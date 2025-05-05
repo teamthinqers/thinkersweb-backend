@@ -155,13 +155,16 @@ export default function AuthPage() {
   const handleGoogleSignIn = async () => {
     try {
       setIsLoading(true);
-      await loginWithGoogle();
       
-      // Add a small delay for Firebase auth to complete
-      setTimeout(() => {
-        // Force refresh the page to ensure clean state
-        window.location.href = "/dashboard";
-      }, 1000);
+      console.log("Starting Google Sign In process from auth page");
+      
+      // Execute login and get user if successful
+      const user = await loginWithGoogle();
+      
+      console.log("Google Sign In successful, user:", user?.displayName);
+      
+      // Hard refresh to dashboard to ensure clean application state
+      window.location.href = "/dashboard";
       
     } catch (error) {
       console.error("Google sign in error:", error);

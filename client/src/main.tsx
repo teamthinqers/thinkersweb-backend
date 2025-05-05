@@ -3,7 +3,8 @@ import App from "./App";
 import "./index.css";
 import { queryClient } from "./lib/queryClient";
 import { initViteConnectionGuard } from "./lib/viteConnectionGuard";
-import { Component, ErrorInfo, ReactNode } from "react";
+import { Component, ErrorInfo, ReactNode, useEffect } from "react";
+import { addResetButton, resetApplicationState } from "./lib/appReset";
 
 // Error boundary component to prevent the entire app from crashing
 class ErrorBoundary extends Component<{children: ReactNode}, {hasError: boolean; error: Error | null}> {
@@ -27,18 +28,26 @@ class ErrorBoundary extends Component<{children: ReactNode}, {hasError: boolean;
         <div className="flex flex-col items-center justify-center min-h-screen p-4">
           <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg max-w-lg w-full">
             <h2 className="text-2xl font-bold mb-4 text-red-600">Something went wrong</h2>
-            <p className="mb-4">We're experiencing technical difficulties. Please try reloading the page.</p>
+            <p className="mb-4">We're experiencing technical difficulties. Please try one of the options below.</p>
             {this.state.error && (
               <div className="bg-gray-100 dark:bg-gray-900 p-2 rounded text-sm mb-4 overflow-auto">
                 <p>{this.state.error.toString()}</p>
               </div>
             )}
-            <button 
-              onClick={() => window.location.reload()}
-              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-            >
-              Reload Page
-            </button>
+            <div className="flex space-x-4">
+              <button 
+                onClick={() => window.location.reload()}
+                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              >
+                Reload Page
+              </button>
+              <button 
+                onClick={() => resetApplicationState("/")}
+                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+              >
+                Reset Application
+              </button>
+            </div>
           </div>
         </div>
       );
@@ -110,9 +119,34 @@ try {
   console.error("Failed to initialize connection guard:", err);
 }
 
+// App initialization wrapper component with reset functionality
+function AppWithReset() {
+  useEffect(() => {
+    // Add debug reset button in development
+    if (import.meta.env.MODE === 'development') {
+      addResetButton();
+    }
+    
+    // Check if we need to reset app state (user added ?reset=true to URL)
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('reset') === 'true') {
+      // Remove the reset param to avoid infinite resets
+      const newUrl = new URL(window.location.href);
+      newUrl.searchParams.delete('reset');
+      window.history.replaceState({}, '', newUrl);
+      
+      // Execute app reset
+      resetApplicationState(window.location.pathname);
+      return;
+    }
+  }, []);
+  
+  return <App />;
+}
+
 // Create the application root element
 createRoot(document.getElementById("root")!).render(
   <ErrorBoundary>
-    <App />
+    <AppWithReset />
   </ErrorBoundary>
 );

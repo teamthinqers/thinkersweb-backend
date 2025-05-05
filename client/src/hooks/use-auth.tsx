@@ -15,7 +15,7 @@ type UserInfo = {
 type AuthContextType = {
   user: UserInfo | null;
   isLoading: boolean;
-  loginWithGoogle: () => Promise<void>;
+  loginWithGoogle: () => Promise<FirebaseUser | null>;
   logout: () => Promise<void>;
 };
 
@@ -74,7 +74,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [setLocation]);
 
   // Function to login with Google
-  const loginWithGoogle = async () => {
+  const loginWithGoogle = async (): Promise<FirebaseUser | null> => {
     try {
       setIsLoading(true);
       
