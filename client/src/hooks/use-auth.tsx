@@ -76,26 +76,51 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         photoURL: fbUser.photoURL,
       };
       
-      const response = await apiRequest("POST", "/api/auth/firebase", userData);
-      const user = await response.json();
+      // Add retry mechanism for server connection issues
+      let retries = 0;
+      const maxRetries = 3;
+      let success = false;
+      let user;
       
-      queryClient.setQueryData(["/api/user"], user);
+      while (!success && retries < maxRetries) {
+        try {
+          const response = await apiRequest("POST", "/api/auth/firebase", userData);
+          user = await response.json();
+          success = true;
+        } catch (error) {
+          retries++;
+          // If we've reached max retries, throw the error to be caught by outer catch
+          if (retries >= maxRetries) throw error;
+          
+          // Wait for 1 second before retrying (exponential backoff)
+          await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, retries - 1)));
+          console.log(`Retrying authentication (${retries}/${maxRetries})...`);
+        }
+      }
       
-      // Redirect to dashboard if they're a new user
-      if (user.isNewUser) {
-        setLocation("/dashboard");
-        toast({
-          title: "Welcome to DotSpark!",
-          description: "Your account has been created successfully.",
-        });
+      if (success && user) {
+        queryClient.setQueryData(["/api/user"], user);
+        
+        // Redirect to dashboard if they're a new user
+        if (user.isNewUser) {
+          setLocation("/dashboard");
+          toast({
+            title: "Welcome to DotSpark!",
+            description: "Your account has been created successfully.",
+          });
+        }
       }
     } catch (error) {
       console.error("Error syncing with server:", error);
       toast({
         title: "Authentication Error",
-        description: "Failed to authenticate with the server.",
+        description: "We're having trouble connecting to the server. Please try refreshing the page or try again later.",
         variant: "destructive",
       });
+      
+      // Force refresh authentication state
+      auth.signOut().catch(() => {}); // Silent catch
+      queryClient.invalidateQueries({ queryKey: ["/api/user"] });
     }
   };
 

@@ -99,10 +99,14 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isMobile, onNewEntry
                   onClick={isMobile ? onClose : undefined}
                 >
                   {React.createElement(item.icon, { 
-                    className: "mr-2 h-4.5 w-4.5", 
-                    size: 18 
+                    className: `mr-2 ${item.label === "Home" ? "text-primary" : ""}`, 
+                    size: item.label === "Home" ? 20 : 18 
                   })}
-                  {item.label}
+                  {item.label === "Home" ? (
+                    <span className="font-medium text-primary">Home</span>
+                  ) : (
+                    item.label
+                  )}
                 </Link>
               </li>
             ))}
