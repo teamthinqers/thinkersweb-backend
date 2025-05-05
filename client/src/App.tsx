@@ -105,10 +105,14 @@ function AppWithLayout() {
   );
 }
 
+// Import the test auth page
+import TestAuth from "@/pages/TestAuth";
+
 function Router() {
   const [location] = useLocation();
   const isLandingPage = location === "/";
   const isAuthPage = location === "/auth";
+  const isTestAuthPage = location === "/test-auth";
 
   if (isLandingPage) {
     return <LandingPage />;
@@ -116,6 +120,10 @@ function Router() {
 
   if (isAuthPage) {
     return <AuthPage />;
+  }
+
+  if (isTestAuthPage) {
+    return <TestAuth />;
   }
 
   return <AppWithLayout />;

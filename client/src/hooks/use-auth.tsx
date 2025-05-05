@@ -47,6 +47,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     queryKey: ["/api/user"],
     queryFn: getQueryFn({ on401: "returnNull" }),
     enabled: !!firebaseUser,
+    retry: false,
   });
 
   // Listen for Firebase auth state changes
