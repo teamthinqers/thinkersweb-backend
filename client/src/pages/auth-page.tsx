@@ -181,27 +181,19 @@ export default function AuthPage() {
             </p>
           </div>
 
-          {/* Note about Google Sign In */}
+          {/* Google Sign In Button */}
           <div className="w-full mb-6">
-            <div className="text-sm rounded-md bg-muted p-4">
-              <div className="flex items-center mb-2">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5 text-muted-foreground mr-2">
-                  <circle cx="12" cy="12" r="10" />
-                  <line x1="12" y1="16" x2="12" y2="12" />
-                  <line x1="12" y1="8" x2="12.01" y2="8" />
-                </svg>
-                <span className="font-medium text-muted-foreground">Google Sign In (Production Only)</span>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                Google Sign In will be available in the production environment. For testing, please use email/password authentication below.
-              </p>
-              <div className="mt-4">
-                <Button 
-                  variant="outline" 
-                  className="w-full flex items-center justify-center gap-2 h-10 border-gray-300 opacity-60"
-                  disabled={true}
-                  type="button"
-                >
+            <Button 
+              variant="outline" 
+              className="w-full flex items-center justify-center gap-2 h-10 border-gray-300"
+              onClick={handleGoogleSignIn}
+              type="button"
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <div className="h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
+              ) : (
+                <>
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" className="h-5 w-5">
                     <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
                     <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
@@ -210,8 +202,13 @@ export default function AuthPage() {
                     <path fill="none" d="M0 0h48v48H0z"/>
                   </svg>
                   Sign in with Google
-                </Button>
-              </div>
+                </>
+              )}
+            </Button>
+            <div className="mt-4 flex items-center">
+              <div className="flex-grow h-px bg-border"></div>
+              <span className="px-3 text-xs text-muted-foreground">OR</span>
+              <div className="flex-grow h-px bg-border"></div>
             </div>
           </div>
 
