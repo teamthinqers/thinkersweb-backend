@@ -339,7 +339,9 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
-      <section className="py-24 relative overflow-hidden">
+      
+      {/* Witness the Spark Section */}
+      <section className="py-24 relative overflow-hidden bg-gradient-to-b from-background to-muted/20">
         <div className="container mx-auto px-4 md:px-6">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Witness the <span className="gradient-heading">Spark</span> Between Dots</h2>
@@ -475,246 +477,6 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
-      
-      {/* Features Section */}
-      <section className="py-20">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Your <span className="gradient-heading">Neural Chip</span> for Limitless Learning</h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              DotSpark acts like a brain implant for your learning journey, connecting all your mental dots to spark explosive growth and performance.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* Feature 1 */}
-            <div className="bg-card border rounded-xl p-6 card-hover">
-              <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center mb-4">
-                <Brain className="h-6 w-6 text-primary animate-pulsate" />
-              </div>
-              <h3 className="text-xl font-semibold mb-2">Neural Input Interface</h3>
-              <p className="text-muted-foreground">
-                Simply chat about what you've learned as if you're talking to your own brain, and DotSpark's AI instantly processes your thoughts.
-              </p>
-            </div>
-
-            {/* Feature 2 */}
-            <div className="bg-card border rounded-xl p-6 card-hover">
-              <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center mb-4">
-                <BookOpen className="h-6 w-6 text-primary animate-pulsate" />
-              </div>
-              <h3 className="text-xl font-semibold mb-2">Dot Mapping System</h3>
-              <p className="text-muted-foreground">
-                Your learnings become "dots" in your personal knowledge network, automatically organized for instant access and future connections.
-              </p>
-            </div>
-
-            {/* Feature 3 */}
-            <div className="bg-card border rounded-xl p-6 card-hover">
-              <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center mb-4">
-                <Users className="h-6 w-6 text-primary animate-pulsate" />
-              </div>
-              <h3 className="text-xl font-semibold mb-2">Collective Intelligence</h3>
-              <p className="text-muted-foreground">
-                Connect your neural chip with others through Barter Learn, sharing dots and discovering network-wide patterns and insights.
-              </p>
-            </div>
-
-            {/* Feature 4 */}
-            <div className="bg-card border rounded-xl p-6 card-hover">
-              <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center mb-4">
-                <Sparkles className="h-6 w-6 text-primary animate-pulsate" />
-              </div>
-              <h3 className="text-xl font-semibold mb-2">Spark Generation</h3>
-              <p className="text-muted-foreground">
-                Watch as your dots combine to create "sparks" - surprising connections and insights between seemingly unrelated knowledge areas.
-              </p>
-            </div>
-
-            {/* Feature 5 */}
-            <div className="bg-card border rounded-xl p-6 card-hover">
-              <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center mb-4">
-                <BarChart2 className="h-6 w-6 text-primary animate-pulsate" />
-              </div>
-              <h3 className="text-xl font-semibold mb-2">Neural Performance Matrix</h3>
-              <p className="text-muted-foreground">
-                Visualize your cognitive growth with analytics that show how your learning network expands and strengthens over time.
-              </p>
-            </div>
-
-            {/* Feature 6 */}
-            <div className="bg-card border rounded-xl p-6 card-hover">
-              <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center mb-4">
-                <MessageCircle className="h-6 w-6 text-primary animate-pulsate" />
-              </div>
-              <h3 className="text-xl font-semibold mb-2">Cognitive Enhancement</h3>
-              <p className="text-muted-foreground">
-                AI-guided reflection sessions that strengthen neural pathways between your dots, enhancing retention and application.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* How It Works */}
-      <section className="py-20 bg-muted/30">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Installing Your <span className="gradient-heading">Neural Chip</span></h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Three simple steps to activate your limitless learning potential
-            </p>
-          </div>
-
-          <div className="flex flex-col md:flex-row gap-8 items-center justify-center">
-            {/* Step 1 */}
-            <div className="flex-1 max-w-md text-center card-hover p-8 rounded-xl bg-card border">
-              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-secondary text-primary-foreground text-2xl font-bold flex items-center justify-center mx-auto mb-6 shadow-md">1</div>
-              <h3 className="text-xl font-semibold mb-2">Neural Transmission</h3>
-              <p className="text-muted-foreground">
-                Chat naturally about your learnings and thoughts. Your neural chip receives these signals and prepares them for processing.
-              </p>
-              <div className="mt-4 pt-2">
-                <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold bg-primary/10 text-primary">effortless</span>
-                <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold bg-primary/10 text-primary ml-1.5">natural</span>
-                <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold bg-primary/10 text-primary ml-1.5">instant</span>
-              </div>
-            </div>
-
-            {/* Step 2 */}
-            <div className="flex-1 max-w-md text-center card-hover p-8 rounded-xl bg-card border">
-              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-secondary text-primary-foreground text-2xl font-bold flex items-center justify-center mx-auto mb-6 shadow-md">2</div>
-              <h3 className="text-xl font-semibold mb-2">Dot Formation</h3>
-              <p className="text-muted-foreground">
-                Your neural chip transforms your knowledge into organized "dots" in your personal matrix, each one tagged and categorized automatically.
-              </p>
-              <div className="mt-4 pt-2">
-                <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold bg-secondary/10 text-secondary">structured</span>
-                <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold bg-secondary/10 text-secondary ml-1.5">AI-powered</span>
-                <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold bg-secondary/10 text-secondary ml-1.5">organized</span>
-              </div>
-            </div>
-
-            {/* Step 3 */}
-            <div className="flex-1 max-w-md text-center card-hover p-8 rounded-xl bg-card border">
-              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-secondary text-primary-foreground text-2xl font-bold flex items-center justify-center mx-auto mb-6 shadow-md">3</div>
-              <h3 className="text-xl font-semibold mb-2">Spark Ignition</h3>
-              <p className="text-muted-foreground">
-                As your dots multiply, connections form automatically, creating sparks of insight that illuminate patterns you never saw before.
-              </p>
-              <div className="mt-4 pt-2">
-                <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold bg-primary/10 text-primary">connections</span>
-                <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold bg-primary/10 text-primary ml-1.5">growth</span>
-                <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold bg-primary/10 text-primary ml-1.5">limitless</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonials/Use Cases */}
-      <section className="py-20 bg-gradient-to-b from-background to-primary/5">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Who Benefits?</h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              See how different people transform their learning experience
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* User 1 */}
-            <div className="bg-card border rounded-xl p-6 card-hover">
-              <div className="mb-4">
-                <span className="inline-block rounded-full bg-gradient-to-br from-primary/20 to-primary/10 p-2.5">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M3 7V5c0-1.1.9-2 2-2h2"></path><path d="M17 3h2c1.1 0 2 .9 2 2v2"></path><path d="M21 17v2c0 1.1-.9 2-2 2h-2"></path><path d="M7 21H5c-1.1 0-2-.9-2-2v-2"></path><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><path d="M9 9h.01"></path><path d="M15 9h.01"></path></svg>
-                </span>
-              </div>
-              <h3 className="text-xl font-semibold mb-2">Students</h3>
-              <p className="text-muted-foreground mb-4">
-                "I used to highlight textbooks and take notes that I never revisited. Now I chat about what I'm learning and can actually see connections between my classes."
-              </p>
-              <div className="mt-4 pt-4 border-t border-border/50">
-                <p className="font-medium text-foreground">Key Benefits:</p>
-                <ul className="mt-2 space-y-1.5 text-sm text-muted-foreground">
-                  <li className="flex items-center">
-                    <span className="h-1.5 w-1.5 rounded-full bg-primary mr-2"></span>
-                    Better retention through organized insights
-                  </li>
-                  <li className="flex items-center">
-                    <span className="h-1.5 w-1.5 rounded-full bg-primary mr-2"></span>
-                    Discover connections across subjects
-                  </li>
-                  <li className="flex items-center">
-                    <span className="h-1.5 w-1.5 rounded-full bg-primary mr-2"></span>
-                    Share notes with study groups
-                  </li>
-                </ul>
-              </div>
-            </div>
-
-            {/* User 2 */}
-            <div className="bg-card border rounded-xl p-6 card-hover">
-              <div className="mb-4">
-                <span className="inline-block rounded-full bg-gradient-to-br from-primary/20 to-primary/10 p-2.5">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-                </span>
-              </div>
-              <h3 className="text-xl font-semibold mb-2">Professionals</h3>
-              <p className="text-muted-foreground mb-4">
-                "I read articles, take courses, and attend webinars constantly. This app helps me retain what matters and apply it to my work."
-              </p>
-              <div className="mt-4 pt-4 border-t border-border/50">
-                <p className="font-medium text-foreground">Key Benefits:</p>
-                <ul className="mt-2 space-y-1.5 text-sm text-muted-foreground">
-                  <li className="flex items-center">
-                    <span className="h-1.5 w-1.5 rounded-full bg-primary mr-2"></span>
-                    Track professional development
-                  </li>
-                  <li className="flex items-center">
-                    <span className="h-1.5 w-1.5 rounded-full bg-primary mr-2"></span>
-                    Turn insights into actionable strategies
-                  </li>
-                  <li className="flex items-center">
-                    <span className="h-1.5 w-1.5 rounded-full bg-primary mr-2"></span>
-                    Share knowledge with team members
-                  </li>
-                </ul>
-              </div>
-            </div>
-
-            {/* User 3 */}
-            <div className="bg-card border rounded-xl p-6 card-hover">
-              <div className="mb-4">
-                <span className="inline-block rounded-full bg-gradient-to-br from-primary/20 to-primary/10 p-2.5">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
-                </span>
-              </div>
-              <h3 className="text-xl font-semibold mb-2">Lifelong Learners</h3>
-              <p className="text-muted-foreground mb-4">
-                "I'm curious about everything from astronomy to cooking. This app helps me see surprising connections between my different interests."
-              </p>
-              <div className="mt-4 pt-4 border-t border-border/50">
-                <p className="font-medium text-foreground">Key Benefits:</p>
-                <ul className="mt-2 space-y-1.5 text-sm text-muted-foreground">
-                  <li className="flex items-center">
-                    <span className="h-1.5 w-1.5 rounded-full bg-primary mr-2"></span>
-                    Organize diverse learning interests
-                  </li>
-                  <li className="flex items-center">
-                    <span className="h-1.5 w-1.5 rounded-full bg-primary mr-2"></span>
-                    Discover interdisciplinary connections
-                  </li>
-                  <li className="flex items-center">
-                    <span className="h-1.5 w-1.5 rounded-full bg-primary mr-2"></span>
-                    Build a personal knowledge database
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* CTA Section */}
       <section className="py-24 relative overflow-hidden">
@@ -730,13 +492,13 @@ export default function LandingPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" variant="secondary" className="text-primary font-semibold shadow-lg btn-bounce" asChild>
-                <Link href="/dashboard" className="px-8">
+                <Link href="/auth" className="px-8">
                   Get Started Now <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
               <Button size="lg" variant="outline" className="bg-transparent border-white text-white hover:bg-white/10 btn-bounce" asChild>
-                <Link href="/network" className="px-8">
-                  Explore Community
+                <Link href="/dashboard" className="px-8">
+                  Explore Dashboard
                 </Link>
               </Button>
             </div>
@@ -748,22 +510,16 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="py-12 bg-muted/50 text-muted-foreground">
+      <footer className="border-t py-12 bg-muted/30">
         <div className="container mx-auto px-4 md:px-6">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="mb-4 md:mb-0">
-              <h2 className="text-2xl font-bold text-foreground">DotSpark</h2>
-              <p className="mt-1">Connect the Dots, Spark Your Potential</p>
+            <div className="flex items-center mb-4 md:mb-0">
+              <Sparkles className="h-5 w-5 text-primary mr-2" />
+              <span className="text-xl font-bold">DotSpark</span>
             </div>
-            <div className="flex space-x-6">
-              <Link href="/dashboard" className="hover:text-primary transition-colors">Dashboard</Link>
-              <Link href="/auth" className="hover:text-primary transition-colors">Sign In</Link>
-              <Link href="/network" className="hover:text-primary transition-colors">Network</Link>
-              <Link href="/settings" className="hover:text-primary transition-colors">Settings</Link>
+            <div className="text-sm text-muted-foreground">
+              © 2025 DotSpark. All rights reserved.
             </div>
-          </div>
-          <div className="mt-8 pt-8 border-t border-border text-center text-sm">
-            <p>&copy; {new Date().getFullYear()} DotSpark. All rights reserved.</p>
           </div>
         </div>
       </footer>
