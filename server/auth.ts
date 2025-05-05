@@ -312,7 +312,7 @@ export function setupAuth(app: Express) {
       });
     } catch (error) {
       console.error("Recovery error:", error);
-      res.status(500).json({ message: "Session recovery failed", error: error.message });
+      res.status(500).json({ message: "Session recovery failed", error: (error as any)?.message || "Unknown error" });
     }
   });
   

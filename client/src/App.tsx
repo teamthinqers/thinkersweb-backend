@@ -1,5 +1,5 @@
 import { Switch, Route, useLocation } from "wouter";
-import { queryClient, networkStatus } from "./lib/queryClient";
+import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import NotFound from "@/pages/not-found";
@@ -16,176 +16,36 @@ import { useEffect, useState } from "react";
 import EntryDetail from "@/components/entries/EntryDetail";
 import ChatEntryForm from "@/components/chat/ChatEntryForm";
 import { AuthProvider, useAuth } from "@/hooks/use-auth";
-import { Loader2, ServerCrash } from "lucide-react";
-import { ConnectionError } from "@/components/ui/connection-error";
-import { useToast } from "@/hooks/use-toast";
-import { Button } from "@/components/ui/button";
-import { isIntentionalHomeNavigation, clearIntentionalNavigation, navigateToHome, navigateToDashboard } from "@/lib/navigationService";
-import { signInWithGoogle, recoverSession } from "@/lib/authService";
+import { Loader2 } from "lucide-react";
 
-// For backward compatibility
-declare global {
-  interface Window {
-    INTENTIONAL_HOME_NAVIGATION: boolean;
-  }
-}
-
-// Protected route component with auto-restore feature
+// Simplified Protected route component
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { user, isLoading, error, loginWithGoogle } = useAuth();
-  const [location, setLocation] = useLocation();
-  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
-  const [autoRestoreAttempted, setAutoRestoreAttempted] = useState(false);
-  const [restorationInProgress, setRestorationInProgress] = useState(false);
-  const { toast } = useToast();
+  const { user, isLoading } = useAuth();
+  const [, setLocation] = useLocation();
 
-  // If we're already on the dashboard, don't attempt any navigation
-  const isOnDashboard = location.startsWith("/dashboard");
-
-  // First, try to auto-restore session if we have stored data
+  // Check if user is authenticated
   useEffect(() => {
-    // Only attempt auto-restore once, when not loading and no user
-    if (!isLoading && !user && !autoRestoreAttempted && !restorationInProgress) {
-      setAutoRestoreAttempted(true);
-      
-      // Check if we have stored user data
-      const storedData = localStorage.getItem('dotspark_user_data');
-      if (storedData) {
-        try {
-          const userData = JSON.parse(storedData);
-          const lastAuth = new Date(userData.lastAuthenticated);
-          const now = new Date();
-          const hoursSinceAuth = (now.getTime() - lastAuth.getTime()) / (1000 * 60 * 60);
-          
-          // If less than 72 hours since last authentication, attempt auto-restore
-          if (hoursSinceAuth < 72) {
-            console.log("Found recent authentication data, attempting session restoration");
-            setRestorationInProgress(true);
-            
-            // Show login prompt for a smoother user experience
-            setShowLoginPrompt(true);
-          } else {
-            console.log("Stored authentication data too old, not attempting auto-restore");
-            // Navigate to auth for a fresh login
-            if (!window.INTENTIONAL_HOME_NAVIGATION && !isOnDashboard) {
-              setTimeout(() => setLocation("/auth"), 500);
-            }
-          }
-        } catch (e) {
-          console.error("Failed to parse stored user data:", e);
-          localStorage.removeItem('dotspark_user_data');
-          // Navigate to auth
-          if (!window.INTENTIONAL_HOME_NAVIGATION && !isOnDashboard) {
-            setTimeout(() => setLocation("/auth"), 500);
-          }
-        }
-      } else {
-        console.log("No stored user data found, regular authentication required");
-        // Navigate to auth
-        if (!window.INTENTIONAL_HOME_NAVIGATION && !isOnDashboard) {
-          setTimeout(() => setLocation("/auth"), 500);
-        }
-      }
+    if (!isLoading && !user) {
+      setLocation("/auth");
     }
-  }, [isLoading, user, autoRestoreAttempted, restorationInProgress, setLocation, isOnDashboard]);
+  }, [user, isLoading, setLocation]);
 
-  // Handler for automatic login
-  const handleAutomaticLogin = async () => {
-    try {
-      toast({
-        title: "Restoring Session",
-        description: "Attempting to restore your previous session...",
-      });
-      
-      await loginWithGoogle();
-      console.log("Session restore successful");
-      
-      toast({
-        title: "Welcome back!",
-        description: "Your session has been restored successfully.",
-      });
-      
-      setShowLoginPrompt(false);
-      setRestorationInProgress(false);
-    } catch (error) {
-      console.error("Session restore failed:", error);
-      
-      toast({
-        title: "Session expired",
-        description: "Please log in again to continue.",
-        variant: "destructive",
-      });
-      
-      setShowLoginPrompt(false);
-      setRestorationInProgress(false);
-      
-      // Navigate to auth
-      if (!window.INTENTIONAL_HOME_NAVIGATION && !isOnDashboard) {
-        setTimeout(() => setLocation("/auth"), 500);
-      }
-    }
-  };
-
-  // Manual navigation to auth when needed
-  useEffect(() => {
-    // Only if we're done with all attempts and still have no user
-    if (!isLoading && !user && autoRestoreAttempted && !restorationInProgress && !showLoginPrompt) {
-      // Check if we're on a protected route that needs auth
-      if (!window.INTENTIONAL_HOME_NAVIGATION && !isOnDashboard && !location.startsWith("/auth")) {
-        console.log("Authentication required for this route, navigating to auth page");
-        setTimeout(() => setLocation("/auth"), 500);
-      }
-    }
-  }, [isLoading, user, autoRestoreAttempted, restorationInProgress, showLoginPrompt, location, setLocation, isOnDashboard]);
-
-  // Show session restore prompt
-  if (showLoginPrompt) {
-    return (
-      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-        <div className="bg-white p-6 rounded-lg shadow-xl max-w-md w-full">
-          <h2 className="text-2xl font-bold mb-4 text-center">Welcome Back!</h2>
-          <p className="mb-6 text-center">
-            We noticed you were previously logged in. Would you like to restore your session?
-          </p>
-          <div className="flex justify-center space-x-4">
-            <Button onClick={handleAutomaticLogin} className="w-32">
-              Restore
-            </Button>
-            <Button 
-              variant="outline" 
-              onClick={() => {
-                setShowLoginPrompt(false);
-                setRestorationInProgress(false);
-                setLocation("/auth");
-              }}
-              className="w-32"
-            >
-              Sign In Again
-            </Button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Show loading state during any loading/restoration process
-  if (isLoading || restorationInProgress) {
+  // Show loading state
+  if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen">
         <Loader2 className="h-8 w-8 animate-spin text-primary mb-4" />
-        <p className="text-center text-muted-foreground">
-          {restorationInProgress ? "Restoring your session..." : "Loading..."}
-        </p>
+        <p className="text-center text-muted-foreground">Loading...</p>
       </div>
     );
   }
 
-  // If no user after all attempts, show loading until redirected
+  // If no user, show loading until redirected
   if (!user) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen">
         <Loader2 className="h-8 w-8 animate-spin text-primary mb-4" />
-        <p className="text-center text-muted-foreground">Preparing your experience...</p>
+        <p className="text-center text-muted-foreground">Redirecting...</p>
       </div>
     );
   }
@@ -255,275 +115,25 @@ function AppWithLayout() {
   );
 }
 
-// Dedicated component to handle Dashboard redirection
-function DashboardRedirect() {
-  const [, setLocation] = useLocation();
-  const { toast } = useToast();
-  
-  useEffect(() => {
-    // Redirect to dashboard with a small delay
-    const redirectTimer = setTimeout(() => {
-      setLocation("/dashboard");
-      toast({
-        title: "Welcome Back",
-        description: "Redirecting you to your dashboard...",
-      });
-    }, 500);
-    
-    return () => clearTimeout(redirectTimer);
-  }, [setLocation, toast]);
-  
-  return (
-    <div className="flex flex-col items-center justify-center min-h-screen">
-      <Loader2 className="h-8 w-8 animate-spin text-primary mb-4" />
-      <p className="text-center text-muted-foreground">Redirecting to dashboard...</p>
-    </div>
-  );
-}
-
 function Router() {
-  const [location, setLocation] = useLocation();
+  const [location] = useLocation();
   const { user, isLoading } = useAuth();
+  
+  // Check if we're on the landing page
   const isLandingPage = location === "/";
-  const isAuthPage = location === "/auth";
-  const isDashboardPage = location.startsWith("/dashboard");
-  const { toast } = useToast();
   
-  // Track intentional navigation to home from dashboard
-  const [intentionalHomeNavigation, setIntentionalHomeNavigation] = useState(false);
-  
-  // Listen for navigation events that could be home navigation
-  useEffect(() => {
-    // If landing page is accessed directly, mark as intentional
-    if (location === "/" && !isLandingPage) {
-      console.log("Setting intentional home navigation flag");
-      setIntentionalHomeNavigation(true);
-      
-      // Reset the flag after 5 seconds
-      const resetTimer = setTimeout(() => {
-        setIntentionalHomeNavigation(false);
-      }, 5000);
-      
-      return () => clearTimeout(resetTimer);
-    }
-  }, [location, isLandingPage]);
-  
-  // Handle home button clicks via URL changes and custom events
-  useEffect(() => {
-    // Listen for URL changes that might be initiated by our home button
-    const handleUrlChange = () => {
-      if (window.location.pathname === "/") {
-        console.log("URL changed to home, marking as intentional navigation");
-        setIntentionalHomeNavigation(true);
-        window.INTENTIONAL_HOME_NAVIGATION = true;
-        
-        // Reset the flag after 5 seconds
-        setTimeout(() => {
-          setIntentionalHomeNavigation(false);
-          window.INTENTIONAL_HOME_NAVIGATION = false;
-        }, 5000);
-      }
-    };
-    
-    // Listen for our custom intentional navigation event
-    const handleIntentionalNavigation = (event: Event) => {
-      console.log("Received intentional home navigation event", (event as CustomEvent).detail);
-      setIntentionalHomeNavigation(true);
-      window.INTENTIONAL_HOME_NAVIGATION = true;
-      
-      // Reset the flag after 5 seconds
-      setTimeout(() => {
-        setIntentionalHomeNavigation(false);
-        window.INTENTIONAL_HOME_NAVIGATION = false;
-      }, 5000);
-    };
-    
-    window.addEventListener("popstate", handleUrlChange);
-    window.addEventListener("intentionalHomeNavigation", handleIntentionalNavigation);
-    
-    return () => {
-      window.removeEventListener("popstate", handleUrlChange);
-      window.removeEventListener("intentionalHomeNavigation", handleIntentionalNavigation);
-    };
-  }, []);
-
-  // Manage authentication-based redirects
-  useEffect(() => {
-    // Avoid any redirects during initial loading
-    if (isLoading) return;
-    
-    // Skip redirects if intentional navigation to home
-    if (intentionalHomeNavigation && location === "/") {
-      console.log("Skipping dashboard redirect due to intentional home navigation");
-      return;
-    }
-    
-    // Wait a moment before redirecting to prevent flickering
-    const redirectDelay = setTimeout(() => {
-      // If logged in and on landing page, go to dashboard (unless intentional)
-      if (user && location === "/" && !intentionalHomeNavigation) {
-        console.log("User is logged in and on landing page, redirecting to dashboard");
-        setLocation("/dashboard");
-      }
-      
-      // If logged in and on auth page, redirect to dashboard (always)
-      if (user && location === "/auth") {
-        console.log("User is logged in and on auth page, redirecting to dashboard");
-        setLocation("/dashboard");
-      }
-    }, 300);
-    
-    return () => clearTimeout(redirectDelay);
-  }, [user, isLoading, location, setLocation, intentionalHomeNavigation]);
-
-  // Redirect to auth page if trying to access protected pages without being logged in
-  useEffect(() => {
-    // Check if user is trying to access dashboard or other protected routes
-    const isProtectedRoute = isDashboardPage || 
-                             location.startsWith("/entries") || 
-                             location.startsWith("/insights") || 
-                             location.startsWith("/favorites") || 
-                             location.startsWith("/network") || 
-                             location.startsWith("/settings");
-                             
-    // Only redirect if not already on auth page, not on landing page, and if auth check is complete
-    if (!user && !isLoading && isProtectedRoute && !isAuthPage && !isLandingPage) {
-      toast({
-        title: "Authentication Required",
-        description: "Please sign in to access the dashboard",
-      });
-      setLocation("/auth");
-    }
-  }, [user, isLoading, location, isAuthPage, isLandingPage, isDashboardPage, setLocation, toast]);
-
-  // Use the navigation service to check for intentional navigation
-  useEffect(() => {
-    if (isLandingPage) {
-      // Check if this is an intentional navigation using the service
-      const isIntentional = isIntentionalHomeNavigation();
-      
-      if (isIntentional) {
-        console.log("Navigation service: Found intentional navigation to landing page");
-        setIntentionalHomeNavigation(true);
-        window.INTENTIONAL_HOME_NAVIGATION = true;
-        
-        // Clear the flag after navigation is complete
-        setTimeout(() => {
-          clearIntentionalNavigation();
-          // Don't reset React state immediately to allow proper rendering
-        }, 1000);
-      }
-    }
-  }, [isLandingPage]);
-
-  // Enhanced logic for landing page access:
-  // 1. Use our navigation service to determine intentional navigation
-  // 2. Support the global flag for backward compatibility 
-  // 3. Always allow access when not authenticated
-  // 4. Also check URL parameters for cache-busting
-  if (isLandingPage && (
-    isIntentionalHomeNavigation() || 
-    intentionalHomeNavigation || 
-    window.INTENTIONAL_HOME_NAVIGATION || 
-    window.location.search.includes('nocache') || 
-    window.location.search.includes('forcedLogout') ||
-    !user
-  )) {
-    console.log("Navigation service: Showing landing page due to intentional navigation or no authentication");
+  // Show LandingPage for unauthenticated users or when on landing page explicitly
+  if (isLandingPage || (!user && !isLoading)) {
     return <LandingPage />;
   }
-
-  if (isAuthPage) {
-    // Don't show auth page if already logged in
-    if (user && !isLoading) {
-      return <DashboardRedirect />;
-    }
+  
+  // Show AuthPage for the auth route
+  if (location === "/auth") {
     return <AuthPage />;
   }
   
-  // Special case to ensure we always have a place to land if we're logged in
-  // But explicitly allow landing page access when it's intentional navigation
-  const forceRedirectToDashboard = user && !isDashboardPage && !isLandingPage && !isAuthPage && 
-    !(intentionalHomeNavigation && location === "/");
-  if (forceRedirectToDashboard) {
-    return <DashboardRedirect />;
-  }
-  
-  // If user is trying to access protected routes without being logged in, show auth page
-  const accessingProtectedRouteWithoutAuth = !user && 
-    (isDashboardPage || 
-     location.startsWith("/entries") || 
-     location.startsWith("/insights") || 
-     location.startsWith("/favorites") || 
-     location.startsWith("/network") || 
-     location.startsWith("/settings"));
-     
-  if (accessingProtectedRouteWithoutAuth) {
-    // This is a fallback in case the useEffect redirect doesn't trigger
-    return <AuthPage />;
-  }
-
+  // For dashboard and other protected routes
   return <AppWithLayout />;
-}
-
-// Connection Error Monitor component
-function ConnectionErrorMonitor() {
-  const { toast } = useToast();
-  const [showConnectionError, setShowConnectionError] = useState(false);
-  
-  // ViteConnectionGuard is now initialized in main.tsx
-  
-  // Monitor network status changes
-  useEffect(() => {
-    // Show connection error banner
-    const handleNetworkChange = () => {
-      if (!networkStatus.serverAvailable || !networkStatus.isOnline) {
-        setShowConnectionError(true);
-        
-        // Show toast notification on first connection error
-        if (networkStatus.connectionAttempts === 1) {
-          toast({
-            title: "Connection Issue",
-            description: !networkStatus.isOnline 
-              ? "You appear to be offline. Please check your internet connection." 
-              : "We're having trouble connecting to the server. Retrying...",
-            variant: "destructive",
-          });
-        }
-      } else {
-        // If connection is restored, hide error after a delay
-        setTimeout(() => {
-          setShowConnectionError(false);
-        }, 1500);
-        
-        // Only show success toast if we had an error before
-        if (showConnectionError) {
-          toast({
-            title: "Connection Restored",
-            description: "Your connection has been restored.",
-          });
-        }
-      }
-    };
-    
-    // Subscribe to network status changes
-    const unsubscribe = networkStatus.addListener();
-    
-    // Initial check
-    handleNetworkChange();
-    
-    return () => {
-      unsubscribe();
-    };
-  }, [toast, showConnectionError]);
-  
-  if (!showConnectionError) return null;
-  
-  return (
-    <div className="fixed top-20 right-4 z-50 w-80">
-      <ConnectionError />
-    </div>
-  );
 }
 
 function App() {
@@ -531,7 +141,6 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <Router />
-        <ConnectionErrorMonitor />
         <Toaster />
       </AuthProvider>
     </QueryClientProvider>

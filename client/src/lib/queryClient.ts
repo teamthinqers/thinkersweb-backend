@@ -1,22 +1,33 @@
 import { QueryClient, QueryFunction } from "@tanstack/react-query";
 
 // Ultra-simplified network status without complex tracking
+/**
+ * A drastically simplified network status to prevent app crashing
+ */
 export const networkStatus = {
   isOnline: true,
   serverAvailable: true,
+  connectionAttempts: 0,
+  maxRetries: 3,
   
   // Add minimum required methods to prevent errors
   setServerStatus(available: boolean) {
     this.serverAvailable = available;
   },
   
-  // Stub methods to prevent errors in other parts of the app
+  // Stub methods that return functions to prevent errors in other components
   addListener() {
     return () => {}; // Return empty cleanup function
   },
   
-  connectionAttempts: 0,
-  maxRetries: 3
+  // Functions required by retry logic
+  canRetry() {
+    return true;
+  },
+  
+  incrementAttempt() {
+    // Do nothing, just a stub
+  }
 };
 
 // Custom error class for server connection issues
