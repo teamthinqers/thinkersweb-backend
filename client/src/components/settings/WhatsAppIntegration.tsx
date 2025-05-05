@@ -290,6 +290,7 @@ export default function WhatsAppIntegration() {
                 <li>Check WhatsApp on your phone for a message with a 6-digit code</li>
                 <li>Enter the verification code below to activate the DotSpark chatbot</li>
                 <li>This security step helps ensure only you can connect your WhatsApp account</li>
+                <li>If you don't receive a code within 2 minutes, make sure your WhatsApp is active and connected, then try again</li>
               </ol>
             </div>
             

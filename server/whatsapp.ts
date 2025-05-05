@@ -96,9 +96,22 @@ export async function sendWhatsAppReply(to: string, message: string): Promise<bo
     return false;
   } catch (error) {
     console.error("Error sending message through WhatsApp chatbot:", error);
-    console.error("Error details:", JSON.stringify(error, null, 2));
     
-    // For development purposes, let's simulate success
+    // In production, we need detailed error logs for troubleshooting
+    if (process.env.NODE_ENV === 'production') {
+      const twilioError = error as any; // Cast to any for accessing Twilio error properties
+      console.error("TWILIO ERROR DETAILS IN PRODUCTION:", JSON.stringify({
+        accountSid: TWILIO_ACCOUNT_SID ? `${TWILIO_ACCOUNT_SID.substring(0, 5)}...` : 'undefined',
+        authToken: TWILIO_AUTH_TOKEN ? 'present' : 'undefined',
+        fromNumber: TWILIO_PHONE_NUMBER ? TWILIO_PHONE_NUMBER : 'undefined',
+        toNumber: to,
+        errorCode: twilioError.code || 'unknown',
+        errorMessage: twilioError.message || 'No error message',
+        errorStatus: twilioError.status || 'unknown'
+      }, null, 2));
+    }
+    
+    // For development purposes, simulate success
     if (process.env.NODE_ENV !== 'production') {
       console.log("Development mode: Simulating successful WhatsApp message delivery");
       return true;
