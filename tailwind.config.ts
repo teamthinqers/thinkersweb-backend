@@ -79,10 +79,59 @@ export default {
             height: "0",
           },
         },
+        typing: {
+          "0%": {
+            width: "0%",
+            borderColor: "transparent",
+          },
+          "5%": {
+            borderColor: "hsl(var(--primary))",
+          },
+          "50%": {
+            width: "100%",
+          },
+          "95%": {
+            borderColor: "hsl(var(--primary))",
+          },
+          "100%": {
+            borderColor: "transparent",
+          }
+        },
+        gradient: {
+          "0%": {
+            backgroundPosition: "0% 50%",
+          },
+          "50%": {
+            backgroundPosition: "100% 50%",
+          },
+          "100%": {
+            backgroundPosition: "0% 50%",
+          }
+        },
+        float: {
+          "0%, 100%": {
+            transform: "translateY(0)",
+          },
+          "50%": {
+            transform: "translateY(-10px)",
+          }
+        },
+        pulsate: {
+          "0%, 100%": {
+            opacity: "1",
+          },
+          "50%": {
+            opacity: "0.7",
+          }
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "typing": "typing 4s steps(40) infinite",
+        "gradient": "gradient 6s ease infinite",
+        "float": "float 4s ease-in-out infinite",
+        "pulsate": "pulsate 2s ease-in-out infinite",
       },
     },
   },

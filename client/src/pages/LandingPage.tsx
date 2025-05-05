@@ -15,7 +15,7 @@ export default function LandingPage() {
                 Introducing the Learning Repository
               </div>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
-                Capture, Connect, <span className="text-primary">Transform</span> Your Learning
+                Capture, Connect, <span className="gradient-heading">Transform</span> Your Learning
               </h1>
               <p className="text-xl text-muted-foreground max-w-2xl">
                 Your personal knowledge management system that turns everyday insights into a powerful learning database through natural conversation.

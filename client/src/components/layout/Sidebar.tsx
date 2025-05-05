@@ -17,6 +17,20 @@ import {
   Hash
 } from "lucide-react";
 
+// Define interfaces for category and tag
+interface CategoryWithCount {
+  id: number;
+  name: string;
+  color: string;
+  count: number;
+}
+
+interface TagWithCount {
+  id: number;
+  name: string;
+  count: number;
+}
+
 interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
@@ -92,30 +106,33 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isMobile, onNewEntry
           </ul>
 
           {categoriesLoading ? (
-            <div className="py-4 px-3 text-sm text-gray-500">Loading categories...</div>
+            <div className="py-3 px-3 text-sm text-muted-foreground flex items-center">
+              <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent mr-2"></div>
+              Loading categories...
+            </div>
           ) : (
             <>
-              <h2 className="text-xs uppercase tracking-wider text-gray-500 font-semibold mb-2 mt-6">Categories</h2>
-              <ul>
-                {categories?.map((category) => (
-                  <li key={category.id} className="mb-1">
-                    <div className="flex items-center justify-between px-3 py-2 rounded-md text-gray-600 hover:bg-gray-100 cursor-pointer">
+              <h2 className="text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-3 mt-8 ml-2">Categories</h2>
+              <ul className="space-y-1">
+                {categories?.map((category: CategoryWithCount) => (
+                  <li key={category.id}>
+                    <div className="flex items-center justify-between px-3 py-2 rounded-md text-muted-foreground hover:bg-muted hover:text-foreground cursor-pointer transition-colors">
                       <div className="flex items-center">
                         <span 
-                          className="w-3 h-3 rounded-full mr-2" 
+                          className="w-3 h-3 rounded-full mr-2.5" 
                           style={{ backgroundColor: category.color }}
                         ></span>
                         <span>{category.name}</span>
                       </div>
-                      <span className="text-xs bg-gray-100 text-gray-500 px-2 py-1 rounded-full">
+                      <span className="text-xs bg-muted px-2 py-0.5 rounded-full font-medium">
                         {category.count}
                       </span>
                     </div>
                   </li>
                 ))}
                 <li>
-                  <div className="px-3 py-2 text-gray-500 hover:text-primary cursor-pointer flex items-center">
-                    <i className="ri-add-line mr-1"></i> Add category
+                  <div className="px-3 py-2 text-muted-foreground hover:text-primary cursor-pointer flex items-center transition-colors mt-1">
+                    <Plus className="h-3.5 w-3.5 mr-1.5" /> Add category
                   </div>
                 </li>
               </ul>
@@ -123,16 +140,20 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isMobile, onNewEntry
           )}
 
           {tagsLoading ? (
-            <div className="py-4 px-3 text-sm text-gray-500">Loading tags...</div>
+            <div className="py-3 px-3 text-sm text-muted-foreground flex items-center">
+              <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent mr-2"></div>
+              Loading tags...
+            </div>
           ) : (
             <>
-              <h2 className="text-xs uppercase tracking-wider text-gray-500 font-semibold mb-2 mt-6">Tags</h2>
-              <div className="flex flex-wrap gap-2 px-3">
-                {topTags.map((tag) => (
+              <h2 className="text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-3 mt-8 ml-2">Tags</h2>
+              <div className="flex flex-wrap gap-1.5 px-3">
+                {topTags.map((tag: TagWithCount) => (
                   <span 
                     key={tag.id}
-                    className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full hover:bg-primary hover:text-white cursor-pointer"
+                    className="px-2 py-0.5 bg-muted text-muted-foreground text-xs rounded-full hover:bg-primary/20 hover:text-primary cursor-pointer transition-colors flex items-center"
                   >
+                    <Hash className="h-3 w-3 mr-0.5 opacity-70" />
                     {tag.name}
                     {tag.count && (
                       <span className="ml-1 text-xs opacity-70">{tag.count}</span>
@@ -140,7 +161,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isMobile, onNewEntry
                   </span>
                 ))}
                 {tags && tags.length > 10 && (
-                  <span className="px-2 py-1 text-primary text-xs hover:underline cursor-pointer mt-2">
+                  <span className="px-2 py-0.5 text-primary text-xs hover:underline cursor-pointer mt-1 flex items-center">
                     View all tags
                   </span>
                 )}
@@ -148,9 +169,13 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isMobile, onNewEntry
             </>
           )}
         </nav>
-        <Separator className="my-4" />
-        <div className="px-4 pb-4 text-xs text-gray-500">
-          <p>Learning Repository v1.0</p>
+        <Separator className="my-6 opacity-50" />
+        <div className="px-4 pb-4 flex items-center justify-between">
+          <p className="text-xs text-muted-foreground">Learning Repository v1.0</p>
+          <div className="flex items-center text-muted-foreground/70">
+            <span className="inline-block h-2 w-2 rounded-full bg-green-500 mr-1.5"></span>
+            <span className="text-xs">Connected</span>
+          </div>
         </div>
       </ScrollArea>
     </div>
