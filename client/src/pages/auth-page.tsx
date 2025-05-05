@@ -351,10 +351,10 @@ export default function AuthPage() {
               <div className="border-t border-border/50 pt-6">
                 <h3 className="text-xl font-semibold flex items-center">
                   <div className="w-8 h-8 rounded-full bg-primary/20 text-primary flex items-center justify-center mr-3">2</div>
-                  Connect WhatsApp (Coming Soon)
+                  DotSpark WhatsApp Chatbot (Coming Soon)
                 </h3>
                 <p className="text-muted-foreground ml-11">
-                  Link your WhatsApp account to capture learning moments on the go, ensuring no valuable insight is ever lost.
+                  Chat with our WhatsApp bot to record learning moments on the go, ensuring no valuable insight is ever lost.
                 </p>
               </div>
 

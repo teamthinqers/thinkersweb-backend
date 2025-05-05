@@ -146,8 +146,8 @@ export default function LandingPage() {
                 <div className="bg-card/50 border rounded-xl p-5 flex items-start gap-4">
                   <div className="w-10 h-10 rounded-full bg-primary/20 text-primary flex items-center justify-center font-semibold text-lg shrink-0">2</div>
                   <div>
-                    <h3 className="font-medium text-lg">Connect WhatsApp</h3>
-                    <p className="text-muted-foreground">Link your WhatsApp in Settings to enable mobile learning capture on the go</p>
+                    <h3 className="font-medium text-lg">DotSpark WhatsApp Chatbot</h3>
+                    <p className="text-muted-foreground">Chat with our WhatsApp bot to record learning moments on the go, seamlessly</p>
                   </div>
                 </div>
                 <div className="bg-card/50 border rounded-xl p-5 flex items-start gap-4">
@@ -336,7 +336,7 @@ export default function LandingPage() {
             <div className="bg-card border rounded-xl p-6 relative">
               <div className="w-12 h-12 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-xl mb-4">2</div>
               <h3 className="text-xl font-bold mb-3">Feed Your Neural Chip</h3>
-              <p className="text-muted-foreground">Capture your learning moments through our chat interface or WhatsApp integration to build your knowledge network.</p>
+              <p className="text-muted-foreground">Capture your learning moments through our chat interface or WhatsApp chatbot to build your knowledge network.</p>
               <div className="absolute top-6 right-6">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary/40"><circle cx="12" cy="12" r="10"></circle><path d="M18 13a6 6 0 0 1-6 5 6 6 0 0 1-6-5h12Z"></path><line x1="9" y1="9" x2="9" y2="9"></line><line x1="15" y1="9" x2="15" y2="9"></line></svg>
               </div>
