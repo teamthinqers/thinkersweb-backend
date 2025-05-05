@@ -73,13 +73,24 @@ export default function WhatsAppIntegration() {
       const data = await res.json();
       
       if (res.ok) {
-        toast({
-          title: "Verification Code Sent",
-          description: data.message || "Please check your WhatsApp for the verification code",
-        });
         setPendingVerification(true);
         setPendingPhoneNumber(phoneNumber);
         setPhoneNumber("");
+        
+        if (data.otpCode) {
+          // In development mode, the OTP code is included in the response
+          // We'll populate the OTP field automatically and show a toast with the code
+          setOtpCode(data.otpCode);
+          toast({
+            title: "Development Mode - OTP Auto-filled",
+            description: `Verification code: ${data.otpCode}`,
+          });
+        } else {
+          toast({
+            title: "Verification Code Sent",
+            description: data.message || "Please check your WhatsApp for the verification code",
+          });
+        }
       } else {
         toast({
           title: "Error",

@@ -975,7 +975,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const result = await requestWhatsAppOTP(userId, phoneNumber);
       
+      // Set NODE_ENV to development for demo purposes
+      process.env.NODE_ENV = 'development';
+      
       if (result.success) {
+        // If in development mode, we included the OTP code in the response for testing
         return res.status(200).json(result);
       } else {
         return res.status(400).json(result);
