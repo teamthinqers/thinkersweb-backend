@@ -5,6 +5,7 @@ export const networkStatus = {
   isOnline: true,
   serverAvailable: true,
   lastConnectionAttempt: Date.now(),
+  lastErrorTimestamp: 0,
   connectionAttempts: 0,
   maxRetries: 3,
   listeners: new Set<() => void>(),
@@ -21,6 +22,9 @@ export const networkStatus = {
   setServerStatus(available: boolean) {
     if (this.serverAvailable !== available) {
       this.serverAvailable = available;
+      if (!available) {
+        this.lastErrorTimestamp = Date.now();
+      }
       this.notifyListeners();
     }
   },
@@ -45,6 +49,19 @@ export const networkStatus = {
   incrementAttempt() {
     this.connectionAttempts++;
     this.lastConnectionAttempt = Date.now();
+    this.lastErrorTimestamp = Date.now();
+    this.notifyListeners();
+  },
+  
+  // Added methods for better error handling
+  getRecentErrorTime() {
+    // Return time since last error (in ms)
+    return Date.now() - this.lastErrorTimestamp;
+  },
+  
+  hasRecentConnectionError() {
+    // Consider an error recent if it happened in the last 15 seconds
+    return !this.serverAvailable || (this.lastErrorTimestamp > 0 && this.getRecentErrorTime() < 15000);
   }
 };
 
@@ -98,6 +115,12 @@ async function fetchWithErrorHandling(url: string, options: RequestInit): Promis
     
     clearTimeout(timeoutId);
     
+    // Check for server errors (5xx) that require special handling
+    if (response.status >= 500 && response.status < 600) {
+      networkStatus.setServerStatus(false);
+      throw new ServerConnectionError(`Server error: ${response.status}`);
+    }
+    
     // If we successfully connect, reset status
     networkStatus.setServerStatus(true);
     networkStatus.resetConnectionAttempts();
@@ -113,6 +136,12 @@ async function fetchWithErrorHandling(url: string, options: RequestInit): Promis
     if (error.message?.includes('fetch')) {
       networkStatus.setServerStatus(false);
       throw new ServerConnectionError("Cannot connect to server. Please try again later.");
+    }
+    
+    // For any other network or connection-related error
+    if (error instanceof TypeError && error.message.includes('network')) {
+      networkStatus.setServerStatus(false);
+      throw new ServerConnectionError("Network error. Please check your connection.");
     }
     
     throw error;

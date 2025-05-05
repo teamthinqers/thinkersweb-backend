@@ -32,13 +32,14 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
     const maxRetries = 3;
     let timeoutId: NodeJS.Timeout;
     
+    // Only retry if we have a connection error (not auth error)
     if (error && !networkStatus.serverAvailable && retryCounter < maxRetries) {
       const retryDelay = Math.min(2000 * Math.pow(2, retryCounter), 10000);
       
       // Show toast only on first error
       if (retryCounter === 0) {
         toast({
-          title: "Authentication Error",
+          title: "Connection Error",
           description: "We're having trouble connecting to the server. Retrying...",
           variant: "destructive",
         });
@@ -60,14 +61,28 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   
   // Navigate to auth page if not authenticated
   useEffect(() => {
-    if (!isLoading && !user && retryCounter >= 3) {
-      setLocation("/auth");
-      toast({
-        title: "Authentication Required",
-        description: "Please sign in to continue",
-      });
+    if (!isLoading && !user) {
+      // Only redirect if:
+      // 1. We've reached max retries, OR
+      // 2. The server is available (meaning it's a real auth issue), OR
+      // 3. There's no error at all (also a real auth issue)
+      if (retryCounter >= 3 || networkStatus.serverAvailable || !error) {
+        // Don't redirect if we had a very recent connection error
+        // This helps prevent flashing between auth and loading screens
+        if (!networkStatus.hasRecentConnectionError()) {
+          setLocation("/auth");
+          
+          // Only show toast for non-connection errors (real auth issues)
+          if (networkStatus.serverAvailable || !error) {
+            toast({
+              title: "Authentication Required",
+              description: "Please sign in to continue",
+            });
+          }
+        }
+      }
     }
-  }, [user, isLoading, retryCounter, setLocation, toast]);
+  }, [user, isLoading, retryCounter, setLocation, toast, error]);
   
   // Show loading state
   if (isLoading || (error && retryCounter < 3 && !networkStatus.serverAvailable)) {
@@ -82,6 +97,10 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
             <ConnectionError 
               title="Reconnecting to Server" 
               message="We're having trouble reaching the server. Retrying automatically..." 
+              retryAction={() => {
+                queryClient.invalidateQueries({ queryKey: ["/api/user"] });
+                setRetryCounter(prev => prev + 1);
+              }}
             />
           </div>
         )}

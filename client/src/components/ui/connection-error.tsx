@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { AlertCircle, RefreshCw, Wifi, WifiOff } from "lucide-react";
+import { AlertCircle, RefreshCw, Wifi, WifiOff, Server, ServerCrash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { networkStatus } from "@/lib/queryClient";
+import { networkStatus, ServerConnectionError } from "@/lib/queryClient";
 import { Progress } from "@/components/ui/progress";
 import { queryClient } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 
 interface ConnectionErrorProps {
   title?: string;
@@ -89,21 +90,40 @@ export function ConnectionError({
     };
   }, [retrying]);
   
+  const { toast } = useToast();
+  
+  // Handle manual reload
+  const handleReload = () => {
+    toast({
+      title: "Reloading application",
+      description: "Refreshing the entire application to restore connection...",
+    });
+    
+    // Brief delay before reload to allow toast to show
+    setTimeout(() => {
+      window.location.reload();
+    }, 500);
+  };
+  
   return (
     <Card className={`shadow-md border-red-200 ${className}`}>
       <CardHeader className="pb-3">
         <div className="flex items-center">
-          {networkStatus.isOnline ? (
-            <AlertCircle className="h-5 w-5 text-red-500 mr-2" />
-          ) : (
+          {!networkStatus.isOnline ? (
             <WifiOff className="h-5 w-5 text-red-500 mr-2" />
+          ) : !networkStatus.serverAvailable ? (
+            <ServerCrash className="h-5 w-5 text-red-500 mr-2" />
+          ) : (
+            <AlertCircle className="h-5 w-5 text-red-500 mr-2" />
           )}
           <CardTitle className="text-lg">{title}</CardTitle>
         </div>
         <CardDescription>
-          {networkStatus.isOnline
-            ? message
-            : "You appear to be offline. Please check your internet connection."}
+          {!networkStatus.isOnline
+            ? "You appear to be offline. Please check your internet connection."
+            : !networkStatus.serverAvailable
+            ? "We're having trouble reaching the server. This might be due to server maintenance or temporary outage."
+            : message}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -116,36 +136,65 @@ export function ConnectionError({
             <Progress value={progress} className="h-1.5" />
           </div>
         )}
+        
+        {/* Troubleshooting tip */}
+        {retryCount > 2 && (
+          <div className="mt-3 text-xs text-muted-foreground border-t pt-3">
+            <p className="font-medium mb-1">Having trouble connecting?</p>
+            <ul className="list-disc list-inside space-y-1">
+              <li>Check your internet connection</li>
+              <li>Try refreshing the page</li>
+              <li>Clear your browser cache</li>
+              {retryCount > 4 && (
+                <li>The server might be temporarily down. Please try again later.</li>
+              )}
+            </ul>
+          </div>
+        )}
       </CardContent>
       <CardFooter className="pt-0 flex justify-between">
         <div className="flex items-center text-sm">
           <div
             className={`w-2 h-2 rounded-full mr-2 ${
-              networkStatus.isOnline ? "bg-green-500" : "bg-red-500"
+              networkStatus.isOnline && networkStatus.serverAvailable ? "bg-green-500" : "bg-red-500"
             }`}
           ></div>
-          <span>
-            {networkStatus.isOnline ? (
-              <span className="flex items-center">
-                <Wifi className="h-3 w-3 mr-1" /> Online
-              </span>
-            ) : (
-              <span className="flex items-center">
-                <WifiOff className="h-3 w-3 mr-1" /> Offline
-              </span>
-            )}
-          </span>
+          {!networkStatus.isOnline ? (
+            <span className="flex items-center">
+              <WifiOff className="h-3 w-3 mr-1" /> Offline
+            </span>
+          ) : !networkStatus.serverAvailable ? (
+            <span className="flex items-center">
+              <Server className="h-3 w-3 mr-1" /> Server unavailable
+            </span>
+          ) : (
+            <span className="flex items-center">
+              <Wifi className="h-3 w-3 mr-1" /> Connected
+            </span>
+          )}
         </div>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={handleRetry}
-          disabled={retrying || !networkStatus.isOnline}
-          className="text-xs"
-        >
-          <RefreshCw className={`h-3 w-3 mr-2 ${retrying ? "animate-spin" : ""}`} />
-          {retrying ? "Reconnecting..." : "Retry"}
-        </Button>
+        <div className="flex space-x-2">
+          {retryCount > 3 && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleReload}
+              className="text-xs"
+            >
+              Reload App
+            </Button>
+          )}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleRetry}
+            disabled={retrying || !networkStatus.isOnline}
+            className="text-xs"
+          >
+            <RefreshCw className={`h-3 w-3 mr-2 ${retrying ? "animate-spin" : ""}`} />
+            {retrying ? "Reconnecting..." : "Retry"}
+          </Button>
+        </div>
       </CardFooter>
     </Card>
   );
