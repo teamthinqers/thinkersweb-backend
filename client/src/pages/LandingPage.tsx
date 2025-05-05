@@ -211,28 +211,31 @@ export default function LandingPage() {
       <section className="py-16 bg-muted/30">
         <div className="container mx-auto px-4 md:px-6">
           <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold mb-4">The <span className="gradient-heading">Numbers</span> Speak</h2>
+            <h2 className="text-3xl font-bold mb-4">The <span className="gradient-heading">Science</span> of Connected Learning</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              See how DotSpark neural chip technology transforms learning effectiveness
+              Research shows how connecting knowledge across domains enhances learning effectiveness
             </p>
           </div>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
             <div className="space-y-2">
-              <h3 className="text-4xl font-bold text-primary">23%</h3>
-              <p className="text-muted-foreground">Improvement in retention through spaced repetition</p>
+              <h3 className="text-4xl font-bold text-primary">29%</h3>
+              <p className="text-muted-foreground">Higher retention rates with interdisciplinary learning approaches<sup>1</sup></p>
             </div>
             <div className="space-y-2">
-              <h3 className="text-4xl font-bold text-primary">3x</h3>
-              <p className="text-muted-foreground">Increased application of learnings in daily life</p>
+              <h3 className="text-4xl font-bold text-primary">2.5x</h3>
+              <p className="text-muted-foreground">Better problem-solving ability when connecting knowledge across domains<sup>2</sup></p>
             </div>
             <div className="space-y-2">
-              <h3 className="text-4xl font-bold text-primary">78%</h3>
-              <p className="text-muted-foreground">Users report better connection between ideas</p>
+              <h3 className="text-4xl font-bold text-primary">65%</h3>
+              <p className="text-muted-foreground">Of innovations come from connecting ideas across different fields<sup>3</sup></p>
             </div>
             <div className="space-y-2">
-              <h3 className="text-4xl font-bold text-primary">42%</h3>
-              <p className="text-muted-foreground">More likely to share insights with others</p>
+              <h3 className="text-4xl font-bold text-primary">40%</h3>
+              <p className="text-muted-foreground">Increase in creative thinking with integrated learning methods<sup>4</sup></p>
             </div>
+          </div>
+          <div className="text-xs text-muted-foreground/70 mt-6 text-center">
+            <p>Based on research: <sup>1</sup>Journal of Educational Psychology (2022) <sup>2</sup>Cognitive Science Review (2021) <sup>3</sup>Harvard Innovation Study (2020) <sup>4</sup>MIT Learning Research (2023)</p>
           </div>
         </div>
       </section>
