@@ -207,15 +207,21 @@ function startAuthRefresh(): void {
   console.log("Auth service: Started auth refresh interval");
 }
 
-// Start server ping interval
+// Start server ping interval with enhanced connection resilience
 function startServerPing(): void {
   // Clear any existing interval
   stopServerPing();
+  
+  // Track network state to prevent logout on connection issues
+  let networkErrorCount = 0;
+  let lastSuccessfulPing = Date.now();
   
   // Create new interval (ping every 5 minutes)
   state.serverPingInterval = setInterval(async () => {
     try {
       if (auth.currentUser) {
+        console.log(`Auth service: Pinging server at ${new Date().toISOString()}`);
+        
         // Touch the server session
         const response = await fetch('/api/auth/refresh', {
           method: 'POST',
@@ -224,15 +230,21 @@ function startServerPing(): void {
             uid: auth.currentUser.uid,
             refreshToken: Date.now()
           }),
-          credentials: 'include'
+          credentials: 'include',
+          // Short timeout to detect network issues quickly
+          signal: AbortSignal.timeout(10000)
         });
+        
+        // Reset error counter on successful ping
+        networkErrorCount = 0;
+        lastSuccessfulPing = Date.now();
         
         if (response.ok) {
           console.log(`Auth service: Server session refreshed at ${new Date().toISOString()}`);
         } else {
           console.warn('Auth service: Failed to refresh server session, status:', response.status);
           
-          // Try to recover if session expired
+          // Only try to recover if authentication issue, NOT network issue
           if (response.status === 401) {
             console.log('Auth service: Session expired, attempting recovery...');
             await recoverSession();
@@ -240,9 +252,70 @@ function startServerPing(): void {
         }
       }
     } catch (error) {
-      console.error("Auth service: Server ping error", error);
+      // Increase error counter, but don't logout for network errors
+      networkErrorCount++;
+      
+      // Log the error with more details for debugging
+      console.error(`Auth service: Server ping error (count: ${networkErrorCount})`, error);
+      
+      // Check if it appears to be a connection issue
+      const isNetworkError = 
+        error.name === 'AbortError' || 
+        error.name === 'TypeError' || 
+        error.message?.includes('network') || 
+        error.message?.includes('fetch') ||
+        error.message?.includes('connect') ||
+        error.message?.includes('timeout');
+        
+      // For network errors, we'll retry on next interval
+      if (isNetworkError) {
+        console.log('Auth service: Network error detected, will retry on next ping without logging out');
+        
+        // If we've been having network issues for more than 30 minutes, try to recover
+        const timeSinceLastSuccess = Date.now() - lastSuccessfulPing;
+        if (timeSinceLastSuccess > 30 * 60 * 1000 && networkErrorCount > 5) {
+          console.log('Auth service: Extended network issues detected, attempting session recovery');
+          
+          // Try to recover but don't log out if it fails
+          recoverSession().catch(err => {
+            console.error('Auth service: Recovery failed during network issues', err);
+          });
+        }
+        
+        // Listen for network reestablishment
+        const tryRecoveryWhenOnline = () => {
+          recoverSession()
+            .then(success => {
+              if (success) {
+                console.log('Auth service: Successfully recovered session after network reconnection');
+                window.removeEventListener('online', tryRecoveryWhenOnline);
+              }
+            })
+            .catch(err => {
+              console.error('Auth service: Recovery failed after network reconnection', err);
+            });
+        };
+        
+        // Add listener only once
+        window.removeEventListener('online', tryRecoveryWhenOnline);
+        window.addEventListener('online', tryRecoveryWhenOnline);
+      } else {
+        // For non-network errors, try to recover
+        recoverSession().catch(err => {
+          console.error('Auth service: Recovery failed after ping error', err);
+        });
+      }
     }
   }, 5 * 60 * 1000);
+  
+  // Also setup a backup check every 15 minutes to handle edge cases
+  const backupInterval = setInterval(() => {
+    if (auth.currentUser) {
+      recoverSession().catch(err => {
+        console.error('Auth service: Backup recovery attempt failed', err);
+      });
+    }
+  }, 15 * 60 * 1000);
   
   console.log("Auth service: Started server ping interval");
 }

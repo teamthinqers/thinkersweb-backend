@@ -38,6 +38,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Create HTTP server
   const httpServer = createServer(app);
   
+  // Simple health check endpoint for network connectivity tests
+  app.get('/api/health', (req, res) => {
+    res.status(200).json({ status: 'ok', time: new Date().toISOString() });
+  });
+  
   // Set up authentication
   setupAuth(app);
 
