@@ -77,30 +77,41 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         photoURL: fbUser.photoURL,
       };
       
+      console.log("Starting server-side authentication...");
+      
       // Add retry mechanism for server connection issues
       let retries = 0;
-      const maxRetries = 3;
+      const maxRetries = 5; // Increased retries
       let success = false;
       let user;
       
       while (!success && retries < maxRetries) {
         try {
+          // Add timestamp to see timing of requests in logs
+          console.log(`Authentication attempt ${retries + 1}/${maxRetries} at ${new Date().toISOString()}`);
+          
           const response = await apiRequest("POST", "/api/auth/firebase", userData);
           user = await response.json();
           success = true;
+          console.log("Server authentication successful:", user?.username || user?.email);
         } catch (error) {
           retries++;
+          console.error(`Authentication attempt ${retries} failed:`, error);
+          
           // If we've reached max retries, throw the error to be caught by outer catch
           if (retries >= maxRetries) throw error;
           
-          // Wait for 1 second before retrying (exponential backoff)
-          await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, retries - 1)));
-          console.log(`Retrying authentication (${retries}/${maxRetries})...`);
+          // Wait with exponential backoff but max 10 seconds
+          const delay = Math.min(1000 * Math.pow(2, retries - 1), 10000);
+          console.log(`Retrying authentication in ${delay}ms...`);
+          await new Promise(resolve => setTimeout(resolve, delay));
         }
       }
       
       if (success && user) {
+        // Store the user in query cache
         queryClient.setQueryData(["/api/user"], user);
+        console.log("User data cached in query client");
         
         // Redirect to dashboard if they're a new user
         if (user.isNewUser) {
@@ -115,13 +126,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       console.error("Error syncing with server:", error);
       toast({
         title: "Authentication Error",
-        description: "We're having trouble connecting to the server. Please try refreshing the page or try again later.",
+        description: "We're having trouble connecting to the server. Please try again in a moment.",
         variant: "destructive",
       });
       
-      // Force refresh authentication state
-      auth.signOut().catch(() => {}); // Silent catch
+      // Rather than signing out immediately, we'll just invalidate the query
+      // to allow retry mechanisms to work
       queryClient.invalidateQueries({ queryKey: ["/api/user"] });
+      
+      // Only sign out as a last resort if explicitly a firebase auth error
+      if (error && (error as Error).message && (error as Error).message.includes("firebase")) {
+        auth.signOut().catch(() => {}); // Silent catch
+      }
     }
   };
 

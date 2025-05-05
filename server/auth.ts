@@ -20,7 +20,7 @@ declare global {
       id: number;
       username: string;
       email: string;
-      firebaseUid?: string;
+      firebaseUid?: string | null;
       fullName?: string | null;
       bio?: string | null;
       avatarUrl?: string | null;

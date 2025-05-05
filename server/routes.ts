@@ -26,9 +26,9 @@ import {
 } from "./whatsapp";
 import { eq, inArray, and } from "drizzle-orm";
 
-// Interface for authenticated requests (will be used later when auth is implemented)
+// Interface for authenticated requests
 interface AuthenticatedRequest extends Request {
-  user?: User;
+  user?: Express.User;
   isAuthenticated(): boolean;
 }
 
