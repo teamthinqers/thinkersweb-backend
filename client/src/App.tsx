@@ -9,6 +9,7 @@ import Insights from "@/pages/Insights";
 import Favorites from "@/pages/Favorites";
 import Network from "@/pages/Network";
 import LandingPage from "@/pages/LandingPage";
+import AuthPage from "@/pages/auth-page";
 import Settings from "@/pages/Settings";
 import AppLayout from "@/components/layout/AppLayout";
 import { useState } from "react";
@@ -77,9 +78,14 @@ function AppWithLayout() {
 function Router() {
   const [location] = useLocation();
   const isLandingPage = location === "/";
+  const isAuthPage = location === "/auth";
 
   if (isLandingPage) {
     return <LandingPage />;
+  }
+
+  if (isAuthPage) {
+    return <AuthPage />;
   }
 
   return <AppWithLayout />;

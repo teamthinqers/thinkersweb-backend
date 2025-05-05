@@ -1,0 +1,309 @@
+import React, { useState } from "react";
+import { useLocation } from "wouter";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ArrowRight, Brain } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+
+// Define form schemas
+const loginSchema = z.object({
+  username: z.string().min(3, {
+    message: "Username must be at least 3 characters.",
+  }),
+  password: z.string().min(6, {
+    message: "Password must be at least 6 characters.",
+  }),
+});
+
+const registerSchema = z.object({
+  username: z.string().min(3, {
+    message: "Username must be at least 3 characters.",
+  }),
+  email: z.string().email({
+    message: "Please enter a valid email address.",
+  }),
+  password: z.string().min(6, {
+    message: "Password must be at least 6 characters.",
+  }),
+});
+
+export default function AuthPage() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [, setLocation] = useLocation();
+  const { toast } = useToast();
+  
+  // Login form
+  const loginForm = useForm<z.infer<typeof loginSchema>>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      username: "",
+      password: "",
+    },
+  });
+
+  // Register form
+  const registerForm = useForm<z.infer<typeof registerSchema>>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: {
+      username: "",
+      email: "",
+      password: "",
+    },
+  });
+
+  async function onLoginSubmit(values: z.infer<typeof loginSchema>) {
+    setIsLoading(true);
+    
+    try {
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      });
+
+      if (response.ok) {
+        toast({
+          title: "Login successful",
+          description: "Welcome back to DotSpark!",
+        });
+        setLocation("/dashboard");
+      } else {
+        const error = await response.text();
+        toast({
+          title: "Login failed",
+          description: error || "Invalid username or password",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Login failed",
+        description: "An error occurred. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  async function onRegisterSubmit(values: z.infer<typeof registerSchema>) {
+    setIsLoading(true);
+    
+    try {
+      const response = await fetch("/api/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      });
+
+      if (response.ok) {
+        toast({
+          title: "Registration successful",
+          description: "Welcome to DotSpark! You can now login.",
+        });
+        // Switch to login tab after successful registration
+        document.querySelector('[data-tab="login"]')?.dispatchEvent(
+          new Event("click", { bubbles: true })
+        );
+      } else {
+        const error = await response.text();
+        toast({
+          title: "Registration failed",
+          description: error || "Username or email already in use",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Registration failed",
+        description: "An error occurred. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  return (
+    <div className="flex min-h-screen">
+      {/* Left side with forms */}
+      <div className="flex-1 flex items-center justify-center p-8">
+        <div className="w-full max-w-md space-y-8">
+          <div className="text-center">
+            <div className="mx-auto w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mb-4">
+              <Brain className="h-8 w-8 text-primary" />
+            </div>
+            <h2 className="text-3xl font-bold tracking-tight">Welcome to DotSpark</h2>
+            <p className="mt-2 text-muted-foreground">
+              Your neural chip for limitless learning growth
+            </p>
+          </div>
+
+          <Tabs defaultValue="login" className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="login" data-tab="login">Login</TabsTrigger>
+              <TabsTrigger value="register">Register</TabsTrigger>
+            </TabsList>
+            <TabsContent value="login" className="mt-6">
+              <Form {...loginForm}>
+                <form onSubmit={loginForm.handleSubmit(onLoginSubmit)} className="space-y-6">
+                  <FormField
+                    control={loginForm.control}
+                    name="username"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Username</FormLabel>
+                        <FormControl>
+                          <Input placeholder="johndoe" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={loginForm.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Password</FormLabel>
+                        <FormControl>
+                          <Input type="password" placeholder="••••••" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <Button type="submit" className="w-full" disabled={isLoading}>
+                    {isLoading ? (
+                      <div className="h-5 w-5 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent"></div>
+                    ) : (
+                      <>Sign In <ArrowRight className="ml-2 h-4 w-4" /></>
+                    )}
+                  </Button>
+                </form>
+              </Form>
+            </TabsContent>
+            <TabsContent value="register" className="mt-6">
+              <Form {...registerForm}>
+                <form onSubmit={registerForm.handleSubmit(onRegisterSubmit)} className="space-y-6">
+                  <FormField
+                    control={registerForm.control}
+                    name="username"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Username</FormLabel>
+                        <FormControl>
+                          <Input placeholder="johndoe" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={registerForm.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email</FormLabel>
+                        <FormControl>
+                          <Input placeholder="john.doe@example.com" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={registerForm.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Password</FormLabel>
+                        <FormControl>
+                          <Input type="password" placeholder="••••••" {...field} />
+                        </FormControl>
+                        <FormDescription>
+                          Must be at least 6 characters long
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <Button type="submit" className="w-full" disabled={isLoading}>
+                    {isLoading ? (
+                      <div className="h-5 w-5 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent"></div>
+                    ) : (
+                      <>Create Account <ArrowRight className="ml-2 h-4 w-4" /></>
+                    )}
+                  </Button>
+                </form>
+              </Form>
+            </TabsContent>
+          </Tabs>
+        </div>
+      </div>
+
+      {/* Right side with branding/marketing */}
+      <div className="hidden lg:flex flex-1 bg-gradient-to-br from-primary/10 via-background to-secondary/10 p-10">
+        <div className="w-full max-w-2xl mx-auto flex flex-col justify-center">
+          <div className="space-y-8">
+            <div>
+              <h1 className="text-4xl font-bold tracking-tight mb-2">
+                Connect the Dots, <span className="text-gradient">Spark</span> Your Potential
+              </h1>
+              <p className="text-xl text-muted-foreground">
+                Like a neural chip for your mind, DotSpark connects your learnings across every domain, unleashing limitless growth through insights you never knew you had.
+              </p>
+            </div>
+
+            <div className="bg-card/50 border rounded-xl p-6 space-y-6">
+              <h3 className="text-xl font-semibold flex items-center">
+                <div className="w-8 h-8 rounded-full bg-primary/20 text-primary flex items-center justify-center mr-3">1</div>
+                Create Your Account
+              </h3>
+              <p className="text-muted-foreground ml-11">
+                Sign up to access your personal neural chip and start capturing your learning dots.
+              </p>
+
+              <div className="border-t border-border/50 pt-6">
+                <h3 className="text-xl font-semibold flex items-center">
+                  <div className="w-8 h-8 rounded-full bg-primary/20 text-primary flex items-center justify-center mr-3">2</div>
+                  Connect WhatsApp (Coming Soon)
+                </h3>
+                <p className="text-muted-foreground ml-11">
+                  Link your WhatsApp account to capture learning moments on the go, ensuring no valuable insight is ever lost.
+                </p>
+              </div>
+
+              <div className="border-t border-border/50 pt-6">
+                <h3 className="text-xl font-semibold flex items-center">
+                  <div className="w-8 h-8 rounded-full bg-primary/20 text-primary flex items-center justify-center mr-3">3</div>
+                  Experience the Spark
+                </h3>
+                <p className="text-muted-foreground ml-11">
+                  Watch as your neural chip connects seemingly unrelated dots into powerful insights that transform your learning journey.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
