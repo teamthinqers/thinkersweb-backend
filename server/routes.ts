@@ -965,23 +965,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Request OTP verification for WhatsApp number
   app.post(`${apiPrefix}/whatsapp/request-otp`, async (req, res) => {
     try {
+      console.log("Received WhatsApp OTP request with body:", req.body);
+      
       // For demo purposes using DEMO_USER_ID, in production this would use authenticated user
       const userId = DEMO_USER_ID;
       const { phoneNumber } = req.body;
       
       if (!phoneNumber) {
+        console.log("Error: Phone number is required");
         return res.status(400).json({ message: "Phone number is required" });
       }
       
-      const result = await requestWhatsAppOTP(userId, phoneNumber);
+      console.log(`Requesting OTP for phone number: ${phoneNumber}`);
       
-      // Set NODE_ENV to development for demo purposes
+      // Set NODE_ENV to development for demo purposes before calling the function
       process.env.NODE_ENV = 'development';
+      console.log("Set NODE_ENV to:", process.env.NODE_ENV);
+      
+      const result = await requestWhatsAppOTP(userId, phoneNumber);
+      console.log("OTP request result:", JSON.stringify(result));
       
       if (result.success) {
         // If in development mode, we included the OTP code in the response for testing
+        console.log("Request successful, returning OTP code in response (dev mode)");
         return res.status(200).json(result);
       } else {
+        console.log("OTP request failed:", result.message);
         return res.status(400).json(result);
       }
     } catch (err) {
