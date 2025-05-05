@@ -124,9 +124,10 @@ export async function sendWhatsAppReply(to: string, message: string): Promise<bo
       }, null, 2));
     }
     
-    // For development purposes, simulate success
+    // For development purposes, always succeed
     if (process.env.NODE_ENV !== 'production') {
       console.log("Development mode: Simulating successful WhatsApp message delivery");
+      console.log(`Development mode: Message content: ${message}`);
       return true;
     }
     
@@ -504,7 +505,20 @@ export async function requestWhatsAppOTP(userId: number, phoneNumber: string): P
       "This code will expire in 10 minutes.\n" + 
       "Please enter this code in the DotSpark web application to verify your WhatsApp number.";
     
-    const messageSent = await sendWhatsAppReply(normalizedPhone, otpMessage);
+    // Try to send the message, but in dev mode, we'll succeed even if Twilio fails
+    let messageSent = false;
+    try {
+      messageSent = await sendWhatsAppReply(normalizedPhone, otpMessage);
+    } catch (error) {
+      console.error("Error sending WhatsApp message:", error);
+      // In production, we'll return an error, but in dev mode we'll continue
+      if (process.env.NODE_ENV === 'production') {
+        messageSent = false;
+      }
+    }
+    
+    // Always include the OTP code in development mode response for testing
+    const isDev = process.env.NODE_ENV !== 'production';
     
     if (!messageSent && process.env.NODE_ENV === 'production') {
       return {
@@ -515,7 +529,7 @@ export async function requestWhatsAppOTP(userId: number, phoneNumber: string): P
 
     // For development purposes, we'll return the OTP code in the response
     // In production, this would never be returned to the client
-    if (process.env.NODE_ENV !== 'production') {
+    if (isDev) {
       console.log(`Development mode: OTP code for verification is ${otpCode}`);
       return {
         success: true,
