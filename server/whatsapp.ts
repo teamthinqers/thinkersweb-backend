@@ -11,7 +11,7 @@ const WHATSAPP_PHONE_NUMBER_ID = process.env.WHATSAPP_PHONE_NUMBER_ID || "";
 const WHATSAPP_ACCESS_TOKEN = process.env.WHATSAPP_ACCESS_TOKEN || "";
 
 /**
- * Interface for incoming WhatsApp message
+ * Interface for incoming message from the DotSpark WhatsApp chatbot
  */
 interface WhatsappMessage {
   object: string;
@@ -45,7 +45,7 @@ interface WhatsappMessage {
 }
 
 /**
- * Helper function to extract message text from WhatsApp webhook payload
+ * Helper function to extract message text from DotSpark WhatsApp chatbot webhook payload
  */
 export function extractWhatsAppMessage(payload: WhatsappMessage): string | null {
   try {
@@ -55,13 +55,13 @@ export function extractWhatsAppMessage(payload: WhatsappMessage): string | null 
     }
     return null;
   } catch (error) {
-    console.error("Error extracting WhatsApp message:", error);
+    console.error("Error extracting message from WhatsApp chatbot webhook:", error);
     return null;
   }
 }
 
 /**
- * Helper function to get user ID from WhatsApp phone number
+ * Helper function to get user ID from a phone number registered with the DotSpark WhatsApp chatbot
  */
 export async function getUserIdFromWhatsAppNumber(phoneNumber: string): Promise<number | null> {
   try {
@@ -78,13 +78,13 @@ export async function getUserIdFromWhatsAppNumber(phoneNumber: string): Promise<
     
     return null;
   } catch (error) {
-    console.error("Error finding user by WhatsApp number:", error);
+    console.error("Error finding user associated with WhatsApp chatbot:", error);
     return null;
   }
 }
 
 /**
- * Helper function to send a WhatsApp message
+ * Helper function to send a message through the DotSpark WhatsApp chatbot
  */
 export async function sendWhatsAppReply(to: string, message: string): Promise<boolean> {
   try {
@@ -113,7 +113,7 @@ export async function sendWhatsAppReply(to: string, message: string): Promise<bo
     
     return false;
   } catch (error) {
-    console.error("Error sending WhatsApp message:", error);
+    console.error("Error sending message through WhatsApp chatbot:", error);
     return false;
   }
 }
@@ -220,15 +220,15 @@ export async function processWhatsAppMessage(from: string, messageText: string):
       } else {
         return {
           success: false,
-          message: "Could not create an entry from your message. Please try again with more detailed information.",
+          message: "Our AI couldn't create a learning dot from your message. Please try again with more detailed information.",
         };
       }
     }
   } catch (error) {
-    console.error("Error processing WhatsApp message:", error);
+    console.error("Error processing WhatsApp chatbot message:", error);
     return {
       success: false,
-      message: "An error occurred while processing your message. Please try again later.",
+      message: "An error occurred while the DotSpark AI was processing your message. Please try again later.",
     };
   }
 }
