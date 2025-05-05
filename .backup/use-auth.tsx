@@ -77,30 +77,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const loginWithGoogle = async () => {
     try {
       setIsLoading(true);
-      
-      // Clear any existing user state first
-      setUser(null);
-      
-      // Perform Firebase Google sign-in
-      const fbUser = await signInWithGoogle();
-      
-      if (fbUser) {
-        // Set user state from Firebase user
-        setUser({
-          uid: fbUser.uid,
-          email: fbUser.email,
-          displayName: fbUser.displayName,
-          photoURL: fbUser.photoURL
-        });
-        
-        return fbUser; // Return user for additional handling if needed
-      } else {
-        throw new Error("No user returned from Firebase");
-      }
+      await signInWithGoogle();
+      // Firebase listener will handle the auth state change
     } catch (error) {
       console.error("Google login error:", error);
       setIsLoading(false);
-      throw error; // Rethrow to allow caller to handle the error
     }
   };
 
@@ -112,10 +93,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Sign out from Firebase
       await signOut();
       
-      // Force a complete page reload to clean up all state
-      window.location.href = "/";
+      // After successful logout, redirect to home
+      setLocation("/");
     } catch (error) {
       console.error("Logout error:", error);
+    } finally {
       setIsLoading(false);
     }
   };

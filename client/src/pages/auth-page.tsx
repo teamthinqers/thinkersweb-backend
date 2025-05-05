@@ -154,10 +154,19 @@ export default function AuthPage() {
   // Handle Google sign in
   const handleGoogleSignIn = async () => {
     try {
+      setIsLoading(true);
       await loginWithGoogle();
-      // The auth context will handle redirection after successful login
+      
+      // Add a small delay for Firebase auth to complete
+      setTimeout(() => {
+        // Force refresh the page to ensure clean state
+        window.location.href = "/dashboard";
+      }, 1000);
+      
     } catch (error) {
       console.error("Google sign in error:", error);
+      setIsLoading(false);
+      
       toast({
         title: "Sign in failed",
         description: "Could not sign in with Google. Please try again.",
