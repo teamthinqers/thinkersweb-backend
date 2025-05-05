@@ -301,6 +301,7 @@ export default function WhatsAppIntegration() {
                 <li>Save the Twilio WhatsApp number <span className="font-mono">+14155238886</span> to your contacts as "DotSpark Bot"</li>
                 <li>Send the message <span className="font-mono">join example-sandbox</span> to this number on WhatsApp</li>
                 <li>You'll receive a confirmation when connected to the Twilio Sandbox</li>
+                <li>You'll receive a code in the format: "<span className="font-mono">123456 is your verification code. For your security, do not share this code.</span>"</li>
                 <li>In development mode, the verification code will also appear directly in the UI below</li>
               </ol>
             </div>
@@ -376,6 +377,7 @@ export default function WhatsAppIntegration() {
                 <li>Save the Twilio WhatsApp number <span className="font-mono">+14155238886</span> to your contacts as "DotSpark Bot"</li>
                 <li>Send the message <span className="font-mono">join example-sandbox</span> to this number on WhatsApp</li>
                 <li>You'll receive a confirmation when connected to the Twilio Sandbox</li>
+                <li>After connecting to the sandbox, you'll receive messages using the template: "<span className="font-mono">123456 is your verification code. For your security, do not share this code.</span>"</li>
                 <li>Once connected, proceed with the steps below to link your DotSpark account</li>
               </ol>
             </div>

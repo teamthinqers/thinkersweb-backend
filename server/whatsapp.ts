@@ -502,7 +502,7 @@ export async function requestWhatsAppOTP(userId: number, phoneNumber: string): P
     // Using one of the approved Twilio Sandbox templates
     // See: https://www.twilio.com/docs/whatsapp/sandbox#using-the-sandbox
     const otpMessage = 
-      `Your DotSpark verification code is: ${otpCode}`;
+      `${otpCode} is your verification code. For your security, do not share this code.`;
     
     // Try to send the message, but in dev mode, we'll succeed even if Twilio fails
     let messageSent = false;
