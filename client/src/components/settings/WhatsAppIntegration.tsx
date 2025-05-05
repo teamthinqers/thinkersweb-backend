@@ -13,8 +13,13 @@ export default function WhatsAppIntegration() {
   const [loading, setLoading] = useState(true);
   const [registering, setRegistering] = useState(false);
   const [unregistering, setUnregistering] = useState(false);
+  const [requestingOtp, setRequestingOtp] = useState(false);
+  const [verifyingOtp, setVerifyingOtp] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [otpCode, setOtpCode] = useState("");
   const [registered, setRegistered] = useState(false);
+  const [pendingVerification, setPendingVerification] = useState(false);
+  const [pendingPhoneNumber, setPendingPhoneNumber] = useState("");
   const [currentPhone, setCurrentPhone] = useState("");
   const { toast } = useToast();
 
@@ -27,8 +32,14 @@ export default function WhatsAppIntegration() {
         const data = await res.json();
         
         setRegistered(data.registered);
+        setPendingVerification(!!data.pendingVerification);
+        
         if (data.registered && data.phoneNumber) {
           setCurrentPhone(data.phoneNumber);
+        }
+        
+        if (data.pendingVerification && data.phoneNumber) {
+          setPendingPhoneNumber(data.phoneNumber);
         }
       } catch (error) {
         console.error("Error fetching WhatsApp status:", error);
@@ -45,7 +56,95 @@ export default function WhatsAppIntegration() {
     getWhatsAppStatus();
   }, [toast]);
 
-  // Register a phone number
+  // Request OTP for phone number verification
+  const handleRequestOTP = async () => {
+    if (!phoneNumber) {
+      toast({
+        title: "Error",
+        description: "Please enter a phone number",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      setRequestingOtp(true);
+      const res = await apiRequest("POST", "/api/whatsapp/request-otp", { phoneNumber });
+      const data = await res.json();
+      
+      if (res.ok) {
+        toast({
+          title: "Verification Code Sent",
+          description: data.message || "Please check your WhatsApp for the verification code",
+        });
+        setPendingVerification(true);
+        setPendingPhoneNumber(phoneNumber);
+        setPhoneNumber("");
+      } else {
+        toast({
+          title: "Error",
+          description: data.message || "Failed to send verification code",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error("Error requesting OTP:", error);
+      toast({
+        title: "Error",
+        description: "Failed to send verification code",
+        variant: "destructive",
+      });
+    } finally {
+      setRequestingOtp(false);
+    }
+  };
+
+  // Verify OTP and register phone number
+  const handleVerifyOTP = async () => {
+    if (!otpCode || otpCode.length !== 6) {
+      toast({
+        title: "Error",
+        description: "Please enter the 6-digit verification code",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      setVerifyingOtp(true);
+      const res = await apiRequest("POST", "/api/whatsapp/verify-otp", { otpCode });
+      const data = await res.json();
+      
+      if (res.ok) {
+        toast({
+          title: "Success",
+          description: data.message || "WhatsApp number verified successfully",
+        });
+        setRegistered(true);
+        setCurrentPhone(pendingPhoneNumber);
+        setPendingVerification(false);
+        setPendingPhoneNumber("");
+        setOtpCode("");
+      } else {
+        toast({
+          title: "Error",
+          description: data.message || "Failed to verify WhatsApp number",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error("Error verifying OTP:", error);
+      toast({
+        title: "Error",
+        description: "Failed to verify WhatsApp number",
+        variant: "destructive",
+      });
+    } finally {
+      setVerifyingOtp(false);
+    }
+  };
+
+  // Legacy direct registration without OTP (will be removed)
   const handleRegister = async () => {
     if (!phoneNumber) {
       toast({
@@ -164,14 +263,50 @@ export default function WhatsAppIntegration() {
               </ol>
             </div>
           </div>
+        ) : pendingVerification ? (
+          <div className="space-y-4">
+            <Alert className="bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-950 dark:to-yellow-950 border-amber-200 dark:border-amber-800">
+              <ShieldCheck className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+              <AlertTitle>Verification Required</AlertTitle>
+              <AlertDescription>
+                We've sent a verification code to your WhatsApp number: <span className="font-medium">{pendingPhoneNumber}</span>
+              </AlertDescription>
+            </Alert>
+            
+            <div className="border rounded-lg p-4 bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-indigo-950 dark:to-blue-950">
+              <p className="font-medium mb-2">Verify your WhatsApp number:</p>
+              <ol className="text-sm space-y-2 list-decimal pl-4">
+                <li>Check WhatsApp on your phone for a message with a 6-digit code</li>
+                <li>Enter the verification code below to activate the DotSpark chatbot</li>
+                <li>This security step helps ensure only you can connect your WhatsApp account</li>
+              </ol>
+            </div>
+            
+            <div className="flex items-end gap-2">
+              <div className="flex-1 space-y-2">
+                <Label htmlFor="otpCode">Verification Code</Label>
+                <Input 
+                  id="otpCode" 
+                  placeholder="123456" 
+                  value={otpCode} 
+                  onChange={(e) => setOtpCode(e.target.value)}
+                  maxLength={6}
+                />
+              </div>
+              <Button onClick={handleVerifyOTP} disabled={verifyingOtp}>
+                {verifyingOtp ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <ShieldCheck className="h-4 w-4 mr-2" />}
+                Verify & Activate
+              </Button>
+            </div>
+          </div>
         ) : (
           <div className="space-y-4">
             <div className="border rounded-lg p-4 bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-indigo-950 dark:to-blue-950">
               <p className="font-medium mb-2">Activate DotSpark AI Chatbot on WhatsApp:</p>
               <ol className="text-sm space-y-2 list-decimal pl-4">
                 <li>Enter your WhatsApp phone number with country code (e.g., +1 234 567 8900)</li>
-                <li>Send a message to <span className="font-medium">the Twilio WhatsApp number</span> on WhatsApp</li>
-                <li>Your WhatsApp conversations with the AI bot are processed into learning dots</li>
+                <li>We'll send a verification code to your WhatsApp number</li>
+                <li>Verify ownership of your number to activate the DotSpark chatbot</li>
                 <li>All knowledge is synced with your DotSpark account automatically</li>
               </ol>
             </div>
@@ -186,9 +321,9 @@ export default function WhatsAppIntegration() {
                   onChange={(e) => setPhoneNumber(e.target.value)}
                 />
               </div>
-              <Button onClick={handleRegister} disabled={registering}>
-                {registering ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-                Activate Chatbot
+              <Button onClick={handleRequestOTP} disabled={requestingOtp}>
+                {requestingOtp ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <ShieldCheck className="h-4 w-4 mr-2" />}
+                Send Verification
               </Button>
             </div>
           </div>
