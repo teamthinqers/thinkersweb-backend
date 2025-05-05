@@ -978,8 +978,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       console.log(`Requesting OTP for phone number: ${phoneNumber}`);
       
-      // Set NODE_ENV to development for demo purposes before calling the function
-      process.env.NODE_ENV = 'development';
+      // Production mode enabled
+      // process.env.NODE_ENV = 'development'; // Commented out for production
       console.log("Set NODE_ENV to:", process.env.NODE_ENV);
       
       const result = await requestWhatsAppOTP(userId, phoneNumber);
