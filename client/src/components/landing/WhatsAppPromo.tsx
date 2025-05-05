@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Smartphone, ArrowRight, MessageCircle, Check } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { Link } from "wouter";
 
 export default function WhatsAppPromo() {
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -122,7 +123,7 @@ export default function WhatsAppPromo() {
               Spark Dots On The Go <span className="gradient-heading">with WhatsApp</span>
             </h2>
             <p className="text-xl text-muted-foreground">
-              Connect your WhatsApp to DotSpark and start capturing your learning moments anywhere, anytime. No app switching needed.
+              After creating your DotSpark account, connect your WhatsApp to capture learning moments anywhere, anytime. No app switching needed.
             </p>
             
             {registered ? (
@@ -150,35 +151,23 @@ export default function WhatsAppPromo() {
                 </ul>
               </div>
             ) : (
-              <div className="space-y-4 mt-8">
-                <p className="text-foreground font-medium">
-                  Enter your WhatsApp number to start:
-                </p>
-                <div className="flex gap-3">
-                  <div className="flex-1">
-                    <Input
-                      placeholder="+1 234 567 8900"
-                      value={phoneNumber}
-                      onChange={(e) => setPhoneNumber(e.target.value)}
-                      className="h-12"
-                    />
-                    <p className="text-xs text-muted-foreground mt-2">
-                      Include country code (e.g. +1 for US)
-                    </p>
+              <div className="space-y-6 mt-8">
+                <div className="bg-primary/5 p-5 rounded-lg border border-primary/20">
+                  <h3 className="font-semibold text-lg mb-2 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 text-primary"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="M8 13h8"></path><path d="M8 17h5"></path></svg>
+                    Simple 2-Step Process
+                  </h3>
+                  <ol className="list-decimal pl-5 space-y-3 text-muted-foreground">
+                    <li><span className="font-medium text-foreground">Create your DotSpark account</span> - Sign up and get started with the web platform</li>
+                    <li><span className="font-medium text-foreground">Connect WhatsApp</span> - Add your WhatsApp number in Settings to enable mobile integration</li>
+                  </ol>
+                  <div className="flex justify-center mt-4">
+                    <Link href="/auth">
+                      <Button className="bg-primary">
+                        Sign Up Now <ArrowRight className="ml-2 h-5 w-5" />
+                      </Button>
+                    </Link>
                   </div>
-                  <Button 
-                    className="h-12 px-5" 
-                    onClick={handleRegister} 
-                    disabled={registering}
-                  >
-                    {registering ? (
-                      <div className="h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
-                    ) : (
-                      <>
-                        Connect <ArrowRight className="ml-2 h-5 w-5" />
-                      </>
-                    )}
-                  </Button>
                 </div>
                 
                 <div className="flex flex-col gap-4 mt-8">

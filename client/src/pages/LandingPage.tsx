@@ -23,7 +23,7 @@ export default function LandingPage() {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 pt-4">
                 <Button size="lg" asChild>
-                  <Link href="/dashboard">
+                  <Link href="/auth">
                     Get Started <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
                 </Button>
@@ -32,6 +32,31 @@ export default function LandingPage() {
                     Sign In
                   </Link>
                 </Button>
+              </div>
+              
+              {/* Onboarding Steps */}
+              <div className="mt-8 pt-6 border-t border-border/40 flex flex-col md:flex-row gap-4 justify-start">
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-full bg-primary/20 text-primary flex items-center justify-center font-semibold">1</div>
+                  <div>
+                    <h3 className="font-medium">Create Account</h3>
+                    <p className="text-sm text-muted-foreground">Sign up and set up your DotSpark profile</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-full bg-primary/20 text-primary flex items-center justify-center font-semibold">2</div>
+                  <div>
+                    <h3 className="font-medium">Connect WhatsApp</h3>
+                    <p className="text-sm text-muted-foreground">Link your WhatsApp in Settings</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-full bg-primary/20 text-primary flex items-center justify-center font-semibold">3</div>
+                  <div>
+                    <h3 className="font-medium">Start Sparking Dots</h3>
+                    <p className="text-sm text-muted-foreground">Capture insights from anywhere</p>
+                  </div>
+                </div>
               </div>
             </div>
             <div className="flex-1 w-full max-w-xl">
