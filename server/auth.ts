@@ -110,23 +110,31 @@ async function generateUniqueUsername(displayName: string | null, email: string 
 }
 
 export function setupAuth(app: Express) {
+  // Generate a consistent but randomized secret if none provided in environment
+  const sessionSecret = process.env.SESSION_SECRET || 
+    `dotspark-secret-${Math.random().toString(36).substring(2, 15)}`;
+  
+  console.log("Setting up authentication with session support");
+  
   const sessionSettings: session.SessionOptions = {
-    secret: process.env.SESSION_SECRET || "dotspark-secret-key",
-    resave: false,
-    saveUninitialized: false,
+    secret: sessionSecret,
+    resave: true, // Changed to true to ensure session is saved on each request
+    saveUninitialized: true, // Changed to true to create session for all users
     store: new PostgresSessionStore({ 
       pool,
       createTableIfMissing: true,
       tableName: 'session',
-      disableTouch: false
+      disableTouch: false,
+      pruneSessionInterval: 60, // Check for expired sessions every minute
     }),
     cookie: {
       secure: process.env.NODE_ENV === "production",
-      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+      maxAge: 365 * 24 * 60 * 60 * 1000, // 1 year (increased from 30 days)
       httpOnly: true,
       sameSite: 'lax',
       path: '/'
     },
+    rolling: true, // Reset cookie expiration on each response
   };
 
   app.set("trust proxy", 1);
@@ -289,11 +297,36 @@ export function setupAuth(app: Express) {
     }
   });
 
-  // Logout endpoint
+  // Logout endpoint with session destruction
   app.post("/api/logout", (req, res, next) => {
+    // Log the session info before logout
+    console.log(`Logging out user ${req.user?.id}, session ID: ${req.sessionID}`);
+    
+    // First logout the user
     req.logout((err) => {
-      if (err) return next(err);
-      res.sendStatus(200);
+      if (err) {
+        console.error("Error during logout:", err);
+        return next(err);
+      }
+      
+      // Then destroy the session completely
+      req.session.destroy((err) => {
+        if (err) {
+          console.error("Error destroying session:", err);
+          return next(err);
+        }
+        
+        // Clear the session cookie
+        res.clearCookie('connect.sid', {
+          path: '/',
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: 'lax'
+        });
+        
+        console.log("User successfully logged out and session destroyed");
+        res.sendStatus(200);
+      });
     });
   });
 

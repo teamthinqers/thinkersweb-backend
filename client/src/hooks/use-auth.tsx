@@ -53,18 +53,57 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Listen for Firebase auth state changes
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setFirebaseUser(user);
-      setInitializing(false);
-      
-      if (user) {
-        // If user is logged in with Firebase but we don't have a session, create one
-        registerOrLoginServerSide(user);
-      }
-    });
+    console.log("Setting up Firebase auth state listener...");
+    let isFirstRun = true;
     
-    return () => unsubscribe();
-  }, []);
+    const unsubscribe = onAuthStateChanged(
+      auth, 
+      (user) => {
+        console.log(`Firebase auth state changed: ${user ? 'logged in' : 'logged out'} at ${new Date().toISOString()}`);
+        setFirebaseUser(user);
+        
+        // Always mark initialization as complete to prevent loading states
+        setInitializing(false);
+        
+        if (user) {
+          // Always sync with server when Firebase says we're logged in
+          registerOrLoginServerSide(user);
+          
+          if (!isFirstRun) {
+            // Only show the toast on non-initial auth changes
+            toast({
+              title: "Welcome back!",
+              description: `Signed in as ${user.displayName || user.email}`,
+            });
+          }
+        } else {
+          // User logged out of Firebase, but only clear server session if not initial load
+          if (!isFirstRun) {
+            console.log("User logged out from Firebase");
+            // Clear user data from query cache
+            queryClient.setQueryData(["/api/user"], null);
+          }
+        }
+        
+        isFirstRun = false;
+      },
+      (error) => {
+        // Handle errors in the auth state listener
+        console.error("Firebase auth state listener error:", error);
+        setInitializing(false);
+        toast({
+          title: "Authentication Error",
+          description: "Please refresh the page to try again",
+          variant: "destructive"
+        });
+      }
+    );
+    
+    return () => {
+      console.log("Cleaning up Firebase auth state listener");
+      unsubscribe();
+    };
+  }, [toast]);
 
   // Register or login on the server side when Firebase authentication is successful
   const registerOrLoginServerSide = async (fbUser: FirebaseUser) => {
@@ -159,26 +198,56 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Logout from both Firebase and the server
   const logout = async (): Promise<void> => {
     try {
-      // Logout from the server first
-      await apiRequest("POST", "/api/logout");
+      console.log("Starting logout process...");
+      
+      // Show confirmation toast
+      toast({
+        title: "Logging out...",
+        description: "Please wait while we log you out.",
+      });
+      
+      // Add a small delay to ensure toast is shown
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      
+      // Logout from the server first with retry
+      let serverLogoutSuccessful = false;
+      
+      // Try server logout up to 3 times
+      for (let i = 0; i < 3; i++) {
+        try {
+          await apiRequest("POST", "/api/logout");
+          serverLogoutSuccessful = true;
+          console.log("Server logout successful");
+          break;
+        } catch (err) {
+          console.warn(`Server logout attempt ${i+1} failed, retrying...`, err);
+          await new Promise((resolve) => setTimeout(resolve, 500));
+        }
+      }
+      
       // Then logout from Firebase
-      await signOut();
+      try {
+        await signOut();
+        console.log("Firebase logout successful");
+      } catch (fbError) {
+        console.error("Firebase logout error:", fbError);
+        // Continue with logout process even if Firebase logout fails
+      }
       
       // Clear user data in query client
       queryClient.setQueryData(["/api/user"], null);
+      console.log("Cleared user data from query cache");
       
-      toast({
-        title: "Logged Out",
-        description: "You have been logged out successfully.",
-      });
+      // Invalidate queries to force refetch on next load
+      queryClient.invalidateQueries();
       
-      // Redirect to home page
-      setLocation("/");
+      // Force a page reload to clear all state
+      window.location.href = "/";
     } catch (error) {
       console.error("Logout error:", error);
       toast({
         title: "Logout Failed",
-        description: error instanceof Error ? error.message : "An error occurred during logout",
+        description: "Please try again or refresh the page",
         variant: "destructive",
       });
     }

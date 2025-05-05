@@ -221,12 +221,28 @@ function Router() {
   const isDashboardPage = location.startsWith("/dashboard");
   const { toast } = useToast();
   
-  // Force redirect to dashboard if we're on root and logged in
+  // Manage authentication-based redirects
   useEffect(() => {
-    if (user && location === "/") {
-      setLocation("/dashboard");
-    }
-  }, [user, location, setLocation]);
+    // Avoid any redirects during initial loading
+    if (isLoading) return;
+    
+    // Wait a moment before redirecting to prevent flickering
+    const redirectDelay = setTimeout(() => {
+      // If logged in and on landing page, go to dashboard
+      if (user && location === "/") {
+        console.log("User is logged in and on landing page, redirecting to dashboard");
+        setLocation("/dashboard");
+      }
+      
+      // If logged in and on auth page, redirect to dashboard
+      if (user && location === "/auth") {
+        console.log("User is logged in and on auth page, redirecting to dashboard");
+        setLocation("/dashboard");
+      }
+    }, 300);
+    
+    return () => clearTimeout(redirectDelay);
+  }, [user, isLoading, location, setLocation]);
 
   // Redirect to auth page if trying to access protected pages without being logged in
   useEffect(() => {
