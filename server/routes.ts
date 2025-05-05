@@ -2,9 +2,10 @@ import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { z } from "zod";
-import { insertCategorySchema, insertEntrySchema, insertTagSchema, insertConnectionSchema, insertSharedEntrySchema } from "@shared/schema";
+import { insertCategorySchema, insertEntrySchema, insertTagSchema, insertConnectionSchema, insertSharedEntrySchema, sharedEntries } from "@shared/schema";
 import { processEntryFromChat, generateChatResponse, type Message } from "./chat";
 import { connectionsService } from "./connections";
+import { db } from "@db";
 
 // Interface for authenticated requests (will be used later when auth is implemented)
 interface AuthenticatedRequest extends Request {

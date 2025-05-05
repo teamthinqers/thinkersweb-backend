@@ -29,6 +29,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isMobile, onNewEntry
     { icon: "ri-book-2-line", label: "All Entries", path: "/entries" },
     { icon: "ri-eye-line", label: "Insights", path: "/insights" },
     { icon: "ri-star-line", label: "Favorites", path: "/favorites" },
+    { icon: "ri-team-line", label: "Network", path: "/network" },
   ];
 
   const sidebarClasses = isMobile
