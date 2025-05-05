@@ -6,6 +6,7 @@ import { insertCategorySchema, insertEntrySchema, insertTagSchema, insertConnect
 import { processEntryFromChat, generateChatResponse, type Message } from "./chat";
 import { connectionsService } from "./connections";
 import { db } from "@db";
+import { setupAuth, isAuthenticated } from "./auth";
 import { 
   extractWhatsAppMessage, 
   processWhatsAppMessage, 
@@ -29,6 +30,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Create HTTP server
   const httpServer = createServer(app);
+  
+  // Set up authentication
+  setupAuth(app);
 
   // Error handler middleware for API routes
   const handleApiError = (err: any, res: any) => {
