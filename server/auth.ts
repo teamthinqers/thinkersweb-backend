@@ -310,9 +310,15 @@ export function setupAuth(app: Express) {
   // Firebase auth login/registration endpoint
   app.post("/api/auth/firebase", async (req, res, next) => {
     try {
+      console.log("Firebase auth attempt with body:", {
+        ...req.body,
+        uid: req.body.uid ? `${req.body.uid.substring(0, 5)}...` : undefined  // Only log partial UID for security
+      });
+      
       const { uid, email, displayName, photoURL } = req.body;
       
       if (!uid) {
+        console.warn("Firebase auth rejected: Missing UID");
         return res.status(400).json({ message: "Firebase UID is required" });
       }
       
@@ -321,13 +327,19 @@ export function setupAuth(app: Express) {
       let isNewUser = false;
       
       if (!user) {
+        console.log(`User not found by UID, checking email: ${email ? 'provided' : 'missing'}`);
+        
         // Check if user exists by email (for linking accounts)
         if (email) {
           user = await getUserByEmail(email);
+          if (user) {
+            console.log(`Found existing user by email: ${user.username}`);
+          }
         }
         
         if (user) {
           // Update existing user with Firebase UID
+          console.log(`Updating user ${user.id} with Firebase UID`);
           const [updatedUser] = await db.update(users)
             .set({ 
               firebaseUid: uid,
@@ -342,24 +354,36 @@ export function setupAuth(app: Express) {
           // Create new user if none exists
           isNewUser = true;
           const username = await generateUniqueUsername(displayName, email);
+          console.log(`Creating new user with username: ${username}`);
           
           // Generate a random password for Firebase users (they'll use Firebase to login)
           const randomPassword = randomBytes(16).toString('hex');
           const hashedPassword = await hashPassword(randomPassword);
           
-          const [newUser] = await db.insert(users)
-            .values({
-              username,
-              email: email || `${username}@firebase.user`,
-              password: hashedPassword,
-              firebaseUid: uid,
-              fullName: displayName,
-              avatarUrl: photoURL,
-            })
-            .returning();
-            
-          user = newUser;
+          try {
+            const [newUser] = await db.insert(users)
+              .values({
+                username,
+                email: email || `${username}@firebase.user`,
+                password: hashedPassword,
+                firebaseUid: uid,
+                fullName: displayName,
+                avatarUrl: photoURL,
+              })
+              .returning();
+              
+            user = newUser;
+            console.log(`New user created with ID: ${user.id}`);
+          } catch (err) {
+            console.error("Failed to create new user:", err);
+            return res.status(500).json({
+              message: "Failed to create user account",
+              details: err instanceof Error ? err.message : String(err)
+            });
+          }
         }
+      } else {
+        console.log(`Found existing user by UID: ${user.username || user.email}`);
       }
       
       // Remove password from response
@@ -370,12 +394,31 @@ export function setupAuth(app: Express) {
       
       // Log user in
       req.login(userWithNewFlag, (err) => {
-        if (err) return next(err);
+        if (err) {
+          console.error("Failed to login user after authentication:", err);
+          return next(err);
+        }
+        
+        console.log(`User ${user.id} successfully logged in`);
+        
+        // Add session info for debugging
+        const sessionInfo = {
+          id: req.sessionID,
+          cookie: req.session?.cookie ? {
+            maxAge: req.session.cookie.maxAge,
+            expires: req.session.cookie.expires
+          } : null
+        };
+        console.log("Session info:", sessionInfo);
+        
         res.status(isNewUser ? 201 : 200).json(userWithNewFlag);
       });
     } catch (error) {
       console.error("Firebase auth error:", error);
-      next(error);
+      res.status(500).json({
+        message: "Authentication failed",
+        details: error instanceof Error ? error.message : String(error)
+      });
     }
   });
 

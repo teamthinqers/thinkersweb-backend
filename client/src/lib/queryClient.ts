@@ -153,7 +153,7 @@ export async function apiRequest(
   url: string,
   data?: unknown | undefined,
   retryCount: number = 0
-): Promise<any> {
+): Promise<Response> {
   try {
     const res = await fetchWithErrorHandling(url, {
       method,
@@ -162,8 +162,9 @@ export async function apiRequest(
       credentials: "include",
     });
 
-    await throwIfResNotOk(res);
-    return await res.json();
+    // We're not automatically throwing an error or parsing JSON
+    // Instead we return the raw response so the caller can handle it
+    return res;
   } catch (error) {
     // Check if we should retry connection errors
     if (

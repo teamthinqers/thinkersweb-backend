@@ -95,7 +95,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     );
     
     // Try to recover from localStorage if needed
-    const tryRecoverFromStorage = () => {
+    const tryRecoverFromStorage = async () => {
       const savedUser = localStorage.getItem('dotspark_user');
       
       if (savedUser && !auth.currentUser) {
@@ -111,10 +111,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             
             // Try to get user from server
             apiRequest("POST", "/api/auth/firebase", userData)
-              .then(response => response.json())
+              .then(response => {
+                console.log("Recovery response status:", response.status);
+                
+                if (!response.ok) {
+                  return response.text().then(errorText => {
+                    console.error("Server recovery error:", errorText);
+                    throw new Error(`Server recovery failed: ${response.status}`);
+                  });
+                }
+                
+                return response.json();
+              })
               .then(user => {
                 console.log("Server recognized stored user:", user.username || user.email);
                 queryClient.setQueryData(["/api/user"], user);
+                
+                // Show a welcome back toast
+                toast({
+                  title: "Welcome back!",
+                  description: `Signed in as ${user.username || user.email}`,
+                });
               })
               .catch(error => {
                 console.error("Failed to verify stored user:", error);
@@ -152,9 +169,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         photoURL: fbUser.photoURL,
       };
       
-      const response = await apiRequest("POST", "/api/auth/firebase", userData);
-      const user = await response.json();
+      console.log("Sending user data to server:", JSON.stringify(userData));
       
+      // Get the raw response
+      const response = await apiRequest("POST", "/api/auth/firebase", userData);
+      
+      // Log detailed response info for debugging
+      console.log("Server response status:", response.status);
+      
+      // Check for error status
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Error response:", errorText);
+        throw new Error(`Server error: ${response.status} - ${errorText}`);
+      }
+      
+      // Parse the JSON response
+      const user = await response.json();
       console.log("Server sync successful:", user.username || user.email);
       
       // Update cache
@@ -169,8 +200,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         });
       }
     } catch (error) {
+      // Log the full error details
       console.error("Server sync error:", error);
+      console.error("Error details:", error instanceof Error ? error.message : String(error));
       
+      // Show a more specific error message
       toast({
         title: "Connection Error",
         description: "We're having trouble connecting to the server. Some features may be limited.",
@@ -238,12 +272,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Combine Firebase user with DB user info
   const user: UserInfo | null = firebaseUser ? {
-    id: dbUser?.id,
+    id: dbUser ? dbUser.id : undefined,
     uid: firebaseUser.uid,
     email: firebaseUser.email,
-    displayName: firebaseUser.displayName || dbUser?.username || "User",
+    displayName: firebaseUser.displayName || (dbUser ? dbUser.username : null) || "User",
     photoURL: firebaseUser.photoURL,
-    isNewUser: dbUser?.createdAt === dbUser?.updatedAt,
+    isNewUser: dbUser ? (dbUser.createdAt.getTime() === dbUser.updatedAt.getTime()) : false,
   } : null;
 
   return (
@@ -251,7 +285,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       value={{
         user,
         firebaseUser,
-        dbUser,
+        dbUser: dbUser || null,
         isLoading: isLoading || isDbLoading,
         error: dbError || null,
         loginWithGoogle,
