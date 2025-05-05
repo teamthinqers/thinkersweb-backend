@@ -1,67 +1,42 @@
 import { QueryClient, QueryFunction } from "@tanstack/react-query";
 
-// Network status monitoring
+// Simplified network status monitoring to prevent issues
 export const networkStatus = {
-  isOnline: true,
+  isOnline: navigator.onLine,
   serverAvailable: true,
-  lastConnectionAttempt: Date.now(),
-  lastErrorTimestamp: 0,
-  connectionAttempts: 0,
-  maxRetries: 3,
-  listeners: new Set<() => void>(),
+  
+  // Simplified listener system
+  listeners: [] as Array<() => void>,
   
   addListener(callback: () => void) {
-    this.listeners.add(callback);
-    return () => this.listeners.delete(callback);
+    this.listeners.push(callback);
+    return () => {
+      this.listeners = this.listeners.filter(cb => cb !== callback);
+    };
   },
   
   notifyListeners() {
-    this.listeners.forEach(callback => callback());
-  },
-  
-  setServerStatus(available: boolean) {
-    if (this.serverAvailable !== available) {
-      this.serverAvailable = available;
-      if (!available) {
-        this.lastErrorTimestamp = Date.now();
-      }
-      this.notifyListeners();
+    try {
+      this.listeners.forEach(callback => {
+        try {
+          callback();
+        } catch (err) {
+          console.error("Error in network status listener:", err);
+        }
+      });
+    } catch (err) {
+      console.error("Error notifying listeners:", err);
     }
   },
   
-  resetConnectionAttempts() {
-    this.connectionAttempts = 0;
-    this.lastConnectionAttempt = Date.now();
-  },
-  
-  canRetry() {
-    // Only retry if we haven't exceeded max retries and sufficient time has passed
-    const now = Date.now();
-    const timePassedMs = now - this.lastConnectionAttempt;
-    
-    // Exponential backoff: 1s, 2s, 4s between retries
-    const backoffTime = this.connectionAttempts === 0 ? 0 : 
-                        Math.pow(2, this.connectionAttempts - 1) * 1000;
-    
-    return this.connectionAttempts < this.maxRetries && timePassedMs > backoffTime;
-  },
-  
-  incrementAttempt() {
-    this.connectionAttempts++;
-    this.lastConnectionAttempt = Date.now();
-    this.lastErrorTimestamp = Date.now();
+  setServerStatus(available: boolean) {
+    this.serverAvailable = available;
     this.notifyListeners();
   },
   
-  // Added methods for better error handling
-  getRecentErrorTime() {
-    // Return time since last error (in ms)
-    return Date.now() - this.lastErrorTimestamp;
-  },
-  
-  hasRecentConnectionError() {
-    // Consider an error recent if it happened in the last 15 seconds
-    return !this.serverAvailable || (this.lastErrorTimestamp > 0 && this.getRecentErrorTime() < 15000);
+  // Simple retry logic
+  canRetry() {
+    return true; // Always allow retry
   }
 };
 
@@ -123,7 +98,6 @@ async function fetchWithErrorHandling(url: string, options: RequestInit): Promis
     
     // If we successfully connect, reset status
     networkStatus.setServerStatus(true);
-    networkStatus.resetConnectionAttempts();
     
     return response;
   } catch (error: any) {
