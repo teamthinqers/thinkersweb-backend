@@ -16,28 +16,31 @@ import { useEffect, useState } from "react";
 import EntryDetail from "@/components/entries/EntryDetail";
 import ChatEntryForm from "@/components/chat/ChatEntryForm";
 import { AuthProvider, useAuth } from "@/hooks/use-auth";
-import { Loader2 } from "lucide-react";
+import { Loader2, ServerCrash } from "lucide-react";
 import { ConnectionError } from "@/components/ui/connection-error";
 import { useToast } from "@/hooks/use-toast";
 
 // Protected route component
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, isLoading, error } = useAuth();
-  const [, setLocation] = useLocation();
+  const [location, setLocation] = useLocation();
   const [retryCounter, setRetryCounter] = useState(0);
   const { toast } = useToast();
+  
+  // If we're already on the dashboard, don't attempt any navigation
+  const isOnDashboard = location.startsWith("/dashboard");
   
   // Handle server connection issues during authentication
   useEffect(() => {
     const maxRetries = 3;
     let timeoutId: NodeJS.Timeout;
     
-    // Only retry if we have a connection error (not auth error)
+    // Only retry if we have a connection error (not auth error) and still need to retry
     if (error && !networkStatus.serverAvailable && retryCounter < maxRetries) {
       const retryDelay = Math.min(2000 * Math.pow(2, retryCounter), 10000);
       
       // Show toast only on first error
-      if (retryCounter === 0) {
+      if (retryCounter === 0 && !isOnDashboard) {
         toast({
           title: "Connection Error",
           description: "We're having trouble connecting to the server. Retrying...",
@@ -57,7 +60,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
     return () => {
       if (timeoutId) clearTimeout(timeoutId);
     };
-  }, [error, retryCounter, toast]);
+  }, [error, retryCounter, toast, isOnDashboard]);
   
   // Navigate to auth page if not authenticated
   useEffect(() => {
@@ -66,14 +69,15 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
       // 1. We've reached max retries, OR
       // 2. The server is available (meaning it's a real auth issue), OR
       // 3. There's no error at all (also a real auth issue)
-      if (retryCounter >= 3 || networkStatus.serverAvailable || !error) {
+      if ((retryCounter >= 3 || networkStatus.serverAvailable || !error) && !isOnDashboard) {
         // Don't redirect if we had a very recent connection error
         // This helps prevent flashing between auth and loading screens
         if (!networkStatus.hasRecentConnectionError()) {
-          setLocation("/auth");
+          // Force to dashboard instead of auth for safety (prevents redirect loops)
+          setLocation(isOnDashboard ? "/dashboard" : "/auth");
           
           // Only show toast for non-connection errors (real auth issues)
-          if (networkStatus.serverAvailable || !error) {
+          if ((networkStatus.serverAvailable || !error) && !isOnDashboard) {
             toast({
               title: "Authentication Required",
               description: "Please sign in to continue",
@@ -82,7 +86,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
         }
       }
     }
-  }, [user, isLoading, retryCounter, setLocation, toast, error]);
+  }, [user, isLoading, retryCounter, setLocation, toast, error, isOnDashboard, location]);
   
   // Show loading state
   if (isLoading || (error && retryCounter < 3 && !networkStatus.serverAvailable)) {
@@ -109,7 +113,14 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   }
   
   if (!user) {
-    return null;
+    // Show a simpler loading state instead of null
+    // This prevents flashing during authentication
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen">
+        <Loader2 className="h-8 w-8 animate-spin text-primary mb-4" />
+        <p className="text-center text-muted-foreground">Loading...</p>
+      </div>
+    );
   }
   
   return <>{children}</>;
@@ -176,17 +187,63 @@ function AppWithLayout() {
   );
 }
 
+// Dedicated component to handle Dashboard redirection
+function DashboardRedirect() {
+  const [, setLocation] = useLocation();
+  const { toast } = useToast();
+  
+  useEffect(() => {
+    // Redirect to dashboard with a small delay
+    const redirectTimer = setTimeout(() => {
+      setLocation("/dashboard");
+      toast({
+        title: "Welcome Back",
+        description: "Redirecting you to your dashboard...",
+      });
+    }, 500);
+    
+    return () => clearTimeout(redirectTimer);
+  }, [setLocation, toast]);
+  
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen">
+      <Loader2 className="h-8 w-8 animate-spin text-primary mb-4" />
+      <p className="text-center text-muted-foreground">Redirecting to dashboard...</p>
+    </div>
+  );
+}
+
 function Router() {
-  const [location] = useLocation();
+  const [location, setLocation] = useLocation();
+  const { user, isLoading } = useAuth();
   const isLandingPage = location === "/";
   const isAuthPage = location === "/auth";
+  
+  // Special case to ensure we always have a place to land
+  const forceRedirectToDashboard = user && !location.startsWith("/dashboard") && !isLandingPage && !isAuthPage;
+  
+  // Force redirect to dashboard if we're on root and logged in
+  useEffect(() => {
+    if (user && location === "/") {
+      setLocation("/dashboard");
+    }
+  }, [user, location, setLocation]);
 
   if (isLandingPage) {
     return <LandingPage />;
   }
 
   if (isAuthPage) {
+    // Don't show auth page if already logged in
+    if (user && !isLoading) {
+      return <DashboardRedirect />;
+    }
     return <AuthPage />;
+  }
+  
+  // Handle special redirect case
+  if (forceRedirectToDashboard) {
+    return <DashboardRedirect />;
   }
 
   return <AppWithLayout />;
