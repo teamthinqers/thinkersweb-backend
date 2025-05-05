@@ -1,6 +1,6 @@
 /**
- * Auth Service
- * Centralized authentication control to fix persistent issues with Firebase auth
+ * Auth Service - Simplified Version
+ * A lightweight authentication service with reliable persistence
  */
 
 import { auth, signInWithGoogle as firebaseSignInWithGoogle, signOut as firebaseSignOut } from "./firebase";
