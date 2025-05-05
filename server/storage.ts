@@ -406,10 +406,13 @@ export const storage = {
   },
 
   async getEntryFrequencyByWeek(weeks: number = 8): Promise<{ week: string; count: number }[]> {
+    // Create a fixed number to avoid param errors
+    const weeksNum = typeof weeks === 'number' ? weeks : 8;
+    
     const result = await db.execute<{ week: string; count: number }>(sql`
       WITH weeks AS (
         SELECT generate_series(
-          date_trunc('week', NOW() - interval '${weeks-1} weeks'),
+          date_trunc('week', NOW() - interval '7 weeks'),
           date_trunc('week', NOW()),
           interval '1 week'
         ) AS week_start
