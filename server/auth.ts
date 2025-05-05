@@ -28,6 +28,10 @@ declare global {
       updatedAt: Date;
       isNewUser?: boolean;
     }
+    
+    interface Session {
+      userId?: number;
+    }
   }
 }
 

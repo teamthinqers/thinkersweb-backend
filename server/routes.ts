@@ -348,75 +348,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  // Firebase Authentication endpoint
-  app.post(`${apiPrefix}/auth/firebase`, async (req, res) => {
-    try {
-      const { uid, email, displayName, photoURL } = req.body;
-      
-      if (!uid) {
-        return res.status(400).json({ message: "Firebase UID is required" });
-      }
-
-      // Check if user exists
-      let user = await db.query.users.findFirst({
-        where: eq(users.firebaseUid, uid)
-      });
-      
-      let isNewUser = false;
-      
-      // If user doesn't exist, create one
-      if (!user) {
-        isNewUser = true;
-        
-        // Generate a username from email or display name
-        let username = displayName?.toLowerCase().replace(/\s+/g, '_') || 
-                      email?.split('@')[0] || 
-                      `user_${Math.floor(Math.random() * 10000)}`;
-        
-        // Make sure username is unique
-        let usernameTaken = await db.query.users.findFirst({
-          where: eq(users.username, username)
-        });
-        
-        let counter = 1;
-        let originalUsername = username;
-        while (usernameTaken) {
-          username = `${originalUsername}_${counter}`;
-          counter++;
-          usernameTaken = await db.query.users.findFirst({
-            where: eq(users.username, username)
-          });
-        }
-        
-        // Create the new user
-        const [newUser] = await db.insert(users).values({
-          username,
-          email: email || '',
-          firebaseUid: uid,
-          fullName: displayName || null,
-          avatarUrl: photoURL || null,
-          password: '', // Firebase users don't need a password
-          createdAt: new Date(),
-          updatedAt: new Date()
-        }).returning();
-        
-        user = newUser;
-      }
-      
-      // Set user session
-      if (req.session) {
-        req.session.userId = user.id;
-      }
-      
-      // Return user with isNewUser flag
-      res.json({
-        ...user,
-        isNewUser
-      });
-    } catch (err) {
-      handleApiError(err, res);
-    }
-  });
+  // Firebase Authentication endpoint has been moved to auth.ts
 
   // User and connection endpoints
   // For demo purposes, we'll use a hardcoded user ID (1) until auth is implemented
