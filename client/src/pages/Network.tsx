@@ -384,6 +384,15 @@ export default function Network() {
             </div>
           )}
         </TabsContent>
+        
+        {/* Network Insights Tab */}
+        <TabsContent value="insights">
+          <h2 className="text-xl font-semibold mb-4">Network Learning Insights</h2>
+          <p className="text-muted-foreground mb-6">
+            Discover patterns and trends from the collective learning of your network.
+          </p>
+          <NetworkInsights />
+        </TabsContent>
       </Tabs>
     </div>
   );

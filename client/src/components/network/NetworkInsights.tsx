@@ -1,255 +1,410 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
-import {
-  Bar,
-  BarChart,
-  Cell,
-  Legend,
-  Pie,
-  PieChart,
-  ResponsiveContainer,
-  XAxis,
-  YAxis,
-  Tooltip,
-} from "recharts";
-import { Loader2, TrendingUp, Users, BookOpen, BrainCircuit } from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
+import { 
+  BarChart, 
+  Bar, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip, 
+  ResponsiveContainer,
+  Cell,
+  PieChart,
+  Pie,
+  Legend
+} from "recharts";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { 
+  Users, 
+  Share, 
+  BookOpen, 
+  TrendingUp, 
+  BarChart2, 
+  PieChart as PieChartIcon,
+  List,
+  MessageSquare
+} from "lucide-react";
+
+interface NetworkInsightsData {
+  connectionCount: number;
+  sharedEntriesCount: number;
+  entriesSharedByUserCount: number;
+  topCategories: Array<{
+    name: string;
+    count: number;
+    color: string;
+  }>;
+  topTags: Array<{
+    name: string;
+    count: number;
+  }>;
+  learningTrends: Array<{
+    week: string;
+    count: number;
+  }>;
+  trendingTopics: string[];
+  connectionInsights: string[];
+  learningPatterns: string[];
+}
 
 export default function NetworkInsights() {
-  // Fetch network insights data
-  const { data: networkInsights, isLoading } = useQuery({
+  const { data, isLoading, error } = useQuery<NetworkInsightsData>({
     queryKey: ["/api/network/insights"],
     queryFn: async () => {
       const response = await fetch("/api/network/insights");
-      if (!response.ok) throw new Error("Failed to fetch network insights");
+      if (!response.ok) {
+        throw new Error("Failed to fetch network insights");
+      }
       return response.json();
-    },
+    }
   });
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-[300px]">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
+    return <LoadingSkeleton />;
   }
 
-  // If no shared entries are available yet
-  if (!networkInsights || !networkInsights.sharedEntriesCount || networkInsights.sharedEntriesCount === 0) {
+  if (error) {
     return (
-      <Card className="col-span-3">
+      <Card className="border-destructive">
         <CardHeader>
-          <CardTitle>Network Insights</CardTitle>
-          <CardDescription>
-            Discover trends and patterns from your learning network
-          </CardDescription>
+          <CardTitle className="text-destructive">Error</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="flex flex-col items-center justify-center py-8 text-center">
-            <Users className="h-12 w-12 text-muted-foreground mb-4" />
-            <h3 className="text-lg font-medium mb-2">No shared entries yet</h3>
-            <p className="text-muted-foreground max-w-md">
-              Connect with other learners and share entries to see network insights. 
-              As your network grows, you'll discover patterns and trends from 
-              collated learning experiences.
-            </p>
-          </div>
+          <p>Failed to load network insights. Please try again later.</p>
+          <p className="text-sm text-muted-foreground mt-2">
+            Network insights are only available when you have active connections who have shared entries with you.
+          </p>
         </CardContent>
       </Card>
     );
   }
 
-  // Format data for charts
-  const topCategoriesData = (networkInsights.topCategories || []).map(category => ({
-    name: category.name,
-    value: category.count,
-    color: category.color || "#6366f1",
-  }));
-
-  const topTagsData = (networkInsights.topTags || []).map(tag => ({
-    name: tag.name,
-    value: tag.count,
-  }));
-
-  const learningTrendsData = networkInsights.learningTrends || [];
-  
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold">Network Insights</h2>
-          <p className="text-muted-foreground">
-            Discover trends and patterns from your learning network
-          </p>
-        </div>
-        <div className="flex items-center space-x-2">
-          <Badge variant="outline" className="flex items-center gap-1">
-            <Users className="h-3 w-3" />
-            <span>{networkInsights.connectionCount || 0} Connections</span>
-          </Badge>
-          <Badge variant="outline" className="flex items-center gap-1">
-            <BookOpen className="h-3 w-3" />
-            <span>{networkInsights.sharedEntriesCount || 0} Shared Entries</span>
-          </Badge>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Summary Stats */}
+      {/* Summary Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-base font-medium">Top Learning Areas</CardTitle>
-            <CardDescription>Most common categories in your network</CardDescription>
+            <CardTitle className="text-lg flex items-center">
+              <Users className="h-5 w-5 mr-2 text-primary" />
+              Network Size
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="h-[200px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={topCategoriesData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={30}
-                    outerRadius={80}
-                    paddingAngle={2}
-                    dataKey="value"
-                    label={({ name }) => name}
-                  >
-                    {topCategoriesData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
+            <p className="text-3xl font-bold">{data?.connectionCount || 0}</p>
+            <p className="text-sm text-muted-foreground">
+              Active learning connections
+            </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-base font-medium">Top Tags</CardTitle>
-            <CardDescription>Most popular tags in shared entries</CardDescription>
+            <CardTitle className="text-lg flex items-center">
+              <BookOpen className="h-5 w-5 mr-2 text-primary" />
+              Shared With You
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="h-[200px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={topTagsData} layout="vertical">
-                  <XAxis type="number" />
-                  <YAxis type="category" dataKey="name" width={80} />
-                  <Tooltip />
-                  <Bar dataKey="value" fill="#8884d8" radius={[0, 4, 4, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
+            <p className="text-3xl font-bold">{data?.sharedEntriesCount || 0}</p>
+            <p className="text-sm text-muted-foreground">
+              Learning entries from your network
+            </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-base font-medium">Learning Trends</CardTitle>
-            <CardDescription>Entry frequency over time</CardDescription>
+            <CardTitle className="text-lg flex items-center">
+              <Share className="h-5 w-5 mr-2 text-primary" />
+              You've Shared
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="h-[200px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={learningTrendsData}>
-                  <XAxis dataKey="week" />
-                  <YAxis allowDecimals={false} />
-                  <Tooltip 
-                    formatter={(value: number) => [`${value} entries`, 'Count']}
-                    labelFormatter={(label) => `Week of ${label}`}
-                  />
-                  <Bar dataKey="count" fill="#6366f1" radius={[4, 4, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
+            <p className="text-3xl font-bold">{data?.entriesSharedByUserCount || 0}</p>
+            <p className="text-sm text-muted-foreground">
+              Entries shared with your connections
+            </p>
           </CardContent>
         </Card>
       </div>
 
-      {/* Valuable Insights */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <BrainCircuit className="h-5 w-5" />
-            <span>Network Learning Discoveries</span>
-          </CardTitle>
-          <CardDescription>
-            Insights and patterns derived from your learning network
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Tabs defaultValue="topics">
-            <TabsList className="mb-4">
-              <TabsTrigger value="topics">Popular Topics</TabsTrigger>
-              <TabsTrigger value="connections">Connection Insights</TabsTrigger>
-              <TabsTrigger value="patterns">Learning Patterns</TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="topics">
-              <div className="space-y-4">
-                <h3 className="text-lg font-medium">Hot Topics in Your Network</h3>
-                <div className="flex flex-wrap gap-2">
-                  {(networkInsights.trendingTopics || []).map((topic, index) => (
-                    <Badge key={index} className="py-1.5">
-                      <TrendingUp className="h-3 w-3 mr-1" />
-                      {topic}
-                    </Badge>
-                  ))}
+      {/* Main Dashboard */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Left column */}
+        <div className="lg:col-span-2 space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <BarChart2 className="h-5 w-5 mr-2 text-primary" />
+                Learning Categories
+              </CardTitle>
+              <CardDescription>
+                Most frequent categories in your network
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="pt-4">
+              {data?.topCategories && data.topCategories.length > 0 ? (
+                <div className="h-72">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart
+                      data={data.topCategories}
+                      margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="name" />
+                      <YAxis />
+                      <Tooltip />
+                      <Bar dataKey="count" name="Entries">
+                        {data.topCategories.map((category, index) => (
+                          <Cell key={`cell-${index}`} fill={category.color} />
+                        ))}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
                 </div>
-                <p className="text-sm text-muted-foreground pt-2">
-                  These topics represent the most active areas of learning and discussion in your network.
+              ) : (
+                <p className="text-muted-foreground py-12 text-center">
+                  No category data available yet. Connect with more learners to see insights.
                 </p>
-              </div>
-            </TabsContent>
-            
-            <TabsContent value="connections">
-              <div className="space-y-4">
-                <h3 className="text-lg font-medium">Connection Insights</h3>
-                <ul className="space-y-2">
-                  {(networkInsights.connectionInsights || []).map((insight, index) => (
-                    <li key={index} className="flex items-start gap-2">
-                      <span className="text-primary text-xl leading-tight">•</span>
-                      <span>{insight}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </TabsContent>
-            
-            <TabsContent value="patterns">
-              <div className="space-y-4">
-                <h3 className="text-lg font-medium">Learning Patterns</h3>
-                <ul className="space-y-2">
-                  {(networkInsights.learningPatterns || []).map((pattern, index) => (
-                    <li key={index} className="flex items-start gap-2">
-                      <span className="text-primary text-xl leading-tight">•</span>
-                      <span>{pattern}</span>
-                    </li>
-                  ))}
-                </ul>
-                <p className="text-sm text-muted-foreground pt-2">
-                  These patterns represent common learning approaches and behaviors observed across your network.
+              )}
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <TrendingUp className="h-5 w-5 mr-2 text-primary" />
+                Learning Activity
+              </CardTitle>
+              <CardDescription>Weekly learning trends in your network</CardDescription>
+            </CardHeader>
+            <CardContent className="pt-4">
+              {data?.learningTrends && data.learningTrends.some(item => item.count > 0) ? (
+                <div className="h-60">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={data.learningTrends} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="week" />
+                      <YAxis />
+                      <Tooltip />
+                      <Bar dataKey="count" name="Entries" fill="#8884d8" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              ) : (
+                <p className="text-muted-foreground py-12 text-center">
+                  No trend data available yet. Share and receive more entries to see activity patterns.
                 </p>
-              </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Right column */}
+        <div className="space-y-6">
+          <Tabs defaultValue="tags">
+            <TabsList className="w-full">
+              <TabsTrigger value="tags">Tags</TabsTrigger>
+              <TabsTrigger value="topics">Topics</TabsTrigger>
+              <TabsTrigger value="insights">Insights</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="tags" className="space-y-4 mt-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center text-lg">
+                    <PieChartIcon className="h-5 w-5 mr-2 text-primary" />
+                    Top Tags
+                  </CardTitle>
+                  <CardDescription>
+                    Most popular tags in your learning network
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {data?.topTags && data.topTags.length > 0 ? (
+                    <div className="h-60">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                          <Pie
+                            data={data.topTags}
+                            cx="50%"
+                            cy="50%"
+                            labelLine={false}
+                            label={({ name, percent }) => `${name} (${(percent * 100).toFixed(0)}%)`}
+                            outerRadius={80}
+                            fill="#8884d8"
+                            dataKey="count"
+                            nameKey="name"
+                          >
+                            {data.topTags.map((tag, index) => (
+                              <Cell 
+                                key={`cell-${index}`} 
+                                fill={[
+                                  "#8884d8", "#83a6ed", "#8dd1e1", "#82ca9d", "#a4de6c"
+                                ][index % 5]} 
+                              />
+                            ))}
+                          </Pie>
+                          <Tooltip />
+                        </PieChart>
+                      </ResponsiveContainer>
+                    </div>
+                  ) : (
+                    <p className="text-muted-foreground py-6 text-center">
+                      No tag data available yet. Connect with more learners who use tags.
+                    </p>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="topics" className="space-y-4 mt-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center text-lg">
+                    <List className="h-5 w-5 mr-2 text-primary" />
+                    Trending Topics
+                  </CardTitle>
+                  <CardDescription>
+                    Topics frequently mentioned in shared entries
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {data?.trendingTopics && data.trendingTopics.length > 0 ? (
+                    <div className="flex flex-wrap gap-2">
+                      {data.trendingTopics.map((topic, index) => (
+                        <Badge key={index} variant="secondary" className="text-sm">
+                          {topic}
+                        </Badge>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-muted-foreground py-6 text-center">
+                      No topic data available yet. Share more detailed entries to see topics.
+                    </p>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="insights" className="space-y-4 mt-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center text-lg">
+                    <MessageSquare className="h-5 w-5 mr-2 text-primary" />
+                    Network Insights
+                  </CardTitle>
+                  <CardDescription>
+                    Observations from your learning network
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {data?.connectionInsights && data.connectionInsights.length > 0 ? (
+                    <ul className="space-y-2 mb-4">
+                      {data.connectionInsights.map((insight, index) => (
+                        <li key={index} className="flex items-start">
+                          <span className="bg-primary/10 text-primary rounded-full p-1 mr-2 mt-0.5">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                          </span>
+                          {insight}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-muted-foreground py-2">No insights available yet.</p>
+                  )}
+
+                  <h4 className="text-sm font-medium mt-4 mb-2">Learning Patterns</h4>
+                  {data?.learningPatterns && data.learningPatterns.length > 0 ? (
+                    <ul className="space-y-2">
+                      {data.learningPatterns.map((pattern, index) => (
+                        <li key={index} className="flex items-start">
+                          <span className="bg-primary/10 text-primary rounded-full p-1 mr-2 mt-0.5">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <path d="M12 20h9"></path>
+                              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                            </svg>
+                          </span>
+                          {pattern}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-muted-foreground py-2">No learning patterns detected yet.</p>
+                  )}
+                </CardContent>
+              </Card>
             </TabsContent>
           </Tabs>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function LoadingSkeleton() {
+  return (
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {[1, 2, 3].map(i => (
+          <Card key={i}>
+            <CardHeader className="pb-2">
+              <Skeleton className="h-6 w-32" />
+            </CardHeader>
+            <CardContent>
+              <Skeleton className="h-8 w-16 mb-2" />
+              <Skeleton className="h-4 w-28" />
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2 space-y-6">
+          <Card>
+            <CardHeader>
+              <Skeleton className="h-6 w-40 mb-2" />
+              <Skeleton className="h-4 w-60" />
+            </CardHeader>
+            <CardContent>
+              <Skeleton className="h-72 w-full" />
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader>
+              <Skeleton className="h-6 w-36 mb-2" />
+              <Skeleton className="h-4 w-56" />
+            </CardHeader>
+            <CardContent>
+              <Skeleton className="h-60 w-full" />
+            </CardContent>
+          </Card>
+        </div>
+
+        <div>
+          <Card>
+            <CardHeader>
+              <Skeleton className="h-6 w-32 mb-2" />
+              <Skeleton className="h-4 w-48" />
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Skeleton className="h-60 w-full" />
+              <div className="space-y-2">
+                {[1, 2, 3, 4].map(i => (
+                  <Skeleton key={i} className="h-4 w-full" />
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
     </div>
   );
 }
