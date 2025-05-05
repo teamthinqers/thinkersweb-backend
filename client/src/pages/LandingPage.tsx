@@ -12,13 +12,13 @@ export default function LandingPage() {
           <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-16">
             <div className="flex-1 space-y-6">
               <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm text-primary mb-4">
-                Introducing the Learning Repository
+                Introducing DotSpark
               </div>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
-                Capture, Connect, <span className="gradient-heading">Transform</span> Your Learning
+                Connect the Dots, <span className="gradient-heading">Spark</span> Your Potential
               </h1>
               <p className="text-xl text-muted-foreground max-w-2xl">
-                Your personal knowledge management system that turns everyday insights into a powerful learning database through natural conversation.
+                Like a neural chip for your mind, DotSpark connects your learnings across every domain, unleashing limitless growth through insights you never knew you had.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 pt-4">
                 <Button size="lg" asChild>
@@ -77,6 +77,117 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Neural Chip Visual Section */}
+      <section className="py-24 relative">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div className="space-y-6">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">Your <span className="gradient-heading">Learning Chip</span> Upgrade</h2>
+              <p className="text-xl text-muted-foreground">
+                DotSpark works like a neural implant for your learning journey, connecting isolated bits of knowledge into a powerful network of insights.
+              </p>
+              
+              <div className="space-y-4 mt-6">
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mt-0.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 16V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v9m16 0H4m16 0 1.28 2.55a1 1 0 0 1-.9 1.45H3.62a1 1 0 0 1-.9-1.45L4 16"></path><path d="M8 7a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v9H8V7z"></path></svg>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg">Neural Integration</h3>
+                    <p className="text-muted-foreground">DotSpark integrates with how your brain naturally works, capturing your thoughts as they occur.</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mt-0.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg">Global Knowledge Network</h3>
+                    <p className="text-muted-foreground">Connect your dots with a global network of learners to expand your cognitive horizons.</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mt-0.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="8" y1="19" x2="8" y2="21"></line><line x1="8" y1="13" x2="8" y2="15"></line><line x1="16" y1="19" x2="16" y2="21"></line><line x1="16" y1="13" x2="16" y2="15"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="12" y1="15" x2="12" y2="17"></line><path d="M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"></path></svg>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg">Unlimited Growth Potential</h3>
+                    <p className="text-muted-foreground">Your neural chip grows with you, constantly finding new connections as you add more knowledge.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Neural Chip Visualization */}
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-secondary/5 rounded-xl transform rotate-3"></div>
+              <div className="relative bg-black/5 dark:bg-white/5 border rounded-xl p-6 shadow-lg overflow-hidden h-[400px]">
+                {/* Brain Nodes and Connections Visualization */}
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[320px] h-[320px]">
+                  {/* Central Node */}
+                  <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
+                                  w-12 h-12 rounded-full bg-gradient-to-br from-primary to-secondary 
+                                  shadow-lg shadow-primary/20 z-20 animate-pulse">
+                    <div className="absolute inset-0 rounded-full border-4 border-white/10"></div>
+                  </div>
+                  
+                  {/* Dot nodes with connections */}
+                  <div className="absolute top-[15%] left-[20%] w-6 h-6 rounded-full 
+                                 bg-primary/80 shadow-sm shadow-primary/20 animate-float">
+                    <div className="absolute h-[100px] w-[1px] bg-gradient-to-b from-primary/80 to-transparent 
+                                   origin-top top-full left-1/2 transform -translate-x-1/2 -rotate-30"></div>
+                  </div>
+                  
+                  <div className="absolute top-[25%] right-[15%] w-5 h-5 rounded-full 
+                                 bg-secondary/80 shadow-sm shadow-secondary/20 animate-float-slow">
+                    <div className="absolute h-[120px] w-[1px] bg-gradient-to-b from-secondary/80 to-transparent 
+                                   origin-top top-full right-1/2 transform translate-x-1/2 rotate-25"></div>
+                  </div>
+                  
+                  <div className="absolute bottom-[20%] left-[25%] w-4 h-4 rounded-full 
+                                 bg-primary/70 shadow-sm shadow-primary/20 animate-float-delay">
+                    <div className="absolute h-[100px] w-[1px] bg-gradient-to-t from-primary/70 to-transparent 
+                                   origin-bottom bottom-full left-1/2 transform -translate-x-1/2 rotate-35"></div>
+                  </div>
+                  
+                  <div className="absolute bottom-[15%] right-[20%] w-6 h-6 rounded-full 
+                                 bg-secondary/70 shadow-sm shadow-secondary/20 animate-float-delay-slow">
+                    <div className="absolute h-[130px] w-[1px] bg-gradient-to-t from-secondary/70 to-transparent 
+                                   origin-bottom bottom-full right-1/2 transform translate-x-1/2 -rotate-30"></div>
+                  </div>
+                  
+                  {/* Sparks */}
+                  <div className="absolute top-[40%] left-[40%] w-4 h-4 rounded-full 
+                                 bg-yellow-300/90 shadow-lg shadow-yellow-300/30 animate-sparkling">
+                    <div className="absolute inset-0 rounded-full border-2 border-yellow-200/30"></div>
+                  </div>
+                  
+                  <div className="absolute bottom-[40%] right-[35%] w-3 h-3 rounded-full 
+                                 bg-yellow-300/90 shadow-lg shadow-yellow-300/30 animate-sparkling-delayed">
+                    <div className="absolute inset-0 rounded-full border-2 border-yellow-200/30"></div>
+                  </div>
+                  
+                  {/* Connection lines */}
+                  <div className="absolute inset-0 rounded-full border-2 border-primary/20 animate-ping-slow"></div>
+                  <div className="absolute inset-0 rounded-full border-4 border-primary/10 animate-ping-slower"></div>
+                </div>
+                
+                {/* Circuit-like patterns in background */}
+                <div className="absolute bottom-0 left-0 w-full h-1/3 opacity-20">
+                  <div className="absolute bottom-8 left-8 w-[200px] h-[1px] bg-primary"></div>
+                  <div className="absolute bottom-8 left-8 w-[1px] h-[40px] bg-primary"></div>
+                  <div className="absolute bottom-8 right-8 w-[150px] h-[1px] bg-secondary"></div>
+                  <div className="absolute bottom-8 right-8 w-[1px] h-[30px] bg-secondary"></div>
+                  <div className="absolute bottom-16 left-24 w-[80px] h-[1px] bg-primary"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      
       {/* Stats Section */}
       <section className="py-16 bg-muted/30">
         <div className="container mx-auto px-4 md:px-6">
@@ -105,9 +216,9 @@ export default function LandingPage() {
       <section className="py-20">
         <div className="container mx-auto px-4 md:px-6">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Transform How You Learn</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Your <span className="gradient-heading">Neural Chip</span> for Limitless Learning</h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Our conversational approach makes recording and connecting learnings effortless and intuitive.
+              DotSpark acts like a brain implant for your learning journey, connecting all your mental dots to spark explosive growth and performance.
             </p>
           </div>
 
@@ -117,9 +228,9 @@ export default function LandingPage() {
               <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center mb-4">
                 <Brain className="h-6 w-6 text-primary animate-pulsate" />
               </div>
-              <h3 className="text-xl font-semibold mb-2">Conversational Capture</h3>
+              <h3 className="text-xl font-semibold mb-2">Neural Input Interface</h3>
               <p className="text-muted-foreground">
-                Simply chat about what you've learned, and AI automatically structures and categorizes your insights.
+                Simply chat about what you've learned as if you're talking to your own brain, and DotSpark's AI instantly processes your thoughts.
               </p>
             </div>
 
@@ -128,9 +239,9 @@ export default function LandingPage() {
               <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center mb-4">
                 <BookOpen className="h-6 w-6 text-primary animate-pulsate" />
               </div>
-              <h3 className="text-xl font-semibold mb-2">Knowledge Organization</h3>
+              <h3 className="text-xl font-semibold mb-2">Dot Mapping System</h3>
               <p className="text-muted-foreground">
-                Automatically categorize and tag entries, creating a searchable personal knowledge database.
+                Your learnings become "dots" in your personal knowledge network, automatically organized for instant access and future connections.
               </p>
             </div>
 
@@ -139,9 +250,9 @@ export default function LandingPage() {
               <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center mb-4">
                 <Users className="h-6 w-6 text-primary animate-pulsate" />
               </div>
-              <h3 className="text-xl font-semibold mb-2">Barter Learn Network</h3>
+              <h3 className="text-xl font-semibold mb-2">Collective Intelligence</h3>
               <p className="text-muted-foreground">
-                Connect with other learners, share insights, and discover patterns from collective learning.
+                Connect your neural chip with others through Barter Learn, sharing dots and discovering network-wide patterns and insights.
               </p>
             </div>
 
@@ -150,9 +261,9 @@ export default function LandingPage() {
               <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center mb-4">
                 <Sparkles className="h-6 w-6 text-primary animate-pulsate" />
               </div>
-              <h3 className="text-xl font-semibold mb-2">Pattern Recognition</h3>
+              <h3 className="text-xl font-semibold mb-2">Spark Generation</h3>
               <p className="text-muted-foreground">
-                Uncover connections between different areas of learning with AI-powered insight generation.
+                Watch as your dots combine to create "sparks" - surprising connections and insights between seemingly unrelated knowledge areas.
               </p>
             </div>
 
@@ -161,9 +272,9 @@ export default function LandingPage() {
               <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center mb-4">
                 <BarChart2 className="h-6 w-6 text-primary animate-pulsate" />
               </div>
-              <h3 className="text-xl font-semibold mb-2">Learning Analytics</h3>
+              <h3 className="text-xl font-semibold mb-2">Neural Performance Matrix</h3>
               <p className="text-muted-foreground">
-                Track your learning habits, identify trends, and visualize progress across different areas.
+                Visualize your cognitive growth with analytics that show how your learning network expands and strengthens over time.
               </p>
             </div>
 
@@ -172,9 +283,9 @@ export default function LandingPage() {
               <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center mb-4">
                 <MessageCircle className="h-6 w-6 text-primary animate-pulsate" />
               </div>
-              <h3 className="text-xl font-semibold mb-2">Interactive Reflection</h3>
+              <h3 className="text-xl font-semibold mb-2">Cognitive Enhancement</h3>
               <p className="text-muted-foreground">
-                Engage in AI-guided reflection on your learning patterns, helping you grow and adapt.
+                AI-guided reflection sessions that strengthen neural pathways between your dots, enhancing retention and application.
               </p>
             </div>
           </div>
@@ -185,9 +296,9 @@ export default function LandingPage() {
       <section className="py-20 bg-muted/30">
         <div className="container mx-auto px-4 md:px-6">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">How It Works</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Installing Your <span className="gradient-heading">Neural Chip</span></h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Three simple steps to transform your learning experience
+              Three simple steps to activate your limitless learning potential
             </p>
           </div>
 
@@ -195,42 +306,42 @@ export default function LandingPage() {
             {/* Step 1 */}
             <div className="flex-1 max-w-md text-center card-hover p-8 rounded-xl bg-card border">
               <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-secondary text-primary-foreground text-2xl font-bold flex items-center justify-center mx-auto mb-6 shadow-md">1</div>
-              <h3 className="text-xl font-semibold mb-2">Chat About Your Learning</h3>
+              <h3 className="text-xl font-semibold mb-2">Neural Transmission</h3>
               <p className="text-muted-foreground">
-                Simply tell the app what you've learned in your own words, just like you're talking to a friend.
+                Chat naturally about your learnings and thoughts. Your neural chip receives these signals and prepares them for processing.
               </p>
               <div className="mt-4 pt-2">
-                <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold bg-primary/10 text-primary">natural</span>
-                <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold bg-primary/10 text-primary ml-1.5">conversational</span>
-                <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold bg-primary/10 text-primary ml-1.5">easy</span>
+                <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold bg-primary/10 text-primary">effortless</span>
+                <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold bg-primary/10 text-primary ml-1.5">natural</span>
+                <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold bg-primary/10 text-primary ml-1.5">instant</span>
               </div>
             </div>
 
             {/* Step 2 */}
             <div className="flex-1 max-w-md text-center card-hover p-8 rounded-xl bg-card border">
               <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-secondary text-primary-foreground text-2xl font-bold flex items-center justify-center mx-auto mb-6 shadow-md">2</div>
-              <h3 className="text-xl font-semibold mb-2">AI Structures Your Insights</h3>
+              <h3 className="text-xl font-semibold mb-2">Dot Formation</h3>
               <p className="text-muted-foreground">
-                The app automatically organizes your learning into structured entries with relevant tags and categories.
+                Your neural chip transforms your knowledge into organized "dots" in your personal matrix, each one tagged and categorized automatically.
               </p>
               <div className="mt-4 pt-2">
-                <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold bg-secondary/10 text-secondary">AI-powered</span>
+                <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold bg-secondary/10 text-secondary">structured</span>
+                <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold bg-secondary/10 text-secondary ml-1.5">AI-powered</span>
                 <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold bg-secondary/10 text-secondary ml-1.5">organized</span>
-                <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold bg-secondary/10 text-secondary ml-1.5">semantic</span>
               </div>
             </div>
 
             {/* Step 3 */}
             <div className="flex-1 max-w-md text-center card-hover p-8 rounded-xl bg-card border">
               <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-secondary text-primary-foreground text-2xl font-bold flex items-center justify-center mx-auto mb-6 shadow-md">3</div>
-              <h3 className="text-xl font-semibold mb-2">Discover Patterns & Share</h3>
+              <h3 className="text-xl font-semibold mb-2">Spark Ignition</h3>
               <p className="text-muted-foreground">
-                Explore connections between your learnings, generate insights, and optionally share with your network.
+                As your dots multiply, connections form automatically, creating sparks of insight that illuminate patterns you never saw before.
               </p>
               <div className="mt-4 pt-2">
-                <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold bg-primary/10 text-primary">patterns</span>
-                <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold bg-primary/10 text-primary ml-1.5">insights</span>
-                <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold bg-primary/10 text-primary ml-1.5">social</span>
+                <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold bg-primary/10 text-primary">connections</span>
+                <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold bg-primary/10 text-primary ml-1.5">growth</span>
+                <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold bg-primary/10 text-primary ml-1.5">limitless</span>
               </div>
             </div>
           </div>

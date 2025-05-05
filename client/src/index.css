@@ -119,6 +119,33 @@
     @apply transform scale-95;
   }
 
+  /* Neural chip visualization */
+  .rotate-25 {
+    transform: rotate(25deg);
+  }
+  
+  .rotate-35 {
+    transform: rotate(35deg);
+  }
+  
+  .-rotate-30 {
+    transform: rotate(-30deg);
+  }
+  
+  /* Neural connection glow */
+  .neural-connection {
+    @apply relative overflow-hidden;
+  }
+  
+  .neural-connection::after {
+    content: "";
+    @apply absolute inset-0 bg-gradient-to-r from-primary/20 to-secondary/20 opacity-0 transition-opacity duration-300;
+  }
+  
+  .neural-connection:hover::after {
+    @apply opacity-100;
+  }
+
   /* Layout styles */
   .page-container {
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;

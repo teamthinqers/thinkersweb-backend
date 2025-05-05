@@ -116,6 +116,14 @@ export default {
             transform: "translateY(-10px)",
           }
         },
+        "float-slow": {
+          "0%, 100%": {
+            transform: "translateY(0)",
+          },
+          "50%": {
+            transform: "translateY(-6px)",
+          }
+        },
         pulsate: {
           "0%, 100%": {
             opacity: "1",
@@ -124,6 +132,48 @@ export default {
             opacity: "0.7",
           }
         },
+        sparkling: {
+          "0%": {
+            transform: "scale(1)",
+            opacity: "0.8",
+          },
+          "50%": {
+            transform: "scale(1.2)",
+            opacity: "1",
+          },
+          "100%": {
+            transform: "scale(1)",
+            opacity: "0.8",
+          }
+        },
+        "ping-slow": {
+          "0%": {
+            transform: "scale(1)",
+            opacity: "1",
+          },
+          "75%, 100%": {
+            transform: "scale(1.2)",
+            opacity: "0",
+          }
+        },
+        "ping-slower": {
+          "0%": {
+            transform: "scale(1)",
+            opacity: "0.8",
+          },
+          "75%, 100%": {
+            transform: "scale(1.3)",
+            opacity: "0",
+          }
+        },
+        bounce: {
+          "0%, 100%": {
+            transform: "translateY(0)",
+          },
+          "50%": {
+            transform: "translateY(-5px)",
+          }
+        }
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -131,7 +181,15 @@ export default {
         "typing": "typing 4s steps(40) infinite",
         "gradient": "gradient 6s ease infinite",
         "float": "float 4s ease-in-out infinite",
+        "float-slow": "float-slow 5s ease-in-out infinite",
+        "float-delay": "float 3s ease-in-out 1s infinite",
+        "float-delay-slow": "float-slow 4s ease-in-out 0.5s infinite",
         "pulsate": "pulsate 2s ease-in-out infinite",
+        "sparkling": "sparkling 2s ease-in-out infinite",
+        "sparkling-delayed": "sparkling 2s ease-in-out 0.7s infinite",
+        "ping-slow": "ping-slow 3s cubic-bezier(0, 0, 0.2, 1) infinite",
+        "ping-slower": "ping-slower 4s cubic-bezier(0, 0, 0.2, 1) infinite",
+        "btn-bounce": "bounce 0.5s ease-in-out"
       },
     },
   },
