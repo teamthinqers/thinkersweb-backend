@@ -146,7 +146,7 @@ export async function processWhatsAppMessage(from: string, messageText: string):
       };
     } else if (messageText.toLowerCase().startsWith("q:")) {
       // Handle question - use the chat function to generate a response
-      const response = await generateChatResponse(messageText.substring(2).trim(), userId);
+      const response = await generateChatResponse(messageText.substring(2).trim(), []); // Empty messages array for now
       return {
         success: true,
         message: response,
@@ -159,7 +159,7 @@ export async function processWhatsAppMessage(from: string, messageText: string):
       };
     } else {
       // Process as a new learning entry
-      const result = await processEntryFromChat(messageText, userId);
+      const result = await processEntryFromChat(messageText, []);
       if (result) {
         return {
           success: true,

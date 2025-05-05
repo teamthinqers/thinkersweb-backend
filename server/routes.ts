@@ -6,6 +6,13 @@ import { insertCategorySchema, insertEntrySchema, insertTagSchema, insertConnect
 import { processEntryFromChat, generateChatResponse, type Message } from "./chat";
 import { connectionsService } from "./connections";
 import { db } from "@db";
+import { 
+  extractWhatsAppMessage, 
+  processWhatsAppMessage, 
+  registerWhatsAppUser,
+  unregisterWhatsAppUser,
+  getWhatsAppStatus
+} from "./whatsapp";
 
 // Interface for authenticated requests (will be used later when auth is implemented)
 interface AuthenticatedRequest extends Request {
@@ -826,6 +833,108 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (err) {
       console.error("Chat response error:", err);
+      handleApiError(err, res);
+    }
+  });
+
+  // WhatsApp Integration Endpoints
+  
+  // WhatsApp webhook endpoint for receiving messages
+  app.post(`${apiPrefix}/whatsapp/webhook`, async (req, res) => {
+    try {
+      // Handle WhatsApp verification challenge
+      if (req.query && req.query["hub.mode"] === "subscribe" && req.query["hub.verify_token"] === process.env.WHATSAPP_VERIFY_TOKEN) {
+        return res.status(200).send(req.query["hub.challenge"]);
+      }
+
+      const messageText = extractWhatsAppMessage(req.body);
+      if (!messageText) {
+        // Not a text message or missing required fields
+        return res.status(200).send(); // Always return 200 to WhatsApp
+      }
+
+      // Process the message from WhatsApp
+      const from = req.body.entry[0]?.changes[0]?.value?.messages[0]?.from;
+      if (!from) {
+        console.error("Missing 'from' field in WhatsApp message");
+        return res.status(200).send();
+      }
+
+      // Process asynchronously so we can respond quickly to webhook
+      processWhatsAppMessage(from, messageText)
+        .then(response => {
+          // Don't wait for this to complete before responding to webhook
+          if (from && response) {
+            // Send reply back to WhatsApp user
+            console.log("Sending WhatsApp reply:", response.message);
+          }
+        })
+        .catch(error => {
+          console.error("Error processing WhatsApp message:", error);
+        });
+
+      // Always respond with 200 OK to WhatsApp webhooks quickly
+      return res.status(200).send();
+    } catch (err) {
+      console.error("WhatsApp webhook error:", err);
+      // Still return 200 as WhatsApp expects
+      return res.status(200).send();
+    }
+  });
+
+  // Register a phone number for WhatsApp integration
+  app.post(`${apiPrefix}/whatsapp/register`, async (req, res) => {
+    try {
+      // For demo purposes using DEMO_USER_ID, in production this would use authenticated user
+      const userId = DEMO_USER_ID; 
+      const { phoneNumber } = req.body;
+      
+      if (!phoneNumber) {
+        return res.status(400).json({ message: "Phone number is required" });
+      }
+      
+      const result = await registerWhatsAppUser(userId, phoneNumber);
+      
+      if (result.success) {
+        return res.status(201).json(result);
+      } else {
+        return res.status(400).json(result);
+      }
+    } catch (err) {
+      console.error("WhatsApp registration error:", err);
+      handleApiError(err, res);
+    }
+  });
+
+  // Unregister a phone number from WhatsApp integration
+  app.post(`${apiPrefix}/whatsapp/unregister`, async (req, res) => {
+    try {
+      // For demo purposes using DEMO_USER_ID, in production this would use authenticated user
+      const userId = DEMO_USER_ID;
+      
+      const result = await unregisterWhatsAppUser(userId);
+      
+      if (result.success) {
+        return res.status(200).json(result);
+      } else {
+        return res.status(400).json(result);
+      }
+    } catch (err) {
+      console.error("WhatsApp unregistration error:", err);
+      handleApiError(err, res);
+    }
+  });
+
+  // Get WhatsApp integration status
+  app.get(`${apiPrefix}/whatsapp/status`, async (req, res) => {
+    try {
+      // For demo purposes using DEMO_USER_ID, in production this would use authenticated user
+      const userId = DEMO_USER_ID;
+      
+      const status = await getWhatsAppStatus(userId);
+      res.json(status);
+    } catch (err) {
+      console.error("WhatsApp status error:", err);
       handleApiError(err, res);
     }
   });
