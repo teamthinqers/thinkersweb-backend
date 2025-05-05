@@ -1,10 +1,11 @@
 import { db } from "@db";
 import { users, whatsappUsers, entries, tags, whatsappOtpVerifications } from "@shared/schema";
 import { eq, and, desc, gt } from "drizzle-orm";
-import { processEntryFromChat, generateChatResponse, analyzeUserInput, type Message } from "./chat";
+import { processEntryFromChat, generateChatResponse, type Message } from "./chat";
 import { storage } from "./storage";
 import twilio from "twilio";
 import { randomInt } from "crypto";
+import OpenAI from "openai";
 
 // Twilio WhatsApp API configuration
 const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID || "";
@@ -13,6 +14,46 @@ const TWILIO_PHONE_NUMBER = process.env.TWILIO_PHONE_NUMBER || "";
 
 // Initialize Twilio client
 const twilioClient = twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
+
+// Initialize OpenAI client
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+/**
+ * Analyze user input to determine whether it's a question or a learning entry
+ */
+async function analyzeUserInput(userInput: string): Promise<{
+  type: 'question' | 'learning' | 'command';
+  confidence: number;
+}> {
+  try {
+    // Check for command prefixes first
+    if (userInput.toLowerCase().startsWith("q:") || 
+        userInput.toLowerCase().startsWith("question:") ||
+        userInput.toLowerCase().startsWith("ask:")) {
+      return { type: 'question', confidence: 0.95 };
+    }
+    
+    if (userInput.toLowerCase() === "help" || 
+        userInput.toLowerCase() === "summary" || 
+        userInput.toLowerCase() === "stats") {
+      return { type: 'command', confidence: 0.95 };
+    }
+    
+    // Simple rule-based classification as a fallback
+    if (userInput.endsWith("?")) {
+      return { type: 'question', confidence: 0.8 };
+    }
+    
+    // Default to treating it as a learning entry if simple analysis fails
+    return { type: 'learning', confidence: 0.7 };
+  } catch (error) {
+    console.error("Error analyzing user input:", error);
+    // Default to treating it as a learning entry if analysis fails
+    return { type: 'learning', confidence: 0.5 };
+  }
+}
 
 /**
  * Interface for incoming Twilio WhatsApp message
@@ -173,14 +214,16 @@ export async function processWhatsAppMessage(from: string, messageText: string):
       };
     }
     
-    // Use AI to analyze if the message is a question or a learning entry
+    // Do a simple analysis of the message to determine if it's a question
     // This makes the interface more conversational - users don't need special prefixes
-    const analysis = await analyzeUserInput(messageText);
-    console.log("Message analysis:", analysis);
+    const isQuestion = messageText.endsWith("?") || 
+        messageText.toLowerCase().startsWith("q:") || 
+        messageText.toLowerCase().startsWith("question:") || 
+        messageText.toLowerCase().startsWith("ask:");
+    console.log("Message analysis - is question:", isQuestion);
     
-    // If it's an explicit question (starts with Q:) or detected as a question with high confidence
-    if (messageText.toLowerCase().startsWith("q:") || 
-        (analysis.type === 'question' && analysis.confidence > 0.7)) {
+    // If it's detected as a question
+    if (isQuestion) {
       
       // Extract the question (remove the Q: prefix if it exists)
       const questionText = messageText.toLowerCase().startsWith("q:") 
@@ -195,8 +238,7 @@ export async function processWhatsAppMessage(from: string, messageText: string):
       };
     }
     
-    // If it's likely a learning entry OR the confidence is low, 
-    // process it as a learning but also provide a conversational response
+    // Process as a learning entry and provide a conversational response
     const structuredEntry = await processEntryFromChat(messageText, []);
     
     if (structuredEntry) {
