@@ -148,8 +148,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     };
     
-    // Try recovery once on mount
-    tryRecoverFromStorage();
+    // Try recovery once on mount - execute but don't await the async function
+    tryRecoverFromStorage().catch(err => console.error("Recovery error:", err));
     
     return () => {
       console.log("Cleaning up Firebase auth state listener");

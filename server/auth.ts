@@ -10,6 +10,15 @@ import { and, eq, or } from "drizzle-orm";
 import connectPg from "connect-pg-simple";
 import { pool } from "@db";
 
+// Add session data type definition
+declare module "express-session" {
+  interface SessionData {
+    userId?: number;
+    firebaseUid?: string;
+    lastActivity?: number;
+  }
+}
+
 const PostgresSessionStore = connectPg(session);
 const scryptAsync = promisify(scrypt);
 
