@@ -266,8 +266,8 @@ export async function registerWhatsAppUser(userId: number, phoneNumber: string):
     
     // Send welcome message to user via WhatsApp
     const welcomeMessage = 
-      "🎉 Welcome to DotSpark WhatsApp Chatbot! 🎉\n\n" +
-      "Your account is now connected. Here's how to use the chatbot:\n\n" +
+      "Welcome to DotSpark - Your Neural chip for limitless learning. Please feel free to ask me anything or record your learnings for the day\n\n" +
+      "Here's how to use the chatbot:\n\n" +
       "1️⃣ Send any text to create a new learning dot\n" +
       "2️⃣ Start with 'Q:' to ask questions about your knowledge\n" +
       "3️⃣ Type 'summary' to get an overview of recent entries\n" +
@@ -545,8 +545,8 @@ export async function verifyWhatsAppOTP(userId: number, otpCode: string): Promis
     
     // Send welcome message to user via WhatsApp
     const welcomeMessage = 
-      "🎉 Welcome to DotSpark WhatsApp Chatbot! 🎉\n\n" +
-      "Your account is now connected. Here's how to use the chatbot:\n\n" +
+      "Welcome to DotSpark - Your Neural chip for limitless learning. Please feel free to ask me anything or record your learnings for the day\n\n" +
+      "Here's how to use the chatbot:\n\n" +
       "1️⃣ Send any text to create a new learning dot\n" +
       "2️⃣ Start with 'Q:' to ask questions about your knowledge\n" +
       "3️⃣ Type 'summary' to get an overview of recent entries\n" +
