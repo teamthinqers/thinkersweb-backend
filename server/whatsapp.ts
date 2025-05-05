@@ -262,6 +262,28 @@ export async function registerWhatsAppUser(userId: number, phoneNumber: string):
       phoneNumber: normalizedPhone,
       active: true,
     });
+    
+    // Send welcome message to user via WhatsApp
+    const welcomeMessage = 
+      "🎉 Welcome to DotSpark WhatsApp Chatbot! 🎉\n\n" +
+      "Your account is now connected. Here's how to use the chatbot:\n\n" +
+      "1️⃣ Send any text to create a new learning dot\n" +
+      "2️⃣ Start with 'Q:' to ask questions about your knowledge\n" +
+      "3️⃣ Type 'summary' to get an overview of recent entries\n" +
+      "4️⃣ Type 'help' to see all available commands\n\n" +
+      "Try sending your first learning entry now! For example:\n" +
+      "'I learned that consistent small efforts lead to big results over time.'";
+    
+    // Don't wait for the message to be sent before returning
+    sendWhatsAppReply(normalizedPhone, welcomeMessage)
+      .then(success => {
+        if (!success) {
+          console.error(`Failed to send welcome message to ${normalizedPhone}`);
+        }
+      })
+      .catch(error => {
+        console.error(`Error sending welcome message to ${normalizedPhone}:`, error);
+      });
 
     return {
       success: true,
