@@ -84,6 +84,9 @@ export default function WhatsAppIntegration() {
         setPendingPhoneNumber(phoneNumber);
         setPhoneNumber("");
         
+        // Always display all data in debug mode
+        console.log('Complete response data:', JSON.stringify(data));
+        
         if (data.otpCode) {
           // In development mode, the OTP code is included in the response
           // We'll populate the OTP field automatically and show a toast with the code
@@ -93,9 +96,17 @@ export default function WhatsAppIntegration() {
             description: `Verification code: ${data.otpCode}`,
           });
         } else {
+          // If no OTP code, but we have a message
           toast({
             title: "Verification Code Sent",
             description: data.message || "Please check your WhatsApp for the verification code",
+          });
+          
+          // Special debug toast showing all response data
+          toast({
+            title: "Debug: No OTP in Response",
+            description: "Check console for complete response data",
+            variant: "destructive"
           });
         }
       } else {
