@@ -221,20 +221,80 @@ function Router() {
   const isDashboardPage = location.startsWith("/dashboard");
   const { toast } = useToast();
   
+  // Track intentional navigation to home from dashboard
+  const [intentionalHomeNavigation, setIntentionalHomeNavigation] = useState(false);
+  
+  // Listen for navigation events that could be home navigation
+  useEffect(() => {
+    // If landing page is accessed directly, mark as intentional
+    if (location === "/" && !isLandingPage) {
+      console.log("Setting intentional home navigation flag");
+      setIntentionalHomeNavigation(true);
+      
+      // Reset the flag after 5 seconds
+      const resetTimer = setTimeout(() => {
+        setIntentionalHomeNavigation(false);
+      }, 5000);
+      
+      return () => clearTimeout(resetTimer);
+    }
+  }, [location, isLandingPage]);
+  
+  // Handle home button clicks via URL changes and custom events
+  useEffect(() => {
+    // Listen for URL changes that might be initiated by our home button
+    const handleUrlChange = () => {
+      if (window.location.pathname === "/") {
+        console.log("URL changed to home, marking as intentional navigation");
+        setIntentionalHomeNavigation(true);
+        
+        // Reset the flag after 5 seconds
+        setTimeout(() => {
+          setIntentionalHomeNavigation(false);
+        }, 5000);
+      }
+    };
+    
+    // Listen for our custom intentional navigation event
+    const handleIntentionalNavigation = (event: Event) => {
+      console.log("Received intentional home navigation event", (event as CustomEvent).detail);
+      setIntentionalHomeNavigation(true);
+      
+      // Reset the flag after 5 seconds
+      setTimeout(() => {
+        setIntentionalHomeNavigation(false);
+      }, 5000);
+    };
+    
+    window.addEventListener("popstate", handleUrlChange);
+    window.addEventListener("intentionalHomeNavigation", handleIntentionalNavigation);
+    
+    return () => {
+      window.removeEventListener("popstate", handleUrlChange);
+      window.removeEventListener("intentionalHomeNavigation", handleIntentionalNavigation);
+    };
+  }, []);
+
   // Manage authentication-based redirects
   useEffect(() => {
     // Avoid any redirects during initial loading
     if (isLoading) return;
     
+    // Skip redirects if intentional navigation to home
+    if (intentionalHomeNavigation && location === "/") {
+      console.log("Skipping dashboard redirect due to intentional home navigation");
+      return;
+    }
+    
     // Wait a moment before redirecting to prevent flickering
     const redirectDelay = setTimeout(() => {
-      // If logged in and on landing page, go to dashboard
-      if (user && location === "/") {
+      // If logged in and on landing page, go to dashboard (unless intentional)
+      if (user && location === "/" && !intentionalHomeNavigation) {
         console.log("User is logged in and on landing page, redirecting to dashboard");
         setLocation("/dashboard");
       }
       
-      // If logged in and on auth page, redirect to dashboard
+      // If logged in and on auth page, redirect to dashboard (always)
       if (user && location === "/auth") {
         console.log("User is logged in and on auth page, redirecting to dashboard");
         setLocation("/dashboard");
@@ -242,7 +302,7 @@ function Router() {
     }, 300);
     
     return () => clearTimeout(redirectDelay);
-  }, [user, isLoading, location, setLocation]);
+  }, [user, isLoading, location, setLocation, intentionalHomeNavigation]);
 
   // Redirect to auth page if trying to access protected pages without being logged in
   useEffect(() => {
@@ -264,7 +324,9 @@ function Router() {
     }
   }, [user, isLoading, location, isAuthPage, isLandingPage, isDashboardPage, setLocation, toast]);
 
-  if (isLandingPage) {
+  // Allow accessing landing page when it's intentional or not authenticated
+  if (isLandingPage && (intentionalHomeNavigation || !user)) {
+    console.log("Showing landing page due to intentional navigation or no authentication");
     return <LandingPage />;
   }
 
@@ -277,7 +339,9 @@ function Router() {
   }
   
   // Special case to ensure we always have a place to land if we're logged in
-  const forceRedirectToDashboard = user && !isDashboardPage && !isLandingPage && !isAuthPage;
+  // But explicitly allow landing page access when it's intentional navigation
+  const forceRedirectToDashboard = user && !isDashboardPage && !isLandingPage && !isAuthPage && 
+    !(intentionalHomeNavigation && location === "/");
   if (forceRedirectToDashboard) {
     return <DashboardRedirect />;
   }

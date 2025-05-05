@@ -107,6 +107,12 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 size="icon"
                 className="text-gray-600 hover:text-primary mr-2"
                 onClick={() => {
+                  // Create and dispatch a custom event to notify about intentional home navigation
+                  const homeNavEvent = new CustomEvent("intentionalHomeNavigation", {
+                    detail: { timestamp: new Date().toISOString() }
+                  });
+                  window.dispatchEvent(homeNavEvent);
+                  
                   // Use direct href to guarantee proper navigation
                   window.location.href = "/";
                 }}
@@ -155,6 +161,12 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 size="sm"
                 className="mr-4 text-gray-600 hover:text-primary"
                 onClick={() => {
+                  // Create and dispatch a custom event to notify about intentional home navigation
+                  const homeNavEvent = new CustomEvent("intentionalHomeNavigation", {
+                    detail: { timestamp: new Date().toISOString() }
+                  });
+                  window.dispatchEvent(homeNavEvent);
+                  
                   // Use direct href to guarantee proper navigation
                   window.location.href = "/";
                 }}
@@ -267,6 +279,12 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 size="sm" 
                 className="w-full justify-start mb-2"
                 onClick={() => {
+                  // Create and dispatch a custom event to notify about intentional home navigation
+                  const homeNavEvent = new CustomEvent("intentionalHomeNavigation", {
+                    detail: { timestamp: new Date().toISOString() }
+                  });
+                  window.dispatchEvent(homeNavEvent);
+                  
                   // Use direct href to guarantee proper navigation
                   window.location.href = "/";
                 }}
