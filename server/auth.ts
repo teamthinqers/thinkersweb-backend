@@ -31,6 +31,8 @@ declare global {
     
     interface Session {
       userId?: number;
+      firebaseUid?: string;
+      lastActivity?: number;
     }
   }
 }
@@ -225,7 +227,7 @@ export function setupAuth(app: Express) {
     })(req, res, next);
   });
 
-  // Session recovery endpoint - recover from localStorage backup
+  // Enhanced session recovery endpoint with improved error handling and session persistence
   app.post("/api/auth/recover", async (req, res, next) => {
     try {
       const { uid, email } = req.body;
@@ -234,7 +236,16 @@ export function setupAuth(app: Express) {
         return res.status(400).json({ message: "Firebase UID is required for recovery" });
       }
       
-      console.log(`Attempting session recovery for UID: ${uid}`);
+      console.log(`Attempting session recovery for UID: ${uid}, Session ID: ${req.sessionID}`);
+      
+      // Check if already authenticated
+      if (req.isAuthenticated() && req.user?.firebaseUid === uid) {
+        console.log(`User already authenticated, session recovery not needed for ${req.user.id}`);
+        return res.status(200).json({ 
+          message: "Already authenticated", 
+          user: req.user 
+        });
+      }
       
       // Find user by Firebase UID
       const user = await getUserByFirebaseUid(uid);
@@ -247,15 +258,50 @@ export function setupAuth(app: Express) {
       // Remove password from response
       const { password: _, ...secureUser } = user;
       
-      // Log user in
-      req.login(secureUser, (err) => {
-        if (err) return next(err);
-        console.log(`Session recovered successfully for user ${user.id}`);
-        res.status(200).json(secureUser);
+      // Log user in with promisified login to handle errors properly
+      await new Promise<void>((resolve, reject) => {
+        req.login(secureUser, (err) => {
+          if (err) {
+            console.error("Failed to login during recovery:", err);
+            reject(err);
+          } else {
+            resolve();
+          }
+        });
+      });
+      
+      // Set additional session properties for better persistence
+      if (req.session) {
+        req.session.lastActivity = Date.now();
+        req.session.firebaseUid = uid;
+        
+        // Extend cookie expiration (30 days)
+        if (req.session.cookie) {
+          req.session.cookie.maxAge = 30 * 24 * 60 * 60 * 1000;
+        }
+        
+        // Save session explicitly to ensure changes are persisted
+        await new Promise<void>((resolve, reject) => {
+          req.session.save((err) => {
+            if (err) {
+              console.error("Error saving session during recovery:", err);
+              reject(err);
+            } else {
+              resolve();
+            }
+          });
+        });
+      }
+      
+      console.log(`Session recovered successfully for user ${user.id} with session ID ${req.sessionID}`);
+      res.status(200).json({
+        message: "Session recovered successfully",
+        user: secureUser,
+        expires: req.session.cookie?.expires
       });
     } catch (error) {
       console.error("Recovery error:", error);
-      next(error);
+      res.status(500).json({ message: "Session recovery failed", error: error.message });
     }
   });
   
@@ -364,46 +410,111 @@ export function setupAuth(app: Express) {
     });
   });
 
-  // Session refresh endpoint to keep it alive
-  app.post("/api/auth/refresh", (req, res) => {
+  // Enhanced session refresh endpoint with async/await for proper error handling
+  app.post("/api/auth/refresh", async (req, res) => {
     try {
       const { uid, refreshToken } = req.body;
+      
+      // Enhanced logging for session debugging
+      console.log(`Session refresh attempt - Authenticated: ${req.isAuthenticated()}, UID: ${uid}, Session ID: ${req.sessionID}`);
       
       // Check if the user is authenticated
       if (req.isAuthenticated()) {
         // Touch the session to update its expiration time
         if (req.session) {
           req.session.touch();
+          
+          // Update last activity timestamp
+          req.session.lastActivity = Date.now();
+          
+          // Extend cookie maxAge to 30 days on every refresh
+          if (req.session.cookie) {
+            req.session.cookie.maxAge = 30 * 24 * 60 * 60 * 1000;
+          }
+          
+          // Save session explicitly to ensure changes are persisted
+          await new Promise<void>((resolve, reject) => {
+            req.session.save((err) => {
+              if (err) {
+                console.error("Error saving session:", err);
+                reject(err);
+              } else {
+                resolve();
+              }
+            });
+          });
         }
         
         // Log session activity for debugging
         console.log(`Session refreshed successfully for user ${req.user?.id} at ${new Date().toISOString()}`);
-        return res.status(200).json({ message: "Session refreshed successfully" });
+        return res.status(200).json({ 
+          success: true,
+          message: "Session refreshed successfully",
+          user: req.user,
+          expires: req.session.cookie?.expires
+        });
       } 
       
       // If there's no active session but UID is provided, try to recover
       if (uid) {
         // Check if we need to create a new session
-        getUserByFirebaseUid(uid).then(user => {
-          if (user) {
-            // Log the user in if found
-            const { password: _, ...secureUser } = user;
-            req.login(secureUser, (err) => {
-              if (err) {
-                console.error("Failed to restore session during refresh:", err);
-                return res.status(500).json({ message: "Failed to restore session" });
-              }
-              console.log(`Session restored for user ${user.id} during refresh`);
-              return res.status(200).json({ message: "Session restored successfully" });
-            });
-          } else {
+        try {
+          const user = await getUserByFirebaseUid(uid);
+          
+          if (!user) {
             console.warn(`Attempt to refresh session for unknown UID: ${uid}`);
             return res.status(404).json({ message: "User not found" });
           }
-        }).catch(error => {
+          
+          // Log the user in if found
+          const { password: _, ...secureUser } = user;
+          
+          // Use promisified login 
+          await new Promise<void>((resolve, reject) => {
+            req.login(secureUser, (err) => {
+              if (err) {
+                console.error("Failed to restore session during refresh:", err);
+                reject(err);
+              } else {
+                resolve();
+              }
+            });
+          });
+          
+          // Set session properties
+          if (req.session) {
+            req.session.lastActivity = Date.now();
+            req.session.firebaseUid = uid;
+            
+            // Extend cookie expiration (30 days)
+            if (req.session.cookie) {
+              req.session.cookie.maxAge = 30 * 24 * 60 * 60 * 1000;
+            }
+            
+            // Save session explicitly
+            await new Promise<void>((resolve, reject) => {
+              req.session.save((err) => {
+                if (err) {
+                  console.error("Error saving recovered session:", err);
+                  reject(err);
+                } else {
+                  resolve();
+                }
+              });
+            });
+          }
+          
+          console.log(`Session restored for user ${user.id} during refresh`);
+          return res.status(200).json({ 
+            success: true,
+            message: "Session restored successfully", 
+            user: secureUser,
+            expires: req.session.cookie?.expires
+          });
+        } catch (error) {
           console.error("Error during session refresh recovery:", error);
-          return res.status(500).json({ message: "Internal server error" });
-        });
+          return res.status(500).json({ message: "Failed to restore session" });
+        }
       } else {
         return res.status(401).json({ message: "Not authenticated" });
       }
