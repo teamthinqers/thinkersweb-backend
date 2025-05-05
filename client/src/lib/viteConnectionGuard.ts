@@ -152,7 +152,8 @@ export function initViteConnectionGuard() {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              uid: userData.firebaseUid
+              uid: userData.firebaseUid,
+              refreshToken: Date.now() // Add timestamp to prevent caching
             }),
             credentials: 'include'
           })
@@ -160,16 +161,34 @@ export function initViteConnectionGuard() {
               if (response.ok) {
                 return response.json();
               }
-              throw new Error('Session invalid');
+              console.warn(`ViteConnectionGuard: Server returned ${response.status} status`);
+              throw new Error(`Session invalid: ${response.status}`);
             })
             .then(data => {
               console.log("ViteConnectionGuard: Server confirmed session is valid");
-              // Update with server data which might be fresher
-              queryClient.setQueryData(["/api/user"], data.user);
+              if (data && data.user) {
+                // Update with server data which might be fresher
+                queryClient.setQueryData(["/api/user"], data.user);
+              } else {
+                console.warn("ViteConnectionGuard: Server response missing user data");
+              }
             })
             .catch(err => {
               console.warn("ViteConnectionGuard: Server session validation failed", err);
-              // Keep using cached data, we'll try server again on next user action
+              // Fallback to firebase direct check
+              import("./firebase").then(({ auth }) => {
+                if (auth.currentUser) {
+                  console.log("ViteConnectionGuard: Firebase auth is still valid, using cached data");
+                  // We have a valid Firebase session even if the server session is invalid
+                  // Keep the UI working with cached data
+                } else {
+                  console.warn("ViteConnectionGuard: Both server and Firebase sessions invalid");
+                  // Clear invalid data
+                  queryClient.setQueryData(["/api/user"], null);
+                  sessionStorage.removeItem('vite_connection_user');
+                  localStorage.removeItem('vite_connection_user_backup');
+                }
+              });
             });
         }
         
@@ -227,6 +246,49 @@ export function initViteConnectionGuard() {
   
   // Check on initialization
   checkForStoredAuth();
+  
+  // Also check connection immediately to ensure server is up
+  fetch('/api/health', { cache: 'no-store' })
+    .then(response => {
+      if (response.ok) {
+        console.log("ViteConnectionGuard: Initial server health check passed");
+        // Let the application know server is available
+        window.setTimeout(() => {
+          try {
+            import('./queryClient').then(({ networkStatus }) => {
+              networkStatus.setServerStatus(true);
+            });
+          } catch (e) {
+            console.warn("Failed to update network status:", e);
+          }
+        }, 0);
+      } else {
+        console.warn("ViteConnectionGuard: Initial server health check failed with status", response.status);
+        // Let the application know server is not available
+        window.setTimeout(() => {
+          try {
+            import('./queryClient').then(({ networkStatus }) => {
+              networkStatus.setServerStatus(false);
+            });
+          } catch (e) {
+            console.warn("Failed to update network status:", e);
+          }
+        }, 0);
+      }
+    })
+    .catch(error => {
+      console.warn("ViteConnectionGuard: Initial server health check failed", error);
+      // Let the application know server is not available
+      window.setTimeout(() => {
+        try {
+          import('./queryClient').then(({ networkStatus }) => {
+            networkStatus.setServerStatus(false);
+          });
+        } catch (e) {
+          console.warn("Failed to update network status:", e);
+        }
+      }, 0);
+    });
   
   // Setup unload handler to preserve state on page refresh/reload
   window.addEventListener('beforeunload', () => {
