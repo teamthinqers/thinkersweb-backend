@@ -1,4 +1,4 @@
-import { Switch, Route } from "wouter";
+import { Switch, Route, useLocation } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -8,12 +8,13 @@ import AllEntries from "@/pages/AllEntries";
 import Insights from "@/pages/Insights";
 import Favorites from "@/pages/Favorites";
 import Network from "@/pages/Network";
+import LandingPage from "@/pages/LandingPage";
 import AppLayout from "@/components/layout/AppLayout";
 import { useState } from "react";
 import EntryDetail from "@/components/entries/EntryDetail";
 import ChatEntryForm from "@/components/chat/ChatEntryForm";
 
-function Router() {
+function AppWithLayout() {
   const [showEntryDetail, setShowEntryDetail] = useState(false);
   const [showEntryForm, setShowEntryForm] = useState(false);
   const [currentEntryId, setCurrentEntryId] = useState<number | null>(null);
@@ -46,7 +47,7 @@ function Router() {
   return (
     <AppLayout onNewEntry={openNewEntryForm}>
       <Switch>
-        <Route path="/" component={() => <Dashboard onEntryClick={openEntryDetail} />} />
+        <Route path="/dashboard" component={() => <Dashboard onEntryClick={openEntryDetail} />} />
         <Route path="/entries" component={() => <AllEntries onEntryClick={openEntryDetail} />} />
         <Route path="/insights" component={Insights} />
         <Route path="/favorites" component={() => <Favorites onEntryClick={openEntryDetail} />} />
@@ -69,6 +70,17 @@ function Router() {
       />
     </AppLayout>
   );
+}
+
+function Router() {
+  const [location] = useLocation();
+  const isLandingPage = location === "/";
+
+  if (isLandingPage) {
+    return <LandingPage />;
+  }
+
+  return <AppWithLayout />;
 }
 
 function App() {

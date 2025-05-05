@@ -5,7 +5,17 @@ import { useCategories } from "@/hooks/useCategories";
 import { useTags } from "@/hooks/useTags";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { LightbulbIcon, PlusIcon } from "lucide-react";
+import { 
+  LightbulbIcon, 
+  PlusIcon, 
+  LayoutDashboard, 
+  BookOpen, 
+  Eye, 
+  Star, 
+  Users, 
+  Plus, 
+  Hash
+} from "lucide-react";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -25,29 +35,31 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isMobile, onNewEntry
   if (!isOpen) return null;
 
   const navItems = [
-    { icon: "ri-dashboard-line", label: "Dashboard", path: "/" },
-    { icon: "ri-book-2-line", label: "All Entries", path: "/entries" },
-    { icon: "ri-eye-line", label: "Insights", path: "/insights" },
-    { icon: "ri-star-line", label: "Favorites", path: "/favorites" },
-    { icon: "ri-team-line", label: "Network", path: "/network" },
+    { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
+    { icon: BookOpen, label: "All Entries", path: "/entries" },
+    { icon: Eye, label: "Insights", path: "/insights" },
+    { icon: Star, label: "Favorites", path: "/favorites" },
+    { icon: Users, label: "Network", path: "/network" },
   ];
 
   const sidebarClasses = isMobile
-    ? "fixed inset-y-0 left-0 z-40 w-64 bg-white shadow-lg transform transition-transform duration-200 ease-in-out"
-    : "w-64 flex-shrink-0 border-r border-gray-200 bg-white h-full overflow-y-auto";
+    ? "fixed inset-y-0 left-0 z-40 w-64 bg-card shadow-xl transform transition-transform duration-200 ease-in-out border-r"
+    : "w-64 flex-shrink-0 border-r h-full overflow-y-auto bg-card/50";
 
   return (
     <div className={sidebarClasses}>
-      <div className="px-6 py-4 border-b border-gray-200">
-        <h1 className="text-xl font-semibold text-gray-800 flex items-center">
-          <LightbulbIcon className="mr-2 h-5 w-5 text-primary" />
-          Learning Repo
+      <div className="px-6 py-5 border-b">
+        <h1 className="text-xl font-bold flex items-center">
+          <LightbulbIcon className="mr-2 h-6 w-6 text-primary" />
+          <span className="bg-gradient-to-r from-primary to-indigo-400 bg-clip-text text-transparent">
+            Learning Repo
+          </span>
         </h1>
       </div>
 
       <div className="p-4">
         <Button 
-          className="w-full flex items-center justify-center"
+          className="w-full flex items-center justify-center shadow-sm"
           onClick={onNewEntry}
         >
           <PlusIcon className="mr-2 h-4 w-4" /> New Entry
@@ -56,20 +68,24 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isMobile, onNewEntry
 
       <ScrollArea className="flex-1 h-[calc(100vh-9rem)]">
         <nav className="mt-2 px-4">
-          <h2 className="text-xs uppercase tracking-wider text-gray-500 font-semibold mb-2">Navigation</h2>
-          <ul>
+          <h2 className="text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-3 ml-2">Navigation</h2>
+          <ul className="space-y-1.5">
             {navItems.map((item) => (
-              <li key={item.path} className="mb-1">
+              <li key={item.path}>
                 <Link 
                   href={item.path}
-                  className={`flex items-center px-3 py-2 rounded-md ${
+                  className={`flex items-center px-3 py-2.5 rounded-md ${
                     location === item.path
-                      ? "bg-indigo-50 text-primary"
-                      : "text-gray-600 hover:bg-gray-100"
+                      ? "bg-primary/10 text-primary font-medium"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
                   }`}
                   onClick={isMobile ? onClose : undefined}
                 >
-                  <i className={`${item.icon} mr-2`}></i> {item.label}
+                  {React.createElement(item.icon, { 
+                    className: "mr-2 h-4.5 w-4.5", 
+                    size: 18 
+                  })}
+                  {item.label}
                 </Link>
               </li>
             ))}
