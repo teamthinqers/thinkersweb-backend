@@ -9,6 +9,7 @@ import Insights from "@/pages/Insights";
 import Favorites from "@/pages/Favorites";
 import Network from "@/pages/Network";
 import LandingPage from "@/pages/LandingPage";
+import Settings from "@/pages/Settings";
 import AppLayout from "@/components/layout/AppLayout";
 import { useState } from "react";
 import EntryDetail from "@/components/entries/EntryDetail";
@@ -52,6 +53,7 @@ function AppWithLayout() {
         <Route path="/insights" component={Insights} />
         <Route path="/favorites" component={() => <Favorites onEntryClick={openEntryDetail} />} />
         <Route path="/network" component={Network} />
+        <Route path="/settings" component={Settings} />
         <Route component={NotFound} />
       </Switch>
 

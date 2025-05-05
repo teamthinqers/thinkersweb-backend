@@ -14,7 +14,8 @@ import {
   Star, 
   Users, 
   Plus, 
-  Hash
+  Hash,
+  Settings as SettingsIcon
 } from "lucide-react";
 
 // Define interfaces for category and tag
@@ -54,6 +55,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isMobile, onNewEntry
     { icon: Eye, label: "Insights", path: "/insights" },
     { icon: Star, label: "Favorites", path: "/favorites" },
     { icon: Users, label: "Network", path: "/network" },
+    { icon: SettingsIcon, label: "Settings", path: "/settings" },
   ];
 
   const sidebarClasses = isMobile
@@ -66,7 +68,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isMobile, onNewEntry
         <h1 className="text-xl font-bold flex items-center">
           <LightbulbIcon className="mr-2 h-6 w-6 text-primary" />
           <span className="bg-gradient-to-r from-primary to-indigo-400 bg-clip-text text-transparent">
-            Learning Repo
+            DotSpark
           </span>
         </h1>
       </div>
@@ -171,7 +173,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isMobile, onNewEntry
         </nav>
         <Separator className="my-6 opacity-50" />
         <div className="px-4 pb-4 flex items-center justify-between">
-          <p className="text-xs text-muted-foreground">Learning Repository v1.0</p>
+          <p className="text-xs text-muted-foreground">DotSpark v1.0</p>
           <div className="flex items-center text-muted-foreground/70">
             <span className="inline-block h-2 w-2 rounded-full bg-green-500 mr-1.5"></span>
             <span className="text-xs">Connected</span>
