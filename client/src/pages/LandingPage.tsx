@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Brain, BookOpen, Users, Sparkles, BarChart2, MessageCircle } from "lucide-react";
+import WhatsAppPromo from "@/components/landing/WhatsAppPromo";
 
 export default function LandingPage() {
   return (
@@ -187,6 +188,9 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+      
+      {/* WhatsApp Integration Section */}
+      <WhatsAppPromo />
       
       {/* Stats Section */}
       <section className="py-16 bg-muted/30">
@@ -626,17 +630,18 @@ export default function LandingPage() {
         <div className="container mx-auto px-4 md:px-6">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="mb-4 md:mb-0">
-              <h2 className="text-2xl font-bold text-foreground">Learning Repository</h2>
-              <p className="mt-1">Capture, Connect, Transform</p>
+              <h2 className="text-2xl font-bold text-foreground">DotSpark</h2>
+              <p className="mt-1">Connect the Dots, Spark Your Potential</p>
             </div>
             <div className="flex space-x-6">
               <Link href="/dashboard" className="hover:text-primary transition-colors">Dashboard</Link>
               <Link href="/auth" className="hover:text-primary transition-colors">Sign In</Link>
               <Link href="/network" className="hover:text-primary transition-colors">Network</Link>
+              <Link href="/settings" className="hover:text-primary transition-colors">Settings</Link>
             </div>
           </div>
           <div className="mt-8 pt-8 border-t border-border text-center text-sm">
-            <p>&copy; {new Date().getFullYear()} Learning Repository. All rights reserved.</p>
+            <p>&copy; {new Date().getFullYear()} DotSpark. All rights reserved.</p>
           </div>
         </div>
       </footer>
