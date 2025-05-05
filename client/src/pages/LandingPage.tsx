@@ -7,6 +7,31 @@ import WhatsAppPromo from "@/components/landing/WhatsAppPromo";
 export default function LandingPage() {
   return (
     <div className="flex flex-col min-h-screen">
+      {/* Header with navigation */}
+      <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container flex h-16 items-center justify-between px-4 md:px-6">
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1">
+              <Sparkles className="h-5 w-5 text-primary" />
+              <span className="text-xl font-bold">DotSpark</span>
+            </div>
+          </div>
+          <nav className="flex items-center gap-6">
+            <Link href="/" className="text-sm font-medium hover:text-primary">
+              Home
+            </Link>
+            <Link href="/dashboard" className="text-sm font-medium hover:text-primary">
+              Dashboard
+            </Link>
+            <Button asChild size="sm">
+              <Link href="/auth">
+                Sign In
+              </Link>
+            </Button>
+          </nav>
+        </div>
+      </header>
+      
       {/* Hero Section */}
       <section className="bg-gradient-to-b from-primary/5 to-background py-20">
         <div className="container mx-auto px-4 md:px-6">
