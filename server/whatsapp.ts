@@ -214,17 +214,23 @@ export async function processWhatsAppMessage(from: string, messageText: string):
       };
     }
     
-    // Do a simple analysis of the message to determine if it's a question
-    // This makes the interface more conversational - users don't need special prefixes
-    const isQuestion = messageText.endsWith("?") || 
+    // Do a more detailed analysis of the message
+    // First, explicitly check for command patterns and question syntax
+    const isExplicitQuestion = messageText.endsWith("?") || 
         messageText.toLowerCase().startsWith("q:") || 
         messageText.toLowerCase().startsWith("question:") || 
         messageText.toLowerCase().startsWith("ask:");
-    console.log("Message analysis - is question:", isQuestion);
+        
+    // Check if this is likely a conversational response rather than a learning
+    const isConversation = messageText.length < 25 || // Short messages are likely conversation
+        /^(yes|no|maybe|thanks|thank you|ok|okay|cool|great|nice)/i.test(messageText) || // Common replies
+        messageText.includes("?") || // Any question mark in the message
+        /^(what|how|why|when|where|who|which|whose|whom|can you|could you)/i.test(messageText); // Question starters
+    
+    console.log("Message analysis:", { isExplicitQuestion, isConversation, length: messageText.length });
     
     // If it's detected as a question
-    if (isQuestion) {
-      
+    if (isExplicitQuestion) {
       // Extract the question (remove the Q: prefix if it exists)
       const questionText = messageText.toLowerCase().startsWith("q:") 
         ? messageText.substring(2).trim() 
@@ -238,7 +244,17 @@ export async function processWhatsAppMessage(from: string, messageText: string):
       };
     }
     
-    // Process as a learning entry and provide a conversational response
+    // If it seems like a conversational response, just chat without saving
+    if (isConversation) {
+      const conversationalResponse = await generateChatResponse(messageText, []);
+      return {
+        success: true,
+        message: conversationalResponse,
+      };
+    }
+    
+    // If it passed the above checks, process as a learning entry
+    // This should now only happen for longer, more substantive content
     const structuredEntry = await processEntryFromChat(messageText, []);
     
     if (structuredEntry) {
@@ -292,7 +308,7 @@ export async function processWhatsAppMessage(from: string, messageText: string):
         
         return {
           success: true,
-          message: `✅ I've saved your learning dot!\n\n"${structuredEntry.title}"\n\n${conversationalResponse}`,
+          message: `${conversationalResponse}\n\n(💡 I've saved this insight to your learning repository)`,
         };
       } catch (error) {
         console.error("Error creating learning dot from WhatsApp chatbot:", error);
