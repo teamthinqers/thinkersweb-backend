@@ -218,9 +218,8 @@ function Router() {
   const { user, isLoading } = useAuth();
   const isLandingPage = location === "/";
   const isAuthPage = location === "/auth";
-  
-  // Special case to ensure we always have a place to land
-  const forceRedirectToDashboard = user && !location.startsWith("/dashboard") && !isLandingPage && !isAuthPage;
+  const isDashboardPage = location.startsWith("/dashboard");
+  const { toast } = useToast();
   
   // Force redirect to dashboard if we're on root and logged in
   useEffect(() => {
@@ -228,6 +227,26 @@ function Router() {
       setLocation("/dashboard");
     }
   }, [user, location, setLocation]);
+
+  // Redirect to auth page if trying to access protected pages without being logged in
+  useEffect(() => {
+    // Check if user is trying to access dashboard or other protected routes
+    const isProtectedRoute = isDashboardPage || 
+                             location.startsWith("/entries") || 
+                             location.startsWith("/insights") || 
+                             location.startsWith("/favorites") || 
+                             location.startsWith("/network") || 
+                             location.startsWith("/settings");
+                             
+    // Only redirect if not already on auth page, not on landing page, and if auth check is complete
+    if (!user && !isLoading && isProtectedRoute && !isAuthPage && !isLandingPage) {
+      toast({
+        title: "Authentication Required",
+        description: "Please sign in to access the dashboard",
+      });
+      setLocation("/auth");
+    }
+  }, [user, isLoading, location, isAuthPage, isLandingPage, isDashboardPage, setLocation, toast]);
 
   if (isLandingPage) {
     return <LandingPage />;
@@ -241,9 +260,24 @@ function Router() {
     return <AuthPage />;
   }
   
-  // Handle special redirect case
+  // Special case to ensure we always have a place to land if we're logged in
+  const forceRedirectToDashboard = user && !isDashboardPage && !isLandingPage && !isAuthPage;
   if (forceRedirectToDashboard) {
     return <DashboardRedirect />;
+  }
+  
+  // If user is trying to access protected routes without being logged in, show auth page
+  const accessingProtectedRouteWithoutAuth = !user && 
+    (isDashboardPage || 
+     location.startsWith("/entries") || 
+     location.startsWith("/insights") || 
+     location.startsWith("/favorites") || 
+     location.startsWith("/network") || 
+     location.startsWith("/settings"));
+     
+  if (accessingProtectedRouteWithoutAuth) {
+    // This is a fallback in case the useEffect redirect doesn't trigger
+    return <AuthPage />;
   }
 
   return <AppWithLayout />;
