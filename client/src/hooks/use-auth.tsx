@@ -47,7 +47,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     queryKey: ["/api/user"],
     queryFn: getQueryFn({ on401: "returnNull" }),
     enabled: !!firebaseUser,
-    retry: false,
+    retry: 3, // Retry up to 3 times for server connection issues
+    retryDelay: attemptIndex => Math.min(1000 * Math.pow(2, attemptIndex), 30000), // Exponential backoff
   });
 
   // Listen for Firebase auth state changes
