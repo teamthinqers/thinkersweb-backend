@@ -16,8 +16,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Loader2, UserPlus, X, Check, Share } from "lucide-react";
+import { Loader2, UserPlus, X, Check, Share, BarChart3 } from "lucide-react";
 import ShareEntryDialog from "@/components/network/ShareEntryDialog";
+import NetworkInsights from "@/components/network/NetworkInsights";
 
 export default function Network() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -180,6 +181,10 @@ export default function Network() {
             )}
           </TabsTrigger>
           <TabsTrigger value="search">Find Learners</TabsTrigger>
+          <TabsTrigger value="insights">
+            <BarChart3 className="h-4 w-4 mr-2" />
+            Network Insights
+          </TabsTrigger>
         </TabsList>
 
         {/* Connections Tab */}

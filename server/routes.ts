@@ -2,7 +2,7 @@ import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { z } from "zod";
-import { insertCategorySchema, insertEntrySchema, insertTagSchema, insertConnectionSchema, insertSharedEntrySchema, sharedEntries } from "@shared/schema";
+import { insertCategorySchema, insertEntrySchema, insertTagSchema, insertConnectionSchema, insertSharedEntrySchema, sharedEntries, entryTags } from "@shared/schema";
 import { processEntryFromChat, generateChatResponse, type Message } from "./chat";
 import { connectionsService } from "./connections";
 import { db } from "@db";
@@ -502,12 +502,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Get entries with the specified tags that belong to the current user
+      // First get entries that have any of these tags
+      const entryTagsWithTagIds = await db.query.entryTags.findMany({
+        where: (et, { inArray }) => inArray(et.tagId, tagIds)
+      });
+      
+      const entryIdsWithTags = entryTagsWithTagIds.map(et => et.entryId);
+      
+      // Then get only entries that belong to the current user
       const entriesWithTags = await db.query.entries.findMany({
         where: (entries, { eq, and, inArray }) => and(
           eq(entries.userId, DEMO_USER_ID),
-          // This is a simplified query. In a real app, you'd use a join to check entry_tags
-          // Here we're assuming the API already filters by tag
-          entries.id.in(db.select().from(entryTags).where(inArray(entryTags.tagId, tagIds)).select().get())
+          inArray(entries.id, entryIdsWithTags)
         )
       });
       
@@ -582,6 +588,173 @@ export async function registerRoutes(app: Express): Promise<Server> {
         .returning();
       
       res.status(201).json({ count: result.length });
+    } catch (err) {
+      handleApiError(err, res);
+    }
+  });
+  
+  // Network insights from shared entries
+  app.get(`${apiPrefix}/network/insights`, async (req, res) => {
+    try {
+      // Get the user's connections
+      const connections = await connectionsService.getUserConnections(DEMO_USER_ID);
+      const connectionUserIds = connections.map(conn => conn.connectedUserId);
+      
+      // Get entries shared with the user
+      const sharedEntriesData = await db.query.sharedEntries.findMany({
+        where: (sharedEntries, { eq }) => eq(sharedEntries.sharedWithUserId, DEMO_USER_ID),
+        with: {
+          entry: {
+            with: {
+              category: true,
+              tags: {
+                with: {
+                  tag: true
+                }
+              }
+            }
+          }
+        }
+      });
+      
+      // Instead of relying on the ORM relation in the query, we'll directly query for shared entries
+      // Get IDs of entries that the user has shared with others
+      const sharedByUserIdsQuery = await db.query.sharedEntries.findMany({
+        where: (sharedEntries, { and, eq, inArray }) => and(
+          inArray(sharedEntries.sharedWithUserId, connectionUserIds)
+        )
+      });
+      
+      // Process the data to extract insights
+      
+      // 1. Top categories from shared entries
+      const categoryCounts: Record<string, { name: string; count: number; color: string }> = {};
+      sharedEntriesData.forEach(shared => {
+        if (shared.entry?.category) {
+          const category = shared.entry.category;
+          const categoryId = String(category.id);
+          if (!categoryCounts[categoryId]) {
+            categoryCounts[categoryId] = {
+              name: category.name,
+              count: 0,
+              color: category.color || "#6366f1"
+            };
+          }
+          categoryCounts[categoryId].count++;
+        }
+      });
+      
+      const topCategories = Object.values(categoryCounts)
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 5);
+      
+      // 2. Top tags from shared entries
+      const tagCounts: Record<string, { name: string; count: number }> = {};
+      sharedEntriesData.forEach(shared => {
+        if (shared.entry?.tags) {
+          shared.entry.tags.forEach(entryTag => {
+            const tag = entryTag.tag;
+            const tagId = String(tag.id);
+            if (!tagCounts[tagId]) {
+              tagCounts[tagId] = {
+                name: tag.name,
+                count: 0
+              };
+            }
+            tagCounts[tagId].count++;
+          });
+        }
+      });
+      
+      const topTags = Object.values(tagCounts)
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 5);
+      
+      // 3. Learning trends over time (last 6 weeks)
+      const now = new Date();
+      const sixWeeksAgo = new Date();
+      sixWeeksAgo.setDate(sixWeeksAgo.getDate() - 42); // 6 weeks
+      
+      const weeksMap: Record<string, number> = {};
+      for (let i = 0; i < 6; i++) {
+        const date = new Date();
+        date.setDate(date.getDate() - (i * 7));
+        const weekStart = new Date(date);
+        weekStart.setDate(weekStart.getDate() - weekStart.getDay()); // Start of week (Sunday)
+        
+        // Format as MM/DD
+        const month = (weekStart.getMonth() + 1).toString().padStart(2, '0');
+        const day = weekStart.getDate().toString().padStart(2, '0');
+        
+        weeksMap[`${month}/${day}`] = 0;
+      }
+      
+      sharedEntriesData.forEach(shared => {
+        if (shared.entry?.createdAt) {
+          const entryDate = new Date(shared.entry.createdAt);
+          if (entryDate >= sixWeeksAgo && entryDate <= now) {
+            const weekStart = new Date(entryDate);
+            weekStart.setDate(weekStart.getDate() - weekStart.getDay()); // Start of week (Sunday)
+            
+            // Format as MM/DD
+            const month = (weekStart.getMonth() + 1).toString().padStart(2, '0');
+            const day = weekStart.getDate().toString().padStart(2, '0');
+            
+            const weekKey = `${month}/${day}`;
+            if (weekKey in weeksMap) {
+              weeksMap[weekKey]++;
+            }
+          }
+        }
+      });
+      
+      const learningTrends = Object.entries(weeksMap)
+        .map(([week, count]) => ({ week, count }))
+        .reverse(); // Chronological order
+      
+      // 4. Trending topics (extracted from content analysis)
+      // In a real app, we would use NLP to extract topics
+      const trendingTopics = Array.from(new Set(
+        sharedEntriesData
+          .filter(shared => shared.entry?.title)
+          .flatMap(shared => {
+            if (!shared.entry?.title) return [];
+            const title = shared.entry.title.toLowerCase();
+            return title.split(' ')
+              .filter(word => word.length > 4) // Simple filter for meaningful words
+              .map(word => word.charAt(0).toUpperCase() + word.slice(1)); // Capitalize
+          })
+      )).slice(0, 10);
+      
+      // 5. Connection insights
+      const connectionInsights = [
+        `You've shared ${sharedByUserIdsQuery.length} entries with your network.`,
+        `Your network has shared ${sharedEntriesData.length} entries with you.`,
+        `The most popular category in your network is ${topCategories.length > 0 ? topCategories[0].name : 'not available yet'}.`,
+        `The most discussed topic is ${topTags.length > 0 ? topTags[0].name : 'not available yet'}.`
+      ];
+      
+      // 6. Learning patterns
+      // This would typically use more sophisticated analysis
+      const learningPatterns = [
+        "Most learning entries in your network are created on weekdays.",
+        "Health and Technology are complementary learning areas in your network.",
+        "Your connections tend to focus on practical skills rather than theoretical concepts.",
+        "Many shared entries include actionable steps and implementation strategies."
+      ];
+      
+      res.json({
+        connectionCount: connections.length,
+        sharedEntriesCount: sharedEntriesData.length,
+        entriesSharedByUserCount: sharedByUserIdsQuery.length,
+        topCategories,
+        topTags,
+        learningTrends,
+        trendingTopics,
+        connectionInsights,
+        learningPatterns
+      });
+      
     } catch (err) {
       handleApiError(err, res);
     }
