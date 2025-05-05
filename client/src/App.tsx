@@ -22,6 +22,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { isIntentionalHomeNavigation, clearIntentionalNavigation, navigateToHome, navigateToDashboard } from "@/lib/navigationService";
 import { signInWithGoogle, recoverSession } from "@/lib/authService";
+import { initViteConnectionGuard } from "@/lib/viteConnectionGuard";
 
 // For backward compatibility
 declare global {
@@ -470,6 +471,16 @@ function Router() {
 function ConnectionErrorMonitor() {
   const { toast } = useToast();
   const [showConnectionError, setShowConnectionError] = useState(false);
+  
+  // Initialize Vite connection guard to preserve auth during hot reloads
+  useEffect(() => {
+    console.log("Initializing Vite connection guard for development mode...");
+    const cleanupConnectionGuard = initViteConnectionGuard();
+    
+    return () => {
+      cleanupConnectionGuard();
+    };
+  }, []);
   
   // Monitor network status changes
   useEffect(() => {
