@@ -507,7 +507,7 @@ function ConnectionErrorMonitor() {
     };
     
     // Subscribe to network status changes
-    const unsubscribe = networkStatus.addListener(handleNetworkChange);
+    const unsubscribe = networkStatus.addListener();
     
     // Initial check
     handleNetworkChange();

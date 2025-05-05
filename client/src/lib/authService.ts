@@ -260,12 +260,12 @@ function startServerPing(): void {
       
       // Check if it appears to be a connection issue
       const isNetworkError = 
-        error.name === 'AbortError' || 
-        error.name === 'TypeError' || 
-        error.message?.includes('network') || 
-        error.message?.includes('fetch') ||
-        error.message?.includes('connect') ||
-        error.message?.includes('timeout');
+        (error as any)?.name === 'AbortError' || 
+        (error as any)?.name === 'TypeError' || 
+        (error as any)?.message?.includes('network') || 
+        (error as any)?.message?.includes('fetch') ||
+        (error as any)?.message?.includes('connect') ||
+        (error as any)?.message?.includes('timeout');
         
       // For network errors, we'll retry on next interval
       if (isNetworkError) {
