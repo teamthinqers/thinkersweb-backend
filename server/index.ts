@@ -1,6 +1,30 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import dotenv from 'dotenv';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+// Load environment variables from .env file
+dotenv.config();
+
+// ES module replacement for __dirname
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const buildDirExists = fs.existsSync(path.join(__dirname, 'public'));
+
+// Force development mode if build directory doesn't exist
+if (!buildDirExists) {
+  process.env.NODE_ENV = 'development';
+  console.log('Running in DEVELOPMENT mode (build directory not found)');
+} else if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === undefined) {
+  process.env.NODE_ENV = 'production';
+  console.log('Running in PRODUCTION mode');
+} else {
+  console.log('Running in DEVELOPMENT mode');
+}
 
 const app = express();
 app.use(express.json());

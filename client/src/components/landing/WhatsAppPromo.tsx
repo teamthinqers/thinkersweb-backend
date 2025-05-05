@@ -162,7 +162,7 @@ export default function WhatsAppPromo() {
                     <li><span className="font-medium text-foreground">Activate the WhatsApp chatbot</span> - Register your phone number to chat with DotSpark AI</li>
                   </ol>
                   <div className="flex justify-center mt-4">
-                    <Link href="/auth">
+                    <Link href="/auth?redirect=settings/whatsapp">
                       <Button className="bg-primary">
                         Sign Up Now <ArrowRight className="ml-2 h-5 w-5" />
                       </Button>

@@ -77,8 +77,21 @@ export async function sendWhatsAppReply(to: string, message: string): Promise<bo
       return false;
     }
 
+    // Format the phone number to ensure it's in E.164 format
+    let formattedNumber = to.trim();
+    
+    // Remove any WhatsApp prefix if it exists
+    if (formattedNumber.startsWith('whatsapp:')) {
+      formattedNumber = formattedNumber.substring(9);
+    }
+    
+    // Ensure the number starts with "+"
+    if (!formattedNumber.startsWith('+')) {
+      formattedNumber = '+' + formattedNumber;
+    }
+    
     // Ensure the phone number has the WhatsApp: prefix required by Twilio
-    const toNumber = to.startsWith('whatsapp:') ? to : `whatsapp:${to}`;
+    const toNumber = `whatsapp:${formattedNumber}`;
     
     console.log(`Attempting to send WhatsApp message to: ${toNumber}`);
     
