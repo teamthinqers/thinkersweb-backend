@@ -1,7 +1,7 @@
 import { db } from "@db";
 import { users, whatsappUsers, entries, tags, whatsappOtpVerifications } from "@shared/schema";
 import { eq, and, desc, gt } from "drizzle-orm";
-import { processEntryFromChat, generateChatResponse, type Message } from "./chat";
+import { processEntryFromChat, generateChatResponse, analyzeUserInput, type Message } from "./chat";
 import { storage } from "./storage";
 import twilio from "twilio";
 import { randomInt } from "crypto";
@@ -136,7 +136,7 @@ export async function sendWhatsAppReply(to: string, message: string): Promise<bo
 }
 
 /**
- * Process a message from the DotSpark WhatsApp chatbot to create a learning dot
+ * Process a message from the DotSpark WhatsApp chatbot using conversational AI
  */
 export async function processWhatsAppMessage(from: string, messageText: string): Promise<{
   success: boolean;
@@ -152,100 +152,128 @@ export async function processWhatsAppMessage(from: string, messageText: string):
       };
     }
 
-    // Process the message based on content
-    if (messageText.toLowerCase().startsWith("help")) {
+    // Handle explicit commands first
+    if (messageText.toLowerCase() === "help") {
       return {
         success: true,
         message: "DotSpark WhatsApp commands:\n" +
-          "- Send any text to create a new learning entry\n" +
-          "- Start with 'Q:' to ask a question about your learnings\n" +
+          "- Chat naturally with DotSpark AI about your learnings\n" +
+          "- Start with 'Q:' to specifically ask a question\n" +
+          "- DotSpark will intelligently save your learnings\n" +
           "- Type 'summary' to get a summary of your recent entries\n" +
           "- Type 'help' to see this message",
       };
-    } else if (messageText.toLowerCase().startsWith("q:")) {
-      // Handle question - use the chat function to generate a response
-      const response = await generateChatResponse(messageText.substring(2).trim(), []); // Empty messages array for now
+    } 
+    
+    if (messageText.toLowerCase() === "summary") {
+      // TODO: Implement a more sophisticated summary function
+      return {
+        success: true,
+        message: "Summary feature coming soon! The improved version will provide personalized insights about your learning patterns.",
+      };
+    }
+    
+    // Use AI to analyze if the message is a question or a learning entry
+    // This makes the interface more conversational - users don't need special prefixes
+    const analysis = await analyzeUserInput(messageText);
+    console.log("Message analysis:", analysis);
+    
+    // If it's an explicit question (starts with Q:) or detected as a question with high confidence
+    if (messageText.toLowerCase().startsWith("q:") || 
+        (analysis.type === 'question' && analysis.confidence > 0.7)) {
+      
+      // Extract the question (remove the Q: prefix if it exists)
+      const questionText = messageText.toLowerCase().startsWith("q:") 
+        ? messageText.substring(2).trim() 
+        : messageText;
+      
+      // Generate a conversational response
+      const response = await generateChatResponse(questionText, []);
       return {
         success: true,
         message: response,
       };
-    } else if (messageText.toLowerCase() === "summary") {
-      // TODO: Implement summary function
-      return {
-        success: true,
-        message: "Summary feature coming soon! Check the web app for now to see your learning insights.",
-      };
-    } else {
-      // Process as a new learning entry
-      const structuredEntry = await processEntryFromChat(messageText, []);
-      
-      if (structuredEntry) {
-        try {
-          // Create the entry in the database
-          // First, we need to update the entries table directly because storage.createEntry doesn't accept userId
-          const [insertedEntry] = await db.insert(entries).values({
-            title: structuredEntry.title,
-            content: structuredEntry.content,
-            categoryId: structuredEntry.categoryId,
-            userId: userId,
-            isFavorite: false,
-          }).returning();
+    }
+    
+    // If it's likely a learning entry OR the confidence is low, 
+    // process it as a learning but also provide a conversational response
+    const structuredEntry = await processEntryFromChat(messageText, []);
+    
+    if (structuredEntry) {
+      try {
+        // Create the entry in the database
+        const [insertedEntry] = await db.insert(entries).values({
+          title: structuredEntry.title,
+          content: structuredEntry.content,
+          categoryId: structuredEntry.categoryId,
+          userId: userId,
+          isFavorite: false,
+        }).returning();
+        
+        const newEntry = insertedEntry;
+        
+        // If we have tag names, create them and associate with the entry
+        if (structuredEntry.tagNames && structuredEntry.tagNames.length > 0) {
+          // Create tags that don't exist and get their IDs
+          const tagIds: number[] = [];
           
-          const newEntry = insertedEntry;
-          
-          // If we have tag names, create them and associate with the entry
-          if (structuredEntry.tagNames && structuredEntry.tagNames.length > 0) {
-            // Create tags that don't exist and get their IDs
-            const tagIds: number[] = [];
-            
-            for (const tagName of structuredEntry.tagNames) {
-              try {
-                // Try to find existing tag
-                const existingTag = await db.query.tags.findFirst({
-                  where: eq(tags.name, tagName)
-                });
-                
-                if (existingTag) {
-                  tagIds.push(existingTag.id);
-                } else {
-                  // Create new tag
-                  const newTag = await storage.createTag({ name: tagName });
-                  tagIds.push(newTag.id);
-                }
-              } catch (error) {
-                console.error(`Error creating tag ${tagName}:`, error);
+          for (const tagName of structuredEntry.tagNames) {
+            try {
+              // Try to find existing tag
+              const existingTag = await db.query.tags.findFirst({
+                where: eq(tags.name, tagName)
+              });
+              
+              if (existingTag) {
+                tagIds.push(existingTag.id);
+              } else {
+                // Create new tag
+                const newTag = await storage.createTag({ name: tagName });
+                tagIds.push(newTag.id);
               }
-            }
-            
-            // Update the entry with the tag IDs
-            if (tagIds.length > 0) {
-              await storage.updateEntry(newEntry.id, { tagIds });
+            } catch (error) {
+              console.error(`Error creating tag ${tagName}:`, error);
             }
           }
           
-          return {
-            success: true,
-            message: `✅ New learning dot created!\n\nTitle: ${structuredEntry.title}\n\nCategory: ${structuredEntry.categoryId ? 'Added' : 'None'}\n\nTags: ${structuredEntry.tagNames && structuredEntry.tagNames.length > 0 ? structuredEntry.tagNames.join(', ') : 'None'}`,
-          };
-        } catch (error) {
-          console.error("Error creating learning dot from WhatsApp chatbot:", error);
-          return {
-            success: false,
-            message: "Your learning was processed by our AI but there was an error saving it. Please try again later.",
-          };
+          // Update the entry with the tag IDs
+          if (tagIds.length > 0) {
+            await storage.updateEntry(newEntry.id, { tagIds });
+          }
         }
-      } else {
+        
+        // Instead of just confirming, generate a conversational response about their learning
+        const conversationalResponse = await generateChatResponse(
+          `I just learned this: ${structuredEntry.title}. ${structuredEntry.content}`, 
+          []
+        );
+        
         return {
-          success: false,
-          message: "Our AI couldn't create a learning dot from your message. Please try again with more detailed information.",
+          success: true,
+          message: `✅ I've saved your learning dot!\n\n"${structuredEntry.title}"\n\n${conversationalResponse}`,
+        };
+      } catch (error) {
+        console.error("Error creating learning dot from WhatsApp chatbot:", error);
+        // If saving fails, still try to provide a conversational response
+        const fallbackResponse = await generateChatResponse(messageText, []);
+        return {
+          success: true,
+          message: `I couldn't save that as a learning dot right now, but let's continue our conversation.\n\n${fallbackResponse}`,
         };
       }
+    } else {
+      // If we couldn't structure it, just have a conversation
+      const conversationalResponse = await generateChatResponse(messageText, []);
+      return {
+        success: true,
+        message: conversationalResponse,
+      };
     }
   } catch (error) {
     console.error("Error processing WhatsApp chatbot message:", error);
     return {
       success: false,
-      message: "An error occurred while the DotSpark AI was processing your message. Please try again later.",
+      message: "I'm having trouble processing that right now. Can we try again in a moment?",
     };
   }
 }
@@ -309,14 +337,13 @@ export async function registerWhatsAppUser(userId: number, phoneNumber: string):
     
     // Send welcome message to user via WhatsApp
     const welcomeMessage = 
-      "Welcome to DotSpark - Your Neural chip for limitless learning. Please feel free to ask me anything or record your learnings for the day\n\n" +
-      "Here's how to use the chatbot:\n\n" +
-      "1️⃣ Send any text to create a new learning dot\n" +
-      "2️⃣ Start with 'Q:' to ask questions about your knowledge\n" +
-      "3️⃣ Type 'summary' to get an overview of recent entries\n" +
-      "4️⃣ Type 'help' to see all available commands\n\n" +
-      "Try sending your first learning entry now! For example:\n" +
-      "'I learned that consistent small efforts lead to big results over time.'";
+      "Welcome to DotSpark - Your Neural chip for limitless learning! 🌟\n\n" +
+      "I'm your interactive learning companion. We can have natural conversations about what you're learning. Simply chat with me:\n\n" +
+      "🔹 Share your thoughts and I'll help structure and save your insights\n" +
+      "🔹 Ask me questions (start with Q: if you want to be explicit)\n" +
+      "🔹 I'll respond naturally and ask follow-up questions\n" +
+      "🔹 Type 'help' anytime for commands\n\n" +
+      "Let's start our conversation! Tell me something interesting you learned today.";
     
     // Don't wait for the message to be sent before returning
     sendWhatsAppReply(normalizedPhone, welcomeMessage)

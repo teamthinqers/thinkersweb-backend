@@ -100,11 +100,13 @@ export async function generateChatResponse(
     if (!messages.some(m => m.role === "system")) {
       messages.unshift({
         role: "system",
-        content: `You are a helpful learning assistant. Your job is to engage with the user
+        content: `You are a helpful learning assistant called DotSpark AI. Your job is to engage with the user
         about their learning experiences and help them reflect more deeply on what they've learned.
         Ask thoughtful follow-up questions about their learning, suggest ways to apply it, 
         or identify connections to other topics they might be interested in.
-        Be brief, friendly, and encouraging.`
+        Be brief, friendly, and encouraging. Always end with a question to encourage further conversation.
+        If the user's message seems like a learning insight rather than a question, respond in a way that
+        acknowledges their learning but also encourages them to reflect further.`
       });
     }
 
@@ -119,7 +121,7 @@ export async function generateChatResponse(
       model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
       messages: messages as any,
       temperature: 0.8,
-      max_tokens: 150,
+      max_tokens: 200,
     });
 
     // Return the response content
@@ -127,6 +129,62 @@ export async function generateChatResponse(
   } catch (error) {
     console.error("Error generating chat response:", error);
     return "I'm having trouble processing that right now. Can you try again?";
+  }
+}
+
+/**
+ * Analyze user input to determine whether it's a question or a learning entry
+ */
+export async function analyzeUserInput(userInput: string): Promise<{
+  type: 'question' | 'learning' | 'command';
+  confidence: number;
+}> {
+  try {
+    // Check for command prefixes first
+    if (userInput.toLowerCase().startsWith("q:") || 
+        userInput.toLowerCase().startsWith("question:") ||
+        userInput.toLowerCase().startsWith("ask:")) {
+      return { type: 'question', confidence: 0.95 };
+    }
+    
+    if (userInput.toLowerCase() === "help" || 
+        userInput.toLowerCase() === "summary" || 
+        userInput.toLowerCase() === "stats") {
+      return { type: 'command', confidence: 0.95 };
+    }
+    
+    // If no command prefix, use AI to analyze
+    const response = await openai.chat.completions.create({
+      model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
+      messages: [
+        {
+          role: "system",
+          content: `You are an input classifier. Categorize the following text as either:
+          1. A question (the user is asking for information)
+          2. A learning entry (the user is sharing something they learned)
+          
+          Respond with JSON in the format:
+          {"type": "question" or "learning", "confidence": 0.0 to 1.0}`
+        },
+        {
+          role: "user",
+          content: userInput
+        }
+      ],
+      response_format: { type: "json_object" },
+      temperature: 0.3,
+    });
+    
+    const result = JSON.parse(response.choices[0].message.content || '{"type": "learning", "confidence": 0.5}');
+    return {
+      type: result.type,
+      confidence: result.confidence
+    };
+    
+  } catch (error) {
+    console.error("Error analyzing user input:", error);
+    // Default to treating it as a learning entry if analysis fails
+    return { type: 'learning', confidence: 0.5 };
   }
 }
 
