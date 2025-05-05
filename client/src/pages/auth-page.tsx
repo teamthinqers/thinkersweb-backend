@@ -48,10 +48,21 @@ export default function AuthPage() {
   const { toast } = useToast();
   const { user, loginWithGoogle } = useAuth();
   
+  // Get redirect path from URL if any
+  const getRedirectPath = () => {
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const redirect = urlParams.get('redirect');
+      return redirect ? `/${redirect}` : '/dashboard';
+    }
+    return '/dashboard';
+  };
+
   // Redirect if already logged in
   useEffect(() => {
     if (user) {
-      setLocation("/dashboard");
+      const redirectPath = getRedirectPath();
+      setLocation(redirectPath);
     }
   }, [user, setLocation]);
   

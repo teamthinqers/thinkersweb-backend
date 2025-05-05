@@ -119,7 +119,7 @@ export default function LandingPage() {
                 ) : (
                   <>
                     <Button size="lg" asChild>
-                      <Link href="/auth">
+                      <Link href="/auth?redirect=settings/whatsapp">
                         Get Started <ArrowRight className="ml-2 h-5 w-5" />
                       </Link>
                     </Button>
