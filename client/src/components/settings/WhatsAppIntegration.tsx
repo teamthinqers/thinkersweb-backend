@@ -63,7 +63,7 @@ export default function WhatsAppIntegration() {
       if (res.ok) {
         toast({
           title: "Success",
-          description: data.message || "WhatsApp integration enabled successfully",
+          description: data.message || "DotSpark WhatsApp chatbot activated successfully",
         });
         setRegistered(true);
         setCurrentPhone(phoneNumber);
@@ -71,15 +71,15 @@ export default function WhatsAppIntegration() {
       } else {
         toast({
           title: "Error",
-          description: data.message || "Failed to register WhatsApp number",
+          description: data.message || "Failed to activate WhatsApp chatbot",
           variant: "destructive",
         });
       }
     } catch (error) {
-      console.error("Error registering WhatsApp:", error);
+      console.error("Error activating WhatsApp chatbot:", error);
       toast({
         title: "Error",
-        description: "Failed to register WhatsApp number",
+        description: "Failed to activate WhatsApp chatbot",
         variant: "destructive",
       });
     } finally {
@@ -97,22 +97,22 @@ export default function WhatsAppIntegration() {
       if (res.ok) {
         toast({
           title: "Success",
-          description: data.message || "WhatsApp integration disabled successfully",
+          description: data.message || "DotSpark WhatsApp chatbot deactivated successfully",
         });
         setRegistered(false);
         setCurrentPhone("");
       } else {
         toast({
           title: "Error",
-          description: data.message || "Failed to disable WhatsApp integration",
+          description: data.message || "Failed to deactivate WhatsApp chatbot",
           variant: "destructive",
         });
       }
     } catch (error) {
-      console.error("Error unregistering WhatsApp:", error);
+      console.error("Error deactivating WhatsApp chatbot:", error);
       toast({
         title: "Error",
-        description: "Failed to disable WhatsApp integration",
+        description: "Failed to deactivate WhatsApp chatbot",
         variant: "destructive",
       });
     } finally {

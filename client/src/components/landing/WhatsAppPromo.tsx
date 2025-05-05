@@ -30,21 +30,21 @@ export default function WhatsAppPromo() {
       if (res.ok) {
         toast({
           title: "Success",
-          description: "WhatsApp integration enabled successfully! You can now send messages to DotSpark.",
+          description: "DotSpark WhatsApp chatbot activated! You can now chat with our AI through WhatsApp.",
         });
         setRegistered(true);
       } else {
         toast({
           title: "Error",
-          description: data.message || "Failed to register WhatsApp number",
+          description: data.message || "Failed to activate WhatsApp chatbot",
           variant: "destructive",
         });
       }
     } catch (error) {
-      console.error("Error registering WhatsApp:", error);
+      console.error("Error activating WhatsApp chatbot:", error);
       toast({
         title: "Error",
-        description: "Failed to register WhatsApp number",
+        description: "Failed to activate WhatsApp chatbot",
         variant: "destructive",
       });
     } finally {
@@ -120,20 +120,20 @@ export default function WhatsAppPromo() {
               Seamless Integration
             </div>
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Spark Dots On The Go <span className="gradient-heading">with WhatsApp</span>
+              Chat with DotSpark AI <span className="gradient-heading">through WhatsApp</span>
             </h2>
             <p className="text-xl text-muted-foreground">
-              After creating your DotSpark account, connect your WhatsApp to capture learning moments anywhere, anytime. No app switching needed.
+              After creating your DotSpark account, activate our WhatsApp chatbot to capture learning moments through conversation. Simply chat with our AI to create learning dots.
             </p>
             
             {registered ? (
               <div className="space-y-4 mt-8 p-6 bg-gradient-to-br from-green-50 to-teal-50 dark:from-green-950 dark:to-teal-950 rounded-xl border shadow-sm">
                 <div className="flex items-center text-green-600 dark:text-green-400 font-medium">
                   <Check className="mr-2 h-5 w-5" />
-                  WhatsApp Connected Successfully!
+                  DotSpark WhatsApp Chatbot Activated!
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  You can now send messages to DotSpark via WhatsApp. Try these commands:
+                  You can now chat with DotSpark AI through WhatsApp. Try these commands:
                 </p>
                 <ul className="space-y-2 text-sm">
                   <li className="flex items-start">
@@ -159,7 +159,7 @@ export default function WhatsAppPromo() {
                   </h3>
                   <ol className="list-decimal pl-5 space-y-3 text-muted-foreground">
                     <li><span className="font-medium text-foreground">Create your DotSpark account</span> - Sign up and get started with the web platform</li>
-                    <li><span className="font-medium text-foreground">Connect WhatsApp</span> - Add your WhatsApp number in Settings to enable mobile integration</li>
+                    <li><span className="font-medium text-foreground">Activate the WhatsApp chatbot</span> - Register your phone number to chat with DotSpark AI</li>
                   </ol>
                   <div className="flex justify-center mt-4">
                     <Link href="/auth">
@@ -176,8 +176,8 @@ export default function WhatsAppPromo() {
                       <MessageCircle className="h-4 w-4" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-lg">Capture Anywhere</h3>
-                      <p className="text-muted-foreground">Record learning moments the instant they happen, right from your most-used messaging app.</p>
+                      <h3 className="font-semibold text-lg">Chat-Based Learning</h3>
+                      <p className="text-muted-foreground">Have natural conversations with DotSpark AI through WhatsApp to capture learning moments as they happen.</p>
                     </div>
                   </div>
                   
