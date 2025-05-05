@@ -219,3 +219,25 @@ export const insertSharedEntrySchema = createInsertSchema(sharedEntries, {
 
 export type InsertSharedEntry = z.infer<typeof insertSharedEntrySchema>;
 export type SharedEntry = typeof sharedEntries.$inferSelect;
+
+// WhatsApp integration schema
+export const whatsappUsers = pgTable("whatsapp_users", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  phoneNumber: text("phone_number").notNull().unique(),
+  active: boolean("active").default(true).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const whatsappUsersRelations = relations(whatsappUsers, ({ one }) => ({
+  user: one(users, { fields: [whatsappUsers.userId], references: [users.id] }),
+}));
+
+export const insertWhatsappUserSchema = createInsertSchema(whatsappUsers, {
+  userId: (schema) => schema.positive("User ID must be positive"),
+  phoneNumber: (schema) => schema.min(10, "Phone number must be at least 10 characters"),
+  active: (schema) => schema.optional(),
+});
+export type InsertWhatsappUser = z.infer<typeof insertWhatsappUserSchema>;
+export type WhatsappUser = typeof whatsappUsers.$inferSelect;
