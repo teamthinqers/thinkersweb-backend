@@ -1,5 +1,13 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut as firebaseSignOut, User } from "firebase/auth";
+import { 
+  getAuth, 
+  GoogleAuthProvider, 
+  signInWithPopup, 
+  signOut as firebaseSignOut, 
+  User, 
+  setPersistence, 
+  browserLocalPersistence 
+} from "firebase/auth";
 
 // Log environment variables to help debug (without showing actual values)
 console.log("Firebase environment variables available:", {
@@ -22,6 +30,12 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 
+// Set auth persistence to local for session persistence
+setPersistence(auth, browserLocalPersistence)
+  .catch((error) => {
+    console.error("Error setting Firebase auth persistence:", error);
+  });
+
 // Configure Google provider with custom parameters for better compatibility
 const googleProvider = new GoogleAuthProvider();
 googleProvider.setCustomParameters({
@@ -34,6 +48,9 @@ googleProvider.setCustomParameters({
 // Helper functions for authentication
 export const signInWithGoogle = async (): Promise<User> => {
   try {
+    // Set auth persistence again before sign-in for extra assurance
+    await setPersistence(auth, browserLocalPersistence);
+    
     // Use signInWithPopup which works better in embedded environments like Replit
     const result = await signInWithPopup(auth, googleProvider);
     console.log("Google sign in successful:", result.user.displayName);
