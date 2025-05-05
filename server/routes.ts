@@ -1,9 +1,20 @@
-import type { Express } from "express";
+import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { z } from "zod";
-import { insertCategorySchema, insertEntrySchema, insertTagSchema } from "@shared/schema";
+import { insertCategorySchema, insertEntrySchema, insertTagSchema, insertConnectionSchema, insertSharedEntrySchema } from "@shared/schema";
 import { processEntryFromChat, generateChatResponse, type Message } from "./chat";
+import { connectionsService } from "./connections";
+
+// Interface for authenticated requests (will be used later when auth is implemented)
+interface AuthenticatedRequest extends Request {
+  user?: {
+    id: number;
+    username: string;
+    email: string;
+  };
+  isAuthenticated(): boolean;
+}
 
 export async function registerRoutes(app: Express): Promise<Server> {
   const apiPrefix = "/api";
@@ -313,6 +324,154 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const insights = await storage.getInsights();
       res.json(insights);
+    } catch (err) {
+      handleApiError(err, res);
+    }
+  });
+  
+  // User and connection endpoints
+  // For demo purposes, we'll use a hardcoded user ID (1) until auth is implemented
+  const DEMO_USER_ID = 1;
+  
+  // Get all connections for the current user
+  app.get(`${apiPrefix}/connections`, async (req, res) => {
+    try {
+      const connections = await connectionsService.getUserConnections(DEMO_USER_ID);
+      res.json(connections);
+    } catch (err) {
+      handleApiError(err, res);
+    }
+  });
+  
+  // Get all pending connection requests for the current user
+  app.get(`${apiPrefix}/connections/requests`, async (req, res) => {
+    try {
+      const requests = await connectionsService.getConnectionRequests(DEMO_USER_ID);
+      res.json(requests);
+    } catch (err) {
+      handleApiError(err, res);
+    }
+  });
+  
+  // Create a new connection request
+  app.post(`${apiPrefix}/connections`, async (req, res) => {
+    try {
+      const { connectedUserId } = req.body;
+      
+      if (!connectedUserId) {
+        return res.status(400).json({ message: "Connected user ID is required" });
+      }
+      
+      const newConnection = await connectionsService.createConnectionRequest(
+        DEMO_USER_ID,
+        connectedUserId
+      );
+      
+      res.status(201).json(newConnection);
+    } catch (err) {
+      handleApiError(err, res);
+    }
+  });
+  
+  // Accept a connection request
+  app.post(`${apiPrefix}/connections/:id/accept`, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid connection ID" });
+      }
+      
+      const updatedConnection = await connectionsService.acceptConnectionRequest(id, DEMO_USER_ID);
+      res.json(updatedConnection);
+    } catch (err) {
+      handleApiError(err, res);
+    }
+  });
+  
+  // Reject a connection request
+  app.post(`${apiPrefix}/connections/:id/reject`, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid connection ID" });
+      }
+      
+      await connectionsService.rejectConnectionRequest(id, DEMO_USER_ID);
+      res.status(204).send();
+    } catch (err) {
+      handleApiError(err, res);
+    }
+  });
+  
+  // Remove a connection
+  app.delete(`${apiPrefix}/connections/:id`, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid connection ID" });
+      }
+      
+      await connectionsService.removeConnection(id, DEMO_USER_ID);
+      res.status(204).send();
+    } catch (err) {
+      handleApiError(err, res);
+    }
+  });
+  
+  // Search for users
+  app.get(`${apiPrefix}/users/search`, async (req, res) => {
+    try {
+      const query = req.query.q as string;
+      if (!query || query.length < 2) {
+        return res.status(400).json({ message: "Search query must be at least 2 characters" });
+      }
+      
+      const users = await connectionsService.searchUsers(query, DEMO_USER_ID);
+      res.json(users);
+    } catch (err) {
+      handleApiError(err, res);
+    }
+  });
+  
+  // Share an entry with a connection
+  app.post(`${apiPrefix}/entries/share`, async (req, res) => {
+    try {
+      const { entryId, sharedWithUserId } = req.body;
+      
+      if (!entryId || !sharedWithUserId) {
+        return res.status(400).json({ 
+          message: "Entry ID and shared with user ID are required" 
+        });
+      }
+      
+      // First verify this is the user's entry
+      const entry = await storage.getEntryById(entryId);
+      if (!entry) {
+        return res.status(404).json({ message: "Entry not found" });
+      }
+      
+      // Then verify these users are connected
+      const connectionStatus = await connectionsService.getConnectionStatus(
+        DEMO_USER_ID, 
+        sharedWithUserId
+      );
+      
+      if (!connectionStatus.isConnected) {
+        return res.status(403).json({ 
+          message: "You can only share entries with your connections" 
+        });
+      }
+      
+      // Create the shared entry
+      const [sharedEntry] = await db.insert(sharedEntries)
+        .values({
+          entryId,
+          sharedWithUserId,
+          permissions: "read" // Default permission
+        })
+        .returning();
+      
+      res.status(201).json(sharedEntry);
     } catch (err) {
       handleApiError(err, res);
     }

@@ -7,6 +7,7 @@ import Dashboard from "@/pages/Dashboard";
 import AllEntries from "@/pages/AllEntries";
 import Insights from "@/pages/Insights";
 import Favorites from "@/pages/Favorites";
+import Network from "@/pages/Network";
 import AppLayout from "@/components/layout/AppLayout";
 import { useState } from "react";
 import EntryDetail from "@/components/entries/EntryDetail";
@@ -49,6 +50,7 @@ function Router() {
         <Route path="/entries" component={() => <AllEntries onEntryClick={openEntryDetail} />} />
         <Route path="/insights" component={Insights} />
         <Route path="/favorites" component={() => <Favorites onEntryClick={openEntryDetail} />} />
+        <Route path="/network" component={Network} />
         <Route component={NotFound} />
       </Switch>
 
