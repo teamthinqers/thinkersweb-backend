@@ -243,3 +243,29 @@ export const insertWhatsappUserSchema = createInsertSchema(whatsappUsers, {
 });
 export type InsertWhatsappUser = z.infer<typeof insertWhatsappUserSchema>;
 export type WhatsappUser = typeof whatsappUsers.$inferSelect;
+
+// WhatsApp OTP verification schema
+export const whatsappOtpVerifications = pgTable("whatsapp_otp_verifications", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  phoneNumber: text("phone_number").notNull(),
+  otpCode: varchar("otp_code", { length: 6 }).notNull(),
+  verified: boolean("verified").default(false).notNull(),
+  expiresAt: timestamp("expires_at").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const whatsappOtpVerificationsRelations = relations(whatsappOtpVerifications, ({ one }) => ({
+  user: one(users, { fields: [whatsappOtpVerifications.userId], references: [users.id] }),
+}));
+
+export const insertWhatsappOtpVerificationSchema = createInsertSchema(whatsappOtpVerifications, {
+  userId: (schema) => schema.positive("User ID must be positive"),
+  phoneNumber: (schema) => schema.min(10, "Phone number must be at least 10 characters"),
+  otpCode: (schema) => schema.length(6, "OTP code must be exactly 6 characters"),
+  verified: (schema) => schema.optional(),
+  expiresAt: (schema) => schema,
+});
+
+export type InsertWhatsappOtpVerification = z.infer<typeof insertWhatsappOtpVerificationSchema>;
+export type WhatsappOtpVerification = typeof whatsappOtpVerifications.$inferSelect;
