@@ -240,23 +240,23 @@ export default function LandingPage() {
               </div>
             </div>
             
-            {/* First Dot/Knowledge - Cooking */}
+            {/* First Dot/Knowledge - Psychology */}
             <div className="bg-card border rounded-xl p-6 card-hover neural-connection">
               <div className="text-right mb-3 lg:hidden">
                 <span className="inline-block rounded-full bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">Dot 1</span>
               </div>
               <div className="flex items-center gap-4 mb-4">
                 <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M8 3v3"></path><path d="M16 3v3"></path><path d="M10 12h8"></path><path d="M18 6H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2Z"></path><path d="M10 16h8"></path></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><circle cx="12" cy="12" r="10"></circle><path d="M18 13a6 6 0 0 1-6 5 6 6 0 0 1-6-5"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold">Cooking Techniques</h3>
-                  <p className="text-muted-foreground text-sm">Learned about the Maillard reaction that gives grilled meats their flavor</p>
+                  <h3 className="text-xl font-semibold">Psychology Course</h3>
+                  <p className="text-muted-foreground text-sm">Learning about the impact of environmental cues on behavior</p>
                 </div>
               </div>
               <div className="mt-4 pt-4 border-t border-border/50">
                 <p className="text-sm text-muted-foreground">
-                  "I've been reading about food science and learning why browning meat creates such rich flavors - it's a complex chemical process at specific temperatures."
+                  "In my psychology studies, I discovered how subtle environmental factors can dramatically influence decision-making and habit formation."
                 </p>
               </div>
               <div className="hidden lg:flex items-center justify-center mt-4">
@@ -264,23 +264,23 @@ export default function LandingPage() {
               </div>
             </div>
             
-            {/* Second Dot/Knowledge - Chemistry */}
+            {/* Second Dot/Knowledge - UX Design */}
             <div className="bg-card border rounded-xl p-6 card-hover neural-connection relative z-10">
               <div className="text-right mb-3 lg:hidden">
                 <span className="inline-block rounded-full bg-secondary/10 px-2.5 py-1 text-xs font-semibold text-secondary">Dot 2</span>
               </div>
               <div className="flex items-center gap-4 mb-4">
                 <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-secondary/20 to-secondary/10 flex items-center justify-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-secondary"><path d="M4.5 3h15"></path><path d="M6 3v16a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V3"></path><path d="M6 14h12"></path></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-secondary"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold">Chemistry Class</h3>
-                  <p className="text-muted-foreground text-sm">Learned about amino acids and protein structures</p>
+                  <h3 className="text-xl font-semibold">UX Design Workshop</h3>
+                  <p className="text-muted-foreground text-sm">Studying user interface patterns and digital product design</p>
                 </div>
               </div>
               <div className="mt-4 pt-4 border-t border-border/50">
                 <p className="text-sm text-muted-foreground">
-                  "In my chemistry course, we studied how heat changes the molecular structure of proteins through denaturing and recombination."
+                  "I've been learning about user experience design principles and how to create intuitive interfaces that users can navigate effortlessly."
                 </p>
               </div>
               <div className="hidden lg:flex items-center justify-center mt-4">
@@ -288,23 +288,23 @@ export default function LandingPage() {
               </div>
             </div>
             
-            {/* Third Dot/Knowledge - Health */}
+            {/* Third Dot/Knowledge - Climate Change */}
             <div className="bg-card border rounded-xl p-6 card-hover neural-connection">
               <div className="text-right mb-3 lg:hidden">
                 <span className="inline-block rounded-full bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">Dot 3</span>
               </div>
               <div className="flex items-center gap-4 mb-4">
                 <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M3 5v14"></path><path d="m21 5-9 14-9-14"></path><path d="M12 20V5"></path></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M12 2v8"></path><path d="m4.93 10.93 1.41 1.41"></path><path d="M2 18h2"></path><path d="M20 18h2"></path><path d="m19.07 10.93-1.41 1.41"></path><path d="M22 22H2"></path><path d="M12 18v-1"></path><path d="M20 17a8 8 0 1 0-16 0"></path></svg>
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold">Fitness Research</h3>
-                  <p className="text-muted-foreground text-sm">Reading about optimizing protein intake for muscle recovery</p>
+                  <h3 className="text-xl font-semibold">Environmental Science</h3>
+                  <p className="text-muted-foreground text-sm">Reading about behavior change challenges in sustainability efforts</p>
                 </div>
               </div>
               <div className="mt-4 pt-4 border-t border-border/50">
                 <p className="text-sm text-muted-foreground">
-                  "I discovered that timing of protein consumption matters, and how our bodies absorb different proteins at different rates."
+                  "I've been studying why people struggle to adopt climate-friendly behaviors despite caring about the environment. The gap between intention and action is fascinating."
                 </p>
               </div>
               <div className="hidden lg:flex items-center justify-center mt-4">
@@ -328,17 +328,22 @@ export default function LandingPage() {
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-yellow-600"><path d="M12 2v8"></path><path d="m4.93 10.93 1.41 1.41"></path><path d="M2 18h2"></path><path d="M20 18h2"></path><path d="m19.07 10.93-1.41 1.41"></path><path d="M22 22H2"></path><path d="m16 6-4 4-4-4"></path><path d="M16 18a4 4 0 0 0-8 0"></path></svg>
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold text-yellow-700 dark:text-yellow-400">The Spark: Protein Cooking Breakthrough</h3>
+                  <h3 className="text-xl font-semibold text-yellow-700 dark:text-yellow-400">The Spark: Sustainable UX Innovation</h3>
                 </div>
               </div>
               <p className="text-muted-foreground">
-                "By connecting my dots from cooking techniques, chemistry knowledge, and fitness research, I realized that I could optimize my meal prep by applying the Maillard reaction to different protein sources based on their amino acid profiles. This led me to develop a customized cooking method that preserves the nutritional value while maximizing flavor - something I never would have discovered without connecting these separate learnings!"
+                "By connecting my dots from psychology, UX design, and environmental science, I created a breakthrough digital interface that uses behavioral psychology principles to nudge users toward sustainable choices. My app redesign incorporates subtle environmental cues that bridge the intention-action gap, making eco-friendly behaviors feel intuitive and effortless. This innovation would have been impossible without seeing the connections between these separate fields of study!"
               </p>
-              <div className="mt-4 text-right">
-                <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold bg-yellow-100 text-yellow-800 border-yellow-400/50">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1"><path d="M12 3v19"></path><path d="M5 8c1.5 0 2.5-1.5 2.5-3S6.5 2 5 2 2.5 3.5 2.5 5 3.5 8 5 8Z"></path><path d="M5 16c1.5 0 2.5-1.5 2.5-3S6.5 10 5 10s-2.5 1.5-2.5 3 1 3 2.5 3Z"></path><path d="M19 8c1.5 0 2.5-1.5 2.5-3S20.5 2 19 2s-2.5 1.5-2.5 3 1 3 2.5 3Z"></path><path d="M19 16c1.5 0 2.5-1.5 2.5-3s-1-3-2.5-3-2.5 1.5-2.5 3 1 3 2.5 3Z"></path></svg>
-                  Cross-domain insight
-                </span>
+              <div className="mt-4 flex flex-col gap-2">
+                <p className="text-sm text-yellow-600 dark:text-yellow-400 italic font-medium">
+                  "And this is just connecting 3 dots. Imagine the breakthroughs possible when DotSpark connects hundreds of your learning dots across all domains of knowledge!"
+                </p>
+                <div className="text-right">
+                  <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold bg-yellow-100 text-yellow-800 border-yellow-400/50">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1"><path d="M12 3v19"></path><path d="M5 8c1.5 0 2.5-1.5 2.5-3S6.5 2 5 2 2.5 3.5 2.5 5 3.5 8 5 8Z"></path><path d="M5 16c1.5 0 2.5-1.5 2.5-3S6.5 10 5 10s-2.5 1.5-2.5 3 1 3 2.5 3Z"></path><path d="M19 8c1.5 0 2.5-1.5 2.5-3S20.5 2 19 2s-2.5 1.5-2.5 3 1 3 2.5 3Z"></path><path d="M19 16c1.5 0 2.5-1.5 2.5-3s-1-3-2.5-3-2.5 1.5-2.5 3 1 3 2.5 3Z"></path></svg>
+                    Cross-domain insight
+                  </span>
+                </div>
               </div>
             </div>
           </div>
