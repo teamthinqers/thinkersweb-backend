@@ -2,56 +2,35 @@ import { db } from "@db";
 import { users, whatsappUsers, entries, tags } from "@shared/schema";
 import { eq } from "drizzle-orm";
 import { processEntryFromChat, generateChatResponse, type Message } from "./chat";
-import axios from "axios";
 import { storage } from "./storage";
+import twilio from "twilio";
 
-// WhatsApp Business API configuration
-const WHATSAPP_API_URL = process.env.WHATSAPP_API_URL || "https://graph.facebook.com/v17.0";
-const WHATSAPP_PHONE_NUMBER_ID = process.env.WHATSAPP_PHONE_NUMBER_ID || "";
-const WHATSAPP_ACCESS_TOKEN = process.env.WHATSAPP_ACCESS_TOKEN || "";
+// Twilio WhatsApp API configuration
+const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID || "";
+const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN || "";
+const TWILIO_PHONE_NUMBER = process.env.TWILIO_PHONE_NUMBER || "";
+
+// Initialize Twilio client
+const twilioClient = twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
 
 /**
- * Interface for incoming message from the DotSpark WhatsApp chatbot
+ * Interface for incoming Twilio WhatsApp message
  */
-interface WhatsappMessage {
-  object: string;
-  entry: Array<{
-    id: string;
-    changes: Array<{
-      value: {
-        messaging_product: string;
-        metadata: {
-          display_phone_number: string;
-          phone_number_id: string;
-        };
-        contacts: Array<{
-          profile: {
-            name: string;
-          };
-          wa_id: string;
-        }>;
-        messages: Array<{
-          id: string;
-          from: string;
-          timestamp: string;
-          type: string;
-          text?: {
-            body: string;
-          };
-        }>;
-      };
-    }>;
-  }>;
+interface TwilioWhatsAppMessage {
+  Body: string;
+  From: string;
+  To: string;
+  ProfileName?: string;
+  MessageSid: string;
 }
 
 /**
- * Helper function to extract message text from DotSpark WhatsApp chatbot webhook payload
+ * Helper function to extract message text from Twilio WhatsApp webhook payload
  */
-export function extractWhatsAppMessage(payload: WhatsappMessage): string | null {
+export function extractWhatsAppMessage(payload: any): string | null {
   try {
-    const message = payload.entry[0]?.changes[0]?.value?.messages[0];
-    if (message && message.type === "text" && message.text) {
-      return message.text.body;
+    if (payload.Body) {
+      return payload.Body.trim();
     }
     return null;
   } catch (error) {
@@ -65,8 +44,11 @@ export function extractWhatsAppMessage(payload: WhatsappMessage): string | null 
  */
 export async function getUserIdFromWhatsAppNumber(phoneNumber: string): Promise<number | null> {
   try {
+    // Normalize the phone number format - Twilio sends with WhatsApp: prefix
+    const normalizedPhone = phoneNumber.replace('whatsapp:', '').trim();
+    
     const whatsappUser = await db.query.whatsappUsers.findFirst({
-      where: eq(whatsappUsers.phoneNumber, phoneNumber),
+      where: eq(whatsappUsers.phoneNumber, normalizedPhone),
       with: {
         user: true,
       },
@@ -84,30 +66,21 @@ export async function getUserIdFromWhatsAppNumber(phoneNumber: string): Promise<
 }
 
 /**
- * Helper function to send a message through the DotSpark WhatsApp chatbot
+ * Helper function to send a message through the DotSpark WhatsApp chatbot using Twilio
  */
 export async function sendWhatsAppReply(to: string, message: string): Promise<boolean> {
   try {
-    const response = await axios.post(
-      `${WHATSAPP_API_URL}/${WHATSAPP_PHONE_NUMBER_ID}/messages`,
-      {
-        messaging_product: "whatsapp",
-        recipient_type: "individual",
-        to,
-        type: "text",
-        text: {
-          body: message,
-        },
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${WHATSAPP_ACCESS_TOKEN}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    // Ensure the phone number has the WhatsApp: prefix required by Twilio
+    const toNumber = to.startsWith('whatsapp:') ? to : `whatsapp:${to}`;
+    
+    const response = await twilioClient.messages.create({
+      body: message,
+      from: `whatsapp:${TWILIO_PHONE_NUMBER}`,
+      to: toNumber
+    });
 
-    if (response.status === 200) {
+    if (response.sid) {
+      console.log(`Message sent successfully via Twilio with SID: ${response.sid}`);
       return true;
     }
     
