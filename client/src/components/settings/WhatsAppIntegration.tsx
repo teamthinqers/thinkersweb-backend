@@ -69,8 +69,15 @@ export default function WhatsAppIntegration() {
 
     try {
       setRequestingOtp(true);
+      console.log('Requesting OTP for phone number:', phoneNumber);
       const res = await apiRequest("POST", "/api/whatsapp/request-otp", { phoneNumber });
       const data = await res.json();
+      
+      console.log('OTP request response:', {
+        status: res.status,
+        ok: res.ok,
+        data: data
+      });
       
       if (res.ok) {
         setPendingVerification(true);

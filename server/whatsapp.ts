@@ -507,7 +507,17 @@ export async function requestWhatsAppOTP(userId: number, phoneNumber: string): P
     // Try to send the message, but in dev mode, we'll succeed even if Twilio fails
     let messageSent = false;
     try {
+      console.log('OTP Generation - Twilio Config:', {
+        accountSidExists: !!TWILIO_ACCOUNT_SID,
+        authTokenExists: !!TWILIO_AUTH_TOKEN,
+        phoneNumberExists: !!TWILIO_PHONE_NUMBER,
+        numberToSend: normalizedPhone,
+        messageLength: otpMessage.length,
+        nodeEnv: process.env.NODE_ENV || 'unknown'
+      });
+      
       messageSent = await sendWhatsAppReply(normalizedPhone, otpMessage);
+      console.log('WhatsApp message sent result:', messageSent);
     } catch (error) {
       console.error("Error sending WhatsApp message:", error);
       // In production, we'll return an error, but in dev mode we'll continue
@@ -518,6 +528,7 @@ export async function requestWhatsAppOTP(userId: number, phoneNumber: string): P
     
     // Always include the OTP code in development mode response for testing
     const isDev = process.env.NODE_ENV !== 'production';
+    console.log('Environment mode:', isDev ? 'DEVELOPMENT' : 'PRODUCTION');
     
     if (!messageSent && process.env.NODE_ENV === 'production') {
       return {
@@ -530,10 +541,14 @@ export async function requestWhatsAppOTP(userId: number, phoneNumber: string): P
     // In production, this would never be returned to the client
     if (isDev) {
       console.log(`Development mode: OTP code for verification is ${otpCode}`);
+      console.log(`NODE_ENV = ${process.env.NODE_ENV}, isDev = ${isDev}`);
+      
+      // Force include OTP code if we're in development OR if the mode is unset
       return {
         success: true,
         message: "Verification code sent to your WhatsApp number. Please check your WhatsApp and enter the 6-digit code.",
-        otpCode: otpCode // Only included in development mode
+        otpCode: otpCode, // Only included in development mode
+        devMode: true
       };
     }
 
