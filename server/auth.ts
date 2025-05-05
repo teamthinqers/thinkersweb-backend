@@ -227,6 +227,8 @@ export function setupAuth(app: Express) {
     })(req, res, next);
   });
 
+  // This section was removed to prevent duplication with the enhanced refresh endpoint below
+
   // Enhanced session recovery endpoint with improved error handling and session persistence
   app.post("/api/auth/recover", async (req, res, next) => {
     try {

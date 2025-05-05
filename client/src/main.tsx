@@ -2,6 +2,7 @@ import { createRoot } from "react-dom/client";
 import App from "./App";
 import "./index.css";
 import { queryClient } from "./lib/queryClient";
+import { initViteConnectionGuard } from "./lib/viteConnectionGuard";
 
 // Store authentication state before hot reload
 if (import.meta.hot) {
@@ -40,18 +41,8 @@ if (import.meta.hot) {
   });
 }
 
-// Detect Vite server disconnection to prevent unwanted logout
-window.addEventListener('error', (event) => {
-  if (event.message && 
-      (event.message.includes('vite') || 
-       event.message.includes('socket') || 
-       event.message.includes('connection') || 
-       event.message.includes('failed to fetch'))) {
-    console.log("Connection error detected, preventing page refresh");
-    event.preventDefault();
-    return true;
-  }
-});
+// Initialize Vite connection guard to prevent logout on server disconnects
+initViteConnectionGuard();
 
 // Create the application root element
 createRoot(document.getElementById("root")!).render(<App />);
