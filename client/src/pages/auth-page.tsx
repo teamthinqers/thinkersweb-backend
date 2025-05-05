@@ -102,7 +102,8 @@ export default function AuthPage() {
           title: "Login successful",
           description: "Welcome back to DotSpark!",
         });
-        setLocation("/dashboard");
+        const redirectPath = getRedirectPath();
+        setLocation(redirectPath);
       } else {
         const error = await response.text();
         toast({
@@ -169,11 +170,12 @@ export default function AuthPage() {
       
       console.log("Starting Google Sign In process from auth page");
       
-      // Execute login and don't wait - just go directly to dashboard
+      // Execute login and don't wait - just go directly to destination
       loginWithGoogle();
       
-      // Don't wait for login to complete, just navigate
-      setLocation("/dashboard");
+      // Don't wait for login to complete, just navigate to the redirect path
+      const redirectPath = getRedirectPath();
+      setLocation(redirectPath);
       
     } catch (error) {
       console.error("Google sign in error:", error);
