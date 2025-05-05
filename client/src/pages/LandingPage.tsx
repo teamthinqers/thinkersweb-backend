@@ -1,10 +1,29 @@
 import React from "react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Brain, BookOpen, Users, Sparkles, BarChart2, MessageCircle } from "lucide-react";
+import { ArrowRight, Brain, BookOpen, Users, Sparkles, BarChart2, MessageCircle, User } from "lucide-react";
 import WhatsAppPromo from "@/components/landing/WhatsAppPromo";
+import { useAuth } from "@/hooks/use-auth";
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function LandingPage() {
+  const { user, logout } = useAuth();
+  
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  };
+
   return (
     <div className="flex flex-col min-h-screen">
       {/* Header with navigation */}
@@ -23,11 +42,55 @@ export default function LandingPage() {
             <Link href="/dashboard" className="text-sm font-medium hover:text-primary">
               Dashboard
             </Link>
-            <Button asChild size="sm">
-              <Link href="/auth">
-                Sign In
-              </Link>
-            </Button>
+            
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm" className="rounded-full">
+                    <Avatar className="h-8 w-8 border-2 border-white shadow">
+                      {user.photoURL ? (
+                        <AvatarImage src={user.photoURL} alt={user.displayName || 'User'} />
+                      ) : (
+                        <AvatarFallback className="bg-primary text-white">
+                          {user.displayName ? user.displayName.charAt(0).toUpperCase() : 'U'}
+                        </AvatarFallback>
+                      )}
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <div className="p-2 text-sm">
+                    <p className="font-medium">{user.displayName || 'User'}</p>
+                    <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+                  </div>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link href="/dashboard" className="cursor-pointer w-full">
+                      Dashboard
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/settings" className="cursor-pointer w-full">
+                      Settings
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleLogout} className="text-red-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="mr-2 h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                      <polyline points="16 17 21 12 16 7"></polyline>
+                      <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                    <span>Sign out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Button asChild size="sm">
+                <Link href="/auth">
+                  Sign In
+                </Link>
+              </Button>
+            )}
           </nav>
         </div>
       </header>
@@ -47,16 +110,26 @@ export default function LandingPage() {
                 Like a neural chip for your mind, DotSpark connects your learnings across every domain, unleashing limitless growth through insights you never knew you had.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 pt-4 justify-center">
-                <Button size="lg" asChild>
-                  <Link href="/auth">
-                    Get Started <ArrowRight className="ml-2 h-5 w-5" />
-                  </Link>
-                </Button>
-                <Button size="lg" variant="outline" asChild>
-                  <Link href="/auth">
-                    Sign In
-                  </Link>
-                </Button>
+                {user ? (
+                  <Button size="lg" asChild>
+                    <Link href="/dashboard">
+                      Go to Dashboard <ArrowRight className="ml-2 h-5 w-5" />
+                    </Link>
+                  </Button>
+                ) : (
+                  <>
+                    <Button size="lg" asChild>
+                      <Link href="/auth">
+                        Get Started <ArrowRight className="ml-2 h-5 w-5" />
+                      </Link>
+                    </Button>
+                    <Button size="lg" variant="outline" asChild>
+                      <Link href="/auth">
+                        Sign In
+                      </Link>
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
             
