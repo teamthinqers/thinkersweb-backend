@@ -1,8 +1,9 @@
 import { db } from "@db";
-import { users, whatsappUsers } from "@shared/schema";
+import { users, whatsappUsers, entries, tags } from "@shared/schema";
 import { eq } from "drizzle-orm";
-import { processEntryFromChat, generateChatResponse } from "./chat";
+import { processEntryFromChat, generateChatResponse, type Message } from "./chat";
 import axios from "axios";
+import { storage } from "./storage";
 
 // WhatsApp Business API configuration
 const WHATSAPP_API_URL = process.env.WHATSAPP_API_URL || "https://graph.facebook.com/v17.0";
@@ -159,12 +160,63 @@ export async function processWhatsAppMessage(from: string, messageText: string):
       };
     } else {
       // Process as a new learning entry
-      const result = await processEntryFromChat(messageText, []);
-      if (result) {
-        return {
-          success: true,
-          message: `✅ New learning dot created!\n\nTitle: ${result.title}\n\nCategory: ${result.categoryId ? 'Added' : 'None'}\n\nTags: ${result.tagNames && result.tagNames.length > 0 ? result.tagNames.join(', ') : 'None'}`,
-        };
+      const structuredEntry = await processEntryFromChat(messageText, []);
+      
+      if (structuredEntry) {
+        try {
+          // Create the entry in the database
+          // First, we need to update the entries table directly because storage.createEntry doesn't accept userId
+          const [insertedEntry] = await db.insert(entries).values({
+            title: structuredEntry.title,
+            content: structuredEntry.content,
+            categoryId: structuredEntry.categoryId,
+            userId: userId,
+            isFavorite: false,
+          }).returning();
+          
+          const newEntry = insertedEntry;
+          
+          // If we have tag names, create them and associate with the entry
+          if (structuredEntry.tagNames && structuredEntry.tagNames.length > 0) {
+            // Create tags that don't exist and get their IDs
+            const tagIds: number[] = [];
+            
+            for (const tagName of structuredEntry.tagNames) {
+              try {
+                // Try to find existing tag
+                const existingTag = await db.query.tags.findFirst({
+                  where: eq(tags.name, tagName)
+                });
+                
+                if (existingTag) {
+                  tagIds.push(existingTag.id);
+                } else {
+                  // Create new tag
+                  const newTag = await storage.createTag({ name: tagName });
+                  tagIds.push(newTag.id);
+                }
+              } catch (error) {
+                console.error(`Error creating tag ${tagName}:`, error);
+              }
+            }
+            
+            // Update the entry with the tag IDs
+            if (tagIds.length > 0) {
+              await storage.updateEntry(newEntry.id, { tagIds });
+            }
+          }
+          
+          return {
+            success: true,
+            message: `✅ New learning dot created!\n\nTitle: ${structuredEntry.title}\n\nCategory: ${structuredEntry.categoryId ? 'Added' : 'None'}\n\nTags: ${structuredEntry.tagNames && structuredEntry.tagNames.length > 0 ? structuredEntry.tagNames.join(', ') : 'None'}`,
+          };
+        } catch (error) {
+          console.error("Error creating entry from WhatsApp:", error);
+          return {
+            success: false,
+            message: "Your learning was processed but there was an error saving it. Please try again later.",
+          };
+        }
       } else {
         return {
           success: false,
