@@ -113,9 +113,9 @@ export default function LandingPage() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {/* Feature 1 */}
-            <div className="bg-card border rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
-              <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
-                <Brain className="h-6 w-6 text-primary" />
+            <div className="bg-card border rounded-xl p-6 card-hover">
+              <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center mb-4">
+                <Brain className="h-6 w-6 text-primary animate-pulsate" />
               </div>
               <h3 className="text-xl font-semibold mb-2">Conversational Capture</h3>
               <p className="text-muted-foreground">
@@ -124,9 +124,9 @@ export default function LandingPage() {
             </div>
 
             {/* Feature 2 */}
-            <div className="bg-card border rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
-              <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
-                <BookOpen className="h-6 w-6 text-primary" />
+            <div className="bg-card border rounded-xl p-6 card-hover">
+              <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center mb-4">
+                <BookOpen className="h-6 w-6 text-primary animate-pulsate" />
               </div>
               <h3 className="text-xl font-semibold mb-2">Knowledge Organization</h3>
               <p className="text-muted-foreground">
@@ -135,9 +135,9 @@ export default function LandingPage() {
             </div>
 
             {/* Feature 3 */}
-            <div className="bg-card border rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
-              <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
-                <Users className="h-6 w-6 text-primary" />
+            <div className="bg-card border rounded-xl p-6 card-hover">
+              <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center mb-4">
+                <Users className="h-6 w-6 text-primary animate-pulsate" />
               </div>
               <h3 className="text-xl font-semibold mb-2">Barter Learn Network</h3>
               <p className="text-muted-foreground">
@@ -146,9 +146,9 @@ export default function LandingPage() {
             </div>
 
             {/* Feature 4 */}
-            <div className="bg-card border rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
-              <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
-                <Sparkles className="h-6 w-6 text-primary" />
+            <div className="bg-card border rounded-xl p-6 card-hover">
+              <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center mb-4">
+                <Sparkles className="h-6 w-6 text-primary animate-pulsate" />
               </div>
               <h3 className="text-xl font-semibold mb-2">Pattern Recognition</h3>
               <p className="text-muted-foreground">
@@ -157,9 +157,9 @@ export default function LandingPage() {
             </div>
 
             {/* Feature 5 */}
-            <div className="bg-card border rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
-              <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
-                <BarChart2 className="h-6 w-6 text-primary" />
+            <div className="bg-card border rounded-xl p-6 card-hover">
+              <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center mb-4">
+                <BarChart2 className="h-6 w-6 text-primary animate-pulsate" />
               </div>
               <h3 className="text-xl font-semibold mb-2">Learning Analytics</h3>
               <p className="text-muted-foreground">
@@ -168,9 +168,9 @@ export default function LandingPage() {
             </div>
 
             {/* Feature 6 */}
-            <div className="bg-card border rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
-              <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
-                <MessageCircle className="h-6 w-6 text-primary" />
+            <div className="bg-card border rounded-xl p-6 card-hover">
+              <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center mb-4">
+                <MessageCircle className="h-6 w-6 text-primary animate-pulsate" />
               </div>
               <h3 className="text-xl font-semibold mb-2">Interactive Reflection</h3>
               <p className="text-muted-foreground">
@@ -193,30 +193,45 @@ export default function LandingPage() {
 
           <div className="flex flex-col md:flex-row gap-8 items-center justify-center">
             {/* Step 1 */}
-            <div className="flex-1 max-w-md text-center">
-              <div className="w-16 h-16 rounded-full bg-primary text-primary-foreground text-2xl font-bold flex items-center justify-center mx-auto mb-6">1</div>
+            <div className="flex-1 max-w-md text-center card-hover p-8 rounded-xl bg-card border">
+              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-secondary text-primary-foreground text-2xl font-bold flex items-center justify-center mx-auto mb-6 shadow-md">1</div>
               <h3 className="text-xl font-semibold mb-2">Chat About Your Learning</h3>
               <p className="text-muted-foreground">
                 Simply tell the app what you've learned in your own words, just like you're talking to a friend.
               </p>
+              <div className="mt-4 pt-2">
+                <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold bg-primary/10 text-primary">natural</span>
+                <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold bg-primary/10 text-primary ml-1.5">conversational</span>
+                <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold bg-primary/10 text-primary ml-1.5">easy</span>
+              </div>
             </div>
 
             {/* Step 2 */}
-            <div className="flex-1 max-w-md text-center">
-              <div className="w-16 h-16 rounded-full bg-primary text-primary-foreground text-2xl font-bold flex items-center justify-center mx-auto mb-6">2</div>
+            <div className="flex-1 max-w-md text-center card-hover p-8 rounded-xl bg-card border">
+              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-secondary text-primary-foreground text-2xl font-bold flex items-center justify-center mx-auto mb-6 shadow-md">2</div>
               <h3 className="text-xl font-semibold mb-2">AI Structures Your Insights</h3>
               <p className="text-muted-foreground">
                 The app automatically organizes your learning into structured entries with relevant tags and categories.
               </p>
+              <div className="mt-4 pt-2">
+                <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold bg-secondary/10 text-secondary">AI-powered</span>
+                <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold bg-secondary/10 text-secondary ml-1.5">organized</span>
+                <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold bg-secondary/10 text-secondary ml-1.5">semantic</span>
+              </div>
             </div>
 
             {/* Step 3 */}
-            <div className="flex-1 max-w-md text-center">
-              <div className="w-16 h-16 rounded-full bg-primary text-primary-foreground text-2xl font-bold flex items-center justify-center mx-auto mb-6">3</div>
+            <div className="flex-1 max-w-md text-center card-hover p-8 rounded-xl bg-card border">
+              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-secondary text-primary-foreground text-2xl font-bold flex items-center justify-center mx-auto mb-6 shadow-md">3</div>
               <h3 className="text-xl font-semibold mb-2">Discover Patterns & Share</h3>
               <p className="text-muted-foreground">
                 Explore connections between your learnings, generate insights, and optionally share with your network.
               </p>
+              <div className="mt-4 pt-2">
+                <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold bg-primary/10 text-primary">patterns</span>
+                <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold bg-primary/10 text-primary ml-1.5">insights</span>
+                <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold bg-primary/10 text-primary ml-1.5">social</span>
+              </div>
             </div>
           </div>
         </div>
@@ -234,9 +249,9 @@ export default function LandingPage() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {/* User 1 */}
-            <div className="bg-card border rounded-xl p-6 shadow-md">
+            <div className="bg-card border rounded-xl p-6 card-hover">
               <div className="mb-4">
-                <span className="inline-block rounded-full bg-primary/10 p-2">
+                <span className="inline-block rounded-full bg-gradient-to-br from-primary/20 to-primary/10 p-2.5">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M3 7V5c0-1.1.9-2 2-2h2"></path><path d="M17 3h2c1.1 0 2 .9 2 2v2"></path><path d="M21 17v2c0 1.1-.9 2-2 2h-2"></path><path d="M7 21H5c-1.1 0-2-.9-2-2v-2"></path><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><path d="M9 9h.01"></path><path d="M15 9h.01"></path></svg>
                 </span>
               </div>
@@ -244,20 +259,29 @@ export default function LandingPage() {
               <p className="text-muted-foreground mb-4">
                 "I used to highlight textbooks and take notes that I never revisited. Now I chat about what I'm learning and can actually see connections between my classes."
               </p>
-              <div className="mt-4 pt-4 border-t">
-                <p className="font-medium">Key Benefits:</p>
-                <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
-                  <li>• Better retention through organized insights</li>
-                  <li>• Discover connections across subjects</li>
-                  <li>• Share notes with study groups</li>
+              <div className="mt-4 pt-4 border-t border-border/50">
+                <p className="font-medium text-foreground">Key Benefits:</p>
+                <ul className="mt-2 space-y-1.5 text-sm text-muted-foreground">
+                  <li className="flex items-center">
+                    <span className="h-1.5 w-1.5 rounded-full bg-primary mr-2"></span>
+                    Better retention through organized insights
+                  </li>
+                  <li className="flex items-center">
+                    <span className="h-1.5 w-1.5 rounded-full bg-primary mr-2"></span>
+                    Discover connections across subjects
+                  </li>
+                  <li className="flex items-center">
+                    <span className="h-1.5 w-1.5 rounded-full bg-primary mr-2"></span>
+                    Share notes with study groups
+                  </li>
                 </ul>
               </div>
             </div>
 
             {/* User 2 */}
-            <div className="bg-card border rounded-xl p-6 shadow-md">
+            <div className="bg-card border rounded-xl p-6 card-hover">
               <div className="mb-4">
-                <span className="inline-block rounded-full bg-primary/10 p-2">
+                <span className="inline-block rounded-full bg-gradient-to-br from-primary/20 to-primary/10 p-2.5">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
                 </span>
               </div>
@@ -265,20 +289,29 @@ export default function LandingPage() {
               <p className="text-muted-foreground mb-4">
                 "I read articles, take courses, and attend webinars constantly. This app helps me retain what matters and apply it to my work."
               </p>
-              <div className="mt-4 pt-4 border-t">
-                <p className="font-medium">Key Benefits:</p>
-                <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
-                  <li>• Track professional development</li>
-                  <li>• Turn insights into actionable strategies</li>
-                  <li>• Share knowledge with team members</li>
+              <div className="mt-4 pt-4 border-t border-border/50">
+                <p className="font-medium text-foreground">Key Benefits:</p>
+                <ul className="mt-2 space-y-1.5 text-sm text-muted-foreground">
+                  <li className="flex items-center">
+                    <span className="h-1.5 w-1.5 rounded-full bg-primary mr-2"></span>
+                    Track professional development
+                  </li>
+                  <li className="flex items-center">
+                    <span className="h-1.5 w-1.5 rounded-full bg-primary mr-2"></span>
+                    Turn insights into actionable strategies
+                  </li>
+                  <li className="flex items-center">
+                    <span className="h-1.5 w-1.5 rounded-full bg-primary mr-2"></span>
+                    Share knowledge with team members
+                  </li>
                 </ul>
               </div>
             </div>
 
             {/* User 3 */}
-            <div className="bg-card border rounded-xl p-6 shadow-md">
+            <div className="bg-card border rounded-xl p-6 card-hover">
               <div className="mb-4">
-                <span className="inline-block rounded-full bg-primary/10 p-2">
+                <span className="inline-block rounded-full bg-gradient-to-br from-primary/20 to-primary/10 p-2.5">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
                 </span>
               </div>
@@ -286,12 +319,21 @@ export default function LandingPage() {
               <p className="text-muted-foreground mb-4">
                 "I'm curious about everything from astronomy to cooking. This app helps me see surprising connections between my different interests."
               </p>
-              <div className="mt-4 pt-4 border-t">
-                <p className="font-medium">Key Benefits:</p>
-                <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
-                  <li>• Organize diverse learning interests</li>
-                  <li>• Discover interdisciplinary connections</li>
-                  <li>• Build a personal knowledge database</li>
+              <div className="mt-4 pt-4 border-t border-border/50">
+                <p className="font-medium text-foreground">Key Benefits:</p>
+                <ul className="mt-2 space-y-1.5 text-sm text-muted-foreground">
+                  <li className="flex items-center">
+                    <span className="h-1.5 w-1.5 rounded-full bg-primary mr-2"></span>
+                    Organize diverse learning interests
+                  </li>
+                  <li className="flex items-center">
+                    <span className="h-1.5 w-1.5 rounded-full bg-primary mr-2"></span>
+                    Discover interdisciplinary connections
+                  </li>
+                  <li className="flex items-center">
+                    <span className="h-1.5 w-1.5 rounded-full bg-primary mr-2"></span>
+                    Build a personal knowledge database
+                  </li>
                 </ul>
               </div>
             </div>
@@ -300,17 +342,33 @@ export default function LandingPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-primary text-primary-foreground">
-        <div className="container mx-auto px-4 md:px-6 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Ready to Transform Your Learning?</h2>
-          <p className="text-xl opacity-90 max-w-2xl mx-auto mb-8">
-            Join thousands of learners who are capturing, connecting, and sharing knowledge more effectively than ever before.
-          </p>
-          <Button size="lg" variant="secondary" className="text-primary" asChild>
-            <Link href="/dashboard">
-              Get Started Now <ArrowRight className="ml-2 h-5 w-5" />
-            </Link>
-          </Button>
+      <section className="py-24 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary to-secondary opacity-90"></div>
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMzYgMzBhNiA2IDAgMSAxLTEyIDAgNiA2IDAgMCAxIDEyIDB6Ii8+PC9nPjwvZz48L3N2Zz4=')] opacity-10"></div>
+        <div className="container mx-auto px-4 md:px-6 text-center relative z-10">
+          <div className="max-w-3xl mx-auto">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 text-white">
+              Ready to Transform Your Learning Journey?
+            </h2>
+            <p className="text-xl text-white/90 max-w-2xl mx-auto mb-10">
+              Join thousands of learners who are capturing, connecting, and sharing knowledge more effectively than ever before.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button size="lg" variant="secondary" className="text-primary font-semibold shadow-lg btn-bounce" asChild>
+                <Link href="/dashboard" className="px-8">
+                  Get Started Now <ArrowRight className="ml-2 h-5 w-5" />
+                </Link>
+              </Button>
+              <Button size="lg" variant="outline" className="bg-transparent border-white text-white hover:bg-white/10 btn-bounce" asChild>
+                <Link href="/network" className="px-8">
+                  Explore Community
+                </Link>
+              </Button>
+            </div>
+            <p className="text-white/70 text-sm mt-8">
+              No credit card required • Free personal account • Cancel anytime
+            </p>
+          </div>
         </div>
       </section>
 
