@@ -2,7 +2,17 @@ import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { z } from "zod";
-import { insertCategorySchema, insertEntrySchema, insertTagSchema, insertConnectionSchema, insertSharedEntrySchema, sharedEntries, entryTags } from "@shared/schema";
+import { 
+  insertCategorySchema, 
+  insertEntrySchema, 
+  insertTagSchema, 
+  insertConnectionSchema, 
+  insertSharedEntrySchema, 
+  sharedEntries, 
+  entryTags, 
+  users, 
+  type User 
+} from "@shared/schema";
 import { processEntryFromChat, generateChatResponse, type Message } from "./chat";
 import { connectionsService } from "./connections";
 import { db } from "@db";
@@ -14,14 +24,11 @@ import {
   unregisterWhatsAppUser,
   getWhatsAppStatus
 } from "./whatsapp";
+import { eq, inArray, and } from "drizzle-orm";
 
 // Interface for authenticated requests (will be used later when auth is implemented)
 interface AuthenticatedRequest extends Request {
-  user?: {
-    id: number;
-    username: string;
-    email: string;
-  };
+  user?: User;
   isAuthenticated(): boolean;
 }
 
