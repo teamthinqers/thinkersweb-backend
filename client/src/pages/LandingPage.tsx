@@ -240,23 +240,23 @@ export default function LandingPage() {
               </div>
             </div>
             
-            {/* First Dot/Knowledge - Psychology */}
+            {/* First Dot/Knowledge - Leadership Book */}
             <div className="bg-card border rounded-xl p-6 card-hover neural-connection">
               <div className="text-right mb-3 lg:hidden">
                 <span className="inline-block rounded-full bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">Dot 1</span>
               </div>
               <div className="flex items-center gap-4 mb-4">
                 <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><circle cx="12" cy="12" r="10"></circle><path d="M18 13a6 6 0 0 1-6 5 6 6 0 0 1-6-5"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold">Psychology Course</h3>
-                  <p className="text-muted-foreground text-sm">Learning about the impact of environmental cues on behavior</p>
+                  <h3 className="text-xl font-semibold">Leadership Reading</h3>
+                  <p className="text-muted-foreground text-sm">Notes from "The Five Dysfunctions of a Team" about trust as a foundation</p>
                 </div>
               </div>
               <div className="mt-4 pt-4 border-t border-border/50">
                 <p className="text-sm text-muted-foreground">
-                  "In my psychology studies, I discovered how subtle environmental factors can dramatically influence decision-making and habit formation."
+                  "I've been intrigued by how vulnerability-based trust creates psychological safety in high-performing teams. When leaders model openness, teams collaborate more effectively."
                 </p>
               </div>
               <div className="hidden lg:flex items-center justify-center mt-4">
@@ -264,23 +264,23 @@ export default function LandingPage() {
               </div>
             </div>
             
-            {/* Second Dot/Knowledge - UX Design */}
+            {/* Second Dot/Knowledge - Industry Research */}
             <div className="bg-card border rounded-xl p-6 card-hover neural-connection relative z-10">
               <div className="text-right mb-3 lg:hidden">
                 <span className="inline-block rounded-full bg-secondary/10 px-2.5 py-1 text-xs font-semibold text-secondary">Dot 2</span>
               </div>
               <div className="flex items-center gap-4 mb-4">
                 <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-secondary/20 to-secondary/10 flex items-center justify-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-secondary"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-secondary"><path d="M19 21V5a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v16"></path><path d="M3 7h18"></path><path d="M9 11v6"></path><path d="M15 11v6"></path><path d="M3 21h18"></path></svg>
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold">UX Design Workshop</h3>
-                  <p className="text-muted-foreground text-sm">Studying user interface patterns and digital product design</p>
+                  <h3 className="text-xl font-semibold">Industry Research</h3>
+                  <p className="text-muted-foreground text-sm">Report on the challenges of rapid digital transformation in traditional industries</p>
                 </div>
               </div>
               <div className="mt-4 pt-4 border-t border-border/50">
                 <p className="text-sm text-muted-foreground">
-                  "I've been learning about user experience design principles and how to create intuitive interfaces that users can navigate effortlessly."
+                  "My research showed that legacy companies struggle with digital transformation not because of technology, but because of embedded cultural resistance and fear of change."
                 </p>
               </div>
               <div className="hidden lg:flex items-center justify-center mt-4">
@@ -288,23 +288,23 @@ export default function LandingPage() {
               </div>
             </div>
             
-            {/* Third Dot/Knowledge - Climate Change */}
+            {/* Third Dot/Knowledge - Management Training */}
             <div className="bg-card border rounded-xl p-6 card-hover neural-connection">
               <div className="text-right mb-3 lg:hidden">
                 <span className="inline-block rounded-full bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">Dot 3</span>
               </div>
               <div className="flex items-center gap-4 mb-4">
                 <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M12 2v8"></path><path d="m4.93 10.93 1.41 1.41"></path><path d="M2 18h2"></path><path d="M20 18h2"></path><path d="m19.07 10.93-1.41 1.41"></path><path d="M22 22H2"></path><path d="M12 18v-1"></path><path d="M20 17a8 8 0 1 0-16 0"></path></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M7 11v2h10v-2H7zm5 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"></path><path d="M2 9V5c0-1.1.9-2 2-2h16a2 2 0 0 1 2 2v4"></path><path d="M2 12v3c0 1.1.9 2 2 2h16a2 2 0 0 0 2-2v-3"></path><path d="M22 12H2"></path><path d="M7 15h0"></path><path d="M17 15h0"></path></svg>
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold">Environmental Science</h3>
-                  <p className="text-muted-foreground text-sm">Reading about behavior change challenges in sustainability efforts</p>
+                  <h3 className="text-xl font-semibold">Executive Training</h3>
+                  <p className="text-muted-foreground text-sm">Workshop on innovative management techniques for disruption</p>
                 </div>
               </div>
               <div className="mt-4 pt-4 border-t border-border/50">
                 <p className="text-sm text-muted-foreground">
-                  "I've been studying why people struggle to adopt climate-friendly behaviors despite caring about the environment. The gap between intention and action is fascinating."
+                  "The most valuable insight from the executive program was learning about psychological safety's role in promoting innovation. Teams need to feel safe to experiment and fail."
                 </p>
               </div>
               <div className="hidden lg:flex items-center justify-center mt-4">
@@ -328,11 +328,11 @@ export default function LandingPage() {
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-yellow-600"><path d="M12 2v8"></path><path d="m4.93 10.93 1.41 1.41"></path><path d="M2 18h2"></path><path d="M20 18h2"></path><path d="m19.07 10.93-1.41 1.41"></path><path d="M22 22H2"></path><path d="m16 6-4 4-4-4"></path><path d="M16 18a4 4 0 0 0-8 0"></path></svg>
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold text-yellow-700 dark:text-yellow-400">The Spark: Sustainable UX Innovation</h3>
+                  <h3 className="text-xl font-semibold text-yellow-700 dark:text-yellow-400">The Spark: Transformation Leadership Framework</h3>
                 </div>
               </div>
               <p className="text-muted-foreground">
-                "By connecting my dots from psychology, UX design, and environmental science, I created a breakthrough digital interface that uses behavioral psychology principles to nudge users toward sustainable choices. My app redesign incorporates subtle environmental cues that bridge the intention-action gap, making eco-friendly behaviors feel intuitive and effortless. This innovation would have been impossible without seeing the connections between these separate fields of study!"
+                "By connecting my dots from leadership theory, industry research, and executive training, I developed a groundbreaking approach to digital transformation that prioritizes psychological safety. I realized that successful transformation isn't about technology adoption, but creating trust-based environments where teams feel safe to innovate. This approach has dramatically increased our transformation success rate by addressing the cultural resistance that typically derails these initiatives. My leadership team now implements this framework across all change management efforts!"
               </p>
               <div className="mt-4 flex flex-col gap-2">
                 <p className="text-sm text-yellow-600 dark:text-yellow-400 italic font-medium">
