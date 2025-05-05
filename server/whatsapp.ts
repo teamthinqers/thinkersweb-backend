@@ -503,7 +503,12 @@ export async function requestWhatsAppOTP(userId: number, phoneNumber: string): P
       "🔐 DotSpark Verification Code\n\n" +
       `Your verification code is: ${otpCode}\n\n` +
       "This code will expire in 10 minutes.\n" + 
-      "Please enter this code in the DotSpark web application to verify your WhatsApp number.";
+      "Please enter this code in the DotSpark web application to verify your WhatsApp number." +
+      (process.env.NODE_ENV !== 'production' ? 
+        "\n\n[DEVELOPMENT MODE] To test with the Twilio WhatsApp Sandbox:" +
+        "\n1. Save +14155238886 to your contacts" +
+        "\n2. Send 'join example-sandbox' to that number on WhatsApp" +
+        "\n3. Once connected, you'll receive messages from our app" : "");
     
     // Try to send the message, but in dev mode, we'll succeed even if Twilio fails
     let messageSent = false;

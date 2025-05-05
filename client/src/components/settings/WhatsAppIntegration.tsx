@@ -264,6 +264,17 @@ export default function WhatsAppIntegration() {
               <p className="font-medium">{currentPhone}</p>
             </div>
             
+            <div className="border rounded-lg p-4 bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-950 dark:to-yellow-950 border-amber-100 dark:border-amber-900 mb-4">
+              <p className="font-medium mb-2 text-amber-800 dark:text-amber-400">Important: Twilio WhatsApp Sandbox Setup</p>
+              <ol className="text-sm space-y-2 list-decimal pl-4 text-amber-700 dark:text-amber-400">
+                <li>Save the Twilio WhatsApp number <span className="font-mono">+14155238886</span> to your contacts as "DotSpark Bot"</li>
+                <li>Send the message <span className="font-mono">join example-sandbox</span> to this number on WhatsApp</li>
+                <li>You'll receive a confirmation when connected to the Twilio Sandbox</li>
+                <li>Now your WhatsApp is linked to the sandbox and can receive messages from our app</li>
+              </ol>
+              <p className="text-xs mt-2 text-amber-600 dark:text-amber-500">Note: In production, you would use an approved WhatsApp Business number instead of the Sandbox.</p>
+            </div>
+
             <div className="border rounded-lg p-4 bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-indigo-950 dark:to-blue-950">
               <p className="font-medium mb-2">Chat with DotSpark AI on WhatsApp:</p>
               <ol className="text-sm space-y-2 list-decimal pl-4">
@@ -283,6 +294,16 @@ export default function WhatsAppIntegration() {
                 We've sent a verification code to your WhatsApp number: <span className="font-medium">{pendingPhoneNumber}</span>
               </AlertDescription>
             </Alert>
+            
+            <div className="border rounded-lg p-4 bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-950 dark:to-yellow-950 border-amber-100 dark:border-amber-900 mb-4">
+              <p className="font-medium mb-2 text-amber-800 dark:text-amber-400">Important: Twilio WhatsApp Sandbox Setup</p>
+              <ol className="text-sm space-y-2 list-decimal pl-4 text-amber-700 dark:text-amber-400">
+                <li>Save the Twilio WhatsApp number <span className="font-mono">+14155238886</span> to your contacts as "DotSpark Bot"</li>
+                <li>Send the message <span className="font-mono">join example-sandbox</span> to this number on WhatsApp</li>
+                <li>You'll receive a confirmation when connected to the Twilio Sandbox</li>
+                <li>In development mode, the verification code will also appear directly in the UI below</li>
+              </ol>
+            </div>
             
             <div className="border rounded-lg p-4 bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-indigo-950 dark:to-blue-950">
               <p className="font-medium mb-2">Verify your WhatsApp number:</p>
@@ -349,6 +370,16 @@ export default function WhatsAppIntegration() {
           </div>
         ) : (
           <div className="space-y-4">
+            <div className="border rounded-lg p-4 bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-950 dark:to-yellow-950 border-amber-100 dark:border-amber-900 mb-4">
+              <p className="font-medium mb-2 text-amber-800 dark:text-amber-400">Important: Twilio WhatsApp Sandbox Setup</p>
+              <ol className="text-sm space-y-2 list-decimal pl-4 text-amber-700 dark:text-amber-400">
+                <li>Save the Twilio WhatsApp number <span className="font-mono">+14155238886</span> to your contacts as "DotSpark Bot"</li>
+                <li>Send the message <span className="font-mono">join example-sandbox</span> to this number on WhatsApp</li>
+                <li>You'll receive a confirmation when connected to the Twilio Sandbox</li>
+                <li>Once connected, proceed with the steps below to link your DotSpark account</li>
+              </ol>
+            </div>
+            
             <div className="border rounded-lg p-4 bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-indigo-950 dark:to-blue-950">
               <p className="font-medium mb-2">Activate DotSpark AI Chatbot on WhatsApp:</p>
               <ol className="text-sm space-y-2 list-decimal pl-4">
