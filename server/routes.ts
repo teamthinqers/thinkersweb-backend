@@ -914,12 +914,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json(result);
       }
     } catch (err) {
-      console.error("WhatsApp registration error:", err);
+      console.error("WhatsApp chatbot registration error:", err);
       handleApiError(err, res);
     }
   });
 
-  // Unregister a phone number from WhatsApp integration
+  // Unregister a phone number from DotSpark WhatsApp chatbot
   app.post(`${apiPrefix}/whatsapp/unregister`, async (req, res) => {
     try {
       // For demo purposes using DEMO_USER_ID, in production this would use authenticated user
@@ -933,12 +933,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json(result);
       }
     } catch (err) {
-      console.error("WhatsApp unregistration error:", err);
+      console.error("WhatsApp chatbot unregistration error:", err);
       handleApiError(err, res);
     }
   });
 
-  // Get WhatsApp integration status
+  // Get DotSpark WhatsApp chatbot status
   app.get(`${apiPrefix}/whatsapp/status`, async (req, res) => {
     try {
       // For demo purposes using DEMO_USER_ID, in production this would use authenticated user
@@ -947,7 +947,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const status = await getWhatsAppStatus(userId);
       res.json(status);
     } catch (err) {
-      console.error("WhatsApp status error:", err);
+      console.error("WhatsApp chatbot status error:", err);
       handleApiError(err, res);
     }
   });
