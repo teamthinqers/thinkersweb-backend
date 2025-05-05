@@ -12,9 +12,37 @@ import LandingPage from "@/pages/LandingPage";
 import AuthPage from "@/pages/auth-page";
 import Settings from "@/pages/Settings";
 import AppLayout from "@/components/layout/AppLayout";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import EntryDetail from "@/components/entries/EntryDetail";
 import ChatEntryForm from "@/components/chat/ChatEntryForm";
+import { AuthProvider, useAuth } from "@/hooks/use-auth";
+import { Loader2 } from "lucide-react";
+
+// Protected route component
+function ProtectedRoute({ children }: { children: React.ReactNode }) {
+  const { user, isLoading } = useAuth();
+  const [, setLocation] = useLocation();
+  
+  useEffect(() => {
+    if (!isLoading && !user) {
+      setLocation("/auth");
+    }
+  }, [user, isLoading, setLocation]);
+  
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+  
+  if (!user) {
+    return null;
+  }
+  
+  return <>{children}</>;
+}
 
 function AppWithLayout() {
   const [showEntryDetail, setShowEntryDetail] = useState(false);
@@ -47,31 +75,33 @@ function AppWithLayout() {
   };
 
   return (
-    <AppLayout onNewEntry={openNewEntryForm}>
-      <Switch>
-        <Route path="/dashboard" component={() => <Dashboard onEntryClick={openEntryDetail} />} />
-        <Route path="/entries" component={() => <AllEntries onEntryClick={openEntryDetail} />} />
-        <Route path="/insights" component={Insights} />
-        <Route path="/favorites" component={() => <Favorites onEntryClick={openEntryDetail} />} />
-        <Route path="/network" component={Network} />
-        <Route path="/settings" component={Settings} />
-        <Route component={NotFound} />
-      </Switch>
+    <ProtectedRoute>
+      <AppLayout onNewEntry={openNewEntryForm}>
+        <Switch>
+          <Route path="/dashboard" component={() => <Dashboard onEntryClick={openEntryDetail} />} />
+          <Route path="/entries" component={() => <AllEntries onEntryClick={openEntryDetail} />} />
+          <Route path="/insights" component={Insights} />
+          <Route path="/favorites" component={() => <Favorites onEntryClick={openEntryDetail} />} />
+          <Route path="/network" component={Network} />
+          <Route path="/settings" component={Settings} />
+          <Route component={NotFound} />
+        </Switch>
 
-      {showEntryDetail && currentEntryId && (
-        <EntryDetail 
-          entryId={currentEntryId} 
-          isOpen={showEntryDetail} 
-          onClose={closeEntryDetail} 
-          onEdit={openEditEntryForm} 
+        {showEntryDetail && currentEntryId && (
+          <EntryDetail 
+            entryId={currentEntryId} 
+            isOpen={showEntryDetail} 
+            onClose={closeEntryDetail} 
+            onEdit={openEditEntryForm} 
+          />
+        )}
+
+        <ChatEntryForm 
+          isOpen={showEntryForm} 
+          onClose={closeEntryForm} 
         />
-      )}
-
-      <ChatEntryForm 
-        isOpen={showEntryForm} 
-        onClose={closeEntryForm} 
-      />
-    </AppLayout>
+      </AppLayout>
+    </ProtectedRoute>
   );
 }
 
@@ -94,8 +124,10 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <Router />
-      <Toaster />
+      <AuthProvider>
+        <Router />
+        <Toaster />
+      </AuthProvider>
     </QueryClientProvider>
   );
 }
