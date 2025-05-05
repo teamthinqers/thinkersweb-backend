@@ -119,7 +119,7 @@ export async function sendWhatsAppReply(to: string, message: string): Promise<bo
 }
 
 /**
- * Process a WhatsApp message to create an entry
+ * Process a message from the DotSpark WhatsApp chatbot to create a learning dot
  */
 export async function processWhatsAppMessage(from: string, messageText: string): Promise<{
   success: boolean;
@@ -131,7 +131,7 @@ export async function processWhatsAppMessage(from: string, messageText: string):
     if (!userId) {
       return {
         success: false,
-        message: "Your phone number is not linked to a DotSpark account. Please register through the web app first.",
+        message: "Your phone number is not linked to a DotSpark account. Please activate the WhatsApp chatbot through the DotSpark web app first.",
       };
     }
 
@@ -211,10 +211,10 @@ export async function processWhatsAppMessage(from: string, messageText: string):
             message: `✅ New learning dot created!\n\nTitle: ${structuredEntry.title}\n\nCategory: ${structuredEntry.categoryId ? 'Added' : 'None'}\n\nTags: ${structuredEntry.tagNames && structuredEntry.tagNames.length > 0 ? structuredEntry.tagNames.join(', ') : 'None'}`,
           };
         } catch (error) {
-          console.error("Error creating entry from WhatsApp:", error);
+          console.error("Error creating learning dot from WhatsApp chatbot:", error);
           return {
             success: false,
-            message: "Your learning was processed but there was an error saving it. Please try again later.",
+            message: "Your learning was processed by our AI but there was an error saving it. Please try again later.",
           };
         }
       } else {
@@ -234,7 +234,7 @@ export async function processWhatsAppMessage(from: string, messageText: string):
 }
 
 /**
- * Register a WhatsApp number for a user
+ * Activate the DotSpark WhatsApp chatbot for a user
  */
 export async function registerWhatsAppUser(userId: number, phoneNumber: string): Promise<{
   success: boolean;
@@ -272,14 +272,14 @@ export async function registerWhatsAppUser(userId: number, phoneNumber: string):
       if (existingWhatsAppUser.userId === userId) {
         return {
           success: true,
-          message: "Phone number already registered for this user",
+          message: "WhatsApp chatbot is already activated for this phone number",
         };
       }
       
       // Otherwise, it's linked to another user
       return {
         success: false,
-        message: "Phone number already registered to another user",
+        message: "This phone number is already connected to another DotSpark account",
       };
     }
 
@@ -292,19 +292,19 @@ export async function registerWhatsAppUser(userId: number, phoneNumber: string):
 
     return {
       success: true,
-      message: "WhatsApp number registered successfully. You can now send messages to DotSpark.",
+      message: "DotSpark WhatsApp chatbot activated successfully. You can now chat with our AI through WhatsApp.",
     };
   } catch (error) {
-    console.error("Error registering WhatsApp user:", error);
+    console.error("Error activating WhatsApp chatbot:", error);
     return {
       success: false,
-      message: "An error occurred while registering your WhatsApp number",
+      message: "An error occurred while activating the WhatsApp chatbot",
     };
   }
 }
 
 /**
- * Unregister a WhatsApp number for a user
+ * Deactivate the DotSpark WhatsApp chatbot for a user
  */
 export async function unregisterWhatsAppUser(userId: number): Promise<{
   success: boolean;
@@ -318,7 +318,7 @@ export async function unregisterWhatsAppUser(userId: number): Promise<{
     if (!whatsappUser) {
       return {
         success: false,
-        message: "No WhatsApp number registered for this user",
+        message: "No WhatsApp chatbot activated for this user",
       };
     }
 
@@ -330,19 +330,19 @@ export async function unregisterWhatsAppUser(userId: number): Promise<{
 
     return {
       success: true,
-      message: "WhatsApp integration deactivated successfully",
+      message: "DotSpark WhatsApp chatbot deactivated successfully",
     };
   } catch (error) {
-    console.error("Error unregistering WhatsApp user:", error);
+    console.error("Error deactivating WhatsApp chatbot:", error);
     return {
       success: false,
-      message: "An error occurred while unregistering your WhatsApp number",
+      message: "An error occurred while deactivating the WhatsApp chatbot",
     };
   }
 }
 
 /**
- * Get WhatsApp registration status for a user
+ * Get DotSpark WhatsApp chatbot status for a user
  */
 export async function getWhatsAppStatus(userId: number): Promise<{
   registered: boolean;
@@ -362,7 +362,7 @@ export async function getWhatsAppStatus(userId: number): Promise<{
       phoneNumber: whatsappUser.phoneNumber,
     };
   } catch (error) {
-    console.error("Error getting WhatsApp status:", error);
+    console.error("Error getting WhatsApp chatbot status:", error);
     return { registered: false };
   }
 }
