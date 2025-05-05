@@ -84,21 +84,22 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
     }
   };
 
-  // Use centralized navigation service for consistent behavior
+  // Direct navigation with Link component
   const goToLandingPage = () => {
     if (isMobile) {
       setShowMobileNav(false);
     }
-    // Use the navigation service for reliable home page navigation
-    navigateToHome(true);
+    // Direct navigation
+    setLocation("/");
   };
 
-  // Use centralized navigation service for dashboard navigation
+  // Direct navigation with Link component
   const goToDashboard = () => {
     if (isMobile) {
       setShowMobileNav(false);
     }
-    navigateToDashboard();
+    // Direct navigation
+    setLocation("/dashboard");
   };
 
   return (

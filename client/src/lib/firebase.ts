@@ -77,29 +77,15 @@ export const signInWithGoogle = async (): Promise<User> => {
   }
 };
 
-// Complete sign out
+// Simple sign out
 export const signOut = async (): Promise<void> => {
   try {
-    console.log("Starting sign out process...");
-    
-    // Clear ALL localStorage to be extra safe
-    localStorage.clear();
-    
-    // Clear any session cookies
-    document.cookie.split(";").forEach(function(c) {
-      document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
-    });
+    // Clear backup
+    localStorage.removeItem('dotspark_user');
     
     // Sign out of Firebase
     await firebaseSignOut(auth);
     console.log("Sign out successful");
-    
-    // For good measure, invalidate any auth token by setting to past date
-    try {
-      document.cookie = `Firebase-auth=; expires=${new Date(0).toUTCString()}; path=/`;
-    } catch (e) {
-      console.warn("Could not reset auth cookie:", e);
-    }
   } catch (error: any) {
     console.error("Error signing out:", error.code, error.message);
     throw error;

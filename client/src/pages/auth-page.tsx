@@ -158,10 +158,10 @@ export default function AuthPage() {
       
       console.log("Starting Google Sign In process from auth page");
       
-      // Execute login and get user if successful
-      const user = await loginWithGoogle();
+      // Execute login
+      await loginWithGoogle();
       
-      console.log("Google Sign In successful, user:", user?.displayName);
+      console.log("Google Sign In successful");
       
       // Hard refresh to dashboard to ensure clean application state
       window.location.href = "/dashboard";
