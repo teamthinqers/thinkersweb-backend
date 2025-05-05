@@ -9,20 +9,13 @@ import {
   Menu, 
   LayoutDashboard
 } from "lucide-react";
-
-// Add a global flag for intentional navigation to home/landing page
-declare global {
-  interface Window {
-    INTENTIONAL_HOME_NAVIGATION: boolean;
-  }
-}
-// Initialize it if not already set
-window.INTENTIONAL_HOME_NAVIGATION = window.INTENTIONAL_HOME_NAVIGATION || false;
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { useAuth } from "@/hooks/use-auth";
 import { Link, useLocation } from "wouter";
+import { navigateToHome, navigateToDashboard } from "@/lib/navigationService";
+import { signOut } from "@/lib/authService";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -66,37 +59,46 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
 
   const handleLogout = async () => {
     try {
-      await logout();
-      setLocation("/");
+      // Show the toast first so user gets immediate feedback
       toast({
-        title: "Logged out",
-        description: "You have been successfully logged out",
+        title: "Logging out...",
+        description: "Please wait while we log you out safely",
       });
+      
+      // Use our centralized auth service for consistent behavior
+      await signOut(true); // true = redirect to home page after logout
+      
+      // Toast notification handled by auth service redirect
     } catch (error) {
+      console.error("Logout error:", error);
       toast({
-        title: "Error",
-        description: "Failed to log out. Please try again.",
+        title: "Error during logout",
+        description: "There was a problem logging out. We'll reload the page to ensure you're signed out.",
         variant: "destructive",
       });
+      
+      // Force a page reload as fallback if logout fails
+      setTimeout(() => {
+        window.location.replace("/?forcedLogout=true");
+      }, 1500);
     }
   };
 
+  // Use centralized navigation service for consistent behavior
   const goToLandingPage = () => {
-    // Completely bypass router for reliable landing page navigation
-    window.INTENTIONAL_HOME_NAVIGATION = true;
-    localStorage.setItem('intentional_home_navigation', 'true');
-    // Force complete page reload with no caching
-    window.location.replace("/?nocache=" + Date.now());
     if (isMobile) {
       setShowMobileNav(false);
     }
+    // Use the navigation service for reliable home page navigation
+    navigateToHome(true);
   };
 
+  // Use centralized navigation service for dashboard navigation
   const goToDashboard = () => {
-    setLocation("/dashboard");
     if (isMobile) {
       setShowMobileNav(false);
     }
+    navigateToDashboard();
   };
 
   return (

@@ -20,15 +20,15 @@ import { Loader2, ServerCrash } from "lucide-react";
 import { ConnectionError } from "@/components/ui/connection-error";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
+import { isIntentionalHomeNavigation, clearIntentionalNavigation, navigateToHome, navigateToDashboard } from "@/lib/navigationService";
+import { signInWithGoogle, recoverSession } from "@/lib/authService";
 
-// Add a global flag for intentional navigation to home/landing page
+// For backward compatibility
 declare global {
   interface Window {
     INTENTIONAL_HOME_NAVIGATION: boolean;
   }
 }
-// Initialize it if not already set
-window.INTENTIONAL_HOME_NAVIGATION = window.INTENTIONAL_HOME_NAVIGATION || false;
 
 // Protected route component with auto-restore feature
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -396,35 +396,40 @@ function Router() {
     }
   }, [user, isLoading, location, isAuthPage, isLandingPage, isDashboardPage, setLocation, toast]);
 
-  // Check for intentional navigation flag from localStorage on page load
+  // Use the navigation service to check for intentional navigation
   useEffect(() => {
     if (isLandingPage) {
-      const storedIntentionalFlag = localStorage.getItem('intentional_home_navigation');
-      if (storedIntentionalFlag === 'true') {
-        console.log("Found intentional navigation flag in localStorage");
+      // Check if this is an intentional navigation using the service
+      const isIntentional = isIntentionalHomeNavigation();
+      
+      if (isIntentional) {
+        console.log("Navigation service: Found intentional navigation to landing page");
         setIntentionalHomeNavigation(true);
         window.INTENTIONAL_HOME_NAVIGATION = true;
         
-        // Clear the flag after a short delay
+        // Clear the flag after navigation is complete
         setTimeout(() => {
-          localStorage.removeItem('intentional_home_navigation');
-          // Don't reset other flags immediately to allow the page to render properly
+          clearIntentionalNavigation();
+          // Don't reset React state immediately to allow proper rendering
         }, 1000);
       }
     }
   }, [isLandingPage]);
 
-  // Allow accessing landing page with much higher priority:
-  // 1. When it's intentional navigation (from localStorage or state)
-  // 2. When the URL has the nocache parameter (from Header navigation)
-  // 3. When not authenticated
+  // Enhanced logic for landing page access:
+  // 1. Use our navigation service to determine intentional navigation
+  // 2. Support the global flag for backward compatibility 
+  // 3. Always allow access when not authenticated
+  // 4. Also check URL parameters for cache-busting
   if (isLandingPage && (
+    isIntentionalHomeNavigation() || 
     intentionalHomeNavigation || 
     window.INTENTIONAL_HOME_NAVIGATION || 
     window.location.search.includes('nocache') || 
+    window.location.search.includes('forcedLogout') ||
     !user
   )) {
-    console.log("Showing landing page due to intentional navigation or no authentication");
+    console.log("Navigation service: Showing landing page due to intentional navigation or no authentication");
     return <LandingPage />;
   }
 
