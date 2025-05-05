@@ -1,6 +1,17 @@
 import { db } from "./index";
 import { users, connections } from "@shared/schema";
 import { sql } from "drizzle-orm";
+import { scrypt, randomBytes } from "crypto";
+import { promisify } from "util";
+
+const scryptAsync = promisify(scrypt);
+
+// Hash password function from auth.ts
+async function hashPassword(password: string) {
+  const salt = randomBytes(16).toString("hex");
+  const buf = (await scryptAsync(password, salt, 64)) as Buffer;
+  return `${buf.toString("hex")}.${salt}`;
+}
 
 async function seedUsers() {
   try {
@@ -19,23 +30,33 @@ async function seedUsers() {
       // Create test users
       console.log("Creating test users...");
       
+      // Create a test user with a known password
+      const testPassword = "dotsparktest"; // Simple password for testing purposes
+      const hashedPassword = await hashPassword(testPassword);
+      
+      console.log(`Test user credentials: username = "testuser", password = "${testPassword}"`);
+      
       const [demoUser] = await db.insert(users)
         .values({ 
-          username: "demo_user", 
-          email: "demo@example.com", 
-          password: "password123", // In a real app, this would be hashed
-          fullName: "Demo User",
-          bio: "This is a demo user for testing the Learning Repository app.",
+          username: "testuser", 
+          email: "test@dotspark.app", 
+          password: hashedPassword,
+          fullName: "Test User",
+          bio: "This is a test user for DotSpark with a known password that you can use for testing.",
           createdAt: new Date(),
           updatedAt: new Date()
         })
         .returning();
 
+      // Hash passwords for other test users as well
+      const learningProPassword = await hashPassword("learning123");
+      const knowledgeSeekerPassword = await hashPassword("knowledge123");
+      
       const [learningPro] = await db.insert(users)
         .values({ 
           username: "learning_pro", 
           email: "learning@example.com", 
-          password: "password123", 
+          password: learningProPassword, 
           fullName: "Learning Pro",
           bio: "I love to learn and share knowledge with others.",
           createdAt: new Date(),
@@ -47,7 +68,7 @@ async function seedUsers() {
         .values({ 
           username: "knowledge_seeker", 
           email: "knowledge@example.com", 
-          password: "password123", 
+          password: knowledgeSeekerPassword, 
           fullName: "Knowledge Seeker",
           bio: "Always seeking new information and insights.",
           createdAt: new Date(),
