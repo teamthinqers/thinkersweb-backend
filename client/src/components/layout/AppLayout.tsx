@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
 import { useMobile } from "@/hooks/use-mobile";
+import { Menu } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -18,31 +20,6 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children, onNewEntry }) => {
 
   return (
     <div className="flex h-screen overflow-hidden">
-      {/* Mobile menu button */}
-      {isMobile && (
-        <div className="absolute top-4 left-4 z-50">
-          <button
-            onClick={toggleMobileSidebar}
-            className="p-2 rounded-md text-gray-600 hover:bg-gray-100"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 6h16M4 12h16M4 18h16"
-              />
-            </svg>
-          </button>
-        </div>
-      )}
-
       {/* Sidebar */}
       <Sidebar 
         isOpen={!isMobile || showMobileSidebar} 
@@ -53,9 +30,13 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children, onNewEntry }) => {
 
       {/* Main content area */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        <Header onSearch={() => {}} />
-        <main className="flex-1 overflow-y-auto p-4 bg-gray-50">
-          <div className="max-w-7xl mx-auto">
+        <Header 
+          onSearch={() => {}} 
+          onMenuClick={toggleMobileSidebar}
+          showMenuButton={isMobile}
+        />
+        <main className={`flex-1 overflow-y-auto p-4 ${isMobile ? 'pt-2 px-2' : 'p-4'} bg-gray-50`}>
+          <div className={`${isMobile ? 'w-full' : 'max-w-7xl mx-auto'}`}>
             {children}
           </div>
         </main>
