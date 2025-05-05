@@ -44,13 +44,48 @@ setPersistence(auth, browserLocalPersistence)
     console.error("Error setting Firebase auth persistence:", error);
   });
 
-// Extra safety measure - check persistence every minute
-setInterval(() => {
-  // Check if we're supposed to be logged in
-  if (auth.currentUser) {
-    console.log(`Auth persistence check: User still logged in as ${auth.currentUser.displayName || auth.currentUser.email}`);
+// Periodic token refresh function to keep Firebase auth session alive
+const refreshTokenPeriodically = async () => {
+  try {
+    if (auth.currentUser) {
+      // Force token refresh
+      const token = await auth.currentUser.getIdToken(true);
+      console.log(`Token refreshed at ${new Date().toISOString()} (${token.substring(0, 10)}...)`);
+      
+      // Also refresh the server session
+      try {
+        // Ping the server to keep session alive
+        await fetch('/api/auth/refresh', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            uid: auth.currentUser.uid,
+            refreshToken: Date.now() // Just a timestamp to prevent caching
+          }),
+          credentials: 'include' // Important for sending cookies
+        });
+        console.log('Server session refreshed successfully');
+      } catch (serverError) {
+        console.warn('Failed to refresh server session, will retry next cycle', serverError);
+      }
+    }
+  } catch (error) {
+    console.error('Failed to refresh auth token:', error);
   }
-}, 60000);
+};
+
+// Initial immediate check and refresh
+setTimeout(refreshTokenPeriodically, 1000);
+
+// Short refresh interval (every 10 minutes)
+const refreshInterval = setInterval(refreshTokenPeriodically, 10 * 60 * 1000); // 10 minutes
+
+// Clear interval on page unload to prevent memory leaks
+window.addEventListener('beforeunload', () => {
+  clearInterval(refreshInterval);
+});
 
 // Configure Google provider with custom parameters for better compatibility
 const googleProvider = new GoogleAuthProvider();

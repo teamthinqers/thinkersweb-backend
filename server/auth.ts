@@ -364,6 +364,55 @@ export function setupAuth(app: Express) {
     });
   });
 
+  // Session refresh endpoint to keep it alive
+  app.post("/api/auth/refresh", (req, res) => {
+    try {
+      const { uid, refreshToken } = req.body;
+      
+      // Check if the user is authenticated
+      if (req.isAuthenticated()) {
+        // Touch the session to update its expiration time
+        if (req.session) {
+          req.session.touch();
+        }
+        
+        // Log session activity for debugging
+        console.log(`Session refreshed successfully for user ${req.user?.id} at ${new Date().toISOString()}`);
+        return res.status(200).json({ message: "Session refreshed successfully" });
+      } 
+      
+      // If there's no active session but UID is provided, try to recover
+      if (uid) {
+        // Check if we need to create a new session
+        getUserByFirebaseUid(uid).then(user => {
+          if (user) {
+            // Log the user in if found
+            const { password: _, ...secureUser } = user;
+            req.login(secureUser, (err) => {
+              if (err) {
+                console.error("Failed to restore session during refresh:", err);
+                return res.status(500).json({ message: "Failed to restore session" });
+              }
+              console.log(`Session restored for user ${user.id} during refresh`);
+              return res.status(200).json({ message: "Session restored successfully" });
+            });
+          } else {
+            console.warn(`Attempt to refresh session for unknown UID: ${uid}`);
+            return res.status(404).json({ message: "User not found" });
+          }
+        }).catch(error => {
+          console.error("Error during session refresh recovery:", error);
+          return res.status(500).json({ message: "Internal server error" });
+        });
+      } else {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+    } catch (error) {
+      console.error("Session refresh error:", error);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
   // Get current user endpoint
   app.get("/api/user", (req, res) => {
     if (!req.isAuthenticated()) {

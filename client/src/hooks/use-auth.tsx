@@ -95,6 +95,83 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     retryDelay: attemptIndex => Math.min(1000 * Math.pow(2, attemptIndex), 30000), // Exponential backoff
   });
 
+  // Ping server to keep session alive periodically
+  useEffect(() => {
+    let pingInterval: NodeJS.Timeout | null = null;
+    
+    const pingServer = async () => {
+      // Only ping if we have an active Firebase user
+      if (firebaseUser) {
+        try {
+          // Touch the server session to prevent timeout
+          const response = await fetch('/api/auth/refresh', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+              uid: firebaseUser.uid,
+              refreshTime: new Date().toISOString()
+            }),
+            credentials: 'include' // Important for cookies
+          });
+          
+          if (response.ok) {
+            console.log(`Server session refreshed at ${new Date().toISOString()}`);
+          } else {
+            console.warn('Failed to refresh server session, status:', response.status);
+            
+            // If the session is gone (401), try to recover it
+            if (response.status === 401) {
+              console.log('Session expired, attempting recovery...');
+              // Create a closure to avoid dependency issues
+              const recoverSession = async () => {
+                try {
+                  // Attempt server side login again
+                  const userData = {
+                    uid: firebaseUser.uid,
+                    email: firebaseUser.email,
+                    displayName: firebaseUser.displayName,
+                    photoURL: firebaseUser.photoURL,
+                  };
+                  
+                  const response = await apiRequest("POST", "/api/auth/firebase", userData);
+                  const user = await response.json();
+                  
+                  // Update cached user data
+                  queryClient.setQueryData(["/api/user"], user);
+                  console.log("Session recovered successfully");
+                } catch (err) {
+                  console.error("Failed to recover session:", err);
+                }
+              };
+              
+              recoverSession();
+            }
+          }
+        } catch (error) {
+          console.error('Error refreshing server session:', error);
+        }
+      }
+    };
+    
+    // Start pinging if we have a user
+    if (firebaseUser) {
+      // Ping once immediately
+      pingServer();
+      
+      // Then set up interval (every 5 minutes)
+      pingInterval = setInterval(pingServer, 5 * 60 * 1000);
+      
+      console.log('Started server ping interval to keep session alive');
+    }
+    
+    return () => {
+      if (pingInterval) {
+        clearInterval(pingInterval);
+        console.log('Stopped server ping interval');
+      }
+    };
+  }, [firebaseUser]);
+
   // Listen for Firebase auth state changes
   useEffect(() => {
     console.log("Setting up Firebase auth state listener...");
@@ -104,6 +181,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       auth, 
       (user) => {
         console.log(`Firebase auth state changed: ${user ? 'logged in' : 'logged out'} at ${new Date().toISOString()}`);
+        
+        // Force token refresh if user is logged in to ensure long-lived token
+        if (user) {
+          // Immediately refresh the token to maximize its lifetime
+          user.getIdToken(true)
+            .then(token => {
+              console.log(`Token refreshed upon auth state change (${token.substring(0, 10)}...)`);
+            })
+            .catch(err => {
+              console.error('Error refreshing token on auth state change:', err);
+            });
+        }
+        
         setFirebaseUser(user);
         
         // Always mark initialization as complete to prevent loading states
