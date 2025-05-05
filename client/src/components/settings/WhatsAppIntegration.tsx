@@ -169,7 +169,7 @@ export default function WhatsAppIntegration() {
               <p className="font-medium mb-2">Activate DotSpark AI Chatbot on WhatsApp:</p>
               <ol className="text-sm space-y-2 list-decimal pl-4">
                 <li>Enter your WhatsApp phone number with country code (e.g., +1 234 567 8900)</li>
-                <li>Chat with DotSpark AI through WhatsApp to create learning dots on the go</li>
+                <li>Send a message to <span className="font-medium">whatsapp:+14155238886</span> on WhatsApp</li>
                 <li>Your WhatsApp conversations with the AI bot are processed into learning dots</li>
                 <li>All knowledge is synced with your DotSpark account automatically</li>
               </ol>

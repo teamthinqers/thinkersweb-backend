@@ -25,6 +25,7 @@ import {
   getWhatsAppStatus
 } from "./whatsapp";
 import { eq, inArray, and } from "drizzle-orm";
+import twilio from "twilio";
 
 // Interface for authenticated requests
 interface AuthenticatedRequest extends Request {
@@ -857,46 +858,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // DotSpark WhatsApp Chatbot Endpoints
   
-  // WhatsApp chatbot webhook endpoint for receiving messages
+  // WhatsApp chatbot webhook endpoint for receiving messages via Twilio
   app.post(`${apiPrefix}/whatsapp/webhook`, async (req, res) => {
     try {
-      // Handle WhatsApp chatbot verification challenge
-      if (req.query && req.query["hub.mode"] === "subscribe" && req.query["hub.verify_token"] === process.env.WHATSAPP_VERIFY_TOKEN) {
-        return res.status(200).send(req.query["hub.challenge"]);
+      // Extract message from Twilio WhatsApp request
+      const messageText = req.body.Body;
+      const from = req.body.From;
+
+      if (!messageText || !from) {
+        console.log("Received invalid Twilio WhatsApp message:", req.body);
+        // Not a valid message or missing required fields
+        return res.status(200).send(); // Always return 200 to Twilio
       }
 
-      const messageText = extractWhatsAppMessage(req.body);
-      if (!messageText) {
-        // Not a text message or missing required fields
-        return res.status(200).send(); // Always return 200 to WhatsApp API
+      console.log(`Received WhatsApp message from ${from}: ${messageText}`);
+
+      // Process the message and get a response
+      const response = await processWhatsAppMessage(from, messageText);
+      
+      // Create a TwiML response to send back to the user
+      const twiml = new twilio.twiml.MessagingResponse();
+      
+      if (response && response.message) {
+        // Add the message to the TwiML response
+        twiml.message(response.message);
+        console.log("Sending WhatsApp chatbot reply:", response.message);
+      } else {
+        // Send a default message if something went wrong
+        twiml.message("Sorry, I couldn't process your message. Please try again later.");
       }
 
-      // Process the message from WhatsApp chatbot
-      const from = req.body.entry[0]?.changes[0]?.value?.messages[0]?.from;
-      if (!from) {
-        console.error("Missing 'from' field in WhatsApp chatbot message");
-        return res.status(200).send();
-      }
-
-      // Process asynchronously so we can respond quickly to webhook
-      processWhatsAppMessage(from, messageText)
-        .then(response => {
-          // Don't wait for this to complete before responding to webhook
-          if (from && response) {
-            // Send reply back through WhatsApp chatbot
-            console.log("Sending WhatsApp chatbot reply:", response.message);
-          }
-        })
-        .catch(error => {
-          console.error("Error processing WhatsApp chatbot message:", error);
-        });
-
-      // Always respond with 200 OK to WhatsApp webhooks quickly
-      return res.status(200).send();
+      // Send the TwiML response back to Twilio
+      res.writeHead(200, { 'Content-Type': 'text/xml' });
+      res.end(twiml.toString());
     } catch (err) {
       console.error("WhatsApp chatbot webhook error:", err);
-      // Still return 200 as WhatsApp API expects
-      return res.status(200).send();
+      // Create an error TwiML response
+      const twiml = new twilio.twiml.MessagingResponse();
+      twiml.message("Sorry, something went wrong. Please try again later.");
+      
+      // Still return 200 as Twilio expects
+      res.writeHead(200, { 'Content-Type': 'text/xml' });
+      res.end(twiml.toString());
     }
   });
 
