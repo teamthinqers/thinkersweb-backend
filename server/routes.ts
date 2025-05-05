@@ -472,7 +472,116 @@ export async function registerRoutes(app: Express): Promise<Server> {
         })
         .returning();
       
-      res.status(201).json(sharedEntry);
+      res.status(201).json({ ...sharedEntry, count: 1 });
+    } catch (err) {
+      handleApiError(err, res);
+    }
+  });
+  
+  // Share entries by tags with a connection
+  app.post(`${apiPrefix}/entries/share-by-tags`, async (req, res) => {
+    try {
+      const { tagIds, sharedWithUserId } = req.body;
+      
+      if (!tagIds || !tagIds.length || !sharedWithUserId) {
+        return res.status(400).json({ 
+          message: "Tag IDs and shared with user ID are required" 
+        });
+      }
+      
+      // Verify these users are connected
+      const connectionStatus = await connectionsService.getConnectionStatus(
+        DEMO_USER_ID, 
+        sharedWithUserId
+      );
+      
+      if (!connectionStatus.isConnected) {
+        return res.status(403).json({ 
+          message: "You can only share entries with your connections" 
+        });
+      }
+      
+      // Get entries with the specified tags that belong to the current user
+      const entriesWithTags = await db.query.entries.findMany({
+        where: (entries, { eq, and, inArray }) => and(
+          eq(entries.userId, DEMO_USER_ID),
+          // This is a simplified query. In a real app, you'd use a join to check entry_tags
+          // Here we're assuming the API already filters by tag
+          entries.id.in(db.select().from(entryTags).where(inArray(entryTags.tagId, tagIds)).select().get())
+        )
+      });
+      
+      if (entriesWithTags.length === 0) {
+        return res.status(404).json({ 
+          message: "No entries found with the selected tags" 
+        });
+      }
+      
+      // Create shared entries
+      const sharedEntryValues = entriesWithTags.map(entry => ({
+        entryId: entry.id,
+        sharedWithUserId,
+        permissions: "read" // Default permission
+      }));
+      
+      const result = await db.insert(sharedEntries)
+        .values(sharedEntryValues)
+        .onConflictDoNothing() // In case some entries are already shared
+        .returning();
+      
+      res.status(201).json({ count: result.length });
+    } catch (err) {
+      handleApiError(err, res);
+    }
+  });
+  
+  // Share all entries with a connection
+  app.post(`${apiPrefix}/entries/share-all`, async (req, res) => {
+    try {
+      const { sharedWithUserId } = req.body;
+      
+      if (!sharedWithUserId) {
+        return res.status(400).json({ 
+          message: "Shared with user ID is required" 
+        });
+      }
+      
+      // Verify these users are connected
+      const connectionStatus = await connectionsService.getConnectionStatus(
+        DEMO_USER_ID, 
+        sharedWithUserId
+      );
+      
+      if (!connectionStatus.isConnected) {
+        return res.status(403).json({ 
+          message: "You can only share entries with your connections" 
+        });
+      }
+      
+      // Get all entries from the current user
+      const userEntries = await db.query.entries.findMany({
+        where: (entries, { eq }) => eq(entries.userId, DEMO_USER_ID)
+      });
+      
+      if (userEntries.length === 0) {
+        return res.status(404).json({ 
+          message: "No entries found to share" 
+        });
+      }
+      
+      // Create shared entries
+      const sharedEntryValues = userEntries.map(entry => ({
+        entryId: entry.id,
+        sharedWithUserId,
+        permissions: "read" // Default permission
+      }));
+      
+      const result = await db.insert(sharedEntries)
+        .values(sharedEntryValues)
+        .onConflictDoNothing() // In case some entries are already shared
+        .returning();
+      
+      res.status(201).json({ count: result.length });
     } catch (err) {
       handleApiError(err, res);
     }

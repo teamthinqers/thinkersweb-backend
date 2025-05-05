@@ -60,17 +60,16 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isMobile, onNewEntry
           <ul>
             {navItems.map((item) => (
               <li key={item.path} className="mb-1">
-                <Link href={item.path}>
-                  <a 
-                    className={`flex items-center px-3 py-2 rounded-md ${
-                      location === item.path
-                        ? "bg-indigo-50 text-primary"
-                        : "text-gray-600 hover:bg-gray-100"
-                    }`}
-                    onClick={isMobile ? onClose : undefined}
-                  >
-                    <i className={`${item.icon} mr-2`}></i> {item.label}
-                  </a>
+                <Link 
+                  href={item.path}
+                  className={`flex items-center px-3 py-2 rounded-md ${
+                    location === item.path
+                      ? "bg-indigo-50 text-primary"
+                      : "text-gray-600 hover:bg-gray-100"
+                  }`}
+                  onClick={isMobile ? onClose : undefined}
+                >
+                  <i className={`${item.icon} mr-2`}></i> {item.label}
                 </Link>
               </li>
             ))}

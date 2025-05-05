@@ -17,9 +17,12 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Loader2, UserPlus, X, Check, Share } from "lucide-react";
+import ShareEntryDialog from "@/components/network/ShareEntryDialog";
 
 export default function Network() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [showShareDialog, setShowShareDialog] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<{ id: number; username: string } | null>(null);
   const { toast } = useToast();
 
   // Fetch current user's connections
@@ -220,8 +223,11 @@ export default function Network() {
                       variant="secondary"
                       size="sm"
                       onClick={() => {
-                        // This would typically open a modal to select entries to share
-                        alert("Select entries to share with this user - this feature is coming soon!");
+                        setSelectedUser({
+                          id: connection.user.id,
+                          username: connection.user.fullName || connection.user.username
+                        });
+                        setShowShareDialog(true);
                       }}
                     >
                       <Share className="h-4 w-4 mr-2" />
