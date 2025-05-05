@@ -9,6 +9,7 @@ export const users = pgTable("users", {
   username: text("username").notNull().unique(),
   email: text("email").notNull().unique(),
   password: text("password").notNull(),
+  firebaseUid: text("firebase_uid").unique(), // For Google authentication
   fullName: text("full_name"),
   bio: text("bio"),
   avatarUrl: text("avatar_url"),
@@ -27,6 +28,7 @@ export const insertUserSchema = createInsertSchema(users, {
   username: (schema) => schema.min(3, "Username must be at least 3 characters"),
   email: (schema) => schema.email("Must be a valid email"),
   password: (schema) => schema.min(6, "Password must be at least 6 characters"),
+  firebaseUid: (schema) => schema.optional(),
   fullName: (schema) => schema.optional(),
   bio: (schema) => schema.optional(),
   avatarUrl: (schema) => schema.optional(),

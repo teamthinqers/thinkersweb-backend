@@ -1,117 +1,166 @@
-import { createContext, ReactNode, useContext } from "react";
+import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import {
   useQuery,
   useMutation,
   UseMutationResult,
 } from "@tanstack/react-query";
-import { User, InsertUser } from "@shared/schema";
+import { User as DbUser } from "@shared/schema";
 import { getQueryFn, apiRequest, queryClient } from "../lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { auth, signInWithGoogle, signOut } from "@/lib/firebase";
+import { User as FirebaseUser, onAuthStateChanged } from "firebase/auth";
+import { useLocation } from "wouter";
+
+type UserInfo = {
+  id?: number;
+  uid: string;
+  email: string | null;
+  displayName: string | null;
+  photoURL: string | null;
+  isNewUser?: boolean;
+};
 
 type AuthContextType = {
-  user: User | null;
+  user: UserInfo | null;
+  firebaseUser: FirebaseUser | null;
+  dbUser: DbUser | null;
   isLoading: boolean;
   error: Error | null;
-  loginMutation: UseMutationResult<User, Error, LoginData>;
-  logoutMutation: UseMutationResult<void, Error, void>;
-  registerMutation: UseMutationResult<User, Error, RegisterData>;
-};
-
-type LoginData = {
-  username: string;
-  password: string;
-};
-
-type RegisterData = {
-  username: string;
-  email: string;
-  password: string;
+  loginWithGoogle: () => Promise<void>;
+  logout: () => Promise<void>;
 };
 
 export const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const { toast } = useToast();
+  const [, setLocation] = useLocation();
+  const [firebaseUser, setFirebaseUser] = useState<FirebaseUser | null>(null);
+  const [initializing, setInitializing] = useState(true);
+
+  // Get database user if available
   const {
-    data: user,
-    error,
-    isLoading,
-  } = useQuery<User, Error>({
+    data: dbUser,
+    error: dbError,
+    isLoading: isDbLoading,
+  } = useQuery<DbUser | null, Error>({
     queryKey: ["/api/user"],
     queryFn: getQueryFn({ on401: "returnNull" }),
+    enabled: !!firebaseUser,
   });
 
-  const loginMutation = useMutation({
-    mutationFn: async (credentials: LoginData) => {
-      const res = await apiRequest("POST", "/api/login", credentials);
-      return await res.json();
-    },
-    onSuccess: (user: User) => {
+  // Listen for Firebase auth state changes
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setFirebaseUser(user);
+      setInitializing(false);
+      
+      if (user) {
+        // If user is logged in with Firebase but we don't have a session, create one
+        registerOrLoginServerSide(user);
+      }
+    });
+    
+    return () => unsubscribe();
+  }, []);
+
+  // Register or login on the server side when Firebase authentication is successful
+  const registerOrLoginServerSide = async (fbUser: FirebaseUser) => {
+    try {
+      // Check if the user exists or needs to be created
+      const userData = {
+        uid: fbUser.uid,
+        email: fbUser.email,
+        displayName: fbUser.displayName,
+        photoURL: fbUser.photoURL,
+      };
+      
+      const response = await apiRequest("POST", "/api/auth/firebase", userData);
+      const user = await response.json();
+      
       queryClient.setQueryData(["/api/user"], user);
+      
+      // Redirect to dashboard if they're a new user
+      if (user.isNewUser) {
+        setLocation("/dashboard");
+        toast({
+          title: "Welcome to DotSpark!",
+          description: "Your account has been created successfully.",
+        });
+      }
+    } catch (error) {
+      console.error("Error syncing with server:", error);
       toast({
-        title: "Login successful",
-        description: "Welcome back to DotSpark!",
-      });
-    },
-    onError: (error: Error) => {
-      toast({
-        title: "Login failed",
-        description: error.message || "Invalid username or password",
+        title: "Authentication Error",
+        description: "Failed to authenticate with the server.",
         variant: "destructive",
       });
-    },
-  });
+    }
+  };
 
-  const registerMutation = useMutation({
-    mutationFn: async (credentials: RegisterData) => {
-      const res = await apiRequest("POST", "/api/register", credentials);
-      return await res.json();
-    },
-    onSuccess: (user: User) => {
-      queryClient.setQueryData(["/api/user"], user);
+  // Login with Google
+  const loginWithGoogle = async (): Promise<void> => {
+    try {
+      await signInWithGoogle();
+      // Authentication state change listener will handle the server-side auth
+    } catch (error) {
+      console.error("Google login error:", error);
       toast({
-        title: "Registration successful",
-        description: "Welcome to DotSpark!",
-      });
-    },
-    onError: (error: Error) => {
-      toast({
-        title: "Registration failed",
-        description: error.message || "Username or email already in use",
+        title: "Login Failed",
+        description: error instanceof Error ? error.message : "An error occurred during login",
         variant: "destructive",
       });
-    },
-  });
+    }
+  };
 
-  const logoutMutation = useMutation({
-    mutationFn: async () => {
+  // Logout from both Firebase and the server
+  const logout = async (): Promise<void> => {
+    try {
+      // Logout from the server first
       await apiRequest("POST", "/api/logout");
-    },
-    onSuccess: () => {
+      // Then logout from Firebase
+      await signOut();
+      
+      // Clear user data in query client
       queryClient.setQueryData(["/api/user"], null);
+      
       toast({
-        title: "Logout successful",
-        description: "You have been logged out successfully",
+        title: "Logged Out",
+        description: "You have been logged out successfully.",
       });
-    },
-    onError: (error: Error) => {
+      
+      // Redirect to home page
+      setLocation("/");
+    } catch (error) {
+      console.error("Logout error:", error);
       toast({
-        title: "Logout failed",
-        description: error.message,
+        title: "Logout Failed",
+        description: error instanceof Error ? error.message : "An error occurred during logout",
         variant: "destructive",
       });
-    },
-  });
+    }
+  };
+
+  // Combine Firebase user with DB user info
+  const user: UserInfo | null = firebaseUser ? {
+    id: dbUser?.id,
+    uid: firebaseUser.uid,
+    email: firebaseUser.email,
+    displayName: firebaseUser.displayName || dbUser?.username || "User",
+    photoURL: firebaseUser.photoURL,
+    isNewUser: dbUser?.createdAt === dbUser?.updatedAt, // Check if user was just created
+  } : null;
 
   return (
     <AuthContext.Provider
       value={{
-        user: user ?? null,
-        isLoading,
-        error,
-        loginMutation,
-        logoutMutation,
-        registerMutation,
+        user,
+        firebaseUser,
+        dbUser,
+        isLoading: initializing || isDbLoading,
+        error: dbError || null,
+        loginWithGoogle,
+        logout,
       }}
     >
       {children}
