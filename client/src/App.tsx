@@ -10,7 +10,7 @@ import Favorites from "@/pages/Favorites";
 import AppLayout from "@/components/layout/AppLayout";
 import { useState } from "react";
 import EntryDetail from "@/components/entries/EntryDetail";
-import EntryForm from "@/components/entries/EntryForm";
+import ChatEntryForm from "@/components/chat/ChatEntryForm";
 
 function Router() {
   const [showEntryDetail, setShowEntryDetail] = useState(false);
@@ -61,10 +61,9 @@ function Router() {
         />
       )}
 
-      <EntryForm 
+      <ChatEntryForm 
         isOpen={showEntryForm} 
         onClose={closeEntryForm} 
-        entryId={currentEntryId} 
       />
     </AppLayout>
   );
