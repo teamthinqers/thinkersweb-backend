@@ -240,23 +240,23 @@ export default function LandingPage() {
               </div>
             </div>
             
-            {/* First Dot/Knowledge - Competitor Analysis */}
+            {/* First Dot/Knowledge - Chess Strategy */}
             <div className="bg-card border rounded-xl p-6 card-hover neural-connection">
               <div className="text-right mb-3 lg:hidden">
                 <span className="inline-block rounded-full bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">Dot 1</span>
               </div>
               <div className="flex items-center gap-4 mb-4">
                 <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M3 3v18h18"></path><path d="m19 9-5 5-4-4-3 3"></path></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M18 12a5 5 0 0 0-5-5h-2a5 5 0 0 0 0 10h2a5 5 0 0 0 0-10"></path><path d="M10 7V3"></path><path d="M14 7V3"></path><path d="M10 21v-4"></path><path d="M14 21v-4"></path><path d="M3 10h2"></path><path d="M3 14h2"></path><path d="M19 10h2"></path><path d="M19 14h2"></path></svg>
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold">Quarterly Market Analysis</h3>
-                  <p className="text-muted-foreground text-sm">Our direct competitor is growing 43% faster despite an inferior product</p>
+                  <h3 className="text-xl font-semibold">Chess Strategy Hobby</h3>
+                  <p className="text-muted-foreground text-sm">Learning patterns of positional advantage and sacrifice</p>
                 </div>
               </div>
               <div className="mt-4 pt-4 border-t border-border/50">
                 <p className="text-sm text-muted-foreground">
-                  "In reviewing the data, I found our main competitor achieved 3x our growth rate by prioritizing an entirely different customer segment than our traditional focus. Their product is objectively worse, but they're winning."
+                  "I've been studying chess for years as a hobby. One concept that fascinated me was 'positional sacrifice' - giving up material in the short term to gain a superior position that pays off many moves later."
                 </p>
               </div>
               <div className="hidden lg:flex items-center justify-center mt-4">
@@ -264,23 +264,23 @@ export default function LandingPage() {
               </div>
             </div>
             
-            {/* Second Dot/Knowledge - Customer Research */}
+            {/* Second Dot/Knowledge - Cooking Class */}
             <div className="bg-card border rounded-xl p-6 card-hover neural-connection relative z-10">
               <div className="text-right mb-3 lg:hidden">
                 <span className="inline-block rounded-full bg-secondary/10 px-2.5 py-1 text-xs font-semibold text-secondary">Dot 2</span>
               </div>
               <div className="flex items-center gap-4 mb-4">
                 <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-secondary/20 to-secondary/10 flex items-center justify-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-secondary"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-secondary"><path d="M8 3v3"></path><path d="M16 3v3"></path><path d="M3 7h18"></path><path d="M7 21h10a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2Z"></path></svg>
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold">User Experience Study</h3>
-                  <p className="text-muted-foreground text-sm">Customer research revealed emotional responses to product features</p>
+                  <h3 className="text-xl font-semibold">Italian Cooking Class</h3>
+                  <p className="text-muted-foreground text-sm">Learning the concept of "mise en place" and preparation</p>
                 </div>
               </div>
               <div className="mt-4 pt-4 border-t border-border/50">
                 <p className="text-sm text-muted-foreground">
-                  "Our UX research uncovered that customers feel an intense emotional connection to certain 'signature moments' in their journey - these emotional peaks matter more than overall product quality or feature completeness."
+                  "The chef emphasized that great dishes come from 'mise en place' - having everything prepared and organized before cooking. 90% of success comes from the preparation that no one sees, not the actual cooking."
                 </p>
               </div>
               <div className="hidden lg:flex items-center justify-center mt-4">
@@ -288,23 +288,23 @@ export default function LandingPage() {
               </div>
             </div>
             
-            {/* Third Dot/Knowledge - Behavioral Economics */}
+            {/* Third Dot/Knowledge - Marathon Training */}
             <div className="bg-card border rounded-xl p-6 card-hover neural-connection">
               <div className="text-right mb-3 lg:hidden">
                 <span className="inline-block rounded-full bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">Dot 3</span>
               </div>
               <div className="flex items-center gap-4 mb-4">
                 <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M12 2v4"></path><path d="M5 5.27A9.98 9.98 0 0 0 2 13a10 10 0 1 0 18-5.76"></path><path d="M12 8v4l3 3"></path></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M19 6V5a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v1"></path><path d="M12 17V9"></path><path d="m9 12 3-3 3 3"></path><rect width="18" height="12" x="3" y="6" rx="2"></rect></svg>
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold">Behavioral Economics Book</h3>
-                  <p className="text-muted-foreground text-sm">Notes from "Thinking, Fast and Slow" on decision-making biases</p>
+                  <h3 className="text-xl font-semibold">Marathon Training</h3>
+                  <p className="text-muted-foreground text-sm">Article about "negative splits" in distance running</p>
                 </div>
               </div>
               <div className="mt-4 pt-4 border-t border-border/50">
                 <p className="text-sm text-muted-foreground">
-                  "Kahneman's work on the peak-end rule showed that people judge experiences mainly by their peaks (most intense points) and ends, not the sum or average of the entire experience. We remember moments, not journeys."
+                  "The elite marathon runners use a counterintuitive strategy called 'negative splits' - they deliberately run the first half slower than the second half. It feels wrong, but data shows it's the optimal approach for endurance."
                 </p>
               </div>
               <div className="hidden lg:flex items-center justify-center mt-4">
@@ -325,14 +325,14 @@ export default function LandingPage() {
             <div className="bg-card border-2 border-yellow-400/50 rounded-xl p-6 shadow-lg shadow-yellow-400/10">
               <div className="flex items-center gap-4 mb-4">
                 <div className="w-12 h-12 rounded-full bg-yellow-400/20 flex items-center justify-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-yellow-600"><path d="M20 16.5V11a4 4 0 0 0-4-4m-.5-4a2.5 2.5 0 1 0 0 5a2.5 2.5 0 0 0 0-5M4 16.5V11a4 4 0 0 1 4-4m.5-4a2.5 2.5 0 1 1 0 5a2.5 2.5 0 0 1 0-5M12 7v5m0 0v5m0-5h-2m2 0h2"></path></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-yellow-600"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"></path><path d="M9 18h6"></path><path d="M10 22h4"></path></svg>
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold text-yellow-700 dark:text-yellow-400">The Spark: Emotional Signature Moments</h3>
+                  <h3 className="text-xl font-semibold text-yellow-700 dark:text-yellow-400">The Spark: Strategic Patient Preparation</h3>
                 </div>
               </div>
               <p className="text-muted-foreground">
-                "Connecting these dots completely transformed our company's strategy. We identified that our competitor's success came from creating intensely emotional 'peak moments' in their user experience, despite having fewer features than us. Using Kahneman's peak-end rule, we redesigned our entire product to focus on 3 signature 'peak moments' that create emotional connection rather than adding more features. After implementing this, our growth rate doubled in just 60 days, conversion increased 87%, and customer lifetime value shot up 134%. This insight was worth millions in revenue and completely changed how we think about product development."
+                "When I connected these personal dots from completely different areas of my life, I had a profound breakthrough that transformed my career. I realized the chess concept of 'positional sacrifice' combined with cooking's 'mise en place' and marathon running's 'negative splits' all shared a powerful pattern: patience, preparation, and deliberate pacing lead to optimal results. I applied this insight to my major product launch by spending 3x longer on preparation than initially planned, deliberately going slower at the start, and accepting short-term 'sacrifices.' The result was the most successful launch in company history with 78% better adoption rates and unprecedented customer satisfaction. I've since been promoted to VP of Product Strategy because of this counterintuitive approach."
               </p>
               <div className="mt-4 flex flex-col gap-2">
                 <p className="text-sm text-yellow-600 dark:text-yellow-400 italic font-medium">
