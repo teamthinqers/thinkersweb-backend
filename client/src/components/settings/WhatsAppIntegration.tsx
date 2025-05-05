@@ -33,7 +33,7 @@ export default function WhatsAppIntegration() {
         console.error("Error fetching WhatsApp status:", error);
         toast({
           title: "Error",
-          description: "Could not fetch WhatsApp integration status",
+          description: "Could not fetch WhatsApp chatbot status",
           variant: "destructive",
         });
       } finally {
@@ -127,10 +127,10 @@ export default function WhatsAppIntegration() {
           <div>
             <CardTitle className="flex items-center gap-2">
               <Phone className="h-5 w-5" />
-              WhatsApp Integration
+              DotSpark WhatsApp Chatbot
             </CardTitle>
             <CardDescription>
-              Connect your WhatsApp account to add learning dots directly from messages
+              Activate DotSpark's WhatsApp chatbot to add learning dots through conversation
             </CardDescription>
           </div>
           {registered && (
@@ -154,23 +154,24 @@ export default function WhatsAppIntegration() {
             </div>
             
             <div className="border rounded-lg p-4 bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-indigo-950 dark:to-blue-950">
-              <p className="font-medium mb-2">How to use:</p>
+              <p className="font-medium mb-2">Chat with DotSpark AI on WhatsApp:</p>
               <ol className="text-sm space-y-2 list-decimal pl-4">
-                <li>Send any message to create a new learning dot</li>
-                <li>Start a message with "Q:" to ask about your learnings</li>
-                <li>Type "summary" to get a summary of recent entries</li>
-                <li>Type "help" to see all available commands</li>
+                <li>Send a message to the DotSpark WhatsApp chatbot to create a learning dot</li>
+                <li>Start your message with "Q:" to ask questions about your knowledge base</li>
+                <li>Type "summary" to receive an AI-generated summary of recent entries</li>
+                <li>Type "help" to see all available chatbot commands</li>
               </ol>
             </div>
           </div>
         ) : (
           <div className="space-y-4">
             <div className="border rounded-lg p-4 bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-indigo-950 dark:to-blue-950">
-              <p className="font-medium mb-2">Connect your WhatsApp to DotSpark:</p>
+              <p className="font-medium mb-2">Activate DotSpark AI Chatbot on WhatsApp:</p>
               <ol className="text-sm space-y-2 list-decimal pl-4">
-                <li>Enter your phone number with country code (e.g., +1 234 567 8900)</li>
-                <li>Receive and send messages to create learning dots on the go</li>
-                <li>Your data is synced with your DotSpark account automatically</li>
+                <li>Enter your WhatsApp phone number with country code (e.g., +1 234 567 8900)</li>
+                <li>Chat with DotSpark AI through WhatsApp to create learning dots on the go</li>
+                <li>Your WhatsApp conversations with the AI bot are processed into learning dots</li>
+                <li>All knowledge is synced with your DotSpark account automatically</li>
               </ol>
             </div>
             
@@ -186,7 +187,7 @@ export default function WhatsAppIntegration() {
               </div>
               <Button onClick={handleRegister} disabled={registering}>
                 {registering ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-                Register
+                Activate Chatbot
               </Button>
             </div>
           </div>
@@ -201,7 +202,7 @@ export default function WhatsAppIntegration() {
             disabled={unregistering}
           >
             {unregistering ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <X className="h-4 w-4 mr-2" />}
-            Disable Integration
+            Deactivate Chatbot
           </Button>
         </CardFooter>
       )}
