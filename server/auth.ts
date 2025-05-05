@@ -225,6 +225,40 @@ export function setupAuth(app: Express) {
     })(req, res, next);
   });
 
+  // Session recovery endpoint - recover from localStorage backup
+  app.post("/api/auth/recover", async (req, res, next) => {
+    try {
+      const { uid, email } = req.body;
+      
+      if (!uid) {
+        return res.status(400).json({ message: "Firebase UID is required for recovery" });
+      }
+      
+      console.log(`Attempting session recovery for UID: ${uid}`);
+      
+      // Find user by Firebase UID
+      const user = await getUserByFirebaseUid(uid);
+      
+      if (!user) {
+        console.log('User not found for recovery attempt');
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Remove password from response
+      const { password: _, ...secureUser } = user;
+      
+      // Log user in
+      req.login(secureUser, (err) => {
+        if (err) return next(err);
+        console.log(`Session recovered successfully for user ${user.id}`);
+        res.status(200).json(secureUser);
+      });
+    } catch (error) {
+      console.error("Recovery error:", error);
+      next(error);
+    }
+  });
+  
   // Firebase auth login/registration endpoint
   app.post("/api/auth/firebase", async (req, res, next) => {
     try {

@@ -73,7 +73,8 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
   };
 
   const goToLandingPage = () => {
-    setLocation("/");
+    // Use a full page reload to ensure proper state reset when going to landing page
+    window.location.href = "/";
     if (isMobile) {
       setShowMobileNav(false);
     }
@@ -105,7 +106,10 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 variant="ghost"
                 size="icon"
                 className="text-gray-600 hover:text-primary mr-2"
-                onClick={goToLandingPage}
+                onClick={() => {
+                  // Use direct href to guarantee proper navigation
+                  window.location.href = "/";
+                }}
               >
                 <HomeIcon className="h-5 w-5" />
               </Button>
@@ -150,7 +154,10 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 variant="ghost"
                 size="sm"
                 className="mr-4 text-gray-600 hover:text-primary"
-                onClick={goToLandingPage}
+                onClick={() => {
+                  // Use direct href to guarantee proper navigation
+                  window.location.href = "/";
+                }}
               >
                 <HomeIcon className="h-5 w-5 mr-1" />
                 <span className="hidden sm:inline">Home</span>
@@ -259,7 +266,10 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 variant="ghost" 
                 size="sm" 
                 className="w-full justify-start mb-2"
-                onClick={goToLandingPage}
+                onClick={() => {
+                  // Use direct href to guarantee proper navigation
+                  window.location.href = "/";
+                }}
               >
                 <HomeIcon className="h-5 w-5 mr-2" />
                 Home

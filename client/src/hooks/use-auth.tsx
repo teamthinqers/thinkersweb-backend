@@ -37,6 +37,50 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [, setLocation] = useLocation();
   const [firebaseUser, setFirebaseUser] = useState<FirebaseUser | null>(null);
   const [initializing, setInitializing] = useState(true);
+  
+  // Recovery mechanism from localStorage if Firebase auth fails
+  useEffect(() => {
+    // Only try recovery if not already authenticated and not in initial loading state
+    if (!firebaseUser && !initializing) {
+      try {
+        // Check localStorage for previously stored authentication data
+        const storedUserData = localStorage.getItem('dotspark_user_data');
+        
+        if (storedUserData) {
+          const userData = JSON.parse(storedUserData);
+          const lastAuth = new Date(userData.lastAuthenticated);
+          const now = new Date();
+          const hoursSinceLastAuth = (now.getTime() - lastAuth.getTime()) / (1000 * 60 * 60);
+          
+          // Only use localStorage data if it's less than 24 hours old
+          if (hoursSinceLastAuth < 24) {
+            console.log('Found recent authentication data in localStorage, attempting recovery...');
+            
+            // Attempt to recover session from server using uid from localStorage
+            apiRequest("POST", "/api/auth/recover", { 
+              uid: userData.uid,
+              email: userData.email
+            })
+            .then(() => {
+              console.log('Session recovery successful');
+              // Force refresh auth state by invalidating the query
+              queryClient.invalidateQueries({ queryKey: ["/api/user"] });
+            })
+            .catch(error => {
+              console.error('Failed to recover session:', error);
+              // Clear localStorage if recovery failed
+              localStorage.removeItem('dotspark_user_data');
+            });
+          } else {
+            console.log('Stored authentication data is too old, not using for recovery');
+            localStorage.removeItem('dotspark_user_data');
+          }
+        }
+      } catch (error) {
+        console.error('Error during auth recovery:', error);
+      }
+    }
+  }, [firebaseUser, initializing]);
 
   // Get database user if available
   const {
@@ -252,6 +296,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
     }
   };
+
+  // Store user info in localStorage for persistence backup
+  useEffect(() => {
+    if (firebaseUser && dbUser) {
+      // Store basic user data in localStorage for persistence backup
+      const persistentUserData = {
+        uid: firebaseUser.uid,
+        email: firebaseUser.email,
+        displayName: firebaseUser.displayName || dbUser?.username,
+        photoURL: firebaseUser.photoURL,
+        dbUserId: dbUser.id,
+        lastAuthenticated: new Date().toISOString()
+      };
+      
+      // Save to localStorage for persistence backup
+      localStorage.setItem('dotspark_user_data', JSON.stringify(persistentUserData));
+      console.log('User data stored in localStorage for persistence backup');
+    }
+  }, [firebaseUser, dbUser]);
 
   // Combine Firebase user with DB user info
   const user: UserInfo | null = firebaseUser ? {
