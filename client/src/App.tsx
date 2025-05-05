@@ -396,8 +396,34 @@ function Router() {
     }
   }, [user, isLoading, location, isAuthPage, isLandingPage, isDashboardPage, setLocation, toast]);
 
-  // Allow accessing landing page when it's intentional or not authenticated
-  if (isLandingPage && (intentionalHomeNavigation || !user)) {
+  // Check for intentional navigation flag from localStorage on page load
+  useEffect(() => {
+    if (isLandingPage) {
+      const storedIntentionalFlag = localStorage.getItem('intentional_home_navigation');
+      if (storedIntentionalFlag === 'true') {
+        console.log("Found intentional navigation flag in localStorage");
+        setIntentionalHomeNavigation(true);
+        window.INTENTIONAL_HOME_NAVIGATION = true;
+        
+        // Clear the flag after a short delay
+        setTimeout(() => {
+          localStorage.removeItem('intentional_home_navigation');
+          // Don't reset other flags immediately to allow the page to render properly
+        }, 1000);
+      }
+    }
+  }, [isLandingPage]);
+
+  // Allow accessing landing page with much higher priority:
+  // 1. When it's intentional navigation (from localStorage or state)
+  // 2. When the URL has the nocache parameter (from Header navigation)
+  // 3. When not authenticated
+  if (isLandingPage && (
+    intentionalHomeNavigation || 
+    window.INTENTIONAL_HOME_NAVIGATION || 
+    window.location.search.includes('nocache') || 
+    !user
+  )) {
     console.log("Showing landing page due to intentional navigation or no authentication");
     return <LandingPage />;
   }

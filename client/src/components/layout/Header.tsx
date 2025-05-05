@@ -82,8 +82,11 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
   };
 
   const goToLandingPage = () => {
-    // Use a full page reload to ensure proper state reset when going to landing page
-    window.location.href = "/";
+    // Completely bypass router for reliable landing page navigation
+    window.INTENTIONAL_HOME_NAVIGATION = true;
+    localStorage.setItem('intentional_home_navigation', 'true');
+    // Force complete page reload with no caching
+    window.location.replace("/?nocache=" + Date.now());
     if (isMobile) {
       setShowMobileNav(false);
     }
@@ -115,16 +118,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 variant="ghost"
                 size="icon"
                 className="text-gray-600 hover:text-primary mr-2"
-                onClick={() => {
-                  // Create and dispatch a custom event to notify about intentional home navigation
-                  const homeNavEvent = new CustomEvent("intentionalHomeNavigation", {
-                    detail: { timestamp: new Date().toISOString() }
-                  });
-                  window.dispatchEvent(homeNavEvent);
-                  
-                  // Use direct href to guarantee proper navigation
-                  window.location.href = "/";
-                }}
+                onClick={goToLandingPage}
               >
                 <HomeIcon className="h-5 w-5" />
               </Button>
@@ -169,16 +163,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 variant="ghost"
                 size="sm"
                 className="mr-4 text-gray-600 hover:text-primary"
-                onClick={() => {
-                  // Create and dispatch a custom event to notify about intentional home navigation
-                  const homeNavEvent = new CustomEvent("intentionalHomeNavigation", {
-                    detail: { timestamp: new Date().toISOString() }
-                  });
-                  window.dispatchEvent(homeNavEvent);
-                  
-                  // Use direct href to guarantee proper navigation
-                  window.location.href = "/";
-                }}
+                onClick={goToLandingPage}
               >
                 <HomeIcon className="h-5 w-5 mr-1" />
                 <span className="hidden sm:inline">Home</span>
@@ -287,16 +272,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 variant="ghost" 
                 size="sm" 
                 className="w-full justify-start mb-2"
-                onClick={() => {
-                  // Create and dispatch a custom event to notify about intentional home navigation
-                  const homeNavEvent = new CustomEvent("intentionalHomeNavigation", {
-                    detail: { timestamp: new Date().toISOString() }
-                  });
-                  window.dispatchEvent(homeNavEvent);
-                  
-                  // Use direct href to guarantee proper navigation
-                  window.location.href = "/";
-                }}
+                onClick={goToLandingPage}
               >
                 <HomeIcon className="h-5 w-5 mr-2" />
                 Home

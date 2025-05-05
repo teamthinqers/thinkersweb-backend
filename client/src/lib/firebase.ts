@@ -35,14 +35,48 @@ if (auth.currentUser) {
   console.log("Existing user detected on initialization");
 }
 
-// Set auth persistence to local for session persistence
-setPersistence(auth, browserLocalPersistence)
-  .then(() => {
+// Enhanced persistence strategy with fallbacks and multiple mechanisms
+const setupPersistence = async () => {
+  try {
+    // First try to set maximum persistence
+    await setPersistence(auth, browserLocalPersistence);
     console.log("Firebase auth persistence set to LOCAL successfully");
-  })
-  .catch((error) => {
+    
+    // Store a flag in localStorage as backup
+    localStorage.setItem('firebase_auth_persistence_set', 'true');
+    localStorage.setItem('firebase_auth_persistence_timestamp', Date.now().toString());
+    
+    // Set up a watchdog to check and reset persistence if needed
+    const watchdogInterval = setInterval(() => {
+      const timestamp = localStorage.getItem('firebase_auth_persistence_timestamp');
+      if (!timestamp || Date.now() - parseInt(timestamp) > 12 * 60 * 60 * 1000) { // 12 hours
+        console.log("Refreshing persistence settings...");
+        setPersistence(auth, browserLocalPersistence)
+          .then(() => {
+            localStorage.setItem('firebase_auth_persistence_timestamp', Date.now().toString());
+            console.log("Persistence refreshed successfully");
+          })
+          .catch(err => console.warn("Persistence refresh failed:", err));
+      }
+    }, 60 * 60 * 1000); // Check every hour
+    
+    // Clear interval on page unload
+    window.addEventListener('beforeunload', () => {
+      clearInterval(watchdogInterval);
+    });
+  } catch (error) {
     console.error("Error setting Firebase auth persistence:", error);
-  });
+    // Try again after a short delay as fallback
+    setTimeout(() => {
+      setPersistence(auth, browserLocalPersistence)
+        .then(() => console.log("Firebase auth persistence retry successful"))
+        .catch(err => console.error("Firebase auth persistence retry failed:", err));
+    }, 3000);
+  }
+};
+
+// Run setup
+setupPersistence();
 
 // Periodic token refresh function to keep Firebase auth session alive
 const refreshTokenPeriodically = async () => {
