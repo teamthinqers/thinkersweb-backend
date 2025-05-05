@@ -95,7 +95,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
               variant="ghost"
               size="icon"
               className="text-gray-600 hover:text-primary"
-              onClick={() => setShowMobileNav(!showMobileNav)}
+              onClick={onMenuClick || (() => setShowMobileNav(!showMobileNav))}
             >
               <Menu className="h-5 w-5" />
             </Button>
@@ -225,8 +225,8 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
         )}
       </header>
       
-      {/* Mobile Navigation Menu */}
-      {isMobile && showMobileNav && (
+      {/* Mobile Navigation Menu - Only shown when not using the main sidebar */}
+      {isMobile && showMobileNav && !onMenuClick && (
         <div className="fixed inset-0 z-50 bg-white">
           <div className="flex justify-between items-center p-4 border-b">
             <h2 className="text-lg font-bold text-primary">DotSpark</h2>

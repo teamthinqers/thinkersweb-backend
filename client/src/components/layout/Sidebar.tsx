@@ -50,6 +50,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isMobile, onNewEntry
   if (!isOpen) return null;
 
   const navItems = [
+    { icon: LightbulbIcon, label: "Home", path: "/" },
     { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
     { icon: BookOpen, label: "All Entries", path: "/entries" },
     { icon: Eye, label: "Insights", path: "/insights" },
