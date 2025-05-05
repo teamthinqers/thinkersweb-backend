@@ -9,6 +9,15 @@ import {
   Menu, 
   LayoutDashboard
 } from "lucide-react";
+
+// Add a global flag for intentional navigation to home/landing page
+declare global {
+  interface Window {
+    INTENTIONAL_HOME_NAVIGATION: boolean;
+  }
+}
+// Initialize it if not already set
+window.INTENTIONAL_HOME_NAVIGATION = window.INTENTIONAL_HOME_NAVIGATION || false;
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";

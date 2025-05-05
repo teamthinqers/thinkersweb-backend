@@ -19,110 +19,178 @@ import { AuthProvider, useAuth } from "@/hooks/use-auth";
 import { Loader2, ServerCrash } from "lucide-react";
 import { ConnectionError } from "@/components/ui/connection-error";
 import { useToast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
 
-// Protected route component
+// Add a global flag for intentional navigation to home/landing page
+declare global {
+  interface Window {
+    INTENTIONAL_HOME_NAVIGATION: boolean;
+  }
+}
+// Initialize it if not already set
+window.INTENTIONAL_HOME_NAVIGATION = window.INTENTIONAL_HOME_NAVIGATION || false;
+
+// Protected route component with auto-restore feature
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { user, isLoading, error } = useAuth();
+  const { user, isLoading, error, loginWithGoogle } = useAuth();
   const [location, setLocation] = useLocation();
-  const [retryCounter, setRetryCounter] = useState(0);
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+  const [autoRestoreAttempted, setAutoRestoreAttempted] = useState(false);
+  const [restorationInProgress, setRestorationInProgress] = useState(false);
   const { toast } = useToast();
-  
+
   // If we're already on the dashboard, don't attempt any navigation
   const isOnDashboard = location.startsWith("/dashboard");
-  
-  // Handle server connection issues during authentication
+
+  // First, try to auto-restore session if we have stored data
   useEffect(() => {
-    const maxRetries = 3;
-    let timeoutId: NodeJS.Timeout;
-    
-    // Only retry if we have a connection error (not auth error) and still need to retry
-    if (error && !networkStatus.serverAvailable && retryCounter < maxRetries) {
-      const retryDelay = Math.min(2000 * Math.pow(2, retryCounter), 10000);
+    // Only attempt auto-restore once, when not loading and no user
+    if (!isLoading && !user && !autoRestoreAttempted && !restorationInProgress) {
+      setAutoRestoreAttempted(true);
       
-      // Show toast only on first error
-      if (retryCounter === 0 && !isOnDashboard) {
-        toast({
-          title: "Connection Error",
-          description: "We're having trouble connecting to the server. Retrying...",
-          variant: "destructive",
-        });
-      }
-      
-      timeoutId = setTimeout(() => {
-        // Increment retry counter
-        setRetryCounter(prev => prev + 1);
-        
-        // Invalidate query to force refetch
-        queryClient.invalidateQueries({ queryKey: ["/api/user"] });
-      }, retryDelay);
-    }
-    
-    return () => {
-      if (timeoutId) clearTimeout(timeoutId);
-    };
-  }, [error, retryCounter, toast, isOnDashboard]);
-  
-  // Navigate to auth page if not authenticated
-  useEffect(() => {
-    if (!isLoading && !user) {
-      // Only redirect if:
-      // 1. We've reached max retries, OR
-      // 2. The server is available (meaning it's a real auth issue), OR
-      // 3. There's no error at all (also a real auth issue)
-      if ((retryCounter >= 3 || networkStatus.serverAvailable || !error) && !isOnDashboard) {
-        // Don't redirect if we had a very recent connection error
-        // This helps prevent flashing between auth and loading screens
-        if (!networkStatus.hasRecentConnectionError()) {
-          // Force to dashboard instead of auth for safety (prevents redirect loops)
-          setLocation(isOnDashboard ? "/dashboard" : "/auth");
+      // Check if we have stored user data
+      const storedData = localStorage.getItem('dotspark_user_data');
+      if (storedData) {
+        try {
+          const userData = JSON.parse(storedData);
+          const lastAuth = new Date(userData.lastAuthenticated);
+          const now = new Date();
+          const hoursSinceAuth = (now.getTime() - lastAuth.getTime()) / (1000 * 60 * 60);
           
-          // Only show toast for non-connection errors (real auth issues)
-          if ((networkStatus.serverAvailable || !error) && !isOnDashboard) {
-            toast({
-              title: "Authentication Required",
-              description: "Please sign in to continue",
-            });
+          // If less than 72 hours since last authentication, attempt auto-restore
+          if (hoursSinceAuth < 72) {
+            console.log("Found recent authentication data, attempting session restoration");
+            setRestorationInProgress(true);
+            
+            // Show login prompt for a smoother user experience
+            setShowLoginPrompt(true);
+          } else {
+            console.log("Stored authentication data too old, not attempting auto-restore");
+            // Navigate to auth for a fresh login
+            if (!window.INTENTIONAL_HOME_NAVIGATION && !isOnDashboard) {
+              setTimeout(() => setLocation("/auth"), 500);
+            }
           }
+        } catch (e) {
+          console.error("Failed to parse stored user data:", e);
+          localStorage.removeItem('dotspark_user_data');
+          // Navigate to auth
+          if (!window.INTENTIONAL_HOME_NAVIGATION && !isOnDashboard) {
+            setTimeout(() => setLocation("/auth"), 500);
+          }
+        }
+      } else {
+        console.log("No stored user data found, regular authentication required");
+        // Navigate to auth
+        if (!window.INTENTIONAL_HOME_NAVIGATION && !isOnDashboard) {
+          setTimeout(() => setLocation("/auth"), 500);
         }
       }
     }
-  }, [user, isLoading, retryCounter, setLocation, toast, error, isOnDashboard, location]);
-  
-  // Show loading state
-  if (isLoading || (error && retryCounter < 3 && !networkStatus.serverAvailable)) {
+  }, [isLoading, user, autoRestoreAttempted, restorationInProgress, setLocation, isOnDashboard]);
+
+  // Handler for automatic login
+  const handleAutomaticLogin = async () => {
+    try {
+      toast({
+        title: "Restoring Session",
+        description: "Attempting to restore your previous session...",
+      });
+      
+      await loginWithGoogle();
+      console.log("Session restore successful");
+      
+      toast({
+        title: "Welcome back!",
+        description: "Your session has been restored successfully.",
+      });
+      
+      setShowLoginPrompt(false);
+      setRestorationInProgress(false);
+    } catch (error) {
+      console.error("Session restore failed:", error);
+      
+      toast({
+        title: "Session expired",
+        description: "Please log in again to continue.",
+        variant: "destructive",
+      });
+      
+      setShowLoginPrompt(false);
+      setRestorationInProgress(false);
+      
+      // Navigate to auth
+      if (!window.INTENTIONAL_HOME_NAVIGATION && !isOnDashboard) {
+        setTimeout(() => setLocation("/auth"), 500);
+      }
+    }
+  };
+
+  // Manual navigation to auth when needed
+  useEffect(() => {
+    // Only if we're done with all attempts and still have no user
+    if (!isLoading && !user && autoRestoreAttempted && !restorationInProgress && !showLoginPrompt) {
+      // Check if we're on a protected route that needs auth
+      if (!window.INTENTIONAL_HOME_NAVIGATION && !isOnDashboard && !location.startsWith("/auth")) {
+        console.log("Authentication required for this route, navigating to auth page");
+        setTimeout(() => setLocation("/auth"), 500);
+      }
+    }
+  }, [isLoading, user, autoRestoreAttempted, restorationInProgress, showLoginPrompt, location, setLocation, isOnDashboard]);
+
+  // Show session restore prompt
+  if (showLoginPrompt) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen">
-        <Loader2 className="h-8 w-8 animate-spin text-primary mb-4" />
-        {error && retryCounter < 3 && !networkStatus.serverAvailable && (
-          <div className="text-center max-w-md px-4">
-            <p className="text-sm text-muted-foreground mb-2">
-              Connecting to server... (Attempt {retryCounter + 1}/3)
-            </p>
-            <ConnectionError 
-              title="Reconnecting to Server" 
-              message="We're having trouble reaching the server. Retrying automatically..." 
-              retryAction={() => {
-                queryClient.invalidateQueries({ queryKey: ["/api/user"] });
-                setRetryCounter(prev => prev + 1);
+      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+        <div className="bg-white p-6 rounded-lg shadow-xl max-w-md w-full">
+          <h2 className="text-2xl font-bold mb-4 text-center">Welcome Back!</h2>
+          <p className="mb-6 text-center">
+            We noticed you were previously logged in. Would you like to restore your session?
+          </p>
+          <div className="flex justify-center space-x-4">
+            <Button onClick={handleAutomaticLogin} className="w-32">
+              Restore
+            </Button>
+            <Button 
+              variant="outline" 
+              onClick={() => {
+                setShowLoginPrompt(false);
+                setRestorationInProgress(false);
+                setLocation("/auth");
               }}
-            />
+              className="w-32"
+            >
+              Sign In Again
+            </Button>
           </div>
-        )}
+        </div>
       </div>
     );
   }
-  
-  if (!user) {
-    // Show a simpler loading state instead of null
-    // This prevents flashing during authentication
+
+  // Show loading state during any loading/restoration process
+  if (isLoading || restorationInProgress) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen">
         <Loader2 className="h-8 w-8 animate-spin text-primary mb-4" />
-        <p className="text-center text-muted-foreground">Loading...</p>
+        <p className="text-center text-muted-foreground">
+          {restorationInProgress ? "Restoring your session..." : "Loading..."}
+        </p>
+      </div>
+    );
+  }
+
+  // If no user after all attempts, show loading until redirected
+  if (!user) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen">
+        <Loader2 className="h-8 w-8 animate-spin text-primary mb-4" />
+        <p className="text-center text-muted-foreground">Preparing your experience...</p>
       </div>
     );
   }
   
+  // User is authenticated, show the protected content
   return <>{children}</>;
 }
 
@@ -247,10 +315,12 @@ function Router() {
       if (window.location.pathname === "/") {
         console.log("URL changed to home, marking as intentional navigation");
         setIntentionalHomeNavigation(true);
+        window.INTENTIONAL_HOME_NAVIGATION = true;
         
         // Reset the flag after 5 seconds
         setTimeout(() => {
           setIntentionalHomeNavigation(false);
+          window.INTENTIONAL_HOME_NAVIGATION = false;
         }, 5000);
       }
     };
@@ -259,10 +329,12 @@ function Router() {
     const handleIntentionalNavigation = (event: Event) => {
       console.log("Received intentional home navigation event", (event as CustomEvent).detail);
       setIntentionalHomeNavigation(true);
+      window.INTENTIONAL_HOME_NAVIGATION = true;
       
       // Reset the flag after 5 seconds
       setTimeout(() => {
         setIntentionalHomeNavigation(false);
+        window.INTENTIONAL_HOME_NAVIGATION = false;
       }, 5000);
     };
     
