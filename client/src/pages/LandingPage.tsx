@@ -10,18 +10,18 @@ export default function LandingPage() {
       {/* Hero Section */}
       <section className="bg-gradient-to-b from-primary/5 to-background py-20">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-16">
-            <div className="flex-1 space-y-6">
+          <div className="flex flex-col items-center gap-8 lg:gap-12 max-w-4xl mx-auto">
+            <div className="space-y-6 text-center">
               <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm text-primary mb-4">
                 Introducing DotSpark
               </div>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
                 Connect the Dots, <span className="gradient-heading">Spark</span> Your Potential
               </h1>
-              <p className="text-xl text-muted-foreground max-w-2xl">
+              <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
                 Like a neural chip for your mind, DotSpark connects your learnings across every domain, unleashing limitless growth through insights you never knew you had.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 pt-4">
+              <div className="flex flex-col sm:flex-row gap-4 pt-4 justify-center">
                 <Button size="lg" asChild>
                   <Link href="/auth">
                     Get Started <ArrowRight className="ml-2 h-5 w-5" />
@@ -33,68 +33,30 @@ export default function LandingPage() {
                   </Link>
                 </Button>
               </div>
-              
-              {/* Onboarding Steps */}
-              <div className="mt-8 pt-6 border-t border-border/40 flex flex-col md:flex-row gap-4 justify-start">
-                <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-full bg-primary/20 text-primary flex items-center justify-center font-semibold">1</div>
-                  <div>
-                    <h3 className="font-medium">Create Account</h3>
-                    <p className="text-sm text-muted-foreground">Sign up and set up your DotSpark profile</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-full bg-primary/20 text-primary flex items-center justify-center font-semibold">2</div>
-                  <div>
-                    <h3 className="font-medium">Connect WhatsApp</h3>
-                    <p className="text-sm text-muted-foreground">Link your WhatsApp in Settings</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-full bg-primary/20 text-primary flex items-center justify-center font-semibold">3</div>
-                  <div>
-                    <h3 className="font-medium">Start Sparking Dots</h3>
-                    <p className="text-sm text-muted-foreground">Capture insights from anywhere</p>
-                  </div>
-                </div>
-              </div>
             </div>
-            <div className="flex-1 w-full max-w-xl">
-              <div className="relative">
-                <div className="absolute -top-8 -left-8 w-72 h-72 bg-primary/20 rounded-full blur-3xl opacity-70"></div>
-                <div className="absolute -bottom-8 -right-8 w-72 h-72 bg-secondary/20 rounded-full blur-3xl opacity-70"></div>
-                <div className="relative bg-card border rounded-xl shadow-2xl overflow-hidden">
-                  <div className="border-b px-6 py-4 flex items-center bg-muted/50">
-                    <div className="flex space-x-2">
-                      <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                      <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                      <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                    </div>
-                    <div className="text-sm font-medium ml-auto text-muted-foreground">Chat Interface</div>
+            
+            {/* Onboarding Steps */}
+            <div className="w-full pt-8 border-t border-border/40">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="bg-card/50 border rounded-xl p-5 flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-full bg-primary/20 text-primary flex items-center justify-center font-semibold text-lg shrink-0">1</div>
+                  <div>
+                    <h3 className="font-medium text-lg">Create Account</h3>
+                    <p className="text-muted-foreground">Sign up and set up your DotSpark profile to start capturing your learning moments</p>
                   </div>
-                  <div className="p-6 space-y-4">
-                    <div className="flex gap-4 items-start">
-                      <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
-                        <MessageCircle className="h-4 w-4 text-primary" />
-                      </div>
-                      <div className="flex-1 bg-muted p-4 rounded-xl">
-                        Today I learned that consistency in small daily learning sessions is more effective than occasional cramming.
-                      </div>
-                    </div>
-                    <div className="flex gap-4 items-start">
-                      <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center">
-                        <Brain className="h-4 w-4 text-secondary-foreground" />
-                      </div>
-                      <div className="flex-1 bg-card border p-4 rounded-xl">
-                        <p className="text-sm text-muted-foreground mb-2">I've captured that insight as a learning entry:</p>
-                        <h3 className="font-medium">The Power of Daily Learning Habits</h3>
-                        <p className="text-sm mt-1">Consistent small sessions produce better results than infrequent long sessions...</p>
-                        <div className="flex gap-2 mt-3">
-                          <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold bg-primary/10 text-primary">habit-formation</span>
-                          <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold bg-secondary/10 text-secondary">learning-science</span>
-                        </div>
-                      </div>
-                    </div>
+                </div>
+                <div className="bg-card/50 border rounded-xl p-5 flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-full bg-primary/20 text-primary flex items-center justify-center font-semibold text-lg shrink-0">2</div>
+                  <div>
+                    <h3 className="font-medium text-lg">Connect WhatsApp</h3>
+                    <p className="text-muted-foreground">Link your WhatsApp in Settings to enable mobile learning capture on the go</p>
+                  </div>
+                </div>
+                <div className="bg-card/50 border rounded-xl p-5 flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-full bg-primary/20 text-primary flex items-center justify-center font-semibold text-lg shrink-0">3</div>
+                  <div>
+                    <h3 className="font-medium text-lg">Start Sparking Dots</h3>
+                    <p className="text-muted-foreground">Capture insights from anywhere and watch as your neural chip connects the dots</p>
                   </div>
                 </div>
               </div>
@@ -103,6 +65,9 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* WhatsApp Integration Section */}
+      <WhatsAppPromo />
+      
       {/* Neural Chip Visual Section */}
       <section className="py-24 relative">
         <div className="container mx-auto px-4 md:px-6">
@@ -213,9 +178,6 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
-      
-      {/* WhatsApp Integration Section */}
-      <WhatsAppPromo />
       
       {/* Stats Section */}
       <section className="py-16 bg-muted/30">
