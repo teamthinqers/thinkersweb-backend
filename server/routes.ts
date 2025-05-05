@@ -22,7 +22,9 @@ import {
   processWhatsAppMessage, 
   registerWhatsAppUser,
   unregisterWhatsAppUser,
-  getWhatsAppStatus
+  getWhatsAppStatus,
+  requestWhatsAppOTP,
+  verifyWhatsAppOTP
 } from "./whatsapp";
 import { eq, inArray, and } from "drizzle-orm";
 import twilio from "twilio";

@@ -1,9 +1,10 @@
 import { db } from "@db";
-import { users, whatsappUsers, entries, tags } from "@shared/schema";
-import { eq } from "drizzle-orm";
+import { users, whatsappUsers, entries, tags, whatsappOtpVerifications } from "@shared/schema";
+import { eq, and, desc, gt } from "drizzle-orm";
 import { processEntryFromChat, generateChatResponse, type Message } from "./chat";
 import { storage } from "./storage";
 import twilio from "twilio";
+import { randomInt } from "crypto";
 
 // Twilio WhatsApp API configuration
 const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID || "";
@@ -342,8 +343,28 @@ export async function unregisterWhatsAppUser(userId: number): Promise<{
 export async function getWhatsAppStatus(userId: number): Promise<{
   registered: boolean;
   phoneNumber?: string;
+  pendingVerification?: boolean;
 }> {
   try {
+    // First check if there's a pending OTP verification
+    const pendingOtp = await db.query.whatsappOtpVerifications.findFirst({
+      where: and(
+        eq(whatsappOtpVerifications.userId, userId),
+        eq(whatsappOtpVerifications.verified, false),
+        gt(whatsappOtpVerifications.expiresAt, new Date())
+      ),
+      orderBy: [desc(whatsappOtpVerifications.createdAt)]
+    });
+
+    if (pendingOtp) {
+      return { 
+        registered: false, 
+        phoneNumber: pendingOtp.phoneNumber,
+        pendingVerification: true
+      };
+    }
+
+    // Check for registered WhatsApp user
     const whatsappUser = await db.query.whatsappUsers.findFirst({
       where: eq(whatsappUsers.userId, userId),
     });
@@ -359,5 +380,200 @@ export async function getWhatsAppStatus(userId: number): Promise<{
   } catch (error) {
     console.error("Error getting WhatsApp chatbot status:", error);
     return { registered: false };
+  }
+}
+
+/**
+ * Generate a random 6-digit OTP code
+ */
+function generateOTPCode(): string {
+  // Generate a random 6-digit number
+  return randomInt(100000, 999999).toString();
+}
+
+/**
+ * Calculate expiration time (10 minutes from now)
+ */
+function getOTPExpirationTime(): Date {
+  const expirationTime = new Date();
+  expirationTime.setMinutes(expirationTime.getMinutes() + 10); // 10 minutes expiration
+  return expirationTime;
+}
+
+/**
+ * Request OTP verification for WhatsApp number
+ */
+export async function requestWhatsAppOTP(userId: number, phoneNumber: string): Promise<{
+  success: boolean;
+  message: string;
+}> {
+  try {
+    // Normalize phone number (remove spaces, ensure it includes country code)
+    const normalizedPhone = phoneNumber.replace(/\s+/g, "");
+    if (!normalizedPhone.startsWith("+")) {
+      return {
+        success: false,
+        message: "Phone number must include country code (e.g., +1 for US)",
+      };
+    }
+
+    // Check if user exists
+    const userExists = await db.query.users.findFirst({
+      where: eq(users.id, userId),
+    });
+
+    if (!userExists) {
+      return {
+        success: false,
+        message: "User not found",
+      };
+    }
+
+    // Check if phone is already registered to another user
+    const existingWhatsAppUser = await db.query.whatsappUsers.findFirst({
+      where: eq(whatsappUsers.phoneNumber, normalizedPhone),
+    });
+
+    if (existingWhatsAppUser && existingWhatsAppUser.userId !== userId) {
+      return {
+        success: false,
+        message: "This phone number is already connected to another DotSpark account",
+      };
+    }
+
+    // Generate OTP code
+    const otpCode = generateOTPCode();
+    const expiresAt = getOTPExpirationTime();
+
+    // Store OTP verification request
+    await db.insert(whatsappOtpVerifications).values({
+      userId,
+      phoneNumber: normalizedPhone,
+      otpCode,
+      expiresAt,
+      verified: false,
+    });
+
+    // Send OTP via WhatsApp
+    const otpMessage = 
+      "🔐 DotSpark Verification Code\n\n" +
+      `Your verification code is: ${otpCode}\n\n` +
+      "This code will expire in 10 minutes.\n" + 
+      "Please enter this code in the DotSpark web application to verify your WhatsApp number.";
+    
+    const messageSent = await sendWhatsAppReply(normalizedPhone, otpMessage);
+    
+    if (!messageSent) {
+      return {
+        success: false,
+        message: "Unable to send verification code to your WhatsApp number. Please check the number and try again.",
+      };
+    }
+
+    return {
+      success: true,
+      message: "Verification code sent to your WhatsApp number. Please check your WhatsApp and enter the 6-digit code.",
+    };
+  } catch (error) {
+    console.error("Error requesting WhatsApp OTP:", error);
+    return {
+      success: false,
+      message: "An error occurred while sending the verification code",
+    };
+  }
+}
+
+/**
+ * Verify OTP code for WhatsApp number
+ */
+export async function verifyWhatsAppOTP(userId: number, otpCode: string): Promise<{
+  success: boolean;
+  message: string;
+}> {
+  try {
+    // Find the most recent unexpired OTP verification request
+    const otpVerification = await db.query.whatsappOtpVerifications.findFirst({
+      where: and(
+        eq(whatsappOtpVerifications.userId, userId),
+        eq(whatsappOtpVerifications.verified, false),
+        gt(whatsappOtpVerifications.expiresAt, new Date())
+      ),
+      orderBy: [desc(whatsappOtpVerifications.createdAt)]
+    });
+
+    if (!otpVerification) {
+      return {
+        success: false,
+        message: "No verification in progress or verification expired. Please request a new code.",
+      };
+    }
+
+    // Check if OTP matches
+    if (otpVerification.otpCode !== otpCode) {
+      return {
+        success: false,
+        message: "Invalid verification code. Please try again.",
+      };
+    }
+
+    // Mark OTP as verified
+    await db.update(whatsappOtpVerifications)
+      .set({ verified: true })
+      .where(eq(whatsappOtpVerifications.id, otpVerification.id));
+
+    // Register WhatsApp user or update existing one
+    const existingUser = await db.query.whatsappUsers.findFirst({
+      where: eq(whatsappUsers.userId, userId),
+    });
+
+    if (existingUser) {
+      // Update existing user with new phone number
+      await db.update(whatsappUsers)
+        .set({ 
+          phoneNumber: otpVerification.phoneNumber,
+          active: true 
+        })
+        .where(eq(whatsappUsers.id, existingUser.id));
+    } else {
+      // Register new WhatsApp user
+      await db.insert(whatsappUsers).values({
+        userId,
+        phoneNumber: otpVerification.phoneNumber,
+        active: true,
+      });
+    }
+    
+    // Send welcome message to user via WhatsApp
+    const welcomeMessage = 
+      "🎉 Welcome to DotSpark WhatsApp Chatbot! 🎉\n\n" +
+      "Your account is now connected. Here's how to use the chatbot:\n\n" +
+      "1️⃣ Send any text to create a new learning dot\n" +
+      "2️⃣ Start with 'Q:' to ask questions about your knowledge\n" +
+      "3️⃣ Type 'summary' to get an overview of recent entries\n" +
+      "4️⃣ Type 'help' to see all available commands\n\n" +
+      "Try sending your first learning entry now! For example:\n" +
+      "'I learned that consistent small efforts lead to big results over time.'";
+    
+    // Don't wait for the message to be sent before returning
+    sendWhatsAppReply(otpVerification.phoneNumber, welcomeMessage)
+      .then(success => {
+        if (!success) {
+          console.error(`Failed to send welcome message to ${otpVerification.phoneNumber}`);
+        }
+      })
+      .catch(error => {
+        console.error(`Error sending welcome message to ${otpVerification.phoneNumber}:`, error);
+      });
+
+    return {
+      success: true,
+      message: "WhatsApp number verified successfully! You can now use the DotSpark WhatsApp chatbot.",
+    };
+  } catch (error) {
+    console.error("Error verifying WhatsApp OTP:", error);
+    return {
+      success: false,
+      message: "An error occurred while verifying the code",
+    };
   }
 }
