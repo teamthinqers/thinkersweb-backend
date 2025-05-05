@@ -58,6 +58,7 @@ function AppWithLayout() {
   const [showEntryDetail, setShowEntryDetail] = useState(false);
   const [showEntryForm, setShowEntryForm] = useState(false);
   const [currentEntryId, setCurrentEntryId] = useState<number | null>(null);
+  const [location] = useLocation();
 
   const openEntryDetail = (id: number) => {
     setCurrentEntryId(id);
@@ -84,18 +85,30 @@ function AppWithLayout() {
     setCurrentEntryId(null);
   };
 
+  // Determine which content to show based on the current location
+  const renderContent = () => {
+    switch (location) {
+      case '/dashboard':
+        return <Dashboard onEntryClick={openEntryDetail} />;
+      case '/entries':
+        return <AllEntries onEntryClick={openEntryDetail} />;
+      case '/insights':
+        return <Insights />;
+      case '/favorites':
+        return <Favorites onEntryClick={openEntryDetail} />;
+      case '/network':
+        return <Network />;
+      case '/settings':
+        return <Settings />;
+      default:
+        return <Dashboard onEntryClick={openEntryDetail} />;
+    }
+  };
+
   return (
     <ProtectedRoute>
       <AppLayout onNewEntry={openNewEntryForm}>
-        <Switch>
-          <Route path="/dashboard" component={() => <Dashboard onEntryClick={openEntryDetail} />} />
-          <Route path="/entries" component={() => <AllEntries onEntryClick={openEntryDetail} />} />
-          <Route path="/insights" component={Insights} />
-          <Route path="/favorites" component={() => <Favorites onEntryClick={openEntryDetail} />} />
-          <Route path="/network" component={Network} />
-          <Route path="/settings" component={Settings} />
-          <Route component={NotFound} />
-        </Switch>
+        {renderContent()}
 
         {showEntryDetail && currentEntryId && (
           <EntryDetail 
@@ -117,23 +130,20 @@ function AppWithLayout() {
 
 function Router() {
   const [location] = useLocation();
-  const { user, isLoading } = useAuth();
   
-  // Check if we're on the landing page
-  const isLandingPage = location === "/";
-  
-  // Show LandingPage for unauthenticated users or when on landing page explicitly
-  if (isLandingPage || (!user && !isLoading)) {
-    return <LandingPage />;
-  }
-  
-  // Show AuthPage for the auth route
-  if (location === "/auth") {
-    return <AuthPage />;
-  }
-  
-  // For dashboard and other protected routes
-  return <AppWithLayout />;
+  return (
+    <Switch>
+      <Route path="/" component={LandingPage} />
+      <Route path="/auth" component={AuthPage} />
+      <Route path="/dashboard" component={() => <AppWithLayout />} />
+      <Route path="/entries" component={() => <AppWithLayout />} />
+      <Route path="/insights" component={() => <AppWithLayout />} />
+      <Route path="/favorites" component={() => <AppWithLayout />} />
+      <Route path="/network" component={() => <AppWithLayout />} />
+      <Route path="/settings" component={() => <AppWithLayout />} />
+      <Route component={NotFound} />
+    </Switch>
+  );
 }
 
 function App() {

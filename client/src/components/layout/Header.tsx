@@ -14,7 +14,6 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { useAuth } from "@/hooks/use-auth";
 import { Link, useLocation } from "wouter";
-import { navigateToHome, navigateToDashboard } from "@/lib/navigationService";
 import { signOut } from "@/lib/authService";
 import {
   DropdownMenu,

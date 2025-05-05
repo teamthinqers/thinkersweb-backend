@@ -158,13 +158,11 @@ export default function AuthPage() {
       
       console.log("Starting Google Sign In process from auth page");
       
-      // Execute login
-      await loginWithGoogle();
+      // Execute login and don't wait - just go directly to dashboard
+      loginWithGoogle();
       
-      console.log("Google Sign In successful");
-      
-      // Hard refresh to dashboard to ensure clean application state
-      window.location.href = "/dashboard";
+      // Don't wait for login to complete, just navigate
+      setLocation("/dashboard");
       
     } catch (error) {
       console.error("Google sign in error:", error);
