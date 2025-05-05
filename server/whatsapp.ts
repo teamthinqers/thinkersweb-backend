@@ -499,16 +499,10 @@ export async function requestWhatsAppOTP(userId: number, phoneNumber: string): P
     });
 
     // Send OTP via WhatsApp
+    // Using one of the approved Twilio Sandbox templates
+    // See: https://www.twilio.com/docs/whatsapp/sandbox#using-the-sandbox
     const otpMessage = 
-      "🔐 DotSpark Verification Code\n\n" +
-      `Your verification code is: ${otpCode}\n\n` +
-      "This code will expire in 10 minutes.\n" + 
-      "Please enter this code in the DotSpark web application to verify your WhatsApp number." +
-      (process.env.NODE_ENV !== 'production' ? 
-        "\n\n[DEVELOPMENT MODE] To test with the Twilio WhatsApp Sandbox:" +
-        "\n1. Save +14155238886 to your contacts" +
-        "\n2. Send 'join example-sandbox' to that number on WhatsApp" +
-        "\n3. Once connected, you'll receive messages from our app" : "");
+      `Your DotSpark verification code is: ${otpCode}`;
     
     // Try to send the message, but in dev mode, we'll succeed even if Twilio fails
     let messageSent = false;
@@ -617,15 +611,9 @@ export async function verifyWhatsAppOTP(userId: number, otpCode: string): Promis
     }
     
     // Send welcome message to user via WhatsApp
-    const welcomeMessage = 
-      "Welcome to DotSpark - Your Neural chip for limitless learning. Please feel free to ask me anything or record your learnings for the day\n\n" +
-      "Here's how to use the chatbot:\n\n" +
-      "1️⃣ Send any text to create a new learning dot\n" +
-      "2️⃣ Start with 'Q:' to ask questions about your knowledge\n" +
-      "3️⃣ Type 'summary' to get an overview of recent entries\n" +
-      "4️⃣ Type 'help' to see all available commands\n\n" +
-      "Try sending your first learning entry now! For example:\n" +
-      "'I learned that consistent small efforts lead to big results over time.'";
+    // Using one of the approved Twilio Sandbox templates
+    // See: https://www.twilio.com/docs/whatsapp/sandbox#using-the-sandbox
+    const welcomeMessage = "Your DotSpark chatbot has been activated. Send any message to create a learning entry.";
     
     // Don't wait for the message to be sent before returning
     sendWhatsAppReply(otpVerification.phoneNumber, welcomeMessage)
