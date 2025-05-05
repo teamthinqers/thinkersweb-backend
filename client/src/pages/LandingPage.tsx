@@ -212,6 +212,139 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Connected Insights Demo Section */}
+      <section className="py-24 relative overflow-hidden">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Witness the <span className="gradient-heading">Spark</span> Between Dots</h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              See how seemingly unrelated knowledge points connect to create powerful breakthroughs
+            </p>
+          </div>
+          
+          <div className="grid lg:grid-cols-3 gap-4 lg:gap-10 mt-12 relative">
+            {/* Visual connection lines for desktop - hidden on mobile */}
+            <div className="absolute top-1/2 left-0 w-full hidden lg:block">
+              <div className="relative h-0">
+                {/* Line connecting first and second dot */}
+                <div className="absolute top-0 left-[25%] w-[25%] h-[2px] bg-gradient-to-r from-primary/80 to-secondary/80 transform -translate-y-1/2"></div>
+                
+                {/* Line connecting second and third dot */}
+                <div className="absolute top-0 left-[50%] w-[25%] h-[2px] bg-gradient-to-r from-secondary/80 to-primary/80 transform -translate-y-1/2"></div>
+                
+                {/* Spark in the middle */}
+                <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-yellow-300 rounded-full shadow-lg shadow-yellow-300/50 animate-sparkling z-20 
+                              flex items-center justify-center text-yellow-800 text-xs font-bold">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.287 1.288L3 12l5.8 1.9a2 2 0 0 1 1.288 1.287L12 21l1.9-5.8a2 2 0 0 1 1.287-1.288L21 12l-5.8-1.9a2 2 0 0 1-1.288-1.287Z"></path></svg>
+                </div>
+              </div>
+            </div>
+            
+            {/* First Dot/Knowledge - Cooking */}
+            <div className="bg-card border rounded-xl p-6 card-hover neural-connection">
+              <div className="text-right mb-3 lg:hidden">
+                <span className="inline-block rounded-full bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">Dot 1</span>
+              </div>
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M8 3v3"></path><path d="M16 3v3"></path><path d="M10 12h8"></path><path d="M18 6H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2Z"></path><path d="M10 16h8"></path></svg>
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold">Cooking Techniques</h3>
+                  <p className="text-muted-foreground text-sm">Learned about the Maillard reaction that gives grilled meats their flavor</p>
+                </div>
+              </div>
+              <div className="mt-4 pt-4 border-t border-border/50">
+                <p className="text-sm text-muted-foreground">
+                  "I've been reading about food science and learning why browning meat creates such rich flavors - it's a complex chemical process at specific temperatures."
+                </p>
+              </div>
+              <div className="hidden lg:flex items-center justify-center mt-4">
+                <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-sm font-bold">1</div>
+              </div>
+            </div>
+            
+            {/* Second Dot/Knowledge - Chemistry */}
+            <div className="bg-card border rounded-xl p-6 card-hover neural-connection relative z-10">
+              <div className="text-right mb-3 lg:hidden">
+                <span className="inline-block rounded-full bg-secondary/10 px-2.5 py-1 text-xs font-semibold text-secondary">Dot 2</span>
+              </div>
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-secondary/20 to-secondary/10 flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-secondary"><path d="M4.5 3h15"></path><path d="M6 3v16a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V3"></path><path d="M6 14h12"></path></svg>
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold">Chemistry Class</h3>
+                  <p className="text-muted-foreground text-sm">Learned about amino acids and protein structures</p>
+                </div>
+              </div>
+              <div className="mt-4 pt-4 border-t border-border/50">
+                <p className="text-sm text-muted-foreground">
+                  "In my chemistry course, we studied how heat changes the molecular structure of proteins through denaturing and recombination."
+                </p>
+              </div>
+              <div className="hidden lg:flex items-center justify-center mt-4">
+                <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-secondary-foreground text-sm font-bold">2</div>
+              </div>
+            </div>
+            
+            {/* Third Dot/Knowledge - Health */}
+            <div className="bg-card border rounded-xl p-6 card-hover neural-connection">
+              <div className="text-right mb-3 lg:hidden">
+                <span className="inline-block rounded-full bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">Dot 3</span>
+              </div>
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M3 5v14"></path><path d="m21 5-9 14-9-14"></path><path d="M12 20V5"></path></svg>
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold">Fitness Research</h3>
+                  <p className="text-muted-foreground text-sm">Reading about optimizing protein intake for muscle recovery</p>
+                </div>
+              </div>
+              <div className="mt-4 pt-4 border-t border-border/50">
+                <p className="text-sm text-muted-foreground">
+                  "I discovered that timing of protein consumption matters, and how our bodies absorb different proteins at different rates."
+                </p>
+              </div>
+              <div className="hidden lg:flex items-center justify-center mt-4">
+                <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-sm font-bold">3</div>
+              </div>
+            </div>
+          </div>
+          
+          {/* The Spark/Insight - Mobile Version */}
+          <div className="mt-8 lg:hidden">
+            <div className="flex justify-center mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-yellow-400"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.287 1.288L3 12l5.8 1.9a2 2 0 0 1 1.288 1.287L12 21l1.9-5.8a2 2 0 0 1 1.287-1.288L21 12l-5.8-1.9a2 2 0 0 1-1.288-1.287Z"></path></svg>
+            </div>
+          </div>
+          
+          {/* The Result/Insight - For Both Mobile and Desktop */}
+          <div className="mt-8 lg:mt-12 max-w-3xl mx-auto">
+            <div className="bg-card border-2 border-yellow-400/50 rounded-xl p-6 shadow-lg shadow-yellow-400/10">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-12 h-12 rounded-full bg-yellow-400/20 flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-yellow-600"><path d="M12 2v8"></path><path d="m4.93 10.93 1.41 1.41"></path><path d="M2 18h2"></path><path d="M20 18h2"></path><path d="m19.07 10.93-1.41 1.41"></path><path d="M22 22H2"></path><path d="m16 6-4 4-4-4"></path><path d="M16 18a4 4 0 0 0-8 0"></path></svg>
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-yellow-700 dark:text-yellow-400">The Spark: Protein Cooking Breakthrough</h3>
+                </div>
+              </div>
+              <p className="text-muted-foreground">
+                "By connecting my dots from cooking techniques, chemistry knowledge, and fitness research, I realized that I could optimize my meal prep by applying the Maillard reaction to different protein sources based on their amino acid profiles. This led me to develop a customized cooking method that preserves the nutritional value while maximizing flavor - something I never would have discovered without connecting these separate learnings!"
+              </p>
+              <div className="mt-4 text-right">
+                <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold bg-yellow-100 text-yellow-800 border-yellow-400/50">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1"><path d="M12 3v19"></path><path d="M5 8c1.5 0 2.5-1.5 2.5-3S6.5 2 5 2 2.5 3.5 2.5 5 3.5 8 5 8Z"></path><path d="M5 16c1.5 0 2.5-1.5 2.5-3S6.5 10 5 10s-2.5 1.5-2.5 3 1 3 2.5 3Z"></path><path d="M19 8c1.5 0 2.5-1.5 2.5-3S20.5 2 19 2s-2.5 1.5-2.5 3 1 3 2.5 3Z"></path><path d="M19 16c1.5 0 2.5-1.5 2.5-3s-1-3-2.5-3-2.5 1.5-2.5 3 1 3 2.5 3Z"></path></svg>
+                  Cross-domain insight
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      
       {/* Features Section */}
       <section className="py-20">
         <div className="container mx-auto px-4 md:px-6">
