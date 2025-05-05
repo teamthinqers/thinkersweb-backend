@@ -1,6 +1,6 @@
 import { db } from "./index";
 import * as schema from "@shared/schema";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 
 async function seed() {
   try {
