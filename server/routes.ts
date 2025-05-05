@@ -11,6 +11,7 @@ import {
   sharedEntries, 
   entryTags, 
   users, 
+  whatsappOtpVerifications,
   type User 
 } from "@shared/schema";
 import { processEntryFromChat, generateChatResponse, type Message } from "./chat";
@@ -26,7 +27,7 @@ import {
   requestWhatsAppOTP,
   verifyWhatsAppOTP
 } from "./whatsapp";
-import { eq, inArray, and } from "drizzle-orm";
+import { eq, inArray, and, lt, desc } from "drizzle-orm";
 import twilio from "twilio";
 
 // Interface for authenticated requests
@@ -954,6 +955,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // For demo purposes using DEMO_USER_ID, in production this would use authenticated user
       const userId = DEMO_USER_ID;
       
+      // Clean up expired OTP verifications first
+      await db.delete(whatsappOtpVerifications)
+        .where(and(
+          eq(whatsappOtpVerifications.userId, userId),
+          lt(whatsappOtpVerifications.expiresAt, new Date())
+        ));
+      
       const status = await getWhatsAppStatus(userId);
       res.json(status);
     } catch (err) {
@@ -1021,6 +1029,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
     } catch (err) {
       console.error("WhatsApp OTP verification error:", err);
+      handleApiError(err, res);
+    }
+  });
+  
+  // Cancel pending WhatsApp verification
+  app.post(`${apiPrefix}/whatsapp/cancel-verification`, async (req, res) => {
+    try {
+      // For demo purposes using DEMO_USER_ID, in production this would use authenticated user
+      const userId = DEMO_USER_ID;
+      
+      // Delete all pending verifications for this user
+      await db.delete(whatsappOtpVerifications)
+        .where(and(
+          eq(whatsappOtpVerifications.userId, userId),
+          eq(whatsappOtpVerifications.verified, false)
+        ));
+      
+      return res.status(200).json({ 
+        success: true, 
+        message: "Verification canceled successfully"
+      });
+    } catch (err) {
+      console.error("WhatsApp verification cancellation error:", err);
       handleApiError(err, res);
     }
   });

@@ -305,9 +305,45 @@ export default function WhatsAppIntegration() {
                   maxLength={6}
                 />
               </div>
-              <Button onClick={handleVerifyOTP} disabled={verifyingOtp}>
+              <Button onClick={handleVerifyOTP} disabled={verifyingOtp} className="mr-2">
                 {verifyingOtp ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <ShieldCheck className="h-4 w-4 mr-2" />}
-                Verify & Activate
+                Verify
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={async () => {
+                  try {
+                    await apiRequest("POST", "/api/whatsapp/cancel-verification");
+                    setPendingVerification(false);
+                    setPendingPhoneNumber("");
+                    setOtpCode("");
+                  } catch (error) {
+                    console.error("Error canceling verification:", error);
+                    // Fall back to client-side cancellation if the API fails
+                    setPendingVerification(false);
+                    setPendingPhoneNumber("");
+                    setOtpCode("");
+                  }
+                }}
+              >
+                Cancel
+              </Button>
+            </div>
+            
+            <div className="flex items-center gap-2 justify-center mt-2">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="text-sm flex items-center text-muted-foreground"
+                onClick={handleRequestOTP}
+                disabled={requestingOtp}
+              >
+                {requestingOtp ? (
+                  <Loader2 className="h-3 w-3 animate-spin mr-2" />
+                ) : (
+                  <RefreshCw className="h-3 w-3 mr-2" />
+                )}
+                Resend verification code
               </Button>
             </div>
           </div>
@@ -325,15 +361,35 @@ export default function WhatsAppIntegration() {
             
             <div className="flex items-end gap-2">
               <div className="flex-1 space-y-2">
-                <Label htmlFor="phoneNumber">Phone Number</Label>
+                <Label htmlFor="phoneNumber">
+                  Phone Number <span className="text-xs text-muted-foreground">(include country code)</span>
+                </Label>
                 <Input 
                   id="phoneNumber" 
                   placeholder="+1 234 567 8900" 
                   value={phoneNumber} 
-                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  onChange={(e) => {
+                    // Simple validation to ensure it starts with "+" and only contains digits, spaces, and "+"
+                    const value = e.target.value;
+                    if (/^[0-9+\s]*$/.test(value)) {
+                      setPhoneNumber(value);
+                    }
+                  }}
+                  onBlur={(e) => {
+                    // Format on blur: ensure it starts with "+"
+                    if (phoneNumber && !phoneNumber.startsWith('+')) {
+                      setPhoneNumber(`+${phoneNumber}`);
+                    }
+                  }}
                 />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Format: +[country code][number] (e.g., +1 for US, +44 for UK)
+                </p>
               </div>
-              <Button onClick={handleRequestOTP} disabled={requestingOtp}>
+              <Button 
+                onClick={handleRequestOTP} 
+                disabled={requestingOtp || !phoneNumber || phoneNumber.length < 10}
+              >
                 {requestingOtp ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <ShieldCheck className="h-4 w-4 mr-2" />}
                 Send Verification
               </Button>
