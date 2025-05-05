@@ -93,51 +93,19 @@ export default function LandingPage() {
       {/* WhatsApp Integration Section */}
       <WhatsAppPromo />
       
-      {/* Neural Chip Visual Section */}
-      <section className="py-24 relative">
+      {/* Neural Chip for Limitless Learning Section */}
+      <section className="py-24 relative overflow-hidden bg-gradient-to-b from-background to-muted/30">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div className="space-y-6">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">Your <span className="gradient-heading">Learning Chip</span> Upgrade</h2>
-              <p className="text-xl text-muted-foreground">
-                DotSpark works like a neural implant for your learning journey, connecting isolated bits of knowledge into a powerful network of insights.
-              </p>
-              
-              <div className="space-y-4 mt-6">
-                <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mt-0.5">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 16V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v9m16 0H4m16 0 1.28 2.55a1 1 0 0 1-.9 1.45H3.62a1 1 0 0 1-.9-1.45L4 16"></path><path d="M8 7a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v9H8V7z"></path></svg>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-lg">Neural Integration</h3>
-                    <p className="text-muted-foreground">DotSpark integrates with how your brain naturally works, capturing your thoughts as they occur.</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mt-0.5">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-lg">Global Knowledge Network</h3>
-                    <p className="text-muted-foreground">Connect your dots with a global network of learners to expand your cognitive horizons.</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mt-0.5">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="8" y1="19" x2="8" y2="21"></line><line x1="8" y1="13" x2="8" y2="15"></line><line x1="16" y1="19" x2="16" y2="21"></line><line x1="16" y1="13" x2="16" y2="15"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="12" y1="15" x2="12" y2="17"></line><path d="M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"></path></svg>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-lg">Unlimited Growth Potential</h3>
-                    <p className="text-muted-foreground">Your neural chip grows with you, constantly finding new connections as you add more knowledge.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Your <span className="gradient-heading">Neural Chip</span> for Limitless Learning</h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              DotSpark functions like a neural chip for your mind, collecting your learning moments and connecting them into a powerful network of insights.
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-2 gap-16 items-center">
             {/* Neural Chip Visualization */}
-            <div className="relative">
+            <div className="relative order-2 md:order-1">
               <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-secondary/5 rounded-xl transform rotate-3"></div>
               <div className="relative bg-black/5 dark:bg-white/5 border rounded-xl p-6 shadow-lg overflow-hidden h-[400px]">
                 {/* Brain Nodes and Connections Visualization */}
@@ -200,6 +168,41 @@ export default function LandingPage() {
                 </div>
               </div>
             </div>
+            
+            {/* Key Features */}
+            <div className="space-y-8 order-1 md:order-2">
+              <div className="space-y-6">
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mt-0.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 16V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v9m16 0H4m16 0 1.28 2.55a1 1 0 0 1-.9 1.45H3.62a1 1 0 0 1-.9-1.45L4 16"></path><path d="M8 7a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v9H8V7z"></path></svg>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg">Neural Integration</h3>
+                    <p className="text-muted-foreground">DotSpark integrates with how your brain naturally works, capturing your thoughts as they occur.</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mt-0.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg">Global Knowledge Network</h3>
+                    <p className="text-muted-foreground">Connect your dots with a global network of learners to expand your cognitive horizons.</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mt-0.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="8" y1="19" x2="8" y2="21"></line><line x1="8" y1="13" x2="8" y2="15"></line><line x1="16" y1="19" x2="16" y2="21"></line><line x1="16" y1="13" x2="16" y2="15"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="12" y1="15" x2="12" y2="17"></line><path d="M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"></path></svg>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg">Unlimited Growth Potential</h3>
+                    <p className="text-muted-foreground">Your neural chip grows with you, constantly finding new connections as you add more knowledge.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -207,6 +210,12 @@ export default function LandingPage() {
       {/* Stats Section */}
       <section className="py-16 bg-muted/30">
         <div className="container mx-auto px-4 md:px-6">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold mb-4">The <span className="gradient-heading">Numbers</span> Speak</h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              See how DotSpark neural chip technology transforms learning effectiveness
+            </p>
+          </div>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
             <div className="space-y-2">
               <h3 className="text-4xl font-bold text-primary">23%</h3>
@@ -228,7 +237,108 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Connected Insights Demo Section */}
+      {/* How to Install Your Chip Section */}
+      <section className="py-20 bg-gradient-to-b from-muted/30 to-background">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">How to <span className="gradient-heading">Install</span> Your Chip</h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              Getting started with your neural chip is simple and non-invasive
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            <div className="bg-card border rounded-xl p-6 relative">
+              <div className="w-12 h-12 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-xl mb-4">1</div>
+              <h3 className="text-xl font-bold mb-3">Create Your Account</h3>
+              <p className="text-muted-foreground">Sign up for DotSpark and configure your neural chip's base settings to match your learning preferences.</p>
+              <div className="absolute top-6 right-6">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary/40"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"></path><circle cx="12" cy="13" r="3"></circle></svg>
+              </div>
+            </div>
+            
+            <div className="bg-card border rounded-xl p-6 relative">
+              <div className="w-12 h-12 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-xl mb-4">2</div>
+              <h3 className="text-xl font-bold mb-3">Feed Your Neural Chip</h3>
+              <p className="text-muted-foreground">Capture your learning moments through our chat interface or WhatsApp integration to build your knowledge network.</p>
+              <div className="absolute top-6 right-6">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary/40"><circle cx="12" cy="12" r="10"></circle><path d="M18 13a6 6 0 0 1-6 5 6 6 0 0 1-6-5h12Z"></path><line x1="9" y1="9" x2="9" y2="9"></line><line x1="15" y1="9" x2="15" y2="9"></line></svg>
+              </div>
+            </div>
+            
+            <div className="bg-card border rounded-xl p-6 relative">
+              <div className="w-12 h-12 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-xl mb-4">3</div>
+              <h3 className="text-xl font-bold mb-3">Witness the Connections</h3>
+              <p className="text-muted-foreground">Watch as your neural chip forms connections between seemingly unrelated ideas, creating powerful insights.</p>
+              <div className="absolute top-6 right-6">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary/40"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.287 1.288L3 12l5.8 1.9a2 2 0 0 1 1.288 1.287L12 21l1.9-5.8a2 2 0 0 1 1.287-1.288L21 12l-5.8-1.9a2 2 0 0 1-1.288-1.287L12 3Z"></path></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Who Benefits Section */}
+      <section className="py-20">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Who <span className="gradient-heading">Benefits</span> Most</h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              DotSpark's neural chip technology helps anyone who values continuous learning and growth
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="border bg-card rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
+              <div className="rounded-full w-12 h-12 bg-primary/10 flex items-center justify-center mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M22 12.5V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-1.5"></path><path d="M18 5v14"></path><path d="M10 17H9"></path><path d="M15 7h3"></path><path d="M15 11h3"></path><path d="M15 15h3"></path><path d="M6 8h3"></path><path d="M6 12h3"></path><path d="M6 16h3"></path></svg>
+              </div>
+              <h3 className="text-xl font-bold mb-2">Lifelong Learners</h3>
+              <p className="text-muted-foreground">People who constantly seek knowledge across diverse fields and need help connecting seemingly unrelated ideas.</p>
+            </div>
+            
+            <div className="border bg-card rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
+              <div className="rounded-full w-12 h-12 bg-primary/10 flex items-center justify-center mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M5 3a2 2 0 0 0-2 2"></path><path d="M19 3a2 2 0 0 1 2 2"></path><path d="M21 19a2 2 0 0 1-2 2"></path><path d="M5 21a2 2 0 0 1-2-2"></path><path d="M9 3h1"></path><path d="M9 21h1"></path><path d="M14 3h1"></path><path d="M14 21h1"></path><path d="M3 9v1"></path><path d="M21 9v1"></path><path d="M3 14v1"></path><path d="M21 14v1"></path><line x1="7" y1="8" x2="17" y2="8"></line><line x1="7" y1="12" x2="17" y2="12"></line><line x1="7" y1="16" x2="17" y2="16"></line></svg>
+              </div>
+              <h3 className="text-xl font-bold mb-2">Professionals & Entrepreneurs</h3>
+              <p className="text-muted-foreground">Individuals looking to turn their continuous learning into competitive advantages and innovative solutions.</p>
+            </div>
+            
+            <div className="border bg-card rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
+              <div className="rounded-full w-12 h-12 bg-primary/10 flex items-center justify-center mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M17 3a2.827 2.827 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3Z"></path><path d="m15 5 4 4"></path></svg>
+              </div>
+              <h3 className="text-xl font-bold mb-2">Content Creators</h3>
+              <p className="text-muted-foreground">Writers, speakers, and creators who need to connect ideas across their content ecosystem for deeper insights.</p>
+            </div>
+            
+            <div className="border bg-card rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
+              <div className="rounded-full w-12 h-12 bg-primary/10 flex items-center justify-center mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+              </div>
+              <h3 className="text-xl font-bold mb-2">Students</h3>
+              <p className="text-muted-foreground">Academic learners who want to create connections between subjects and enhance their understanding through pattern recognition.</p>
+            </div>
+            
+            <div className="border bg-card rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
+              <div className="rounded-full w-12 h-12 bg-primary/10 flex items-center justify-center mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M2 3h20"></path><path d="M21 3v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V3"></path><path d="m7 21 5-5 5 5"></path></svg>
+              </div>
+              <h3 className="text-xl font-bold mb-2">Career Changers</h3>
+              <p className="text-muted-foreground">Professionals pivoting to new fields who need to leverage their existing knowledge and connect it with new domains.</p>
+            </div>
+            
+            <div className="border bg-card rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
+              <div className="rounded-full w-12 h-12 bg-primary/10 flex items-center justify-center mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+              </div>
+              <h3 className="text-xl font-bold mb-2">Personal Growth Enthusiasts</h3>
+              <p className="text-muted-foreground">Anyone committed to self-improvement who wants to systematically track their insights and growth across different life areas.</p>
+            </div>
+          </div>
+        </div>
+      </section>
       <section className="py-24 relative overflow-hidden">
         <div className="container mx-auto px-4 md:px-6">
           <div className="text-center mb-12">
