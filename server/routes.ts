@@ -962,5 +962,56 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Request OTP verification for WhatsApp number
+  app.post(`${apiPrefix}/whatsapp/request-otp`, async (req, res) => {
+    try {
+      // For demo purposes using DEMO_USER_ID, in production this would use authenticated user
+      const userId = DEMO_USER_ID;
+      const { phoneNumber } = req.body;
+      
+      if (!phoneNumber) {
+        return res.status(400).json({ message: "Phone number is required" });
+      }
+      
+      const result = await requestWhatsAppOTP(userId, phoneNumber);
+      
+      if (result.success) {
+        return res.status(200).json(result);
+      } else {
+        return res.status(400).json(result);
+      }
+    } catch (err) {
+      console.error("WhatsApp OTP request error:", err);
+      handleApiError(err, res);
+    }
+  });
+
+  // Verify OTP code for WhatsApp number
+  app.post(`${apiPrefix}/whatsapp/verify-otp`, async (req, res) => {
+    try {
+      // For demo purposes using DEMO_USER_ID, in production this would use authenticated user
+      const userId = DEMO_USER_ID;
+      const { otpCode } = req.body;
+      
+      if (!otpCode || otpCode.length !== 6) {
+        return res.status(400).json({ 
+          success: false,
+          message: "Valid 6-digit verification code is required" 
+        });
+      }
+      
+      const result = await verifyWhatsAppOTP(userId, otpCode);
+      
+      if (result.success) {
+        return res.status(200).json(result);
+      } else {
+        return res.status(400).json(result);
+      }
+    } catch (err) {
+      console.error("WhatsApp OTP verification error:", err);
+      handleApiError(err, res);
+    }
+  });
+
   return httpServer;
 }
