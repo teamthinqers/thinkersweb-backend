@@ -850,12 +850,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // WhatsApp Integration Endpoints
+  // DotSpark WhatsApp Chatbot Endpoints
   
-  // WhatsApp webhook endpoint for receiving messages
+  // WhatsApp chatbot webhook endpoint for receiving messages
   app.post(`${apiPrefix}/whatsapp/webhook`, async (req, res) => {
     try {
-      // Handle WhatsApp verification challenge
+      // Handle WhatsApp chatbot verification challenge
       if (req.query && req.query["hub.mode"] === "subscribe" && req.query["hub.verify_token"] === process.env.WHATSAPP_VERIFY_TOKEN) {
         return res.status(200).send(req.query["hub.challenge"]);
       }
@@ -863,13 +863,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const messageText = extractWhatsAppMessage(req.body);
       if (!messageText) {
         // Not a text message or missing required fields
-        return res.status(200).send(); // Always return 200 to WhatsApp
+        return res.status(200).send(); // Always return 200 to WhatsApp API
       }
 
-      // Process the message from WhatsApp
+      // Process the message from WhatsApp chatbot
       const from = req.body.entry[0]?.changes[0]?.value?.messages[0]?.from;
       if (!from) {
-        console.error("Missing 'from' field in WhatsApp message");
+        console.error("Missing 'from' field in WhatsApp chatbot message");
         return res.status(200).send();
       }
 
@@ -878,24 +878,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
         .then(response => {
           // Don't wait for this to complete before responding to webhook
           if (from && response) {
-            // Send reply back to WhatsApp user
-            console.log("Sending WhatsApp reply:", response.message);
+            // Send reply back through WhatsApp chatbot
+            console.log("Sending WhatsApp chatbot reply:", response.message);
           }
         })
         .catch(error => {
-          console.error("Error processing WhatsApp message:", error);
+          console.error("Error processing WhatsApp chatbot message:", error);
         });
 
       // Always respond with 200 OK to WhatsApp webhooks quickly
       return res.status(200).send();
     } catch (err) {
-      console.error("WhatsApp webhook error:", err);
-      // Still return 200 as WhatsApp expects
+      console.error("WhatsApp chatbot webhook error:", err);
+      // Still return 200 as WhatsApp API expects
       return res.status(200).send();
     }
   });
 
-  // Register a phone number for WhatsApp integration
+  // Register a phone number for DotSpark WhatsApp chatbot
   app.post(`${apiPrefix}/whatsapp/register`, async (req, res) => {
     try {
       // For demo purposes using DEMO_USER_ID, in production this would use authenticated user
