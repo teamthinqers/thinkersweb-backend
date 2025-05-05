@@ -306,6 +306,17 @@ export default function WhatsAppIntegration() {
               </ol>
             </div>
             
+            <div className="border rounded-lg p-4 bg-gradient-to-r from-red-50 to-pink-50 dark:from-red-950 dark:to-pink-950 border-red-100 dark:border-red-900 mb-4">
+              <p className="font-medium mb-2 text-red-800 dark:text-red-400">Administrator: Configuring Webhook URL</p>
+              <p className="text-sm text-red-700 dark:text-red-400 mb-2">To receive messages from Twilio, configure your webhook URL in the Twilio console:</p>
+              <ol className="text-sm space-y-2 list-decimal pl-4 text-red-700 dark:text-red-400">
+                <li>In your Twilio console, go to Messaging → Settings → WhatsApp Sandbox Settings</li>
+                <li>Set the "When a message comes in" URL to: <span className="font-mono">{window.location.origin}/api/whatsapp/webhook</span></li>
+                <li>Make sure the method is set to <span className="font-mono">HTTP POST</span></li>
+                <li>This allows Twilio to forward WhatsApp messages to your DotSpark application</li>
+              </ol>
+            </div>
+            
             <div className="border rounded-lg p-4 bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-indigo-950 dark:to-blue-950">
               <p className="font-medium mb-2">Verify your WhatsApp number:</p>
               <ol className="text-sm space-y-2 list-decimal pl-4">
@@ -379,6 +390,17 @@ export default function WhatsAppIntegration() {
                 <li>You'll receive a confirmation when connected to the Twilio Sandbox</li>
                 <li>After connecting to the sandbox, you'll receive messages using the template: "<span className="font-mono">123456 is your verification code. For your security, do not share this code.</span>"</li>
                 <li>Once connected, proceed with the steps below to link your DotSpark account</li>
+              </ol>
+            </div>
+            
+            <div className="border rounded-lg p-4 bg-gradient-to-r from-red-50 to-pink-50 dark:from-red-950 dark:to-pink-950 border-red-100 dark:border-red-900 mb-4">
+              <p className="font-medium mb-2 text-red-800 dark:text-red-400">Administrator: Configuring Webhook URL</p>
+              <p className="text-sm text-red-700 dark:text-red-400 mb-2">To receive messages from Twilio, configure your webhook URL in the Twilio console:</p>
+              <ol className="text-sm space-y-2 list-decimal pl-4 text-red-700 dark:text-red-400">
+                <li>In your Twilio console, go to Messaging → Settings → WhatsApp Sandbox Settings</li>
+                <li>Set the "When a message comes in" URL to: <span className="font-mono">{window.location.origin}/api/whatsapp/webhook</span></li>
+                <li>Make sure the method is set to <span className="font-mono">HTTP POST</span></li>
+                <li>This allows Twilio to forward WhatsApp messages to your DotSpark application</li>
               </ol>
             </div>
             

@@ -613,7 +613,7 @@ export async function verifyWhatsAppOTP(userId: number, otpCode: string): Promis
     // Send welcome message to user via WhatsApp
     // Using one of the approved Twilio Sandbox templates
     // See: https://www.twilio.com/docs/whatsapp/sandbox#using-the-sandbox
-    const welcomeMessage = "Your DotSpark chatbot has been activated. Send any message to create a learning entry.";
+    const welcomeMessage = "Your WhatsApp verification was successful! You can now use WhatsApp to create entries in DotSpark.";
     
     // Don't wait for the message to be sent before returning
     sendWhatsAppReply(otpVerification.phoneNumber, welcomeMessage)
