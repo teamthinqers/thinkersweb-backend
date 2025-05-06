@@ -6,6 +6,7 @@ import { storage } from "./storage";
 import twilio from "twilio";
 import { randomInt } from "crypto";
 import OpenAI from "openai";
+import { generateAdvancedResponse, analyzeContentType, processLearningEntry } from "./openai";
 
 // Twilio WhatsApp API configuration
 const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID || "";
@@ -197,12 +198,13 @@ export async function processWhatsAppMessage(from: string, messageText: string):
     if (messageText.toLowerCase() === "help") {
       return {
         success: true,
-        message: "DotSpark WhatsApp commands:\n" +
-          "- Chat naturally with DotSpark AI about your learnings\n" +
-          "- Start with 'Q:' to specifically ask a question\n" +
-          "- DotSpark will intelligently save your learnings\n" +
-          "- Type 'summary' to get a summary of your recent entries\n" +
-          "- Type 'help' to see this message",
+        message: "Hi there! I'm your DotSpark AI assistant. Here's what I can do:\n\n" +
+          "💬 Chat with you about anything - I'm here to converse!\n" +
+          "❓ Answer questions on any topic you're curious about\n" +
+          "💡 Save insights to your learning repository (use phrases like 'save this' or 'remember this')\n" +
+          "📚 Type 'summary' to see your recent learning entries\n" +
+          "🔄 Just chat normally - no special commands needed for most conversations\n\n" +
+          "What would you like to talk about?",
       };
     } 
     
@@ -214,120 +216,179 @@ export async function processWhatsAppMessage(from: string, messageText: string):
       };
     }
     
-    // Do a more detailed analysis of the message
-    // First, explicitly check for command patterns and question syntax
-    const isExplicitQuestion = messageText.endsWith("?") || 
-        messageText.toLowerCase().startsWith("q:") || 
-        messageText.toLowerCase().startsWith("question:") || 
-        messageText.toLowerCase().startsWith("ask:");
-        
-    // Check if this is likely a conversational response rather than a learning
-    const isConversation = messageText.length < 25 || // Short messages are likely conversation
-        /^(yes|no|maybe|thanks|thank you|ok|okay|cool|great|nice)/i.test(messageText) || // Common replies
-        messageText.includes("?") || // Any question mark in the message
-        /^(what|how|why|when|where|who|which|whose|whom|can you|could you)/i.test(messageText); // Question starters
-    
-    console.log("Message analysis:", { isExplicitQuestion, isConversation, length: messageText.length });
-    
-    // If it's detected as a question
-    if (isExplicitQuestion) {
-      // Extract the question (remove the Q: prefix if it exists)
-      const questionText = messageText.toLowerCase().startsWith("q:") 
-        ? messageText.substring(2).trim() 
-        : messageText;
+    // Try the enhanced GPT-powered conversation first
+    try {
+      // Generate a GPT-4o response that feels more natural
+      const { text: responseText, isLearning } = await generateAdvancedResponse(
+        messageText,
+        userId,
+        from // Pass phone number to maintain conversation context
+      );
       
-      // Generate a conversational response
-      const response = await generateChatResponse(questionText, []);
-      return {
-        success: true,
-        message: response,
-      };
-    }
-    
-    // If it seems like a conversational response, just chat without saving
-    if (isConversation) {
-      const conversationalResponse = await generateChatResponse(messageText, []);
-      return {
-        success: true,
-        message: conversationalResponse,
-      };
-    }
-    
-    // If it passed the above checks, process as a learning entry
-    // This should now only happen for longer, more substantive content
-    const structuredEntry = await processEntryFromChat(messageText, []);
-    
-    if (structuredEntry) {
-      try {
-        // Create the entry in the database
-        const [insertedEntry] = await db.insert(entries).values({
-          title: structuredEntry.title,
-          content: structuredEntry.content,
-          categoryId: structuredEntry.categoryId,
-          userId: userId,
-          isFavorite: false,
-        }).returning();
+      // Only save as a learning if it's a substantial insight and user explicitly wants
+      // to save it by using keywords like "save this" or "record this learning"
+      const explicitSaveRequest = 
+        messageText.toLowerCase().includes("save this") || 
+        messageText.toLowerCase().includes("record this") ||
+        messageText.toLowerCase().includes("make a note") ||
+        messageText.toLowerCase().includes("add to my learning");
+      
+      const isPotentialLearning = isLearning && messageText.length > 70;
+      
+      // Save if explicitly requested OR if it's very likely a learning insight
+      if (explicitSaveRequest || isPotentialLearning) {
         
-        const newEntry = insertedEntry;
+        // Process the learning with more advanced AI processing
+        const structuredEntry = await processLearningEntry(messageText);
         
-        // If we have tag names, create them and associate with the entry
-        if (structuredEntry.tagNames && structuredEntry.tagNames.length > 0) {
-          // Create tags that don't exist and get their IDs
-          const tagIds: number[] = [];
+        if (structuredEntry) {
+          // Create the entry in the database with the structured content
+          const [insertedEntry] = await db.insert(entries).values({
+            title: structuredEntry.title,
+            content: structuredEntry.content,
+            categoryId: structuredEntry.categoryId || 1, // Default category if none provided
+            userId: userId,
+            isFavorite: false,
+          }).returning();
           
-          for (const tagName of structuredEntry.tagNames) {
-            try {
-              // Try to find existing tag
-              const existingTag = await db.query.tags.findFirst({
-                where: eq(tags.name, tagName)
-              });
-              
-              if (existingTag) {
-                tagIds.push(existingTag.id);
-              } else {
-                // Create new tag
-                const newTag = await storage.createTag({ name: tagName });
-                tagIds.push(newTag.id);
+          // If we have tag names, create and associate them
+          if (structuredEntry.tagNames && structuredEntry.tagNames.length > 0) {
+            const tagIds: number[] = [];
+            
+            for (const tagName of structuredEntry.tagNames) {
+              // Try to find or create the tag
+              try {
+                const existingTag = await db.query.tags.findFirst({
+                  where: eq(tags.name, tagName)
+                });
+                
+                if (existingTag) {
+                  tagIds.push(existingTag.id);
+                } else {
+                  const newTag = await storage.createTag({ name: tagName });
+                  tagIds.push(newTag.id);
+                }
+              } catch (error) {
+                console.error(`Error with tag ${tagName}:`, error);
               }
-            } catch (error) {
-              console.error(`Error creating tag ${tagName}:`, error);
+            }
+            
+            // Associate tags with the entry
+            if (tagIds.length > 0) {
+              await storage.updateEntry(insertedEntry.id, { tagIds });
             }
           }
           
-          // Update the entry with the tag IDs
-          if (tagIds.length > 0) {
-            await storage.updateEntry(newEntry.id, { tagIds });
-          }
+          // Return the response with a subtle note that we saved it
+          return {
+            success: true,
+            message: `${responseText}\n\n(💡 I've saved this insight to your learning repository)`,
+          };
         }
-        
-        // Instead of just confirming, generate a conversational response about their learning
-        const conversationalResponse = await generateChatResponse(
-          `I just learned this: ${structuredEntry.title}. ${structuredEntry.content}`, 
-          []
-        );
-        
-        return {
-          success: true,
-          message: `${conversationalResponse}\n\n(💡 I've saved this insight to your learning repository)`,
-        };
-      } catch (error) {
-        console.error("Error creating learning dot from WhatsApp chatbot:", error);
-        // If saving fails, still try to provide a conversational response
-        const fallbackResponse = await generateChatResponse(messageText, []);
-        return {
-          success: true,
-          message: `I couldn't save that as a learning dot right now, but let's continue our conversation.\n\n${fallbackResponse}`,
-        };
       }
-    } else {
-      // If we couldn't structure it, just have a conversation
-      const conversationalResponse = await generateChatResponse(messageText, []);
+      
+      // For regular conversation, just return the AI response
       return {
         success: true,
-        message: conversationalResponse,
+        message: responseText
       };
+    } catch (aiError) {
+      // Log the error from the AI processing attempt
+      console.error("Error using advanced GPT response:", aiError);
+      
+      // FALLBACK: Use the original processing approach
+      // Simple pattern analysis as fallback
+      const isExplicitQuestion = messageText.endsWith("?") || 
+          messageText.toLowerCase().startsWith("q:") || 
+          messageText.toLowerCase().startsWith("question:");
+          
+      const isConversation = messageText.length < 25 || 
+          /^(yes|no|maybe|thanks|thank you|ok|okay|cool|great|nice)/i.test(messageText);
+      
+      if (isExplicitQuestion || isConversation) {
+        const response = await generateChatResponse(messageText, []);
+        return {
+          success: true,
+          message: response,
+        };
+      }
+      
+      // Process as a learning entry as fallback
+      const structuredEntry = await processEntryFromChat(messageText, []);
+      
+      if (structuredEntry) {
+        try {
+          // Create the entry in the database
+          const [insertedEntry] = await db.insert(entries).values({
+            title: structuredEntry.title,
+            content: structuredEntry.content,
+            categoryId: structuredEntry.categoryId,
+            userId: userId,
+            isFavorite: false,
+          }).returning();
+          
+          const newEntry = insertedEntry;
+          
+          // If we have tag names, create them and associate with the entry
+          if (structuredEntry.tagNames && structuredEntry.tagNames.length > 0) {
+            // Create tags that don't exist and get their IDs
+            const tagIds: number[] = [];
+            
+            for (const tagName of structuredEntry.tagNames) {
+              try {
+                // Try to find existing tag
+                const existingTag = await db.query.tags.findFirst({
+                  where: eq(tags.name, tagName)
+                });
+                
+                if (existingTag) {
+                  tagIds.push(existingTag.id);
+                } else {
+                  // Create new tag
+                  const newTag = await storage.createTag({ name: tagName });
+                  tagIds.push(newTag.id);
+                }
+              } catch (error) {
+                console.error(`Error creating tag ${tagName}:`, error);
+              }
+            }
+            
+            // Update the entry with the tag IDs
+            if (tagIds.length > 0) {
+              await storage.updateEntry(newEntry.id, { tagIds });
+            }
+          }
+          
+          // Instead of just confirming, generate a conversational response about their learning
+          const conversationalResponse = await generateChatResponse(
+            `I just learned this: ${structuredEntry.title}. ${structuredEntry.content}`, 
+            []
+          );
+          
+          return {
+            success: true,
+            message: `${conversationalResponse}\n\n(💡 I've saved this insight to your learning repository)`,
+          };
+        } catch (dbError) {
+          console.error("Error creating learning dot from WhatsApp chatbot:", dbError);
+          // If saving fails, still try to provide a conversational response
+          const fallbackResponse = await generateChatResponse(messageText, []);
+          return {
+            success: true,
+            message: `I couldn't save that as a learning dot right now, but let's continue our conversation.\n\n${fallbackResponse}`,
+          };
+        }
+      } else {
+        // If we couldn't structure it, just have a conversation
+        const conversationalResponse = await generateChatResponse(messageText, []);
+        return {
+          success: true,
+          message: conversationalResponse,
+        };
+      }
     }
   } catch (error) {
+    // Main try/catch block for the whole function
     console.error("Error processing WhatsApp chatbot message:", error);
     return {
       success: false,
@@ -395,13 +456,13 @@ export async function registerWhatsAppUser(userId: number, phoneNumber: string):
     
     // Send welcome message to user via WhatsApp
     const welcomeMessage = 
-      "Welcome to DotSpark - Your Neural chip for limitless learning! 🌟\n\n" +
-      "I'm your interactive learning companion. We can have natural conversations about what you're learning. Simply chat with me:\n\n" +
-      "🔹 Share your thoughts and I'll help structure and save your insights\n" +
-      "🔹 Ask me questions (start with Q: if you want to be explicit)\n" +
-      "🔹 I'll respond naturally and ask follow-up questions\n" +
-      "🔹 Type 'help' anytime for commands\n\n" +
-      "Let's start our conversation! Tell me something interesting you learned today.";
+      "Welcome to DotSpark - Your conversational AI companion! 🌟\n\n" +
+      "I'm here to chat with you about anything you'd like to discuss. I can also help you save your insights when you want. Here's what I can do:\n\n" +
+      "🔹 Chat with you about any topic - just start a conversation\n" +
+      "🔹 Answer questions about anything you're curious about\n" +
+      "🔹 Save important insights (just say 'save this' or something similar)\n" +
+      "🔹 Type 'help' anytime for more commands\n\n" +
+      "What would you like to talk about today?";
     
     // Don't wait for the message to be sent before returning
     sendWhatsAppReply(normalizedPhone, welcomeMessage)
