@@ -1061,6 +1061,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
       handleApiError(err, res);
     }
   });
+  
+  // ADMIN ONLY: Register a phone number directly without verification (for testing)
+  app.post(`${apiPrefix}/whatsapp/admin-register`, async (req, res) => {
+    try {
+      const { phoneNumber } = req.body;
+      
+      if (!phoneNumber) {
+        return res.status(400).json({ 
+          success: false, 
+          message: "Phone number is required" 
+        });
+      }
+      
+      // Import the registration function from the script
+      const { registerPhoneNumber } = await import("../scripts/register-whatsapp-number");
+      
+      // Use the function to register the phone number
+      const success = await registerPhoneNumber(phoneNumber);
+      
+      if (success) {
+        return res.status(201).json({
+          success: true,
+          message: `Phone number ${phoneNumber} was successfully registered or updated`
+        });
+      } else {
+        return res.status(500).json({
+          success: false,
+          message: `Failed to register phone number ${phoneNumber}`
+        });
+      }
+    } catch (err) {
+      console.error("Admin WhatsApp registration error:", err);
+      handleApiError(err, res);
+    }
+  });
 
   return httpServer;
 }

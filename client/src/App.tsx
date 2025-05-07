@@ -11,6 +11,7 @@ import Network from "@/pages/Network";
 import LandingPage from "@/pages/LandingPage";
 import AuthPage from "@/pages/auth-page";
 import Settings from "@/pages/Settings";
+import WhatsAppAdmin from "@/pages/WhatsAppAdmin";
 import AppLayout from "@/components/layout/AppLayout";
 import { useEffect, useState } from "react";
 import EntryDetail from "@/components/entries/EntryDetail";
@@ -141,6 +142,7 @@ function Router() {
       <Route path="/favorites" component={() => <AppWithLayout />} />
       <Route path="/network" component={() => <AppWithLayout />} />
       <Route path="/settings" component={() => <AppWithLayout />} />
+      <Route path="/whatsapp-admin" component={WhatsAppAdmin} />
       <Route component={NotFound} />
     </Switch>
   );
