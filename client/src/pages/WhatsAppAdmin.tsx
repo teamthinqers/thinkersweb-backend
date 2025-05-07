@@ -1,168 +1,182 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, Phone, Check, AlertCircle } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { apiRequest } from "@/lib/queryClient";
+import { useAuth } from "@/hooks/use-auth";
+import { apiRequest, getQueryFn } from '@/lib/queryClient';
+import { Loader2, AlertTriangle, CheckCircle2, Trash2 } from 'lucide-react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+
+interface WhatsAppUser {
+  id: number;
+  phone_number: string;
+  active: boolean;
+  user_id: number;
+  created_at: string;
+}
 
 export default function WhatsAppAdmin() {
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [registering, setRegistering] = useState(false);
-  const [registeredNumbers, setRegisteredNumbers] = useState<{number: string, timestamp: string}[]>([]);
   const { toast } = useToast();
+  const { user } = useAuth();
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const queryClient = useQueryClient();
 
-  const handleRegister = async () => {
+  const { data: registeredNumbers, isLoading } = useQuery({
+    queryKey: ['/api/whatsapp/admin/numbers'],
+    queryFn: getQueryFn({ on401: "returnNull" }),
+    enabled: !!user
+  });
+
+  const registerMutation = useMutation({
+    mutationFn: async (phoneNumber: string) => {
+      const res = await apiRequest('POST', '/api/whatsapp/admin/register', { phoneNumber });
+      return await res.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "WhatsApp number registered",
+        description: `The number ${phoneNumber} has been registered successfully.`,
+      });
+      setPhoneNumber('');
+      queryClient.invalidateQueries({ queryKey: ['/api/whatsapp/admin/numbers'] });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Registration failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  });
+
+  const deactivateMutation = useMutation({
+    mutationFn: async (id: number) => {
+      const res = await apiRequest('DELETE', `/api/whatsapp/admin/number/${id}`);
+      return await res.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "WhatsApp number deactivated",
+        description: "The number has been deactivated successfully.",
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/whatsapp/admin/numbers'] });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Deactivation failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
     if (!phoneNumber) {
       toast({
-        title: "Error",
+        title: "Phone number required",
         description: "Please enter a phone number",
         variant: "destructive",
       });
       return;
     }
+    registerMutation.mutate(phoneNumber);
+  };
 
-    try {
-      setRegistering(true);
-      
-      const response = await apiRequest("POST", "/api/whatsapp/admin-register", {
-        phoneNumber
-      });
-      
-      const result = await response.json();
-      
-      if (result.success) {
-        toast({
-          title: "Success",
-          description: result.message,
-        });
-        
-        // Add this number to the registered list
-        setRegisteredNumbers(prev => [
-          { number: phoneNumber, timestamp: new Date().toLocaleTimeString() },
-          ...prev
-        ]);
-        
-        // Clear the input
-        setPhoneNumber("");
-      } else {
-        toast({
-          title: "Error",
-          description: result.message || "Failed to register number",
-          variant: "destructive",
-        });
-      }
-    } catch (error) {
-      console.error("Error registering WhatsApp number:", error);
-      toast({
-        title: "Error",
-        description: "Something went wrong while registering the number",
-        variant: "destructive",
-      });
-    } finally {
-      setRegistering(false);
+  const handleDeactivate = (id: number, phoneNumber: string) => {
+    if (confirm(`Are you sure you want to deactivate ${phoneNumber}?`)) {
+      deactivateMutation.mutate(id);
     }
   };
 
   return (
-    <div className="container py-10">
-      <h1 className="text-4xl font-bold mb-8">WhatsApp Admin Dashboard</h1>
-      
-      <div className="grid gap-8 md:grid-cols-2">
+    <div className="container mx-auto p-4 max-w-4xl">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold">WhatsApp Admin</h1>
+        <Button 
+          variant="outline" 
+          onClick={() => window.history.back()}
+        >
+          Back
+        </Button>
+      </div>
+
+      <div className="grid gap-6">
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Phone className="h-5 w-5" />
-              Register Phone Number
-            </CardTitle>
+            <CardTitle>Register WhatsApp Number</CardTitle>
             <CardDescription>
-              Manually register a test WhatsApp number to bypass verification
+              Add a test phone number to allow it to interact with the DotSpark WhatsApp chatbot without verification.
             </CardDescription>
           </CardHeader>
-          
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="phoneNumber">
-                Phone Number <span className="text-xs text-muted-foreground">(include country code)</span>
-              </Label>
-              <Input 
-                id="phoneNumber" 
-                placeholder="+1 234 567 8900" 
-                value={phoneNumber} 
-                onChange={(e) => {
-                  // Simple validation to ensure it only contains digits, spaces, and "+"
-                  const value = e.target.value;
-                  if (/^[0-9+\s]*$/.test(value)) {
-                    setPhoneNumber(value);
-                  }
-                }}
-                onBlur={(e) => {
-                  // Format on blur: ensure it starts with "+"
-                  if (phoneNumber && !phoneNumber.startsWith('+')) {
-                    setPhoneNumber(`+${phoneNumber}`);
-                  }
-                }}
+          <CardContent>
+            <form onSubmit={handleSubmit} className="flex gap-2">
+              <Input
+                type="text"
+                placeholder="+1234567890"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                className="flex-grow"
               />
-              <p className="text-xs text-muted-foreground">
-                Format: +[country code][number] (e.g., +1 for US, +44 for UK)
-              </p>
-            </div>
+              <Button 
+                type="submit" 
+                disabled={registerMutation.isPending}
+              >
+                {registerMutation.isPending ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Registering...
+                  </>
+                ) : (
+                  "Register Number"
+                )}
+              </Button>
+            </form>
           </CardContent>
-          
-          <CardFooter>
-            <Button onClick={handleRegister} disabled={registering}>
-              {registering ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Registering...
-                </>
-              ) : (
-                <>Register Number</>
-              )}
-            </Button>
+          <CardFooter className="text-sm text-muted-foreground">
+            Numbers must include country code (e.g., +1 for USA, +44 for UK).
           </CardFooter>
         </Card>
-        
+
         <Card>
           <CardHeader>
-            <CardTitle>Recently Registered Numbers</CardTitle>
+            <CardTitle>Registered Numbers</CardTitle>
             <CardDescription>
-              Numbers that have been registered during this session
+              Currently registered WhatsApp numbers in the system.
             </CardDescription>
           </CardHeader>
-          
-          <CardContent className="space-y-2">
-            {registeredNumbers.length === 0 ? (
-              <div className="flex items-center justify-center py-8 text-muted-foreground">
-                <AlertCircle className="mr-2 h-4 w-4" />
-                No numbers registered yet
+          <CardContent>
+            {isLoading ? (
+              <div className="flex justify-center py-4">
+                <Loader2 className="h-6 w-6 animate-spin text-primary" />
+              </div>
+            ) : registeredNumbers?.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-6 text-center">
+                <AlertTriangle className="h-12 w-12 text-muted-foreground mb-2" />
+                <p className="text-muted-foreground">No WhatsApp numbers registered yet.</p>
               </div>
             ) : (
-              <ul className="space-y-2">
-                {registeredNumbers.map((registration, i) => (
-                  <li key={i} className="flex items-center justify-between p-2 border rounded">
-                    <div className="flex items-center">
-                      <Check className="h-4 w-4 text-green-500 mr-2" />
-                      <span>{registration.number}</span>
+              <div className="border rounded-md divide-y">
+                {registeredNumbers?.map((number: WhatsAppUser) => (
+                  <div key={number.id} className="flex justify-between items-center p-3">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle2 className="h-5 w-5 text-green-500" />
+                      <span className="font-medium">{number.phone_number}</span>
                     </div>
-                    <span className="text-xs text-muted-foreground">{registration.timestamp}</span>
-                  </li>
+                    <Button 
+                      variant="ghost" 
+                      size="icon"
+                      onClick={() => handleDeactivate(number.id, number.phone_number)}
+                    >
+                      <Trash2 className="h-5 w-5 text-muted-foreground hover:text-destructive" />
+                    </Button>
+                  </div>
                 ))}
-              </ul>
+              </div>
             )}
           </CardContent>
         </Card>
-      </div>
-      
-      <div className="mt-8 bg-muted p-4 rounded-md">
-        <h3 className="font-medium mb-2">How to Test WhatsApp Integration:</h3>
-        <ol className="list-decimal pl-5 space-y-2">
-          <li>Register a phone number using the form above</li>
-          <li>Have the test user send <code className="bg-background px-1 rounded">join [your-sandbox-code]</code> to your Twilio WhatsApp number</li>
-          <li>After joining the sandbox, the user can start chatting normally without verification</li>
-          <li>All messages will be associated with the demo user account (ID: 1)</li>
-        </ol>
       </div>
     </div>
   );

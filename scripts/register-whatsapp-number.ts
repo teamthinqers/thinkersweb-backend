@@ -47,8 +47,8 @@ async function registerPhoneNumber(phoneNumber: string) {
   }
 }
 
-// If running this script directly
-if (require.main === module) {
+// Command-line functionality
+async function registerFromCommandLine() {
   // Get phone numbers from command line arguments
   const phoneNumbers = process.argv.slice(2);
   
@@ -58,22 +58,25 @@ if (require.main === module) {
     process.exit(1);
   }
   
-  // Register each phone number
-  (async () => {
-    console.log(`Registering ${phoneNumbers.length} phone numbers...`);
-    
-    for (const phoneNumber of phoneNumbers) {
-      const success = await registerPhoneNumber(phoneNumber);
-      if (success) {
-        console.log(`✓ ${phoneNumber} registered successfully`);
-      } else {
-        console.log(`✗ Failed to register ${phoneNumber}`);
-      }
+  console.log(`Registering ${phoneNumbers.length} phone numbers...`);
+  
+  for (const phoneNumber of phoneNumbers) {
+    const success = await registerPhoneNumber(phoneNumber);
+    if (success) {
+      console.log(`✓ ${phoneNumber} registered successfully`);
+    } else {
+      console.log(`✗ Failed to register ${phoneNumber}`);
     }
-    
-    console.log('Registration process complete');
-    process.exit(0);
-  })();
+  }
+  
+  console.log('Registration process complete');
+  process.exit(0);
+}
+
+// Call the function if this file is executed directly
+// (This works in ESM modules)
+if (process.argv[1] === import.meta.url.substring(7)) {
+  registerFromCommandLine();
 }
 
 export { registerPhoneNumber };
