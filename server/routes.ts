@@ -1097,5 +1097,93 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // New WhatsApp Admin Endpoints
+  app.get(`${apiPrefix}/whatsapp/admin/numbers`, isAuthenticated, async (req, res) => {
+    try {
+      const numbers = await db.query.whatsappUsers.findMany({
+        orderBy: (whatsappUsers, { desc }) => [desc(whatsappUsers.createdAt)]
+      });
+      res.json(numbers);
+    } catch (error) {
+      console.error('Error fetching WhatsApp numbers:', error);
+      res.status(500).json({ error: 'Failed to fetch WhatsApp numbers' });
+    }
+  });
+  
+  app.post(`${apiPrefix}/whatsapp/admin/register`, isAuthenticated, async (req, res) => {
+    try {
+      const { phoneNumber } = req.body;
+      
+      if (!phoneNumber) {
+        return res.status(400).json({ error: 'Phone number is required' });
+      }
+      
+      // Standardize phone number format
+      const formattedNumber = phoneNumber.startsWith('+') ? phoneNumber : `+${phoneNumber}`;
+      
+      // Check if already exists
+      const existing = await db.query.whatsappUsers.findFirst({
+        where: eq(whatsappUsers.phoneNumber, formattedNumber)
+      });
+      
+      if (existing) {
+        // Reactivate if it exists but is inactive
+        if (!existing.active) {
+          await db.update(whatsappUsers)
+            .set({ active: true, updatedAt: new Date() })
+            .where(eq(whatsappUsers.id, existing.id));
+          
+          return res.status(200).json({ 
+            message: 'WhatsApp number reactivated successfully',
+            number: formattedNumber
+          });
+        }
+        
+        return res.status(200).json({ 
+          message: 'WhatsApp number already registered',
+          number: formattedNumber
+        });
+      }
+      
+      // Register new number for the current user
+      const user = req.user as Express.User;
+      const result = await db.insert(whatsappUsers).values({
+        userId: user.id,
+        phoneNumber: formattedNumber,
+        active: true,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }).returning();
+      
+      res.status(201).json({ 
+        message: 'WhatsApp number registered successfully',
+        number: result[0]
+      });
+    } catch (error) {
+      console.error('Error registering WhatsApp number:', error);
+      res.status(500).json({ error: 'Failed to register WhatsApp number' });
+    }
+  });
+  
+  app.delete(`${apiPrefix}/whatsapp/admin/number/:id`, isAuthenticated, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      
+      if (isNaN(id)) {
+        return res.status(400).json({ error: 'Invalid ID format' });
+      }
+      
+      // Soft delete (deactivate) the number
+      await db.update(whatsappUsers)
+        .set({ active: false, updatedAt: new Date() })
+        .where(eq(whatsappUsers.id, id));
+      
+      res.status(200).json({ message: 'WhatsApp number deactivated successfully' });
+    } catch (error) {
+      console.error('Error deactivating WhatsApp number:', error);
+      res.status(500).json({ error: 'Failed to deactivate WhatsApp number' });
+    }
+  });
+
   return httpServer;
 }

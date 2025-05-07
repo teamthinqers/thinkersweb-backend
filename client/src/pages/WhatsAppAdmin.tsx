@@ -22,7 +22,7 @@ export default function WhatsAppAdmin() {
   const [phoneNumber, setPhoneNumber] = useState('');
   const queryClient = useQueryClient();
 
-  const { data: registeredNumbers, isLoading } = useQuery({
+  const { data: registeredNumbers = [], isLoading } = useQuery<WhatsAppUser[]>({
     queryKey: ['/api/whatsapp/admin/numbers'],
     queryFn: getQueryFn({ on401: "returnNull" }),
     enabled: !!user
