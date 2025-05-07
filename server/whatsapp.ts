@@ -90,6 +90,39 @@ export async function getUserIdFromWhatsAppNumber(phoneNumber: string): Promise<
     // Normalize the phone number format - Twilio sends with WhatsApp: prefix
     const normalizedPhone = phoneNumber.replace('whatsapp:', '').trim();
     
+    // TEST MODE: When enabled, automatically associate any WhatsApp number with the demo user
+    // This allows testing without requiring verification through the web app
+    const TEST_MODE_ENABLED = process.env.NODE_ENV === 'development';
+    const DEMO_USER_ID = 1; // Same as in routes.ts
+    
+    if (TEST_MODE_ENABLED) {
+      console.log(`[TEST MODE] Auto-associating WhatsApp number ${normalizedPhone} with demo user ID ${DEMO_USER_ID}`);
+      
+      // Automatically add the number to the database if it doesn't exist
+      const existingUser = await db.query.whatsappUsers.findFirst({
+        where: eq(whatsappUsers.phoneNumber, normalizedPhone),
+      });
+      
+      if (!existingUser) {
+        console.log(`[TEST MODE] Automatically registering new test phone number ${normalizedPhone}`);
+        // Create a new WhatsApp user record for this number
+        await db.insert(whatsappUsers).values({
+          userId: DEMO_USER_ID,
+          phoneNumber: normalizedPhone,
+          active: true,
+        });
+      } else if (!existingUser.active) {
+        // If it exists but is inactive, activate it
+        await db.update(whatsappUsers)
+          .set({ active: true })
+          .where(eq(whatsappUsers.id, existingUser.id));
+      }
+      
+      // Return the demo user ID
+      return DEMO_USER_ID;
+    }
+    
+    // NORMAL MODE: Only return user ID if the WhatsApp number is properly registered
     const whatsappUser = await db.query.whatsappUsers.findFirst({
       where: eq(whatsappUsers.phoneNumber, normalizedPhone),
       with: {

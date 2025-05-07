@@ -875,6 +875,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       console.log(`Received WhatsApp message from ${from}: ${messageText}`);
+      
+      // Log test mode status to help with debugging
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`[TEST MODE ACTIVE] WhatsApp test phone numbers will be automatically registered to demo user ID 1`);
+        console.log(`[TEST MODE ACTIVE] No verification needed for WhatsApp in development environment`);
+      }
 
       // Process the message and get a response
       const response = await processWhatsAppMessage(from, messageText);
