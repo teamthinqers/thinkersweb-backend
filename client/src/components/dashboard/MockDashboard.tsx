@@ -229,15 +229,15 @@ const MockDashboard: React.FC = () => {
               <Brain className="h-10 w-10" />
             </div>
             <h3 className="text-xl font-bold text-white mb-2 text-center">
-              Neural Map Generation Ready
+              Neural Extension Ready
             </h3>
             <p className="text-white/80 text-center max-w-md mb-6">
-              Your cognitive connections are prepared for visualization. Sign up to unlock your interactive neural network map.
+              Join innovative professionals extending their cognitive capabilities. Sign up to unlock your neural extension.
             </p>
             <Button size="lg" className="bg-white text-primary hover:bg-white/90 shadow-lg" asChild>
               <Link href="/auth">
-                <Sparkles className="mr-2 h-4 w-4" />
-                <span>Activate Your Neural Extension</span>
+                <Brain className="mr-2 h-4 w-4" />
+                <span>Get Your Neural Extension</span>
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
@@ -303,21 +303,7 @@ const MockDashboard: React.FC = () => {
         </div>
       </div>
 
-      {/* CTA section */}
-      <div className="bg-gradient-to-r from-primary to-secondary text-white rounded-xl p-8 text-center">
-        <h2 className="text-2xl font-bold mb-4">
-          Ready to Amplify Your Professional Cognitive Power?
-        </h2>
-        <p className="text-white/80 max-w-2xl mx-auto mb-6">
-          Join innovative professionals who are extending their cognitive capabilities with neural frameworks, 
-          achieving breakthrough results and career advancement.
-        </p>
-        <Button size="lg" variant="default" className="bg-white text-primary hover:bg-white/90" asChild>
-          <Link href="/auth">
-            Get Started Now <ArrowRight className="ml-2 h-5 w-5" />
-          </Link>
-        </Button>
-      </div>
+
     </div>
   );
 };
