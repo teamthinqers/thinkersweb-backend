@@ -153,8 +153,8 @@ export default function LandingPage() {
                 <div className="bg-card/50 border rounded-xl p-5 flex items-start gap-4">
                   <div className="w-10 h-10 rounded-full bg-primary/20 text-primary flex items-center justify-center font-semibold text-lg shrink-0">3</div>
                   <div>
-                    <h3 className="font-medium text-lg">Receive Insights & Frameworks</h3>
-                    <p className="text-muted-foreground">Get custom decision frameworks and insights tailored to your professional challenges</p>
+                    <h3 className="font-medium text-lg">Achieve Professional Excellence</h3>
+                    <p className="text-muted-foreground">Get frameworks, insights, and knowledge systems that elevate your professional performance and career growth</p>
                   </div>
                 </div>
               </div>
@@ -170,9 +170,9 @@ export default function LandingPage() {
       <section className="py-24 relative overflow-hidden bg-gradient-to-b from-background to-muted/30">
         <div className="container mx-auto px-4 md:px-6">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Your <span className="gradient-heading">Second Brain</span> for Decision Excellence</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Your <span className="gradient-heading">Neural Extension</span> for Professional Excellence</h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              DotSpark works relentlessly in the background, studying industry resources and generating professional frameworks to enhance your decision-making capabilities.
+              DotSpark functions as your cognitive partner, continuously learning from industry resources to help you excel professionally through knowledge systems, frameworks, and insights.
             </p>
           </div>
           
@@ -284,27 +284,27 @@ export default function LandingPage() {
       <section className="py-16 bg-muted/30">
         <div className="container mx-auto px-4 md:px-6">
           <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold mb-4">The <span className="gradient-heading">Science</span> of Better Decision-Making</h2>
+            <h2 className="text-3xl font-bold mb-4">The <span className="gradient-heading">Science</span> of Professional Excellence</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Research shows that professionals with structured frameworks make significantly better decisions
+              Research shows that professionals with neural extensions and personalized knowledge systems achieve significantly greater career growth
             </p>
           </div>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
             <div className="space-y-2">
               <h3 className="text-4xl font-bold text-primary">87%</h3>
-              <p className="text-muted-foreground">Of successful executives rely on decision frameworks for complex challenges<sup>1</sup></p>
+              <p className="text-muted-foreground">Of top professionals credit cognitive extensions for their career advancement<sup>1</sup></p>
             </div>
             <div className="space-y-2">
-              <h3 className="text-4xl font-bold text-primary">3.2x</h3>
-              <p className="text-muted-foreground">Higher success rate for businesses using systematic decision processes<sup>2</sup></p>
+              <h3 className="text-4xl font-bold text-primary">3.5x</h3>
+              <p className="text-muted-foreground">Faster professional development with personalized neural knowledge systems<sup>2</sup></p>
             </div>
             <div className="space-y-2">
-              <h3 className="text-4xl font-bold text-primary">71%</h3>
-              <p className="text-muted-foreground">Reduction in decision fatigue when using structured frameworks<sup>3</sup></p>
+              <h3 className="text-4xl font-bold text-primary">76%</h3>
+              <p className="text-muted-foreground">Improvement in cognitive performance when using tuned neural extensions<sup>3</sup></p>
             </div>
             <div className="space-y-2">
-              <h3 className="text-4xl font-bold text-primary">48%</h3>
-              <p className="text-muted-foreground">Increase in implementation effectiveness with framework-based decisions<sup>4</sup></p>
+              <h3 className="text-4xl font-bold text-primary">56%</h3>
+              <p className="text-muted-foreground">Greater career growth rate among professionals with second brain integration<sup>4</sup></p>
             </div>
           </div>
           <div className="text-xs text-muted-foreground/70 mt-6 text-center">
@@ -313,42 +313,66 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* How to Set Up Your Second Brain */}
-      <section className="py-20 bg-gradient-to-b from-muted/30 to-background">
-        <div className="container mx-auto px-4 md:px-6">
+      {/* Neural Tuning Section */}
+      <section className="py-20 bg-gradient-to-b from-muted/30 to-background relative overflow-hidden">
+        {/* Neural Background Effects */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute w-[600px] h-[600px] rounded-full border border-primary/20 top-1/4 left-1/4 animate-pulse-slow"></div>
+          <div className="absolute w-[300px] h-[300px] rounded-full border border-secondary/20 top-1/2 left-1/3 animate-pulse-slow animation-delay-1000"></div>
+          <div className="absolute w-8 h-8 rounded-full bg-primary/10 top-[20%] right-[25%] animate-float-slow"></div>
+          <div className="absolute w-6 h-6 rounded-full bg-secondary/10 bottom-[25%] left-[20%] animate-float-slow animation-delay-2000"></div>
+          <div className="absolute w-4 h-4 rounded-full bg-primary/10 bottom-[35%] right-[35%] animate-float-slow animation-delay-1500"></div>
+        </div>
+        
+        <div className="container mx-auto px-4 md:px-6 relative z-10">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">How to <span className="gradient-heading">Activate</span> Your Second Brain</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Neural <span className="gradient-heading">Tuning</span> Your Cognitive Extension</h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Getting started with your professional second brain is simple and effective
+              The more you train and align your second brain, the more it adapts to your unique thinking patterns
             </p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            <div className="bg-card border rounded-xl p-6 relative">
-              <div className="w-12 h-12 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-xl mb-4">1</div>
-              <h3 className="text-xl font-bold mb-3">Define Your Focus Areas</h3>
-              <p className="text-muted-foreground">Create your account and select the professional domains and challenges you want your second brain to master.</p>
+            <div className="bg-card border border-primary/10 rounded-xl p-6 relative hover:border-primary/30 transition-all duration-300 neural-node">
+              <div className="w-12 h-12 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-xl mb-4 shadow-inner">1</div>
+              <h3 className="text-xl font-bold mb-3">Define Neural Pathways</h3>
+              <p className="text-muted-foreground">Train your cognitive extension by identifying the professional domains and thinking patterns you want it to emulate.</p>
               <div className="absolute top-6 right-6">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary/40"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"></path><circle cx="12" cy="13" r="3"></circle></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary/40"><path d="M2 12h5"></path><path d="M7 17l-5-5 5-5"></path><path d="M22 19c0-3.87-3.13-7-7-7H9"></path><path d="M22 5c0 3.87-3.13 7-7 7H9"></path></svg>
               </div>
             </div>
             
-            <div className="bg-card border rounded-xl p-6 relative">
-              <div className="w-12 h-12 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-xl mb-4">2</div>
-              <h3 className="text-xl font-bold mb-3">Connect with WhatsApp</h3>
-              <p className="text-muted-foreground">Link your WhatsApp account to interact with your second brain anytime and anywhere with simple text commands.</p>
+            <div className="bg-card border border-primary/10 rounded-xl p-6 relative hover:border-primary/30 transition-all duration-300 neural-node">
+              <div className="w-12 h-12 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-xl mb-4 shadow-inner">2</div>
+              <h3 className="text-xl font-bold mb-3">Seamless Integration</h3>
+              <p className="text-muted-foreground">Connect your second brain to your daily workflow through WhatsApp, allowing for natural thought extension whenever needed.</p>
               <div className="absolute top-6 right-6">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary/40"><circle cx="12" cy="12" r="10"></circle><path d="M18 13a6 6 0 0 1-6 5 6 6 0 0 1-6-5h12Z"></path><line x1="9" y1="9" x2="9" y2="9"></line><line x1="15" y1="9" x2="15" y2="9"></line></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary/40"><circle cx="12" cy="12" r="10"></circle><path d="m4.9 4.9 14.2 14.2"></path><path d="M9 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"></path><path d="M15 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"></path></svg>
               </div>
             </div>
             
-            <div className="bg-card border rounded-xl p-6 relative">
-              <div className="w-12 h-12 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-xl mb-4">3</div>
-              <h3 className="text-xl font-bold mb-3">Get Decision Frameworks</h3>
-              <p className="text-muted-foreground">Ask your second brain for solutions to your professional challenges and receive customized frameworks and insights.</p>
+            <div className="bg-card border border-primary/10 rounded-xl p-6 relative hover:border-primary/30 transition-all duration-300 neural-node">
+              <div className="w-12 h-12 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-xl mb-4 shadow-inner">3</div>
+              <h3 className="text-xl font-bold mb-3">Adaptive Intelligence</h3>
+              <p className="text-muted-foreground">The more you interact, the more your neural extension learns your preferences and thinking style, continuously improving its output.</p>
               <div className="absolute top-6 right-6">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary/40"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.287 1.288L3 12l5.8 1.9a2 2 0 0 1 1.288 1.287L12 21l1.9-5.8a2 2 0 0 1 1.287-1.288L21 12l-5.8-1.9a2 2 0 0 1-1.288-1.287L12 3Z"></path></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary/40"><path d="M22 17a10 10 0 0 0-20 0"></path><path d="M12 17v4"></path><path d="M12 3v4"></path><path d="M20 7a4 4 0 0 0-8 0"></path><path d="M4 7a4 4 0 0 1 8 0"></path></svg>
               </div>
+            </div>
+          </div>
+
+          {/* Neural Explanation */}
+          <div className="mt-16 max-w-3xl mx-auto text-center">
+            <div className="p-6 bg-card border border-primary/20 rounded-xl relative">
+              <div className="absolute -top-5 left-1/2 transform -translate-x-1/2">
+                <div className="bg-background p-2 rounded-full border border-primary/20 inline-block">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-5 0v-15A2.5 2.5 0 0 1 9.5 2Z"></path><path d="M14.5 4a2.5 2.5 0 0 1 5 0v15a2.5 2.5 0 0 1-5 0V4Z"></path><path d="M3 5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5Z"></path></svg>
+                </div>
+              </div>
+              <h4 className="text-xl font-bold mt-4 mb-3">Your Brain, Enhanced</h4>
+              <p className="text-muted-foreground">
+                DotSpark functions as a true neural extension that adapts to your unique cognitive patterns. The more you use and tune it, the better it understands how you think. Unlike generic AI tools, your second brain becomes personalized to your specific needs, learning from each interaction and continuously improving its ability to generate frameworks that align with your thinking style.
+              </p>
             </div>
           </div>
         </div>

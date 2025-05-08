@@ -2,6 +2,94 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+  /* Neural animations */
+  .animate-pulse-slow {
+    animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  
+  .animate-float-slow {
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  .animation-delay-1000 {
+    animation-delay: 1000ms;
+  }
+  
+  .animation-delay-1500 {
+    animation-delay: 1500ms;
+  }
+  
+  .animation-delay-2000 {
+    animation-delay: 2000ms;
+  }
+  
+  @keyframes float {
+    0% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-20px);
+    }
+    100% {
+      transform: translateY(0px);
+    }
+  }
+  
+  /* Neural node styles */
+  .neural-node {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .neural-node::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(
+      circle at center,
+      rgba(var(--primary), 0.1) 0%,
+      rgba(var(--primary), 0) 70%
+    );
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+  }
+  
+  .neural-node:hover::before {
+    opacity: 1;
+  }
+  
+  .neural-connection {
+    position: relative;
+    z-index: 1;
+  }
+  
+  .neural-connection::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(90deg, 
+      rgba(var(--primary), 0.1),
+      rgba(var(--primary), 0.3),
+      rgba(var(--primary), 0.1)
+    );
+    bottom: -2px;
+    left: 0;
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 0.5s ease;
+  }
+  
+  .neural-connection:hover::after {
+    transform: scaleX(1);
+  }
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
