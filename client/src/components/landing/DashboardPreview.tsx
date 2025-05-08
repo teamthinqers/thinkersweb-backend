@@ -115,19 +115,7 @@ const DashboardPreview: React.FC = () => {
           </Card>
         </div>
         
-        {/* CTA Buttons */}
-        <div className="flex flex-col sm:flex-row justify-center items-center gap-3 mt-5">
-          <Button asChild className="bg-gradient-to-r from-primary to-indigo-600 text-white hover:from-primary/90 hover:to-indigo-600/90 shadow-md">
-            <Link href="/dashboard">
-              <Brain className="mr-2 h-4 w-4" /> View Full Dashboard
-            </Link>
-          </Button>
-          <Button variant="outline" asChild size="sm" className="text-sm">
-            <Link href="/auth">
-              Get Your Neural Extension
-            </Link>
-          </Button>
-        </div>
+{/* Removed CTA buttons */}
       </div>
     </div>
   );
