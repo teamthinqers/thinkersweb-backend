@@ -297,22 +297,6 @@ export default function LandingPage() {
             <div className="transform hover:scale-[1.01] transition-transform duration-300 shadow-xl rounded-xl overflow-hidden border border-primary/10">
               <DashboardPreview />
             </div>
-            
-            <div className="flex flex-col sm:flex-row justify-center gap-5 mt-10">
-              <Button size="lg" asChild className="gradient-button">
-                <Link href="/dashboard">
-                  <Brain className="mr-2 h-5 w-5" />
-                  Explore Full Dashboard
-                </Link>
-              </Button>
-              
-              <Button size="lg" variant="outline" asChild>
-                <Link href="/auth">
-                  <User className="mr-2 h-5 w-5" />
-                  Create Your Account
-                </Link>
-              </Button>
-            </div>
           </div>
         </div>
       </section>
