@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import { Switch, Route, useLocation } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -13,11 +14,11 @@ import AuthPage from "@/pages/auth-page";
 import Settings from "@/pages/Settings";
 import WhatsAppAdmin from "@/pages/WhatsAppAdmin";
 import AppLayout from "@/components/layout/AppLayout";
-import { useEffect, useState } from "react";
 import EntryDetail from "@/components/entries/EntryDetail";
 import ChatEntryForm from "@/components/chat/ChatEntryForm";
 import { AuthProvider, useAuth } from "@/hooks/use-auth";
 import { Loader2 } from "lucide-react";
+import MockDashboard from "@/components/dashboard/MockDashboard";
 
 // Simplified Protected route component
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -130,13 +131,30 @@ function AppWithLayout() {
 }
 
 function Router() {
+  const { user, isLoading } = useAuth();
   const [location] = useLocation();
+  
+  // Show a Loading component while auth state is being determined
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen">
+        <Loader2 className="h-8 w-8 animate-spin text-primary mb-4" />
+        <p className="text-center text-muted-foreground">Loading...</p>
+      </div>
+    );
+  }
   
   return (
     <Switch>
       <Route path="/" component={LandingPage} />
       <Route path="/auth" component={AuthPage} />
-      <Route path="/dashboard" component={() => <AppWithLayout />} />
+      
+      {/* Dashboard route - shows mock dashboard if user is not authenticated */}
+      <Route path="/dashboard">
+        {user ? <AppWithLayout /> : <MockDashboard />}
+      </Route>
+      
+      {/* Other protected routes */}
       <Route path="/entries" component={() => <AppWithLayout />} />
       <Route path="/insights" component={() => <AppWithLayout />} />
       <Route path="/favorites" component={() => <AppWithLayout />} />
