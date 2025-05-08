@@ -104,10 +104,10 @@ export default function LandingPage() {
                 Introducing DotSpark
               </div>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
-                Your <span className="gradient-heading">Second Brain</span> for Professional Excellence
+                Your <span className="gradient-heading">Neural Extension</span> for Professional Excellence
               </h1>
               <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                DotSpark works as your second brain, continuously learning from the best books and resources in your field to enhance your decision-making and spark professional breakthroughs.
+                DotSpark works as your neural extension, continuously learning and adapting to your cognitive patterns to accelerate your professional growth and unlock excellence.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 pt-4 justify-center">
                 {user ? (
@@ -139,15 +139,15 @@ export default function LandingPage() {
                 <div className="bg-card/50 border rounded-xl p-5 flex items-start gap-4">
                   <div className="w-10 h-10 rounded-full bg-primary/20 text-primary flex items-center justify-center font-semibold text-lg shrink-0">1</div>
                   <div>
-                    <h3 className="font-medium text-lg">Set Up Your Second Brain</h3>
-                    <p className="text-muted-foreground">Create your account and define your professional interests so your second brain can start working for you</p>
+                    <h3 className="font-medium text-lg">Install Your Neural Extension</h3>
+                    <p className="text-muted-foreground">Create your account and define your professional patterns so your neural extension can begin adapting to your thinking</p>
                   </div>
                 </div>
                 <div className="bg-card/50 border rounded-xl p-5 flex items-start gap-4">
                   <div className="w-10 h-10 rounded-full bg-primary/20 text-primary flex items-center justify-center font-semibold text-lg shrink-0">2</div>
                   <div>
                     <h3 className="font-medium text-lg">Connect via WhatsApp</h3>
-                    <p className="text-muted-foreground">Interact with your second brain anytime through our intelligent WhatsApp assistant</p>
+                    <p className="text-muted-foreground">Interact with your neural extension anytime through our intelligent WhatsApp assistant</p>
                   </div>
                 </div>
                 <div className="bg-card/50 border rounded-xl p-5 flex items-start gap-4">
@@ -271,7 +271,7 @@ export default function LandingPage() {
                   </div>
                   <div>
                     <h3 className="font-semibold text-lg">Adaptive Intelligence</h3>
-                    <p className="text-muted-foreground">Your second brain learns from your interactions, getting smarter and more personalized over time.</p>
+                    <p className="text-muted-foreground">Your neural extension learns from your interactions, getting smarter and more personalized over time.</p>
                   </div>
                 </div>
               </div>
@@ -328,7 +328,7 @@ export default function LandingPage() {
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Neural <span className="gradient-heading">Tuning</span> Your Cognitive Extension</h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              The more you train and align your second brain, the more it adapts to your unique thinking patterns
+              The more you train and align your neural extension, the more it adapts to your unique thinking patterns
             </p>
           </div>
           
@@ -371,7 +371,7 @@ export default function LandingPage() {
               </div>
               <h4 className="text-xl font-bold mt-4 mb-3">Your Brain, Enhanced</h4>
               <p className="text-muted-foreground">
-                DotSpark functions as a true neural extension that adapts to your unique cognitive patterns. The more you use and tune it, the better it understands how you think. Unlike generic AI tools, your second brain becomes personalized to your specific needs, learning from each interaction and continuously improving its ability to generate frameworks that align with your thinking style.
+                DotSpark functions as a true neural extension that adapts to your unique cognitive patterns. The more you use and tune it, the better it understands how you think. Unlike generic AI tools, your neural extension becomes personalized to your specific needs, learning from each interaction and continuously improving its ability to generate frameworks that align with your thinking style.
               </p>
             </div>
           </div>
