@@ -7,6 +7,19 @@ import { Brain, Users, BookOpen, Sparkles, BarChart2, MessageCircle, Star, PlusC
 const MockDashboard: React.FC = () => {
   return (
     <div className="container mx-auto px-4 py-6">
+      {/* Demo indicator banner */}
+      <div className="bg-indigo-600 text-white rounded-lg p-3 mb-6 shadow-md border border-indigo-500 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-indigo-600/0 via-indigo-500/30 to-indigo-600/0 animate-pulse"></div>
+        <div className="flex items-center justify-center font-medium relative z-10">
+          <Sparkles className="h-4 w-4 mr-2" />
+          <span>DEMO DASHBOARD</span>
+          <Sparkles className="h-4 w-4 ml-2" />
+        </div>
+        <p className="text-xs text-center text-white/80 mt-1">
+          This is a preview of what your neural extension dashboard will look like after signup
+        </p>
+      </div>
+      
       {/* Top notification bar - gamified but simpler */}
       <div className="bg-gradient-to-r from-primary/10 to-secondary/10 rounded-lg p-4 mb-8 border border-primary/20">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -47,8 +60,8 @@ const MockDashboard: React.FC = () => {
       {/* Dashboard header - no buttons */}
       <div className="flex flex-col mb-8">
         <div>
-          <h1 className="text-2xl font-bold mb-2">Your Neural Dashboard</h1>
-          <p className="text-muted-foreground">Organize, visualize, and expand your cognitive capabilities</p>
+          <h1 className="text-2xl font-bold mb-2">Neural Extension Dashboard <span className="text-sm bg-gray-100 dark:bg-gray-800 text-muted-foreground px-2 py-0.5 rounded ml-2">Preview Mode</span></h1>
+          <p className="text-muted-foreground">A preview of how you'll organize, visualize, and expand your cognitive capabilities</p>
         </div>
       </div>
 
