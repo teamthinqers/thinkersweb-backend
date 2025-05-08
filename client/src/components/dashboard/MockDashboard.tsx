@@ -7,7 +7,7 @@ import { Brain, Users, BookOpen, Sparkles, BarChart2, MessageCircle, Star, PlusC
 const MockDashboard: React.FC = () => {
   return (
     <div className="container mx-auto px-4 py-6">
-      {/* Top notification bar - gamified */}
+      {/* Top notification bar - gamified but simpler */}
       <div className="bg-gradient-to-r from-primary/10 to-secondary/10 rounded-lg p-4 mb-8 border border-primary/20">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div className="flex items-center">
@@ -40,31 +40,15 @@ const MockDashboard: React.FC = () => {
                 <span className="font-medium">Top 5%</span>
               </div>
             </div>
-            <Button size="sm" variant="default" className="bg-gradient-to-r from-primary to-secondary text-white hover:opacity-90 shadow-md" asChild>
-              <Link href="/auth">
-                <span>Claim Your Neural Extension</span>
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
           </div>
         </div>
       </div>
 
-      {/* Dashboard header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+      {/* Dashboard header - no buttons */}
+      <div className="flex flex-col mb-8">
         <div>
           <h1 className="text-2xl font-bold mb-2">Your Neural Dashboard</h1>
           <p className="text-muted-foreground">Organize, visualize, and expand your cognitive capabilities</p>
-        </div>
-        <div className="flex gap-3 mt-4 md:mt-0">
-          <Button variant="outline" className="gap-2">
-            <Users className="h-4 w-4" />
-            <span>Share</span>
-          </Button>
-          <Button className="gap-2 bg-primary text-white hover:bg-primary/90">
-            <PlusCircle className="h-4 w-4" />
-            <span>New Entry</span>
-          </Button>
         </div>
       </div>
 
@@ -189,13 +173,10 @@ const MockDashboard: React.FC = () => {
         </Card>
       </div>
 
-      {/* Recent activity section */}
+      {/* Recent activity section - simplified */}
       <div className="mb-10">
-        <div className="flex justify-between items-center mb-4">
+        <div className="mb-4">
           <h2 className="text-lg font-semibold">Recent Neural Activities</h2>
-          <Button variant="ghost" size="sm" className="text-primary">
-            View all
-          </Button>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -218,9 +199,6 @@ const MockDashboard: React.FC = () => {
                   <span className="text-xs text-muted-foreground">{entry.date}</span>
                   <div className="flex items-center gap-2">
                     {entry.isFavorite && <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />}
-                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                      <ArrowRight className="h-4 w-4" />
-                    </Button>
                   </div>
                 </div>
               </CardContent>
@@ -229,22 +207,18 @@ const MockDashboard: React.FC = () => {
         </div>
       </div>
 
-      {/* Neural network visualization (mock) */}
+      {/* Neural network visualization (mock) - simplified */}
       <div className="mb-8">
         <div className="flex justify-between items-center mb-4">
           <div>
             <h2 className="text-lg font-semibold">Neural Knowledge Map</h2>
             <p className="text-sm text-muted-foreground">Your cognitive network has 782 connections across 8 domains</p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center">
             <div className="text-xs bg-emerald-100 dark:bg-emerald-900 text-emerald-700 dark:text-emerald-300 px-2 py-1 rounded-full font-medium flex items-center">
               <span className="inline-block h-2 w-2 rounded-full bg-emerald-500 mr-1 animate-pulse"></span>
               Growing (+32%)
             </div>
-            <Button variant="outline" size="sm" className="gap-1">
-              <Sparkles className="h-3.5 w-3.5" />
-              <span>Enhance</span>
-            </Button>
           </div>
         </div>
         
