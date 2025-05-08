@@ -166,13 +166,13 @@ export default function LandingPage() {
       {/* WhatsApp Integration Section */}
       <WhatsAppPromo />
       
-      {/* Second Brain Intelligence Section */}
+      {/* Cognitive Enhancement Section */}
       <section className="py-24 relative overflow-hidden bg-gradient-to-b from-background to-muted/30">
         <div className="container mx-auto px-4 md:px-6">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Your <span className="gradient-heading">Neural Extension</span> for Professional Excellence</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Advanced <span className="gradient-heading">Cognitive Enhancement</span> Technology</h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              DotSpark functions as your cognitive partner, continuously learning from industry resources to help you excel professionally through knowledge systems, frameworks, and insights.
+              DotSpark functions as your neural bridge to professional knowledge, continuously learning from industry resources and adapting to your thinking patterns.
             </p>
           </div>
           
@@ -384,7 +384,7 @@ export default function LandingPage() {
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Who <span className="gradient-heading">Benefits</span> Most</h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              DotSpark's second brain technology empowers professionals making complex decisions
+              DotSpark's neural extension technology empowers professionals making complex decisions
             </p>
           </div>
           
@@ -479,7 +479,7 @@ export default function LandingPage() {
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold">Your Business Challenge</h3>
-                  <p className="text-muted-foreground text-sm">Message to your second brain about a complex decision</p>
+                  <p className="text-muted-foreground text-sm">Message to your neural extension about a complex decision</p>
                 </div>
               </div>
               <div className="mt-4 pt-4 border-t border-border/50">
@@ -503,7 +503,7 @@ export default function LandingPage() {
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold">Knowledge Integration</h3>
-                  <p className="text-muted-foreground text-sm">Your second brain processes relevant business knowledge</p>
+                  <p className="text-muted-foreground text-sm">Your neural extension processes relevant business knowledge</p>
                 </div>
               </div>
               <div className="mt-4 pt-4 border-t border-border/50">
@@ -532,7 +532,7 @@ export default function LandingPage() {
               </div>
               <div className="mt-4 pt-4 border-t border-border/50">
                 <p className="text-sm text-muted-foreground">
-                  "Your second brain has generated a 'Product Strategy Decision Matrix' with 7 critical evaluation criteria, weighted scoring system, and step-by-step implementation guide tailored to your specific resource constraints."
+                  "Your neural extension has generated a 'Product Strategy Decision Matrix' with 7 critical evaluation criteria, weighted scoring system, and step-by-step implementation guide tailored to your specific resource constraints."
                 </p>
               </div>
               <div className="hidden lg:flex items-center justify-center mt-4">
@@ -560,7 +560,7 @@ export default function LandingPage() {
                 </div>
               </div>
               <p className="text-muted-foreground mb-4">
-                Your second brain generated this custom framework to guide your decision:
+                Your neural extension generated this custom framework to guide your decision:
               </p>
               <div className="bg-primary/5 border border-primary/20 rounded-lg p-5">
                 <h4 className="font-bold text-lg mb-3 text-primary text-center">Product Portfolio Optimization Framework</h4>
