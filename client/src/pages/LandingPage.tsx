@@ -705,15 +705,17 @@ export default function LandingPage() {
         <div className="container mx-auto px-4 md:px-6 text-center relative z-10">
           <div className="max-w-3xl mx-auto">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 text-white">
-              Ready to Elevate Your Professional Decision-Making?
+              Ready to Amplify Your Professional Cognitive Power?
             </h2>
             <p className="text-xl text-white/90 max-w-2xl mx-auto mb-10">
-              Join forward-thinking professionals who are transforming complex business challenges into structured frameworks for more confident and strategic decisions.
+              Join innovative professionals who are extending their cognitive capabilities with neural frameworks, achieving breakthrough results and career advancement.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" variant="secondary" className="text-primary font-semibold shadow-lg btn-bounce" asChild>
-                <Link href="/auth" className="px-8">
-                  Get Started Now <ArrowRight className="ml-2 h-5 w-5" />
+              <Button size="lg" variant="secondary" className="text-primary font-semibold shadow-lg btn-bounce group relative overflow-hidden" asChild>
+                <Link href="/auth" className="px-8 flex items-center">
+                  <span className="relative z-10">Connect Your Neural Extension</span>
+                  <ArrowRight className="ml-2 h-5 w-5 relative z-10 group-hover:translate-x-1 transition-transform" />
+                  <span className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity"></span>
                 </Link>
               </Button>
               <Button size="lg" variant="outline" className="bg-transparent border-white text-white hover:bg-white/10 btn-bounce" asChild>
@@ -723,7 +725,7 @@ export default function LandingPage() {
               </Button>
             </div>
             <p className="text-white/70 text-sm mt-8">
-              No credit card required • Free personal account • Cancel anytime
+              No credit card required • Free personal account • 30-day neural amplification guarantee
             </p>
           </div>
         </div>
