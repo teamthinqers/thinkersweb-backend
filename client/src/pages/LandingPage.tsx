@@ -711,7 +711,7 @@ export default function LandingPage() {
               Join innovative professionals who are extending their cognitive capabilities with neural frameworks, achieving breakthrough results and career advancement.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" variant="secondary" className="text-primary font-semibold shadow-lg btn-bounce group relative overflow-hidden" asChild>
+              <Button size="lg" variant="default" className="bg-white text-primary font-bold shadow-lg btn-bounce group relative overflow-hidden border-2 border-white hover:bg-white/90" asChild>
                 <Link href="/auth" className="px-8 flex items-center">
                   <span className="relative z-10">Get Started Now</span>
                   <ArrowRight className="ml-2 h-5 w-5 relative z-10 group-hover:translate-x-1 transition-transform" />
