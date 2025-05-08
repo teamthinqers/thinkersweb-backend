@@ -196,6 +196,11 @@
   .gradient-heading {
     @apply bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent;
   }
+  
+  /* Gradient button */
+  .gradient-button {
+    @apply bg-gradient-to-r from-primary to-secondary text-white hover:from-primary/90 hover:to-secondary/90 shadow-md;
+  }
 
   /* Card hover effects */
   .card-hover {
