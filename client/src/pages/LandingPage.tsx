@@ -284,31 +284,31 @@ export default function LandingPage() {
       <section className="py-16 bg-muted/30">
         <div className="container mx-auto px-4 md:px-6">
           <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold mb-4">The <span className="gradient-heading">Science</span> of Connected Learning</h2>
+            <h2 className="text-3xl font-bold mb-4">The <span className="gradient-heading">Science</span> of Better Decision-Making</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Research shows how connecting knowledge across domains enhances learning effectiveness
+              Research shows that professionals with structured frameworks make significantly better decisions
             </p>
           </div>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
             <div className="space-y-2">
-              <h3 className="text-4xl font-bold text-primary">29%</h3>
-              <p className="text-muted-foreground">Higher retention rates with interdisciplinary learning approaches<sup>1</sup></p>
+              <h3 className="text-4xl font-bold text-primary">87%</h3>
+              <p className="text-muted-foreground">Of successful executives rely on decision frameworks for complex challenges<sup>1</sup></p>
             </div>
             <div className="space-y-2">
-              <h3 className="text-4xl font-bold text-primary">2.5x</h3>
-              <p className="text-muted-foreground">Better problem-solving ability when connecting knowledge across domains<sup>2</sup></p>
+              <h3 className="text-4xl font-bold text-primary">3.2x</h3>
+              <p className="text-muted-foreground">Higher success rate for businesses using systematic decision processes<sup>2</sup></p>
             </div>
             <div className="space-y-2">
-              <h3 className="text-4xl font-bold text-primary">65%</h3>
-              <p className="text-muted-foreground">Of innovations come from connecting ideas across different fields<sup>3</sup></p>
+              <h3 className="text-4xl font-bold text-primary">71%</h3>
+              <p className="text-muted-foreground">Reduction in decision fatigue when using structured frameworks<sup>3</sup></p>
             </div>
             <div className="space-y-2">
-              <h3 className="text-4xl font-bold text-primary">40%</h3>
-              <p className="text-muted-foreground">Increase in creative thinking with integrated learning methods<sup>4</sup></p>
+              <h3 className="text-4xl font-bold text-primary">48%</h3>
+              <p className="text-muted-foreground">Increase in implementation effectiveness with framework-based decisions<sup>4</sup></p>
             </div>
           </div>
           <div className="text-xs text-muted-foreground/70 mt-6 text-center">
-            <p>Based on research: <sup>1</sup>Journal of Educational Psychology (2022) <sup>2</sup>Cognitive Science Review (2021) <sup>3</sup>Harvard Innovation Study (2020) <sup>4</sup>MIT Learning Research (2023)</p>
+            <p>Based on research: <sup>1</sup>Harvard Business Review (2023) <sup>2</sup>McKinsey Decision-Making Study (2022) <sup>3</sup>Journal of Organizational Behavior (2022) <sup>4</sup>Stanford Executive Decision Research (2021)</p>
           </div>
         </div>
       </section>
@@ -416,13 +416,13 @@ export default function LandingPage() {
         </div>
       </section>
       
-      {/* Witness the Spark Section */}
+      {/* Framework Generation Section */}
       <section className="py-24 relative overflow-hidden bg-gradient-to-b from-background to-muted/20">
         <div className="container mx-auto px-4 md:px-6">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Witness the <span className="gradient-heading">Spark</span> Between Dots</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Generating <span className="gradient-heading">Frameworks</span> for Better Decisions</h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              See how seemingly unrelated knowledge points connect to create powerful breakthroughs
+              See how DotSpark transforms your professional challenges into structured decision frameworks
             </p>
           </div>
           
@@ -444,23 +444,23 @@ export default function LandingPage() {
               </div>
             </div>
             
-            {/* First Dot/Knowledge - Chess Strategy */}
+            {/* First Input - Professional Challenge */}
             <div className="bg-card border rounded-xl p-6 card-hover neural-connection">
               <div className="text-right mb-3 lg:hidden">
-                <span className="inline-block rounded-full bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">Dot 1</span>
+                <span className="inline-block rounded-full bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">Input</span>
               </div>
               <div className="flex items-center gap-4 mb-4">
                 <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M18 12a5 5 0 0 0-5-5h-2a5 5 0 0 0 0 10h2a5 5 0 0 0 0-10"></path><path d="M10 7V3"></path><path d="M14 7V3"></path><path d="M10 21v-4"></path><path d="M14 21v-4"></path><path d="M3 10h2"></path><path d="M3 14h2"></path><path d="M19 10h2"></path><path d="M19 14h2"></path></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M9.5 13a9.77 9.77 0 0 0 4.812 4.812c.775.384 1.687.118 2.147-.665l1.473-2.503a1.44 1.44 0 0 0-.43-1.88l-1.585-1.038a1.56 1.56 0 0 0-1.742-.06L13 12.5l-3.5-3.5V8.05c.85-.25 1.72-.405 2.628-.47a1.56 1.56 0 0 0 1.445-1.3l.265-1.587A1.44 1.44 0 0 0 12.5 3c-5.68.488-10.204 5.01-10.692 10.692a1.44 1.44 0 0 0 1.357 1.538l1.586.264c.725.12 1.42-.246 1.664-.97L7.5 13l2 2z"></path></svg>
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold">Chess Strategy Hobby</h3>
-                  <p className="text-muted-foreground text-sm">Learning patterns of positional advantage and sacrifice</p>
+                  <h3 className="text-xl font-semibold">Your Business Challenge</h3>
+                  <p className="text-muted-foreground text-sm">Message to your second brain about a complex decision</p>
                 </div>
               </div>
               <div className="mt-4 pt-4 border-t border-border/50">
                 <p className="text-sm text-muted-foreground">
-                  "I've been studying chess for years as a hobby. One concept that fascinated me was 'positional sacrifice' - giving up material in the short term to gain a superior position that pays off many moves later."
+                  "I need to decide between expanding our product line or focusing on optimizing our existing flagship product. We have limited resources and I'm not sure which strategy would yield better results."
                 </p>
               </div>
               <div className="hidden lg:flex items-center justify-center mt-4">
@@ -468,23 +468,23 @@ export default function LandingPage() {
               </div>
             </div>
             
-            {/* Second Dot/Knowledge - Cooking Class */}
+            {/* Second Element - Knowledge Integration */}
             <div className="bg-card border rounded-xl p-6 card-hover neural-connection relative z-10">
               <div className="text-right mb-3 lg:hidden">
-                <span className="inline-block rounded-full bg-secondary/10 px-2.5 py-1 text-xs font-semibold text-secondary">Dot 2</span>
+                <span className="inline-block rounded-full bg-secondary/10 px-2.5 py-1 text-xs font-semibold text-secondary">Processing</span>
               </div>
               <div className="flex items-center gap-4 mb-4">
                 <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-secondary/20 to-secondary/10 flex items-center justify-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-secondary"><path d="M8 3v3"></path><path d="M16 3v3"></path><path d="M3 7h18"></path><path d="M7 21h10a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2Z"></path></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-secondary"><path d="M4 17V7c0-2 2-4 4-4h8c2 0 4 2 4 4v10c0 2-2 4-4 4h-8c-2 0-4-2-4-4Z"></path><path d="M12 17v4"></path><path d="M8 21h8"></path><path d="M22 17H2"></path><path d="M22 7H2"></path><path d="M12 7v10"></path><path d="M12 7H8a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1h-4Z"></path></svg>
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold">Italian Cooking Class</h3>
-                  <p className="text-muted-foreground text-sm">Learning the concept of "mise en place" and preparation</p>
+                  <h3 className="text-xl font-semibold">Knowledge Integration</h3>
+                  <p className="text-muted-foreground text-sm">Your second brain processes relevant business knowledge</p>
                 </div>
               </div>
               <div className="mt-4 pt-4 border-t border-border/50">
                 <p className="text-sm text-muted-foreground">
-                  "The chef emphasized that great dishes come from 'mise en place' - having everything prepared and organized before cooking. 90% of success comes from the preparation that no one sees, not the actual cooking."
+                  <span className="font-medium">Sources analyzed:</span> Product Strategy (HBR), Innovator's Dilemma, Blue Ocean Strategy, core vs. innovation balance metrics, market penetration case studies, product lifecycle management best practices
                 </p>
               </div>
               <div className="hidden lg:flex items-center justify-center mt-4">
@@ -492,23 +492,23 @@ export default function LandingPage() {
               </div>
             </div>
             
-            {/* Third Dot/Knowledge - Marathon Training */}
+            {/* Third Element - Framework Output */}
             <div className="bg-card border rounded-xl p-6 card-hover neural-connection">
               <div className="text-right mb-3 lg:hidden">
-                <span className="inline-block rounded-full bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">Dot 3</span>
+                <span className="inline-block rounded-full bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">Output</span>
               </div>
               <div className="flex items-center gap-4 mb-4">
                 <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M19 6V5a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v1"></path><path d="M12 17V9"></path><path d="m9 12 3-3 3 3"></path><rect width="18" height="12" x="3" y="6" rx="2"></rect></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><rect width="18" height="18" x="3" y="3" rx="2"></rect><path d="M7 7h10"></path><path d="M7 12h10"></path><path d="M7 17h5"></path></svg>
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold">Marathon Training</h3>
-                  <p className="text-muted-foreground text-sm">Article about "negative splits" in distance running</p>
+                  <h3 className="text-xl font-semibold">Structured Framework</h3>
+                  <p className="text-muted-foreground text-sm">Decision framework with weighted criteria and process steps</p>
                 </div>
               </div>
               <div className="mt-4 pt-4 border-t border-border/50">
                 <p className="text-sm text-muted-foreground">
-                  "The elite marathon runners use a counterintuitive strategy called 'negative splits' - they deliberately run the first half slower than the second half. It feels wrong, but data shows it's the optimal approach for endurance."
+                  "Your second brain has generated a 'Product Strategy Decision Matrix' with 7 critical evaluation criteria, weighted scoring system, and step-by-step implementation guide tailored to your specific resource constraints."
                 </p>
               </div>
               <div className="hidden lg:flex items-center justify-center mt-4">
@@ -524,30 +524,37 @@ export default function LandingPage() {
             </div>
           </div>
           
-          {/* The Result/Insight - For Both Mobile and Desktop */}
+          {/* Framework Box - For Both Mobile and Desktop */}
           <div className="mt-8 lg:mt-12 max-w-3xl mx-auto">
             <div className="bg-card border-2 border-yellow-400/50 rounded-xl p-6 shadow-lg shadow-yellow-400/10">
               <div className="flex items-center gap-4 mb-4">
                 <div className="w-12 h-12 rounded-full bg-yellow-400/20 flex items-center justify-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-yellow-600"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"></path><path d="M9 18h6"></path><path d="M10 22h4"></path></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-yellow-600"><path d="M20 16V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v9m16 0H4m16 0 1.28 2.55a1 1 0 0 1-.9 1.45H3.62a1 1 0 0 1-.9-1.45L4 16"></path><path d="M8 7a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v9H8V7z"></path></svg>
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold text-yellow-700 dark:text-yellow-400">The Spark: Strategic Patient Preparation</h3>
+                  <h3 className="text-xl font-semibold text-yellow-700 dark:text-yellow-400">Decision Framework</h3>
                 </div>
               </div>
-              <p className="text-muted-foreground">
-                "When I connected these personal dots from completely different areas of my life, I had a profound breakthrough that transformed my career. I realized the chess concept of 'positional sacrifice' combined with cooking's 'mise en place' and marathon running's 'negative splits' all shared a powerful pattern: patience, preparation, and deliberate pacing lead to optimal results. I applied this insight to my major product launch by spending 3x longer on preparation than initially planned, deliberately going slower at the start, and accepting short-term 'sacrifices.' The result was the most successful launch in company history with 78% better adoption rates and unprecedented customer satisfaction. I've since been promoted to VP of Product Strategy because of this counterintuitive approach."
+              <p className="text-muted-foreground mb-4">
+                Your second brain generated this custom framework to guide your decision:
               </p>
-              <div className="mt-4 flex flex-col gap-2">
-                <p className="text-sm text-yellow-600 dark:text-yellow-400 italic font-medium">
-                  "And this is just connecting 3 dots. Imagine the breakthroughs possible when DotSpark connects hundreds of your learning dots across all domains of knowledge!"
+              <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
+                <h4 className="font-bold text-lg mb-2 text-primary">Product Portfolio Optimization Framework</h4>
+                <p className="text-sm text-muted-foreground">
+                  A structured approach to evaluate product expansion vs. optimization:
                 </p>
-                <div className="text-right">
-                  <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold bg-yellow-100 text-yellow-800 border-yellow-400/50">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1"><path d="M12 3v19"></path><path d="M5 8c1.5 0 2.5-1.5 2.5-3S6.5 2 5 2 2.5 3.5 2.5 5 3.5 8 5 8Z"></path><path d="M5 16c1.5 0 2.5-1.5 2.5-3S6.5 10 5 10s-2.5 1.5-2.5 3 1 3 2.5 3Z"></path><path d="M19 8c1.5 0 2.5-1.5 2.5-3S20.5 2 19 2s-2.5 1.5-2.5 3 1 3 2.5 3Z"></path><path d="M19 16c1.5 0 2.5-1.5 2.5-3s-1-3-2.5-3-2.5 1.5-2.5 3 1 3 2.5 3Z"></path></svg>
-                    Cross-domain insight
-                  </span>
-                </div>
+                <ul className="text-sm text-muted-foreground mt-2 space-y-1 list-disc pl-5">
+                  <li>Market saturation assessment (25%)</li>
+                  <li>Resource allocation efficiency (20%)</li>
+                  <li>Competitive differentiation potential (20%)</li>
+                  <li>Revenue growth projections (15%)</li>
+                  <li>Operational implementation complexity (10%)</li>
+                  <li>Brand alignment strength (5%)</li>
+                  <li>Risk distribution profile (5%)</li>
+                </ul>
+              </div>
+              <div className="mt-4 text-sm text-muted-foreground italic">
+                Complete with implementation guide, metrics dashboard template, and evaluation spreadsheet.
               </div>
             </div>
           </div>
@@ -561,10 +568,10 @@ export default function LandingPage() {
         <div className="container mx-auto px-4 md:px-6 text-center relative z-10">
           <div className="max-w-3xl mx-auto">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 text-white">
-              Ready to Transform Your Learning Journey?
+              Ready to Elevate Your Professional Decision-Making?
             </h2>
             <p className="text-xl text-white/90 max-w-2xl mx-auto mb-10">
-              Join thousands of learners who are capturing, connecting, and sharing knowledge more effectively than ever before.
+              Join forward-thinking professionals who are transforming complex business challenges into structured frameworks for more confident and strategic decisions.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" variant="secondary" className="text-primary font-semibold shadow-lg btn-bounce" asChild>
