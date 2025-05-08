@@ -104,10 +104,10 @@ export default function LandingPage() {
                 Introducing DotSpark
               </div>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
-                Connect the Dots, <span className="gradient-heading">Spark</span> Your Potential
+                Your <span className="gradient-heading">Second Brain</span> for Professional Excellence
               </h1>
               <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                Like a neural chip for your mind, DotSpark connects your learnings across every domain, unleashing limitless growth through insights you never knew you had.
+                DotSpark works as your second brain, continuously learning from the best books and resources in your field to enhance your decision-making and spark professional breakthroughs.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 pt-4 justify-center">
                 {user ? (
@@ -139,22 +139,22 @@ export default function LandingPage() {
                 <div className="bg-card/50 border rounded-xl p-5 flex items-start gap-4">
                   <div className="w-10 h-10 rounded-full bg-primary/20 text-primary flex items-center justify-center font-semibold text-lg shrink-0">1</div>
                   <div>
-                    <h3 className="font-medium text-lg">Create Account</h3>
-                    <p className="text-muted-foreground">Sign up and set up your DotSpark profile to start capturing your learning moments</p>
+                    <h3 className="font-medium text-lg">Set Up Your Second Brain</h3>
+                    <p className="text-muted-foreground">Create your account and define your professional interests so your second brain can start working for you</p>
                   </div>
                 </div>
                 <div className="bg-card/50 border rounded-xl p-5 flex items-start gap-4">
                   <div className="w-10 h-10 rounded-full bg-primary/20 text-primary flex items-center justify-center font-semibold text-lg shrink-0">2</div>
                   <div>
-                    <h3 className="font-medium text-lg">DotSpark WhatsApp Chatbot</h3>
-                    <p className="text-muted-foreground">Chat with our WhatsApp bot to record learning moments on the go, seamlessly</p>
+                    <h3 className="font-medium text-lg">Connect via WhatsApp</h3>
+                    <p className="text-muted-foreground">Interact with your second brain anytime through our intelligent WhatsApp assistant</p>
                   </div>
                 </div>
                 <div className="bg-card/50 border rounded-xl p-5 flex items-start gap-4">
                   <div className="w-10 h-10 rounded-full bg-primary/20 text-primary flex items-center justify-center font-semibold text-lg shrink-0">3</div>
                   <div>
-                    <h3 className="font-medium text-lg">Start Sparking Dots</h3>
-                    <p className="text-muted-foreground">Capture insights from anywhere and watch as your neural chip connects the dots</p>
+                    <h3 className="font-medium text-lg">Receive Insights & Frameworks</h3>
+                    <p className="text-muted-foreground">Get custom decision frameworks and insights tailored to your professional challenges</p>
                   </div>
                 </div>
               </div>
@@ -166,13 +166,13 @@ export default function LandingPage() {
       {/* WhatsApp Integration Section */}
       <WhatsAppPromo />
       
-      {/* Neural Chip for Limitless Learning Section */}
+      {/* Second Brain Intelligence Section */}
       <section className="py-24 relative overflow-hidden bg-gradient-to-b from-background to-muted/30">
         <div className="container mx-auto px-4 md:px-6">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Your <span className="gradient-heading">Neural Chip</span> for Limitless Learning</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Your <span className="gradient-heading">Second Brain</span> for Decision Excellence</h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              DotSpark functions like a neural chip for your mind, collecting your learning moments and connecting them into a powerful network of insights.
+              DotSpark works relentlessly in the background, studying industry resources and generating professional frameworks to enhance your decision-making capabilities.
             </p>
           </div>
           
@@ -247,31 +247,31 @@ export default function LandingPage() {
               <div className="space-y-6">
                 <div className="flex items-start gap-3">
                   <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mt-0.5">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 16V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v9m16 0H4m16 0 1.28 2.55a1 1 0 0 1-.9 1.45H3.62a1 1 0 0 1-.9-1.45L4 16"></path><path d="M8 7a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v9H8V7z"></path></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
                   </div>
                   <div>
-                    <h3 className="font-semibold text-lg">Neural Integration</h3>
-                    <p className="text-muted-foreground">DotSpark integrates with how your brain naturally works, capturing your thoughts as they occur.</p>
+                    <h3 className="font-semibold text-lg">Professional Knowledge Aggregation</h3>
+                    <p className="text-muted-foreground">DotSpark continuously learns from top business books, articles, and resources in your field.</p>
                   </div>
                 </div>
                 
                 <div className="flex items-start gap-3">
                   <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mt-0.5">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="14 2 18 6 7 17 3 17 3 13 14 2"></polygon><line x1="3" y1="22" x2="21" y2="22"></line></svg>
                   </div>
                   <div>
-                    <h3 className="font-semibold text-lg">Global Knowledge Network</h3>
-                    <p className="text-muted-foreground">Connect your dots with a global network of learners to expand your cognitive horizons.</p>
+                    <h3 className="font-semibold text-lg">Framework Generation</h3>
+                    <p className="text-muted-foreground">Get customized decision frameworks and templates tailored to your specific professional challenges.</p>
                   </div>
                 </div>
                 
                 <div className="flex items-start gap-3">
                   <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mt-0.5">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="8" y1="19" x2="8" y2="21"></line><line x1="8" y1="13" x2="8" y2="15"></line><line x1="16" y1="19" x2="16" y2="21"></line><line x1="16" y1="13" x2="16" y2="15"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="12" y1="15" x2="12" y2="17"></line><path d="M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"></path></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z"></path></svg>
                   </div>
                   <div>
-                    <h3 className="font-semibold text-lg">Unlimited Growth Potential</h3>
-                    <p className="text-muted-foreground">Your neural chip grows with you, constantly finding new connections as you add more knowledge.</p>
+                    <h3 className="font-semibold text-lg">Adaptive Intelligence</h3>
+                    <p className="text-muted-foreground">Your second brain learns from your interactions, getting smarter and more personalized over time.</p>
                   </div>
                 </div>
               </div>
