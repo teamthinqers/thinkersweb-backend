@@ -284,63 +284,34 @@ export default function LandingPage() {
       {/* Dashboard Preview Section */}
       <section className="py-24 bg-gradient-to-b from-muted/30 to-background relative overflow-hidden">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="text-center mb-12">
+          <div className="text-center mb-10">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
               Your <span className="gradient-heading">Neural Dashboard</span> Preview
             </h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Experience how your neural extension dashboard tracks brain efficiency, neural connections, and cognitive enhancements.
+              Experience how your neural extension visualizes connections and enhances your professional thinking.
             </p>
           </div>
           
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            <div className="lg:col-span-5 space-y-6">
-              <div className="space-y-4">
-                <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mt-0.5">
-                    <Brain className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-lg">Neural Network Visualizations</h3>
-                    <p className="text-muted-foreground">View your cognitive network with 782 connections across 8 knowledge domains, all visualized interactively.</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mt-0.5">
-                    <BarChart2 className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-lg">Cognitive Performance Metrics</h3>
-                    <p className="text-muted-foreground">Track your neural extension efficiency, learning progress, and performance improvements over time.</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mt-0.5">
-                    <Sparkles className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-lg">Decision Framework Library</h3>
-                    <p className="text-muted-foreground">Access your growing collection of decision frameworks, templates, and cognitive tools.</p>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="pt-4">
-                <Button size="lg" asChild className="gradient-button">
-                  <Link href="/dashboard">
-                    <Brain className="mr-2 h-5 w-5" />
-                    Explore Neural Dashboard
-                  </Link>
-                </Button>
-              </div>
+          <div className="max-w-5xl mx-auto">
+            <div className="transform hover:scale-[1.01] transition-transform duration-300 shadow-xl rounded-xl overflow-hidden border border-primary/10">
+              <DashboardPreview />
             </div>
             
-            <div className="lg:col-span-7">
-              <div className="transform hover:scale-[1.01] transition-transform duration-300">
-                <DashboardPreview />
-              </div>
+            <div className="flex flex-col sm:flex-row justify-center gap-5 mt-10">
+              <Button size="lg" asChild className="gradient-button">
+                <Link href="/dashboard">
+                  <Brain className="mr-2 h-5 w-5" />
+                  Explore Full Dashboard
+                </Link>
+              </Button>
+              
+              <Button size="lg" variant="outline" asChild>
+                <Link href="/auth">
+                  <User className="mr-2 h-5 w-5" />
+                  Create Your Account
+                </Link>
+              </Button>
             </div>
           </div>
         </div>
