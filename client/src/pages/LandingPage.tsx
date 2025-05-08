@@ -313,21 +313,21 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* How to Install Your Chip Section */}
+      {/* How to Set Up Your Second Brain */}
       <section className="py-20 bg-gradient-to-b from-muted/30 to-background">
         <div className="container mx-auto px-4 md:px-6">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">How to <span className="gradient-heading">Install</span> Your Chip</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">How to <span className="gradient-heading">Activate</span> Your Second Brain</h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Getting started with your neural chip is simple and non-invasive
+              Getting started with your professional second brain is simple and effective
             </p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             <div className="bg-card border rounded-xl p-6 relative">
               <div className="w-12 h-12 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-xl mb-4">1</div>
-              <h3 className="text-xl font-bold mb-3">Create Your Account</h3>
-              <p className="text-muted-foreground">Sign up for DotSpark and configure your neural chip's base settings to match your learning preferences.</p>
+              <h3 className="text-xl font-bold mb-3">Define Your Focus Areas</h3>
+              <p className="text-muted-foreground">Create your account and select the professional domains and challenges you want your second brain to master.</p>
               <div className="absolute top-6 right-6">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary/40"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"></path><circle cx="12" cy="13" r="3"></circle></svg>
               </div>
@@ -335,8 +335,8 @@ export default function LandingPage() {
             
             <div className="bg-card border rounded-xl p-6 relative">
               <div className="w-12 h-12 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-xl mb-4">2</div>
-              <h3 className="text-xl font-bold mb-3">Feed Your Neural Chip</h3>
-              <p className="text-muted-foreground">Capture your learning moments through our chat interface or WhatsApp chatbot to build your knowledge network.</p>
+              <h3 className="text-xl font-bold mb-3">Connect with WhatsApp</h3>
+              <p className="text-muted-foreground">Link your WhatsApp account to interact with your second brain anytime and anywhere with simple text commands.</p>
               <div className="absolute top-6 right-6">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary/40"><circle cx="12" cy="12" r="10"></circle><path d="M18 13a6 6 0 0 1-6 5 6 6 0 0 1-6-5h12Z"></path><line x1="9" y1="9" x2="9" y2="9"></line><line x1="15" y1="9" x2="15" y2="9"></line></svg>
               </div>
@@ -344,8 +344,8 @@ export default function LandingPage() {
             
             <div className="bg-card border rounded-xl p-6 relative">
               <div className="w-12 h-12 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-xl mb-4">3</div>
-              <h3 className="text-xl font-bold mb-3">Witness the Connections</h3>
-              <p className="text-muted-foreground">Watch as your neural chip forms connections between seemingly unrelated ideas, creating powerful insights.</p>
+              <h3 className="text-xl font-bold mb-3">Get Decision Frameworks</h3>
+              <p className="text-muted-foreground">Ask your second brain for solutions to your professional challenges and receive customized frameworks and insights.</p>
               <div className="absolute top-6 right-6">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary/40"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.287 1.288L3 12l5.8 1.9a2 2 0 0 1 1.288 1.287L12 21l1.9-5.8a2 2 0 0 1 1.287-1.288L21 12l-5.8-1.9a2 2 0 0 1-1.288-1.287L12 3Z"></path></svg>
               </div>
@@ -360,57 +360,57 @@ export default function LandingPage() {
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Who <span className="gradient-heading">Benefits</span> Most</h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              DotSpark's neural chip technology helps anyone who values continuous learning and growth
+              DotSpark's second brain technology empowers professionals making complex decisions
             </p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div className="border bg-card rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
               <div className="rounded-full w-12 h-12 bg-primary/10 flex items-center justify-center mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M22 12.5V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-1.5"></path><path d="M18 5v14"></path><path d="M10 17H9"></path><path d="M15 7h3"></path><path d="M15 11h3"></path><path d="M15 15h3"></path><path d="M6 8h3"></path><path d="M6 12h3"></path><path d="M6 16h3"></path></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
               </div>
-              <h3 className="text-xl font-bold mb-2">Lifelong Learners</h3>
-              <p className="text-muted-foreground">People who constantly seek knowledge across diverse fields and need help connecting seemingly unrelated ideas.</p>
+              <h3 className="text-xl font-bold mb-2">Business Leaders</h3>
+              <p className="text-muted-foreground">Executives and managers who need data-backed frameworks for strategic decisions and organizational challenges.</p>
             </div>
             
             <div className="border bg-card rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
               <div className="rounded-full w-12 h-12 bg-primary/10 flex items-center justify-center mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M5 3a2 2 0 0 0-2 2"></path><path d="M19 3a2 2 0 0 1 2 2"></path><path d="M21 19a2 2 0 0 1-2 2"></path><path d="M5 21a2 2 0 0 1-2-2"></path><path d="M9 3h1"></path><path d="M9 21h1"></path><path d="M14 3h1"></path><path d="M14 21h1"></path><path d="M3 9v1"></path><path d="M21 9v1"></path><path d="M3 14v1"></path><path d="M21 14v1"></path><line x1="7" y1="8" x2="17" y2="8"></line><line x1="7" y1="12" x2="17" y2="12"></line><line x1="7" y1="16" x2="17" y2="16"></line></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="m3 16 4 4 4-4"></path><path d="M7 20V4"></path><path d="M21 12a9 9 0 0 0-9-9"></path><path d="M3 8a9 9 0 0 1 9 9"></path></svg>
               </div>
-              <h3 className="text-xl font-bold mb-2">Professionals & Entrepreneurs</h3>
-              <p className="text-muted-foreground">Individuals looking to turn their continuous learning into competitive advantages and innovative solutions.</p>
+              <h3 className="text-xl font-bold mb-2">Startup Founders</h3>
+              <p className="text-muted-foreground">Entrepreneurs who need to make rapid, well-informed decisions with limited resources and maximum impact.</p>
             </div>
             
             <div className="border bg-card rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
               <div className="rounded-full w-12 h-12 bg-primary/10 flex items-center justify-center mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M17 3a2.827 2.827 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3Z"></path><path d="m15 5 4 4"></path></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M5 3a2 2 0 0 0-2 2v14c0 1.1.9 2 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2H5Z"></path><path d="M12 8v8"></path><path d="M8 12h8"></path></svg>
               </div>
-              <h3 className="text-xl font-bold mb-2">Content Creators</h3>
-              <p className="text-muted-foreground">Writers, speakers, and creators who need to connect ideas across their content ecosystem for deeper insights.</p>
+              <h3 className="text-xl font-bold mb-2">Healthcare Professionals</h3>
+              <p className="text-muted-foreground">Doctors and healthcare providers who need evidence-based frameworks for complex patient care decisions.</p>
             </div>
             
             <div className="border bg-card rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
               <div className="rounded-full w-12 h-12 bg-primary/10 flex items-center justify-center mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
               </div>
-              <h3 className="text-xl font-bold mb-2">Students</h3>
-              <p className="text-muted-foreground">Academic learners who want to create connections between subjects and enhance their understanding through pattern recognition.</p>
+              <h3 className="text-xl font-bold mb-2">Consultants</h3>
+              <p className="text-muted-foreground">Professional advisors who need to quickly develop frameworks and recommendations for diverse client challenges.</p>
             </div>
             
             <div className="border bg-card rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
               <div className="rounded-full w-12 h-12 bg-primary/10 flex items-center justify-center mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M2 3h20"></path><path d="M21 3v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V3"></path><path d="m7 21 5-5 5 5"></path></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"></rect><line x1="3" x2="21" y1="9" y2="9"></line><line x1="9" x2="9" y1="21" y2="9"></line></svg>
               </div>
-              <h3 className="text-xl font-bold mb-2">Career Changers</h3>
-              <p className="text-muted-foreground">Professionals pivoting to new fields who need to leverage their existing knowledge and connect it with new domains.</p>
+              <h3 className="text-xl font-bold mb-2">Product Managers</h3>
+              <p className="text-muted-foreground">PMs who need to balance user needs, business goals, and technical constraints with organized thinking frameworks.</p>
             </div>
             
             <div className="border bg-card rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
               <div className="rounded-full w-12 h-12 bg-primary/10 flex items-center justify-center mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="m8 3 4 8 5-5 5 15H2L8 3z"></path></svg>
               </div>
-              <h3 className="text-xl font-bold mb-2">Personal Growth Enthusiasts</h3>
-              <p className="text-muted-foreground">Anyone committed to self-improvement who wants to systematically track their insights and growth across different life areas.</p>
+              <h3 className="text-xl font-bold mb-2">Investors</h3>
+              <p className="text-muted-foreground">Financial professionals who need structured frameworks to evaluate opportunities and make data-driven investment decisions.</p>
             </div>
           </div>
         </div>
