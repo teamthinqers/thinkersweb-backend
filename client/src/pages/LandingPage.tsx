@@ -399,10 +399,10 @@ export default function LandingPage() {
             
             <div className="border bg-card rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
               <div className="rounded-full w-12 h-12 bg-primary/10 flex items-center justify-center mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"></rect><line x1="3" x2="21" y1="9" y2="9"></line><line x1="9" x2="9" y1="21" y2="9"></line></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
               </div>
-              <h3 className="text-xl font-bold mb-2">Product Managers</h3>
-              <p className="text-muted-foreground">PMs who need to balance user needs, business goals, and technical constraints with organized thinking frameworks.</p>
+              <h3 className="text-xl font-bold mb-2">Career Growth Aspirants</h3>
+              <p className="text-muted-foreground">Professionals seeking career advancement who need strategic frameworks to make better decisions and demonstrate leadership thinking.</p>
             </div>
             
             <div className="border bg-card rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
