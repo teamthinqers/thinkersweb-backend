@@ -304,7 +304,7 @@ export default function LandingPage() {
             </div>
             <div className="space-y-2">
               <h3 className="text-4xl font-bold text-primary">56%</h3>
-              <p className="text-muted-foreground">Greater career growth rate among professionals with second brain integration<sup>4</sup></p>
+              <p className="text-muted-foreground">Greater career growth rate among professionals with neural extension integration<sup>4</sup></p>
             </div>
           </div>
           <div className="text-xs text-muted-foreground/70 mt-6 text-center">
@@ -345,7 +345,7 @@ export default function LandingPage() {
             <div className="bg-card border border-primary/10 rounded-xl p-6 relative hover:border-primary/30 transition-all duration-300 neural-node">
               <div className="w-12 h-12 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-xl mb-4 shadow-inner">2</div>
               <h3 className="text-xl font-bold mb-3">Seamless Integration</h3>
-              <p className="text-muted-foreground">Connect your second brain to your daily workflow through WhatsApp, allowing for natural thought extension whenever needed.</p>
+              <p className="text-muted-foreground">Connect your neural extension to your daily workflow through WhatsApp, allowing for natural thought enhancement whenever needed.</p>
               <div className="absolute top-6 right-6">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary/40"><circle cx="12" cy="12" r="10"></circle><path d="m4.9 4.9 14.2 14.2"></path><path d="M9 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"></path><path d="M15 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"></path></svg>
               </div>
