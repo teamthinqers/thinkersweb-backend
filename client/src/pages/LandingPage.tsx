@@ -661,7 +661,7 @@ export default function LandingPage() {
                     <div className="font-medium">Recommendation engine</div>
                     <div>Based on 14 data points</div>
                   </div>
-                  <div className="px-3 py-1.5 bg-secondary/20 rounded-full border border-secondary/30 text-sm font-semibold text-secondary-foreground">
+                  <div className="px-3 py-1.5 bg-secondary rounded-full border border-secondary text-sm font-semibold text-white shadow-md">
                     Optimize Flagship Product: 72% confidence
                   </div>
                 </div>
