@@ -207,6 +207,82 @@ const MockDashboard: React.FC = () => {
         </div>
       </div>
 
+      {/* Brain-Network Mapping Section */}
+      <div className="mb-10 bg-gradient-to-r from-indigo-50 to-violet-50 dark:from-indigo-950 dark:to-violet-950 rounded-xl p-6 border shadow-sm">
+        <div className="flex flex-col lg:flex-row gap-6">
+          <div className="lg:w-1/2">
+            <h2 className="text-xl font-bold mb-3 flex items-center">
+              <Users className="mr-2 h-5 w-5 text-primary" />
+              Map My Brain With My Network
+            </h2>
+            <p className="text-sm text-muted-foreground mb-4">
+              DotSpark's unique neural extension maps your professional knowledge with your network's expertise, 
+              creating powerful cognitive augmentation that improves pattern recognition and decision-making.
+            </p>
+            
+            <div className="grid grid-cols-2 gap-3 mb-4">
+              <div className="bg-white dark:bg-gray-900 rounded-lg p-3 border border-primary/10 flex flex-col items-center">
+                <div className="text-2xl font-bold text-primary">782</div>
+                <div className="text-xs text-center text-muted-foreground">Neural Connections</div>
+              </div>
+              <div className="bg-white dark:bg-gray-900 rounded-lg p-3 border border-indigo-500/10 flex flex-col items-center">
+                <div className="text-2xl font-bold text-indigo-500">8</div>
+                <div className="text-xs text-center text-muted-foreground">Knowledge Domains</div>
+              </div>
+              <div className="bg-white dark:bg-gray-900 rounded-lg p-3 border border-emerald-500/10 flex flex-col items-center">
+                <div className="text-2xl font-bold text-emerald-500">96%</div>
+                <div className="text-xs text-center text-muted-foreground">Knowledge Recall</div>
+              </div>
+              <div className="bg-white dark:bg-gray-900 rounded-lg p-3 border border-amber-500/10 flex flex-col items-center">
+                <div className="text-2xl font-bold text-amber-500">32%</div>
+                <div className="text-xs text-center text-muted-foreground">Growth Rate</div>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-full h-1.5 bg-gray-200 dark:bg-gray-800 rounded-full overflow-hidden">
+                <div className="h-full bg-gradient-to-r from-primary to-indigo-500 rounded-full" style={{ width: "78%" }}></div>
+              </div>
+              <span className="text-xs font-medium">78%</span>
+            </div>
+            
+            <p className="text-xs text-muted-foreground italic">
+              "When your neural extension maps to your network, cognitive abilities improve by an average of 43% in decision-making scenarios."
+            </p>
+          </div>
+          
+          <div className="lg:w-1/2 relative min-h-[200px] flex items-center justify-center bg-white/50 dark:bg-black/20 rounded-lg overflow-hidden">
+            {/* Visual neural network illustration */}
+            <div className="absolute inset-0 opacity-70">
+              {/* Neural nodes */}
+              <div className="absolute top-1/4 left-1/4 h-4 w-4 rounded-full bg-primary animate-pulse"></div>
+              <div className="absolute top-1/3 right-1/3 h-5 w-5 rounded-full bg-indigo-500 animate-pulse delay-150"></div>
+              <div className="absolute bottom-1/4 right-1/4 h-3 w-3 rounded-full bg-emerald-500 animate-pulse delay-300"></div>
+              <div className="absolute bottom-1/3 left-1/3 h-4 w-4 rounded-full bg-amber-500 animate-pulse delay-500"></div>
+              <div className="absolute top-1/2 left-1/2 h-6 w-6 rounded-full bg-violet-500 animate-pulse delay-700"></div>
+              
+              {/* Neural connections */}
+              <div className="absolute top-1/4 left-1/4 w-[30%] h-[1px] bg-primary transform rotate-30 origin-left"></div>
+              <div className="absolute top-1/3 right-1/3 w-[25%] h-[1px] bg-indigo-500 transform -rotate-15 origin-left"></div>
+              <div className="absolute bottom-1/4 right-1/4 w-[40%] h-[1px] bg-emerald-500 transform rotate-45 origin-right"></div>
+              <div className="absolute bottom-1/3 left-1/3 w-[35%] h-[1px] bg-amber-500 transform -rotate-30 origin-right"></div>
+              <div className="absolute top-1/2 left-1/2 w-[20%] h-[1px] bg-violet-500 transform rotate-60 origin-bottom"></div>
+              
+              {/* Background effect */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="h-32 w-32 rounded-full border-4 border-primary/20 animate-ping"></div>
+              </div>
+            </div>
+            
+            <div className="relative z-10 text-center p-4">
+              <Brain className="h-12 w-12 text-primary mx-auto mb-3" />
+              <div className="text-sm font-medium">Neural Network Optimization</div>
+              <div className="text-xs text-muted-foreground">Tuned for your professional domain</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
       {/* Neural network visualization (mock) - simplified */}
       <div className="mb-8">
         <div className="flex justify-between items-center mb-4">
