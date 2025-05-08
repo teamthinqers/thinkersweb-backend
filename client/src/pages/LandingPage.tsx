@@ -538,20 +538,133 @@ export default function LandingPage() {
               <p className="text-muted-foreground mb-4">
                 Your second brain generated this custom framework to guide your decision:
               </p>
-              <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
-                <h4 className="font-bold text-lg mb-2 text-primary">Product Portfolio Optimization Framework</h4>
-                <p className="text-sm text-muted-foreground">
-                  A structured approach to evaluate product expansion vs. optimization:
-                </p>
-                <ul className="text-sm text-muted-foreground mt-2 space-y-1 list-disc pl-5">
-                  <li>Market saturation assessment (25%)</li>
-                  <li>Resource allocation efficiency (20%)</li>
-                  <li>Competitive differentiation potential (20%)</li>
-                  <li>Revenue growth projections (15%)</li>
-                  <li>Operational implementation complexity (10%)</li>
-                  <li>Brand alignment strength (5%)</li>
-                  <li>Risk distribution profile (5%)</li>
-                </ul>
+              <div className="bg-primary/5 border border-primary/20 rounded-lg p-5">
+                <h4 className="font-bold text-lg mb-3 text-primary text-center">Product Portfolio Optimization Framework</h4>
+                
+                {/* Infographic Header */}
+                <div className="flex justify-between items-center mb-4 px-2">
+                  <div className="text-center px-4 py-2 bg-primary/10 rounded-lg border border-primary/20">
+                    <span className="text-xs text-muted-foreground font-medium">OPTION A</span>
+                    <p className="font-semibold text-sm">Product Expansion</p>
+                  </div>
+
+                  <div className="text-xs font-medium text-muted-foreground">WEIGHTED DECISION CRITERIA</div>
+                  
+                  <div className="text-center px-4 py-2 bg-secondary/10 rounded-lg border border-secondary/20">
+                    <span className="text-xs text-muted-foreground font-medium">OPTION B</span>
+                    <p className="font-semibold text-sm">Flagship Optimization</p>
+                  </div>
+                </div>
+                
+                {/* Criteria Bars */}
+                <div className="space-y-3.5">
+                  {/* Market Saturation */}
+                  <div className="flex items-center">
+                    <div className="w-[30%] pr-3">
+                      <div className="text-xs font-medium">Market Saturation</div>
+                      <div className="text-[10px] text-muted-foreground">Current market penetration levels</div>
+                    </div>
+                    <div className="w-[45%]">
+                      <div className="h-2.5 w-full bg-muted/60 rounded-full overflow-hidden">
+                        <div className="h-full bg-gradient-to-r from-primary to-secondary rounded-full" style={{ width: '25%' }}></div>
+                      </div>
+                    </div>
+                    <div className="w-[25%] pl-3 text-right">
+                      <span className="text-xs font-semibold">25%</span>
+                    </div>
+                  </div>
+                  
+                  {/* Resource Allocation */}
+                  <div className="flex items-center">
+                    <div className="w-[30%] pr-3">
+                      <div className="text-xs font-medium">Resource Allocation</div>
+                      <div className="text-[10px] text-muted-foreground">Efficiency of team distribution</div>
+                    </div>
+                    <div className="w-[45%]">
+                      <div className="h-2.5 w-full bg-muted/60 rounded-full overflow-hidden">
+                        <div className="h-full bg-gradient-to-r from-primary to-secondary rounded-full" style={{ width: '20%' }}></div>
+                      </div>
+                    </div>
+                    <div className="w-[25%] pl-3 text-right">
+                      <span className="text-xs font-semibold">20%</span>
+                    </div>
+                  </div>
+                  
+                  {/* Competitive Differentiation */}
+                  <div className="flex items-center">
+                    <div className="w-[30%] pr-3">
+                      <div className="text-xs font-medium">Competitive Edge</div>
+                      <div className="text-[10px] text-muted-foreground">Differentiation potential</div>
+                    </div>
+                    <div className="w-[45%]">
+                      <div className="h-2.5 w-full bg-muted/60 rounded-full overflow-hidden">
+                        <div className="h-full bg-gradient-to-r from-primary to-secondary rounded-full" style={{ width: '20%' }}></div>
+                      </div>
+                    </div>
+                    <div className="w-[25%] pl-3 text-right">
+                      <span className="text-xs font-semibold">20%</span>
+                    </div>
+                  </div>
+                  
+                  {/* Revenue Growth */}
+                  <div className="flex items-center">
+                    <div className="w-[30%] pr-3">
+                      <div className="text-xs font-medium">Revenue Growth</div>
+                      <div className="text-[10px] text-muted-foreground">Projected financial impact</div>
+                    </div>
+                    <div className="w-[45%]">
+                      <div className="h-2.5 w-full bg-muted/60 rounded-full overflow-hidden">
+                        <div className="h-full bg-gradient-to-r from-primary to-secondary rounded-full" style={{ width: '15%' }}></div>
+                      </div>
+                    </div>
+                    <div className="w-[25%] pl-3 text-right">
+                      <span className="text-xs font-semibold">15%</span>
+                    </div>
+                  </div>
+                  
+                  {/* Implementation Complexity */}
+                  <div className="flex items-center">
+                    <div className="w-[30%] pr-3">
+                      <div className="text-xs font-medium">Implementation</div>
+                      <div className="text-[10px] text-muted-foreground">Operational complexity</div>
+                    </div>
+                    <div className="w-[45%]">
+                      <div className="h-2.5 w-full bg-muted/60 rounded-full overflow-hidden">
+                        <div className="h-full bg-gradient-to-r from-primary to-secondary rounded-full" style={{ width: '10%' }}></div>
+                      </div>
+                    </div>
+                    <div className="w-[25%] pl-3 text-right">
+                      <span className="text-xs font-semibold">10%</span>
+                    </div>
+                  </div>
+                  
+                  {/* Additional Criteria */}
+                  <div className="flex items-center">
+                    <div className="w-[30%] pr-3">
+                      <div className="text-xs font-medium">Other Factors</div>
+                      <div className="text-[10px] text-muted-foreground">Brand & risk assessment</div>
+                    </div>
+                    <div className="w-[45%]">
+                      <div className="h-2.5 w-full bg-muted/60 rounded-full overflow-hidden">
+                        <div className="h-full bg-gradient-to-r from-primary to-secondary rounded-full" style={{ width: '10%' }}></div>
+                      </div>
+                    </div>
+                    <div className="w-[25%] pl-3 text-right">
+                      <span className="text-xs font-semibold">10%</span>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Framework Recommendation */}
+                <div className="mt-4 flex justify-between items-center border-t border-primary/10 pt-3">
+                  <div className="text-xs text-muted-foreground">
+                    <div className="font-medium">Recommendation engine</div>
+                    <div>Based on 14 data points</div>
+                  </div>
+                  <div className="px-3 py-1.5 bg-secondary/20 rounded-full border border-secondary/30 text-sm font-semibold text-secondary-foreground">
+                    Optimize Flagship Product: 72% confidence
+                  </div>
+                </div>
               </div>
               <div className="mt-4 text-sm text-muted-foreground italic">
                 Complete with implementation guide, metrics dashboard template, and evaluation spreadsheet.
