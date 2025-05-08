@@ -367,6 +367,14 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div className="border bg-card rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
               <div className="rounded-full w-12 h-12 bg-primary/10 flex items-center justify-center mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+              </div>
+              <h3 className="text-xl font-bold mb-2">Career Growth Aspirants</h3>
+              <p className="text-muted-foreground">Professionals seeking career advancement who need strategic frameworks to make better decisions and demonstrate leadership thinking.</p>
+            </div>
+
+            <div className="border bg-card rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
+              <div className="rounded-full w-12 h-12 bg-primary/10 flex items-center justify-center mb-4">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
               </div>
               <h3 className="text-xl font-bold mb-2">Business Leaders</h3>
@@ -383,14 +391,6 @@ export default function LandingPage() {
             
             <div className="border bg-card rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
               <div className="rounded-full w-12 h-12 bg-primary/10 flex items-center justify-center mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M5 3a2 2 0 0 0-2 2v14c0 1.1.9 2 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2H5Z"></path><path d="M12 8v8"></path><path d="M8 12h8"></path></svg>
-              </div>
-              <h3 className="text-xl font-bold mb-2">Healthcare Professionals</h3>
-              <p className="text-muted-foreground">Doctors and healthcare providers who need evidence-based frameworks for complex patient care decisions.</p>
-            </div>
-            
-            <div className="border bg-card rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
-              <div className="rounded-full w-12 h-12 bg-primary/10 flex items-center justify-center mb-4">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
               </div>
               <h3 className="text-xl font-bold mb-2">Consultants</h3>
@@ -399,18 +399,18 @@ export default function LandingPage() {
             
             <div className="border bg-card rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
               <div className="rounded-full w-12 h-12 bg-primary/10 flex items-center justify-center mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
-              </div>
-              <h3 className="text-xl font-bold mb-2">Career Growth Aspirants</h3>
-              <p className="text-muted-foreground">Professionals seeking career advancement who need strategic frameworks to make better decisions and demonstrate leadership thinking.</p>
-            </div>
-            
-            <div className="border bg-card rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
-              <div className="rounded-full w-12 h-12 bg-primary/10 flex items-center justify-center mb-4">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="m8 3 4 8 5-5 5 15H2L8 3z"></path></svg>
               </div>
               <h3 className="text-xl font-bold mb-2">Investors</h3>
               <p className="text-muted-foreground">Financial professionals who need structured frameworks to evaluate opportunities and make data-driven investment decisions.</p>
+            </div>
+            
+            <div className="border bg-card rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
+              <div className="rounded-full w-12 h-12 bg-primary/10 flex items-center justify-center mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M5 3a2 2 0 0 0-2 2v14c0 1.1.9 2 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2H5Z"></path><path d="M12 8v8"></path><path d="M8 12h8"></path></svg>
+              </div>
+              <h3 className="text-xl font-bold mb-2">Healthcare Professionals</h3>
+              <p className="text-muted-foreground">Doctors and healthcare providers who need evidence-based frameworks for complex patient care decisions.</p>
             </div>
           </div>
         </div>
