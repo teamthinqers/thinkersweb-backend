@@ -713,7 +713,7 @@ export default function LandingPage() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" variant="secondary" className="text-primary font-semibold shadow-lg btn-bounce group relative overflow-hidden" asChild>
                 <Link href="/auth" className="px-8 flex items-center">
-                  <span className="relative z-10">Connect Your Neural Extension</span>
+                  <span className="relative z-10">Get Started Now</span>
                   <ArrowRight className="ml-2 h-5 w-5 relative z-10 group-hover:translate-x-1 transition-transform" />
                   <span className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity"></span>
                 </Link>
@@ -724,9 +724,7 @@ export default function LandingPage() {
                 </Link>
               </Button>
             </div>
-            <p className="text-white/70 text-sm mt-8">
-              No credit card required • Free personal account • 30-day neural amplification guarantee
-            </p>
+
           </div>
         </div>
       </section>
