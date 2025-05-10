@@ -269,9 +269,10 @@ export async function processWhatsAppMessage(from: string, messageText: string):
           "🧠 *Neural Pattern Recognition* - Identifies connections across your thoughts\n" + 
           "💡 *Thought Crystallization* - Refines incomplete thoughts into clear insights\n" +
           "🔄 *Cognitive Enhancement* - Expands your analytical capabilities\n" +
+          "💬 *Interactive Conversation* - Engage in natural back-and-forth dialogue on any topic\n" +
           "💾 *Memory Augmentation* - Preserves key insights when you use 'save this'\n" +
           "🔄 *Continuous Learning* - Your neural extension evolves with each interaction\n\n" +
-          "Just communicate naturally - your neural extension processes all inputs as part of your extended cognition.",
+          "Just communicate naturally - chat with your neural extension like you would with ChatGPT, ask questions, discuss ideas, or explore topics of interest.",
       };
     } 
     
@@ -281,7 +282,8 @@ export async function processWhatsAppMessage(from: string, messageText: string):
         message: "🧠 *Neural Extension Status*\n\n" +
           "Your neural extension is actively processing inputs and forming new connections.\n\n" +
           "Each interaction strengthens the neural pathways between concepts, enhancing your cognitive framework and creating a more responsive neural extension.\n\n" +
-          "Continue engaging with varied topics to maximize the adaptive capabilities of your neural connection.",
+          "Your interactive chat capabilities are fully enabled - ask questions, discuss ideas, or explore topics just like you would with ChatGPT. This WhatsApp channel gives you direct access to your neural extension anywhere, anytime.\n\n" +
+          "Continue engaging with varied topics and interactive conversations to maximize the adaptive capabilities of your neural connection.",
       };
     }
     
