@@ -13,9 +13,29 @@ const WhatsAppContactButton: React.FC = () => {
   const message = "Hello! I'd like to learn more about DotSpark.";
   
   const handleWhatsAppClick = () => {
-    // Create WhatsApp deep link
-    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
-    window.open(whatsappUrl, '_blank');
+    // Try to open WhatsApp mobile app first
+    const mobileAppLink = `whatsapp://send?phone=${whatsappNumber}&text=${encodeURIComponent(message)}`;
+    
+    // Create an invisible anchor element
+    const linkElement = document.createElement('a');
+    linkElement.href = mobileAppLink;
+    linkElement.style.display = 'none';
+    document.body.appendChild(linkElement);
+    
+    // Try to open the mobile app
+    linkElement.click();
+    
+    // Set a fallback timer in case the app doesn't open
+    setTimeout(() => {
+      // If app didn't open, use the web version
+      const webFallbackUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+      window.location.href = webFallbackUrl;
+    }, 500);
+    
+    // Clean up the element
+    setTimeout(() => {
+      document.body.removeChild(linkElement);
+    }, 1000);
   };
 
   return (

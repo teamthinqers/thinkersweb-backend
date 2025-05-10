@@ -6,13 +6,35 @@ import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
 
-// Function to open WhatsApp chat directly
+// Function to open WhatsApp chat directly in the app
 function openWhatsAppChat() {
   // Replace with your actual Twilio WhatsApp number
   const whatsappNumber = "14155238886"; // Example: This is a Twilio demo number
   const message = "Hello! I'd like to learn more about DotSpark.";
-  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
-  window.open(whatsappUrl, '_blank');
+  
+  // Try to open WhatsApp mobile app first
+  const mobileAppLink = `whatsapp://send?phone=${whatsappNumber}&text=${encodeURIComponent(message)}`;
+  
+  // Create an invisible anchor element
+  const linkElement = document.createElement('a');
+  linkElement.href = mobileAppLink;
+  linkElement.style.display = 'none';
+  document.body.appendChild(linkElement);
+  
+  // Try to open the mobile app
+  linkElement.click();
+  
+  // Set a fallback timer in case the app doesn't open
+  setTimeout(() => {
+    // If app didn't open, use the web version
+    const webFallbackUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+    window.location.href = webFallbackUrl;
+  }, 500);
+  
+  // Clean up the element
+  setTimeout(() => {
+    document.body.removeChild(linkElement);
+  }, 1000);
 }
 
 export default function WhatsAppPromo() {
