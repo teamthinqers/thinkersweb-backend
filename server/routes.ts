@@ -48,6 +48,78 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.status(200).json({ status: 'ok', time: new Date().toISOString() });
   });
 
+  // Get entries endpoint - requires authentication
+  app.get(`${apiPrefix}/entries`, isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+
+      // Parse query parameters
+      const limit = req.query.limit ? parseInt(req.query.limit as string) : 10;
+      const offset = req.query.offset ? parseInt(req.query.offset as string) : 0;
+      const categoryId = req.query.categoryId ? parseInt(req.query.categoryId as string) : undefined;
+      const tagIds = req.query.tagIds 
+        ? (req.query.tagIds as string).split(',').map(id => parseInt(id)) 
+        : undefined;
+      const searchQuery = req.query.search as string | undefined;
+      const isFavorite = req.query.favorite 
+        ? req.query.favorite === 'true' 
+        : undefined;
+      const sortBy = req.query.sortBy as string || 'createdAt';
+      const sortOrder = req.query.sortOrder as 'asc' | 'desc' || 'desc';
+
+      console.log(`⭐️ Getting entries for user ID: ${userId}`);
+      
+      // Get entries with user ID filter
+      const result = await storage.getAllEntries({
+        userId,
+        categoryId,
+        tagIds,
+        searchQuery,
+        isFavorite,
+        limit,
+        offset,
+        sortBy,
+        sortOrder
+      });
+
+      res.json(result);
+    } catch (error) {
+      console.error('Error getting entries:', error);
+      res.status(500).json({ error: 'Failed to get entries' });
+    }
+  });
+
+  // Get single entry endpoint
+  app.get(`${apiPrefix}/entries/:id`, isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const entryId = parseInt(req.params.id);
+      const userId = req.user?.id;
+
+      if (!userId) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+
+      const entry = await storage.getEntryWithDetails(entryId);
+      
+      if (!entry) {
+        return res.status(404).json({ error: 'Entry not found' });
+      }
+      
+      // Make sure the user can only access their own entries
+      if (entry.userId !== userId) {
+        return res.status(403).json({ error: 'Access denied' });
+      }
+      
+      res.json(entry);
+    } catch (error) {
+      console.error('Error getting entry:', error);
+      res.status(500).json({ error: 'Failed to get entry' });
+    }
+  });
+
   // Setup authentication middleware
   setupAuth(app);
 
