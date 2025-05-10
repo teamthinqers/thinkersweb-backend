@@ -37,20 +37,26 @@ export default function LandingPage() {
               <span className="text-xl font-bold">DotSpark</span>
             </div>
           </div>
-          <nav className="flex items-center gap-6">
-            <Link href="/" className="text-sm font-medium hover:text-primary">
-              Home
-            </Link>
-            <Link href="/dashboard" className="text-sm font-medium hover:text-primary">
-              Dashboard
-            </Link>
+          
+          <div className="flex items-center gap-2">
+            {/* Desktop navigation */}
+            <div className="hidden md:flex items-center gap-6">
+              <Link href="/" className="text-sm font-medium hover:text-primary">
+                Home
+              </Link>
+              <Link href="/dashboard" className="text-sm font-medium hover:text-primary">
+                Dashboard
+              </Link>
+            </div>
             
+            {/* WhatsApp button, only show when not logged in */}
             {!user && <WhatsAppContactButton />}
             
+            {/* User profile or sign in button */}
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm" className="rounded-full">
+                  <Button variant="ghost" size="sm" className="rounded-full ml-2">
                     <Avatar className="h-8 w-8 border-2 border-white shadow">
                       {user.photoURL ? (
                         <AvatarImage src={user.photoURL} alt={user.displayName || 'User'} />
@@ -89,13 +95,18 @@ export default function LandingPage() {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Button asChild size="sm">
+              <Button asChild size="sm" className="ml-2">
                 <Link href="/auth">
                   Sign In
                 </Link>
               </Button>
             )}
-          </nav>
+            
+            {/* Mobile menu button */}
+            <Button variant="ghost" size="icon" className="ml-2 md:hidden">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="6" x2="20" y2="6"></line><line x1="4" y1="18" x2="20" y2="18"></line></svg>
+            </Button>
+          </div>
         </div>
       </header>
       
