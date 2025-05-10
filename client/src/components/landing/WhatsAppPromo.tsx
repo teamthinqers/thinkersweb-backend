@@ -9,8 +9,23 @@ function openWhatsAppChat() {
   
   console.log("Opening WhatsApp chat with:", whatsappNumber);
   
-  // Try to open WhatsApp mobile app first
-  const mobileAppLink = `whatsapp://send?phone=${whatsappNumber}&text=${encodeURIComponent(message)}`;
+  // Check if this is the first time the user is visiting (using local storage)
+  const hasVisited = localStorage.getItem('whatsapp_visited');
+  
+  // Determine the proper links based on visit history
+  let mobileAppLink, webFallbackUrl;
+  
+  if (!hasVisited) {
+    // First time visitor - include the welcome message
+    mobileAppLink = `whatsapp://send?phone=${whatsappNumber}&text=${encodeURIComponent(message)}`;
+    webFallbackUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+    // Mark as visited for future
+    localStorage.setItem('whatsapp_visited', 'true');
+  } else {
+    // Returning visitor - no prefilled message
+    mobileAppLink = `whatsapp://send?phone=${whatsappNumber}`;
+    webFallbackUrl = `https://wa.me/${whatsappNumber}`;
+  }
   
   // Create an invisible anchor element
   const linkElement = document.createElement('a');
@@ -24,7 +39,6 @@ function openWhatsAppChat() {
   // Set a fallback timer in case the app doesn't open
   setTimeout(() => {
     // If app didn't open, use the web version
-    const webFallbackUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
     window.location.href = webFallbackUrl;
   }, 500);
   

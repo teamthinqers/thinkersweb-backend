@@ -21,9 +21,19 @@ const CompactWhatsAppButton: React.FC = () => {
       const phoneNumber = "16067157733";
       setWhatsappNumber(phoneNumber);
       
+      // Check if this is the first time the user is visiting (using local storage)
+      const hasVisited = localStorage.getItem('whatsapp_visited');
+      
       // Create a direct WhatsApp link that bypasses Twilio's formatting requirements
-      // This will open WhatsApp directly with your number
-      setDirectLink(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`);
+      if (!hasVisited) {
+        // First time visitor - include the welcome message
+        setDirectLink(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`);
+        // Mark as visited for future
+        localStorage.setItem('whatsapp_visited', 'true');
+      } else {
+        // Returning visitor - no prefilled message
+        setDirectLink(`https://wa.me/${phoneNumber}`);
+      }
       
       console.log("Using direct WhatsApp link:", `https://wa.me/${phoneNumber}`);
     } catch (error) {
