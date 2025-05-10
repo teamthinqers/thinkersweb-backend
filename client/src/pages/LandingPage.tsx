@@ -249,30 +249,33 @@ export default function LandingPage() {
               </p>
               
               {/* Enhanced 3D brain neural network visualization */}
-              <div className="relative h-48 md:h-56 lg:h-64 mx-auto max-w-4xl my-10 perspective">
+              <div className="relative h-48 md:h-56 lg:h-64 mx-auto max-w-4xl my-10 perspective overflow-hidden">
+                {/* Container with fixed width for mobile to prevent overflow */}
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="relative w-full h-full max-w-lg">
-                    {/* Brain outline */}
-                    <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-32 h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 rounded-full border-[3px] border-primary/30 animate-pulse-slow"></div>
+                  <div className="relative w-[280px] sm:w-[320px] md:w-full h-full max-w-lg mx-auto">
+                    {/* Brain outline - smaller size on mobile */}
+                    <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[90px] h-[90px] sm:w-32 sm:h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 rounded-full border-[2px] border-primary/30 animate-pulse-slow"></div>
                     
-                    {/* Central node - represents user's brain */}
-                    <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-full overflow-hidden shadow-xl z-30">
+                    {/* Central node - represents user's brain - smaller on mobile */}
+                    <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-full overflow-hidden shadow-xl z-30">
                       <div className="absolute inset-0 bg-gradient-to-br from-primary/90 to-indigo-600/90"></div>
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <Brain className="w-8 h-8 md:w-10 md:h-10 text-white/90" />
+                        <Brain className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 text-white/90" />
                       </div>
                       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_40%,rgba(255,255,255,0.2)_80%)]"></div>
                     </div>
                     
-                    {/* Neural connection nodes */}
-                    {Array.from({ length: 12 }).map((_, i) => {
-                      const angle = (i / 12) * Math.PI * 2;
-                      const distance = 80 + (i % 3) * 20; // Vary distances slightly for depth
+                    {/* Neural connection nodes - fewer nodes and smaller distances on mobile */}
+                    {Array.from({ length: 10 }).map((_, i) => {
+                      // Fixed smaller distance for mobile
+                      const baseDistance = 50; // Smaller base distance for mobile 
+                      const angle = (i / 10) * Math.PI * 2;
+                      const distance = baseDistance + (i % 3) * 10; // Smaller variance for mobile
                       const x = Math.cos(angle) * distance;
                       const y = Math.sin(angle) * distance;
-                      const scale = 0.5 + Math.random() * 0.5; // Random size for variety
-                      const delay = i * 200; // Staggered animation
-                      const isPrimary = i % 3 === 0; // Every third node is primary color
+                      const scale = 0.5 + Math.random() * 0.5;
+                      const delay = i * 200;
+                      const isPrimary = i % 3 === 0;
                       
                       return (
                         <div 
@@ -281,8 +284,8 @@ export default function LandingPage() {
                             isPrimary ? 'bg-primary/80' : 'bg-blue-500/80'
                           }`}
                           style={{
-                            width: `${12 * scale}px`,
-                            height: `${12 * scale}px`,
+                            width: `${10 * scale}px`, // Slightly smaller dots
+                            height: `${10 * scale}px`,
                             transform: `translate(${x}px, ${y}px) scale(${scale})`,
                             animationDelay: `${delay}ms`,
                           }}
@@ -293,11 +296,13 @@ export default function LandingPage() {
                       );
                     })}
                     
-                    {/* Connection lines */}
+                    {/* Connection lines with fixed distances for mobile */}
                     <svg className="absolute inset-0 w-full h-full z-10" xmlns="http://www.w3.org/2000/svg">
-                      {Array.from({ length: 12 }).map((_, i) => {
-                        const angle = (i / 12) * Math.PI * 2;
-                        const distance = 80 + (i % 3) * 20;
+                      {Array.from({ length: 10 }).map((_, i) => {
+                        // Match distances with nodes above
+                        const baseDistance = 50;
+                        const angle = (i / 10) * Math.PI * 2;
+                        const distance = baseDistance + (i % 3) * 10;
                         const x = Math.cos(angle) * distance;
                         const y = Math.sin(angle) * distance;
                         
@@ -329,8 +334,8 @@ export default function LandingPage() {
                       </defs>
                     </svg>
                     
-                    {/* Pulsing glow effect */}
-                    <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-32 h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 rounded-full bg-primary/20 filter blur-xl animate-pulse-slow"></div>
+                    {/* Pulsing glow effect - smaller for mobile */}
+                    <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[80px] h-[80px] sm:w-28 sm:h-28 md:w-36 md:h-36 lg:w-44 lg:h-44 rounded-full bg-primary/20 filter blur-xl animate-pulse-slow"></div>
                   </div>
                 </div>
               </div>
