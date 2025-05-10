@@ -13,13 +13,8 @@ export default function WhatsAppIntegration() {
   const [loading, setLoading] = useState(true);
   const [registering, setRegistering] = useState(false);
   const [unregistering, setUnregistering] = useState(false);
-  const [requestingOtp, setRequestingOtp] = useState(false);
-  const [verifyingOtp, setVerifyingOtp] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [otpCode, setOtpCode] = useState("");
   const [registered, setRegistered] = useState(false);
-  const [pendingVerification, setPendingVerification] = useState(false);
-  const [pendingPhoneNumber, setPendingPhoneNumber] = useState("");
   const [currentPhone, setCurrentPhone] = useState("");
   const { toast } = useToast();
 
@@ -32,14 +27,9 @@ export default function WhatsAppIntegration() {
         const data = await res.json();
         
         setRegistered(data.registered);
-        setPendingVerification(!!data.pendingVerification);
         
         if (data.registered && data.phoneNumber) {
           setCurrentPhone(data.phoneNumber);
-        }
-        
-        if (data.pendingVerification && data.phoneNumber) {
-          setPendingPhoneNumber(data.phoneNumber);
         }
       } catch (error) {
         console.error("Error fetching WhatsApp status:", error);
@@ -107,93 +97,9 @@ export default function WhatsAppIntegration() {
     }
   };
 
-  // Verify OTP and register phone number
-  const handleVerifyOTP = async () => {
-    if (!otpCode || otpCode.length !== 6) {
-      toast({
-        title: "Error",
-        description: "Please enter the 6-digit verification code",
-        variant: "destructive",
-      });
-      return;
-    }
 
-    try {
-      setVerifyingOtp(true);
-      const res = await apiRequest("POST", "/api/whatsapp/verify-otp", { otpCode });
-      const data = await res.json();
-      
-      if (res.ok) {
-        toast({
-          title: "Success",
-          description: data.message || "WhatsApp number verified successfully",
-        });
-        setRegistered(true);
-        setCurrentPhone(pendingPhoneNumber);
-        setPendingVerification(false);
-        setPendingPhoneNumber("");
-        setOtpCode("");
-      } else {
-        toast({
-          title: "Error",
-          description: data.message || "Failed to verify WhatsApp number",
-          variant: "destructive",
-        });
-      }
-    } catch (error) {
-      console.error("Error verifying OTP:", error);
-      toast({
-        title: "Error",
-        description: "Failed to verify WhatsApp number",
-        variant: "destructive",
-      });
-    } finally {
-      setVerifyingOtp(false);
-    }
-  };
 
-  // Legacy direct registration without OTP (will be removed)
-  const handleRegister = async () => {
-    if (!phoneNumber) {
-      toast({
-        title: "Error",
-        description: "Please enter a phone number",
-        variant: "destructive",
-      });
-      return;
-    }
 
-    try {
-      setRegistering(true);
-      const res = await apiRequest("POST", "/api/whatsapp/register", { phoneNumber });
-      const data = await res.json();
-      
-      if (res.ok) {
-        toast({
-          title: "Success",
-          description: data.message || "DotSpark WhatsApp chatbot activated successfully",
-        });
-        setRegistered(true);
-        setCurrentPhone(phoneNumber);
-        setPhoneNumber("");
-      } else {
-        toast({
-          title: "Error",
-          description: data.message || "Failed to activate WhatsApp chatbot",
-          variant: "destructive",
-        });
-      }
-    } catch (error) {
-      console.error("Error activating WhatsApp chatbot:", error);
-      toast({
-        title: "Error",
-        description: "Failed to activate WhatsApp chatbot",
-        variant: "destructive",
-      });
-    } finally {
-      setRegistering(false);
-    }
-  };
 
   // Unregister a phone number
   const handleUnregister = async () => {
@@ -285,35 +191,23 @@ export default function WhatsAppIntegration() {
           </div>
         ) : (
           <div className="space-y-4">
-            <div className="border rounded-lg p-4 bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-950 dark:to-yellow-950 border-amber-100 dark:border-amber-900 mb-4">
-              <p className="font-medium mb-2 text-amber-800 dark:text-amber-400">Important: Twilio WhatsApp Sandbox Setup</p>
-              <ol className="text-sm space-y-2 list-decimal pl-4 text-amber-700 dark:text-amber-400">
-                <li>Save the Twilio WhatsApp number <span className="font-mono">+14155238886</span> to your contacts as "DotSpark Bot"</li>
-                <li>Send the message <span className="font-mono">join example-sandbox</span> to this number on WhatsApp</li>
-                <li>You'll receive a confirmation when connected to the Twilio Sandbox</li>
-                <li>After connecting to the sandbox, you'll receive messages using the template: "<span className="font-mono">123456 is your verification code. For your security, do not share this code.</span>"</li>
-                <li>Once connected, proceed with the steps below to link your DotSpark account</li>
-              </ol>
-            </div>
-            
-            <div className="border rounded-lg p-4 bg-gradient-to-r from-red-50 to-pink-50 dark:from-red-950 dark:to-pink-950 border-red-100 dark:border-red-900 mb-4">
-              <p className="font-medium mb-2 text-red-800 dark:text-red-400">Administrator: Configuring Webhook URL</p>
-              <p className="text-sm text-red-700 dark:text-red-400 mb-2">To receive messages from Twilio, configure your webhook URL in the Twilio console:</p>
-              <ol className="text-sm space-y-2 list-decimal pl-4 text-red-700 dark:text-red-400">
-                <li>In your Twilio console, go to Messaging → Settings → WhatsApp Sandbox Settings</li>
-                <li>Set the "When a message comes in" URL to: <span className="font-mono">{window.location.origin}/api/whatsapp/webhook</span></li>
-                <li>Make sure the method is set to <span className="font-mono">HTTP POST</span></li>
-                <li>This allows Twilio to forward WhatsApp messages to your DotSpark application</li>
+            <div className="border rounded-lg p-4 bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-950 dark:to-indigo-950 border-purple-100 dark:border-purple-900 mb-4">
+              <p className="font-medium mb-2 text-indigo-800 dark:text-indigo-400">Connect Your Neural Extension</p>
+              <ol className="text-sm space-y-2 list-decimal pl-4 text-indigo-700 dark:text-indigo-400">
+                <li>Save the DotSpark WhatsApp number <span className="font-mono">+15557649526</span> to your contacts as "DotSpark Neural"</li>
+                <li>Simply message this number to establish your neural connection</li>
+                <li>No verification codes needed - your neural extension activates instantly</li>
+                <li>Your WhatsApp messaging becomes an extension of your thinking brain</li>
               </ol>
             </div>
             
             <div className="border rounded-lg p-4 bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-indigo-950 dark:to-blue-950">
-              <p className="font-medium mb-2">Activate DotSpark AI Chatbot on WhatsApp:</p>
+              <p className="font-medium mb-2">Register Your Number for Neural Extension:</p>
               <ol className="text-sm space-y-2 list-decimal pl-4">
                 <li>Enter your WhatsApp phone number with country code (e.g., +1 234 567 8900)</li>
-                <li>We'll send a verification code to your WhatsApp number</li>
-                <li>Verify ownership of your number to activate the DotSpark chatbot</li>
-                <li>All knowledge is synced with your DotSpark account automatically</li>
+                <li>Click "Activate Neural Extension" to register your neural link</li>
+                <li>All neural connections are synced with your account automatically</li>
+                <li>Start thinking through WhatsApp immediately</li>
               </ol>
             </div>
             
