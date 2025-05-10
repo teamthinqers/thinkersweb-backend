@@ -262,119 +262,25 @@ export default function WhatsAppIntegration() {
             </div>
             
             <div className="border rounded-lg p-4 bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-950 dark:to-yellow-950 border-amber-100 dark:border-amber-900 mb-4">
-              <p className="font-medium mb-2 text-amber-800 dark:text-amber-400">Important: Twilio WhatsApp Sandbox Setup</p>
+              <p className="font-medium mb-2 text-amber-800 dark:text-amber-400">Connect Your Neural Extension via WhatsApp</p>
               <ol className="text-sm space-y-2 list-decimal pl-4 text-amber-700 dark:text-amber-400">
-                <li>Save the Twilio WhatsApp number <span className="font-mono">+14155238886</span> to your contacts as "DotSpark Bot"</li>
-                <li>Send the message <span className="font-mono">join example-sandbox</span> to this number on WhatsApp</li>
-                <li>You'll receive a confirmation when connected to the Twilio Sandbox</li>
-                <li>Now your WhatsApp is linked to the sandbox and can receive messages from our app</li>
+                <li>Save the DotSpark WhatsApp number <span className="font-mono">+15557649526</span> to your contacts as "DotSpark Neural"</li>
+                <li>Send any message to start the connection with your neural extension</li>
+                <li>You'll receive a welcome message confirming your neural link is established</li>
+                <li>Your neural extension is now ready to capture and process your thoughts</li>
               </ol>
-              <p className="text-xs mt-2 text-amber-600 dark:text-amber-500">Note: In production, you would use an approved WhatsApp Business number instead of the Sandbox.</p>
+              <p className="text-xs mt-2 text-amber-600 dark:text-amber-500">Your neural extension runs on WhatsApp Business API for seamless integration with your daily communications.</p>
             </div>
 
             <div className="border rounded-lg p-4 bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-indigo-950 dark:to-blue-950">
-              <p className="font-medium mb-2">Chat with DotSpark AI on WhatsApp:</p>
+              <p className="font-medium mb-2">Interact with Your Neural Extension:</p>
               <ol className="text-sm space-y-2 list-decimal pl-4">
-                <li>Send a message to the DotSpark WhatsApp chatbot to create a learning dot</li>
-                <li>Start your message with "Q:" to ask questions about your knowledge base</li>
-                <li>Type "summary" to receive an AI-generated summary of recent entries</li>
-                <li>Type "help" to see all available chatbot commands</li>
+                <li>Send any text to your neural extension to capture thoughts and ideas</li>
+                <li>Start with "Q:" to query your neural network for insights</li>
+                <li>Type "summary" for a neural synthesis of your recent thoughts</li>
+                <li>Type "help" to see all neural interface commands</li>
+                <li>Your neural extension continuously learns from your interactions</li>
               </ol>
-            </div>
-          </div>
-        ) : pendingVerification ? (
-          <div className="space-y-4">
-            <Alert className="bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-950 dark:to-yellow-950 border-amber-200 dark:border-amber-800">
-              <ShieldCheck className="h-5 w-5 text-amber-600 dark:text-amber-400" />
-              <AlertTitle>Verification Required</AlertTitle>
-              <AlertDescription>
-                We've sent a verification code to your WhatsApp number: <span className="font-medium">{pendingPhoneNumber}</span>
-              </AlertDescription>
-            </Alert>
-            
-            <div className="border rounded-lg p-4 bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-950 dark:to-yellow-950 border-amber-100 dark:border-amber-900 mb-4">
-              <p className="font-medium mb-2 text-amber-800 dark:text-amber-400">Important: Twilio WhatsApp Sandbox Setup</p>
-              <ol className="text-sm space-y-2 list-decimal pl-4 text-amber-700 dark:text-amber-400">
-                <li>Save the Twilio WhatsApp number <span className="font-mono">+14155238886</span> to your contacts as "DotSpark Bot"</li>
-                <li>Send the message <span className="font-mono">join example-sandbox</span> to this number on WhatsApp</li>
-                <li>You'll receive a confirmation when connected to the Twilio Sandbox</li>
-                <li>You'll receive a code in the format: "<span className="font-mono">123456 is your verification code. For your security, do not share this code.</span>"</li>
-                <li>In development mode, the verification code will also appear directly in the UI below</li>
-              </ol>
-            </div>
-            
-            <div className="border rounded-lg p-4 bg-gradient-to-r from-red-50 to-pink-50 dark:from-red-950 dark:to-pink-950 border-red-100 dark:border-red-900 mb-4">
-              <p className="font-medium mb-2 text-red-800 dark:text-red-400">Administrator: Configuring Webhook URL</p>
-              <p className="text-sm text-red-700 dark:text-red-400 mb-2">To receive messages from Twilio, configure your webhook URL in the Twilio console:</p>
-              <ol className="text-sm space-y-2 list-decimal pl-4 text-red-700 dark:text-red-400">
-                <li>In your Twilio console, go to Messaging → Settings → WhatsApp Sandbox Settings</li>
-                <li>Set the "When a message comes in" URL to: <span className="font-mono">{window.location.origin}/api/whatsapp/webhook</span></li>
-                <li>Make sure the method is set to <span className="font-mono">HTTP POST</span></li>
-                <li>This allows Twilio to forward WhatsApp messages to your DotSpark application</li>
-              </ol>
-            </div>
-            
-            <div className="border rounded-lg p-4 bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-indigo-950 dark:to-blue-950">
-              <p className="font-medium mb-2">Verify your WhatsApp number:</p>
-              <ol className="text-sm space-y-2 list-decimal pl-4">
-                <li>Check WhatsApp on your phone for a message with a 6-digit code</li>
-                <li>Enter the verification code below to activate the DotSpark chatbot</li>
-                <li>This security step helps ensure only you can connect your WhatsApp account</li>
-                <li>If you don't receive a code within 2 minutes, make sure your WhatsApp is active and connected, then try again</li>
-              </ol>
-            </div>
-            
-            <div className="flex items-end gap-2">
-              <div className="flex-1 space-y-2">
-                <Label htmlFor="otpCode">Verification Code</Label>
-                <Input 
-                  id="otpCode" 
-                  placeholder="123456" 
-                  value={otpCode} 
-                  onChange={(e) => setOtpCode(e.target.value)}
-                  maxLength={6}
-                />
-              </div>
-              <Button onClick={handleVerifyOTP} disabled={verifyingOtp} className="mr-2">
-                {verifyingOtp ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <ShieldCheck className="h-4 w-4 mr-2" />}
-                Verify
-              </Button>
-              <Button 
-                variant="outline" 
-                onClick={async () => {
-                  try {
-                    await apiRequest("POST", "/api/whatsapp/cancel-verification");
-                    setPendingVerification(false);
-                    setPendingPhoneNumber("");
-                    setOtpCode("");
-                  } catch (error) {
-                    console.error("Error canceling verification:", error);
-                    // Fall back to client-side cancellation if the API fails
-                    setPendingVerification(false);
-                    setPendingPhoneNumber("");
-                    setOtpCode("");
-                  }
-                }}
-              >
-                Cancel
-              </Button>
-            </div>
-            
-            <div className="flex items-center gap-2 justify-center mt-2">
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className="text-sm flex items-center text-muted-foreground"
-                onClick={handleRequestOTP}
-                disabled={requestingOtp}
-              >
-                {requestingOtp ? (
-                  <Loader2 className="h-3 w-3 animate-spin mr-2" />
-                ) : (
-                  <RefreshCw className="h-3 w-3 mr-2" />
-                )}
-                Resend verification code
-              </Button>
             </div>
           </div>
         ) : (
