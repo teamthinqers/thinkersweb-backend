@@ -271,11 +271,10 @@ export default function LandingPage() {
                     <div className="bg-gradient-to-br from-primary/5 to-indigo-500/5 dark:from-primary/10 dark:to-indigo-500/10 border border-primary/20 dark:border-primary/30 rounded-xl p-6 flex flex-col items-center shadow-lg shadow-primary/5 dark:shadow-primary/10 relative overflow-hidden group">
                       <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-indigo-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                       
-                      <Button size="lg" asChild className="w-full mb-5 relative overflow-hidden">
-                        <Link href="/auth?redirect=settings/whatsapp" className="flex items-center justify-center">
-                          <Brain className="mr-2 h-5 w-5" />
+                      <Button size="lg" asChild className="w-full mb-5 relative overflow-hidden bg-gradient-to-r from-primary to-indigo-600 hover:from-indigo-600 hover:to-primary border-0 shadow-lg shadow-primary/20 hover:shadow-indigo-500/30 transition-all duration-300 transform hover:scale-105">
+                        <Link href="/auth?redirect=settings/whatsapp" className="flex items-center justify-center relative z-10">
+                          <Brain className="mr-2 h-5 w-5 animate-pulse-slow" />
                           <span>Activate Neural Extension</span>
-                          <div className="absolute inset-0 bg-gradient-to-r from-primary to-indigo-600 opacity-90 hover:opacity-100 transition-opacity"></div>
                         </Link>
                       </Button>
                       
@@ -295,7 +294,7 @@ export default function LandingPage() {
                       
                       <Button 
                         size="lg" 
-                        className="w-full mb-5 relative overflow-hidden bg-[#25D366] hover:bg-[#128C7E] text-white"
+                        className="w-full mb-5 relative overflow-hidden bg-gradient-to-r from-[#25D366] to-[#128C7E] hover:from-[#128C7E] hover:to-[#25D366] text-white border-0 shadow-lg shadow-green-500/20 hover:shadow-green-600/30 transition-all duration-300 transform hover:scale-105"
                         onClick={() => {
                           const whatsappNumber = "16067157733";
                           const mobileAppLink = `whatsapp://send?phone=${whatsappNumber}`;
@@ -306,9 +305,8 @@ export default function LandingPage() {
                           }, 500);
                         }}
                       >
-                        <div className="absolute inset-0 bg-gradient-to-r from-[#25D366] to-[#128C7E] opacity-100 hover:opacity-90 transition-opacity"></div>
                         <div className="flex items-center justify-center relative z-10">
-                          <svg className="mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" fill="currentColor">
+                          <svg className="mr-2 h-5 w-5 animate-pulse-slow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" fill="currentColor">
                             <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157z"></path>
                           </svg>
                           <span>Ask DotSpark</span>
