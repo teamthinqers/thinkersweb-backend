@@ -103,7 +103,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get(`${apiPrefix}/whatsapp/contact`, async (req: Request, res: Response) => {
     try {
       // Use the actual WhatsApp number directly
-      const whatsappNumber = process.env.WHATSAPP_PHONE_NUMBER || "15557649526";
+      const whatsappNumber = process.env.WHATSAPP_PHONE_NUMBER || "16067157733";
       
       // Log the WhatsApp number being used
       console.log(`Using direct WhatsApp number: ${whatsappNumber}`);
