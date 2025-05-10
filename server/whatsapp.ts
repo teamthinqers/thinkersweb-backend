@@ -104,13 +104,9 @@ export async function getUserIdFromWhatsAppNumber(phoneNumber: string): Promise<
       });
       
       if (!existingUser) {
-        console.log(`[TEST MODE] Automatically registering new test phone number ${normalizedPhone}`);
-        // Create a new WhatsApp user record for this number
-        await db.insert(whatsappUsers).values({
-          userId: DEMO_USER_ID,
-          phoneNumber: normalizedPhone,
-          active: true,
-        });
+        console.log(`[TEST MODE] New user detected - will trigger welcome message`);
+        // Return null for first-time users to trigger welcome message in the main handler
+        return null;
       } else if (!existingUser.active) {
         // If it exists but is inactive, activate it
         await db.update(whatsappUsers)
