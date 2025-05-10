@@ -16,13 +16,27 @@ export function WhatsAppLinking() {
   const generateLinkCode = async () => {
     try {
       setLoading(true);
+      console.log("Attempting to generate WhatsApp link code...");
+      
       const response = await apiRequest("POST", "/api/whatsapp/generate-link-code");
+      console.log("Link code API response status:", response.status);
+      
+      // Get the response text for debugging
+      const responseText = await response.text();
+      console.log("Raw response:", responseText);
       
       if (!response.ok) {
-        throw new Error("Failed to generate link code");
+        throw new Error(`Failed to generate link code: ${response.status} ${responseText}`);
       }
       
-      const data = await response.json();
+      // Parse the JSON after getting the text
+      const data = JSON.parse(responseText);
+      console.log("Link code data:", data);
+      
+      if (!data.linkCode || !data.expiresAt) {
+        throw new Error("Invalid response format from server");
+      }
+      
       setLinkCode(data.linkCode);
       setExpiryTime(new Date(data.expiresAt));
       
@@ -35,7 +49,7 @@ export function WhatsAppLinking() {
       toast({
         variant: "destructive",
         title: "Unable to generate link code",
-        description: "Please try again later",
+        description: error instanceof Error ? error.message : "Please try again later",
       });
     } finally {
       setLoading(false);
