@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200" fill="none">
+  <!-- Background circle with gradient -->
+  <circle cx="100" cy="100" r="95" fill="url(#gradient)" />
+  
+  <!-- Central spark symbol -->
+  <path d="M100 30L117.5 80.8654L171.747 80.8654L127.635 112.135L145.534 163L100 132.5L54.4658 163L72.3654 112.135L28.2531 80.8654H82.5L100 30Z" fill="white" />
+  
+  <!-- Neural connection dots - horizontal line -->
+  <circle cx="60" cy="100" r="5" fill="white" opacity="0.8" />
+  <circle cx="140" cy="100" r="5" fill="white" opacity="0.8" />
+  
+  <!-- Neural connection dots - vertical line -->
+  <circle cx="100" cy="60" r="5" fill="white" opacity="0.8" />
+  <circle cx="100" cy="140" r="5" fill="white" opacity="0.8" />
+  
+  <!-- Neural connection dots - diagonal lines -->
+  <circle cx="75" cy="75" r="5" fill="white" opacity="0.8" />
+  <circle cx="125" cy="75" r="5" fill="white" opacity="0.8" />
+  <circle cx="75" cy="125" r="5" fill="white" opacity="0.8" />
+  <circle cx="125" cy="125" r="5" fill="white" opacity="0.8" />
+  
+  <!-- Neural connection lines -->
+  <line x1="60" y1="100" x2="95" y2="100" stroke="white" stroke-width="2" opacity="0.5" />
+  <line x1="105" y1="100" x2="140" y2="100" stroke="white" stroke-width="2" opacity="0.5" />
+  <line x1="100" y1="60" x2="100" y2="95" stroke="white" stroke-width="2" opacity="0.5" />
+  <line x1="100" y1="105" x2="100" y2="140" stroke="white" stroke-width="2" opacity="0.5" />
+  <line x1="80" y1="80" x2="95" y2="95" stroke="white" stroke-width="2" opacity="0.5" />
+  <line x1="105" y1="95" x2="120" y2="80" stroke="white" stroke-width="2" opacity="0.5" />
+  <line x1="80" y1="120" x2="95" y2="105" stroke="white" stroke-width="2" opacity="0.5" />
+  <line x1="105" y1="105" x2="120" y2="120" stroke="white" stroke-width="2" opacity="0.5" />
+  
+  <!-- Define the gradient -->
+  <defs>
+    <linearGradient id="gradient" x1="0" y1="0" x2="1" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0%" stop-color="#7B61FF" /> <!-- Primary color -->
+      <stop offset="100%" stop-color="#A85CFF" /> <!-- Secondary color -->
+    </linearGradient>
+  </defs>
+</svg>

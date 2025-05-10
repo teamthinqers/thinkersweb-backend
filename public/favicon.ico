@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 200 200" fill="none">
+  <!-- Circle background -->
+  <circle cx="100" cy="100" r="95" fill="url(#gradient)" />
+  
+  <!-- Spark symbol -->
+  <path d="M100 30L117.5 80.8654L171.747 80.8654L127.635 112.135L145.534 163L100 132.5L54.4658 163L72.3654 112.135L28.2531 80.8654H82.5L100 30Z" fill="white" />
+  
+  <!-- Define the gradient -->
+  <defs>
+    <linearGradient id="gradient" x1="0" y1="0" x2="1" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0%" stop-color="#7B61FF" /> <!-- Primary color -->
+      <stop offset="100%" stop-color="#A85CFF" /> <!-- Secondary color -->
+    </linearGradient>
+  </defs>
+</svg>
