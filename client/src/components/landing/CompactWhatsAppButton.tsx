@@ -88,7 +88,7 @@ const CompactWhatsAppButton: React.FC = () => {
   return (
     <Button
       onClick={handleWhatsAppClick}
-      className="bg-[#25D366] hover:bg-[#128C7E] flex items-center gap-1 px-2 py-1 h-8"
+      className="bg-gradient-to-r from-[#25D366] to-[#075E54] hover:from-[#128C7E] hover:to-[#063E38] flex items-center gap-1 px-2 py-1 h-8 shadow-md"
       size="sm"
       disabled={isLoading}
     >
@@ -99,8 +99,17 @@ const CompactWhatsAppButton: React.FC = () => {
         </>
       ) : (
         <>
-          <svg className="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" fill="white">
-            <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157z"></path>
+          {/* Neural network icon - replacing WhatsApp icon for compact button */}
+          <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="6" cy="5" r="2"></circle>
+            <circle cx="18" cy="5" r="2"></circle>
+            <circle cx="6" cy="18" r="2"></circle>
+            <circle cx="18" cy="18" r="2"></circle>
+            <line x1="6" y1="7" x2="6" y2="16"></line>
+            <line x1="18" y1="7" x2="18" y2="16"></line>
+            <line x1="8" y1="5" x2="16" y2="5"></line>
+            <line x1="8" y1="18" x2="16" y2="18"></line>
+            <line x1="6" y1="5" x2="18" y2="18"></line>
           </svg>
           <span className="text-xs font-medium">Neural Link</span>
         </>
