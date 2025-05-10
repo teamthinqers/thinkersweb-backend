@@ -54,6 +54,62 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Use the WhatsApp Business API webhook router for all WhatsApp webhook requests
   app.use(`${apiPrefix}/whatsapp/webhook`, whatsappWebhookRouter);
+  
+  // Special test endpoint for WhatsApp webhook verification
+  app.get(`${apiPrefix}/whatsapp/test-webhook`, (req, res) => {
+    console.log("⭐️ WhatsApp webhook test endpoint accessed");
+    res.status(200).json({ 
+      status: 'ok', 
+      message: 'This test endpoint confirms that the WhatsApp webhook route is properly registered.'
+    });
+  });
+  
+  // Debug endpoint to simulate a WhatsApp message
+  app.post(`${apiPrefix}/whatsapp/simulate`, isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      if (!req.user) {
+        return res.status(401).json({ error: "Authentication required" });
+      }
+      
+      const { message } = req.body;
+      if (!message) {
+        return res.status(400).json({ error: "Message is required" });
+      }
+      
+      console.log(`⭐️ Simulating WhatsApp message from user ${req.user.id}: ${message}`);
+      
+      // Process the message as if it came from WhatsApp
+      const from = "whatsapp:+12345678900"; // Fake WhatsApp number
+      const response = await processWhatsAppMessage(from, message);
+      
+      // Create an entry connected to this user's account
+      try {
+        console.log(`⭐️ Creating entry for simulated WhatsApp message`);
+        
+        const entryData = {
+          userId: req.user.id,
+          title: `WhatsApp Simulation - ${new Date().toLocaleString()}`,
+          content: message,
+          visibility: "private",
+          isFavorite: false
+        };
+        
+        await db.insert(entries).values(entryData);
+        console.log(`⭐️ Entry created successfully for simulated message`);
+      } catch (entryError) {
+        console.error("Error creating entry for simulated message:", entryError);
+      }
+      
+      return res.status(200).json({ 
+        success: true, 
+        response: response.message,
+        message: "WhatsApp message simulated and entry created" 
+      });
+    } catch (error) {
+      console.error("Error in WhatsApp simulate route:", error);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+  });
 
   // Register a phone number for DotSpark WhatsApp chatbot
   app.post(`${apiPrefix}/whatsapp/register`, isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {

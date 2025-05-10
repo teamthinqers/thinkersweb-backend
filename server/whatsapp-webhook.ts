@@ -105,6 +105,7 @@ whatsappWebhookRouter.get('/', (req: Request, res: Response) => {
 whatsappWebhookRouter.post('/', async (req: Request, res: Response) => {
   try {
     console.log('📩 Received WhatsApp webhook payload:', JSON.stringify(req.body));
+    console.log('📨 WhatsApp webhook headers:', JSON.stringify(req.headers));
     
     // Check if this is a Twilio request by looking for Twilio-specific fields
     if (req.body.Body && req.body.From) {
