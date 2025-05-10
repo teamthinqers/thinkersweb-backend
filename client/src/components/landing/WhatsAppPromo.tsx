@@ -178,7 +178,7 @@ export default function WhatsAppPromo() {
                   </div>
                   <div>
                     <h3 className="font-medium text-base">Neural Tuning</h3>
-                    <p className="text-muted-foreground text-sm">Tune your neural extension to your cognitive patterns.</p>
+                    <p className="text-muted-foreground text-sm">Tune your neural extension directly through WhatsApp - no signup required.</p>
                   </div>
                 </div>
                 
@@ -198,7 +198,7 @@ export default function WhatsAppPromo() {
                   </div>
                   <div>
                     <h3 className="font-medium text-base">Performance Metrics</h3>
-                    <p className="text-muted-foreground text-sm">View neural connections and cognitive growth.</p>
+                    <p className="text-muted-foreground text-sm">Create a DotSpark account to access your neural connections via dashboard.</p>
                   </div>
                 </div>
               </div>

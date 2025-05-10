@@ -122,9 +122,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Generate a linking code for connecting WhatsApp to a DotSpark account
   app.post(`${apiPrefix}/whatsapp/generate-link-code`, isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
     try {
-      // For testing purposes, use demo user if not authenticated
-      const userId = req.user?.id || 1; // Default to demo user in dev environment
+      // Require user to be logged in - no demo user fallback
+      if (!req.user || !req.user.id) {
+        return res.status(401).json({ 
+          error: 'Authentication required',
+          message: 'You must log in to generate a WhatsApp link code'
+        });
+      }
       
+      const userId = req.user.id;
       console.log("Generating WhatsApp link code for user ID:", userId);
       
       // Generate a random 6-digit code

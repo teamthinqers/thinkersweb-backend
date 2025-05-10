@@ -11,6 +11,7 @@ export function WhatsAppLinking() {
   const [linkCode, setLinkCode] = useState<string | null>(null);
   const [expiryTime, setExpiryTime] = useState<Date | null>(null);
   const [copied, setCopied] = useState(false);
+  const [authError, setAuthError] = useState(false);
 
   // Generate a new link code
   const generateLinkCode = async () => {
@@ -25,7 +26,10 @@ export function WhatsAppLinking() {
       const responseText = await response.text();
       console.log("Raw response:", responseText);
       
-      if (!response.ok) {
+      if (response.status === 401) {
+        setAuthError(true);
+        throw new Error("You need to be logged in to generate a link code. Please log in to your DotSpark account first.");
+      } else if (!response.ok) {
         throw new Error(`Failed to generate link code: ${response.status} ${responseText}`);
       }
       
@@ -103,16 +107,33 @@ export function WhatsAppLinking() {
         </CardDescription>
       </CardHeader>
       
+      {authError && (
+        <div className="mx-6 my-2 p-4 bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 rounded-md">
+          <h3 className="text-amber-800 dark:text-amber-400 font-medium mb-2">Authentication Required</h3>
+          <p className="text-amber-700 dark:text-amber-500 text-sm mb-3">
+            You need to be logged in to generate a WhatsApp link code. Please log in to your DotSpark account first.
+          </p>
+          <div className="flex items-center justify-end">
+            <a href="/auth" className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md text-sm transition-colors">
+              Log In to DotSpark
+            </a>
+          </div>
+        </div>
+      )}
+      
       <CardContent>
         <div className="space-y-4">
           <div className="bg-amber-50 dark:bg-amber-950 p-4 rounded-md border border-amber-200 dark:border-amber-800">
-            <h4 className="font-medium text-amber-800 dark:text-amber-400 mb-2">How to link your WhatsApp</h4>
+            <h4 className="font-medium text-amber-800 dark:text-amber-400 mb-2">How to link your WhatsApp to DotSpark</h4>
             <ol className="text-sm space-y-2 list-decimal pl-4 text-amber-700 dark:text-amber-400">
-              <li>Generate a link code using the button below</li>
+              <li>Generate a link code using the button below (requires account login)</li>
               <li>Send the code to WhatsApp number <span className="font-mono">+16067157733</span></li>
               <li>Your WhatsApp will be linked to this DotSpark account</li>
               <li>All your WhatsApp conversations will now appear in your dashboard</li>
             </ol>
+            <p className="text-xs mt-3 text-amber-600 dark:text-amber-500 italic">
+              Note: While anyone can use the neural extension via WhatsApp without an account, linking requires a DotSpark account to sync conversations with your dashboard.
+            </p>
           </div>
           
           {linkCode && !isExpired() && (
