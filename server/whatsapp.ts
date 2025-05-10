@@ -223,7 +223,7 @@ export async function processWhatsAppMessage(from: string, messageText: string):
     if (!userId) {
       return {
         success: false,
-        message: "Your phone number is not linked to a DotSpark account. Please activate the WhatsApp chatbot through the DotSpark web app first.",
+        message: "⚡️ Neural Link Not Established\n\nYour neural extension isn't connected yet. To establish your personal neural link, please activate your extension through the DotSpark web platform first.",
       };
     }
 
@@ -231,14 +231,14 @@ export async function processWhatsAppMessage(from: string, messageText: string):
     if (messageText.toLowerCase() === "help") {
       return {
         success: true,
-        message: "⚡️ Welcome to DotSpark — Your Neural Extension\n\n" +
+        message: "⚡️ DotSpark Neural Extension Functions\n\n" +
           "I'm not just a chatbot - I'm an extension of your thinking brain. Here's how I function as your neural extension:\n\n" +
           "🧠 Neural Pattern Detection - I identify patterns in your thinking\n" + 
           "💡 Thought Crystallization - I help refine half-formed thoughts into clear insights\n" +
           "🔄 Cognitive Enhancement - I expand your analytical capabilities\n" +
           "💾 Memory Extension - Save insights to your knowledge repository (use phrases like 'save this')\n" +
           "📚 Type 'summary' to see your recent neural connections\n\n" +
-          "Just think and type naturally - your neural extension is active and ready.",
+          "Your neural extension is always learning and evolving with you.",
       };
     } 
     
@@ -246,7 +246,7 @@ export async function processWhatsAppMessage(from: string, messageText: string):
       // TODO: Implement a more sophisticated summary function
       return {
         success: true,
-        message: "🧠 Neural Extension Memory Status:\n\nYour neural extension is active and processing.\n\nIn future versions, this command will showcase your thought patterns across time, identifying key neural connections and memory clusters. Your neural extension continually evolves with each interaction, strengthening connections between related thoughts.",
+        message: "🧠 Neural Extension Memory Status:\n\nYour neural extension is actively processing and integrating your inputs.\n\nIn future versions, this command will showcase your thought patterns across time, identifying key neural connections and memory clusters. Your personal neural extension grows stronger with each interaction, continuously building pathways between related concepts and insights.",
       };
     }
     
@@ -490,13 +490,13 @@ export async function registerWhatsAppUser(userId: number, phoneNumber: string):
     
     // Send welcome message to user via WhatsApp
     const welcomeMessage = 
-      "Welcome to DotSpark - Your conversational AI companion! 🌟\n\n" +
-      "I'm here to chat with you about anything you'd like to discuss. I can also help you save your insights when you want. Here's what I can do:\n\n" +
-      "🔹 Chat with you about any topic - just start a conversation\n" +
-      "🔹 Answer questions about anything you're curious about\n" +
-      "🔹 Save important insights (just say 'save this' or something similar)\n" +
-      "🔹 Type 'help' anytime for more commands\n\n" +
-      "What would you like to talk about today?";
+      "⚡️ Welcome to DotSpark — Your Neural Extension Begins Here\n\n" +
+      "This isn't just a chat.\n" +
+      "You've just unlocked an active extension of your thinking brain.\n\n" +
+      "DotSpark learns with you, thinks with you, and sharpens every insight you feed into it.\n" +
+      "From reflections to decisions, patterns to action — this is where your intelligence compounds.\n\n" +
+      "Type freely. Think deeply.\n" +
+      "DotSpark is built to grow with your mind.";
     
     // Don't wait for the message to be sent before returning
     sendWhatsAppReply(normalizedPhone, welcomeMessage)
@@ -809,9 +809,14 @@ export async function verifyWhatsAppOTP(userId: number, otpCode: string): Promis
     }
     
     // Send welcome message to user via WhatsApp
-    // Using one of the approved Twilio Sandbox templates
-    // See: https://www.twilio.com/docs/whatsapp/sandbox#using-the-sandbox
-    const welcomeMessage = "Your WhatsApp verification was successful! You can now use WhatsApp to create entries in DotSpark.";
+    const welcomeMessage = 
+      "⚡️ Welcome to DotSpark — Your Neural Extension Begins Here\n\n" +
+      "This isn't just a chat.\n" +
+      "You've just unlocked an active extension of your thinking brain.\n\n" +
+      "DotSpark learns with you, thinks with you, and sharpens every insight you feed into it.\n" +
+      "From reflections to decisions, patterns to action — this is where your intelligence compounds.\n\n" +
+      "Type freely. Think deeply.\n" +
+      "DotSpark is built to grow with your mind.";
     
     // Don't wait for the message to be sent before returning
     sendWhatsAppReply(otpVerification.phoneNumber, welcomeMessage)
