@@ -10,6 +10,7 @@ import Insights from "@/pages/Insights";
 import Favorites from "@/pages/Favorites";
 import Network from "@/pages/Network";
 import LandingPage from "@/pages/LandingPage";
+import LogoPage from "@/pages/LogoPage";
 import AuthPage from "@/pages/auth-page";
 import Settings from "@/pages/Settings";
 import WhatsAppAdmin from "@/pages/WhatsAppAdmin";
@@ -161,6 +162,7 @@ function Router() {
       <Route path="/network" component={() => <AppWithLayout />} />
       <Route path="/settings" component={() => <AppWithLayout />} />
       <Route path="/whatsapp-admin" component={WhatsAppAdmin} />
+      <Route path="/logo" component={LogoPage} />
       <Route component={NotFound} />
     </Switch>
   );
