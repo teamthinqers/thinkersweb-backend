@@ -2,6 +2,9 @@ import { Request, Response, Router } from 'express';
 import { processWhatsAppMessage } from './whatsapp';
 import axios from 'axios';
 import twilio from 'twilio';
+import { db } from "@db";
+import { whatsappUsers, entries } from "@shared/schema";
+import { eq } from "drizzle-orm";
 
 // Create a router for WhatsApp webhook endpoints
 const whatsappWebhookRouter = Router();
@@ -100,10 +103,6 @@ whatsappWebhookRouter.get('/', (req: Request, res: Response) => {
     res.sendStatus(500);
   }
 });
-
-import { db } from "@db";
-import { whatsappUsers, entries } from "@shared/schema";
-import { eq } from "drizzle-orm";
 
 // POST endpoint for receiving WhatsApp messages - handles BOTH Twilio and Meta formats
 whatsappWebhookRouter.post('/', async (req: Request, res: Response) => {
