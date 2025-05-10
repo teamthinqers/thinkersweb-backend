@@ -134,6 +134,14 @@ export default function LandingPage() {
               <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
                 DotSpark works as your neural extension, continuously learning and adapting to your cognitive patterns to accelerate your professional growth and unlock excellence.
               </p>
+              <div className="mt-2 flex bg-secondary/10 rounded-lg p-3 max-w-2xl mx-auto text-sm">
+                <div className="flex items-start">
+                  <MessageCircle className="h-5 w-5 mr-2 mt-0.5 text-green-600 shrink-0" />
+                  <p className="text-muted-foreground leading-snug">
+                    <span className="font-medium text-foreground">Start instantly:</span> Use the neural extension directly through WhatsApp with no signup required. <span className="font-medium text-foreground">Upgrade for more:</span> Create an account to access your dashboard with analytics and personalized insights.
+                  </p>
+                </div>
+              </div>
               <div className="flex flex-col sm:flex-row gap-3 pt-4 justify-center mobile-stack">
                 {user ? (
                   <Button size="lg" asChild className="w-full sm:w-auto">
@@ -162,24 +170,24 @@ export default function LandingPage() {
             <div className="w-full pt-6 md:pt-8 border-t border-border/40">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
                 <div className="bg-card/50 border rounded-xl p-4 md:p-5 flex items-start gap-3 md:gap-4">
-                  <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-primary/20 text-primary flex items-center justify-center font-semibold text-base md:text-lg shrink-0">1</div>
+                  <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-green-500/60 text-white flex items-center justify-center font-semibold text-base md:text-lg shrink-0">1</div>
                   <div>
-                    <h3 className="font-medium text-base md:text-lg mb-1">Install Your Neural Extension</h3>
-                    <p className="text-muted-foreground text-sm md:text-base">Create your account and define your professional patterns so your neural extension can begin adapting to your thinking</p>
+                    <h3 className="font-medium text-base md:text-lg mb-1">Start Instantly via WhatsApp</h3>
+                    <p className="text-muted-foreground text-sm md:text-base">Begin using your neural extension immediately through WhatsApp - <span className="text-green-600 dark:text-green-500 font-medium">no account required</span></p>
                   </div>
                 </div>
                 <div className="bg-card/50 border rounded-xl p-4 md:p-5 flex items-start gap-3 md:gap-4">
                   <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-primary/20 text-primary flex items-center justify-center font-semibold text-base md:text-lg shrink-0">2</div>
                   <div>
-                    <h3 className="font-medium text-base md:text-lg mb-1">Connect via WhatsApp</h3>
-                    <p className="text-muted-foreground text-sm md:text-base">Interact with your neural extension anytime through our intelligent WhatsApp assistant</p>
+                    <h3 className="font-medium text-base md:text-lg mb-1">Create Your Account <span className="text-xs font-medium bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 px-1.5 py-0.5 rounded">Optional</span></h3>
+                    <p className="text-muted-foreground text-sm md:text-base">Upgrade to access your personal dashboard with insights, analytics and enhanced features</p>
                   </div>
                 </div>
                 <div className="bg-card/50 border rounded-xl p-4 md:p-5 flex items-start gap-3 md:gap-4">
-                  <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-primary/20 text-primary flex items-center justify-center font-semibold text-base md:text-lg shrink-0">3</div>
+                  <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-purple-500/60 text-white flex items-center justify-center font-semibold text-base md:text-lg shrink-0">3</div>
                   <div>
-                    <h3 className="font-medium text-base md:text-lg mb-1">Achieve Professional Excellence</h3>
-                    <p className="text-muted-foreground text-sm md:text-base">Get frameworks, insights, and knowledge systems that elevate your professional performance and career growth</p>
+                    <h3 className="font-medium text-base md:text-lg mb-1">Link WhatsApp to Dashboard <span className="text-xs font-medium bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 px-1.5 py-0.5 rounded">Premium</span></h3>
+                    <p className="text-muted-foreground text-sm md:text-base">Sync your WhatsApp conversations with your dashboard to track insights and get comprehensive analytics</p>
                   </div>
                 </div>
               </div>
