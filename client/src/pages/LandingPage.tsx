@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Brain, BookOpen, Users, Sparkles, BarChart2, MessageCircle, User } from "lucide-react";
 import WhatsAppPromo from "@/components/landing/WhatsAppPromo";
 import WhatsAppContactButton from "@/components/landing/WhatsAppContactButton";
+import CompactWhatsAppButton from "@/components/landing/CompactWhatsAppButton";
 import DashboardPreview from "@/components/landing/DashboardPreview";
 import { useAuth } from "@/hooks/use-auth";
 import { 
@@ -50,7 +51,16 @@ export default function LandingPage() {
             </div>
             
             {/* WhatsApp button, only show when not logged in */}
-            {!user && <WhatsAppContactButton />}
+            {!user && (
+              <>
+                <div className="hidden md:block">
+                  <WhatsAppContactButton />
+                </div>
+                <div className="md:hidden">
+                  <CompactWhatsAppButton />
+                </div>
+              </>
+            )}
             
             {/* User profile or sign in button */}
             {user ? (
