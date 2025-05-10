@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
@@ -12,6 +12,11 @@ export function NeuralWhatsAppLinking() {
   const [copied, setCopied] = useState(false);
   const [authError, setAuthError] = useState(false);
 
+  // Reset auth error when component loads (since we're already on a protected page)
+  useEffect(() => {
+    setAuthError(false);
+  }, []);
+
   // Generate a new link code and automatically open WhatsApp
   const generateLinkCode = async () => {
     try {
@@ -21,18 +26,23 @@ export function NeuralWhatsAppLinking() {
       const response = await apiRequest("POST", "/api/whatsapp/generate-link-code");
       console.log("Link code API response status:", response.status);
       
-      // Get the response text for debugging
-      const responseText = await response.text();
-      
-      if (response.status === 401) {
-        setAuthError(true);
-        throw new Error("You need to be logged in to generate a link code. Please log in to your DotSpark account first.");
-      } else if (!response.ok) {
-        throw new Error(`Failed to generate link code: ${response.status} ${responseText}`);
+      // Check if we have a successful response first
+      if (!response.ok) {
+        // Get the response text for debugging
+        const responseText = await response.text();
+        console.error(`API error: ${response.status} ${responseText}`);
+        
+        if (response.status === 401) {
+          // This shouldn't happen if we're already on a protected page
+          console.error("Authentication error when generating link code");
+          throw new Error("Session expired. Please refresh the page and try again.");
+        } else {
+          throw new Error(`Service unavailable. Please try again later.`);
+        }
       }
       
-      // Parse the JSON after getting the text
-      const data = JSON.parse(responseText);
+      // We have a successful response, parse the JSON
+      const data = await response.json();
       
       if (!data.linkCode || !data.expiresAt) {
         throw new Error("Invalid response format from server");
@@ -124,18 +134,10 @@ export function NeuralWhatsAppLinking() {
           <li>Click the "Link WhatsApp" button below</li>
           <li>WhatsApp will open automatically with a pre-filled message</li>
           <li>Send the message to complete the linking process</li>
-          <li>All your WhatsApp conversations will then appear in your dashboard</li>
         </ol>
       </div>
       
-      {authError && (
-        <div className="my-4 p-4 bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 rounded-md text-center">
-          <h3 className="text-amber-800 dark:text-amber-400 font-medium mb-2">Authentication Required</h3>
-          <p className="text-amber-700 dark:text-amber-500 text-sm mb-3">
-            You need to be logged in to generate a WhatsApp link code.
-          </p>
-        </div>
-      )}
+
       
       {linkCode && !isExpired() && (
         <div className="mb-6">
