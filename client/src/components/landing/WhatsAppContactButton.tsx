@@ -12,42 +12,26 @@ const WhatsAppContactButton: React.FC = () => {
   // Pre-filled message (optional)
   const message = "Hello! I'd like to activate my neural extension.";
   
-  // Fetch the WhatsApp number from the backend
+  // Hardcode the WhatsApp number to ensure consistency
   useEffect(() => {
-    const fetchWhatsAppNumber = async () => {
-      try {
-        setIsLoading(true);
-        const response = await apiRequest("GET", "/api/whatsapp/contact");
-        const data = await response.json();
-        
-        if (data.phoneNumber) {
-          setWhatsappNumber(data.phoneNumber);
-          
-          // Use the direct link from the API if available
-          if (data.directLink) {
-            setDirectLink(data.directLink);
-          } else {
-            // Fallback - generate the link ourselves
-            setDirectLink(`https://api.whatsapp.com/send?phone=${data.phoneNumber}`);
-          }
-        } else {
-          console.error("No WhatsApp number returned from API");
-          // Fallback to an empty state if API fails
-          setWhatsappNumber("");
-          setDirectLink("");
-        }
-      } catch (error) {
-        console.error("Error fetching WhatsApp number:", error);
-        // Fallback to an empty state if API fails
-        setWhatsappNumber("");
-        setDirectLink("");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    
-    fetchWhatsAppNumber();
-  }, []);
+    try {
+      setIsLoading(true);
+      
+      // Use your Twilio WhatsApp number directly
+      const phoneNumber = "16067157733";
+      setWhatsappNumber(phoneNumber);
+      
+      // Create a direct WhatsApp link that bypasses Twilio's formatting requirements
+      // This will open WhatsApp directly with your number
+      setDirectLink(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`);
+      
+      console.log("Using direct WhatsApp link:", `https://wa.me/${phoneNumber}`);
+    } catch (error) {
+      console.error("Error setting up WhatsApp link:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [message]);
   
   const handleWhatsAppClick = () => {
     // Check if we have a WhatsApp direct link

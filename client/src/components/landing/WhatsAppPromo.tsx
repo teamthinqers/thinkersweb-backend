@@ -3,9 +3,11 @@ import { Smartphone, MessageCircle } from "lucide-react";
 
 // Function to open WhatsApp chat directly in the app
 function openWhatsAppChat() {
-  // Replace with your actual Twilio WhatsApp number
-  const whatsappNumber = "14155238886"; // Example: This is a Twilio demo number
-  const message = "Hello! I'd like to learn more about DotSpark.";
+  // Your production Twilio WhatsApp number
+  const whatsappNumber = "16067157733";
+  const message = "Hello! I'd like to activate my neural extension.";
+  
+  console.log("Opening WhatsApp chat with:", whatsappNumber);
   
   // Try to open WhatsApp mobile app first
   const mobileAppLink = `whatsapp://send?phone=${whatsappNumber}&text=${encodeURIComponent(message)}`;
