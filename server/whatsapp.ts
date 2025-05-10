@@ -179,9 +179,13 @@ export async function sendWhatsAppReply(to: string, message: string): Promise<bo
     
     console.log(`Attempting to send WhatsApp message to: ${toNumber}`);
     
+    // Use your production Twilio WhatsApp number
+    const from = `whatsapp:${TWILIO_PHONE_NUMBER}`;
+    console.log(`Sending from: ${from}`);
+    
     const response = await twilioClient.messages.create({
       body: message,
-      from: `whatsapp:${TWILIO_PHONE_NUMBER}`,
+      from: from,
       to: toNumber
     });
 
