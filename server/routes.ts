@@ -30,6 +30,7 @@ import {
 } from "./whatsapp";
 import { eq, inArray, and, lt, desc } from "drizzle-orm";
 import twilio from "twilio";
+import whatsappWebhookRouter from "./whatsapp-webhook";
 
 // Interface for authenticated requests
 interface AuthenticatedRequest extends Request {
@@ -862,6 +863,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // DotSpark WhatsApp Chatbot Endpoints
   
+  // Use the WhatsApp Business API webhook router for all WhatsApp webhook requests
+  app.use(`${apiPrefix}/whatsapp/webhook`, whatsappWebhookRouter);
+  
+  /* Commented out old Twilio implementation
   // WhatsApp chatbot webhook endpoint for receiving messages via Twilio
   app.post(`${apiPrefix}/whatsapp/webhook`, async (req, res) => {
     try {
@@ -869,7 +874,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Extract message from Twilio WhatsApp request
       const messageText = req.body.Body;
-      const from = req.body.From;
+      const from = req.body.From; */
 
       if (!messageText || !from) {
         console.log("❌ Received invalid Twilio WhatsApp message:", req.body);
