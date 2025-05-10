@@ -19,10 +19,55 @@ console.log(`- TWILIO_ACCOUNT_SID: ${TWILIO_ACCOUNT_SID ? "Set" : "Missing"}`);
 console.log(`- TWILIO_AUTH_TOKEN: ${TWILIO_AUTH_TOKEN ? "Set" : "Missing"}`);
 console.log(`- TWILIO_PHONE_NUMBER: ${TWILIO_PHONE_NUMBER ? "Set" : "Missing"}`);
 
-// Initialize Twilio client (if credentials are available)
-const twilioClient = (TWILIO_ACCOUNT_SID && TWILIO_AUTH_TOKEN) 
-  ? twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
-  : null;
+// Initialize Twilio client
+const twilioClient = twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
+
+// Initialize OpenAI client
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+/**
+ * Analyze user input to determine whether it's a question or a learning entry
+ */
+async function analyzeUserInput(userInput: string): Promise<{
+  type: 'question' | 'learning' | 'command';
+  confidence: number;
+}> {
+  try {
+    // Check for command prefixes first
+    if (userInput.toLowerCase().startsWith("q:") || 
+        userInput.toLowerCase().startsWith("question:") ||
+        userInput.toLowerCase().startsWith("ask:")) {
+      return { type: 'question', confidence: 0.95 };
+    }
+    
+    if (userInput.toLowerCase() === "help" || 
+        userInput.toLowerCase() === "summary" || 
+        userInput.toLowerCase() === "commands") {
+      return { type: 'command', confidence: 1.0 };
+    }
+    
+    // Check if it's an explicit question
+    if (userInput.endsWith("?")) {
+      return { type: 'question', confidence: 0.9 };
+    }
+    
+    try {
+      const analysis = await analyzeContentType(userInput);
+      return analysis;
+    } catch (e) {
+      console.error("Error using OpenAI for content analysis:", e);
+    }
+    
+    // Default to treating it as a learning entry if simple analysis fails
+    return { type: 'learning', confidence: 0.7 };
+  } catch (error) {
+    console.error("Error analyzing user input:", error);
+    // Default to treating it as a learning entry if analysis fails
+    return { type: 'learning', confidence: 0.5 };
+  }
+}
 
 /**
  * Interface for incoming Twilio WhatsApp message
@@ -40,19 +85,12 @@ interface TwilioWhatsAppMessage {
  */
 export function extractWhatsAppMessage(payload: any): string | null {
   try {
-    // For Twilio webhook format
-    if (payload && payload.Body) {
-      return payload.Body;
+    if (payload.Body) {
+      return payload.Body.trim();
     }
-    
-    // For Meta webhook format
-    if (payload?.entry?.[0]?.changes?.[0]?.value?.messages?.[0]?.text?.body) {
-      return payload.entry[0].changes[0].value.messages[0].text.body;
-    }
-    
     return null;
   } catch (error) {
-    console.error("Error extracting WhatsApp message:", error);
+    console.error("Error extracting message from WhatsApp chatbot webhook:", error);
     return null;
   }
 }
@@ -62,18 +100,54 @@ export function extractWhatsAppMessage(payload: any): string | null {
  */
 export async function getUserIdFromWhatsAppNumber(phoneNumber: string): Promise<number | null> {
   try {
-    // Normalize phone number format (remove WhatsApp prefix if present)
+    // Normalize the phone number format - Twilio sends with WhatsApp: prefix
     const normalizedPhone = phoneNumber.replace('whatsapp:', '').trim();
     
-    // Look up user by phone number in the WhatsApp users table
+    // First check if this phone number is linked to a specific user account
     const whatsappUser = await db.query.whatsappUsers.findFirst({
-      where: eq(whatsappUsers.phoneNumber, normalizedPhone)
+      where: eq(whatsappUsers.phoneNumber, normalizedPhone),
     });
     
-    // Return the user ID if found, or null if not registered
-    return whatsappUser?.userId || null;
+    // If the phone is linked to a specific user account, return that user's ID
+    if (whatsappUser) {
+      if (!whatsappUser.active) {
+        // If it exists but is inactive, activate it
+        await db.update(whatsappUsers)
+          .set({ 
+            active: true,
+            lastMessageSentAt: new Date(),
+            updatedAt: new Date()
+          })
+          .where(eq(whatsappUsers.id, whatsappUser.id));
+      } else {
+        // Update last message timestamp
+        await db.update(whatsappUsers)
+          .set({ 
+            lastMessageSentAt: new Date(),
+            updatedAt: new Date()
+          })
+          .where(eq(whatsappUsers.id, whatsappUser.id));
+      }
+      
+      console.log(`WhatsApp number ${normalizedPhone} linked to user ID ${whatsappUser.userId}`);
+      return whatsappUser.userId;
+    }
+    
+    // If no linked account, check if we're in test mode
+    const TEST_MODE_ENABLED = process.env.NODE_ENV === 'development';
+    const DEMO_USER_ID = 1; // Same as in routes.ts
+    
+    if (TEST_MODE_ENABLED) {
+      console.log(`[TEST MODE] Using demo account for unlinked WhatsApp number ${normalizedPhone}`);
+      // Return null for first-time users to trigger welcome message
+      return null; // The main handler will create an association with the demo user
+    }
+    
+    // In production, unlinked numbers return null so they can receive instructions to link
+    console.log(`Unlinked WhatsApp number: ${normalizedPhone} - awaiting account connection`);
+    return null;
   } catch (error) {
-    console.error("Error getting user ID from WhatsApp number:", error);
+    console.error("Error finding user associated with WhatsApp chatbot:", error);
     return null;
   }
 }
@@ -83,21 +157,26 @@ export async function getUserIdFromWhatsAppNumber(phoneNumber: string): Promise<
  */
 export async function sendWhatsAppReply(to: string, message: string): Promise<boolean> {
   try {
-    // Check if Twilio client is initialized
-    if (!twilioClient) {
-      console.error("Twilio client not initialized - missing credentials");
+    // Check if Twilio credentials are properly configured
+    if (!TWILIO_ACCOUNT_SID || !TWILIO_AUTH_TOKEN || !TWILIO_PHONE_NUMBER) {
+      console.error("Missing Twilio credentials. Please check environment variables.");
       return false;
     }
+
+    // Format the phone number to ensure it's in E.164 format
+    let formattedNumber = to.trim();
     
-    // Format the recipient phone number (ensure it has the correct format with country code)
-    let formattedNumber = to.replace('whatsapp:', '').trim();
-    
-    // Add + if missing from the phone number
-    if (!formattedNumber.startsWith('+')) {
-      formattedNumber = `+${formattedNumber}`;
+    // Remove any WhatsApp prefix if it exists
+    if (formattedNumber.startsWith('whatsapp:')) {
+      formattedNumber = formattedNumber.substring(9);
     }
     
-    // Create the full WhatsApp format number for Twilio
+    // Ensure the number starts with "+"
+    if (!formattedNumber.startsWith('+')) {
+      formattedNumber = '+' + formattedNumber;
+    }
+    
+    // Ensure the phone number has the WhatsApp: prefix required by Twilio
     const toNumber = `whatsapp:${formattedNumber}`;
     
     console.log(`Attempting to send WhatsApp message to: ${toNumber}`);
@@ -277,13 +356,91 @@ export async function processWhatsAppMessage(from: string, messageText: string):
       
       return {
         success: true,
-        message: "✅ *Successfully Connected!*\n\n" +
-          `Great! Your WhatsApp is now connected to your DotSpark account (${userEmail}).\n\n` +
-          "What this means for you:\n" +
-          "• Our conversations will now appear in your DotSpark dashboard\n" +
-          "• I can reference your saved insights and entries\n" +
-          "• Your experience will be more personalized over time\n\n" +
-          "What would you like to talk about? Ask me anything!"
+        message: "✅ *DotSpark Account Successfully Linked*\n\n" +
+          `Your WhatsApp number is now linked to your DotSpark account (${userEmail}). All your conversations here will be available in your dashboard.\n\n` +
+          "Your neural extension is now fully synchronized with your account, providing personalized insights based on your previous interactions and learning entries."
+      };
+    }
+    
+    // Still support old 6-digit code method
+    const linkCodeRegex = /^\d{6}$/;
+    if (linkCodeRegex.test(messageText.trim())) {
+      const linkCode = messageText.trim();
+      const normalizedPhone = from.replace('whatsapp:', '').trim();
+      
+      console.log(`Attempting to link WhatsApp number ${normalizedPhone} with code ${linkCode}`);
+      
+      // Find the verification record with this code
+      const verification = await db.query.whatsappOtpVerifications.findFirst({
+        where: and(
+          eq(whatsappOtpVerifications.otpCode, linkCode),
+          eq(whatsappOtpVerifications.verified, false),
+          gt(whatsappOtpVerifications.expiresAt, new Date())
+        )
+      });
+      
+      if (!verification) {
+        return {
+          success: true,
+          message: "⚠️ *Invalid or Expired Code*\n\n" +
+            "The code you entered is either invalid or has expired. Please generate a new code from the DotSpark dashboard.\n\n" +
+            "To generate a new code:\n" +
+            "1. Log in to your DotSpark account\n" +
+            "2. Go to Settings > WhatsApp Integration\n" +
+            "3. Click 'Generate New Link Code'\n" +
+            "4. Send the new code to this chat"
+        };
+      }
+      
+      // Valid code found! Update the verification record with the phone number
+      await db.update(whatsappOtpVerifications)
+        .set({
+          phoneNumber: normalizedPhone,
+          verified: true
+        })
+        .where(eq(whatsappOtpVerifications.id, verification.id));
+      
+      // Check if this phone is already registered with another user
+      const existingWhatsappUser = await db.query.whatsappUsers.findFirst({
+        where: eq(whatsappUsers.phoneNumber, normalizedPhone)
+      });
+      
+      if (existingWhatsappUser) {
+        // Update the existing record to point to the new user
+        await db.update(whatsappUsers)
+          .set({
+            userId: verification.userId,
+            active: true,
+            lastMessageSentAt: new Date(),
+            updatedAt: new Date()
+          })
+          .where(eq(whatsappUsers.phoneNumber, normalizedPhone));
+      } else {
+        // Create a new WhatsApp user record
+        await db.insert(whatsappUsers).values({
+          userId: verification.userId,
+          phoneNumber: normalizedPhone,
+          active: true,
+          lastMessageSentAt: new Date()
+        });
+      }
+      
+      return {
+        success: true,
+        message: "✅ *DotSpark Account Successfully Linked*\n\n" +
+          "Your WhatsApp number is now linked to your DotSpark account. All your conversations here will be available in your dashboard.\n\n" +
+          "Your neural extension is now fully synchronized with your account, providing personalized insights based on your previous interactions and learning entries."
+      };
+    }
+    
+    if (messageText.toLowerCase() === "summary") {
+      return {
+        success: true,
+        message: "🧠 *Neural Extension Status*\n\n" +
+          "Your neural extension is actively processing inputs and forming new connections.\n\n" +
+          "Each interaction strengthens the neural pathways between concepts, enhancing your cognitive framework and creating a more responsive neural extension.\n\n" +
+          "Your interactive chat capabilities are fully enabled - ask questions, discuss ideas, or explore topics just like you would with ChatGPT. This WhatsApp channel gives you direct access to your neural extension anywhere, anytime.\n\n" +
+          "Continue engaging with varied topics and interactive conversations to maximize the adaptive capabilities of your neural connection.",
       };
     }
     
@@ -358,104 +515,9 @@ export async function processWhatsAppMessage(from: string, messageText: string):
       
       return {
         success: true,
-        message: "✅ *Successfully Connected!*\n\n" +
-          `Great! Your WhatsApp is now connected to your DotSpark account (${userEmail}).\n\n` +
-          "What this means for you:\n" +
-          "• Our conversations will now appear in your DotSpark dashboard\n" +
-          "• I can reference your saved insights and entries\n" +
-          "• Your experience will be more personalized over time\n\n" +
-          "What would you like to talk about? Ask me anything!"
-      };
-    }
-    
-    // Still support old 6-digit code method
-    const linkCodeRegex = /^\d{6}$/;
-    if (linkCodeRegex.test(messageText.trim())) {
-      const linkCode = messageText.trim();
-      const normalizedPhone = from.replace('whatsapp:', '').trim();
-      
-      console.log(`Attempting to link WhatsApp number ${normalizedPhone} with code ${linkCode}`);
-      
-      // Find the verification record with this code
-      const verification = await db.query.whatsappOtpVerifications.findFirst({
-        where: and(
-          eq(whatsappOtpVerifications.otpCode, linkCode),
-          eq(whatsappOtpVerifications.verified, false),
-          gt(whatsappOtpVerifications.expiresAt, new Date())
-        )
-      });
-      
-      if (!verification) {
-        return {
-          success: true,
-          message: "⚠️ *Invalid or Expired Code*\n\n" +
-            "The code you entered is either invalid or has expired. Please generate a new code from the DotSpark dashboard.\n\n" +
-            "To generate a new code:\n" +
-            "1. Log in to your DotSpark account\n" +
-            "2. Go to Settings > WhatsApp Integration\n" +
-            "3. Click 'Generate New Link Code'\n" +
-            "4. Send the new code to this chat"
-        };
-      }
-      
-      // Valid code found! Update the verification record with the phone number
-      await db.update(whatsappOtpVerifications)
-        .set({
-          phoneNumber: normalizedPhone,
-          verified: true
-        })
-        .where(eq(whatsappOtpVerifications.id, verification.id));
-      
-      // Also create or update the WhatsApp user record for this user
-      const existingWhatsappUser = await db.query.whatsappUsers.findFirst({
-        where: eq(whatsappUsers.phoneNumber, normalizedPhone)
-      });
-      
-      if (existingWhatsappUser) {
-        // Update the existing record to point to the new user
-        await db.update(whatsappUsers)
-          .set({
-            userId: verification.userId,
-            active: true,
-            lastMessageSentAt: new Date(),
-            updatedAt: new Date()
-          })
-          .where(eq(whatsappUsers.phoneNumber, normalizedPhone));
-      } else {
-        // Create a new WhatsApp user record
-        await db.insert(whatsappUsers).values({
-          userId: verification.userId,
-          phoneNumber: normalizedPhone,
-          active: true,
-          lastMessageSentAt: new Date()
-        });
-      }
-      
-      // Look up the user details to personalize the response
-      const user = await db.query.users.findFirst({
-        where: eq(users.id, verification.userId)
-      });
-      
-      return {
-        success: true,
-        message: "✅ *Successfully Connected!*\n\n" +
-          `Great! Your WhatsApp is now connected to your DotSpark account${user?.email ? ` (${user.email})` : ''}.\n\n` +
-          "What this means for you:\n" +
-          "• Our conversations will now appear in your DotSpark dashboard\n" +
-          "• I can reference your saved insights and entries\n" +
-          "• Your experience will be more personalized over time\n\n" +
-          "What would you like to talk about? Ask me anything!"
-      };
-    }
-    
-    if (messageText.toLowerCase() === "summary") {
-      return {
-        success: true,
-        message: "📊 *Your Neural Extension Status*\n\n" +
-          "• Connected to: " + (userId === 1 ? "Demo Account (no dashboard access)" : "Personal DotSpark Account") + "\n" +
-          "• Personalization Level: " + (userId === 1 ? "Basic (limited to conversation context)" : "Advanced (enhanced with your learning history)") + "\n" +
-          "• Dashboard Integration: " + (userId === 1 ? "Disabled" : "Enabled") + "\n\n" +
-          "Continue engaging with varied topics and interactive conversations to maximize the adaptive capabilities of your neural connection.",
+        message: "✅ *DotSpark Account Successfully Linked*\n\n" +
+          `Your WhatsApp number is now linked to your DotSpark account (${userEmail}). All your conversations here will be available in your dashboard.\n\n` +
+          "Your neural extension is now fully synchronized with your account, providing personalized insights based on your previous interactions and learning entries."
       };
     }
     
@@ -486,66 +548,70 @@ export async function processWhatsAppMessage(from: string, messageText: string):
         if (structuredEntry) {
           // Create the entry in the database with the structured content
           const [insertedEntry] = await db.insert(entries).values({
+            title: structuredEntry.title,
+            content: structuredEntry.content,
+            categoryId: structuredEntry.categoryId || 1, // Default category if none provided
             userId: userId,
-            title: structuredEntry.title || "Untitled Entry",
-            content: structuredEntry.content || messageText,
-            categoryId: structuredEntry.categoryId,
-            source: "whatsapp",
-            favorite: false,
+            isFavorite: false,
           }).returning();
           
-          // Handle tags if present
+          // If we have tag names, create and associate them
           if (structuredEntry.tagNames && structuredEntry.tagNames.length > 0) {
-            // Process each tag
+            const tagIds: number[] = [];
+            
+            // Create or get IDs for each tag
             for (const tagName of structuredEntry.tagNames) {
-              // Skip empty tag names
-              if (!tagName.trim()) continue;
-              
-              // Find existing tag or create a new one
+              // Check if tag exists
               let tag = await db.query.tags.findFirst({
-                where: eq(tags.name, tagName)
+                where: eq(tags.name, tagName),
               });
               
-              if (!tag) {
-                // Create the new tag
-                [tag] = await db.insert(tags).values({
-                  name: tagName
+              // Create tag if it doesn't exist
+              if (tag) {
+                tagIds.push(tag.id);
+              } else {
+                const [newTag] = await db.insert(tags).values({
+                  name: tagName,
                 }).returning();
+                tagIds.push(newTag.id);
               }
-              
-              // Link tag to entry
-              await db.insert(entryTags).values({
-                entryId: insertedEntry.id,
-                tagId: tag.id
-              });
+            }
+            
+            // Associate tags with the entry
+            if (tagIds.length > 0) {
+              await storage.updateEntry(insertedEntry.id, { tagIds });
             }
           }
           
+          // Return the response with confirmation that the insight was saved
           return {
             success: true,
-            message: responseText + "\n\n✓ *Saved to your DotSpark dashboard*"
+            message: `${responseText}\n\n(💡 Neural insight saved to your extended memory)`,
           };
         }
       }
       
-      // Regular response (not a save request or learning entry)
+      // For all other interactions, provide the neural extension response
       return {
         success: true,
         message: responseText
       };
-    } catch (error) {
-      console.error("Error generating WhatsApp response:", error);
+    } catch (aiError) {
+      // Log the error
+      console.error("Error in neural extension processing:", aiError);
       
+      // Simple fallback with neural extension terminology
       return {
-        success: false,
-        message: "I apologize, but I'm experiencing a temporary neural connection issue. Please try again in a moment while I recalibrate my thought processes."
+        success: true,
+        message: "I'm experiencing a temporary neural processing limitation. Please try expressing your thought in a different way, and I'll continue functioning as your cognitive extension."
       };
     }
   } catch (error) {
-    console.error("Error processing WhatsApp message:", error);
+    // Main try/catch block for the whole function
+    console.error("Error processing WhatsApp chatbot message:", error);
     return {
       success: false,
-      message: "I'm having trouble processing your message. Please try again or contact support if the issue persists."
+      message: "I'm having trouble processing that right now. Can we try again in a moment?",
     };
   }
 }
@@ -556,37 +622,58 @@ export async function processWhatsAppMessage(from: string, messageText: string):
 export async function registerWhatsAppUser(userId: number, phoneNumber: string): Promise<{
   success: boolean;
   message: string;
-  otpCode?: string;
 }> {
   try {
-    // Normalize phone number (remove any + prefix for consistent format)
-    const normalizedPhone = phoneNumber.replace('+', '').trim();
+    // Normalize phone number format (remove spaces, ensure it starts with +)
+    let formattedNumber = phoneNumber.trim();
+    if (!formattedNumber.startsWith('+')) {
+      formattedNumber = '+' + formattedNumber;
+    }
     
-    // Default expiration: 10 minutes from now
-    const expiresAt = new Date();
-    expiresAt.setMinutes(expiresAt.getMinutes() + 10);
+    // Check if this phone number is already registered
+    const existingRegistration = await db.query.whatsappUsers.findFirst({
+      where: eq(whatsappUsers.phoneNumber, formattedNumber)
+    });
     
-    // Generate a random 6-digit code
-    const otpCode = randomInt(100000, 999999).toString();
+    if (existingRegistration) {
+      // If already registered to this user, just activate
+      if (existingRegistration.userId === userId) {
+        await db.update(whatsappUsers)
+          .set({ 
+            active: true,
+            updatedAt: new Date()
+          })
+          .where(eq(whatsappUsers.id, existingRegistration.id));
+        
+        return {
+          success: true,
+          message: "Your WhatsApp number has been reactivated. You can now interact with DotSpark via WhatsApp."
+        };
+      }
+      
+      // If registered to another user, return error
+      return {
+        success: false,
+        message: "This phone number is already registered with another DotSpark account."
+      };
+    }
     
-    // Create verification record
-    await db.insert(whatsappOtpVerifications).values({
+    // This is a new registration, create it
+    await db.insert(whatsappUsers).values({
       userId,
-      otpCode,
-      expiresAt,
-      verified: false,
+      phoneNumber: formattedNumber,
+      active: true,
     });
     
     return {
       success: true,
-      message: "WhatsApp verification code generated successfully!",
-      otpCode
+      message: "Your WhatsApp number has been activated. You can now interact with DotSpark via WhatsApp."
     };
   } catch (error) {
     console.error("Error registering WhatsApp user:", error);
     return {
       success: false,
-      message: "Failed to generate WhatsApp verification code. Please try again later."
+      message: "An error occurred while registering your WhatsApp number. Please try again later."
     };
   }
 }
@@ -599,34 +686,35 @@ export async function unregisterWhatsAppUser(userId: number): Promise<{
   message: string;
 }> {
   try {
-    // Find all WhatsApp users associated with this user
-    const whatsappUserRecords = await db.query.whatsappUsers.findMany({
-      where: eq(whatsappUsers.userId, userId)
+    // Find the user's WhatsApp registration
+    const whatsappUser = await db.query.whatsappUsers.findFirst({
+      where: eq(whatsappUsers.userId, userId),
     });
     
-    if (whatsappUserRecords.length === 0) {
+    if (!whatsappUser) {
       return {
         success: false,
-        message: "No WhatsApp numbers found for this user."
+        message: "WhatsApp integration not found for your account."
       };
     }
     
-    // Deactivate all associated WhatsApp numbers
-    for (const record of whatsappUserRecords) {
-      await db.update(whatsappUsers)
-        .set({ active: false, updatedAt: new Date() })
-        .where(eq(whatsappUsers.id, record.id));
-    }
+    // Update to inactive instead of deleting
+    await db.update(whatsappUsers)
+      .set({ 
+        active: false,
+        updatedAt: new Date()
+      })
+      .where(eq(whatsappUsers.id, whatsappUser.id));
     
     return {
       success: true,
-      message: `Successfully deactivated ${whatsappUserRecords.length} WhatsApp integration(s).`
+      message: "WhatsApp integration has been deactivated successfully."
     };
   } catch (error) {
     console.error("Error unregistering WhatsApp user:", error);
     return {
       success: false,
-      message: "Failed to deactivate WhatsApp integration. Please try again later."
+      message: "An error occurred while deactivating WhatsApp integration. Please try again later."
     };
   }
 }
@@ -636,27 +724,37 @@ export async function unregisterWhatsAppUser(userId: number): Promise<{
  */
 export async function getWhatsAppStatus(userId: number): Promise<{
   active: boolean;
-  phoneNumber?: string;
-  lastMessageSentAt?: Date;
+  phoneNumber: string | null;
+  message: string;
 }> {
   try {
-    // Find the most recently updated WhatsApp user record for this user
+    // Find the user's WhatsApp registration
     const whatsappUser = await db.query.whatsappUsers.findFirst({
       where: eq(whatsappUsers.userId, userId),
-      orderBy: desc(whatsappUsers.updatedAt || whatsappUsers.createdAt)
     });
     
     if (!whatsappUser) {
-      return { active: false };
+      return {
+        active: false,
+        phoneNumber: null,
+        message: "WhatsApp integration not configured for your account."
+      };
     }
     
+    // Return the status
     return {
-      active: whatsappUser.active ?? false,
+      active: whatsappUser.active,
       phoneNumber: whatsappUser.phoneNumber,
-      lastMessageSentAt: whatsappUser.lastMessageSentAt
+      message: whatsappUser.active 
+        ? `WhatsApp integration is active for ${whatsappUser.phoneNumber}`
+        : `WhatsApp integration is inactive for ${whatsappUser.phoneNumber}`
     };
   } catch (error) {
     console.error("Error getting WhatsApp status:", error);
-    return { active: false };
+    return {
+      active: false,
+      phoneNumber: null,
+      message: "An error occurred while checking WhatsApp integration status."
+    };
   }
 }
