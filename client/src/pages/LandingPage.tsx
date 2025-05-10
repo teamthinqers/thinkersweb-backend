@@ -476,11 +476,11 @@ export default function LandingPage() {
       </section>
       
       {/* Framework Generation Section */}
-      <section className="py-24 relative overflow-hidden bg-gradient-to-b from-background to-muted/20">
+      <section className="py-12 md:py-24 relative overflow-hidden bg-gradient-to-b from-background to-muted/20">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Generating <span className="gradient-heading">Frameworks</span> for Better Decisions</h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+          <div className="text-center mb-8 md:mb-12">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 md:mb-4">Generating <span className="gradient-heading">Frameworks</span> for Better Decisions</h2>
+            <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
               See how DotSpark transforms your professional challenges into structured decision frameworks
             </p>
           </div>
@@ -734,45 +734,44 @@ export default function LandingPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 relative overflow-hidden">
+      <section className="py-16 md:py-24 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary to-secondary opacity-90"></div>
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMzYgMzBhNiA2IDAgMSAxLTEyIDAgNiA2IDAgMCAxIDEyIDB6Ii8+PC9nPjwvZz48L3N2Zz4=')] opacity-10"></div>
         <div className="container mx-auto px-4 md:px-6 text-center relative z-10">
           <div className="max-w-3xl mx-auto">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 text-white">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 text-white">
               Ready to Amplify Your Professional Cognitive Power?
             </h2>
-            <p className="text-xl text-white/90 max-w-2xl mx-auto mb-10">
+            <p className="text-base sm:text-lg md:text-xl text-white/90 max-w-2xl mx-auto mb-6 md:mb-10">
               Join innovative professionals who are extending their cognitive capabilities with neural frameworks, achieving breakthrough results and career advancement.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" variant="default" className="bg-white text-primary font-bold shadow-lg btn-bounce group relative overflow-hidden border-2 border-white hover:bg-white/90" asChild>
-                <Link href="/auth" className="px-8 flex items-center">
+            <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center mobile-stack">
+              <Button size="lg" variant="default" className="bg-white text-primary font-bold shadow-lg btn-bounce group relative overflow-hidden border-2 border-white hover:bg-white/90 w-full sm:w-auto" asChild>
+                <Link href="/auth" className="px-4 md:px-8 flex items-center justify-center">
                   <span className="relative z-10">Get Started Now</span>
                   <ArrowRight className="ml-2 h-5 w-5 relative z-10 group-hover:translate-x-1 transition-transform" />
                   <span className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity"></span>
                 </Link>
               </Button>
-              <Button size="lg" variant="outline" className="bg-transparent border-white text-white hover:bg-white/10 btn-bounce" asChild>
-                <Link href="/dashboard" className="px-8">
+              <Button size="lg" variant="outline" className="bg-transparent border-white text-white hover:bg-white/10 btn-bounce w-full sm:w-auto" asChild>
+                <Link href="/dashboard" className="px-4 md:px-8 justify-center">
                   Explore Dashboard
                 </Link>
               </Button>
             </div>
-
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t py-12 bg-muted/30">
+      <footer className="border-t py-8 md:py-12 bg-muted/30">
         <div className="container mx-auto px-4 md:px-6">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center mb-4 md:mb-0">
-              <Sparkles className="h-5 w-5 text-primary mr-2" />
-              <span className="text-xl font-bold">DotSpark</span>
+              <Sparkles className="h-4 w-4 md:h-5 md:w-5 text-primary mr-2" />
+              <span className="text-lg md:text-xl font-bold">DotSpark</span>
             </div>
-            <div className="text-sm text-muted-foreground">
+            <div className="text-xs md:text-sm text-muted-foreground">
               © 2025 DotSpark. All rights reserved.
             </div>
           </div>
