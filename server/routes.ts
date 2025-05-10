@@ -12,6 +12,7 @@ import {
   entryTags, 
   users, 
   whatsappOtpVerifications,
+  whatsappUsers,
   type User 
 } from "@shared/schema";
 import { processEntryFromChat, generateChatResponse, type Message } from "./chat";
