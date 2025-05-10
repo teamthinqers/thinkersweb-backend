@@ -468,7 +468,39 @@ export async function processWhatsAppMessage(from: string, messageText: string):
         from // Pass phone number to maintain conversation context
       );
       
-      // Check if this is an explicit save request
+      // For linked users (not using demo account), save all conversation entries
+      // This ensures their WhatsApp conversations appear in the dashboard
+      const isLinkedAccount = userId !== 1;
+      
+      if (isLinkedAccount) {
+        console.log(`Auto-saving WhatsApp message for linked user ${userId}: "${messageText.substring(0, 30)}..."`);
+        
+        try {
+          // Create a basic entry with the message content
+          const currentDate = new Date();
+          const formattedDate = `${currentDate.toLocaleDateString()} ${currentDate.toLocaleTimeString()}`;
+          
+          // Create the entry in the database with proper fields
+          // Convert to type-safe object using schema fields
+          const newEntry = {
+            userId: userId,
+            title: `WhatsApp Chat - ${formattedDate}`,
+            content: messageText,
+            visibility: "private",
+            isFavorite: false
+          };
+          
+          // Insert using Drizzle ORM
+          await db.insert(entries).values(newEntry);
+          
+          console.log(`Successfully saved WhatsApp message to user's dashboard`);
+        } catch (saveError) {
+          console.error("Error saving WhatsApp message to entries:", saveError);
+          // Continue even if saving fails - don't disrupt the conversation
+        }
+      }
+      
+      // Check if this is an explicit save request as a learning entry
       const explicitSaveRequest = 
         messageText.toLowerCase().includes("save this") || 
         messageText.toLowerCase().includes("record this") ||
@@ -476,7 +508,7 @@ export async function processWhatsAppMessage(from: string, messageText: string):
         messageText.toLowerCase().includes("add to my") ||
         messageText.toLowerCase().includes("remember this");
       
-      // Save only if explicitly requested (no automatic classification)
+      // Save as a structured learning entry if explicitly requested
       if (explicitSaveRequest) {
         console.log(`User requested to save neural insight: "${messageText.substring(0, 30)}..."`);
         
@@ -485,14 +517,16 @@ export async function processWhatsAppMessage(from: string, messageText: string):
         
         if (structuredEntry) {
           // Create the entry in the database with the structured content
-          const [insertedEntry] = await db.insert(entries).values({
+          const entryData = {
             userId: userId,
             title: structuredEntry.title || "Untitled Entry",
             content: structuredEntry.content || messageText,
             categoryId: structuredEntry.categoryId,
-            source: "whatsapp",
-            favorite: false,
-          }).returning();
+            visibility: "private",
+            isFavorite: false
+          };
+          
+          const [insertedEntry] = await db.insert(entries).values(entryData).returning();
           
           // Handle tags if present
           if (structuredEntry.tagNames && structuredEntry.tagNames.length > 0) {
