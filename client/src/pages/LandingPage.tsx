@@ -291,26 +291,13 @@ export default function LandingPage() {
                     <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 border border-green-200 dark:border-green-900/50 rounded-xl p-6 flex flex-col items-center shadow-lg shadow-green-500/5 dark:shadow-green-900/10 relative overflow-hidden group">
                       <div className="absolute inset-0 bg-gradient-to-br from-green-100/50 to-emerald-100/50 dark:from-green-900/30 dark:to-emerald-900/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                       
-                      <Button 
+                      <WhatsAppContactButton 
                         size="lg" 
+                        label="Ask DotSpark"
+                        showIcon={true}
+                        variant="default"
                         className="w-full mb-5 relative overflow-hidden bg-gradient-to-r from-[#25D366] to-[#128C7E] hover:from-[#128C7E] hover:to-[#25D366] text-white border-0 shadow-lg shadow-green-500/20 hover:shadow-green-600/30 transition-all duration-300 transform hover:scale-105"
-                        onClick={() => {
-                          const whatsappNumber = "16067157733";
-                          const mobileAppLink = `whatsapp://send?phone=${whatsappNumber}`;
-                          window.location.href = mobileAppLink;
-                          setTimeout(() => {
-                            const webFallbackUrl = `https://wa.me/${whatsappNumber}`;
-                            window.location.href = webFallbackUrl;
-                          }, 500);
-                        }}
-                      >
-                        <div className="flex items-center justify-center relative z-10">
-                          <svg className="mr-2 h-5 w-5 animate-pulse-slow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" fill="currentColor">
-                            <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157z"></path>
-                          </svg>
-                          <span>Ask DotSpark</span>
-                        </div>
-                      </Button>
+                      />
 
                       <div className="text-sm text-muted-foreground text-left relative z-10">
                         <p className="mb-2 font-medium text-green-700 dark:text-green-500">Instant ChatGPT-like experience:</p>

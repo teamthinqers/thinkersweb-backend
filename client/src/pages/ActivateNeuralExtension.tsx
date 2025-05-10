@@ -165,13 +165,38 @@ export default function ActivateNeuralExtension() {
                 
                 {/* Success message if already connected */}
                 {isWhatsAppConnected && (
-                  <div className="mt-4 p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-900/30 flex items-start">
-                    <CheckCircle2 className="h-5 w-5 text-green-600 dark:text-green-400 mr-2 flex-shrink-0 mt-0.5" />
-                    <div>
-                      <h4 className="font-medium text-green-800 dark:text-green-300">WhatsApp Successfully Connected!</h4>
-                      <p className="text-sm text-green-700 dark:text-green-400 mt-1">
-                        Your neural extension is now fully activated. You can interact with it via WhatsApp or use your personalized dashboard.
-                      </p>
+                  <div className="mt-4 p-6 bg-gradient-to-br from-green-50/80 to-emerald-50/80 dark:from-green-950/30 dark:to-emerald-950/30 rounded-xl border-2 border-green-200 dark:border-green-800/30 flex flex-col items-center text-center">
+                    <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mb-4">
+                      <CheckCircle2 className="h-8 w-8 text-green-600 dark:text-green-400" />
+                    </div>
+                    <h4 className="font-bold text-xl text-green-800 dark:text-green-300 mb-2">Neural Extension Activated!</h4>
+                    <div className="w-full max-w-xs mx-auto mb-3">
+                      <div className="w-full max-w-xs bg-green-200 dark:bg-green-900/20 rounded-full h-2 overflow-hidden">
+                        <div 
+                          className="bg-green-600 dark:bg-green-500 h-full rounded-full transition-all duration-1000"
+                          style={{ width: '100%' }}
+                        ></div>
+                      </div>
+                    </div>
+                    <p className="text-green-700 dark:text-green-400 mb-4">
+                      Your neural extension is now fully activated and synchronized. You can interact with it via WhatsApp or use your personalized dashboard.
+                    </p>
+                    <div className="grid grid-cols-2 gap-4 w-full max-w-sm">
+                      <Button 
+                        variant="outline" 
+                        className="border-green-300 text-green-700 hover:bg-green-50 dark:border-green-800 dark:text-green-400 dark:hover:bg-green-900/20"
+                        onClick={() => window.open(`https://wa.me/16067157733`, "_blank")}
+                      >
+                        <MessageSquare className="mr-2 h-4 w-4" />
+                        Open WhatsApp
+                      </Button>
+                      <Button 
+                        className="bg-green-600 hover:bg-green-700 text-white"
+                        onClick={() => setLocation('/dashboard')}
+                      >
+                        <ArrowRight className="mr-2 h-4 w-4" />
+                        Dashboard
+                      </Button>
                     </div>
                   </div>
                 )}
