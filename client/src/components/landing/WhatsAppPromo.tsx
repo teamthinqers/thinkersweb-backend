@@ -98,56 +98,58 @@ export default function WhatsAppPromo() {
           {/* Right column with text and form */}
           <div className="space-y-6">
             <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm text-primary mb-0">
-              Seamless Integration
+              Neural Extension
             </div>
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Chat with DotSpark AI <span className="gradient-heading">through WhatsApp</span>
+              Your Brain's <span className="gradient-heading">Digital Extension</span>
             </h2>
             <p className="text-xl text-muted-foreground">
-              Start using DotSpark AI instantly through WhatsApp - no account needed! Chat directly with our AI to capture learning moments as they happen and organize your knowledge effortlessly.
+              Tune your neural extension instantly through WhatsApp. Connect directly to your cognitive ecosystem and extend your brain's capabilities.
             </p>
             
             <div className="space-y-6 mt-8">
               <div className="flex justify-center py-12 relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-950/40 dark:to-blue-950/40 rounded-2xl opacity-70"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-indigo-50 via-blue-50 to-purple-50 dark:from-indigo-950/40 dark:via-blue-950/40 dark:to-purple-950/40 rounded-2xl opacity-80"></div>
+                <div className="absolute -top-8 left-1/4 w-40 h-40 bg-indigo-500/10 rounded-full blur-3xl"></div>
+                <div className="absolute -bottom-8 right-1/4 w-40 h-40 bg-purple-500/10 rounded-full blur-3xl"></div>
                 <Button 
                   onClick={openWhatsAppChat}
-                  className="bg-gradient-to-r from-green-600 to-green-500 hover:from-green-500 hover:to-green-600 flex items-center gap-3 py-8 px-10 rounded-xl shadow-lg transform transition-transform hover:scale-105 relative z-10"
+                  className="bg-gradient-to-r from-indigo-600 to-blue-500 hover:from-indigo-500 hover:to-blue-600 flex items-center gap-3 py-8 px-10 rounded-xl shadow-lg transform transition-transform hover:scale-105 relative z-10"
                   size="lg"
                 >
-                  <MessageCircle className="h-7 w-7" />
-                  <span className="text-xl font-medium">Chat on WhatsApp</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><circle cx="12" cy="12" r="4"></circle></svg>
+                  <span className="text-xl font-medium">Connect Neural Extension</span>
                 </Button>
               </div>
               
-              <div className="flex flex-col gap-4 mt-4">
+              <div className="flex flex-col gap-6 mt-8">
                 <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mt-0.5">
-                    <MessageCircle className="h-4 w-4" />
+                  <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 flex items-center justify-center mt-0.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
                   </div>
                   <div>
-                    <h3 className="font-semibold text-lg">Chat-Based Learning</h3>
-                    <p className="text-muted-foreground">Have natural conversations with DotSpark AI through WhatsApp to capture learning moments as they happen.</p>
+                    <h3 className="font-semibold text-lg">Personalized Neural Tuning</h3>
+                    <p className="text-muted-foreground">Tune your neural extension to your specific cognitive patterns through natural conversation.</p>
                   </div>
                 </div>
                 
                 <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mt-0.5">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 16.8a7.14 7.14 0 0 0 2.24-3.22 8.34 8.34 0 0 0 .52-2.91c.04-3.34.84-4.2 1.24-4.83"></path><path d="M18 13.84a3.23 3.23 0 0 0 .52-1.47 3.67 3.67 0 0 0-.28-2.3c-.52-1.3-2-3.06-2-4.6 0-1.48 1.15-2.5 2.24-3.3"></path><path d="M11.66 6.5a4 4 0 0 0-1.35 1.14"></path><path d="M21.92 15.66A13.07 13.07 0 0 0 22 13.5c0-3.5-2-3.5-2-5 0-1.53 1-2.5 2-3.29a1 1 0 0 0 0-1.42A10.66 10.66 0 0 0 20 2.77a10.64 10.64 0 0 0-10 0 10.66 10.66 0 0 0-2 1.02 1 1 0 0 0 0 1.42C9 6 10 6.97 10 8.5c0 .79-.17 1.16-.59 1.63"></path><path d="M8.24 17.67A7.44 7.44 0 0 0 10 14c.5 1.5 2 3 2 5 0 1.16-.45 1.96-1.22 2.68"></path><path d="M13.76 17.67A7.44 7.44 0 0 1 12 14c-.5 1.5-2 3-2 5 0 1.16.45 1.96 1.22 2.68"></path><path d="M10 2l2.5 6.5L14 8l1.5-.5L18 2"></path></svg>
+                  <div className="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 flex items-center justify-center mt-0.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
                   </div>
                   <div>
-                    <h3 className="font-semibold text-lg">AI-Powered Processing</h3>
-                    <p className="text-muted-foreground">Our AI automatically organizes your messages into structured learning dots with titles, categories, and tags.</p>
+                    <h3 className="font-semibold text-lg">Adaptive Neural Networking</h3>
+                    <p className="text-muted-foreground">Your extension continuously adapts and creates neural connections from your thoughts and inputs.</p>
                   </div>
                 </div>
                 
                 <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mt-0.5">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                  <div className="w-10 h-10 rounded-full bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 flex items-center justify-center mt-0.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="M9 15v-2"></path><path d="M12 15v-4"></path><path d="M15 15v-6"></path></svg>
                   </div>
                   <div>
-                    <h3 className="font-semibold text-lg">Get more with an account</h3>
-                    <p className="text-muted-foreground">Create a free account to access your personal dashboard, analytics, and advanced features.</p>
+                    <h3 className="font-semibold text-lg">Cognitive Performance Metrics</h3>
+                    <p className="text-muted-foreground">Access the full dashboard to view your neural extension's growth, connections, and cognitive performance.</p>
                   </div>
                 </div>
               </div>
