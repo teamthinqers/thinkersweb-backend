@@ -120,6 +120,50 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // DotSpark WhatsApp Chatbot Endpoints
   
+  // Debug endpoint to simulate a WhatsApp message
+  app.post(`${apiPrefix}/whatsapp/test-message`, async (req: Request, res: Response) => {
+    try {
+      const { message, phoneNumber, userId } = req.body;
+      
+      if (!message || !userId) {
+        return res.status(400).json({ error: 'Message and userId are required' });
+      }
+
+      console.log(`⭐️ TEST: Creating entry for test WhatsApp message from user ID: ${userId}`);
+      
+      // Format current time in a readable way for the title
+      const timestamp = new Date().toLocaleString('en-US', {
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        hour12: true
+      });
+      
+      const entryData = {
+        userId,
+        title: `Test WhatsApp - ${timestamp}`,
+        content: message,
+        visibility: "private",
+        isFavorite: false
+      };
+      
+      const [newEntry] = await db.insert(entries).values(entryData).returning();
+      console.log(`⭐️ TEST: Created entry ID ${newEntry.id} for test WhatsApp message`);
+
+      // Return success with the new entry
+      res.status(201).json({ 
+        success: true, 
+        entry: newEntry,
+        message: `Created new entry with ID ${newEntry.id}`
+      });
+    } catch (error) {
+      console.error("Error creating test WhatsApp entry:", error);
+      res.status(500).json({ error: 'Failed to create test WhatsApp entry' });
+    }
+  });
+  
   // Use the WhatsApp Business API webhook router for all WhatsApp webhook requests
   app.use(`${apiPrefix}/whatsapp/webhook`, whatsappWebhookRouter);
   
