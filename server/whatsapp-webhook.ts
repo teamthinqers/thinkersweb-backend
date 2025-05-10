@@ -135,31 +135,62 @@ whatsappWebhookRouter.post('/', async (req: Request, res: Response) => {
       const whatsappUser = await db.query.whatsappUsers.findFirst({
         where: eq(whatsappUsers.phoneNumber, normalizedPhone)
       });
+
+      let userId;
+      
+      // If no linked account found, use the demo account to allow immediate usage
+      if (whatsappUser && whatsappUser.userId) {
+        userId = whatsappUser.userId;
+        console.log(`⭐️ Found linked user ID: ${userId} for phone ${normalizedPhone}`);
+      } else {
+        // Use the demo user ID as a fallback for all unlinked WhatsApp users
+        userId = 1; // Demo user ID
+        console.log(`⚠️ No linked user found. Using demo user ID: ${userId} for phone ${normalizedPhone}`);
+        
+        // Auto-register this phone number with the demo account if not already registered
+        try {
+          await db.insert(whatsappUsers).values({
+            userId: userId,
+            phoneNumber: normalizedPhone,
+            active: true,
+            lastMessageSentAt: new Date(),
+          }).onConflictDoNothing();
+          console.log(`⭐️ Auto-registered phone ${normalizedPhone} with demo user ID ${userId}`);
+        } catch (regError) {
+          console.error("⛔️ Error registering phone with demo user:", regError);
+          // Continue anyway
+        }
+      }
+      
+      // Always create an entry for the received message, regardless of user status
+      try {
+        console.log(`⭐️ Creating entry for WhatsApp message from user ID: ${userId}`);
+        
+        const timestamp = new Date().toLocaleString('en-US', {
+          year: 'numeric',
+          month: 'numeric',
+          day: 'numeric',
+          hour: 'numeric',
+          minute: 'numeric',
+          hour12: true
+        });
+        
+        const entryData = {
+          userId: userId,
+          title: `WhatsApp - ${timestamp}`,
+          content: messageText,
+          visibility: "private",
+          isFavorite: false
+        };
+        
+        const [newEntry] = await db.insert(entries).values(entryData).returning();
+        console.log(`⭐️ Created entry ID ${newEntry.id} for WhatsApp message`);
+      } catch (entryError) {
+        console.error("⛔️ Error creating entry for WhatsApp message:", entryError);
+      }
       
       // Process the message and get a response
       const response = await processWhatsAppMessage(from, messageText);
-      
-      // If we found a linked user, save this message as an entry
-      if (whatsappUser && whatsappUser.userId) {
-        try {
-          console.log(`⭐️ Creating entry for WhatsApp message from user ID: ${whatsappUser.userId}`);
-          
-          const entryData = {
-            userId: whatsappUser.userId,
-            title: `WhatsApp - ${new Date().toLocaleString()}`,
-            content: messageText,
-            visibility: "private",
-            isFavorite: false
-          };
-          
-          const [newEntry] = await db.insert(entries).values(entryData).returning();
-          console.log(`⭐️ Created entry ID ${newEntry.id} for WhatsApp message`);
-        } catch (entryError) {
-          console.error("⛔️ Error creating entry for WhatsApp message:", entryError);
-        }
-      } else {
-        console.log(`⚠️ No linked user found for WhatsApp number: ${normalizedPhone}`);
-      }
       
       // Create a TwiML response to send back to the user
       const twiml = new twilio.twiml.MessagingResponse();
