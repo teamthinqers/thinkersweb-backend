@@ -284,7 +284,64 @@ export async function processWhatsAppMessage(from: string, messageText: string):
       };
     }
     
-    // Check if this is a linking code (6-digit number)
+    // Check for email-based linking messages
+    const emailLinkingRegex = /link.*whatsapp.*\(([^\)]+)\)/i;
+    const emailMatch = messageText.match(emailLinkingRegex);
+    
+    if (emailMatch && emailMatch[1]) {
+      const userEmail = emailMatch[1].trim();
+      const normalizedPhone = from.replace('whatsapp:', '').trim();
+      
+      console.log(`Attempting to link WhatsApp number ${normalizedPhone} with email ${userEmail}`);
+      
+      // Find user by email
+      const user = await db.query.users.findFirst({
+        where: eq(users.email, userEmail)
+      });
+      
+      if (!user) {
+        return {
+          success: true,
+          message: "⚠️ *Account Not Found*\n\n" +
+            `We couldn't find a DotSpark account with email "${userEmail}". Please make sure you're using the same email address that you used to create your DotSpark account.\n\n` +
+            "If you don't have a DotSpark account yet, you can still use this WhatsApp chatbot, but your conversations won't appear in a dashboard."
+        };
+      }
+      
+      // Check if this phone is already registered with another user
+      const existingWhatsappUser = await db.query.whatsappUsers.findFirst({
+        where: eq(whatsappUsers.phoneNumber, normalizedPhone)
+      });
+      
+      if (existingWhatsappUser) {
+        // Update the existing record to point to the new user
+        await db.update(whatsappUsers)
+          .set({
+            userId: user.id,
+            active: true,
+            lastMessageSentAt: new Date(),
+            updatedAt: new Date()
+          })
+          .where(eq(whatsappUsers.phoneNumber, normalizedPhone));
+      } else {
+        // Create a new WhatsApp user record
+        await db.insert(whatsappUsers).values({
+          userId: user.id,
+          phoneNumber: normalizedPhone,
+          active: true,
+          lastMessageSentAt: new Date()
+        });
+      }
+      
+      return {
+        success: true,
+        message: "✅ *DotSpark Account Successfully Linked*\n\n" +
+          `Your WhatsApp number is now linked to your DotSpark account (${userEmail}). All your conversations here will be available in your dashboard.\n\n` +
+          "Your neural extension is now fully synchronized with your account, providing personalized insights based on your previous interactions and learning entries."
+      };
+    }
+    
+    // Still support old 6-digit code method
     const linkCodeRegex = /^\d{6}$/;
     if (linkCodeRegex.test(messageText.trim())) {
       const linkCode = messageText.trim();
