@@ -79,6 +79,19 @@ export default {
             height: "0",
           },
         },
+        "pulse-slow": {
+          "0%, 100%": {
+            opacity: "0.8",
+          },
+          "50%": {
+            opacity: "0.4",
+          }
+        },
+        "dash-slow": {
+          to: {
+            strokeDashoffset: "-10"
+          }
+        },
         typing: {
           "0%": {
             width: "0%",
@@ -189,7 +202,9 @@ export default {
         "sparkling-delayed": "sparkling 2s ease-in-out 0.7s infinite",
         "ping-slow": "ping-slow 3s cubic-bezier(0, 0, 0.2, 1) infinite",
         "ping-slower": "ping-slower 4s cubic-bezier(0, 0, 0.2, 1) infinite",
-        "btn-bounce": "bounce 0.5s ease-in-out"
+        "btn-bounce": "bounce 0.5s ease-in-out",
+        "pulse-slow": "pulse-slow 3s ease-in-out infinite",
+        "dash-slow": "dash-slow 15s linear infinite"
       },
     },
   },

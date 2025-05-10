@@ -168,34 +168,90 @@ export default function LandingPage() {
                 It mirrors your thinking patterns and amplifies your decision-making — getting sharper every time you use it
               </p>
               
-              {/* Neural nodes visualization */}
-              <div className="relative h-24 md:h-32 mx-auto max-w-2xl my-8">
-                <div className="absolute left-1/4 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-primary to-indigo-600 dark:from-primary dark:to-indigo-400 rounded-full opacity-90 animate-pulse">
-                  <div className="absolute inset-0 rounded-full border-4 border-white/20 dark:border-black/20"></div>
-                  <div className="absolute inset-0 rounded-full border-2 border-white/10 dark:border-black/10 animate-ping"></div>
-                </div>
-                
-                <div className="absolute right-1/4 top-1/2 transform translate-x-1/2 -translate-y-1/2 w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-blue-500 to-indigo-500 dark:from-blue-400 dark:to-indigo-400 rounded-full opacity-90 animate-pulse">
-                  <div className="absolute inset-0 rounded-full border-4 border-white/20 dark:border-black/20"></div>
-                  <div className="absolute inset-0 rounded-full border-2 border-white/10 dark:border-black/10 animate-ping"></div>
-                </div>
-                
+              {/* Enhanced 3D brain neural network visualization */}
+              <div className="relative h-48 md:h-56 lg:h-64 mx-auto max-w-4xl my-10 perspective">
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="h-[2px] w-1/2 bg-gradient-to-r from-primary via-indigo-500 to-blue-500 dark:from-primary dark:via-indigo-400 dark:to-blue-400"></div>
-                </div>
-                
-                <div className="absolute inset-0 flex items-center justify-center opacity-30">
-                  <svg width="100%" height="6" viewBox="0 0 200 6" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M 0 3 L 200 3" stroke="url(#pulse-gradient)" strokeWidth="2" strokeDasharray="3 3">
-                      <animate attributeName="stroke-dashoffset" from="0" to="12" dur="1s" repeatCount="indefinite" />
-                    </path>
-                    <defs>
-                      <linearGradient id="pulse-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stopColor="var(--color-primary)" stopOpacity="1" />
-                        <stop offset="100%" stopColor="var(--color-blue-500)" stopOpacity="1" />
-                      </linearGradient>
-                    </defs>
-                  </svg>
+                  <div className="relative w-full h-full max-w-lg">
+                    {/* Brain outline */}
+                    <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-32 h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 rounded-full border-[3px] border-primary/30 animate-pulse-slow"></div>
+                    
+                    {/* Central node - represents user's brain */}
+                    <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-full overflow-hidden shadow-xl z-30">
+                      <div className="absolute inset-0 bg-gradient-to-br from-primary/90 to-indigo-600/90"></div>
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <Brain className="w-8 h-8 md:w-10 md:h-10 text-white/90" />
+                      </div>
+                      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_40%,rgba(255,255,255,0.2)_80%)]"></div>
+                    </div>
+                    
+                    {/* Neural connection nodes */}
+                    {Array.from({ length: 12 }).map((_, i) => {
+                      const angle = (i / 12) * Math.PI * 2;
+                      const distance = 80 + (i % 3) * 20; // Vary distances slightly for depth
+                      const x = Math.cos(angle) * distance;
+                      const y = Math.sin(angle) * distance;
+                      const scale = 0.5 + Math.random() * 0.5; // Random size for variety
+                      const delay = i * 200; // Staggered animation
+                      const isPrimary = i % 3 === 0; // Every third node is primary color
+                      
+                      return (
+                        <div 
+                          key={i}
+                          className={`absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 translate-z-0 rounded-full shadow-lg z-20 ${
+                            isPrimary ? 'bg-primary/80' : 'bg-blue-500/80'
+                          }`}
+                          style={{
+                            width: `${12 * scale}px`,
+                            height: `${12 * scale}px`,
+                            transform: `translate(${x}px, ${y}px) scale(${scale})`,
+                            animationDelay: `${delay}ms`,
+                          }}
+                        >
+                          <div className="absolute inset-0 rounded-full animate-ping-slow" 
+                               style={{ animationDelay: `${delay}ms` }}></div>
+                        </div>
+                      );
+                    })}
+                    
+                    {/* Connection lines */}
+                    <svg className="absolute inset-0 w-full h-full z-10" xmlns="http://www.w3.org/2000/svg">
+                      {Array.from({ length: 12 }).map((_, i) => {
+                        const angle = (i / 12) * Math.PI * 2;
+                        const distance = 80 + (i % 3) * 20;
+                        const x = Math.cos(angle) * distance;
+                        const y = Math.sin(angle) * distance;
+                        
+                        return (
+                          <line 
+                            key={i}
+                            x1="50%" 
+                            y1="50%" 
+                            x2={`calc(50% + ${x}px)`} 
+                            y2={`calc(50% + ${y}px)`} 
+                            stroke={i % 3 === 0 ? 'url(#line-primary)' : 'url(#line-secondary)'} 
+                            strokeWidth="1"
+                            strokeDasharray="3,3"
+                            className="animate-dash-slow"
+                            style={{ animationDelay: `${i * 100}ms` }}
+                          />
+                        );
+                      })}
+                      
+                      <defs>
+                        <linearGradient id="line-primary" x1="0%" y1="0%" x2="100%" y2="0%">
+                          <stop offset="0%" stopColor="var(--color-primary)" stopOpacity="0.9" />
+                          <stop offset="100%" stopColor="var(--color-primary)" stopOpacity="0.1" />
+                        </linearGradient>
+                        <linearGradient id="line-secondary" x1="0%" y1="0%" x2="100%" y2="0%">
+                          <stop offset="0%" stopColor="var(--color-blue-500)" stopOpacity="0.9" />
+                          <stop offset="100%" stopColor="var(--color-blue-500)" stopOpacity="0.1" />
+                        </linearGradient>
+                      </defs>
+                    </svg>
+                    
+                    {/* Pulsing glow effect */}
+                    <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-32 h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 rounded-full bg-primary/20 filter blur-xl animate-pulse-slow"></div>
+                  </div>
                 </div>
               </div>
               
