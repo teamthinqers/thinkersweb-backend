@@ -102,11 +102,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get WhatsApp contact number for the frontend
   app.get(`${apiPrefix}/whatsapp/contact`, async (req: Request, res: Response) => {
     try {
-      // Use the actual WhatsApp number directly
-      const whatsappNumber = process.env.WHATSAPP_PHONE_NUMBER || "16067157733";
+      // Use Twilio WhatsApp number directly - hardcoded to ensure consistency
+      const whatsappNumber = "16067157733"; // Your Twilio WhatsApp number
       
       // Log the WhatsApp number being used
-      console.log(`Using direct WhatsApp number: ${whatsappNumber}`);
+      console.log(`Using Twilio WhatsApp number: ${whatsappNumber}`);
       
       // Use the standard WhatsApp click-to-chat link format for direct numbers
       res.status(200).json({
