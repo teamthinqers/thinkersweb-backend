@@ -1,10 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Brain, BookOpen, Users, Sparkles, BarChart2, MessageCircle, User } from "lucide-react";
+import { ArrowRight, Brain, BookOpen, Users, Sparkles, BarChart2, MessageCircle, User, Menu, X } from "lucide-react";
 import { WhatsAppContactButton } from "@/components/landing/WhatsAppContactButton";
 import { CompactWhatsAppButton } from "@/components/landing/CompactWhatsAppButton";
 import DashboardPreview from "@/components/landing/DashboardPreview";
+import { 
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetClose 
+} from "@/components/ui/sheet";
 import { useAuth } from "@/hooks/use-auth";
 import { 
   DropdownMenu,
@@ -17,6 +23,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function LandingPage() {
   const { user, logout } = useAuth();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
   const handleLogout = async () => {
     try {
@@ -112,9 +119,79 @@ export default function LandingPage() {
             )}
             
             {/* Mobile menu button */}
-            <Button variant="ghost" size="icon" className="ml-2 md:hidden">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="6" x2="20" y2="6"></line><line x1="4" y1="18" x2="20" y2="18"></line></svg>
-            </Button>
+            <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="ml-2 md:hidden">
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-[80vw] sm:w-[350px] p-0">
+                <div className="h-full flex flex-col">
+                  <div className="border-b p-4 flex justify-between items-center">
+                    <div className="flex items-center gap-1">
+                      <Sparkles className="h-5 w-5 text-primary" />
+                      <span className="text-lg font-bold">DotSpark</span>
+                    </div>
+                    <SheetClose asChild>
+                      <Button variant="ghost" size="icon">
+                        <X className="h-5 w-5" />
+                      </Button>
+                    </SheetClose>
+                  </div>
+                  
+                  <div className="flex-1 py-6 px-6 flex flex-col">
+                    <nav className="space-y-4 mb-8">
+                      <SheetClose asChild>
+                        <Link href="/" className="block py-2 px-3 hover:bg-primary/5 rounded-md transition-colors">
+                          Home
+                        </Link>
+                      </SheetClose>
+                      <SheetClose asChild>
+                        <Link href="/dashboard" className="block py-2 px-3 hover:bg-primary/5 rounded-md transition-colors">
+                          Dashboard
+                        </Link>
+                      </SheetClose>
+                      <SheetClose asChild>
+                        <Link href="/activate" className="block py-2 px-3 hover:bg-primary/5 rounded-md transition-colors flex items-center">
+                          <Brain className="h-4 w-4 mr-2 text-primary" />
+                          Activate Neural Extension
+                        </Link>
+                      </SheetClose>
+                    </nav>
+                    
+                    {/* Mobile WhatsApp button with text label */}
+                    {!user && (
+                      <SheetClose asChild>
+                        <div className="mb-6">
+                          <WhatsAppContactButton 
+                            variant="default"
+                            showIcon={true}
+                            label="Ask DotSpark"
+                            className="w-full"
+                          />
+                        </div>
+                      </SheetClose>
+                    )}
+                    
+                    {user ? (
+                      <SheetClose asChild>
+                        <Button onClick={handleLogout} variant="outline" className="w-full">
+                          Sign Out
+                        </Button>
+                      </SheetClose>
+                    ) : (
+                      <SheetClose asChild>
+                        <Button asChild className="w-full">
+                          <Link href="/auth">
+                            Sign In
+                          </Link>
+                        </Button>
+                      </SheetClose>
+                    )}
+                  </div>
+                </div>
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
       </header>

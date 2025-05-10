@@ -55,13 +55,13 @@ export function CompactWhatsAppButton({ className = "" }: CompactWhatsAppButtonP
 
   return (
     <Button
-      size={isMobile ? "icon" : "default"}
+      size="default"
       onClick={handleButtonClick}
       disabled={loading || !whatsAppNumber}
       className={`rounded-full bg-[#25D366] hover:bg-[#128C7E] text-white shadow-md hover:shadow-lg transition-all duration-300 ${className}`}
     >
-      <MessageCircle className={`${isMobile ? 'h-5 w-5' : 'h-5 w-5 mr-2'}`} />
-      {!isMobile && <span>Ask DotSpark</span>}
+      <MessageCircle className="h-5 w-5 mr-2" />
+      <span>Ask DotSpark</span>
     </Button>
   );
 }
