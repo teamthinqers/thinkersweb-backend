@@ -2,9 +2,8 @@ import React from "react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Brain, BookOpen, Users, Sparkles, BarChart2, MessageCircle, User } from "lucide-react";
-import WhatsAppPromo from "@/components/landing/WhatsAppPromo";
-import WhatsAppContactButton from "@/components/landing/WhatsAppContactButton";
-import CompactWhatsAppButton from "@/components/landing/CompactWhatsAppButton";
+import { WhatsAppContactButton } from "@/components/landing/WhatsAppContactButton";
+import { CompactWhatsAppButton } from "@/components/landing/CompactWhatsAppButton";
 import DashboardPreview from "@/components/landing/DashboardPreview";
 import { useAuth } from "@/hooks/use-auth";
 import { 
