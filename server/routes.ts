@@ -980,15 +980,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get WhatsApp contact number for the frontend
   app.get(`${apiPrefix}/whatsapp/contact`, async (req, res) => {
     try {
-      // Use the Twilio WhatsApp sandbox number for testing
-      // This is the standard WhatsApp sandbox number from Twilio
-      const whatsappPhoneNumber = "14155238886";
+      // Use the WhatsApp Business Platform ID directly from environment variable
+      const whatsappPhoneNumber = process.env.WHATSAPP_PHONE_NUMBER || "";
+      
+      // Check if it's the Business Platform ID (usually a long number)
+      const isBusinessPlatformId = whatsappPhoneNumber.length > 10;
       
       // Log the phone number being used
       console.log(`Using WhatsApp phone number: ${whatsappPhoneNumber}`);
       
-      // For WhatsApp, we always use the wa.me format which is the most reliable
-      const directLink = `https://wa.me/${whatsappPhoneNumber}`;
+      let directLink;
+      
+      // Handle different WhatsApp number formats
+      if (isBusinessPlatformId) {
+        // For Meta WhatsApp Business Platform IDs, use a direct link
+        directLink = `https://wa.me/p/${whatsappPhoneNumber}`;
+      } else {
+        // For regular WhatsApp numbers
+        directLink = `https://wa.me/${whatsappPhoneNumber}`;
+      }
       
       // Return both the phone number and direct API URLs
       res.json({ 
