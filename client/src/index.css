@@ -126,6 +126,12 @@
     --chart-4: 38 92% 50%;
     --chart-5: 0 84% 60%;
 
+    /* WhatsApp official colors */
+    --whatsapp-green: 142 70% 45%;
+    --whatsapp-dark-green: 158 100% 16%;
+    --whatsapp-light-green: 94 56% 92%;
+    --whatsapp-background: 36 33% 91%;
+
     --radius: 0.5rem;
   }
 
@@ -157,6 +163,12 @@
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 243 75% 59%;
+    
+    /* WhatsApp official colors - dark mode adjustments */
+    --whatsapp-green: 142 70% 45%;
+    --whatsapp-dark-green: 158 90% 20%;
+    --whatsapp-light-green: 94 56% 92%;
+    --whatsapp-background: 36 10% 20%;
   }
 }
 
@@ -311,4 +323,46 @@
 
 .prose a {
   @apply text-primary hover:text-accent underline;
+}
+
+/* Mobile Optimization */
+@media (max-width: 640px) {
+  /* More readable text on small screens */
+  body {
+    @apply text-base;
+  }
+  
+  h1, h2, h3 {
+    @apply tracking-tight;
+  }
+  
+  /* More compact spacing on mobile */
+  .section-spacing {
+    @apply py-8;
+  }
+  
+  /* Better touch targets for buttons */
+  button, a.btn, a.button, .btn, [role="button"] {
+    @apply min-h-[44px] px-4;
+  }
+  
+  /* Adjust card layouts */
+  .card-hover {
+    @apply hover:shadow-sm hover:translate-y-0;
+  }
+  
+  /* WhatsApp specific mobile styling */
+  .whatsapp-button {
+    @apply w-full justify-center py-3;
+  }
+  
+  /* Better spacing in mobile layout */
+  .mobile-stack > * {
+    @apply w-full mb-4;
+  }
+  
+  /* Improve form elements on mobile */
+  input, select, textarea {
+    @apply text-base py-3;
+  }
 }
