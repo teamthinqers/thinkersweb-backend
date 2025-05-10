@@ -161,7 +161,7 @@ export default function LandingPage() {
               </h1>
               
               <p className="text-lg md:text-xl lg:text-2xl text-muted-foreground max-w-3xl mx-auto mt-3">
-                Extend your cognitive capabilities with an AI system that adapts to your unique thinking patterns
+                Your personal cognitive companion that learns, evolves, and amplifies your professional thinking in real-time
               </p>
               
               {/* Neural nodes visualization */}
