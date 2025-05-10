@@ -103,46 +103,48 @@ export async function getUserIdFromWhatsAppNumber(phoneNumber: string): Promise<
     // Normalize the phone number format - Twilio sends with WhatsApp: prefix
     const normalizedPhone = phoneNumber.replace('whatsapp:', '').trim();
     
-    // TEST MODE: When enabled, automatically associate any WhatsApp number with the demo user
-    // This allows testing without requiring verification through the web app
+    // First check if this phone number is linked to a specific user account
+    const whatsappUser = await db.query.whatsappUsers.findFirst({
+      where: eq(whatsappUsers.phoneNumber, normalizedPhone),
+    });
+    
+    // If the phone is linked to a specific user account, return that user's ID
+    if (whatsappUser) {
+      if (!whatsappUser.active) {
+        // If it exists but is inactive, activate it
+        await db.update(whatsappUsers)
+          .set({ 
+            active: true,
+            lastMessageSentAt: new Date(),
+            updatedAt: new Date()
+          })
+          .where(eq(whatsappUsers.id, whatsappUser.id));
+      } else {
+        // Update last message timestamp
+        await db.update(whatsappUsers)
+          .set({ 
+            lastMessageSentAt: new Date(),
+            updatedAt: new Date()
+          })
+          .where(eq(whatsappUsers.id, whatsappUser.id));
+      }
+      
+      console.log(`WhatsApp number ${normalizedPhone} linked to user ID ${whatsappUser.userId}`);
+      return whatsappUser.userId;
+    }
+    
+    // If no linked account, check if we're in test mode
     const TEST_MODE_ENABLED = process.env.NODE_ENV === 'development';
     const DEMO_USER_ID = 1; // Same as in routes.ts
     
     if (TEST_MODE_ENABLED) {
-      console.log(`[TEST MODE] Auto-associating WhatsApp number ${normalizedPhone} with demo user ID ${DEMO_USER_ID}`);
-      
-      // Automatically add the number to the database if it doesn't exist
-      const existingUser = await db.query.whatsappUsers.findFirst({
-        where: eq(whatsappUsers.phoneNumber, normalizedPhone),
-      });
-      
-      if (!existingUser) {
-        console.log(`[TEST MODE] New user detected - will trigger welcome message`);
-        // Return null for first-time users to trigger welcome message in the main handler
-        return null;
-      } else if (!existingUser.active) {
-        // If it exists but is inactive, activate it
-        await db.update(whatsappUsers)
-          .set({ active: true })
-          .where(eq(whatsappUsers.id, existingUser.id));
-      }
-      
-      // Return the demo user ID
-      return DEMO_USER_ID;
+      console.log(`[TEST MODE] Using demo account for unlinked WhatsApp number ${normalizedPhone}`);
+      // Return null for first-time users to trigger welcome message
+      return null; // The main handler will create an association with the demo user
     }
     
-    // NORMAL MODE: Only return user ID if the WhatsApp number is properly registered
-    const whatsappUser = await db.query.whatsappUsers.findFirst({
-      where: eq(whatsappUsers.phoneNumber, normalizedPhone),
-      with: {
-        user: true,
-      },
-    });
-
-    if (whatsappUser && whatsappUser.active) {
-      return whatsappUser.userId;
-    }
-    
+    // In production, unlinked numbers return null so they can receive instructions to link
+    console.log(`Unlinked WhatsApp number: ${normalizedPhone} - awaiting account connection`);
     return null;
   } catch (error) {
     console.error("Error finding user associated with WhatsApp chatbot:", error);
@@ -217,28 +219,29 @@ export async function processWhatsAppMessage(from: string, messageText: string):
   message: string;
 }> {
   try {
-    // Get user ID from WhatsApp number or use a default for new users
+    // Normalize phone number format
+    const normalizedPhone = from.replace('whatsapp:', '').trim();
+    
+    // Check if this phone is linked to a DotSpark account
     let userId = await getUserIdFromWhatsAppNumber(from);
     const isFirstTimeUser = !userId;
     
-    // If the user doesn't exist, automatically create a temporary link
-    // to allow anyone to chat without registration
+    // If no linked account found, use the demo account to allow immediate usage
     if (!userId) {
-      // Use the demo user ID as a fallback for all WhatsApp users
+      // Use the demo user ID as a fallback for all unlinked WhatsApp users
       const DEMO_USER_ID = 1;
       userId = DEMO_USER_ID;
       
-      // Normalize phone number format
-      const normalizedPhone = from.replace('whatsapp:', '').trim();
-      
-      // Auto-register this phone number
-      console.log(`Auto-registering new WhatsApp user: ${normalizedPhone}`);
+      // Auto-register this phone number with the demo account
+      console.log(`Auto-registering new WhatsApp user with demo account: ${normalizedPhone}`);
       await db.insert(whatsappUsers).values({
         userId: DEMO_USER_ID,
         phoneNumber: normalizedPhone,
         active: true,
         lastMessageSentAt: new Date(),
       });
+      
+      // Later, if they send a link code, we'll update this record to their real account
     }
     
     // Send welcome message for first-time users
@@ -253,7 +256,9 @@ export async function processWhatsAppMessage(from: string, messageText: string):
         "DotSpark learns with you, thinks with you, and sharpens every insight you feed into it.\n" +
         "From reflections to decisions, patterns to action — this is where your intelligence compounds.\n\n" +
         "Type freely. Think deeply.\n" +
-        "DotSpark is built to grow with your mind.";
+        "DotSpark is built to grow with your mind.\n\n" +
+        "💡 *Have a DotSpark account?*\n" +
+        "Visit dotspark.ai, log in, and generate a 6-digit code to link this WhatsApp number. Your conversations will appear in your dashboard.";
         
       await sendWhatsAppReply(from, welcomeMessage);
       
@@ -272,6 +277,9 @@ export async function processWhatsAppMessage(from: string, messageText: string):
           "💬 *Interactive Conversation* - Engage in natural back-and-forth dialogue on any topic\n" +
           "💾 *Memory Augmentation* - Preserves key insights when you use 'save this'\n" +
           "🔄 *Continuous Learning* - Your neural extension evolves with each interaction\n\n" +
+          "Available commands:\n" +
+          "• Type 'link' to get instructions for connecting to your DotSpark account\n" +
+          "• Type 'summary' to see your neural extension status\n\n" +
           "Just communicate naturally - chat with your neural extension like you would with ChatGPT, ask questions, discuss ideas, or explore topics of interest.",
       };
     }
@@ -355,6 +363,22 @@ export async function processWhatsAppMessage(from: string, messageText: string):
           "Each interaction strengthens the neural pathways between concepts, enhancing your cognitive framework and creating a more responsive neural extension.\n\n" +
           "Your interactive chat capabilities are fully enabled - ask questions, discuss ideas, or explore topics just like you would with ChatGPT. This WhatsApp channel gives you direct access to your neural extension anywhere, anytime.\n\n" +
           "Continue engaging with varied topics and interactive conversations to maximize the adaptive capabilities of your neural connection.",
+      };
+    }
+    
+    // Handle link account command
+    if (messageText.toLowerCase() === "link" || 
+        messageText.toLowerCase() === "link account" ||
+        messageText.toLowerCase() === "connect account") {
+      return {
+        success: true,
+        message: "🔗 *Link Your DotSpark Account*\n\n" +
+          "To link this WhatsApp number with your DotSpark account:\n\n" +
+          "1. Go to dotspark.ai and log in to your account\n" +
+          "2. Navigate to Settings → WhatsApp Integration\n" +
+          "3. Click 'Generate Link Code'\n" +
+          "4. Send the 6-digit code to this chat\n\n" +
+          "Once linked, your WhatsApp conversations will be accessible from your DotSpark dashboard, and your neural extension will be personalized based on your learning history."
       };
     }
     
