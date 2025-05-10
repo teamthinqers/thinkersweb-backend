@@ -3,6 +3,7 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Brain, BookOpen, Users, Sparkles, BarChart2, MessageCircle, User } from "lucide-react";
 import WhatsAppPromo from "@/components/landing/WhatsAppPromo";
+import WhatsAppContactButton from "@/components/landing/WhatsAppContactButton";
 import DashboardPreview from "@/components/landing/DashboardPreview";
 import { useAuth } from "@/hooks/use-auth";
 import { 
@@ -43,6 +44,8 @@ export default function LandingPage() {
             <Link href="/dashboard" className="text-sm font-medium hover:text-primary">
               Dashboard
             </Link>
+            
+            {!user && <WhatsAppContactButton />}
             
             {user ? (
               <DropdownMenu>
