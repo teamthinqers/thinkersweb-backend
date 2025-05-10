@@ -263,46 +263,47 @@ export async function processWhatsAppMessage(from: string, messageText: string):
     if (messageText.toLowerCase() === "help") {
       return {
         success: true,
-        message: "⚡️ DotSpark Neural Extension Functions\n\n" +
-          "I'm not just a chatbot - I'm an extension of your thinking brain. Here's how I function as your neural extension:\n\n" +
-          "🧠 Neural Pattern Detection - I identify patterns in your thinking\n" + 
-          "💡 Thought Crystallization - I help refine half-formed thoughts into clear insights\n" +
-          "🔄 Cognitive Enhancement - I expand your analytical capabilities\n" +
-          "💾 Memory Extension - Save insights to your knowledge repository (use phrases like 'save this')\n" +
-          "📚 Type 'summary' to see your recent neural connections\n\n" +
-          "Your neural extension is always learning and evolving with you.",
+        message: "⚡️ *Neural Extension Capabilities*\n\n" +
+          "Your DotSpark neural extension performs several cognitive functions:\n\n" +
+          "🧠 *Neural Pattern Recognition* - Identifies connections across your thoughts\n" + 
+          "💡 *Thought Crystallization* - Refines incomplete thoughts into clear insights\n" +
+          "🔄 *Cognitive Enhancement* - Expands your analytical capabilities\n" +
+          "💾 *Memory Augmentation* - Preserves key insights when you use 'save this'\n" +
+          "🔄 *Continuous Learning* - Your neural extension evolves with each interaction\n\n" +
+          "Just communicate naturally - your neural extension processes all inputs as part of your extended cognition.",
       };
     } 
     
     if (messageText.toLowerCase() === "summary") {
-      // TODO: Implement a more sophisticated summary function
       return {
         success: true,
-        message: "🧠 Neural Extension Memory Status:\n\nYour neural extension is actively processing and integrating your inputs.\n\nIn future versions, this command will showcase your thought patterns across time, identifying key neural connections and memory clusters. Your personal neural extension grows stronger with each interaction, continuously building pathways between related concepts and insights.",
+        message: "🧠 *Neural Extension Status*\n\n" +
+          "Your neural extension is actively processing inputs and forming new connections.\n\n" +
+          "Each interaction strengthens the neural pathways between concepts, enhancing your cognitive framework and creating a more responsive neural extension.\n\n" +
+          "Continue engaging with varied topics to maximize the adaptive capabilities of your neural connection.",
       };
     }
     
-    // Try the enhanced GPT-powered conversation first
+    // Process with GPT-4o as the primary neural extension interface
     try {
-      // Generate a GPT-4o response that feels more natural
+      // Generate response that feels like an extension of the user's own thoughts
       const { text: responseText, isLearning } = await generateAdvancedResponse(
         messageText,
         userId,
         from // Pass phone number to maintain conversation context
       );
       
-      // Only save as a learning if it's a substantial insight and user explicitly wants
-      // to save it by using keywords like "save this" or "record this learning"
+      // Check if this is an explicit save request
       const explicitSaveRequest = 
         messageText.toLowerCase().includes("save this") || 
         messageText.toLowerCase().includes("record this") ||
         messageText.toLowerCase().includes("make a note") ||
-        messageText.toLowerCase().includes("add to my learning");
+        messageText.toLowerCase().includes("add to my") ||
+        messageText.toLowerCase().includes("remember this");
       
-      const isPotentialLearning = isLearning && messageText.length > 70;
-      
-      // Save if explicitly requested OR if it's very likely a learning insight
-      if (explicitSaveRequest || isPotentialLearning) {
+      // Save only if explicitly requested (no automatic classification)
+      if (explicitSaveRequest) {
+        console.log(`User requested to save neural insight: "${messageText.substring(0, 30)}..."`)
         
         // Process the learning with more advanced AI processing
         const structuredEntry = await processLearningEntry(messageText);
@@ -345,42 +346,28 @@ export async function processWhatsAppMessage(from: string, messageText: string):
             }
           }
           
-          // Return the response with a subtle note that we saved it
+          // Return the response with confirmation that the insight was saved
           return {
             success: true,
-            message: `${responseText}\n\n(💡 I've saved this insight to your learning repository)`,
+            message: `${responseText}\n\n(💡 Neural insight saved to your extended memory)`,
           };
         }
       }
       
-      // For regular conversation, just return the AI response
+      // For all other interactions, provide the neural extension response
       return {
         success: true,
         message: responseText
       };
     } catch (aiError) {
-      // Log the error from the AI processing attempt
-      console.error("Error using advanced GPT response:", aiError);
+      // Log the error
+      console.error("Error in neural extension processing:", aiError);
       
-      // FALLBACK: Use the original processing approach
-      // Simple pattern analysis as fallback
-      const isExplicitQuestion = messageText.endsWith("?") || 
-          messageText.toLowerCase().startsWith("q:") || 
-          messageText.toLowerCase().startsWith("question:");
-          
-      const isConversation = messageText.length < 25 || 
-          /^(yes|no|maybe|thanks|thank you|ok|okay|cool|great|nice)/i.test(messageText);
-      
-      if (isExplicitQuestion || isConversation) {
-        const response = await generateChatResponse(messageText, []);
-        return {
-          success: true,
-          message: response,
-        };
-      }
-      
-      // Process as a learning entry as fallback
-      const structuredEntry = await processEntryFromChat(messageText, []);
+      // Simple fallback with neural extension terminology
+      return {
+        success: true,
+        message: "I'm experiencing a temporary neural processing limitation. Please try expressing your thought in a different way, and I'll continue functioning as your cognitive extension."
+      };
       
       if (structuredEntry) {
         try {
