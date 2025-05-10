@@ -980,20 +980,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get WhatsApp contact number for the frontend
   app.get(`${apiPrefix}/whatsapp/contact`, async (req, res) => {
     try {
-      // Use the WhatsApp Business Account ID directly
-      const whatsappBusinessId = "2519650718400538";
+      // Use the actual WhatsApp number directly
+      const whatsappNumber = "15557649526"; // Removing the + from +15557649526
       
-      // Log the WhatsApp Business ID being used
-      console.log(`Using WhatsApp Business ID: ${whatsappBusinessId}`);
+      // Log the WhatsApp number being used
+      console.log(`Using direct WhatsApp number: ${whatsappNumber}`);
       
-      // For WhatsApp Business Platform, use direct format
-      // This is the standard format that should open in the proper WhatsApp app
-      // Using WABA_ID approach with click-to-chat link format
-      const directLink = `https://api.whatsapp.com/message/WABA_ID.${whatsappBusinessId}`;
+      // Use the standard WhatsApp click-to-chat link format for direct numbers
+      const directLink = `https://api.whatsapp.com/send?phone=${whatsappNumber}`;
       
-      // Return both the business ID and direct API URL
+      // Return both the phone number and direct API URL
       res.json({ 
-        phoneNumber: whatsappBusinessId, // Use the business ID in the phoneNumber field for consistency
+        phoneNumber: whatsappNumber,
         directLink: directLink
       });
     } catch (err) {
