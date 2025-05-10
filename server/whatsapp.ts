@@ -218,13 +218,47 @@ export async function processWhatsAppMessage(from: string, messageText: string):
   message: string;
 }> {
   try {
-    // Get user ID from WhatsApp number
-    const userId = await getUserIdFromWhatsAppNumber(from);
+    // Get user ID from WhatsApp number or use a default for new users
+    let userId = await getUserIdFromWhatsAppNumber(from);
+    const isFirstTimeUser = !userId;
+    
+    // If the user doesn't exist, automatically create a temporary link
+    // to allow anyone to chat without registration
     if (!userId) {
-      return {
-        success: false,
-        message: "⚡️ Neural Link Not Established\n\nYour neural extension isn't connected yet. To establish your personal neural link, please activate your extension through the DotSpark web platform first.",
-      };
+      // Use the demo user ID as a fallback for all WhatsApp users
+      const DEMO_USER_ID = 1;
+      userId = DEMO_USER_ID;
+      
+      // Normalize phone number format
+      const normalizedPhone = from.replace('whatsapp:', '').trim();
+      
+      // Auto-register this phone number
+      console.log(`Auto-registering new WhatsApp user: ${normalizedPhone}`);
+      await db.insert(whatsappUsers).values({
+        userId: DEMO_USER_ID,
+        phoneNumber: normalizedPhone,
+        active: true,
+        lastMessageSentAt: new Date(),
+      });
+    }
+    
+    // Send welcome message for first-time users
+    if (isFirstTimeUser) {
+      // We'll proceed with processing their actual message below,
+      // but we should also send a welcome message soon
+      // We'll do this in the background after sending the response
+      setTimeout(async () => {
+        const welcomeMessage = 
+          "⚡️ Welcome to DotSpark — Your Neural Extension Begins Here\n\n" +
+          "This isn't just a chat.\n" +
+          "You've just unlocked an active extension of your thinking brain.\n\n" +
+          "DotSpark learns with you, thinks with you, and sharpens every insight you feed into it.\n" +
+          "From reflections to decisions, patterns to action — this is where your intelligence compounds.\n\n" +
+          "Type freely. Think deeply.\n" +
+          "DotSpark is built to grow with your mind.";
+          
+        await sendWhatsAppReply(from, welcomeMessage);
+      }, 1000); // Send welcome message 1 second after initial response
     }
 
     // Handle explicit commands first
@@ -448,7 +482,7 @@ export async function registerWhatsAppUser(userId: number, phoneNumber: string):
       };
     }
 
-    // Check if user exists
+    // Check if user exists - needed for proper association
     const userExists = await db.query.users.findFirst({
       where: eq(users.id, userId),
     });
@@ -470,14 +504,23 @@ export async function registerWhatsAppUser(userId: number, phoneNumber: string):
       if (existingWhatsAppUser.userId === userId) {
         return {
           success: true,
-          message: "WhatsApp chatbot is already activated for this phone number",
+          message: "Neural extension is already activated for this phone number",
         };
       }
       
-      // Otherwise, it's linked to another user
+      // If registered to another user, update it to be associated with this user
+      // This makes it easier for users to connect without restrictions
+      await db.update(whatsappUsers)
+        .set({ 
+          userId: userId,
+          active: true,
+          updatedAt: new Date()
+        })
+        .where(eq(whatsappUsers.id, existingWhatsAppUser.id));
+      
       return {
-        success: false,
-        message: "This phone number is already connected to another DotSpark account",
+        success: true,
+        message: "Neural extension successfully connected to your account",
       };
     }
 
@@ -511,7 +554,7 @@ export async function registerWhatsAppUser(userId: number, phoneNumber: string):
 
     return {
       success: true,
-      message: "DotSpark WhatsApp chatbot activated successfully. You can now chat with our AI through WhatsApp.",
+      message: "DotSpark neural extension activated successfully. Your neural extension is now ready for direct integration with your thinking process via WhatsApp.",
     };
   } catch (error) {
     console.error("Error activating WhatsApp chatbot:", error);
