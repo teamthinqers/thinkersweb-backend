@@ -56,8 +56,8 @@ export default function WhatsAppIntegration() {
     getWhatsAppStatus();
   }, [toast]);
 
-  // Request OTP for phone number verification
-  const handleRequestOTP = async () => {
+  // Direct neural extension activation through WhatsApp
+  const handleDirectRegistration = async () => {
     if (!phoneNumber) {
       toast({
         title: "Error",
@@ -68,63 +68,42 @@ export default function WhatsAppIntegration() {
     }
 
     try {
-      setRequestingOtp(true);
-      console.log('Requesting OTP for phone number:', phoneNumber);
-      const res = await apiRequest("POST", "/api/whatsapp/request-otp", { phoneNumber });
+      setRegistering(true);
+      console.log('Activating neural extension for:', phoneNumber);
+      const res = await apiRequest("POST", "/api/whatsapp/register-direct", { phoneNumber });
       const data = await res.json();
       
-      console.log('OTP request response:', {
+      console.log('Neural extension activation response:', {
         status: res.status,
         ok: res.ok,
         data: data
       });
       
       if (res.ok) {
-        setPendingVerification(true);
-        setPendingPhoneNumber(phoneNumber);
+        setRegistered(true);
+        setCurrentPhone(phoneNumber);
         setPhoneNumber("");
         
-        // Always display all data in debug mode
-        console.log('Complete response data:', JSON.stringify(data));
-        
-        if (data.otpCode) {
-          // In development mode, the OTP code is included in the response
-          // We'll populate the OTP field automatically and show a toast with the code
-          setOtpCode(data.otpCode);
-          toast({
-            title: "Development Mode - OTP Auto-filled",
-            description: `Verification code: ${data.otpCode}`,
-          });
-        } else {
-          // If no OTP code, but we have a message
-          toast({
-            title: "Verification Code Sent",
-            description: data.message || "Please check your WhatsApp for the verification code",
-          });
-          
-          // Special debug toast showing all response data
-          toast({
-            title: "Debug: No OTP in Response",
-            description: "Check console for complete response data",
-            variant: "destructive"
-          });
-        }
+        toast({
+          title: "Neural Extension Activated",
+          description: data.message || "Your neural extension is now connected through WhatsApp",
+        });
       } else {
         toast({
           title: "Error",
-          description: data.message || "Failed to send verification code",
+          description: data.message || "Failed to activate neural extension",
           variant: "destructive",
         });
       }
     } catch (error) {
-      console.error("Error requesting OTP:", error);
+      console.error("Error activating neural extension:", error);
       toast({
         title: "Error",
-        description: "Failed to send verification code",
+        description: "Failed to activate neural extension",
         variant: "destructive",
       });
     } finally {
-      setRequestingOtp(false);
+      setRegistering(false);
     }
   };
 
