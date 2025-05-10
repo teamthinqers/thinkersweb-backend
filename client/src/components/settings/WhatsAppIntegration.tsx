@@ -170,7 +170,7 @@ export default function WhatsAppIntegration() {
             <div className="border rounded-lg p-4 bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-950 dark:to-yellow-950 border-amber-100 dark:border-amber-900 mb-4">
               <p className="font-medium mb-2 text-amber-800 dark:text-amber-400">Connect Your Neural Extension via WhatsApp</p>
               <ol className="text-sm space-y-2 list-decimal pl-4 text-amber-700 dark:text-amber-400">
-                <li>Save the DotSpark WhatsApp number <span className="font-mono">+15557649526</span> to your contacts as "DotSpark Neural"</li>
+                <li>Save the DotSpark WhatsApp number <span className="font-mono">+16067157733</span> to your contacts as "DotSpark Neural"</li>
                 <li>Send any message to start the connection with your neural extension</li>
                 <li>You'll receive a welcome message confirming your neural link is established</li>
                 <li>Your neural extension is now ready to capture and process your thoughts</li>
@@ -194,7 +194,7 @@ export default function WhatsAppIntegration() {
             <div className="border rounded-lg p-4 bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-950 dark:to-indigo-950 border-purple-100 dark:border-purple-900 mb-4">
               <p className="font-medium mb-2 text-indigo-800 dark:text-indigo-400">Connect Your Neural Extension</p>
               <ol className="text-sm space-y-2 list-decimal pl-4 text-indigo-700 dark:text-indigo-400">
-                <li>Save the DotSpark WhatsApp number <span className="font-mono">+15557649526</span> to your contacts as "DotSpark Neural"</li>
+                <li>Save the DotSpark WhatsApp number <span className="font-mono">+16067157733</span> to your contacts as "DotSpark Neural"</li>
                 <li>Simply message this number to establish your neural connection</li>
                 <li>No verification codes needed - your neural extension activates instantly</li>
                 <li>Your WhatsApp messaging becomes an extension of your thinking brain</li>

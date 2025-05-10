@@ -1,7 +1,8 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import WhatsAppIntegration from "@/components/settings/WhatsAppIntegration";
+import { WhatsAppLinking } from "@/components/settings/WhatsAppLinking";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Settings as SettingsIcon, Smartphone } from "lucide-react";
+import { Settings as SettingsIcon, Smartphone, Link } from "lucide-react";
 
 export default function Settings() {
   return (
@@ -19,7 +20,17 @@ export default function Settings() {
           </TabsTrigger>
         </TabsList>
         
-        <TabsContent value="integrations" className="space-y-4">
+        <TabsContent value="integrations" className="space-y-6">
+          {/* WhatsApp Account Linking */}
+          <div>
+            <h2 className="text-lg font-medium mb-4 flex items-center">
+              <Link className="h-5 w-5 mr-2 text-indigo-500" />
+              Neural Extension Account Linking
+            </h2>
+            <WhatsAppLinking />
+          </div>
+          
+          {/* Original WhatsApp Integration */}
           <Card>
             <CardHeader>
               <CardTitle>External Integrations</CardTitle>
