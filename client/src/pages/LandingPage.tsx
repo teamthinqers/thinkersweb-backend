@@ -120,38 +120,106 @@ export default function LandingPage() {
         </div>
       </header>
       
-      {/* Hero Section */}
-      <section className="bg-gradient-to-b from-primary/5 to-background py-12 md:py-20">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="flex flex-col items-center gap-6 lg:gap-12 max-w-4xl mx-auto">
+      {/* Enhanced Hero Section with Visual Elements */}
+      <section className="relative py-16 md:py-24 overflow-hidden">
+        {/* Background visual elements */}
+        <div className="absolute inset-0 z-0">
+          <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/5 rounded-full blur-3xl opacity-60 -translate-y-1/2 translate-x-1/3"></div>
+          <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-blue-500/5 dark:bg-blue-500/10 rounded-full blur-3xl opacity-60 translate-y-1/3 -translate-x-1/4"></div>
+          
+          {/* Neural network node points */}
+          <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-primary rounded-full shadow-lg shadow-primary/30 animate-pulse"></div>
+          <div className="absolute top-1/3 right-1/3 w-2 h-2 bg-blue-500 rounded-full shadow-lg shadow-blue-500/30 animate-pulse delay-150"></div>
+          <div className="absolute bottom-1/3 left-1/3 w-2 h-2 bg-indigo-500 rounded-full shadow-lg shadow-indigo-500/30 animate-pulse delay-300"></div>
+          <div className="absolute bottom-1/4 right-1/4 w-2 h-2 bg-purple-500 rounded-full shadow-lg shadow-purple-500/30 animate-pulse delay-500"></div>
+          
+          {/* Connection lines */}
+          <svg className="absolute inset-0 w-full h-full opacity-20" xmlns="http://www.w3.org/2000/svg">
+            <line x1="25%" y1="25%" x2="33%" y2="33%" stroke="url(#line-gradient)" strokeWidth="0.5" />
+            <line x1="66%" y1="33%" x2="75%" y2="25%" stroke="url(#line-gradient)" strokeWidth="0.5" />
+            <line x1="33%" y1="66%" x2="25%" y2="75%" stroke="url(#line-gradient)" strokeWidth="0.5" />
+            <line x1="75%" y1="75%" x2="66%" y2="66%" stroke="url(#line-gradient)" strokeWidth="0.5" />
+            <defs>
+              <linearGradient id="line-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="var(--color-primary)" stopOpacity="0.8" />
+                <stop offset="100%" stopColor="var(--color-primary)" stopOpacity="0" />
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        
+        <div className="container mx-auto px-4 md:px-6 relative z-10">
+          <div className="flex flex-col items-center gap-8 lg:gap-12 max-w-5xl mx-auto">
             <div className="space-y-4 md:space-y-6 text-center">
-              <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm text-primary mb-2 md:mb-4">
-                Introducing DotSpark
+              <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1.5 text-sm text-primary mb-3 md:mb-5">
+                <Sparkles className="h-4 w-4" />
+                <span>Introducing DotSpark</span>
               </div>
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
-                Your <span className="gradient-heading">Neural Extension</span> for Professional Excellence
+              
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-tight">
+                Your <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-primary to-blue-600 dark:from-indigo-400 dark:via-primary dark:to-blue-400">Neural Extension</span>
               </h1>
-              <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
-                DotSpark works as your neural extension, continuously learning and adapting to your cognitive patterns to accelerate your professional growth and unlock excellence.
+              
+              <p className="text-lg md:text-xl lg:text-2xl text-muted-foreground max-w-3xl mx-auto mt-3">
+                Extend your cognitive capabilities with an AI system that adapts to your unique thinking patterns
               </p>
+              
+              {/* Neural nodes visualization */}
+              <div className="relative h-24 md:h-32 mx-auto max-w-2xl my-8">
+                <div className="absolute left-1/4 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-primary to-indigo-600 dark:from-primary dark:to-indigo-400 rounded-full opacity-90 animate-pulse">
+                  <div className="absolute inset-0 rounded-full border-4 border-white/20 dark:border-black/20"></div>
+                  <div className="absolute inset-0 rounded-full border-2 border-white/10 dark:border-black/10 animate-ping"></div>
+                </div>
+                
+                <div className="absolute right-1/4 top-1/2 transform translate-x-1/2 -translate-y-1/2 w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-blue-500 to-indigo-500 dark:from-blue-400 dark:to-indigo-400 rounded-full opacity-90 animate-pulse">
+                  <div className="absolute inset-0 rounded-full border-4 border-white/20 dark:border-black/20"></div>
+                  <div className="absolute inset-0 rounded-full border-2 border-white/10 dark:border-black/10 animate-ping"></div>
+                </div>
+                
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="h-[2px] w-1/2 bg-gradient-to-r from-primary via-indigo-500 to-blue-500 dark:from-primary dark:via-indigo-400 dark:to-blue-400"></div>
+                </div>
+                
+                <div className="absolute inset-0 flex items-center justify-center opacity-30">
+                  <svg width="100%" height="6" viewBox="0 0 200 6" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M 0 3 L 200 3" stroke="url(#pulse-gradient)" strokeWidth="2" strokeDasharray="3 3">
+                      <animate attributeName="stroke-dashoffset" from="0" to="12" dur="1s" repeatCount="indefinite" />
+                    </path>
+                    <defs>
+                      <linearGradient id="pulse-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stopColor="var(--color-primary)" stopOpacity="1" />
+                        <stop offset="100%" stopColor="var(--color-blue-500)" stopOpacity="1" />
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                </div>
+              </div>
+              
+              {/* Action buttons with enhanced styling */}
               <div className="flex flex-col gap-8 pt-6 max-w-3xl mx-auto">
                 {user ? (
-                  <Button size="lg" asChild className="w-full">
-                    <Link href="/dashboard">
-                      Go to Dashboard <ArrowRight className="ml-2 h-5 w-5" />
+                  <Button size="lg" asChild className="w-full relative overflow-hidden group">
+                    <Link href="/dashboard" className="flex items-center justify-center">
+                      <span className="relative z-10">Go to Dashboard</span>
+                      <ArrowRight className="ml-2 h-5 w-5 relative z-10 group-hover:translate-x-1 transition-transform" />
+                      <div className="absolute inset-0 bg-gradient-to-r from-primary to-primary/80 opacity-90 group-hover:opacity-100 transition-opacity"></div>
                     </Link>
                   </Button>
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Button 1: Activate Neural Extension */}
-                    <div className="bg-primary/5 border border-primary/20 rounded-lg p-5 text-center flex flex-col items-center">
-                      <Button size="lg" asChild className="w-full mb-4">
-                        <Link href="/auth?redirect=settings/whatsapp">
-                          <Brain className="mr-2 h-5 w-5" /> Activate Neural Extension
+                    <div className="bg-gradient-to-br from-primary/5 to-indigo-500/5 dark:from-primary/10 dark:to-indigo-500/10 border border-primary/20 dark:border-primary/30 rounded-xl p-6 flex flex-col items-center shadow-lg shadow-primary/5 dark:shadow-primary/10 relative overflow-hidden group">
+                      <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-indigo-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                      
+                      <Button size="lg" asChild className="w-full mb-5 relative overflow-hidden">
+                        <Link href="/auth?redirect=settings/whatsapp" className="flex items-center justify-center">
+                          <Brain className="mr-2 h-5 w-5" />
+                          <span>Activate Neural Extension</span>
+                          <div className="absolute inset-0 bg-gradient-to-r from-primary to-indigo-600 opacity-90 hover:opacity-100 transition-opacity"></div>
                         </Link>
                       </Button>
                       
-                      <div className="text-sm text-muted-foreground text-left">
+                      <div className="text-sm text-muted-foreground text-left relative z-10">
                         <p className="mb-2 font-medium text-foreground">Premium dashboard integration:</p>
                         <ol className="list-decimal list-inside space-y-1 text-xs">
                           <li>Create a DotSpark account</li>
@@ -162,10 +230,12 @@ export default function LandingPage() {
                     </div>
                     
                     {/* Button 2: Ask DotSpark */}
-                    <div className="bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-900 rounded-lg p-5 text-center flex flex-col items-center">
+                    <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 border border-green-200 dark:border-green-900/50 rounded-xl p-6 flex flex-col items-center shadow-lg shadow-green-500/5 dark:shadow-green-900/10 relative overflow-hidden group">
+                      <div className="absolute inset-0 bg-gradient-to-br from-green-100/50 to-emerald-100/50 dark:from-green-900/30 dark:to-emerald-900/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                      
                       <Button 
                         size="lg" 
-                        className="w-full mb-4 bg-[#25D366] hover:bg-[#128C7E] text-white"
+                        className="w-full mb-5 relative overflow-hidden bg-[#25D366] hover:bg-[#128C7E] text-white"
                         onClick={() => {
                           const whatsappNumber = "16067157733";
                           const mobileAppLink = `whatsapp://send?phone=${whatsappNumber}`;
@@ -176,13 +246,16 @@ export default function LandingPage() {
                           }, 500);
                         }}
                       >
-                        <svg className="mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" fill="currentColor">
-                          <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157z"></path>
-                        </svg>
-                        Ask DotSpark
+                        <div className="absolute inset-0 bg-gradient-to-r from-[#25D366] to-[#128C7E] opacity-100 hover:opacity-90 transition-opacity"></div>
+                        <div className="flex items-center justify-center relative z-10">
+                          <svg className="mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" fill="currentColor">
+                            <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157z"></path>
+                          </svg>
+                          <span>Ask DotSpark</span>
+                        </div>
                       </Button>
 
-                      <div className="text-sm text-muted-foreground text-left">
+                      <div className="text-sm text-muted-foreground text-left relative z-10">
                         <p className="mb-2 font-medium text-green-700 dark:text-green-500">Instant ChatGPT-like experience:</p>
                         <p className="text-xs">Start using your neural extension immediately through WhatsApp - no account required. Interact naturally like with ChatGPT.</p>
                       </div>
@@ -191,14 +264,12 @@ export default function LandingPage() {
                 )}
               </div>
             </div>
-            
 
           </div>
         </div>
       </section>
 
-      {/* WhatsApp Integration Section */}
-      <WhatsAppPromo />
+      {/* Visual showcase section replacing the WhatsApp mockup */}
       
       {/* Cognitive Enhancement Section */}
       <section className="py-24 relative overflow-hidden bg-gradient-to-b from-background to-muted/30">
