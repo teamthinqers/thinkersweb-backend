@@ -64,9 +64,12 @@ const WhatsAppContactButton: React.FC = () => {
     // Try to open WhatsApp mobile app first
     let mobileAppLink;
     
-    // Support both formats: api.whatsapp.com and wa.me
+    // Support all WhatsApp formats including WhatsApp Business Platform
     if (finalUrl.includes('api.whatsapp.com/send')) {
       mobileAppLink = finalUrl.replace('https://api.whatsapp.com/send', 'whatsapp://send');
+    } else if (finalUrl.includes('wa.me/business/')) {
+      // Business Platform ID format - keep as is, will open in WhatsApp app
+      mobileAppLink = finalUrl;
     } else if (finalUrl.includes('wa.me/')) {
       mobileAppLink = finalUrl.replace('https://wa.me/', 'whatsapp://send?phone=');
     } else {
