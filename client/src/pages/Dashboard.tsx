@@ -31,8 +31,11 @@ const Dashboard: React.FC<DashboardProps> = ({ onEntryClick }) => {
     }]
   });
 
+  console.log('Dashboard received data:', data);
+  
+  // Ensure we handle the data correctly
   const entries = data?.entries || [];
-  const totalEntries = data?.total || 0;
+  const totalEntries = data?.total ? parseInt(data.total) : 0;
 
   const handleSort = (value: string) => {
     // Parse sort option value (format: "field_order")
