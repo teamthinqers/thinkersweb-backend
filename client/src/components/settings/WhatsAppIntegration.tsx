@@ -235,15 +235,15 @@ export default function WhatsAppIntegration() {
           <div>
             <CardTitle className="flex items-center gap-2">
               <Phone className="h-5 w-5" />
-              DotSpark WhatsApp Chatbot
+              Neural Extension via WhatsApp
             </CardTitle>
             <CardDescription>
-              Activate DotSpark's WhatsApp chatbot to add learning dots through conversation
+              Connect your neural extension through WhatsApp to capture and process your thoughts seamlessly
             </CardDescription>
           </div>
           {registered && (
-            <Badge className="bg-gradient-to-r from-green-400 to-green-600 hover:from-green-500 hover:to-green-700">
-              <Check className="h-3 w-3 mr-1" /> Enabled
+            <Badge className="bg-gradient-to-r from-purple-400 to-indigo-600 hover:from-purple-500 hover:to-indigo-700">
+              <Check className="h-3 w-3 mr-1" /> Connected
             </Badge>
           )}
         </div>
@@ -345,11 +345,11 @@ export default function WhatsAppIntegration() {
                 </p>
               </div>
               <Button 
-                onClick={handleRequestOTP} 
-                disabled={requestingOtp || !phoneNumber || phoneNumber.length < 10}
+                onClick={handleDirectRegistration} 
+                disabled={registering || !phoneNumber || phoneNumber.length < 10}
               >
-                {requestingOtp ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <ShieldCheck className="h-4 w-4 mr-2" />}
-                Send Verification
+                {registering ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <ShieldCheck className="h-4 w-4 mr-2" />}
+                Activate Neural Extension
               </Button>
             </div>
           </div>
@@ -364,7 +364,7 @@ export default function WhatsAppIntegration() {
             disabled={unregistering}
           >
             {unregistering ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <X className="h-4 w-4 mr-2" />}
-            Deactivate Chatbot
+            Disconnect Neural Extension
           </Button>
         </CardFooter>
       )}
