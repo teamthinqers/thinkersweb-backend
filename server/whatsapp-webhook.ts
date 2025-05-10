@@ -9,7 +9,7 @@ const whatsappWebhookRouter = Router();
 // Constants for WhatsApp Business API
 const WHATSAPP_VERIFY_TOKEN = 'dotspark-neural-extension-token';
 const WHATSAPP_API_VERSION = 'v18.0';
-const WHATSAPP_PHONE_NUMBER_ID = process.env.WHATSAPP_PHONE_NUMBER_ID || '';
+const WHATSAPP_PHONE_NUMBER_ID = process.env.WHATSAPP_PHONE_NUMBER_ID || '2519650718400538'; // Your WhatsApp Business Account ID
 const WHATSAPP_ACCESS_TOKEN = process.env.WHATSAPP_ACCESS_TOKEN || '';
 const META_API_URL = `https://graph.facebook.com/${WHATSAPP_API_VERSION}`;
 
