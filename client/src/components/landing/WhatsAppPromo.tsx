@@ -6,6 +6,15 @@ import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
 
+// Function to open WhatsApp chat directly
+function openWhatsAppChat() {
+  // Replace with your actual Twilio WhatsApp number
+  const whatsappNumber = "14155238886"; // Example: This is a Twilio demo number
+  const message = "Hello! I'd like to learn more about DotSpark.";
+  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+  window.open(whatsappUrl, '_blank');
+}
+
 export default function WhatsAppPromo() {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [registering, setRegistering] = useState(false);
@@ -149,6 +158,16 @@ export default function WhatsAppPromo() {
                     <span>Type "help" to see all available commands</span>
                   </li>
                 </ul>
+                
+                <div className="mt-4">
+                  <Button 
+                    onClick={openWhatsAppChat} 
+                    className="bg-green-600 hover:bg-green-700 flex items-center gap-2"
+                  >
+                    <MessageCircle className="h-5 w-5" />
+                    <span>Open WhatsApp Chat</span>
+                  </Button>
+                </div>
               </div>
             ) : (
               <div className="space-y-6 mt-8">
@@ -161,12 +180,20 @@ export default function WhatsAppPromo() {
                     <li><span className="font-medium text-foreground">Create your DotSpark account</span> - Sign up and get started with the web platform</li>
                     <li><span className="font-medium text-foreground">Activate the WhatsApp chatbot</span> - Register your phone number to chat with DotSpark AI</li>
                   </ol>
-                  <div className="flex justify-center mt-4">
+                  <div className="flex justify-center gap-4 mt-4">
                     <Link href="/auth?redirect=settings">
                       <Button className="bg-primary">
                         Sign Up Now <ArrowRight className="ml-2 h-5 w-5" />
                       </Button>
                     </Link>
+                    
+                    <Button 
+                      onClick={openWhatsAppChat}
+                      className="bg-green-600 hover:bg-green-700 flex items-center gap-2"
+                    >
+                      <MessageCircle className="h-5 w-5" />
+                      <span>Try on WhatsApp</span>
+                    </Button>
                   </div>
                 </div>
                 
