@@ -865,12 +865,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // WhatsApp chatbot webhook endpoint for receiving messages via Twilio
   app.post(`${apiPrefix}/whatsapp/webhook`, async (req, res) => {
     try {
+      console.log("💬 RECEIVED WEBHOOK from WhatsApp: ", req.body);
+      
       // Extract message from Twilio WhatsApp request
       const messageText = req.body.Body;
       const from = req.body.From;
 
       if (!messageText || !from) {
-        console.log("Received invalid Twilio WhatsApp message:", req.body);
+        console.log("❌ Received invalid Twilio WhatsApp message:", req.body);
         // Not a valid message or missing required fields
         return res.status(200).send(); // Always return 200 to Twilio
       }
