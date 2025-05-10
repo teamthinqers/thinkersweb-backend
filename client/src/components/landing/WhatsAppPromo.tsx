@@ -1,10 +1,5 @@
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Smartphone, ArrowRight, MessageCircle, Check } from "lucide-react";
-import { apiRequest } from "@/lib/queryClient";
-import { useToast } from "@/hooks/use-toast";
-import { Link } from "wouter";
+import { Smartphone, MessageCircle } from "lucide-react";
 
 // Function to open WhatsApp chat directly in the app
 function openWhatsAppChat() {
@@ -38,51 +33,6 @@ function openWhatsAppChat() {
 }
 
 export default function WhatsAppPromo() {
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [registering, setRegistering] = useState(false);
-  const [registered, setRegistered] = useState(false);
-  const { toast } = useToast();
-
-  const handleRegister = async () => {
-    if (!phoneNumber) {
-      toast({
-        title: "Error",
-        description: "Please enter a phone number",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    try {
-      setRegistering(true);
-      const res = await apiRequest("POST", "/api/whatsapp/register", { phoneNumber });
-      const data = await res.json();
-      
-      if (res.ok) {
-        toast({
-          title: "Success",
-          description: "DotSpark WhatsApp chatbot activated! You can now chat with our AI through WhatsApp.",
-        });
-        setRegistered(true);
-      } else {
-        toast({
-          title: "Error",
-          description: data.message || "Failed to activate WhatsApp chatbot",
-          variant: "destructive",
-        });
-      }
-    } catch (error) {
-      console.error("Error activating WhatsApp chatbot:", error);
-      toast({
-        title: "Error",
-        description: "Failed to activate WhatsApp chatbot",
-        variant: "destructive",
-      });
-    } finally {
-      setRegistering(false);
-    }
-  };
-
   return (
     <div className="bg-gradient-to-b from-slate-50 to-white dark:from-gray-900 dark:to-gray-950 py-24 relative overflow-hidden">
       <div className="container mx-auto px-4 md:px-6">
@@ -154,94 +104,80 @@ export default function WhatsAppPromo() {
               Chat with DotSpark AI <span className="gradient-heading">through WhatsApp</span>
             </h2>
             <p className="text-xl text-muted-foreground">
-              After creating your DotSpark account, activate our WhatsApp chatbot to capture learning moments through conversation. Simply chat with our AI to create learning dots.
+              Start using DotSpark AI instantly through WhatsApp - no account needed! Chat directly with our AI to capture learning moments as they happen and organize your knowledge effortlessly.
             </p>
             
-            {registered ? (
-              <div className="space-y-4 mt-8 p-6 bg-gradient-to-br from-green-50 to-teal-50 dark:from-green-950 dark:to-teal-950 rounded-xl border shadow-sm">
-                <div className="flex items-center text-green-600 dark:text-green-400 font-medium">
-                  <Check className="mr-2 h-5 w-5" />
-                  DotSpark WhatsApp Chatbot Activated!
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  You can now chat with DotSpark AI through WhatsApp. Try these commands:
-                </p>
-                <ul className="space-y-2 text-sm">
-                  <li className="flex items-start">
-                    <span className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-100 w-5 h-5 rounded-full flex items-center justify-center mr-2 mt-0.5 text-xs">1</span>
-                    <span>Send any text to create a new learning dot</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-100 w-5 h-5 rounded-full flex items-center justify-center mr-2 mt-0.5 text-xs">2</span>
-                    <span>Start a message with "Q:" to ask about your learnings</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-100 w-5 h-5 rounded-full flex items-center justify-center mr-2 mt-0.5 text-xs">3</span>
-                    <span>Type "help" to see all available commands</span>
-                  </li>
-                </ul>
+            <div className="space-y-6 mt-8">
+              <div className="bg-primary/5 p-6 rounded-lg border border-primary/20">
+                <h3 className="font-semibold text-lg mb-4 text-center">
+                  Start using DotSpark AI right now
+                </h3>
                 
-                <div className="mt-4">
+                <div className="flex justify-center mb-6">
                   <Button 
-                    onClick={openWhatsAppChat} 
-                    className="bg-green-600 hover:bg-green-700 flex items-center gap-2"
+                    onClick={openWhatsAppChat}
+                    className="bg-green-600 hover:bg-green-700 flex items-center gap-2 py-6 px-8"
+                    size="lg"
                   >
-                    <MessageCircle className="h-5 w-5" />
-                    <span>Open WhatsApp Chat</span>
+                    <MessageCircle className="h-6 w-6" />
+                    <span className="text-lg font-medium">Chat on WhatsApp</span>
                   </Button>
                 </div>
+                
+                <div className="grid grid-cols-3 gap-4 mt-6">
+                  <div className="text-center">
+                    <div className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-100 w-8 h-8 rounded-full flex items-center justify-center mx-auto">
+                      <span className="font-semibold">1</span>
+                    </div>
+                    <p className="text-xs mt-2">Send any text to create a learning entry</p>
+                  </div>
+                  <div className="text-center">
+                    <div className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-100 w-8 h-8 rounded-full flex items-center justify-center mx-auto">
+                      <span className="font-semibold">2</span>
+                    </div>
+                    <p className="text-xs mt-2">Start with "Q:" to ask questions</p>
+                  </div>
+                  <div className="text-center">
+                    <div className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-100 w-8 h-8 rounded-full flex items-center justify-center mx-auto">
+                      <span className="font-semibold">3</span>
+                    </div>
+                    <p className="text-xs mt-2">Type "help" for all commands</p>
+                  </div>
+                </div>
               </div>
-            ) : (
-              <div className="space-y-6 mt-8">
-                <div className="bg-primary/5 p-5 rounded-lg border border-primary/20">
-                  <h3 className="font-semibold text-lg mb-2 flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 text-primary"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="M8 13h8"></path><path d="M8 17h5"></path></svg>
-                    Simple 2-Step Process
-                  </h3>
-                  <ol className="list-decimal pl-5 space-y-3 text-muted-foreground">
-                    <li><span className="font-medium text-foreground">Create your DotSpark account</span> - Sign up and get started with the web platform</li>
-                    <li><span className="font-medium text-foreground">Activate the WhatsApp chatbot</span> - Register your phone number to chat with DotSpark AI</li>
-                  </ol>
-                  <div className="flex justify-center gap-4 mt-4">
-                    <Link href="/auth?redirect=settings">
-                      <Button className="bg-primary">
-                        Sign Up Now <ArrowRight className="ml-2 h-5 w-5" />
-                      </Button>
-                    </Link>
-                    
-                    <Button 
-                      onClick={openWhatsAppChat}
-                      className="bg-green-600 hover:bg-green-700 flex items-center gap-2"
-                    >
-                      <MessageCircle className="h-5 w-5" />
-                      <span>Try on WhatsApp</span>
-                    </Button>
+              
+              <div className="flex flex-col gap-4 mt-4">
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mt-0.5">
+                    <MessageCircle className="h-4 w-4" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg">Chat-Based Learning</h3>
+                    <p className="text-muted-foreground">Have natural conversations with DotSpark AI through WhatsApp to capture learning moments as they happen.</p>
                   </div>
                 </div>
                 
-                <div className="flex flex-col gap-4 mt-8">
-                  <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mt-0.5">
-                      <MessageCircle className="h-4 w-4" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-lg">Chat-Based Learning</h3>
-                      <p className="text-muted-foreground">Have natural conversations with DotSpark AI through WhatsApp to capture learning moments as they happen.</p>
-                    </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mt-0.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 16.8a7.14 7.14 0 0 0 2.24-3.22 8.34 8.34 0 0 0 .52-2.91c.04-3.34.84-4.2 1.24-4.83"></path><path d="M18 13.84a3.23 3.23 0 0 0 .52-1.47 3.67 3.67 0 0 0-.28-2.3c-.52-1.3-2-3.06-2-4.6 0-1.48 1.15-2.5 2.24-3.3"></path><path d="M11.66 6.5a4 4 0 0 0-1.35 1.14"></path><path d="M21.92 15.66A13.07 13.07 0 0 0 22 13.5c0-3.5-2-3.5-2-5 0-1.53 1-2.5 2-3.29a1 1 0 0 0 0-1.42A10.66 10.66 0 0 0 20 2.77a10.64 10.64 0 0 0-10 0 10.66 10.66 0 0 0-2 1.02 1 1 0 0 0 0 1.42C9 6 10 6.97 10 8.5c0 .79-.17 1.16-.59 1.63"></path><path d="M8.24 17.67A7.44 7.44 0 0 0 10 14c.5 1.5 2 3 2 5 0 1.16-.45 1.96-1.22 2.68"></path><path d="M13.76 17.67A7.44 7.44 0 0 1 12 14c-.5 1.5-2 3-2 5 0 1.16.45 1.96 1.22 2.68"></path><path d="M10 2l2.5 6.5L14 8l1.5-.5L18 2"></path></svg>
                   </div>
-                  
-                  <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mt-0.5">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 16.8a7.14 7.14 0 0 0 2.24-3.22 8.34 8.34 0 0 0 .52-2.91c.04-3.34.84-4.2 1.24-4.83"></path><path d="M18 13.84a3.23 3.23 0 0 0 .52-1.47 3.67 3.67 0 0 0-.28-2.3c-.52-1.3-2-3.06-2-4.6 0-1.48 1.15-2.5 2.24-3.3"></path><path d="M11.66 6.5a4 4 0 0 0-1.35 1.14"></path><path d="M21.92 15.66A13.07 13.07 0 0 0 22 13.5c0-3.5-2-3.5-2-5 0-1.53 1-2.5 2-3.29a1 1 0 0 0 0-1.42A10.66 10.66 0 0 0 20 2.77a10.64 10.64 0 0 0-10 0 10.66 10.66 0 0 0-2 1.02 1 1 0 0 0 0 1.42C9 6 10 6.97 10 8.5c0 .79-.17 1.16-.59 1.63"></path><path d="M8.24 17.67A7.44 7.44 0 0 0 10 14c.5 1.5 2 3 2 5 0 1.16-.45 1.96-1.22 2.68"></path><path d="M13.76 17.67A7.44 7.44 0 0 1 12 14c-.5 1.5-2 3-2 5 0 1.16.45 1.96 1.22 2.68"></path><path d="M10 2l2.5 6.5L14 8l1.5-.5L18 2"></path></svg>
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-lg">AI-Powered Processing</h3>
-                      <p className="text-muted-foreground">Our AI automatically organizes your messages into structured learning dots with titles, categories, and tags.</p>
-                    </div>
+                  <div>
+                    <h3 className="font-semibold text-lg">AI-Powered Processing</h3>
+                    <p className="text-muted-foreground">Our AI automatically organizes your messages into structured learning dots with titles, categories, and tags.</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mt-0.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg">Get more with an account</h3>
+                    <p className="text-muted-foreground">Create a free account to access your personal dashboard, analytics, and advanced features.</p>
                   </div>
                 </div>
               </div>
-            )}
+            </div>
           </div>
         </div>
       </div>
