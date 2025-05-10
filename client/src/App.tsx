@@ -14,6 +14,7 @@ import LogoPage from "@/pages/LogoPage";
 import AuthPage from "@/pages/auth-page";
 import Settings from "@/pages/Settings";
 import WhatsAppAdmin from "@/pages/WhatsAppAdmin";
+import ActivateNeuralExtension from "@/pages/ActivateNeuralExtension";
 import AppLayout from "@/components/layout/AppLayout";
 import EntryDetail from "@/components/entries/EntryDetail";
 import ChatEntryForm from "@/components/chat/ChatEntryForm";
@@ -163,6 +164,7 @@ function Router() {
       <Route path="/settings" component={() => <AppWithLayout />} />
       <Route path="/whatsapp-admin" component={WhatsAppAdmin} />
       <Route path="/logo" component={LogoPage} />
+      <Route path="/activate" component={ActivateNeuralExtension} />
       <Route component={NotFound} />
     </Switch>
   );

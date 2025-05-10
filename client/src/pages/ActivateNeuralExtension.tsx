@@ -12,6 +12,9 @@ import { NeuralWhatsAppLinking } from '@/components/neural/NeuralWhatsAppLinking
 export default function ActivateNeuralExtension() {
   const [, setLocation] = useLocation();
   const { user, isLoading: isAuthLoading, loginWithGoogle } = useAuth();
+  
+  // Function to navigate back to the home page
+  const goToHome = () => setLocation("/");
   const { isWhatsAppConnected, isLoading: isWhatsAppStatusLoading } = useWhatsAppStatus();
   const [activeTab, setActiveTab] = useState<string>(user ? 'step2' : 'step1');
 
@@ -51,6 +54,12 @@ export default function ActivateNeuralExtension() {
 
   return (
     <div className="container max-w-4xl mx-auto px-4 py-10">
+      <div className="flex justify-end mb-4">
+        <Button variant="ghost" onClick={goToHome} className="text-muted-foreground hover:text-foreground">
+          <ArrowRight className="h-4 w-4 mr-2 rotate-180" />
+          Back to Home
+        </Button>
+      </div>
       <div className="text-center mb-8">
         <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2">
           Activate Your <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-primary to-blue-600">Neural Extension</span>
