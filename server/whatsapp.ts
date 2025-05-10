@@ -210,6 +210,18 @@ export async function sendWhatsAppReply(to: string, message: string): Promise<bo
   }
 }
 
+// This is the welcome message that will be sent to new users
+const WELCOME_MESSAGE = `⚡️ Welcome to DotSpark — Your Neural Extension Begins Here
+
+This isn't just a chat.
+You've just unlocked an active extension of your thinking brain.
+
+DotSpark learns with you, thinks with you, and sharpens every insight you feed into it.
+From reflections to decisions, patterns to action — this is where your intelligence compounds.
+
+Type freely. Think deeply.
+DotSpark is built to grow with your mind.`;
+
 /**
  * Process a message from the DotSpark WhatsApp chatbot using conversational AI
  */
@@ -224,6 +236,28 @@ export async function processWhatsAppMessage(from: string, messageText: string):
       return {
         success: false,
         message: "Your phone number is not linked to a DotSpark account. Please activate the WhatsApp chatbot through the DotSpark web app first.",
+      };
+    }
+    
+    // Normalize the phone number
+    const normalizedPhone = from.replace('whatsapp:', '').trim();
+    
+    // Check if this is the first message from this WhatsApp number
+    // by looking up their message history in the database
+    const whatsappUser = await db.query.whatsappUsers.findFirst({
+      where: eq(whatsappUsers.phoneNumber, normalizedPhone)
+    });
+    
+    // If this is a new user or they haven't sent a message before, send welcome message
+    if (whatsappUser && !whatsappUser.lastMessageSentAt) {
+      // Update the last message timestamp to mark that they've received the welcome message
+      await db.update(whatsappUsers)
+        .set({ lastMessageSentAt: new Date() })
+        .where(eq(whatsappUsers.id, whatsappUser.id));
+      
+      return {
+        success: true,
+        message: WELCOME_MESSAGE
       };
     }
 
