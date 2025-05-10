@@ -111,29 +111,29 @@ export default function LandingPage() {
       </header>
       
       {/* Hero Section */}
-      <section className="bg-gradient-to-b from-primary/5 to-background py-20">
+      <section className="bg-gradient-to-b from-primary/5 to-background py-12 md:py-20">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="flex flex-col items-center gap-8 lg:gap-12 max-w-4xl mx-auto">
-            <div className="space-y-6 text-center">
-              <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm text-primary mb-4">
+          <div className="flex flex-col items-center gap-6 lg:gap-12 max-w-4xl mx-auto">
+            <div className="space-y-4 md:space-y-6 text-center">
+              <div className="inline-block rounded-lg bg-primary/10 px-3 py-1 text-sm text-primary mb-2 md:mb-4">
                 Introducing DotSpark
               </div>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
                 Your <span className="gradient-heading">Neural Extension</span> for Professional Excellence
               </h1>
-              <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
                 DotSpark works as your neural extension, continuously learning and adapting to your cognitive patterns to accelerate your professional growth and unlock excellence.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 pt-4 justify-center">
+              <div className="flex flex-col sm:flex-row gap-3 pt-4 justify-center mobile-stack">
                 {user ? (
-                  <Button size="lg" asChild>
+                  <Button size="lg" asChild className="w-full sm:w-auto">
                     <Link href="/dashboard">
                       Go to Dashboard <ArrowRight className="ml-2 h-5 w-5" />
                     </Link>
                   </Button>
                 ) : (
                   <>
-                    <Button size="lg" asChild>
+                    <Button size="lg" asChild className="w-full sm:w-auto">
                       <Link href="/auth?redirect=settings/whatsapp">
                         Get Started <ArrowRight className="ml-2 h-5 w-5" />
                       </Link>
@@ -149,27 +149,27 @@ export default function LandingPage() {
             </div>
             
             {/* Onboarding Steps */}
-            <div className="w-full pt-8 border-t border-border/40">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-card/50 border rounded-xl p-5 flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-full bg-primary/20 text-primary flex items-center justify-center font-semibold text-lg shrink-0">1</div>
+            <div className="w-full pt-6 md:pt-8 border-t border-border/40">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+                <div className="bg-card/50 border rounded-xl p-4 md:p-5 flex items-start gap-3 md:gap-4">
+                  <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-primary/20 text-primary flex items-center justify-center font-semibold text-base md:text-lg shrink-0">1</div>
                   <div>
-                    <h3 className="font-medium text-lg">Install Your Neural Extension</h3>
-                    <p className="text-muted-foreground">Create your account and define your professional patterns so your neural extension can begin adapting to your thinking</p>
+                    <h3 className="font-medium text-base md:text-lg mb-1">Install Your Neural Extension</h3>
+                    <p className="text-muted-foreground text-sm md:text-base">Create your account and define your professional patterns so your neural extension can begin adapting to your thinking</p>
                   </div>
                 </div>
-                <div className="bg-card/50 border rounded-xl p-5 flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-full bg-primary/20 text-primary flex items-center justify-center font-semibold text-lg shrink-0">2</div>
+                <div className="bg-card/50 border rounded-xl p-4 md:p-5 flex items-start gap-3 md:gap-4">
+                  <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-primary/20 text-primary flex items-center justify-center font-semibold text-base md:text-lg shrink-0">2</div>
                   <div>
-                    <h3 className="font-medium text-lg">Connect via WhatsApp</h3>
-                    <p className="text-muted-foreground">Interact with your neural extension anytime through our intelligent WhatsApp assistant</p>
+                    <h3 className="font-medium text-base md:text-lg mb-1">Connect via WhatsApp</h3>
+                    <p className="text-muted-foreground text-sm md:text-base">Interact with your neural extension anytime through our intelligent WhatsApp assistant</p>
                   </div>
                 </div>
-                <div className="bg-card/50 border rounded-xl p-5 flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-full bg-primary/20 text-primary flex items-center justify-center font-semibold text-lg shrink-0">3</div>
+                <div className="bg-card/50 border rounded-xl p-4 md:p-5 flex items-start gap-3 md:gap-4">
+                  <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-primary/20 text-primary flex items-center justify-center font-semibold text-base md:text-lg shrink-0">3</div>
                   <div>
-                    <h3 className="font-medium text-lg">Achieve Professional Excellence</h3>
-                    <p className="text-muted-foreground">Get frameworks, insights, and knowledge systems that elevate your professional performance and career growth</p>
+                    <h3 className="font-medium text-base md:text-lg mb-1">Achieve Professional Excellence</h3>
+                    <p className="text-muted-foreground text-sm md:text-base">Get frameworks, insights, and knowledge systems that elevate your professional performance and career growth</p>
                   </div>
                 </div>
               </div>
