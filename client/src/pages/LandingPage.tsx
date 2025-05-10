@@ -161,7 +161,7 @@ export default function LandingPage() {
               </h1>
               
               <p className="text-lg md:text-xl lg:text-2xl text-muted-foreground max-w-3xl mx-auto mt-3">
-                Your personal cognitive companion that learns, evolves, and amplifies your professional thinking in real-time
+                A true neural extension that learns, evolves, and amplifies your professional thinking as you use it
               </p>
               
               {/* Neural nodes visualization */}
