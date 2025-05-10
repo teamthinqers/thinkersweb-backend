@@ -12,7 +12,7 @@ export function NeuralWhatsAppLinking() {
   const [copied, setCopied] = useState(false);
   const [authError, setAuthError] = useState(false);
 
-  // Generate a new link code
+  // Generate a new link code and automatically open WhatsApp
   const generateLinkCode = async () => {
     try {
       setLoading(true);
@@ -41,9 +41,15 @@ export function NeuralWhatsAppLinking() {
       setLinkCode(data.linkCode);
       setExpiryTime(new Date(data.expiresAt));
       
+      // Automatically open WhatsApp with the code
+      // Small delay to ensure state is updated
+      setTimeout(() => {
+        openWhatsAppWithCode();
+      }, 300);
+      
       toast({
         title: "Link code generated",
-        description: "Send this code to the DotSpark WhatsApp number",
+        description: "Opening WhatsApp with the linking code...",
       });
     } catch (error) {
       console.error("Error generating link code:", error);
@@ -97,7 +103,7 @@ export function NeuralWhatsAppLinking() {
     if (!linkCode) return;
     
     const phoneNumber = "16067157733";
-    const message = `whatsapp:${linkCode}`;
+    const message = `Hey DotSpark! I'd like to link my WhatsApp with my DotSpark account to access my neural dashboard. Here's my linking code: whatsapp:${linkCode}`;
     
     // Try to open in mobile app first
     const mobileAppLink = `whatsapp://send?phone=${phoneNumber}&text=${encodeURIComponent(message)}`;
@@ -115,10 +121,10 @@ export function NeuralWhatsAppLinking() {
       <div className="bg-amber-50 dark:bg-amber-950 p-4 rounded-md border border-amber-200 dark:border-amber-800 mb-6">
         <h4 className="font-medium text-amber-800 dark:text-amber-400 mb-2">How to link your WhatsApp to DotSpark</h4>
         <ol className="text-sm space-y-2 list-decimal pl-4 text-amber-700 dark:text-amber-400">
-          <li>Generate a link code using the button below</li>
-          <li>Send the code to WhatsApp number <span className="font-mono">+16067157733</span></li>
-          <li>Your WhatsApp will be linked to this DotSpark account</li>
-          <li>All your WhatsApp conversations will now appear in your dashboard</li>
+          <li>Click the "Link WhatsApp" button below</li>
+          <li>WhatsApp will open automatically with a pre-filled message</li>
+          <li>Send the message to complete the linking process</li>
+          <li>All your WhatsApp conversations will then appear in your dashboard</li>
         </ol>
       </div>
       
@@ -154,7 +160,7 @@ export function NeuralWhatsAppLinking() {
             
             <div className="mt-4">
               <Button 
-                onClick={openWhatsAppWithCode}
+                onClick={() => openWhatsAppWithCode()}
                 className="bg-[#25D366] hover:bg-[#128C7E] text-white w-full flex items-center justify-center gap-2"
               >
                 <SendHorizonal className="h-4 w-4" />
@@ -191,7 +197,7 @@ export function NeuralWhatsAppLinking() {
         ) : (
           <>
             <Smartphone className="mr-2 h-4 w-4" />
-            Generate WhatsApp Link Code
+            Link WhatsApp with One Click
           </>
         )}
       </Button>
