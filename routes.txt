@@ -1,0 +1,52 @@
+import type { Express, Request, Response, NextFunction } from "express";
+import { createServer, type Server } from "http";
+import { storage } from "./storage";
+import { z } from "zod";
+import { 
+  insertCategorySchema, 
+  insertEntrySchema, 
+  insertTagSchema, 
+  insertConnectionSchema, 
+  insertSharedEntrySchema, 
+  sharedEntries, 
+  entryTags, 
+  users, 
+  whatsappOtpVerifications,
+  whatsappUsers,
+  type User 
+} from "@shared/schema";
+import { processEntryFromChat, generateChatResponse, type Message } from "./chat";
+import { connectionsService } from "./connections";
+import { db } from "@db";
+import { setupAuth, isAuthenticated } from "./auth";
+import { 
+  extractWhatsAppMessage, 
+  processWhatsAppMessage, 
+  registerWhatsAppUser,
+  unregisterWhatsAppUser,
+  getWhatsAppStatus,
+  requestWhatsAppOTP,
+  verifyWhatsAppOTP
+} from "./whatsapp";
+import { eq, inArray, and, lt, desc } from "drizzle-orm";
+import twilio from "twilio";
+import whatsappWebhookRouter from "./whatsapp-webhook";
+
+  // DotSpark WhatsApp Chatbot Endpoints
+  
+  // Use the WhatsApp Business API webhook router for all WhatsApp webhook requests
+  app.use(`${apiPrefix}/whatsapp/webhook`, whatsappWebhookRouter);
+
+  app.use(`${apiPrefix}/whatsapp/webhook`, whatsappWebhookRouter);
+        .where(eq(whatsappUsers.id, id));
+      
+      res.status(200).json({ message: 'WhatsApp number deactivated successfully' });
+    } catch (error) {
+      console.error('Error deactivating WhatsApp number:', error);
+      res.status(500).json({ error: 'Failed to deactivate WhatsApp number' });
+    }
+  });
+
+  return httpServer;
+}
+}

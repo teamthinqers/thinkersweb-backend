@@ -77,18 +77,21 @@ whatsappWebhookRouter.get('/', (req: Request, res: Response) => {
     console.log('🔍 WhatsApp Webhook Verification Request:', req.query);
     
     // WhatsApp sends a verification request with these query parameters
-    const mode = req.query['hub.mode'];
-    const token = req.query['hub.verify_token'];
-    const challenge = req.query['hub.challenge'];
+    const mode = req.query['hub.mode'] as string | undefined;
+    const token = req.query['hub.verify_token'] as string | undefined;
+    const challenge = req.query['hub.challenge'] as string | undefined;
+    
+    console.log(`Received verification: mode=${mode}, token=${token}, challenge=${challenge}`);
     
     // Verify the token matches our verification token
     if (mode === 'subscribe' && token === WHATSAPP_VERIFY_TOKEN) {
       console.log('✅ WhatsApp webhook verified successfully');
-      // Respond with the challenge to confirm verification
+      // Important: Set content type to text/plain and return ONLY the challenge string
+      res.setHeader('Content-Type', 'text/plain');
       res.status(200).send(challenge);
     } else {
       // Verification failed
-      console.log('❌ WhatsApp webhook verification failed');
+      console.log('❌ WhatsApp webhook verification failed - Invalid mode or token');
       res.sendStatus(403);
     }
   } catch (error) {
