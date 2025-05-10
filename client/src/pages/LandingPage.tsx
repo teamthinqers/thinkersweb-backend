@@ -134,12 +134,22 @@ export default function LandingPage() {
               <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
                 DotSpark works as your neural extension, continuously learning and adapting to your cognitive patterns to accelerate your professional growth and unlock excellence.
               </p>
-              <div className="mt-2 flex bg-secondary/10 rounded-lg p-3 max-w-2xl mx-auto text-sm">
+              <div className="mt-2 flex bg-secondary/10 rounded-lg p-4 max-w-2xl mx-auto text-sm shadow-sm">
                 <div className="flex items-start">
-                  <MessageCircle className="h-5 w-5 mr-2 mt-0.5 text-green-600 shrink-0" />
-                  <p className="text-muted-foreground leading-snug">
-                    <span className="font-medium text-foreground">Start instantly:</span> Use the neural extension directly through WhatsApp with no signup required. <span className="font-medium text-foreground">Upgrade for more:</span> Create an account to access your dashboard with analytics and personalized insights.
-                  </p>
+                  <Brain className="h-6 w-6 mr-3 mt-0.5 text-primary shrink-0" />
+                  <div>
+                    <h4 className="font-medium text-foreground mb-1 text-base">Two ways to access your neural extension:</h4>
+                    <ul className="space-y-2 text-muted-foreground">
+                      <li className="flex items-start">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 text-green-600 shrink-0 mt-0.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                        <span><span className="font-medium text-foreground">Direct WhatsApp access:</span> Start chatting immediately with no signup required</span>
+                      </li>
+                      <li className="flex items-start">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 text-primary shrink-0 mt-0.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                        <span><span className="font-medium text-foreground">Premium dashboard experience:</span> Sign up to unlock analytics, insights, and WhatsApp integration</span>
+                      </li>
+                    </ul>
+                  </div>
                 </div>
               </div>
               <div className="flex flex-col sm:flex-row gap-3 pt-4 justify-center mobile-stack">
@@ -168,26 +178,65 @@ export default function LandingPage() {
             
             {/* Onboarding Steps */}
             <div className="w-full pt-6 md:pt-8 border-t border-border/40">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
-                <div className="bg-card/50 border rounded-xl p-4 md:p-5 flex items-start gap-3 md:gap-4">
-                  <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-green-500/60 text-white flex items-center justify-center font-semibold text-base md:text-lg shrink-0">1</div>
-                  <div>
-                    <h3 className="font-medium text-base md:text-lg mb-1">Start Instantly via WhatsApp</h3>
-                    <p className="text-muted-foreground text-sm md:text-base">Begin using your neural extension immediately through WhatsApp - <span className="text-green-600 dark:text-green-500 font-medium">no account required</span></p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+                {/* First column: Account flow */}
+                <div className="bg-primary/5 border border-primary/10 rounded-xl p-5 md:p-6">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-semibold text-lg">1</div>
+                    <h3 className="font-medium text-lg text-primary">Premium Dashboard Experience</h3>
+                  </div>
+                  
+                  <div className="pl-14 space-y-6">
+                    <div className="space-y-2">
+                      <div className="font-medium">Sign Up for DotSpark Account <span className="text-xs bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 px-1.5 py-0.5 rounded">Optional</span></div>
+                      <p className="text-muted-foreground text-sm">Create an account to unlock personalized dashboard with analytics and insights</p>
+                      <Button asChild variant="outline" size="sm" className="mt-2">
+                        <Link href="/auth">Create Account</Link>
+                      </Button>
+                    </div>
+                    
+                    <div className="space-y-2 pt-2 border-t border-primary/10">
+                      <div className="font-medium">Connect WhatsApp to Dashboard</div>
+                      <p className="text-muted-foreground text-sm">Link your WhatsApp to sync conversations with your personalized dashboard</p>
+                      <Button asChild size="sm" className="mt-2">
+                        <Link href="/auth?redirect=settings/whatsapp">Connect WhatsApp</Link>
+                      </Button>
+                    </div>
                   </div>
                 </div>
-                <div className="bg-card/50 border rounded-xl p-4 md:p-5 flex items-start gap-3 md:gap-4">
-                  <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-primary/20 text-primary flex items-center justify-center font-semibold text-base md:text-lg shrink-0">2</div>
-                  <div>
-                    <h3 className="font-medium text-base md:text-lg mb-1">Create Your Account <span className="text-xs font-medium bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 px-1.5 py-0.5 rounded">Optional</span></h3>
-                    <p className="text-muted-foreground text-sm md:text-base">Upgrade to access your personal dashboard with insights, analytics and enhanced features</p>
+                
+                {/* Second column: Direct WhatsApp flow */}
+                <div className="bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-900/30 rounded-xl p-5 md:p-6">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 rounded-full bg-green-600 text-white flex items-center justify-center font-semibold text-lg">2</div>
+                    <h3 className="font-medium text-lg text-green-700 dark:text-green-500">Direct WhatsApp Access</h3>
                   </div>
-                </div>
-                <div className="bg-card/50 border rounded-xl p-4 md:p-5 flex items-start gap-3 md:gap-4">
-                  <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-purple-500/60 text-white flex items-center justify-center font-semibold text-base md:text-lg shrink-0">3</div>
-                  <div>
-                    <h3 className="font-medium text-base md:text-lg mb-1">Link WhatsApp to Dashboard <span className="text-xs font-medium bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 px-1.5 py-0.5 rounded">Premium</span></h3>
-                    <p className="text-muted-foreground text-sm md:text-base">Sync your WhatsApp conversations with your dashboard to track insights and get comprehensive analytics</p>
+                  
+                  <div className="pl-14 space-y-4">
+                    <div className="space-y-2">
+                      <div className="font-medium">Start Using Your Neural Extension <span className="text-xs bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-500 px-1.5 py-0.5 rounded">No Signup</span></div>
+                      <p className="text-muted-foreground text-sm">Message our WhatsApp number to interact with your neural extension immediately</p>
+                      
+                      <div className="bg-white dark:bg-black/20 shadow-sm rounded-lg p-3 mt-2 flex items-center justify-between">
+                        <div className="flex items-center">
+                          <svg className="w-5 h-5 mr-2 text-[#25D366]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" fill="currentColor">
+                            <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157z"></path>
+                          </svg>
+                          <span className="font-mono text-sm">+1 (606) 715-7733</span>
+                        </div>
+                        <Button size="sm" variant="ghost" className="ml-2 bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-500 hover:bg-green-200 dark:hover:bg-green-900/60 rounded-md" onClick={() => {
+                          const whatsappNumber = "16067157733";
+                          const mobileAppLink = `whatsapp://send?phone=${whatsappNumber}`;
+                          window.location.href = mobileAppLink;
+                          setTimeout(() => {
+                            const webFallbackUrl = `https://wa.me/${whatsappNumber}`;
+                            window.location.href = webFallbackUrl;
+                          }, 500);
+                        }}>
+                          Chat Now
+                        </Button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
