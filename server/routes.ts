@@ -118,6 +118,51 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ error: 'Failed to get WhatsApp contact information' });
     }
   });
+  
+  // Generate a linking code for connecting WhatsApp to a DotSpark account
+  app.post(`${apiPrefix}/whatsapp/generate-link-code`, isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      if (!req.user || !req.user.id) {
+        return res.status(401).json({ error: 'You must be logged in to generate a link code' });
+      }
+      
+      const userId = req.user.id;
+      
+      // Generate a random 6-digit code
+      const linkCode = Math.floor(100000 + Math.random() * 900000).toString();
+      
+      // Store the code in the database with a 15-minute expiration
+      const expiresAt = new Date();
+      expiresAt.setMinutes(expiresAt.getMinutes() + 15); // 15 minute expiration
+      
+      // Delete any previous unverified codes for this user
+      await db.delete(whatsappOtpVerifications)
+        .where(and(
+          eq(whatsappOtpVerifications.userId, userId),
+          eq(whatsappOtpVerifications.verified, false)
+        ));
+      
+      // Insert the new verification code
+      await db.insert(whatsappOtpVerifications).values({
+        userId,
+        phoneNumber: "", // Will be filled when the user sends the code from WhatsApp
+        otpCode: linkCode,
+        verified: false,
+        expiresAt,
+      });
+      
+      // Return the code to the client
+      res.status(200).json({ 
+        linkCode,
+        expiresAt,
+        message: "Send this code to the WhatsApp number within 15 minutes to link your account"
+      });
+      
+    } catch (err) {
+      console.error("Error generating WhatsApp link code:", err);
+      res.status(500).json({ error: 'Failed to generate link code' });
+    }
+  });
 
   // Direct WhatsApp registration (no OTP needed)
   app.post(`${apiPrefix}/whatsapp/direct-register`, isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {

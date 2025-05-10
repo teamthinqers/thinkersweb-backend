@@ -274,7 +274,78 @@ export async function processWhatsAppMessage(from: string, messageText: string):
           "🔄 *Continuous Learning* - Your neural extension evolves with each interaction\n\n" +
           "Just communicate naturally - chat with your neural extension like you would with ChatGPT, ask questions, discuss ideas, or explore topics of interest.",
       };
-    } 
+    }
+    
+    // Check if this is a linking code (6-digit number)
+    const linkCodeRegex = /^\d{6}$/;
+    if (linkCodeRegex.test(messageText.trim())) {
+      const linkCode = messageText.trim();
+      const normalizedPhone = from.replace('whatsapp:', '').trim();
+      
+      console.log(`Attempting to link WhatsApp number ${normalizedPhone} with code ${linkCode}`);
+      
+      // Find the verification record with this code
+      const verification = await db.query.whatsappOtpVerifications.findFirst({
+        where: and(
+          eq(whatsappOtpVerifications.otpCode, linkCode),
+          eq(whatsappOtpVerifications.verified, false),
+          gt(whatsappOtpVerifications.expiresAt, new Date())
+        )
+      });
+      
+      if (!verification) {
+        return {
+          success: true,
+          message: "⚠️ *Invalid or Expired Code*\n\n" +
+            "The code you entered is either invalid or has expired. Please generate a new code from the DotSpark dashboard.\n\n" +
+            "To generate a new code:\n" +
+            "1. Log in to your DotSpark account\n" +
+            "2. Go to Settings > WhatsApp Integration\n" +
+            "3. Click 'Generate New Link Code'\n" +
+            "4. Send the new code to this chat"
+        };
+      }
+      
+      // Valid code found! Update the verification record with the phone number
+      await db.update(whatsappOtpVerifications)
+        .set({
+          phoneNumber: normalizedPhone,
+          verified: true
+        })
+        .where(eq(whatsappOtpVerifications.id, verification.id));
+      
+      // Check if this phone is already registered with another user
+      const existingWhatsappUser = await db.query.whatsappUsers.findFirst({
+        where: eq(whatsappUsers.phoneNumber, normalizedPhone)
+      });
+      
+      if (existingWhatsappUser) {
+        // Update the existing record to point to the new user
+        await db.update(whatsappUsers)
+          .set({
+            userId: verification.userId,
+            active: true,
+            lastMessageSentAt: new Date(),
+            updatedAt: new Date()
+          })
+          .where(eq(whatsappUsers.phoneNumber, normalizedPhone));
+      } else {
+        // Create a new WhatsApp user record
+        await db.insert(whatsappUsers).values({
+          userId: verification.userId,
+          phoneNumber: normalizedPhone,
+          active: true,
+          lastMessageSentAt: new Date()
+        });
+      }
+      
+      return {
+        success: true,
+        message: "✅ *DotSpark Account Successfully Linked*\n\n" +
+          "Your WhatsApp number is now linked to your DotSpark account. All your conversations here will be available in your dashboard.\n\n" +
+          "Your neural extension is now fully synchronized with your account, providing personalized insights based on your previous interactions and learning entries."
+      };
+    }
     
     if (messageText.toLowerCase() === "summary") {
       return {
