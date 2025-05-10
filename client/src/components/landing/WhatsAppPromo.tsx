@@ -108,42 +108,16 @@ export default function WhatsAppPromo() {
             </p>
             
             <div className="space-y-6 mt-8">
-              <div className="bg-primary/5 p-6 rounded-lg border border-primary/20">
-                <h3 className="font-semibold text-lg mb-4 text-center">
-                  Start using DotSpark AI right now
-                </h3>
-                
-                <div className="flex justify-center mb-6">
-                  <Button 
-                    onClick={openWhatsAppChat}
-                    className="bg-green-600 hover:bg-green-700 flex items-center gap-2 py-6 px-8"
-                    size="lg"
-                  >
-                    <MessageCircle className="h-6 w-6" />
-                    <span className="text-lg font-medium">Chat on WhatsApp</span>
-                  </Button>
-                </div>
-                
-                <div className="grid grid-cols-3 gap-4 mt-6">
-                  <div className="text-center">
-                    <div className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-100 w-8 h-8 rounded-full flex items-center justify-center mx-auto">
-                      <span className="font-semibold">1</span>
-                    </div>
-                    <p className="text-xs mt-2">Send any text to create a learning entry</p>
-                  </div>
-                  <div className="text-center">
-                    <div className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-100 w-8 h-8 rounded-full flex items-center justify-center mx-auto">
-                      <span className="font-semibold">2</span>
-                    </div>
-                    <p className="text-xs mt-2">Start with "Q:" to ask questions</p>
-                  </div>
-                  <div className="text-center">
-                    <div className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-100 w-8 h-8 rounded-full flex items-center justify-center mx-auto">
-                      <span className="font-semibold">3</span>
-                    </div>
-                    <p className="text-xs mt-2">Type "help" for all commands</p>
-                  </div>
-                </div>
+              <div className="flex justify-center py-12 relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-950/40 dark:to-blue-950/40 rounded-2xl opacity-70"></div>
+                <Button 
+                  onClick={openWhatsAppChat}
+                  className="bg-gradient-to-r from-green-600 to-green-500 hover:from-green-500 hover:to-green-600 flex items-center gap-3 py-8 px-10 rounded-xl shadow-lg transform transition-transform hover:scale-105 relative z-10"
+                  size="lg"
+                >
+                  <MessageCircle className="h-7 w-7" />
+                  <span className="text-xl font-medium">Chat on WhatsApp</span>
+                </Button>
               </div>
               
               <div className="flex flex-col gap-4 mt-4">
