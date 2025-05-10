@@ -980,9 +980,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get WhatsApp contact number for the frontend
   app.get(`${apiPrefix}/whatsapp/contact`, async (req, res) => {
     try {
-      // Use the regular phone number for WhatsApp - NOT the Business Platform ID
-      // This should be your actual WhatsApp number in international format without + or spaces
-      const whatsappPhoneNumber = "14155238886"; // Replace with your actual WhatsApp number
+      // Use the Twilio WhatsApp sandbox number for testing
+      // This is the standard WhatsApp sandbox number from Twilio
+      const whatsappPhoneNumber = "14155238886";
       
       // Log the phone number being used
       console.log(`Using WhatsApp phone number: ${whatsappPhoneNumber}`);

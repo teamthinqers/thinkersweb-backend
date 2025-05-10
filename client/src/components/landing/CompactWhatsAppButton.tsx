@@ -97,7 +97,7 @@ const CompactWhatsAppButton: React.FC = () => {
   return (
     <Button
       onClick={handleWhatsAppClick}
-      className="bg-gradient-to-r from-[#25D366] to-[#075E54] hover:from-[#128C7E] hover:to-[#063E38] flex items-center gap-1 px-2 py-1 h-8 shadow-md"
+      className="bg-gradient-to-r from-violet-600 to-indigo-900 hover:from-violet-700 hover:to-indigo-950 flex items-center gap-1 px-2 py-1 h-8 shadow-md border border-violet-400/30 hover:scale-[1.05] transition-all duration-200"
       size="sm"
       disabled={isLoading}
     >

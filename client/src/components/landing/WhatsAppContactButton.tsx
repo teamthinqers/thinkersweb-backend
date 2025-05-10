@@ -97,7 +97,7 @@ const WhatsAppContactButton: React.FC = () => {
   return (
     <Button
       onClick={handleWhatsAppClick}
-      className="bg-gradient-to-r from-[#25D366] to-[#075E54] hover:from-[#128C7E] hover:to-[#063E38] flex items-center gap-2 shadow-lg text-white font-medium relative overflow-hidden group"
+      className="bg-gradient-to-r from-violet-600 to-indigo-900 hover:from-violet-700 hover:to-indigo-950 flex items-center gap-2 shadow-lg text-white font-medium relative overflow-hidden group border border-violet-400/30 hover:scale-[1.02] transition-all duration-300"
       disabled={isLoading}
     >
       {/* Neural network background effect */}

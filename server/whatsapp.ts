@@ -401,7 +401,7 @@ export async function processWhatsAppMessage(from: string, messageText: string):
           
           return {
             success: true,
-            message: `${conversationalResponse}\n\n(💡 I've saved this insight to your learning repository)`,
+            message: `${conversationalResponse}\n\n(💡 Neural connection established: insight saved to your neural extension)`,
           };
         } catch (dbError) {
           console.error("Error creating learning dot from WhatsApp chatbot:", dbError);
