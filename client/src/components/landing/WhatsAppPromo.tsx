@@ -115,8 +115,8 @@ export default function WhatsAppPromo() {
           {/* Right column with text and form */}
           <div className="space-y-6 md:space-y-8 order-1 md:order-2 max-w-xl mx-auto md:mx-0">
             <div>
-              <div className="inline-flex items-center rounded-full bg-[#25D366]/10 dark:bg-[#25D366]/20 px-2 py-0.5 text-[10px] text-[#075E54] dark:text-[#25D366] mb-1">
-                <svg className="w-3 h-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" fill="currentColor">
+              <div className="inline-flex items-center rounded-full bg-[#25D366]/10 dark:bg-[#25D366]/20 px-3 py-1 text-xs text-[#075E54] dark:text-[#25D366] mb-2">
+                <svg className="w-3.5 h-3.5 mr-1.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" fill="currentColor">
                   <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157z"></path>
                 </svg>
                 Neural Extension via WhatsApp
@@ -124,7 +124,7 @@ export default function WhatsAppPromo() {
               <h2 className="text-xl md:text-2xl font-bold mb-2">
                 Your Brain's <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-blue-600 dark:from-indigo-400 dark:to-blue-400">Digital Extension</span>
               </h2>
-              <p className="text-sm text-muted-foreground leading-relaxed">
+              <p className="text-base text-muted-foreground leading-relaxed">
                 Tune your neural extension through WhatsApp. Connect to your cognitive ecosystem and extend your brain's capabilities.
               </p>
             </div>
@@ -149,8 +149,8 @@ export default function WhatsAppPromo() {
                   </Button>
                   
                   <div className="flex items-center mt-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1 text-muted-foreground"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><circle cx="12" cy="12" r="4"></circle></svg>
-                    <span className="text-xs text-muted-foreground">AI-powered neural technology</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1.5 text-muted-foreground"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><circle cx="12" cy="12" r="4"></circle></svg>
+                    <span className="text-sm text-muted-foreground">AI-powered neural technology</span>
                   </div>
                 </div>
               </div>
@@ -161,8 +161,8 @@ export default function WhatsAppPromo() {
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
                   </div>
                   <div>
-                    <h3 className="font-medium text-sm">Neural Tuning</h3>
-                    <p className="text-muted-foreground text-xs">Tune your neural extension to your cognitive patterns.</p>
+                    <h3 className="font-medium text-base">Neural Tuning</h3>
+                    <p className="text-muted-foreground text-sm">Tune your neural extension to your cognitive patterns.</p>
                   </div>
                 </div>
                 
@@ -171,8 +171,8 @@ export default function WhatsAppPromo() {
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
                   </div>
                   <div>
-                    <h3 className="font-medium text-sm">Adaptive Networking</h3>
-                    <p className="text-muted-foreground text-xs">Creates neural connections from your inputs.</p>
+                    <h3 className="font-medium text-base">Adaptive Networking</h3>
+                    <p className="text-muted-foreground text-sm">Creates neural connections from your inputs.</p>
                   </div>
                 </div>
                 
@@ -181,8 +181,8 @@ export default function WhatsAppPromo() {
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="M9 15v-2"></path><path d="M12 15v-4"></path><path d="M15 15v-6"></path></svg>
                   </div>
                   <div>
-                    <h3 className="font-medium text-sm">Performance Metrics</h3>
-                    <p className="text-muted-foreground text-xs">View neural connections and cognitive growth.</p>
+                    <h3 className="font-medium text-base">Performance Metrics</h3>
+                    <p className="text-muted-foreground text-sm">View neural connections and cognitive growth.</p>
                   </div>
                 </div>
               </div>
