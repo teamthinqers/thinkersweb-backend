@@ -15,17 +15,28 @@ export function NeuralWhatsAppLinking() {
     try {
       setLoading(true);
       
-      // Create a message with the user's email to identify them
-      const userIdentifier = user?.email || "user"; // Fallback to "user" if email not available
+      // Get the user's email or fallback to user ID
+      const userEmail = user?.email;
       
-      // Create a pre-filled message that includes user information for identification
+      if (!userEmail) {
+        // No email available, provide alternative instructions
+        toast({
+          variant: "destructive",
+          title: "Email not available",
+          description: "Please log in with an account that has an email address to link WhatsApp.",
+        });
+        setLoading(false);
+        return;
+      }
+      
+      // Create a pre-filled message that includes both explicit linking command and email in parentheses
       const phoneNumber = "16067157733";
-      const message = `Hey DotSpark! I'd like to link my WhatsApp with my DotSpark account (${userIdentifier}) to access my neural dashboard.`;
+      const message = `link:${userEmail}`;
       
-      // Show success toast
+      // Show success toast with specific instructions
       toast({
         title: "Opening WhatsApp",
-        description: "WhatsApp will open with a pre-filled message. Just tap send!",
+        description: `WhatsApp will open with your email. Just tap send to link your account!`,
       });
       
       setLinkSent(true);
@@ -40,12 +51,15 @@ export function NeuralWhatsAppLinking() {
         window.location.href = webFallbackUrl;
       }, 500);
       
+      // Add logging for debugging
+      console.log(`Attempted to open WhatsApp with email: ${userEmail}`);
+      
     } catch (error) {
       console.error("Error opening WhatsApp:", error);
       toast({
         variant: "destructive",
         title: "Unable to open WhatsApp",
-        description: "Please try again or manually open WhatsApp and send a message to +16067157733",
+        description: "Please manually send 'link:your-email@example.com' to +16067157733 in WhatsApp",
       });
     } finally {
       setLoading(false);
@@ -57,10 +71,13 @@ export function NeuralWhatsAppLinking() {
       <div className="bg-amber-50 dark:bg-amber-950 p-4 rounded-md border border-amber-200 dark:border-amber-800 mb-6">
         <h4 className="font-medium text-amber-800 dark:text-amber-400 mb-2">How to link your WhatsApp to DotSpark</h4>
         <ol className="text-sm space-y-2 list-decimal pl-4 text-amber-700 dark:text-amber-400">
-          <li>Click the "Link WhatsApp" button below</li>
-          <li>WhatsApp will open automatically with a pre-filled message</li>
-          <li>Just send the message to complete the linking process</li>
+          <li>Click the "Link WhatsApp with One Click" button below</li>
+          <li>WhatsApp will open with a special command containing your email</li>
+          <li>Send this message <strong>without editing it</strong> to complete the link</li>
         </ol>
+        <p className="text-xs mt-2 text-amber-600 dark:text-amber-500">
+          Alternative method: Send "link:your-email@example.com" directly to +16067157733 in WhatsApp
+        </p>
       </div>
       
       {linkSent && (

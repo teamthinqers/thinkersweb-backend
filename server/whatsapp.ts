@@ -284,11 +284,33 @@ export async function processWhatsAppMessage(from: string, messageText: string):
       };
     }
     
-    // Check for email-based linking messages
-    const emailLinkingRegex = /link.*whatsapp.*\(([^\)]+)\)/i;
-    const emailMatch = messageText.match(emailLinkingRegex);
+    // Check for email-based linking messages (with extensive logging)
+    console.log("Checking for email-based linking in message:", messageText);
+    
+    // Try multiple regex patterns to capture various message formats
+    const emailLinkingRegex1 = /link.*whatsapp.*\(([^\)]+)\)/i;
+    const emailLinkingRegex2 = /link.*dotspark.*\(([^\)]+)\)/i;
+    const emailLinkingRegex3 = /.*dotspark.*account.*\(([^\)]+)\)/i;
+    
+    let emailMatch = messageText.match(emailLinkingRegex1) || 
+                    messageText.match(emailLinkingRegex2) || 
+                    messageText.match(emailLinkingRegex3);
+    
+    // Direct email extraction as fallback
+    if (!emailMatch) {
+      console.log("No regex match, trying direct email extraction");
+      // Look for email pattern directly
+      const emailRegex = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/;
+      const directEmailMatch = messageText.match(emailRegex);
+      
+      if (directEmailMatch) {
+        emailMatch = [messageText, directEmailMatch[0]];
+        console.log("Found email directly:", directEmailMatch[0]);
+      }
+    }
     
     if (emailMatch && emailMatch[1]) {
+      console.log("Found email match:", emailMatch[1]);
       const userEmail = emailMatch[1].trim();
       const normalizedPhone = from.replace('whatsapp:', '').trim();
       
@@ -424,18 +446,80 @@ export async function processWhatsAppMessage(from: string, messageText: string):
     }
     
     // Handle link account command
-    if (messageText.toLowerCase() === "link" || 
-        messageText.toLowerCase() === "link account" ||
-        messageText.toLowerCase() === "connect account") {
+    const linkCommand = messageText.toLowerCase();
+    if (linkCommand === "link" || 
+        linkCommand === "link account" || 
+        linkCommand === "connect account") {
       return {
         success: true,
         message: "🔗 *Link Your DotSpark Account*\n\n" +
           "To link this WhatsApp number with your DotSpark account:\n\n" +
+          "Method 1: Use the WhatsApp button in the app\n" +
           "1. Go to dotspark.ai and log in to your account\n" +
-          "2. Navigate to Settings → WhatsApp Integration\n" +
-          "3. Click 'Generate Link Code'\n" +
-          "4. Send the 6-digit code to this chat\n\n" +
-          "Once linked, your WhatsApp conversations will be accessible from your DotSpark dashboard, and your neural extension will be personalized based on your learning history."
+          "2. Click the 'Link WhatsApp with One Click' button\n" +
+          "3. WhatsApp will open with a pre-filled message\n" +
+          "4. Just send that message without changing it\n\n" +
+          "Method 2: Send your email directly\n" +
+          "Just type the following command, replacing with your actual email:\n" +
+          "link:youremail@example.com\n\n" +
+          "Once linked, your WhatsApp conversations will be accessible from your DotSpark dashboard."
+      };
+    }
+    
+    // Handle direct email linking command (link:email@example.com)
+    const directLinkRegex = /^link:(.+@.+\..+)$/i;
+    const directLinkMatch = messageText.match(directLinkRegex);
+    
+    if (directLinkMatch && directLinkMatch[1]) {
+      const userEmail = directLinkMatch[1].trim();
+      const normalizedPhone = from.replace('whatsapp:', '').trim();
+      
+      console.log(`Direct email linking attempt: ${normalizedPhone} with email ${userEmail}`);
+      
+      // Find user by email
+      const user = await db.query.users.findFirst({
+        where: eq(users.email, userEmail)
+      });
+      
+      if (!user) {
+        return {
+          success: true,
+          message: "⚠️ *Account Not Found*\n\n" +
+            `We couldn't find a DotSpark account with email "${userEmail}". Please make sure you're using the same email address that you used to create your DotSpark account.\n\n` +
+            "If you don't have a DotSpark account yet, you can still use this WhatsApp chatbot, but your conversations won't appear in a dashboard."
+        };
+      }
+      
+      // Check if this phone is already registered with another user
+      const existingWhatsappUser = await db.query.whatsappUsers.findFirst({
+        where: eq(whatsappUsers.phoneNumber, normalizedPhone)
+      });
+      
+      if (existingWhatsappUser) {
+        // Update the existing record to point to the new user
+        await db.update(whatsappUsers)
+          .set({
+            userId: user.id,
+            active: true,
+            lastMessageSentAt: new Date(),
+            updatedAt: new Date()
+          })
+          .where(eq(whatsappUsers.phoneNumber, normalizedPhone));
+      } else {
+        // Create a new WhatsApp user record
+        await db.insert(whatsappUsers).values({
+          userId: user.id,
+          phoneNumber: normalizedPhone,
+          active: true,
+          lastMessageSentAt: new Date()
+        });
+      }
+      
+      return {
+        success: true,
+        message: "✅ *DotSpark Account Successfully Linked*\n\n" +
+          `Your WhatsApp number is now linked to your DotSpark account (${userEmail}). All your conversations here will be available in your dashboard.\n\n` +
+          "Your neural extension is now fully synchronized with your account, providing personalized insights based on your previous interactions and learning entries."
       };
     }
     
