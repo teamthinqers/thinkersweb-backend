@@ -1,6 +1,7 @@
 import { Request, Response, Router } from 'express';
 import { processWhatsAppMessage } from './whatsapp';
 import axios from 'axios';
+import twilio from 'twilio';
 
 // Create a router for WhatsApp webhook endpoints
 const whatsappWebhookRouter = Router();
@@ -71,7 +72,7 @@ export async function sendWhatsAppMessage(to: string, text: string): Promise<boo
   }
 }
 
-// GET endpoint for WhatsApp webhook verification
+// GET endpoint for WhatsApp webhook verification (Meta API)
 whatsappWebhookRouter.get('/', (req: Request, res: Response) => {
   try {
     console.log('🔍 WhatsApp Webhook Verification Request:', req.query);
@@ -100,12 +101,52 @@ whatsappWebhookRouter.get('/', (req: Request, res: Response) => {
   }
 });
 
-// POST endpoint for receiving WhatsApp messages
+// POST endpoint for receiving WhatsApp messages - handles BOTH Twilio and Meta formats
 whatsappWebhookRouter.post('/', async (req: Request, res: Response) => {
   try {
     console.log('📩 Received WhatsApp webhook payload:', JSON.stringify(req.body));
     
-    // Always acknowledge receipt quickly (Meta expects fast responses)
+    // Check if this is a Twilio request by looking for Twilio-specific fields
+    if (req.body.Body && req.body.From) {
+      // This is a Twilio request
+      console.log("💬 RECEIVED WEBHOOK from Twilio WhatsApp");
+      
+      // Extract message from Twilio WhatsApp request
+      const messageText = req.body.Body;
+      const from = req.body.From;
+
+      if (!messageText || !from) {
+        console.log("❌ Received invalid Twilio WhatsApp message:", req.body);
+        // Not a valid message or missing required fields
+        return res.status(200).send(); // Always return 200 to Twilio
+      }
+
+      console.log(`Received Twilio WhatsApp message from ${from}: ${messageText}`);
+      
+      // Process the message and get a response
+      const response = await processWhatsAppMessage(from, messageText);
+      
+      // Create a TwiML response to send back to the user
+      const twiml = new twilio.twiml.MessagingResponse();
+      
+      if (response && response.message) {
+        // Add the message to the TwiML response
+        twiml.message(response.message);
+        console.log("Sending WhatsApp chatbot reply:", response.message);
+      } else {
+        // Send a default message if something went wrong
+        twiml.message("Sorry, I couldn't process your message. Please try again later.");
+      }
+      
+      // Set response headers and send TwiML response
+      res.set('Content-Type', 'text/xml');
+      return res.send(twiml.toString());
+    }
+    
+    // If not Twilio, assume it's from Meta WhatsApp Business API
+    // We've already sent 200 to Twilio if that was the case, so now handle Meta
+    
+    // Acknowledge receipt for Meta (if this is a Meta request)
     res.status(200).send('EVENT_RECEIVED');
     
     // Extract the webhook data
@@ -113,7 +154,7 @@ whatsappWebhookRouter.post('/', async (req: Request, res: Response) => {
     
     // Verify this is a WhatsApp Business API message
     if (data.object !== 'whatsapp_business_account') {
-      console.log('Not a WhatsApp Business API message, ignoring');
+      console.log('Not a WhatsApp Business API message');
       return;
     }
     
@@ -142,7 +183,7 @@ whatsappWebhookRouter.post('/', async (req: Request, res: Response) => {
           const from = message.from; // Sender's WhatsApp number
           const messageText = message.text.body; // The message content
           
-          console.log(`📱 Processing WhatsApp message from ${from}: ${messageText}`);
+          console.log(`📱 Processing Meta WhatsApp message from ${from}: ${messageText}`);
           
           // Process the message through our neural extension
           const response = await processWhatsAppMessage(from, messageText);
@@ -158,8 +199,18 @@ whatsappWebhookRouter.post('/', async (req: Request, res: Response) => {
       }
     }
   } catch (error) {
-    // Log errors but don't send response (already sent 200 above)
+    // For Twilio, we need to respond with valid TwiML even for errors
     console.error('Error processing WhatsApp webhook:', error);
+    try {
+      const twiml = new twilio.twiml.MessagingResponse();
+      twiml.message("Our neural extension is experiencing technical difficulties. Please try again later.");
+      res.set('Content-Type', 'text/xml');
+      res.send(twiml.toString());
+    } catch (innerError) {
+      console.error('Error creating error response:', innerError);
+      // As a last resort, just send an empty 200 response
+      res.status(200).send();
+    }
   }
 });
 
