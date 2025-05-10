@@ -231,13 +231,14 @@ export async function processWhatsAppMessage(from: string, messageText: string):
     if (messageText.toLowerCase() === "help") {
       return {
         success: true,
-        message: "Hi there! I'm your DotSpark AI assistant. Here's what I can do:\n\n" +
-          "💬 Chat with you about anything - I'm here to converse!\n" +
-          "❓ Answer questions on any topic you're curious about\n" +
-          "💡 Save insights to your learning repository (use phrases like 'save this' or 'remember this')\n" +
-          "📚 Type 'summary' to see your recent learning entries\n" +
-          "🔄 Just chat normally - no special commands needed for most conversations\n\n" +
-          "What would you like to talk about?",
+        message: "⚡️ Welcome to DotSpark — Your Neural Extension\n\n" +
+          "I'm not just a chatbot - I'm an extension of your thinking brain. Here's how I function as your neural extension:\n\n" +
+          "🧠 Neural Pattern Detection - I identify patterns in your thinking\n" + 
+          "💡 Thought Crystallization - I help refine half-formed thoughts into clear insights\n" +
+          "🔄 Cognitive Enhancement - I expand your analytical capabilities\n" +
+          "💾 Memory Extension - Save insights to your knowledge repository (use phrases like 'save this')\n" +
+          "📚 Type 'summary' to see your recent neural connections\n\n" +
+          "Just think and type naturally - your neural extension is active and ready.",
       };
     } 
     
@@ -245,7 +246,7 @@ export async function processWhatsAppMessage(from: string, messageText: string):
       // TODO: Implement a more sophisticated summary function
       return {
         success: true,
-        message: "Summary feature coming soon! The improved version will provide personalized insights about your learning patterns.",
+        message: "🧠 Neural Extension Memory Status:\n\nYour neural extension is active and processing.\n\nIn future versions, this command will showcase your thought patterns across time, identifying key neural connections and memory clusters. Your neural extension continually evolves with each interaction, strengthening connections between related thoughts.",
       };
     }
     
