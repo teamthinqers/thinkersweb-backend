@@ -766,25 +766,10 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="border-t py-8 md:py-12 bg-muted/30">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="flex flex-col justify-between items-center space-y-4">
-            <div className="flex items-center">
+          <div className="flex flex-col md:flex-row justify-between items-center w-full">
+            <div className="flex items-center mb-4 md:mb-0">
               <Sparkles className="h-4 w-4 md:h-5 md:w-5 text-primary mr-2" />
               <span className="text-lg md:text-xl font-bold">DotSpark</span>
-            </div>
-            
-            <div className="flex flex-wrap justify-center gap-3 text-xs">
-              <a href="/logo.svg" download="dotspark-logo.svg" className="text-primary hover:underline flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                Logo
-              </a>
-              <a href="/logo-transparent.svg" download="dotspark-logo-transparent.svg" className="text-primary hover:underline flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                Transparent Logo
-              </a>
-              <a href="/icon.svg" download="dotspark-icon.svg" className="text-primary hover:underline flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                Icon
-              </a>
             </div>
             
             <div className="text-xs md:text-sm text-muted-foreground">
