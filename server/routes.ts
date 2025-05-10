@@ -979,15 +979,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get WhatsApp contact number for the frontend
   app.get(`${apiPrefix}/whatsapp/contact`, async (req, res) => {
     try {
-      // Return the Meta WhatsApp Business number from environment variables
-      // Format without the + prefix for WhatsApp URL compatibility
-      const phoneNumber = process.env.WHATSAPP_PHONE_NUMBER || process.env.TWILIO_PHONE_NUMBER || "";
-      const formattedNumber = phoneNumber.startsWith('+') ? phoneNumber.substring(1) : phoneNumber;
+      // Hardcoded Meta WhatsApp Business number for direct connectivity
+      // This is the number you provided for the Meta WhatsApp Business integration
+      const directBusinessNumber = "15557649526";
       
-      // Log the phone number being used (redacted for security)
-      console.log(`Using WhatsApp number: ${formattedNumber.substring(0, 4)}*****${formattedNumber.substring(formattedNumber.length - 4)}`);
+      // Log the phone number being used (we're using the Meta Business phone)
+      console.log(`Using WhatsApp Business number: ${directBusinessNumber}`);
       
-      res.json({ phoneNumber: formattedNumber });
+      res.json({ phoneNumber: directBusinessNumber });
     } catch (err) {
       console.error("WhatsApp contact number error:", err);
       handleApiError(err, res);

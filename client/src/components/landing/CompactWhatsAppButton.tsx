@@ -50,8 +50,8 @@ const CompactWhatsAppButton: React.FC = () => {
     
     // Check if the number is a Meta Business API ID (long numeric ID)
     if (whatsappNumber.length > 15) {
-      // Meta Business API format
-      webFallbackUrl = `https://wa.me/message/${whatsappNumber}`;
+      // Meta Business API format for Direct Link
+      webFallbackUrl = `https://api.whatsapp.com/send?phone=15557649526`;
     } else {
       // Regular phone number format
       // Try to open WhatsApp mobile app first

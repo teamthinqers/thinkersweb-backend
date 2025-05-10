@@ -45,41 +45,29 @@ const WhatsAppContactButton: React.FC = () => {
       return;
     }
     
-    // Format the URL differently for Meta Business API vs regular phone numbers
-    let webFallbackUrl = '';
+    // Create both native app and web URIs
+    const mobileAppLink = `whatsapp://send?phone=${whatsappNumber}&text=${encodeURIComponent(message)}`;
+    const webFallbackUrl = `https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${encodeURIComponent(message)}`;
     
-    // Check if the number is a Meta Business API ID (long numeric ID)
-    if (whatsappNumber.length > 15) {
-      // Meta Business API format
-      webFallbackUrl = `https://wa.me/message/${whatsappNumber}`;
-    } else {
-      // Regular phone number format
-      // Try to open WhatsApp mobile app first
-      const mobileAppLink = `whatsapp://send?phone=${whatsappNumber}&text=${encodeURIComponent(message)}`;
-      
-      // Create an invisible anchor element
-      const linkElement = document.createElement('a');
-      linkElement.href = mobileAppLink;
-      linkElement.style.display = 'none';
-      document.body.appendChild(linkElement);
-      
-      // Try to open the mobile app
-      linkElement.click();
-      
-      // Standard wa.me link as fallback
-      webFallbackUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
-      
-      // Clean up the element
-      setTimeout(() => {
-        document.body.removeChild(linkElement);
-      }, 1000);
-    }
+    // Try to open the mobile app first using an invisible anchor
+    const linkElement = document.createElement('a');
+    linkElement.href = mobileAppLink;
+    linkElement.style.display = 'none';
+    document.body.appendChild(linkElement);
+    
+    // Try to open the mobile app
+    linkElement.click();
     
     // Set a fallback timer in case the app doesn't open
     setTimeout(() => {
       // If app didn't open, use the web version
       window.location.href = webFallbackUrl;
     }, 500);
+    
+    // Clean up the element
+    setTimeout(() => {
+      document.body.removeChild(linkElement);
+    }, 1000);
   };
 
   return (
