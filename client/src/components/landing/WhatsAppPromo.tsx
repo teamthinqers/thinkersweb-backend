@@ -55,9 +55,9 @@ export default function WhatsAppPromo() {
             <div className="relative mx-auto w-[280px] h-[580px] bg-black rounded-[3rem] border-[14px] border-black overflow-hidden shadow-xl">
               <div className="absolute top-0 left-0 right-0 h-6 bg-black z-10"></div>
               <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-40 h-6 bg-black rounded-b-xl z-20"></div>
-              <div className="h-full w-full bg-gradient-to-b from-indigo-100 to-sky-50 dark:from-slate-800 dark:to-slate-900 overflow-hidden pt-6">
+              <div className="h-full w-full bg-[#ECE5DD] dark:bg-[#0D1F2B] overflow-hidden pt-6">
                 {/* WhatsApp header */}
-                <div className="bg-[#128C7E] h-16 px-4 flex items-center justify-between text-white">
+                <div className="bg-[#075E54] h-16 px-4 flex items-center justify-between text-white">
                   <div className="flex items-center">
                     <svg className="w-6 h-6 mr-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" fill="white">
                       <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157z"></path>
@@ -73,7 +73,7 @@ export default function WhatsAppPromo() {
                 {/* Chat bubbles */}
                 <div className="p-3 space-y-3">
                   <div className="flex justify-end">
-                    <div className="bg-blue-100 dark:bg-blue-900/60 p-2 rounded-lg max-w-[75%] text-sm ml-auto">
+                    <div className="bg-[#DCF8C6] dark:bg-[#1EAA5E]/60 p-2 rounded-lg max-w-[75%] text-sm ml-auto">
                       Just had an insight about neural network training optimization.
                     </div>
                   </div>
@@ -92,7 +92,7 @@ export default function WhatsAppPromo() {
                   </div>
                   
                   <div className="flex justify-end">
-                    <div className="bg-blue-100 dark:bg-blue-900/60 p-2 rounded-lg max-w-[75%] text-sm ml-auto">
+                    <div className="bg-[#DCF8C6] dark:bg-[#1EAA5E]/60 p-2 rounded-lg max-w-[75%] text-sm ml-auto">
                       How does this connect to my insight about gradient descent?
                     </div>
                   </div>
@@ -113,16 +113,18 @@ export default function WhatsAppPromo() {
           </div>
           
           {/* Right column with text and form */}
-          <div className="space-y-8 md:space-y-10 order-1 md:order-2">
+          <div className="space-y-6 md:space-y-8 order-1 md:order-2 max-w-xl mx-auto md:mx-0">
             <div>
-              <div className="inline-flex items-center rounded-full bg-indigo-100 dark:bg-indigo-900/30 px-3 py-1 text-sm text-indigo-700 dark:text-indigo-300 mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
-                Neural Extension Technology
+              <div className="inline-flex items-center rounded-full bg-[#25D366]/10 dark:bg-[#25D366]/20 px-3 py-1 text-xs text-[#075E54] dark:text-[#25D366] mb-2">
+                <svg className="w-3.5 h-3.5 mr-1.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" fill="currentColor">
+                  <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157z"></path>
+                </svg>
+                Neural Extension via WhatsApp
               </div>
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              <h2 className="text-2xl md:text-3xl font-bold mb-3">
                 Your Brain's <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-blue-600 dark:from-indigo-400 dark:to-blue-400">Digital Extension</span>
               </h2>
-              <p className="text-xl text-muted-foreground">
+              <p className="text-base text-muted-foreground leading-relaxed">
                 Tune your neural extension instantly through WhatsApp. Connect directly to your cognitive ecosystem and extend your brain's capabilities.
               </p>
             </div>
@@ -135,7 +137,7 @@ export default function WhatsAppPromo() {
                 <div className="flex flex-col items-center gap-3 relative z-10">
                   <Button 
                     onClick={openWhatsAppChat}
-                    className="bg-[#128C7E] hover:bg-[#075E54] flex items-center gap-3 py-7 px-10 rounded-xl shadow-lg transform transition-all hover:scale-105 border-2 border-white/20"
+                    className="bg-[#25D366] hover:bg-[#128C7E] flex items-center gap-3 py-7 px-10 rounded-xl shadow-lg transform transition-all hover:scale-105 border-2 border-white/20"
                     size="lg"
                   >
                     <div className="flex items-center gap-4">
