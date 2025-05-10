@@ -980,29 +980,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get WhatsApp contact number for the frontend
   app.get(`${apiPrefix}/whatsapp/contact`, async (req, res) => {
     try {
-      // Use the WhatsApp Business Platform ID directly from environment variable
-      const whatsappPhoneNumber = process.env.WHATSAPP_PHONE_NUMBER || "";
+      // Use the WhatsApp Business Account ID directly
+      const whatsappBusinessId = "2519650718400538";
       
-      // Check if it's the Business Platform ID (usually a long number)
-      const isBusinessPlatformId = whatsappPhoneNumber.length > 10;
+      // Log the WhatsApp Business ID being used
+      console.log(`Using WhatsApp Business ID: ${whatsappBusinessId}`);
       
-      // Log the phone number being used
-      console.log(`Using WhatsApp phone number: ${whatsappPhoneNumber}`);
+      // For WhatsApp Business Platform, use the business ID directly in the URL
+      // This format works with the WhatsApp Business Platform API
+      const directLink = `https://wa.me/business/${whatsappBusinessId}`;
       
-      let directLink;
-      
-      // Handle different WhatsApp number formats
-      if (isBusinessPlatformId) {
-        // For Meta WhatsApp Business Platform IDs, use a direct link
-        directLink = `https://wa.me/p/${whatsappPhoneNumber}`;
-      } else {
-        // For regular WhatsApp numbers
-        directLink = `https://wa.me/${whatsappPhoneNumber}`;
-      }
-      
-      // Return both the phone number and direct API URLs
+      // Return both the business ID and direct API URL
       res.json({ 
-        phoneNumber: whatsappPhoneNumber,
+        phoneNumber: whatsappBusinessId, // Use the business ID in the phoneNumber field for consistency
         directLink: directLink
       });
     } catch (err) {
