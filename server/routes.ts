@@ -979,10 +979,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get WhatsApp contact number for the frontend
   app.get(`${apiPrefix}/whatsapp/contact`, async (req, res) => {
     try {
-      // Return the WhatsApp number from environment variables
+      // Return the Meta WhatsApp Business number from environment variables
       // Format without the + prefix for WhatsApp URL compatibility
-      const phoneNumber = process.env.TWILIO_PHONE_NUMBER || "";
+      const phoneNumber = process.env.WHATSAPP_PHONE_NUMBER || process.env.TWILIO_PHONE_NUMBER || "";
       const formattedNumber = phoneNumber.startsWith('+') ? phoneNumber.substring(1) : phoneNumber;
+      
+      // Log the phone number being used (redacted for security)
+      console.log(`Using WhatsApp number: ${formattedNumber.substring(0, 4)}*****${formattedNumber.substring(formattedNumber.length - 4)}`);
       
       res.json({ phoneNumber: formattedNumber });
     } catch (err) {
