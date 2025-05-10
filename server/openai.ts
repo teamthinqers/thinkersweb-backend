@@ -9,7 +9,29 @@ const openai = new OpenAI({
 // Check if API key is available
 if (!process.env.OPENAI_API_KEY) {
   console.error("OPENAI_API_KEY is not set in the environment variables");
+} else {
+  console.log("OpenAI API key is configured and available");
 }
+
+// Add a test function to verify API connectivity
+async function testOpenAIConnection() {
+  try {
+    console.log("Testing OpenAI API connection...");
+    const response = await openai.chat.completions.create({
+      model: "gpt-4o",
+      messages: [{ role: "user", content: "Hello, are you working?" }],
+      max_tokens: 5
+    });
+    console.log("OpenAI connection successful:", response.choices[0]?.message?.content);
+    return true;
+  } catch (error) {
+    console.error("OpenAI connection test failed:", error);
+    return false;
+  }
+}
+
+// Run the test immediately to check connectivity
+testOpenAIConnection();
 
 // Store conversation history for each user
 // This helps provide context for more coherent conversations

@@ -140,11 +140,16 @@ export async function processWhatsAppMessage(from: string, messageText: string):
   message: string;
 }> {
   try {
+    console.log(`⭐️ Processing WhatsApp message from ${from}: "${messageText}"`);
+    
     // Normalize phone number format
     const normalizedPhone = from.replace('whatsapp:', '').trim();
+    console.log(`⭐️ Normalized phone number: ${normalizedPhone}`);
     
     // Check if this phone is linked to a DotSpark account
     let userId = await getUserIdFromWhatsAppNumber(from);
+    console.log(`⭐️ Found linked userId: ${userId || 'none'}`);
+    
     const isFirstTimeUser = !userId;
     
     // If no linked account found, use the demo account to allow immediate usage
@@ -154,13 +159,21 @@ export async function processWhatsAppMessage(from: string, messageText: string):
       userId = DEMO_USER_ID;
       
       // Auto-register this phone number with the demo account
-      console.log(`Auto-registering new WhatsApp user with demo account: ${normalizedPhone}`);
-      await db.insert(whatsappUsers).values({
-        userId: DEMO_USER_ID,
-        phoneNumber: normalizedPhone,
-        active: true,
-        lastMessageSentAt: new Date(),
-      });
+      console.log(`⭐️ Auto-registering new WhatsApp user with demo account: ${normalizedPhone}`);
+      try {
+        const [newWhatsappUser] = await db.insert(whatsappUsers).values({
+          userId: DEMO_USER_ID,
+          phoneNumber: normalizedPhone,
+          active: true,
+          lastMessageSentAt: new Date(),
+        }).returning();
+        
+        console.log(`⭐️ Successfully registered WhatsApp user: ${JSON.stringify(newWhatsappUser)}`);
+      } catch (error) {
+        // If there's an error (like duplicate entry), just log it but continue
+        console.error("Error registering WhatsApp user:", error);
+        console.log("⚠️ Continuing with demo user ID despite registration error");
+      }
       
       // Later, if they send a link code, we'll update this record to their real account
     }
@@ -461,6 +474,8 @@ export async function processWhatsAppMessage(from: string, messageText: string):
     
     // Process with GPT-4o as the primary neural extension interface
     try {
+      console.log(`⭐️ Calling GPT to generate response for message: "${messageText}"`);
+      
       // Generate response that feels like an extension of the user's own thoughts
       const { text: responseText, isLearning } = await generateAdvancedResponse(
         messageText,
@@ -468,36 +483,33 @@ export async function processWhatsAppMessage(from: string, messageText: string):
         from // Pass phone number to maintain conversation context
       );
       
-      // For linked users (not using demo account), save all conversation entries
-      // This ensures their WhatsApp conversations appear in the dashboard
-      const isLinkedAccount = userId !== 1;
+      console.log(`⭐️ GPT response received: "${responseText?.substring(0, 30)}..."`);
       
-      if (isLinkedAccount) {
-        console.log(`Auto-saving WhatsApp message for linked user ${userId}: "${messageText.substring(0, 30)}..."`);
+      // Always save the entry - for BOTH demo and linked users
+      // This ensures ALL WhatsApp conversations appear in the dashboard
+      try {
+        // Create a basic entry with the message content
+        const currentDate = new Date();
+        const formattedDate = `${currentDate.toLocaleDateString()} ${currentDate.toLocaleTimeString()}`;
         
-        try {
-          // Create a basic entry with the message content
-          const currentDate = new Date();
-          const formattedDate = `${currentDate.toLocaleDateString()} ${currentDate.toLocaleTimeString()}`;
-          
-          // Create the entry in the database with proper fields
-          // Convert to type-safe object using schema fields
-          const newEntry = {
-            userId: userId,
-            title: `WhatsApp Chat - ${formattedDate}`,
-            content: messageText,
-            visibility: "private",
-            isFavorite: false
-          };
-          
-          // Insert using Drizzle ORM
-          await db.insert(entries).values(newEntry);
-          
-          console.log(`Successfully saved WhatsApp message to user's dashboard`);
-        } catch (saveError) {
-          console.error("Error saving WhatsApp message to entries:", saveError);
-          // Continue even if saving fails - don't disrupt the conversation
-        }
+        console.log(`⭐️ Creating WhatsApp entry for userId: ${userId}`);
+        
+        // Create the entry in the database with proper fields
+        const newEntry = {
+          userId: userId,
+          title: `WhatsApp - ${formattedDate}`,
+          content: messageText,
+          visibility: "private", 
+          isFavorite: false
+        };
+        
+        // Insert using Drizzle ORM with returning to get the created ID
+        const [createdEntry] = await db.insert(entries).values(newEntry).returning();
+        
+        console.log(`⭐️ Successfully saved WhatsApp message as entry ID: ${createdEntry.id}`);
+      } catch (saveError) {
+        console.error("⛔️ Error saving WhatsApp message to entries:", saveError);
+        // Continue even if saving fails - don't disrupt the conversation
       }
       
       // Check if this is an explicit save request as a learning entry

@@ -48,11 +48,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.status(200).json({ status: 'ok', time: new Date().toISOString() });
   });
 
-  // Get entries endpoint - temporarily bypassing authentication for debugging
+  // Get entries endpoint - uses auth when available, fallback to demo user
   app.get(`${apiPrefix}/entries`, async (req: Request, res: Response) => {
     try {
-      // Temporary hardcoded userId for debugging
-      const userId = 1; // Assuming user ID 1 exists for testing
+      // Get the authenticated user ID if available, otherwise fallback to demo user
+      let userId = 1; // Demo user ID as fallback
+      
+      // Check if this is an authenticated request
+      if (req.isAuthenticated && req.isAuthenticated() && (req as AuthenticatedRequest).user?.id) {
+        userId = (req as AuthenticatedRequest).user.id;
+        console.log(`⭐️ Getting entries for authenticated user ID: ${userId}`);
+      } else {
+        console.log(`⭐️ Using demo user ID: ${userId} (no authenticated user)`);
+      }
 
       // Parse query parameters
       const limit = req.query.limit ? parseInt(req.query.limit as string) : 10;
@@ -67,8 +75,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         : undefined;
       const sortBy = req.query.sortBy as string || 'createdAt';
       const sortOrder = req.query.sortOrder as 'asc' | 'desc' || 'desc';
-
-      console.log(`⭐️ Getting entries for user ID: ${userId}`);
+      
+      // Add extensive logging to debug issues
+      console.log(`📝 Entries request details:
+      - User ID: ${userId}
+      - Limit: ${limit}, Offset: ${offset}
+      - Category ID: ${categoryId || 'none'}
+      - Sort: ${sortBy} ${sortOrder}
+      - Search: ${searchQuery || 'none'}
+      - Favorite: ${isFavorite !== undefined ? String(isFavorite) : 'not specified'}`);
       
       // Get entries with user ID filter
       const result = await storage.getAllEntries({
@@ -82,6 +97,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         sortBy,
         sortOrder
       });
+
+      console.log(`📋 Found ${result.entries.length} entries (total: ${result.total})`);
+      
+      // For debugging, log first entry if available
+      if (result.entries.length > 0) {
+        console.log(`📄 First entry: ID ${result.entries[0].id}, Title: ${result.entries[0].title}`);
+      }
 
       res.json(result);
     } catch (error) {
