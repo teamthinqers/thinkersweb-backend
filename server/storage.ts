@@ -117,6 +117,7 @@ export const storage = {
 
   // Entry operations
   async getAllEntries(options?: {
+    userId?: number;
     categoryId?: number;
     tagIds?: number[];
     searchQuery?: string;
@@ -126,7 +127,7 @@ export const storage = {
     sortBy?: string;
     sortOrder?: 'asc' | 'desc';
   }): Promise<{ entries: Entry[]; total: number }> {
-    const { categoryId, tagIds, searchQuery, isFavorite, limit = 10, offset = 0, sortBy = 'createdAt', sortOrder = 'desc' } = options || {};
+    const { userId, categoryId, tagIds, searchQuery, isFavorite, limit = 10, offset = 0, sortBy = 'createdAt', sortOrder = 'desc' } = options || {};
     
     let query = db
       .select()
@@ -136,6 +137,11 @@ export const storage = {
     
     // Apply filters
     const conditions: SQL<unknown>[] = [];
+    
+    // Filter by user ID (critical for WhatsApp entries to appear in dashboard)
+    if (userId) {
+      conditions.push(eq(entries.userId, userId));
+    }
     
     if (categoryId) {
       conditions.push(eq(entries.categoryId, categoryId));
