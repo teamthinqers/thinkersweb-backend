@@ -86,12 +86,12 @@ export default function LandingPage() {
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm" className="rounded-full ml-2">
-                    <Avatar className="h-8 w-8 border-2 border-white shadow">
+                  <Button variant="ghost" size="sm" className="rounded-full ml-1 p-0">
+                    <Avatar className="h-7 w-7 md:h-8 md:w-8 border border-white shadow">
                       {user.photoURL ? (
                         <AvatarImage src={user.photoURL} alt={user.displayName || 'User'} />
                       ) : (
-                        <AvatarFallback className="bg-primary text-white">
+                        <AvatarFallback className="bg-primary text-white text-xs md:text-sm">
                           {user.displayName ? user.displayName.charAt(0).toUpperCase() : 'U'}
                         </AvatarFallback>
                       )}
@@ -125,19 +125,19 @@ export default function LandingPage() {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Button asChild size="sm" className="ml-2">
+              <Button asChild size="sm" className="ml-1 h-8 md:h-10 text-xs md:text-sm px-2 md:px-4">
                 <Link href="/auth">
                   Sign In
                 </Link>
               </Button>
             )}
             
-            {/* Mobile menu button */}
+            {/* Mobile menu button - always visible */}
             <div className="md:hidden ml-1">
               <Sheet>
                 <SheetTrigger asChild>
-                  <Button variant="ghost" size="sm" className="px-1">
-                    <Menu className="h-5 w-5" />
+                  <Button variant="ghost" size="sm" className="p-1">
+                    <Menu className="h-4 w-4" />
                   </Button>
                 </SheetTrigger>
                 <SheetContent side="right">
