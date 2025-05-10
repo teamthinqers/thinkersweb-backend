@@ -250,15 +250,15 @@ export async function processWhatsAppMessage(from: string, messageText: string):
       
       // We'll send an immediate welcome message before processing their actual message
       const welcomeMessage = 
-        "⚡️ *Welcome to DotSpark — Your Neural Extension Begins Here*\n\n" +
-        "This isn't just a chat.\n" +
-        "You've just unlocked an active extension of your thinking brain.\n\n" +
-        "DotSpark learns with you, thinks with you, and sharpens every insight you feed into it.\n" +
-        "From reflections to decisions, patterns to action — this is where your intelligence compounds.\n\n" +
-        "Type freely. Think deeply.\n" +
-        "DotSpark is built to grow with your mind.\n\n" +
-        "💡 *Have a DotSpark account?*\n" +
-        "Visit dotspark.ai, log in, and generate a 6-digit code to link this WhatsApp number. Your conversations will appear in your dashboard.";
+        "👋 *Welcome to DotSpark!*\n\n" +
+        "I'm your AI assistant, ready to help you with questions, ideas, or conversations about any topic.\n\n" +
+        "How can I help you today? Feel free to ask me anything or share your thoughts.\n\n" +
+        "💡 *Want more features?*\n" +
+        "If you create a DotSpark account at dotspark.ai, you'll be able to:\n" +
+        "• Save our conversations to your dashboard\n" +
+        "• Track your learning patterns over time\n" +
+        "• Customize your neural extension\n\n" +
+        "Just type 'link' anytime to connect your WhatsApp with your DotSpark account.";
         
       await sendWhatsAppReply(from, welcomeMessage);
       
@@ -269,18 +269,17 @@ export async function processWhatsAppMessage(from: string, messageText: string):
     if (messageText.toLowerCase() === "help") {
       return {
         success: true,
-        message: "⚡️ *Neural Extension Capabilities*\n\n" +
-          "Your DotSpark neural extension performs several cognitive functions:\n\n" +
-          "🧠 *Neural Pattern Recognition* - Identifies connections across your thoughts\n" + 
-          "💡 *Thought Crystallization* - Refines incomplete thoughts into clear insights\n" +
-          "🔄 *Cognitive Enhancement* - Expands your analytical capabilities\n" +
-          "💬 *Interactive Conversation* - Engage in natural back-and-forth dialogue on any topic\n" +
-          "💾 *Memory Augmentation* - Preserves key insights when you use 'save this'\n" +
-          "🔄 *Continuous Learning* - Your neural extension evolves with each interaction\n\n" +
-          "Available commands:\n" +
-          "• Type 'link' to get instructions for connecting to your DotSpark account\n" +
-          "• Type 'summary' to see your neural extension status\n\n" +
-          "Just communicate naturally - chat with your neural extension like you would with ChatGPT, ask questions, discuss ideas, or explore topics of interest.",
+        message: "👋 *How I Can Help You*\n\n" +
+          "I'm your DotSpark AI assistant, here to help with:\n\n" +
+          "💬 *Answering Questions* - Ask me anything you're curious about\n" + 
+          "💡 *Brainstorming Ideas* - Let's explore possibilities together\n" +
+          "📚 *Learning New Concepts* - I can explain topics in simple terms\n" +
+          "🔄 *Having Conversations* - Chat naturally like you would with a friend\n" +
+          "📝 *Solving Problems* - I can help you work through challenges\n\n" +
+          "Simple commands:\n" +
+          "• Type 'link' to connect your WhatsApp to your DotSpark account\n" +
+          "• Type 'help' anytime to see this message again\n\n" +
+          "Feel free to chat naturally - I'm here to help with whatever you need!",
       };
     }
     
@@ -452,17 +451,16 @@ export async function processWhatsAppMessage(from: string, messageText: string):
         linkCommand === "connect account") {
       return {
         success: true,
-        message: "🔗 *Link Your DotSpark Account*\n\n" +
-          "To link this WhatsApp number with your DotSpark account:\n\n" +
-          "Method 1: Use the WhatsApp button in the app\n" +
-          "1. Go to dotspark.ai and log in to your account\n" +
-          "2. Click the 'Link WhatsApp with One Click' button\n" +
-          "3. WhatsApp will open with a pre-filled message\n" +
-          "4. Just send that message without changing it\n\n" +
-          "Method 2: Send your email directly\n" +
-          "Just type the following command, replacing with your actual email:\n" +
+        message: "🔗 *Connect to Your DotSpark Account*\n\n" +
+          "Thanks for wanting to connect! There are two easy ways to link this WhatsApp with your DotSpark account:\n\n" +
+          "*Option 1: From the DotSpark website* (easiest)\n" +
+          "1. Log in at dotspark.ai\n" +
+          "2. Click 'Link WhatsApp with One Click'\n" +
+          "3. Send the pre-filled message that appears in WhatsApp\n\n" +
+          "*Option 2: Right here in chat*\n" +
+          "Simply type the following (using your account email):\n" +
           "link:youremail@example.com\n\n" +
-          "Once linked, your WhatsApp conversations will be accessible from your DotSpark dashboard."
+          "Once connected, all our conversations will appear in your DotSpark dashboard, and I'll be able to provide more personalized assistance based on your saved insights!"
       };
     }
     
