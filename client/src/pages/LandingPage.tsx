@@ -160,8 +160,12 @@ export default function LandingPage() {
                 Your <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-primary to-blue-600 dark:from-indigo-400 dark:via-primary dark:to-blue-400">Neural Extension</span>
               </h1>
               
-              <p className="text-lg md:text-xl lg:text-2xl text-muted-foreground max-w-3xl mx-auto mt-3">
-                A true neural extension that learns, evolves, and amplifies your professional thinking as you use it
+              <p className="text-xl md:text-2xl font-medium text-foreground max-w-3xl mx-auto mt-3">
+                DotSpark isn't just smart. It's personal.
+              </p>
+              
+              <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mt-2">
+                It mirrors your thinking patterns and amplifies your decision-making — getting sharper every time you use it
               </p>
               
               {/* Neural nodes visualization */}
