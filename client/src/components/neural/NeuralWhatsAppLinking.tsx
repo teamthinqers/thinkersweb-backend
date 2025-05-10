@@ -1,132 +1,57 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/use-auth";
-import { apiRequest } from "@/lib/queryClient";
-import { Loader2, Smartphone, Check, Copy, RefreshCw, SendHorizonal } from "lucide-react";
+import { Loader2, Smartphone, MessageCircle, SendHorizonal } from "lucide-react";
 
 export function NeuralWhatsAppLinking() {
   const { toast } = useToast();
+  const { user } = useAuth();
   const [loading, setLoading] = useState(false);
-  const [linkCode, setLinkCode] = useState<string | null>(null);
-  const [expiryTime, setExpiryTime] = useState<Date | null>(null);
-  const [copied, setCopied] = useState(false);
-  const [authError, setAuthError] = useState(false);
+  const [linkSent, setLinkSent] = useState(false);
 
-  // Reset auth error when component loads (since we're already on a protected page)
-  useEffect(() => {
-    setAuthError(false);
-  }, []);
-
-  // Generate a new link code and automatically open WhatsApp
-  const generateLinkCode = async () => {
+  // Direct WhatsApp linking without server interaction
+  const openWhatsAppLink = async () => {
     try {
       setLoading(true);
-      console.log("Attempting to generate WhatsApp link code...");
       
-      const response = await apiRequest("POST", "/api/whatsapp/generate-link-code");
-      console.log("Link code API response status:", response.status);
+      // Create a message with the user's email to identify them
+      const userIdentifier = user?.email || "user"; // Fallback to "user" if email not available
       
-      // Check if we have a successful response first
-      if (!response.ok) {
-        // Get the response text for debugging
-        const responseText = await response.text();
-        console.error(`API error: ${response.status} ${responseText}`);
-        
-        if (response.status === 401) {
-          // This shouldn't happen if we're already on a protected page
-          console.error("Authentication error when generating link code");
-          throw new Error("Session expired. Please refresh the page and try again.");
-        } else {
-          throw new Error(`Service unavailable. Please try again later.`);
-        }
-      }
+      // Create a pre-filled message that includes user information for identification
+      const phoneNumber = "16067157733";
+      const message = `Hey DotSpark! I'd like to link my WhatsApp with my DotSpark account (${userIdentifier}) to access my neural dashboard.`;
       
-      // We have a successful response, parse the JSON
-      const data = await response.json();
-      
-      if (!data.linkCode || !data.expiresAt) {
-        throw new Error("Invalid response format from server");
-      }
-      
-      setLinkCode(data.linkCode);
-      setExpiryTime(new Date(data.expiresAt));
-      
-      // Automatically open WhatsApp with the code
-      // Small delay to ensure state is updated
-      setTimeout(() => {
-        openWhatsAppWithCode();
-      }, 300);
-      
+      // Show success toast
       toast({
-        title: "Link code generated",
-        description: "Opening WhatsApp with the linking code...",
+        title: "Opening WhatsApp",
+        description: "WhatsApp will open with a pre-filled message. Just tap send!",
       });
+      
+      setLinkSent(true);
+      
+      // Try to open in mobile app first
+      const mobileAppLink = `whatsapp://send?phone=${phoneNumber}&text=${encodeURIComponent(message)}`;
+      window.location.href = mobileAppLink;
+      
+      // Fallback to web version after a short delay
+      setTimeout(() => {
+        const webFallbackUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+        window.location.href = webFallbackUrl;
+      }, 500);
+      
     } catch (error) {
-      console.error("Error generating link code:", error);
+      console.error("Error opening WhatsApp:", error);
       toast({
         variant: "destructive",
-        title: "Unable to generate link code",
-        description: error instanceof Error ? error.message : "Please try again later",
+        title: "Unable to open WhatsApp",
+        description: "Please try again or manually open WhatsApp and send a message to +16067157733",
       });
     } finally {
       setLoading(false);
     }
   };
-
-  // Copy the link code to clipboard
-  const copyLinkCode = () => {
-    if (linkCode) {
-      navigator.clipboard.writeText(linkCode);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-      
-      toast({
-        title: "Copied to clipboard",
-        description: "Send this code to the DotSpark WhatsApp number",
-      });
-    }
-  };
-
-  // Format remaining time
-  const getRemainingTime = () => {
-    if (!expiryTime) return "";
-    
-    const now = new Date();
-    const diff = expiryTime.getTime() - now.getTime();
-    
-    if (diff <= 0) return "Expired";
-    
-    const minutes = Math.floor(diff / 60000);
-    const seconds = Math.floor((diff % 60000) / 1000);
-    
-    return `Expires in ${minutes}m ${seconds}s`;
-  };
-
-  // Check if the code is expired
-  const isExpired = () => {
-    if (!expiryTime) return false;
-    return new Date() > expiryTime;
-  };
-
-  // Open WhatsApp with the code
-  const openWhatsAppWithCode = () => {
-    if (!linkCode) return;
-    
-    const phoneNumber = "16067157733";
-    const message = `Hey DotSpark! I'd like to link my WhatsApp with my DotSpark account to access my neural dashboard. Here's my linking code: whatsapp:${linkCode}`;
-    
-    // Try to open in mobile app first
-    const mobileAppLink = `whatsapp://send?phone=${phoneNumber}&text=${encodeURIComponent(message)}`;
-    window.location.href = mobileAppLink;
-    
-    // Fallback to web version after a short delay
-    setTimeout(() => {
-      const webFallbackUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-      window.location.href = webFallbackUrl;
-    }, 500);
-  };
-
+  
   return (
     <div className="mb-6">
       <div className="bg-amber-50 dark:bg-amber-950 p-4 rounded-md border border-amber-200 dark:border-amber-800 mb-6">
@@ -134,76 +59,49 @@ export function NeuralWhatsAppLinking() {
         <ol className="text-sm space-y-2 list-decimal pl-4 text-amber-700 dark:text-amber-400">
           <li>Click the "Link WhatsApp" button below</li>
           <li>WhatsApp will open automatically with a pre-filled message</li>
-          <li>Send the message to complete the linking process</li>
+          <li>Just send the message to complete the linking process</li>
         </ol>
       </div>
       
-
-      
-      {linkCode && !isExpired() && (
-        <div className="mb-6">
-          <div className="relative p-6 border-2 border-primary/30 rounded-lg bg-primary/5 dark:bg-primary/10 text-center">
-            <div className="absolute top-0 right-0 m-2">
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                onClick={copyLinkCode}
-                className="h-7 w-7"
-              >
-                {copied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
-              </Button>
-            </div>
-            
-            <h3 className="text-xl font-bold tracking-wider font-mono text-primary dark:text-primary/90 mb-1">
-              {linkCode}
-            </h3>
-            <p className="text-xs text-muted-foreground">
-              {getRemainingTime()}
-            </p>
-            
-            <div className="mt-4">
-              <Button 
-                onClick={() => openWhatsAppWithCode()}
-                className="bg-[#25D366] hover:bg-[#128C7E] text-white w-full flex items-center justify-center gap-2"
-              >
-                <SendHorizonal className="h-4 w-4" />
-                <span>Open WhatsApp & Send Code</span>
-              </Button>
-            </div>
+      {linkSent && (
+        <div className="mb-6 p-4 bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-900 rounded-md">
+          <h3 className="text-green-700 dark:text-green-400 font-medium text-center mb-2">
+            WhatsApp Message Ready!
+          </h3>
+          <p className="text-green-600 dark:text-green-500 text-sm text-center mb-4">
+            Send the pre-filled message in WhatsApp to link your account. Our system will recognize you and link your account automatically.
+          </p>
+          <div className="mt-3">
+            <Button
+              onClick={openWhatsAppLink}
+              className="bg-[#25D366] hover:bg-[#128C7E] text-white w-full flex items-center justify-center gap-2"
+            >
+              <SendHorizonal className="h-4 w-4" />
+              <span>Open WhatsApp Again</span>
+            </Button>
           </div>
         </div>
       )}
       
-      {linkCode && isExpired() && (
-        <div className="bg-red-50 dark:bg-red-950 p-4 rounded-md border border-red-200 dark:border-red-900 text-center mb-6">
-          <p className="text-red-600 dark:text-red-400 font-medium">
-            This link code has expired. Please generate a new one.
-          </p>
-        </div>
+      {!linkSent && (
+        <Button 
+          onClick={openWhatsAppLink} 
+          disabled={loading}
+          className="w-full bg-gradient-to-r from-primary to-indigo-600 hover:from-indigo-600 hover:to-primary"
+        >
+          {loading ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Opening WhatsApp...
+            </>
+          ) : (
+            <>
+              <MessageCircle className="mr-2 h-4 w-4" />
+              Link WhatsApp with One Click
+            </>
+          )}
+        </Button>
       )}
-      
-      <Button 
-        onClick={generateLinkCode} 
-        disabled={loading}
-        className="w-full bg-gradient-to-r from-primary to-indigo-600 hover:from-indigo-600 hover:to-primary"
-      >
-        {loading ? (
-          <>
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            Generating code...
-          </>
-        ) : linkCode && !isExpired() ? (
-          <>
-            <RefreshCw className="mr-2 h-4 w-4" />
-            Generate New Code
-          </>
-        ) : (
-          <>
-            <Smartphone className="mr-2 h-4 w-4" />
-            Link WhatsApp with One Click
-          </>
-        )}
-      </Button>
     </div>
   );
 }
