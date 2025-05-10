@@ -228,6 +228,7 @@ export const whatsappUsers = pgTable("whatsapp_users", {
   userId: integer("user_id").references(() => users.id).notNull(),
   phoneNumber: text("phone_number").notNull().unique(),
   active: boolean("active").default(true).notNull(),
+  lastMessageSentAt: timestamp("last_message_sent_at"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
@@ -240,6 +241,7 @@ export const insertWhatsappUserSchema = createInsertSchema(whatsappUsers, {
   userId: (schema) => schema.positive("User ID must be positive"),
   phoneNumber: (schema) => schema.min(10, "Phone number must be at least 10 characters"),
   active: (schema) => schema.optional(),
+  lastMessageSentAt: (schema) => schema.optional(),
 });
 export type InsertWhatsappUser = z.infer<typeof insertWhatsappUserSchema>;
 export type WhatsappUser = typeof whatsappUsers.$inferSelect;
