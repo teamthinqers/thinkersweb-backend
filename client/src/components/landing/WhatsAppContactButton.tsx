@@ -62,7 +62,16 @@ const WhatsAppContactButton: React.FC = () => {
       : `${directLink}?text=${encodeURIComponent(message)}`;
     
     // Try to open WhatsApp mobile app first
-    const mobileAppLink = finalUrl.replace('https://api.whatsapp.com/send', 'whatsapp://send');
+    let mobileAppLink;
+    
+    // Support both formats: api.whatsapp.com and wa.me
+    if (finalUrl.includes('api.whatsapp.com/send')) {
+      mobileAppLink = finalUrl.replace('https://api.whatsapp.com/send', 'whatsapp://send');
+    } else if (finalUrl.includes('wa.me/')) {
+      mobileAppLink = finalUrl.replace('https://wa.me/', 'whatsapp://send?phone=');
+    } else {
+      mobileAppLink = finalUrl; // Use as-is if format not recognized
+    }
     
     // Create an invisible anchor element
     const linkElement = document.createElement('a');
