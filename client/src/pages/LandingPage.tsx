@@ -55,31 +55,29 @@ export default function LandingPage() {
               </Link>
             </div>
             
-            {/* WhatsApp button, always visible on mobile when not logged in */}
+            {/* WhatsApp button, always visible on mobile and desktop regardless of login status */}
             <div className="hidden md:block">
-              {!user && <WhatsAppContactButton />}
+              <WhatsAppContactButton />
             </div>
             <div className="block md:hidden">
-              {!user && (
-                <Button
-                  variant="default"
-                  size="sm"
-                  className="bg-[#25D366] hover:bg-[#128C7E] text-white px-3 py-1 h-8 rounded-md"
-                  onClick={() => {
-                    const whatsAppNumber = '16067157733';
-                    const mobileAppLink = `whatsapp://send?phone=${whatsAppNumber}`;
-                    window.location.href = mobileAppLink;
-                    
-                    setTimeout(() => {
-                      const webFallbackUrl = `https://wa.me/${whatsAppNumber}`;
-                      window.location.href = webFallbackUrl;
-                    }, 500);
-                  }}
-                >
-                  <MessageCircle className="h-4 w-4 mr-1" />
-                  <span>Ask</span>
-                </Button>
-              )}
+              <Button
+                variant="default"
+                size="sm"
+                className="bg-[#25D366] hover:bg-[#128C7E] text-white px-3 py-1 h-8 rounded-md"
+                onClick={() => {
+                  const whatsAppNumber = '16067157733';
+                  const mobileAppLink = `whatsapp://send?phone=${whatsAppNumber}`;
+                  window.location.href = mobileAppLink;
+                  
+                  setTimeout(() => {
+                    const webFallbackUrl = `https://wa.me/${whatsAppNumber}`;
+                    window.location.href = webFallbackUrl;
+                  }, 500);
+                }}
+              >
+                <MessageCircle className="h-4 w-4 mr-1" />
+                <span>Ask</span>
+              </Button>
             </div>
             
             {/* User profile or sign in button */}
