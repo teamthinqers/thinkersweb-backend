@@ -67,6 +67,9 @@ const WhatsAppContactButton: React.FC = () => {
     // Support all WhatsApp formats including WhatsApp Business Platform
     if (finalUrl.includes('api.whatsapp.com/send')) {
       mobileAppLink = finalUrl.replace('https://api.whatsapp.com/send', 'whatsapp://send');
+    } else if (finalUrl.includes('api.whatsapp.com/message/WABA_ID')) {
+      // Business Platform ID format - use direct WhatsApp URI
+      mobileAppLink = finalUrl;
     } else if (finalUrl.includes('wa.me/business/')) {
       // Business Platform ID format - keep as is, will open in WhatsApp app
       mobileAppLink = finalUrl;

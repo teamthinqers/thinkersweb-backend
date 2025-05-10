@@ -986,9 +986,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Log the WhatsApp Business ID being used
       console.log(`Using WhatsApp Business ID: ${whatsappBusinessId}`);
       
-      // For WhatsApp Business Platform, use the business ID directly in the URL
-      // This format works with the WhatsApp Business Platform API
-      const directLink = `https://wa.me/business/${whatsappBusinessId}`;
+      // For WhatsApp Business Platform, use direct format
+      // This is the standard format that should open in the proper WhatsApp app
+      // Using WABA_ID approach with click-to-chat link format
+      const directLink = `https://api.whatsapp.com/message/WABA_ID.${whatsappBusinessId}`;
       
       // Return both the business ID and direct API URL
       res.json({ 
