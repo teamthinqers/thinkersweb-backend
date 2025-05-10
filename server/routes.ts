@@ -980,13 +980,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get(`${apiPrefix}/whatsapp/contact`, async (req, res) => {
     try {
       // Hardcoded Meta WhatsApp Business number for direct connectivity
-      // This is the number you provided for the Meta WhatsApp Business integration
+      // For Meta Business API we use the phone number directly
       const directBusinessNumber = "15557649526";
       
-      // Log the phone number being used (we're using the Meta Business phone)
+      // Log the phone number being used
       console.log(`Using WhatsApp Business number: ${directBusinessNumber}`);
       
-      res.json({ phoneNumber: directBusinessNumber });
+      // Return both the phone number and direct API URLs
+      res.json({ 
+        phoneNumber: directBusinessNumber,
+        directLink: `https://api.whatsapp.com/send?phone=${directBusinessNumber}`
+      });
     } catch (err) {
       console.error("WhatsApp contact number error:", err);
       handleApiError(err, res);

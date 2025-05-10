@@ -6,6 +6,7 @@ import { Loader2 } from "lucide-react";
 // This component creates a compact WhatsApp button for the header
 const CompactWhatsAppButton: React.FC = () => {
   const [whatsappNumber, setWhatsappNumber] = useState<string>(""); 
+  const [directLink, setDirectLink] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(true);
   
   // Pre-filled message (optional)
@@ -21,15 +22,25 @@ const CompactWhatsAppButton: React.FC = () => {
         
         if (data.phoneNumber) {
           setWhatsappNumber(data.phoneNumber);
+          
+          // Use the direct link from the API if available
+          if (data.directLink) {
+            setDirectLink(data.directLink);
+          } else {
+            // Fallback - generate the link ourselves
+            setDirectLink(`https://api.whatsapp.com/send?phone=${data.phoneNumber}`);
+          }
         } else {
           console.error("No WhatsApp number returned from API");
-          // Fallback to Twilio demo number if API fails
-          setWhatsappNumber("14155238886");
+          // Fallback to a default number if API fails
+          setWhatsappNumber("15557649526");
+          setDirectLink("https://api.whatsapp.com/send?phone=15557649526");
         }
       } catch (error) {
         console.error("Error fetching WhatsApp number:", error);
-        // Fallback to Twilio demo number if API fails
-        setWhatsappNumber("14155238886");
+        // Fallback to a default number if API fails
+        setWhatsappNumber("15557649526");
+        setDirectLink("https://api.whatsapp.com/send?phone=15557649526");
       } finally {
         setIsLoading(false);
       }
@@ -39,47 +50,39 @@ const CompactWhatsAppButton: React.FC = () => {
   }, []);
   
   const handleWhatsAppClick = () => {
-    // Check if we have a WhatsApp number
-    if (!whatsappNumber) {
-      console.error("No WhatsApp number available");
+    // Check if we have a WhatsApp direct link
+    if (!directLink) {
+      console.error("No WhatsApp direct link available");
       return;
     }
     
-    // Format the URL differently for Meta Business API vs regular phone numbers
-    let webFallbackUrl = '';
+    // Add the message parameter to the URL if it's not already there
+    const finalUrl = directLink.includes('?') 
+      ? `${directLink}&text=${encodeURIComponent(message)}`
+      : `${directLink}?text=${encodeURIComponent(message)}`;
     
-    // Check if the number is a Meta Business API ID (long numeric ID)
-    if (whatsappNumber.length > 15) {
-      // Meta Business API format for Direct Link
-      webFallbackUrl = `https://api.whatsapp.com/send?phone=15557649526`;
-    } else {
-      // Regular phone number format
-      // Try to open WhatsApp mobile app first
-      const mobileAppLink = `whatsapp://send?phone=${whatsappNumber}&text=${encodeURIComponent(message)}`;
-      
-      // Create an invisible anchor element
-      const linkElement = document.createElement('a');
-      linkElement.href = mobileAppLink;
-      linkElement.style.display = 'none';
-      document.body.appendChild(linkElement);
-      
-      // Try to open the mobile app
-      linkElement.click();
-      
-      // Standard wa.me link as fallback
-      webFallbackUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
-      
-      // Clean up the element
-      setTimeout(() => {
-        document.body.removeChild(linkElement);
-      }, 1000);
-    }
+    // Try to open WhatsApp mobile app first
+    const mobileAppLink = finalUrl.replace('https://api.whatsapp.com/send', 'whatsapp://send');
+    
+    // Create an invisible anchor element
+    const linkElement = document.createElement('a');
+    linkElement.href = mobileAppLink;
+    linkElement.style.display = 'none';
+    document.body.appendChild(linkElement);
+    
+    // Try to open the mobile app
+    linkElement.click();
     
     // Set a fallback timer in case the app doesn't open
     setTimeout(() => {
       // If app didn't open, use the web version
-      window.location.href = webFallbackUrl;
+      window.location.href = finalUrl;
     }, 500);
+    
+    // Clean up the element
+    setTimeout(() => {
+      document.body.removeChild(linkElement);
+    }, 1000);
   };
 
   return (
