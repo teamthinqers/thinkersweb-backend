@@ -9,6 +9,7 @@ import {
   insertConnectionSchema, 
   insertSharedEntrySchema, 
   sharedEntries, 
+  entries,
   entryTags, 
   users, 
   whatsappOtpVerifications,

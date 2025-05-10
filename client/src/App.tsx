@@ -14,6 +14,7 @@ import LogoPage from "@/pages/LogoPage";
 import AuthPage from "@/pages/auth-page";
 import Settings from "@/pages/Settings";
 import WhatsAppAdmin from "@/pages/WhatsAppAdmin";
+import WhatsAppTest from "@/pages/WhatsAppTest";
 import ActivateNeuralExtension from "@/pages/ActivateNeuralExtension";
 import AppLayout from "@/components/layout/AppLayout";
 import EntryDetail from "@/components/entries/EntryDetail";
@@ -163,6 +164,7 @@ function Router() {
       <Route path="/network" component={() => <AppWithLayout />} />
       <Route path="/settings" component={() => <AppWithLayout />} />
       <Route path="/whatsapp-admin" component={WhatsAppAdmin} />
+      <Route path="/whatsapp-test" component={WhatsAppTest} />
       <Route path="/logo" component={LogoPage} />
       <Route path="/activate" component={ActivateNeuralExtension} />
       <Route component={NotFound} />

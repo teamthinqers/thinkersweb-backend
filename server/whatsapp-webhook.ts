@@ -101,6 +101,10 @@ whatsappWebhookRouter.get('/', (req: Request, res: Response) => {
   }
 });
 
+import { db } from "@db";
+import { whatsappUsers, entries } from "@shared/schema";
+import { eq } from "drizzle-orm";
+
 // POST endpoint for receiving WhatsApp messages - handles BOTH Twilio and Meta formats
 whatsappWebhookRouter.post('/', async (req: Request, res: Response) => {
   try {
@@ -122,10 +126,41 @@ whatsappWebhookRouter.post('/', async (req: Request, res: Response) => {
         return res.status(200).send(); // Always return 200 to Twilio
       }
 
-      console.log(`Received Twilio WhatsApp message from ${from}: ${messageText}`);
+      console.log(`⭐️ Received Twilio WhatsApp message from ${from}: ${messageText}`);
+      
+      // Find a user associated with this phone number
+      const normalizedPhone = from.replace('whatsapp:', '').trim();
+      console.log(`⭐️ Looking up user for WhatsApp number: ${normalizedPhone}`);
+      
+      // Check if this phone is linked to a user account
+      const whatsappUser = await db.query.whatsappUsers.findFirst({
+        where: eq(whatsappUsers.phoneNumber, normalizedPhone)
+      });
       
       // Process the message and get a response
       const response = await processWhatsAppMessage(from, messageText);
+      
+      // If we found a linked user, save this message as an entry
+      if (whatsappUser && whatsappUser.userId) {
+        try {
+          console.log(`⭐️ Creating entry for WhatsApp message from user ID: ${whatsappUser.userId}`);
+          
+          const entryData = {
+            userId: whatsappUser.userId,
+            title: `WhatsApp - ${new Date().toLocaleString()}`,
+            content: messageText,
+            visibility: "private",
+            isFavorite: false
+          };
+          
+          const [newEntry] = await db.insert(entries).values(entryData).returning();
+          console.log(`⭐️ Created entry ID ${newEntry.id} for WhatsApp message`);
+        } catch (entryError) {
+          console.error("⛔️ Error creating entry for WhatsApp message:", entryError);
+        }
+      } else {
+        console.log(`⚠️ No linked user found for WhatsApp number: ${normalizedPhone}`);
+      }
       
       // Create a TwiML response to send back to the user
       const twiml = new twilio.twiml.MessagingResponse();
