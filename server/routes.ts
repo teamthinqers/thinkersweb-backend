@@ -980,9 +980,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get WhatsApp contact number for the frontend
   app.get(`${apiPrefix}/whatsapp/contact`, async (req, res) => {
     try {
-      // Hardcoded Meta WhatsApp Business number for direct connectivity
+      // Use the WhatsApp Business number from environment variables
       // For Meta Business API we use the phone number directly
-      const directBusinessNumber = "15557649526";
+      const directBusinessNumber = process.env.WHATSAPP_PHONE_NUMBER || "15557649526";
       
       // Log the phone number being used
       console.log(`Using WhatsApp Business number: ${directBusinessNumber}`);

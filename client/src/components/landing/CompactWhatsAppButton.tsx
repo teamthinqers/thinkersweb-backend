@@ -32,15 +32,15 @@ const CompactWhatsAppButton: React.FC = () => {
           }
         } else {
           console.error("No WhatsApp number returned from API");
-          // Fallback to a default number if API fails
-          setWhatsappNumber("15557649526");
-          setDirectLink("https://api.whatsapp.com/send?phone=15557649526");
+          // Fallback to an empty state if API fails
+          setWhatsappNumber("");
+          setDirectLink("");
         }
       } catch (error) {
         console.error("Error fetching WhatsApp number:", error);
-        // Fallback to a default number if API fails
-        setWhatsappNumber("15557649526");
-        setDirectLink("https://api.whatsapp.com/send?phone=15557649526");
+        // Fallback to an empty state if API fails
+        setWhatsappNumber("");
+        setDirectLink("");
       } finally {
         setIsLoading(false);
       }
