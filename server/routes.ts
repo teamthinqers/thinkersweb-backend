@@ -975,6 +975,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       handleApiError(err, res);
     }
   });
+  
+  // Get WhatsApp contact number for the frontend
+  app.get(`${apiPrefix}/whatsapp/contact`, async (req, res) => {
+    try {
+      // Return the WhatsApp number from environment variables
+      // Format without the + prefix for WhatsApp URL compatibility
+      const phoneNumber = process.env.TWILIO_PHONE_NUMBER || "";
+      const formattedNumber = phoneNumber.startsWith('+') ? phoneNumber.substring(1) : phoneNumber;
+      
+      res.json({ phoneNumber: formattedNumber });
+    } catch (err) {
+      console.error("WhatsApp contact number error:", err);
+      handleApiError(err, res);
+    }
+  });
 
   // Request OTP verification for WhatsApp number
   app.post(`${apiPrefix}/whatsapp/request-otp`, async (req, res) => {
