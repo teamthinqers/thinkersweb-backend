@@ -47,26 +47,57 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
   const [showMobileNav, setShowMobileNav] = useState(false);
   
   // Get WhatsApp status with our enhanced hook
-  const { isWhatsAppConnected, simulateActivation, forceStatusRefresh } = useWhatsAppStatus();
+  const { 
+    isWhatsAppConnected, 
+    simulateActivation, 
+    forceStatusRefresh 
+  } = useWhatsAppStatus();
   
-  // Check localStorage for activation status
+  // Check localStorage for activation status every render to ensure consistency
   const isActiveInLocalStorage = localStorage.getItem('whatsapp_activated') === 'true';
   
   // Combined activation status check (either API confirms it or we have localStorage flag)
   const isActivated = isWhatsAppConnected || isActiveInLocalStorage;
   
-  // When component mounts, check localStorage and update status if needed
+  // Debug status
+  console.log("WhatsApp status - Header:", { 
+    isWhatsAppConnected, 
+    isActiveInLocalStorage, 
+    isActivated 
+  });
+  
+  // When component mounts, refresh WhatsApp status
   useEffect(() => {
-    if (user && isActiveInLocalStorage) {
-      // This ensures the header shows the activated status even if API hasn't responded yet
-      simulateActivation();
+    // Always force a status refresh when Header mounts
+    // This is important to synchronize status across multiple browser windows/tabs
+    if (user) {
+      console.log("Header mounted, refreshing WhatsApp status");
       
-      // Also force a refresh of the API status
+      // Check if we're activated in localStorage
+      if (isActiveInLocalStorage) {
+        // If we have a local flag, simulate activation first for immediate UI update
+        simulateActivation();
+      }
+      
+      // Regardless of local status, force a backend check
       setTimeout(() => {
         forceStatusRefresh();
       }, 500);
     }
   }, [user, isActiveInLocalStorage, simulateActivation, forceStatusRefresh]);
+  
+  // Add a special effect to periodically check activation status
+  useEffect(() => {
+    // Set up an interval to refresh status every 5 seconds
+    // This helps ensure multi-device/multi-tab consistency
+    if (user) {
+      const intervalId = setInterval(() => {
+        forceStatusRefresh();
+      }, 5000);
+      
+      return () => clearInterval(intervalId);
+    }
+  }, [user, forceStatusRefresh]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();

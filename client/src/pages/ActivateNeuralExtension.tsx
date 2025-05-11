@@ -33,7 +33,11 @@ export default function ActivateNeuralExtension() {
   // Function to navigate back to the home page
   const goToHome = () => setLocation("/");
 
-  // Force synchronization of activation status on page load
+  // Calculate progress percentage - make sure it's 100% when activated in localStorage
+  const isActiveInLocalStorage = localStorage.getItem('whatsapp_activated') === 'true';
+  const progress = user ? (isWhatsAppConnected || isActiveInLocalStorage ? 100 : 50) : 0;
+  
+  // Effect 1: Force synchronization of activation status on page load
   useEffect(() => {
     // Check if there's a WhatsApp activation in localStorage and force the UI to update
     if (localStorage.getItem('whatsapp_activated') === 'true' && user) {
@@ -46,11 +50,16 @@ export default function ActivateNeuralExtension() {
     }
   }, [user]);
   
-  // Calculate progress percentage - make sure it's 100% when activated in localStorage
-  const isActiveInLocalStorage = localStorage.getItem('whatsapp_activated') === 'true';
-  const progress = user ? (isWhatsAppConnected || isActiveInLocalStorage ? 100 : 50) : 0;
+  // Effect 2: Update tab when auth changes (primary tab control)
+  useEffect(() => {
+    if (user) {
+      setActiveTab('step2');
+    } else {
+      setActiveTab('step1');
+    }
+  }, [user]);
   
-  // Check for activation success flag and handle redirection
+  // Effect 3: Check for activation success flag and handle status updates
   useEffect(() => {
     // Check for a specific flag to avoid duplicate notifications
     const hasBeenActivatedBefore = localStorage.getItem('neural_extension_seen') === 'true';
@@ -78,15 +87,6 @@ export default function ActivateNeuralExtension() {
       localStorage.setItem('whatsapp_activated', 'true');
     }
   }, [showActivationSuccess, isWhatsAppConnected, user, toast]);
-  
-  // Update tab when auth or WhatsApp status changes
-  useEffect(() => {
-    if (user) {
-      setActiveTab('step2');
-    } else {
-      setActiveTab('step1');
-    }
-  }, [user, isWhatsAppConnected]);
   
   // Neural network visualization setup
   useEffect(() => {
