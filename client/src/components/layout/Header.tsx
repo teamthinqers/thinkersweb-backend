@@ -203,27 +203,31 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 Dashboard
               </Button>
               
-              <Button 
-                className={`mr-2 ${isWhatsAppConnected 
-                  ? "bg-gradient-to-r from-green-600 to-emerald-500 hover:from-green-700 hover:to-emerald-600" 
-                  : "bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90"} text-white`}
-                size="sm"
-                onClick={() => setLocation("/activate-neural")}
-              >
-                {isWhatsAppConnected ? (
-                  <>
+              {isWhatsAppConnected ? (
+                <Button 
+                  className="mr-2 bg-gradient-to-r from-green-600 to-emerald-500 hover:from-green-700 hover:to-emerald-600 text-white relative"
+                  size="sm"
+                  onClick={() => setLocation("/dashboard")}
+                >
+                  <div className="absolute inset-0 bg-white/10 rounded animate-pulse"></div>
+                  <span className="relative z-10 flex items-center">
                     <Check className="h-4 w-4 mr-1" />
-                    <Sparkles className="h-3 w-3 absolute top-1 right-1" />
-                    Activated
-                  </>
-                ) : (
-                  <>
-                    <Brain className="h-4 w-4 mr-1" />
-                    <Sparkles className="h-3 w-3 absolute top-1 right-1" />
-                    Activate Neural
-                  </>
-                )}
-              </Button>
+                    <Sparkles className="h-3 w-3 absolute top-1 right-0.5" />
+                    Neural Activated
+                  </span>
+                </Button>
+              ) : (
+                <Button 
+                  className="mr-2 bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white"
+                  size="sm"
+                  onClick={() => setLocation("/activate-neural")}
+                >
+                  <Brain className="h-4 w-4 mr-1" />
+                  <Sparkles className="h-3 w-3 absolute top-1 right-1" />
+                  Activate Neural
+                </Button>
+              )}
+              
               
               <button 
                 className="p-2 rounded-full text-gray-400 hover:text-gray-500 hover:bg-gray-100 mr-2"
@@ -319,30 +323,36 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 Dashboard
               </Button>
               
-              <Button 
-                className={`w-full justify-start mb-2 ${isWhatsAppConnected 
-                  ? "bg-gradient-to-r from-green-600 to-emerald-500 hover:from-green-700 hover:to-emerald-600" 
-                  : "bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90"} text-white relative`}
-                size="sm"
-                onClick={() => {
-                  setShowMobileNav(false);
-                  setLocation("/activate-neural");
-                }}
-              >
-                {isWhatsAppConnected ? (
-                  <>
+              {isWhatsAppConnected ? (
+                <Button 
+                  className="w-full justify-start mb-2 bg-gradient-to-r from-green-600 to-emerald-500 hover:from-green-700 hover:to-emerald-600 text-white relative"
+                  size="sm"
+                  onClick={() => {
+                    setShowMobileNav(false);
+                    setLocation("/dashboard");
+                  }}
+                >
+                  <div className="absolute inset-0 bg-white/10 rounded animate-pulse"></div>
+                  <span className="relative z-10 flex items-center">
                     <Check className="h-5 w-5 mr-2" />
                     <span>Neural Extension Activated</span>
                     <Sparkles className="h-3 w-3 absolute top-2 right-2" />
-                  </>
-                ) : (
-                  <>
-                    <Brain className="h-5 w-5 mr-2" />
-                    <span>Activate Neural Extension</span>
-                    <Sparkles className="h-3 w-3 absolute top-2 right-2" />
-                  </>
-                )}
-              </Button>
+                  </span>
+                </Button>
+              ) : (
+                <Button 
+                  className="w-full justify-start mb-2 bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white relative"
+                  size="sm"
+                  onClick={() => {
+                    setShowMobileNav(false);
+                    setLocation("/activate-neural");
+                  }}
+                >
+                  <Brain className="h-5 w-5 mr-2" />
+                  <span>Activate Neural Extension</span>
+                  <Sparkles className="h-3 w-3 absolute top-2 right-2" />
+                </Button>
+              )}
               
               <Button 
                 variant="ghost" 

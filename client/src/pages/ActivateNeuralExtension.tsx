@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { AlertCircle, ArrowRight, Brain, Check, CheckCircle2, LogIn, MessageCircle, Sparkles, MessageSquare, Zap } from 'lucide-react';
+import { AlertCircle, ArrowRight, Brain, Check, CheckCircle2, LogIn, LayoutDashboard, MessageCircle, Sparkles, MessageSquare, Zap } from 'lucide-react';
 import { NeuralWhatsAppLinking } from '@/components/neural/NeuralWhatsAppLinking';
 import Header from '@/components/layout/Header';
 
@@ -24,7 +24,7 @@ export default function ActivateNeuralExtension() {
   
   // Function to navigate back to the home page
   const goToHome = () => setLocation("/");
-  const { isWhatsAppConnected, isLoading: isWhatsAppStatusLoading } = useWhatsAppStatus();
+  const { isWhatsAppConnected, phoneNumber, isLoading: isWhatsAppStatusLoading } = useWhatsAppStatus();
   const [activeTab, setActiveTab] = useState<string>(user ? 'step2' : 'step1');
 
   // Calculate progress percentage
@@ -354,60 +354,93 @@ export default function ActivateNeuralExtension() {
 
             {/* Step 2: Link WhatsApp */}
             <TabsContent value="step2" className="mt-4">
-              <Card className="border-2 border-[#25D366]/20 shadow-lg overflow-hidden bg-gradient-to-br from-slate-50 to-white dark:from-slate-950 dark:to-slate-900">
-                <div className="absolute left-0 top-0 w-40 h-40 bg-gradient-to-br from-[#25D366]/10 to-[#25D366]/5 rounded-br-full"></div>
-                <div className="absolute right-0 bottom-0 w-40 h-40 bg-gradient-to-tl from-[#128C7E]/10 to-[#25D366]/5 rounded-tl-full"></div>
-                
-                <CardHeader className="text-center relative z-10 pt-4 pb-2">
-                  <div className="w-16 h-16 bg-gradient-to-br from-[#25D366]/20 to-[#128C7E]/20 rounded-full flex items-center justify-center mx-auto mb-2 relative">
-                    <MessageSquare className="h-8 w-8 text-[#25D366]" />
-                    <div className="absolute -inset-1 rounded-full border-2 border-[#25D366]/20 animate-pulse"></div>
-                  </div>
-                  <CardTitle className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#25D366] to-[#128C7E]">
-                    Authenticate WhatsApp
-                  </CardTitle>
-                  <CardDescription className="text-sm">
-                    Complete your neural extension activation
-                  </CardDescription>
-                </CardHeader>
-                
-                <CardContent className="relative z-10 pt-0">
-                  {/* Only show the linking component if not connected yet */}
-                  {!isWhatsAppConnected && <NeuralWhatsAppLinking />}
+              {isWhatsAppConnected ? (
+                <Card className="border-2 border-green-400/30 shadow-lg overflow-hidden bg-gradient-to-br from-green-50 to-white dark:from-green-950/20 dark:to-slate-900">
+                  <div className="absolute left-0 top-0 w-40 h-40 bg-gradient-to-br from-green-400/10 to-emerald-300/10 rounded-br-full"></div>
+                  <div className="absolute right-0 bottom-0 w-40 h-40 bg-gradient-to-tl from-green-400/10 to-emerald-300/10 rounded-tl-full"></div>
                   
-                  {/* Success message if already connected */}
-                  {isWhatsAppConnected && (
-                    <div className="mt-3 p-3 bg-gradient-to-br from-green-50/80 to-emerald-50/80 dark:from-green-950/30 dark:to-emerald-950/30 rounded-xl border-2 border-green-200 dark:border-green-800/30 flex flex-col items-center text-center relative overflow-hidden">
-                      {/* Animated success elements */}
-                      <div className="absolute inset-0 overflow-hidden">
-                        <div className="absolute top-0 left-1/4 w-0.5 h-12 bg-green-400/20 animate-pulse" style={{animationDelay: '0.1s'}}></div>
-                        <div className="absolute top-5 left-1/3 w-0.5 h-10 bg-green-400/20 animate-pulse" style={{animationDelay: '0.2s'}}></div>
-                        <div className="absolute top-3 left-1/2 w-0.5 h-14 bg-green-400/20 animate-pulse" style={{animationDelay: '0.3s'}}></div>
-                        <div className="absolute top-4 left-2/3 w-0.5 h-12 bg-green-400/20 animate-pulse" style={{animationDelay: '0.4s'}}></div>
-                        <div className="absolute top-1 left-3/4 w-0.5 h-10 bg-green-400/20 animate-pulse" style={{animationDelay: '0.5s'}}></div>
+                  <CardHeader className="text-center relative z-10 pt-4 pb-2">
+                    <div className="w-16 h-16 bg-gradient-to-br from-green-400/20 to-emerald-400/20 rounded-full flex items-center justify-center mx-auto mb-2 relative">
+                      <div className="absolute inset-0 rounded-full animate-ping bg-white/10"></div>
+                      <CheckCircle2 className="h-8 w-8 text-green-500" />
+                      <Sparkles className="h-3 w-3 absolute top-2 right-2 text-green-400" />
+                    </div>
+                    <CardTitle className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-green-500 to-emerald-500">
+                      Neural Extension Activated
+                    </CardTitle>
+                    <CardDescription className="text-sm text-green-700 dark:text-green-400">
+                      Your cognitive extension is fully operational
+                    </CardDescription>
+                  </CardHeader>
+                  
+                  <CardContent className="relative z-10 pt-0">
+                    <div className="p-4 bg-gradient-to-br from-green-50/70 to-emerald-50/70 dark:from-green-950/30 dark:to-emerald-950/30 rounded-xl border border-green-200 dark:border-green-800/30 mb-4">
+                      <div className="flex items-center mb-2">
+                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-white dark:bg-green-900/30 shadow-sm flex items-center justify-center mr-3">
+                          <MessageSquare className="h-4 w-4 text-green-600 dark:text-green-400" />
+                        </div>
+                        <div>
+                          <h4 className="text-sm font-medium text-green-800 dark:text-green-300">WhatsApp Connected</h4>
+                          <p className="text-xs text-green-600 dark:text-green-500">{phoneNumber || 'Your phone'}</p>
+                        </div>
                       </div>
                       
-                      <CheckCircle2 className="h-10 w-10 text-green-500 mb-2" />
-                      <h3 className="text-base font-medium text-green-800 dark:text-green-300 mb-1">
-                        Neural Extension Activated!
-                      </h3>
-                      <p className="text-xs text-green-700 dark:text-green-400 mb-2">
-                        Your WhatsApp is successfully connected and ready to use.
-                      </p>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-3">
+                        <div className="flex items-center p-2 rounded-lg bg-white/70 dark:bg-green-900/20 border border-green-100 dark:border-green-800/20">
+                          <Zap className="h-3.5 w-3.5 mr-2 text-green-500 dark:text-green-400" />
+                          <span className="text-xs text-green-700 dark:text-green-400">Send messages to your neural extension</span>
+                        </div>
+                        <div className="flex items-center p-2 rounded-lg bg-white/70 dark:bg-green-900/20 border border-green-100 dark:border-green-800/20">
+                          <Zap className="h-3.5 w-3.5 mr-2 text-green-500 dark:text-green-400" />
+                          <span className="text-xs text-green-700 dark:text-green-400">View insights in the dashboard</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="flex flex-col sm:flex-row gap-3 justify-center mt-4">
                       <Button
+                        className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white"
+                        onClick={() => window.open(`https://wa.me/16067157733`, '_blank')}
                         size="sm"
-                        className="relative overflow-hidden group bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700"
-                        onClick={() => setLocation('/dashboard')}
                       >
-                        <span className="relative z-10 flex items-center">
-                          Go to Dashboard
-                          <ArrowRight className="ml-1 h-3 w-3" />
-                        </span>
+                        <MessageSquare className="h-4 w-4 mr-2" />
+                        Open WhatsApp
+                      </Button>
+                      
+                      <Button
+                        className="bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white"
+                        onClick={() => setLocation('/dashboard')}
+                        size="sm"
+                      >
+                        <LayoutDashboard className="h-4 w-4 mr-2" />
+                        Go to Dashboard
                       </Button>
                     </div>
-                  )}
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+              ) : (
+                <Card className="border-2 border-[#25D366]/20 shadow-lg overflow-hidden bg-gradient-to-br from-slate-50 to-white dark:from-slate-950 dark:to-slate-900">
+                  <div className="absolute left-0 top-0 w-40 h-40 bg-gradient-to-br from-[#25D366]/10 to-[#25D366]/5 rounded-br-full"></div>
+                  <div className="absolute right-0 bottom-0 w-40 h-40 bg-gradient-to-tl from-[#128C7E]/10 to-[#25D366]/5 rounded-tl-full"></div>
+                  
+                  <CardHeader className="text-center relative z-10 pt-4 pb-2">
+                    <div className="w-16 h-16 bg-gradient-to-br from-[#25D366]/20 to-[#128C7E]/20 rounded-full flex items-center justify-center mx-auto mb-2 relative">
+                      <MessageSquare className="h-8 w-8 text-[#25D366]" />
+                      <div className="absolute -inset-1 rounded-full border-2 border-[#25D366]/20 animate-pulse"></div>
+                    </div>
+                    <CardTitle className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#25D366] to-[#128C7E]">
+                      Authenticate WhatsApp
+                    </CardTitle>
+                    <CardDescription className="text-sm">
+                      Complete your neural extension activation
+                    </CardDescription>
+                  </CardHeader>
+                  
+                  <CardContent className="relative z-10 pt-0">
+                    <NeuralWhatsAppLinking />
+                  </CardContent>
+                </Card>
+              )}
             </TabsContent>
           </Tabs>
         </div>

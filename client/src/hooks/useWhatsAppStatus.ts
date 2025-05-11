@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { getQueryFn } from '@/lib/queryClient';
+import { useAuth } from '@/hooks/use-auth';
 
 // Type for WhatsApp connection status
 export interface WhatsAppStatusResponse {
@@ -13,6 +14,8 @@ export interface WhatsAppStatusResponse {
  * Hook to check user's WhatsApp connection status
  */
 export function useWhatsAppStatus() {
+  const { user } = useAuth();
+  
   const { 
     data,
     isLoading,
@@ -22,8 +25,12 @@ export function useWhatsAppStatus() {
     queryKey: ['/api/whatsapp/status'],
     queryFn: getQueryFn({ on401: 'returnNull' }),
     retry: false,
-    // Only fetch if the user is likely authenticated
-    enabled: localStorage.getItem('user_session') !== null,
+    // Only fetch if the user is authenticated
+    enabled: !!user,
+    // Refresh every 30 seconds to detect changes
+    refetchInterval: 30000,
+    // Always refetch on window focus
+    refetchOnWindowFocus: true,
   });
 
   return {
