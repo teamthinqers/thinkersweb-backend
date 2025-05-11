@@ -15,9 +15,10 @@ import { Button } from "@/components/ui/button";
 
 interface DashboardProps {
   onEntryClick: (id: number) => void;
+  onNewEntry?: () => void;
 }
 
-const Dashboard: React.FC<DashboardProps> = ({ onEntryClick }) => {
+const Dashboard: React.FC<DashboardProps> = ({ onEntryClick, onNewEntry }) => {
   const [sortBy, setSortBy] = useState("createdAt");
   const [sortOrder, setSortOrder] = useState("desc");
   const [visibleEntries, setVisibleEntries] = useState(6);
@@ -66,7 +67,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onEntryClick }) => {
 
   return (
     <>
-      <DashboardHeader />
+      <DashboardHeader onNewEntry={onNewEntry} />
       <InsightSection />
       <StatisticsSection />
 
