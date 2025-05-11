@@ -282,7 +282,7 @@ export async function processWhatsAppMessage(from: string, messageText: string):
     }
     
     // Check for email-based linking messages (with extensive logging)
-    console.log("Checking for email-based linking in message:", messageText);
+    console.log("⚡️ Checking for email-based linking in message:", messageText);
     
     // Try multiple regex patterns to capture various message formats
     const emailLinkingRegex1 = /link.*whatsapp.*\(([^\)]+)\)/i;
@@ -291,11 +291,26 @@ export async function processWhatsAppMessage(from: string, messageText: string):
     const emailLinkingRegex4 = /please connect my Neural Extension via WhatsApp\.?\s*My DotSpark account is\s*([\w.%+-]+@[\w.-]+\.[A-Za-z]{2,})/i;
     const emailLinkingRegex5 = /Hey DotSpark,?\s*please connect my Neural Extension via WhatsApp\.?\s*My DotSpark account is\s*([\w.%+-]+@[\w.-]+\.[A-Za-z]{2,})/i;
     
+    // Even more flexible patterns
+    const emailLinkingRegex6 = /connect.*Neural Extension.*account.*is\s*([\w.%+-]+@[\w.-]+\.[A-Za-z]{2,})/i;
+    const emailLinkingRegex7 = /Neural Extension.*WhatsApp.*account\s*(?:is)?\s*([\w.%+-]+@[\w.-]+\.[A-Za-z]{2,})/i;
+    
+    // Log individual regex tests for debugging
+    console.log("Regex1 test:", emailLinkingRegex1.test(messageText));
+    console.log("Regex2 test:", emailLinkingRegex2.test(messageText));
+    console.log("Regex3 test:", emailLinkingRegex3.test(messageText));
+    console.log("Regex4 test:", emailLinkingRegex4.test(messageText));
+    console.log("Regex5 test:", emailLinkingRegex5.test(messageText));
+    console.log("Regex6 test:", emailLinkingRegex6.test(messageText));
+    console.log("Regex7 test:", emailLinkingRegex7.test(messageText));
+    
     let emailMatch = messageText.match(emailLinkingRegex1) || 
                     messageText.match(emailLinkingRegex2) || 
                     messageText.match(emailLinkingRegex3) ||
                     messageText.match(emailLinkingRegex4) ||
-                    messageText.match(emailLinkingRegex5);
+                    messageText.match(emailLinkingRegex5) ||
+                    messageText.match(emailLinkingRegex6) ||
+                    messageText.match(emailLinkingRegex7);
     
     // Direct email extraction as fallback
     if (!emailMatch) {
@@ -311,9 +326,11 @@ export async function processWhatsAppMessage(from: string, messageText: string):
     }
     
     if (emailMatch && emailMatch[1]) {
-      console.log("Found email match:", emailMatch[1]);
+      console.log("✅ Found email match:", emailMatch[1]);
+      console.log("✅ Full match data:", JSON.stringify(emailMatch));
       const userEmail = emailMatch[1].trim();
       const normalizedPhone = from.replace('whatsapp:', '').trim();
+      console.log(`✅ Linking WhatsApp number ${normalizedPhone} with email ${userEmail}`);
       
       console.log(`Attempting to link WhatsApp number ${normalizedPhone} with email ${userEmail}`);
       
