@@ -59,12 +59,21 @@ export function useWhatsAppStatus() {
       // Store in localStorage for persistence
       localStorage.setItem('whatsapp_activated', 'true');
       setActivationStatus(true);
+      
+      // Also refresh sessionStorage to ensure web view sees activation
+      sessionStorage.setItem('show_activation_success', 'true');
+      setShowActivationSuccess(true);
     } 
     
     // We also check localStorage on mount to ensure consistency
     const localActivation = localStorage.getItem('whatsapp_activated') === 'true';
     if (localActivation) {
       setActivationStatus(true);
+      
+      // Add a short delay before attempting to refetch to ensure API is called
+      setTimeout(() => {
+        refetch();
+      }, 1000);
     }
   }, [data]);
   

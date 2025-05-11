@@ -44,7 +44,7 @@ export default function ActivateNeuralExtension() {
       // Success toast with longer duration
       toast({
         title: "Neural Extension Activated!",
-        description: "Your WhatsApp is now successfully connected to your dashboard.",
+        description: "WhatsApp connection completed successfully.",
         duration: 5000,
       });
       
@@ -289,9 +289,6 @@ export default function ActivateNeuralExtension() {
               </div>
               <div className="flex-1">
                 <h3 className="text-sm font-medium text-green-800 dark:text-green-300">Neural Extension Successfully Activated!</h3>
-                <p className="text-xs text-green-700 dark:text-green-400 mt-0.5">
-                  Your WhatsApp is now connected to DotSpark. The neural extension will continuously learn from your interactions.
-                </p>
               </div>
             </div>
           )}
