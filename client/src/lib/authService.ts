@@ -338,7 +338,7 @@ function stopServerPing(): void {
   }
 }
 
-// Recover session from localStorage if Firebase fails
+// Enhanced session recovery with persistent login support
 export async function recoverSession(): Promise<boolean> {
   try {
     // Skip if already authenticated
@@ -349,48 +349,93 @@ export async function recoverSession(): Promise<boolean> {
     
     console.log("Auth service: Attempting session recovery...");
     
-    // Check localStorage for stored data
-    const storedData = localStorage.getItem('dotspark_user_data');
-    if (!storedData) {
+    // Check all possible storage locations for backup data
+    const storedUserData = localStorage.getItem('dotspark_user_data');
+    const storedUser = localStorage.getItem('dotspark_user');
+    const sessionActive = localStorage.getItem('dotspark_session_active');
+    
+    if (!storedUserData && !storedUser) {
       console.log("Auth service: No stored data found for recovery");
       return false;
     }
     
-    // Parse stored data
-    const userData = JSON.parse(storedData);
-    const lastAuth = new Date(userData.lastAuthenticated);
+    // Parse the stored data (prioritize user_data which has more fields)
+    let userData;
+    if (storedUserData) {
+      userData = JSON.parse(storedUserData);
+    } else if (storedUser) {
+      userData = JSON.parse(storedUser);
+    }
+    
+    // Check if the session is meant to be persistent
+    // If dotspark_session_active exists, or if the session has a rememberMe flag, consider it persistent
+    const isPersistent = !!sessionActive || (userData?.rememberMe === true);
+    
+    // For persistent sessions (remember me), use a much longer timeout (90 days)
+    // For regular sessions, use 24 hours
+    const maxHoursWithoutActivity = isPersistent ? 90 * 24 : 24;
+    
+    const lastAuth = new Date(userData.lastAuthenticated || userData.lastLogin);
     const now = new Date();
     const hoursSinceLastAuth = (now.getTime() - lastAuth.getTime()) / (1000 * 60 * 60);
     
-    // Only use stored data if recent (24 hours)
-    if (hoursSinceLastAuth > 24) {
-      console.log("Auth service: Stored data too old for recovery");
+    // Skip recovery if too much time has passed
+    if (hoursSinceLastAuth > maxHoursWithoutActivity) {
+      console.log(`Auth service: Stored data too old for recovery (${hoursSinceLastAuth.toFixed(1)} hours, max: ${maxHoursWithoutActivity})`);
       localStorage.removeItem('dotspark_user_data');
+      localStorage.removeItem('dotspark_user');
+      localStorage.removeItem('dotspark_session_active');
       return false;
     }
     
-    console.log("Auth service: Found recent auth data, attempting recovery");
+    console.log(`Auth service: Found recent auth data (${hoursSinceLastAuth.toFixed(1)} hours old), attempting recovery`);
     
-    // Attempt server side recovery
+    // Attempt server side recovery with persistent flag
     const response = await apiRequest("POST", "/api/auth/recover", { 
       uid: userData.uid,
-      email: userData.email
+      email: userData.email,
+      persistent: isPersistent
     });
     
     if (response.ok) {
       const user = await response.json();
       queryClient.setQueryData(["/api/user"], user);
       console.log("Auth service: Session recovery successful");
+      
+      // Update recovery timestamp to extend the session
+      if (storedUserData) {
+        const updatedData = JSON.parse(storedUserData);
+        updatedData.lastAuthenticated = new Date().toISOString();
+        localStorage.setItem('dotspark_user_data', JSON.stringify(updatedData));
+      }
+      
+      // Mark session as active for next recovery
+      localStorage.setItem('dotspark_session_active', 'true');
+      
       notifyListeners('sessionRestored', user);
       return true;
     } else {
       console.log("Auth service: Server rejected recovery attempt");
-      localStorage.removeItem('dotspark_user_data');
+      
+      // Only clear if rejection was not due to network issues
+      if (response.status !== 0) {
+        localStorage.removeItem('dotspark_user_data');
+        localStorage.removeItem('dotspark_user');
+        localStorage.removeItem('dotspark_session_active');
+      }
+      
       return false;
     }
   } catch (error) {
     console.error("Auth service: Recovery error", error);
-    localStorage.removeItem('dotspark_user_data');
+    
+    // Don't clear data on network errors - might be temporary
+    if (!(error instanceof TypeError)) {
+      localStorage.removeItem('dotspark_user_data');
+      localStorage.removeItem('dotspark_user');
+      localStorage.removeItem('dotspark_session_active');
+    }
+    
     notifyListeners('error', error);
     return false;
   }
