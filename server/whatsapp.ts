@@ -215,6 +215,8 @@ export async function processWhatsAppMessage(from: string, messageText: string):
       "Hey DotSpark",
       "Hello DotSpark",
       "Hi DotSpark",
+      "got a few things on my mind",
+      "need your thoughts"
     ];
     
     const isDefaultPrompt = defaultPromptPatterns.some(pattern => 
@@ -222,6 +224,7 @@ export async function processWhatsAppMessage(from: string, messageText: string):
     );
     
     console.log(`Default prompt check: ${isDefaultPrompt ? "YES" : "NO"} for message: "${messageText}"`);
+    console.log(`First time user check: ${isFirstTimeUser ? "YES" : "NO"} for ${from}`);
     
     // For default prompt from returning users, we provide a special greeting
     if (isDefaultPrompt && !isFirstTimeUser) {
