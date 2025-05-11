@@ -206,9 +206,6 @@ export function useWhatsAppStatus() {
     return () => {
       window.removeEventListener('whatsapp-status-check', handleStatusCheck);
     };
-    
-    // Cleanup function is returned in the inner block above
-    // No need for a separate cleanup function at this level
   }, [user, forceStatusRefresh]);
   
   // Main effect for handling data changes from API
