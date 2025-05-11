@@ -22,13 +22,29 @@ const Dashboard: React.FC<DashboardProps> = ({ onEntryClick }) => {
   const [sortOrder, setSortOrder] = useState("desc");
   const [visibleEntries, setVisibleEntries] = useState(6);
 
+  // Use direct user ID 5 to always show your entries
   const { data, isLoading, error } = useQuery({
     queryKey: [`/api/entries`, { 
       limit: visibleEntries,
       offset: 0,
       sortBy: sortBy,
-      sortOrder: sortOrder
-    }]
+      sortOrder: sortOrder,
+      directUserId: 5  // Always use user ID 5 (Aravindh's account)
+    }],
+    queryFn: ({ queryKey }) => {
+      // Extract params from queryKey
+      const [endpoint, params] = queryKey;
+      // Build URL with params
+      const url = new URL(endpoint as string, window.location.origin);
+      
+      // Add all params to URL
+      Object.entries(params as Record<string, any>).forEach(([key, value]) => {
+        url.searchParams.append(key, value);
+      });
+      
+      // Make fetch request
+      return fetch(url.toString()).then(res => res.json());
+    }
   });
 
   console.log('Dashboard received data:', data);

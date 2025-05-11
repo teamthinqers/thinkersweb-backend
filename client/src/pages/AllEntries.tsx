@@ -47,9 +47,24 @@ const AllEntries: React.FC<AllEntriesProps> = ({ onEntryClick }) => {
         sortOrder,
         search: searchQuery,
         categoryId: selectedCategory,
-        tagIds: selectedTags.length > 0 ? selectedTags : undefined
+        tagIds: selectedTags.length > 0 ? selectedTags : undefined,
+        directUserId: 5  // Always use user ID 5 (Aravindh's account)
       }
-    ]
+    ],
+    queryFn: ({ queryKey }) => {
+      // Extract params from queryKey
+      const [endpoint, params] = queryKey;
+      // Build URL with params
+      const url = new URL(endpoint as string, window.location.origin);
+      
+      // Add all params to URL
+      Object.entries(params as Record<string, any>).forEach(([key, value]) => {
+        url.searchParams.append(key, value);
+      });
+      
+      // Make fetch request
+      return fetch(url.toString()).then(res => res.json());
+    }
   });
 
   const entries = data?.entries || [];
