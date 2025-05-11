@@ -425,7 +425,8 @@ export async function processWhatsAppMessage(from: string, messageText: string):
     }
     
     // Send welcome message for first-time users
-    if (isFirstTimeUser) {
+    // Skip sending welcome message on activation attempts (detected earlier)
+    if (isFirstTimeUser && !isActivationAttempt) {
       console.log(`First-time user detected for ${from} - sending welcome message`);
       
       // We'll send an immediate welcome message before processing their actual message
@@ -465,7 +466,10 @@ export async function processWhatsAppMessage(from: string, messageText: string):
           message: welcomeMessage
         };
       }
+    }
       
+    // If we get here for a first-time user, we'll continue processing their message
+    if (isFirstTimeUser && !isDefaultPrompt) {
       console.log(`First-time user with custom message: continuing to process their message`);
       // For non-default messages, continue processing their actual message content
     }
@@ -680,8 +684,8 @@ export async function processWhatsAppMessage(from: string, messageText: string):
         await db.update(whatsappUsers)
           .set({
             active: true,
-            verified: true, // Make sure to use the correct field name that exists in the schema
-            updatedAt: new Date()
+            updatedAt: new Date(),
+            lastMessageSentAt: new Date() // Update message timestamp to ensure we don't send welcome messages again
           })
           .where(eq(whatsappUsers.phoneNumber, normalizedPhone));
       } catch (error) {
@@ -1034,6 +1038,7 @@ export async function registerWhatsAppUser(userId: number, phoneNumber: string):
     // Create verification record
     await db.insert(whatsappOtpVerifications).values({
       userId,
+      phoneNumber: normalizedPhone,
       otpCode,
       expiresAt,
       verified: false,
