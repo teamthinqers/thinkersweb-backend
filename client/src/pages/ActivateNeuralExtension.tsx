@@ -171,7 +171,7 @@ export default function ActivateNeuralExtension() {
       {/* Header */}
       <Header onSearch={handleSearch} />
       
-      <div className="container max-w-4xl mx-auto px-4 pt-2 pb-4 flex-1 flex flex-col items-center justify-center">
+      <div className="container max-w-4xl mx-auto px-4 pt-0 pb-2 flex-1 flex flex-col items-center justify-center">
         {/* Neural network canvas - covering entire background */}
         <div className="fixed inset-0 z-0 opacity-40 pointer-events-none">
           <canvas 
@@ -184,35 +184,35 @@ export default function ActivateNeuralExtension() {
         {/* Content centered in viewport */}
         <div className="relative z-10 w-full max-w-3xl">
           {/* Hero section with title */}
-          <div className="text-center mb-5">
-            <div className="inline-block h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center mb-2 relative">
-              <Brain className="h-8 w-8 text-primary animate-pulse" />
+          <div className="text-center mb-3">
+            <div className="inline-block h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mb-1 relative">
+              <Brain className="h-6 w-6 text-primary animate-pulse" />
               <div className="absolute inset-0 rounded-full border border-primary/20 animate-ping"></div>
             </div>
-            <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-1">
+            <h1 className="text-2xl md:text-3xl font-bold tracking-tight mb-0.5">
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-primary to-blue-600">Neural Extension</span>
             </h1>
-            <p className="text-base text-muted-foreground">
+            <p className="text-sm text-muted-foreground">
               Unlock your cognitive potential with DotSpark
             </p>
           </div>
           
           {/* Gamified progress path */}
-          <div className="relative w-full max-w-md mx-auto mb-5">
-            <div className="h-2 bg-slate-200 dark:bg-slate-800 rounded-full relative z-0">
-              <div className={`h-2 bg-gradient-to-r from-indigo-600 to-primary rounded-full absolute top-0 left-0 transition-all duration-1000 ease-out`} 
+          <div className="relative w-full max-w-md mx-auto mb-3">
+            <div className="h-1.5 bg-slate-200 dark:bg-slate-800 rounded-full relative z-0">
+              <div className={`h-1.5 bg-gradient-to-r from-indigo-600 to-primary rounded-full absolute top-0 left-0 transition-all duration-1000 ease-out`} 
                    style={{width: `${progress}%`}}></div>
               
               {/* Step points */}
               <div className="absolute top-0 left-0 w-full h-full flex items-center justify-between transform translate-y-[-50%]">
                 {/* Step 1 indicator */}
                 <div className="relative flex flex-col items-center">
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center mb-1 ${
+                  <div className={`w-6 h-6 rounded-full flex items-center justify-center mb-1 ${
                     progress >= 50 ? 'bg-gradient-to-r from-indigo-600 to-blue-600 text-white' : 'bg-slate-300 dark:bg-slate-700 text-slate-600 dark:text-slate-400'
                   }`}>
-                    {progress >= 50 ? <Check className="h-5 w-5" /> : '1'}
+                    {progress >= 50 ? <Check className="h-3.5 w-3.5" /> : '1'}
                   </div>
-                  <span className={`absolute top-10 text-xs whitespace-nowrap font-medium ${progress >= 50 ? 'text-primary' : 'text-slate-500'}`}>
+                  <span className={`absolute top-7 text-[10px] whitespace-nowrap font-medium ${progress >= 50 ? 'text-primary' : 'text-slate-500'}`}>
                     Create Account
                   </span>
                   
@@ -223,16 +223,16 @@ export default function ActivateNeuralExtension() {
                 </div>
                 
                 {/* Midpoint decoration */}
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-4 h-4 rotate-45 border-t-2 border-r-2 border-slate-300 dark:border-slate-700"></div>
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-3 h-3 rotate-45 border-t-2 border-r-2 border-slate-300 dark:border-slate-700"></div>
                 
                 {/* Step 2 indicator */}
                 <div className="relative flex flex-col items-center">
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center mb-1 ${
+                  <div className={`w-6 h-6 rounded-full flex items-center justify-center mb-1 ${
                     progress === 100 ? 'bg-gradient-to-r from-indigo-600 to-blue-600 text-white' : user ? 'bg-primary/20 text-primary border-2 border-primary/50 pulse-border' : 'bg-slate-300 dark:bg-slate-700 text-slate-600 dark:text-slate-400'
                   }`}>
-                    {progress === 100 ? <Check className="h-5 w-5" /> : '2'}
+                    {progress === 100 ? <Check className="h-3.5 w-3.5" /> : '2'}
                   </div>
-                  <span className={`absolute top-10 text-xs whitespace-nowrap font-medium ${progress === 100 ? 'text-primary' : user ? 'text-primary/80' : 'text-slate-500'}`}>
+                  <span className={`absolute top-7 text-[10px] whitespace-nowrap font-medium ${progress === 100 ? 'text-primary' : user ? 'text-primary/80' : 'text-slate-500'}`}>
                     Authenticate WhatsApp
                   </span>
                   
@@ -246,9 +246,9 @@ export default function ActivateNeuralExtension() {
           </div>
           
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-4">
-              <TabsTrigger value="step1" disabled={!!user} className="text-sm">Step 1: Account Setup</TabsTrigger>
-              <TabsTrigger value="step2" disabled={!user} className="text-sm">Step 2: Sync WhatsApp</TabsTrigger>
+            <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-2">
+              <TabsTrigger value="step1" disabled={!!user} className="text-xs py-1">Account Setup</TabsTrigger>
+              <TabsTrigger value="step2" disabled={!user} className="text-xs py-1">Sync WhatsApp</TabsTrigger>
             </TabsList>
 
             {/* Step 1: Create Account */}
@@ -257,86 +257,86 @@ export default function ActivateNeuralExtension() {
                 <div className="absolute right-0 top-0 w-40 h-40 bg-gradient-to-br from-indigo-600/10 to-indigo-600/5 rounded-bl-full"></div>
                 <div className="absolute left-0 bottom-0 w-40 h-40 bg-gradient-to-tr from-blue-600/10 to-blue-600/5 rounded-tr-full"></div>
                 
-                <CardHeader className="text-center relative z-10 pt-8">
-                  <div className="w-24 h-24 bg-gradient-to-br from-indigo-600/20 to-primary/20 rounded-full flex items-center justify-center mx-auto mb-4 relative">
-                    <Brain className="h-12 w-12 text-primary" />
+                <CardHeader className="text-center relative z-10 pt-4 pb-2">
+                  <div className="w-16 h-16 bg-gradient-to-br from-indigo-600/20 to-primary/20 rounded-full flex items-center justify-center mx-auto mb-2 relative">
+                    <Brain className="h-8 w-8 text-primary" />
                     <div className="absolute -inset-1 rounded-full border-2 border-primary/20 animate-pulse"></div>
-                    <div className="absolute top-1 right-1 h-4 w-4 bg-indigo-600 rounded-full animate-ping"></div>
+                    <div className="absolute top-1 right-1 h-3 w-3 bg-indigo-600 rounded-full animate-ping"></div>
                   </div>
-                  <CardTitle className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-primary">
+                  <CardTitle className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-primary">
                     Activate Your Neural Account
                   </CardTitle>
-                  <CardDescription className="text-base">
+                  <CardDescription className="text-sm">
                     Your personal cognitive extension awaits
                   </CardDescription>
                 </CardHeader>
                 
-                <CardContent className="relative z-10 px-6 sm:px-8 pt-4">
-                  <div className="flex flex-col md:flex-row gap-6 items-center">
+                <CardContent className="relative z-10 px-4 sm:px-6 pt-0">
+                  <div className="flex flex-col md:flex-row gap-3 items-center">
                     {/* Visual brain enhancement graphic */}
-                    <div className="relative w-48 h-48 mx-auto flex-shrink-0 hidden md:block">
-                      <div className="absolute w-20 h-20 bg-gradient-to-br from-indigo-200/70 to-indigo-100/70 dark:from-indigo-900/30 dark:to-indigo-800/30 rounded-full top-4 left-4 animate-pulse-slow"></div>
-                      <div className="absolute w-12 h-12 bg-gradient-to-br from-indigo-300/70 to-indigo-200/70 dark:from-indigo-800/30 dark:to-indigo-700/30 rounded-full top-2 right-12 animate-pulse-slow animation-delay-1000"></div>
-                      <div className="absolute w-16 h-16 bg-gradient-to-br from-blue-200/70 to-blue-100/70 dark:from-blue-900/30 dark:to-blue-800/30 rounded-full bottom-8 left-8 animate-pulse-slow animation-delay-1500"></div>
-                      <div className="absolute w-10 h-10 bg-gradient-to-br from-blue-300/70 to-blue-200/70 dark:from-blue-800/30 dark:to-blue-700/30 rounded-full bottom-4 right-6 animate-pulse-slow animation-delay-2000"></div>
+                    <div className="relative w-32 h-32 mx-auto flex-shrink-0 hidden md:block">
+                      <div className="absolute w-14 h-14 bg-gradient-to-br from-indigo-200/70 to-indigo-100/70 dark:from-indigo-900/30 dark:to-indigo-800/30 rounded-full top-2 left-2 animate-pulse-slow"></div>
+                      <div className="absolute w-9 h-9 bg-gradient-to-br from-indigo-300/70 to-indigo-200/70 dark:from-indigo-800/30 dark:to-indigo-700/30 rounded-full top-1 right-8 animate-pulse-slow animation-delay-1000"></div>
+                      <div className="absolute w-11 h-11 bg-gradient-to-br from-blue-200/70 to-blue-100/70 dark:from-blue-900/30 dark:to-blue-800/30 rounded-full bottom-5 left-5 animate-pulse-slow animation-delay-1500"></div>
+                      <div className="absolute w-7 h-7 bg-gradient-to-br from-blue-300/70 to-blue-200/70 dark:from-blue-800/30 dark:to-blue-700/30 rounded-full bottom-2 right-4 animate-pulse-slow animation-delay-2000"></div>
                       
                       {/* Connection lines */}
-                      <svg className="absolute inset-0 w-full h-full" viewBox="0 0 192 192">
-                        <path d="M50 50 L140 140" stroke="rgba(99, 102, 241, 0.3)" strokeWidth="1.5" strokeDasharray="6 3" />
-                        <path d="M140 50 L50 140" stroke="rgba(99, 102, 241, 0.3)" strokeWidth="1.5" strokeDasharray="6 3" />
-                        <path d="M96 30 L96 160" stroke="rgba(99, 102, 241, 0.3)" strokeWidth="1.5" strokeDasharray="6 3" />
+                      <svg className="absolute inset-0 w-full h-full" viewBox="0 0 128 128">
+                        <path d="M32 32 L96 96" stroke="rgba(99, 102, 241, 0.3)" strokeWidth="1" strokeDasharray="4 2" />
+                        <path d="M96 32 L32 96" stroke="rgba(99, 102, 241, 0.3)" strokeWidth="1" strokeDasharray="4 2" />
+                        <path d="M64 16 L64 112" stroke="rgba(99, 102, 241, 0.3)" strokeWidth="1" strokeDasharray="4 2" />
                       </svg>
                       
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <Brain className="h-16 w-16 text-indigo-600/30" />
+                        <Brain className="h-12 w-12 text-indigo-600/30" />
                       </div>
                     </div>
                     
                     {/* Benefits */}
                     <div className="flex-1">
-                      <h3 className="font-bold flex items-center justify-center md:justify-start mb-4 text-lg text-indigo-800 dark:text-indigo-300">
-                        <Sparkles className="h-5 w-5 mr-2 text-indigo-600" />
-                        Neural Extension Benefits
+                      <h3 className="font-bold flex items-center justify-center md:justify-start mb-2 text-sm text-indigo-800 dark:text-indigo-300">
+                        <Sparkles className="h-4 w-4 mr-1 text-indigo-600" />
+                        Extension Benefits
                       </h3>
-                      <ul className="text-sm space-y-4">
-                        <li className="flex items-start p-3 rounded-lg bg-indigo-50/50 dark:bg-indigo-950/30 border border-indigo-100 dark:border-indigo-900/30">
-                          <div className="flex-shrink-0 w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center mr-3">
-                            <Zap className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
+                      <ul className="text-xs space-y-2">
+                        <li className="flex items-start p-2 rounded-lg bg-indigo-50/50 dark:bg-indigo-950/30 border border-indigo-100 dark:border-indigo-900/30">
+                          <div className="flex-shrink-0 w-6 h-6 rounded-full bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center mr-2">
+                            <Zap className="h-3 w-3 text-indigo-600 dark:text-indigo-400" />
                           </div>
                           <div>
                             <span className="font-medium text-indigo-800 dark:text-indigo-300">Cognitive Extension</span>
-                            <p className="text-xs mt-1 text-slate-600 dark:text-slate-400">Tune your neural system to your professional needs</p>
+                            <p className="text-[10px] mt-0.5 text-slate-600 dark:text-slate-400">Tune your neural system to professional needs</p>
                           </div>
                         </li>
-                        <li className="flex items-start p-3 rounded-lg bg-blue-50/50 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900/30">
-                          <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center mr-3">
-                            <Zap className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                        <li className="flex items-start p-2 rounded-lg bg-blue-50/50 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900/30">
+                          <div className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center mr-2">
+                            <Zap className="h-3 w-3 text-blue-600 dark:text-blue-400" />
                           </div>
                           <div>
                             <span className="font-medium text-blue-800 dark:text-blue-300">Unified Messaging</span>
-                            <p className="text-xs mt-1 text-slate-600 dark:text-slate-400">Access your neural insights from WhatsApp and web dashboard</p>
+                            <p className="text-[10px] mt-0.5 text-slate-600 dark:text-slate-400">Access neural insights from WhatsApp</p>
                           </div>
                         </li>
                       </ul>
                     </div>
                   </div>
                   
-                  <div className="mt-8 text-center">
+                  <div className="mt-4 text-center">
                     <Button 
                       onClick={handleGoogleLogin}
-                      className="w-full sm:w-auto px-8 py-6 h-auto text-lg font-medium relative overflow-hidden group bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white shadow-lg"
-                      size="lg"
+                      className="w-full sm:w-auto px-6 py-3 h-auto text-base font-medium relative overflow-hidden group bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white shadow-lg"
+                      size="default"
                     >
                       <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-r from-indigo-600/20 to-primary/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                       <div className="relative z-10 flex items-center justify-center">
-                        <LogIn className="mr-2 h-5 w-5" />
+                        <LogIn className="mr-2 h-4 w-4" />
                         <span>Activate with Google</span>
                       </div>
                       <div className="absolute -inset-1 blur-xl bg-gradient-to-r from-indigo-600/20 to-primary/20 group-hover:opacity-100 opacity-0 transition-opacity"></div>
                     </Button>
                     
-                    <p className="mt-4 text-sm text-slate-500 dark:text-slate-400">
-                      Already have an account? Your neural progress will be automatically detected.
+                    <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                      Have an account? Your progress will be detected automatically.
                     </p>
                   </div>
                 </CardContent>
@@ -349,20 +349,20 @@ export default function ActivateNeuralExtension() {
                 <div className="absolute left-0 top-0 w-40 h-40 bg-gradient-to-br from-[#25D366]/10 to-[#25D366]/5 rounded-br-full"></div>
                 <div className="absolute right-0 bottom-0 w-40 h-40 bg-gradient-to-tl from-[#128C7E]/10 to-[#25D366]/5 rounded-tl-full"></div>
                 
-                <CardHeader className="text-center relative z-10 pt-8">
-                  <div className="w-24 h-24 bg-gradient-to-br from-[#25D366]/20 to-[#128C7E]/20 rounded-full flex items-center justify-center mx-auto mb-4 relative">
-                    <MessageSquare className="h-12 w-12 text-[#25D366]" />
+                <CardHeader className="text-center relative z-10 pt-4 pb-2">
+                  <div className="w-16 h-16 bg-gradient-to-br from-[#25D366]/20 to-[#128C7E]/20 rounded-full flex items-center justify-center mx-auto mb-2 relative">
+                    <MessageSquare className="h-8 w-8 text-[#25D366]" />
                     <div className="absolute -inset-1 rounded-full border-2 border-[#25D366]/20 animate-pulse"></div>
                   </div>
-                  <CardTitle className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#25D366] to-[#128C7E]">
+                  <CardTitle className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#25D366] to-[#128C7E]">
                     Authenticate WhatsApp
                   </CardTitle>
-                  <CardDescription className="text-base">
+                  <CardDescription className="text-sm">
                     Complete your neural extension activation
                   </CardDescription>
                 </CardHeader>
                 
-                <CardContent className="relative z-10 pt-2">
+                <CardContent className="relative z-10 pt-0">
                   {/* WhatsApp linking component */}
                   <NeuralWhatsAppLinking />
                   

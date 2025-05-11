@@ -142,19 +142,19 @@ export function NeuralWhatsAppLinking() {
         <Button 
           onClick={openWhatsAppLink} 
           disabled={loading}
-          className="w-full sm:w-auto mx-auto px-8 py-6 h-auto text-lg font-medium relative overflow-hidden group bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white shadow-lg"
-          size="lg"
+          className="w-full sm:w-auto mx-auto px-6 py-3 h-auto text-base font-medium relative overflow-hidden group bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white shadow-lg"
+          size="default"
         >
           <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-r from-indigo-600/20 to-primary/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
           
           {loading ? (
             <>
-              <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               <span>Opening WhatsApp...</span>
             </>
           ) : (
             <>
-              <MessageCircle className="mr-2 h-5 w-5" />
+              <MessageCircle className="mr-2 h-4 w-4" />
               <span>Authenticate WhatsApp</span>
               <div className="absolute -inset-1 blur-xl bg-gradient-to-r from-indigo-600/20 to-primary/20 group-hover:opacity-100 opacity-0 transition-opacity"></div>
             </>
