@@ -23,6 +23,7 @@ export default function ActivateNeuralExtension() {
   // All useState hooks must be in the same order each render
   const [isAnimating, setIsAnimating] = useState(true);
   const [activeTab, setActiveTab] = useState<string>('step1'); // Initialize to default, we'll update in useEffect
+  const [whatsAppDirectLink, setWhatsAppDirectLink] = useState('');
   
   // All useRef hooks after state hooks
   const canvasRef = useRef<HTMLCanvasElement>(null);

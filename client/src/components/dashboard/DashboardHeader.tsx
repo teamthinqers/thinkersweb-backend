@@ -15,28 +15,37 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onNewEntry }) => {
   // Local state to control the entry form if no onNewEntry prop is provided
   const [showEntryForm, setShowEntryForm] = useState(false);
   
-  // Get WhatsApp number for direct linking
+  // Get WhatsApp number and direct link for direct linking
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [directLink, setDirectLink] = useState('');
   
-  // Fetch the Twilio WhatsApp number from our API
+  // Fetch the Twilio WhatsApp number and direct link from our API
   useEffect(() => {
     // This endpoint doesn't require authentication, so we can call it directly
     fetch('/api/whatsapp/contact')
       .then(res => res.json())
       .then(data => {
-        if (data && data.phoneNumber) {
-          // Format the phone number to ensure it works with WhatsApp
-          // Strip any + sign since the wa.me link doesn't need it
-          const formattedNumber = data.phoneNumber.replace(/^\+/, '');
-          setPhoneNumber(formattedNumber);
-          console.log("Got WhatsApp number:", formattedNumber);
+        if (data) {
+          if (data.phoneNumber) {
+            // Format the phone number to ensure it works with WhatsApp
+            // Strip any + sign since the wa.me link doesn't need it
+            const formattedNumber = data.phoneNumber.replace(/^\+/, '');
+            setPhoneNumber(formattedNumber);
+            console.log("Got WhatsApp number:", formattedNumber);
+          }
+          
+          if (data.directLink) {
+            setDirectLink(data.directLink);
+            console.log("Got WhatsApp direct link:", data.directLink);
+          }
         }
       })
       .catch(err => console.error("Error fetching WhatsApp contact:", err));
   }, []);
   
-  // Direct WhatsApp link for mobile - default to Twilio number if API call fails
-  const whatsappLink = `https://wa.me/${phoneNumber || '16067157733'}`;
+  // Direct WhatsApp link with default message
+  const defaultMessage = encodeURIComponent("Hey DotSpark, I've got a few things on my mind — need your thoughts");
+  const whatsappLink = directLink || `https://wa.me/${phoneNumber || '16067157733'}?text=${defaultMessage}`;
   
   // Handle opening the entry form on web
   const handleOpenEntryForm = () => {
