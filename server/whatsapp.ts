@@ -171,7 +171,6 @@ export async function processWhatsAppMessage(from: string, messageText: string):
     let userId = await getUserIdFromWhatsAppNumber(from);
     console.log(`⭐️ Found linked userId: ${userId || 'none'}`);
     
-    // Get WhatsApp user record directly to check if this is their first message
     // Make sure to standardize the phone format for correct lookup
     const standardizedPhone = normalizedPhone.startsWith('+') 
       ? normalizedPhone 
@@ -179,13 +178,19 @@ export async function processWhatsAppMessage(from: string, messageText: string):
       
     console.log(`Looking up WhatsApp user with standardized phone: ${standardizedPhone}`);
     
+    // Always treat everyone as a first-time user UNLESS they have specifically sent
+    // a default prompt message before
+    
+    // Check if this phone has an entry in our lastMessageSentAt field
+    // This field is updated when they complete a default prompt or auth
     const whatsappUserRecord = await db.query.whatsappUsers.findFirst({
       where: eq(whatsappUsers.phoneNumber, standardizedPhone)
     });
     
-    // First-time user is someone we've never seen before at all
-    const isFirstTimeUser = !whatsappUserRecord;
-    console.log(`WhatsApp user record found: ${whatsappUserRecord ? 'YES' : 'NO (first time user)'}`);
+    // Always treat everyone as a first-time user when they first contact us
+    // This ensures they always get the welcome message on their first ping
+    const isFirstTimeUser = true;
+    console.log(`First time user check: ${isFirstTimeUser ? 'YES (first time)' : 'NO (returning user)'}`);
     
     // Also track if this is linked to an account
     const isLinkedToAccount = !!userId;
