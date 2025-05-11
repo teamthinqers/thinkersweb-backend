@@ -51,19 +51,16 @@ export function NeuralWhatsAppLinking() {
           duration: 5000,
         });
         
-        // Store a "just_activated" flag so we can show extra UI elements
+        // Store activation flags for persistence and UI updates
         localStorage.setItem('neural_just_activated', 'true');
+        sessionStorage.setItem('show_activation_success', 'true');
         
-        // Force a hard reload (more reliable than regular navigation)
+        // Instead of redirecting, first reload the current page
+        // This ensures all components recognize the activation status
         setTimeout(() => {
-          // Use replace instead of href for cleaner history (no back button issues)
-          window.location.replace('/dashboard');
-          
-          // As a backup, if the replace doesn't trigger within 500ms, force a reload
-          setTimeout(() => {
-            window.location.reload();
-          }, 500);
-        }, 1000);
+          // Force a complete page reload to update all components
+          window.location.reload();
+        }, 2000);
         
       }, 5000);
       

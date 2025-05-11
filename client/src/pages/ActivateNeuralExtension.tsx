@@ -3,6 +3,7 @@ import { useLocation } from 'wouter';
 import { useAuth } from '@/hooks/use-auth';
 import { useWhatsAppStatus } from '@/hooks/useWhatsAppStatus';
 import { useMobile } from '@/hooks/use-mobile';
+import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
@@ -14,6 +15,7 @@ import Header from '@/components/layout/Header';
 export default function ActivateNeuralExtension() {
   const [, setLocation] = useLocation();
   const { user, isLoading: isAuthLoading, loginWithGoogle } = useAuth();
+  const { toast } = useToast();
   
   // Neural network visualization state
   const [isAnimating, setIsAnimating] = useState(true);
@@ -29,6 +31,28 @@ export default function ActivateNeuralExtension() {
 
   // Calculate progress percentage
   const progress = user ? (isWhatsAppConnected ? 100 : 50) : 0;
+  
+  // Check for activation success flag and handle redirects
+  useEffect(() => {
+    // Check if we have the activation success flag
+    const showActivationSuccess = sessionStorage.getItem('show_activation_success') === 'true';
+    
+    if (showActivationSuccess && isWhatsAppConnected) {
+      // Clear the flag to prevent repeated redirects
+      sessionStorage.removeItem('show_activation_success');
+      
+      // Show success toast to confirm activation
+      toast({
+        title: "Neural Extension Activated!",
+        description: "Your WhatsApp is now successfully connected to your dashboard.",
+      });
+      
+      // Redirect to dashboard after a delay to allow the user to see the success state
+      setTimeout(() => {
+        setLocation('/dashboard');
+      }, 3000);
+    }
+  }, [isWhatsAppConnected, toast, setLocation]);
   
   // Update tab when auth or WhatsApp status changes
   useEffect(() => {
