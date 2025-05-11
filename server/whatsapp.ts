@@ -434,9 +434,9 @@ export async function processWhatsAppMessage(from: string, messageText: string):
       // For ANY message from a first-time user, send our welcome message
       // This ensures consistent welcome for both button clicks and direct messages
       welcomeMessage = 
-        "✨ *Welcome to DotSpark.*\n\n" +
-        "Thanks for reaching out! DotSpark is your neural extension for clearer thinking and instant insights.\n\n" +
-        "I can help with anything on your mind — from breaking down complex ideas to organizing your thoughts. What would you like to explore today?";
+        "✨ *Welcome to DotSpark*\n\n" +
+        "Ask questions. Break down thoughts. Get instant clarity.\n\n" +
+        "It's like chatting with intelligence — ready when you are.";
         
       console.log(`Sending welcome message to first-time user: ${from}`);
       
