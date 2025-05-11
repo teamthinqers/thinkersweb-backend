@@ -81,17 +81,29 @@ export function useWhatsAppStatus() {
       // Clear the flag immediately to avoid duplicate polling
       localStorage.removeItem('check_whatsapp_status');
       
-      // Set up a polling interval for frequent checks
-      const pollingInterval = setInterval(() => {
-        console.log("Polling WhatsApp status...");
+      // Set up a polling interval for frequent checks - more aggressive for better responsiveness
+      const fastPollingInterval = setInterval(() => {
+        console.log("Fast polling WhatsApp status...");
         forceStatusRefresh();
-      }, 2000); // Poll every 2 seconds
+      }, 1000); // Poll every 1 second initially
       
-      // Stop polling after 30 seconds to avoid excessive API calls
+      // After 10 seconds, switch to slower polling
       setTimeout(() => {
-        console.log("Stopping WhatsApp status polling");
-        clearInterval(pollingInterval);
-      }, 30000);
+        clearInterval(fastPollingInterval);
+        console.log("Switching to slower WhatsApp status polling");
+        
+        // Continue with less frequent polling
+        const slowPollingInterval = setInterval(() => {
+          console.log("Slow polling WhatsApp status...");
+          forceStatusRefresh();
+        }, 3000); // Poll every 3 seconds
+        
+        // Stop all polling after another 20 seconds
+        setTimeout(() => {
+          clearInterval(slowPollingInterval);
+          console.log("Stopping WhatsApp status polling");
+        }, 20000);
+      }, 10000);
     }
     
     // When component mounts, ensure we get fresh data from the server

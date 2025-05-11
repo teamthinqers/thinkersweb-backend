@@ -25,6 +25,13 @@ export default function ActivateNeuralExtension() {
   const [activeTab, setActiveTab] = useState<string>('step1'); // Initialize to default, we'll update in useEffect
   const [whatsAppDirectLink, setWhatsAppDirectLink] = useState('');
   
+  // Additional state for tracking activation status with more details
+  const [activationStatus, setActivationStatus] = useState({
+    isConnected: isWhatsAppConnected || localStorage.getItem('whatsapp_activated') === 'true',
+    isCheckingStatus: false,
+    lastChecked: Date.now()
+  });
+  
   // All useRef hooks after state hooks
   const canvasRef = useRef<HTMLCanvasElement>(null);
   
@@ -107,16 +114,38 @@ export default function ActivateNeuralExtension() {
           duration: 3000,
         });
         
-        // Set a polling check for activation status
-        const checkActivation = setInterval(() => {
+        // For UI responsiveness, we'll add an immediate state update
+        setActivationStatus(prev => ({
+          ...prev,
+          isCheckingStatus: true
+        }));
+        
+        // Set up more responsive polling for activation status - fast initially
+        const fastCheckActivation = setInterval(() => {
           // Force a status check
           fetch('/api/whatsapp/status')
             .then(res => res.json())
             .then(data => {
-              console.log("WhatsApp status check result:", data);
+              console.log("Fast WhatsApp status check result:", data);
               if (data.isRegistered || data.isConnected) {
-                clearInterval(checkActivation);
+                clearInterval(fastCheckActivation);
+                clearInterval(slowCheckActivation); // Clear slow interval too if it exists
+                
+                // Update local storage
                 localStorage.setItem('whatsapp_activated', 'true');
+                localStorage.setItem('whatsapp_phone', data.phoneNumber || '');
+                
+                // Update UI state
+                setActivationStatus(prev => ({
+                  ...prev,
+                  isConnected: true,
+                  isCheckingStatus: false
+                }));
+                
+                // Dispatch event to notify other components
+                window.dispatchEvent(new Event('whatsapp-activation-success'));
+                
+                // Show success notification
                 toast({
                   title: "Neural Extension Activated!",
                   description: "Your WhatsApp message was received and your neural extension is now active.",
@@ -125,11 +154,53 @@ export default function ActivateNeuralExtension() {
               }
             })
             .catch(err => console.error("Error checking WhatsApp status:", err));
-        }, 3000); // Check every 3 seconds
+        }, 1000); // Check every 1 second for first 10 seconds
         
-        // Clear the interval after 30 seconds to avoid excessive polling
+        // After 10 seconds, switch to slower polling to reduce server load
+        let slowCheckActivation;
         setTimeout(() => {
-          clearInterval(checkActivation);
+          clearInterval(fastCheckActivation);
+          
+          // Continue with slower polling
+          slowCheckActivation = setInterval(() => {
+            fetch('/api/whatsapp/status')
+              .then(res => res.json())
+              .then(data => {
+                console.log("Slow WhatsApp status check result:", data);
+                if (data.isRegistered || data.isConnected) {
+                  clearInterval(slowCheckActivation);
+                  
+                  // Update local storage and state
+                  localStorage.setItem('whatsapp_activated', 'true');
+                  setActivationStatus(prev => ({
+                    ...prev, 
+                    isConnected: true,
+                    isCheckingStatus: false
+                  }));
+                  
+                  // Show success notification
+                  toast({
+                    title: "Neural Extension Activated!",
+                    description: "Your WhatsApp message was received and your neural extension is now active.",
+                    duration: 5000,
+                  });
+                }
+              })
+              .catch(err => console.error("Error checking WhatsApp status:", err));
+          }, 3000); // Check every 3 seconds
+        }, 10000);
+        
+        // Clear all intervals after 30 seconds to avoid excessive polling
+        setTimeout(() => {
+          clearInterval(fastCheckActivation);
+          clearInterval(slowCheckActivation);
+          
+          // Update UI state
+          setActivationStatus(prev => ({
+            ...prev,
+            isCheckingStatus: false
+          }));
+          
           // Final reminder if not activated
           if (!isWhatsAppConnected) {
             toast({
