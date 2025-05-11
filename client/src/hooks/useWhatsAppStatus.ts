@@ -62,45 +62,70 @@ export function useWhatsAppStatus() {
     refetch();
   };
   
-  // Try to force a refresh on initial load to ensure we have the latest status
-  // This runs once when the component mounts
+  // When component mounts, ensure we get fresh data from the server
   useEffect(() => {
     if (user) {
+      console.log("User authenticated, forcing refresh of WhatsApp status from server");
       forceStatusRefresh();
     }
-  }, [user]);
+  }, [user, forceStatusRefresh]);
   
-  // Update the status when data changes or on component mount
+  // Main effect for handling data changes from API
   useEffect(() => {
+    if (!user) return; // Skip if no user is logged in
+    
+    console.log("WhatsApp status API data update:", data);
+    
     // If we get confirmation from the API
     if (data?.isRegistered) {
       console.log("API confirms WhatsApp is registered, updating status");
-      // Store in localStorage for persistence
+      // Store in localStorage for persistence across sessions and browser tabs
       localStorage.setItem('whatsapp_activated', 'true');
+      localStorage.setItem('whatsapp_phone', data.phoneNumber || '');
+      localStorage.setItem('whatsapp_user_id', String(data.userId || ''));
+      
+      // Update in-memory state
       setActivationStatus(true);
       
-      // Also refresh sessionStorage to ensure web view sees activation
+      // Also refresh sessionStorage to ensure web view sees activation success message
       sessionStorage.setItem('show_activation_success', 'true');
       setShowActivationSuccess(true);
-    } 
-  }, [data]);
+      
+      console.log("WhatsApp activation status set to TRUE based on API response");
+    } else if (data !== undefined) {
+      // API explicitly indicates user is NOT registered (not just loading or error)
+      console.log("API indicates WhatsApp is NOT registered for this user");
+      
+      // If we previously thought we were activated, but API says no, clear localStorage
+      if (localStorage.getItem('whatsapp_activated') === 'true') {
+        console.log("Clearing incorrect localStorage activation status");
+        localStorage.removeItem('whatsapp_activated');
+        localStorage.removeItem('whatsapp_phone');
+        localStorage.removeItem('whatsapp_user_id');
+        setActivationStatus(false);
+      }
+    }
+  }, [data, user]);
   
-  // Separate effect to check localStorage on component mount
+  // Separate effect to check localStorage on component mount (before API returns)
   useEffect(() => {
     // Always check localStorage on mount to ensure consistency
     const localActivation = localStorage.getItem('whatsapp_activated') === 'true';
-    console.log("Checking localStorage activation status:", localActivation);
+    console.log("Initial check of localStorage activation status:", localActivation);
     
     if (localActivation) {
-      console.log("Found local activation status, updating state");
+      console.log("Found local activation status, setting memory state immediately");
       setActivationStatus(true);
       
-      // Force a refetch after a short delay to ensure API status is updated
-      setTimeout(() => {
-        refetch();
-      }, 1000);
+      // If user is logged in, verify with server after a short delay
+      if (user) {
+        setTimeout(() => {
+          console.log("Verifying localStorage activation status with server");
+          refetch();
+        }, 1500);
+      }
     }
-  }, [refetch]);
+  }, [user, refetch]);
   
   // Clear "just activated" flag after 10 seconds
   useEffect(() => {
