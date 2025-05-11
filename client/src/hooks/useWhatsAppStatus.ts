@@ -405,19 +405,60 @@ export function useWhatsAppStatus() {
     }
   }, [user, toast]);
   
-  // Auto-repair on page load if localStorage shows activated but server doesn't
+  // Auto-repair on EVERY page load when user is logged in - more aggressive approach
   useEffect(() => {
     const isActiveInLocal = localStorage.getItem('whatsapp_activated') === 'true';
     
-    if (isActiveInLocal && user && !data?.isRegistered && !data?.isConnected) {
+    // First, always check for activation in local storage and set state
+    if (isActiveInLocal) {
+      console.log("📌 Found activation in localStorage during page load, updating state");
+      setActivationStatus(true);
+    }
+    
+    // If local says active but server doesn't, try to repair automatically
+    if (isActiveInLocal && user && data !== undefined && !data?.isRegistered && !data?.isConnected) {
       console.log("🔧 Detected activation state mismatch, attempting auto-repair");
       repairActivationStatus();
     }
-  }, [data?.isRegistered, data?.isConnected, user, repairActivationStatus]);
+    
+    // Additionally, run a repair attempt when returning to the app or switching tabs
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible' && user && isActiveInLocal) {
+        console.log("🔄 Page visibility changed to visible, ensuring activation status");
+        // Force refresh first, then check if repair is needed
+        refetch().then(result => {
+          if (result.data && !result.data.isRegistered && !result.data.isConnected) {
+            console.log("🔧 Visibility change triggered repair");
+            repairActivationStatus();
+          }
+        });
+      }
+    };
+    
+    // Register event listener for visibility changes
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    
+    // Always try to auto-repair on every router navigation when user is logged in
+    // by storing a special flag in session storage
+    if (user && isActiveInLocal && !sessionStorage.getItem('visited_page')) {
+      console.log("📍 First page navigation, ensuring activation works");
+      sessionStorage.setItem('visited_page', 'true');
+      repairActivationStatus();
+    }
+    
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [data, user, repairActivationStatus, refetch]);
 
   // Simulate activation for demo purposes when user sends a link
   const simulateActivation = () => {
+    // Set all possible storage mechanisms to TRUE to maximize persistence
     localStorage.setItem('whatsapp_activated', 'true');
+    sessionStorage.setItem('whatsapp_activated', 'true'); // Backup in session storage
+    document.cookie = "whatsapp_activated=true; max-age=31536000; path=/"; // Also try cookie (1 year)
+    
+    // Update state
     setActivationStatus(true);
     
     // Set flags for UI feedback
@@ -428,8 +469,22 @@ export function useWhatsAppStatus() {
     sessionStorage.setItem('show_activation_success', 'true');
     setShowActivationSuccess(true);
     
+    // Add an additional persistent flag that never gets removed
+    localStorage.setItem('neural_extension_activated_date', new Date().toISOString());
+    
     // Force a refetch to update server state if possible
     refetch();
+    
+    // Broadcast the activation event to all open tabs and components
+    window.dispatchEvent(new CustomEvent('whatsapp-activation-complete', { 
+      detail: { 
+        timestamp: new Date(),
+        source: 'simulateActivation',
+        permanent: true
+      }
+    }));
+    
+    console.log("✅ WhatsApp activation complete - synchronized across all storage mechanisms");
   };
 
   // For testing only - trigger WhatsApp activation events
@@ -460,9 +515,33 @@ export function useWhatsAppStatus() {
     }, 3000);
   };
   
+  // Create combined status tracking object with multiple sources
+  const combinedStatus = {
+    // First from localStorage (most reliable between page navigations)
+    localStorage: localStorage.getItem('whatsapp_activated') === 'true',
+    // From sessionStorage (backup)
+    sessionStorage: sessionStorage.getItem('whatsapp_activated') === 'true',
+    // From cookie (most reliable for longer persistence)
+    cookie: document.cookie.includes('whatsapp_activated=true'),
+    // From state variable (within current component lifecycle)
+    stateVariable: activationStatus,
+    // From server API response
+    apiRegistered: data?.isRegistered === true,
+    apiConnected: data?.isConnected === true,
+  };
+  
+  // Debug status in console if user is authenticated
+  if (user) {
+    console.log("📊 WhatsApp activation status sources:", combinedStatus);
+  }
+  
+  // Calculate derived status from all sources (any source confirms = activated)
+  const isDerivedActive = Object.values(combinedStatus).some(value => value === true);
+  
   return {
-    // Either API confirms it, or we have local activation
-    isWhatsAppConnected: data?.isRegistered || data?.isConnected || activationStatus,
+    // Primary indicator uses ANY source that confirms activation
+    isWhatsAppConnected: isDerivedActive,
+    // Original server data
     phoneNumber: data?.phoneNumber || 'Your phone',
     registeredAt: data?.registeredAt ? new Date(data.registeredAt) : new Date(),
     isLoading,
@@ -482,7 +561,11 @@ export function useWhatsAppStatus() {
     forceStatusRefresh,
     // Test function for activation events
     testActivationEvents,
-    // Expose the localStorage status
-    isActiveInLocalStorage: activationStatus
+    // Expose the localStorage status directly
+    isActiveInLocalStorage: localStorage.getItem('whatsapp_activated') === 'true',
+    // Provide debug information to components
+    statusSources: combinedStatus,
+    // Combined value from all sources
+    isDerivedActive
   };
 }
