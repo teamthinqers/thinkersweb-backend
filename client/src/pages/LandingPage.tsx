@@ -313,6 +313,14 @@ export default function LandingPage() {
               {/* Dot with spark */}
               <div className="absolute left-[25%] top-1/2 transform -translate-y-1/2">
                 <div className="w-2 h-2 bg-primary/90 rounded-full animate-pulse-slow delay-300"></div>
+                
+                {/* Spark symbol */}
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 opacity-0 animate-spark-flash delay-1900">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M13 2L4.5 13.5H11.5L11 22L19.5 10.5H12.5L13 2Z" fill="#3b82f6" stroke="#3b82f6" strokeWidth="1" />
+                  </svg>
+                </div>
+                
                 {/* Spark rays */}
                 <div className="absolute w-4 h-[1px] bg-primary/80 rotate-0 -translate-x-1/2 opacity-0 animate-spark-appear delay-2000"></div>
                 <div className="absolute w-4 h-[1px] bg-primary/80 rotate-45 -translate-x-1/2 opacity-0 animate-spark-appear delay-2100"></div>
@@ -326,6 +334,14 @@ export default function LandingPage() {
               {/* Center dot with spark */}
               <div className="absolute left-[50%] top-1/2 transform -translate-x-1/2 -translate-y-1/2">
                 <div className="w-3 h-3 bg-indigo-500/90 rounded-full animate-pulse-slow"></div>
+                
+                {/* Spark symbol */}
+                <div className="absolute -top-5 left-1/2 -translate-x-1/2 opacity-0 animate-spark-flash delay-2900">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M13 2L4.5 13.5H11.5L11 22L19.5 10.5H12.5L13 2Z" fill="#6366f1" stroke="#6366f1" strokeWidth="1" />
+                  </svg>
+                </div>
+                
                 {/* Spark rays */}
                 <div className="absolute w-6 h-[1.5px] bg-indigo-500/80 rotate-0 -translate-x-1/2 opacity-0 animate-spark-appear delay-3000"></div>
                 <div className="absolute w-6 h-[1.5px] bg-indigo-500/80 rotate-45 -translate-x-1/2 opacity-0 animate-spark-appear delay-3100"></div>
@@ -339,6 +355,14 @@ export default function LandingPage() {
               {/* Dot with spark */}
               <div className="absolute left-[75%] top-1/2 transform -translate-y-1/2">
                 <div className="w-2 h-2 bg-blue-500/90 rounded-full animate-pulse-slow delay-100"></div>
+                
+                {/* Spark symbol */}
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 opacity-0 animate-spark-flash delay-4900">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M13 2L4.5 13.5H11.5L11 22L19.5 10.5H12.5L13 2Z" fill="#3b82f6" stroke="#3b82f6" strokeWidth="1" />
+                  </svg>
+                </div>
+                
                 {/* Spark rays */}
                 <div className="absolute w-4 h-[1px] bg-blue-500/80 rotate-0 -translate-x-1/2 opacity-0 animate-spark-appear delay-5000"></div>
                 <div className="absolute w-4 h-[1px] bg-blue-500/80 rotate-45 -translate-x-1/2 opacity-0 animate-spark-appear delay-5100"></div>
