@@ -37,26 +37,23 @@ export default function ActivateNeuralExtension() {
   const progress = user ? (isWhatsAppConnected ? 100 : 50) : 0;
   
   // Check for activation success flag and handle redirects
+  // Handle activation success and redirection
   useEffect(() => {
-    // Check if we have the activation success flag
-    const showActivationSuccess = sessionStorage.getItem('show_activation_success') === 'true';
-    
+    // Use the value from the hook directly, no need to read from sessionStorage
     if (showActivationSuccess && isWhatsAppConnected) {
-      // Clear the flag to prevent repeated redirects
-      sessionStorage.removeItem('show_activation_success');
-      
-      // Show success toast to confirm activation
+      // Success toast with longer duration
       toast({
         title: "Neural Extension Activated!",
         description: "Your WhatsApp is now successfully connected to your dashboard.",
+        duration: 5000,
       });
       
-      // Redirect to dashboard after a delay to allow the user to see the success state
+      // Redirect to dashboard after a delay
       setTimeout(() => {
         setLocation('/dashboard');
       }, 3000);
     }
-  }, [isWhatsAppConnected, toast, setLocation]);
+  }, [showActivationSuccess, isWhatsAppConnected, toast, setLocation]);
   
   // Update tab when auth or WhatsApp status changes
   useEffect(() => {
@@ -169,12 +166,7 @@ export default function ActivateNeuralExtension() {
     };
   }, [canvasRef, isAnimating]);
 
-  // Set the active tab based on auth state
-  useEffect(() => {
-    if (user && !isWhatsAppConnected) {
-      setActiveTab('step2');
-    }
-  }, [user, isWhatsAppConnected]);
+  // We already handle tab changes in the other useEffect
 
   // Handle Google login
   const handleGoogleLogin = async () => {
