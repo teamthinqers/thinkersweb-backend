@@ -399,7 +399,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
   
-  // Debug endpoint to simulate a WhatsApp message
+  // Debug endpoint to simulate a WhatsApp message through UI
   app.post(`${apiPrefix}/whatsapp/simulate`, isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
     try {
       if (!req.user) {
@@ -514,6 +514,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Public debug endpoint to test WhatsApp message processing
+  app.post(`${apiPrefix}/whatsapp/test-processing`, async (req: Request, res: Response) => {
+    try {
+      const { phoneNumber, message } = req.body;
+      
+      if (!phoneNumber || !message) {
+        return res.status(400).json({ error: "phoneNumber and message are required" });
+      }
+      
+      console.log(`⭐️ Testing WhatsApp message processing from ${phoneNumber}: ${message}`);
+      
+      // Format the phone number as a WhatsApp number
+      const formattedNumber = phoneNumber.startsWith('whatsapp:') 
+        ? phoneNumber 
+        : `whatsapp:${phoneNumber}`;
+      
+      // Process the message but don't save entries
+      const response = await processWhatsAppMessage(formattedNumber, message);
+      
+      return res.status(200).json({ 
+        success: true, 
+        response: response.message,
+        message: "WhatsApp message processing tested" 
+      });
+    } catch (error) {
+      console.error("Error in WhatsApp test processing route:", error);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+  });
+  
   // Get WhatsApp contact number for the frontend
   app.get(`${apiPrefix}/whatsapp/contact`, async (req: Request, res: Response) => {
     try {

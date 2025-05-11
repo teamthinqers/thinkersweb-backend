@@ -338,6 +338,8 @@ export async function processWhatsAppMessage(from: string, messageText: string):
     console.log("Regex5 test:", emailLinkingRegex5.test(messageText));
     console.log("Regex6 test:", emailLinkingRegex6.test(messageText));
     console.log("Regex7 test:", emailLinkingRegex7.test(messageText));
+    console.log("Regex8 test:", emailLinkingRegex8.test(messageText));
+    console.log("Regex9 test:", emailLinkingRegex9.test(messageText));
     
     let emailMatch = messageText.match(emailLinkingRegex1) || 
                     messageText.match(emailLinkingRegex2) || 
@@ -345,7 +347,9 @@ export async function processWhatsAppMessage(from: string, messageText: string):
                     messageText.match(emailLinkingRegex4) ||
                     messageText.match(emailLinkingRegex5) ||
                     messageText.match(emailLinkingRegex6) ||
-                    messageText.match(emailLinkingRegex7);
+                    messageText.match(emailLinkingRegex7) ||
+                    messageText.match(emailLinkingRegex8) ||
+                    messageText.match(emailLinkingRegex9);
     
     // Direct email extraction as fallback
     if (!emailMatch) {
