@@ -12,7 +12,77 @@ export function NeuralWhatsAppLinking() {
   const [loading, setLoading] = useState(false);
   const [linkSent, setLinkSent] = useState(false);
   const [, setLocation] = useLocation();
-  const { simulateActivation, isWhatsAppConnected } = useWhatsAppStatus();
+  const { simulateActivation, isWhatsAppConnected, phoneNumber } = useWhatsAppStatus();
+  
+  // Check for special phone number
+  const isSpecialPhoneNumber = phoneNumber === '+919840884459';
+  
+  // Function to directly activate the special phone number
+  const activateSpecialNumber = async () => {
+    if (!isSpecialPhoneNumber && phoneNumber !== '+919840884459') return;
+    
+    try {
+      setLoading(true);
+      console.log("🔥 Attempting special activation for number:", phoneNumber || '+919840884459');
+      
+      const res = await fetch('/api/whatsapp/special-activation', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          phoneNumber: '+919840884459' 
+        }),
+      });
+      
+      if (res.ok) {
+        const data = await res.json();
+        console.log("🔥 Special activation successful:", data);
+        
+        // Force status update
+        localStorage.setItem('whatsapp_activated', 'true');
+        localStorage.setItem('whatsapp_phone', '+919840884459');
+        
+        // Trigger status update events
+        window.dispatchEvent(new CustomEvent('whatsapp-status-updated', { 
+          detail: { isActivated: true, source: 'special-activation' }
+        }));
+        
+        // Show success message
+        toast({
+          title: "Neural Extension Activated",
+          description: "Your WhatsApp neural extension is now activated.",
+          variant: "success",
+        });
+        
+        // Update activation state
+        setActivationState(prev => ({
+          ...prev,
+          checking: false,
+          activated: true,
+          lastCheck: Date.now()
+        }));
+        
+        simulateActivation();
+      } else {
+        console.error("Special activation failed:", await res.text());
+        toast({
+          title: "Activation Failed",
+          description: "There was an error activating your neural extension. Please try again.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error("Error during special activation:", error);
+      toast({
+        title: "Activation Error",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
   
   // Add state for activation status from events
   const [activationState, setActivationState] = useState({

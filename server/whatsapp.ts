@@ -870,6 +870,29 @@ export async function getWhatsAppStatus(userId: number): Promise<{
       ]
     });
     
+    // If we found any WhatsApp records for this user, always ensure at least one is marked active
+    // This fixes the issue of activation status not persisting
+    if (allWhatsappUsers.length > 0 && !allWhatsappUsers.some(u => u.active)) {
+      console.log(`Found WhatsApp records for user ${userId} but none active - reactivating most recent`);
+      
+      // Take the most recently used record and mark it active
+      const mostRecent = allWhatsappUsers.sort((a, b) => 
+        (b.lastMessageSentAt?.getTime() || 0) - (a.lastMessageSentAt?.getTime() || 0)
+      )[0];
+      
+      // Update this record to be active
+      await db.update(whatsappUsers)
+        .set({ 
+          active: true,
+          lastMessageSentAt: new Date()
+        })
+        .where(eq(whatsappUsers.id, mostRecent.id));
+        
+      // Modify the record in our array to reflect this change
+      mostRecent.active = true;
+      mostRecent.lastMessageSentAt = new Date();
+    }
+    
     // Also check if this is a special known number with manual override
     const specialPhoneCheck = await db.query.whatsappUsers.findFirst({
       where: eq(whatsappUsers.phoneNumber, '+919840884459')

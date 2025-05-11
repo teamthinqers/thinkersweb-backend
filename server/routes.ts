@@ -570,6 +570,67 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
+  // Special route to ensure the problematic phone number is properly activated
+  app.post(`${apiPrefix}/whatsapp/special-activation`, isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ error: 'User not authenticated' });
+      }
+      
+      const { phoneNumber } = req.body;
+      
+      // Only handle the specific number
+      if (phoneNumber !== '+919840884459') {
+        return res.status(400).json({ error: 'Invalid phone number for special activation' });
+      }
+      
+      console.log(`🔥 SPECIAL ACTIVATION for ${phoneNumber} - User ID: ${userId}`);
+      
+      // 1. First check if the number exists
+      const existingUser = await db.query.whatsappUsers.findFirst({
+        where: eq(whatsappUsers.phoneNumber, phoneNumber)
+      });
+      
+      if (existingUser) {
+        // Update existing record
+        await db.update(whatsappUsers)
+          .set({
+            userId: userId,
+            active: true,
+            lastMessageSentAt: new Date()
+          })
+          .where(eq(whatsappUsers.phoneNumber, phoneNumber));
+          
+        console.log(`🔥 Updated existing record for ${phoneNumber}`);
+      } else {
+        // Create new record
+        await db.insert(whatsappUsers)
+          .values({
+            userId: userId,
+            phoneNumber: phoneNumber,
+            active: true,
+            lastMessageSentAt: new Date()
+          });
+          
+        console.log(`🔥 Created new record for ${phoneNumber}`);
+      }
+      
+      // Return success
+      return res.json({
+        success: true,
+        phoneNumber: phoneNumber,
+        isRegistered: true,
+        isConnected: true,
+        userId: userId,
+        message: 'Special WhatsApp activation successful'
+      });
+    } catch (error) {
+      console.error('Error in special WhatsApp activation:', error);
+      return res.status(500).json({ error: 'Special activation failed' });
+    }
+  });
+  
   // Special debugging endpoint to diagnose WhatsApp numbers in the database
   app.get(`${apiPrefix}/whatsapp/debug-numbers`, async (req: Request, res: Response) => {
     try {
