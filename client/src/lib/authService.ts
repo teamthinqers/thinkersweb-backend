@@ -371,9 +371,10 @@ export async function recoverSession(): Promise<boolean> {
     // If dotspark_session_active exists, or if the session has a rememberMe flag, consider it persistent
     const isPersistent = !!sessionActive || (userData?.rememberMe === true);
     
-    // For persistent sessions (remember me), use a much longer timeout (90 days)
-    // For regular sessions, use 24 hours
-    const maxHoursWithoutActivity = isPersistent ? 90 * 24 : 24;
+    // Always use a very long timeout (365 days) for all sessions to ensure users 
+    // stay logged in until they explicitly sign out
+    // This creates a "remember me" behavior by default
+    const maxHoursWithoutActivity = 365 * 24; // 365 days
     
     const lastAuth = new Date(userData.lastAuthenticated || userData.lastLogin);
     const now = new Date();

@@ -130,23 +130,27 @@ export function setupAuth(app: Express) {
   
   const sessionSettings: session.SessionOptions = {
     secret: sessionSecret,
-    resave: true, // Changed to true to ensure session is saved on each request
-    saveUninitialized: true, // Changed to true to create session for all users
+    resave: true, // Keep true to ensure session is saved on each request
+    saveUninitialized: true, // Keep true to create session for all users
     store: new PostgresSessionStore({ 
       pool,
       createTableIfMissing: true,
       tableName: 'session',
-      disableTouch: false,
-      pruneSessionInterval: 60, // Check for expired sessions every minute
+      disableTouch: false, // Make sure session expiration is updated on activity
+      // Check for expired sessions every 15 minutes instead of every minute to reduce DB load
+      pruneSessionInterval: 15 * 60, 
     }),
     cookie: {
       secure: process.env.NODE_ENV === "production",
-      maxAge: 365 * 24 * 60 * 60 * 1000, // 1 year (increased from 30 days)
-      httpOnly: true,
-      sameSite: 'lax',
-      path: '/'
+      // Set to 365 days by default for persistent sessions
+      maxAge: 365 * 24 * 60 * 60 * 1000, 
+      httpOnly: true, // Prevent JavaScript access to the cookie
+      sameSite: 'lax', // Allow cross-site navigation while protecting against CSRF
+      path: '/',
     },
-    rolling: true, // Reset cookie expiration on each response
+    // Reset cookie expiration on each response to maintain the session
+    // This ensures that as long as the user is active, they stay logged in
+    rolling: true,
   };
 
   app.set("trust proxy", 1);
