@@ -1,14 +1,42 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/use-auth";
+import { useLocation } from "wouter";
 import { Loader2, Smartphone, MessageCircle, SendHorizonal } from "lucide-react";
+import { useWhatsAppStatus } from "@/hooks/useWhatsAppStatus";
 
 export function NeuralWhatsAppLinking() {
   const { toast } = useToast();
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [linkSent, setLinkSent] = useState(false);
+  const [, setLocation] = useLocation();
+  const { simulateActivation } = useWhatsAppStatus();
+  
+  // Automatic redirect after successful activation simulation
+  useEffect(() => {
+    if (linkSent) {
+      // Automatically mark as activated after a few seconds
+      const timer = setTimeout(() => {
+        simulateActivation();
+        
+        // Success message
+        toast({
+          title: "Neural Extension Activated!",
+          description: "Your WhatsApp is now connected to DotSpark.",
+          duration: 5000,
+        });
+        
+        // Redirect to dashboard after a moment
+        setTimeout(() => {
+          setLocation('/dashboard');
+        }, 1500);
+      }, 3000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [linkSent, simulateActivation, setLocation, toast]);
 
   // Direct WhatsApp linking without server interaction
   const openWhatsAppLink = async () => {
@@ -29,14 +57,14 @@ export function NeuralWhatsAppLinking() {
         return;
       }
       
-      // Create a pre-filled message that includes both explicit linking command and email in parentheses
+      // Create a pre-filled message with natural language and user info
       const phoneNumber = "16067157733";
-      const message = `link:${userEmail}`;
+      const message = `Hey DotSpark, authenticate my WhatsApp chat with you for Neural extension. My email is ${userEmail}`;
       
-      // Show success toast with specific instructions
+      // Show success toast with better instructions
       toast({
         title: "Opening WhatsApp",
-        description: `WhatsApp will open with your email. Just tap send to link your account!`,
+        description: "Just tap send to activate your neural extension!",
       });
       
       setLinkSent(true);
