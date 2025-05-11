@@ -368,6 +368,132 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
+  // Special debugging endpoint to diagnose WhatsApp numbers in the database
+  app.get(`${apiPrefix}/whatsapp/debug-numbers`, async (req: Request, res: Response) => {
+    try {
+      console.log(`⭐️ Running WhatsApp number debug endpoint`);
+      
+      // Get all WhatsApp users from the database
+      const whatsappUsers = await db.query.whatsappUsers.findMany();
+      
+      const formattedUsers = whatsappUsers.map(user => ({
+        userId: user.userId,
+        phoneNumber: user.phoneNumber,
+        active: user.active,
+        lastMessageSentAt: user.lastMessageSentAt?.toISOString()
+      }));
+      
+      console.log(`⭐️ Found ${whatsappUsers.length} WhatsApp users in database:`);
+      formattedUsers.forEach((user, i) => {
+        console.log(`  ${i+1}. User ID: ${user.userId}, Phone: ${user.phoneNumber}, Active: ${user.active}`);
+      });
+      
+      // Get recent entries to compare
+      const recentEntries = await db.select()
+        .from(entries)
+        .orderBy(desc(entries.createdAt))
+        .limit(10);
+      
+      console.log(`⭐️ Recent entries (${recentEntries.length} total):`);
+      recentEntries.forEach((entry, i) => {
+        console.log(`  ${i+1}. Entry ID: ${entry.id}, User ID: ${entry.userId}, Title: ${entry.title}, Created: ${entry.createdAt.toISOString()}`);
+      });
+      
+      res.json({
+        whatsappUsers: formattedUsers,
+        recentEntries: recentEntries.map(entry => ({
+          id: entry.id,
+          userId: entry.userId,
+          title: entry.title,
+          createdAt: entry.createdAt
+        }))
+      });
+    } catch (error) {
+      console.error('Error debugging WhatsApp numbers:', error);
+      res.status(500).json({ error: 'Failed to debug WhatsApp numbers' });
+    }
+  });
+  
+  // Simplified WhatsApp number registration - just enter your phone and user ID
+  app.post(`${apiPrefix}/whatsapp/link-number`, async (req: Request, res: Response) => {
+    try {
+      const { phoneNumber, userId } = req.body;
+      
+      if (!phoneNumber || !userId) {
+        return res.status(400).json({ error: 'Phone number and user ID are required' });
+      }
+      
+      // Normalize and standardize phone number format
+      let normalizedPhone = phoneNumber.trim();
+      if (normalizedPhone.startsWith('whatsapp:')) {
+        normalizedPhone = normalizedPhone.replace('whatsapp:', '').trim();
+      }
+      
+      // Make sure it has a + prefix for international format
+      const standardizedPhone = normalizedPhone.startsWith('+') 
+        ? normalizedPhone 
+        : `+${normalizedPhone}`;
+      
+      console.log(`⭐️ Linking phone ${standardizedPhone} to user ID: ${userId}`);
+      
+      // Check if this phone is already registered
+      const existingUser = await db.query.whatsappUsers.findFirst({
+        where: eq(whatsappUsers.phoneNumber, standardizedPhone)
+      });
+      
+      if (existingUser) {
+        // Update the existing record
+        await db.update(whatsappUsers)
+          .set({ 
+            userId: userId,
+            active: true,
+            lastMessageSentAt: new Date()
+          })
+          .where(eq(whatsappUsers.phoneNumber, standardizedPhone));
+          
+        console.log(`⭐️ Updated existing WhatsApp user - changed user ID from ${existingUser.userId} to ${userId}`);
+      } else {
+        // Create a new record
+        const [newUser] = await db.insert(whatsappUsers).values({
+          userId: userId,
+          phoneNumber: standardizedPhone,
+          active: true,
+          lastMessageSentAt: new Date()
+        }).returning();
+        
+        console.log(`⭐️ Created new WhatsApp user: ${JSON.stringify(newUser)}`);
+      }
+      
+      res.status(200).json({ 
+        success: true, 
+        message: `Your phone number ${standardizedPhone} has been linked to user ID ${userId}` 
+      });
+    } catch (error) {
+      console.error('Error linking WhatsApp number:', error);
+      res.status(500).json({ error: 'Failed to link WhatsApp number' });
+    }
+  });
+  
+  // Simple endpoint to get the current user's ID
+  app.get(`${apiPrefix}/current-user`, async (req: Request, res: Response) => {
+    try {
+      // Get the current user ID
+      const userId = req.user?.id || 0;
+      const isAuthenticated = req.isAuthenticated();
+      
+      console.log(`⭐️ Current user ID check: ${userId} (authenticated: ${isAuthenticated})`);
+      
+      res.json({
+        userId,
+        isAuthenticated,
+        sessionData: req.session
+      });
+    } catch (error) {
+      console.error('Error getting current user:', error);
+      res.status(500).json({ error: 'Failed to get current user' });
+    }
+  });
+  
   // Generate a linking code for connecting WhatsApp to a DotSpark account
   app.post(`${apiPrefix}/whatsapp/generate-link-code`, isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
     try {
