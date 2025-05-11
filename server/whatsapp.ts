@@ -665,7 +665,8 @@ export async function processWhatsAppMessage(from: string, messageText: string):
     
     try {
       // Use the user's ID to maintain conversation history
-      const response = await generateAdvancedResponse(userId, messageText, from);
+      // Pass parameters in correct order matching function definition: input, userId, phoneNumber
+      const response = await generateAdvancedResponse(messageText, userId, from.toString());
       
       // Check if response is valid and has text property
       if (response && response.text) {
@@ -682,15 +683,21 @@ export async function processWhatsAppMessage(from: string, messageText: string):
         } catch (dbError) {
           console.error("Error updating lastMessageSentAt for WhatsApp user:", dbError);
         }
+        
+        // Return the AI response text
+        return {
+          success: true,
+          message: response.text
+        };
       } else {
         console.error("Invalid response format from OpenAI:", response);
+        
+        // Return a fallback message
+        return {
+          success: false,
+          message: "I apologize, I couldn't generate a proper response. Please try again."
+        };
       }
-      
-      // Return the AI response
-      return {
-        success: true,
-        message: response && response.text ? response.text : "I apologize, I couldn't generate a proper response. Please try again."
-      };
     } catch (aiError) {
       console.error("Error generating AI response:", aiError);
       
@@ -761,8 +768,7 @@ export async function registerWhatsAppUser(userId: number, phoneNumber: string):
       set: {
         otpCode: otpCode,
         expiresAt: expiresAt,
-        verified: false,
-        updatedAt: new Date()
+        verified: false
       }
     });
     
