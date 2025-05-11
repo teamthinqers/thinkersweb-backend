@@ -40,12 +40,26 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const { toast } = useToast();
-  // Get WhatsApp status with our enhanced hook that includes localStorage persistence
-  const { isWhatsAppConnected, simulateActivation } = useWhatsAppStatus();
   const { user, logout } = useAuth();
   const [, setLocation] = useLocation();
   const isMobile = useMobile();
   const [showMobileNav, setShowMobileNav] = useState(false);
+  
+  // Get WhatsApp status with our enhanced hook that includes localStorage persistence
+  const { isWhatsAppConnected, simulateActivation, forceStatusRefresh } = useWhatsAppStatus();
+  
+  // Check localStorage for activation status
+  const isActiveInLocalStorage = localStorage.getItem('whatsapp_activated') === 'true';
+  
+  // Combined activation status check
+  const isActivated = isWhatsAppConnected || isActiveInLocalStorage;
+  
+  // Force a refresh of WhatsApp status on header load
+  useEffect(() => {
+    if (user) {
+      forceStatusRefresh();
+    }
+  }, [user, forceStatusRefresh]);
   
   // Check localStorage on initial render to ensure header shows correct activation status
   React.useEffect(() => {

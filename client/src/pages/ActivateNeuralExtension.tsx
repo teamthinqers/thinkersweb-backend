@@ -33,8 +33,22 @@ export default function ActivateNeuralExtension() {
   // Function to navigate back to the home page
   const goToHome = () => setLocation("/");
 
-  // Calculate progress percentage
-  const progress = user ? (isWhatsAppConnected ? 100 : 50) : 0;
+  // Force synchronization of activation status on page load
+  useEffect(() => {
+    // Check if there's a WhatsApp activation in localStorage and force the UI to update
+    if (localStorage.getItem('whatsapp_activated') === 'true' && user) {
+      // Set global and local activation flags
+      localStorage.setItem('whatsapp_activated', 'true');
+      sessionStorage.setItem('show_activation_success', 'true');
+      
+      // Force to step 2 since this is an activated user
+      setActiveTab('step2');
+    }
+  }, [user]);
+  
+  // Calculate progress percentage - make sure it's 100% when activated in localStorage
+  const isActiveInLocalStorage = localStorage.getItem('whatsapp_activated') === 'true';
+  const progress = user ? (isWhatsAppConnected || isActiveInLocalStorage ? 100 : 50) : 0;
   
   // Check for activation success flag and handle redirection
   useEffect(() => {

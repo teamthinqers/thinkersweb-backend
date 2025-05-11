@@ -52,6 +52,24 @@ export function useWhatsAppStatus() {
     staleTime: 30000,
   });
   
+  // Force a complete status refresh from the server - useful for synchronizing web/mobile views
+  const forceStatusRefresh = () => {
+    console.log("Forcing WhatsApp status refresh");
+    // Clear any cached data to ensure fresh load
+    localStorage.removeItem('_tanstack_query_/api/whatsapp/status');
+    
+    // Force an immediate refetch 
+    refetch();
+  };
+  
+  // Try to force a refresh on initial load to ensure we have the latest status
+  // This runs once when the component mounts
+  useEffect(() => {
+    if (user) {
+      forceStatusRefresh();
+    }
+  }, [user]);
+  
   // Update the status when data changes or on component mount
   useEffect(() => {
     // If we get confirmation from the API
@@ -130,6 +148,8 @@ export function useWhatsAppStatus() {
     clearJustActivated: () => {
       localStorage.removeItem('neural_just_activated');
       setJustActivated(false);
-    }
+    },
+    // Expose the force refresh function
+    forceStatusRefresh
   };
 }
