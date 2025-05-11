@@ -55,15 +55,28 @@ export function WhatsAppContactButton({
   const handleButtonClick = () => {
     if (!whatsAppNumber) return;
     
-    // Try to open in mobile app first
-    const mobileAppLink = `whatsapp://send?phone=${whatsAppNumber}`;
-    window.location.href = mobileAppLink;
-    
-    // Fallback to web version after a short delay
-    setTimeout(() => {
-      const webFallbackUrl = whatsAppLink || `https://wa.me/${whatsAppNumber}`;
-      window.location.href = webFallbackUrl;
-    }, 500);
+    // Use the direct link from API which includes the default message
+    if (whatsAppLink) {
+      // Try to open in mobile app first with the default message
+      const defaultMessage = encodeURIComponent("Hey DotSpark, I've got a few things on my mind — need your thoughts");
+      const mobileAppLink = `whatsapp://send?phone=${whatsAppNumber}&text=${defaultMessage}`;
+      window.location.href = mobileAppLink;
+      
+      // Fallback to web version after a short delay
+      setTimeout(() => {
+        window.location.href = whatsAppLink;
+      }, 500);
+    } else {
+      // Fallback if direct link is not available
+      const defaultMessage = encodeURIComponent("Hey DotSpark, I've got a few things on my mind — need your thoughts");
+      const mobileAppLink = `whatsapp://send?phone=${whatsAppNumber}&text=${defaultMessage}`;
+      window.location.href = mobileAppLink;
+      
+      setTimeout(() => {
+        const webFallbackUrl = `https://wa.me/${whatsAppNumber}?text=${defaultMessage}`;
+        window.location.href = webFallbackUrl;
+      }, 500);
+    }
   };
 
   const buttonClasses = `

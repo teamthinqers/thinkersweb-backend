@@ -42,13 +42,16 @@ export function CompactWhatsAppButton({ className = "" }: CompactWhatsAppButtonP
   const handleButtonClick = () => {
     if (!whatsAppNumber) return;
     
-    // Try to open in mobile app first
-    const mobileAppLink = `whatsapp://send?phone=${whatsAppNumber}`;
+    // Include the default message
+    const defaultMessage = encodeURIComponent("Hey DotSpark, I've got a few things on my mind — need your thoughts");
+    
+    // Try to open in mobile app first with the default message
+    const mobileAppLink = `whatsapp://send?phone=${whatsAppNumber}&text=${defaultMessage}`;
     window.location.href = mobileAppLink;
     
     // Fallback to web version after a short delay
     setTimeout(() => {
-      const webFallbackUrl = `https://wa.me/${whatsAppNumber}`;
+      const webFallbackUrl = `https://wa.me/${whatsAppNumber}?text=${defaultMessage}`;
       window.location.href = webFallbackUrl;
     }, 500);
   };

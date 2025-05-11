@@ -520,13 +520,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Use Twilio WhatsApp number directly - hardcoded to ensure consistency
       const whatsappNumber = "16067157733"; // Your Twilio WhatsApp number
       
+      // Default welcome message
+      const defaultMessage = encodeURIComponent("Hey DotSpark, I've got a few things on my mind — need your thoughts");
+      
       // Log the WhatsApp number being used
       console.log(`Using Twilio WhatsApp number: ${whatsappNumber}`);
       
-      // Use the standard WhatsApp click-to-chat link format for direct numbers
+      // Use the standard WhatsApp click-to-chat link format with pre-filled message
       res.status(200).json({
         phoneNumber: whatsappNumber,
-        directLink: `https://wa.me/${whatsappNumber}`
+        directLink: `https://wa.me/${whatsappNumber}?text=${defaultMessage}`,
+        defaultMessage: "Hey DotSpark, I've got a few things on my mind — need your thoughts"
       });
     } catch (err) {
       console.error("WhatsApp contact number error:", err);
