@@ -82,13 +82,48 @@ export function useWhatsAppStatus() {
       // Clear the flag immediately to avoid duplicate polling
       localStorage.removeItem('check_whatsapp_status');
       
+      // Get the last activation message to help with debugging
+      const lastMessage = localStorage.getItem('last_activation_message');
+      if (lastMessage) {
+        console.log(`Last activation message: ${lastMessage}`);
+      }
+      
+      // Check immediately before setting up intervals
+      forceStatusRefresh();
+      
+      // Emit a custom event that can be listened for by other components
+      window.dispatchEvent(new CustomEvent('whatsapp_activation_started', {
+        detail: { timestamp: new Date() }
+      }));
+      
       // Set up a polling interval for frequent checks - more aggressive for better responsiveness
       const fastPollingInterval = setInterval(() => {
         console.log("Fast polling WhatsApp status...");
+        
+        // Also check the localStorage (might be updated by other tabs)
+        const newStatus = localStorage.getItem('whatsapp_activated') === 'true';
+        if (newStatus && !activationStatus) {
+          console.log("Activation detected in localStorage!");
+          setActivationStatus(true);
+        }
+        
+        // Force refresh from server
         forceStatusRefresh();
+        
+        // Check if server reports connected status
+        if (data?.isRegistered || data?.isConnected) {
+          console.log("SUCCESS! Server confirms WhatsApp connection:", data);
+          simulateActivation();
+          clearInterval(fastPollingInterval);
+          
+          // Emit success event
+          window.dispatchEvent(new CustomEvent('whatsapp_activation_success', {
+            detail: { timestamp: new Date(), source: 'server-confirmation' }
+          }));
+        }
       }, 1000); // Poll every 1 second initially
       
-      // After 10 seconds, switch to slower polling
+      // After 12 seconds, switch to slower polling
       setTimeout(() => {
         clearInterval(fastPollingInterval);
         console.log("Switching to slower WhatsApp status polling");
@@ -97,14 +132,29 @@ export function useWhatsAppStatus() {
         const slowPollingInterval = setInterval(() => {
           console.log("Slow polling WhatsApp status...");
           forceStatusRefresh();
+          
+          // Check if server reports connected status
+          if (data?.isRegistered || data?.isConnected) {
+            console.log("SUCCESS! Server confirms WhatsApp connection in slow polling:", data);
+            simulateActivation();
+            clearInterval(slowPollingInterval);
+            
+            // Emit success event
+            window.dispatchEvent(new CustomEvent('whatsapp_activation_success', {
+              detail: { timestamp: new Date(), source: 'server-confirmation-slow' }
+            }));
+          }
         }, 3000); // Poll every 3 seconds
         
-        // Stop all polling after another 20 seconds
+        // Stop all polling after another 30 seconds (longer time for slow phones/connections)
         setTimeout(() => {
           clearInterval(slowPollingInterval);
           console.log("Stopping WhatsApp status polling");
-        }, 20000);
-      }, 10000);
+          
+          // Final check before giving up
+          forceStatusRefresh();
+        }, 30000);
+      }, 12000);
     }
     
     // When component mounts, ensure we get fresh data from the server
