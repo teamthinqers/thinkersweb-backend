@@ -232,183 +232,94 @@ export default function LandingPage() {
         </div>
       </header>
       
-      {/* Enhanced Hero Section with Visual Elements - Optimized for mobile */}
+      {/* Enhanced Hero Section with Visual Elements - Centered for all screens */}
       <section className="relative pt-6 pb-8 md:py-12 lg:py-16 overflow-hidden">
         {/* Background visual elements */}
         <div className="absolute inset-0 z-0">
           <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/5 rounded-full blur-3xl opacity-60 -translate-y-1/2 translate-x-1/3"></div>
           <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-blue-500/5 dark:bg-blue-500/10 rounded-full blur-3xl opacity-60 translate-y-1/3 -translate-x-1/4"></div>
           
-          {/* Neural network node points - reduced for mobile */}
-          <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-primary rounded-full shadow-lg shadow-primary/30 animate-pulse"></div>
-          <div className="absolute top-1/3 right-1/3 w-2 h-2 bg-blue-500 rounded-full shadow-lg shadow-blue-500/30 animate-pulse delay-150"></div>
-          <div className="absolute bottom-1/3 left-1/3 w-2 h-2 bg-indigo-500 rounded-full shadow-lg shadow-indigo-500/30 animate-pulse delay-300"></div>
-          <div className="absolute bottom-1/4 right-1/4 w-2 h-2 bg-purple-500 rounded-full shadow-lg shadow-purple-500/30 animate-pulse delay-500"></div>
-          
-          {/* Connection lines */}
-          <svg className="absolute inset-0 w-full h-full opacity-20" xmlns="http://www.w3.org/2000/svg">
-            <line x1="25%" y1="25%" x2="33%" y2="33%" stroke="url(#line-gradient)" strokeWidth="0.5" />
-            <line x1="66%" y1="33%" x2="75%" y2="25%" stroke="url(#line-gradient)" strokeWidth="0.5" />
-            <line x1="33%" y1="66%" x2="25%" y2="75%" stroke="url(#line-gradient)" strokeWidth="0.5" />
-            <line x1="75%" y1="75%" x2="66%" y2="66%" stroke="url(#line-gradient)" strokeWidth="0.5" />
-            <defs>
-              <linearGradient id="line-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="var(--color-primary)" stopOpacity="0.8" />
-                <stop offset="100%" stopColor="var(--color-primary)" stopOpacity="0" />
-              </linearGradient>
-            </defs>
-          </svg>
+          {/* Neural network node points - positioned at edges */}
+          <div className="absolute top-10 left-10 w-2 h-2 bg-primary rounded-full shadow-lg shadow-primary/30 animate-pulse"></div>
+          <div className="absolute top-10 right-10 w-2 h-2 bg-blue-500 rounded-full shadow-lg shadow-blue-500/30 animate-pulse delay-150"></div>
+          <div className="absolute bottom-10 left-10 w-2 h-2 bg-indigo-500 rounded-full shadow-lg shadow-indigo-500/30 animate-pulse delay-300"></div>
+          <div className="absolute bottom-10 right-10 w-2 h-2 bg-purple-500 rounded-full shadow-lg shadow-purple-500/30 animate-pulse delay-500"></div>
         </div>
         
         <div className="container mx-auto px-4 md:px-6 relative z-10">
-          {/* Two-column layout for desktop, single column for mobile */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 items-center max-w-6xl mx-auto">
-            {/* Left column: Content and call-to-action */}
-            <div className="flex flex-col">
-              <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1.5 text-sm text-primary mb-2 self-center md:self-start">
-                <Sparkles className="h-4 w-4" />
-                <span>Introducing DotSpark</span>
-              </div>
-              
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-tight text-center md:text-left">
-                Your <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-primary to-blue-600 dark:from-indigo-400 dark:via-primary dark:to-blue-400">Neural Extension</span>
-              </h1>
-              
-              <p className="text-lg md:text-xl font-medium text-foreground mt-2 text-center md:text-left">
-                DotSpark isn't just smart. It's personal.
-              </p>
-              
-              <p className="text-base md:text-lg text-muted-foreground mt-1 md:mt-2 mb-4 text-center md:text-left">
-                It mirrors your thinking patterns and amplifies your decision-making — getting sharper every time you use it
-              </p>
-              
-              {/* Action buttons - Prioritized and moved up for mobile */}
-              {user ? (
-                <Button size="lg" asChild className="w-full relative overflow-hidden group mt-2">
-                  <Link href="/dashboard" className="flex items-center justify-center">
-                    <span className="relative z-10">Go to Dashboard</span>
-                    <ArrowRight className="ml-2 h-5 w-5 relative z-10 group-hover:translate-x-1 transition-transform" />
-                    <div className="absolute inset-0 bg-gradient-to-r from-primary to-primary/80 opacity-90 group-hover:opacity-100 transition-opacity"></div>
-                  </Link>
-                </Button>
-              ) : (
-                <div className="grid grid-cols-1 gap-3 mt-2">
-                  {/* Button 1: Activate Neural Extension */}
-                  <div className="bg-gradient-to-br from-primary/5 to-indigo-500/5 dark:from-primary/10 dark:to-indigo-500/10 border border-primary/20 dark:border-primary/30 rounded-xl p-3 flex flex-col items-center shadow-lg shadow-primary/5 dark:shadow-primary/10 relative overflow-hidden group">
-                    <Button size="lg" asChild className="w-full relative overflow-hidden bg-gradient-to-r from-primary to-indigo-600 hover:from-indigo-600 hover:to-primary border-0 shadow-lg shadow-primary/20 hover:shadow-indigo-500/30 transition-all duration-300 transform hover:scale-105 group">
-                      <Link href="/activate-neural" className="flex items-center justify-center relative z-10">
-                        <Brain className="mr-2 h-5 w-5" />
-                        <span>Activate Neural Extension</span>
-                        <div className="absolute top-0 left-0 w-full h-full overflow-hidden">
-                          <Sparkles className="h-4 w-4 absolute top-1/2 left-3 transform -translate-y-1/2 text-white opacity-80 animate-pulse" />
-                        </div>
-                      </Link>
-                    </Button>
-                  </div>
-                  
-                  {/* Button 2: Ask DotSpark */}
-                  <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 border border-green-200 dark:border-green-900/50 rounded-xl p-3 flex flex-col items-center shadow-lg shadow-green-500/5 dark:shadow-green-900/10 relative overflow-hidden group">
-                    <WhatsAppContactButton 
-                      size="lg" 
-                      label="Ask DotSpark"
-                      showIcon={true}
-                      variant="default"
-                      className="w-full relative overflow-hidden bg-gradient-to-r from-[#25D366] to-[#128C7E] hover:from-[#128C7E] hover:to-[#25D366] text-white border-0 shadow-lg shadow-green-500/20 hover:shadow-green-600/30 transition-all duration-300 transform hover:scale-105"
-                    />
-                  </div>
-                </div>
-              )}
+          <div className="flex flex-col items-center max-w-3xl mx-auto">
+            {/* Centered badge */}
+            <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1.5 text-sm text-primary mb-2">
+              <Sparkles className="h-4 w-4" />
+              <span>Introducing DotSpark</span>
             </div>
             
-            {/* Right column: Brain visualization - Hidden on mobile */}
-            <div className="hidden md:block relative h-64 w-full perspective overflow-hidden">
+            {/* Heading */}
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-tight text-center">
+              Your <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-primary to-blue-600 dark:from-indigo-400 dark:via-primary dark:to-blue-400">Neural Extension</span>
+            </h1>
+            
+            {/* Subheadings */}
+            <p className="text-lg md:text-xl font-medium text-foreground mt-2 max-w-2xl text-center">
+              DotSpark isn't just smart. It's personal.
+            </p>
+            
+            <p className="text-base md:text-lg text-muted-foreground mt-1 md:mt-2 mb-4 max-w-2xl text-center">
+              It mirrors your thinking patterns and amplifies your decision-making — getting sharper every time you use it
+            </p>
+            
+            {/* Neural visualization - Small and centered */}
+            <div className="relative h-20 w-20 md:h-24 md:w-24 my-2 md:my-3">
+              {/* Brain outline */}
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="relative w-full h-full max-w-lg mx-auto">
-                  {/* Brain outline */}
-                  <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-40 h-40 rounded-full border-[2px] border-primary/30 animate-pulse-slow"></div>
-                  
-                  {/* Central node - represents user's brain */}
-                  <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-20 h-20 rounded-full overflow-hidden shadow-xl z-30">
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary/90 to-indigo-600/90"></div>
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <Brain className="w-10 h-10 text-white/90" />
-                    </div>
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_40%,rgba(255,255,255,0.2)_80%)]"></div>
+                <div className="w-16 h-16 md:w-20 md:h-20 rounded-full border-[1.5px] border-primary/30 animate-pulse-slow"></div>
+              
+                {/* Central node - represents user's brain */}
+                <div className="absolute w-10 h-10 md:w-12 md:h-12 rounded-full overflow-hidden shadow-lg z-30">
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/90 to-indigo-600/90"></div>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <Brain className="w-5 h-5 md:w-6 md:h-6 text-white/90" />
                   </div>
-                  
-                  {/* Neural connection nodes */}
-                  {Array.from({ length: 10 }).map((_, i) => {
-                    const baseDistance = 60;
-                    const angle = (i / 10) * Math.PI * 2;
-                    const distance = baseDistance + (i % 3) * 15;
-                    const x = Math.cos(angle) * distance;
-                    const y = Math.sin(angle) * distance;
-                    const scale = 0.5 + Math.random() * 0.5;
-                    const delay = i * 200;
-                    const isPrimary = i % 3 === 0;
-                    
-                    return (
-                      <div 
-                        key={i}
-                        className={`absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 translate-z-0 rounded-full shadow-lg z-20 ${
-                          isPrimary ? 'bg-primary/80' : 'bg-blue-500/80'
-                        }`}
-                        style={{
-                          width: `${12 * scale}px`,
-                          height: `${12 * scale}px`,
-                          transform: `translate(${x}px, ${y}px) scale(${scale})`,
-                          animationDelay: `${delay}ms`,
-                        }}
-                      >
-                        <div className="absolute inset-0 rounded-full animate-ping-slow" 
-                            style={{ animationDelay: `${delay}ms` }}></div>
-                      </div>
-                    );
-                  })}
-                  
-                  {/* Connection lines with fixed distances for mobile */}
-                  <svg className="absolute inset-0 w-full h-full z-10" xmlns="http://www.w3.org/2000/svg">
-                    {Array.from({ length: 10 }).map((_, i) => {
-                      // Match distances with nodes above
-                      const baseDistance = 50;
-                      const angle = (i / 10) * Math.PI * 2;
-                      const distance = baseDistance + (i % 3) * 10;
-                      const x = Math.cos(angle) * distance;
-                      const y = Math.sin(angle) * distance;
-                      
-                      return (
-                        <line 
-                          key={i}
-                          x1="50%" 
-                          y1="50%" 
-                          x2={`calc(50% + ${x}px)`} 
-                          y2={`calc(50% + ${y}px)`} 
-                          stroke={i % 3 === 0 ? 'url(#line-primary)' : 'url(#line-secondary)'} 
-                          strokeWidth="1"
-                          strokeDasharray="3,3"
-                          className="animate-dash-slow"
-                          style={{ animationDelay: `${i * 100}ms` }}
-                        />
-                      );
-                    })}
-                    
-                    <defs>
-                      <linearGradient id="line-primary" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stopColor="var(--color-primary)" stopOpacity="0.9" />
-                        <stop offset="100%" stopColor="var(--color-primary)" stopOpacity="0.1" />
-                      </linearGradient>
-                      <linearGradient id="line-secondary" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stopColor="var(--color-blue-500)" stopOpacity="0.9" />
-                        <stop offset="100%" stopColor="var(--color-blue-500)" stopOpacity="0.1" />
-                      </linearGradient>
-                    </defs>
-                  </svg>
-                  
-                  {/* Pulsing glow effect */}
-                  <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-36 h-36 rounded-full bg-primary/20 filter blur-xl animate-pulse-slow"></div>
                 </div>
               </div>
             </div>
+            
+            {/* Action buttons - Centered */}
+            {user ? (
+              <Button size="lg" asChild className="w-full md:w-2/3 relative overflow-hidden group mt-3">
+                <Link href="/dashboard" className="flex items-center justify-center">
+                  <span className="relative z-10">Go to Dashboard</span>
+                  <ArrowRight className="ml-2 h-5 w-5 relative z-10 group-hover:translate-x-1 transition-transform" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary to-primary/80 opacity-90 group-hover:opacity-100 transition-opacity"></div>
+                </Link>
+              </Button>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 w-full mt-3">
+                {/* Button 1: Activate Neural Extension */}
+                <div className="bg-gradient-to-br from-primary/5 to-indigo-500/5 dark:from-primary/10 dark:to-indigo-500/10 border border-primary/20 dark:border-primary/30 rounded-xl p-3 flex flex-col items-center shadow-lg shadow-primary/5 dark:shadow-primary/10 relative overflow-hidden group">
+                  <Button size="lg" asChild className="w-full relative overflow-hidden bg-gradient-to-r from-primary to-indigo-600 hover:from-indigo-600 hover:to-primary border-0 shadow-lg shadow-primary/20 hover:shadow-indigo-500/30 transition-all duration-300 transform hover:scale-105 group">
+                    <Link href="/activate-neural" className="flex items-center justify-center relative z-10">
+                      <Brain className="mr-2 h-5 w-5" />
+                      <span>Activate Neural Extension</span>
+                      <div className="absolute top-0 left-0 w-full h-full overflow-hidden">
+                        <Sparkles className="h-4 w-4 absolute top-1/2 left-3 transform -translate-y-1/2 text-white opacity-80 animate-pulse" />
+                      </div>
+                    </Link>
+                  </Button>
+                </div>
+                
+                {/* Button 2: Ask DotSpark */}
+                <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 border border-green-200 dark:border-green-900/50 rounded-xl p-3 flex flex-col items-center shadow-lg shadow-green-500/5 dark:shadow-green-900/10 relative overflow-hidden group">
+                  <WhatsAppContactButton 
+                    size="lg" 
+                    label="Ask DotSpark"
+                    showIcon={true}
+                    variant="default"
+                    className="w-full relative overflow-hidden bg-gradient-to-r from-[#25D366] to-[#128C7E] hover:from-[#128C7E] hover:to-[#25D366] text-white border-0 shadow-lg shadow-green-500/20 hover:shadow-green-600/30 transition-all duration-300 transform hover:scale-105"
+                  />
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </section>
