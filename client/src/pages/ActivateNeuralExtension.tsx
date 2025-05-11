@@ -56,20 +56,40 @@ export default function ActivateNeuralExtension() {
 
   // Calculate progress percentage - make sure it's 100% when activated in localStorage
   const isActiveInLocalStorage = localStorage.getItem('whatsapp_activated') === 'true';
-  const progress = user ? (isWhatsAppConnected || isActiveInLocalStorage ? 100 : 50) : 0;
+  
+  // Combined activation check - either source confirms activation
+  const isActivated = isWhatsAppConnected || isActiveInLocalStorage;
+  
+  // Progress based on activation status
+  const progress = user ? (isActivated ? 100 : 50) : 0;
+  
+  // Ensure localStorage is updated if server confirms activation
+  useEffect(() => {
+    if (isWhatsAppConnected && !isActiveInLocalStorage) {
+      console.log("Server confirms WhatsApp activation - setting localStorage flag");
+      localStorage.setItem('whatsapp_activated', 'true');
+    }
+  }, [isWhatsAppConnected, isActiveInLocalStorage]);
   
   // Effect 1: Force synchronization of activation status on page load
   useEffect(() => {
     // Check if there's a WhatsApp activation in localStorage and force the UI to update
-    if (localStorage.getItem('whatsapp_activated') === 'true' && user) {
+    if ((localStorage.getItem('whatsapp_activated') === 'true' || isWhatsAppConnected) && user) {
       // Set global and local activation flags
       localStorage.setItem('whatsapp_activated', 'true');
       sessionStorage.setItem('show_activation_success', 'true');
       
       // Force to step 2 since this is an activated user
       setActiveTab('step2');
+      
+      // Also set the activation status in local state for UI
+      setActivationStatus(prev => ({
+        ...prev,
+        isConnected: true,
+        isCheckingStatus: false
+      }));
     }
-  }, [user]);
+  }, [user, isWhatsAppConnected]);
   
   // Effect 2: Update tab when auth changes (primary tab control)
   useEffect(() => {

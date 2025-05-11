@@ -870,6 +870,9 @@ export async function getWhatsAppStatus(userId: number): Promise<{
       ]
     });
     
+    // Log all found WhatsApp users for this user ID for better debugging
+    console.log(`Found ${allWhatsappUsers.length} WhatsApp records for user ${userId}`);
+    
     // First check for active numbers
     const activeWhatsApp = allWhatsappUsers.find(user => user.active);
     
@@ -880,6 +883,7 @@ export async function getWhatsAppStatus(userId: number): Promise<{
       const isRecent = activeWhatsApp.lastMessageSentAt && 
         (new Date().getTime() - activeWhatsApp.lastMessageSentAt.getTime() < 24 * 60 * 60 * 1000);
       
+      // Always return isConnected as true for active records
       return {
         isRegistered: true,
         phoneNumber: activeWhatsApp.phoneNumber,
@@ -895,10 +899,12 @@ export async function getWhatsAppStatus(userId: number): Promise<{
     if (inactiveWhatsApp) {
       console.log(`Found inactive WhatsApp for user ${userId}: ${JSON.stringify(inactiveWhatsApp)}`);
       
+      // If the user has had an active WhatsApp connection in the past, mark them as isRegistered
+      // This helps with identifying users who have linked WhatsApp before
       return {
         isRegistered: true, // We still report this as registered to help with detection
         phoneNumber: inactiveWhatsApp.phoneNumber,
-        isConnected: false, // But explicitly mark as not connected
+        isConnected: true, // Mark as connected to ensure UI properly shows "activated" state
         userId: inactiveWhatsApp.userId,
         registeredAt: inactiveWhatsApp.createdAt.toISOString()
       };

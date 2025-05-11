@@ -116,9 +116,17 @@ export function useWhatsAppStatus() {
           simulateActivation();
           clearInterval(fastPollingInterval);
           
+          // Always store the activation status in localStorage when confirmed by server
+          localStorage.setItem('whatsapp_activated', 'true');
+          
           // Emit success event
           window.dispatchEvent(new CustomEvent('whatsapp_activation_success', {
             detail: { timestamp: new Date(), source: 'server-confirmation' }
+          }));
+          
+          // Also dispatch standard event for all components to detect
+          window.dispatchEvent(new CustomEvent('whatsapp-status-updated', { 
+            detail: { isActivated: true, source: 'server-confirmation' }
           }));
         }
       }, 1000); // Poll every 1 second initially
@@ -139,9 +147,17 @@ export function useWhatsAppStatus() {
             simulateActivation();
             clearInterval(slowPollingInterval);
             
+            // Always store the activation status in localStorage when confirmed by server
+            localStorage.setItem('whatsapp_activated', 'true');
+            
             // Emit success event
             window.dispatchEvent(new CustomEvent('whatsapp_activation_success', {
               detail: { timestamp: new Date(), source: 'server-confirmation-slow' }
+            }));
+            
+            // Also dispatch standard event for all components to detect
+            window.dispatchEvent(new CustomEvent('whatsapp-status-updated', { 
+              detail: { isActivated: true, source: 'server-confirmation-slow' }
             }));
           }
         }, 3000); // Poll every 3 seconds
@@ -157,16 +173,42 @@ export function useWhatsAppStatus() {
       }, 12000);
     }
     
+    // Register event listener
+    window.addEventListener('whatsapp-status-check', handleStatusCheck);
+    
     // When component mounts, ensure we get fresh data from the server
     if (user) {
       console.log("User authenticated, forcing refresh of WhatsApp status from server");
+      
+      // Force refresh from server to get the latest status
       forceStatusRefresh();
+      
+      // Add a short delay before checking again, for cases where the backend might take time to process
+      setTimeout(() => {
+        console.log("Second check for WhatsApp status after initial load");
+        forceStatusRefresh();
+      }, 1500);
+      
+      // Set up a periodic check to maintain consistency
+      const periodicCheck = setInterval(() => {
+        console.log("Periodic WhatsApp status check");
+        forceStatusRefresh();
+      }, 30000); // every 30 seconds
+      
+      // Return cleanup function for both event listener and interval
+      return () => {
+        window.removeEventListener('whatsapp-status-check', handleStatusCheck);
+        clearInterval(periodicCheck);
+      };
     }
     
-    // Cleanup function
+    // Return event listener cleanup if no user
     return () => {
       window.removeEventListener('whatsapp-status-check', handleStatusCheck);
     };
+    
+    // Cleanup function is returned in the inner block above
+    // No need for a separate cleanup function at this level
   }, [user, forceStatusRefresh]);
   
   // Main effect for handling data changes from API

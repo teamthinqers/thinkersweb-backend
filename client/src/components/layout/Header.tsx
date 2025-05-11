@@ -57,7 +57,16 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
   const isActiveInLocalStorage = localStorage.getItem('whatsapp_activated') === 'true';
   
   // Combined activation status check (either API confirms it or we have localStorage flag)
+  // Always check both sources for consistency across sessions
   const isActivated = isWhatsAppConnected || isActiveInLocalStorage;
+  
+  // Persist activation status in localStorage if backend confirms it
+  useEffect(() => {
+    if (isWhatsAppConnected && !isActiveInLocalStorage) {
+      console.log("Backend confirms WhatsApp connection - updating localStorage");
+      localStorage.setItem('whatsapp_activated', 'true');
+    }
+  }, [isWhatsAppConnected, isActiveInLocalStorage]);
   
   // Debug status
   console.log("WhatsApp status - Header:", { 
