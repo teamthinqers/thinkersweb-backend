@@ -1,4 +1,4 @@
-import { eq, and, gt } from "drizzle-orm";
+import { eq, and, gt, desc } from "drizzle-orm";
 import crypto from "crypto";
 
 import { db } from "../db";
