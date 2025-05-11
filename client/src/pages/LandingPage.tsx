@@ -286,29 +286,29 @@ export default function LandingPage() {
             {/* Centered badge */}
             <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1.5 text-sm text-primary mb-2">
               <Sparkles className="h-4 w-4" />
-              <span>Introducing DotSpark</span>
+              <span>Innovative AI Assistant</span>
             </div>
             
             {/* Heading */}
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-tight text-center">
-              Your <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-primary to-blue-600 dark:from-indigo-400 dark:via-primary dark:to-blue-400">Neural Extension</span>
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-primary to-blue-600 dark:from-indigo-400 dark:via-primary dark:to-blue-400">Intelligent Assistant</span>
             </h1>
             
             {/* Subheadings */}
             <p className="text-lg md:text-xl font-medium text-foreground mt-2 max-w-2xl text-center">
-              DotSpark isn't just smart. It's personal.
+              Smart. Personal. Adaptive.
             </p>
             
             <p className="text-base md:text-lg text-muted-foreground mt-1 md:mt-2 mb-4 max-w-2xl text-center">
-              It mirrors your thinking patterns and amplifies your decision-making — getting sharper every time you use it
+              Mirrors thinking patterns and amplifies decision-making — getting sharper with every interaction
             </p>
             
-            {/* Neural extension visualization - central interactive dot network */}
+            {/* Visual element - interactive dot network */}
             <div className="relative h-20 w-full my-2 md:my-3 overflow-hidden">
               {/* Main connection line with gradient */}
               <div className="absolute left-0 top-1/2 w-full h-[1px] bg-gradient-to-r from-transparent via-indigo-500/60 to-transparent transform -translate-y-1/2"></div>
               
-              {/* Central extension hub */}
+              {/* Central hub */}
               <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
                 {/* Central glow effect */}
                 <div className="absolute w-10 h-10 bg-indigo-500/20 rounded-full blur-md"></div>
