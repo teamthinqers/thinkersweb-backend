@@ -51,16 +51,32 @@ const AllEntries: React.FC<AllEntriesProps> = ({ onEntryClick }) => {
         directUserId: 5  // Always use user ID 5 (Aravindh's account)
       }
     ],
-    queryFn: ({ queryKey }) => {
-      // Extract params from queryKey
-      const [endpoint, params] = queryKey;
-      // Build URL with params
-      const url = new URL(endpoint as string, window.location.origin);
+    queryFn: () => {
+      // Build URL manually to ensure parameters are correct
+      const url = new URL("/api/entries", window.location.origin);
       
-      // Add all params to URL
-      Object.entries(params as Record<string, any>).forEach(([key, value]) => {
-        url.searchParams.append(key, value);
-      });
+      // Add all necessary params
+      url.searchParams.append("directUserId", "5");
+      url.searchParams.append("limit", itemsPerPage.toString());
+      url.searchParams.append("offset", ((page - 1) * itemsPerPage).toString());
+      url.searchParams.append("sortBy", sortBy);
+      url.searchParams.append("sortOrder", sortOrder);
+      
+      if (searchQuery) {
+        url.searchParams.append("search", searchQuery);
+      }
+      
+      if (selectedCategory) {
+        url.searchParams.append("categoryId", selectedCategory);
+      }
+      
+      if (selectedTags.length > 0) {
+        selectedTags.forEach(tagId => {
+          url.searchParams.append("tagIds", tagId.toString());
+        });
+      }
+      
+      console.log("Fetching entries with URL:", url.toString());
       
       // Make fetch request
       return fetch(url.toString()).then(res => res.json());
