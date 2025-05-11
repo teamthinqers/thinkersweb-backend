@@ -140,6 +140,34 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
               >
                 <HomeIcon className="h-5 w-5" />
               </Button>
+              
+              {isWhatsAppConnected ? (
+                <Button 
+                  className="mr-1 bg-gradient-to-r from-green-600 to-emerald-500 hover:from-green-700 hover:to-emerald-600 text-white h-9 px-2 relative overflow-hidden"
+                  size="sm"
+                  onClick={() => setLocation("/dashboard")}
+                >
+                  {/* Pulsing background */}
+                  <div className="absolute inset-0 bg-white/10 rounded animate-pulse"></div>
+                  
+                  {/* Icon with sparkle */}
+                  <div className="flex items-center relative z-10">
+                    <Check className="h-4 w-4" />
+                    <Sparkles className="h-3 w-3 ml-0.5" />
+                  </div>
+                </Button>
+              ) : (
+                <Button 
+                  className="mr-1 bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white h-9 px-2 relative"
+                  size="sm"
+                  onClick={() => setLocation("/activate-neural")}
+                >
+                  <div className="flex items-center relative z-10">
+                    <Brain className="h-4 w-4" />
+                    <Sparkles className="h-3 w-3 ml-0.5 opacity-50" />
+                  </div>
+                </Button>
+              )}
             </div>
             
             <DropdownMenu>

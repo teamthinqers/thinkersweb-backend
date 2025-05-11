@@ -13,12 +13,18 @@ import { NeuralWhatsAppLinking } from '@/components/neural/NeuralWhatsAppLinking
 import Header from '@/components/layout/Header';
 
 export default function ActivateNeuralExtension() {
+  // Hook declarations need to be in the same order in every render
   const [, setLocation] = useLocation();
   const { user, isLoading: isAuthLoading, loginWithGoogle } = useAuth();
   const { toast } = useToast();
+  const { isWhatsAppConnected, phoneNumber, isLoading: isWhatsAppStatusLoading, 
+          showActivationSuccess, justActivated } = useWhatsAppStatus();
   
-  // Neural network visualization state
+  // All useState hooks must be in the same order each render
   const [isAnimating, setIsAnimating] = useState(true);
+  const [activeTab, setActiveTab] = useState<string>('step1'); // Initialize to default, we'll update in useEffect
+  
+  // All useRef hooks after state hooks
   const canvasRef = useRef<HTMLCanvasElement>(null);
   
   // Function for header search (empty implementation as it's not used on this page)
@@ -26,8 +32,6 @@ export default function ActivateNeuralExtension() {
   
   // Function to navigate back to the home page
   const goToHome = () => setLocation("/");
-  const { isWhatsAppConnected, phoneNumber, isLoading: isWhatsAppStatusLoading } = useWhatsAppStatus();
-  const [activeTab, setActiveTab] = useState<string>(user ? 'step2' : 'step1');
 
   // Calculate progress percentage
   const progress = user ? (isWhatsAppConnected ? 100 : 50) : 0;
