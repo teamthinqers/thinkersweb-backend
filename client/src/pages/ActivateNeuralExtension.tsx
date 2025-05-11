@@ -157,96 +157,116 @@ export default function ActivateNeuralExtension() {
           isCheckingStatus: true
         }));
         
-        // Set up more responsive polling for activation status - fast initially
-        const fastCheckActivation = setInterval(() => {
-          // Force a status check
-          fetch('/api/whatsapp/status')
+        // Store all timeout IDs for proper cleanup
+        const timeoutIds: number[] = [];
+        
+        // Define exact check times for better control
+        const checkTimes = [
+          { delay: 1000, label: 'Immediate check' },
+          { delay: 3000, label: 'Check #1' }, 
+          { delay: 6000, label: 'Check #2' },
+          { delay: 9000, label: 'Check #3' },
+          { delay: 12000, label: 'Check #4' },
+          { delay: 15000, label: 'Check #5' },
+          { delay: 20000, label: 'Slower check #1' },
+          { delay: 25000, label: 'Slower check #2' }
+        ];
+        
+        // Create a function that both makes API calls and checks localStorage
+        const checkActivation = (checkLabel: string): Promise<boolean> => {
+          console.log(`${checkLabel} for WhatsApp activation`);
+          
+          // First check if localStorage was updated by another component (including the hook)
+          const isActiveInStorage = localStorage.getItem('whatsapp_activated') === 'true';
+          if (isActiveInStorage) {
+            console.log(`${checkLabel}: Found activation in localStorage`);
+            handleActivationSuccess('localStorage');
+            return Promise.resolve(true);
+          }
+          
+          // If not in localStorage, make direct API request with credentials
+          return fetch('/api/whatsapp/status', { 
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include'
+          })
             .then(res => res.json())
             .then(data => {
-              console.log("Fast WhatsApp status check result:", data);
+              console.log(`${checkLabel} API result:`, data);
+              
+              // Check if the API reports activation (either isRegistered or isConnected)
               if (data.isRegistered || data.isConnected) {
-                clearInterval(fastCheckActivation);
-                clearInterval(slowCheckActivation); // Clear slow interval too if it exists
-                
-                // Update local storage
-                localStorage.setItem('whatsapp_activated', 'true');
-                localStorage.setItem('whatsapp_phone', data.phoneNumber || '');
-                
-                // Update UI state
-                setActivationStatus(prev => ({
-                  ...prev,
-                  isConnected: true,
-                  isCheckingStatus: false
-                }));
-                
-                // Dispatch event to notify other components
-                window.dispatchEvent(new Event('whatsapp-activation-success'));
-                
-                // Show success notification
-                toast({
-                  title: "Neural Extension Activated!",
-                  description: "Your WhatsApp message was received and your neural extension is now active.",
-                  duration: 5000,
-                });
+                handleActivationSuccess('api', data);
+                return true;
               }
+              return false;
             })
-            .catch(err => console.error("Error checking WhatsApp status:", err));
-        }, 1000); // Check every 1 second for first 10 seconds
+            .catch(err => {
+              console.error(`${checkLabel} error:`, err);
+              return false;
+            });
+        };
         
-        // After 10 seconds, switch to slower polling to reduce server load
-        let slowCheckActivation;
-        setTimeout(() => {
-          clearInterval(fastCheckActivation);
+        // Common handler for successful activation from any source
+        const handleActivationSuccess = (source: string, data?: any) => {
+          console.log(`Activation confirmed from ${source}`, data);
           
-          // Continue with slower polling
-          slowCheckActivation = setInterval(() => {
-            fetch('/api/whatsapp/status')
-              .then(res => res.json())
-              .then(data => {
-                console.log("Slow WhatsApp status check result:", data);
-                if (data.isRegistered || data.isConnected) {
-                  clearInterval(slowCheckActivation);
-                  
-                  // Update local storage and state
-                  localStorage.setItem('whatsapp_activated', 'true');
-                  setActivationStatus(prev => ({
-                    ...prev, 
-                    isConnected: true,
-                    isCheckingStatus: false
-                  }));
-                  
-                  // Show success notification
-                  toast({
-                    title: "Neural Extension Activated!",
-                    description: "Your WhatsApp message was received and your neural extension is now active.",
-                    duration: 5000,
-                  });
-                }
-              })
-              .catch(err => console.error("Error checking WhatsApp status:", err));
-          }, 3000); // Check every 3 seconds
-        }, 10000);
-        
-        // Clear all intervals after 30 seconds to avoid excessive polling
-        setTimeout(() => {
-          clearInterval(fastCheckActivation);
-          clearInterval(slowCheckActivation);
+          // Clear all pending timeouts to stop further checks
+          timeoutIds.forEach(id => window.clearTimeout(id));
+          
+          // Update localStorage
+          localStorage.setItem('whatsapp_activated', 'true');
+          if (data?.phoneNumber) {
+            localStorage.setItem('whatsapp_phone', data.phoneNumber);
+          }
           
           // Update UI state
           setActivationStatus(prev => ({
             ...prev,
+            isConnected: true,
             isCheckingStatus: false
           }));
           
-          // Final reminder if not activated
-          if (!isWhatsAppConnected) {
+          // Dispatch event for other components
+          window.dispatchEvent(new CustomEvent('whatsapp-status-updated', { 
+            detail: { isActivated: true, source }
+          }));
+          
+          // Only show toast once
+          if (!sessionStorage.getItem('activation_success_shown')) {
             toast({
-              title: "Still Waiting...",
-              description: "It may take a moment to receive your WhatsApp message. The page will update automatically when your neural extension is activated.",
+              title: "Neural Extension Activated!",
+              description: "Your WhatsApp message was received and your neural extension is now active.",
               duration: 5000,
             });
+            sessionStorage.setItem('activation_success_shown', 'true');
           }
-        }, 30000);
+        };
+        
+        // Schedule each check at the appropriate time
+        checkTimes.forEach(({ delay, label }) => {
+          const timeoutId = window.setTimeout(() => {
+            checkActivation(label)
+              .then((success: boolean) => {
+                // If not successful and this is the last check, show reminder
+                if (!success && delay === checkTimes[checkTimes.length - 1].delay) {
+                  setActivationStatus(prev => ({ ...prev, isCheckingStatus: false }));
+                  toast({
+                    title: "Still Waiting...",
+                    description: "It may take a moment to receive your WhatsApp message. The page will update automatically when your neural extension is activated.",
+                    duration: 5000,
+                  });
+                }
+              });
+          }, delay);
+          
+          timeoutIds.push(timeoutId);
+        });
+        
+        // Return cleanup function that clears all scheduled checks
+        return () => {
+          timeoutIds.forEach(id => window.clearTimeout(id));
+        };
       }
     }
     

@@ -799,38 +799,60 @@ export async function getWhatsAppStatus(userId: number): Promise<{
   phoneNumber?: string;
   isConnected?: boolean;
   userId?: number;
+  registeredAt?: string;
 }> {
   try {
     console.log(`Getting WhatsApp status for user ${userId}`);
     
-    // Find the most recently used WhatsApp number for this user
-    const whatsappUser = await db.query.whatsappUsers.findFirst({
-      where: and(
-        eq(whatsappUsers.userId, userId),
-        eq(whatsappUsers.active, true)
-      ),
-      orderBy: (whatsappUsers, { desc }) => [desc(whatsappUsers.lastMessageSentAt)]
+    // Find ALL WhatsApp numbers for this user, including both active and inactive
+    // This helps us detect users who have WhatsApp numbers in any state
+    const allWhatsappUsers = await db.query.whatsappUsers.findMany({
+      where: eq(whatsappUsers.userId, userId),
+      orderBy: [
+        desc(whatsappUsers.active), // Active first 
+        desc(whatsappUsers.lastMessageSentAt) // Then most recent
+      ]
     });
     
-    if (!whatsappUser) {
-      console.log(`No active WhatsApp numbers found for user ${userId}`);
+    // First check for active numbers
+    const activeWhatsApp = allWhatsappUsers.find(user => user.active);
+    
+    if (activeWhatsApp) {
+      console.log(`Found active WhatsApp for user ${userId}: ${JSON.stringify(activeWhatsApp)}`);
+      
+      // Check if the user has received or sent any messages in the last 24 hours
+      const isRecent = activeWhatsApp.lastMessageSentAt && 
+        (new Date().getTime() - activeWhatsApp.lastMessageSentAt.getTime() < 24 * 60 * 60 * 1000);
       
       return {
-        isRegistered: false
+        isRegistered: true,
+        phoneNumber: activeWhatsApp.phoneNumber,
+        isConnected: true, // If there's an active number, always report it as connected
+        userId: activeWhatsApp.userId,
+        registeredAt: activeWhatsApp.createdAt.toISOString()
       };
     }
     
-    console.log(`Found WhatsApp record for user ${userId}: ${JSON.stringify(whatsappUser)}`);
+    // Check for inactive numbers as fallback - useful for manual verification
+    const inactiveWhatsApp = allWhatsappUsers.find(user => !user.active);
     
-    // Check if the user has received or sent any messages in the last 24 hours
-    const isRecent = whatsappUser.lastMessageSentAt && 
-      (new Date().getTime() - whatsappUser.lastMessageSentAt.getTime() < 24 * 60 * 60 * 1000);
+    if (inactiveWhatsApp) {
+      console.log(`Found inactive WhatsApp for user ${userId}: ${JSON.stringify(inactiveWhatsApp)}`);
+      
+      return {
+        isRegistered: true, // We still report this as registered to help with detection
+        phoneNumber: inactiveWhatsApp.phoneNumber,
+        isConnected: false, // But explicitly mark as not connected
+        userId: inactiveWhatsApp.userId,
+        registeredAt: inactiveWhatsApp.createdAt.toISOString()
+      };
+    }
+    
+    // No WhatsApp numbers found at all
+    console.log(`No WhatsApp numbers found for user ${userId}`);
     
     return {
-      isRegistered: true,
-      phoneNumber: whatsappUser.phoneNumber,
-      isConnected: isRecent,
-      userId: whatsappUser.userId
+      isRegistered: false
     };
   } catch (error) {
     console.error("Error getting WhatsApp status:", error);
