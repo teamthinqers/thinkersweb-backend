@@ -240,55 +240,51 @@ export default function LandingPage() {
           <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/5 rounded-full blur-3xl opacity-60 -translate-y-1/2 translate-x-1/3"></div>
           <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-blue-500/5 dark:bg-blue-500/10 rounded-full blur-3xl opacity-60 translate-y-1/3 -translate-x-1/4"></div>
           
-          {/* Left side neural cluster */}
-          <div className="absolute left-20 top-1/3 w-[100px] h-[100px]">
-            {/* Core dot */}
-            <div className="absolute left-1/2 top-1/2 w-6 h-6 bg-primary/30 rounded-full blur-md transform -translate-x-1/2 -translate-y-1/2"></div>
-            <div className="absolute left-1/2 top-1/2 w-3 h-3 bg-primary/80 rounded-full animate-pulse-slow transform -translate-x-1/2 -translate-y-1/2"></div>
-            
-            {/* Radiating lines */}
-            <div className="absolute left-1/2 top-1/2 w-[70px] h-[1px] bg-gradient-to-r from-primary/70 to-transparent rotate-[10deg] transform -translate-x-1/2 -translate-y-1/2"></div>
-            <div className="absolute left-1/2 top-1/2 w-[60px] h-[1px] bg-gradient-to-r from-primary/70 to-transparent rotate-[70deg] transform -translate-x-1/2 -translate-y-1/2"></div>
-            <div className="absolute left-1/2 top-1/2 w-[50px] h-[1px] bg-gradient-to-r from-primary/70 to-transparent rotate-[130deg] transform -translate-x-1/2 -translate-y-1/2"></div>
-            <div className="absolute left-1/2 top-1/2 w-[40px] h-[1px] bg-gradient-to-r from-primary/70 to-transparent rotate-[190deg] transform -translate-x-1/2 -translate-y-1/2"></div>
-            <div className="absolute left-1/2 top-1/2 w-[60px] h-[1px] bg-gradient-to-r from-primary/70 to-transparent rotate-[250deg] transform -translate-x-1/2 -translate-y-1/2"></div>
-            <div className="absolute left-1/2 top-1/2 w-[50px] h-[1px] bg-gradient-to-r from-primary/70 to-transparent rotate-[310deg] transform -translate-x-1/2 -translate-y-1/2"></div>
-            
-            {/* Spark effects */}
-            <div className="absolute left-[70%] top-[30%] w-0.5 h-0.5 bg-white rounded-full animate-ping-slow"></div>
-            <div className="absolute left-[20%] top-[60%] w-0.5 h-0.5 bg-white rounded-full animate-ping-slow delay-400"></div>
-          </div>
+          {/* Network of dots and sparks surrounding the content */}
           
-          {/* Right side neural cluster */}
-          <div className="absolute right-20 bottom-1/3 w-[100px] h-[100px]">
-            {/* Core dot */}
-            <div className="absolute left-1/2 top-1/2 w-6 h-6 bg-blue-500/30 rounded-full blur-md transform -translate-x-1/2 -translate-y-1/2"></div>
-            <div className="absolute left-1/2 top-1/2 w-3 h-3 bg-blue-500/80 rounded-full animate-pulse-slow delay-300 transform -translate-x-1/2 -translate-y-1/2"></div>
-            
-            {/* Radiating lines */}
-            <div className="absolute left-1/2 top-1/2 w-[70px] h-[1px] bg-gradient-to-l from-blue-500/70 to-transparent rotate-[10deg] transform -translate-x-1/2 -translate-y-1/2"></div>
-            <div className="absolute left-1/2 top-1/2 w-[60px] h-[1px] bg-gradient-to-l from-blue-500/70 to-transparent rotate-[70deg] transform -translate-x-1/2 -translate-y-1/2"></div>
-            <div className="absolute left-1/2 top-1/2 w-[50px] h-[1px] bg-gradient-to-l from-blue-500/70 to-transparent rotate-[130deg] transform -translate-x-1/2 -translate-y-1/2"></div>
-            <div className="absolute left-1/2 top-1/2 w-[40px] h-[1px] bg-gradient-to-l from-blue-500/70 to-transparent rotate-[190deg] transform -translate-x-1/2 -translate-y-1/2"></div>
-            <div className="absolute left-1/2 top-1/2 w-[60px] h-[1px] bg-gradient-to-l from-blue-500/70 to-transparent rotate-[250deg] transform -translate-x-1/2 -translate-y-1/2"></div>
-            <div className="absolute left-1/2 top-1/2 w-[50px] h-[1px] bg-gradient-to-l from-blue-500/70 to-transparent rotate-[310deg] transform -translate-x-1/2 -translate-y-1/2"></div>
-            
-            {/* Spark effects */}
-            <div className="absolute left-[30%] top-[30%] w-0.5 h-0.5 bg-white rounded-full animate-ping-slow delay-200"></div>
-            <div className="absolute left-[80%] top-[60%] w-0.5 h-0.5 bg-white rounded-full animate-ping-slow delay-600"></div>
-          </div>
+          {/* Left side dots */}
+          <div className="absolute left-6 top-1/4 w-1.5 h-1.5 bg-primary/40 rounded-full animate-pulse-slow"></div>
+          <div className="absolute left-12 top-1/3 w-1 h-1 bg-primary/50 rounded-full animate-pulse-slow delay-300"></div>
+          <div className="absolute left-8 top-2/5 w-1 h-1 bg-primary/60 rounded-full animate-pulse-slow delay-500"></div>
+          <div className="absolute left-16 top-1/6 w-1 h-1 bg-primary/40 rounded-full animate-pulse-slow delay-700"></div>
+          <div className="absolute left-20 top-2/6 w-1 h-1 bg-primary/50 rounded-full animate-pulse-slow delay-100"></div>
+          <div className="absolute left-28 top-3/5 w-1 h-1 bg-primary/40 rounded-full animate-pulse-slow delay-600"></div>
+          <div className="absolute left-32 top-3/4 w-1 h-1 bg-primary/70 rounded-full animate-pulse-slow delay-200"></div>
           
-          {/* Extension connection line */}
-          <div className="absolute left-[30%] top-1/3 w-[40%] h-[1px] bg-gradient-to-r from-primary/60 via-indigo-500/60 to-blue-500/60"></div>
+          {/* Right side dots */}
+          <div className="absolute right-6 top-2/4 w-1.5 h-1.5 bg-blue-500/40 rounded-full animate-pulse-slow delay-400"></div>
+          <div className="absolute right-12 top-3/5 w-1 h-1 bg-blue-500/50 rounded-full animate-pulse-slow delay-900"></div>
+          <div className="absolute right-8 top-1/5 w-1 h-1 bg-blue-500/60 rounded-full animate-pulse-slow delay-600"></div>
+          <div className="absolute right-16 top-3/6 w-1 h-1 bg-blue-500/40 rounded-full animate-pulse-slow delay-800"></div>
+          <div className="absolute right-20 top-3/4 w-1 h-1 bg-blue-500/50 rounded-full animate-pulse-slow delay-300"></div>
+          <div className="absolute right-28 top-2/5 w-1 h-1 bg-blue-500/70 rounded-full animate-pulse-slow delay-100"></div>
+          <div className="absolute right-32 top-1/4 w-1 h-1 bg-blue-500/40 rounded-full animate-pulse-slow delay-700"></div>
           
-          {/* Pulse dots along connection */}
-          <div className="absolute left-[40%] top-1/3 w-2 h-2 bg-indigo-500/70 rounded-full animate-pulse transform -translate-y-1/2"></div>
-          <div className="absolute left-[50%] top-1/3 w-2 h-2 bg-indigo-500/70 rounded-full animate-pulse delay-300 transform -translate-x-1/2 -translate-y-1/2"></div>
-          <div className="absolute left-[60%] top-1/3 w-2 h-2 bg-indigo-500/70 rounded-full animate-pulse delay-600 transform -translate-y-1/2"></div>
+          {/* Top area dots */}
+          <div className="absolute left-1/4 top-16 w-1 h-1 bg-indigo-500/50 rounded-full animate-pulse-slow delay-200"></div>
+          <div className="absolute left-2/5 top-10 w-1 h-1 bg-indigo-500/40 rounded-full animate-pulse-slow delay-800"></div>
+          <div className="absolute right-1/4 top-20 w-1 h-1 bg-indigo-500/60 rounded-full animate-pulse-slow delay-500"></div>
+          <div className="absolute right-2/5 top-14 w-1 h-1 bg-indigo-500/50 rounded-full animate-pulse-slow delay-300"></div>
           
-          {/* Spark highlights */}
-          <div className="absolute left-[45%] top-[calc(1/3*100% - 3px)] w-0.5 h-0.5 bg-white rounded-full animate-ping-slow"></div>
-          <div className="absolute left-[55%] top-[calc(1/3*100% + 3px)] w-0.5 h-0.5 bg-white rounded-full animate-ping-slow delay-500"></div>
+          {/* Bottom area dots */}
+          <div className="absolute left-1/3 bottom-16 w-1 h-1 bg-indigo-500/40 rounded-full animate-pulse-slow delay-700"></div>
+          <div className="absolute left-3/5 bottom-10 w-1 h-1 bg-indigo-500/50 rounded-full animate-pulse-slow delay-400"></div>
+          <div className="absolute right-1/3 bottom-20 w-1 h-1 bg-indigo-500/60 rounded-full animate-pulse-slow delay-100"></div>
+          <div className="absolute right-3/5 bottom-14 w-1 h-1 bg-indigo-500/40 rounded-full animate-pulse-slow delay-600"></div>
+          
+          {/* Random sparks between dots */}
+          <div className="absolute left-[15%] top-[25%] w-[40px] h-[1px] bg-gradient-to-r from-primary/80 to-transparent rotate-15 opacity-0 animate-spark-appear"></div>
+          <div className="absolute right-[15%] top-[35%] w-[30px] h-[1px] bg-gradient-to-l from-blue-500/80 to-transparent rotate-160 opacity-0 animate-spark-appear delay-700"></div>
+          <div className="absolute left-[25%] top-[45%] w-[50px] h-[1px] bg-gradient-to-r from-indigo-500/80 to-transparent rotate-45 opacity-0 animate-spark-appear delay-1500"></div>
+          <div className="absolute right-[25%] bottom-[30%] w-[40px] h-[1px] bg-gradient-to-l from-primary/80 to-transparent rotate-[120deg] opacity-0 animate-spark-appear delay-2300"></div>
+          <div className="absolute left-[40%] bottom-[40%] w-[30px] h-[1px] bg-gradient-to-r from-blue-500/80 to-transparent rotate-[210deg] opacity-0 animate-spark-appear delay-3100"></div>
+          <div className="absolute right-[40%] top-[20%] w-[35px] h-[1px] bg-gradient-to-l from-indigo-500/80 to-transparent rotate-[330deg] opacity-0 animate-spark-appear delay-3900"></div>
+          
+          {/* Quick flash sparks */}
+          <div className="absolute left-[30%] top-[30%] w-0.5 h-0.5 bg-white rounded-full animate-ping-fast opacity-0 animate-spark-flash delay-500"></div>
+          <div className="absolute right-[35%] top-[40%] w-0.5 h-0.5 bg-white rounded-full animate-ping-fast opacity-0 animate-spark-flash delay-1300"></div>
+          <div className="absolute left-[45%] bottom-[35%] w-0.5 h-0.5 bg-white rounded-full animate-ping-fast opacity-0 animate-spark-flash delay-2100"></div>
+          <div className="absolute right-[25%] bottom-[25%] w-0.5 h-0.5 bg-white rounded-full animate-ping-fast opacity-0 animate-spark-flash delay-2900"></div>
         </div>
         
         <div className="container mx-auto px-4 md:px-6 relative z-10">

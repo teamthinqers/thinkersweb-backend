@@ -79,6 +79,24 @@ export default {
             height: "0",
           },
         },
+
+        "ping-fast": {
+          "0%": { transform: "scale(1)", opacity: "1" },
+          "100%": { transform: "scale(3)", opacity: "0" },
+        },
+        "spark-appear": {
+          "0%": { opacity: "0" },
+          "5%": { opacity: "0.8" },
+          "15%": { opacity: "0.4" },
+          "25%": { opacity: "0" },
+          "100%": { opacity: "0" }
+        },
+        "spark-flash": {
+          "0%": { opacity: "0" },
+          "5%": { opacity: "1" },
+          "10%": { opacity: "0" },
+          "100%": { opacity: "0" }
+        },
         "pulse-slow": {
           "0%, 100%": {
             opacity: "0.8",
