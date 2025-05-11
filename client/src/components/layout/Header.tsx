@@ -152,7 +152,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 <HomeIcon className="h-5 w-5" />
               </Button>
               
-              {isWhatsAppConnected ? (
+              {isActivated ? (
                 <Button 
                   className="mr-1 bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white h-9 px-2 relative"
                   size="sm"
@@ -250,7 +250,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 Dashboard
               </Button>
               
-              {isWhatsAppConnected ? (
+              {isActivated ? (
                 <Button 
                   className="mr-2 bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white relative"
                   size="sm"
@@ -371,7 +371,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 Dashboard
               </Button>
               
-              {isWhatsAppConnected ? (
+              {isActivated ? (
                 <Button 
                   className="w-full justify-start mb-2 bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white relative"
                   size="sm"

@@ -14,11 +14,29 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onNewEntry }) => {
   const isMobile = useMobile();
   // Local state to control the entry form if no onNewEntry prop is provided
   const [showEntryForm, setShowEntryForm] = useState(false);
-  // Get WhatsApp phone number
-  const { phoneNumber } = useWhatsAppStatus();
   
-  // Direct WhatsApp link for mobile
-  const whatsappLink = `https://wa.me/${phoneNumber}`;
+  // Get WhatsApp number for direct linking
+  const [phoneNumber, setPhoneNumber] = useState('');
+  
+  // Fetch the Twilio WhatsApp number from our API
+  useEffect(() => {
+    // This endpoint doesn't require authentication, so we can call it directly
+    fetch('/api/whatsapp/contact')
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.phoneNumber) {
+          // Format the phone number to ensure it works with WhatsApp
+          // Strip any + sign since the wa.me link doesn't need it
+          const formattedNumber = data.phoneNumber.replace(/^\+/, '');
+          setPhoneNumber(formattedNumber);
+          console.log("Got WhatsApp number:", formattedNumber);
+        }
+      })
+      .catch(err => console.error("Error fetching WhatsApp contact:", err));
+  }, []);
+  
+  // Direct WhatsApp link for mobile - default to Twilio number if API call fails
+  const whatsappLink = `https://wa.me/${phoneNumber || '16067157733'}`;
   
   // Handle opening the entry form on web
   const handleOpenEntryForm = () => {
