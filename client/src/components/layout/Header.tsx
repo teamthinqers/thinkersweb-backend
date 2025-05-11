@@ -216,26 +216,39 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
               
               {isWhatsAppConnected ? (
                 <Button 
-                  className="mr-2 bg-gradient-to-r from-green-600 to-emerald-500 hover:from-green-700 hover:to-emerald-600 text-white relative"
+                  className="mr-2 bg-gradient-to-r from-green-600 to-emerald-500 hover:from-green-700 hover:to-emerald-600 text-white relative overflow-hidden"
                   size="sm"
                   onClick={() => setLocation("/dashboard")}
                 >
+                  {/* Pulsing background for attention */}
                   <div className="absolute inset-0 bg-white/10 rounded animate-pulse"></div>
+                  
+                  {/* Sparkling effect for activated status */}
+                  <div className="absolute inset-0">
+                    <div className="absolute top-1 left-1/4 w-0.5 h-3 bg-white/20 animate-pulse" style={{animationDelay: '0.1s'}}></div>
+                    <div className="absolute top-3 left-1/3 w-0.5 h-2 bg-white/20 animate-pulse" style={{animationDelay: '0.2s'}}></div>
+                    <div className="absolute top-2 left-1/2 w-0.5 h-4 bg-white/20 animate-pulse" style={{animationDelay: '0.3s'}}></div>
+                    <div className="absolute top-1 left-2/3 w-0.5 h-3 bg-white/20 animate-pulse" style={{animationDelay: '0.4s'}}></div>
+                    <div className="absolute top-3 left-3/4 w-0.5 h-2 bg-white/20 animate-pulse" style={{animationDelay: '0.5s'}}></div>
+                  </div>
+                  
                   <span className="relative z-10 flex items-center">
                     <Check className="h-4 w-4 mr-1" />
-                    <Sparkles className="h-3 w-3 absolute top-1 right-0.5" />
-                    Neural Activated
+                    <span>Activated</span>
+                    <Sparkles className="h-3 w-3 ml-1" />
                   </span>
                 </Button>
               ) : (
                 <Button 
-                  className="mr-2 bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white"
+                  className="mr-2 bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white relative"
                   size="sm"
                   onClick={() => setLocation("/activate-neural")}
                 >
-                  <Brain className="h-4 w-4 mr-1" />
-                  <Sparkles className="h-3 w-3 absolute top-1 right-1" />
-                  Activate Neural
+                  <span className="relative z-10 flex items-center">
+                    <Brain className="h-4 w-4 mr-1" />
+                    <span>Activate Neural</span>
+                    <Sparkles className="h-3 w-3 ml-1" />
+                  </span>
                 </Button>
               )}
               
@@ -336,18 +349,29 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
               
               {isWhatsAppConnected ? (
                 <Button 
-                  className="w-full justify-start mb-2 bg-gradient-to-r from-green-600 to-emerald-500 hover:from-green-700 hover:to-emerald-600 text-white relative"
+                  className="w-full justify-start mb-2 bg-gradient-to-r from-green-600 to-emerald-500 hover:from-green-700 hover:to-emerald-600 text-white relative overflow-hidden"
                   size="sm"
                   onClick={() => {
                     setShowMobileNav(false);
                     setLocation("/dashboard");
                   }}
                 >
+                  {/* Pulsing background for attention */}
                   <div className="absolute inset-0 bg-white/10 rounded animate-pulse"></div>
+                  
+                  {/* Sparkling effect for activated status */}
+                  <div className="absolute inset-0">
+                    <div className="absolute top-1 left-1/4 w-0.5 h-5 bg-white/20 animate-pulse" style={{animationDelay: '0.1s'}}></div>
+                    <div className="absolute top-4 left-1/3 w-0.5 h-3 bg-white/20 animate-pulse" style={{animationDelay: '0.2s'}}></div>
+                    <div className="absolute top-2 left-1/2 w-0.5 h-6 bg-white/20 animate-pulse" style={{animationDelay: '0.3s'}}></div>
+                    <div className="absolute top-1 left-2/3 w-0.5 h-5 bg-white/20 animate-pulse" style={{animationDelay: '0.4s'}}></div>
+                    <div className="absolute top-3 left-3/4 w-0.5 h-4 bg-white/20 animate-pulse" style={{animationDelay: '0.5s'}}></div>
+                  </div>
+                  
                   <span className="relative z-10 flex items-center">
                     <Check className="h-5 w-5 mr-2" />
                     <span>Neural Extension Activated</span>
-                    <Sparkles className="h-3 w-3 absolute top-2 right-2" />
+                    <Sparkles className="h-3 w-3 ml-1" />
                   </span>
                 </Button>
               ) : (

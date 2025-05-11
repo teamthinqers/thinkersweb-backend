@@ -14,32 +14,56 @@ export function NeuralWhatsAppLinking() {
   const [, setLocation] = useLocation();
   const { simulateActivation } = useWhatsAppStatus();
   
-  // Automatic activation sequence after WhatsApp link is sent
+  // Simulate the activation process with a multi-step animation
   useEffect(() => {
+    // Only run this effect when the link has been sent
     if (linkSent) {
       let isActivated = false;
       
-      // Step 1: Mark as activated after user sends WhatsApp message (simulated with timeout)
-      const activationTimer = setTimeout(() => {
+      // Step 1: Show "Connecting..." toast immediately
+      toast({
+        title: "Connecting to WhatsApp...",
+        description: "Please wait while we establish the connection.",
+        duration: 2500,
+      });
+      
+      // Step 2: After a delay, show "Activating..." toast and mark as activated
+      const step1Timer = setTimeout(() => {
+        toast({
+          title: "Activating Neural Extension...",
+          description: "Setting up your personal cognitive extension.",
+          duration: 2500,
+        });
+      }, 2500);
+      
+      // Step 3: After another delay, show success and redirect
+      const step2Timer = setTimeout(() => {
         if (isActivated) return; // Prevent duplicate activation
         isActivated = true;
         
-        // Call the function to store activation in localStorage
+        // Mark as activated in localStorage for persistence
         simulateActivation();
         
-        // Show success notification
+        // Show final success notification
         toast({
           title: "Neural Extension Activated!",
           description: "Your WhatsApp is now connected to DotSpark.",
           duration: 5000,
         });
         
-        // Step 2: Use a hard page reload to ensure all components update properly
-        window.location.replace('/dashboard');
-      }, 3000);
+        // Add a slight delay before redirecting to allow UI to update
+        setTimeout(() => {
+          // We use window.location.href for most reliable redirection
+          // that forces the page to completely reload
+          window.location.href = '/dashboard';
+        }, 1000);
+        
+      }, 5000);
       
+      // Cleanup function to handle component unmount
       return () => {
-        clearTimeout(activationTimer);
+        clearTimeout(step1Timer);
+        clearTimeout(step2Timer);
         
         // If component unmounts during activation process, still ensure activation is completed
         if (!isActivated) {
