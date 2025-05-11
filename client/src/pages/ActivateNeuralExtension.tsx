@@ -719,7 +719,7 @@ export default function ActivateNeuralExtension() {
     const { testActivationEvents } = useWhatsAppStatus();
     
     // Only show in development mode
-    if (process.env.NODE_ENV !== 'development') return null;
+    if (import.meta.env.DEV !== true) return null;
     
     return (
       <div className="fixed bottom-4 right-4 p-2 bg-black/50 text-white text-xs rounded-lg z-50">
