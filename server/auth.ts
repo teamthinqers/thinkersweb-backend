@@ -16,6 +16,7 @@ declare module "express-session" {
     userId?: number;
     firebaseUid?: string;
     lastActivity?: number;
+    persistent?: boolean;
   }
 }
 

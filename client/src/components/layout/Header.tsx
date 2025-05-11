@@ -111,29 +111,29 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
             <Button
               variant="ghost"
               size="icon"
-              className="text-gray-600 hover:text-primary"
+              className="text-gray-600 hover:text-primary w-8 h-8 min-w-0 p-1"
               onClick={onMenuClick || (() => setShowMobileNav(!showMobileNav))}
             >
-              <Menu className="h-5 w-5" />
+              <Menu className="h-4 w-4" />
             </Button>
             
             <div className="flex items-center">
               <Button 
                 variant="ghost"
                 size="icon"
-                className="text-gray-600 hover:text-primary mr-2"
+                className="text-gray-600 hover:text-primary mr-1.5 w-8 h-8 min-w-0 p-1"
                 onClick={goToLandingPage}
               >
-                <HomeIcon className="h-5 w-5" />
+                <HomeIcon className="h-4 w-4" />
               </Button>
               
               <Button
                 size="icon"
-                className="bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white mr-2 relative"
+                className="w-8 h-8 min-w-0 p-1 bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white mr-1.5 relative"
                 onClick={() => setLocation("/activate-neural")}
               >
-                <Brain className="h-4 w-4" />
-                <Sparkles className="h-2 w-2 absolute top-1 right-1" />
+                <Brain className="h-3.5 w-3.5" />
+                <Sparkles className="h-1.5 w-1.5 absolute top-1 right-1" />
               </Button>
             </div>
             
