@@ -270,8 +270,159 @@ export async function processWhatsAppMessage(from: string, messageText: string):
       const userEmail = accountLinkMatch[1].trim();
       console.log(`WhatsApp account linking request detected with email: ${userEmail}`);
       
-      // Process as authentication message with the extracted email
-      return await processAuthenticationMessage(from, userEmail);
+      // Get properly standardized phone format for correct database operations
+      const normalizedPhone = from.replace('whatsapp:', '').trim();
+      const standardizedPhone = normalizedPhone.startsWith('+') 
+        ? normalizedPhone 
+        : `+${normalizedPhone}`;
+      
+      console.log(`Attempting to link WhatsApp number ${standardizedPhone} with email ${userEmail}`);
+      
+      // Find user by email
+      const user = await db.query.users.findFirst({
+        where: eq(users.email, userEmail)
+      });
+      
+      // Log debugging info for user lookup
+      console.log(`User lookup result for ${userEmail}:`, user ? `Found user with ID ${user.id}` : "No user found");
+      
+      if (!user) {
+        console.log("Creating provisional account for email:", userEmail);
+        
+        try {
+          // Generate a random username based on the email
+          const username = userEmail.split('@')[0] + '_' + Math.floor(Math.random() * 1000);
+          
+          // Create a new user with minimal required fields
+          const [newUser] = await db.insert(users).values({
+            email: userEmail,
+            username: username,
+            password: 'provisional_' + Math.random().toString(36).substring(2), // Random password
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          }).returning();
+          
+          console.log("Created provisional user:", JSON.stringify(newUser));
+          
+          // Register this phone with the new user
+          await db.insert(whatsappUsers).values({
+            userId: newUser.id,
+            phoneNumber: standardizedPhone,
+            active: true,
+            lastMessageSentAt: new Date(),
+          }).onConflictDoUpdate({
+            target: whatsappUsers.phoneNumber,
+            set: {
+              userId: newUser.id,
+              active: true,
+              lastMessageSentAt: new Date(),
+              updatedAt: new Date()
+            }
+          });
+          
+          // Send activation success message
+          const activationMessage = "✅ *Neural Extension Activated Successfully!*\n\n" +
+            `DotSpark is now tuned to grow with your thinking.\n` +
+            `The more you interact, the sharper and more personalized it becomes.\n\n` +
+            `Say anything — a thought, a question, a decision you're stuck on.\n` +
+            `Let's begin.\n\n` +
+            `We've created a provisional account for you with email ${userEmail}. Visit www.dotspark.in to set up a password and access your dashboard.`;
+          
+          // Send follow-up welcome message after short delay
+          setTimeout(async () => {
+            try {
+              const welcomeMessage = 
+                "✨ *Welcome to DotSpark.*\n\n" +
+                "DotSpark is your neural extension for clearer thinking and instant insights.\n\n" +
+                "I can help with anything on your mind — from breaking down complex ideas to organizing your thoughts. What would you like to explore today?";
+              
+              await sendWhatsAppReply(from, welcomeMessage);
+            } catch (error) {
+              console.error("Error sending delayed welcome message:", error);
+            }
+          }, 2000);
+          
+          return {
+            success: true,
+            message: activationMessage
+          };
+        } catch (error) {
+          console.error("Error creating provisional account:", error);
+          
+          return {
+            success: true,
+            message: "⚠️ *Account Creation Issue*\n\n" +
+              `We tried to create a DotSpark account for you with ${userEmail}, but encountered a technical issue.\n\n` +
+              "You can still use WhatsApp with DotSpark, but to sync with a dashboard, please create an account at www.dotspark.in and then reconnect."
+          };
+        }
+      }
+      
+      // User exists - link their WhatsApp number
+      try {
+        // Check if this phone is already registered with another user
+        const existingWhatsappUser = await db.query.whatsappUsers.findFirst({
+          where: eq(whatsappUsers.phoneNumber, standardizedPhone)
+        });
+        
+        if (existingWhatsappUser) {
+          // Update the existing record to point to the new user
+          await db.update(whatsappUsers)
+            .set({
+              userId: user.id,
+              active: true,
+              lastMessageSentAt: new Date(),
+              updatedAt: new Date()
+            })
+            .where(eq(whatsappUsers.phoneNumber, standardizedPhone));
+        } else {
+          // Create a new WhatsApp user record
+          await db.insert(whatsappUsers).values({
+            userId: user.id,
+            phoneNumber: standardizedPhone,
+            active: true,
+            lastMessageSentAt: new Date()
+          });
+        }
+        
+        // Send activation success message
+        const activationMessage = "✅ *Successfully Connected!*\n\n" +
+          `✅ *Congratulations — your Neural Extension is now active!*\n\n` +
+          `DotSpark is now tuned to grow with your thinking.\n` +
+          `The more you interact, the sharper and more personalized it becomes.\n\n` +
+          `Say anything — a thought, a question, a decision you're stuck on.\n` +
+          `Let's begin.\n\n` +
+          `You can also access your personal dashboard for deeper insights at www.dotspark.in`;
+        
+        // Send message immediately
+        await sendWhatsAppReply(from, activationMessage);
+        
+        // After a short delay, also send the standard welcome message
+        setTimeout(async () => {
+          try {
+            const welcomeMessage = 
+              "✨ *Welcome to DotSpark.*\n\n" +
+              "DotSpark is your neural extension for clearer thinking and instant insights.\n\n" +
+              "I can help with anything on your mind — from breaking down complex ideas to organizing your thoughts. What would you like to explore today?";
+            
+            await sendWhatsAppReply(from, welcomeMessage);
+            console.log(`Sent delayed welcome message after account linking to: ${from}`);
+          } catch (error) {
+            console.error("Error sending delayed welcome message:", error);
+          }
+        }, 2000);
+        
+        return {
+          success: true,
+          message: activationMessage
+        };
+      } catch (error) {
+        console.error("Error linking WhatsApp account:", error);
+        return {
+          success: false,
+          message: "⚠️ *Error*\n\nThere was an error linking your WhatsApp to your DotSpark account. Please try again or contact support."
+        };
+      }
     }
     
     // Send welcome message for first-time users
