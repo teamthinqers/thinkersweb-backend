@@ -128,12 +128,12 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
               </Button>
               
               <Button
-                size="sm"
+                size="icon"
                 className="bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white mr-2 relative"
                 onClick={() => setLocation("/activate-neural")}
               >
-                <Brain className="h-4 w-4 mr-1" />
-                <span className="text-xs">Activate</span>
+                <Brain className="h-4 w-4" />
+                <Sparkles className="h-2 w-2 absolute top-1 right-1" />
               </Button>
             </div>
             
