@@ -12,6 +12,10 @@
     animation: float 6s ease-in-out infinite;
   }
   
+  .pulse-border {
+    animation: pulseBorder 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
   .animation-delay-1000 {
     animation-delay: 1000ms;
   }
@@ -33,6 +37,15 @@
     }
     100% {
       transform: translateY(0px);
+    }
+  }
+  
+  @keyframes pulseBorder {
+    0%, 100% {
+      border-color: rgba(var(--primary), 0.3);
+    }
+    50% {
+      border-color: rgba(var(--primary), 0.8);
     }
   }
   
