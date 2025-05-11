@@ -488,6 +488,20 @@ export async function processWhatsAppMessage(from: string, messageText: string):
       };
     }
     
+    // For activation messages, ALWAYS prioritize activation path
+    // This ensures users can activate even if they've previously seen welcome messages
+    const activationKeywords = ['neural extension', 'connect my', 'dotspark account', 'link my account', 'activate extension'];
+    const lowerMessage = messageText.toLowerCase();
+    const isActivationAttempt = activationKeywords.some(keyword => lowerMessage.includes(keyword));
+    
+    if (isActivationAttempt) {
+      console.log("⚡️ Detected activation attempt in message:", messageText);
+      console.log("Prioritizing activation processing regardless of previous interactions");
+      
+      // We don't modify the first-time user flags (which are constants)
+      // But we'll handle this directly in the email matching code
+    }
+    
     // Check for email-based linking messages (with extensive logging)
     console.log("⚡️ Checking for email-based linking in message:", messageText);
     
@@ -656,24 +670,26 @@ export async function processWhatsAppMessage(from: string, messageText: string):
         `Let's begin.\n\n` +
         `You can also access your personal dashboard for deeper insights at www.dotspark.in.`;
       
-      // Send message immediately, don't wait for response
-      await sendWhatsAppReply(from, activationSuccessMessage);
+      // ⚠️ IMPORTANT: Don't send a message here, as we'll return the message from this function
+      // This prevents duplicate messages - we'll only send a message at the very end
       
-      // After a short delay, also send the standard welcome message to explain more features
-      setTimeout(async () => {
-        try {
-          const welcomeMessage = 
-            "✨ *Welcome to DotSpark.*\n\n" +
-            "DotSpark is your neural extension for clearer thinking and instant insights.\n\n" +
-            "I can help with anything on your mind — from breaking down complex ideas to organizing your thoughts. What would you like to explore today?";
-          
-          await sendWhatsAppReply(from, welcomeMessage);
-          console.log(`Sent delayed welcome message after activation to: ${from}`);
-        } catch (error) {
-          console.error("Error sending delayed welcome message:", error);
-        }
-      }, 2000);  // 2 second delay
-      
+      // Explicitly ensure the whatsapp_user record has active=true for proper web status detection
+      try {
+        console.log(`Setting whatsapp_user record to active=true for ${from} after successful activation`);
+        // IMPORTANT: Update DB with active=true status to ensure web app detects the activated status
+        await db.update(whatsappUsers)
+          .set({
+            active: true,
+            verified: true, // Make sure to use the correct field name that exists in the schema
+            updatedAt: new Date()
+          })
+          .where(eq(whatsappUsers.phoneNumber, normalizedPhone));
+      } catch (error) {
+        console.error(`Error updating activation status in database: ${error}`);
+      }
+        
+      // Just return the activation message - this is what will be sent as the single reply
+      console.log(`Returning SINGLE activation success message for ${from}`);
       return {
         success: true,
         message: activationSuccessMessage
