@@ -462,14 +462,15 @@ export function useWhatsAppStatus() {
   
   return {
     // Either API confirms it, or we have local activation
-    isWhatsAppConnected: data?.isRegistered || activationStatus,
+    isWhatsAppConnected: data?.isRegistered || data?.isConnected || activationStatus,
     phoneNumber: data?.phoneNumber || 'Your phone',
     registeredAt: data?.registeredAt ? new Date(data.registeredAt) : new Date(),
     isLoading,
     error,
     refetch,
     simulateActivation,
-    // Add the new state flags
+    repairActivationStatus,
+    // Local status and other flags
     justActivated,
     showActivationSuccess,
     // Helper method to clear "just activated" flag manually
@@ -480,6 +481,8 @@ export function useWhatsAppStatus() {
     // Expose the force refresh function
     forceStatusRefresh,
     // Test function for activation events
-    testActivationEvents
+    testActivationEvents,
+    // Expose the localStorage status
+    isActiveInLocalStorage: activationStatus
   };
 }

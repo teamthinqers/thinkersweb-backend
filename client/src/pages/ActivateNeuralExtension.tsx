@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { AlertCircle, ArrowRight, Brain, Check, CheckCircle2, LogIn, LayoutDashboard, MessageCircle, Sparkles, MessageSquare, Zap } from 'lucide-react';
+import { AlertCircle, ArrowRight, Brain, Check, CheckCircle2, LogIn, LayoutDashboard, MessageCircle, Sparkles, MessageSquare, Zap, RefreshCw, Activity } from 'lucide-react';
 import { NeuralWhatsAppLinking } from '@/components/neural/NeuralWhatsAppLinking';
 import Header from '@/components/layout/Header';
 
@@ -19,7 +19,8 @@ export default function ActivateNeuralExtension() {
   const { user, isLoading: isAuthLoading, loginWithGoogle } = useAuth();
   const { toast } = useToast();
   const { isWhatsAppConnected, phoneNumber, isLoading: isWhatsAppStatusLoading, 
-          showActivationSuccess, justActivated } = useWhatsAppStatus();
+          showActivationSuccess, justActivated, isActiveInLocalStorage,
+          repairActivationStatus } = useWhatsAppStatus();
   
   // All useState hooks must be in the same order each render
   const [isAnimating, setIsAnimating] = useState(true);
@@ -55,9 +56,6 @@ export default function ActivateNeuralExtension() {
       .catch(err => console.error("Error fetching WhatsApp contact:", err));
   }, []);
 
-  // Calculate progress percentage - make sure it's 100% when activated in localStorage
-  const isActiveInLocalStorage = localStorage.getItem('whatsapp_activated') === 'true';
-  
   // Combined activation check - either source confirms activation
   const isActivated = isWhatsAppConnected || isActiveInLocalStorage;
   
