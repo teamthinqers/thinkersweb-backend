@@ -17,8 +17,13 @@ export function NeuralWhatsAppLinking() {
   // Automatic activation sequence after WhatsApp link is sent
   useEffect(() => {
     if (linkSent) {
+      let isActivated = false;
+      
       // Step 1: Mark as activated after user sends WhatsApp message (simulated with timeout)
       const activationTimer = setTimeout(() => {
+        if (isActivated) return; // Prevent duplicate activation
+        isActivated = true;
+        
         // Call the function to store activation in localStorage
         simulateActivation();
         
@@ -29,11 +34,18 @@ export function NeuralWhatsAppLinking() {
           duration: 5000,
         });
         
-        // Step 2: Manual reload to ensure all components update with new activation status
-        window.location.href = '/dashboard';
+        // Step 2: Use a hard page reload to ensure all components update properly
+        window.location.replace('/dashboard');
       }, 3000);
       
-      return () => clearTimeout(activationTimer);
+      return () => {
+        clearTimeout(activationTimer);
+        
+        // If component unmounts during activation process, still ensure activation is completed
+        if (!isActivated) {
+          simulateActivation();
+        }
+      };
     }
   }, [linkSent, simulateActivation, toast]);
 
@@ -182,7 +194,7 @@ export function NeuralWhatsAppLinking() {
           ) : (
             <>
               <MessageCircle className="mr-2 h-4 w-4" />
-              <span>Authenticate WhatsApp</span>
+              <span>Authenticate with WhatsApp</span>
               <div className="absolute -inset-1 blur-xl bg-gradient-to-r from-indigo-600/20 to-primary/20 group-hover:opacity-100 opacity-0 transition-opacity"></div>
             </>
           )}
