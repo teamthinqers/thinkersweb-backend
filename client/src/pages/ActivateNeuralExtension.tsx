@@ -30,6 +30,15 @@ export default function ActivateNeuralExtension() {
   // Calculate progress percentage
   const progress = user ? (isWhatsAppConnected ? 100 : 50) : 0;
   
+  // Update tab when auth or WhatsApp status changes
+  useEffect(() => {
+    if (user) {
+      setActiveTab('step2');
+    } else {
+      setActiveTab('step1');
+    }
+  }, [user, isWhatsAppConnected]);
+  
   // Neural network visualization setup
   useEffect(() => {
     if (!canvasRef.current) return;
@@ -363,35 +372,36 @@ export default function ActivateNeuralExtension() {
                 </CardHeader>
                 
                 <CardContent className="relative z-10 pt-0">
-                  {/* WhatsApp linking component */}
-                  <NeuralWhatsAppLinking />
+                  {/* Only show the linking component if not connected yet */}
+                  {!isWhatsAppConnected && <NeuralWhatsAppLinking />}
                   
                   {/* Success message if already connected */}
                   {isWhatsAppConnected && (
-                    <div className="mt-6 p-6 bg-gradient-to-br from-green-50/80 to-emerald-50/80 dark:from-green-950/30 dark:to-emerald-950/30 rounded-xl border-2 border-green-200 dark:border-green-800/30 flex flex-col items-center text-center relative overflow-hidden">
+                    <div className="mt-3 p-3 bg-gradient-to-br from-green-50/80 to-emerald-50/80 dark:from-green-950/30 dark:to-emerald-950/30 rounded-xl border-2 border-green-200 dark:border-green-800/30 flex flex-col items-center text-center relative overflow-hidden">
                       {/* Animated success elements */}
                       <div className="absolute inset-0 overflow-hidden">
-                        <div className="absolute top-0 left-1/4 w-1 h-20 bg-green-400/20 animate-pulse" style={{animationDelay: '0.1s'}}></div>
-                        <div className="absolute top-10 left-1/3 w-1 h-16 bg-green-400/20 animate-pulse" style={{animationDelay: '0.2s'}}></div>
-                        <div className="absolute top-5 left-1/2 w-1 h-24 bg-green-400/20 animate-pulse" style={{animationDelay: '0.3s'}}></div>
-                        <div className="absolute top-8 left-2/3 w-1 h-20 bg-green-400/20 animate-pulse" style={{animationDelay: '0.4s'}}></div>
-                        <div className="absolute top-2 left-3/4 w-1 h-16 bg-green-400/20 animate-pulse" style={{animationDelay: '0.5s'}}></div>
+                        <div className="absolute top-0 left-1/4 w-0.5 h-12 bg-green-400/20 animate-pulse" style={{animationDelay: '0.1s'}}></div>
+                        <div className="absolute top-5 left-1/3 w-0.5 h-10 bg-green-400/20 animate-pulse" style={{animationDelay: '0.2s'}}></div>
+                        <div className="absolute top-3 left-1/2 w-0.5 h-14 bg-green-400/20 animate-pulse" style={{animationDelay: '0.3s'}}></div>
+                        <div className="absolute top-4 left-2/3 w-0.5 h-12 bg-green-400/20 animate-pulse" style={{animationDelay: '0.4s'}}></div>
+                        <div className="absolute top-1 left-3/4 w-0.5 h-10 bg-green-400/20 animate-pulse" style={{animationDelay: '0.5s'}}></div>
                       </div>
                       
-                      <CheckCircle2 className="h-16 w-16 text-green-500 mb-4" />
-                      <h3 className="text-xl font-medium text-green-800 dark:text-green-300 mb-2">
-                        WhatsApp Successfully Connected!
+                      <CheckCircle2 className="h-10 w-10 text-green-500 mb-2" />
+                      <h3 className="text-base font-medium text-green-800 dark:text-green-300 mb-1">
+                        Neural Extension Activated!
                       </h3>
-                      <p className="text-green-700 dark:text-green-400 mb-4">
-                        Your neural extension is now fully activated and ready to use.
+                      <p className="text-xs text-green-700 dark:text-green-400 mb-2">
+                        Your WhatsApp is successfully connected and ready to use.
                       </p>
                       <Button
+                        size="sm"
                         className="relative overflow-hidden group bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700"
                         onClick={() => setLocation('/dashboard')}
                       >
                         <span className="relative z-10 flex items-center">
                           Go to Dashboard
-                          <ArrowRight className="ml-2 h-4 w-4" />
+                          <ArrowRight className="ml-1 h-3 w-3" />
                         </span>
                       </Button>
                     </div>
