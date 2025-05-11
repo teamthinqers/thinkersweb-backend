@@ -232,14 +232,14 @@ export default function LandingPage() {
         </div>
       </header>
       
-      {/* Enhanced Hero Section with Visual Elements */}
-      <section className="relative py-16 md:py-24 overflow-hidden">
+      {/* Enhanced Hero Section with Visual Elements - Optimized for mobile */}
+      <section className="relative pt-6 pb-8 md:py-12 lg:py-16 overflow-hidden">
         {/* Background visual elements */}
         <div className="absolute inset-0 z-0">
           <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/5 rounded-full blur-3xl opacity-60 -translate-y-1/2 translate-x-1/3"></div>
           <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-blue-500/5 dark:bg-blue-500/10 rounded-full blur-3xl opacity-60 translate-y-1/3 -translate-x-1/4"></div>
           
-          {/* Neural network node points */}
+          {/* Neural network node points - reduced for mobile */}
           <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-primary rounded-full shadow-lg shadow-primary/30 animate-pulse"></div>
           <div className="absolute top-1/3 right-1/3 w-2 h-2 bg-blue-500 rounded-full shadow-lg shadow-blue-500/30 animate-pulse delay-150"></div>
           <div className="absolute bottom-1/3 left-1/3 w-2 h-2 bg-indigo-500 rounded-full shadow-lg shadow-indigo-500/30 animate-pulse delay-300"></div>
@@ -261,177 +261,154 @@ export default function LandingPage() {
         </div>
         
         <div className="container mx-auto px-4 md:px-6 relative z-10">
-          <div className="flex flex-col items-center gap-8 lg:gap-12 max-w-5xl mx-auto">
-            <div className="space-y-4 md:space-y-6 text-center">
-              <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1.5 text-sm text-primary mb-3 md:mb-5">
+          {/* Two-column layout for desktop, single column for mobile */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 items-center max-w-6xl mx-auto">
+            {/* Left column: Content and call-to-action */}
+            <div className="flex flex-col">
+              <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1.5 text-sm text-primary mb-2 self-center md:self-start">
                 <Sparkles className="h-4 w-4" />
                 <span>Introducing DotSpark</span>
               </div>
               
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-tight">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-tight text-center md:text-left">
                 Your <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-primary to-blue-600 dark:from-indigo-400 dark:via-primary dark:to-blue-400">Neural Extension</span>
               </h1>
               
-              <p className="text-xl md:text-2xl font-medium text-foreground max-w-3xl mx-auto mt-3">
+              <p className="text-lg md:text-xl font-medium text-foreground mt-2 text-center md:text-left">
                 DotSpark isn't just smart. It's personal.
               </p>
               
-              <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mt-2">
+              <p className="text-base md:text-lg text-muted-foreground mt-1 md:mt-2 mb-4 text-center md:text-left">
                 It mirrors your thinking patterns and amplifies your decision-making — getting sharper every time you use it
               </p>
               
-              {/* Enhanced 3D brain neural network visualization */}
-              <div className="relative h-48 md:h-56 lg:h-64 mx-auto max-w-4xl my-10 perspective overflow-hidden">
-                {/* Container with fixed width for mobile to prevent overflow */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="relative w-[280px] sm:w-[320px] md:w-full h-full max-w-lg mx-auto">
-                    {/* Brain outline - smaller size on mobile */}
-                    <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[90px] h-[90px] sm:w-32 sm:h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 rounded-full border-[2px] border-primary/30 animate-pulse-slow"></div>
-                    
-                    {/* Central node - represents user's brain - smaller on mobile */}
-                    <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-full overflow-hidden shadow-xl z-30">
-                      <div className="absolute inset-0 bg-gradient-to-br from-primary/90 to-indigo-600/90"></div>
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <Brain className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 text-white/90" />
-                      </div>
-                      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_40%,rgba(255,255,255,0.2)_80%)]"></div>
+              {/* Action buttons - Prioritized and moved up for mobile */}
+              {user ? (
+                <Button size="lg" asChild className="w-full relative overflow-hidden group mt-2">
+                  <Link href="/dashboard" className="flex items-center justify-center">
+                    <span className="relative z-10">Go to Dashboard</span>
+                    <ArrowRight className="ml-2 h-5 w-5 relative z-10 group-hover:translate-x-1 transition-transform" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-primary to-primary/80 opacity-90 group-hover:opacity-100 transition-opacity"></div>
+                  </Link>
+                </Button>
+              ) : (
+                <div className="grid grid-cols-1 gap-3 mt-2">
+                  {/* Button 1: Activate Neural Extension */}
+                  <div className="bg-gradient-to-br from-primary/5 to-indigo-500/5 dark:from-primary/10 dark:to-indigo-500/10 border border-primary/20 dark:border-primary/30 rounded-xl p-3 flex flex-col items-center shadow-lg shadow-primary/5 dark:shadow-primary/10 relative overflow-hidden group">
+                    <Button size="lg" asChild className="w-full relative overflow-hidden bg-gradient-to-r from-primary to-indigo-600 hover:from-indigo-600 hover:to-primary border-0 shadow-lg shadow-primary/20 hover:shadow-indigo-500/30 transition-all duration-300 transform hover:scale-105 group">
+                      <Link href="/activate-neural" className="flex items-center justify-center relative z-10">
+                        <Brain className="mr-2 h-5 w-5" />
+                        <span>Activate Neural Extension</span>
+                        <div className="absolute top-0 left-0 w-full h-full overflow-hidden">
+                          <Sparkles className="h-4 w-4 absolute top-1/2 left-3 transform -translate-y-1/2 text-white opacity-80 animate-pulse" />
+                        </div>
+                      </Link>
+                    </Button>
+                  </div>
+                  
+                  {/* Button 2: Ask DotSpark */}
+                  <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 border border-green-200 dark:border-green-900/50 rounded-xl p-3 flex flex-col items-center shadow-lg shadow-green-500/5 dark:shadow-green-900/10 relative overflow-hidden group">
+                    <WhatsAppContactButton 
+                      size="lg" 
+                      label="Ask DotSpark"
+                      showIcon={true}
+                      variant="default"
+                      className="w-full relative overflow-hidden bg-gradient-to-r from-[#25D366] to-[#128C7E] hover:from-[#128C7E] hover:to-[#25D366] text-white border-0 shadow-lg shadow-green-500/20 hover:shadow-green-600/30 transition-all duration-300 transform hover:scale-105"
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+            
+            {/* Right column: Brain visualization - Hidden on mobile */}
+            <div className="hidden md:block relative h-64 w-full perspective overflow-hidden">
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="relative w-full h-full max-w-lg mx-auto">
+                  {/* Brain outline */}
+                  <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-40 h-40 rounded-full border-[2px] border-primary/30 animate-pulse-slow"></div>
+                  
+                  {/* Central node - represents user's brain */}
+                  <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-20 h-20 rounded-full overflow-hidden shadow-xl z-30">
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary/90 to-indigo-600/90"></div>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <Brain className="w-10 h-10 text-white/90" />
                     </div>
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_40%,rgba(255,255,255,0.2)_80%)]"></div>
+                  </div>
+                  
+                  {/* Neural connection nodes */}
+                  {Array.from({ length: 10 }).map((_, i) => {
+                    const baseDistance = 60;
+                    const angle = (i / 10) * Math.PI * 2;
+                    const distance = baseDistance + (i % 3) * 15;
+                    const x = Math.cos(angle) * distance;
+                    const y = Math.sin(angle) * distance;
+                    const scale = 0.5 + Math.random() * 0.5;
+                    const delay = i * 200;
+                    const isPrimary = i % 3 === 0;
                     
-                    {/* Neural connection nodes - fewer nodes and smaller distances on mobile */}
+                    return (
+                      <div 
+                        key={i}
+                        className={`absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 translate-z-0 rounded-full shadow-lg z-20 ${
+                          isPrimary ? 'bg-primary/80' : 'bg-blue-500/80'
+                        }`}
+                        style={{
+                          width: `${12 * scale}px`,
+                          height: `${12 * scale}px`,
+                          transform: `translate(${x}px, ${y}px) scale(${scale})`,
+                          animationDelay: `${delay}ms`,
+                        }}
+                      >
+                        <div className="absolute inset-0 rounded-full animate-ping-slow" 
+                            style={{ animationDelay: `${delay}ms` }}></div>
+                      </div>
+                    );
+                  })}
+                  
+                  {/* Connection lines with fixed distances for mobile */}
+                  <svg className="absolute inset-0 w-full h-full z-10" xmlns="http://www.w3.org/2000/svg">
                     {Array.from({ length: 10 }).map((_, i) => {
-                      // Fixed smaller distance for mobile
-                      const baseDistance = 50; // Smaller base distance for mobile 
+                      // Match distances with nodes above
+                      const baseDistance = 50;
                       const angle = (i / 10) * Math.PI * 2;
-                      const distance = baseDistance + (i % 3) * 10; // Smaller variance for mobile
+                      const distance = baseDistance + (i % 3) * 10;
                       const x = Math.cos(angle) * distance;
                       const y = Math.sin(angle) * distance;
-                      const scale = 0.5 + Math.random() * 0.5;
-                      const delay = i * 200;
-                      const isPrimary = i % 3 === 0;
                       
                       return (
-                        <div 
+                        <line 
                           key={i}
-                          className={`absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 translate-z-0 rounded-full shadow-lg z-20 ${
-                            isPrimary ? 'bg-primary/80' : 'bg-blue-500/80'
-                          }`}
-                          style={{
-                            width: `${10 * scale}px`, // Slightly smaller dots
-                            height: `${10 * scale}px`,
-                            transform: `translate(${x}px, ${y}px) scale(${scale})`,
-                            animationDelay: `${delay}ms`,
-                          }}
-                        >
-                          <div className="absolute inset-0 rounded-full animate-ping-slow" 
-                               style={{ animationDelay: `${delay}ms` }}></div>
-                        </div>
+                          x1="50%" 
+                          y1="50%" 
+                          x2={`calc(50% + ${x}px)`} 
+                          y2={`calc(50% + ${y}px)`} 
+                          stroke={i % 3 === 0 ? 'url(#line-primary)' : 'url(#line-secondary)'} 
+                          strokeWidth="1"
+                          strokeDasharray="3,3"
+                          className="animate-dash-slow"
+                          style={{ animationDelay: `${i * 100}ms` }}
+                        />
                       );
                     })}
                     
-                    {/* Connection lines with fixed distances for mobile */}
-                    <svg className="absolute inset-0 w-full h-full z-10" xmlns="http://www.w3.org/2000/svg">
-                      {Array.from({ length: 10 }).map((_, i) => {
-                        // Match distances with nodes above
-                        const baseDistance = 50;
-                        const angle = (i / 10) * Math.PI * 2;
-                        const distance = baseDistance + (i % 3) * 10;
-                        const x = Math.cos(angle) * distance;
-                        const y = Math.sin(angle) * distance;
-                        
-                        return (
-                          <line 
-                            key={i}
-                            x1="50%" 
-                            y1="50%" 
-                            x2={`calc(50% + ${x}px)`} 
-                            y2={`calc(50% + ${y}px)`} 
-                            stroke={i % 3 === 0 ? 'url(#line-primary)' : 'url(#line-secondary)'} 
-                            strokeWidth="1"
-                            strokeDasharray="3,3"
-                            className="animate-dash-slow"
-                            style={{ animationDelay: `${i * 100}ms` }}
-                          />
-                        );
-                      })}
-                      
-                      <defs>
-                        <linearGradient id="line-primary" x1="0%" y1="0%" x2="100%" y2="0%">
-                          <stop offset="0%" stopColor="var(--color-primary)" stopOpacity="0.9" />
-                          <stop offset="100%" stopColor="var(--color-primary)" stopOpacity="0.1" />
-                        </linearGradient>
-                        <linearGradient id="line-secondary" x1="0%" y1="0%" x2="100%" y2="0%">
-                          <stop offset="0%" stopColor="var(--color-blue-500)" stopOpacity="0.9" />
-                          <stop offset="100%" stopColor="var(--color-blue-500)" stopOpacity="0.1" />
-                        </linearGradient>
-                      </defs>
-                    </svg>
-                    
-                    {/* Pulsing glow effect - smaller for mobile */}
-                    <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[80px] h-[80px] sm:w-28 sm:h-28 md:w-36 md:h-36 lg:w-44 lg:h-44 rounded-full bg-primary/20 filter blur-xl animate-pulse-slow"></div>
-                  </div>
+                    <defs>
+                      <linearGradient id="line-primary" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stopColor="var(--color-primary)" stopOpacity="0.9" />
+                        <stop offset="100%" stopColor="var(--color-primary)" stopOpacity="0.1" />
+                      </linearGradient>
+                      <linearGradient id="line-secondary" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stopColor="var(--color-blue-500)" stopOpacity="0.9" />
+                        <stop offset="100%" stopColor="var(--color-blue-500)" stopOpacity="0.1" />
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                  
+                  {/* Pulsing glow effect */}
+                  <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-36 h-36 rounded-full bg-primary/20 filter blur-xl animate-pulse-slow"></div>
                 </div>
               </div>
-              
-              {/* Action buttons with enhanced styling */}
-              <div className="flex flex-col gap-8 pt-6 max-w-3xl mx-auto">
-                {user ? (
-                  <Button size="lg" asChild className="w-full relative overflow-hidden group">
-                    <Link href="/dashboard" className="flex items-center justify-center">
-                      <span className="relative z-10">Go to Dashboard</span>
-                      <ArrowRight className="ml-2 h-5 w-5 relative z-10 group-hover:translate-x-1 transition-transform" />
-                      <div className="absolute inset-0 bg-gradient-to-r from-primary to-primary/80 opacity-90 group-hover:opacity-100 transition-opacity"></div>
-                    </Link>
-                  </Button>
-                ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* Button 1: Activate Neural Extension */}
-                    <div className="bg-gradient-to-br from-primary/5 to-indigo-500/5 dark:from-primary/10 dark:to-indigo-500/10 border border-primary/20 dark:border-primary/30 rounded-xl p-6 flex flex-col items-center shadow-lg shadow-primary/5 dark:shadow-primary/10 relative overflow-hidden group">
-                      <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-indigo-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                      
-                      <Button size="lg" asChild className="w-full mb-5 relative overflow-hidden bg-gradient-to-r from-primary to-indigo-600 hover:from-indigo-600 hover:to-primary border-0 shadow-lg shadow-primary/20 hover:shadow-indigo-500/30 transition-all duration-300 transform hover:scale-105 group">
-                        <Link href="/activate-neural" className="flex items-center justify-center relative z-10">
-                          <Brain className="mr-2 h-5 w-5" />
-                          <span>Activate Neural Extension</span>
-                          <div className="absolute top-0 left-0 w-full h-full overflow-hidden">
-                            <Sparkles className="h-4 w-4 absolute top-1/2 left-3 transform -translate-y-1/2 text-white opacity-80 animate-pulse" />
-                            <Sparkles className="h-3 w-3 absolute top-1/4 right-6 transform -translate-y-1/2 text-white opacity-80 animate-pulse" style={{animationDelay: '300ms'}} />
-                          </div>
-                          <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity"></div>
-                        </Link>
-                      </Button>
-                      
-                      <div className="text-sm text-muted-foreground text-left relative z-10">
-                        <p className="mb-2 font-medium text-foreground">Premium dashboard integration:</p>
-                        <ol className="list-decimal list-inside space-y-1 text-xs">
-                          <li>Create a DotSpark account</li>
-                          <li>Set up your personalized dashboard</li>
-                          <li>Link your WhatsApp for synchronized insights</li>
-                        </ol>
-                      </div>
-                    </div>
-                    
-                    {/* Button 2: Ask DotSpark */}
-                    <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 border border-green-200 dark:border-green-900/50 rounded-xl p-6 flex flex-col items-center shadow-lg shadow-green-500/5 dark:shadow-green-900/10 relative overflow-hidden group">
-                      <div className="absolute inset-0 bg-gradient-to-br from-green-100/50 to-emerald-100/50 dark:from-green-900/30 dark:to-emerald-900/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                      
-                      <WhatsAppContactButton 
-                        size="lg" 
-                        label="Ask DotSpark"
-                        showIcon={true}
-                        variant="default"
-                        className="w-full mb-5 relative overflow-hidden bg-gradient-to-r from-[#25D366] to-[#128C7E] hover:from-[#128C7E] hover:to-[#25D366] text-white border-0 shadow-lg shadow-green-500/20 hover:shadow-green-600/30 transition-all duration-300 transform hover:scale-105"
-                      />
-
-                      <div className="text-sm text-muted-foreground text-left relative z-10">
-                        <p className="mb-2 font-medium text-green-700 dark:text-green-500">Instant ChatGPT-like experience:</p>
-                        <p className="text-xs">Start using your neural extension immediately through WhatsApp - no account required. Interact naturally like with ChatGPT.</p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
             </div>
-
           </div>
         </div>
       </section>
