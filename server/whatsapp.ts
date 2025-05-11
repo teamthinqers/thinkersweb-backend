@@ -209,8 +209,19 @@ export async function processWhatsAppMessage(from: string, messageText: string):
       // Later, if they send a link code, we'll update this record to their real account
     }
     
-    // Check for our default prompt message
-    const isDefaultPrompt = messageText.includes("I've got a few things on my mind — need your thoughts");
+    // Check for our default prompt message with broader matching
+    const defaultPromptPatterns = [
+      "I've got a few things on my mind — need your thoughts",
+      "Hey DotSpark",
+      "Hello DotSpark",
+      "Hi DotSpark",
+    ];
+    
+    const isDefaultPrompt = defaultPromptPatterns.some(pattern => 
+      messageText.toLowerCase().includes(pattern.toLowerCase())
+    );
+    
+    console.log(`Default prompt check: ${isDefaultPrompt ? "YES" : "NO"} for message: "${messageText}"`);
     
     // For default prompt from returning users, we provide a special greeting
     if (isDefaultPrompt && !isFirstTimeUser) {
