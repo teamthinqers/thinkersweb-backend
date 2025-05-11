@@ -320,16 +320,28 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
               </Button>
               
               <Button 
-                className="w-full justify-start mb-2 bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white relative"
+                className={`w-full justify-start mb-2 ${isWhatsAppConnected 
+                  ? "bg-gradient-to-r from-green-600 to-emerald-500 hover:from-green-700 hover:to-emerald-600" 
+                  : "bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90"} text-white relative`}
                 size="sm"
                 onClick={() => {
                   setShowMobileNav(false);
                   setLocation("/activate-neural");
                 }}
               >
-                <Brain className="h-5 w-5 mr-2" />
-                <span>Activate Neural Extension</span>
-                <Sparkles className="h-3 w-3 absolute top-2 right-2" />
+                {isWhatsAppConnected ? (
+                  <>
+                    <Check className="h-5 w-5 mr-2" />
+                    <span>Neural Extension Activated</span>
+                    <Sparkles className="h-3 w-3 absolute top-2 right-2" />
+                  </>
+                ) : (
+                  <>
+                    <Brain className="h-5 w-5 mr-2" />
+                    <span>Activate Neural Extension</span>
+                    <Sparkles className="h-3 w-3 absolute top-2 right-2" />
+                  </>
+                )}
               </Button>
               
               <Button 
