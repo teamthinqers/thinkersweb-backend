@@ -191,9 +191,20 @@ export function useWhatsAppStatus() {
       sessionStorage.setItem('show_activation_success', 'true');
       setShowActivationSuccess(true);
       
-      // Dispatch a global event that other components can listen for
+      // Mark the user as having completed neural activation
+      sessionStorage.setItem('neural_activation_completed', 'true');
+      
+      // Dispatch success events (both legacy and new formats)
       window.dispatchEvent(new CustomEvent('whatsapp-status-updated', { 
         detail: { isActivated: true, source: 'api' }
+      }));
+      
+      window.dispatchEvent(new CustomEvent('whatsapp_activation_success', {
+        detail: { 
+          timestamp: new Date(), 
+          source: 'api',
+          data: data
+        }
       }));
       
       console.log("WhatsApp activation status set to TRUE based on API response");
