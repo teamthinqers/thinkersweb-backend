@@ -209,17 +209,56 @@ export async function processWhatsAppMessage(from: string, messageText: string):
       // Later, if they send a link code, we'll update this record to their real account
     }
     
+    // Check for our default prompt message
+    const isDefaultPrompt = messageText.includes("I've got a few things on my mind — need your thoughts");
+    
+    // For default prompt from returning users, we provide a special greeting
+    if (isDefaultPrompt && !isFirstTimeUser) {
+      console.log(`Default prompt detected from returning user ${from}`);
+      const returningUserGreeting = 
+        "Welcome back to DotSpark! I'm here to help organize your thoughts and provide clarity.\n\n" +
+        "What would you like to explore today?";
+      
+      await sendWhatsAppReply(from, returningUserGreeting);
+      
+      // Return this special greeting as the response and don't process the default prompt further
+      return {
+        success: true,
+        message: returningUserGreeting
+      };
+    }
+    
     // Send welcome message for first-time users
     if (isFirstTimeUser) {
       console.log(`First-time user detected for ${from} - sending welcome message`);
       
       // We'll send an immediate welcome message before processing their actual message
-      const welcomeMessage = 
-        "✨ *Welcome to DotSpark.*\n\n" +
-        "You can ask, explore, or break down any thought here — DotSpark is built to respond with clarity and insight, instantly.\n\n" +
-        "Say what's on your mind — let's begin.";
+      let welcomeMessage;
+      
+      // Different welcome message based on whether they used the default prompt
+      if (isDefaultPrompt) {
+        welcomeMessage = 
+          "✨ *Welcome to DotSpark.*\n\n" +
+          "Thanks for reaching out! DotSpark is your neural extension for clearer thinking and instant insights.\n\n" +
+          "I can help with anything on your mind — from breaking down complex ideas to organizing your thoughts. What would you like to explore today?";
+          
+        // Send the welcome message
+        await sendWhatsAppReply(from, welcomeMessage);
         
-      await sendWhatsAppReply(from, welcomeMessage);
+        // For default prompt, return immediately after welcome
+        return {
+          success: true,
+          message: welcomeMessage
+        };
+      } else {
+        welcomeMessage = 
+          "✨ *Welcome to DotSpark.*\n\n" +
+          "You can ask, explore, or break down any thought here — DotSpark is built to respond with clarity and insight, instantly.\n\n" +
+          "Say what's on your mind — let's begin.";
+          
+        // Send the welcome message
+        await sendWhatsAppReply(from, welcomeMessage);
+      }
       
       // We'll handle their initial message below after sending the welcome
     }
