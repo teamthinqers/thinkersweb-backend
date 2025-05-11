@@ -47,6 +47,28 @@ const conversationHistories = new Map<string, Message[]>();
 // Set to 20 to support longer interactive ChatGPT-like conversations
 const MAX_HISTORY_LENGTH = 20;
 
+// For optimized responses, we use a smaller context window
+const OPTIMIZED_HISTORY_LENGTH = 8;
+
+/**
+ * Optimize conversation history for faster response times
+ * This keeps the system message and only the most recent messages
+ */
+function optimizeHistoryForResponse(history: Message[]): Message[] {
+  if (history.length <= OPTIMIZED_HISTORY_LENGTH) {
+    return history;
+  }
+  
+  // Always keep the system message (first message)
+  const systemMessage = history[0];
+  
+  // Take the most recent messages
+  const recentMessages = history.slice(-(OPTIMIZED_HISTORY_LENGTH - 1));
+  
+  // Return optimized history
+  return [systemMessage, ...recentMessages];
+}
+
 /**
  * Get a unique conversation ID for tracking conversation history
  * This can be a user ID, phone number, or any other unique identifier
@@ -140,14 +162,18 @@ export async function generateAdvancedResponse(
     });
 
     // The newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
+    // Optimize for response time by prioritizing immediately relevant history
+    // and setting response parameters for faster generation
+    const optimizedHistory = optimizeHistoryForResponse(history);
+      
     const response = await openai.chat.completions.create({
       model: "gpt-4o",
-      messages: history,
-      temperature: 0.8,     // Slightly increased for more creative responses
-      max_tokens: 1000,     // Maintain token limit for comprehensive responses
-      top_p: 0.95,          // More focus on high-probability tokens for better quality
-      frequency_penalty: 0.5, // Reduce repetition
-      presence_penalty: 0.5,  // Encourage addressing new topics
+      messages: optimizedHistory,
+      temperature: 0.7,     // Balanced for both speed and creativity
+      max_tokens: 800,      // Reduced for faster response time
+      top_p: 0.9,           // Slightly reduced for faster token selection
+      frequency_penalty: 0.3, // Reduced to improve response time
+      presence_penalty: 0.3,  // Reduced to improve response time
     });
 
     const responseText = response.choices[0]?.message?.content?.trim() || 
