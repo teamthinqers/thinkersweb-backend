@@ -288,12 +288,14 @@ export async function processWhatsAppMessage(from: string, messageText: string):
     const emailLinkingRegex1 = /link.*whatsapp.*\(([^\)]+)\)/i;
     const emailLinkingRegex2 = /link.*dotspark.*\(([^\)]+)\)/i;
     const emailLinkingRegex3 = /.*dotspark.*account.*\(([^\)]+)\)/i;
-    const emailLinkingRegex4 = /please connect my Neural Extension via WhatsApp\.\s*My DotSpark account is\s*([\w.%+-]+@[\w.-]+\.[A-Za-z]{2,})/i;
+    const emailLinkingRegex4 = /please connect my Neural Extension via WhatsApp\.?\s*My DotSpark account is\s*([\w.%+-]+@[\w.-]+\.[A-Za-z]{2,})/i;
+    const emailLinkingRegex5 = /Hey DotSpark,?\s*please connect my Neural Extension via WhatsApp\.?\s*My DotSpark account is\s*([\w.%+-]+@[\w.-]+\.[A-Za-z]{2,})/i;
     
     let emailMatch = messageText.match(emailLinkingRegex1) || 
                     messageText.match(emailLinkingRegex2) || 
                     messageText.match(emailLinkingRegex3) ||
-                    messageText.match(emailLinkingRegex4);
+                    messageText.match(emailLinkingRegex4) ||
+                    messageText.match(emailLinkingRegex5);
     
     // Direct email extraction as fallback
     if (!emailMatch) {
