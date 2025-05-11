@@ -339,13 +339,73 @@ export async function processWhatsAppMessage(from: string, messageText: string):
         where: eq(users.email, userEmail)
       });
       
+      // Log debugging info for user lookup
+      console.log(`User lookup result for ${userEmail}:`, user ? `Found user with ID ${user.id}` : "No user found");
+      
       if (!user) {
-        return {
-          success: true,
-          message: "⚠️ *Account Not Found*\n\n" +
-            `We couldn't find a DotSpark account with email "${userEmail}". Please make sure you're using the same email address that you used to create your DotSpark account.\n\n` +
-            "If you don't have a DotSpark account yet, you can still use this WhatsApp chatbot, but your conversations won't appear in a dashboard."
-        };
+        console.log("Fetching all users to look for approximate matches");
+        const allUsers = await db.query.users.findMany();
+        console.log("Available user emails:", allUsers.map(u => u.email));
+        
+        // Look for a closest match - maybe case sensitivity issues?
+        const possibleMatch = allUsers.find(u => u.email.toLowerCase() === userEmail.toLowerCase());
+        if (possibleMatch) {
+          console.log(`Found possible case-insensitive match: ${possibleMatch.email}`);
+        }
+        
+        // Auto-create a provisional account for this user so they can start using it 
+        console.log(`Creating provisional account for email: ${userEmail}`);
+        
+        try {
+          // Generate a random username based on the email
+          const username = userEmail.split('@')[0] + '_' + Math.floor(Math.random() * 1000);
+          
+          // Create a new user with minimal required fields
+          const [newUser] = await db.insert(users).values({
+            email: userEmail,
+            username: username,
+            password: 'provisional_' + Math.random().toString(36).substring(2), // Random password, they'll need to reset
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          }).returning();
+          
+          console.log(`Created provisional user: ${JSON.stringify(newUser)}`);
+          
+          // Now register their WhatsApp
+          await db.insert(whatsappUsers).values({
+            userId: newUser.id,
+            phoneNumber: normalizedPhone,
+            active: true,
+            lastMessageSentAt: new Date(),
+          }).onConflictDoUpdate({
+            target: whatsappUsers.phoneNumber,
+            set: {
+              userId: newUser.id,
+              active: true,
+              updatedAt: new Date(),
+              lastMessageSentAt: new Date(),
+            },
+          });
+          
+          return {
+            success: true,
+            message: "✅ *Neural Extension Activated Successfully!*\n\n" +
+              `DotSpark is now tuned to grow with your thinking.\n` +
+              `The more you interact, the sharper and more personalized it becomes.\n\n` +
+              `Say anything — a thought, a question, a decision you're stuck on.\n` +
+              `Let's begin.\n\n` +
+              `We've created a provisional account for you with email ${userEmail}. Visit www.dotspark.in to set up a password and access your dashboard.`
+          };
+        } catch (error) {
+          console.error("Error creating provisional account:", error);
+          
+          return {
+            success: true,
+            message: "⚠️ *Account Creation Issue*\n\n" +
+              `We tried to create a DotSpark account for you with ${userEmail}, but encountered a technical issue.\n\n` +
+              "You can still use WhatsApp with DotSpark, but to sync with a dashboard, please create an account at www.dotspark.in and then reconnect."
+          };
+        }
       }
       
       // Check if this phone is already registered with another user
