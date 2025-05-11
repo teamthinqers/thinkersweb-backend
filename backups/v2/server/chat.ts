@@ -1,0 +1,202 @@
+import OpenAI from "openai";
+
+// Initialize OpenAI client
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+// Define message types
+export interface Message {
+  role: "system" | "user" | "assistant";
+  content: string;
+}
+
+// Type for structured entry from chat input
+export interface StructuredEntry {
+  title: string;
+  content: string;
+  categoryId?: number;
+  tagNames?: string[];
+}
+
+/**
+ * Process user input to create a structured entry
+ */
+export async function processEntryFromChat(
+  userInput: string, 
+  messages: Message[] = []
+): Promise<StructuredEntry> {
+  try {
+    // Add system message if not already in history
+    if (!messages.some(m => m.role === "system")) {
+      messages.unshift({
+        role: "system",
+        content: `You are a helpful learning assistant. Your job is to structure the user's learning input into a proper entry.
+        Extract a title, content, and any relevant categories (from: professional, personal, health, finance) and tags.
+        Always respond with a valid JSON object with the following format:
+        {
+          "title": "Clear, concise title of the entry",
+          "content": "Expanded detailed content of what the user learned",
+          "category": "One of: professional, personal, health, finance",
+          "tags": ["tag1", "tag2"]
+        }
+        Do not include any explanations or extra text, just return the JSON.`
+      });
+    }
+
+    // Add user message
+    messages.push({
+      role: "user",
+      content: userInput,
+    });
+
+    // Generate response from OpenAI
+    const response = await openai.chat.completions.create({
+      model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
+      messages: messages as any,
+      response_format: { type: "json_object" },
+      temperature: 0.7,
+    });
+
+    // Get the response content
+    const responseContent = response.choices[0].message.content;
+    
+    // Parse the response
+    if (!responseContent) {
+      throw new Error("No response from OpenAI");
+    }
+    
+    const structuredData = JSON.parse(responseContent);
+    
+    // Map to our structured entry format
+    const result: StructuredEntry = {
+      title: structuredData.title,
+      content: structuredData.content,
+      tagNames: structuredData.tags || [],
+    };
+    
+    // Add category if present
+    if (structuredData.category) {
+      // We'll map category names to IDs when we implement the API endpoint
+      result.categoryId = getCategoryIdFromName(structuredData.category);
+    }
+    
+    return result;
+  } catch (error) {
+    console.error("Error processing chat input:", error);
+    throw new Error("Failed to process your learning entry. Please try again.");
+  }
+}
+
+/**
+ * Generate assistant messages to simulate a conversation about the learning
+ */
+export async function generateChatResponse(
+  userInput: string,
+  messages: Message[] = []
+): Promise<string> {
+  try {
+    // Add system message if not already in history
+    if (!messages.some(m => m.role === "system")) {
+      messages.unshift({
+        role: "system",
+        content: `You are a helpful learning assistant called DotSpark AI. Your job is to engage with the user
+        about their learning experiences and help them reflect more deeply on what they've learned.
+        Ask thoughtful follow-up questions about their learning, suggest ways to apply it, 
+        or identify connections to other topics they might be interested in.
+        Be brief, friendly, and encouraging. Always end with a question to encourage further conversation.
+        If the user's message seems like a learning insight rather than a question, respond in a way that
+        acknowledges their learning but also encourages them to reflect further.`
+      });
+    }
+
+    // Add user message
+    messages.push({
+      role: "user",
+      content: userInput,
+    });
+
+    // Generate response from OpenAI
+    const response = await openai.chat.completions.create({
+      model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
+      messages: messages as any,
+      temperature: 0.8,
+      max_tokens: 200,
+    });
+
+    // Return the response content
+    return response.choices[0].message.content || "I didn't quite catch that. Can you tell me more about what you learned?";
+  } catch (error) {
+    console.error("Error generating chat response:", error);
+    return "I'm having trouble processing that right now. Can you try again?";
+  }
+}
+
+/**
+ * Analyze user input to determine whether it's a question or a learning entry
+ */
+export async function analyzeUserInput(userInput: string): Promise<{
+  type: 'question' | 'learning' | 'command';
+  confidence: number;
+}> {
+  try {
+    // Check for command prefixes first
+    if (userInput.toLowerCase().startsWith("q:") || 
+        userInput.toLowerCase().startsWith("question:") ||
+        userInput.toLowerCase().startsWith("ask:")) {
+      return { type: 'question', confidence: 0.95 };
+    }
+    
+    if (userInput.toLowerCase() === "help" || 
+        userInput.toLowerCase() === "summary" || 
+        userInput.toLowerCase() === "stats") {
+      return { type: 'command', confidence: 0.95 };
+    }
+    
+    // If no command prefix, use AI to analyze
+    const response = await openai.chat.completions.create({
+      model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
+      messages: [
+        {
+          role: "system",
+          content: `You are an input classifier. Categorize the following text as either:
+          1. A question (the user is asking for information)
+          2. A learning entry (the user is sharing something they learned)
+          
+          Respond with JSON in the format:
+          {"type": "question" or "learning", "confidence": 0.0 to 1.0}`
+        },
+        {
+          role: "user",
+          content: userInput
+        }
+      ],
+      response_format: { type: "json_object" },
+      temperature: 0.3,
+    });
+    
+    const result = JSON.parse(response.choices[0].message.content || '{"type": "learning", "confidence": 0.5}');
+    return {
+      type: result.type,
+      confidence: result.confidence
+    };
+    
+  } catch (error) {
+    console.error("Error analyzing user input:", error);
+    // Default to treating it as a learning entry if analysis fails
+    return { type: 'learning', confidence: 0.5 };
+  }
+}
+
+// Helper function to map category names to IDs
+// This is a temporary placeholder - we'll replace it with database lookups in the API endpoint
+function getCategoryIdFromName(categoryName: string): number | undefined {
+  const categoryMap: Record<string, number> = {
+    professional: 1,
+    personal: 2,
+    health: 3,
+    finance: 4,
+  };
+  
+  return categoryMap[categoryName.toLowerCase()];
+}
