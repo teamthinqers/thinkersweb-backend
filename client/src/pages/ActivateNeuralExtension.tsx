@@ -52,6 +52,9 @@ export default function ActivateNeuralExtension() {
       // This lets the user see the activation status on the activation page
       setActiveTab('step2');
       
+      // Also set activation in localStorage to ensure persistence across devices
+      localStorage.setItem('whatsapp_activated', 'true');
+      
       // Ensure the progress bar shows 100%
       // We don't need to do anything special here as the progress
       // is calculated based on isWhatsAppConnected

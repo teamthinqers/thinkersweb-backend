@@ -75,7 +75,7 @@ export function useWhatsAppStatus() {
         refetch();
       }, 1000);
     }
-  }, [data]);
+  }, [data, refetch]);
   
   // Clear "just activated" flag after 10 seconds
   useEffect(() => {
@@ -105,6 +105,13 @@ export function useWhatsAppStatus() {
     // Set flags for UI feedback
     localStorage.setItem('neural_just_activated', 'true');
     setJustActivated(true);
+    
+    // Also set session storage to ensure it shows in web view
+    sessionStorage.setItem('show_activation_success', 'true');
+    setShowActivationSuccess(true);
+    
+    // Force a refetch to update server state if possible
+    refetch();
   };
 
   return {
