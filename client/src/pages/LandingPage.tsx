@@ -53,31 +53,53 @@ export default function LandingPage() {
               <Link href="/dashboard" className="text-sm font-medium hover:text-primary">
                 Dashboard
               </Link>
+              <Link href="/activate-neural" className="hidden sm:block ml-2">
+                <Button
+                  size="sm"
+                  className="bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white relative group"
+                >
+                  <Brain className="h-4 w-4 mr-1" />
+                  <span>Activate Neural</span>
+                  <Sparkles className="h-3 w-3 absolute top-1 right-1 text-white/80" />
+                </Button>
+              </Link>
             </div>
             
             {/* WhatsApp button, always visible on mobile and desktop regardless of login status */}
             <div className="hidden md:block">
               <WhatsAppContactButton />
             </div>
-            <div className="block md:hidden">
-              <Button
-                variant="default"
-                size="sm"
-                className="bg-[#25D366] hover:bg-[#128C7E] text-white px-3 py-1 h-8 rounded-md"
-                onClick={() => {
-                  const whatsAppNumber = '16067157733';
-                  const mobileAppLink = `whatsapp://send?phone=${whatsAppNumber}`;
-                  window.location.href = mobileAppLink;
-                  
-                  setTimeout(() => {
-                    const webFallbackUrl = `https://wa.me/${whatsAppNumber}`;
-                    window.location.href = webFallbackUrl;
-                  }, 500);
-                }}
-              >
-                <MessageCircle className="h-4 w-4 mr-1" />
-                <span>Ask</span>
-              </Button>
+            <div className="flex items-center space-x-2 sm:space-x-3">
+              <div className="block md:hidden">
+                <Button
+                  variant="default"
+                  size="sm"
+                  className="bg-[#25D366] hover:bg-[#128C7E] text-white px-3 py-1 h-8 rounded-md"
+                  onClick={() => {
+                    const whatsAppNumber = '16067157733';
+                    const mobileAppLink = `whatsapp://send?phone=${whatsAppNumber}`;
+                    window.location.href = mobileAppLink;
+                    
+                    setTimeout(() => {
+                      const webFallbackUrl = `https://wa.me/${whatsAppNumber}`;
+                      window.location.href = webFallbackUrl;
+                    }, 500);
+                  }}
+                >
+                  <MessageCircle className="h-4 w-4 mr-1" />
+                  <span>Ask</span>
+                </Button>
+              </div>
+              
+              <Link href="/activate-neural" className="block sm:hidden">
+                <Button
+                  size="sm"
+                  className="bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white relative h-8 px-3"
+                >
+                  <Brain className="h-4 w-4 mr-1" />
+                  <span className="text-xs">Activate</span>
+                </Button>
+              </Link>
             </div>
             
             {/* User profile or sign in button */}
@@ -166,9 +188,10 @@ export default function LandingPage() {
                       </SheetClose>
                       
                       <SheetClose asChild>
-                        <Link href="/activate" className="py-2 hover:text-primary transition-colors flex items-center gap-2">
+                        <Link href="/activate-neural" className="py-2 hover:text-primary transition-colors flex items-center gap-2 relative">
                           <Brain className="h-4 w-4 text-primary" />
                           <span>Activate Neural Extension</span>
+                          <Sparkles className="h-3 w-3 absolute left-1 top-6 text-indigo-400" />
                         </Link>
                       </SheetClose>
                     </div>
@@ -365,10 +388,15 @@ export default function LandingPage() {
                     <div className="bg-gradient-to-br from-primary/5 to-indigo-500/5 dark:from-primary/10 dark:to-indigo-500/10 border border-primary/20 dark:border-primary/30 rounded-xl p-6 flex flex-col items-center shadow-lg shadow-primary/5 dark:shadow-primary/10 relative overflow-hidden group">
                       <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-indigo-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                       
-                      <Button size="lg" asChild className="w-full mb-5 relative overflow-hidden bg-gradient-to-r from-primary to-indigo-600 hover:from-indigo-600 hover:to-primary border-0 shadow-lg shadow-primary/20 hover:shadow-indigo-500/30 transition-all duration-300 transform hover:scale-105">
-                        <Link href="/activate" className="flex items-center justify-center relative z-10">
-                          <Brain className="mr-2 h-5 w-5 animate-pulse-slow" />
+                      <Button size="lg" asChild className="w-full mb-5 relative overflow-hidden bg-gradient-to-r from-primary to-indigo-600 hover:from-indigo-600 hover:to-primary border-0 shadow-lg shadow-primary/20 hover:shadow-indigo-500/30 transition-all duration-300 transform hover:scale-105 group">
+                        <Link href="/activate-neural" className="flex items-center justify-center relative z-10">
+                          <Brain className="mr-2 h-5 w-5" />
                           <span>Activate Neural Extension</span>
+                          <div className="absolute top-0 left-0 w-full h-full overflow-hidden">
+                            <Sparkles className="h-4 w-4 absolute top-1/2 left-3 transform -translate-y-1/2 text-white opacity-80 animate-pulse" />
+                            <Sparkles className="h-3 w-3 absolute top-1/4 right-6 transform -translate-y-1/2 text-white opacity-80 animate-pulse" style={{animationDelay: '300ms'}} />
+                          </div>
+                          <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity"></div>
                         </Link>
                       </Button>
                       
