@@ -121,15 +121,29 @@ export function NeuralWhatsAppLinking() {
       
       setLinkSent(true);
       
-      // Try to open in mobile app first
-      const mobileAppLink = `whatsapp://send?phone=${phoneNumber}&text=${encodeURIComponent(message)}`;
-      window.location.href = mobileAppLink;
+      // For mobile devices, create a direct link to the app with better handling
+      const encodedMessage = encodeURIComponent(message);
+      const mobileAppLink = `whatsapp://send?phone=${phoneNumber}&text=${encodedMessage}`;
+      const webFallbackUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
       
-      // Fallback to web version after a short delay
-      setTimeout(() => {
-        const webFallbackUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-        window.location.href = webFallbackUrl;
-      }, 500);
+      if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+        // Create and click an actual anchor element for better mobile compatibility
+        const a = document.createElement('a');
+        a.href = mobileAppLink;
+        a.setAttribute('target', '_blank');
+        a.setAttribute('rel', 'noopener noreferrer');
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        
+        // After a short delay, try the web version as fallback
+        setTimeout(() => {
+          window.open(webFallbackUrl, '_blank');
+        }, 1000);
+      } else {
+        // For desktop, use the web version directly
+        window.open(webFallbackUrl, '_blank');
+      }
       
       // Add logging for debugging
       console.log(`Attempted to open WhatsApp with email: ${userEmail}`);
