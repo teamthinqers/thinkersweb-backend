@@ -285,6 +285,34 @@ export function useWhatsAppStatus() {
     refetch();
   };
 
+  // For testing only - trigger WhatsApp activation events
+  const testActivationEvents = () => {
+    console.log("⚠️ TESTING: Manually triggering WhatsApp activation events");
+    
+    // First, dispatch started event
+    window.dispatchEvent(new CustomEvent('whatsapp_activation_started', {
+      detail: { timestamp: new Date(), testSource: 'manual-test' }
+    }));
+    
+    // After 3 seconds, dispatch success event
+    setTimeout(() => {
+      window.dispatchEvent(new CustomEvent('whatsapp_activation_success', {
+        detail: { 
+          timestamp: new Date(), 
+          source: 'manual-test',
+          testData: {
+            isRegistered: true,
+            phoneNumber: '+1234567890',
+            registeredAt: new Date().toISOString()
+          }
+        }
+      }));
+      
+      // Also update localStorage and memory state
+      simulateActivation();
+    }, 3000);
+  };
+  
   return {
     // Either API confirms it, or we have local activation
     isWhatsAppConnected: data?.isRegistered || activationStatus,
@@ -303,6 +331,8 @@ export function useWhatsAppStatus() {
       setJustActivated(false);
     },
     // Expose the force refresh function
-    forceStatusRefresh
+    forceStatusRefresh,
+    // Test function for activation events
+    testActivationEvents
   };
 }

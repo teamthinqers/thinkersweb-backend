@@ -713,4 +713,265 @@ export default function ActivateNeuralExtension() {
       </div>
     </div>
   );
+
+  // Add a test function at the very bottom of the component (not in the JSX/return)
+  const ActivationTestPanel = () => {
+    const { testActivationEvents } = useWhatsAppStatus();
+    
+    // Only show in development mode
+    if (process.env.NODE_ENV !== 'development') return null;
+    
+    return (
+      <div className="fixed bottom-4 right-4 p-2 bg-black/50 text-white text-xs rounded-lg z-50">
+        <p className="mb-1">Activation Test Panel</p>
+        <button 
+          onClick={testActivationEvents}
+          className="px-2 py-1 bg-purple-600 text-white rounded text-xs"
+        >
+          Test Events
+        </button>
+      </div>
+    );
+  };
+  
+  // Store the main component so we can wrap it with the test panel
+  const MainComponent = (
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50/80 via-violet-50/90 to-purple-50/80 dark:from-indigo-950/80 dark:via-violet-950/90 dark:to-purple-950/80 flex flex-col">
+      <Header onSearch={handleSearch} />
+      <div className="flex-1 container max-w-7xl mx-auto px-4 py-8">
+        <div className="max-w-5xl mx-auto relative">
+          {/* Canvas for neural network visualization in background */}
+          <canvas
+            ref={canvasRef}
+            className="absolute inset-0 w-full h-full pointer-events-none z-0"
+          />
+          
+          <Tabs value={activeTab} className="relative z-10">
+            <TabsList className="grid w-full grid-cols-3 mb-6">
+              <TabsTrigger value="step1" onClick={() => setActiveTab('step1')}>
+                <div className="flex items-center">
+                  <span className="flex items-center justify-center w-5 h-5 rounded-full bg-primary/10 text-primary mr-2 text-xs font-medium">1</span>
+                  <span>Learn</span>
+                </div>
+              </TabsTrigger>
+              <TabsTrigger value="step2" onClick={() => setActiveTab('step2')}>
+                <div className="flex items-center">
+                  <span className="flex items-center justify-center w-5 h-5 rounded-full bg-primary/10 text-primary mr-2 text-xs font-medium">2</span>
+                  <span>Connect</span>
+                </div>
+              </TabsTrigger>
+              <TabsTrigger value="completed" onClick={() => setActiveTab('completed')}>
+                <div className="flex items-center">
+                  <span className="flex items-center justify-center w-5 h-5 rounded-full bg-primary/10 text-primary mr-2 text-xs font-medium">
+                    <Check className="h-3 w-3" />
+                  </span>
+                  <span>Activated</span>
+                </div>
+              </TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="step1" className="relative z-10">
+              <Card className="border-2 border-indigo-100 dark:border-indigo-900/30 shadow-lg relative overflow-hidden bg-white/90 dark:bg-gray-950/90 backdrop-blur-sm">
+                <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/30 to-indigo-100/30 dark:from-indigo-950/30 dark:to-indigo-900/30 pointer-events-none z-0"></div>
+                
+                <CardHeader className="relative z-10">
+                  <CardTitle className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-indigo-700 to-primary bg-clip-text text-transparent dark:from-indigo-400 dark:to-primary-foreground">
+                    Neural Extension
+                  </CardTitle>
+                  <CardDescription className="text-sm">
+                    Your personal cognitive extension
+                  </CardDescription>
+                </CardHeader>
+                
+                <CardContent className="relative z-10">
+                  <div className="space-y-4">
+                    <div className="bg-gradient-to-br from-indigo-50/80 to-violet-50/80 dark:from-indigo-950/30 dark:to-violet-950/30 p-4 rounded-lg border border-indigo-100 dark:border-indigo-900/30">
+                      <h3 className="font-bold text-indigo-800 dark:text-indigo-300 text-sm mb-2">
+                        What is a Neural Extension?
+                      </h3>
+                      <p className="text-xs text-slate-700 dark:text-slate-300 mb-3">
+                        Your personal DotSpark Neural Extension functions as a cognitive enhancer that:
+                      </p>
+                      <ul className="text-xs space-y-2 text-slate-700 dark:text-slate-300">
+                        <li className="flex items-start">
+                          <Sparkles className="h-3.5 w-3.5 mr-2 text-indigo-600 dark:text-indigo-400 flex-shrink-0 mt-0.5" />
+                          <span>Creates personalized frameworks for clearer thinking on complex topics</span>
+                        </li>
+                        <li className="flex items-start">
+                          <Sparkles className="h-3.5 w-3.5 mr-2 text-indigo-600 dark:text-indigo-400 flex-shrink-0 mt-0.5" />
+                          <span>Continuously learns from sources in your domain</span>
+                        </li>
+                        <li className="flex items-start">
+                          <Sparkles className="h-3.5 w-3.5 mr-2 text-indigo-600 dark:text-indigo-400 flex-shrink-0 mt-0.5" />
+                          <span>Generates associations and connections between disparate information</span>
+                        </li>
+                        <li className="flex items-start">
+                          <Sparkles className="h-3.5 w-3.5 mr-2 text-indigo-600 dark:text-indigo-400 flex-shrink-0 mt-0.5" />
+                          <span>Adapts and improves through your interactions</span>
+                        </li>
+                      </ul>
+                    </div>
+                    
+                    <div className="flex justify-center">
+                      <Button 
+                        onClick={() => setActiveTab('step2')}
+                        className="px-8 py-6 h-auto text-base font-medium relative overflow-hidden group"
+                        size="lg"
+                      >
+                        <div className="absolute inset-0 flex items-center justify-center bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        <span>Continue to Activation</span>
+                        <ArrowRight className="ml-2 h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+            
+            <TabsContent value="step2" className="relative z-10">
+              {!user && !isAuthLoading ? (
+                <Card className="border-2 border-indigo-100 dark:border-indigo-900/30 shadow-lg relative overflow-hidden bg-white/90 dark:bg-gray-950/90 backdrop-blur-sm">
+                  <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/30 to-indigo-100/30 dark:from-indigo-950/30 dark:to-indigo-900/30 pointer-events-none z-0"></div>
+                  
+                  <CardHeader className="relative z-10">
+                    <CardTitle className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-indigo-700 to-primary bg-clip-text text-transparent dark:from-indigo-400 dark:to-primary-foreground">
+                      Login Required
+                    </CardTitle>
+                    <CardDescription className="text-sm">
+                      Please login to activate your neural extension
+                    </CardDescription>
+                  </CardHeader>
+                  
+                  <CardContent className="relative z-10">
+                    <div className="text-center p-6">
+                      <AlertCircle className="h-10 w-10 text-amber-500 dark:text-amber-400 mx-auto mb-4" />
+                      <h3 className="text-lg font-bold mb-2 text-slate-800 dark:text-slate-200">
+                        Authentication Required
+                      </h3>
+                      <p className="text-sm text-slate-600 dark:text-slate-400 mb-6 max-w-md mx-auto">
+                        You need to be logged in to activate your neural extension. This allows us to connect your WhatsApp to your personal dashboard.
+                      </p>
+                      
+                      <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                        <Button
+                          onClick={loginWithGoogle}
+                          className="px-6 py-2 h-auto"
+                          size="lg"
+                          variant="default"
+                        >
+                          <LogIn className="mr-2 h-4 w-4" />
+                          <span>Login with Google</span>
+                        </Button>
+                        
+                        <Button
+                          onClick={goToHome}
+                          className="px-6 py-2 h-auto"
+                          size="lg"
+                          variant="outline"
+                        >
+                          <span>Back to Home</span>
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ) : (
+                <Card className="border-2 border-indigo-100 dark:border-indigo-900/30 shadow-lg relative overflow-hidden bg-white/90 dark:bg-gray-950/90 backdrop-blur-sm">
+                  <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/30 to-indigo-100/30 dark:from-indigo-950/30 dark:to-indigo-900/30 pointer-events-none z-0"></div>
+                  
+                  <CardHeader className="relative z-10">
+                    <CardTitle className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-indigo-700 to-primary bg-clip-text text-transparent dark:from-indigo-400 dark:to-primary-foreground">
+                      Activate Extension
+                    </CardTitle>
+                    <CardDescription className="text-sm">
+                      Complete your neural extension activation
+                    </CardDescription>
+                  </CardHeader>
+                  
+                  <CardContent className="relative z-10 pt-0">
+                    <NeuralWhatsAppLinking />
+                  </CardContent>
+                </Card>
+              )}
+            </TabsContent>
+            
+            <TabsContent value="completed" className="relative z-10">
+              <Card className="border-2 border-green-100 dark:border-green-900/30 shadow-lg relative overflow-hidden bg-white/90 dark:bg-gray-950/90 backdrop-blur-sm">
+                <div className="absolute inset-0 bg-gradient-to-br from-green-50/30 to-emerald-100/30 dark:from-green-950/30 dark:to-emerald-900/30 pointer-events-none z-0"></div>
+                
+                <CardHeader className="relative z-10">
+                  <CardTitle className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent dark:from-green-400 dark:to-emerald-300">
+                    Neural Extension Activated!
+                  </CardTitle>
+                  <CardDescription className="text-sm">
+                    Your cognitive extension is now connected
+                  </CardDescription>
+                </CardHeader>
+                
+                <CardContent className="relative z-10">
+                  <div className="text-center py-4">
+                    <div className="w-16 h-16 mx-auto bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mb-4 relative">
+                      <div className="absolute inset-0 rounded-full border-4 border-green-400/40 dark:border-green-500/40"></div>
+                      <CheckCircle2 className="h-8 w-8 text-green-600 dark:text-green-400" />
+                    </div>
+                    
+                    <h3 className="text-lg font-bold mb-2 text-slate-800 dark:text-slate-200">
+                      WhatsApp Successfully Connected
+                    </h3>
+                    <p className="text-sm text-slate-600 dark:text-slate-400 mb-6 max-w-md mx-auto">
+                      Your neural extension is now fully active! You can send thoughts, questions, and challenges directly through WhatsApp and they'll be saved to your dashboard.
+                    </p>
+                    
+                    <div className="bg-gradient-to-br from-green-50/80 to-emerald-50/80 dark:from-green-950/30 dark:to-emerald-950/30 p-4 rounded-lg border border-green-100 dark:border-green-900/30 text-left max-w-md mx-auto mb-6">
+                      <h4 className="font-bold text-green-800 dark:text-green-300 text-sm mb-2">
+                        What happens next?
+                      </h4>
+                      <ul className="text-xs space-y-2 text-slate-700 dark:text-slate-300">
+                        <li className="flex items-start">
+                          <MessageSquare className="h-3.5 w-3.5 mr-2 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
+                          <span>Send messages to your DotSpark number anytime</span>
+                        </li>
+                        <li className="flex items-start">
+                          <Brain className="h-3.5 w-3.5 mr-2 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
+                          <span>Your extension learns from every interaction</span>
+                        </li>
+                        <li className="flex items-start">
+                          <LayoutDashboard className="h-3.5 w-3.5 mr-2 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
+                          <span>Check your dashboard for insights and connections</span>
+                        </li>
+                        <li className="flex items-start">
+                          <Zap className="h-3.5 w-3.5 mr-2 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
+                          <span>Your personal thinking assistant is always ready</span>
+                        </li>
+                      </ul>
+                    </div>
+                    
+                    <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                      <Button
+                        onClick={() => window.location.href = "/dashboard"}
+                        className="px-6 py-2 h-auto"
+                        size="lg"
+                        variant="default"
+                      >
+                        <LayoutDashboard className="mr-2 h-4 w-4" />
+                        <span>Go to Dashboard</span>
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
+        </div>
+      </div>
+    </div>
+  );
+  
+  // Return the main component with test panel (only in development)
+  return (
+    <>
+      {MainComponent}
+      {import.meta.env.DEV && <ActivationTestPanel />}
+    </>
+  );
 }
