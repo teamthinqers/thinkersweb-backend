@@ -187,9 +187,9 @@ export async function processWhatsAppMessage(from: string, messageText: string):
       where: eq(whatsappUsers.phoneNumber, standardizedPhone)
     });
     
-    // Always treat everyone as a first-time user when they first contact us
-    // This ensures they always get the welcome message on their first ping
-    const isFirstTimeUser = true;
+    // User is first-time if we've never seen their WhatsApp number before
+    // or if they've never received a welcome message (indicated by lastMessageSentAt being null)
+    const isFirstTimeUser = !whatsappUserRecord || !whatsappUserRecord.lastMessageSentAt;
     console.log(`First time user check: ${isFirstTimeUser ? 'YES (first time)' : 'NO (returning user)'}`);
     
     // Also track if this is linked to an account
@@ -443,6 +443,19 @@ export async function processWhatsAppMessage(from: string, messageText: string):
       
       // Send the welcome message
       await sendWhatsAppReply(from, welcomeMessage);
+      
+      // Mark the user as having received the welcome message by updating lastMessageSentAt
+      try {
+        await db.update(whatsappUsers)
+          .set({
+            lastMessageSentAt: new Date(),
+            updatedAt: new Date()
+          })
+          .where(eq(whatsappUsers.phoneNumber, standardizedPhone));
+        console.log(`Updated lastMessageSentAt for ${standardizedPhone} after welcome message`);
+      } catch (error) {
+        console.error(`Failed to update lastMessageSentAt for ${standardizedPhone}:`, error);
+      }
       
       // For default prompts, return immediately after welcome message
       // This prevents processing empty/generic first messages from button clicks
