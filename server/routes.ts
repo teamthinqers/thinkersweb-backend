@@ -206,6 +206,141 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Setup authentication middleware
   setupAuth(app);
 
+  // Firebase authentication endpoint - creates/updates user on login
+  app.post(`${apiPrefix}/auth/firebase`, async (req: Request, res: Response) => {
+    try {
+      const { uid, email, displayName, persistent = true } = req.body;
+      
+      if (!uid || !email) {
+        return res.status(400).json({ error: "Missing required fields" });
+      }
+      
+      // Check if user exists
+      let user = await db.query.users.findFirst({
+        where: eq(users.firebaseUid, uid)
+      });
+      
+      // If user doesn't exist, create a new one
+      if (!user) {
+        console.log(`Creating new user from Firebase auth: ${email}`);
+        
+        // Generate a unique username based on email
+        const username = email.split('@')[0].toLowerCase() + 
+                        Math.floor(Math.random() * 1000).toString();
+        
+        // Insert the new user
+        const [newUser] = await db.insert(users).values({
+          email,
+          username,
+          firebaseUid: uid,
+          fullName: displayName || null,
+          password: '', // Firebase users don't have a password
+          createdAt: new Date(),
+          updatedAt: new Date()
+        }).returning();
+        
+        user = newUser;
+        
+        // Add isNewUser flag for frontend to show welcome/onboarding
+        user.isNewUser = true;
+      } else {
+        // Update existing user's info if needed
+        if (displayName && !user.fullName) {
+          await db.update(users)
+            .set({ 
+              fullName: displayName,
+              updatedAt: new Date()
+            })
+            .where(eq(users.id, user.id));
+          
+          user.fullName = displayName;
+        }
+      }
+      
+      // Store user in session with persistent flag
+      if (req.session) {
+        req.session.userId = user.id;
+        req.session.firebaseUid = uid;
+        req.session.lastActivity = Date.now();
+        req.session.persistent = persistent;
+        
+        console.log(`User session established for ${email} (persistent: ${persistent})`);
+      }
+      
+      // Return user object
+      res.status(200).json(user);
+    } catch (error) {
+      console.error('Error in Firebase auth endpoint:', error);
+      res.status(500).json({ error: 'Authentication failed' });
+    }
+  });
+  
+  // Session recovery endpoint - allows client to recover session without Firebase
+  app.post(`${apiPrefix}/auth/recover`, async (req: Request, res: Response) => {
+    try {
+      const { uid, email, persistent = true } = req.body;
+      
+      if (!uid) {
+        return res.status(400).json({ error: "Missing Firebase UID" });
+      }
+      
+      // Check if user exists with this Firebase UID
+      const user = await db.query.users.findFirst({
+        where: eq(users.firebaseUid, uid)
+      });
+      
+      if (!user) {
+        console.log(`Session recovery failed: No user found with Firebase UID ${uid}`);
+        return res.status(404).json({ error: "User not found" });
+      }
+      
+      // Check if email matches if provided (additional security)
+      if (email && user.email !== email) {
+        console.log(`Session recovery denied: Email mismatch for UID ${uid}`);
+        return res.status(403).json({ error: "Email mismatch" });
+      }
+      
+      // Create a new session for the user
+      if (req.session) {
+        req.session.userId = user.id;
+        req.session.firebaseUid = uid;
+        req.session.lastActivity = Date.now();
+        req.session.persistent = persistent;
+        
+        console.log(`Session recovered for ${user.email} (ID: ${user.id})`);
+      }
+      
+      // Return user data
+      res.status(200).json(user);
+    } catch (error) {
+      console.error('Error recovering session:', error);
+      res.status(500).json({ error: 'Session recovery failed' });
+    }
+  });
+  
+  // Session refresh endpoint - keeps session alive
+  app.post(`${apiPrefix}/auth/refresh`, async (req: Request, res: Response) => {
+    try {
+      // If no session exists, return error
+      if (!req.session || !req.session.userId) {
+        return res.status(401).json({ error: "No active session" });
+      }
+      
+      // Update last activity timestamp
+      req.session.lastActivity = Date.now();
+      
+      // Return success with user ID
+      res.status(200).json({ 
+        success: true, 
+        timestamp: req.session.lastActivity,
+        userId: req.session.userId
+      });
+    } catch (error) {
+      console.error('Error refreshing session:', error);
+      res.status(500).json({ error: 'Session refresh failed' });
+    }
+  });
+
   // DotSpark WhatsApp Chatbot Endpoints
   
   // Debug endpoint to simulate a WhatsApp message
