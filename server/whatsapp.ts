@@ -233,7 +233,9 @@ export async function processWhatsAppMessage(from: string, messageText: string):
       "Hello DotSpark",
       "Hi DotSpark",
       "got a few things on my mind",
-      "need your thoughts"
+      "need your thoughts",
+      "please connect my Neural Extension",
+      "connect my Neural Extension"
     ];
     
     const isDefaultPrompt = defaultPromptPatterns.some(pattern => 
@@ -319,6 +321,10 @@ export async function processWhatsAppMessage(from: string, messageText: string):
     const emailLinkingRegex3 = /.*dotspark.*account.*\(([^\)]+)\)/i;
     const emailLinkingRegex4 = /please connect my Neural Extension via WhatsApp\.?\s*My DotSpark account is\s*([\w.%+-]+@[\w.-]+\.[A-Za-z]{2,})/i;
     const emailLinkingRegex5 = /Hey DotSpark,?\s*please connect my Neural Extension via WhatsApp\.?\s*My DotSpark account is\s*([\w.%+-]+@[\w.-]+\.[A-Za-z]{2,})/i;
+    
+    // Even more permissive patterns to catch slight message variations
+    const emailLinkingRegex8 = /Neural Extension.*account is\s*([\w.%+-]+@[\w.-]+\.[A-Za-z]{2,})/i;
+    const emailLinkingRegex9 = /DotSpark.*account is\s*([\w.%+-]+@[\w.-]+\.[A-Za-z]{2,})/i;
     
     // Even more flexible patterns
     const emailLinkingRegex6 = /connect.*Neural Extension.*account.*is\s*([\w.%+-]+@[\w.-]+\.[A-Za-z]{2,})/i;
