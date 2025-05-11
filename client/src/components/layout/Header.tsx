@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { 
   SearchIcon, 
@@ -38,6 +38,7 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }) => {
+  // State and hooks
   const [searchQuery, setSearchQuery] = useState("");
   const { toast } = useToast();
   const { user, logout } = useAuth();
@@ -45,31 +46,27 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
   const isMobile = useMobile();
   const [showMobileNav, setShowMobileNav] = useState(false);
   
-  // Get WhatsApp status with our enhanced hook that includes localStorage persistence
+  // Get WhatsApp status with our enhanced hook
   const { isWhatsAppConnected, simulateActivation, forceStatusRefresh } = useWhatsAppStatus();
   
   // Check localStorage for activation status
   const isActiveInLocalStorage = localStorage.getItem('whatsapp_activated') === 'true';
   
-  // Combined activation status check
+  // Combined activation status check (either API confirms it or we have localStorage flag)
   const isActivated = isWhatsAppConnected || isActiveInLocalStorage;
   
-  // Force a refresh of WhatsApp status on header load
+  // When component mounts, check localStorage and update status if needed
   useEffect(() => {
-    if (user) {
-      forceStatusRefresh();
+    if (user && isActiveInLocalStorage) {
+      // This ensures the header shows the activated status even if API hasn't responded yet
+      simulateActivation();
+      
+      // Also force a refresh of the API status
+      setTimeout(() => {
+        forceStatusRefresh();
+      }, 500);
     }
-  }, [user, forceStatusRefresh]);
-  
-  // Check localStorage on initial render to ensure header shows correct activation status
-  React.useEffect(() => {
-    // This will ensure the header always shows the correct activation status
-    // even if the API call hasn't completed yet
-    const storedActivation = localStorage.getItem('whatsapp_activated') === 'true';
-    if (storedActivation) {
-      simulateActivation(); // This will update the status in our hook
-    }
-  }, [simulateActivation]);
+  }, [user, isActiveInLocalStorage, simulateActivation, forceStatusRefresh]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
