@@ -321,7 +321,7 @@ export async function processWhatsAppMessage(from: string, messageText: string):
           });
           
           // Send activation success message
-          const activationMessage = "✅ *Neural Extension Activated Successfully!*\n\n" +
+          const activationMessage = "✅ *Congratulations — your Neural Extension is now active!*\n\n" +
             `DotSpark is now tuned to grow with your thinking.\n` +
             `The more you interact, the sharper and more personalized it becomes.\n\n` +
             `Say anything — a thought, a question, a decision you're stuck on.\n` +

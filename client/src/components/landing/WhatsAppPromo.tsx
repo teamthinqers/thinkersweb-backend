@@ -5,7 +5,7 @@ import { Smartphone, MessageCircle } from "lucide-react";
 function openWhatsAppChat() {
   // Your production Twilio WhatsApp number
   const whatsappNumber = "16067157733";
-  const message = "Hello! I'd like to activate my neural extension.";
+  const message = "Hey DotSpark, I've got a few things on my mind — need your thoughts";
   
   console.log("Opening WhatsApp chat with:", whatsappNumber);
   
