@@ -286,21 +286,21 @@ export default function LandingPage() {
             {/* Centered badge */}
             <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1.5 text-sm text-primary mb-2">
               <Sparkles className="h-4 w-4" />
-              <span>Innovative AI Assistant</span>
+              <span>Introducing DotSpark</span>
             </div>
             
             {/* Heading */}
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-tight text-center">
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-primary to-blue-600 dark:from-indigo-400 dark:via-primary dark:to-blue-400">Intelligent Assistant</span>
+              Your <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-primary to-blue-600 dark:from-indigo-400 dark:via-primary dark:to-blue-400">Neural Extension</span>
             </h1>
             
             {/* Subheadings */}
             <p className="text-lg md:text-xl font-medium text-foreground mt-2 max-w-2xl text-center">
-              Smart. Personal. Adaptive.
+              DotSpark isn't just smart. It's personal.
             </p>
             
             <p className="text-base md:text-lg text-muted-foreground mt-1 md:mt-2 mb-4 max-w-2xl text-center">
-              Mirrors thinking patterns and amplifies decision-making — getting sharper with every interaction
+              It mirrors your thinking patterns and amplifies your decision-making — getting sharper every time you use it
             </p>
             
             {/* Visual element - interactive dot network */}
