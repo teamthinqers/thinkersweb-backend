@@ -231,10 +231,19 @@ export async function processWhatsAppMessage(from: string, messageText: string):
     console.log(`Default prompt check: ${isDefaultPrompt ? "YES" : "NO"} for message: "${messageText}"`);
     
     // Check for activation attempts including account linking
-    const activationKeywords = ['neural extension', 'connect my', 'dotspark account', 'link my account', 'activate extension'];
+    const activationKeywords = [
+      'neural extension', 
+      'connect my', 
+      'dotspark account', 
+      'link my account', 
+      'activate extension',
+      'hey dotspark, please connect',
+      'please connect'
+    ];
     const lowerMessage = messageText.toLowerCase();
     
     // Check if this is an account linking request (neural extension activation)
+    // More permissive regex to match variations of the activation message
     const accountLinkingRegex = /please connect my Neural Extension via WhatsApp\.?\s*My DotSpark account is\s*([\w.%+-]+@[\w.-]+\.[A-Za-z]{2,})/i;
     const accountLinkMatch = messageText.match(accountLinkingRegex);
     
