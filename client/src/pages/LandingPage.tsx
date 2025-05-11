@@ -239,11 +239,23 @@ export default function LandingPage() {
           <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/5 rounded-full blur-3xl opacity-60 -translate-y-1/2 translate-x-1/3"></div>
           <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-blue-500/5 dark:bg-blue-500/10 rounded-full blur-3xl opacity-60 translate-y-1/3 -translate-x-1/4"></div>
           
-          {/* Neural network node points - positioned at edges */}
+          {/* Neural network node points - positioned at edges and corners */}
           <div className="absolute top-10 left-10 w-2 h-2 bg-primary rounded-full shadow-lg shadow-primary/30 animate-pulse"></div>
           <div className="absolute top-10 right-10 w-2 h-2 bg-blue-500 rounded-full shadow-lg shadow-blue-500/30 animate-pulse delay-150"></div>
           <div className="absolute bottom-10 left-10 w-2 h-2 bg-indigo-500 rounded-full shadow-lg shadow-indigo-500/30 animate-pulse delay-300"></div>
           <div className="absolute bottom-10 right-10 w-2 h-2 bg-purple-500 rounded-full shadow-lg shadow-purple-500/30 animate-pulse delay-500"></div>
+          
+          {/* Additional neural nodes for enhanced effect */}
+          <div className="absolute top-1/3 left-5 w-1.5 h-1.5 bg-primary/70 rounded-full animate-pulse delay-200"></div>
+          <div className="absolute top-2/3 right-5 w-1.5 h-1.5 bg-blue-500/70 rounded-full animate-pulse delay-400"></div>
+          <div className="absolute top-5 left-1/3 w-1.5 h-1.5 bg-indigo-500/70 rounded-full animate-pulse delay-600"></div>
+          <div className="absolute bottom-5 right-1/3 w-1.5 h-1.5 bg-purple-500/70 rounded-full animate-pulse delay-700"></div>
+          
+          {/* Connection lines at edges */}
+          <div className="absolute top-20 left-20 w-20 h-px bg-gradient-to-r from-primary/50 to-transparent rotate-45"></div>
+          <div className="absolute top-20 right-20 w-20 h-px bg-gradient-to-l from-blue-500/50 to-transparent -rotate-45"></div>
+          <div className="absolute bottom-20 left-20 w-20 h-px bg-gradient-to-r from-indigo-500/50 to-transparent -rotate-45"></div>
+          <div className="absolute bottom-20 right-20 w-20 h-px bg-gradient-to-l from-purple-500/50 to-transparent rotate-45"></div>
         </div>
         
         <div className="container mx-auto px-4 md:px-6 relative z-10">
@@ -268,23 +280,29 @@ export default function LandingPage() {
               It mirrors your thinking patterns and amplifies your decision-making — getting sharper every time you use it
             </p>
             
-            {/* Neural visualization - Small and centered */}
-            <div className="relative h-20 w-20 md:h-24 md:w-24 my-2 md:my-3">
-              {/* Brain outline */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-16 h-16 md:w-20 md:h-20 rounded-full border-[1.5px] border-primary/30 animate-pulse-slow"></div>
+            {/* Neural connection visualization - enhanced lines with multiple nodes */}
+            <div className="relative h-12 w-full my-2 md:my-3 overflow-hidden">
+              {/* Left connecting line */}
+              <div className="absolute left-0 top-1/2 w-[45%] h-px bg-gradient-to-r from-transparent via-primary/40 to-primary/60 transform -translate-y-1/2"></div>
+              {/* Right connecting line */}
+              <div className="absolute right-0 top-1/2 w-[45%] h-px bg-gradient-to-l from-transparent via-primary/40 to-primary/60 transform -translate-y-1/2"></div>
               
-                {/* Central node - represents user's brain */}
-                <div className="absolute w-10 h-10 md:w-12 md:h-12 rounded-full overflow-hidden shadow-lg z-30">
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary/90 to-indigo-600/90"></div>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <Brain className="w-5 h-5 md:w-6 md:h-6 text-white/90" />
-                  </div>
-                </div>
-              </div>
+              {/* Neural nodes on left line */}
+              <div className="absolute left-[15%] top-1/2 w-1.5 h-1.5 rounded-full bg-primary/70 transform -translate-y-1/2 animate-pulse"></div>
+              <div className="absolute left-[25%] top-[calc(50%-4px)] w-1 h-1 rounded-full bg-indigo-500/70 transform -translate-y-1/2 animate-pulse delay-200"></div>
+              <div className="absolute left-[35%] top-[calc(50%+4px)] w-1 h-1 rounded-full bg-blue-500/70 transform -translate-y-1/2 animate-pulse delay-400"></div>
+              
+              {/* Neural nodes on right line */}
+              <div className="absolute right-[15%] top-1/2 w-1.5 h-1.5 rounded-full bg-primary/70 transform -translate-y-1/2 animate-pulse delay-100"></div>
+              <div className="absolute right-[25%] top-[calc(50%+4px)] w-1 h-1 rounded-full bg-indigo-500/70 transform -translate-y-1/2 animate-pulse delay-300"></div>
+              <div className="absolute right-[35%] top-[calc(50%-4px)] w-1 h-1 rounded-full bg-blue-500/70 transform -translate-y-1/2 animate-pulse delay-500"></div>
+              
+              {/* Central connecting circles */}
+              <div className="absolute left-[45%] top-1/2 w-[10%] h-px bg-primary/40 transform -translate-y-1/2"></div>
+              <div className="absolute left-1/2 top-1/2 w-2 h-2 rounded-full bg-primary/50 transform -translate-x-1/2 -translate-y-1/2"></div>
             </div>
             
-            {/* Action buttons - Centered */}
+            {/* Action buttons with explanation boxes - Centered */}
             {user ? (
               <Button size="lg" asChild className="w-full md:w-2/3 relative overflow-hidden group mt-3">
                 <Link href="/dashboard" className="flex items-center justify-center">
@@ -294,10 +312,10 @@ export default function LandingPage() {
                 </Link>
               </Button>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 w-full mt-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full mt-3">
                 {/* Button 1: Activate Neural Extension */}
-                <div className="bg-gradient-to-br from-primary/5 to-indigo-500/5 dark:from-primary/10 dark:to-indigo-500/10 border border-primary/20 dark:border-primary/30 rounded-xl p-3 flex flex-col items-center shadow-lg shadow-primary/5 dark:shadow-primary/10 relative overflow-hidden group">
-                  <Button size="lg" asChild className="w-full relative overflow-hidden bg-gradient-to-r from-primary to-indigo-600 hover:from-indigo-600 hover:to-primary border-0 shadow-lg shadow-primary/20 hover:shadow-indigo-500/30 transition-all duration-300 transform hover:scale-105 group">
+                <div className="bg-gradient-to-br from-primary/5 to-indigo-500/5 dark:from-primary/10 dark:to-indigo-500/10 border border-primary/20 dark:border-primary/30 rounded-xl p-4 flex flex-col items-center shadow-lg shadow-primary/5 dark:shadow-primary/10 relative overflow-hidden group">
+                  <Button size="lg" asChild className="w-full mb-3 relative overflow-hidden bg-gradient-to-r from-primary to-indigo-600 hover:from-indigo-600 hover:to-primary border-0 shadow-lg shadow-primary/20 hover:shadow-indigo-500/30 transition-all duration-300 transform hover:scale-105 group">
                     <Link href="/activate-neural" className="flex items-center justify-center relative z-10">
                       <Brain className="mr-2 h-5 w-5" />
                       <span>Activate Neural Extension</span>
@@ -306,17 +324,31 @@ export default function LandingPage() {
                       </div>
                     </Link>
                   </Button>
+                  
+                  <div className="text-sm text-muted-foreground text-left relative z-10">
+                    <p className="mb-2 font-medium text-foreground">Premium dashboard integration:</p>
+                    <ol className="list-decimal list-inside space-y-1 text-xs">
+                      <li>Create a DotSpark account</li>
+                      <li>Set up your personalized dashboard</li>
+                      <li>Link your WhatsApp for synchronized insights</li>
+                    </ol>
+                  </div>
                 </div>
                 
                 {/* Button 2: Ask DotSpark */}
-                <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 border border-green-200 dark:border-green-900/50 rounded-xl p-3 flex flex-col items-center shadow-lg shadow-green-500/5 dark:shadow-green-900/10 relative overflow-hidden group">
+                <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 border border-green-200 dark:border-green-900/50 rounded-xl p-4 flex flex-col items-center shadow-lg shadow-green-500/5 dark:shadow-green-900/10 relative overflow-hidden group">
                   <WhatsAppContactButton 
                     size="lg" 
                     label="Ask DotSpark"
                     showIcon={true}
                     variant="default"
-                    className="w-full relative overflow-hidden bg-gradient-to-r from-[#25D366] to-[#128C7E] hover:from-[#128C7E] hover:to-[#25D366] text-white border-0 shadow-lg shadow-green-500/20 hover:shadow-green-600/30 transition-all duration-300 transform hover:scale-105"
+                    className="w-full mb-3 relative overflow-hidden bg-gradient-to-r from-[#25D366] to-[#128C7E] hover:from-[#128C7E] hover:to-[#25D366] text-white border-0 shadow-lg shadow-green-500/20 hover:shadow-green-600/30 transition-all duration-300 transform hover:scale-105"
                   />
+
+                  <div className="text-sm text-muted-foreground text-left relative z-10">
+                    <p className="mb-2 font-medium text-green-700 dark:text-green-500">Instant ChatGPT-like experience:</p>
+                    <p className="text-xs">Start using your neural extension immediately through WhatsApp - no account required. Interact naturally like with ChatGPT.</p>
+                  </div>
                 </div>
               </div>
             )}
