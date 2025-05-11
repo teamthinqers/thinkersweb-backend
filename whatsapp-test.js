@@ -15,7 +15,9 @@ async function simulateWhatsAppWebhook() {
     };
     
     // Send the payload to the webhook endpoint
-    const response = await axios.post('http://localhost:5000/api/whatsapp/webhook', payload, {
+    const webhookUrl = 'http://localhost:5000/api/whatsapp/webhook';
+    console.log(`Sending WhatsApp webhook POST to ${webhookUrl}`);
+    const response = await axios.post(webhookUrl, payload, {
       headers: {
         'Content-Type': 'application/json'
       }

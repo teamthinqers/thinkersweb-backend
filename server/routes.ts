@@ -136,6 +136,65 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ error: 'Failed to get entry' });
     }
   });
+  
+  // Create entry endpoint - uses auth when available, fallback to demo user
+  app.post(`${apiPrefix}/entries`, async (req: Request, res: Response) => {
+    try {
+      // Get the authenticated user ID if available, otherwise fallback to demo user
+      let userId = 1; // Demo user ID as fallback
+      
+      // Check if this is an authenticated request
+      if (req.isAuthenticated && req.isAuthenticated() && (req as AuthenticatedRequest).user?.id) {
+        userId = (req as AuthenticatedRequest).user.id;
+        console.log(`⭐️ Creating entry for authenticated user ID: ${userId}`);
+      } else {
+        console.log(`⭐️ Creating entry for demo user ID: ${userId} (no authenticated user)`);
+      }
+      
+      const { title, content, categoryId, tagIds, visibility, isFavorite } = req.body;
+      
+      if (!content) {
+        return res.status(400).json({ error: 'Content is required' });
+      }
+      
+      console.log(`⭐️ Creating entry with title: "${title?.substring(0, 30) || 'Untitled'}" for user ${userId}`);
+
+      // Create entry with user ID
+      const entryData = {
+        userId,
+        title: title || `Entry - ${new Date().toLocaleString()}`,
+        content,
+        categoryId: categoryId || null,
+        visibility: visibility || 'private',
+        isFavorite: isFavorite || false
+      };
+      
+      // Insert entry and get the created entry back
+      const [newEntry] = await db.insert(entries).values(entryData).returning();
+      console.log(`⭐️ Created entry ID: ${newEntry.id}`);
+      
+      // If tags were provided, associate them with the entry
+      if (tagIds && Array.isArray(tagIds) && tagIds.length > 0) {
+        const entryTagValues = tagIds.map(tagId => ({
+          entryId: newEntry.id,
+          tagId
+        }));
+        
+        try {
+          await db.insert(entryTags).values(entryTagValues);
+          console.log(`⭐️ Added ${tagIds.length} tags to entry ID: ${newEntry.id}`);
+        } catch (tagError) {
+          console.error(`Error adding tags to entry: ${tagError}`);
+          // Continue even if tag association fails
+        }
+      }
+      
+      res.status(201).json(newEntry);
+    } catch (error) {
+      console.error('Error creating entry:', error);
+      res.status(500).json({ error: 'Failed to create entry' });
+    }
+  });
 
   // Setup authentication middleware
   setupAuth(app);
