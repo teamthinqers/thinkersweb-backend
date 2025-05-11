@@ -51,11 +51,18 @@ export function NeuralWhatsAppLinking() {
           duration: 5000,
         });
         
-        // Add a slight delay before redirecting to allow UI to update
+        // Store a "just_activated" flag so we can show extra UI elements
+        localStorage.setItem('neural_just_activated', 'true');
+        
+        // Force a hard reload (more reliable than regular navigation)
         setTimeout(() => {
-          // We use window.location.href for most reliable redirection
-          // that forces the page to completely reload
-          window.location.href = '/dashboard';
+          // Use replace instead of href for cleaner history (no back button issues)
+          window.location.replace('/dashboard');
+          
+          // As a backup, if the replace doesn't trigger within 500ms, force a reload
+          setTimeout(() => {
+            window.location.reload();
+          }, 500);
         }, 1000);
         
       }, 5000);
