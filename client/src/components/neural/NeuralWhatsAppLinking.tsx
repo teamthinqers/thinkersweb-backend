@@ -51,6 +51,12 @@ export function NeuralWhatsAppLinking() {
           duration: 5000,
         });
         
+        // Store welcome message in localStorage so it can be sent to the user
+        localStorage.setItem('whatsapp_welcome_message', JSON.stringify({
+          title: "✅ Congratulations — your Neural Extension is now active!",
+          message: "DotSpark is now tuned to grow with your thinking.\nThe more you interact, the sharper and more personalized it becomes.\n\nSay anything — a thought, a question, a decision you're stuck on.\nLet's begin.\n\nYou can also access your personal dashboard for deeper insights at www.dotspark.in."
+        }));
+        
         // Store activation flags for persistence and UI updates
         localStorage.setItem('neural_just_activated', 'true');
         sessionStorage.setItem('show_activation_success', 'true');
