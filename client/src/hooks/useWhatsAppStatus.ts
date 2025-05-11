@@ -1,7 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 import { getQueryFn } from '@/lib/queryClient';
 import { useAuth } from '@/hooks/use-auth';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
+import { useToast } from '@/hooks/use-toast';
 
 // Type for WhatsApp connection status
 export interface WhatsAppStatusResponse {
@@ -343,6 +344,77 @@ export function useWhatsAppStatus() {
     }
   }, [showActivationSuccess]);
   
+  // Get toast utility
+  const { toast } = useToast();
+  
+  // Function to auto-repair activation status when it's lost
+  const repairActivationStatus = useCallback(async () => {
+    if (!user) return false;
+    
+    try {
+      console.log("🔧 Attempting to repair WhatsApp activation status");
+      
+      // Get the stored phone number if available
+      const storedPhone = localStorage.getItem('whatsapp_phone');
+      
+      const response = await fetch('/api/whatsapp/fix-activation', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          phoneNumber: storedPhone || undefined
+        }),
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        console.log("🔧 Successfully repaired WhatsApp activation:", data);
+        
+        // Update local state and storage
+        localStorage.setItem('whatsapp_activated', 'true');
+        
+        if (data.phoneNumber) {
+          localStorage.setItem('whatsapp_phone', data.phoneNumber);
+        }
+        
+        setActivationStatus(true);
+        
+        // Notify UI components
+        window.dispatchEvent(new CustomEvent('whatsapp-status-updated', { 
+          detail: { isActivated: true, source: 'auto-repair' }
+        }));
+        
+        // Show toast only if this was a repair, not initial setup
+        if (storedPhone) {
+          toast({
+            title: "Connection restored",
+            description: "Your Neural Extension has been reconnected automatically.",
+            variant: "default",
+          });
+        }
+        
+        return true;
+      } else {
+        console.error("Auto-repair failed:", await response.text());
+        return false;
+      }
+    } catch (error) {
+      console.error("Error in auto-repair:", error);
+      return false;
+    }
+  }, [user, toast]);
+  
+  // Auto-repair on page load if localStorage shows activated but server doesn't
+  useEffect(() => {
+    const isActiveInLocal = localStorage.getItem('whatsapp_activated') === 'true';
+    
+    if (isActiveInLocal && user && !data?.isRegistered && !data?.isConnected) {
+      console.log("🔧 Detected activation state mismatch, attempting auto-repair");
+      repairActivationStatus();
+    }
+  }, [data?.isRegistered, data?.isConnected, user, repairActivationStatus]);
+
   // Simulate activation for demo purposes when user sends a link
   const simulateActivation = () => {
     localStorage.setItem('whatsapp_activated', 'true');

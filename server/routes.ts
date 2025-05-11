@@ -570,6 +570,91 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
+  // Special route to fix WhatsApp activation that was lost
+  app.post(`${apiPrefix}/whatsapp/fix-activation`, isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ error: 'User not authenticated' });
+      }
+      
+      const { phoneNumber } = req.body;
+      
+      console.log(`⚙️ Fix activation request for user ${userId}, phone: ${phoneNumber || 'not provided'}`);
+      
+      // First, check if this user has any WhatsApp records
+      const userWhatsappRecords = await db.query.whatsappUsers.findMany({
+        where: eq(whatsappUsers.userId, userId),
+        orderBy: [desc(whatsappUsers.lastMessageSentAt)]
+      });
+      
+      if (userWhatsappRecords.length === 0) {
+        console.log(`⚙️ No WhatsApp records found for user ${userId}`);
+        
+        // If phone number was provided, create a new record
+        if (phoneNumber) {
+          console.log(`⚙️ Creating new WhatsApp record for ${phoneNumber}`);
+          
+          await db.insert(whatsappUsers)
+            .values({
+              userId: userId,
+              phoneNumber: phoneNumber,
+              active: true,
+              lastMessageSentAt: new Date()
+            });
+            
+          return res.json({
+            success: true,
+            message: 'New WhatsApp activation created',
+            isRegistered: true,
+            isConnected: true,
+            phoneNumber
+          });
+        } else {
+          return res.status(404).json({ 
+            error: 'No WhatsApp records found and no phone number provided' 
+          });
+        }
+      }
+      
+      // If we have records but none are active, make the most recent one active
+      if (!userWhatsappRecords.some(record => record.active)) {
+        const mostRecent = userWhatsappRecords[0];
+        
+        console.log(`⚙️ Reactivating most recent WhatsApp record: ${mostRecent.phoneNumber}`);
+        
+        await db.update(whatsappUsers)
+          .set({
+            active: true,
+            lastMessageSentAt: new Date()
+          })
+          .where(eq(whatsappUsers.id, mostRecent.id));
+          
+        return res.json({
+          success: true,
+          message: 'WhatsApp activation restored',
+          isRegistered: true,
+          isConnected: true,
+          phoneNumber: mostRecent.phoneNumber
+        });
+      }
+      
+      // If we have records and at least one is active, return success
+      const activeRecord = userWhatsappRecords.find(record => record.active);
+      
+      return res.json({
+        success: true,
+        message: 'WhatsApp already active',
+        isRegistered: true,
+        isConnected: true,
+        phoneNumber: activeRecord?.phoneNumber
+      });
+    } catch (error) {
+      console.error('Error fixing WhatsApp activation:', error);
+      return res.status(500).json({ error: 'Failed to fix WhatsApp activation' });
+    }
+  });
+
   // Special route to ensure the problematic phone number is properly activated
   app.post(`${apiPrefix}/whatsapp/special-activation`, isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
     try {

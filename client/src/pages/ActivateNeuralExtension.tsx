@@ -64,40 +64,71 @@ export default function ActivateNeuralExtension() {
   // Progress based on activation status
   const progress = user ? (isActivated ? 100 : 50) : 0;
   
-  // Ensure localStorage is updated if server confirms activation
+  // Ensure activation status is synced across localStorage and server
   useEffect(() => {
-    // Check if this user has the special case phone number
-    const specialUserCheck = async () => {
+    // Function to fix activation status when needed
+    const fixActivationStatus = async () => {
       try {
-        const res = await apiRequest("GET", "/api/whatsapp/status");
-        const statusData = await res.json();
+        // Get stored phone number if available
+        const storedPhone = localStorage.getItem('whatsapp_phone');
         
-        if (statusData?.phoneNumber === '+919840884459') {
-          console.log("⭐️ Special phone detected in activation page - forcing activation");
-          localStorage.setItem('whatsapp_activated', 'true');
-          setActivationStatus(prev => ({
-            ...prev,
-            isConnected: true,
-            isCheckingStatus: false
-          }));
+        console.log("🔄 Checking if activation fix is needed. Current status:", { 
+          isWhatsAppConnected, 
+          isActiveInLocalStorage,
+          storedPhone 
+        });
+        
+        // If localStorage says activated but server doesn't confirm, try to fix it
+        if (isActiveInLocalStorage && !isWhatsAppConnected) {
+          console.log("🔄 Activation status mismatch - attempting to fix");
           
-          // Force UI to show 100% completion
-          setActiveTab('step2');
+          const fixRes = await fetch('/api/whatsapp/fix-activation', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ 
+              phoneNumber: storedPhone || undefined
+            }),
+          });
+          
+          if (fixRes.ok) {
+            const fixData = await fixRes.json();
+            console.log("🔄 Activation fixed successfully:", fixData);
+            
+            // Update activation status
+            setActivationStatus(prev => ({
+              ...prev,
+              isConnected: true,
+              isCheckingStatus: false
+            }));
+            
+            // Force UI to show 100% completion if needed
+            setActiveTab('step2');
+          } else {
+            console.error("Failed to fix activation:", await fixRes.text());
+          }
+        }
+        // If server confirms activation but localStorage doesn't have it, update localStorage
+        else if (isWhatsAppConnected && !isActiveInLocalStorage) {
+          console.log("Server confirms WhatsApp activation - setting localStorage flag");
+          localStorage.setItem('whatsapp_activated', 'true');
+          
+          // Add stored phone number if we know it
+          if (phoneNumber) {
+            localStorage.setItem('whatsapp_phone', phoneNumber);
+          }
         }
       } catch (error) {
-        console.error("Error checking special phone status:", error);
+        console.error("Error fixing activation status:", error);
       }
     };
     
+    // Only run check when user is logged in
     if (user) {
-      specialUserCheck();
+      fixActivationStatus();
     }
-    
-    if (isWhatsAppConnected && !isActiveInLocalStorage) {
-      console.log("Server confirms WhatsApp activation - setting localStorage flag");
-      localStorage.setItem('whatsapp_activated', 'true');
-    }
-  }, [isWhatsAppConnected, isActiveInLocalStorage, user]);
+  }, [isWhatsAppConnected, isActiveInLocalStorage, user, phoneNumber]);
   
   // Effect 1: Force synchronization of activation status on page load
   useEffect(() => {
