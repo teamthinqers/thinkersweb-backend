@@ -240,7 +240,9 @@ export default {
         "btn-bounce": "bounce 0.5s ease-in-out",
         "pulse-slow": "pulse-slow 3s ease-in-out infinite",
         "dash-slow": "dash-slow 15s linear infinite",
-        "orbit": "orbit 4s ease-in-out infinite"
+        "orbit": "orbit 4s ease-in-out infinite",
+        "spark-appear": "spark-appear 1.5s ease-in-out infinite",
+        "spark-flash": "spark-flash 2s ease-in-out infinite"
       },
     },
   },

@@ -307,15 +307,45 @@ export default function LandingPage() {
               {/* Main straight line */}
               <div className="absolute left-0 top-1/2 w-full h-[1.5px] bg-gradient-to-r from-transparent via-indigo-500/70 to-transparent transform -translate-y-1/2"></div>
               
-              {/* Dots along the line */}
+              {/* Dots along the line - some with spark effects */}
               <div className="absolute left-[15%] top-1/2 w-2 h-2 bg-primary/60 rounded-full animate-pulse-slow transform -translate-y-1/2"></div>
-              <div className="absolute left-[25%] top-1/2 w-2 h-2 bg-primary/70 rounded-full animate-pulse-slow delay-300 transform -translate-y-1/2"></div>
+              
+              {/* Dot with spark */}
+              <div className="absolute left-[25%] top-1/2 transform -translate-y-1/2">
+                <div className="w-2 h-2 bg-primary/90 rounded-full animate-pulse-slow delay-300"></div>
+                {/* Spark rays */}
+                <div className="absolute w-4 h-[1px] bg-primary/80 rotate-0 -translate-x-1/2 opacity-0 animate-spark-appear delay-2000"></div>
+                <div className="absolute w-4 h-[1px] bg-primary/80 rotate-45 -translate-x-1/2 opacity-0 animate-spark-appear delay-2100"></div>
+                <div className="absolute w-4 h-[1px] bg-primary/80 rotate-90 -translate-x-1/2 opacity-0 animate-spark-appear delay-2200"></div>
+                <div className="absolute w-4 h-[1px] bg-primary/80 rotate-135 -translate-x-1/2 opacity-0 animate-spark-appear delay-2300"></div>
+              </div>
+              
               <div className="absolute left-[35%] top-1/2 w-2 h-2 bg-indigo-500/60 rounded-full animate-pulse-slow delay-500 transform -translate-y-1/2"></div>
               <div className="absolute left-[45%] top-1/2 w-2 h-2 bg-indigo-500/70 rounded-full animate-pulse-slow delay-200 transform -translate-y-1/2"></div>
-              <div className="absolute left-[50%] top-1/2 w-3 h-3 bg-indigo-500/80 rounded-full animate-pulse-slow transform -translate-x-1/2 -translate-y-1/2"></div>
+              
+              {/* Center dot with spark */}
+              <div className="absolute left-[50%] top-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                <div className="w-3 h-3 bg-indigo-500/90 rounded-full animate-pulse-slow"></div>
+                {/* Spark rays */}
+                <div className="absolute w-6 h-[1.5px] bg-indigo-500/80 rotate-0 -translate-x-1/2 opacity-0 animate-spark-appear delay-3000"></div>
+                <div className="absolute w-6 h-[1.5px] bg-indigo-500/80 rotate-45 -translate-x-1/2 opacity-0 animate-spark-appear delay-3100"></div>
+                <div className="absolute w-6 h-[1.5px] bg-indigo-500/80 rotate-90 -translate-x-1/2 opacity-0 animate-spark-appear delay-3200"></div>
+                <div className="absolute w-6 h-[1.5px] bg-indigo-500/80 rotate-135 -translate-x-1/2 opacity-0 animate-spark-appear delay-3300"></div>
+              </div>
+              
               <div className="absolute left-[55%] top-1/2 w-2 h-2 bg-indigo-500/70 rounded-full animate-pulse-slow delay-400 transform -translate-y-1/2"></div>
               <div className="absolute left-[65%] top-1/2 w-2 h-2 bg-blue-500/60 rounded-full animate-pulse-slow delay-600 transform -translate-y-1/2"></div>
-              <div className="absolute left-[75%] top-1/2 w-2 h-2 bg-blue-500/70 rounded-full animate-pulse-slow delay-100 transform -translate-y-1/2"></div>
+              
+              {/* Dot with spark */}
+              <div className="absolute left-[75%] top-1/2 transform -translate-y-1/2">
+                <div className="w-2 h-2 bg-blue-500/90 rounded-full animate-pulse-slow delay-100"></div>
+                {/* Spark rays */}
+                <div className="absolute w-4 h-[1px] bg-blue-500/80 rotate-0 -translate-x-1/2 opacity-0 animate-spark-appear delay-5000"></div>
+                <div className="absolute w-4 h-[1px] bg-blue-500/80 rotate-45 -translate-x-1/2 opacity-0 animate-spark-appear delay-5100"></div>
+                <div className="absolute w-4 h-[1px] bg-blue-500/80 rotate-90 -translate-x-1/2 opacity-0 animate-spark-appear delay-5200"></div>
+                <div className="absolute w-4 h-[1px] bg-blue-500/80 rotate-135 -translate-x-1/2 opacity-0 animate-spark-appear delay-5300"></div>
+              </div>
+              
               <div className="absolute left-[85%] top-1/2 w-2 h-2 bg-blue-500/60 rounded-full animate-pulse-slow delay-700 transform -translate-y-1/2"></div>
               
               {/* Sparks between specific dots */}
