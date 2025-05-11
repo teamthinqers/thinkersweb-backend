@@ -9,7 +9,8 @@ import {
   Menu, 
   LayoutDashboard,
   Brain, 
-  Sparkles
+  Sparkles,
+  Check
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
@@ -29,7 +30,6 @@ import {
 } from "@/components/ui/button";
 import { useMobile } from "@/hooks/use-mobile";
 import { useWhatsAppStatus } from "@/hooks/useWhatsAppStatus";
-import { Check } from "lucide-react";
 
 interface HeaderProps {
   onSearch: (query: string) => void;
