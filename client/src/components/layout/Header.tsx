@@ -7,7 +7,9 @@ import {
   LogOut, 
   ChevronDown, 
   Menu, 
-  LayoutDashboard
+  LayoutDashboard,
+  Brain, 
+  Sparkles
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
@@ -124,6 +126,15 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
               >
                 <HomeIcon className="h-5 w-5" />
               </Button>
+              
+              <Button
+                size="sm"
+                className="bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white mr-2 relative"
+                onClick={() => setLocation("/activate-neural")}
+              >
+                <Brain className="h-4 w-4 mr-1" />
+                <span className="text-xs">Activate</span>
+              </Button>
             </div>
             
             <DropdownMenu>
@@ -194,8 +205,20 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 className="mr-2"
                 onClick={goToDashboard}
               >
+                <LayoutDashboard className="h-4 w-4 mr-1" />
                 Dashboard
               </Button>
+              
+              <Button 
+                className="mr-2 bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white"
+                size="sm"
+                onClick={() => setLocation("/activate-neural")}
+              >
+                <Brain className="h-4 w-4 mr-1" />
+                <Sparkles className="h-3 w-3 absolute top-1 right-1" />
+                Activate Neural
+              </Button>
+              
               <button 
                 className="p-2 rounded-full text-gray-400 hover:text-gray-500 hover:bg-gray-100 mr-2"
                 onClick={handleNotifications}
@@ -288,6 +311,19 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
               >
                 <LayoutDashboard className="h-5 w-5 mr-2" />
                 Dashboard
+              </Button>
+              
+              <Button 
+                className="w-full justify-start mb-2 bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white relative"
+                size="sm"
+                onClick={() => {
+                  setShowMobileNav(false);
+                  setLocation("/activate-neural");
+                }}
+              >
+                <Brain className="h-5 w-5 mr-2" />
+                <span>Activate Neural Extension</span>
+                <Sparkles className="h-3 w-3 absolute top-2 right-2" />
               </Button>
               
               <Button 

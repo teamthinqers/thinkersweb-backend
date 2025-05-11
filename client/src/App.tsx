@@ -171,6 +171,7 @@ function Router() {
       <Route path="/fixed-entries" component={FixedEntries} />
       <Route path="/logo" component={LogoPage} />
       <Route path="/activate" component={ActivateNeuralExtension} />
+      <Route path="/activate-neural" component={ActivateNeuralExtension} />
       <Route component={NotFound} />
     </Switch>
   );

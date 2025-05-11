@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useLocation } from 'wouter';
 import { useAuth } from '@/hooks/use-auth';
 import { useWhatsAppStatus } from '@/hooks/useWhatsAppStatus';
@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { AlertCircle, ArrowRight, Brain, Check, CheckCircle2, LogIn, MessageCircle, Sparkles, MessageSquare } from 'lucide-react';
+import { AlertCircle, ArrowRight, Brain, Check, CheckCircle2, LogIn, MessageCircle, Sparkles, MessageSquare, Zap } from 'lucide-react';
 import { NeuralWhatsAppLinking } from '@/components/neural/NeuralWhatsAppLinking';
 
 export default function ActivateNeuralExtension() {
