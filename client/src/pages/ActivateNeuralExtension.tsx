@@ -33,6 +33,19 @@ export default function ActivateNeuralExtension() {
   
   // Function to navigate back to the home page
   const goToHome = () => setLocation("/");
+  
+  // Get WhatsApp direct link with prefilled message
+  useEffect(() => {
+    fetch('/api/whatsapp/contact')
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.directLink) {
+          setWhatsAppDirectLink(data.directLink);
+          console.log("Got WhatsApp direct link:", data.directLink);
+        }
+      })
+      .catch(err => console.error("Error fetching WhatsApp contact:", err));
+  }, []);
 
   // Calculate progress percentage - make sure it's 100% when activated in localStorage
   const isActiveInLocalStorage = localStorage.getItem('whatsapp_activated') === 'true';
@@ -461,7 +474,7 @@ export default function ActivateNeuralExtension() {
                     <div className="flex flex-col sm:flex-row gap-3 justify-center mt-4">
                       <Button
                         className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white"
-                        onClick={() => window.open(`https://wa.me/16067157733`, '_blank')}
+                        onClick={() => window.open(whatsAppDirectLink || `https://wa.me/16067157733?text=${encodeURIComponent("Hey DotSpark, I've got a few things on my mind — need your thoughts")}`, '_blank')}
                         size="sm"
                       >
                         <MessageSquare className="h-4 w-4 mr-2" />
