@@ -9,6 +9,7 @@ export interface WhatsAppStatusResponse {
   phoneNumber?: string;
   registeredAt?: string;
   userId?: number;
+  isConnected?: boolean;
 }
 
 /**
@@ -124,36 +125,58 @@ export function useWhatsAppStatus() {
     
     console.log("WhatsApp status API data update:", data);
     
-    // If we get confirmation from the API
-    if (data?.isRegistered) {
-      console.log("API confirms WhatsApp is registered, updating status");
+    // If we get confirmation from the API (either isRegistered or isConnected is true)
+    if (data?.isRegistered || data?.isConnected) {
+      console.log("API confirms WhatsApp is registered/connected, updating status");
+      
       // Store in localStorage for persistence across sessions and browser tabs
       localStorage.setItem('whatsapp_activated', 'true');
       localStorage.setItem('whatsapp_phone', data.phoneNumber || '');
       localStorage.setItem('whatsapp_user_id', String(data.userId || ''));
       
-      // Update in-memory state
+      // Update in-memory state immediately for reactive UI
       setActivationStatus(true);
       
-      // Also refresh sessionStorage to ensure web view sees activation success message
+      // Also refresh sessionStorage to ensure web view shows activation success message
       sessionStorage.setItem('show_activation_success', 'true');
       setShowActivationSuccess(true);
+      
+      // Dispatch a global event that other components can listen for
+      window.dispatchEvent(new CustomEvent('whatsapp-status-updated', { 
+        detail: { isActivated: true, source: 'api' }
+      }));
       
       console.log("WhatsApp activation status set to TRUE based on API response");
     } else if (data !== undefined) {
       // API explicitly indicates user is NOT registered (not just loading or error)
-      console.log("API indicates WhatsApp is NOT registered for this user");
+      console.log("API indicates WhatsApp is NOT registered for this user", data);
       
-      // If we previously thought we were activated, but API says no, clear localStorage
+      // If we previously thought we were activated based on localStorage, verify with server
+      // This might be a case where the user has activated on a different device/browser
       if (localStorage.getItem('whatsapp_activated') === 'true') {
-        console.log("Clearing incorrect localStorage activation status");
+        // If this is the first time we're checking, try refreshing once more to be sure
+        if (!sessionStorage.getItem('double_checked_whatsapp')) {
+          console.log("LocalStorage says activated but API says no - double checking status");
+          sessionStorage.setItem('double_checked_whatsapp', 'true');
+          // Force an immediate refetch for double verification
+          setTimeout(() => refetch(), 500);
+          return; // Don't update state yet until double check completes
+        }
+        
+        // If we've double-checked and still no activation, clear localStorage
+        console.log("Verified API says not registered - clearing localStorage activation status");
         localStorage.removeItem('whatsapp_activated');
         localStorage.removeItem('whatsapp_phone');
         localStorage.removeItem('whatsapp_user_id');
         setActivationStatus(false);
+        
+        // Dispatch status update event
+        window.dispatchEvent(new CustomEvent('whatsapp-status-updated', { 
+          detail: { isActivated: false, source: 'api' }
+        }));
       }
     }
-  }, [data, user]);
+  }, [data, user, refetch]);
   
   // Separate effect to check localStorage on component mount (before API returns)
   useEffect(() => {

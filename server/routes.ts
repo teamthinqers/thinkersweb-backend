@@ -497,11 +497,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Get status from the database
       const status = await getWhatsAppStatus(userId);
       
-      // Add fixed response format to ensure frontend always has isRegistered field
+      // Add isConnected field explicitly for frontend use
+      console.log(`Returning WhatsApp status to client:`, status);
+      
       res.status(200).json({
         isRegistered: status.isRegistered,
         phoneNumber: status.phoneNumber,
-        registeredAt: status.registeredAt,
+        isConnected: status.isConnected || false,
         userId: status.userId
       });
     } catch (err) {

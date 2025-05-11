@@ -80,7 +80,44 @@ export default function ActivateNeuralExtension() {
     }
   }, [user]);
   
-  // Effect 3: Check for activation success flag and handle status updates
+  // Effect 3: Listen for WhatsApp status updates from any source
+  useEffect(() => {
+    const handleWhatsAppStatusUpdate = (event: Event) => {
+      // Cast to CustomEvent to access detail
+      const customEvent = event as CustomEvent<{isActivated: boolean, source: string}>;
+      console.log("Received WhatsApp status update event:", customEvent.detail);
+      
+      if (customEvent.detail.isActivated) {
+        // Update our local state
+        setActivationStatus(prev => ({
+          ...prev,
+          isConnected: true,
+          isCheckingStatus: false
+        }));
+        
+        // Show success notification if this isn't a duplicate
+        const hasSeenSuccess = sessionStorage.getItem('shown_whatsapp_success') === 'true';
+        if (!hasSeenSuccess) {
+          toast({
+            title: "Neural Extension Activated!",
+            description: "Your WhatsApp is connected and your neural extension is now active.",
+            duration: 5000,
+          });
+          sessionStorage.setItem('shown_whatsapp_success', 'true');
+        }
+      }
+    };
+    
+    // Register event listener for status updates
+    window.addEventListener('whatsapp-status-updated', handleWhatsAppStatusUpdate);
+    
+    // Clean up
+    return () => {
+      window.removeEventListener('whatsapp-status-updated', handleWhatsAppStatusUpdate);
+    };
+  }, [toast]);
+
+  // Effect 4: Check for activation success flag and handle status updates
   useEffect(() => {
     // Check for a specific flag to avoid duplicate notifications
     const hasBeenActivatedBefore = localStorage.getItem('neural_extension_seen') === 'true';
