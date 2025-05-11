@@ -261,6 +261,19 @@ export async function processWhatsAppMessage(from: string, messageText: string):
       };
     }
     
+    // Check if this message is a WhatsApp account linking request 
+    // (this is not a neural extension - neural extension is only when users go through the activation process)
+    const accountLinkingRegex = /please connect my Neural Extension via WhatsApp\.?\s*My DotSpark account is\s*([\w.%+-]+@[\w.-]+\.[A-Za-z]{2,})/i;
+    const accountLinkMatch = messageText.match(accountLinkingRegex);
+    
+    if (accountLinkMatch && accountLinkMatch[1]) {
+      const userEmail = accountLinkMatch[1].trim();
+      console.log(`WhatsApp account linking request detected with email: ${userEmail}`);
+      
+      // Process as authentication message with the extracted email
+      return await processAuthenticationMessage(from, userEmail);
+    }
+    
     // Send welcome message for first-time users
     if (isFirstTimeUser) {
       console.log(`First-time user detected for ${from} - sending welcome message`);
@@ -472,14 +485,35 @@ export async function processWhatsAppMessage(from: string, messageText: string):
         });
       }
       
+      // Send the activation success message 
+      const activationSuccessMessage = "✅ *Congratulations — your Neural Extension is now active!*\n\n" +
+        `DotSpark is now tuned to grow with your thinking.\n` +
+        `The more you interact, the sharper and more personalized it becomes.\n\n` +
+        `Say anything — a thought, a question, a decision you're stuck on.\n` +
+        `Let's begin.\n\n` +
+        `You can also access your personal dashboard for deeper insights at www.dotspark.in.`;
+      
+      // Send message immediately, don't wait for response
+      await sendWhatsAppReply(from, activationSuccessMessage);
+      
+      // After a short delay, also send the standard welcome message to explain more features
+      setTimeout(async () => {
+        try {
+          const welcomeMessage = 
+            "✨ *Welcome to DotSpark.*\n\n" +
+            "DotSpark is your neural extension for clearer thinking and instant insights.\n\n" +
+            "I can help with anything on your mind — from breaking down complex ideas to organizing your thoughts. What would you like to explore today?";
+          
+          await sendWhatsAppReply(from, welcomeMessage);
+          console.log(`Sent delayed welcome message after activation to: ${from}`);
+        } catch (error) {
+          console.error("Error sending delayed welcome message:", error);
+        }
+      }, 2000);  // 2 second delay
+      
       return {
         success: true,
-        message: "✅ *Congratulations — your Neural Extension is now active!*\n\n" +
-          `DotSpark is now tuned to grow with your thinking.\n` +
-          `The more you interact, the sharper and more personalized it becomes.\n\n` +
-          `Say anything — a thought, a question, a decision you're stuck on.\n` +
-          `Let's begin.\n\n` +
-          `You can also access your personal dashboard for deeper insights at www.dotspark.in.`
+        message: activationSuccessMessage
       };
     }
     
@@ -552,15 +586,36 @@ export async function processWhatsAppMessage(from: string, messageText: string):
         });
       }
       
+      // Send the activation success message
+      const activationSuccessMessage = "✅ *Successfully Connected!*\n\n" +
+        `✅ *Congratulations — your Neural Extension is now active!*\n\n` +
+        `DotSpark is now tuned to grow with your thinking.\n` +
+        `The more you interact, the sharper and more personalized it becomes.\n\n` +
+        `Say anything — a thought, a question, a decision you're stuck on.\n` +
+        `Let's begin.\n\n` +
+        `You can also access your personal dashboard for deeper insights at www.dotspark.in`;
+      
+      // Send message immediately, don't wait for response
+      await sendWhatsAppReply(from, activationSuccessMessage);
+      
+      // After a short delay, also send the standard welcome message to explain more features
+      setTimeout(async () => {
+        try {
+          const welcomeMessage = 
+            "✨ *Welcome to DotSpark.*\n\n" +
+            "DotSpark is your neural extension for clearer thinking and instant insights.\n\n" +
+            "I can help with anything on your mind — from breaking down complex ideas to organizing your thoughts. What would you like to explore today?";
+          
+          await sendWhatsAppReply(from, welcomeMessage);
+          console.log(`Sent delayed welcome message after direct link to: ${from}`);
+        } catch (error) {
+          console.error("Error sending delayed welcome message:", error);
+        }
+      }, 2000);  // 2 second delay
+      
       return {
         success: true,
-        message: "✅ *Successfully Connected!*\n\n" +
-          `✅ *Congratulations — your Neural Extension is now active!*\n\n` +
-          `DotSpark is now tuned to grow with your thinking.\n` +
-          `The more you interact, the sharper and more personalized it becomes.\n\n` +
-          `Say anything — a thought, a question, a decision you're stuck on.\n` +
-          `Let's begin.\n\n` +
-          `You can also access your personal dashboard for deeper insights at www.dotspark.in`
+        message: activationSuccessMessage
       };
     }
     
