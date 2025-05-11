@@ -87,6 +87,23 @@ export default {
             opacity: "0.4",
           }
         },
+        "orbit": {
+          "0%": {
+            transform: "translateX(6px) translateY(0px)",
+          },
+          "25%": {
+            transform: "translateX(4px) translateY(4px)",
+          },
+          "50%": {
+            transform: "translateX(0px) translateY(6px)",
+          },
+          "75%": {
+            transform: "translateX(-4px) translateY(4px)",
+          },
+          "100%": {
+            transform: "translateX(-6px) translateY(0px)",
+          }
+        },
         "dash-slow": {
           to: {
             strokeDashoffset: "-10"
@@ -204,7 +221,8 @@ export default {
         "ping-slower": "ping-slower 4s cubic-bezier(0, 0, 0.2, 1) infinite",
         "btn-bounce": "bounce 0.5s ease-in-out",
         "pulse-slow": "pulse-slow 3s ease-in-out infinite",
-        "dash-slow": "dash-slow 15s linear infinite"
+        "dash-slow": "dash-slow 15s linear infinite",
+        "orbit": "orbit 4s ease-in-out infinite"
       },
     },
   },

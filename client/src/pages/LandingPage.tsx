@@ -234,28 +234,97 @@ export default function LandingPage() {
       
       {/* Enhanced Hero Section with Visual Elements - Centered for all screens */}
       <section className="relative pt-6 pb-8 md:py-12 lg:py-16 overflow-hidden">
-        {/* Background visual elements */}
+        {/* Background visual elements with neural network patterns */}
         <div className="absolute inset-0 z-0">
+          {/* Subtle gradient background effects */}
           <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/5 rounded-full blur-3xl opacity-60 -translate-y-1/2 translate-x-1/3"></div>
           <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-blue-500/5 dark:bg-blue-500/10 rounded-full blur-3xl opacity-60 translate-y-1/3 -translate-x-1/4"></div>
           
-          {/* Neural network node points - positioned at edges and corners */}
-          <div className="absolute top-10 left-10 w-2 h-2 bg-primary rounded-full shadow-lg shadow-primary/30 animate-pulse"></div>
-          <div className="absolute top-10 right-10 w-2 h-2 bg-blue-500 rounded-full shadow-lg shadow-blue-500/30 animate-pulse delay-150"></div>
-          <div className="absolute bottom-10 left-10 w-2 h-2 bg-indigo-500 rounded-full shadow-lg shadow-indigo-500/30 animate-pulse delay-300"></div>
-          <div className="absolute bottom-10 right-10 w-2 h-2 bg-purple-500 rounded-full shadow-lg shadow-purple-500/30 animate-pulse delay-500"></div>
+          {/* Neural Network Layer 1 - Left Side */}
+          <div className="absolute left-20 top-1/4 w-[120px] h-[180px]">
+            {/* Neural layer container */}
+            <div className="absolute inset-0 border border-dashed border-primary/20 rounded-lg"></div>
+            
+            {/* Neural nodes in the layer */}
+            <div className="absolute left-1/4 top-1/4 w-2 h-2 bg-primary/70 rounded-full shadow-sm animate-pulse"></div>
+            <div className="absolute left-2/3 top-1/5 w-2 h-2 bg-indigo-500/70 rounded-full shadow-sm animate-pulse delay-300"></div>
+            <div className="absolute left-1/2 top-1/2 w-2.5 h-2.5 bg-primary/80 rounded-full shadow-md animate-pulse delay-100"></div>
+            <div className="absolute left-1/5 top-3/4 w-2 h-2 bg-blue-500/70 rounded-full shadow-sm animate-pulse delay-500"></div>
+            <div className="absolute left-3/4 top-4/5 w-2 h-2 bg-indigo-500/70 rounded-full shadow-sm animate-pulse delay-700"></div>
+            
+            {/* Connection lines between neurons */}
+            <div className="absolute left-[35%] top-[30%] w-[20px] h-[30px] border-t border-l border-primary/30 rounded-tl-lg"></div>
+            <div className="absolute left-[55%] top-[25%] w-[15px] h-[25px] border-t border-r border-indigo-500/30 rounded-tr-lg"></div>
+            <div className="absolute left-[30%] top-[55%] w-[15px] h-[20px] border-b border-l border-blue-500/30 rounded-bl-lg"></div>
+            <div className="absolute left-[60%] top-[60%] w-[20px] h-[25px] border-b border-r border-primary/30 rounded-br-lg"></div>
+          </div>
           
-          {/* Additional neural nodes for enhanced effect */}
-          <div className="absolute top-1/3 left-5 w-1.5 h-1.5 bg-primary/70 rounded-full animate-pulse delay-200"></div>
-          <div className="absolute top-2/3 right-5 w-1.5 h-1.5 bg-blue-500/70 rounded-full animate-pulse delay-400"></div>
-          <div className="absolute top-5 left-1/3 w-1.5 h-1.5 bg-indigo-500/70 rounded-full animate-pulse delay-600"></div>
-          <div className="absolute bottom-5 right-1/3 w-1.5 h-1.5 bg-purple-500/70 rounded-full animate-pulse delay-700"></div>
+          {/* Neural Network Layer 2 - Right Side */}
+          <div className="absolute right-20 top-2/3 w-[120px] h-[180px]">
+            {/* Neural layer container */}
+            <div className="absolute inset-0 border border-dashed border-blue-500/20 rounded-lg"></div>
+            
+            {/* Neural nodes in the layer */}
+            <div className="absolute right-1/4 top-1/4 w-2 h-2 bg-blue-500/70 rounded-full shadow-sm animate-pulse delay-200"></div>
+            <div className="absolute right-2/3 top-1/5 w-2 h-2 bg-indigo-500/70 rounded-full shadow-sm animate-pulse delay-400"></div>
+            <div className="absolute right-1/2 top-1/2 w-2.5 h-2.5 bg-blue-500/80 rounded-full shadow-md animate-pulse delay-600"></div>
+            <div className="absolute right-1/5 top-3/4 w-2 h-2 bg-primary/70 rounded-full shadow-sm animate-pulse"></div>
+            <div className="absolute right-3/4 top-4/5 w-2 h-2 bg-indigo-500/70 rounded-full shadow-sm animate-pulse delay-800"></div>
+            
+            {/* Connection lines between neurons */}
+            <div className="absolute right-[35%] top-[30%] w-[20px] h-[30px] border-t border-r border-blue-500/30 rounded-tr-lg"></div>
+            <div className="absolute right-[55%] top-[25%] w-[15px] h-[25px] border-t border-l border-indigo-500/30 rounded-tl-lg"></div>
+            <div className="absolute right-[30%] top-[55%] w-[15px] h-[20px] border-b border-r border-primary/30 rounded-br-lg"></div>
+            <div className="absolute right-[60%] top-[60%] w-[20px] h-[25px] border-b border-l border-blue-500/30 rounded-bl-lg"></div>
+          </div>
           
-          {/* Connection lines at edges */}
-          <div className="absolute top-20 left-20 w-20 h-px bg-gradient-to-r from-primary/50 to-transparent rotate-45"></div>
-          <div className="absolute top-20 right-20 w-20 h-px bg-gradient-to-l from-blue-500/50 to-transparent -rotate-45"></div>
-          <div className="absolute bottom-20 left-20 w-20 h-px bg-gradient-to-r from-indigo-500/50 to-transparent -rotate-45"></div>
-          <div className="absolute bottom-20 right-20 w-20 h-px bg-gradient-to-l from-purple-500/50 to-transparent rotate-45"></div>
+          {/* Synaptic connections - Left side */}
+          <div className="absolute left-8 top-1/2 w-[100px] h-[1px]">
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/40 to-transparent"></div>
+            <div className="absolute left-1/4 top-0 w-1.5 h-1.5 rounded-full bg-primary/60 animate-pulse delay-300"></div>
+            <div className="absolute left-2/3 top-0 w-1 h-1 rounded-full bg-indigo-500/60 animate-pulse"></div>
+            
+            <div className="absolute left-1/3 top-[-10px] w-[30px] h-[1px] bg-gradient-to-r from-transparent via-primary/30 to-transparent rotate-[-30deg]"></div>
+            <div className="absolute left-1/2 top-[10px] w-[30px] h-[1px] bg-gradient-to-r from-transparent via-primary/30 to-transparent rotate-[30deg]"></div>
+          </div>
+          
+          {/* Synaptic connections - Right side */}
+          <div className="absolute right-8 top-1/3 w-[100px] h-[1px]">
+            <div className="absolute inset-0 bg-gradient-to-l from-transparent via-blue-500/40 to-transparent"></div>
+            <div className="absolute right-1/4 top-0 w-1.5 h-1.5 rounded-full bg-blue-500/60 animate-pulse delay-100"></div>
+            <div className="absolute right-2/3 top-0 w-1 h-1 rounded-full bg-indigo-500/60 animate-pulse delay-500"></div>
+            
+            <div className="absolute right-1/3 top-[-10px] w-[30px] h-[1px] bg-gradient-to-l from-transparent via-blue-500/30 to-transparent rotate-[30deg]"></div>
+            <div className="absolute right-1/2 top-[10px] w-[30px] h-[1px] bg-gradient-to-l from-transparent via-blue-500/30 to-transparent rotate-[-30deg]"></div>
+          </div>
+          
+          {/* Neural pathways - Top left */}
+          <div className="absolute left-40 top-20 w-[80px] h-[80px]">
+            <div className="absolute left-0 top-0 w-full h-[1px] bg-gradient-to-r from-primary/50 to-transparent"></div>
+            <div className="absolute left-0 top-0 w-[1px] h-full bg-gradient-to-b from-primary/50 to-transparent"></div>
+            <div className="absolute w-2 h-2 rounded-full bg-primary/30 left-0 top-0 blur-sm"></div>
+            <div className="absolute w-1 h-1 rounded-full bg-primary/80 left-0 top-0 animate-pulse"></div>
+            
+            <div className="absolute left-[40%] top-[40%] w-[30px] h-[30px]">
+              <div className="absolute left-0 top-0 w-[1px] h-full bg-gradient-to-b from-primary/40 to-transparent"></div>
+              <div className="absolute left-0 top-0 w-full h-[1px] bg-gradient-to-r from-primary/40 to-transparent"></div>
+              <div className="absolute w-1.5 h-1.5 rounded-full bg-primary/50 left-0 top-0 animate-pulse delay-200"></div>
+            </div>
+          </div>
+          
+          {/* Neural pathways - Bottom right */}
+          <div className="absolute right-40 bottom-20 w-[80px] h-[80px]">
+            <div className="absolute right-0 bottom-0 w-full h-[1px] bg-gradient-to-l from-blue-500/50 to-transparent"></div>
+            <div className="absolute right-0 bottom-0 w-[1px] h-full bg-gradient-to-t from-blue-500/50 to-transparent"></div>
+            <div className="absolute w-2 h-2 rounded-full bg-blue-500/30 right-0 bottom-0 blur-sm"></div>
+            <div className="absolute w-1 h-1 rounded-full bg-blue-500/80 right-0 bottom-0 animate-pulse delay-200"></div>
+            
+            <div className="absolute right-[40%] bottom-[40%] w-[30px] h-[30px]">
+              <div className="absolute right-0 bottom-0 w-[1px] h-full bg-gradient-to-t from-blue-500/40 to-transparent"></div>
+              <div className="absolute right-0 bottom-0 w-full h-[1px] bg-gradient-to-l from-blue-500/40 to-transparent"></div>
+              <div className="absolute w-1.5 h-1.5 rounded-full bg-blue-500/50 right-0 bottom-0 animate-pulse delay-400"></div>
+            </div>
+          </div>
         </div>
         
         <div className="container mx-auto px-4 md:px-6 relative z-10">
@@ -280,26 +349,77 @@ export default function LandingPage() {
               It mirrors your thinking patterns and amplifies your decision-making — getting sharper every time you use it
             </p>
             
-            {/* Neural connection visualization - enhanced lines with multiple nodes */}
-            <div className="relative h-12 w-full my-2 md:my-3 overflow-hidden">
-              {/* Left connecting line */}
-              <div className="absolute left-0 top-1/2 w-[45%] h-px bg-gradient-to-r from-transparent via-primary/40 to-primary/60 transform -translate-y-1/2"></div>
-              {/* Right connecting line */}
-              <div className="absolute right-0 top-1/2 w-[45%] h-px bg-gradient-to-l from-transparent via-primary/40 to-primary/60 transform -translate-y-1/2"></div>
+            {/* Neural neural network visualization - central connecting structure */}
+            <div className="relative h-16 w-full my-2 md:my-3 overflow-hidden">
+              {/* Main connecting neural pathways */}
+              <div className="absolute left-0 top-1/2 w-[45%] h-[1px] bg-gradient-to-r from-transparent via-primary/40 to-primary/60 transform -translate-y-1/2"></div>
+              <div className="absolute right-0 top-1/2 w-[45%] h-[1px] bg-gradient-to-l from-transparent via-blue-500/40 to-blue-500/60 transform -translate-y-1/2"></div>
               
-              {/* Neural nodes on left line */}
-              <div className="absolute left-[15%] top-1/2 w-1.5 h-1.5 rounded-full bg-primary/70 transform -translate-y-1/2 animate-pulse"></div>
-              <div className="absolute left-[25%] top-[calc(50%-4px)] w-1 h-1 rounded-full bg-indigo-500/70 transform -translate-y-1/2 animate-pulse delay-200"></div>
-              <div className="absolute left-[35%] top-[calc(50%+4px)] w-1 h-1 rounded-full bg-blue-500/70 transform -translate-y-1/2 animate-pulse delay-400"></div>
+              {/* Neural pathway with branching structure - Left */}
+              <div className="absolute left-[25%] top-1/2 transform -translate-y-1/2">
+                <div className="relative h-8 w-[60px]">
+                  {/* Neural connections */}
+                  <div className="absolute left-0 top-1/2 w-full h-[1px] bg-primary/40"></div>
+                  <div className="absolute left-1/4 top-0 w-[1px] h-[8px] bg-primary/30"></div>
+                  <div className="absolute left-2/4 top-full w-[1px] h-[8px] bg-primary/30 -translate-y-full"></div>
+                  <div className="absolute left-3/4 top-[4px] w-[1px] h-[8px] bg-primary/30 -translate-y-1/2"></div>
+                  
+                  {/* Neural nodes */}
+                  <div className="absolute left-1/4 top-0 w-2 h-2 rounded-full bg-primary/60 -translate-x-1/2 -translate-y-1/2 animate-pulse"></div>
+                  <div className="absolute left-2/4 top-full w-2 h-2 rounded-full bg-indigo-500/60 -translate-x-1/2 -translate-y-1/2 animate-pulse delay-300"></div>
+                  <div className="absolute left-3/4 top-1/4 w-1.5 h-1.5 rounded-full bg-blue-500/60 -translate-x-1/2 -translate-y-1/2 animate-pulse delay-500"></div>
+                  <div className="absolute right-0 top-1/2 w-2.5 h-2.5 rounded-full bg-primary/70 -translate-x-1/2 -translate-y-1/2 animate-pulse delay-200"></div>
+                </div>
+              </div>
               
-              {/* Neural nodes on right line */}
-              <div className="absolute right-[15%] top-1/2 w-1.5 h-1.5 rounded-full bg-primary/70 transform -translate-y-1/2 animate-pulse delay-100"></div>
-              <div className="absolute right-[25%] top-[calc(50%+4px)] w-1 h-1 rounded-full bg-indigo-500/70 transform -translate-y-1/2 animate-pulse delay-300"></div>
-              <div className="absolute right-[35%] top-[calc(50%-4px)] w-1 h-1 rounded-full bg-blue-500/70 transform -translate-y-1/2 animate-pulse delay-500"></div>
+              {/* Central neural network node */}
+              <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                <div className="relative h-10 w-10">
+                  {/* Central node sphere */}
+                  <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary/40 to-blue-500/40 shadow-lg shadow-primary/20 animate-pulse-slow"></div>
+                  
+                  {/* Inner connection structure */}
+                  <div className="absolute inset-[2px] rounded-full border border-dashed border-white/30"></div>
+                  
+                  {/* Central core */}
+                  <div className="absolute inset-[30%] rounded-full bg-gradient-to-tr from-indigo-500/80 to-primary/80 animate-pulse"></div>
+                  
+                  {/* Neural connections radiating outward */}
+                  <div className="absolute inset-0">
+                    <div className="absolute left-0 top-1/2 w-5 h-[1px] bg-primary/60 -translate-x-full -translate-y-1/2"></div>
+                    <div className="absolute right-0 top-1/2 w-5 h-[1px] bg-blue-500/60 translate-x-full -translate-y-1/2"></div>
+                    <div className="absolute left-1/2 top-0 w-[1px] h-3 bg-indigo-500/60 -translate-x-1/2 -translate-y-full"></div>
+                    <div className="absolute left-1/2 bottom-0 w-[1px] h-3 bg-indigo-500/60 -translate-x-1/2 translate-y-full"></div>
+                  </div>
+                  
+                  {/* Neural activity simulation - pulsing dots */}
+                  <div className="absolute left-[80%] top-[20%] w-1 h-1 rounded-full bg-blue-400/90 animate-ping-slow"></div>
+                  <div className="absolute left-[30%] top-[80%] w-1 h-1 rounded-full bg-primary/90 animate-ping-slow delay-700"></div>
+                </div>
+              </div>
               
-              {/* Central connecting circles */}
-              <div className="absolute left-[45%] top-1/2 w-[10%] h-px bg-primary/40 transform -translate-y-1/2"></div>
-              <div className="absolute left-1/2 top-1/2 w-2 h-2 rounded-full bg-primary/50 transform -translate-x-1/2 -translate-y-1/2"></div>
+              {/* Neural pathway with branching structure - Right */}
+              <div className="absolute right-[25%] top-1/2 transform -translate-y-1/2">
+                <div className="relative h-8 w-[60px]">
+                  {/* Neural connections */}
+                  <div className="absolute left-0 top-1/2 w-full h-[1px] bg-blue-500/40"></div>
+                  <div className="absolute left-1/4 top-full w-[1px] h-[8px] bg-blue-500/30 -translate-y-full"></div>
+                  <div className="absolute left-2/4 top-0 w-[1px] h-[8px] bg-blue-500/30"></div>
+                  <div className="absolute left-3/4 top-[4px] w-[1px] h-[8px] bg-blue-500/30 -translate-y-1/2"></div>
+                  
+                  {/* Neural nodes */}
+                  <div className="absolute left-0 top-1/2 w-2.5 h-2.5 rounded-full bg-blue-500/70 -translate-x-1/2 -translate-y-1/2 animate-pulse delay-100"></div>
+                  <div className="absolute left-1/4 top-full w-2 h-2 rounded-full bg-indigo-500/60 -translate-x-1/2 -translate-y-1/2 animate-pulse delay-400"></div>
+                  <div className="absolute left-2/4 top-0 w-2 h-2 rounded-full bg-primary/60 -translate-x-1/2 -translate-y-1/2 animate-pulse"></div>
+                  <div className="absolute left-3/4 top-1/4 w-1.5 h-1.5 rounded-full bg-blue-500/60 -translate-x-1/2 -translate-y-1/2 animate-pulse delay-600"></div>
+                </div>
+              </div>
+              
+              {/* Additional neural activity indicators */}
+              <div className="absolute left-[15%] top-[calc(50%+6px)] w-1 h-1 rounded-full bg-primary/70 animate-pulse delay-800"></div>
+              <div className="absolute left-[40%] top-[calc(50%-8px)] w-0.5 h-0.5 rounded-full bg-indigo-500/60"></div>
+              <div className="absolute right-[15%] top-[calc(50%-6px)] w-1 h-1 rounded-full bg-blue-500/70 animate-pulse delay-100"></div>
+              <div className="absolute right-[40%] top-[calc(50%+8px)] w-0.5 h-0.5 rounded-full bg-indigo-500/60"></div>
             </div>
             
             {/* Action buttons with explanation boxes - Centered */}
