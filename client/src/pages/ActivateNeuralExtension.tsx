@@ -36,28 +36,32 @@ export default function ActivateNeuralExtension() {
   // Calculate progress percentage
   const progress = user ? (isWhatsAppConnected ? 100 : 50) : 0;
   
-  // Check for activation success flag and handle redirects
-  // Handle activation success and redirection
+  // Check for activation success flag and handle redirection
   useEffect(() => {
-    // Use the value from the hook directly, no need to read from sessionStorage
-    if ((showActivationSuccess || isWhatsAppConnected) && user) {
-      // Success toast with longer duration
+    // Check for a specific flag to avoid duplicate notifications
+    const hasBeenActivatedBefore = localStorage.getItem('neural_extension_seen') === 'true';
+    
+    // Only show toast if this is a new activation and we have an explicit success flag
+    if (showActivationSuccess && user && !hasBeenActivatedBefore) {
+      // Success toast with longer duration - only for first-time activations
       toast({
         title: "Neural Extension Activated!",
         description: "WhatsApp connection completed successfully.",
         duration: 5000,
       });
       
+      // Mark that we've shown the activation notification
+      localStorage.setItem('neural_extension_seen', 'true');
+    }
+    
+    // If WhatsApp is connected or we have an activation success flag
+    if ((showActivationSuccess || isWhatsAppConnected) && user) {
       // We no longer automatically redirect to dashboard
       // This lets the user see the activation status on the activation page
       setActiveTab('step2');
       
       // Also set activation in localStorage to ensure persistence across devices
       localStorage.setItem('whatsapp_activated', 'true');
-      
-      // Ensure the progress bar shows 100%
-      // We don't need to do anything special here as the progress
-      // is calculated based on isWhatsAppConnected
     }
   }, [showActivationSuccess, isWhatsAppConnected, user, toast]);
   

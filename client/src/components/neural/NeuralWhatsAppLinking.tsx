@@ -44,12 +44,20 @@ export function NeuralWhatsAppLinking() {
         // Mark as activated in localStorage for persistence
         simulateActivation();
         
-        // Show final success notification
-        toast({
-          title: "Neural Extension Activated!",
-          description: "Your WhatsApp is now connected to DotSpark.",
-          duration: 5000,
-        });
+        // This activation happens BEFORE localStorage has whatsapp_activated set
+        // So we need to check a different flag that would indicate a previous activation
+        const hasBeenActivatedBefore = localStorage.getItem('neural_extension_seen') === 'true';
+        
+        if (!hasBeenActivatedBefore) {
+          toast({
+            title: "Neural Extension Activated!",
+            description: "WhatsApp connection completed successfully.",
+            duration: 5000,
+          });
+          
+          // Mark that we've seen the activation before to avoid duplicate toasts
+          localStorage.setItem('neural_extension_seen', 'true');
+        }
         
         // Store welcome message in localStorage so it can be sent to the user
         localStorage.setItem('whatsapp_welcome_message', JSON.stringify({
