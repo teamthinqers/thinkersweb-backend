@@ -241,17 +241,30 @@ export function setupAuth(app: Express) {
   // Enhanced session recovery endpoint with improved error handling and session persistence
   app.post("/api/auth/recover", async (req, res, next) => {
     try {
-      const { uid, email } = req.body;
+      const { uid, email, persistent = false } = req.body;
       
       if (!uid) {
         return res.status(400).json({ message: "Firebase UID is required for recovery" });
       }
       
-      console.log(`Attempting session recovery for UID: ${uid}, Session ID: ${req.sessionID}`);
+      console.log(`Attempting session recovery for UID: ${uid}, Session ID: ${req.sessionID}, Persistent: ${persistent}`);
       
       // Check if already authenticated
       if (req.isAuthenticated() && req.user?.firebaseUid === uid) {
         console.log(`User already authenticated, session recovery not needed for ${req.user.id}`);
+        
+        // But still update session expiry for persistent sessions
+        if (persistent && req.session?.cookie) {
+          const oldExpiry = req.session.cookie.maxAge || 0;
+          req.session.cookie.maxAge = 365 * 24 * 60 * 60 * 1000; // 1 year for persistent sessions
+          console.log(`Extended session expiry for persistent session from ${oldExpiry}ms to ${req.session.cookie.maxAge}ms`);
+          
+          // Force save the session
+          await new Promise<void>((resolve) => {
+            req.session.save(() => resolve());
+          });
+        }
+        
         return res.status(200).json({ 
           message: "Already authenticated", 
           user: req.user 
@@ -285,10 +298,19 @@ export function setupAuth(app: Express) {
       if (req.session) {
         req.session.lastActivity = Date.now();
         req.session.firebaseUid = uid;
+        req.session.persistent = persistent; // Store persistence preference
         
-        // Extend cookie expiration (30 days)
+        // Set cookie expiration based on persistence preference
         if (req.session.cookie) {
-          req.session.cookie.maxAge = 30 * 24 * 60 * 60 * 1000;
+          if (persistent) {
+            // 1 year for persistent "remember me" sessions
+            req.session.cookie.maxAge = 365 * 24 * 60 * 60 * 1000;
+            console.log(`Setting persistent session with 1-year expiry for user ${user.id}`);
+          } else {
+            // 30 days for regular sessions
+            req.session.cookie.maxAge = 30 * 24 * 60 * 60 * 1000;
+            console.log(`Setting standard session with 30-day expiry for user ${user.id}`);
+          }
         }
         
         // Save session explicitly to ensure changes are persisted
