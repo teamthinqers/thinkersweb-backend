@@ -51,7 +51,7 @@ export function NeuralWhatsAppLinking() {
         if (!hasBeenActivatedBefore) {
           toast({
             title: "Neural Extension Activated!",
-            description: "WhatsApp connection completed successfully.",
+            description: "WhatsApp connection completed successfully. Your personal cognitive extension is now ready.",
             duration: 5000,
           });
           
@@ -111,7 +111,7 @@ export function NeuralWhatsAppLinking() {
       
       // Create a pre-filled message with natural language and user info
       const phoneNumber = "16067157733";
-      const message = `Hey DotSpark, please connect my Neural Extension via WhatsApp. My DotSpark account is ${userEmail}`;
+      const message = `Hey DotSpark, please connect my Neural Extension via WhatsApp. My DotSpark account is ${userEmail}`; // Keep prefilled message as requested
       
       // Show success toast with better instructions
       toast({
