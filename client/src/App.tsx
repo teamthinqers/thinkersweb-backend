@@ -173,6 +173,7 @@ function Router() {
       <Route path="/logo" component={LogoPage} />
       <Route path="/activate" component={ActivateNeuralExtension} />
       <Route path="/activate-neural" component={ActivateNeuralExtension} />
+      <Route path="/testing" component={Testing} />
       <Route component={NotFound} />
     </Switch>
   );
