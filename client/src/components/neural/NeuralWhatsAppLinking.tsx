@@ -61,11 +61,10 @@ export function NeuralWhatsAppLinking() {
         localStorage.setItem('neural_just_activated', 'true');
         sessionStorage.setItem('show_activation_success', 'true');
         
-        // Instead of redirecting, first reload the current page
-        // This ensures all components recognize the activation status
+        // After a brief delay to let status be processed, redirect to the activation page
         setTimeout(() => {
-          // Force a complete page reload to update all components
-          window.location.reload();
+          // Direct navigation to activation page to show success status
+          window.location.href = "/activate-neural";
         }, 2000);
         
       }, 5000);

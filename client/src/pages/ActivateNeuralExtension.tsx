@@ -40,7 +40,7 @@ export default function ActivateNeuralExtension() {
   // Handle activation success and redirection
   useEffect(() => {
     // Use the value from the hook directly, no need to read from sessionStorage
-    if (showActivationSuccess && isWhatsAppConnected) {
+    if ((showActivationSuccess || isWhatsAppConnected) && user) {
       // Success toast with longer duration
       toast({
         title: "Neural Extension Activated!",
@@ -48,12 +48,15 @@ export default function ActivateNeuralExtension() {
         duration: 5000,
       });
       
-      // Redirect to dashboard after a delay
-      setTimeout(() => {
-        setLocation('/dashboard');
-      }, 3000);
+      // We no longer automatically redirect to dashboard
+      // This lets the user see the activation status on the activation page
+      setActiveTab('step2');
+      
+      // Ensure the progress bar shows 100%
+      // We don't need to do anything special here as the progress
+      // is calculated based on isWhatsAppConnected
     }
-  }, [showActivationSuccess, isWhatsAppConnected, toast, setLocation]);
+  }, [showActivationSuccess, isWhatsAppConnected, user, toast]);
   
   // Update tab when auth or WhatsApp status changes
   useEffect(() => {
@@ -257,12 +260,16 @@ export default function ActivateNeuralExtension() {
                 {/* Step 2 indicator */}
                 <div className="relative flex flex-col items-center">
                   <div className={`w-6 h-6 rounded-full flex items-center justify-center mb-1 ${
-                    progress === 100 ? 'bg-gradient-to-r from-indigo-600 to-blue-600 text-white' : user ? 'bg-primary/20 text-primary border-2 border-primary/50 pulse-border' : 'bg-slate-300 dark:bg-slate-700 text-slate-600 dark:text-slate-400'
+                    progress === 100 ? 'bg-gradient-to-r from-indigo-600 to-blue-600 text-white relative' : user ? 'bg-primary/20 text-primary border-2 border-primary/50 pulse-border' : 'bg-slate-300 dark:bg-slate-700 text-slate-600 dark:text-slate-400'
                   }`}>
                     {progress === 100 ? <Check className="h-3.5 w-3.5" /> : '2'}
+                    {/* Add a glowing effect around completed status */}
+                    {progress === 100 && (
+                      <div className="absolute -inset-1 rounded-full border-2 border-primary/40 animate-pulse"></div>
+                    )}
                   </div>
                   <span className={`absolute top-7 text-[10px] whitespace-nowrap font-medium ${progress === 100 ? 'text-primary' : user ? 'text-primary/80' : 'text-slate-500'}`}>
-                    Authenticate WhatsApp
+                    {progress === 100 ? 'Successfully Activated' : 'Authenticate WhatsApp'}
                   </span>
                   
                   {/* Animation dots for active state */}
@@ -273,6 +280,21 @@ export default function ActivateNeuralExtension() {
               </div>
             </div>
           </div>
+          
+          {/* Success message that shows on both web and mobile views when activated */}
+          {isWhatsAppConnected && user && (
+            <div className="w-full max-w-md mx-auto mb-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4 flex items-center">
+              <div className="bg-green-100 dark:bg-green-800/30 rounded-full p-2 mr-3">
+                <CheckCircle2 className="h-5 w-5 text-green-600 dark:text-green-400" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-sm font-medium text-green-800 dark:text-green-300">Neural Extension Successfully Activated!</h3>
+                <p className="text-xs text-green-700 dark:text-green-400 mt-0.5">
+                  Your WhatsApp is now connected to DotSpark. The neural extension will continuously learn from your interactions.
+                </p>
+              </div>
+            </div>
+          )}
           
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-2">
