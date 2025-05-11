@@ -18,6 +18,7 @@ import WhatsAppTest from "@/pages/WhatsAppTest";
 import WhatsAppEntries from "@/pages/WhatsAppEntries";
 import FixedEntries from "@/pages/FixedEntries";
 import ActivateNeuralExtension from "@/pages/ActivateNeuralExtension";
+import Testing from "@/pages/Testing";
 import AppLayout from "@/components/layout/AppLayout";
 import EntryDetail from "@/components/entries/EntryDetail";
 import ChatEntryForm from "@/components/chat/ChatEntryForm";
