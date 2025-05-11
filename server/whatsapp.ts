@@ -666,24 +666,30 @@ export async function processWhatsAppMessage(from: string, messageText: string):
     try {
       // Use the user's ID to maintain conversation history
       const response = await generateAdvancedResponse(userId, messageText, from);
-      console.log(`Got response from OpenAI: ${response.substring(0, 100)}...`);
       
-      // Update the lastMessageSentAt timestamp
-      try {
-        await db.update(whatsappUsers)
-          .set({ 
-            lastMessageSentAt: new Date(),
-            updatedAt: new Date()
-          })
-          .where(eq(whatsappUsers.phoneNumber, standardizedPhone));
-      } catch (dbError) {
-        console.error("Error updating lastMessageSentAt for WhatsApp user:", dbError);
+      // Check if response is valid and has text property
+      if (response && response.text) {
+        console.log(`Got response from OpenAI: ${response.text.substring(0, 100)}...`);
+        
+        // Update the lastMessageSentAt timestamp
+        try {
+          await db.update(whatsappUsers)
+            .set({ 
+              lastMessageSentAt: new Date(),
+              updatedAt: new Date()
+            })
+            .where(eq(whatsappUsers.phoneNumber, standardizedPhone));
+        } catch (dbError) {
+          console.error("Error updating lastMessageSentAt for WhatsApp user:", dbError);
+        }
+      } else {
+        console.error("Invalid response format from OpenAI:", response);
       }
       
       // Return the AI response
       return {
         success: true,
-        message: response
+        message: response && response.text ? response.text : "I apologize, I couldn't generate a proper response. Please try again."
       };
     } catch (aiError) {
       console.error("Error generating AI response:", aiError);
