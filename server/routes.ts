@@ -51,11 +51,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get entries endpoint - uses auth when available, fallback to demo user
   app.get(`${apiPrefix}/entries`, async (req: Request, res: Response) => {
     try {
+      // Allow direct user ID specification for debugging/special pages
+      const directUserId = req.query.directUserId ? parseInt(req.query.directUserId as string) : undefined;
+      
       // Get the authenticated user ID if available, otherwise fallback to demo user
       let userId = 1; // Demo user ID as fallback
       
-      // Check if this is an authenticated request
-      if (req.isAuthenticated && req.isAuthenticated() && (req as AuthenticatedRequest).user?.id) {
+      if (directUserId) {
+        // Use the direct user ID if specified
+        userId = directUserId;
+        console.log(`⭐️ Using direct user ID: ${userId} from query parameter`);
+      } else if (req.isAuthenticated && req.isAuthenticated() && (req as AuthenticatedRequest).user?.id) {
+        // Otherwise use the authenticated user ID
         userId = (req as AuthenticatedRequest).user.id;
         console.log(`⭐️ Getting entries for authenticated user ID: ${userId}`);
       } else {
