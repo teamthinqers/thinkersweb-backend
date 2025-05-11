@@ -171,18 +171,30 @@ export async function processWhatsAppMessage(from: string, messageText: string):
     let userId = await getUserIdFromWhatsAppNumber(from);
     console.log(`⭐️ Found linked userId: ${userId || 'none'}`);
     
-    const isFirstTimeUser = !userId;
+    // Get WhatsApp user record directly to check if this is their first message
+    // Make sure to standardize the phone format for correct lookup
+    const standardizedPhone = normalizedPhone.startsWith('+') 
+      ? normalizedPhone 
+      : `+${normalizedPhone}`;
+      
+    console.log(`Looking up WhatsApp user with standardized phone: ${standardizedPhone}`);
+    
+    const whatsappUserRecord = await db.query.whatsappUsers.findFirst({
+      where: eq(whatsappUsers.phoneNumber, standardizedPhone)
+    });
+    
+    // First-time user is someone we've never seen before at all
+    const isFirstTimeUser = !whatsappUserRecord;
+    console.log(`WhatsApp user record found: ${whatsappUserRecord ? 'YES' : 'NO (first time user)'}`);
+    
+    // Also track if this is linked to an account
+    const isLinkedToAccount = !!userId;
     
     // If no linked account found, use the demo account to allow immediate usage
     if (!userId) {
       // Use the demo user ID as a fallback for all unlinked WhatsApp users
       const DEMO_USER_ID = 1;
       userId = DEMO_USER_ID;
-      
-      // Standardize phone format for consistent storage
-      const standardizedPhone = normalizedPhone.startsWith('+') 
-        ? normalizedPhone 
-        : `+${normalizedPhone}`;
       
       // Auto-register this phone number with the demo account
       console.log(`⭐️ Auto-registering new WhatsApp user with demo account: ${standardizedPhone}`);
@@ -249,32 +261,30 @@ export async function processWhatsAppMessage(from: string, messageText: string):
       // We'll send an immediate welcome message before processing their actual message
       let welcomeMessage;
       
-      // Different welcome message based on whether they used the default prompt
-      if (isDefaultPrompt) {
-        welcomeMessage = 
-          "✨ *Welcome to DotSpark.*\n\n" +
-          "Thanks for reaching out! DotSpark is your neural extension for clearer thinking and instant insights.\n\n" +
-          "I can help with anything on your mind — from breaking down complex ideas to organizing your thoughts. What would you like to explore today?";
-          
-        // Send the welcome message
-        await sendWhatsAppReply(from, welcomeMessage);
+      // For ANY message from a first-time user, send our welcome message
+      // This ensures consistent welcome for both button clicks and direct messages
+      welcomeMessage = 
+        "✨ *Welcome to DotSpark.*\n\n" +
+        "Thanks for reaching out! DotSpark is your neural extension for clearer thinking and instant insights.\n\n" +
+        "I can help with anything on your mind — from breaking down complex ideas to organizing your thoughts. What would you like to explore today?";
         
-        // For default prompt, return immediately after welcome
+      console.log(`Sending welcome message to first-time user: ${from}`);
+      
+      // Send the welcome message
+      await sendWhatsAppReply(from, welcomeMessage);
+      
+      // For default prompts, return immediately after welcome message
+      // This prevents processing empty/generic first messages from button clicks
+      if (isDefaultPrompt) {
+        console.log(`First-time user with default prompt: stopping after welcome`);
         return {
           success: true,
           message: welcomeMessage
         };
-      } else {
-        welcomeMessage = 
-          "✨ *Welcome to DotSpark.*\n\n" +
-          "You can ask, explore, or break down any thought here — DotSpark is built to respond with clarity and insight, instantly.\n\n" +
-          "Say what's on your mind — let's begin.";
-          
-        // Send the welcome message
-        await sendWhatsAppReply(from, welcomeMessage);
       }
       
-      // We'll handle their initial message below after sending the welcome
+      console.log(`First-time user with custom message: continuing to process their message`);
+      // For non-default messages, continue processing their actual message content
     }
 
     // Handle explicit commands first
