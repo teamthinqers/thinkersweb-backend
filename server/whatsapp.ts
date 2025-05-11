@@ -215,16 +215,9 @@ export async function processWhatsAppMessage(from: string, messageText: string):
       
       // We'll send an immediate welcome message before processing their actual message
       const welcomeMessage = 
-        "👋 *Welcome to your Neural Extension!*\n\n" +
-        "DotSpark functions as a personalized cognitive extension that you can tune like your own brain.\n\n" +
-        "The system proactively generates frameworks while continuously learning from your interactions, automatically connecting disparate information into actionable insights.\n\n" +
-        "Share a thought, ask a question, or describe a decision you're stuck on — I'll adapt to your thinking style with each interaction.\n\n" +
-        "💡 *Want the full neural experience?*\n" +
-        "Create a DotSpark account at dotspark.ai to:\n" +
-        "• Access your personal dashboard with all interactions\n" +
-        "• Visualize your thinking patterns and insights\n" +
-        "• Customize how your neural extension processes information\n\n" +
-        "Just type 'link' anytime to connect WhatsApp with your DotSpark account.";
+        "✨ *Welcome to DotSpark.*\n\n" +
+        "You can ask, explore, or break down any thought here — DotSpark is built to respond with clarity and insight, instantly.\n\n" +
+        "Say what's on your mind — let's begin.";
         
       await sendWhatsAppReply(from, welcomeMessage);
       
