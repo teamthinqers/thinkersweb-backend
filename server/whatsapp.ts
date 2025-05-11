@@ -65,10 +65,31 @@ export async function getUserIdFromWhatsAppNumber(phoneNumber: string): Promise<
     // Normalize phone number format (remove WhatsApp prefix if present)
     const normalizedPhone = phoneNumber.replace('whatsapp:', '').trim();
     
-    // Look up user by phone number in the WhatsApp users table
-    const whatsappUser = await db.query.whatsappUsers.findFirst({
-      where: eq(whatsappUsers.phoneNumber, normalizedPhone)
+    // Create standardized version (always with + prefix)
+    const standardizedPhone = normalizedPhone.startsWith('+') 
+      ? normalizedPhone 
+      : `+${normalizedPhone}`;
+    
+    console.log(`🔍 Looking up WhatsApp user with phone: ${normalizedPhone} (standardized: ${standardizedPhone})`);
+    
+    // Try to find with standardized format first
+    let whatsappUser = await db.query.whatsappUsers.findFirst({
+      where: eq(whatsappUsers.phoneNumber, standardizedPhone)
     });
+    
+    // If not found, try with original format
+    if (!whatsappUser) {
+      console.log(`🔍 Not found with standardized format, trying original format`);
+      whatsappUser = await db.query.whatsappUsers.findFirst({
+        where: eq(whatsappUsers.phoneNumber, normalizedPhone)
+      });
+    }
+    
+    if (whatsappUser?.userId) {
+      console.log(`✅ Found WhatsApp user with ID: ${whatsappUser.userId}`);
+    } else {
+      console.log(`⚠️ No WhatsApp user found for phone: ${normalizedPhone}`);
+    }
     
     // Return the user ID if found, or null if not registered
     return whatsappUser?.userId || null;
@@ -158,17 +179,27 @@ export async function processWhatsAppMessage(from: string, messageText: string):
       const DEMO_USER_ID = 1;
       userId = DEMO_USER_ID;
       
+      // Standardize phone format for consistent storage
+      const standardizedPhone = normalizedPhone.startsWith('+') 
+        ? normalizedPhone 
+        : `+${normalizedPhone}`;
+      
       // Auto-register this phone number with the demo account
-      console.log(`⭐️ Auto-registering new WhatsApp user with demo account: ${normalizedPhone}`);
+      console.log(`⭐️ Auto-registering new WhatsApp user with demo account: ${standardizedPhone}`);
       try {
+        // Use standardized phone format for storage
         const [newWhatsappUser] = await db.insert(whatsappUsers).values({
           userId: DEMO_USER_ID,
-          phoneNumber: normalizedPhone,
+          phoneNumber: standardizedPhone,
           active: true,
           lastMessageSentAt: new Date(),
-        }).returning();
+        }).onConflictDoNothing().returning();
         
-        console.log(`⭐️ Successfully registered WhatsApp user: ${JSON.stringify(newWhatsappUser)}`);
+        if (newWhatsappUser) {
+          console.log(`⭐️ Successfully registered WhatsApp user: ${JSON.stringify(newWhatsappUser)}`);
+        } else {
+          console.log(`⚠️ WhatsApp user already exists (onConflictDoNothing took effect)`);
+        }
       } catch (error) {
         // If there's an error (like duplicate entry), just log it but continue
         console.error("Error registering WhatsApp user:", error);

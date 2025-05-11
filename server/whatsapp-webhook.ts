@@ -129,12 +129,27 @@ whatsappWebhookRouter.post('/', async (req: Request, res: Response) => {
       
       // Find a user associated with this phone number
       const normalizedPhone = from.replace('whatsapp:', '').trim();
-      console.log(`⭐️ Looking up user for WhatsApp number: ${normalizedPhone}`);
       
-      // Check if this phone is linked to a user account
-      const whatsappUser = await db.query.whatsappUsers.findFirst({
-        where: eq(whatsappUsers.phoneNumber, normalizedPhone)
+      // Additional normalization to handle international formats
+      // Some phone numbers might come with '+' prefix, others without
+      const standardizedPhone = normalizedPhone.startsWith('+') 
+        ? normalizedPhone 
+        : `+${normalizedPhone}`;
+        
+      console.log(`⭐️ Looking up user for WhatsApp number: ${normalizedPhone} (standardized: ${standardizedPhone})`);
+      
+      // Check if this phone is linked to a user account - try both formats
+      let whatsappUser = await db.query.whatsappUsers.findFirst({
+        where: eq(whatsappUsers.phoneNumber, standardizedPhone)
       });
+      
+      // If not found with standardized format, try the original format
+      if (!whatsappUser) {
+        console.log(`⚠️ User not found with standardized phone, trying original format`);
+        whatsappUser = await db.query.whatsappUsers.findFirst({
+          where: eq(whatsappUsers.phoneNumber, normalizedPhone)
+        });
+      }
 
       let userId;
       
@@ -147,15 +162,25 @@ whatsappWebhookRouter.post('/', async (req: Request, res: Response) => {
         userId = 1; // Demo user ID
         console.log(`⚠️ No linked user found. Using demo user ID: ${userId} for phone ${normalizedPhone}`);
         
+        // Standardize phone format for consistent storage
+        const standardizedPhone = normalizedPhone.startsWith('+') 
+          ? normalizedPhone 
+          : `+${normalizedPhone}`;
+        
         // Auto-register this phone number with the demo account if not already registered
         try {
-          await db.insert(whatsappUsers).values({
+          const [newUser] = await db.insert(whatsappUsers).values({
             userId: userId,
-            phoneNumber: normalizedPhone,
+            phoneNumber: standardizedPhone, // Use standardized format
             active: true,
             lastMessageSentAt: new Date(),
-          }).onConflictDoNothing();
-          console.log(`⭐️ Auto-registered phone ${normalizedPhone} with demo user ID ${userId}`);
+          }).onConflictDoNothing().returning();
+          
+          if (newUser) {
+            console.log(`⭐️ Auto-registered phone ${standardizedPhone} with demo user ID ${userId}`);
+          } else {
+            console.log(`⚠️ WhatsApp user registration skipped (already exists)`);
+          }
         } catch (regError) {
           console.error("⛔️ Error registering phone with demo user:", regError);
           // Continue anyway
@@ -175,16 +200,41 @@ whatsappWebhookRouter.post('/', async (req: Request, res: Response) => {
           hour12: true
         });
         
+        const now = new Date();
+        
         const entryData = {
           userId: userId,
           title: `WhatsApp - ${timestamp}`,
           content: messageText,
           visibility: "private",
-          isFavorite: false
+          isFavorite: false,
+          createdAt: now,
+          updatedAt: now
         };
         
+        // Insert with explicit timestamp to ensure it's visible in dashboard
         const [newEntry] = await db.insert(entries).values(entryData).returning();
-        console.log(`⭐️ Created entry ID ${newEntry.id} for WhatsApp message`);
+        
+        if (newEntry) {
+          console.log(`⭐️ Created entry with ID ${newEntry.id} for WhatsApp message with timestamp ${now.toISOString()}`);
+          
+          // Double-check entry creation
+          try {
+            const verifyEntry = await db.query.entries.findFirst({
+              where: eq(entries.id, newEntry.id)
+            });
+            
+            if (verifyEntry) {
+              console.log(`⭐️ Entry verification successful. Entry ID ${newEntry.id} exists in database.`);
+            } else {
+              console.error(`⛔️ Failed to verify entry existence after creation. Entry ID ${newEntry.id} not found!`);
+            }
+          } catch (verifyError) {
+            console.error(`⛔️ Error verifying entry: ${verifyError}`);
+          }
+        } else {
+          console.error(`⛔️ Failed to create entry! No entry returned after insert.`);
+        }
       } catch (entryError) {
         console.error("⛔️ Error creating entry for WhatsApp message:", entryError);
       }
