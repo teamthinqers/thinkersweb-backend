@@ -114,7 +114,7 @@ export default function ActivateNeuralExtension() {
             .then(res => res.json())
             .then(data => {
               console.log("WhatsApp status check result:", data);
-              if (data.isConnected) {
+              if (data.isRegistered || data.isConnected) {
                 clearInterval(checkActivation);
                 localStorage.setItem('whatsapp_activated', 'true');
                 toast({
