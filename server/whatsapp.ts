@@ -435,12 +435,12 @@ export async function processWhatsAppMessage(from: string, messageText: string):
       return {
         success: true,
         message: "✅ *Successfully Connected!*\n\n" +
-          `Great! Your WhatsApp is now connected to your DotSpark account (${userEmail}).\n\n` +
-          "What this means for you:\n" +
-          "• Our conversations will now appear in your DotSpark dashboard\n" +
-          "• I can reference your saved insights and entries\n" +
-          "• Your experience will be more personalized over time\n\n" +
-          "What would you like to talk about? Ask me anything!"
+          `✅ *Congratulations — your Neural Extension is now active!*\n\n` +
+          `DotSpark is now tuned to grow with your thinking.\n` +
+          `The more you interact, the sharper and more personalized it becomes.\n\n` +
+          `Say anything — a thought, a question, a decision you're stuck on.\n` +
+          `Let's begin.\n\n` +
+          `You can also access your personal dashboard for deeper insights at www.dotspark.in`
       };
     }
     
@@ -515,12 +515,12 @@ export async function processWhatsAppMessage(from: string, messageText: string):
       return {
         success: true,
         message: "✅ *Successfully Connected!*\n\n" +
-          `Great! Your WhatsApp is now connected to your DotSpark account${user?.email ? ` (${user.email})` : ''}.\n\n` +
-          "What this means for you:\n" +
-          "• Our conversations will now appear in your DotSpark dashboard\n" +
-          "• I can reference your saved insights and entries\n" +
-          "• Your experience will be more personalized over time\n\n" +
-          "What would you like to talk about? Ask me anything!"
+          `✅ *Congratulations — your Neural Extension is now active!*\n\n` +
+          `DotSpark is now tuned to grow with your thinking.\n` +
+          `The more you interact, the sharper and more personalized it becomes.\n\n` +
+          `Say anything — a thought, a question, a decision you're stuck on.\n` +
+          `Let's begin.\n\n` +
+          `You can also access your personal dashboard for deeper insights at www.dotspark.in`
       };
     }
     

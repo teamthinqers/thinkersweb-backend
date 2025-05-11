@@ -62,7 +62,7 @@ export function NeuralWhatsAppLinking() {
         // Store welcome message in localStorage so it can be sent to the user
         localStorage.setItem('whatsapp_welcome_message', JSON.stringify({
           title: "✅ Congratulations — your Neural Extension is now active!",
-          message: "You can now use DotSpark through WhatsApp.\n\nSay anything — a thought, a question, a decision you're stuck on.\nLet's begin.\n\nYou can also access your personal dashboard at www.dotspark.in."
+          message: "DotSpark is now tuned to grow with your thinking.\nThe more you interact, the sharper and more personalized it becomes.\n\nSay anything — a thought, a question, a decision you're stuck on.\nLet's begin.\n\nYou can also access your personal dashboard for deeper insights at www.dotspark.in"
         }));
         
         // Store activation flags for persistence and UI updates
@@ -111,7 +111,7 @@ export function NeuralWhatsAppLinking() {
       
       // Create a pre-filled message with natural language and user info
       const phoneNumber = "16067157733";
-      const message = `Hey DotSpark, authenticate my WhatsApp chat with you for Neural extension. My email is ${userEmail}`;
+      const message = `Hey DotSpark, please connect my Neural Extension via WhatsApp. My DotSpark account is ${userEmail}`;
       
       // Show success toast with better instructions
       toast({
