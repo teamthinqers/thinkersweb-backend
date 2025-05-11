@@ -28,6 +28,8 @@ import {
   Button 
 } from "@/components/ui/button";
 import { useMobile } from "@/hooks/use-mobile";
+import { useWhatsAppStatus } from "@/hooks/useWhatsAppStatus";
+import { Check } from "lucide-react";
 
 interface HeaderProps {
   onSearch: (query: string) => void;
@@ -38,6 +40,7 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const { toast } = useToast();
+  const { isWhatsAppConnected } = useWhatsAppStatus();
   const { user, logout } = useAuth();
   const [, setLocation] = useLocation();
   const isMobile = useMobile();
@@ -201,13 +204,25 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
               </Button>
               
               <Button 
-                className="mr-2 bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white"
+                className={`mr-2 ${isWhatsAppConnected 
+                  ? "bg-gradient-to-r from-green-600 to-emerald-500 hover:from-green-700 hover:to-emerald-600" 
+                  : "bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90"} text-white`}
                 size="sm"
                 onClick={() => setLocation("/activate-neural")}
               >
-                <Brain className="h-4 w-4 mr-1" />
-                <Sparkles className="h-3 w-3 absolute top-1 right-1" />
-                Activate Neural
+                {isWhatsAppConnected ? (
+                  <>
+                    <Check className="h-4 w-4 mr-1" />
+                    <Sparkles className="h-3 w-3 absolute top-1 right-1" />
+                    Activated
+                  </>
+                ) : (
+                  <>
+                    <Brain className="h-4 w-4 mr-1" />
+                    <Sparkles className="h-3 w-3 absolute top-1 right-1" />
+                    Activate Neural
+                  </>
+                )}
               </Button>
               
               <button 
