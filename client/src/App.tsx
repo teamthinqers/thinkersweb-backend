@@ -180,6 +180,37 @@ function Router() {
 }
 
 function App() {
+  // Check for WhatsApp redirect on initial load
+  useEffect(() => {
+    // Check if we have a pending WhatsApp redirect
+    const redirectTarget = sessionStorage.getItem('redirectAfterWhatsApp');
+    const redirectExpiry = sessionStorage.getItem('redirectAfterWhatsAppExpires');
+    
+    if (redirectTarget && redirectExpiry) {
+      // Check if the redirect is still valid (not expired)
+      const expiryTime = parseInt(redirectExpiry, 10);
+      const now = Date.now();
+      
+      if (now < expiryTime) {
+        console.log(`Redirecting to ${redirectTarget} after WhatsApp interaction`);
+        
+        // Clear the redirect data
+        sessionStorage.removeItem('redirectAfterWhatsApp');
+        sessionStorage.removeItem('redirectAfterWhatsAppExpires');
+        
+        // Add a flag to show that we're coming back from WhatsApp
+        sessionStorage.setItem('returningFromWhatsApp', 'true');
+        
+        // Redirect to the target page
+        window.location.href = `/${redirectTarget}`;
+      } else {
+        // Clear expired redirect data
+        sessionStorage.removeItem('redirectAfterWhatsApp');
+        sessionStorage.removeItem('redirectAfterWhatsAppExpires');
+      }
+    }
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>

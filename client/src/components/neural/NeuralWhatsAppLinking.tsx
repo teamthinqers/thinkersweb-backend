@@ -126,23 +126,58 @@ export function NeuralWhatsAppLinking() {
       const mobileAppLink = `whatsapp://send?phone=${phoneNumber}&text=${encodedMessage}`;
       const webFallbackUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
       
+      // Store the current location before sending to WhatsApp
+      sessionStorage.setItem('redirectAfterWhatsApp', 'activate-neural');
+      
+      // Set a timestamp for the redirect expiration (5 minutes from now)
+      const expirationTime = Date.now() + (5 * 60 * 1000);
+      sessionStorage.setItem('redirectAfterWhatsAppExpires', expirationTime.toString());
+      
       if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
         // Create and click an actual anchor element for better mobile compatibility
         const a = document.createElement('a');
         a.href = mobileAppLink;
-        a.setAttribute('target', '_blank');
-        a.setAttribute('rel', 'noopener noreferrer');
+        
+        // Important: For mobile UX, don't use _blank which prevents returning to our site
+        // Use _self to ensure that when the user comes back (hits back), they return to our app
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
         
         // After a short delay, try the web version as fallback
         setTimeout(() => {
-          window.open(webFallbackUrl, '_blank');
+          // Create a form that does a POST to launch WhatsApp then redirects back
+          const form = document.createElement('form');
+          form.setAttribute('method', 'get');
+          form.setAttribute('action', webFallbackUrl);
+          form.setAttribute('target', '_blank');
+          document.body.appendChild(form);
+          form.submit();
+          document.body.removeChild(form);
+          
+          // After a short delay, set up an automatic redirect back to activation page
+          // This only works if the user comes back to this tab after sending their message
+          setTimeout(() => {
+            window.location.href = "/activate-neural";
+          }, 5000);
         }, 1000);
       } else {
-        // For desktop, use the web version directly
-        window.open(webFallbackUrl, '_blank');
+        // For desktop, open in a new window/tab but ensure our page stays in the current tab
+        const whatsappWindow = window.open(webFallbackUrl, '_blank');
+        
+        // If we have a reference to the opened window, we can set up a check
+        // to see when it's closed and redirect back to activation page
+        if (whatsappWindow) {
+          const checkClosed = setInterval(() => {
+            if (whatsappWindow.closed) {
+              clearInterval(checkClosed);
+              window.location.href = "/activate-neural";
+            }
+          }, 1000);
+          
+          // Clear the interval after 2 minutes to avoid resource usage
+          setTimeout(() => clearInterval(checkClosed), 2 * 60 * 1000);
+        }
       }
       
       // Add logging for debugging

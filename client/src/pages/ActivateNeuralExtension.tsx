@@ -77,9 +77,73 @@ export default function ActivateNeuralExtension() {
   useEffect(() => {
     // Check for a specific flag to avoid duplicate notifications
     const hasBeenActivatedBefore = localStorage.getItem('neural_extension_seen') === 'true';
+    // Check if returning from WhatsApp
+    const returningFromWhatsApp = sessionStorage.getItem('returningFromWhatsApp') === 'true';
+    
+    // For users returning from WhatsApp, we want to force check their activation status
+    if (returningFromWhatsApp && user) {
+      console.log("User returned from WhatsApp, checking connection status");
+      sessionStorage.removeItem('returningFromWhatsApp');
+      
+      // Start tab at the second step
+      setActiveTab('step2');
+      
+      // Add a flag to trigger automatic polling
+      localStorage.setItem('check_whatsapp_status', 'true');
+      
+      // If they are already connected, show success
+      if (isWhatsAppConnected) {
+        toast({
+          title: "Neural Extension Activated!",
+          description: "Your WhatsApp message was received and your neural extension is now active.",
+          duration: 5000,
+        });
+        localStorage.setItem('whatsapp_activated', 'true');
+      } else {
+        // If they're not connected yet, show a waiting message 
+        toast({
+          title: "Message Sent!",
+          description: "Waiting for WhatsApp activation confirmation...",
+          duration: 3000,
+        });
+        
+        // Set a polling check for activation status
+        const checkActivation = setInterval(() => {
+          // Force a status check
+          fetch('/api/whatsapp/status')
+            .then(res => res.json())
+            .then(data => {
+              console.log("WhatsApp status check result:", data);
+              if (data.isConnected) {
+                clearInterval(checkActivation);
+                localStorage.setItem('whatsapp_activated', 'true');
+                toast({
+                  title: "Neural Extension Activated!",
+                  description: "Your WhatsApp message was received and your neural extension is now active.",
+                  duration: 5000,
+                });
+              }
+            })
+            .catch(err => console.error("Error checking WhatsApp status:", err));
+        }, 3000); // Check every 3 seconds
+        
+        // Clear the interval after 30 seconds to avoid excessive polling
+        setTimeout(() => {
+          clearInterval(checkActivation);
+          // Final reminder if not activated
+          if (!isWhatsAppConnected) {
+            toast({
+              title: "Still Waiting...",
+              description: "It may take a moment to receive your WhatsApp message. The page will update automatically when your neural extension is activated.",
+              duration: 5000,
+            });
+          }
+        }, 30000);
+      }
+    }
     
     // Only show toast if this is a new activation and we have an explicit success flag
-    if (showActivationSuccess && user && !hasBeenActivatedBefore) {
+    else if (showActivationSuccess && user && !hasBeenActivatedBefore) {
       // Success toast with longer duration - only for first-time activations
       toast({
         title: "Neural Extension Activated!",

@@ -62,12 +62,48 @@ export function useWhatsAppStatus() {
     refetch();
   };
   
-  // When component mounts, ensure we get fresh data from the server
+  // Listen for manual refresh events and add a check for status polling
   useEffect(() => {
+    // Add event listener for manual refresh triggers (from external components)
+    const handleStatusCheck = () => {
+      console.log("Received whatsapp-status-check event, refreshing status");
+      forceStatusRefresh();
+    };
+    
+    // Register event listener
+    window.addEventListener('whatsapp-status-check', handleStatusCheck);
+    
+    // Check if we should poll for status (after returning from WhatsApp)
+    const shouldCheckStatus = localStorage.getItem('check_whatsapp_status') === 'true';
+    if (shouldCheckStatus && user) {
+      console.log("Starting WhatsApp status polling after redirect");
+      
+      // Clear the flag immediately to avoid duplicate polling
+      localStorage.removeItem('check_whatsapp_status');
+      
+      // Set up a polling interval for frequent checks
+      const pollingInterval = setInterval(() => {
+        console.log("Polling WhatsApp status...");
+        forceStatusRefresh();
+      }, 2000); // Poll every 2 seconds
+      
+      // Stop polling after 30 seconds to avoid excessive API calls
+      setTimeout(() => {
+        console.log("Stopping WhatsApp status polling");
+        clearInterval(pollingInterval);
+      }, 30000);
+    }
+    
+    // When component mounts, ensure we get fresh data from the server
     if (user) {
       console.log("User authenticated, forcing refresh of WhatsApp status from server");
       forceStatusRefresh();
     }
+    
+    // Cleanup function
+    return () => {
+      window.removeEventListener('whatsapp-status-check', handleStatusCheck);
+    };
   }, [user, forceStatusRefresh]);
   
   // Main effect for handling data changes from API
