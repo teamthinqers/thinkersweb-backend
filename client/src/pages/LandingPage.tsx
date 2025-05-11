@@ -74,7 +74,7 @@ export default function LandingPage() {
                 <Button
                   variant="default"
                   size="sm"
-                  className="bg-[#25D366] hover:bg-[#128C7E] text-white px-3 py-1 h-8 rounded-md"
+                  className="bg-[#25D366] hover:bg-[#128C7E] text-white px-2 py-0.5 h-7 rounded-md"
                   onClick={() => {
                     const whatsAppNumber = '16067157733';
                     const mobileAppLink = `whatsapp://send?phone=${whatsAppNumber}`;
@@ -86,17 +86,17 @@ export default function LandingPage() {
                     }, 500);
                   }}
                 >
-                  <MessageCircle className="h-4 w-4 mr-1" />
-                  <span>Ask</span>
+                  <MessageCircle className="h-3.5 w-3.5 mr-1" />
+                  <span className="text-xs">Ask</span>
                 </Button>
               </div>
               
               <Link href="/activate-neural" className="block sm:hidden">
                 <Button
                   size="sm"
-                  className="bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white relative h-8 px-3"
+                  className="bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white relative h-7 px-2"
                 >
-                  <Brain className="h-4 w-4 mr-1" />
+                  <Brain className="h-3.5 w-3.5 mr-1" />
                   <span className="text-xs">Activate</span>
                 </Button>
               </Link>
@@ -156,8 +156,8 @@ export default function LandingPage() {
             <div className="md:hidden ml-1">
               <Sheet>
                 <SheetTrigger asChild>
-                  <Button variant="ghost" size="sm" className="p-1">
-                    <Menu className="h-4 w-4" />
+                  <Button variant="ghost" size="lg" className="p-2">
+                    <Menu className="h-6 w-6" />
                   </Button>
                 </SheetTrigger>
                 <SheetContent side="right">
