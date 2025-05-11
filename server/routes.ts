@@ -345,13 +345,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get DotSpark WhatsApp chatbot status
   app.get(`${apiPrefix}/whatsapp/status`, isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
     try {
-      const userId = req.user?.id || 1; // Default to demo user in dev environment
+      // Get the actual authenticated user ID - never default to a demo user for status checks
+      const userId = req.user?.id;
       
+      // If no user ID is available, return a proper error
+      if (!userId) {
+        console.log("WhatsApp status check without user ID");
+        return res.status(401).json({ 
+          isRegistered: false,
+          error: 'User not authenticated' 
+        });
+      }
+      
+      console.log(`Getting WhatsApp status for user ID: ${userId}`);
+      
+      // Get status from the database
       const status = await getWhatsAppStatus(userId);
-      res.status(200).json(status);
+      
+      // Add fixed response format to ensure frontend always has isRegistered field
+      res.status(200).json({
+        isRegistered: status.isRegistered,
+        phoneNumber: status.phoneNumber,
+        registeredAt: status.registeredAt,
+        userId: status.userId
+      });
     } catch (err) {
       console.error("WhatsApp chatbot status error:", err);
-      res.status(500).json({ error: 'Failed to get WhatsApp chatbot status' });
+      // Even on error, return a properly formatted response
+      res.status(500).json({ 
+        isRegistered: false,
+        error: 'Failed to get WhatsApp chatbot status' 
+      });
     }
   });
 

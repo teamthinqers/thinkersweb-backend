@@ -705,28 +705,40 @@ export async function unregisterWhatsAppUser(userId: number): Promise<{
  * Get DotSpark WhatsApp chatbot status for a user
  */
 export async function getWhatsAppStatus(userId: number): Promise<{
-  active: boolean;
+  isRegistered: boolean;
   phoneNumber?: string;
-  lastMessageSentAt?: Date;
+  registeredAt?: string;
+  userId?: number;
 }> {
   try {
+    console.log(`Checking WhatsApp status for user ID: ${userId}`);
+    
     // Find the most recently updated WhatsApp user record for this user
     const whatsappUser = await db.query.whatsappUsers.findFirst({
       where: eq(whatsappUsers.userId, userId),
       orderBy: desc(whatsappUsers.updatedAt || whatsappUsers.createdAt)
     });
     
+    console.log(`WhatsApp user record found:`, whatsappUser ? 'Yes' : 'No');
+    
     if (!whatsappUser) {
-      return { active: false };
+      return { isRegistered: false };
     }
     
+    // When a record exists and is active, the user is registered
+    const isRegistered = whatsappUser.active ?? false;
+    
+    // Log the status for debugging
+    console.log(`WhatsApp activation status for user ${userId}: ${isRegistered ? 'ACTIVATED' : 'NOT ACTIVATED'}`);
+    
     return {
-      active: whatsappUser.active ?? false,
+      isRegistered: isRegistered,
       phoneNumber: whatsappUser.phoneNumber,
-      lastMessageSentAt: whatsappUser.lastMessageSentAt
+      registeredAt: whatsappUser.createdAt.toISOString(),
+      userId: whatsappUser.userId
     };
   } catch (error) {
     console.error("Error getting WhatsApp status:", error);
-    return { active: false };
+    return { isRegistered: false };
   }
 }
