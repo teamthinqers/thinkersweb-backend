@@ -14,29 +14,28 @@ export function NeuralWhatsAppLinking() {
   const [, setLocation] = useLocation();
   const { simulateActivation } = useWhatsAppStatus();
   
-  // Automatic redirect after successful activation simulation
+  // Automatic activation sequence after WhatsApp link is sent
   useEffect(() => {
     if (linkSent) {
-      // Automatically mark as activated after a few seconds
-      const timer = setTimeout(() => {
+      // Step 1: Mark as activated after user sends WhatsApp message (simulated with timeout)
+      const activationTimer = setTimeout(() => {
+        // Call the function to store activation in localStorage
         simulateActivation();
         
-        // Success message
+        // Show success notification
         toast({
           title: "Neural Extension Activated!",
           description: "Your WhatsApp is now connected to DotSpark.",
           duration: 5000,
         });
         
-        // Redirect to dashboard after a moment
-        setTimeout(() => {
-          setLocation('/dashboard');
-        }, 1500);
+        // Step 2: Manual reload to ensure all components update with new activation status
+        window.location.href = '/dashboard';
       }, 3000);
       
-      return () => clearTimeout(timer);
+      return () => clearTimeout(activationTimer);
     }
-  }, [linkSent, simulateActivation, setLocation, toast]);
+  }, [linkSent, simulateActivation, toast]);
 
   // Direct WhatsApp linking without server interaction
   const openWhatsAppLink = async () => {
@@ -110,7 +109,7 @@ export function NeuralWhatsAppLinking() {
                   Hi! I'm DotSpark's Neural Extension
                 </div>
                 <div className="mr-1 ml-auto max-w-[80%] bg-[#D9FDD3] dark:bg-[#005C4B] p-1 text-[5px] rounded-lg shadow-sm">
-                  link:{user?.email ? user.email.substring(0, 5) + "..." : "email..."}
+                  Hey DotSpark, authenticate...
                 </div>
               </div>
             </div>
@@ -125,15 +124,15 @@ export function NeuralWhatsAppLinking() {
             <ol className="text-xs space-y-1 text-slate-700 dark:text-slate-300">
               <li className="flex items-start">
                 <span className="flex-shrink-0 flex items-center justify-center bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 w-5 h-5 rounded-full mr-1 font-medium text-[10px]">1</span>
-                <span>Click <span className="font-medium text-primary">Authenticate</span> button</span>
+                <span>Click <span className="font-medium text-primary">Authenticate with WhatsApp</span> button</span>
               </li>
               <li className="flex items-start">
                 <span className="flex-shrink-0 flex items-center justify-center bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 w-5 h-5 rounded-full mr-1 font-medium text-[10px]">2</span>
-                <span>WhatsApp opens with your email</span>
+                <span>WhatsApp opens with authentication message</span>
               </li>
               <li className="flex items-start">
                 <span className="flex-shrink-0 flex items-center justify-center bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 w-5 h-5 rounded-full mr-1 font-medium text-[10px]">3</span>
-                <span>Tap <span className="font-medium text-green-600 dark:text-green-400">Send</span> to complete</span>
+                <span>Tap <span className="font-medium text-green-600 dark:text-green-400">Send</span> to complete - you'll be redirected automatically</span>
               </li>
             </ol>
           </div>
