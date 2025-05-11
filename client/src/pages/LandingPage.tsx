@@ -234,118 +234,94 @@ export default function LandingPage() {
       
       {/* Enhanced Hero Section with Visual Elements - Centered for all screens */}
       <section className="relative pt-6 pb-8 md:py-12 lg:py-16 overflow-hidden">
-        {/* Background visual elements with cognitive neural patterns */}
+        {/* Background visual elements with neural dot cloud patterns */}
         <div className="absolute inset-0 z-0">
           {/* Subtle gradient background effects */}
           <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/5 rounded-full blur-3xl opacity-60 -translate-y-1/2 translate-x-1/3"></div>
           <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-blue-500/5 dark:bg-blue-500/10 rounded-full blur-3xl opacity-60 translate-y-1/3 -translate-x-1/4"></div>
           
-          {/* Left Brain Hemisphere Abstraction */}
-          <div className="absolute left-20 top-1/3 w-[140px] h-[140px]">
-            {/* Hemisphere outline */}
-            <div className="absolute left-0 top-0 w-[70px] h-[140px] border-l border-t border-b border-primary/20 rounded-l-full"></div>
+          {/* Left side neural dot cloud */}
+          <div className="absolute left-16 top-1/3 w-[200px] h-[200px]">
+            {/* Primary user cluster */}
+            <div className="absolute left-[40%] top-[40%] w-8 h-8 bg-primary/20 rounded-full blur-md"></div>
+            <div className="absolute left-[40%] top-[40%] w-6 h-6 rounded-full border border-primary/30"></div>
+            <div className="absolute left-[40%] top-[40%] w-3 h-3 bg-primary/60 rounded-full animate-pulse-slow"></div>
             
-            {/* Key cognitive regions - only a few important ones */}
-            <div className="absolute left-[15%] top-[20%] w-[40px] h-[30px] border border-dashed border-primary/30 rounded-lg">
-              {/* Frontal lobe representation - decision making */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-3 h-3 bg-primary/30 rounded-full"></div>
-                <div className="absolute w-4 h-px bg-primary/40 rotate-45"></div>
-                <div className="absolute w-4 h-px bg-primary/40 -rotate-45"></div>
-              </div>
-            </div>
+            {/* Surrounding neural dots with pulse animation */}
+            <div className="absolute left-[20%] top-[30%] w-2 h-2 bg-primary/50 rounded-full animate-pulse"></div>
+            <div className="absolute left-[60%] top-[20%] w-1.5 h-1.5 bg-primary/40 rounded-full animate-pulse delay-300"></div>
+            <div className="absolute left-[70%] top-[60%] w-2 h-2 bg-indigo-500/50 rounded-full animate-pulse delay-500"></div>
+            <div className="absolute left-[30%] top-[70%] w-1.5 h-1.5 bg-primary/40 rounded-full animate-pulse delay-700"></div>
+            <div className="absolute left-[10%] top-[50%] w-1 h-1 bg-primary/30 rounded-full animate-pulse delay-200"></div>
             
-            {/* Neural connection pathway */}
-            <div className="absolute left-[40%] top-[60%] w-[60px] h-[1px] bg-gradient-to-r from-primary/50 to-transparent"></div>
-            <div className="absolute left-[40%] top-[60%] w-[1px] h-[40px] bg-gradient-to-b from-primary/50 to-transparent"></div>
+            {/* Spark connections between dots */}
+            <div className="absolute left-[40%] top-[40%] w-[60px] h-[1px] bg-gradient-to-r from-primary/60 to-transparent rotate-[20deg]"></div>
+            <div className="absolute left-[40%] top-[40%] w-[40px] h-[1px] bg-gradient-to-r from-primary/60 to-transparent rotate-[160deg]"></div>
+            <div className="absolute left-[40%] top-[40%] w-[50px] h-[1px] bg-gradient-to-r from-primary/60 to-transparent rotate-[260deg]"></div>
+            <div className="absolute left-[40%] top-[40%] w-[45px] h-[1px] bg-gradient-to-r from-primary/60 to-transparent rotate-[330deg]"></div>
             
-            {/* Single neural node with purpose */}
-            <div className="absolute left-[30%] top-[70%] w-5 h-5 rounded-full border border-primary/40 flex items-center justify-center">
-              <div className="w-2 h-2 bg-primary/60 rounded-full animate-pulse-slow"></div>
-            </div>
+            {/* Sparkling effects - small dots of light */}
+            <div className="absolute left-[25%] top-[35%] w-0.5 h-0.5 bg-white rounded-full animate-ping-slow"></div>
+            <div className="absolute left-[65%] top-[25%] w-0.5 h-0.5 bg-white rounded-full animate-ping-slow delay-400"></div>
+            <div className="absolute left-[55%] top-[65%] w-0.5 h-0.5 bg-white rounded-full animate-ping-slow delay-800"></div>
           </div>
           
-          {/* Right Brain Hemisphere Abstraction */}
-          <div className="absolute right-20 bottom-1/3 w-[140px] h-[140px]">
-            {/* Hemisphere outline */}
-            <div className="absolute right-0 top-0 w-[70px] h-[140px] border-r border-t border-b border-blue-500/20 rounded-r-full"></div>
+          {/* Right side neural dot cloud */}
+          <div className="absolute right-16 bottom-1/3 w-[200px] h-[200px]">
+            {/* Secondary system cluster */}
+            <div className="absolute right-[40%] top-[40%] w-8 h-8 bg-blue-500/20 rounded-full blur-md"></div>
+            <div className="absolute right-[40%] top-[40%] w-6 h-6 rounded-full border border-blue-500/30"></div>
+            <div className="absolute right-[40%] top-[40%] w-3 h-3 bg-blue-500/60 rounded-full animate-pulse-slow delay-200"></div>
             
-            {/* Key cognitive region - creative thinking */}
-            <div className="absolute right-[15%] top-[30%] w-[40px] h-[30px] border border-dashed border-blue-500/30 rounded-lg">
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-3 h-3 bg-blue-500/30 rounded-full"></div>
-                <div className="absolute w-3 h-px bg-blue-500/40 rotate-30 translate-x-1"></div>
-                <div className="absolute w-3 h-px bg-blue-500/40 -rotate-30 translate-x-1"></div>
-                <div className="absolute w-3 h-px bg-blue-500/40 rotate-90 translate-y-1"></div>
-              </div>
-            </div>
+            {/* Surrounding neural dots with pulse animation */}
+            <div className="absolute right-[20%] top-[30%] w-2 h-2 bg-blue-500/50 rounded-full animate-pulse delay-100"></div>
+            <div className="absolute right-[60%] top-[20%] w-1.5 h-1.5 bg-blue-500/40 rounded-full animate-pulse delay-400"></div>
+            <div className="absolute right-[70%] top-[60%] w-2 h-2 bg-indigo-500/50 rounded-full animate-pulse delay-600"></div>
+            <div className="absolute right-[30%] top-[70%] w-1.5 h-1.5 bg-blue-500/40 rounded-full animate-pulse delay-800"></div>
+            <div className="absolute right-[10%] top-[50%] w-1 h-1 bg-blue-500/30 rounded-full animate-pulse delay-300"></div>
             
-            {/* Neural connection pathway */}
-            <div className="absolute right-[40%] top-[60%] w-[60px] h-[1px] bg-gradient-to-l from-blue-500/50 to-transparent"></div>
-            <div className="absolute right-[40%] top-[20%] w-[1px] h-[40px] bg-gradient-to-t from-blue-500/50 to-transparent"></div>
+            {/* Spark connections between dots */}
+            <div className="absolute right-[40%] top-[40%] w-[60px] h-[1px] bg-gradient-to-l from-blue-500/60 to-transparent rotate-[20deg]"></div>
+            <div className="absolute right-[40%] top-[40%] w-[40px] h-[1px] bg-gradient-to-l from-blue-500/60 to-transparent rotate-[160deg]"></div>
+            <div className="absolute right-[40%] top-[40%] w-[50px] h-[1px] bg-gradient-to-l from-blue-500/60 to-transparent rotate-[260deg]"></div>
+            <div className="absolute right-[40%] top-[40%] w-[45px] h-[1px] bg-gradient-to-l from-blue-500/60 to-transparent rotate-[330deg]"></div>
             
-            {/* Single neural node with purpose */}
-            <div className="absolute right-[30%] top-[40%] w-5 h-5 rounded-full border border-blue-500/40 flex items-center justify-center">
-              <div className="w-2 h-2 bg-blue-500/60 rounded-full animate-pulse-slow delay-500"></div>
-            </div>
+            {/* Sparkling effects - small dots of light */}
+            <div className="absolute right-[25%] top-[35%] w-0.5 h-0.5 bg-white rounded-full animate-ping-slow delay-200"></div>
+            <div className="absolute right-[65%] top-[25%] w-0.5 h-0.5 bg-white rounded-full animate-ping-slow delay-600"></div>
+            <div className="absolute right-[55%] top-[65%] w-0.5 h-0.5 bg-white rounded-full animate-ping-slow"></div>
           </div>
           
-          {/* Central Brain Top View Abstraction */}
-          <div className="absolute left-1/2 top-[10%] transform -translate-x-1/2 w-[60px] h-[40px]">
-            {/* Top-down brain outline */}
-            <div className="absolute inset-0 border border-indigo-500/20 rounded-full"></div>
+          {/* Additional spark dot patterns - top */}
+          <div className="absolute left-1/2 top-[15%] transform -translate-x-1/2 w-[150px] h-[80px]">
+            {/* Small scattered dots */}
+            <div className="absolute left-[10%] top-[20%] w-1.5 h-1.5 bg-primary/40 rounded-full animate-pulse delay-300"></div>
+            <div className="absolute left-[30%] top-[60%] w-1 h-1 bg-indigo-500/40 rounded-full animate-pulse delay-500"></div>
+            <div className="absolute left-[70%] top-[30%] w-1.5 h-1.5 bg-blue-500/40 rounded-full animate-pulse delay-200"></div>
+            <div className="absolute left-[90%] top-[70%] w-1 h-1 bg-indigo-500/40 rounded-full animate-pulse delay-700"></div>
             
-            {/* Central fissure */}
-            <div className="absolute left-1/2 top-0 w-[1px] h-full bg-indigo-500/30 -translate-x-1/2"></div>
+            {/* Sparkling effects */}
+            <div className="absolute left-[20%] top-[40%] w-0.5 h-0.5 bg-white rounded-full animate-ping-slow delay-350"></div>
+            <div className="absolute left-[80%] top-[50%] w-0.5 h-0.5 bg-white rounded-full animate-ping-slow delay-650"></div>
             
-            {/* Neural activity representation */}
-            <div className="absolute left-1/4 top-1/2 w-3 h-3 rounded-full border border-primary/30 flex items-center justify-center -translate-y-1/2">
-              <div className="w-1 h-1 bg-primary/50 rounded-full animate-ping-slow"></div>
-            </div>
-            
-            <div className="absolute right-1/4 top-1/2 w-3 h-3 rounded-full border border-blue-500/30 flex items-center justify-center -translate-y-1/2">
-              <div className="w-1 h-1 bg-blue-500/50 rounded-full animate-ping-slow delay-300"></div>
-            </div>
+            {/* Faint connecting lines */}
+            <div className="absolute left-[15%] top-[40%] w-[40px] h-[1px] bg-primary/20 rotate-[15deg]"></div>
+            <div className="absolute left-[50%] top-[40%] w-[40px] h-[1px] bg-blue-500/20 rotate-[15deg]"></div>
           </div>
           
-          {/* Neural synapse illustration - left side */}
-          <div className="absolute left-8 top-1/2 w-[100px] h-[40px]">
-            {/* Neuron body */}
-            <div className="absolute left-0 top-1/2 w-[30px] h-[20px] border border-primary/30 rounded-l-full rounded-r-sm -translate-y-1/2"></div>
+          {/* Extension effect illustrations - connecting lines between clusters */}
+          <div className="absolute inset-0">
+            {/* Long-distance neural connection from left to right */}
+            <div className="absolute left-[25%] top-[40%] w-[50%] h-[1px] bg-gradient-to-r from-primary/30 via-indigo-500/40 to-blue-500/30 opacity-60"></div>
             
-            {/* Dendrites */}
-            <div className="absolute left-0 top-[40%] w-[15px] h-[1px] bg-primary/40 -translate-x-full"></div>
-            <div className="absolute left-[5px] top-[30%] w-[10px] h-[1px] bg-primary/40 rotate-[20deg] -translate-x-full"></div>
-            <div className="absolute left-[5px] top-[70%] w-[10px] h-[1px] bg-primary/40 -rotate-[20deg] -translate-x-full"></div>
+            {/* Neural extension points along the connection */}
+            <div className="absolute left-[35%] top-[40%] w-2 h-2 bg-primary/30 rounded-full animate-pulse-slow transform -translate-y-1/2"></div>
+            <div className="absolute left-1/2 top-[40%] w-2.5 h-2.5 bg-indigo-500/40 rounded-full animate-pulse-slow delay-300 transform -translate-x-1/2 -translate-y-1/2"></div>
+            <div className="absolute left-[65%] top-[40%] w-2 h-2 bg-blue-500/30 rounded-full animate-pulse-slow delay-600 transform -translate-y-1/2"></div>
             
-            {/* Axon */}
-            <div className="absolute left-[30px] top-1/2 w-[40px] h-[1px] bg-primary/60 -translate-y-1/2"></div>
-            
-            {/* Synapse gap */}
-            <div className="absolute left-[75px] top-1/2 w-[5px] h-[10px] border-0 rounded-sm -translate-y-1/2">
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-1 h-1 bg-primary/60 rounded-full animate-ping-slow"></div>
-              </div>
-            </div>
-            
-            {/* Receiving dendrite */}
-            <div className="absolute left-[80px] top-1/2 w-[20px] h-[1px] bg-primary/60 -translate-y-1/2"></div>
-          </div>
-          
-          {/* Neural circuit representation - right side */}
-          <div className="absolute right-8 bottom-1/3 w-[80px] h-[60px] border border-dashed border-blue-500/20 rounded-lg">
-            {/* Simplified circuit paths */}
-            <div className="absolute left-[10px] top-[10px] w-[60px] h-[1px] bg-blue-500/30"></div>
-            <div className="absolute left-[10px] top-[10px] w-[1px] h-[40px] bg-blue-500/30"></div>
-            <div className="absolute left-[10px] bottom-[10px] w-[60px] h-[1px] bg-blue-500/30"></div>
-            <div className="absolute right-[10px] top-[10px] w-[1px] h-[40px] bg-blue-500/30"></div>
-            
-            {/* Processing node */}
-            <div className="absolute left-1/2 top-1/2 w-4 h-4 -translate-x-1/2 -translate-y-1/2 rounded-sm border border-blue-500/40">
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-1.5 h-1.5 bg-blue-500/60 rounded-sm animate-pulse"></div>
-              </div>
-            </div>
+            {/* Spark effects along the connection */}
+            <div className="absolute left-[42%] top-[38%] w-0.5 h-0.5 bg-white rounded-full animate-ping-slow delay-100"></div>
+            <div className="absolute left-[58%] top-[42%] w-0.5 h-0.5 bg-white rounded-full animate-ping-slow delay-400"></div>
           </div>
         </div>
         
@@ -371,61 +347,67 @@ export default function LandingPage() {
               It mirrors your thinking patterns and amplifies your decision-making — getting sharper every time you use it
             </p>
             
-            {/* Cognitive connection visualization - brain bridging both hemispheres */}
-            <div className="relative h-16 w-full my-2 md:my-3 overflow-hidden">
-              {/* Corpus callosum connecting the hemispheres */}
-              <div className="absolute left-[25%] top-1/2 w-[50%] h-[3px] bg-gradient-to-r from-primary/50 via-indigo-500/50 to-blue-500/50 rounded-full transform -translate-y-1/2"></div>
+            {/* Neural extension visualization - central interactive dot network */}
+            <div className="relative h-20 w-full my-2 md:my-3 overflow-hidden">
+              {/* Main connection line with gradient */}
+              <div className="absolute left-0 top-1/2 w-full h-[1px] bg-gradient-to-r from-transparent via-indigo-500/60 to-transparent transform -translate-y-1/2"></div>
               
-              {/* Left hemisphere connection */}
-              <div className="absolute left-0 top-1/2 w-[25%] h-[1px] bg-gradient-to-r from-transparent to-primary/60 transform -translate-y-1/2"></div>
-              
-              {/* Right hemisphere connection */}
-              <div className="absolute right-0 top-1/2 w-[25%] h-[1px] bg-gradient-to-l from-transparent to-blue-500/60 transform -translate-y-1/2"></div>
-              
-              {/* Central Brain Structure */}
+              {/* Central extension hub */}
               <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                <div className="relative h-12 w-16">
-                  {/* Brain outline */}
-                  <div className="absolute inset-0 border border-indigo-500/30 rounded-t-full"></div>
-                  
-                  {/* Central division - corpus callosum */}
-                  <div className="absolute left-1/2 top-[20%] w-[1px] h-[80%] bg-indigo-500/20 -translate-x-1/2"></div>
-                  
-                  {/* Left frontal lobe - analytical thinking */}
-                  <div className="absolute left-[25%] top-[30%] w-4 h-4 transform -translate-x-1/2 -translate-y-1/2">
-                    <div className="absolute inset-0 border border-dashed border-primary/40 rounded-full"></div>
-                    <div className="absolute inset-[25%] bg-primary/40 rounded-full animate-pulse-slow"></div>
-                  </div>
-                  
-                  {/* Right frontal lobe - creative thinking */}
-                  <div className="absolute right-[25%] top-[30%] w-4 h-4 transform translate-x-1/2 -translate-y-1/2">
-                    <div className="absolute inset-0 border border-dashed border-blue-500/40 rounded-full"></div>
-                    <div className="absolute inset-[25%] bg-blue-500/40 rounded-full animate-pulse-slow delay-500"></div>
-                  </div>
-                  
-                  {/* Neural activity simulation with minimal dots */}
-                  <div className="absolute left-[30%] top-[60%] w-[1px] h-[20%] bg-primary/40"></div>
-                  <div className="absolute right-[30%] top-[60%] w-[1px] h-[20%] bg-blue-500/40"></div>
-                  
-                  {/* Neural circuit on left side */}
-                  <div className="absolute left-[20%] top-[70%] w-3 h-3 border border-dashed border-primary/30 rounded-sm">
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-1 h-1 bg-primary/60 rounded-sm animate-pulse-slow"></div>
-                    </div>
-                  </div>
-                  
-                  {/* Neural circuit on right side */}
-                  <div className="absolute right-[20%] top-[70%] w-3 h-3 border border-dashed border-blue-500/30 rounded-sm">
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-1 h-1 bg-blue-500/60 rounded-sm animate-pulse-slow delay-700"></div>
-                    </div>
-                  </div>
-                </div>
+                {/* Central glow effect */}
+                <div className="absolute w-10 h-10 bg-indigo-500/20 rounded-full blur-md"></div>
+                
+                {/* Central dot - core node */}
+                <div className="absolute w-5 h-5 bg-indigo-500/40 rounded-full animate-pulse-slow transform -translate-x-1/2 -translate-y-1/2"></div>
+                <div className="absolute w-3 h-3 bg-indigo-500/70 rounded-full animate-pulse transform -translate-x-1/2 -translate-y-1/2"></div>
+                
+                {/* Radiating connection lines */}
+                <div className="absolute w-[80px] h-[1px] bg-gradient-to-r from-indigo-500/60 to-transparent rotate-[15deg] transform -translate-x-1/2 -translate-y-1/2"></div>
+                <div className="absolute w-[80px] h-[1px] bg-gradient-to-r from-indigo-500/60 to-transparent rotate-[195deg] transform -translate-x-1/2 -translate-y-1/2"></div>
+                <div className="absolute w-[80px] h-[1px] bg-gradient-to-l from-indigo-500/60 to-transparent rotate-[105deg] transform -translate-x-1/2 -translate-y-1/2"></div>
+                <div className="absolute w-[80px] h-[1px] bg-gradient-to-l from-indigo-500/60 to-transparent rotate-[285deg] transform -translate-x-1/2 -translate-y-1/2"></div>
+                
+                {/* Sparkling effects surrounding the core */}
+                <div className="absolute w-0.5 h-0.5 bg-white rounded-full animate-ping-slow delay-200 transform translate-x-4 translate-y-3"></div>
+                <div className="absolute w-0.5 h-0.5 bg-white rounded-full animate-ping-slow delay-400 transform translate-x-3 -translate-y-4"></div>
+                <div className="absolute w-0.5 h-0.5 bg-white rounded-full animate-ping-slow delay-600 transform -translate-x-4 translate-y-2"></div>
+                <div className="absolute w-0.5 h-0.5 bg-white rounded-full animate-ping-slow delay-800 transform -translate-x-3 -translate-y-3"></div>
               </div>
               
-              {/* Cognitive function labels */}
-              <div className="absolute left-[20%] top-[30%] text-xs text-primary/70 font-light">analytical</div>
-              <div className="absolute right-[20%] top-[30%] text-xs text-blue-500/70 font-light">creative</div>
+              {/* Left cluster - user side */}
+              <div className="absolute left-[20%] top-1/2 transform -translate-y-1/2">
+                {/* User node */}
+                <div className="absolute w-6 h-6 bg-primary/20 rounded-full blur-sm transform -translate-x-1/2 -translate-y-1/2"></div>
+                <div className="absolute w-4 h-4 border border-primary/40 rounded-full transform -translate-x-1/2 -translate-y-1/2"></div>
+                <div className="absolute w-2 h-2 bg-primary/60 rounded-full animate-pulse-slow transform -translate-x-1/2 -translate-y-1/2"></div>
+                
+                {/* Connection dots from user to center */}
+                <div className="absolute w-1.5 h-1.5 bg-primary/50 rounded-full animate-pulse delay-300 transform translate-x-[30px] -translate-y-1/2"></div>
+                <div className="absolute w-1.5 h-1.5 bg-indigo-500/50 rounded-full animate-pulse delay-600 transform translate-x-[70px] -translate-y-1/2"></div>
+                
+                {/* Spark effect */}
+                <div className="absolute w-0.5 h-0.5 bg-white rounded-full animate-ping-slow delay-500 transform translate-x-[50px] -translate-y-[4px]"></div>
+              </div>
+              
+              {/* Right cluster - system extension */}
+              <div className="absolute right-[20%] top-1/2 transform -translate-y-1/2">
+                {/* System node */}
+                <div className="absolute w-6 h-6 bg-blue-500/20 rounded-full blur-sm transform -translate-x-1/2 -translate-y-1/2"></div>
+                <div className="absolute w-4 h-4 border border-blue-500/40 rounded-full transform -translate-x-1/2 -translate-y-1/2"></div>
+                <div className="absolute w-2 h-2 bg-blue-500/60 rounded-full animate-pulse-slow transform -translate-x-1/2 -translate-y-1/2"></div>
+                
+                {/* Connection dots from center to system */}
+                <div className="absolute w-1.5 h-1.5 bg-blue-500/50 rounded-full animate-pulse delay-400 transform -translate-x-[30px] -translate-y-1/2"></div>
+                <div className="absolute w-1.5 h-1.5 bg-indigo-500/50 rounded-full animate-pulse delay-700 transform -translate-x-[70px] -translate-y-1/2"></div>
+                
+                {/* Spark effect */}
+                <div className="absolute w-0.5 h-0.5 bg-white rounded-full animate-ping-slow delay-300 transform -translate-x-[50px] -translate-y-[4px]"></div>
+              </div>
+              
+              {/* Extension labels */}
+              <div className="absolute left-[12%] top-[30%] text-xs text-primary/70 font-light">you</div>
+              <div className="absolute left-1/2 top-[70%] text-xs text-indigo-500/70 font-light transform -translate-x-1/2">neural extension</div>
+              <div className="absolute right-[12%] top-[30%] text-xs text-blue-500/70 font-light">DotSpark</div>
             </div>
             
             {/* Action buttons with explanation boxes - Centered */}
