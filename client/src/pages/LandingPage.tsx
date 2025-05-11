@@ -403,7 +403,8 @@ export default function LandingPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full mt-3">
                 {/* Button 1: Activate or View Neural Extension */}
                 <div className="bg-gradient-to-br from-primary/5 to-indigo-500/5 dark:from-primary/10 dark:to-indigo-500/10 border border-primary/20 dark:border-primary/30 rounded-xl p-4 flex flex-col items-center shadow-lg shadow-primary/5 dark:shadow-primary/10 relative overflow-hidden group">
-                  {isWhatsAppConnected ? (
+                  {/* Only show "Activated" status if the user is logged in AND WhatsApp is connected */}
+                  {user && isWhatsAppConnected ? (
                     <Button size="lg" asChild className="w-full mb-3 relative overflow-hidden bg-gradient-to-r from-green-600 to-emerald-500 hover:from-emerald-600 hover:to-green-500 border-0 shadow-lg shadow-green-500/20 hover:shadow-emerald-500/30 transition-all duration-300 transform hover:scale-105 group">
                       <Link href="/dashboard" className="flex items-center justify-center relative z-10">
                         <Check className="mr-2 h-5 w-5" />
