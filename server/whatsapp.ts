@@ -243,9 +243,27 @@ export async function processWhatsAppMessage(from: string, messageText: string):
     const lowerMessage = messageText.toLowerCase();
     
     // Check if this is an account linking request (neural extension activation)
-    // More permissive regex to match variations of the activation message
-    const accountLinkingRegex = /please connect my Neural Extension via WhatsApp\.?\s*My DotSpark account is\s*([\w.%+-]+@[\w.-]+\.[A-Za-z]{2,})/i;
-    const accountLinkMatch = messageText.match(accountLinkingRegex);
+    // Use multiple patterns to catch variations of the activation message
+    const linkingPatterns = [
+      // Standard format from our UI
+      /please connect my Neural Extension via WhatsApp\.?\s*My DotSpark account is\s*([\w.%+-]+@[\w.-]+\.[A-Za-z]{2,})/i,
+      
+      // More permissive patterns to catch message variations
+      /hey dotspark,? please connect.*account is\s*([\w.%+-]+@[\w.-]+\.[A-Za-z]{2,})/i,
+      /hey dotspark,? please connect.*extension.*via.*\s*([\w.%+-]+@[\w.-]+\.[A-Za-z]{2,})/i,
+      /connect.*neural extension.*dotspark account.*\s*([\w.%+-]+@[\w.-]+\.[A-Za-z]{2,})/i,
+      /dotspark account is\s*([\w.%+-]+@[\w.-]+\.[A-Za-z]{2,})/i
+    ];
+    
+    let accountLinkMatch = null;
+    for (const pattern of linkingPatterns) {
+      const match = messageText.match(pattern);
+      if (match && match[1] && match[1].includes('@')) {
+        accountLinkMatch = match;
+        console.log(`Account linking match found with pattern: ${pattern}`);
+        break;
+      }
+    }
     
     // Flag to track if this is an activation/linking attempt - needed to avoid welcome messages
     const isActivationAttempt = !!accountLinkMatch || activationKeywords.some(keyword => lowerMessage.includes(keyword));

@@ -111,7 +111,13 @@ export function NeuralWhatsAppLinking() {
       
       // Create a pre-filled message with natural language and user info
       const phoneNumber = "16067157733";
-      const message = `Hey DotSpark, please connect my Neural Extension via WhatsApp. My DotSpark account is ${userEmail}`; // Keep prefilled message as requested
+      
+      // Format message with exact wording from requirements
+      const message = `Hey DotSpark, please connect my Neural Extension via WhatsApp. My DotSpark account is ${userEmail}`;
+      
+      // Store the message in localStorage for debugging
+      console.log("Sending activation message:", message);
+      localStorage.setItem('last_activation_message', message);
       
       // Show success toast with better instructions
       toast({
