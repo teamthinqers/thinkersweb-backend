@@ -49,10 +49,12 @@ export function NeuralWhatsAppLinking() {
         const hasBeenActivatedBefore = localStorage.getItem('neural_extension_seen') === 'true';
         
         if (!hasBeenActivatedBefore) {
+          const userEmail = user?.email || "your account";
+          
           toast({
             title: "Neural Extension Activated!",
-            description: "WhatsApp connection completed successfully. Your personal cognitive extension is now ready.",
-            duration: 5000,
+            description: `Your WhatsApp is now linked to ${userEmail}. All interactions will be synced to your dashboard automatically.`,
+            duration: 7000,
           });
           
           // Mark that we've seen the activation before to avoid duplicate toasts

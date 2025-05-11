@@ -1,4 +1,4 @@
-import { eq, and, gt, desc } from "drizzle-orm";
+import { eq, and, gt, desc, sql } from "drizzle-orm";
 import crypto from "crypto";
 
 import { db } from "../db";
@@ -287,13 +287,41 @@ export async function processWhatsAppMessage(from: string, messageText: string):
     
     // Handle account linking requests (neural extension activation)
     if (accountLinkMatch && accountLinkMatch[1]) {
+      // Log the entire message for debugging
+      console.log(`Full message for account linking: "${messageText}"`);
+      
       const userEmail = accountLinkMatch[1].trim();
+      console.log(`Extracted email for account linking: "${userEmail}"`);
+      
+      // Log the attempt for debugging (console only, we don't have a messages table)
+      console.log(`ACCOUNT LINKING ATTEMPT: ${standardizedPhone} with email: ${userEmail}`);
+      console.log(`Message details: ${messageText.substring(0, 100)}...`);
       console.log(`WhatsApp account linking request detected with email: ${userEmail}`);
       
-      // Find the user with this email
-      const user = await db.query.users.findFirst({
+      // Normalize the email to lowercase for case-insensitive matching
+      const normalizedEmail = userEmail.toLowerCase();
+      console.log(`Looking up user with normalized email: ${normalizedEmail}`);
+      
+      // Try to find the user with this email (we'll handle case-insensitivity ourselves)
+      // First try exact match
+      let user = await db.query.users.findFirst({
         where: eq(users.email, userEmail)
       });
+      
+      // If no match, try case-insensitive match
+      if (!user) {
+        console.log(`No exact match found, trying case-insensitive search for ${normalizedEmail}`);
+        const allUsers = await db.query.users.findMany();
+        user = allUsers.find(u => u.email.toLowerCase() === normalizedEmail);
+        
+        if (user) {
+          console.log(`Found case-insensitive match: ${user.email} for ${normalizedEmail}`);
+        }
+      }
+      
+      if (user) {
+        console.log(`Found user with ID ${user.id} for email ${normalizedEmail}`);
+      }
       
       if (!user) {
         console.log(`User not found with email: ${userEmail}`);
@@ -406,8 +434,9 @@ export async function processWhatsAppMessage(from: string, messageText: string):
           });
         }
         
-        // Send activation success message
+        // Send activation success message with account email confirmation
         const activationMessage = "✅ *Congratulations — your Neural Extension is now active!*\n\n" +
+          `I've successfully linked this WhatsApp number to your DotSpark account (${user.email}).\n\n` +
           `DotSpark is now tuned to grow with your thinking.\n` +
           `The more you interact, the sharper and more personalized it becomes.\n\n` +
           `Say anything — a thought, a question, a decision you're stuck on.\n` +
