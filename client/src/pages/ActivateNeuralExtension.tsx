@@ -759,6 +759,32 @@ export default function ActivateNeuralExtension() {
                         Go to Dashboard
                       </Button>
                     </div>
+                    
+                    {/* Repair button - only shown on the activated state as a fallback */}
+                    <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-800">
+                      <div className="text-left mb-2">
+                        <h3 className="text-sm font-medium text-gray-600 dark:text-gray-300">Having connection issues?</h3>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                          If your Neural Extension isn't working properly, you can repair the connection.
+                        </p>
+                      </div>
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => {
+                          repairActivationStatus();
+                          toast({
+                            title: "Repair initiated",
+                            description: "Attempting to reconnect your Neural Extension...",
+                            variant: "default"
+                          });
+                        }}
+                        className="w-full flex items-center justify-center gap-2 text-amber-600 dark:text-amber-400 border-amber-300 dark:border-amber-800 hover:bg-amber-50 dark:hover:bg-amber-950"
+                      >
+                        <RefreshCw className="h-3.5 w-3.5" />
+                        <span>Repair Connection</span>
+                      </Button>
+                    </div>
                   </CardContent>
                 </Card>
               ) : (
