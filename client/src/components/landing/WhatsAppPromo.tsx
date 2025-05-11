@@ -12,40 +12,34 @@ function openWhatsAppChat() {
   // Check if this is the first time the user is visiting (using local storage)
   const hasVisited = localStorage.getItem('whatsapp_visited');
   
-  // Determine the proper links based on visit history
-  let mobileAppLink, webFallbackUrl;
+  // Always include the welcome message for better user experience
+  const mobileAppLink = `whatsapp://send?phone=${whatsappNumber}&text=${encodeURIComponent(message)}`;
+  const webFallbackUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
   
+  // Mark as visited for future tracking
   if (!hasVisited) {
-    // First time visitor - include the welcome message
-    mobileAppLink = `whatsapp://send?phone=${whatsappNumber}&text=${encodeURIComponent(message)}`;
-    webFallbackUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
-    // Mark as visited for future
     localStorage.setItem('whatsapp_visited', 'true');
-  } else {
-    // Returning visitor - no prefilled message
-    mobileAppLink = `whatsapp://send?phone=${whatsappNumber}`;
-    webFallbackUrl = `https://wa.me/${whatsappNumber}`;
   }
   
-  // Create an invisible anchor element
-  const linkElement = document.createElement('a');
-  linkElement.href = mobileAppLink;
-  linkElement.style.display = 'none';
-  document.body.appendChild(linkElement);
-  
-  // Try to open the mobile app
-  linkElement.click();
-  
-  // Set a fallback timer in case the app doesn't open
-  setTimeout(() => {
-    // If app didn't open, use the web version
-    window.location.href = webFallbackUrl;
-  }, 500);
-  
-  // Clean up the element
-  setTimeout(() => {
-    document.body.removeChild(linkElement);
-  }, 1000);
+  // For mobile devices, create a direct link to the app with better handling
+  if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+    // Create and click an actual anchor element for better mobile compatibility
+    const a = document.createElement('a');
+    a.href = mobileAppLink;
+    a.setAttribute('target', '_blank');
+    a.setAttribute('rel', 'noopener noreferrer');
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    
+    // After a short delay, try the web version as fallback
+    setTimeout(() => {
+      window.open(webFallbackUrl, '_blank');
+    }, 1000);
+  } else {
+    // For desktop, use the web version directly
+    window.open(webFallbackUrl, '_blank');
+  }
 }
 
 export default function WhatsAppPromo() {

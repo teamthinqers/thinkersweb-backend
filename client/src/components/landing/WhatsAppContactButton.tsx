@@ -55,27 +55,31 @@ export function WhatsAppContactButton({
   const handleButtonClick = () => {
     if (!whatsAppNumber) return;
     
-    // Use the direct link from API which includes the default message
-    if (whatsAppLink) {
-      // Try to open in mobile app first with the default message
-      const defaultMessage = encodeURIComponent("Hey DotSpark, I've got a few things on my mind — need your thoughts");
-      const mobileAppLink = `whatsapp://send?phone=${whatsAppNumber}&text=${defaultMessage}`;
-      window.location.href = mobileAppLink;
+    // Always include the default message
+    const defaultMessage = "Hey DotSpark, I've got a few things on my mind — need your thoughts";
+    const encodedMessage = encodeURIComponent(defaultMessage);
+    
+    // For mobile devices, create a direct link to the app
+    if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+      // Try to use the direct app link first
+      const whatsappUrl = `whatsapp://send?phone=${whatsAppNumber}&text=${encodedMessage}`;
       
-      // Fallback to web version after a short delay
+      // Create and click an actual anchor element for better mobile compatibility
+      const a = document.createElement('a');
+      a.href = whatsappUrl;
+      a.setAttribute('target', '_blank');
+      a.setAttribute('rel', 'noopener noreferrer');
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      
+      // After a short delay, try the web version as fallback
       setTimeout(() => {
-        window.location.href = whatsAppLink;
-      }, 500);
+        window.open(`https://wa.me/${whatsAppNumber}?text=${encodedMessage}`, '_blank');
+      }, 1000);
     } else {
-      // Fallback if direct link is not available
-      const defaultMessage = encodeURIComponent("Hey DotSpark, I've got a few things on my mind — need your thoughts");
-      const mobileAppLink = `whatsapp://send?phone=${whatsAppNumber}&text=${defaultMessage}`;
-      window.location.href = mobileAppLink;
-      
-      setTimeout(() => {
-        const webFallbackUrl = `https://wa.me/${whatsAppNumber}?text=${defaultMessage}`;
-        window.location.href = webFallbackUrl;
-      }, 500);
+      // For desktop, use the web version directly
+      window.open(`https://wa.me/${whatsAppNumber}?text=${encodedMessage}`, '_blank');
     }
   };
 
