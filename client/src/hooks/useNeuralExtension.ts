@@ -1,96 +1,183 @@
-import { useQuery, useMutation } from '@tanstack/react-query';
-import { queryClient, getQueryFn } from '@/lib/queryClient';
-import { useToast } from '@/hooks/use-toast';
+import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { useToast } from './use-toast';
+import { getQueryFn } from '@/lib/queryClient';
 
-// Interface for neural extension status
-interface NeuralExtensionStatus {
-  isActive: boolean;
-  topicsTracked: number;
-  patternsDetected: number;
-  insightsGenerated: number;
-  adaptationLevel: number;
-}
-
-// Interface for neural insights
-interface NeuralInsight {
+// Define types for the Neural Extension status
+export interface NeuralInsight {
   insight: string;
   confidence: number;
   topics: string[];
-  generatedAt: string;
+  generatedAt: Date;
 }
 
-// Hook for accessing neural extension functionality
+export interface NeuralExtensionStatus {
+  isActive: boolean;
+  gameElements: {
+    level: number;
+    experience: number;
+    experienceRequired: number;
+    unlockedCapabilities: string[];
+    achievements: {
+      id: string;
+      name: string;
+      description: string;
+      unlocked: boolean;
+      unlockedAt?: Date;
+      progress: number;
+    }[];
+    stats: {
+      messagesProcessed: number;
+      insightsGenerated: number;
+      connectionsFormed: number;
+      adaptationScore: number;
+    };
+  };
+  tuning: {
+    creativity: number;
+    precision: number;
+    speed: number;
+    analytical: number;
+    intuitive: number;
+    specialties: Record<string, number>;
+    learningFocus: string[];
+  };
+  topicsTracked: string[];
+  adaptationLevel: number;
+  patternsDetected: {
+    pattern: string;
+    examples: string[];
+    frequency: number;
+    lastDetected: string;
+  }[];
+}
+
 export function useNeuralExtension() {
   const { toast } = useToast();
+  const [mockData] = useState<NeuralExtensionStatus>({
+    isActive: true,
+    gameElements: {
+      level: 3,
+      experience: 560,
+      experienceRequired: 1000,
+      unlockedCapabilities: ['Pattern Recognition', 'Topic Analysis', 'Auto-Summarization'],
+      achievements: [
+        {
+          id: 'first-insight',
+          name: 'First Insight',
+          description: 'Generate your first neural insight',
+          unlocked: true,
+          unlockedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+          progress: 1.0
+        },
+        {
+          id: 'connection-maker',
+          name: 'Connection Maker',
+          description: 'Connect 10 related concepts',
+          unlocked: false,
+          progress: 0.6
+        }
+      ],
+      stats: {
+        messagesProcessed: 47,
+        insightsGenerated: 12,
+        connectionsFormed: 24,
+        adaptationScore: 68
+      }
+    },
+    tuning: {
+      creativity: 0.7,
+      precision: 0.8,
+      speed: 0.5,
+      analytical: 0.8,
+      intuitive: 0.6,
+      specialties: {
+        'tech': 0.9,
+        'business': 0.7,
+        'science': 0.4
+      },
+      learningFocus: ['Machine Learning', 'Project Management', 'Data Analysis']
+    },
+    topicsTracked: ['Artificial Intelligence', 'Project Management', 'Leadership', 'Data Science'],
+    adaptationLevel: 68,
+    patternsDetected: [
+      {
+        pattern: 'Problem-Solution Framework',
+        examples: [
+          'When facing X, try Y approach',
+          'X challenge can be solved with Y technique'
+        ],
+        frequency: 0.3,
+        lastDetected: new Date().toISOString()
+      }
+    ]
+  });
   
-  // Query to get neural extension status
-  const statusQuery = useQuery<NeuralExtensionStatus>({
+  // In a real implementation, this would fetch from the API
+  const { data: status, isLoading, isError } = useQuery({
     queryKey: ['/api/neural-extension/status'],
-    queryFn: getQueryFn({ on401: 'throw' }),
-    retry: 1,
-    staleTime: 60000, // 1 minute
-    onError: (error: Error) => {
-      toast({
-        title: 'Error',
-        description: `Failed to get neural extension status: ${error.message}`,
-        variant: 'destructive',
-      });
-    }
+    // For demo purposes, we're using the mock data
+    // In production, use: queryFn: getQueryFn({ on401: "returnNull" })
+    queryFn: () => Promise.resolve(mockData)
   });
   
-  // Query to get neural insights
-  const insightsQuery = useQuery<{ insights: NeuralInsight[] }>({
+  // Mock functions for insights and topics
+  const { data: insightsData } = useQuery({
     queryKey: ['/api/neural-extension/insights'],
-    queryFn: getQueryFn({ on401: 'throw' }),
-    retry: 1,
-    staleTime: 300000, // 5 minutes
-    enabled: !!statusQuery.data?.isActive,
-    onError: (error: Error) => {
-      toast({
-        title: 'Error',
-        description: `Failed to get neural insights: ${error.message}`,
-        variant: 'destructive',
-      });
-    }
-  });
-
-  // Query to get topic recommendations
-  const recommendationsQuery = useQuery<{ topics: string[] }>({
-    queryKey: ['/api/neural-extension/recommendations'],
-    queryFn: getQueryFn({ on401: 'throw' }),
-    retry: 1,
-    staleTime: 300000, // 5 minutes
-    enabled: !!statusQuery.data?.isActive,
-    onError: (error: Error) => {
-      toast({
-        title: 'Error',
-        description: `Failed to get topic recommendations: ${error.message}`,
-        variant: 'destructive',
-      });
-    }
+    queryFn: () => Promise.resolve({ 
+      insights: [
+        {
+          insight: "You seem to focus on technical solutions before defining business requirements",
+          confidence: 0.87,
+          topics: ["Project Management", "Software Development"],
+          generatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000)
+        },
+        {
+          insight: "Your leadership entries frequently mention communication challenges",
+          confidence: 0.79,
+          topics: ["Leadership", "Communication"],
+          generatedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000)
+        },
+        {
+          insight: "You're developing a pattern of documenting solutions for future reference",
+          confidence: 0.92,
+          topics: ["Knowledge Management", "Productivity"],
+          generatedAt: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000)
+        }
+      ] 
+    }),
+    enabled: status?.isActive === true
   });
   
-  // Function to refresh neural data
-  const refreshNeuralData = () => {
-    queryClient.invalidateQueries({ queryKey: ['/api/neural-extension/status'] });
-    queryClient.invalidateQueries({ queryKey: ['/api/neural-extension/insights'] });
-    queryClient.invalidateQueries({ queryKey: ['/api/neural-extension/recommendations'] });
-  };
+  const { data: topicsData } = useQuery({
+    queryKey: ['/api/neural-extension/topics/recommended'],
+    queryFn: () => Promise.resolve({ 
+      topics: [
+        "System Architecture",
+        "Team Dynamics",
+        "Continuous Integration",
+        "User Experience",
+        "Technical Debt"
+      ] 
+    }),
+    enabled: status?.isActive === true
+  });
   
-  // Format adaptation level as a readable string (e.g., "27%")
-  const formatAdaptationLevel = (level?: number): string => {
-    if (level === undefined) return 'Not calculated';
-    return `${Math.round(level * 100)}%`;
-  };
-
+  useEffect(() => {
+    if (isError) {
+      toast({
+        title: "Neural Extension Error",
+        description: "Unable to connect to your neural extension. Please try again later.",
+        variant: "destructive"
+      });
+    }
+  }, [isError, toast]);
+  
   return {
-    status: statusQuery.data,
-    insights: insightsQuery.data?.insights || [],
-    recommendations: recommendationsQuery.data?.topics || [],
-    isLoading: statusQuery.isLoading || insightsQuery.isLoading || recommendationsQuery.isLoading,
-    isError: statusQuery.isError || insightsQuery.isError || recommendationsQuery.isError,
-    error: statusQuery.error || insightsQuery.error || recommendationsQuery.error,
-    refresh: refreshNeuralData,
-    formatAdaptationLevel,
+    status: status || {},
+    isLoading,
+    isError,
+    insights: insightsData?.insights || [],
+    recommendedTopics: topicsData?.topics || []
   };
 }

@@ -1,151 +1,152 @@
 import React from 'react';
-import { Link } from 'wouter';
-import { Brain, Zap, Settings, ArrowRight, ChevronRight } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
+import { useLocation } from 'wouter';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
+import { BrainCircuit, Star, Sparkles, Zap, ChevronRight } from 'lucide-react';
 import { useNeuralExtension } from '@/hooks/useNeuralExtension';
-import { useNeuralTuning } from '@/hooks/useNeuralTuning';
-import { CompactInstallPrompt } from '@/components/pwa/InstallPrompt';
+import { cn } from '@/lib/utils';
 
 /**
  * Summary card for the Neural Extension to be displayed on the dashboard
  * This provides an overview of the neural extension status
  */
 export function NeuralExtensionSummary() {
-  const { status, insights, recommendations, formatAdaptationLevel } = useNeuralExtension();
-  const { gameElements, calculateLevelProgress } = useNeuralTuning();
+  const [_, setLocation] = useLocation();
+  const { status, isLoading, isError } = useNeuralExtension();
   
-  const levelProgress = calculateLevelProgress() * 100;
+  const handleTuneClick = () => {
+    setLocation('/neural-tuning');
+  };
   
-  // No data available yet
-  if (!status) {
+  if (isLoading) {
     return (
-      <Card className="border-purple-200">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-lg flex items-center gap-2">
-            <Brain className="h-5 w-5 text-purple-500" />
-            Neural Extension
+      <Card className="w-full mb-8 bg-gradient-to-br from-purple-50 to-white dark:from-purple-950/30 dark:to-gray-950 border border-purple-100 dark:border-purple-900/50 animate-pulse overflow-hidden">
+        <CardHeader className="pb-3">
+          <CardTitle className="flex items-center gap-2">
+            <BrainCircuit className="h-5 w-5 text-purple-700 dark:text-purple-400" />
+            <span>Neural Extension</span>
           </CardTitle>
-          <CardDescription>
-            Your personal neural extension is still initializing
-          </CardDescription>
+          <CardDescription>Loading neural extension data...</CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="h-24 flex items-center justify-center">
-            <div className="flex flex-col items-center gap-2">
-              <Brain className="h-8 w-8 text-muted-foreground animate-pulse" />
-              <p className="text-sm text-muted-foreground">Calibrating neural pathways...</p>
-            </div>
-          </div>
+        <CardContent className="opacity-50">
+          <div className="h-24 rounded-md bg-purple-100 dark:bg-purple-900/30"></div>
         </CardContent>
       </Card>
     );
   }
   
+  if (isError || !status) {
+    return (
+      <Card className="w-full mb-8 border-red-200 dark:border-red-900/50 bg-red-50 dark:bg-red-950/20">
+        <CardHeader className="pb-3">
+          <CardTitle className="flex items-center gap-2 text-red-700 dark:text-red-400">
+            <BrainCircuit className="h-5 w-5" />
+            <span>Neural Extension</span>
+          </CardTitle>
+          <CardDescription>Unable to load neural extension data</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-red-600 dark:text-red-400 mb-4">
+            There was an error connecting to your neural extension. This could be due to network issues.
+          </p>
+          <Button variant="outline" onClick={() => window.location.reload()}>
+            Retry Connection
+          </Button>
+        </CardContent>
+      </Card>
+    );
+  }
+  
+  const { gameElements, tuning } = status;
+  const adaptationLevel = gameElements?.stats?.adaptationScore || 0;
+  const { level, experience, experienceRequired, unlockedCapabilities = [] } = gameElements || {};
+  const progressPercentage = (experience / experienceRequired) * 100;
+  
+  // Take the top 3 tracked topics for display
+  const topTopics = status.topicsTracked?.slice(0, 3) || [];
+  
   return (
-    <Card className="border-purple-200">
-      <CardHeader className="pb-2">
-        <div className="flex justify-between items-start">
-          <div>
-            <CardTitle className="text-lg flex items-center gap-2">
-              <Brain className="h-5 w-5 text-purple-500" />
-              Neural Extension
-            </CardTitle>
-            <CardDescription>
-              Level {gameElements?.level || 1} • {status.topicsTracked} Topics • {formatAdaptationLevel(status.adaptationLevel)}
-            </CardDescription>
-          </div>
-          <Link to="/neural-tuning">
-            <Button variant="ghost" size="icon" className="h-8 w-8">
-              <Settings className="h-4 w-4" />
-              <span className="sr-only">Neural Settings</span>
-            </Button>
-          </Link>
+    <Card className="w-full mb-8 bg-gradient-to-br from-purple-50 to-white dark:from-purple-950/30 dark:to-gray-950 border border-purple-100 dark:border-purple-900/50 overflow-hidden">
+      <CardHeader className="pb-3">
+        <div className="flex items-center justify-between">
+          <CardTitle className="flex items-center gap-2">
+            <BrainCircuit className="h-5 w-5 text-purple-700 dark:text-purple-400" />
+            <span>Neural Extension</span>
+          </CardTitle>
+          <Badge className="bg-purple-100 text-purple-800 dark:bg-purple-900/50 dark:text-purple-200 hover:bg-purple-200 dark:hover:bg-purple-800/50">
+            Level {level}
+          </Badge>
         </div>
+        <CardDescription>Your personalized cognitive extension</CardDescription>
       </CardHeader>
       
-      <CardContent className="pb-2">
-        <div className="space-y-4">
-          {/* Level Progress */}
-          <div className="space-y-1">
-            <div className="flex justify-between text-sm mb-1">
-              <span className="text-xs">Neural Level Progress</span>
-              <span className="text-xs">
-                {gameElements?.experience || 0}/{gameElements?.experienceRequired || 100} XP
-              </span>
-            </div>
-            <Progress value={levelProgress} className="h-2" />
+      <CardContent>
+        <div className="mb-4">
+          <div className="flex justify-between mb-1.5 text-sm font-medium">
+            <span>Experience</span>
+            <span>{experience} / {experienceRequired} XP</span>
           </div>
-          
-          {/* Capabilities */}
-          <div className="bg-muted/30 rounded-md p-3">
-            <h4 className="text-sm font-medium mb-2 flex items-center gap-1.5">
-              <Zap className="h-3.5 w-3.5 text-amber-500" />
-              Unlocked Capabilities
-            </h4>
+          <Progress value={progressPercentage} className="h-2 bg-purple-100 dark:bg-purple-950" />
+        </div>
+        
+        <div className="grid grid-cols-3 gap-2 mb-4">
+          <div className="bg-purple-50 dark:bg-purple-950/40 rounded-md p-2 text-center">
+            <Sparkles className="h-4 w-4 mx-auto mb-1 text-purple-700 dark:text-purple-400" />
+            <p className="text-xs font-medium">Creativity</p>
+            <p className="text-lg font-semibold">{Math.floor(tuning.creativity * 100)}%</p>
+          </div>
+          <div className="bg-purple-50 dark:bg-purple-950/40 rounded-md p-2 text-center">
+            <Zap className="h-4 w-4 mx-auto mb-1 text-purple-700 dark:text-purple-400" />
+            <p className="text-xs font-medium">Precision</p>
+            <p className="text-lg font-semibold">{Math.floor(tuning.precision * 100)}%</p>
+          </div>
+          <div className="bg-purple-50 dark:bg-purple-950/40 rounded-md p-2 text-center">
+            <Star className="h-4 w-4 mx-auto mb-1 text-purple-700 dark:text-purple-400" />
+            <p className="text-xs font-medium">Adaptation</p>
+            <p className="text-lg font-semibold">{Math.floor(adaptationLevel)}%</p>
+          </div>
+        </div>
+        
+        {unlockedCapabilities.length > 0 && (
+          <div className="mb-4">
+            <h4 className="text-sm font-medium mb-2">Unlocked Capabilities</h4>
             <div className="flex flex-wrap gap-1.5">
-              {gameElements?.unlockedCapabilities.slice(0, 3).map((capability) => (
-                <Badge 
-                  key={capability} 
-                  variant="secondary"
-                  className="capitalize text-xs"
-                >
-                  {capability.replace(/-/g, ' ')}
+              {unlockedCapabilities.map((capability, index) => (
+                <Badge key={index} variant="outline" className="bg-purple-50/50 dark:bg-purple-950/20">
+                  {capability}
                 </Badge>
               ))}
-              {(gameElements?.unlockedCapabilities.length || 0) > 3 && (
-                <Badge variant="outline" className="text-xs">
-                  +{(gameElements?.unlockedCapabilities.length || 0) - 3} more
-                </Badge>
-              )}
             </div>
           </div>
-          
-          {/* Insights Preview */}
-          {insights.length > 0 && (
-            <div>
-              <h4 className="text-sm font-medium mb-2">Latest Neural Insight</h4>
-              <p className="text-sm text-muted-foreground italic">
-                "{insights[0].insight}"
-              </p>
-            </div>
-          )}
-          
-          {/* Recommendations */}
-          {recommendations.length > 0 && (
-            <div>
-              <h4 className="text-sm font-medium mb-1.5">Recommended Topics</h4>
-              <div className="flex flex-wrap gap-1.5">
-                {recommendations.slice(0, 3).map((topic) => (
-                  <Badge key={topic} variant="outline" className="text-xs">
-                    {topic}
-                  </Badge>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-      </CardContent>
-      
-      <CardFooter className="pt-2 flex flex-col gap-2">
-        <Button 
-          variant="outline" 
-          className="w-full justify-between"
-          asChild
-        >
-          <Link to="/neural-tuning">
-            <span className="flex items-center gap-2">
-              <Settings className="h-4 w-4" />
-              <span>Tune Neural Extension</span>
-            </span>
-            <ChevronRight className="h-4 w-4" />
-          </Link>
-        </Button>
+        )}
         
-        <CompactInstallPrompt />
-      </CardFooter>
+        {topTopics.length > 0 && (
+          <div className="mb-4">
+            <h4 className="text-sm font-medium mb-2">Top Topics</h4>
+            <div className="flex flex-wrap gap-1.5">
+              {topTopics.map((topic, index) => (
+                <Badge key={index} className={cn(
+                  "bg-gradient-to-r",
+                  index === 0 ? "from-amber-500 to-orange-500" : 
+                  index === 1 ? "from-blue-500 to-indigo-500" : 
+                  "from-green-500 to-emerald-500"
+                )}>
+                  {topic}
+                </Badge>
+              ))}
+            </div>
+          </div>
+        )}
+        
+        <Button 
+          onClick={handleTuneClick}
+          className="w-full bg-gradient-to-r from-purple-700 to-purple-500 hover:from-purple-800 hover:to-purple-600">
+          Tune Your Neural Extension
+          <ChevronRight className="h-4 w-4 ml-1" />
+        </Button>
+      </CardContent>
     </Card>
   );
 }
