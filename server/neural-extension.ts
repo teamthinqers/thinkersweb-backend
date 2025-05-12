@@ -623,6 +623,157 @@ export async function adaptResponseToUser(
 }
 
 /**
+ * Get or initialize the neural tuning parameters for a user
+ * @param userId User ID
+ * @returns Neural tuning parameters
+ */
+export function getNeuralTuning(userId: number): NeuralTuning {
+  // If user doesn't have tuning parameters yet, initialize with defaults
+  if (!userNeuralTuning.has(userId)) {
+    userNeuralTuning.set(userId, { ...DEFAULT_NEURAL_TUNING });
+  }
+  
+  return userNeuralTuning.get(userId)!;
+}
+
+/**
+ * Update a user's neural tuning parameters
+ * @param userId User ID
+ * @param tuningParams New tuning parameters (partial update supported)
+ * @returns Updated neural tuning parameters
+ */
+export function updateNeuralTuning(
+  userId: number, 
+  tuningParams: Partial<NeuralTuning>
+): NeuralTuning {
+  // Get current parameters or initialize with defaults
+  const currentParams = getNeuralTuning(userId);
+  
+  // Update with new parameters (partial update)
+  const updatedParams: NeuralTuning = {
+    ...currentParams,
+    ...tuningParams,
+    // Handle nested objects specially
+    specialties: {
+      ...currentParams.specialties,
+      ...(tuningParams.specialties || {})
+    },
+    // Handle arrays specially
+    learningFocus: tuningParams.learningFocus || currentParams.learningFocus
+  };
+  
+  // Store updated parameters
+  userNeuralTuning.set(userId, updatedParams);
+  
+  // Check if this is the first time tuning - unlock achievement
+  const gameElements = getGameElements(userId);
+  const tunerAchievement = gameElements.achievements.find(a => a.id === 'neural-tuner');
+  if (tunerAchievement && !tunerAchievement.unlocked) {
+    tunerAchievement.unlocked = true;
+    tunerAchievement.unlockedAt = new Date();
+    tunerAchievement.progress = 1.0;
+    
+    // Update game elements
+    updateGameElements(userId, {
+      achievements: gameElements.achievements,
+      experience: gameElements.experience + 25 // Bonus XP for tuning
+    });
+    
+    console.log(`🏆 Neural Tuner achievement unlocked for user ${userId}`);
+  }
+  
+  return updatedParams;
+}
+
+/**
+ * Get or initialize game elements for a user
+ * @param userId User ID
+ * @returns Game elements
+ */
+export function getGameElements(userId: number): NeuralGameElements {
+  // If user doesn't have game elements yet, initialize with defaults
+  if (!userGameElements.has(userId)) {
+    userGameElements.set(userId, JSON.parse(JSON.stringify(DEFAULT_GAME_ELEMENTS)));
+  }
+  
+  return userGameElements.get(userId)!;
+}
+
+/**
+ * Update a user's game elements
+ * @param userId User ID
+ * @param elements New game elements (partial update supported)
+ * @returns Updated game elements
+ */
+export function updateGameElements(
+  userId: number, 
+  elements: Partial<NeuralGameElements>
+): NeuralGameElements {
+  // Get current elements or initialize with defaults
+  const currentElements = getGameElements(userId);
+  
+  // Update with new elements (partial update)
+  const updatedElements: NeuralGameElements = {
+    ...currentElements,
+    ...elements,
+    // Handle nested objects specially
+    stats: {
+      ...currentElements.stats,
+      ...(elements.stats || {})
+    },
+    // Handle arrays specially
+    unlockedCapabilities: elements.unlockedCapabilities || currentElements.unlockedCapabilities,
+    achievements: elements.achievements || currentElements.achievements
+  };
+  
+  // Check for level up
+  if (
+    updatedElements.experience >= updatedElements.experienceRequired && 
+    updatedElements.level < 10 // Max level cap
+  ) {
+    updatedElements.level += 1;
+    updatedElements.experience -= updatedElements.experienceRequired;
+    updatedElements.experienceRequired = Math.floor(updatedElements.experienceRequired * 1.5); // Increase XP requirement
+    
+    // Unlock new capabilities based on level
+    if (updatedElements.level === 2 && !updatedElements.unlockedCapabilities.includes('topic-insights')) {
+      updatedElements.unlockedCapabilities.push('topic-insights');
+    } else if (updatedElements.level === 3 && !updatedElements.unlockedCapabilities.includes('neural-tuning')) {
+      updatedElements.unlockedCapabilities.push('neural-tuning');
+    } else if (updatedElements.level === 5 && !updatedElements.unlockedCapabilities.includes('advanced-insights')) {
+      updatedElements.unlockedCapabilities.push('advanced-insights');
+    }
+    
+    console.log(`🎉 User ${userId} leveled up to Neural Extension Level ${updatedElements.level}!`);
+  }
+  
+  // Store updated elements
+  userGameElements.set(userId, updatedElements);
+  
+  return updatedElements;
+}
+
+/**
+ * Award experience points to a user's neural extension
+ * @param userId User ID
+ * @param amount Amount of XP to award
+ * @param reason Reason for the XP award (for logging)
+ * @returns Updated game elements
+ */
+export function awardExperience(
+  userId: number, 
+  amount: number, 
+  reason: string
+): NeuralGameElements {
+  console.log(`🧠 Awarding ${amount} XP to user ${userId} for: ${reason}`);
+  
+  const gameElements = getGameElements(userId);
+  return updateGameElements(userId, {
+    experience: gameElements.experience + amount
+  });
+}
+
+/**
  * Get the neural extension status for a user
  * @param userId User ID
  * @returns Status information
@@ -633,11 +784,15 @@ export function getNeuralExtensionStatus(userId: number): {
   patternsDetected: number;
   insightsGenerated: number;
   adaptationLevel: number; // 0.0 to 1.0
+  tuning: NeuralTuning;
+  gameElements: NeuralGameElements;
 } {
   // Get user data
   const connections = userTopicConnections.get(userId) || [];
   const patterns = userPatterns.get(userId) || [];
   const insights = userInsights.get(userId) || [];
+  const tuning = getNeuralTuning(userId);
+  const gameElements = getGameElements(userId);
   
   // Calculate adaptation level based on amount of data collected
   const connectionScore = Math.min(connections.length / 10, 1);
@@ -646,11 +801,19 @@ export function getNeuralExtensionStatus(userId: number): {
   
   const adaptationLevel = (connectionScore + patternScore + insightScore) / 3;
   
+  // Update adaptation score in game elements
+  if (gameElements.stats.adaptationScore !== Math.round(adaptationLevel * 100)) {
+    gameElements.stats.adaptationScore = Math.round(adaptationLevel * 100);
+    userGameElements.set(userId, gameElements);
+  }
+  
   return {
     isActive: connections.length > 0 || patterns.length > 0,
     topicsTracked: connections.length,
     patternsDetected: patterns.length,
     insightsGenerated: insights.length,
-    adaptationLevel
+    adaptationLevel,
+    tuning,
+    gameElements
   };
 }
