@@ -44,7 +44,7 @@ import { cn } from '@/lib/utils';
 
 export default function NeuralTuningPage() {
   const [_, setLocation] = useLocation();
-  const [activeTab, setActiveTab] = useState('parameters');
+  const [activeTab, setActiveTab] = useState('hygiene');
   const [newFocus, setNewFocus] = useState('');
   const [focusAreas, setFocusAreas] = useState<string[]>([]);
   
@@ -375,33 +375,62 @@ export default function NeuralTuningPage() {
         </CardContent>
       </Card>
       
-      {/* Tabs for different tuning options */}
+      {/* Four layers for neural tuning */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-8">
-        <TabsList className="grid grid-cols-3 mb-6">
-          <TabsTrigger value="parameters" className="flex items-center gap-1.5">
-            <Gauge className="h-4 w-4" />
-            <span>Parameters</span>
+        <TabsList className="grid grid-cols-4 mb-6">
+          <TabsTrigger value="hygiene" className="group">
+            <div className="flex flex-col items-center gap-1">
+              <span className="text-sm flex items-center gap-1">
+                <span className="inline-block w-5 h-5 rounded-full bg-indigo-500 text-white flex items-center justify-center text-xs font-bold">1</span>
+                Hygiene
+              </span>
+              <span className="h-1 w-full bg-indigo-300/30 group-data-[state=active]:bg-indigo-500 rounded-full transition-colors duration-300"></span>
+            </div>
           </TabsTrigger>
-          <TabsTrigger value="specialties" className="flex items-center gap-1.5">
-            <BrainCog className="h-4 w-4" />
-            <span>Specialties</span>
+          <TabsTrigger value="expertise" className="group">
+            <div className="flex flex-col items-center gap-1">
+              <span className="text-sm flex items-center gap-1">
+                <span className="inline-block w-5 h-5 rounded-full bg-blue-500 text-white flex items-center justify-center text-xs font-bold">2</span>
+                Expertise
+              </span>
+              <span className="h-1 w-full bg-blue-300/30 group-data-[state=active]:bg-blue-500 rounded-full transition-colors duration-300"></span>
+            </div>
           </TabsTrigger>
-          <TabsTrigger value="learning" className="flex items-center gap-1.5">
-            <Lightbulb className="h-4 w-4" />
-            <span>Learning</span>
+          <TabsTrigger value="personal" className="group">
+            <div className="flex flex-col items-center gap-1">
+              <span className="text-sm flex items-center gap-1">
+                <span className="inline-block w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xs font-bold">3</span>
+                Personal
+              </span>
+              <span className="h-1 w-full bg-emerald-300/30 group-data-[state=active]:bg-emerald-500 rounded-full transition-colors duration-300"></span>
+            </div>
+          </TabsTrigger>
+          <TabsTrigger value="learning" className="group">
+            <div className="flex flex-col items-center gap-1">
+              <span className="text-sm flex items-center gap-1">
+                <span className="inline-block w-5 h-5 rounded-full bg-amber-500 text-white flex items-center justify-center text-xs font-bold">4</span>
+                Learning
+              </span>
+              <span className="h-1 w-full bg-amber-300/30 group-data-[state=active]:bg-amber-500 rounded-full transition-colors duration-300"></span>
+            </div>
           </TabsTrigger>
         </TabsList>
         
-        {/* Parameters Tab */}
-        <TabsContent value="parameters" className="space-y-6">
-          {/* Core processing parameters */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2">
-                <Zap className="h-5 w-5 text-amber-500" />
-                Core Processing
-              </CardTitle>
-              <CardDescription>Adjust how your neural extension processes and responds to information</CardDescription>
+        {/* LAYER 1: Hygiene Setup - Quick defaults */}
+        <TabsContent value="hygiene" className="space-y-6">
+          <Card className="border-indigo-100 dark:border-indigo-900/40 overflow-hidden">
+            <div className="absolute -right-16 -top-16 w-48 h-48 bg-gradient-to-br from-indigo-200/30 to-purple-200/10 dark:from-indigo-800/20 dark:to-purple-800/5 rounded-full blur-3xl"></div>
+            
+            <CardHeader className="relative z-10">
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 rounded-lg bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center">
+                  <BrainCircuit className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
+                </div>
+                <div>
+                  <CardTitle>Neural Hygiene Setup</CardTitle>
+                  <CardDescription>Select a preset configuration to instantly activate your neural extension</CardDescription>
+                </div>
+              </div>
             </CardHeader>
             
             <CardContent className="space-y-6">
