@@ -223,7 +223,9 @@ export default function NeuralTuningPage() {
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2">
               <BrainCircuit className="h-5 w-5 text-purple-700 dark:text-purple-400" />
-              <CardTitle>Neural Extension</CardTitle>
+              <CardTitle>
+                <span className="font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">{neuralName}</span>
+              </CardTitle>
             </div>
             <Badge className="bg-purple-100 text-purple-800 dark:bg-purple-900/50 dark:text-purple-200 hover:bg-purple-200 dark:hover:bg-purple-800/50">
               Level {gameElements?.level || 1}
