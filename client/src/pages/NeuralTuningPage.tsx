@@ -1,566 +1,612 @@
 import React, { useState } from 'react';
-import { Brain, Zap, Lightbulb, FlaskConical, Clock, Gauge, Award, Target, Layers, Sparkles } from 'lucide-react';
+import { Link, useLocation } from 'wouter';
 import { useNeuralTuning } from '@/hooks/useNeuralTuning';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Slider } from '@/components/ui/slider';
-import { Progress } from '@/components/ui/progress';
-import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { 
+  BrainCircuit, 
+  Sparkles, 
+  Zap, 
+  Gauge, 
+  BrainCog, 
+  Lightbulb, 
+  ChevronLeft,
+  ChevronRight, 
+  MoreHorizontal, 
+  X,
+  Plus,
+  Save,
+  Target,
+  Bookmark,
+  Star,
+  Check
+} from 'lucide-react';
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from "@/components/ui/select";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
+import { Progress } from "@/components/ui/progress";
+import { cn } from '@/lib/utils';
 
-/**
- * Neural Tuning Page - Core PWA functionality
- * This page allows users to customize their neural extension parameters
- * and view their progress in the gamified experience
- */
 export default function NeuralTuningPage() {
+  const [_, setLocation] = useLocation();
+  const [activeTab, setActiveTab] = useState('parameters');
+  const [newFocus, setNewFocus] = useState('');
+  const [focusAreas, setFocusAreas] = useState<string[]>([]);
+  
   const { 
-    tuning, 
-    gameElements, 
-    updateTuning, 
-    updateSpecialty,
+    status, 
+    isLoading, 
+    isError, 
+    availableSpecialties,
+    updateTuning,
+    isUpdating,
     updateLearningFocus,
-    formatTuningValue, 
-    calculateLevelProgress,
-    isPending,
-    isLoading
+    isUpdatingFocus
   } = useNeuralTuning();
   
-  const [newFocus, setNewFocus] = useState('');
-  const [activeTab, setActiveTab] = useState('tuning');
-
-  // For handling specialty domain selections
-  const [selectedDomain, setSelectedDomain] = useState('general');
-  const [specialtyValue, setSpecialtyValue] = useState(tuning?.specialties.general || 0.5);
-
-  // Calculate experience progress
-  const levelProgress = calculateLevelProgress() * 100;
-  
-  // Handle specialty domain change
-  const handleDomainChange = (domain: string) => {
-    setSelectedDomain(domain);
-    setSpecialtyValue(tuning?.specialties[domain] || 0.5);
+  // Function to handle slider value changes
+  const handleParameterChange = (paramName: string, value: number[]) => {
+    const paramValue = value[0];
+    updateTuning({ [paramName]: paramValue });
   };
   
-  // Handle specialty value update
-  const handleSpecialtyUpdate = () => {
-    if (selectedDomain) {
-      updateSpecialty(selectedDomain, specialtyValue);
-    }
+  // Function to handle specialty value changes
+  const handleSpecialtyChange = (specialtyId: string, value: number[]) => {
+    const specialtyValue = value[0];
+    updateTuning({
+      specialties: {
+        [specialtyId]: specialtyValue
+      }
+    });
   };
   
-  // Handle adding new learning focus
+  // Function to add a new focus area
   const handleAddFocus = () => {
-    if (newFocus && tuning) {
-      const updatedFocus = [...tuning.learningFocus, newFocus];
-      updateLearningFocus(updatedFocus);
-      setNewFocus('');
-    }
+    if (!newFocus.trim()) return;
+    
+    const updatedFocus = [...(status?.tuning?.learningFocus || []), newFocus.trim()];
+    updateLearningFocus(updatedFocus);
+    setNewFocus('');
   };
   
-  // Handle removing learning focus
-  const handleRemoveFocus = (focus: string) => {
-    if (tuning) {
-      const updatedFocus = tuning.learningFocus.filter(f => f !== focus);
-      updateLearningFocus(updatedFocus);
-    }
+  // Function to remove a focus area
+  const handleRemoveFocus = (index: number) => {
+    const updatedFocus = [...(status?.tuning?.learningFocus || [])];
+    updatedFocus.splice(index, 1);
+    updateLearningFocus(updatedFocus);
   };
-
-  // If tuning data is not yet loaded
+  
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen p-4">
-        <div className="flex flex-col items-center gap-4">
-          <Brain className="h-16 w-16 text-primary animate-pulse" />
-          <p className="text-lg text-center">Loading your neural extension...</p>
+      <div className="container mx-auto px-4 py-8 max-w-4xl animate-pulse">
+        <div className="flex items-center gap-2 mb-6">
+          <div className="h-10 w-10 rounded-full bg-purple-200 dark:bg-purple-800"></div>
+          <div className="h-8 w-48 bg-purple-200 dark:bg-purple-800 rounded"></div>
+        </div>
+        
+        <div className="h-12 w-full bg-purple-200 dark:bg-purple-800 rounded mb-6"></div>
+        
+        <div className="grid gap-6">
+          <div className="h-48 bg-purple-100 dark:bg-purple-900/40 rounded-lg"></div>
+          <div className="h-48 bg-purple-100 dark:bg-purple-900/40 rounded-lg"></div>
+          <div className="h-48 bg-purple-100 dark:bg-purple-900/40 rounded-lg"></div>
         </div>
       </div>
     );
   }
-
-  return (
-    <div className="container max-w-3xl mx-auto p-4 pt-6 pb-16">
-      <header className="mb-6 text-center">
-        <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-700 to-violet-500 text-transparent bg-clip-text">
-          Neural Extension Tuning
-        </h1>
-        <p className="text-muted-foreground">
-          Customize how your neural extension processes information
-        </p>
-      </header>
-
-      <Card className="mb-8 border-purple-200 shadow-lg overflow-hidden">
-        <div className="bg-gradient-to-r from-purple-500/10 to-violet-500/10 p-4 flex justify-between items-center">
-          <div className="flex items-center gap-3">
-            <div className="h-14 w-14 rounded-xl bg-gradient-to-br from-purple-700 to-violet-500 flex items-center justify-center text-white shadow-lg">
-              <Brain className="h-8 w-8" />
-            </div>
-            <div>
-              <h2 className="text-xl font-semibold">Neural Level {gameElements?.level || 1}</h2>
-              <p className="text-sm text-muted-foreground">
-                Adaptation Score: {gameElements?.stats.adaptationScore || 0}%
-              </p>
-            </div>
-          </div>
-          <Badge variant="outline" className="font-medium border-purple-300">
-            {gameElements?.unlockedCapabilities.length || 0} Capabilities
-          </Badge>
+  
+  if (isError) {
+    return (
+      <div className="container mx-auto px-4 py-8 max-w-4xl">
+        <div className="flex items-center gap-2 mb-6">
+          <Button variant="ghost" onClick={() => setLocation('/')} className="p-2">
+            <ChevronLeft className="h-5 w-5" />
+          </Button>
+          <h1 className="text-2xl font-bold">Neural Extension Tuning</h1>
         </div>
         
-        <div className="px-4 py-3 bg-gradient-to-r from-purple-50 to-violet-50 dark:from-purple-950/20 dark:to-violet-950/20">
-          <div className="flex justify-between text-sm mb-1">
-            <span>Experience</span>
-            <span>{gameElements?.experience || 0}/{gameElements?.experienceRequired || 100} XP</span>
+        <Card className="border-red-200 dark:border-red-900/50 bg-red-50 dark:bg-red-950/20">
+          <CardHeader>
+            <CardTitle className="text-red-700 dark:text-red-400">Connection Error</CardTitle>
+            <CardDescription>Unable to connect to your neural extension</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p className="mb-4">
+              There was an error connecting to your neural extension. This could be due to network issues or your neural extension may need to be reactivated.
+            </p>
+            <Button variant="outline" onClick={() => window.location.reload()}>
+              Retry Connection
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+  
+  const { gameElements, tuning } = status || {};
+  
+  return (
+    <div className="container mx-auto px-4 py-8 max-w-4xl">
+      {/* Header with Back Button */}
+      <div className="flex items-center gap-2 mb-6">
+        <Button variant="ghost" onClick={() => setLocation('/')} className="p-2">
+          <ChevronLeft className="h-5 w-5" />
+        </Button>
+        <h1 className="text-2xl font-bold">Neural Extension Tuning</h1>
+      </div>
+      
+      {/* Neural Extension Level Card */}
+      <Card className="mb-8 bg-gradient-to-br from-purple-50 to-white dark:from-purple-950/30 dark:to-gray-950 border border-purple-100 dark:border-purple-900/50">
+        <CardHeader className="pb-4">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center gap-2">
+              <BrainCircuit className="h-5 w-5 text-purple-700 dark:text-purple-400" />
+              <CardTitle>Neural Extension</CardTitle>
+            </div>
+            <Badge className="bg-purple-100 text-purple-800 dark:bg-purple-900/50 dark:text-purple-200 hover:bg-purple-200 dark:hover:bg-purple-800/50">
+              Level {gameElements?.level || 1}
+            </Badge>
           </div>
-          <Progress value={levelProgress} className="h-2 bg-purple-100" />
-        </div>
+          <CardDescription>Configure how your cognitive extension processes information</CardDescription>
+        </CardHeader>
+        
+        <CardContent className="pb-4">
+          <div className="mb-4">
+            <div className="flex justify-between mb-1.5 text-sm font-medium">
+              <span>Experience</span>
+              <span>{gameElements?.experience || 0} / {gameElements?.experienceRequired || 1000} XP</span>
+            </div>
+            <Progress value={(gameElements?.experience || 0) / (gameElements?.experienceRequired || 1000) * 100} className="h-2 bg-purple-100 dark:bg-purple-950" />
+          </div>
+          
+          <div className="text-sm text-muted-foreground mb-2">
+            <p>Tuning your neural extension affects how it processes information and generates insights. Each parameter adjustment adapts your extension to better match your cognitive preferences.</p>
+          </div>
+        </CardContent>
       </Card>
-
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-        <TabsList className="grid grid-cols-3 mb-4">
-          <TabsTrigger value="tuning" className="flex items-center gap-2">
+      
+      {/* Tabs for different tuning options */}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-8">
+        <TabsList className="grid grid-cols-3 mb-6">
+          <TabsTrigger value="parameters" className="flex items-center gap-1.5">
             <Gauge className="h-4 w-4" />
-            <span>Core Tuning</span>
+            <span>Parameters</span>
           </TabsTrigger>
-          <TabsTrigger value="specialties" className="flex items-center gap-2">
-            <FlaskConical className="h-4 w-4" />
+          <TabsTrigger value="specialties" className="flex items-center gap-1.5">
+            <BrainCog className="h-4 w-4" />
             <span>Specialties</span>
           </TabsTrigger>
-          <TabsTrigger value="achievements" className="flex items-center gap-2">
-            <Award className="h-4 w-4" />
-            <span>Achievements</span>
+          <TabsTrigger value="learning" className="flex items-center gap-1.5">
+            <Lightbulb className="h-4 w-4" />
+            <span>Learning</span>
           </TabsTrigger>
         </TabsList>
         
-        {/* Core Tuning Tab */}
-        <TabsContent value="tuning" className="space-y-4">
+        {/* Parameters Tab */}
+        <TabsContent value="parameters" className="space-y-6">
+          {/* Core processing parameters */}
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Sparkles className="h-5 w-5 text-purple-500" />
-                Core Parameters
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Zap className="h-5 w-5 text-amber-500" />
+                Core Processing
               </CardTitle>
-              <CardDescription>
-                Adjust how your neural extension processes information
-              </CardDescription>
+              <CardDescription>Adjust how your neural extension processes and responds to information</CardDescription>
             </CardHeader>
+            
             <CardContent className="space-y-6">
-              {/* Creativity */}
+              {/* Creativity Slider */}
               <div className="space-y-2">
-                <div className="flex justify-between">
-                  <label className="text-sm font-medium flex items-center gap-2">
-                    <Lightbulb className="h-4 w-4 text-amber-500" />
-                    Creativity
-                  </label>
+                <div className="flex items-center justify-between">
+                  <HoverCard>
+                    <HoverCardTrigger asChild>
+                      <div className="flex items-center gap-1.5 cursor-help">
+                        <Sparkles className="h-4 w-4 text-pink-500" />
+                        <label htmlFor="creativity" className="text-sm font-medium">
+                          Creativity
+                        </label>
+                      </div>
+                    </HoverCardTrigger>
+                    <HoverCardContent className="w-80">
+                      <div className="space-y-2">
+                        <h4 className="text-sm font-semibold">Creativity Parameter</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Controls how creative and varied the neural extension's outputs will be. Higher values produce more unique and unexpected connections.
+                        </p>
+                      </div>
+                    </HoverCardContent>
+                  </HoverCard>
                   <span className="text-sm text-muted-foreground">
-                    {formatTuningValue(tuning?.creativity)}
+                    {Math.round((tuning?.creativity || 0.5) * 100)}%
                   </span>
                 </div>
                 <Slider
-                  value={[tuning?.creativity || 0.5]}
-                  min={0}
-                  max={1}
-                  step={0.01}
-                  className="[&>span:first-child]:bg-amber-500/20"
-                  onValueChange={([value]) => updateTuning({ creativity: value })}
-                  disabled={isPending}
+                  id="creativity"
+                  defaultValue={[(tuning?.creativity || 0.5) * 100]}
+                  max={100}
+                  step={5}
+                  onValueCommit={(value) => handleParameterChange('creativity', [value[0] / 100])}
+                  className="py-1"
                 />
-                <p className="text-xs text-muted-foreground">
-                  Higher values produce more creative and varied responses
-                </p>
+                <div className="flex justify-between text-xs text-muted-foreground">
+                  <span>Logical</span>
+                  <span>Creative</span>
+                </div>
               </div>
               
-              {/* Precision */}
+              {/* Precision Slider */}
               <div className="space-y-2">
-                <div className="flex justify-between">
-                  <label className="text-sm font-medium flex items-center gap-2">
-                    <Target className="h-4 w-4 text-emerald-500" />
-                    Precision
-                  </label>
+                <div className="flex items-center justify-between">
+                  <HoverCard>
+                    <HoverCardTrigger asChild>
+                      <div className="flex items-center gap-1.5 cursor-help">
+                        <Target className="h-4 w-4 text-blue-500" />
+                        <label htmlFor="precision" className="text-sm font-medium">
+                          Precision
+                        </label>
+                      </div>
+                    </HoverCardTrigger>
+                    <HoverCardContent className="w-80">
+                      <div className="space-y-2">
+                        <h4 className="text-sm font-semibold">Precision Parameter</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Controls the accuracy and detail level in the neural extension's processing. Higher values produce more accurate and detailed insights.
+                        </p>
+                      </div>
+                    </HoverCardContent>
+                  </HoverCard>
                   <span className="text-sm text-muted-foreground">
-                    {formatTuningValue(tuning?.precision)}
+                    {Math.round((tuning?.precision || 0.5) * 100)}%
                   </span>
                 </div>
                 <Slider
-                  value={[tuning?.precision || 0.5]}
-                  min={0}
-                  max={1}
-                  step={0.01}
-                  className="[&>span:first-child]:bg-emerald-500/20"
-                  onValueChange={([value]) => updateTuning({ precision: value })}
-                  disabled={isPending}
+                  id="precision"
+                  defaultValue={[(tuning?.precision || 0.5) * 100]}
+                  max={100}
+                  step={5}
+                  onValueCommit={(value) => handleParameterChange('precision', [value[0] / 100])}
+                  className="py-1"
                 />
-                <p className="text-xs text-muted-foreground">
-                  Higher values improve factual accuracy and detail level
-                </p>
+                <div className="flex justify-between text-xs text-muted-foreground">
+                  <span>Broad</span>
+                  <span>Precise</span>
+                </div>
               </div>
               
-              {/* Speed */}
+              {/* Speed Slider */}
               <div className="space-y-2">
-                <div className="flex justify-between">
-                  <label className="text-sm font-medium flex items-center gap-2">
-                    <Clock className="h-4 w-4 text-blue-500" />
-                    Speed
-                  </label>
+                <div className="flex items-center justify-between">
+                  <HoverCard>
+                    <HoverCardTrigger asChild>
+                      <div className="flex items-center gap-1.5 cursor-help">
+                        <Zap className="h-4 w-4 text-yellow-500" />
+                        <label htmlFor="speed" className="text-sm font-medium">
+                          Processing Speed
+                        </label>
+                      </div>
+                    </HoverCardTrigger>
+                    <HoverCardContent className="w-80">
+                      <div className="space-y-2">
+                        <h4 className="text-sm font-semibold">Processing Speed Parameter</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Controls the balance between speed and depth of processing. Higher values prioritize faster responses over deeper analysis.
+                        </p>
+                      </div>
+                    </HoverCardContent>
+                  </HoverCard>
                   <span className="text-sm text-muted-foreground">
-                    {formatTuningValue(tuning?.speed)}
+                    {Math.round((tuning?.speed || 0.5) * 100)}%
                   </span>
                 </div>
                 <Slider
-                  value={[tuning?.speed || 0.5]}
-                  min={0}
-                  max={1}
-                  step={0.01}
-                  className="[&>span:first-child]:bg-blue-500/20"
-                  onValueChange={([value]) => updateTuning({ speed: value })}
-                  disabled={isPending}
+                  id="speed"
+                  defaultValue={[(tuning?.speed || 0.5) * 100]}
+                  max={100}
+                  step={5}
+                  onValueCommit={(value) => handleParameterChange('speed', [value[0] / 100])}
+                  className="py-1"
                 />
-                <p className="text-xs text-muted-foreground">
-                  Higher values prioritize response speed over depth
-                </p>
-              </div>
-              
-              {/* Cognitive Style: Analytical vs Intuitive */}
-              <div className="pt-2 border-t">
-                <h3 className="text-sm font-medium mb-3">Cognitive Style Balance</h3>
-                <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <label className="text-sm flex items-center gap-2">
-                      <Layers className="h-4 w-4 text-indigo-500" />
-                      Analytical
-                    </label>
-                    <span className="text-sm text-muted-foreground">
-                      {formatTuningValue(tuning?.analytical)}
-                    </span>
-                  </div>
-                  <Slider
-                    value={[tuning?.analytical || 0.5]}
-                    min={0}
-                    max={1}
-                    step={0.01}
-                    className="[&>span:first-child]:bg-indigo-500/20"
-                    onValueChange={([value]) => updateTuning({ analytical: value })}
-                    disabled={isPending}
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    Logical, systematic thinking emphasis
-                  </p>
-                </div>
-                
-                <div className="space-y-2 mt-4">
-                  <div className="flex justify-between">
-                    <label className="text-sm flex items-center gap-2">
-                      <Sparkles className="h-4 w-4 text-fuchsia-500" />
-                      Intuitive
-                    </label>
-                    <span className="text-sm text-muted-foreground">
-                      {formatTuningValue(tuning?.intuitive)}
-                    </span>
-                  </div>
-                  <Slider
-                    value={[tuning?.intuitive || 0.5]}
-                    min={0}
-                    max={1}
-                    step={0.01}
-                    className="[&>span:first-child]:bg-fuchsia-500/20"
-                    onValueChange={([value]) => updateTuning({ intuitive: value })}
-                    disabled={isPending}
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    Pattern recognition and insight emphasis
-                  </p>
-                </div>
-              </div>
-              
-              {/* Learning Focus */}
-              <div className="pt-2 border-t">
-                <h3 className="text-sm font-medium mb-3">Learning Focus</h3>
-                <p className="text-xs text-muted-foreground mb-3">
-                  Topics your neural extension will prioritize learning
-                </p>
-                
-                <div className="flex gap-2 mb-3">
-                  <Input
-                    value={newFocus}
-                    onChange={(e) => setNewFocus(e.target.value)}
-                    placeholder="Add a focus area..."
-                    className="flex-1"
-                  />
-                  <Button 
-                    onClick={handleAddFocus} 
-                    size="sm" 
-                    disabled={!newFocus || isPending}
-                  >
-                    Add
-                  </Button>
-                </div>
-                
-                <div className="flex flex-wrap gap-2">
-                  {tuning?.learningFocus.map((focus) => (
-                    <Badge 
-                      key={focus} 
-                      variant="secondary"
-                      className="flex items-center gap-1 px-2 py-1"
-                    >
-                      {focus}
-                      <button 
-                        onClick={() => handleRemoveFocus(focus)}
-                        className="ml-1 rounded-full hover:bg-muted p-0.5"
-                        disabled={isPending}
-                      >
-                        <span className="sr-only">Remove</span>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="12"
-                          height="12"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <path d="M18 6 6 18" />
-                          <path d="m6 6 12 12" />
-                        </svg>
-                      </button>
-                    </Badge>
-                  ))}
-                  {tuning?.learningFocus.length === 0 && (
-                    <p className="text-xs text-muted-foreground italic">
-                      No focus areas added yet
-                    </p>
-                  )}
+                <div className="flex justify-between text-xs text-muted-foreground">
+                  <span>Deep</span>
+                  <span>Fast</span>
                 </div>
               </div>
             </CardContent>
-            <CardFooter>
-              <Button 
-                variant="default" 
-                className="w-full"
-                onClick={() => updateTuning({
-                  creativity: tuning?.creativity,
-                  precision: tuning?.precision,
-                  speed: tuning?.speed,
-                  analytical: tuning?.analytical,
-                  intuitive: tuning?.intuitive
-                })}
-                disabled={isPending}
-              >
-                {isPending ? 'Updating...' : 'Save Neural Parameters'}
-              </Button>
-            </CardFooter>
+          </Card>
+          
+          {/* Cognitive Style Parameters */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg flex items-center gap-2">
+                <BrainCircuit className="h-5 w-5 text-indigo-500" />
+                Cognitive Style
+              </CardTitle>
+              <CardDescription>Adjust the thinking style your neural extension emphasizes</CardDescription>
+            </CardHeader>
+            
+            <CardContent className="space-y-6">
+              {/* Analytical Slider */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <label htmlFor="analytical" className="text-sm font-medium flex items-center gap-1.5">
+                    <BrainCog className="h-4 w-4 text-blue-600" />
+                    Analytical Thinking
+                  </label>
+                  <span className="text-sm text-muted-foreground">
+                    {Math.round((tuning?.analytical || 0.5) * 100)}%
+                  </span>
+                </div>
+                <Slider
+                  id="analytical"
+                  defaultValue={[(tuning?.analytical || 0.5) * 100]}
+                  max={100}
+                  step={5}
+                  onValueCommit={(value) => handleParameterChange('analytical', [value[0] / 100])}
+                  className="py-1"
+                />
+                <div className="flex justify-between text-xs text-muted-foreground">
+                  <span>Low</span>
+                  <span>High</span>
+                </div>
+              </div>
+              
+              {/* Intuitive Slider */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <label htmlFor="intuitive" className="text-sm font-medium flex items-center gap-1.5">
+                    <Lightbulb className="h-4 w-4 text-amber-500" />
+                    Intuitive Thinking
+                  </label>
+                  <span className="text-sm text-muted-foreground">
+                    {Math.round((tuning?.intuitive || 0.5) * 100)}%
+                  </span>
+                </div>
+                <Slider
+                  id="intuitive"
+                  defaultValue={[(tuning?.intuitive || 0.5) * 100]}
+                  max={100}
+                  step={5}
+                  onValueCommit={(value) => handleParameterChange('intuitive', [value[0] / 100])}
+                  className="py-1"
+                />
+                <div className="flex justify-between text-xs text-muted-foreground">
+                  <span>Low</span>
+                  <span>High</span>
+                </div>
+              </div>
+            </CardContent>
           </Card>
         </TabsContent>
         
         {/* Specialties Tab */}
-        <TabsContent value="specialties" className="space-y-4">
+        <TabsContent value="specialties" className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <FlaskConical className="h-5 w-5 text-purple-500" />
-                Specialty Focus
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Star className="h-5 w-5 text-amber-500" />
+                Domain Specialties
               </CardTitle>
-              <CardDescription>
-                Customize your neural extension's domain expertise
-              </CardDescription>
+              <CardDescription>Adjust how your neural extension specializes in different knowledge domains</CardDescription>
             </CardHeader>
+            
             <CardContent className="space-y-6">
-              <div className="space-y-4">
-                <p className="text-sm">
-                  Adjust how much your neural extension prioritizes different knowledge domains.
-                  Higher values mean better performance in that specialty area.
-                </p>
-                
-                <div className="space-y-3">
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Select Domain</label>
-                    <Select 
-                      value={selectedDomain} 
-                      onValueChange={handleDomainChange}
-                      disabled={isPending}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a domain" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="general">General Knowledge</SelectItem>
-                        <SelectItem value="business">Business & Leadership</SelectItem>
-                        <SelectItem value="technology">Technology & Engineering</SelectItem>
-                        <SelectItem value="science">Science & Research</SelectItem>
-                        <SelectItem value="arts">Arts & Creativity</SelectItem>
-                        <SelectItem value="personal">Personal Development</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <div className="flex justify-between">
-                      <label className="text-sm font-medium">
-                        Domain Focus Level
-                      </label>
-                      <span className="text-sm text-muted-foreground">
-                        {formatTuningValue(specialtyValue)}
-                      </span>
-                    </div>
-                    <Slider
-                      value={[specialtyValue]}
-                      min={0}
-                      max={1}
-                      step={0.01}
-                      className="[&>span:first-child]:bg-purple-500/20"
-                      onValueChange={([value]) => setSpecialtyValue(value)}
-                      disabled={isPending}
-                    />
-                  </div>
-                </div>
+              <div className="text-sm text-muted-foreground mb-4">
+                <p>Higher values mean your neural extension will emphasize that knowledge domain when processing information and generating insights.</p>
               </div>
               
-              <div className="bg-muted/50 rounded-lg p-3">
-                <h3 className="text-sm font-medium mb-2">Current Specialty Levels</h3>
-                <div className="space-y-2">
-                  {tuning && Object.entries(tuning.specialties).map(([domain, value]) => (
-                    <div key={domain} className="flex justify-between items-center">
-                      <span className="text-sm capitalize">{domain.replace('_', ' ')}</span>
-                      <div className="flex items-center gap-2">
+              {availableSpecialties.map((specialty) => (
+                <div key={specialty.id} className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <label htmlFor={`specialty-${specialty.id}`} className="text-sm font-medium">
+                      {specialty.name}
+                    </label>
+                    <span className="text-sm text-muted-foreground">
+                      {Math.round(((tuning?.specialties?.[specialty.id]) || 0) * 100)}%
+                    </span>
+                  </div>
+                  <Slider
+                    id={`specialty-${specialty.id}`}
+                    defaultValue={[((tuning?.specialties?.[specialty.id]) || 0) * 100]}
+                    max={100}
+                    step={5}
+                    onValueCommit={(value) => handleSpecialtyChange(specialty.id, [value[0] / 100])}
+                    className="py-1"
+                  />
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        </TabsContent>
+        
+        {/* Learning Focus Tab */}
+        <TabsContent value="learning" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Bookmark className="h-5 w-5 text-green-500" />
+                Learning Focus
+              </CardTitle>
+              <CardDescription>Direct your neural extension to focus on specific topics or skills</CardDescription>
+            </CardHeader>
+            
+            <CardContent className="space-y-4">
+              <div className="text-sm text-muted-foreground mb-2">
+                <p>Your neural extension will prioritize content related to these topics when learning and generating insights.</p>
+              </div>
+              
+              {/* Add new focus area */}
+              <div className="flex gap-2">
+                <Input 
+                  value={newFocus}
+                  onChange={(e) => setNewFocus(e.target.value)}
+                  placeholder="Add a learning focus area"
+                  className="flex-1"
+                  onKeyDown={(e) => e.key === 'Enter' && handleAddFocus()}
+                />
+                <Button 
+                  onClick={handleAddFocus} 
+                  size="icon"
+                  disabled={isUpdatingFocus || !newFocus.trim()}
+                >
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </div>
+              
+              {/* Current focus areas */}
+              <div className="mt-4">
+                <h3 className="text-sm font-medium mb-2">Current Focus Areas</h3>
+                {(!tuning?.learningFocus || tuning.learningFocus.length === 0) ? (
+                  <div className="text-sm text-muted-foreground italic">
+                    No focus areas defined yet. Add some above to guide your neural extension's learning.
+                  </div>
+                ) : (
+                  <div className="flex flex-wrap gap-2">
+                    {tuning.learningFocus.map((focus, index) => (
+                      <Badge 
+                        key={index} 
+                        variant="secondary"
+                        className="flex items-center gap-1 pl-3 pr-2 py-1.5 bg-green-50 text-green-700 dark:bg-green-950/40 dark:text-green-400 border border-green-200 dark:border-green-900/30"
+                      >
+                        {focus}
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-4 w-4 ml-1 rounded-full p-0 text-green-700 dark:text-green-400 hover:bg-green-200/50 dark:hover:bg-green-900/30"
+                          onClick={() => handleRemoveFocus(index)}
+                          disabled={isUpdatingFocus}
+                        >
+                          <X className="h-3 w-3" />
+                        </Button>
+                      </Badge>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+          
+          {/* Achievements Card */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Star className="h-5 w-5 text-yellow-500" />
+                Achievements
+              </CardTitle>
+              <CardDescription>Track your neural extension's learning progress</CardDescription>
+            </CardHeader>
+            
+            <CardContent>
+              <ScrollArea className="h-[200px] pr-4">
+                <div className="space-y-4">
+                  {gameElements?.achievements?.map((achievement) => (
+                    <div key={achievement.id} className="flex items-start space-x-3">
+                      <div className={cn(
+                        "flex items-center justify-center w-8 h-8 rounded-full mt-0.5",
+                        achievement.unlocked 
+                          ? "bg-yellow-100 text-yellow-600 dark:bg-yellow-950/60 dark:text-yellow-400" 
+                          : "bg-muted text-muted-foreground"
+                      )}>
+                        {achievement.unlocked ? (
+                          <Check className="h-4 w-4" />
+                        ) : (
+                          <LockIcon className="h-4 w-4" />
+                        )}
+                      </div>
+                      <div className="space-y-1 flex-1">
+                        <div className="flex items-center justify-between">
+                          <h4 className={cn(
+                            "text-sm font-medium",
+                            achievement.unlocked ? "text-foreground" : "text-muted-foreground"
+                          )}>
+                            {achievement.name}
+                          </h4>
+                          <span className="text-xs text-muted-foreground">
+                            {Math.round(achievement.progress * 100)}%
+                          </span>
+                        </div>
+                        <p className="text-xs text-muted-foreground">{achievement.description}</p>
                         <Progress 
-                          value={value * 100} 
-                          className="h-2 w-24 bg-muted" 
+                          value={achievement.progress * 100} 
+                          className={cn(
+                            "h-1.5",
+                            achievement.unlocked 
+                              ? "bg-yellow-100 dark:bg-yellow-950/40" 
+                              : "bg-muted"
+                          )}
                         />
-                        <span className="text-xs text-muted-foreground w-8 text-right">
-                          {Math.round(value * 100)}%
-                        </span>
                       </div>
                     </div>
                   ))}
                 </div>
-              </div>
+              </ScrollArea>
             </CardContent>
-            <CardFooter>
-              <Button 
-                variant="default" 
-                className="w-full"
-                onClick={handleSpecialtyUpdate}
-                disabled={isPending}
-              >
-                {isPending ? 'Updating...' : 'Update Specialty Focus'}
-              </Button>
-            </CardFooter>
           </Card>
-        </TabsContent>
-        
-        {/* Achievements Tab */}
-        <TabsContent value="achievements" className="space-y-4">
+          
+          {/* Unlocked Capabilities Card */}
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Award className="h-5 w-5 text-purple-500" />
-                Neural Achievements
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Zap className="h-5 w-5 text-purple-500" />
+                Unlocked Capabilities
               </CardTitle>
-              <CardDescription>
-                Track your neural extension's growth and capabilities
-              </CardDescription>
+              <CardDescription>Features your neural extension has learned</CardDescription>
             </CardHeader>
+            
             <CardContent>
-              <div className="space-y-4">
-                <div className="bg-muted/50 rounded-lg p-3">
-                  <h3 className="text-sm font-medium mb-2">Neural Stats</h3>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="bg-background rounded-md p-2">
-                      <div className="text-xs text-muted-foreground">Messages Processed</div>
-                      <div className="text-lg font-semibold">{gameElements?.stats.messagesProcessed || 0}</div>
-                    </div>
-                    <div className="bg-background rounded-md p-2">
-                      <div className="text-xs text-muted-foreground">Insights Generated</div>
-                      <div className="text-lg font-semibold">{gameElements?.stats.insightsGenerated || 0}</div>
-                    </div>
-                    <div className="bg-background rounded-md p-2">
-                      <div className="text-xs text-muted-foreground">Connections Formed</div>
-                      <div className="text-lg font-semibold">{gameElements?.stats.connectionsFormed || 0}</div>
-                    </div>
-                    <div className="bg-background rounded-md p-2">
-                      <div className="text-xs text-muted-foreground">Adaptation Score</div>
-                      <div className="text-lg font-semibold">{gameElements?.stats.adaptationScore || 0}%</div>
-                    </div>
-                  </div>
+              {(!gameElements?.unlockedCapabilities || gameElements.unlockedCapabilities.length === 0) ? (
+                <div className="text-sm text-muted-foreground italic">
+                  No capabilities unlocked yet. Continue using your neural extension to unlock new features.
                 </div>
-                
-                <div className="pt-2">
-                  <h3 className="text-sm font-medium mb-3">Unlocked Capabilities</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {gameElements?.unlockedCapabilities.map((capability) => (
-                      <Badge 
-                        key={capability} 
-                        className="capitalize"
-                      >
-                        {capability.replace(/-/g, ' ')}
-                      </Badge>
-                    ))}
-                  </div>
+              ) : (
+                <div className="flex flex-wrap gap-2">
+                  {gameElements.unlockedCapabilities.map((capability, index) => (
+                    <Badge 
+                      key={index}
+                      className="bg-purple-100 text-purple-700 hover:bg-purple-200 dark:bg-purple-950/40 dark:text-purple-400 dark:hover:bg-purple-900/30"
+                    >
+                      {capability}
+                    </Badge>
+                  ))}
                 </div>
-                
-                <div className="pt-2">
-                  <h3 className="text-sm font-medium mb-3">Achievement Progress</h3>
-                  <div className="space-y-4">
-                    {gameElements?.achievements.map((achievement) => (
-                      <div key={achievement.id} className="space-y-2">
-                        <div className="flex justify-between items-center">
-                          <div className="flex items-center gap-2">
-                            {achievement.unlocked ? (
-                              <div className="h-5 w-5 rounded-full bg-green-500/20 flex items-center justify-center">
-                                <svg 
-                                  xmlns="http://www.w3.org/2000/svg" 
-                                  width="12" 
-                                  height="12" 
-                                  viewBox="0 0 24 24" 
-                                  fill="none" 
-                                  stroke="currentColor" 
-                                  strokeWidth="3"
-                                  strokeLinecap="round" 
-                                  strokeLinejoin="round"
-                                  className="text-green-500"
-                                >
-                                  <path d="M20 6 9 17l-5-5" />
-                                </svg>
-                              </div>
-                            ) : (
-                              <div className="h-5 w-5 rounded-full border-2 border-muted-foreground/20" />
-                            )}
-                            <span className="text-sm font-medium">{achievement.name}</span>
-                          </div>
-                          <Badge 
-                            variant={achievement.unlocked ? "default" : "outline"}
-                            className={achievement.unlocked ? "bg-green-500" : ""}
-                          >
-                            {achievement.unlocked ? "Completed" : `${Math.round(achievement.progress * 100)}%`}
-                          </Badge>
-                        </div>
-                        <p className="text-xs text-muted-foreground pl-7">
-                          {achievement.description}
-                        </p>
-                        {!achievement.unlocked && (
-                          <Progress 
-                            value={achievement.progress * 100} 
-                            className="h-1.5 ml-7 mr-1" 
-                          />
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
       </Tabs>
     </div>
+  );
+}
+
+// Lock icon component
+function LockIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
+      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+    </svg>
   );
 }

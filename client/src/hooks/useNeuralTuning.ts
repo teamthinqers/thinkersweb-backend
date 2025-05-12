@@ -1,164 +1,149 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { apiRequest } from '@/lib/queryClient';
-import { useNeuralExtension } from './useNeuralExtension';
+import { useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from './use-toast';
+import { apiRequest } from '@/lib/queryClient';
+import { NeuralExtensionStatus } from './useNeuralExtension';
 
-// Neural tuning interface from the server
-export interface NeuralTuning {
+interface TuningParams {
   // Core processing parameters
-  creativity: number; // 0.0 to 1.0 - affects response variety and uniqueness
-  precision: number;  // 0.0 to 1.0 - affects factual accuracy and detail level
-  speed: number;      // 0.0 to 1.0 - affects response time vs. depth tradeoff
+  creativity?: number;  // 0.0 to 1.0 - affects response variety and uniqueness
+  precision?: number;   // 0.0 to 1.0 - affects factual accuracy and detail level
+  speed?: number;       // 0.0 to 1.0 - affects response time vs. depth tradeoff
   
   // Cognitive style parameters
-  analytical: number; // 0.0 to 1.0 - logical/systematic thinking emphasis
-  intuitive: number;  // 0.0 to 1.0 - pattern recognition/insight emphasis
+  analytical?: number;  // 0.0 to 1.0 - logical/systematic thinking emphasis
+  intuitive?: number;   // 0.0 to 1.0 - pattern recognition/insight emphasis
   
   // Specialty focus areas (weights for different domains)
-  specialties: {
-    [domain: string]: number; // 0.0 to 1.0 - e.g., "science", "business", "creative"
+  specialties?: {
+    [domain: string]: number; // 0.0 to 1.0
   };
   
-  // Active learning directives - what the extension should prioritize learning
-  learningFocus: string[];
+  // Active learning directives
+  learningFocus?: string[];
 }
 
-// Neural game elements interface
-export interface NeuralGameElements {
-  level: number;
-  experience: number;
-  experienceRequired: number;
-  unlockedCapabilities: string[];
-  achievements: {
-    id: string;
-    name: string;
-    description: string;
-    unlocked: boolean;
-    unlockedAt?: string;
-    progress: number;
-  }[];
-  stats: {
-    messagesProcessed: number;
-    insightsGenerated: number;
-    connectionsFormed: number;
-    adaptationScore: number;
-  };
-}
-
-/**
- * Hook for managing neural tuning parameters
- * This allows users to customize how their neural extension processes information
- */
 export function useNeuralTuning() {
-  const { toast } = useToast();
   const queryClient = useQueryClient();
-  const { status, refresh } = useNeuralExtension();
+  const { toast } = useToast();
+  const [mockStatus] = useState<NeuralExtensionStatus | null>(
+    queryClient.getQueryData(['/api/neural-extension/status']) as NeuralExtensionStatus
+  );
   
-  // Get the current tuning parameters and game elements from the neural extension status
-  const tuning = status?.tuning;
-  const gameElements = status?.gameElements;
+  // Mock available specialties for demo
+  const [availableSpecialties] = useState([
+    { id: 'tech', name: 'Technology & Computing' },
+    { id: 'business', name: 'Business & Management' },
+    { id: 'science', name: 'Science & Research' },
+    { id: 'creative', name: 'Creative & Design' },
+    { id: 'health', name: 'Health & Wellness' },
+    { id: 'finance', name: 'Finance & Economics' },
+    { id: 'education', name: 'Education & Learning' },
+    { id: 'social', name: 'Social Sciences' }
+  ]);
   
-  // Mutation to update neural tuning parameters
+  // In a real implementation, this would fetch from the API
+  const { data: status, isLoading, isError } = useQuery({
+    queryKey: ['/api/neural-extension/status'],
+    // For demo purposes, we're using the mock data
+    queryFn: () => Promise.resolve(mockStatus)
+  });
+  
+  // Update neural tuning parameters
   const updateTuningMutation = useMutation({
-    mutationFn: async (newTuning: Partial<NeuralTuning>) => {
-      const res = await apiRequest('POST', '/api/neural-extension/tune', newTuning);
-      return res.json();
+    mutationFn: async (params: TuningParams) => {
+      // In a real implementation, this would call the API
+      // return await apiRequest('POST', '/api/neural-extension/tuning', params);
+      
+      // For demo purposes, we'll just return a mock response
+      await new Promise(resolve => setTimeout(resolve, 800)); // Simulate network latency
+      
+      // Create updated tuning params by merging with current settings
+      const updatedTuning = {
+        ...status?.tuning,
+        ...params,
+        specialties: {
+          ...status?.tuning.specialties,
+          ...(params.specialties || {})
+        }
+      };
+      
+      // Create an updated status object with the new tuning params
+      const updatedStatus = {
+        ...status,
+        tuning: updatedTuning
+      };
+      
+      return updatedStatus;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      // Update the cached status data
+      queryClient.setQueryData(['/api/neural-extension/status'], data);
+      
       toast({
-        title: 'Neural Extension Updated',
-        description: 'Your neural extension has been tuned to your preferences.',
-        variant: 'default',
+        title: "Neural Extension Updated",
+        description: "Your neural extension tuning parameters have been updated.",
       });
-      // Refresh neural extension data
-      refresh();
     },
-    onError: (error: Error) => {
+    onError: (error) => {
+      console.error('Error updating neural tuning:', error);
+      
       toast({
-        title: 'Tuning Failed',
-        description: `Could not update neural parameters: ${error.message}`,
-        variant: 'destructive',
+        title: "Update Failed",
+        description: "Failed to update neural extension parameters. Please try again.",
+        variant: "destructive"
       });
     }
   });
   
-  // Mutation to update specialty focus
-  const updateSpecialtyMutation = useMutation({
-    mutationFn: async ({ domain, value }: { domain: string; value: number }) => {
-      const specialties = { ...tuning?.specialties, [domain]: value };
-      const res = await apiRequest('POST', '/api/neural-extension/tune', { 
-        specialties 
-      });
-      return res.json();
-    },
-    onSuccess: () => {
-      toast({
-        title: 'Specialty Focus Updated',
-        description: 'Your neural extension specialty focus has been updated.',
-        variant: 'default',
-      });
-      // Refresh neural extension data
-      refresh();
-    },
-    onError: (error: Error) => {
-      toast({
-        title: 'Update Failed',
-        description: `Could not update specialty focus: ${error.message}`,
-        variant: 'destructive',
-      });
-    }
-  });
-  
-  // Mutation to update learning focus
+  // Function to update learning focus
   const updateLearningFocusMutation = useMutation({
-    mutationFn: async (learningFocus: string[]) => {
-      const res = await apiRequest('POST', '/api/neural-extension/tune', { 
-        learningFocus 
-      });
-      return res.json();
+    mutationFn: async (focusAreas: string[]) => {
+      // In a real implementation, this would call the API
+      // return await apiRequest('POST', '/api/neural-extension/learning-focus', { focusAreas });
+      
+      // For demo purposes, we'll just return a mock response
+      await new Promise(resolve => setTimeout(resolve, 800)); // Simulate network latency
+      
+      // Create an updated status with the new learning focus
+      const updatedStatus = {
+        ...status,
+        tuning: {
+          ...status?.tuning,
+          learningFocus: focusAreas
+        }
+      };
+      
+      return updatedStatus;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      // Update the cached status data
+      queryClient.setQueryData(['/api/neural-extension/status'], data);
+      
       toast({
-        title: 'Learning Focus Updated',
-        description: 'Your neural extension learning priorities have been updated.',
-        variant: 'default',
+        title: "Learning Focus Updated",
+        description: "Your neural extension learning directives have been updated.",
       });
-      // Refresh neural extension data
-      refresh();
     },
-    onError: (error: Error) => {
+    onError: (error) => {
+      console.error('Error updating learning focus:', error);
+      
       toast({
-        title: 'Update Failed',
-        description: `Could not update learning focus: ${error.message}`,
-        variant: 'destructive',
+        title: "Update Failed",
+        description: "Failed to update learning focus. Please try again.",
+        variant: "destructive"
       });
     }
   });
-  
-  // Format a tuning value for display (0.0-1.0 to 0-100%)
-  const formatTuningValue = (value?: number): string => {
-    if (value === undefined) return '50%';
-    return `${Math.round(value * 100)}%`;
-  };
-  
-  // Calculate progress to next level
-  const calculateLevelProgress = (): number => {
-    if (!gameElements) return 0;
-    return gameElements.experience / gameElements.experienceRequired;
-  };
   
   return {
-    tuning,
-    gameElements,
-    isLoading: !tuning,
-    updateTuning: (params: Partial<NeuralTuning>) => updateTuningMutation.mutate(params),
-    updateSpecialty: (domain: string, value: number) => 
-      updateSpecialtyMutation.mutate({ domain, value }),
-    updateLearningFocus: (focus: string[]) => updateLearningFocusMutation.mutate(focus),
-    formatTuningValue,
-    calculateLevelProgress,
-    isPending: updateTuningMutation.isPending || 
-              updateSpecialtyMutation.isPending || 
-              updateLearningFocusMutation.isPending
+    status,
+    isLoading,
+    isError,
+    availableSpecialties,
+    updateTuning: updateTuningMutation.mutate,
+    isUpdating: updateTuningMutation.isPending,
+    updateLearningFocus: updateLearningFocusMutation.mutate,
+    isUpdatingFocus: updateLearningFocusMutation.isPending
   };
 }
