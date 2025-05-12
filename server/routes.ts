@@ -454,6 +454,67 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ error: 'Failed to get topic recommendations' });
     }
   });
+
+  // Update neural extension tuning parameters
+  app.post(`${apiPrefix}/neural-extension/tune`, isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ error: 'User not authenticated' });
+      }
+      
+      // Validate request body
+      const tuningSchema = z.object({
+        creativity: z.number().min(0).max(1).optional(),
+        precision: z.number().min(0).max(1).optional(),
+        speed: z.number().min(0).max(1).optional(),
+        analytical: z.number().min(0).max(1).optional(),
+        intuitive: z.number().min(0).max(1).optional(),
+        specialties: z.record(z.string(), z.number().min(0).max(1)).optional(),
+        learningFocus: z.array(z.string()).optional()
+      });
+      
+      const validatedData = tuningSchema.parse(req.body);
+      
+      // Update neural tuning
+      const { updateNeuralTuning, getNeuralTuning } = await import('./neural-extension');
+      const updatedTuning = updateNeuralTuning(userId, validatedData);
+      
+      // Award experience for tuning their neural extension
+      const { updateGameElements, awardExperience } = await import('./neural-extension');
+      
+      // Check if the neural-tuner achievement should be unlocked
+      const gameElements = await import('./neural-extension').then(m => m.getGameElements(userId));
+      const neuralTunerAchievement = gameElements.achievements.find(a => a.id === 'neural-tuner');
+      
+      if (neuralTunerAchievement && !neuralTunerAchievement.unlocked) {
+        // Unlock achievement
+        const updatedAchievements = gameElements.achievements.map(a => 
+          a.id === 'neural-tuner' 
+            ? { ...a, unlocked: true, progress: 1, unlockedAt: new Date().toISOString() }
+            : a
+        );
+        
+        updateGameElements(userId, { 
+          achievements: updatedAchievements 
+        });
+        
+        // Award extra XP for first-time tuning
+        awardExperience(userId, 25, 'Completed first neural extension tuning');
+      } else {
+        // Regular XP for tuning
+        awardExperience(userId, 5, 'Updated neural extension tuning');
+      }
+      
+      res.status(200).json(updatedTuning);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: 'Invalid tuning parameters', details: error.errors });
+      }
+      console.error("Error updating neural tuning:", error);
+      res.status(500).json({ error: 'Failed to update neural tuning' });
+    }
+  });
   
   // Debug endpoint to simulate a WhatsApp message through UI
   app.post(`${apiPrefix}/whatsapp/simulate`, isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
