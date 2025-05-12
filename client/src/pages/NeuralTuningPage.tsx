@@ -143,11 +143,17 @@ export default function NeuralTuningPage() {
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
       {/* Header with Back Button */}
-      <div className="flex items-center gap-2 mb-6">
-        <Button variant="ghost" onClick={() => setLocation('/')} className="p-2">
-          <ChevronLeft className="h-5 w-5" />
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-2">
+          <Button variant="ghost" onClick={() => setLocation('/')} className="p-2">
+            <ChevronLeft className="h-5 w-5" />
+          </Button>
+          <h1 className="text-2xl font-bold">Neural Extension Tuning</h1>
+        </div>
+        <Button variant="outline" onClick={() => setLocation('/neural-capacity')} className="gap-1.5">
+          <Gauge className="h-4 w-4" />
+          <span>View Capacity</span>
         </Button>
-        <h1 className="text-2xl font-bold">Neural Extension Tuning</h1>
       </div>
       
       {/* Neural Extension Level Card */}

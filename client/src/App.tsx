@@ -19,6 +19,7 @@ import WhatsAppEntries from "@/pages/WhatsAppEntries";
 import FixedEntries from "@/pages/FixedEntries";
 import ActivateNeuralExtension from "@/pages/ActivateNeuralExtension";
 import NeuralTuningPage from "@/pages/NeuralTuningPage";
+import NeuralCapacityPage from "@/pages/NeuralCapacityPage";
 import Testing from "@/pages/Testing";
 import AppLayout from "@/components/layout/AppLayout";
 import EntryDetail from "@/components/entries/EntryDetail";
@@ -177,6 +178,7 @@ function Router() {
       <Route path="/activate" component={ActivateNeuralExtension} />
       <Route path="/activate-neural" component={ActivateNeuralExtension} />
       <Route path="/neural-tuning" component={NeuralTuningPage} />
+      <Route path="/neural-capacity" component={NeuralCapacityPage} />
       <Route path="/testing" component={Testing} />
       <Route component={NotFound} />
     </Switch>
