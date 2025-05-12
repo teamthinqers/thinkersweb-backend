@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'wouter';
 import { useNeuralTuning } from '@/hooks/useNeuralTuning';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -59,10 +59,48 @@ export default function NeuralTuningPage() {
     isUpdatingFocus
   } = useNeuralTuning();
   
+  // State for capacity metrics with animation
+  const [processingEfficiency, setProcessingEfficiency] = useState<number>(65);
+  const [memoryCapacity, setMemoryCapacity] = useState<number>(48);
+  const [learningRate, setLearningRate] = useState<number>(52);
+  const [specializationLevel, setSpecializationLevel] = useState<number>(35);
+  
+  // Update capacity metrics when status changes
+  useEffect(() => {
+    if (status) {
+      const { gameElements, tuning } = status;
+      setProcessingEfficiency(gameElements?.stats?.adaptationScore || 0);
+      setMemoryCapacity(Math.min(100, ((gameElements?.stats?.connectionsFormed || 0) / 50) * 100));
+      setLearningRate(Math.min(100, ((gameElements?.stats?.insightsGenerated || 0) / 20) * 100));
+      setSpecializationLevel(Math.min(100, (Object.keys(tuning?.specialties || {}).length / 8) * 100));
+    }
+  }, [status]);
+  
   // Function to handle slider value changes
   const handleParameterChange = (paramName: string, value: number[]) => {
     const paramValue = value[0];
     updateTuning({ [paramName]: paramValue });
+    
+    // Simulate capacity changes based on parameter adjustments
+    // In a real implementation, these would be calculated by the backend
+    if (paramName === 'creativity') {
+      // Creativity affects processing efficiency and learning rate
+      setProcessingEfficiency(prev => Math.min(100, prev + (Math.random() * 4 - 2)));
+      setLearningRate(prev => Math.min(100, prev + (paramValue > 0.5 ? 2 : -1)));
+    } else if (paramName === 'precision') {
+      // Precision affects memory capacity
+      setMemoryCapacity(prev => Math.min(100, prev + (paramValue > 0.6 ? 3 : -1)));
+    } else if (paramName === 'speed') {
+      // Speed affects processing efficiency but can reduce memory
+      setProcessingEfficiency(prev => Math.min(100, prev + (paramValue > 0.7 ? 4 : -1)));
+      setMemoryCapacity(prev => Math.min(100, prev + (paramValue > 0.7 ? -2 : 1)));
+    } else if (paramName === 'analytical') {
+      // Analytical thinking affects memory capacity and precision
+      setMemoryCapacity(prev => Math.min(100, prev + (paramValue > 0.5 ? 2 : -1)));
+    } else if (paramName === 'intuitive') {
+      // Intuitive thinking affects learning rate
+      setLearningRate(prev => Math.min(100, prev + (paramValue > 0.6 ? 3 : -1)));
+    }
   };
   
   // Function to handle specialty value changes
@@ -73,6 +111,16 @@ export default function NeuralTuningPage() {
         [specialtyId]: specialtyValue
       }
     });
+    
+    // Update specialization level based on specialty strength
+    setSpecializationLevel(prev => {
+      const currentSpecialties = Object.keys(tuning?.specialties || {}).length;
+      return Math.min(100, (currentSpecialties / 8) * 100 + (specialtyValue > 0.7 ? 5 : -2));
+    });
+    
+    // Specialty changes also affect other metrics
+    setMemoryCapacity(prev => Math.min(100, prev + (specialtyValue > 0.6 ? 1 : -0.5)));
+    setLearningRate(prev => Math.min(100, prev + (specialtyValue > 0.5 ? 2 : -1)));
   };
   
   // Function to add a new focus area
@@ -138,7 +186,8 @@ export default function NeuralTuningPage() {
     );
   }
   
-  const { gameElements, tuning } = status || {};
+  // Extract values from status for rendering
+  const { gameElements, tuning } = status || { gameElements: undefined, tuning: undefined };
   
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
@@ -156,9 +205,13 @@ export default function NeuralTuningPage() {
         </Button>
       </div>
       
-      {/* Neural Extension Level Card */}
-      <Card className="mb-8 bg-gradient-to-br from-purple-50 to-white dark:from-purple-950/30 dark:to-gray-950 border border-purple-100 dark:border-purple-900/50">
-        <CardHeader className="pb-4">
+      {/* Neural Extension Level Card with Capacity Metrics */}
+      <Card className="mb-8 bg-gradient-to-br from-purple-50 to-white dark:from-purple-950/30 dark:to-gray-950 border border-purple-100 dark:border-purple-900/50 overflow-hidden">
+        <div className="relative overflow-hidden">
+          <div className="absolute -right-16 -top-16 w-48 h-48 bg-gradient-to-br from-purple-200/30 to-indigo-200/10 dark:from-purple-800/20 dark:to-indigo-800/5 rounded-full blur-3xl"></div>
+        </div>
+        
+        <CardHeader className="pb-2 relative z-10">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2">
               <BrainCircuit className="h-5 w-5 text-purple-700 dark:text-purple-400" />
@@ -171,13 +224,149 @@ export default function NeuralTuningPage() {
           <CardDescription>Configure how your cognitive extension processes information</CardDescription>
         </CardHeader>
         
-        <CardContent className="pb-4">
+        <CardContent className="pb-4 relative z-10">
+          {/* Experience Progress */}
           <div className="mb-4">
             <div className="flex justify-between mb-1.5 text-sm font-medium">
               <span>Experience</span>
               <span>{gameElements?.experience || 0} / {gameElements?.experienceRequired || 1000} XP</span>
             </div>
             <Progress value={(gameElements?.experience || 0) / (gameElements?.experienceRequired || 1000) * 100} className="h-2 bg-purple-100 dark:bg-purple-950" />
+          </div>
+          
+          {/* Capacity Metrics */}
+          <div className="grid grid-cols-4 gap-2 mb-4">
+            {/* Processing Efficiency */}
+            <div className="text-center">
+              <div className="relative w-16 h-16 mx-auto">
+                <svg className="w-full h-full" viewBox="0 0 100 100">
+                  <circle 
+                    cx="50" 
+                    cy="50" 
+                    r="45" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    className="text-indigo-100 dark:text-indigo-950" 
+                    strokeWidth="8" 
+                  />
+                  <circle 
+                    cx="50" 
+                    cy="50" 
+                    r="45" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    className="text-indigo-500 transition-all duration-500 ease-out" 
+                    strokeWidth="8" 
+                    strokeDasharray={`${2 * Math.PI * 45 * (processingEfficiency / 100)} ${2 * Math.PI * 45}`}
+                    strokeDashoffset={(2 * Math.PI * 45) * 0.25}
+                    transform="rotate(-90 50 50)"
+                  />
+                </svg>
+                <div className="absolute inset-0 flex items-center justify-center flex-col">
+                  <span className="text-lg font-bold text-indigo-700 dark:text-indigo-400 transition-all duration-500 ease-out">{Math.round(processingEfficiency)}%</span>
+                </div>
+              </div>
+              <p className="text-xs mt-1 text-muted-foreground">Processing</p>
+            </div>
+            
+            {/* Memory Capacity */}
+            <div className="text-center">
+              <div className="relative w-16 h-16 mx-auto">
+                <svg className="w-full h-full" viewBox="0 0 100 100">
+                  <circle 
+                    cx="50" 
+                    cy="50" 
+                    r="45" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    className="text-blue-100 dark:text-blue-950" 
+                    strokeWidth="8" 
+                  />
+                  <circle 
+                    cx="50" 
+                    cy="50" 
+                    r="45" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    className="text-blue-500 transition-all duration-500 ease-out" 
+                    strokeWidth="8" 
+                    strokeDasharray={`${2 * Math.PI * 45 * (memoryCapacity / 100)} ${2 * Math.PI * 45}`}
+                    strokeDashoffset={(2 * Math.PI * 45) * 0.25}
+                    transform="rotate(-90 50 50)"
+                  />
+                </svg>
+                <div className="absolute inset-0 flex items-center justify-center flex-col">
+                  <span className="text-lg font-bold text-blue-700 dark:text-blue-400 transition-all duration-500 ease-out">{Math.round(memoryCapacity)}%</span>
+                </div>
+              </div>
+              <p className="text-xs mt-1 text-muted-foreground">Memory</p>
+            </div>
+            
+            {/* Learning Rate */}
+            <div className="text-center">
+              <div className="relative w-16 h-16 mx-auto">
+                <svg className="w-full h-full" viewBox="0 0 100 100">
+                  <circle 
+                    cx="50" 
+                    cy="50" 
+                    r="45" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    className="text-emerald-100 dark:text-emerald-950" 
+                    strokeWidth="8" 
+                  />
+                  <circle 
+                    cx="50" 
+                    cy="50" 
+                    r="45" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    className="text-emerald-500 transition-all duration-500 ease-out" 
+                    strokeWidth="8" 
+                    strokeDasharray={`${2 * Math.PI * 45 * (learningRate / 100)} ${2 * Math.PI * 45}`}
+                    strokeDashoffset={(2 * Math.PI * 45) * 0.25}
+                    transform="rotate(-90 50 50)"
+                  />
+                </svg>
+                <div className="absolute inset-0 flex items-center justify-center flex-col">
+                  <span className="text-lg font-bold text-emerald-700 dark:text-emerald-400 transition-all duration-500 ease-out">{Math.round(learningRate)}%</span>
+                </div>
+              </div>
+              <p className="text-xs mt-1 text-muted-foreground">Learning</p>
+            </div>
+            
+            {/* Specialization */}
+            <div className="text-center">
+              <div className="relative w-16 h-16 mx-auto">
+                <svg className="w-full h-full" viewBox="0 0 100 100">
+                  <circle 
+                    cx="50" 
+                    cy="50" 
+                    r="45" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    className="text-amber-100 dark:text-amber-950" 
+                    strokeWidth="8" 
+                  />
+                  <circle 
+                    cx="50" 
+                    cy="50" 
+                    r="45" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    className="text-amber-500 transition-all duration-500 ease-out" 
+                    strokeWidth="8" 
+                    strokeDasharray={`${2 * Math.PI * 45 * (specializationLevel / 100)} ${2 * Math.PI * 45}`}
+                    strokeDashoffset={(2 * Math.PI * 45) * 0.25}
+                    transform="rotate(-90 50 50)"
+                  />
+                </svg>
+                <div className="absolute inset-0 flex items-center justify-center flex-col">
+                  <span className="text-lg font-bold text-amber-700 dark:text-amber-400 transition-all duration-500 ease-out">{Math.round(specializationLevel)}%</span>
+                </div>
+              </div>
+              <p className="text-xs mt-1 text-muted-foreground">Specialties</p>
+            </div>
           </div>
           
           <div className="text-sm text-muted-foreground mb-2">
