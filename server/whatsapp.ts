@@ -660,10 +660,15 @@ export async function processWhatsAppMessage(from: string, messageText: string):
       };
     }
     
-    // For all other messages, use the AI to process them
+    // For all other messages, use the AI to process them with Neural Extension capabilities
     console.log(`Using OpenAI to process standard message from ${from}`);
     
     try {
+      // First, record this interaction for the neural extension to learn from
+      const { recordUserInteraction } = await import('./neural-extension');
+      await recordUserInteraction(userId, messageText);
+      console.log(`👁️ Neural Extension: Recorded interaction for user ${userId}`);
+      
       // Use the user's ID to maintain conversation history
       // Pass parameters in correct order matching function definition: input, userId, phoneNumber
       const response = await generateAdvancedResponse(messageText, userId, from.toString());
@@ -671,6 +676,15 @@ export async function processWhatsAppMessage(from: string, messageText: string):
       // Check if response is valid and has text property
       if (response && response.text) {
         console.log(`Got response from OpenAI: ${response.text.substring(0, 100)}...`);
+        
+        // Adapt the response based on user preferences and history
+        const { adaptResponseToUser } = await import('./neural-extension');
+        const adaptedResponse = await adaptResponseToUser(userId, response.text, {
+          message: messageText,
+          isQuestion: messageText.trim().endsWith('?')
+        });
+        
+        console.log(`👁️ Neural Extension: Adapted response for user ${userId}`);
         
         // Update the lastMessageSentAt timestamp
         try {
@@ -684,10 +698,10 @@ export async function processWhatsAppMessage(from: string, messageText: string):
           console.error("Error updating lastMessageSentAt for WhatsApp user:", dbError);
         }
         
-        // Return the AI response text
+        // Return the adapted AI response text
         return {
           success: true,
-          message: response.text
+          message: adaptedResponse
         };
       } else {
         console.error("Invalid response format from OpenAI:", response);
