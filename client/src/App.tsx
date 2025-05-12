@@ -27,6 +27,7 @@ import { AuthProvider, useAuth } from "@/hooks/use-auth";
 import { Loader2 } from "lucide-react";
 import MockDashboard from "@/components/dashboard/MockDashboard";
 import { initPWA } from "@/lib/pwaUtils";
+import { InstallPrompt } from "@/components/pwa/InstallPrompt";
 
 // Simplified Protected route component
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -175,6 +176,7 @@ function Router() {
       <Route path="/logo" component={LogoPage} />
       <Route path="/activate" component={ActivateNeuralExtension} />
       <Route path="/activate-neural" component={ActivateNeuralExtension} />
+      <Route path="/neural-tuning" component={NeuralTuningPage} />
       <Route path="/testing" component={Testing} />
       <Route component={NotFound} />
     </Switch>
@@ -182,6 +184,12 @@ function Router() {
 }
 
 function App() {
+  // Initialize PWA functionality
+  useEffect(() => {
+    // Register service worker and setup installation handlers
+    initPWA();
+  }, []);
+  
   // Check for WhatsApp redirect on initial load
   useEffect(() => {
     // Check if we have a pending WhatsApp redirect
@@ -218,6 +226,7 @@ function App() {
       <AuthProvider>
         <Router />
         <Toaster />
+        <InstallPrompt />
       </AuthProvider>
     </QueryClientProvider>
   );

@@ -1,202 +1,135 @@
 import React, { useState, useEffect } from 'react';
-import { CheckCircle, Download, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle
-} from '@/components/ui/card';
-import { showInstallPrompt, isPWAInstalled, AddToHomeScreenProps } from '@/lib/pwaUtils';
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogHeader, 
+  DialogTitle, 
+  DialogDescription,
+  DialogFooter
+} from '@/components/ui/dialog';
+import { CheckCircle, Download, BrainCircuit } from 'lucide-react';
 
-/**
- * A component that prompts the user to install the app
- */
-export function InstallPrompt({ onInstall, onDismiss }: AddToHomeScreenProps) {
-  const [isInstallable, setIsInstallable] = useState(false);
-  const [isInstalled, setIsInstalled] = useState(isPWAInstalled());
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    // Check if the app is already installed
-    setIsInstalled(isPWAInstalled());
-
-    // Listen for installability
-    const handleInstallable = () => {
-      setIsInstallable(true);
-      // Show the prompt after a short delay
-      setTimeout(() => setIsVisible(true), 3000);
-    };
-
-    // Listen for installation
-    const handleInstalled = () => {
-      setIsInstalled(true);
-      setIsVisible(false);
-      
-      // Show success message briefly
-      setTimeout(() => {
-        if (onInstall) {
-          onInstall();
-        }
-      }, 2000);
-    };
-
-    window.addEventListener('pwaInstallable', handleInstallable);
-    window.addEventListener('pwaInstalled', handleInstalled);
-
-    // Clean up
-    return () => {
-      window.removeEventListener('pwaInstallable', handleInstallable);
-      window.removeEventListener('pwaInstalled', handleInstalled);
-    };
-  }, [onInstall]);
-
-  // Don't show if not installable or already installed
-  if (!isVisible || !isInstallable || isInstalled) {
-    return null;
-  }
-
-  const handleInstall = async () => {
-    const success = await showInstallPrompt();
-    if (success) {
-      setIsInstalled(true);
-      if (onInstall) {
-        onInstall();
-      }
-    }
-  };
-
-  const handleDismiss = () => {
-    setIsVisible(false);
-    if (onDismiss) {
-      onDismiss();
-    }
-  };
-
-  return (
-    <div className="fixed bottom-4 left-0 right-0 px-4 z-50 animate-in fade-in slide-in-from-bottom duration-300">
-      <Card className="mx-auto max-w-md shadow-lg border-primary/20">
-        <CardHeader className="pb-2">
-          <div className="flex justify-between items-start">
-            <CardTitle className="text-lg flex items-center gap-2">
-              <Download className="h-5 w-5 text-primary" />
-              Install DotSpark
-            </CardTitle>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="h-8 w-8 p-0 rounded-full"
-              onClick={handleDismiss}
-            >
-              <X className="h-4 w-4" />
-              <span className="sr-only">Close</span>
-            </Button>
-          </div>
-          <CardDescription>
-            Add DotSpark to your home screen for the full neural extension tuning experience.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="pb-2">
-          <div className="flex items-start space-x-4">
-            <div className="flex-shrink-0 bg-primary/10 p-2 rounded-full">
-              <div className="h-10 w-10 rounded-full bg-gradient-to-br from-purple-700 to-purple-500 flex items-center justify-center">
-                <span className="text-white font-bold">DS</span>
-              </div>
-            </div>
-            <div>
-              <h4 className="text-sm font-semibold">Benefits:</h4>
-              <ul className="text-sm text-muted-foreground mt-1 space-y-1">
-                <li className="flex items-center gap-1">
-                  <CheckCircle className="h-3 w-3 text-green-500" />
-                  <span>Advanced neural extension tuning</span>
-                </li>
-                <li className="flex items-center gap-1">
-                  <CheckCircle className="h-3 w-3 text-green-500" />
-                  <span>Offline access to your neural settings</span>
-                </li>
-                <li className="flex items-center gap-1">
-                  <CheckCircle className="h-3 w-3 text-green-500" />
-                  <span>Customized thought pattern analysis</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </CardContent>
-        <CardFooter className="pt-1">
-          <Button 
-            className="w-full" 
-            onClick={handleInstall}
-            variant="default"
-          >
-            <Download className="mr-2 h-4 w-4" />
-            Install Neural Extension
-          </Button>
-        </CardFooter>
-      </Card>
-    </div>
-  );
+interface BeforeInstallPromptEvent extends Event {
+  readonly platforms: string[];
+  readonly userChoice: Promise<{
+    outcome: 'accepted' | 'dismissed',
+    platform: string
+  }>;
+  prompt(): Promise<void>;
 }
 
-/**
- * A smaller, more subtle version of the install prompt for use in menus
- */
-export function CompactInstallPrompt({ onInstall, onDismiss }: AddToHomeScreenProps) {
-  const [isInstallable, setIsInstallable] = useState(false);
-  const [isInstalled, setIsInstalled] = useState(isPWAInstalled());
+declare global {
+  interface WindowEventMap {
+    'beforeinstallprompt': BeforeInstallPromptEvent;
+    'appinstalled': Event;
+  }
+}
+
+export function InstallPrompt() {
+  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
+  const [showPrompt, setShowPrompt] = useState(false);
+  const [installed, setInstalled] = useState(false);
 
   useEffect(() => {
-    // Check if the app is already installed
-    setIsInstalled(isPWAInstalled());
+    // Check if already installed
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      setInstalled(true);
+      return;
+    }
 
-    // Listen for installability
-    const handleInstallable = () => {
-      setIsInstallable(true);
+    const handleBeforeInstallPrompt = (e: BeforeInstallPromptEvent) => {
+      // Prevent Chrome 67 and earlier from automatically showing the prompt
+      e.preventDefault();
+      // Stash the event so it can be triggered later
+      setDeferredPrompt(e);
+      // Show the prompt to user after 3 seconds if they've used the app for a bit
+      setTimeout(() => {
+        setShowPrompt(true);
+      }, 3000);
     };
 
-    // Listen for installation
-    const handleInstalled = () => {
-      setIsInstalled(true);
-      if (onInstall) {
-        onInstall();
-      }
+    const handleAppInstalled = () => {
+      // App is installed, hide the prompt
+      setShowPrompt(false);
+      setInstalled(true);
+      setDeferredPrompt(null);
     };
 
-    window.addEventListener('pwaInstallable', handleInstallable);
-    window.addEventListener('pwaInstalled', handleInstalled);
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt as any);
+    window.addEventListener('appinstalled', handleAppInstalled);
 
-    // Clean up
     return () => {
-      window.removeEventListener('pwaInstallable', handleInstallable);
-      window.removeEventListener('pwaInstalled', handleInstalled);
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt as any);
+      window.removeEventListener('appinstalled', handleAppInstalled);
     };
-  }, [onInstall]);
+  }, []);
 
-  // Don't show if not installable or already installed
-  if (!isInstallable || isInstalled) {
+  const handleInstallClick = async () => {
+    if (!deferredPrompt) {
+      return;
+    }
+    
+    // Show the install prompt
+    deferredPrompt.prompt();
+    
+    // Wait for the user to respond to the prompt
+    const { outcome } = await deferredPrompt.userChoice;
+    
+    if (outcome === 'accepted') {
+      console.log('User accepted the install prompt');
+    } else {
+      console.log('User dismissed the install prompt');
+    }
+    
+    // We no longer need the prompt
+    setDeferredPrompt(null);
+    setShowPrompt(false);
+  };
+
+  // Don't render anything if no prompt is available or already installed
+  if (!showPrompt || !deferredPrompt || installed) {
     return null;
   }
 
-  const handleInstall = async () => {
-    const success = await showInstallPrompt();
-    if (success) {
-      setIsInstalled(true);
-      if (onInstall) {
-        onInstall();
-      }
-    }
-  };
-
   return (
-    <Button 
-      variant="outline" 
-      size="sm" 
-      className="w-full justify-start mt-2" 
-      onClick={handleInstall}
-    >
-      <Download className="mr-2 h-4 w-4" />
-      Install Neural Extension
-    </Button>
+    <Dialog open={showPrompt} onOpenChange={setShowPrompt}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <BrainCircuit className="h-5 w-5 text-purple-600" />
+            <span>Install Neural Extension</span>
+          </DialogTitle>
+          <DialogDescription>
+            Install DotSpark as an app on your device for the best neural tuning experience. You'll be able to access your neural extension even when offline.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="grid grid-cols-1 gap-4 py-4">
+          <div className="flex items-start gap-3 rounded-lg border p-3">
+            <CheckCircle className="h-5 w-5 text-green-500 mt-0.5" />
+            <div>
+              <h4 className="font-medium">Offline Access</h4>
+              <p className="text-sm text-gray-500">Continue neural tuning even without an internet connection</p>
+            </div>
+          </div>
+          <div className="flex items-start gap-3 rounded-lg border p-3">
+            <CheckCircle className="h-5 w-5 text-green-500 mt-0.5" />
+            <div>
+              <h4 className="font-medium">Enhanced Performance</h4>
+              <p className="text-sm text-gray-500">Faster loading times and smoother experience</p>
+            </div>
+          </div>
+        </div>
+        <DialogFooter className="sm:justify-between">
+          <Button variant="outline" onClick={() => setShowPrompt(false)}>
+            Not Now
+          </Button>
+          <Button onClick={handleInstallClick} className="gap-1.5 bg-gradient-to-r from-purple-700 to-purple-500">
+            <Download className="h-4 w-4" />
+            Install App
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }

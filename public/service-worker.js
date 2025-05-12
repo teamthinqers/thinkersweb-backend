@@ -1,172 +1,179 @@
-// DotSpark Service Worker
-const CACHE_NAME = 'dotspark-cache-v1';
+const CACHE_NAME = 'dotspark-neural-extension-v1';
+const OFFLINE_URL = '/offline.html';
 
-// Assets to cache on install
-const PRECACHE_ASSETS = [
+// Resources to cache
+const CORE_ASSETS = [
   '/',
   '/index.html',
+  '/offline.html',
   '/manifest.json',
-  '/favicon.ico',
   '/icons/icon-192x192.png',
-  '/icons/icon-512x512.png'
+  '/icons/icon-512x512.png',
+  '/icons/apple-touch-icon.png'
 ];
 
 // Install event - cache core assets
-self.addEventListener('install', (event) => {
+self.addEventListener('install', event => {
+  console.log('[Service Worker] Install');
+  
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => {
-        console.log('Service Worker: Caching core assets');
-        return cache.addAll(PRECACHE_ASSETS);
-      })
-      .then(() => self.skipWaiting())
+    caches.open(CACHE_NAME).then(cache => {
+      console.log('[Service Worker] Caching core assets');
+      return cache.addAll(CORE_ASSETS);
+    })
   );
+  
+  // Force the waiting service worker to become active
+  self.skipWaiting();
 });
 
 // Activate event - clean up old caches
-self.addEventListener('activate', (event) => {
-  const currentCaches = [CACHE_NAME];
+self.addEventListener('activate', event => {
+  console.log('[Service Worker] Activate');
   
   event.waitUntil(
-    caches.keys()
-      .then((cacheNames) => {
-        return cacheNames.filter(
-          (cacheName) => !currentCaches.includes(cacheName)
-        );
-      })
-      .then((cachesToDelete) => {
-        return Promise.all(
-          cachesToDelete.map((cacheToDelete) => {
-            return caches.delete(cacheToDelete);
-          })
-        );
-      })
-      .then(() => self.clients.claim())
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.map(cacheName => {
+          if (cacheName !== CACHE_NAME) {
+            console.log('[Service Worker] Removing old cache:', cacheName);
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    })
   );
+  
+  // Take control of all clients immediately
+  self.clients.claim();
 });
-
-// Cache first with network fallback strategy for non-API requests
-async function cacheFirstWithNetworkFallback(request) {
-  const cache = await caches.open(CACHE_NAME);
-  
-  try {
-    // First, try to get from cache
-    const cachedResponse = await cache.match(request);
-    if (cachedResponse) {
-      return cachedResponse;
-    }
-    
-    // If not in cache, fetch from network
-    const networkResponse = await fetch(request);
-    
-    // Clone the response as it can only be consumed once
-    const responseToCache = networkResponse.clone();
-    
-    // Cache the network response for future use (if it's a valid response)
-    if (networkResponse.status === 200) {
-      cache.put(request, responseToCache);
-    }
-    
-    return networkResponse;
-  } catch (error) {
-    // Return offline page for navigation requests if there's a network error
-    if (request.mode === 'navigate') {
-      return cache.match('/offline.html');
-    }
-    
-    // For other requests, just throw the error
-    throw error;
-  }
-}
-
-// Network first with cache fallback strategy for API requests
-async function networkFirstWithCacheFallback(request) {
-  const cache = await caches.open(CACHE_NAME);
-  
-  try {
-    // First, try to get from network
-    const networkResponse = await fetch(request);
-    
-    // Clone the response as it can only be consumed once
-    const responseToCache = networkResponse.clone();
-    
-    // Cache the network response for future use (if it's a valid response)
-    if (networkResponse.status === 200) {
-      cache.put(request, responseToCache);
-    }
-    
-    return networkResponse;
-  } catch (error) {
-    // If network fails, try to get from cache
-    const cachedResponse = await cache.match(request);
-    if (cachedResponse) {
-      return cachedResponse;
-    }
-    
-    // If not in cache, propagate the error
-    throw error;
-  }
-}
 
 // Fetch event - handle requests
-self.addEventListener('fetch', (event) => {
-  const request = event.request;
-  const url = new URL(request.url);
+self.addEventListener('fetch', event => {
+  // Skip non-GET requests
+  if (event.request.method !== 'GET') return;
   
-  // Skip cross-origin requests
-  if (url.origin !== self.location.origin) {
-    return;
-  }
+  // Skip browser extension and chrome-extension requests
+  if (event.request.url.startsWith('chrome-extension://') || 
+      event.request.url.includes('extension')) return;
   
-  // Use different strategies for API vs static resources
-  if (url.pathname.startsWith('/api/')) {
-    // Network-first strategy for API requests
-    event.respondWith(networkFirstWithCacheFallback(request));
+  // Handle specific file types or resources
+  if (event.request.url.includes('/api/')) {
+    // API requests - Network first, then offline fallback
+    handleApiRequest(event);
+  } else if (
+    event.request.url.match(/\.(js|css|png|jpg|jpeg|svg|ico|json)$/) ||
+    event.request.url.includes('/icons/')
+  ) {
+    // Static assets - Cache first, then network fallback
+    handleStaticAsset(event);
   } else {
-    // Cache-first strategy for static resources
-    event.respondWith(cacheFirstWithNetworkFallback(request));
+    // HTML and other resources - Network first with fallback
+    handleHtmlRequest(event);
   }
 });
 
-// Handle push notifications
-self.addEventListener('push', (event) => {
-  const data = event.data.json();
-  
-  const options = {
-    body: data.body,
-    icon: '/icons/icon-192x192.png',
-    badge: '/icons/badge-72x72.png',
-    vibrate: [100, 50, 100],
-    data: {
-      url: data.actionUrl || '/'
-    }
-  };
-  
-  event.waitUntil(
-    self.registration.showNotification(data.title, options)
-  );
-});
-
-// Handle notification click
-self.addEventListener('notificationclick', (event) => {
-  event.notification.close();
-  
-  event.waitUntil(
-    clients.matchAll({ type: 'window' })
-      .then((clientList) => {
-        const url = event.notification.data.url;
-        
-        // If there's a window already open, focus it
-        for (const client of clientList) {
-          if (client.url === url && 'focus' in client) {
-            return client.focus();
+// Handle API requests - Network first with offline fallback
+function handleApiRequest(event) {
+  event.respondWith(
+    fetch(event.request)
+      .then(response => {
+        // If valid response, clone and cache it
+        if (response && response.status === 200) {
+          const clonedResponse = response.clone();
+          caches.open(CACHE_NAME).then(cache => {
+            cache.put(event.request, clonedResponse);
+          });
+        }
+        return response;
+      })
+      .catch(() => {
+        // When offline, try to get from cache
+        return caches.match(event.request).then(cachedResponse => {
+          if (cachedResponse) {
+            return cachedResponse;
           }
-        }
-        
-        // Otherwise open a new window
-        if (clients.openWindow) {
-          return clients.openWindow(url);
-        }
+          
+          // If no cached response for API, return a custom offline response
+          return new Response(
+            JSON.stringify({ 
+              error: 'You are offline. This action requires an internet connection.' 
+            }),
+            {
+              status: 503,
+              statusText: 'Service Unavailable',
+              headers: new Headers({
+                'Content-Type': 'application/json'
+              })
+            }
+          );
+        });
       })
   );
+}
+
+// Handle static assets - Cache first with network fallback
+function handleStaticAsset(event) {
+  event.respondWith(
+    caches.match(event.request).then(cachedResponse => {
+      if (cachedResponse) {
+        return cachedResponse;
+      }
+      
+      // If not in cache, fetch from network
+      return fetch(event.request).then(response => {
+        // If valid response, clone and cache it
+        if (response && response.status === 200) {
+          const clonedResponse = response.clone();
+          caches.open(CACHE_NAME).then(cache => {
+            cache.put(event.request, clonedResponse);
+          });
+        }
+        return response;
+      }).catch(error => {
+        console.error('[Service Worker] Fetch failed:', error);
+        // For images, could return a default image
+        if (event.request.url.match(/\.(png|jpg|jpeg|svg|ico)$/)) {
+          return caches.match('/icons/icon-192x192.png');
+        }
+        // Otherwise just propagate the error
+        throw error;
+      });
+    })
+  );
+}
+
+// Handle HTML requests - Network first with offline fallback
+function handleHtmlRequest(event) {
+  event.respondWith(
+    fetch(event.request)
+      .then(response => {
+        // If valid response, clone and cache it
+        if (response && response.status === 200) {
+          const clonedResponse = response.clone();
+          caches.open(CACHE_NAME).then(cache => {
+            cache.put(event.request, clonedResponse);
+          });
+        }
+        return response;
+      })
+      .catch(() => {
+        return caches.match(event.request)
+          .then(cachedResponse => {
+            // Return cached response if available
+            if (cachedResponse) {
+              return cachedResponse;
+            }
+            // Otherwise serve the offline page
+            return caches.match(OFFLINE_URL);
+          });
+      })
+  );
+}
+
+// Listen for messages from clients
+self.addEventListener('message', event => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });
