@@ -26,9 +26,66 @@ interface TuningParams {
 export function useNeuralTuning() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
-  const [mockStatus] = useState<NeuralExtensionStatus | null>(
-    queryClient.getQueryData(['/api/neural-extension/status']) as NeuralExtensionStatus
-  );
+  
+  // Initialize with default mock data
+  const [mockStatus] = useState<NeuralExtensionStatus>({
+    isActive: true,
+    gameElements: {
+      level: 3,
+      experience: 560,
+      experienceRequired: 1000,
+      unlockedCapabilities: ['Pattern Recognition', 'Topic Analysis', 'Auto-Summarization'],
+      achievements: [
+        {
+          id: 'first-insight',
+          name: 'First Insight',
+          description: 'Generate your first neural insight',
+          unlocked: true,
+          unlockedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+          progress: 1.0
+        },
+        {
+          id: 'connection-maker',
+          name: 'Connection Maker',
+          description: 'Connect 10 related concepts',
+          unlocked: false,
+          progress: 0.6
+        }
+      ],
+      stats: {
+        messagesProcessed: 47,
+        insightsGenerated: 12,
+        connectionsFormed: 24,
+        adaptationScore: 68
+      }
+    },
+    tuning: {
+      creativity: 0.7,
+      precision: 0.8,
+      speed: 0.5,
+      analytical: 0.8,
+      intuitive: 0.6,
+      specialties: {
+        'tech': 0.9,
+        'business': 0.7,
+        'science': 0.4
+      },
+      learningFocus: ['Machine Learning', 'Project Management', 'Data Analysis']
+    },
+    topicsTracked: ['Artificial Intelligence', 'Project Management', 'Leadership', 'Data Science'],
+    adaptationLevel: 68,
+    patternsDetected: [
+      {
+        pattern: 'Problem-Solution Framework',
+        examples: [
+          'When facing X, try Y approach',
+          'X challenge can be solved with Y technique'
+        ],
+        frequency: 0.3,
+        lastDetected: new Date().toISOString()
+      }
+    ]
+  });
   
   // Mock available specialties for demo
   const [availableSpecialties] = useState([
