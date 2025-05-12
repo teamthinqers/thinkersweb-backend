@@ -5,6 +5,7 @@ import { queryClient } from "./lib/queryClient";
 import { initViteConnectionGuard } from "./lib/viteConnectionGuard";
 import { Component, ErrorInfo, ReactNode, useEffect } from "react";
 import { addResetButton, resetApplicationState } from "./lib/appReset";
+import { initPWA, setupConnectivityMonitoring } from "./lib/pwaUtils";
 
 // Error boundary component to prevent the entire app from crashing
 class ErrorBoundary extends Component<{children: ReactNode}, {hasError: boolean; error: Error | null}> {
@@ -122,6 +123,21 @@ try {
 // App initialization wrapper component with reset functionality
 function AppWithReset() {
   useEffect(() => {
+    // Initialize the PWA features
+    initPWA();
+    
+    // Set up connectivity monitoring for online/offline status
+    setupConnectivityMonitoring(
+      // Online callback
+      () => {
+        console.log('App is back online');
+      },
+      // Offline callback
+      () => {
+        console.log('App is now offline');
+      }
+    );
+    
     // Add debug reset button in development
     if (import.meta.env.MODE === 'development') {
       addResetButton();
