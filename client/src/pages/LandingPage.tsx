@@ -299,11 +299,12 @@ export default function LandingPage() {
             
             {/* Subheadings */}
             <p className="text-lg md:text-xl font-medium text-foreground mt-2 max-w-2xl text-center">
-              DotSpark isn't just smart. It's personal.
+              DotSpark is your cognitive OS, helping you use AI without losing yourself.
             </p>
             
             <p className="text-base md:text-lg text-muted-foreground mt-1 md:mt-2 mb-4 max-w-2xl text-center">
-              It mirrors your thinking patterns and amplifies your decision-making — getting sharper every time you use it
+              It's not artificial intelligence.<br/>
+              It's authentic intelligence — powered by you.
             </p>
             
             <div className="relative h-16 w-full my-2 md:my-3 overflow-hidden">
