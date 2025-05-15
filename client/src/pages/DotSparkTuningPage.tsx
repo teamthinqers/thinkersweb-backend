@@ -1083,42 +1083,82 @@ export default function DotSparkTuningPage() {
             
             {/* Learning Tab */}
             <TabsContent value="learning" className="space-y-6">
-              {/* Learning Focus */}
-              <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <h3 className="text-sm font-medium">Learning Focus</h3>
-                  <span className="text-xs text-muted-foreground">Tell your DotSpark what to prioritize</span>
+              {/* Learning Overview */}
+              <div className="p-4 rounded-lg border border-emerald-200 dark:border-emerald-800 shadow-sm bg-emerald-50/50 dark:bg-emerald-950/20">
+                <h3 className="text-lg font-medium flex items-center gap-1.5 mb-3 bg-gradient-to-r from-emerald-600 to-green-500 bg-clip-text text-transparent">
+                  <Bookmark className="h-5 w-5 text-emerald-500" />
+                  <span>Continuous Learning</span>
+                </h3>
+                
+                <p className="text-sm text-muted-foreground mb-4">
+                  Guide your DotSpark's learning journey by defining what topics and skills you want it to explore and develop expertise in. Your DotSpark will prioritize these areas when processing information.
+                </p>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                  <div className="rounded-lg border border-emerald-200 dark:border-emerald-900 bg-white dark:bg-emerald-950/30 p-3 shadow-sm">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Target className="h-4 w-4 text-emerald-500" />
+                      <h4 className="text-sm font-medium">Focus Areas</h4>
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      Topics your DotSpark will prioritize when learning and connecting information
+                    </p>
+                  </div>
+                  
+                  <div className="rounded-lg border border-emerald-200 dark:border-emerald-900 bg-white dark:bg-emerald-950/30 p-3 shadow-sm">
+                    <div className="flex items-center gap-2 mb-2">
+                      <BrainCog className="h-4 w-4 text-emerald-500" />
+                      <h4 className="text-sm font-medium">Knowledge Integration</h4>
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      DotSpark connects new information with existing knowledge in these focus areas
+                    </p>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Current Learning Focus */}
+              <div className="p-4 rounded-lg border border-emerald-200 dark:border-emerald-800 shadow-sm bg-white dark:bg-gray-950">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-base font-medium flex items-center gap-1.5">
+                    <Target className="h-4 w-4 text-emerald-500" />
+                    <span>Your Learning Priorities</span>
+                  </h3>
+                  <span className="text-xs text-muted-foreground">Customize what your brain extension learns</span>
                 </div>
                 
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {tuning?.learningFocus?.map((focus, index) => (
-                    <div key={index} className="group flex items-center gap-1 rounded-full bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 py-1 pl-3 pr-1.5 text-sm">
-                      <span>{focus}</span>
-                      <Button 
-                        variant="ghost" 
-                        size="icon" 
-                        className="h-5 w-5 rounded-full opacity-60 group-hover:opacity-100 bg-emerald-100 dark:bg-emerald-900/40 hover:bg-emerald-200 dark:hover:bg-emerald-800/60"
-                        onClick={() => handleRemoveFocus(index)}
-                      >
-                        <X className="h-3 w-3" />
-                      </Button>
+                <div className="flex flex-wrap gap-2 mb-4 min-h-[60px]">
+                  {tuning?.learningFocus?.length > 0 ? (
+                    tuning.learningFocus.map((focus, index) => (
+                      <div key={index} className="group flex items-center gap-1 rounded-full bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 py-1.5 pl-3 pr-1.5 text-sm hover:bg-emerald-100 dark:hover:bg-emerald-900/30 transition-colors">
+                        <span>{focus}</span>
+                        <Button
+                          variant="ghost" 
+                          size="icon" 
+                          className="h-5 w-5 rounded-full opacity-60 group-hover:opacity-100 bg-emerald-100 dark:bg-emerald-900/40 hover:bg-emerald-200 dark:hover:bg-emerald-800/60"
+                          onClick={() => handleRemoveFocus(index)}
+                        >
+                          <X className="h-3 w-3" />
+                          <span className="sr-only">Remove {focus}</span>
+                        </Button>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="w-full text-center py-4 text-sm text-muted-foreground">
+                      No learning focus areas defined yet. Add some below!
                     </div>
-                  ))}
-                  
-                  {(tuning?.learningFocus?.length === 0) && (
-                    <div className="text-sm text-muted-foreground italic">No learning focus areas defined yet</div>
                   )}
                 </div>
                 
-                {/* Add new focus area */}
-                <div className="flex gap-2">
+                <div className="flex items-center gap-2 mb-3">
                   <Input
                     placeholder="Add a new learning focus area..."
                     value={newFocus}
                     onChange={(e) => setNewFocus(e.target.value)}
                     className="border-emerald-200 dark:border-emerald-800 focus:border-emerald-500 dark:focus:border-emerald-500"
                     onKeyDown={(e) => {
-                      if (e.key === 'Enter') {
+                      if (e.key === 'Enter' && newFocus.trim()) {
+                        e.preventDefault();
                         handleAddFocus();
                       }
                     }}
@@ -1134,64 +1174,152 @@ export default function DotSparkTuningPage() {
                   </Button>
                 </div>
                 
-                <p className="text-xs text-muted-foreground mt-1">
-                  Learning focus areas guide what your DotSpark will prioritize learning about
+                <p className="text-xs text-muted-foreground">
+                  These topics help your DotSpark prioritize what to learn and connect. Add subjects that matter to your thinking.
+                </p>
+              </div>
+              
+              {/* Suggested Topics */}
+              <div className="p-4 rounded-lg border border-blue-200 dark:border-blue-800 shadow-sm bg-blue-50/50 dark:bg-blue-950/20">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-base font-medium flex items-center gap-1.5 bg-gradient-to-r from-blue-600 to-indigo-500 bg-clip-text text-transparent">
+                    <Lightbulb className="h-4 w-4 text-blue-500" />
+                    <span>Suggested Learning Areas</span>
+                  </h3>
+                  <span className="text-xs text-muted-foreground">Based on your thinking patterns</span>
+                </div>
+                
+                <div className="flex flex-wrap gap-2 mb-3">
+                  {/* In a real implementation, these would come from the API */}
+                  {["Machine Learning", "Product Management", "UX Research", "Data Analysis", "Leadership", "Neural Networks", "Psychology", "Behavioral Economics"].map((topic) => (
+                    <Badge key={topic} variant="outline" 
+                      className={cn(
+                        "py-1.5 px-3 text-sm cursor-pointer transition-colors",
+                        "bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800 hover:bg-blue-100 dark:hover:bg-blue-900/30",
+                        tuning?.learningFocus?.includes(topic) && "bg-blue-100 dark:bg-blue-900/40 border-blue-300 dark:border-blue-700"
+                      )}
+                      onClick={() => {
+                        if (!tuning?.learningFocus?.includes(topic)) {
+                          const updatedFocus = [...(tuning?.learningFocus || []), topic];
+                          updateLearningFocus(updatedFocus);
+                        }
+                      }}
+                    >
+                      {tuning?.learningFocus?.includes(topic) ? (
+                        <span className="flex items-center gap-1">
+                          <Check className="h-3 w-3" />
+                          {topic}
+                        </span>
+                      ) : topic}
+                    </Badge>
+                  ))}
+                </div>
+                
+                <p className="text-xs text-muted-foreground italic">
+                  Click on any topic to add it to your learning focus areas. Topics are generated based on your interactions and thinking style.
                 </p>
               </div>
               
               {/* Topics Tracked */}
-              <div className="space-y-3 pt-4">
-                <div className="flex justify-between items-center">
-                  <h3 className="text-sm font-medium">Topics Being Tracked</h3>
-                  <Badge variant="outline" className="bg-blue-50 dark:bg-blue-950/30">
+              <div className="p-4 rounded-lg border border-violet-200 dark:border-violet-800 shadow-sm bg-violet-50/50 dark:bg-violet-950/20">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-base font-medium flex items-center gap-1.5 bg-gradient-to-r from-violet-600 to-purple-500 bg-clip-text text-transparent">
+                    <BookCopy className="h-4 w-4 text-violet-500" />
+                    <span>Topics Being Tracked</span>
+                  </h3>
+                  <Badge variant="outline" className="bg-violet-50 dark:bg-violet-950/30 text-violet-700 dark:text-violet-300 border-violet-200 dark:border-violet-800">
                     {status?.topicsTracked?.length || 0} Topics
                   </Badge>
                 </div>
                 
-                <div className="flex flex-wrap gap-2">
-                  {status?.topicsTracked?.map((topic, index) => (
-                    <div key={index} className="rounded-full bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 py-1 px-3 text-sm">
-                      {topic}
+                <div className="flex flex-wrap gap-2 mb-3 min-h-[40px]">
+                  {status?.topicsTracked?.length > 0 ? (
+                    status.topicsTracked.map((topic, index) => (
+                      <div key={index} className="rounded-full bg-violet-50 dark:bg-violet-950/30 text-violet-700 dark:text-violet-300 border border-violet-200 dark:border-violet-800 py-1.5 px-3 text-sm">
+                        {topic}
+                      </div>
+                    ))
+                  ) : (
+                    <div className="w-full text-center py-2 text-sm text-muted-foreground">
+                      No topics being tracked yet. DotSpark will automatically identify topics from your interactions.
                     </div>
-                  ))}
-                  
-                  {(status?.topicsTracked?.length === 0) && (
-                    <div className="text-sm text-muted-foreground italic">No topics being tracked yet</div>
                   )}
                 </div>
                 
-                <p className="text-xs text-muted-foreground mt-1">
+                <p className="text-xs text-muted-foreground">
                   Topics are automatically identified from your interactions and entries
                 </p>
               </div>
               
               {/* Detected Patterns */}
-              <div className="space-y-3 pt-4">
-                <div className="flex justify-between items-center">
-                  <h3 className="text-sm font-medium">Detected Patterns</h3>
+              <div className="p-4 rounded-lg border border-purple-200 dark:border-purple-800 shadow-sm bg-purple-50/50 dark:bg-purple-950/20">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-base font-medium flex items-center gap-1.5 bg-gradient-to-r from-purple-600 to-fuchsia-500 bg-clip-text text-transparent">
+                    <Network className="h-4 w-4 text-purple-500" />
+                    <span>Detected Patterns</span>
+                  </h3>
                   <span className="text-xs text-muted-foreground">Recurring themes in your content</span>
                 </div>
                 
-                <div className="space-y-3">
-                  {status?.patternsDetected?.map((pattern, index) => (
-                    <div key={index} className="rounded-lg border border-purple-100 dark:border-purple-900/50 bg-purple-50/50 dark:bg-purple-950/20 p-3">
-                      <div className="flex justify-between items-start mb-2">
-                        <h4 className="text-sm font-medium text-purple-800 dark:text-purple-300">{pattern.pattern}</h4>
-                        <Badge variant="outline" className="bg-purple-100/50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300">
-                          {Math.round(pattern.frequency * 100)}% Frequency
-                        </Badge>
+                <div className="space-y-3 mb-1">
+                  {status?.patternsDetected?.length > 0 ? (
+                    status.patternsDetected.map((pattern, index) => (
+                      <div key={index} className="rounded-lg border border-purple-100 dark:border-purple-900/50 bg-white dark:bg-gray-950 p-3 shadow-sm">
+                        <div className="flex justify-between items-start mb-2">
+                          <h4 className="text-sm font-medium text-purple-800 dark:text-purple-300">{pattern.pattern}</h4>
+                          <Badge variant="outline" className="bg-purple-100/50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300">
+                            {Math.round(pattern.frequency * 100)}% Frequency
+                          </Badge>
+                        </div>
+                        <div className="space-y-1">
+                          {pattern.examples.map((example, i) => (
+                            <p key={i} className="text-xs text-muted-foreground">"{example}"</p>
+                          ))}
+                        </div>
                       </div>
-                      <div className="space-y-1">
-                        {pattern.examples.map((example, i) => (
-                          <p key={i} className="text-xs text-muted-foreground">"{example}"</p>
-                        ))}
-                      </div>
+                    ))
+                  ) : (
+                    <div className="text-center py-3 text-sm text-muted-foreground">
+                      No patterns detected yet. Use your DotSpark more to develop pattern recognition.
                     </div>
-                  ))}
-                  
-                  {(status?.patternsDetected?.length === 0) && (
-                    <div className="text-sm text-muted-foreground italic">No patterns detected yet</div>
                   )}
+                </div>
+                
+                <p className="text-xs text-muted-foreground">
+                  Your DotSpark identifies patterns in your thinking and communication style
+                </p>
+              </div>
+              
+              {/* Learning Benefits */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="p-3 rounded-lg border border-emerald-200 dark:border-emerald-800 bg-white dark:bg-gray-950 shadow-sm">
+                  <div className="mb-2">
+                    <Zap className="h-5 w-5 text-emerald-500" />
+                  </div>
+                  <h4 className="text-sm font-medium mb-1">Enhanced Connections</h4>
+                  <p className="text-xs text-muted-foreground">
+                    Your DotSpark forms stronger neural pathways related to your focus areas
+                  </p>
+                </div>
+                
+                <div className="p-3 rounded-lg border border-emerald-200 dark:border-emerald-800 bg-white dark:bg-gray-950 shadow-sm">
+                  <div className="mb-2">
+                    <Sparkles className="h-5 w-5 text-emerald-500" />
+                  </div>
+                  <h4 className="text-sm font-medium mb-1">Deep Insights</h4>
+                  <p className="text-xs text-muted-foreground">
+                    Get more meaningful insights as your DotSpark develops expertise in your areas
+                  </p>
+                </div>
+                
+                <div className="p-3 rounded-lg border border-emerald-200 dark:border-emerald-800 bg-white dark:bg-gray-950 shadow-sm">
+                  <div className="mb-2">
+                    <BrainCircuit className="h-5 w-5 text-emerald-500" />
+                  </div>
+                  <h4 className="text-sm font-medium mb-1">Personalized Growth</h4>
+                  <p className="text-xs text-muted-foreground">
+                    Your DotSpark evolves alongside your interests and priorities
+                  </p>
                 </div>
               </div>
             </TabsContent>
