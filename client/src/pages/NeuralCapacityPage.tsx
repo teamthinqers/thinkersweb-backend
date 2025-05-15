@@ -19,8 +19,8 @@ import {
   ArrowUpRight
 } from 'lucide-react';
 
-export default function CognitiveCapacityPage() {
-  const { status, isLoading, isError } = useCognitiveOS();
+export default function DotSparkCapacityPage() {
+  const { status, isLoading, isError } = useDotSpark();
   
   if (isLoading) {
     return (

@@ -29,7 +29,7 @@ export default function ActivateNeuralExtension() {
   
   // Additional state for tracking activation status with more details
   const [activationStatus, setActivationStatus] = useState({
-    isConnected: isWhatsAppConnected || localStorage.getItem('whatsapp_activated') === 'true',
+    isConnected: isWhatsAppConnected || localStorage.getItem('dotspark_activated') === 'true',
     isCheckingStatus: false,
     lastChecked: Date.now()
   });
@@ -176,8 +176,8 @@ export default function ActivateNeuralExtension() {
         const hasSeenSuccess = sessionStorage.getItem('shown_whatsapp_success') === 'true';
         if (!hasSeenSuccess) {
           toast({
-            title: "Neural Extension Activated!",
-            description: "Your WhatsApp is connected and your neural extension is now active.",
+            title: "DotSpark Activated!",
+            description: "Your WhatsApp is connected and your DotSpark is now active.",
             duration: 5000,
           });
           sessionStorage.setItem('shown_whatsapp_success', 'true');
@@ -215,8 +215,8 @@ export default function ActivateNeuralExtension() {
       // If they are already connected, show success
       if (isWhatsAppConnected) {
         toast({
-          title: "Neural Extension Activated!",
-          description: "Your WhatsApp message was received and your neural extension is now active.",
+          title: "DotSpark Activated!",
+          description: "Your WhatsApp message was received and your DotSpark is now active.",
           duration: 5000,
         });
         localStorage.setItem('whatsapp_activated', 'true');
@@ -312,8 +312,8 @@ export default function ActivateNeuralExtension() {
           // Only show toast once
           if (!sessionStorage.getItem('activation_success_shown')) {
             toast({
-              title: "Neural Extension Activated!",
-              description: "Your WhatsApp message was received and your neural extension is now active.",
+              title: "DotSpark Activated!",
+              description: "Your WhatsApp message was received and your DotSpark is now active.",
               duration: 5000,
             });
             sessionStorage.setItem('activation_success_shown', 'true');
