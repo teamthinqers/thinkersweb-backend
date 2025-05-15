@@ -98,8 +98,8 @@ const userPatterns = new Map<number, DetectedPattern[]>();
 // Store generated insights
 const userInsights = new Map<number, UserInsight[]>();
 
-// Store user-specific neural tuning parameters
-const userNeuralTuning = new Map<number, NeuralTuning>();
+// Store user-specific DotSpark tuning parameters
+const userDotSparkTuning = new Map<number, DotSparkTuning>();
 
 // Store gamification elements for each user
 const userGameElements = new Map<number, NeuralGameElements>();
@@ -623,17 +623,17 @@ export async function adaptResponseToUser(
 }
 
 /**
- * Get or initialize the neural tuning parameters for a user
+ * Get or initialize the DotSpark tuning parameters for a user
  * @param userId User ID
- * @returns Neural tuning parameters
+ * @returns DotSpark tuning parameters
  */
-export function getNeuralTuning(userId: number): NeuralTuning {
+export function getDotSparkTuning(userId: number): DotSparkTuning {
   // If user doesn't have tuning parameters yet, initialize with defaults
-  if (!userNeuralTuning.has(userId)) {
-    userNeuralTuning.set(userId, { ...DEFAULT_NEURAL_TUNING });
+  if (!userDotSparkTuning.has(userId)) {
+    userDotSparkTuning.set(userId, { ...DEFAULT_DOTSPARK_TUNING });
   }
   
-  return userNeuralTuning.get(userId)!;
+  return userDotSparkTuning.get(userId)!;
 }
 
 /**
