@@ -220,7 +220,7 @@ const MockDashboard: React.FC = () => {
         {/* Recent activity section - simplified */}
         <div className="mb-10">
           <div className="mb-4">
-            <h2 className="text-lg font-semibold">Recent Neural Activities</h2>
+            <h2 className="text-lg font-semibold">Recent DotSpark Activities</h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -260,14 +260,14 @@ const MockDashboard: React.FC = () => {
                 Map My Brain With My Network
               </h2>
               <p className="text-sm text-muted-foreground mb-4">
-                DotSpark's unique neural extension maps your professional knowledge with your network's expertise, 
-                creating powerful cognitive augmentation that improves pattern recognition and decision-making.
+                DotSpark maps your professional knowledge with your network's expertise, 
+                creating powerful augmentation that improves pattern recognition and decision-making.
               </p>
               
               <div className="grid grid-cols-2 gap-3 mb-4">
                 <div className="bg-white dark:bg-gray-900 rounded-lg p-3 border border-primary/10 flex flex-col items-center">
                   <div className="text-2xl font-bold text-primary">782</div>
-                  <div className="text-xs text-center text-muted-foreground">Neural Connections</div>
+                  <div className="text-xs text-center text-muted-foreground">Knowledge Connections</div>
                 </div>
                 <div className="bg-white dark:bg-gray-900 rounded-lg p-3 border border-indigo-500/10 flex flex-col items-center">
                   <div className="text-2xl font-bold text-indigo-500">8</div>
@@ -313,8 +313,8 @@ const MockDashboard: React.FC = () => {
               </div>
               
               <div className="relative z-10 p-4 bg-white/80 dark:bg-gray-900/80 rounded-lg shadow-lg text-center">
-                <h3 className="font-semibold mb-2">Neural Network Visualization</h3>
-                <p className="text-xs text-muted-foreground">Real-time cognitive map of your extended neural network</p>
+                <h3 className="font-semibold mb-2">DotSpark Network Visualization</h3>
+                <p className="text-xs text-muted-foreground">Real-time map of your knowledge network</p>
                 <Link href="/auth" className="mt-3 text-xs text-primary hover:underline inline-flex items-center">
                   <span>Unlock Full Visualization</span>
                   <ArrowRight className="ml-1 h-3 w-3" />
@@ -326,13 +326,13 @@ const MockDashboard: React.FC = () => {
         
         {/* CTA section */}
         <div className="text-center py-8 px-4 mb-6 bg-gradient-to-r from-primary/5 via-secondary/5 to-primary/5 rounded-xl border border-primary/10">
-          <h2 className="text-xl font-bold mb-3">Ready to Extend Your Cognitive Capabilities?</h2>
+          <h2 className="text-xl font-bold mb-3">Ready to Enhance Your Learning?</h2>
           <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-            Join thousands of professionals who have enhanced their decision-making and knowledge retention with their own neural extension.
+            Join thousands of professionals who have enhanced their decision-making and knowledge retention with DotSpark.
           </p>
           <Button asChild className="px-8 py-6 rounded-lg shadow-md bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white border-none">
             <Link href="/auth">
-              <span className="text-lg font-medium">Get Your Neural Extension</span>
+              <span className="text-lg font-medium">Get Your DotSpark</span>
             </Link>
           </Button>
         </div>

@@ -3,15 +3,15 @@ import { useQuery } from '@tanstack/react-query';
 import { useToast } from './use-toast';
 import { getQueryFn } from '@/lib/queryClient';
 
-// Define types for the Cognitive OS status
-export interface CognitiveInsight {
+// Define types for DotSpark status
+export interface DotSparkInsight {
   insight: string;
   confidence: number;
   topics: string[];
   generatedAt: Date;
 }
 
-export interface CognitiveOSStatus {
+export interface DotSparkStatus {
   isActive: boolean;
   gameElements: {
     level: number;
@@ -52,9 +52,9 @@ export interface CognitiveOSStatus {
   }[];
 }
 
-export function useCognitiveOS() {
+export function useDotSpark() {
   const { toast } = useToast();
-  const [mockData] = useState<CognitiveOSStatus>({
+  const [mockData] = useState<DotSparkStatus>({
     isActive: true,
     gameElements: {
       level: 3,
@@ -115,7 +115,7 @@ export function useCognitiveOS() {
   
   // In a real implementation, this would fetch from the API
   const { data: status, isLoading, isError } = useQuery({
-    queryKey: ['/api/cognitive-os/status'],
+    queryKey: ['/api/dotspark/status'],
     // For demo purposes, we're using the mock data
     // In production, use: queryFn: getQueryFn({ on401: "returnNull" })
     queryFn: () => Promise.resolve(mockData)
@@ -123,7 +123,7 @@ export function useCognitiveOS() {
   
   // Mock functions for insights and topics
   const { data: insightsData } = useQuery({
-    queryKey: ['/api/cognitive-os/insights'],
+    queryKey: ['/api/dotspark/insights'],
     queryFn: () => Promise.resolve({ 
       insights: [
         {
@@ -150,7 +150,7 @@ export function useCognitiveOS() {
   });
   
   const { data: topicsData } = useQuery({
-    queryKey: ['/api/neural-extension/topics/recommended'],
+    queryKey: ['/api/dotspark/topics/recommended'],
     queryFn: () => Promise.resolve({ 
       topics: [
         "System Architecture",
@@ -166,8 +166,8 @@ export function useCognitiveOS() {
   useEffect(() => {
     if (isError) {
       toast({
-        title: "Cognitive OS Error",
-        description: "Unable to connect to your Cognitive OS. Please try again later.",
+        title: "DotSpark Error",
+        description: "Unable to connect to your DotSpark. Please try again later.",
         variant: "destructive"
       });
     }

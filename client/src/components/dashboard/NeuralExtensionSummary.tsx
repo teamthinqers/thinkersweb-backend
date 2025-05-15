@@ -5,19 +5,19 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { BrainCircuit, Star, Sparkles, Zap, ChevronRight } from 'lucide-react';
-import { useCognitiveOS } from '@/hooks/useNeuralExtension';
+import { useDotSpark } from '@/hooks/useNeuralExtension';
 import { cn } from '@/lib/utils';
 
 /**
- * Summary card for the Cognitive OS to be displayed on the dashboard
- * This provides an overview of the cognitive OS status
+ * Summary card for DotSpark to be displayed on the dashboard
+ * This provides an overview of the DotSpark status
  */
-export function CognitiveOSSummary() {
+export function DotSparkSummary() {
   const [_, setLocation] = useLocation();
-  const { status, isLoading, isError } = useCognitiveOS();
+  const { status, isLoading, isError } = useDotSpark();
   
   const handleTuneClick = () => {
-    setLocation('/cognitive-tuning');
+    setLocation('/dotspark-tuning');
   };
   
   if (isLoading) {

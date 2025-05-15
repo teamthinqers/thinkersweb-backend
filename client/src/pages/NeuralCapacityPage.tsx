@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'wouter';
-import { useCognitiveOS } from '@/hooks/useNeuralExtension';
+import { useDotSpark } from '@/hooks/useNeuralExtension';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
@@ -48,13 +48,13 @@ export default function CognitiveCapacityPage() {
           <Button variant="ghost" asChild className="p-2">
             <Link href="/"><ChevronLeft className="h-5 w-5" /></Link>
           </Button>
-          <h1 className="text-2xl font-bold">Cognitive OS Capacity</h1>
+          <h1 className="text-2xl font-bold">DotSpark Capacity</h1>
         </div>
         
         <Card className="border-red-200 dark:border-red-900/50 bg-red-50 dark:bg-red-950/20">
           <CardHeader>
             <CardTitle className="text-red-700 dark:text-red-400">Connection Error</CardTitle>
-            <CardDescription>Unable to connect to your Cognitive OS</CardDescription>
+            <CardDescription>Unable to connect to your DotSpark</CardDescription>
           </CardHeader>
           <CardContent>
             <p className="mb-4">
