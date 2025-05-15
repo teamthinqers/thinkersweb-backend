@@ -431,16 +431,15 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 </Button>
               ) : (
                 <Button 
-                  className="w-full justify-start mb-2 bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white relative"
+                  className="w-full justify-start mb-2 bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white relative"
                   size="sm"
                   onClick={() => {
                     setShowMobileNav(false);
-                    setLocation("/activate-dotspark");
+                    setLocation("/activate-neura");
                   }}
                 >
                   <Brain className="h-5 w-5 mr-2" />
-                  <span>Activate DotSpark</span>
-                  <Sparkles className="h-3 w-3 absolute top-2 right-2" />
+                  <span>Activate Neura</span>
                 </Button>
               )}
               
