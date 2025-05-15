@@ -24,7 +24,33 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function LandingPage() {
   const { user, logout } = useAuth();
-  const { isWhatsAppConnected } = useWhatsAppStatus();
+  const [location, setLocation] = useLocation();
+  const { 
+    isWhatsAppConnected, 
+    simulateActivation, 
+    forceStatusRefresh 
+  } = useWhatsAppStatus();
+  
+  // Check localStorage for activation status every render to ensure consistency
+  const isActiveInLocalStorage = localStorage.getItem('whatsapp_activated') === 'true';
+  
+  // Combined activation status check (either API confirms it or we have localStorage flag)
+  // Always check both sources for consistency across sessions
+  const isActivated = isWhatsAppConnected || isActiveInLocalStorage;
+  
+  // Persist activation status in localStorage if backend confirms it
+  useEffect(() => {
+    if (isWhatsAppConnected && !isActiveInLocalStorage) {
+      console.log("Backend confirms WhatsApp connection - updating localStorage");
+      localStorage.setItem('whatsapp_activated', 'true');
+    }
+  }, [isWhatsAppConnected, isActiveInLocalStorage]);
+  
+  // When component mounts, refresh WhatsApp status
+  useEffect(() => {
+    // Force a status refresh when component mounts
+    forceStatusRefresh();
+  }, [forceStatusRefresh]);
   
   const handleLogout = async () => {
     try {
@@ -55,9 +81,30 @@ export default function LandingPage() {
               <Link href="/dashboard" className="text-sm font-medium hover:text-primary">
                 Dashboard
               </Link>
-              <Link href="/activate-neura" className="text-sm font-medium hover:text-primary">
-                Activate Neura
-              </Link>
+              {isActivated ? (
+                <Button 
+                  className="bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white h-9 px-2 relative"
+                  size="sm"
+                  onClick={() => setLocation("/activate-neura")}
+                >
+                  {/* Icon with sparkle */}
+                  <div className="flex items-center relative z-10">
+                    <Check className="h-4 w-4" />
+                    <Sparkles className="h-3 w-3 ml-0.5" />
+                  </div>
+                </Button>
+              ) : (
+                <Button 
+                  className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white h-9 px-2 relative"
+                  size="sm"
+                  onClick={() => setLocation("/activate-neura")}
+                >
+                  <div className="flex items-center relative z-10">
+                    <Brain className="h-4 w-4" />
+                    <Sparkles className="h-3 w-3 ml-0.5 opacity-50" />
+                  </div>
+                </Button>
+              )}
             </div>
             
             {/* WhatsApp button, always visible on mobile and desktop regardless of login status */}
@@ -86,15 +133,25 @@ export default function LandingPage() {
                 </Button>
               </div>
               
-              <Link href="/activate-neural" className="block sm:hidden">
-                <Button
-                  size="sm"
-                  className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white relative h-7 px-2"
-                >
-                  <Brain className="h-3.5 w-3.5 mr-1" />
-                  <span className="text-xs">Neura</span>
-                </Button>
-              </Link>
+              <div className="block sm:hidden" onClick={() => setLocation("/activate-neura")}>
+                {isActivated ? (
+                  <Button
+                    size="sm"
+                    className="bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white relative h-7 px-2"
+                  >
+                    <Check className="h-3.5 w-3.5 mr-1" />
+                    <span className="text-xs">Neura</span>
+                  </Button>
+                ) : (
+                  <Button
+                    size="sm"
+                    className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white relative h-7 px-2"
+                  >
+                    <Brain className="h-3.5 w-3.5 mr-1" />
+                    <span className="text-xs">Neura</span>
+                  </Button>
+                )}
+              </div>
             </div>
             
             {/* User profile or sign in button */}
@@ -183,9 +240,25 @@ export default function LandingPage() {
                       </SheetClose>
                       
                       <SheetClose asChild>
-                        <Link href="/activate-neura" className="py-2 hover:text-primary transition-colors">
-                          Activate Neura
-                        </Link>
+                        <div onClick={() => setLocation("/activate-neura")} className="py-2 hover:text-primary transition-colors flex items-center gap-2">
+                          {isActivated ? (
+                            <>
+                              <div className="flex items-center">
+                                <Check className="h-4 w-4 text-green-500" />
+                                <Sparkles className="h-3 w-3 ml-0.5 text-primary" />
+                              </div>
+                              <span>Neura Active</span>
+                            </>
+                          ) : (
+                            <>
+                              <div className="flex items-center">
+                                <Brain className="h-4 w-4 text-indigo-500" />
+                                <Sparkles className="h-3 w-3 ml-0.5 text-primary opacity-50" />
+                              </div>
+                              <span>Activate Neura</span>
+                            </>
+                          )}
+                        </div>
                       </SheetClose>
 
                       <SheetClose asChild>
