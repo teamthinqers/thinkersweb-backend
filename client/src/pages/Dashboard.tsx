@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import InsightSection from "@/components/dashboard/InsightSection";
 import StatisticsSection from "@/components/dashboard/StatisticsSection";
-import { NeuralExtensionSummary } from "@/components/dashboard/NeuralExtensionSummary";
+import { CognitiveOSSummary } from "@/components/dashboard/NeuralExtensionSummary";
 import EntryCard from "@/components/entries/EntryCard";
 import { useQuery } from "@tanstack/react-query";
 import {

@@ -12,12 +12,12 @@ import { cn } from '@/lib/utils';
  * Summary card for the Cognitive OS to be displayed on the dashboard
  * This provides an overview of the cognitive OS status
  */
-export function NeuralExtensionSummary() {
+export function CognitiveOSSummary() {
   const [_, setLocation] = useLocation();
   const { status, isLoading, isError } = useNeuralExtension();
   
   const handleTuneClick = () => {
-    setLocation('/neural-tuning');
+    setLocation('/cognitive-tuning');
   };
   
   if (isLoading) {
@@ -143,7 +143,7 @@ export function NeuralExtensionSummary() {
         <Button 
           onClick={handleTuneClick}
           className="w-full bg-gradient-to-r from-purple-700 to-purple-500 hover:from-purple-800 hover:to-purple-600">
-          Tune Your Neural Extension
+          Tune Your Cognitive OS
           <ChevronRight className="h-4 w-4 ml-1" />
         </Button>
       </CardContent>
