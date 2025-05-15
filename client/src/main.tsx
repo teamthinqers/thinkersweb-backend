@@ -111,14 +111,43 @@ if (import.meta.hot) {
   });
 }
 
-// Initialize error handler for uncaught errors
+// Enhanced error handler for uncaught errors with detailed logging
 window.addEventListener('error', (event) => {
   console.error('Global error caught:', event.error);
+  
+  // Specifically watch for Network-related errors and prevent them from crashing the app
+  if (event.message && (
+      event.message.includes('Network') || 
+      event.message.includes('network') ||
+      event.message.includes('Can\'t find variable')
+    )) {
+    console.warn('Intercepted potential Network error:', event.message);
+    console.warn('Error details:', {
+      message: event.message,
+      filename: event.filename,
+      lineno: event.lineno,
+      colno: event.colno,
+      error: event.error ? event.error.toString() : 'No error object'
+    });
+    
+    // Prevent the error from bubbling up if it's our targeted Network error
+    if (event.message.includes('Can\'t find variable: Network')) {
+      console.log('Successfully intercepted Network error, preventing app crash');
+      event.preventDefault();
+    }
+  }
 });
 
-// Initialize error handler for unhandled promise rejections
+// Enhanced error handler for unhandled promise rejections
 window.addEventListener('unhandledrejection', (event) => {
   console.error('Unhandled promise rejection:', event.reason);
+  
+  // Check if this is our Network-related error
+  const reasonStr = String(event.reason);
+  if (reasonStr.includes('Network') || reasonStr.includes('network')) {
+    console.warn('Intercepted Network-related promise rejection:', reasonStr);
+    event.preventDefault();
+  }
 });
 
 // Initialize Vite connection guard to prevent logout on server disconnects

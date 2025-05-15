@@ -3,162 +3,91 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DotSpark - Offline</title>
-  <link rel="shortcut icon" href="/icons/icon-192x192.png" type="image/png">
-  <link rel="manifest" href="/manifest.json">
+  <title>Offline - DotSpark</title>
   <style>
-    :root {
-      --background: #ffffff;
-      --foreground: #333333;
-      --primary: #6B21A8;
-      --primary-light: #9333EA;
-      --accent: #7B5FF0;
-      --error: #dc2626;
-    }
-    
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --background: #1a1a1a;
-        --foreground: #e5e5e5;
-        --accent: #9867F0;
-      }
-    }
-    
-    * {
-      box-sizing: border-box;
+    body {
+      font-family: system-ui, sans-serif;
+      background: #f7f7f7;
+      color: #333;
       margin: 0;
       padding: 0;
-    }
-    
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background-color: var(--background);
-      color: var(--foreground);
-      min-height: 100vh;
       display: flex;
       flex-direction: column;
+      min-height: 100vh;
       align-items: center;
       justify-content: center;
-      padding: 1.5rem;
       text-align: center;
     }
-    
     .container {
-      max-width: 500px;
+      max-width: 600px;
+      padding: 2rem;
       margin: 0 auto;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
-    
     h1 {
-      font-size: 1.75rem;
+      font-size: 2rem;
       margin-bottom: 1rem;
-      background: linear-gradient(135deg, var(--primary), var(--primary-light));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      color: transparent;
+      color: #6b46c1;
     }
-    
     p {
       margin-bottom: 1.5rem;
       line-height: 1.6;
     }
-    
-    .icon {
-      width: 120px;
-      height: 120px;
-      margin-bottom: 2rem;
-    }
-    
-    .button {
-      background: linear-gradient(135deg, var(--primary), var(--primary-light));
-      color: white;
-      border: none;
-      padding: 0.75rem 1.5rem;
-      border-radius: 0.5rem;
-      font-weight: 500;
-      cursor: pointer;
-      text-decoration: none;
-      display: inline-flex;
+    .logo {
+      width: 80px;
+      height: 80px;
+      margin-bottom: 1.5rem;
+      border-radius: 50%;
+      padding: 0.5rem;
+      background: linear-gradient(to right, #6b46c1, #8b5cf6);
+      display: flex;
       align-items: center;
       justify-content: center;
-      gap: 0.5rem;
-      transition: opacity 0.2s;
     }
-    
-    .button:hover {
-      opacity: 0.9;
+    .logo svg {
+      width: 50px;
+      height: 50px;
+      fill: white;
     }
-    
-    .features {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1.5rem;
-      margin-top: 2rem;
-      margin-bottom: 2rem;
+    .btn {
+      display: inline-block;
+      background: linear-gradient(to right, #6b46c1, #8b5cf6);
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 4px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.2s ease;
     }
-    
-    .feature {
-      padding: 1.5rem;
-      border-radius: 0.5rem;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      background-color: rgba(0, 0, 0, 0.05);
-    }
-    
-    .feature h3 {
-      margin-bottom: 0.5rem;
-      color: var(--accent);
-    }
-    
-    @media (prefers-color-scheme: dark) {
-      .feature {
-        background-color: rgba(255, 255, 255, 0.05);
-      }
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(107, 70, 193, 0.3);
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <svg class="icon" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect width="512" height="512" rx="128" fill="url(#paint0_linear)" />
-      <circle cx="170" cy="170" r="42" fill="white" />
-      <circle cx="342" cy="170" r="42" fill="white" />
-      <circle cx="256" cy="342" r="42" fill="white" />
-      <path d="M170 170L342 170M170 170L256 342M342 170L256 342" stroke="white" stroke-width="8" />
-      <defs>
-        <linearGradient id="paint0_linear" x1="0" y1="0" x2="512" y2="512" gradientUnits="userSpaceOnUse">
-          <stop stop-color="#6B21A8" />
-          <stop offset="1" stop-color="#9333EA" />
-        </linearGradient>
-      </defs>
-    </svg>
-
-    <h1>You're Offline</h1>
-    <p>It looks like you're currently offline. Your DotSpark Neura can still function with limited capabilities in offline mode.</p>
-    
-    <div class="features">
-      <div class="feature">
-        <h3>Offline Features</h3>
-        <p>You can still access your saved Neura tuning parameters and view cached insights.</p>
-      </div>
-      <div class="feature">
-        <h3>When Back Online</h3>
-        <p>Changes made while offline will sync automatically when you reconnect to DotSpark.</p>
-      </div>
-    </div>
-    
-    <button class="button" id="reload-btn">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
-        <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path>
-        <path d="M21 3v5h-5"></path>
-        <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path>
-        <path d="M3 21v-5h5"></path>
+    <div class="logo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1 2.96-3.08 2.5 2.5 0 0 1-.2-6.06A2.5 2.5 0 0 1 9.5 2Z"></path>
+        <path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0-2.96-3.08 2.5 2.5 0 0 0 .2-6.06A2.5 2.5 0 0 0 14.5 2Z"></path>
       </svg>
-      Try Reconnecting
-    </button>
+    </div>
+    <h1>You're Offline</h1>
+    <p>It looks like you've lost your connection to the internet. DotSpark needs an active internet connection to access your neural tuning settings.</p>
+    <p>Please check your internet connection and try again.</p>
+    <a href="/" class="btn">Try Again</a>
   </div>
-
   <script>
-    document.getElementById('reload-btn').addEventListener('click', function() {
+    // Simple offline detection that doesn't require service workers
+    window.addEventListener('online', () => {
+      window.location.reload();
+    });
+    
+    document.querySelector('.btn').addEventListener('click', (e) => {
+      e.preventDefault();
       window.location.reload();
     });
   </script>

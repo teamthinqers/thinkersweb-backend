@@ -1,65 +1,21 @@
 {
-  "name": "DotSpark - Think Sharper, Stay You",
-  "short_name": "DotSpark",
-  "description": "Your personalized neural extension that adapts to your unique thought patterns",
+  "name": "DotSpark Neura",
+  "short_name": "Neura",
+  "description": "Your personalized neural extension for learning and knowledge management",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#6B21A8",
-  "theme_color": "#6B21A8",
-  "orientation": "portrait-primary",
+  "background_color": "#ffffff",
+  "theme_color": "#6b46c1",
   "icons": [
     {
-      "src": "/icons/icon-192x192.png",
+      "src": "/icon-192.png",
       "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any"
+      "type": "image/png"
     },
     {
-      "src": "/icons/icon-384x384.png",
-      "sizes": "384x384",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/icons/icon-512x512.png",
+      "src": "/icon-512.png",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/icons/icon-512x512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
+      "type": "image/png"
     }
-  ],
-  "shortcuts": [
-    {
-      "name": "DotSpark Tuning",
-      "short_name": "Tune",
-      "description": "Tune your Neura parameters",
-      "url": "/dotspark-tuning-unified",
-      "icons": [
-        {
-          "src": "/icons/icon-192x192.png",
-          "sizes": "192x192",
-          "type": "image/png"
-        }
-      ]
-    },
-    {
-      "name": "Entries",
-      "short_name": "Entries",
-      "description": "View your learning entries",
-      "url": "/entries",
-      "icons": [
-        {
-          "src": "/icons/icon-192x192.png",
-          "sizes": "192x192",
-          "type": "image/png"
-        }
-      ]
-    }
-  ],
-  "categories": ["productivity", "education", "utilities"]
+  ]
 }
