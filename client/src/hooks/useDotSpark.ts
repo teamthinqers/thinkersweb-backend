@@ -34,11 +34,28 @@ export interface DotSparkStatus {
     };
   };
   tuning: {
+    // Core processing parameters
     creativity: number;
     precision: number;
     speed: number;
+    adaptability: number;
+    
+    // Cognitive style parameters
     analytical: number;
     intuitive: number;
+    
+    // Memory parameters
+    memoryRetention: number;
+    memoryRecall: number;
+    connectionStrength: number;
+    patternRecognition: number;
+    
+    // Learning parameters
+    learningRate: number;
+    conceptIntegration: number;
+    curiosityIndex: number;
+    
+    // Specialty focus areas and learning directives
     specialties: Record<string, number>;
     learningFocus: string[];
   };

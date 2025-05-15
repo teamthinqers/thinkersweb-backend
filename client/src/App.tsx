@@ -21,6 +21,7 @@ import ActivateDotSpark from "@/pages/ActivateDotSpark";
 import DotSparkTuningPage from "@/pages/DotSparkTuningPage";
 import DotSparkCapacityPage from "@/pages/DotSparkCapacityPage";
 import SectionedDotSparkTuningPage from "@/pages/SectionedDotSparkTuningPage";
+import DotSparkTuningUnified from "@/pages/DotSparkTuningUnified";
 import Testing from "@/pages/Testing";
 import AppLayout from "@/components/layout/AppLayout";
 import EntryDetail from "@/components/entries/EntryDetail";
@@ -179,9 +180,9 @@ function Router() {
       <Route path="/activate" component={ActivateDotSpark} />
       <Route path="/activate-dotspark" component={ActivateDotSpark} />
       <Route path="/activate-neural" component={ActivateDotSpark} /> {/* Legacy route */}
-      <Route path="/dotspark-tuning" component={SectionedDotSparkTuningPage} />
-      <Route path="/sectioned-dotspark-tuning" component={SectionedDotSparkTuningPage} />
-      <Route path="/neural-tuning" component={SectionedDotSparkTuningPage} /> {/* Legacy route */}
+      <Route path="/dotspark-tuning" component={DotSparkTuningUnified} />
+      <Route path="/sectioned-dotspark-tuning" component={DotSparkTuningUnified} />
+      <Route path="/neural-tuning" component={DotSparkTuningUnified} /> {/* Legacy route */}
       <Route path="/dotspark-capacity" component={DotSparkCapacityPage} />
       <Route path="/neural-capacity" component={DotSparkCapacityPage} /> {/* Legacy route */}
       <Route path="/testing" component={Testing} />
