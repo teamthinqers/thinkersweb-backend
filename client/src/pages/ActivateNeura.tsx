@@ -70,12 +70,94 @@ export default function ActivateNeura() {
   const [activeTab, setActiveTab] = useState<string>('step1');
   const [whatsAppDirectLink, setWhatsAppDirectLink] = useState('');
   const [domainFilter, setDomainFilter] = useState('');
+  const [isChecking, setIsChecking] = useState(false);
+  const [isNeuraActivated, setIsNeuraActivated] = useState<boolean>(() => 
+    localStorage.getItem("neuraActivated") === "true"
+  );
   
-  // Combined activation status
-  const isActivated = isWhatsAppConnected || isActiveInLocalStorage;
+  // Check for Neura activation on mount and when localStorage changes
+  useEffect(() => {
+    const checkNeuraActivation = () => {
+      const activated = localStorage.getItem("neuraActivated") === "true";
+      setIsNeuraActivated(activated);
+    };
+    
+    // Check on mount
+    checkNeuraActivation();
+    
+    // Listen for storage events (in case another tab changes activation)
+    window.addEventListener('storage', checkNeuraActivation);
+    
+    // Clean up
+    return () => {
+      window.removeEventListener('storage', checkNeuraActivation);
+    };
+  }, []);
+  
+  // Combined activation status 
+  const isActivated = isWhatsAppConnected || isActiveInLocalStorage || isNeuraActivated;
   
   // Progress based on setup stage
   const progress = !user ? 33 : (!tuning || Object.keys(tuning).length === 0) ? 67 : isActivated ? 100 : 67;
+  
+  // Save changes function
+  const saveChanges = async () => {
+    if (Object.keys(pendingChanges).length > 0) {
+      try {
+        await saveTuning({
+          ...tuning,
+          ...pendingChanges
+        });
+        setUnsavedChanges(false);
+        setPendingChanges({});
+        toast({
+          title: "Parameters saved",
+          description: "Your neural parameters have been saved successfully.",
+          variant: "default"
+        });
+      } catch (error) {
+        toast({
+          title: "Error saving parameters",
+          description: "There was a problem saving your neural parameters. Please try again.",
+          variant: "destructive"
+        });
+      }
+    }
+  };
+  
+  // Update repairActivationStatus to be a proper activation function
+  const activateNeura = async () => {
+    setIsChecking(true);
+    try {
+      // Save any pending changes first
+      if (unsavedChanges) {
+        await saveChanges();
+      }
+      
+      // Set local activation status to true
+      localStorage.setItem("neuraActivated", "true");
+      
+      // Trigger backend activation if needed
+      await repairActivationStatus();
+      
+      toast({
+        title: "Neura Activated!",
+        description: "Your neural extension is now fully activated and ready to use.",
+        variant: "default"
+      });
+      
+      // Refresh the page to show activated state
+      window.location.reload();
+    } catch (error) {
+      toast({
+        title: "Activation Error",
+        description: "There was a problem activating your Neura. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsChecking(false);
+    }
+  };
   
   // Empty search handler for header
   const handleSearch = () => {};
@@ -997,23 +1079,37 @@ export default function ActivateNeura() {
                     </Button>
                   ) : (
                     user && tuning && Object.keys(tuning).length > 0 && (
-                      <Button 
-                        variant="outline" 
-                        onClick={repairActivationStatus}
-                        disabled={isChecking}
-                      >
-                        {isChecking ? (
-                          <>
-                            <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-                            Checking...
-                          </>
-                        ) : (
-                          <>
-                            <RefreshCw className="mr-2 h-4 w-4" />
-                            Check Connection Status
-                          </>
+                      <div className="flex space-x-3">
+                        {unsavedChanges && (
+                          <Button 
+                            onClick={saveChanges}
+                            variant="outline"
+                            className="border-purple-200 hover:bg-purple-50 dark:border-purple-800 dark:hover:bg-purple-950/50"
+                          >
+                            <Save className="mr-2 h-4 w-4" />
+                            Save Parameters
+                          </Button>
                         )}
-                      </Button>
+                        
+                        <Button 
+                          onClick={activateNeura}
+                          disabled={isChecking || unsavedChanges}
+                          size="lg"
+                          className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white shadow-md hover:shadow-lg transition-all duration-200"
+                        >
+                          {isChecking ? (
+                            <>
+                              <RefreshCw className="mr-2 h-5 w-5 animate-spin" />
+                              Activating...
+                            </>
+                          ) : (
+                            <>
+                              <Zap className="mr-2 h-5 w-5" />
+                              Activate Neura
+                            </>
+                          )}
+                        </Button>
+                      </div>
                     )
                   )}
                 </div>
