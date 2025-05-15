@@ -540,7 +540,7 @@ export default function LandingPage() {
               </div>
               <h3 className="text-xl font-semibold mb-2">Link WhatsApp</h3>
               <p className="text-muted-foreground text-sm">Connect your phone to interact with DotSpark anywhere, anytime.</p>
-              <CompactWhatsAppButton className="mt-4 w-full" variant="outline" />
+              <CompactWhatsAppButton className="mt-4 w-full" />
             </div>
           </div>
           
