@@ -6,6 +6,15 @@ import { initViteConnectionGuard } from "./lib/viteConnectionGuard";
 import { Component, ErrorInfo, ReactNode, useEffect } from "react";
 import { addResetButton, resetApplicationState } from "./lib/appReset";
 
+// Global polyfill for the Network object to fix the "Can't find variable: Network" error
+// This is a workaround for the Vite plugin error without modifying vite.config.ts
+// @ts-ignore
+window.Network = window.Network || { 
+  isOnline: () => navigator.onLine,
+  addEventListener: () => {},
+  removeEventListener: () => {}
+};
+
 // Error boundary component to prevent the entire app from crashing
 class ErrorBoundary extends Component<{children: ReactNode}, {hasError: boolean; error: Error | null}> {
   constructor(props: {children: ReactNode}) {
