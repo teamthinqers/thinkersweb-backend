@@ -68,6 +68,7 @@ export default function ActivateDotSpark() {
   
   const [activeTab, setActiveTab] = useState<string>('step1');
   const [whatsAppDirectLink, setWhatsAppDirectLink] = useState('');
+  const [domainFilter, setDomainFilter] = useState('');
   
   // Combined activation status
   const isActivated = isWhatsAppConnected || isActiveInLocalStorage;
@@ -150,6 +151,19 @@ export default function ActivateDotSpark() {
         button.removeChild(circle);
       }
     }, 600);
+  };
+  
+  // Calculate mastery score from all expertise levels
+  const calculateMasteryScore = () => {
+    const domainCount = domainGroups.reduce((count, group) => count + group.domains.length, 0);
+    const totalExpertise = Object.values(selectedExpertise).reduce((sum, level) => sum + level, 0);
+    const maxPossibleScore = domainCount * 1; // Max level is 1.0 per domain
+    
+    // Calculate percentage and round to nearest integer
+    const percentage = Math.round((totalExpertise / maxPossibleScore) * 100);
+    
+    // Return score with a minimum of 10 if any domain has expertise
+    return percentage > 0 ? percentage : (Object.keys(selectedExpertise).length > 0 ? 10 : 0);
   };
   
   // Update selected expertise and pending changes
