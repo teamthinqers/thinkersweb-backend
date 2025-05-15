@@ -10,7 +10,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AlertCircle, ArrowRight, Brain, Check, CheckCircle2, LogIn, LayoutDashboard, MessageCircle, Sparkles, MessageSquare, Zap, RefreshCw, Activity, Wrench } from 'lucide-react';
-import { NeuralWhatsAppLinking } from '@/components/neural/NeuralWhatsAppLinking'; // This will need to be replaced when the component is renamed
+import { DotSparkWhatsAppLinking } from '@/components/dotspark/DotSparkWhatsAppLinking';
 import Header from '@/components/layout/Header';
 
 export default function ActivateDotSpark() {
@@ -604,7 +604,7 @@ export default function ActivateDotSpark() {
           </CardHeader>
           <CardContent className="space-y-4">
             {/* WhatsApp Activation Component */}
-            <NeuralWhatsAppLinking />
+            <DotSparkWhatsAppLinking />
             
             {activationStatus.isCheckingStatus && (
               <div className="flex items-center gap-2 text-sm mt-4">

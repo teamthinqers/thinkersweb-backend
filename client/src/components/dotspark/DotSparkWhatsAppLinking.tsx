@@ -52,7 +52,7 @@ export function DotSparkWhatsAppLinking() {
         toast({
           title: "DotSpark Activated",
           description: "Your WhatsApp DotSpark is now activated.",
-          variant: "success",
+          variant: "default",
         });
         
         // Update activation state
