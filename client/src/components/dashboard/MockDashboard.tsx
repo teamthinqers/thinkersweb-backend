@@ -47,7 +47,7 @@ const MockDashboard: React.FC = () => {
             <Sparkles className="h-4 w-4 ml-2" />
           </div>
           <p className="text-xs text-center text-white/80 mt-1">
-            This is a preview of what your neural extension dashboard will look like after signup
+            This is a preview of what your DotSpark dashboard will look like after signup
           </p>
         </div>
         
@@ -65,7 +65,7 @@ const MockDashboard: React.FC = () => {
                     97% Efficiency
                   </div>
                 </div>
-                <p className="text-sm text-muted-foreground">Experience elite cognitive performance with your own neural extension</p>
+                <p className="text-sm text-muted-foreground">Experience elite cognitive performance with your own DotSpark</p>
               </div>
             </div>
             
@@ -195,7 +195,7 @@ const MockDashboard: React.FC = () => {
           <Card className="overflow-hidden border-t-4 border-t-emerald-500">
             <CardHeader className="pb-1 pt-3">
               <div className="flex justify-between items-start">
-                <CardTitle className="text-sm font-medium">Neural Achievement</CardTitle>
+                <CardTitle className="text-sm font-medium">DotSpark Achievement</CardTitle>
                 <div className="h-8 w-8 rounded-full bg-emerald-500/10 flex items-center justify-center">
                   <Sparkles className="h-4 w-4 text-emerald-500" />
                 </div>
@@ -291,7 +291,7 @@ const MockDashboard: React.FC = () => {
               </div>
               
               <p className="text-xs text-muted-foreground italic">
-                "When your neural extension maps to your network, cognitive abilities improve by an average of 43% in decision-making scenarios."
+                "When your DotSpark maps to your network, cognitive abilities improve by an average of 43% in decision-making scenarios."
               </p>
             </div>
             

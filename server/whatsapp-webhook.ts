@@ -10,7 +10,7 @@ import { eq } from "drizzle-orm";
 const whatsappWebhookRouter = Router();
 
 // Constants for WhatsApp Business API
-const WHATSAPP_VERIFY_TOKEN = 'dotspark-neural-extension-token';
+const WHATSAPP_VERIFY_TOKEN = 'dotspark-verification-token';
 const WHATSAPP_API_VERSION = 'v18.0';
 const WHATSAPP_PHONE_NUMBER_ID = process.env.WHATSAPP_PHONE_NUMBER_ID || '2519650718400538'; // Your WhatsApp Business Account ID
 const WHATSAPP_ACCESS_TOKEN = process.env.WHATSAPP_ACCESS_TOKEN || '';
@@ -301,15 +301,15 @@ whatsappWebhookRouter.post('/', async (req: Request, res: Response) => {
           
           console.log(`📱 Processing Meta WhatsApp message from ${from}: ${messageText}`);
           
-          // Process the message through our neural extension
+          // Process the message through DotSpark
           const response = await processWhatsAppMessage(from, messageText);
           
           // Send response back through WhatsApp API
           if (response && response.message) {
-            console.log(`🤖 Neural extension response: ${response.message.substring(0, 50)}...`);
+            console.log(`🤖 DotSpark response: ${response.message.substring(0, 50)}...`);
             await sendWhatsAppMessage(from, response.message);
           } else {
-            console.log('❌ No response generated from neural extension');
+            console.log('❌ No response generated from DotSpark');
           }
         }
       }
@@ -319,7 +319,7 @@ whatsappWebhookRouter.post('/', async (req: Request, res: Response) => {
     console.error('Error processing WhatsApp webhook:', error);
     try {
       const twiml = new twilio.twiml.MessagingResponse();
-      twiml.message("Our neural extension is experiencing technical difficulties. Please try again later.");
+      twiml.message("DotSpark is experiencing technical difficulties. Please try again later.");
       res.set('Content-Type', 'text/xml');
       res.send(twiml.toString());
     } catch (innerError) {
