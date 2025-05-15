@@ -16,7 +16,7 @@ export function DotSparkWhatsAppLinking({
   isActivated: externalIsActivated,
   isChecking: externalIsChecking,
   directLink: externalDirectLink
-}: DotSparkWhatsAppLinkingProps) {
+}: DotSparkWhatsAppLinkingProps = {}) {
   const { toast } = useToast();
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
@@ -99,8 +99,8 @@ export function DotSparkWhatsAppLinking({
   
   // Add state for activation status from events
   const [activationState, setActivationState] = useState({
-    checking: false,
-    activated: isWhatsAppConnected,
+    checking: externalIsChecking !== undefined ? externalIsChecking : false,
+    activated: externalIsActivated !== undefined ? externalIsActivated : isWhatsAppConnected,
     lastCheck: Date.now()
   });
   
@@ -283,6 +283,13 @@ export function DotSparkWhatsAppLinking({
       });
       
       setLinkSent(true);
+      
+      // Use external direct link if provided
+      if (externalDirectLink) {
+        console.log("Using external direct link:", externalDirectLink);
+        window.open(externalDirectLink, '_blank');
+        return;
+      }
       
       // For mobile devices, create a direct link to the app with better handling
       const encodedMessage = encodeURIComponent(message);
