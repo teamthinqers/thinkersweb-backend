@@ -41,7 +41,7 @@ const MockDashboardHeader: React.FC = () => {
         {/* Center section: Title */}
         {!isMobile && (
           <div className="flex items-center">
-            <h1 className="text-lg font-semibold text-primary">DotSpark Neural Dashboard</h1>
+            <h1 className="text-lg font-semibold text-primary">DotSpark Dashboard</h1>
             <span className="ml-2 px-2 py-0.5 bg-primary/10 text-primary text-xs rounded-full">
               Preview Mode
             </span>

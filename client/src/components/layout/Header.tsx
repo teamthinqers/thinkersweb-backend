@@ -196,7 +196,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 <Button 
                   className="mr-1 bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white h-9 px-2 relative"
                   size="sm"
-                  onClick={() => setLocation("/activate-neural")}
+                  onClick={() => setLocation("/activate-dotspark")}
                 >
                   {/* Icon with sparkle */}
                   <div className="flex items-center relative z-10">
@@ -208,7 +208,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 <Button 
                   className="mr-1 bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white h-9 px-2 relative"
                   size="sm"
-                  onClick={() => setLocation("/activate-neural")}
+                  onClick={() => setLocation("/activate-dotspark")}
                 >
                   <div className="flex items-center relative z-10">
                     <Brain className="h-4 w-4" />
@@ -294,7 +294,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 <Button 
                   className="mr-2 bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white relative"
                   size="sm"
-                  onClick={() => setLocation("/activate-neural")}
+                  onClick={() => setLocation("/activate-dotspark")}
                 >
                   <span className="relative z-10 flex items-center">
                     <Check className="h-4 w-4 mr-1" />
@@ -417,7 +417,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                   size="sm"
                   onClick={() => {
                     setShowMobileNav(false);
-                    setLocation("/activate-neural");
+                    setLocation("/activate-dotspark");
                   }}
                 >
                   <span className="relative z-10 flex items-center">
@@ -432,7 +432,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                   size="sm"
                   onClick={() => {
                     setShowMobileNav(false);
-                    setLocation("/activate-neural");
+                    setLocation("/activate-dotspark");
                   }}
                 >
                   <Brain className="h-5 w-5 mr-2" />
