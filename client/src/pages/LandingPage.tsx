@@ -478,7 +478,7 @@ export default function LandingPage() {
               </div>
               <h3 className="text-xl font-semibold mb-2">Sign In or Register</h3>
               <p className="text-muted-foreground text-sm">Create your account to personalize your DotSpark experience.</p>
-              <Button asChild variant="outline" className="mt-4 w-full">
+              <Button asChild variant="default" className="mt-4 w-full bg-gradient-to-r from-primary to-indigo-600 hover:from-indigo-600 hover:to-primary text-white border-0 shadow-md">
                 <Link href="/auth">
                   Get Started
                 </Link>
@@ -496,7 +496,7 @@ export default function LandingPage() {
               </div>
               <h3 className="text-xl font-semibold mb-2">Activate Neura</h3>
               <p className="text-muted-foreground text-sm">Configure your neural extension parameters to match your thinking style.</p>
-              <Button asChild variant="outline" className="mt-4 w-full">
+              <Button asChild variant="default" className="mt-4 w-full bg-gradient-to-r from-violet-600 to-purple-700 hover:from-purple-700 hover:to-violet-600 text-white border-0 shadow-md">
                 <Link href="/activate-neura">
                   Setup Neura
                 </Link>
@@ -512,7 +512,7 @@ export default function LandingPage() {
               <div className="absolute top-6 right-6 flex items-center justify-center w-8 h-8 rounded-full bg-[#25D366]/80 text-white font-bold text-lg">
                 3
               </div>
-              <h3 className="text-xl font-semibold mb-2">Authenticate WhatsApp</h3>
+              <h3 className="text-xl font-semibold mb-2">Link WhatsApp</h3>
               <p className="text-muted-foreground text-sm">Connect your phone to interact with DotSpark anywhere, anytime.</p>
               <Button 
                 size="default" 
@@ -520,7 +520,7 @@ export default function LandingPage() {
                 className="mt-4 w-full rounded-full bg-[#25D366] hover:bg-[#128C7E] text-white shadow-md hover:shadow-lg transition-all duration-300"
               >
                 <MessageSquare className="h-5 w-5 mr-2" />
-                <span>Authenticate WhatsApp</span>
+                <span>Link WhatsApp</span>
               </Button>
             </div>
           </div>
