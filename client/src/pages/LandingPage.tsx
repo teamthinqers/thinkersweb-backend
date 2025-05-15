@@ -56,16 +56,16 @@ export default function LandingPage() {
               <Link href="/dashboard" className="text-sm font-medium hover:text-primary">
                 Dashboard
               </Link>
-              <a href="#setup-dotspark" className="hidden sm:block ml-2">
+              <Link href="/activate-neural" className="hidden sm:block ml-2">
                 <Button
                   size="sm"
-                  className="bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white relative group"
+                  className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white relative group"
                 >
                   <Brain className="h-4 w-4 mr-1" />
-                  <span>Setup DotSpark</span>
+                  <span>Activate Neura</span>
                   <Sparkles className="h-3 w-3 absolute top-1 right-1 text-white/80" />
                 </Button>
-              </a>
+              </Link>
             </div>
             
             {/* WhatsApp button, always visible on mobile and desktop regardless of login status */}
@@ -94,15 +94,15 @@ export default function LandingPage() {
                 </Button>
               </div>
               
-              <a href="#setup-dotspark" className="block sm:hidden">
+              <Link href="/activate-neural" className="block sm:hidden">
                 <Button
                   size="sm"
-                  className="bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white relative h-7 px-2"
+                  className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white relative h-7 px-2"
                 >
                   <Brain className="h-3.5 w-3.5 mr-1" />
-                  <span className="text-xs">Setup</span>
+                  <span className="text-xs">Neura</span>
                 </Button>
-              </a>
+              </Link>
             </div>
             
             {/* User profile or sign in button */}
@@ -191,10 +191,17 @@ export default function LandingPage() {
                       </SheetClose>
                       
                       <SheetClose asChild>
-                        <a href="#setup-dotspark" className="py-2 hover:text-primary transition-colors flex items-center gap-2 relative">
-                          <Brain className="h-4 w-4 text-primary" />
-                          <span>Setup DotSpark</span>
+                        <Link href="/activate-neural" className="py-2 hover:text-primary transition-colors flex items-center gap-2 relative">
+                          <Brain className="h-4 w-4 text-purple-500" />
+                          <span>Activate Neura</span>
                           <Sparkles className="h-3 w-3 absolute left-1 top-6 text-indigo-400" />
+                        </Link>
+                      </SheetClose>
+                      
+                      <SheetClose asChild>
+                        <a href="#setup-dotspark" className="py-2 hover:text-primary transition-colors flex items-center gap-2 relative">
+                          <Sparkles className="h-4 w-4 text-primary" />
+                          <span>Setup DotSpark</span>
                         </a>
                       </SheetClose>
                     </div>
