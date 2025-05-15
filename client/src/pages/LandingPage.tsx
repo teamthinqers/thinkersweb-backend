@@ -56,7 +56,9 @@ export default function LandingPage() {
               <Link href="/dashboard" className="text-sm font-medium hover:text-primary">
                 Dashboard
               </Link>
-
+              <Link href="/activate-neura" className="text-sm font-medium hover:text-primary">
+                Activate Neura
+              </Link>
             </div>
             
             {/* WhatsApp button, always visible on mobile and desktop regardless of login status */}
@@ -181,6 +183,11 @@ export default function LandingPage() {
                         </Link>
                       </SheetClose>
                       
+                      <SheetClose asChild>
+                        <Link href="/activate-neura" className="py-2 hover:text-primary transition-colors">
+                          Activate Neura
+                        </Link>
+                      </SheetClose>
 
                       <SheetClose asChild>
                         <a href="#setup-dotspark" className="py-2 hover:text-primary transition-colors flex items-center gap-2 relative">
