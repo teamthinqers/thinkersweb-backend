@@ -487,10 +487,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const gameElements = await import('./dotspark').then(m => m.getGameElements(userId));
       const dotsparkTunerAchievement = gameElements.achievements.find(a => a.id === 'dotspark-tuner' || a.id === 'neural-tuner'); // Support both IDs for backward compatibility
       
-      if (neuralTunerAchievement && !neuralTunerAchievement.unlocked) {
+      if (dotsparkTunerAchievement && !dotsparkTunerAchievement.unlocked) {
         // Unlock achievement
         const updatedAchievements = gameElements.achievements.map(a => 
-          a.id === 'neural-tuner' 
+          (a.id === 'dotspark-tuner' || a.id === 'neural-tuner') 
             ? { ...a, unlocked: true, progress: 1, unlockedAt: new Date().toISOString() }
             : a
         );
@@ -500,10 +500,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
         
         // Award extra XP for first-time tuning
-        awardExperience(userId, 25, 'Completed first neural extension tuning');
+        awardExperience(userId, 25, 'Completed first DotSpark tuning');
       } else {
         // Regular XP for tuning
-        awardExperience(userId, 5, 'Updated neural extension tuning');
+        awardExperience(userId, 5, 'Updated DotSpark tuning');
       }
       
       res.status(200).json(updatedTuning);
@@ -511,8 +511,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (error instanceof z.ZodError) {
         return res.status(400).json({ error: 'Invalid tuning parameters', details: error.errors });
       }
-      console.error("Error updating neural tuning:", error);
-      res.status(500).json({ error: 'Failed to update neural tuning' });
+      console.error("Error updating DotSpark tuning:", error);
+      res.status(500).json({ error: 'Failed to update DotSpark tuning' });
     }
   });
   
@@ -1029,7 +1029,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (result.success) {
         res.status(200).json({
           success: true,
-          message: "Your neural extension is now activated. You can now chat with DotSpark directly through WhatsApp."
+          message: "Your DotSpark is now activated. You can now chat with it directly through WhatsApp."
         });
       } else {
         res.status(400).json({ success: false, error: result.message });
