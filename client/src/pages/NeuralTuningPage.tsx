@@ -47,7 +47,7 @@ export default function NeuralTuningPage() {
   const [activeTab, setActiveTab] = useState('hygiene');
   const [newFocus, setNewFocus] = useState('');
   const [focusAreas, setFocusAreas] = useState<string[]>([]);
-  const [neuralName, setNeuralName] = useState(localStorage.getItem('dotsparkName') || 'My DotSpark');
+  const [dotsparkName, setDotsparkName] = useState(localStorage.getItem('dotsparkName') || 'My DotSpark');
   
   const { 
     status, 
@@ -140,7 +140,7 @@ export default function NeuralTuningPage() {
     updateLearningFocus(updatedFocus);
   };
   
-  // Function to handle neural extension name changes
+  // Function to handle DotSpark name changes
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newName = e.target.value;
     setNeuralName(newName);
@@ -205,7 +205,7 @@ export default function NeuralTuningPage() {
           <Button variant="ghost" onClick={() => setLocation('/')} className="p-2">
             <ChevronLeft className="h-5 w-5" />
           </Button>
-          <h1 className="text-2xl font-bold">Neural Extension Tuning</h1>
+          <h1 className="text-2xl font-bold">DotSpark Tuning</h1>
         </div>
         <Button variant="outline" onClick={() => setLocation('/neural-capacity')} className="gap-1.5">
           <Gauge className="h-4 w-4" />
