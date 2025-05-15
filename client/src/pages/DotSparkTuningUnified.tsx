@@ -31,7 +31,12 @@ import {
   FlaskConical,
   BookOpen,
   Trophy,
-  Check
+  Check,
+  Puzzle,
+  CircleSlash,
+  NetworkIcon2,
+  CircleX,
+  Aperture
 } from 'lucide-react';
 
 import {
@@ -44,13 +49,23 @@ import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
 import { cn } from '@/lib/utils';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+import { 
+  Clock5, 
+  Combine,
+  GitMerge, 
+  Info, 
+  Layers, 
+  Save 
+} from 'lucide-react';
 
 export default function DotSparkTuningUnified() {
   const [_, setLocation] = useLocation();
   const [newFocus, setNewFocus] = useState('');
   
-  // Using fixed "My DotSpark" name for all users
-  const dotsparkName = 'My DotSpark';
+  // Using fixed "My DotSpark Neura" name for all users
+  const dotsparkName = 'My DotSpark Neura';
   
   const { 
     status, 
@@ -1214,7 +1229,7 @@ export default function DotSparkTuningUnified() {
                       handleParameterChange('connectionStrength', [0.7]);
                     }}
                   >
-                    <Network className="h-5 w-5 mb-2" />
+                    <NetworkIcon className="h-5 w-5 mb-2" />
                     <div className="space-y-1 text-center">
                       <h4 className="text-xs font-medium">Holistic</h4>
                       <p className="text-xs text-muted-foreground">Unified knowledge base</p>
