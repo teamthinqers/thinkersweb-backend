@@ -632,9 +632,9 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Neural Tuning Section */}
+      {/* Cognitive OS Tuning Section */}
       <section className="py-20 bg-gradient-to-b from-muted/30 to-background relative overflow-hidden">
-        {/* Neural Background Effects */}
+        {/* Cognitive Background Effects */}
         <div className="absolute inset-0 opacity-5">
           <div className="absolute w-[600px] h-[600px] rounded-full border border-primary/20 top-1/4 left-1/4 animate-pulse-slow"></div>
           <div className="absolute w-[300px] h-[300px] rounded-full border border-secondary/20 top-1/2 left-1/3 animate-pulse-slow animation-delay-1000"></div>
@@ -645,17 +645,17 @@ export default function LandingPage() {
         
         <div className="container mx-auto px-4 md:px-6 relative z-10">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Neural <span className="gradient-heading">Tuning</span> Your Cognitive Extension</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Advanced <span className="gradient-heading">Tuning</span> Your Cognitive OS</h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              The more you train and align your neural extension, the more it adapts to your unique thinking patterns
+              The more you train and align your Cognitive OS, the more it adapts to your unique thinking patterns
             </p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             <div className="bg-card border border-primary/10 rounded-xl p-6 relative hover:border-primary/30 transition-all duration-300 neural-node">
               <div className="w-12 h-12 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-xl mb-4 shadow-inner">1</div>
-              <h3 className="text-xl font-bold mb-3">Define Neural Pathways</h3>
-              <p className="text-muted-foreground">Train your cognitive extension by identifying the professional domains and thinking patterns you want it to emulate.</p>
+              <h3 className="text-xl font-bold mb-3">Define Cognitive Pathways</h3>
+              <p className="text-muted-foreground">Train your Cognitive OS by identifying the professional domains and thinking patterns you want it to emulate.</p>
               <div className="absolute top-6 right-6">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary/40"><path d="M2 12h5"></path><path d="M7 17l-5-5 5-5"></path><path d="M22 19c0-3.87-3.13-7-7-7H9"></path><path d="M22 5c0 3.87-3.13 7-7 7H9"></path></svg>
               </div>
@@ -664,7 +664,7 @@ export default function LandingPage() {
             <div className="bg-card border border-primary/10 rounded-xl p-6 relative hover:border-primary/30 transition-all duration-300 neural-node">
               <div className="w-12 h-12 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-xl mb-4 shadow-inner">2</div>
               <h3 className="text-xl font-bold mb-3">Seamless Integration</h3>
-              <p className="text-muted-foreground">Connect your neural extension to your daily workflow through WhatsApp, allowing for natural thought enhancement whenever needed.</p>
+              <p className="text-muted-foreground">Connect your Cognitive OS to your daily workflow through WhatsApp, allowing for natural thought enhancement whenever needed.</p>
               <div className="absolute top-6 right-6">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary/40"><circle cx="12" cy="12" r="10"></circle><path d="m4.9 4.9 14.2 14.2"></path><path d="M9 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"></path><path d="M15 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"></path></svg>
               </div>
@@ -673,7 +673,7 @@ export default function LandingPage() {
             <div className="bg-card border border-primary/10 rounded-xl p-6 relative hover:border-primary/30 transition-all duration-300 neural-node">
               <div className="w-12 h-12 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-xl mb-4 shadow-inner">3</div>
               <h3 className="text-xl font-bold mb-3">Adaptive Intelligence</h3>
-              <p className="text-muted-foreground">The more you interact, the more your neural extension learns your preferences and thinking style, continuously improving its output.</p>
+              <p className="text-muted-foreground">The more you interact, the more your Cognitive OS learns your preferences and thinking style, continuously improving its output.</p>
               <div className="absolute top-6 right-6">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary/40"><path d="M22 17a10 10 0 0 0-20 0"></path><path d="M12 17v4"></path><path d="M12 3v4"></path><path d="M20 7a4 4 0 0 0-8 0"></path><path d="M4 7a4 4 0 0 1 8 0"></path></svg>
               </div>
