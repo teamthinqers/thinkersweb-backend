@@ -306,11 +306,11 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 <Button 
                   className="mr-2 bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white relative"
                   size="sm"
-                  onClick={() => setLocation("/activate-neural")}
+                  onClick={() => setLocation("/activate-dotspark")}
                 >
                   <span className="relative z-10 flex items-center">
                     <Brain className="h-4 w-4 mr-1" />
-                    <span>Activate Neural</span>
+                    <span>Activate DotSpark</span>
                     <Sparkles className="h-3 w-3 ml-1" />
                   </span>
                 </Button>
