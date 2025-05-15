@@ -12,7 +12,8 @@ import {
   Zap, 
   Gauge, 
   BrainCog, 
-  Lightbulb, 
+  Lightbulb,
+  Save,
   ChevronLeft,
   Cpu,
   Database,
@@ -35,7 +36,12 @@ import {
   Puzzle,
   CircleSlash,
   CircleX,
-  Aperture
+  Aperture,
+  Clock5, 
+  Combine,
+  GitMerge, 
+  Info, 
+  Layers
 } from 'lucide-react';
 
 import {
@@ -50,14 +56,6 @@ import { cn } from '@/lib/utils';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { 
-  Clock5, 
-  Combine,
-  GitMerge, 
-  Info, 
-  Layers, 
-  Save 
-} from 'lucide-react';
 
 export default function DotSparkTuningUnified() {
   const [_, setLocation] = useLocation();
@@ -1589,6 +1587,26 @@ export default function DotSparkTuningUnified() {
           </div>
         </CardContent>
       </Card>
+      
+      {/* Floating Save Button - only visible when there are unsaved changes */}
+      {Object.keys(unsavedChanges).length > 0 && (
+        <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3">
+          {showSaveSuccess && (
+            <div className="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 p-3 rounded-lg shadow-lg flex items-center gap-2 animate-in slide-in-from-right duration-300">
+              <Check className="h-5 w-5 text-green-600 dark:text-green-400" />
+              <span>Changes saved successfully!</span>
+            </div>
+          )}
+          <Button 
+            size="lg" 
+            onClick={saveChanges}
+            className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg flex items-center gap-2"
+          >
+            <Save className="h-5 w-5" />
+            Save Changes
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
