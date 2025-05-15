@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Brain, BookOpen, Users, Sparkles, BarChart2, MessageCircle, User, Menu, X } from "lucide-react";
+import { ArrowRight, Brain, BookOpen, Users, Sparkles, BarChart2, MessageCircle, MessageSquare, User, Menu, X } from "lucide-react";
 import { WhatsAppContactButton } from "@/components/landing/WhatsAppContactButton";
 import { CompactWhatsAppButton } from "@/components/landing/CompactWhatsAppButton";
 import DashboardPreview from "@/components/landing/DashboardPreview";
@@ -512,9 +512,16 @@ export default function LandingPage() {
               <div className="absolute top-6 right-6 flex items-center justify-center w-8 h-8 rounded-full bg-[#25D366]/80 text-white font-bold text-lg">
                 3
               </div>
-              <h3 className="text-xl font-semibold mb-2">Link WhatsApp</h3>
+              <h3 className="text-xl font-semibold mb-2">Authenticate WhatsApp</h3>
               <p className="text-muted-foreground text-sm">Connect your phone to interact with DotSpark anywhere, anytime.</p>
-              <CompactWhatsAppButton className="mt-4 w-full" />
+              <Button 
+                size="default" 
+                onClick={() => window.open("https://wa.me/16067157733?text=Hey%20DotSpark%2C%20I%27ve%20got%20a%20few%20things%20on%20my%20mind%20%E2%80%94%20need%20your%20thoughts", "_blank")}
+                className="mt-4 w-full rounded-full bg-[#25D366] hover:bg-[#128C7E] text-white shadow-md hover:shadow-lg transition-all duration-300"
+              >
+                <MessageSquare className="h-5 w-5 mr-2" />
+                <span>Authenticate WhatsApp</span>
+              </Button>
             </div>
           </div>
           
