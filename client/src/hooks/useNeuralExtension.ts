@@ -3,15 +3,15 @@ import { useQuery } from '@tanstack/react-query';
 import { useToast } from './use-toast';
 import { getQueryFn } from '@/lib/queryClient';
 
-// Define types for the Neural Extension status
-export interface NeuralInsight {
+// Define types for the Cognitive OS status
+export interface CognitiveInsight {
   insight: string;
   confidence: number;
   topics: string[];
   generatedAt: Date;
 }
 
-export interface NeuralExtensionStatus {
+export interface CognitiveOSStatus {
   isActive: boolean;
   gameElements: {
     level: number;

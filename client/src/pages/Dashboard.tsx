@@ -69,7 +69,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onEntryClick, onNewEntry }) => {
   return (
     <>
       <DashboardHeader onNewEntry={onNewEntry} />
-      <NeuralExtensionSummary />
+      <CognitiveOSSummary />
       <InsightSection />
       <StatisticsSection />
 
