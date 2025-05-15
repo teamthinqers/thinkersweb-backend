@@ -26,7 +26,7 @@ export function useWhatsAppStatus() {
   
   const [justActivated, setJustActivated] = useState<boolean>(() => {
     // Check if we just completed activation
-    return localStorage.getItem('neural_just_activated') === 'true';
+    return localStorage.getItem('dotspark_just_activated') === 'true';
   });
   
   const [showActivationSuccess, setShowActivationSuccess] = useState<boolean>(() => {
@@ -257,7 +257,7 @@ export function useWhatsAppStatus() {
       setShowActivationSuccess(true);
       
       // Mark the user as having completed neural activation
-      sessionStorage.setItem('neural_activation_completed', 'true');
+      sessionStorage.setItem('dotspark_activation_completed', 'true');
       
       // Dispatch success events (both legacy and new formats)
       window.dispatchEvent(new CustomEvent('whatsapp-status-updated', { 
@@ -328,7 +328,7 @@ export function useWhatsAppStatus() {
   useEffect(() => {
     if (justActivated) {
       const timer = setTimeout(() => {
-        localStorage.removeItem('neural_just_activated');
+        localStorage.removeItem('dotspark_just_activated');
         setJustActivated(false);
       }, 10000);
       
@@ -389,7 +389,7 @@ export function useWhatsAppStatus() {
         if (storedPhone) {
           toast({
             title: "Connection restored",
-            description: "Your Neural Extension has been reconnected automatically.",
+            description: "Your DotSpark has been reconnected automatically.",
             variant: "default",
           });
         }
@@ -462,7 +462,7 @@ export function useWhatsAppStatus() {
     setActivationStatus(true);
     
     // Set flags for UI feedback
-    localStorage.setItem('neural_just_activated', 'true');
+    localStorage.setItem('dotspark_just_activated', 'true');
     setJustActivated(true);
     
     // Also set session storage to ensure it shows in web view
@@ -470,7 +470,7 @@ export function useWhatsAppStatus() {
     setShowActivationSuccess(true);
     
     // Add an additional persistent flag that never gets removed
-    localStorage.setItem('neural_extension_activated_date', new Date().toISOString());
+    localStorage.setItem('dotspark_activated_date', new Date().toISOString());
     
     // Force a refetch to update server state if possible
     refetch();
@@ -554,7 +554,7 @@ export function useWhatsAppStatus() {
     showActivationSuccess,
     // Helper method to clear "just activated" flag manually
     clearJustActivated: () => {
-      localStorage.removeItem('neural_just_activated');
+      localStorage.removeItem('dotspark_just_activated');
       setJustActivated(false);
     },
     // Expose the force refresh function
