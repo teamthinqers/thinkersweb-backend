@@ -327,7 +327,7 @@ export default function ActivateNeura() {
           <TabsList className="grid w-full grid-cols-3 mb-2 bg-background/60 border">
             <TabsTrigger value="step1" className="text-xs">Core Parameters</TabsTrigger>
             <TabsTrigger value="step2" className="text-xs">Domain Expertise</TabsTrigger>
-            <TabsTrigger value="step3" className="text-xs">WhatsApp Link</TabsTrigger>
+            <TabsTrigger value="step3" className="text-xs">Activation</TabsTrigger>
           </TabsList>
           
           {/* Neural parameters visualization */}
@@ -348,9 +348,9 @@ export default function ActivateNeura() {
             <div className="h-0.5 flex-1 mx-2 bg-gray-200 dark:bg-gray-800"></div>
             <div className="flex flex-col items-center">
               <div className={`w-8 h-8 rounded-full flex items-center justify-center ${activeTab === 'step3' ? 'bg-primary text-primary-foreground' : progress > 99 ? 'bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-400' : 'bg-gray-100 text-gray-400 dark:bg-gray-800'}`}>
-                {progress > 99 ? <Check className="h-4 w-4" /> : <MessageCircle className="h-4 w-4" />}
+                {progress > 99 ? <Check className="h-4 w-4" /> : <Zap className="h-4 w-4" />}
               </div>
-              <span className="text-xs mt-1 text-muted-foreground">WhatsApp</span>
+              <span className="text-xs mt-1 text-muted-foreground">Activate</span>
             </div>
           </div>
           
@@ -825,22 +825,26 @@ export default function ActivateNeura() {
           {/* Tab 3: WhatsApp Linking */}
           <TabsContent value="step3" className="mt-4">
             <Card>
-              <CardHeader className={isActivated ? 'text-center bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/40 dark:to-emerald-950/40 border-b rounded-t-lg' : ''}>
-                {isActivated && (
+              <CardHeader className={isActivated ? 'text-center bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/40 dark:to-emerald-950/40 border-b rounded-t-lg' : 'text-center'}>
+                {isActivated ? (
                   <div className="mx-auto mb-2 w-16 h-16 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
                     <Check className="h-8 w-8 text-green-600 dark:text-green-400" />
                   </div>
+                ) : (
+                  <div className="mx-auto mb-2 w-16 h-16 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
+                    <Zap className="h-8 w-8 text-purple-600 dark:text-purple-400" />
+                  </div>
                 )}
-                <CardTitle className={isActivated ? 'text-2xl bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-emerald-600 dark:from-green-400 dark:to-emerald-400' : ''}>
+                <CardTitle className={isActivated ? 'text-2xl bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-emerald-600 dark:from-green-400 dark:to-emerald-400' : 'text-2xl bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400'}>
                   {isActivated ? 
-                    "DotSpark Setup Completed" : 
-                    "Link WhatsApp to Your Neura"
+                    "Neura Activated" : 
+                    "Activate Your Neura"
                   }
                 </CardTitle>
-                <CardDescription className={isActivated ? 'max-w-md mx-auto mt-2' : ''}>
+                <CardDescription className="max-w-md mx-auto mt-2">
                   {isActivated ? 
-                    "Your neural extension is now fully configured and ready to use. You can access all features through the dashboard or via WhatsApp." : 
-                    "Send a WhatsApp message to activate your personal cognitive extension."
+                    "Your neural extension is now fully configured and ready to use. You can access all features through the dashboard." : 
+                    "Your neural parameters are set. Activate Neura to start experiencing your personalized cognitive extension."
                   }
                 </CardDescription>
               </CardHeader>
@@ -865,19 +869,28 @@ export default function ActivateNeura() {
                         </div>
                       </div>
                     </div>
-                  ) : (
-                    <>
-                      {/* WhatsApp linking components */}
-                      <DotSparkWhatsAppLinking 
-                        isActivated={isActivated} 
-                        isChecking={isChecking}
-                        directLink={whatsAppDirectLink}
-                      />
-                      
-                      {/* Status display */}
-                      {isActivated ? (
-                        <div className="flex flex-col space-y-6">
-                          {/* Completed steps summary */}
+                  ) : tuning && Object.keys(tuning).length === 0 ? (
+                    <div className="rounded-md bg-amber-50 p-4 border border-amber-200">
+                      <div className="flex items-start">
+                        <AlertCircle className="h-5 w-5 text-amber-500 mt-0.5 mr-3" />
+                        <div>
+                          <h3 className="font-medium text-amber-800">Configure Neural Parameters</h3>
+                          <p className="text-amber-700 text-sm mt-1">
+                            Please complete Steps 1 and 2 to configure your neural parameters before activation.
+                          </p>
+                          <Button 
+                            variant="outline" 
+                            className="mt-3 text-amber-800 border-amber-300 hover:bg-amber-100"
+                            onClick={() => setActiveTab('step1')}
+                          >
+                            Configure Parameters
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  ) : isActivated ? (
+                    <div className="flex flex-col space-y-6 items-center">
+                      {/* Activated status display */}
                           <div className="rounded-lg border p-6 bg-gradient-to-br from-green-50/30 to-emerald-50/30 dark:from-green-950/20 dark:to-emerald-950/20">
                             <h3 className="font-medium text-lg mb-4">Setup Complete</h3>
                             
