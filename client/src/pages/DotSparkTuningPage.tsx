@@ -401,182 +401,422 @@ export default function DotSparkTuningPage() {
         </CardHeader>
         <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid grid-cols-4 mb-6">
+            <TabsList className="grid grid-cols-3 mb-6">
               <TabsTrigger value="hygiene" className="flex flex-col items-center gap-1 sm:flex-row sm:gap-1.5">
-                <div className="w-3 h-3 rounded-full bg-sky-400"></div>
-                <span className="text-xs sm:text-sm">Thinking Style</span>
+                <div className="w-3 h-3 rounded-full bg-violet-500"></div>
+                <span className="text-xs sm:text-sm">Cognitive Processing</span>
               </TabsTrigger>
               <TabsTrigger value="expertise" className="flex flex-col items-center gap-1 sm:flex-row sm:gap-1.5">
                 <div className="w-3 h-3 rounded-full bg-indigo-500"></div>
-                <span className="text-xs sm:text-sm">Knowledge Areas</span>
-              </TabsTrigger>
-              <TabsTrigger value="personal" className="flex flex-col items-center gap-1 sm:flex-row sm:gap-1.5">
-                <div className="w-3 h-3 rounded-full bg-purple-500"></div>
-                <span className="text-xs sm:text-sm">Personality</span>
+                <span className="text-xs sm:text-sm">Expertise Areas</span>
               </TabsTrigger>
               <TabsTrigger value="learning" className="flex flex-col items-center gap-1 sm:flex-row sm:gap-1.5">
                 <div className="w-3 h-3 rounded-full bg-emerald-500"></div>
-                <span className="text-xs sm:text-sm">Growth Focus</span>
+                <span className="text-xs sm:text-sm">Learning Focus</span>
               </TabsTrigger>
             </TabsList>
             
-            {/* Hygiene Tab - Core Parameters */}
+            {/* Cognitive Processing Tab */}
             <TabsContent value="hygiene" className="space-y-6">
-              {/* Name */}
-              <div className="space-y-1.5">
-                <label htmlFor="dotspark-name" className="text-sm font-medium">
-                  DotSpark Name
-                </label>
-                <div className="relative">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="absolute left-3 top-1/2 -translate-y-1/2 text-indigo-500" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 12a6 6 0 0 0 12 0c0-1.39-.5-2.68-1.34-3.7.3-1.2.58-2.1.95-2.8a1 1 0 0 0-.17-1.14 1.8 1.8 0 0 0-2.27-.17 6 6 0 0 0-10.32 4.68A5.77 5.77 0 0 0 4.5 12c0 3.14 2.56 5.7 5.68 5.7 1.38 0 2.58-.75 3.32-1.2a10.8 10.8 0 0 0 3.5 0c.33.19.94.47 1.6.5a1.5 1.5 0 0 0 1.26-.63c.3-.38.36-.9.25-1.37C19.75 13.75 19.5 12.75 19.5 12a6 6 0 0 0-.28-1.81"></path><path d="M14 10a1 1 0 1 0 2 0 1 1 0 1 0-2 0"></path><path d="M8 10a1 1 0 1 0 2 0 1 1 0 1 0-2 0"></path></svg>
-                  <Input
-                    id="dotspark-name"
-                    value={dotsparkName}
-                    onChange={handleNameChange}
-                    className="pl-10 border-indigo-200 dark:border-indigo-800 focus:border-indigo-500 dark:focus:border-indigo-500"
-                    placeholder="Enter a name for your DotSpark"
-                  />
-                </div>
-                <p className="text-xs text-muted-foreground mt-1">
-                  Give your DotSpark a unique name to help personalize your experience
-                </p>
-              </div>
-
-              {/* Creativity Slider */}
-              <div className="space-y-1.5">
-                <div className="flex justify-between items-center">
-                  <label className="text-sm font-medium">Creativity</label>
-                  <HoverCard>
-                    <HoverCardTrigger asChild>
-                      <Button variant="ghost" size="icon" className="h-6 w-6">
-                        <MoreHorizontal className="h-4 w-4" />
-                      </Button>
-                    </HoverCardTrigger>
-                    <HoverCardContent className="w-80">
-                      <div className="space-y-2">
-                        <h4 className="text-sm font-semibold">About Creativity</h4>
-                        <p className="text-sm text-muted-foreground">Affects the variety and uniqueness of responses. Higher creativity leads to more diverse but potentially less precise outputs.</p>
-                        <div className="grid grid-cols-2 gap-2 pt-2">
-                          <div className="rounded-md border border-blue-100 dark:border-blue-900 bg-blue-50 dark:bg-blue-950/30 p-2">
-                            <div className="font-semibold text-xs text-blue-700 dark:text-blue-400">Higher Values</div>
-                            <p className="text-xs text-muted-foreground mt-1">More creative and diverse output</p>
-                          </div>
-                          <div className="rounded-md border border-amber-100 dark:border-amber-900 bg-amber-50 dark:bg-amber-950/30 p-2">
-                            <div className="font-semibold text-xs text-amber-700 dark:text-amber-400">Lower Values</div>
-                            <p className="text-xs text-muted-foreground mt-1">More consistent and predictable output</p>
-                          </div>
-                        </div>
-                      </div>
-                    </HoverCardContent>
-                  </HoverCard>
-                </div>
+              {/* DotSpark Identity */}
+              <div className="p-4 rounded-lg border border-violet-200 dark:border-violet-800 shadow-sm bg-violet-50/50 dark:bg-violet-950/20">
+                <h3 className="text-lg font-medium flex items-center gap-1.5 mb-3 bg-gradient-to-r from-purple-600 to-violet-500 bg-clip-text text-transparent">
+                  <BrainCircuit className="h-5 w-5 text-violet-500" />
+                  <span>Your Brain Extension</span>
+                </h3>
                 
-                <div className="grid grid-cols-[1fr_auto] gap-4 items-center">
-                  <Slider
-                    defaultValue={[tuning?.creativity || 0.5]}
-                    max={1}
-                    step={0.01}
-                    onValueChange={(value) => handleParameterChange('creativity', value)}
-                    className="[&>span:first-child]:h-2 [&>span:first-child]:bg-gradient-to-r [&>span:first-child]:from-indigo-200 [&>span:first-child]:to-violet-200 [&>span:first-child]:dark:from-indigo-950 [&>span:first-child]:dark:to-violet-950"
-                  />
-                  <span className="w-12 text-sm text-muted-foreground">{Math.round((tuning?.creativity || 0) * 100)}%</span>
-                </div>
-                
-                <div className="flex justify-between text-xs text-muted-foreground mt-1">
-                  <span>Conventional</span>
-                  <span>Creative</span>
+                <div className="space-y-1.5">
+                  <label htmlFor="dotspark-name" className="text-sm font-medium">
+                    DotSpark Name
+                  </label>
+                  <div className="relative">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="absolute left-3 top-1/2 -translate-y-1/2 text-violet-500" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 12a6 6 0 0 0 12 0c0-1.39-.5-2.68-1.34-3.7.3-1.2.58-2.1.95-2.8a1 1 0 0 0-.17-1.14 1.8 1.8 0 0 0-2.27-.17 6 6 0 0 0-10.32 4.68A5.77 5.77 0 0 0 4.5 12c0 3.14 2.56 5.7 5.68 5.7 1.38 0 2.58-.75 3.32-1.2a10.8 10.8 0 0 0 3.5 0c.33.19.94.47 1.6.5a1.5 1.5 0 0 0 1.26-.63c.3-.38.36-.9.25-1.37C19.75 13.75 19.5 12.75 19.5 12a6 6 0 0 0-.28-1.81"></path><path d="M14 10a1 1 0 1 0 2 0 1 1 0 1 0-2 0"></path><path d="M8 10a1 1 0 1 0 2 0 1 1 0 1 0-2 0"></path></svg>
+                    <Input
+                      id="dotspark-name"
+                      value={dotsparkName}
+                      onChange={handleNameChange}
+                      className="pl-10 border-violet-200 dark:border-violet-800 focus:border-violet-500 dark:focus:border-violet-500"
+                      placeholder="Name your cognitive extension"
+                    />
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Give your DotSpark a unique name that resonates with your extended thinking style
+                  </p>
                 </div>
               </div>
               
-              {/* Precision Slider */}
-              <div className="space-y-1.5">
-                <div className="flex justify-between items-center">
-                  <label className="text-sm font-medium">Precision</label>
-                  <HoverCard>
-                    <HoverCardTrigger asChild>
-                      <Button variant="ghost" size="icon" className="h-6 w-6">
-                        <MoreHorizontal className="h-4 w-4" />
-                      </Button>
-                    </HoverCardTrigger>
-                    <HoverCardContent className="w-80">
-                      <div className="space-y-2">
-                        <h4 className="text-sm font-semibold">About Precision</h4>
-                        <p className="text-sm text-muted-foreground">Controls accuracy and detail level. Higher precision leads to more factual and detailed responses but may limit creativity.</p>
-                        <div className="grid grid-cols-2 gap-2 pt-2">
-                          <div className="rounded-md border border-blue-100 dark:border-blue-900 bg-blue-50 dark:bg-blue-950/30 p-2">
-                            <div className="font-semibold text-xs text-blue-700 dark:text-blue-400">Higher Values</div>
-                            <p className="text-xs text-muted-foreground mt-1">More factual and detailed output</p>
-                          </div>
-                          <div className="rounded-md border border-amber-100 dark:border-amber-900 bg-amber-50 dark:bg-amber-950/30 p-2">
-                            <div className="font-semibold text-xs text-amber-700 dark:text-amber-400">Lower Values</div>
-                            <p className="text-xs text-muted-foreground mt-1">More general and concise output</p>
-                          </div>
-                        </div>
-                      </div>
-                    </HoverCardContent>
-                  </HoverCard>
+              {/* Capacity Visual Metrics */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div className="p-3 rounded-lg border border-indigo-200 dark:border-indigo-800 bg-indigo-50/50 dark:bg-indigo-950/20 flex flex-col items-center">
+                  <div className="relative w-16 h-16 mx-auto mb-1">
+                    <svg className="w-full h-full" viewBox="0 0 100 100">
+                      <circle 
+                        cx="50" 
+                        cy="50" 
+                        r="45" 
+                        fill="none" 
+                        stroke="currentColor" 
+                        className="text-indigo-100 dark:text-indigo-950" 
+                        strokeWidth="8" 
+                      />
+                      <circle 
+                        cx="50" 
+                        cy="50" 
+                        r="45" 
+                        fill="none" 
+                        stroke="currentColor" 
+                        className="text-indigo-500 transition-all duration-500 ease-out" 
+                        strokeWidth="8" 
+                        strokeDasharray={`${2 * Math.PI * 45 * (processingEfficiency / 100)} ${2 * Math.PI * 45}`}
+                        strokeDashoffset={(2 * Math.PI * 45) * 0.25}
+                        transform="rotate(-90 50 50)"
+                      />
+                    </svg>
+                    <div className="absolute inset-0 flex items-center justify-center flex-col">
+                      <span className="text-lg font-bold text-indigo-700 dark:text-indigo-400 transition-all duration-500 ease-out">{Math.round(processingEfficiency)}%</span>
+                    </div>
+                  </div>
+                  <p className="text-xs font-medium text-center">Processing</p>
                 </div>
                 
-                <div className="grid grid-cols-[1fr_auto] gap-4 items-center">
-                  <Slider
-                    defaultValue={[tuning?.precision || 0.5]}
-                    max={1}
-                    step={0.01}
-                    onValueChange={(value) => handleParameterChange('precision', value)}
-                    className="[&>span:first-child]:h-2 [&>span:first-child]:bg-gradient-to-r [&>span:first-child]:from-blue-200 [&>span:first-child]:to-sky-200 [&>span:first-child]:dark:from-blue-950 [&>span:first-child]:dark:to-sky-950"
-                  />
-                  <span className="w-12 text-sm text-muted-foreground">{Math.round((tuning?.precision || 0) * 100)}%</span>
+                <div className="p-3 rounded-lg border border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-950/20 flex flex-col items-center">
+                  <div className="relative w-16 h-16 mx-auto mb-1">
+                    <svg className="w-full h-full" viewBox="0 0 100 100">
+                      <circle 
+                        cx="50" 
+                        cy="50" 
+                        r="45" 
+                        fill="none" 
+                        stroke="currentColor" 
+                        className="text-blue-100 dark:text-blue-950" 
+                        strokeWidth="8" 
+                      />
+                      <circle 
+                        cx="50" 
+                        cy="50" 
+                        r="45" 
+                        fill="none" 
+                        stroke="currentColor" 
+                        className="text-blue-500 transition-all duration-500 ease-out" 
+                        strokeWidth="8" 
+                        strokeDasharray={`${2 * Math.PI * 45 * (memoryCapacity / 100)} ${2 * Math.PI * 45}`}
+                        strokeDashoffset={(2 * Math.PI * 45) * 0.25}
+                        transform="rotate(-90 50 50)"
+                      />
+                    </svg>
+                    <div className="absolute inset-0 flex items-center justify-center flex-col">
+                      <span className="text-lg font-bold text-blue-700 dark:text-blue-400 transition-all duration-500 ease-out">{Math.round(memoryCapacity)}%</span>
+                    </div>
+                  </div>
+                  <p className="text-xs font-medium text-center">Memory</p>
                 </div>
                 
-                <div className="flex justify-between text-xs text-muted-foreground mt-1">
-                  <span>Generalized</span>
-                  <span>Detailed</span>
+                <div className="p-3 rounded-lg border border-emerald-200 dark:border-emerald-800 bg-emerald-50/50 dark:bg-emerald-950/20 flex flex-col items-center">
+                  <div className="relative w-16 h-16 mx-auto mb-1">
+                    <svg className="w-full h-full" viewBox="0 0 100 100">
+                      <circle 
+                        cx="50" 
+                        cy="50" 
+                        r="45" 
+                        fill="none" 
+                        stroke="currentColor" 
+                        className="text-emerald-100 dark:text-emerald-950" 
+                        strokeWidth="8" 
+                      />
+                      <circle 
+                        cx="50" 
+                        cy="50" 
+                        r="45" 
+                        fill="none" 
+                        stroke="currentColor" 
+                        className="text-emerald-500 transition-all duration-500 ease-out" 
+                        strokeWidth="8" 
+                        strokeDasharray={`${2 * Math.PI * 45 * (learningRate / 100)} ${2 * Math.PI * 45}`}
+                        strokeDashoffset={(2 * Math.PI * 45) * 0.25}
+                        transform="rotate(-90 50 50)"
+                      />
+                    </svg>
+                    <div className="absolute inset-0 flex items-center justify-center flex-col">
+                      <span className="text-lg font-bold text-emerald-700 dark:text-emerald-400 transition-all duration-500 ease-out">{Math.round(learningRate)}%</span>
+                    </div>
+                  </div>
+                  <p className="text-xs font-medium text-center">Learning</p>
+                </div>
+                
+                <div className="p-3 rounded-lg border border-amber-200 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-950/20 flex flex-col items-center">
+                  <div className="relative w-16 h-16 mx-auto mb-1">
+                    <svg className="w-full h-full" viewBox="0 0 100 100">
+                      <circle 
+                        cx="50" 
+                        cy="50" 
+                        r="45" 
+                        fill="none" 
+                        stroke="currentColor" 
+                        className="text-amber-100 dark:text-amber-950" 
+                        strokeWidth="8" 
+                      />
+                      <circle 
+                        cx="50" 
+                        cy="50" 
+                        r="45" 
+                        fill="none" 
+                        stroke="currentColor" 
+                        className="text-amber-500 transition-all duration-500 ease-out" 
+                        strokeWidth="8" 
+                        strokeDasharray={`${2 * Math.PI * 45 * (specializationLevel / 100)} ${2 * Math.PI * 45}`}
+                        strokeDashoffset={(2 * Math.PI * 45) * 0.25}
+                        transform="rotate(-90 50 50)"
+                      />
+                    </svg>
+                    <div className="absolute inset-0 flex items-center justify-center flex-col">
+                      <span className="text-lg font-bold text-amber-700 dark:text-amber-400 transition-all duration-500 ease-out">{Math.round(specializationLevel)}%</span>
+                    </div>
+                  </div>
+                  <p className="text-xs font-medium text-center">Specialization</p>
                 </div>
               </div>
               
-              {/* Speed Slider */}
-              <div className="space-y-1.5">
-                <div className="flex justify-between items-center">
-                  <label className="text-sm font-medium">Speed</label>
-                  <HoverCard>
-                    <HoverCardTrigger asChild>
-                      <Button variant="ghost" size="icon" className="h-6 w-6">
-                        <MoreHorizontal className="h-4 w-4" />
-                      </Button>
-                    </HoverCardTrigger>
-                    <HoverCardContent className="w-80">
-                      <div className="space-y-2">
-                        <h4 className="text-sm font-semibold">About Speed</h4>
-                        <p className="text-sm text-muted-foreground">Controls response time vs. depth tradeoff. Higher speed leads to faster but potentially less thorough responses.</p>
-                        <div className="grid grid-cols-2 gap-2 pt-2">
-                          <div className="rounded-md border border-blue-100 dark:border-blue-900 bg-blue-50 dark:bg-blue-950/30 p-2">
-                            <div className="font-semibold text-xs text-blue-700 dark:text-blue-400">Higher Values</div>
-                            <p className="text-xs text-muted-foreground mt-1">Faster response times</p>
-                          </div>
-                          <div className="rounded-md border border-amber-100 dark:border-amber-900 bg-amber-50 dark:bg-amber-950/30 p-2">
-                            <div className="font-semibold text-xs text-amber-700 dark:text-amber-400">Lower Values</div>
-                            <p className="text-xs text-muted-foreground mt-1">More thorough and considered responses</p>
-                          </div>
+              {/* Thought Process Section */}
+              <div className="p-4 rounded-lg border border-amber-200 dark:border-amber-800 shadow-sm bg-amber-50/50 dark:bg-amber-950/20">
+                <h3 className="text-base font-medium flex items-center gap-1.5 mb-3 bg-gradient-to-r from-amber-600 to-orange-500 bg-clip-text text-transparent">
+                  <Sparkles className="h-4 w-4 text-amber-500" />
+                  <span>Thought Generation</span>
+                </h3>
+                
+                {/* Divergent Thinking (formerly Creativity) */}
+                <div className="space-y-1.5 mb-4">
+                  <div className="flex justify-between items-center">
+                    <label className="text-sm font-medium flex items-center gap-1">
+                      <span>Thought Generation</span>
+                    </label>
+                    <HoverCard>
+                      <HoverCardTrigger asChild>
+                        <Button variant="ghost" size="icon" className="h-6 w-6">
+                          <MoreHorizontal className="h-4 w-4" />
+                        </Button>
+                      </HoverCardTrigger>
+                      <HoverCardContent className="w-80">
+                        <div className="space-y-2">
+                          <h4 className="text-sm font-semibold">Thought Generation Style</h4>
+                          <p className="text-sm text-muted-foreground">
+                            How does your brain typically approach problems? Convergent thinking focuses on finding a single correct answer, while divergent thinking explores multiple possibilities.
+                          </p>
                         </div>
-                      </div>
-                    </HoverCardContent>
-                  </HoverCard>
+                      </HoverCardContent>
+                    </HoverCard>
+                  </div>
+                  
+                  <div className="grid grid-cols-[1fr_auto] gap-4 items-center">
+                    <Slider
+                      defaultValue={[tuning?.creativity || 0.5]}
+                      max={1}
+                      step={0.01}
+                      onValueChange={(value) => handleParameterChange('creativity', value)}
+                      className="[&>span:first-child]:h-2 [&>span:first-child]:bg-gradient-to-r [&>span:first-child]:from-amber-200 [&>span:first-child]:to-rose-200 [&>span:first-child]:dark:from-amber-950 [&>span:first-child]:dark:to-rose-950"
+                    />
+                    <span className="w-12 text-sm text-muted-foreground">{Math.round((tuning?.creativity || 0) * 100)}%</span>
+                  </div>
+                  
+                  <div className="flex justify-between text-xs text-muted-foreground mt-1">
+                    <span className="font-medium text-amber-700 dark:text-amber-300">Convergent</span>
+                    <span className="font-medium text-rose-700 dark:text-rose-300">Divergent</span>
+                  </div>
+                  <div className="flex justify-between text-xs text-muted-foreground mt-0.5">
+                    <span>Single correct solution</span>
+                    <span>Multiple creative possibilities</span>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Information Processing Section */}
+              <div className="p-4 rounded-lg border border-blue-200 dark:border-blue-800 shadow-sm bg-blue-50/50 dark:bg-blue-950/20">
+                <h3 className="text-base font-medium flex items-center gap-1.5 mb-3 bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">
+                  <Target className="h-4 w-4 text-blue-500" />
+                  <span>Information Processing</span>
+                </h3>
+                
+                {/* Depth vs Breadth (formerly Precision) */}
+                <div className="space-y-1.5 mb-4">
+                  <div className="flex justify-between items-center">
+                    <label className="text-sm font-medium flex items-center gap-1">
+                      <span>Processing Style</span>
+                    </label>
+                    <HoverCard>
+                      <HoverCardTrigger asChild>
+                        <Button variant="ghost" size="icon" className="h-6 w-6">
+                          <MoreHorizontal className="h-4 w-4" />
+                        </Button>
+                      </HoverCardTrigger>
+                      <HoverCardContent className="w-80">
+                        <div className="space-y-2">
+                          <h4 className="text-sm font-semibold">Processing Style</h4>
+                          <p className="text-sm text-muted-foreground">
+                            How do you naturally process information? Breadth-focused thinking prioritizes the big picture, while depth-focused examines specific details thoroughly.
+                          </p>
+                        </div>
+                      </HoverCardContent>
+                    </HoverCard>
+                  </div>
+                  
+                  <div className="grid grid-cols-[1fr_auto] gap-4 items-center">
+                    <Slider
+                      defaultValue={[tuning?.precision || 0.5]}
+                      max={1}
+                      step={0.01}
+                      onValueChange={(value) => handleParameterChange('precision', value)}
+                      className="[&>span:first-child]:h-2 [&>span:first-child]:bg-gradient-to-r [&>span:first-child]:from-cyan-200 [&>span:first-child]:to-blue-200 [&>span:first-child]:dark:from-cyan-950 [&>span:first-child]:dark:to-blue-950"
+                    />
+                    <span className="w-12 text-sm text-muted-foreground">{Math.round((tuning?.precision || 0) * 100)}%</span>
+                  </div>
+                  
+                  <div className="flex justify-between text-xs text-muted-foreground mt-1">
+                    <span className="font-medium text-cyan-700 dark:text-cyan-300">Breadth-focused</span>
+                    <span className="font-medium text-blue-700 dark:text-blue-300">Depth-focused</span>
+                  </div>
+                  <div className="flex justify-between text-xs text-muted-foreground mt-0.5">
+                    <span>Big picture overview</span>
+                    <span>Detailed analysis</span>
+                  </div>
                 </div>
                 
-                <div className="grid grid-cols-[1fr_auto] gap-4 items-center">
-                  <Slider
-                    defaultValue={[tuning?.speed || 0.5]}
-                    max={1}
-                    step={0.01}
-                    onValueChange={(value) => handleParameterChange('speed', value)}
-                    className="[&>span:first-child]:h-2 [&>span:first-child]:bg-gradient-to-r [&>span:first-child]:from-emerald-200 [&>span:first-child]:to-green-200 [&>span:first-child]:dark:from-emerald-950 [&>span:first-child]:dark:to-green-950"
-                  />
-                  <span className="w-12 text-sm text-muted-foreground">{Math.round((tuning?.speed || 0) * 100)}%</span>
+                {/* Processing Speed (Deliberate vs. Quick) */}
+                <div className="space-y-1.5">
+                  <div className="flex justify-between items-center">
+                    <label className="text-sm font-medium flex items-center gap-1">
+                      <span>Thinking Pace</span>
+                    </label>
+                    <HoverCard>
+                      <HoverCardTrigger asChild>
+                        <Button variant="ghost" size="icon" className="h-6 w-6">
+                          <MoreHorizontal className="h-4 w-4" />
+                        </Button>
+                      </HoverCardTrigger>
+                      <HoverCardContent className="w-80">
+                        <div className="space-y-2">
+                          <h4 className="text-sm font-semibold">Thinking Pace</h4>
+                          <p className="text-sm text-muted-foreground">
+                            How do you typically pace your thinking? Deliberate thinking is careful and methodical, while quick thinking provides rapid responses but may miss nuances.
+                          </p>
+                        </div>
+                      </HoverCardContent>
+                    </HoverCard>
+                  </div>
+                  
+                  <div className="grid grid-cols-[1fr_auto] gap-4 items-center">
+                    <Slider
+                      defaultValue={[tuning?.speed || 0.5]}
+                      max={1}
+                      step={0.01}
+                      onValueChange={(value) => handleParameterChange('speed', value)}
+                      className="[&>span:first-child]:h-2 [&>span:first-child]:bg-gradient-to-r [&>span:first-child]:from-indigo-200 [&>span:first-child]:to-orange-200 [&>span:first-child]:dark:from-indigo-950 [&>span:first-child]:dark:to-orange-950"
+                    />
+                    <span className="w-12 text-sm text-muted-foreground">{Math.round((tuning?.speed || 0) * 100)}%</span>
+                  </div>
+                  
+                  <div className="flex justify-between text-xs text-muted-foreground mt-1">
+                    <span className="font-medium text-indigo-700 dark:text-indigo-300">Deliberate</span>
+                    <span className="font-medium text-orange-700 dark:text-orange-300">Quick</span>
+                  </div>
+                  <div className="flex justify-between text-xs text-muted-foreground mt-0.5">
+                    <span>Careful consideration</span>
+                    <span>Rapid response</span>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Reasoning Approach */}
+              <div className="p-4 rounded-lg border border-purple-200 dark:border-purple-800 shadow-sm bg-purple-50/50 dark:bg-purple-950/20">
+                <h3 className="text-base font-medium flex items-center gap-1.5 mb-3 bg-gradient-to-r from-purple-600 to-violet-500 bg-clip-text text-transparent">
+                  <BrainCog className="h-4 w-4 text-purple-500" />
+                  <span>Reasoning Approach</span>
+                </h3>
+                
+                {/* Analytical Reasoning */}
+                <div className="space-y-1.5 mb-4">
+                  <div className="flex justify-between items-center">
+                    <label className="text-sm font-medium flex items-center gap-1">
+                      <span>Reasoning Style</span>
+                    </label>
+                    <HoverCard>
+                      <HoverCardTrigger asChild>
+                        <Button variant="ghost" size="icon" className="h-6 w-6">
+                          <MoreHorizontal className="h-4 w-4" />
+                        </Button>
+                      </HoverCardTrigger>
+                      <HoverCardContent className="w-80">
+                        <div className="space-y-2">
+                          <h4 className="text-sm font-semibold">Reasoning Style</h4>
+                          <p className="text-sm text-muted-foreground">
+                            How do you approach solving problems? Lateral thinking makes unexpected connections, while logical thinking follows structured, sequential steps.
+                          </p>
+                        </div>
+                      </HoverCardContent>
+                    </HoverCard>
+                  </div>
+                  
+                  <div className="grid grid-cols-[1fr_auto] gap-4 items-center">
+                    <Slider
+                      defaultValue={[tuning?.analytical || 0.5]}
+                      max={1}
+                      step={0.01}
+                      onValueChange={(value) => handleParameterChange('analytical', value)}
+                      className="[&>span:first-child]:h-2 [&>span:first-child]:bg-gradient-to-r [&>span:first-child]:from-slate-200 [&>span:first-child]:to-purple-200 [&>span:first-child]:dark:from-slate-950 [&>span:first-child]:dark:to-purple-950"
+                    />
+                    <span className="w-12 text-sm text-muted-foreground">{Math.round((tuning?.analytical || 0) * 100)}%</span>
+                  </div>
+                  
+                  <div className="flex justify-between text-xs text-muted-foreground mt-1">
+                    <span className="font-medium text-slate-700 dark:text-slate-300">Lateral</span>
+                    <span className="font-medium text-purple-700 dark:text-purple-300">Logical</span>
+                  </div>
+                  <div className="flex justify-between text-xs text-muted-foreground mt-0.5">
+                    <span>Creative connections</span>
+                    <span>Step-by-step process</span>
+                  </div>
                 </div>
                 
-                <div className="flex justify-between text-xs text-muted-foreground mt-1">
-                  <span>Thorough</span>
-                  <span>Rapid</span>
+                {/* Intuitive Insight */}
+                <div className="space-y-1.5">
+                  <div className="flex justify-between items-center">
+                    <label className="text-sm font-medium flex items-center gap-1">
+                      <span>Knowledge Approach</span>
+                    </label>
+                    <HoverCard>
+                      <HoverCardTrigger asChild>
+                        <Button variant="ghost" size="icon" className="h-6 w-6">
+                          <MoreHorizontal className="h-4 w-4" />
+                        </Button>
+                      </HoverCardTrigger>
+                      <HoverCardContent className="w-80">
+                        <div className="space-y-2">
+                          <h4 className="text-sm font-semibold">Knowledge Approach</h4>
+                          <p className="text-sm text-muted-foreground">
+                            How do you typically form conclusions? Empirical thinking relies on observable evidence and data, while intuitive thinking follows instincts and pattern recognition.
+                          </p>
+                        </div>
+                      </HoverCardContent>
+                    </HoverCard>
+                  </div>
+                  
+                  <div className="grid grid-cols-[1fr_auto] gap-4 items-center">
+                    <Slider
+                      defaultValue={[tuning?.intuitive || 0.5]}
+                      max={1}
+                      step={0.01}
+                      onValueChange={(value) => handleParameterChange('intuitive', value)}
+                      className="[&>span:first-child]:h-2 [&>span:first-child]:bg-gradient-to-r [&>span:first-child]:from-emerald-200 [&>span:first-child]:to-violet-200 [&>span:first-child]:dark:from-emerald-950 [&>span:first-child]:dark:to-violet-950"
+                    />
+                    <span className="w-12 text-sm text-muted-foreground">{Math.round((tuning?.intuitive || 0) * 100)}%</span>
+                  </div>
+                  
+                  <div className="flex justify-between text-xs text-muted-foreground mt-1">
+                    <span className="font-medium text-emerald-700 dark:text-emerald-300">Empirical</span>
+                    <span className="font-medium text-violet-700 dark:text-violet-300">Intuitive</span>
+                  </div>
+                  <div className="flex justify-between text-xs text-muted-foreground mt-0.5">
+                    <span>Evidence-based</span>
+                    <span>Pattern-recognition</span>
+                  </div>
                 </div>
               </div>
             </TabsContent>
