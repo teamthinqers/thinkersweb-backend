@@ -60,7 +60,22 @@ import { Label } from "@/components/ui/label";
 export default function DotSparkTuningUnified() {
   const [_, setLocation] = useLocation();
   const [newFocus, setNewFocus] = useState('');
-  const [unsavedChanges, setUnsavedChanges] = useState({});
+  const [unsavedChanges, setUnsavedChanges] = useState<{
+    creativity?: number;
+    precision?: number;
+    speed?: number;
+    adaptability?: number;
+    analytical?: number;
+    intuitive?: number;
+    memoryRetention?: number;
+    memoryRecall?: number;
+    connectionStrength?: number;
+    conceptIntegration?: number;
+    learningRate?: number;
+    curiosityIndex?: number;
+    specialties?: Record<string, number>;
+    learningFocus?: string[];
+  }>({});
   const [showSaveSuccess, setShowSaveSuccess] = useState(false);
   
   // Using fixed "My DotSpark Neura" name for all users
@@ -1490,35 +1505,90 @@ export default function DotSparkTuningUnified() {
                 Domain Expertise
               </CardTitle>
               <CardDescription>
-                Configure which knowledge domains your DotSpark specializes in
+                Configure the knowledge domains your Neura specializes in
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid gap-4">
-                {availableSpecialties.map((specialty) => (
-                  <div key={specialty.id} className="space-y-1.5">
-                    <div className="flex justify-between items-center">
-                      <label className="text-sm font-medium">{specialty.name}</label>
-                      <Badge variant="outline" className="font-mono">
-                        {formatParam(tuning.specialties?.[specialty.id])}
-                      </Badge>
-                    </div>
-                    <div className="grid grid-cols-[1fr_auto] gap-4 items-center">
-                      <Slider
-                        defaultValue={[tuning.specialties?.[specialty.id] || 0]}
-                        max={1}
-                        step={0.01}
-                        onValueChange={(value) => handleSpecialtyChange(specialty.id, value)}
-                        className="[&>span:first-child]:h-2 [&>span:first-child]:bg-gradient-to-r [&>span:first-child]:from-amber-100 [&>span:first-child]:to-amber-300 [&>span:first-child]:dark:from-amber-950 [&>span:first-child]:dark:to-amber-700"
-                      />
-                    </div>
-                  </div>
-                ))}
+              <div className="space-y-6">
+                <div className="bg-amber-50 dark:bg-amber-950/30 p-4 rounded-lg border border-amber-200 dark:border-amber-800">
+                  <h3 className="font-medium text-sm mb-2 flex items-center gap-1.5">
+                    <Sparkles className="h-4 w-4 text-amber-500" />
+                    Domain Specialization System
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    Select expertise domains below and set mastery levels for each. Your Neura will optimize its neural pathways accordingly, creating stronger connections for specialized domains.
+                  </p>
+                </div>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                  {availableSpecialties.map((specialty) => {
+                    const currentValue = tuning.specialties?.[specialty.id] || 0;
+                    const currentLevelIndex = Math.floor(currentValue * 5);
+                    const expertiseLevels = ["Novice", "Basic", "Intermediate", "Advanced", "Expert"];
+                    
+                    return (
+                      <div 
+                        key={specialty.id} 
+                        className={`rounded-lg p-4 border transition-all cursor-pointer relative ${
+                          currentValue > 0 
+                            ? 'border-amber-300 dark:border-amber-700 bg-gradient-to-br from-amber-50 to-amber-100/70 dark:from-amber-950/50 dark:to-amber-900/30 shadow-md' 
+                            : 'border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 hover:border-amber-200 dark:hover:border-amber-800'
+                        }`}
+                        onClick={() => {
+                          // Calculate next level (cycling through 5 levels)
+                          const nextLevel = (currentLevelIndex + 1) % 6;
+                          handleSpecialtyChange(specialty.id, [nextLevel / 5]);
+                        }}
+                      >
+                        <div className="flex justify-between items-start mb-3">
+                          <h4 className="font-medium text-sm">{specialty.name}</h4>
+                          {currentValue > 0 && (
+                            <Badge 
+                              className={`
+                                ${currentValue <= 0.2 ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-300' : ''}
+                                ${currentValue > 0.2 && currentValue <= 0.4 ? 'bg-amber-200 text-amber-800 dark:bg-amber-800/50 dark:text-amber-200' : ''}
+                                ${currentValue > 0.4 && currentValue <= 0.6 ? 'bg-amber-300 text-amber-900 dark:bg-amber-700/50 dark:text-amber-100' : ''}
+                                ${currentValue > 0.6 && currentValue <= 0.8 ? 'bg-amber-400 text-amber-900 dark:bg-amber-600/50 dark:text-amber-50' : ''}
+                                ${currentValue > 0.8 ? 'bg-amber-500 text-white dark:bg-amber-500/70' : ''}
+                              `}
+                            >
+                              {expertiseLevels[currentLevelIndex] || "None"}
+                            </Badge>
+                          )}
+                        </div>
+                        
+                        <div className="flex space-x-1 mb-3">
+                          {[0, 1, 2, 3, 4].map((level) => (
+                            <div 
+                              key={level}
+                              className={`h-1.5 flex-1 rounded-full ${
+                                level <= currentLevelIndex 
+                                  ? 'bg-amber-500' 
+                                  : 'bg-gray-200 dark:bg-gray-700'
+                              }`}
+                            />
+                          ))}
+                        </div>
+                        
+                        <div className="flex items-center text-xs text-muted-foreground">
+                          <div className="flex items-center">
+                            <Star className={`h-3.5 w-3.5 mr-1 ${currentValue > 0 ? 'text-amber-500' : 'text-gray-400'}`} />
+                            {currentValue === 0 ? (
+                              <span>Tap to add expertise</span>
+                            ) : (
+                              <span>Level {currentLevelIndex + 1}/5</span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+                
+                <p className="text-xs text-muted-foreground mt-4">
+                  Tap on domains to increase expertise level. Higher expertise means your Neura will process information in that domain more efficiently.
+                </p>
               </div>
-              <p className="text-xs text-muted-foreground mt-4">
-                Adjust the sliders to determine how much your DotSpark should specialize in each knowledge domain.
-                Higher values mean more expertise in that area.
-              </p>
             </CardContent>
           </Card>
         </TabsContent>
