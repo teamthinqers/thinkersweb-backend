@@ -64,11 +64,11 @@ const DashboardPreview: React.FC = () => {
           </Card>
         </div>
         
-        {/* Brain Network Mapping Preview */}
+        {/* DotSpark Network Mapping Preview */}
         <div className="mb-4 bg-gradient-to-r from-indigo-50 to-violet-50 dark:from-indigo-950 dark:to-violet-950 rounded-lg p-4 border border-indigo-100 dark:border-indigo-900">
           <div className="flex items-center mb-2">
             <Users className="h-4 w-4 text-primary mr-2" />
-            <div className="text-sm font-bold">Brain Network Mapping</div>
+            <div className="text-sm font-bold">DotSpark Network Mapping</div>
           </div>
           
           <div className="grid grid-cols-2 gap-2 mb-3">
@@ -84,7 +84,7 @@ const DashboardPreview: React.FC = () => {
           
           <div className="relative h-14 overflow-hidden rounded-md bg-background/20 flex items-center justify-center">
             <div className="absolute inset-0 opacity-40">
-              {/* Neural nodes and connections */}
+              {/* DotSpark nodes and connections */}
               <div className="absolute top-1/4 left-1/4 h-3 w-3 rounded-full bg-primary animate-pulse"></div>
               <div className="absolute top-1/3 right-1/3 h-2 w-2 rounded-full bg-indigo-500 animate-pulse"></div>
               <div className="absolute bottom-1/4 right-1/4 h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></div>
