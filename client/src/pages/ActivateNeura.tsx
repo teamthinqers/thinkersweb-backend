@@ -327,30 +327,30 @@ export default function ActivateNeura() {
           <TabsList className="grid w-full grid-cols-3 mb-2 bg-background/60 border">
             <TabsTrigger value="step1" className="text-xs">Core Parameters</TabsTrigger>
             <TabsTrigger value="step2" className="text-xs">Domain Expertise</TabsTrigger>
-            <TabsTrigger value="step3" className="text-xs">Advanced Settings</TabsTrigger>
+            <TabsTrigger value="step3" className="text-xs">WhatsApp Link</TabsTrigger>
           </TabsList>
           
           {/* Neural parameters visualization */}
           <div className="flex items-center justify-between mb-6 px-1">
             <div className="flex flex-col items-center">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${activeTab === 'step1' ? 'bg-primary text-primary-foreground' : 'bg-gray-100 text-gray-400 dark:bg-gray-800'}`}>
-                <BrainCircuit className="h-4 w-4" />
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${activeTab === 'step1' ? 'bg-primary text-primary-foreground' : progress > 33 ? 'bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-400' : 'bg-gray-100 text-gray-400 dark:bg-gray-800'}`}>
+                {progress > 33 ? <Check className="h-4 w-4" /> : <BrainCircuit className="h-4 w-4" />}
               </div>
               <span className="text-xs mt-1 text-muted-foreground">Core</span>
             </div>
             <div className="h-0.5 flex-1 mx-2 bg-gray-200 dark:bg-gray-800"></div>
             <div className="flex flex-col items-center">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${activeTab === 'step2' ? 'bg-primary text-primary-foreground' : 'bg-gray-100 text-gray-400 dark:bg-gray-800'}`}>
-                <Star className="h-4 w-4" />
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${activeTab === 'step2' ? 'bg-primary text-primary-foreground' : progress > 67 ? 'bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-400' : 'bg-gray-100 text-gray-400 dark:bg-gray-800'}`}>
+                {progress > 67 ? <Check className="h-4 w-4" /> : <Star className="h-4 w-4" />}
               </div>
               <span className="text-xs mt-1 text-muted-foreground">Expertise</span>
             </div>
             <div className="h-0.5 flex-1 mx-2 bg-gray-200 dark:bg-gray-800"></div>
             <div className="flex flex-col items-center">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${activeTab === 'step3' ? 'bg-primary text-primary-foreground' : 'bg-gray-100 text-gray-400 dark:bg-gray-800'}`}>
-                <Sliders className="h-4 w-4" />
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${activeTab === 'step3' ? 'bg-primary text-primary-foreground' : progress > 99 ? 'bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-400' : 'bg-gray-100 text-gray-400 dark:bg-gray-800'}`}>
+                {progress > 99 ? <Check className="h-4 w-4" /> : <MessageCircle className="h-4 w-4" />}
               </div>
-              <span className="text-xs mt-1 text-muted-foreground">Advanced</span>
+              <span className="text-xs mt-1 text-muted-foreground">WhatsApp</span>
             </div>
           </div>
           
@@ -825,16 +825,21 @@ export default function ActivateNeura() {
           {/* Tab 3: WhatsApp Linking */}
           <TabsContent value="step3" className="mt-4">
             <Card>
-              <CardHeader>
-                <CardTitle>
+              <CardHeader className={isActivated ? 'text-center bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/40 dark:to-emerald-950/40 border-b rounded-t-lg' : ''}>
+                {isActivated && (
+                  <div className="mx-auto mb-2 w-16 h-16 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                    <Check className="h-8 w-8 text-green-600 dark:text-green-400" />
+                  </div>
+                )}
+                <CardTitle className={isActivated ? 'text-2xl bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-emerald-600 dark:from-green-400 dark:to-emerald-400' : ''}>
                   {isActivated ? 
-                    "Neura Activated" : 
+                    "DotSpark Setup Completed" : 
                     "Link WhatsApp to Your Neura"
                   }
                 </CardTitle>
-                <CardDescription>
+                <CardDescription className={isActivated ? 'max-w-md mx-auto mt-2' : ''}>
                   {isActivated ? 
-                    "Your WhatsApp is connected and Neura is active." : 
+                    "Your neural extension is now fully configured and ready to use. You can access all features through the dashboard or via WhatsApp." : 
                     "Send a WhatsApp message to activate your personal cognitive extension."
                   }
                 </CardDescription>
@@ -870,17 +875,69 @@ export default function ActivateNeura() {
                       />
                       
                       {/* Status display */}
-                      <div className="flex flex-col">
-                        <div className="flex items-center justify-between p-4 rounded-lg bg-card border">
-                          <div className="flex items-center">
-                            <div className={`w-3 h-3 rounded-full mr-3 ${isActivated ? 'bg-green-500' : 'bg-amber-500'}`}></div>
-                            <span>WhatsApp Connection</span>
+                      {isActivated ? (
+                        <div className="flex flex-col space-y-6">
+                          {/* Completed steps summary */}
+                          <div className="rounded-lg border p-6 bg-gradient-to-br from-green-50/30 to-emerald-50/30 dark:from-green-950/20 dark:to-emerald-950/20">
+                            <h3 className="font-medium text-lg mb-4">Setup Complete</h3>
+                            
+                            <div className="space-y-3">
+                              <div className="flex items-start">
+                                <div className="w-6 h-6 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center mt-0.5 mr-3">
+                                  <Check className="h-3.5 w-3.5 text-green-600 dark:text-green-400" />
+                                </div>
+                                <div>
+                                  <span className="font-medium">Core Parameters Configured</span>
+                                  <p className="text-sm text-muted-foreground">Your neural extension's core processing preferences are set</p>
+                                </div>
+                              </div>
+                              
+                              <div className="flex items-start">
+                                <div className="w-6 h-6 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center mt-0.5 mr-3">
+                                  <Check className="h-3.5 w-3.5 text-green-600 dark:text-green-400" />
+                                </div>
+                                <div>
+                                  <span className="font-medium">Domain Expertise Defined</span>
+                                  <p className="text-sm text-muted-foreground">Your knowledge specializations are established</p>
+                                </div>
+                              </div>
+                              
+                              <div className="flex items-start">
+                                <div className="w-6 h-6 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center mt-0.5 mr-3">
+                                  <Check className="h-3.5 w-3.5 text-green-600 dark:text-green-400" />
+                                </div>
+                                <div>
+                                  <span className="font-medium">WhatsApp Connected</span>
+                                  <p className="text-sm text-muted-foreground">Your neural extension is accessible via WhatsApp</p>
+                                </div>
+                              </div>
+                            </div>
                           </div>
-                          <span className="text-sm font-medium">
-                            {isActivated ? 'Active' : isChecking ? 'Checking...' : 'Inactive'}
-                          </span>
+                          
+                          {/* WhatsApp connection status */}
+                          <div className="flex items-center justify-between p-4 rounded-lg bg-card border">
+                            <div className="flex items-center">
+                              <div className="w-3 h-3 rounded-full mr-3 bg-green-500"></div>
+                              <span>WhatsApp Connection</span>
+                            </div>
+                            <span className="text-sm font-medium text-green-600 dark:text-green-400">
+                              Active
+                            </span>
+                          </div>
                         </div>
-                      </div>
+                      ) : (
+                        <div className="flex flex-col">
+                          <div className="flex items-center justify-between p-4 rounded-lg bg-card border">
+                            <div className="flex items-center">
+                              <div className="w-3 h-3 rounded-full mr-3 bg-amber-500"></div>
+                              <span>WhatsApp Connection</span>
+                            </div>
+                            <span className="text-sm font-medium">
+                              {isChecking ? 'Checking...' : 'Inactive'}
+                            </span>
+                          </div>
+                        </div>
+                      )}
                     </>
                   )}
                 </div>
@@ -900,9 +957,9 @@ export default function ActivateNeura() {
                       <Button 
                         onClick={() => setLocation('/dashboard')} 
                         size="lg" 
-                        className="bg-primary hover:bg-primary/90"
+                        className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white shadow-md hover:shadow-lg transition-all duration-200"
                       >
-                        <LayoutDashboard className="mr-2 h-4 w-4" />
+                        <LayoutDashboard className="mr-2 h-5 w-5" />
                         Open Dashboard
                       </Button>
                     </>
