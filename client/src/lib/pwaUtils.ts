@@ -51,82 +51,64 @@ export function initPWA() {
         console.error('❌ Error loading manifest:', error);
       });
     
-    // Register the service worker immediately rather than waiting for window.load
-    try {
-      navigator.serviceWorker
-        .register('/service-worker.js', { scope: '/' })
-        .then(registration => {
-          console.log('✅ Service Worker registered successfully with scope:', registration.scope);
-          
-          // Check for updates to the service worker
-          registration.onupdatefound = () => {
-            const installingWorker = registration.installing;
-            if (installingWorker) {
-              console.log('Service worker installation in progress...');
-              
-              installingWorker.onstatechange = () => {
-                console.log(`Service worker state changed: ${installingWorker.state}`);
-                
-                if (installingWorker.state === 'installed') {
-                  if (navigator.serviceWorker.controller) {
-                    // At this point, the updated precached content has been fetched,
-                    // but the previous service worker will still serve the older
-                    // content until all client tabs are closed.
-                    console.log('✅ New content is available and will be used when all tabs for this page are closed.');
-                    
-                    // Optionally, show a notification to the user about the update
-                    showUpdateNotification();
-                  } else {
-                    // At this point, everything has been precached.
-                    // It's the perfect time to display a "Content is cached for offline use." message.
-                    console.log('✅ Content is cached for offline use.');
-                  }
-                }
-              };
-            }
-          };
-        })
-        .catch(error => {
-          console.error('❌ Service Worker registration failed:', error);
-          console.error('Detailed error:', JSON.stringify(error));
-          
-          // Try again after a delay with more specific error tracking
-          setTimeout(() => {
-            console.log('Attempting to register service worker again...');
-            fetch('/service-worker.js')
-              .then(response => {
-                if (!response.ok) {
-                  throw new Error(`Service worker fetch failed: ${response.status} ${response.statusText}`);
-                }
-                console.log('Service worker file is accessible');
-                return navigator.serviceWorker.register('/service-worker.js', { scope: '/' });
-              })
-              .then(reg => console.log('✅ Service Worker registered on retry with scope:', reg.scope))
-              .catch(err => {
-                console.error('❌ Service Worker registration failed again:', err);
-                console.error('Detailed retry error:', JSON.stringify(err));
-              });
-          }, 3000);
+    // First unregister any existing service workers
+    navigator.serviceWorker.getRegistrations().then(registrations => {
+      const unregisterPromises = registrations.map(registration => {
+        return registration.unregister().then(() => {
+          console.log('Unregistered existing service worker');
+        }).catch(err => {
+          console.error('Failed to unregister service worker:', err);
         });
-    } catch (error) {
-      console.error('❌ Critical error registering service worker:', error);
-      console.error('Detailed critical error:', JSON.stringify(error));
-    }
-    
-    // Also register on window load as a fallback
-    window.addEventListener('load', () => {
-      // Check if service worker is already registered
-      if (navigator.serviceWorker.controller) {
-        console.log('Service worker is already controlling this page on window.load');
-      } else {
-        console.log('Attempting to register service worker on window.load event...');
-        navigator.serviceWorker.register('/service-worker.js', { scope: '/' })
-          .then(reg => console.log('✅ Service Worker registered on window.load with scope:', reg.scope))
-          .catch(err => {
-            console.error('❌ Service Worker registration failed on window.load:', err);
-            console.error('Detailed window.load error:', JSON.stringify(err));
-          });
-      }
+      });
+
+      // After unregistering, register the new service worker
+      Promise.all(unregisterPromises).then(() => {
+        setTimeout(() => {
+          // Register the service worker
+          try {
+            navigator.serviceWorker
+              .register('/service-worker.js', { 
+                scope: '/',
+                updateViaCache: 'none' // Don't cache the service worker file
+              })
+              .then(registration => {
+                console.log('✅ Service Worker registered successfully with scope:', registration.scope);
+                
+                // Check for updates to the service worker
+                registration.onupdatefound = () => {
+                  const installingWorker = registration.installing;
+                  if (installingWorker) {
+                    console.log('Service worker installation in progress...');
+                    
+                    installingWorker.onstatechange = () => {
+                      console.log(`Service worker state changed: ${installingWorker.state}`);
+                      
+                      if (installingWorker.state === 'installed') {
+                        if (navigator.serviceWorker.controller) {
+                          // Updated content is available
+                          console.log('✅ New content is available and will be used when all tabs for this page are closed.');
+                          showUpdateNotification();
+                        } else {
+                          // First time install
+                          console.log('✅ Content is cached for offline use.');
+                        }
+                      }
+                    };
+                  }
+                };
+              })
+              .catch(error => {
+                console.error('❌ Service Worker registration failed:', error);
+                console.error('Detailed error:', JSON.stringify(error));
+              });
+          } catch (error) {
+            console.error('❌ Critical error registering service worker:', error);
+            console.error('Detailed critical error:', JSON.stringify(error));
+          }
+        }, 1000); // Small delay to ensure unregistration completes
+      });
+    }).catch(err => {
+      console.error('Could not get service worker registrations:', err);
     });
   } else {
     console.log('⚠️ Service workers are not supported by this browser.');
