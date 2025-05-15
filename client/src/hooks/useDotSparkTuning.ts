@@ -226,6 +226,57 @@ export function useDotSparkTuning() {
     }
   });
   
+  // Function to set tuning parameters directly (useful for ActivateDotSpark)
+  const saveTuning = async (params: TuningParams) => {
+    try {
+      // In a real implementation, this would call the API
+      // await apiRequest('POST', '/api/dotspark/tuning', params);
+      
+      // For demo purposes, we'll just update the local state
+      await new Promise(resolve => setTimeout(resolve, 800)); // Simulate network latency
+      
+      // Create updated tuning params by merging with current settings
+      const updatedTuning = {
+        ...status?.tuning,
+        ...params,
+        specialties: {
+          ...status?.tuning?.specialties,
+          ...(params.specialties || {})
+        }
+      };
+      
+      // Create an updated status object with the new tuning params
+      const updatedStatus = {
+        ...status,
+        tuning: updatedTuning
+      };
+      
+      // Update the cached status data
+      queryClient.setQueryData(['/api/dotspark/status'], updatedStatus);
+      
+      return updatedStatus;
+    } catch (error) {
+      console.error('Error saving DotSpark tuning:', error);
+      throw error;
+    }
+  };
+  
+  // Function to get the current tuning parameters
+  const getTuning = () => status?.tuning || {};
+  
+  // Function to directly set tuning value
+  const setTuning = (tuning: TuningParams) => {
+    const updatedStatus = {
+      ...status,
+      tuning: {
+        ...status?.tuning,
+        ...tuning
+      }
+    };
+    
+    queryClient.setQueryData(['/api/dotspark/status'], updatedStatus);
+  };
+
   return {
     status,
     isLoading,
@@ -234,6 +285,10 @@ export function useDotSparkTuning() {
     updateTuning: updateTuningMutation.mutate,
     isUpdating: updateTuningMutation.isPending,
     updateLearningFocus: updateLearningFocusMutation.mutate,
-    isUpdatingFocus: updateLearningFocusMutation.isPending
+    isUpdatingFocus: updateLearningFocusMutation.isPending,
+    // Add new functions for ActivateDotSpark
+    tuning: getTuning(),
+    setTuning,
+    saveTuning
   };
 }

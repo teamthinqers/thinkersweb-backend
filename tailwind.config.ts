@@ -107,6 +107,11 @@ export default {
           "10%": { opacity: "0" },
           "100%": { opacity: "0" }
         },
+        "ripple": {
+          "0%": { transform: "scale(0)", opacity: "0.7" },
+          "80%": { transform: "scale(1)", opacity: "0.2" },
+          "100%": { transform: "scale(1)", opacity: "0" }
+        },
         "pulse-slow": {
           "0%, 100%": {
             opacity: "0.8",
