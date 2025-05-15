@@ -31,6 +31,8 @@ import { AuthProvider, useAuth } from "@/hooks/use-auth";
 import { Loader2 } from "lucide-react";
 import MockDashboard from "@/components/dashboard/MockDashboard";
 // PWA functionality has been removed
+// Empty placeholder component to avoid import errors
+const InstallPrompt = () => null;
 
 // Simplified Protected route component
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -229,6 +231,7 @@ function App() {
       <AuthProvider>
         <Router />
         <Toaster />
+        <InstallPrompt />
       </AuthProvider>
     </QueryClientProvider>
   );
