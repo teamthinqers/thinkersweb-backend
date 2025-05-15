@@ -181,14 +181,7 @@ export default function LandingPage() {
                         </Link>
                       </SheetClose>
                       
-                      <SheetClose asChild>
-                        <Link href="/activate-neural" className="py-2 hover:text-primary transition-colors flex items-center gap-2 relative">
-                          <Brain className="h-4 w-4 text-purple-500" />
-                          <span>Activate Neura</span>
-                          <Sparkles className="h-3 w-3 absolute left-1 top-6 text-indigo-400" />
-                        </Link>
-                      </SheetClose>
-                      
+
                       <SheetClose asChild>
                         <a href="#setup-dotspark" className="py-2 hover:text-primary transition-colors flex items-center gap-2 relative">
                           <Sparkles className="h-4 w-4 text-primary" />
