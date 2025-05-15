@@ -276,7 +276,7 @@ export default function MyNeura() {
       <div className="flex-1 container mx-auto px-4 py-6 md:py-12 max-w-6xl">
         <div className="mb-8">
           <h1 className="text-3xl font-bold tracking-tight">
-            <span className="text-primary">My Neura</span> Dashboard
+            <span className="text-primary">My Neura</span>
           </h1>
           <p className="text-muted-foreground mt-2">
             Fine-tune your personal neural extension to match your unique thought patterns and cognitive style.
