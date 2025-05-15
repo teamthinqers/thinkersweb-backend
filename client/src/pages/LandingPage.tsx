@@ -56,16 +56,7 @@ export default function LandingPage() {
               <Link href="/dashboard" className="text-sm font-medium hover:text-primary">
                 Dashboard
               </Link>
-              <Link href="/activate-neural" className="hidden sm:block ml-2">
-                <Button
-                  size="sm"
-                  className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white relative group"
-                >
-                  <Brain className="h-4 w-4 mr-1" />
-                  <span>Activate Neura</span>
-                  <Sparkles className="h-3 w-3 absolute top-1 right-1 text-white/80" />
-                </Button>
-              </Link>
+
             </div>
             
             {/* WhatsApp button, always visible on mobile and desktop regardless of login status */}
@@ -438,16 +429,6 @@ export default function LandingPage() {
                       </a>
                     </Button>
                   )}
-                  
-                  <Button size="lg" asChild className="w-full mb-3 mt-2 relative overflow-hidden bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 border-0 shadow-lg shadow-purple-500/20 hover:shadow-indigo-500/30 transition-all duration-300 transform hover:scale-105 group">
-                      <Link href="/activate-neural" className="flex items-center justify-center relative z-10">
-                        <Brain className="mr-2 h-5 w-5" />
-                        <span>Activate Neura</span>
-                        <div className="absolute top-0 left-0 w-full h-full overflow-hidden">
-                          <div className="h-4 w-4 absolute top-1/2 left-3 transform -translate-y-1/2 text-white opacity-80 animate-pulse" />
-                        </div>
-                      </Link>
-                    </Button>
                   
                   <div className="text-sm text-muted-foreground text-left relative z-10">
                     <p className="mb-2 font-medium text-foreground">Get started in 3 easy steps:</p>
