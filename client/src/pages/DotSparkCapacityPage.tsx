@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'wouter';
-import { useDotSpark } from '@/hooks/useNeuralExtension';
+import { useDotSpark } from '@/hooks/useDotSpark';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
@@ -321,11 +321,11 @@ export default function DotSparkCapacityPage() {
             </Card>
           </div>
           
-          {/* Neural Extension Stats */}
+          {/* DotSpark Stats */}
           <div className="mb-8">
             <h3 className="font-medium text-sm mb-3 flex items-center gap-2">
               <History className="h-4 w-4 text-purple-700 dark:text-purple-400" />
-              Neural Extension Statistics
+              DotSpark Statistics
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="p-4 rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800">
@@ -359,7 +359,7 @@ export default function DotSparkCapacityPage() {
           <div>
             <h3 className="font-medium text-sm mb-3 flex items-center gap-2">
               <Sparkles className="h-4 w-4 text-purple-700 dark:text-purple-400" />
-              Neural Capabilities
+              DotSpark Capabilities
             </h3>
             
             {/* Unlocked Capabilities */}
@@ -394,12 +394,12 @@ export default function DotSparkCapacityPage() {
         
         <CardFooter className="flex justify-between">
           <Button variant="outline" asChild>
-            <Link href="/neural-tuning">
-              Tune Neural Extension
+            <Link href="/dotspark-tuning">
+              Tune DotSpark
             </Link>
           </Button>
           <Button variant="default" className="bg-gradient-to-r from-purple-700 to-indigo-600 hover:from-purple-800 hover:to-indigo-700">
-            <span>Boost Neural Capacity</span>
+            <span>Boost DotSpark Capacity</span>
             <ArrowUpRight className="h-4 w-4 ml-2" />
           </Button>
         </CardFooter>
