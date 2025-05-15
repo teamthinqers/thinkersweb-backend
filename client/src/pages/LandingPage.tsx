@@ -409,7 +409,7 @@ export default function LandingPage() {
                     <Button size="lg" asChild className="w-full mb-3 relative overflow-hidden bg-gradient-to-r from-green-600 to-emerald-500 hover:from-emerald-600 hover:to-green-500 border-0 shadow-lg shadow-green-500/20 hover:shadow-emerald-500/30 transition-all duration-300 transform hover:scale-105 group">
                       <Link href="/dashboard" className="flex items-center justify-center relative z-10">
                         <Check className="mr-2 h-5 w-5" />
-                        <span>Neural Extension Activated</span>
+                        <span>DotSpark Activated</span>
                         <div className="absolute inset-0">
                           <div className="absolute top-1/2 left-1/4 w-0.5 h-10 bg-white/10 animate-pulse" style={{animationDelay: '0.1s'}}></div>
                           <div className="absolute top-1/2 left-1/3 w-0.5 h-8 bg-white/10 animate-pulse" style={{animationDelay: '0.2s'}}></div>
@@ -424,7 +424,7 @@ export default function LandingPage() {
                     <Button size="lg" asChild className="w-full mb-3 relative overflow-hidden bg-gradient-to-r from-primary to-indigo-600 hover:from-indigo-600 hover:to-primary border-0 shadow-lg shadow-primary/20 hover:shadow-indigo-500/30 transition-all duration-300 transform hover:scale-105 group">
                       <Link href="/activate-neural" className="flex items-center justify-center relative z-10">
                         <Brain className="mr-2 h-5 w-5" />
-                        <span>Activate Neural Extension</span>
+                        <span>Activate DotSpark</span>
                         <div className="absolute top-0 left-0 w-full h-full overflow-hidden">
                           <Sparkles className="h-4 w-4 absolute top-1/2 left-3 transform -translate-y-1/2 text-white opacity-80 animate-pulse" />
                         </div>
@@ -454,7 +454,7 @@ export default function LandingPage() {
 
                   <div className="text-sm text-muted-foreground text-left relative z-10">
                     <p className="mb-2 font-medium text-green-700 dark:text-green-500">Instant ChatGPT-like experience:</p>
-                    <p className="text-xs">Start using your neural extension immediately through WhatsApp - no account required. Interact naturally like with ChatGPT.</p>
+                    <p className="text-xs">Start using DotSpark immediately through WhatsApp - no account required. Interact naturally like with ChatGPT.</p>
                   </div>
                 </div>
               </div>
