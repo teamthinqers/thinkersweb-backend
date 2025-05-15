@@ -42,7 +42,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
   const [searchQuery, setSearchQuery] = useState("");
   const { toast } = useToast();
   const { user, logout } = useAuth();
-  const [, setLocation] = useLocation();
+  const [location, setLocation] = useLocation();
   const isMobile = useMobile();
   const [showMobileNav, setShowMobileNav] = useState(false);
   
@@ -192,7 +192,21 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 <HomeIcon className="h-5 w-5" />
               </Button>
               
-              {isActivated ? (
+              {/* Always show "My Neura" when on the My Neura page */}
+              {location === "/my-neura" || location === "/activate-neura" ? (
+                <Button 
+                  className="mr-1 bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white h-9 px-2 relative"
+                  size="sm"
+                  onClick={() => setLocation("/my-neura")}
+                >
+                  <div className="flex items-center relative z-10">
+                    <div className="relative">
+                      <Brain className="h-4 w-4" />
+                      {isActivated && <div className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-green-500 rounded-full"></div>}
+                    </div>
+                  </div>
+                </Button>
+              ) : isActivated ? (
                 <Button 
                   className="mr-1 bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white h-9 px-2 relative"
                   size="sm"
@@ -290,7 +304,22 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 Dashboard
               </Button>
               
-              {isActivated ? (
+              {/* Always show "My Neura" when on the My Neura page */}
+              {location === "/my-neura" || location === "/activate-neura" ? (
+                <Button 
+                  className="mr-2 bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white relative"
+                  size="sm"
+                  onClick={() => setLocation("/my-neura")}
+                >
+                  <span className="relative z-10 flex items-center">
+                    <div className="relative mr-1.5">
+                      <Brain className="h-4 w-4" />
+                      {isActivated && <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-green-500 rounded-full"></div>}
+                    </div>
+                    <span>My Neura</span>
+                  </span>
+                </Button>
+              ) : isActivated ? (
                 <Button 
                   className="mr-2 bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white relative"
                   size="sm"
