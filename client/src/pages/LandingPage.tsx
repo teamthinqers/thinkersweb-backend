@@ -632,9 +632,9 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Cognitive OS Tuning Section */}
+      {/* DotSpark Tuning Section */}
       <section className="py-20 bg-gradient-to-b from-muted/30 to-background relative overflow-hidden">
-        {/* Cognitive Background Effects */}
+        {/* DotSpark Background Effects */}
         <div className="absolute inset-0 opacity-5">
           <div className="absolute w-[600px] h-[600px] rounded-full border border-primary/20 top-1/4 left-1/4 animate-pulse-slow"></div>
           <div className="absolute w-[300px] h-[300px] rounded-full border border-secondary/20 top-1/2 left-1/3 animate-pulse-slow animation-delay-1000"></div>
@@ -645,9 +645,9 @@ export default function LandingPage() {
         
         <div className="container mx-auto px-4 md:px-6 relative z-10">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Advanced <span className="gradient-heading">Tuning</span> Your Cognitive OS</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Advanced <span className="gradient-heading">Tuning</span> Your DotSpark</h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              The more you train and align your Cognitive OS, the more it adapts to your unique thinking patterns
+              The more you train and align DotSpark, the more it adapts to your unique thinking patterns
             </p>
           </div>
           
@@ -680,7 +680,7 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* Cognitive OS Explanation */}
+          {/* DotSpark Explanation */}
           <div className="mt-16 max-w-3xl mx-auto text-center">
             <div className="p-6 bg-card border border-primary/20 rounded-xl relative">
               <div className="absolute -top-5 left-1/2 transform -translate-x-1/2">
@@ -690,7 +690,7 @@ export default function LandingPage() {
               </div>
               <h4 className="text-xl font-bold mt-4 mb-3">Your Brain, Enhanced</h4>
               <p className="text-muted-foreground">
-                DotSpark functions as a true cognitive operating system that adapts to your unique thought patterns. The more you use and tune it, the better it understands how you think. Unlike generic AI tools, your Cognitive OS becomes personalized to your specific needs, learning from each interaction and continuously improving its ability to generate frameworks that align with your thinking style.
+                DotSpark adapts to your unique thought patterns. The more you use and tune it, the better it understands how you think. Unlike generic AI tools, DotSpark becomes personalized to your specific needs, learning from each interaction and continuously improving its ability to generate frameworks that align with your thinking style.
               </p>
             </div>
           </div>
@@ -703,7 +703,7 @@ export default function LandingPage() {
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Who <span className="gradient-heading">Benefits</span> Most</h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              DotSpark's cognitive operating system empowers professionals making complex decisions
+              DotSpark empowers professionals making complex decisions
             </p>
           </div>
           

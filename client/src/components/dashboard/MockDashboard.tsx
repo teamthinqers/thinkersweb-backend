@@ -102,7 +102,7 @@ const MockDashboard: React.FC = () => {
             <div className="mb-4 md:mb-0">
               <h2 className="text-xl font-bold mb-2 flex items-center">
                 <Brain className="mr-2 h-5 w-5 text-primary" />
-                Neural Extension Efficiency
+                DotSpark Efficiency
               </h2>
               <p className="text-muted-foreground text-sm">Your cognitive amplification is operating at peak capacity</p>
             </div>
