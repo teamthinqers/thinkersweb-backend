@@ -51,7 +51,7 @@ export default function PwaDebugger() {
     const offlineCapable = 'caches' in window;
     
     // Test network polyfill
-    const networkPolyfillWorking = window.Network !== undefined;
+    const networkPolyfillWorking = typeof window !== 'undefined' && 'Network' in window;
     
     setPwaStatus({
       installable: false, // Will be set by the beforeinstallprompt event
