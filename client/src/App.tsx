@@ -20,6 +20,7 @@ import FixedEntries from "@/pages/FixedEntries";
 import ActivateDotSpark from "@/pages/ActivateDotSpark";
 import DotSparkTuningPage from "@/pages/DotSparkTuningPage";
 import DotSparkCapacityPage from "@/pages/DotSparkCapacityPage";
+import SectionedDotSparkTuningPage from "@/pages/SectionedDotSparkTuningPage";
 import Testing from "@/pages/Testing";
 import AppLayout from "@/components/layout/AppLayout";
 import EntryDetail from "@/components/entries/EntryDetail";
