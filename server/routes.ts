@@ -478,14 +478,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Update DotSpark tuning
       const { updateDotSparkTuning, getDotSparkTuning } = await import('./dotspark');
-      const updatedTuning = updateNeuralTuning(userId, validatedData);
+      const updatedTuning = updateDotSparkTuning(userId, validatedData);
       
-      // Award experience for tuning their neural extension
-      const { updateGameElements, awardExperience } = await import('./neural-extension');
+      // Award experience for tuning their DotSpark
+      const { updateGameElements, awardExperience } = await import('./dotspark');
       
-      // Check if the neural-tuner achievement should be unlocked
-      const gameElements = await import('./neural-extension').then(m => m.getGameElements(userId));
-      const neuralTunerAchievement = gameElements.achievements.find(a => a.id === 'neural-tuner');
+      // Check if the dotspark-tuner achievement should be unlocked
+      const gameElements = await import('./dotspark').then(m => m.getGameElements(userId));
+      const dotsparkTunerAchievement = gameElements.achievements.find(a => a.id === 'dotspark-tuner' || a.id === 'neural-tuner'); // Support both IDs for backward compatibility
       
       if (neuralTunerAchievement && !neuralTunerAchievement.unlocked) {
         // Unlock achievement
