@@ -402,21 +402,21 @@ export default function DotSparkTuningPage() {
         <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid grid-cols-4 mb-6">
-              <TabsTrigger value="hygiene" className="flex items-center gap-1.5">
+              <TabsTrigger value="hygiene" className="flex flex-col items-center gap-1 sm:flex-row sm:gap-1.5">
                 <div className="w-3 h-3 rounded-full bg-sky-400"></div>
-                <span>Hygiene</span>
+                <span className="text-xs sm:text-sm">Thinking Style</span>
               </TabsTrigger>
-              <TabsTrigger value="expertise" className="flex items-center gap-1.5">
+              <TabsTrigger value="expertise" className="flex flex-col items-center gap-1 sm:flex-row sm:gap-1.5">
                 <div className="w-3 h-3 rounded-full bg-indigo-500"></div>
-                <span>Expertise</span>
+                <span className="text-xs sm:text-sm">Knowledge Areas</span>
               </TabsTrigger>
-              <TabsTrigger value="personal" className="flex items-center gap-1.5">
+              <TabsTrigger value="personal" className="flex flex-col items-center gap-1 sm:flex-row sm:gap-1.5">
                 <div className="w-3 h-3 rounded-full bg-purple-500"></div>
-                <span>Personal</span>
+                <span className="text-xs sm:text-sm">Personality</span>
               </TabsTrigger>
-              <TabsTrigger value="learning" className="flex items-center gap-1.5">
+              <TabsTrigger value="learning" className="flex flex-col items-center gap-1 sm:flex-row sm:gap-1.5">
                 <div className="w-3 h-3 rounded-full bg-emerald-500"></div>
-                <span>Learning</span>
+                <span className="text-xs sm:text-sm">Growth Focus</span>
               </TabsTrigger>
             </TabsList>
             
