@@ -1,7 +1,7 @@
-import React from "react";
-import { Link } from "wouter";
+import React, { useEffect } from "react";
+import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Brain, BookOpen, Users, Sparkles, BarChart2, MessageCircle, MessageSquare, User, Menu, X } from "lucide-react";
+import { ArrowRight, Brain, BookOpen, Users, Sparkles, BarChart2, MessageCircle, MessageSquare, User, Menu, X, Check } from "lucide-react";
 import { WhatsAppContactButton } from "@/components/landing/WhatsAppContactButton";
 import { CompactWhatsAppButton } from "@/components/landing/CompactWhatsAppButton";
 import DashboardPreview from "@/components/landing/DashboardPreview";
@@ -13,8 +13,7 @@ import {
 } from "@/components/ui/sheet";
 import { useAuth } from "@/hooks/use-auth";
 import { useWhatsAppStatus } from "@/hooks/useWhatsAppStatus";
-import { Check } from "lucide-react";
-import { 
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
