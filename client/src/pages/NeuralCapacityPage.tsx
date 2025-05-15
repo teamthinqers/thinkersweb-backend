@@ -48,17 +48,17 @@ export default function NeuralCapacityPage() {
           <Button variant="ghost" asChild className="p-2">
             <Link href="/"><ChevronLeft className="h-5 w-5" /></Link>
           </Button>
-          <h1 className="text-2xl font-bold">Neural Capacity</h1>
+          <h1 className="text-2xl font-bold">Cognitive OS Capacity</h1>
         </div>
         
         <Card className="border-red-200 dark:border-red-900/50 bg-red-50 dark:bg-red-950/20">
           <CardHeader>
             <CardTitle className="text-red-700 dark:text-red-400">Connection Error</CardTitle>
-            <CardDescription>Unable to connect to your neural extension</CardDescription>
+            <CardDescription>Unable to connect to your Cognitive OS</CardDescription>
           </CardHeader>
           <CardContent>
             <p className="mb-4">
-              There was an error connecting to your neural extension. This could be due to network issues or your neural extension may need to be reactivated.
+              There was an error connecting to your Cognitive OS. This could be due to network issues or your Cognitive OS may need to be reactivated.
             </p>
             <Button variant="outline" onClick={() => window.location.reload()}>
               Retry Connection

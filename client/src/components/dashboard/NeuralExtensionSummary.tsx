@@ -79,7 +79,7 @@ export function NeuralExtensionSummary() {
             Level {level}
           </Badge>
         </div>
-        <CardDescription>Your personalized cognitive extension</CardDescription>
+        <CardDescription>Your personalized Cognitive OS</CardDescription>
       </CardHeader>
       
       <CardContent>
