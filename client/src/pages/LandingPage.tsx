@@ -56,7 +56,7 @@ export default function LandingPage() {
               <Link href="/dashboard" className="text-sm font-medium hover:text-primary">
                 Dashboard
               </Link>
-              <Link href="/activate-neural" className="hidden sm:block ml-2">
+              <Link href="/activate-dotspark" className="hidden sm:block ml-2">
                 <Button
                   size="sm"
                   className="bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white relative group"
@@ -94,7 +94,7 @@ export default function LandingPage() {
                 </Button>
               </div>
               
-              <Link href="/activate-neural" className="block sm:hidden">
+              <Link href="/activate-dotspark" className="block sm:hidden">
                 <Button
                   size="sm"
                   className="bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white relative h-7 px-2"
@@ -191,9 +191,9 @@ export default function LandingPage() {
                       </SheetClose>
                       
                       <SheetClose asChild>
-                        <Link href="/activate-neural" className="py-2 hover:text-primary transition-colors flex items-center gap-2 relative">
+                        <Link href="/activate-dotspark" className="py-2 hover:text-primary transition-colors flex items-center gap-2 relative">
                           <Brain className="h-4 w-4 text-primary" />
-                          <span>Activate Neural Extension</span>
+                          <span>Activate DotSpark</span>
                           <Sparkles className="h-3 w-3 absolute left-1 top-6 text-indigo-400" />
                         </Link>
                       </SheetClose>
@@ -402,7 +402,7 @@ export default function LandingPage() {
               </Button>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full mt-3">
-                {/* Button 1: Activate or View Neural Extension */}
+                {/* Button 1: Activate or View DotSpark */}
                 <div className="bg-gradient-to-br from-primary/5 to-indigo-500/5 dark:from-primary/10 dark:to-indigo-500/10 border border-primary/20 dark:border-primary/30 rounded-xl p-4 flex flex-col items-center shadow-lg shadow-primary/5 dark:shadow-primary/10 relative overflow-hidden group">
                   {/* Only show "Activated" status if the user is logged in AND WhatsApp is connected */}
                   {user && isWhatsAppConnected ? (
@@ -422,7 +422,7 @@ export default function LandingPage() {
                     </Button>
                   ) : (
                     <Button size="lg" asChild className="w-full mb-3 relative overflow-hidden bg-gradient-to-r from-primary to-indigo-600 hover:from-indigo-600 hover:to-primary border-0 shadow-lg shadow-primary/20 hover:shadow-indigo-500/30 transition-all duration-300 transform hover:scale-105 group">
-                      <Link href="/activate-neural" className="flex items-center justify-center relative z-10">
+                      <Link href="/activate-dotspark" className="flex items-center justify-center relative z-10">
                         <Brain className="mr-2 h-5 w-5" />
                         <span>Activate DotSpark</span>
                         <div className="absolute top-0 left-0 w-full h-full overflow-hidden">
@@ -476,7 +476,7 @@ export default function LandingPage() {
           </div>
           
           <div className="grid md:grid-cols-2 gap-16 items-center">
-            {/* Neural Chip Visualization */}
+            {/* DotSpark Chip Visualization */}
             <div className="relative order-2 md:order-1">
               <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-secondary/5 rounded-xl transform rotate-3"></div>
               <div className="relative bg-black/5 dark:bg-white/5 border rounded-xl p-6 shadow-lg overflow-hidden h-[400px]">
