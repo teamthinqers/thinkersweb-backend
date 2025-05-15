@@ -17,9 +17,9 @@ import WhatsAppAdmin from "@/pages/WhatsAppAdmin";
 import WhatsAppTest from "@/pages/WhatsAppTest";
 import WhatsAppEntries from "@/pages/WhatsAppEntries";
 import FixedEntries from "@/pages/FixedEntries";
-import ActivateNeuralExtension from "@/pages/ActivateNeuralExtension";
-import NeuralTuningPage from "@/pages/NeuralTuningPage";
-import NeuralCapacityPage from "@/pages/NeuralCapacityPage";
+import ActivateDotSpark from "@/pages/ActivateNeuralExtension";
+import DotSparkTuningPage from "@/pages/NeuralTuningPage";
+import DotSparkCapacityPage from "@/pages/NeuralCapacityPage";
 import Testing from "@/pages/Testing";
 import AppLayout from "@/components/layout/AppLayout";
 import EntryDetail from "@/components/entries/EntryDetail";
@@ -175,10 +175,13 @@ function Router() {
       <Route path="/whatsapp-entries" component={WhatsAppEntries} />
       <Route path="/fixed-entries" component={FixedEntries} />
       <Route path="/logo" component={LogoPage} />
-      <Route path="/activate" component={ActivateNeuralExtension} />
-      <Route path="/activate-neural" component={ActivateNeuralExtension} />
-      <Route path="/neural-tuning" component={NeuralTuningPage} />
-      <Route path="/neural-capacity" component={NeuralCapacityPage} />
+      <Route path="/activate" component={ActivateDotSpark} />
+      <Route path="/activate-dotspark" component={ActivateDotSpark} />
+      <Route path="/activate-neural" component={ActivateDotSpark} /> {/* Legacy route */}
+      <Route path="/dotspark-tuning" component={DotSparkTuningPage} />
+      <Route path="/neural-tuning" component={DotSparkTuningPage} /> {/* Legacy route */}
+      <Route path="/dotspark-capacity" component={DotSparkCapacityPage} />
+      <Route path="/neural-capacity" component={DotSparkCapacityPage} /> {/* Legacy route */}
       <Route path="/testing" component={Testing} />
       <Route component={NotFound} />
     </Switch>

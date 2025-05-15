@@ -60,7 +60,7 @@ const MockDashboard: React.FC = () => {
               </div>
               <div>
                 <div className="flex items-center">
-                  <h3 className="font-bold">Neural Extension Demo</h3>
+                  <h3 className="font-bold">DotSpark Demo</h3>
                   <div className="ml-2 px-2 py-0.5 bg-amber-100 dark:bg-amber-900 text-amber-700 dark:text-amber-300 text-xs rounded-full font-medium">
                     97% Efficiency
                   </div>
@@ -91,7 +91,7 @@ const MockDashboard: React.FC = () => {
         {/* Dashboard header - no buttons */}
         <div className="flex flex-col mb-8">
           <div>
-            <h1 className="text-2xl font-bold mb-2">Neural Extension Dashboard <span className="text-sm bg-gray-100 dark:bg-gray-800 text-muted-foreground px-2 py-0.5 rounded ml-2">Preview Mode</span></h1>
+            <h1 className="text-2xl font-bold mb-2">DotSpark Dashboard <span className="text-sm bg-gray-100 dark:bg-gray-800 text-muted-foreground px-2 py-0.5 rounded ml-2">Preview Mode</span></h1>
             <p className="text-muted-foreground">A preview of how you'll organize, visualize, and expand your cognitive capabilities</p>
           </div>
         </div>
