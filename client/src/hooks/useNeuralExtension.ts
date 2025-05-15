@@ -52,9 +52,9 @@ export interface CognitiveOSStatus {
   }[];
 }
 
-export function useNeuralExtension() {
+export function useCognitiveOS() {
   const { toast } = useToast();
-  const [mockData] = useState<NeuralExtensionStatus>({
+  const [mockData] = useState<CognitiveOSStatus>({
     isActive: true,
     gameElements: {
       level: 3,
@@ -115,7 +115,7 @@ export function useNeuralExtension() {
   
   // In a real implementation, this would fetch from the API
   const { data: status, isLoading, isError } = useQuery({
-    queryKey: ['/api/neural-extension/status'],
+    queryKey: ['/api/cognitive-os/status'],
     // For demo purposes, we're using the mock data
     // In production, use: queryFn: getQueryFn({ on401: "returnNull" })
     queryFn: () => Promise.resolve(mockData)
@@ -123,7 +123,7 @@ export function useNeuralExtension() {
   
   // Mock functions for insights and topics
   const { data: insightsData } = useQuery({
-    queryKey: ['/api/neural-extension/insights'],
+    queryKey: ['/api/cognitive-os/insights'],
     queryFn: () => Promise.resolve({ 
       insights: [
         {

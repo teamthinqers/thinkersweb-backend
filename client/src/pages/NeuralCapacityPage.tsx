@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'wouter';
-import { useNeuralExtension } from '@/hooks/useNeuralExtension';
+import { useCognitiveOS } from '@/hooks/useNeuralExtension';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
@@ -19,8 +19,8 @@ import {
   ArrowUpRight
 } from 'lucide-react';
 
-export default function NeuralCapacityPage() {
-  const { status, isLoading, isError } = useNeuralExtension();
+export default function CognitiveCapacityPage() {
+  const { status, isLoading, isError } = useCognitiveOS();
   
   if (isLoading) {
     return (

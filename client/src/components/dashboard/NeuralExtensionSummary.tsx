@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { BrainCircuit, Star, Sparkles, Zap, ChevronRight } from 'lucide-react';
-import { useNeuralExtension } from '@/hooks/useNeuralExtension';
+import { useCognitiveOS } from '@/hooks/useNeuralExtension';
 import { cn } from '@/lib/utils';
 
 /**
@@ -14,7 +14,7 @@ import { cn } from '@/lib/utils';
  */
 export function CognitiveOSSummary() {
   const [_, setLocation] = useLocation();
-  const { status, isLoading, isError } = useNeuralExtension();
+  const { status, isLoading, isError } = useCognitiveOS();
   
   const handleTuneClick = () => {
     setLocation('/cognitive-tuning');
