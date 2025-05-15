@@ -160,21 +160,25 @@ export default function ActivateDotSpark() {
   // Effect 3: Listen for WhatsApp status updates from any source
   useEffect(() => {
     const handleWhatsAppStatusUpdate = (event: Event) => {
-      // Cast to CustomEvent to access detail
-      const customEvent = event as CustomEvent<{isActivated: boolean, source: string}>;
-      console.log("Received WhatsApp status update event:", customEvent.detail);
-      
-      if (customEvent.detail.isActivated) {
-        // Update our local state
-        setActivationStatus(prev => ({
-          ...prev,
-          isConnected: true,
-          isCheckingStatus: false
-        }));
+      try {
+        // Cast to CustomEvent to access detail
+        const customEvent = event as CustomEvent<{isActivated: boolean, source: string}>;
+        console.log("Received WhatsApp status update event:", customEvent.detail);
         
-        // Show success notification if this isn't a duplicate
-        const hasSeenSuccess = sessionStorage.getItem('shown_whatsapp_success') === 'true';
-        if (!hasSeenSuccess) {
+        if (customEvent.detail && customEvent.detail.isActivated) {
+          // Update our local state
+          setActivationStatus(prev => ({
+            ...prev,
+            isConnected: true,
+            isCheckingStatus: false
+          }));
+          
+          // Show success notification if this isn't a duplicate
+          const hasSeenSuccess = sessionStorage.getItem('shown_whatsapp_success') === 'true';
+          if (!hasSeenSuccess) {
+      } catch (error) {
+        console.error("Error handling WhatsApp status update:", error);
+      }
           toast({
             title: "DotSpark Activated!",
             description: "Your WhatsApp is connected and your DotSpark is now active.",
@@ -305,9 +309,10 @@ export default function ActivateDotSpark() {
           }));
           
           // Dispatch event for other components
-          window.dispatchEvent(new CustomEvent('whatsapp-status-updated', { 
-            detail: { isActivated: true, source }
-          }));
+          const statusEvent = new CustomEvent('whatsapp-status-updated', { 
+            detail: { isActivated: true, source: source }
+          });
+          window.dispatchEvent(statusEvent);
           
           // Only show toast once
           if (!sessionStorage.getItem('activation_success_shown')) {
