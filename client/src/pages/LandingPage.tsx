@@ -429,22 +429,32 @@ export default function LandingPage() {
                     </Button>
                   ) : (
                     <Button size="lg" asChild className="w-full mb-3 relative overflow-hidden bg-gradient-to-r from-primary to-indigo-600 hover:from-indigo-600 hover:to-primary border-0 shadow-lg shadow-primary/20 hover:shadow-indigo-500/30 transition-all duration-300 transform hover:scale-105 group">
-                      <Link href="/activate-dotspark" className="flex items-center justify-center relative z-10">
-                        <Brain className="mr-2 h-5 w-5" />
-                        <span>Activate DotSpark</span>
+                      <a href="#setup-dotspark" className="flex items-center justify-center relative z-10">
+                        <Sparkles className="mr-2 h-5 w-5" />
+                        <span>Setup DotSpark</span>
                         <div className="absolute top-0 left-0 w-full h-full overflow-hidden">
-                          <Sparkles className="h-4 w-4 absolute top-1/2 left-3 transform -translate-y-1/2 text-white opacity-80 animate-pulse" />
+                          <div className="h-4 w-4 absolute top-1/2 left-3 transform -translate-y-1/2 text-white opacity-80 animate-pulse" />
                         </div>
-                      </Link>
+                      </a>
                     </Button>
                   )}
                   
+                  <Button size="lg" asChild className="w-full mb-3 mt-2 relative overflow-hidden bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 border-0 shadow-lg shadow-purple-500/20 hover:shadow-indigo-500/30 transition-all duration-300 transform hover:scale-105 group">
+                      <Link href="/activate-neural" className="flex items-center justify-center relative z-10">
+                        <Brain className="mr-2 h-5 w-5" />
+                        <span>Activate Neura</span>
+                        <div className="absolute top-0 left-0 w-full h-full overflow-hidden">
+                          <div className="h-4 w-4 absolute top-1/2 left-3 transform -translate-y-1/2 text-white opacity-80 animate-pulse" />
+                        </div>
+                      </Link>
+                    </Button>
+                  
                   <div className="text-sm text-muted-foreground text-left relative z-10">
-                    <p className="mb-2 font-medium text-foreground">Premium dashboard integration:</p>
+                    <p className="mb-2 font-medium text-foreground">Get started in 3 easy steps:</p>
                     <ol className="list-decimal list-inside space-y-1 text-xs">
-                      <li>Create a DotSpark account</li>
-                      <li>Set up your personalized dashboard</li>
-                      <li>Link your WhatsApp for synchronized insights</li>
+                      <li>Sign up for an account</li>
+                      <li>Activate your neural parameters</li>
+                      <li>Link your WhatsApp for personalized insights</li>
                     </ol>
                   </div>
                 </div>

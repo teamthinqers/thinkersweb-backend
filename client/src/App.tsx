@@ -18,6 +18,7 @@ import WhatsAppTest from "@/pages/WhatsAppTest";
 import WhatsAppEntries from "@/pages/WhatsAppEntries";
 import FixedEntries from "@/pages/FixedEntries";
 import ActivateDotSpark from "@/pages/ActivateDotSpark";
+import ActivateNeura from "@/pages/ActivateNeura";
 import DotSparkTuningPage from "@/pages/DotSparkTuningPage";
 import DotSparkCapacityPage from "@/pages/DotSparkCapacityPage";
 import SectionedDotSparkTuningPage from "@/pages/SectionedDotSparkTuningPage";
@@ -181,7 +182,7 @@ function Router() {
       <Route path="/logo" component={LogoPage} />
       <Route path="/activate" component={ActivateDotSpark} />
       <Route path="/activate-dotspark" component={ActivateDotSpark} />
-      <Route path="/activate-neural" component={ActivateDotSpark} /> {/* Legacy route */}
+      <Route path="/activate-neural" component={ActivateNeura} />
       <Route path="/dotspark-tuning" component={DotSparkTuningUnified} />
       <Route path="/sectioned-dotspark-tuning" component={DotSparkTuningUnified} />
       <Route path="/neural-tuning" component={DotSparkTuningUnified} /> {/* Legacy route */}
