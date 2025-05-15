@@ -110,7 +110,7 @@ export default function ActivateNeuralExtension() {
         // If server confirms activation but localStorage doesn't have it, update localStorage
         else if (isWhatsAppConnected && !isActiveInLocalStorage) {
           console.log("Server confirms WhatsApp activation - setting localStorage flag");
-          localStorage.setItem('whatsapp_activated', 'true');
+          localStorage.setItem('dotspark_activated', 'true');
           
           // Add stored phone number if we know it
           if (phoneNumber) {
@@ -219,7 +219,7 @@ export default function ActivateNeuralExtension() {
           description: "Your WhatsApp message was received and your DotSpark is now active.",
           duration: 5000,
         });
-        localStorage.setItem('whatsapp_activated', 'true');
+        localStorage.setItem('dotspark_activated', 'true');
       } else {
         // If they're not connected yet, show a waiting message 
         toast({
@@ -292,7 +292,7 @@ export default function ActivateNeuralExtension() {
           timeoutIds.forEach(id => window.clearTimeout(id));
           
           // Update localStorage
-          localStorage.setItem('whatsapp_activated', 'true');
+          localStorage.setItem('dotspark_activated', 'true');
           if (data?.phoneNumber) {
             localStorage.setItem('whatsapp_phone', data.phoneNumber);
           }
