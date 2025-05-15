@@ -77,8 +77,25 @@ export default function DotSparkTuningUnified() {
     isUpdatingFocus
   } = useDotSparkTuning();
   
-  // Destructure tuning params for easier access
-  const tuning = status?.tuning || {};
+  // Destructure tuning params for easier access with default values for all properties
+  const tuning = {
+    creativity: 0.5,
+    precision: 0.5,
+    speed: 0.5,
+    adaptability: 0.5,
+    analytical: 0.5,
+    intuitive: 0.5,
+    memoryRetention: 0.5,
+    memoryRecall: 0.5,
+    connectionStrength: 0.5,
+    patternRecognition: 0.5,
+    learningRate: 0.5,
+    conceptIntegration: 0.5,
+    curiosityIndex: 0.5,
+    specialties: {},
+    learningFocus: [],
+    ...status?.tuning
+  };
   
   // State for capacity metrics with animation
   const [processingEfficiency, setProcessingEfficiency] = useState<number>(65);
@@ -86,16 +103,36 @@ export default function DotSparkTuningUnified() {
   const [learningRate, setLearningRate] = useState<number>(52);
   const [specializationLevel, setSpecializationLevel] = useState<number>(35);
   
+  // Create a safe status object with default values
+  const safeStatus = {
+    isActive: true,
+    gameElements: {
+      level: 1,
+      experience: 0,
+      experienceRequired: 100,
+      unlockedCapabilities: [],
+      achievements: [],
+      stats: {
+        messagesProcessed: 0,
+        insightsGenerated: 0,
+        connectionsFormed: 0,
+        adaptationScore: 0
+      }
+    },
+    topicsTracked: [],
+    adaptationLevel: 0,
+    patternsDetected: [],
+    ...status
+  };
+
   // Update capacity metrics when status changes
   useEffect(() => {
-    if (status) {
-      const { gameElements, tuning } = status;
-      setProcessingEfficiency(gameElements?.stats?.adaptationScore || 0);
-      setMemoryCapacity(Math.min(100, ((gameElements?.stats?.connectionsFormed || 0) / 50) * 100));
-      setLearningRate(Math.min(100, ((gameElements?.stats?.insightsGenerated || 0) / 20) * 100));
-      setSpecializationLevel(Math.min(100, (Object.keys(tuning?.specialties || {}).length / 8) * 100));
-    }
-  }, [status]);
+    const { gameElements, tuning } = safeStatus;
+    setProcessingEfficiency(gameElements?.stats?.adaptationScore || 0);
+    setMemoryCapacity(Math.min(100, ((gameElements?.stats?.connectionsFormed || 0) / 50) * 100));
+    setLearningRate(Math.min(100, ((gameElements?.stats?.insightsGenerated || 0) / 20) * 100));
+    setSpecializationLevel(Math.min(100, (Object.keys(tuning?.specialties || {}).length / 8) * 100));
+  }, [safeStatus]);
   
   // Function to handle slider value changes
   const handleParameterChange = (paramName: string, value: number[]) => {
@@ -983,7 +1020,7 @@ export default function DotSparkTuningUnified() {
                       htmlFor="semantic"
                       className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-3 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-blue-500 [&:has([data-state=checked])]:border-blue-500 cursor-pointer"
                     >
-                      <Network className="mb-2 h-6 w-6" />
+                      <NetworkIcon className="mb-2 h-6 w-6" />
                       <div className="text-center space-y-0.5">
                         <p className="text-sm font-medium leading-none">Semantic</p>
                         <p className="text-xs text-muted-foreground">Conceptual networks</p>
@@ -1055,7 +1092,7 @@ export default function DotSparkTuningUnified() {
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
                   <label className="text-sm font-medium flex items-center gap-1.5">
-                    <Network className="h-4 w-4 text-violet-500" />
+                    <NetworkIcon className="h-4 w-4 text-violet-500" />
                     <span>Neural Connection Density</span>
                   </label>
                   <Badge>Level {Math.floor((tuning.connectionStrength || 0) * 10)}</Badge>
