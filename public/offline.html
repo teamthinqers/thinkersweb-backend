@@ -3,93 +3,168 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Offline - DotSpark</title>
+  <title>DotSpark Neura - Offline</title>
   <style>
-    body {
-      font-family: system-ui, sans-serif;
-      background: #f7f7f7;
-      color: #333;
+    :root {
+      --background: #ffffff;
+      --foreground: #020817;
+      --primary: #8b5cf6;
+      --primary-hover: #7c3aed;
+      --muted: #f1f5f9;
+      --muted-foreground: #64748b;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --background: #020817;
+        --foreground: #ffffff;
+        --primary: #7c3aed;
+        --primary-hover: #8b5cf6;
+        --muted: #1e293b;
+        --muted-foreground: #94a3b8;
+      }
+    }
+
+    * {
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      background-color: var(--background);
+      color: var(--foreground);
       display: flex;
       flex-direction: column;
-      min-height: 100vh;
       align-items: center;
       justify-content: center;
+      min-height: 100vh;
+      padding: 2rem;
       text-align: center;
     }
+
     .container {
       max-width: 600px;
-      padding: 2rem;
-      margin: 0 auto;
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      width: 100%;
     }
+
+    .logo {
+      margin-bottom: 1.5rem;
+      width: 100px;
+      height: 100px;
+      background: linear-gradient(135deg, #6b46c1, #8b5cf6);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .logo-inner {
+      width: 60px;
+      height: 60px;
+      fill: white;
+    }
+
     h1 {
       font-size: 2rem;
       margin-bottom: 1rem;
-      color: #6b46c1;
+      background: linear-gradient(to right, #6b46c1, #8b5cf6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-fill-color: transparent;
     }
+
     p {
-      margin-bottom: 1.5rem;
-      line-height: 1.6;
+      margin-bottom: 1rem;
+      line-height: 1.5;
+      color: var(--muted-foreground);
     }
-    .logo {
-      width: 80px;
-      height: 80px;
-      margin-bottom: 1.5rem;
-      border-radius: 50%;
-      padding: 0.5rem;
-      background: linear-gradient(to right, #6b46c1, #8b5cf6);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .logo svg {
-      width: 50px;
-      height: 50px;
-      fill: white;
-    }
-    .btn {
+
+    .button {
       display: inline-block;
-      background: linear-gradient(to right, #6b46c1, #8b5cf6);
+      background-color: var(--primary);
       color: white;
       padding: 0.75rem 1.5rem;
-      border-radius: 4px;
+      border-radius: 0.375rem;
       text-decoration: none;
       font-weight: 500;
-      transition: all 0.2s ease;
+      margin-top: 1rem;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.2s;
     }
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(107, 70, 193, 0.3);
+
+    .button:hover {
+      background-color: var(--primary-hover);
+    }
+
+    .button:focus {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }
+
+    .status {
+      margin-top: 2rem;
+      padding: 1rem;
+      background-color: var(--muted);
+      border-radius: 0.5rem;
+      font-size: 0.875rem;
+    }
+
+    .brain-icon {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1.5rem;
     }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="logo">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1 2.96-3.08 2.5 2.5 0 0 1-.2-6.06A2.5 2.5 0 0 1 9.5 2Z"></path>
-        <path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0-2.96-3.08 2.5 2.5 0 0 0 .2-6.06A2.5 2.5 0 0 0 14.5 2Z"></path>
+      <svg class="logo-inner" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M203 85C233 85 256 108 256 138V458C256 488 229 512 199 512C158 512 140 471 175 441C203 416 206 392 203 346C201 311 183 304 165 332C153 351 128 332 143 307C160 277 146 249 123 249C90 249 95 196 128 196C153 196 165 170 158 153C146 127 173 85 203 85Z" fill="white"/>
+        <path d="M309 85C279 85 256 108 256 138V458C256 488 283 512 313 512C354 512 372 471 337 441C309 416 306 392 309 346C311 311 329 304 347 332C359 351 384 332 369 307C352 277 366 249 389 249C422 249 417 196 384 196C359 196 347 170 354 153C366 127 339 85 309 85Z" fill="white"/>
       </svg>
     </div>
-    <h1>You're Offline</h1>
-    <p>It looks like you've lost your connection to the internet. DotSpark needs an active internet connection to access your neural tuning settings.</p>
-    <p>Please check your internet connection and try again.</p>
-    <a href="/" class="btn">Try Again</a>
-  </div>
-  <script>
-    // Simple offline detection that doesn't require service workers
-    window.addEventListener('online', () => {
-      window.location.reload();
-    });
     
-    document.querySelector('.btn').addEventListener('click', (e) => {
-      e.preventDefault();
-      window.location.reload();
-    });
+    <h1>DotSpark Neura</h1>
+    
+    <p>You're currently offline. DotSpark Neura needs an internet connection to function properly.</p>
+    
+    <p>Please check your network connection and try again.</p>
+    
+    <button class="button" onclick="window.location.reload()">Try Again</button>
+    
+    <div class="status">
+      <p id="connection-status">Checking connection...</p>
+    </div>
+  </div>
+
+  <script>
+    // Update the connection status message
+    function updateConnectionStatus() {
+      const statusElement = document.getElementById('connection-status');
+      
+      if (navigator.onLine) {
+        statusElement.textContent = 'Your device is online. Attempting to reconnect...';
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+      } else {
+        statusElement.textContent = 'Your device is offline. Please check your network connection.';
+      }
+    }
+
+    // Check connection when the page loads
+    document.addEventListener('DOMContentLoaded', updateConnectionStatus);
+    
+    // Listen for online/offline events
+    window.addEventListener('online', updateConnectionStatus);
+    window.addEventListener('offline', updateConnectionStatus);
   </script>
 </body>
 </html>

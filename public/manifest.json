@@ -1,21 +1,40 @@
 {
   "name": "DotSpark Neura",
   "short_name": "Neura",
-  "description": "Your personalized neural extension for learning and knowledge management",
+  "description": "Your personal neural extension for intelligence augmentation",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#6b46c1",
+  "theme_color": "#8b5cf6",
   "icons": [
     {
-      "src": "/icon-192.png",
+      "src": "/icon-192.svg",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
     },
     {
-      "src": "/icon-512.png",
+      "src": "/icon-512.svg",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
     }
-  ]
+  ],
+  "shortcuts": [
+    {
+      "name": "Tune My Neura",
+      "url": "/dotspark-tuning",
+      "description": "Tune your Neura's cognitive parameters"
+    },
+    {
+      "name": "Neural Capacity",
+      "url": "/dotspark-capacity",
+      "description": "View your Neura's capacity and capabilities"
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "screenshots": [],
+  "categories": ["productivity", "utilities"],
+  "orientation": "any"
 }

@@ -195,6 +195,8 @@ function Router() {
 }
 
 function App() {
+  const [showNetworkWarning, setShowNetworkWarning] = useState(false);
+  
   // Check for WhatsApp redirect on initial load
   useEffect(() => {
     // Check if we have a pending WhatsApp redirect
@@ -225,10 +227,51 @@ function App() {
       }
     }
   }, []);
+  
+  // Listen for network-related errors and show a warning banner
+  useEffect(() => {
+    const errorHandler = (event: ErrorEvent) => {
+      // Check if this is our Network-related error
+      if (event.message && (
+          event.message.includes('Network') || 
+          event.message.includes('network') ||
+          event.message.includes('Can\'t find variable: Network')
+        )) {
+        // Show the warning banner
+        setShowNetworkWarning(true);
+        
+        // Prevent the default error handling if it's our specific error
+        if (event.message.includes('Can\'t find variable: Network')) {
+          event.preventDefault();
+        }
+      }
+    };
+    
+    // Add the error handler
+    window.addEventListener('error', errorHandler);
+    
+    // Clean up
+    return () => {
+      window.removeEventListener('error', errorHandler);
+    };
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
+        {showNetworkWarning && (
+          <div className="fixed top-0 left-0 right-0 p-2 bg-amber-500 text-black z-50 text-center text-sm">
+            <p>
+              Network module warning detected. Visit the <a href="/pwa-debug" className="underline font-bold">PWA Debugger</a> for help.
+              <button 
+                className="ml-2 px-2 py-0.5 bg-black text-white rounded-sm text-xs"
+                onClick={() => setShowNetworkWarning(false)}
+              >
+                Dismiss
+              </button>
+            </p>
+          </div>
+        )}
         <Router />
         <Toaster />
         <InstallPrompt />
