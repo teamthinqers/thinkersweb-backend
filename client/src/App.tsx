@@ -18,7 +18,7 @@ import WhatsAppTest from "@/pages/WhatsAppTest";
 import WhatsAppEntries from "@/pages/WhatsAppEntries";
 import FixedEntries from "@/pages/FixedEntries";
 import ActivateDotSpark from "@/pages/ActivateDotSpark";
-import DotSparkTuningPage from "@/pages/NeuralTuningPage";
+import DotSparkTuningPage from "@/pages/DotSparkTuningPage";
 import DotSparkCapacityPage from "@/pages/NeuralCapacityPage";
 import Testing from "@/pages/Testing";
 import AppLayout from "@/components/layout/AppLayout";
