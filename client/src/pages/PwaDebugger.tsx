@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { AlertCircle, CheckCircle, Download, RefreshCw, Smartphone } from "lucide-react";
+import { AlertCircle, CheckCircle, Download, RefreshCw, Smartphone, Terminal } from "lucide-react";
 import { promptInstall } from "@/lib/pwaUtils";
 import { useLocation } from "wouter";
 
@@ -247,6 +247,68 @@ export default function PwaDebugger() {
                   <li>Click the install icon in the address bar (➕)</li>
                   <li>Click "Install" in the prompt that appears</li>
                 </ol>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+      
+      <div className="mt-6">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <AlertCircle className="h-5 w-5 text-purple-500" />
+              Troubleshooting Tools
+            </CardTitle>
+            <CardDescription>
+              Advanced tools to fix PWA issues
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="p-4 bg-gray-100 dark:bg-gray-800 rounded-md">
+                <h3 className="font-medium mb-2">Clear Service Worker and Cache:</h3>
+                <p className="text-sm mb-2">If you're experiencing issues, try clearing the cache:</p>
+                <Button 
+                  variant="destructive" 
+                  size="sm" 
+                  className="mr-2"
+                  onClick={() => {
+                    try {
+                      if ('serviceWorker' in navigator) {
+                        navigator.serviceWorker.getRegistrations().then(registrations => {
+                          for (const registration of registrations) {
+                            registration.unregister();
+                          }
+                          console.log('Service workers unregistered');
+                        });
+                      }
+                      if ('caches' in window) {
+                        caches.keys().then(keyList => {
+                          return Promise.all(
+                            keyList.map(key => {
+                              return caches.delete(key);
+                            })
+                          );
+                        });
+                        console.log('Caches cleared');
+                      }
+                      alert('Service worker and caches cleared. Please refresh the page.');
+                    } catch (e) {
+                      console.error('Error clearing:', e);
+                      alert('Error clearing cache. See console for details.');
+                    }
+                  }}
+                >
+                  Clear Cache
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => window.location.reload()}
+                >
+                  Force Refresh
+                </Button>
               </div>
             </div>
           </CardContent>
