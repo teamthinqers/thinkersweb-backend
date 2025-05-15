@@ -62,7 +62,7 @@ export default function LandingPage() {
                   className="bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white relative group"
                 >
                   <Brain className="h-4 w-4 mr-1" />
-                  <span>Activate Neural</span>
+                  <span>Activate DotSpark</span>
                   <Sparkles className="h-3 w-3 absolute top-1 right-1 text-white/80" />
                 </Button>
               </Link>
