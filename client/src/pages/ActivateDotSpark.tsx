@@ -462,16 +462,26 @@ export default function ActivateDotSpark() {
                   <div className="flex flex-col space-y-8">
                     {/* Core parameters section */}
                     <div>
-                      <h3 className="text-lg font-semibold mb-4">Core Parameters</h3>
-                      <div className="grid gap-6 md:grid-cols-2">
+                      <div className="text-center mb-6">
+                        <h3 className="text-xl font-semibold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400">Core Parameters</h3>
+                        <p className="text-sm text-muted-foreground max-w-lg mx-auto">
+                          Fine-tune how your Neura processes information. These parameters define your unique cognitive extension.
+                        </p>
+                      </div>
+                      <div className="grid gap-6 md:grid-cols-2 bg-gradient-to-br from-indigo-50/50 to-purple-50/50 dark:from-indigo-950/20 dark:to-purple-950/20 p-5 rounded-lg border border-indigo-100 dark:border-indigo-950/30 shadow-sm">
                         {/* Creativity slider */}
-                        <div className="space-y-2">
+                        <div className="space-y-3 bg-white dark:bg-background rounded-lg p-4 shadow-sm border border-indigo-100/50 dark:border-slate-800">
                           <div className="flex justify-between items-center">
                             <div className="flex items-center gap-2">
-                              <Sparkles className="h-4 w-4 text-amber-500" />
-                              <span className="font-medium">Creativity</span>
+                              <div className="w-8 h-8 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
+                                <Sparkles className="h-4 w-4 text-amber-500 dark:text-amber-400" />
+                              </div>
+                              <div>
+                                <span className="font-medium block">Creativity</span>
+                                <span className="text-xs text-muted-foreground">Influences response variety and novelty</span>
+                              </div>
                             </div>
-                            <span className="text-sm text-muted-foreground">
+                            <span className="text-sm font-semibold px-2 py-1 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 rounded-md">
                               {Math.round(((pendingChanges?.creativity !== undefined ? pendingChanges.creativity : tuning?.creativity) || 0.5) * 100)}%
                             </span>
                           </div>
@@ -480,22 +490,28 @@ export default function ActivateDotSpark() {
                             min={0}
                             max={1}
                             step={0.01}
+                            className="py-1"
                             onValueChange={(val) => handleSliderChange('creativity', val)}
                           />
-                          <div className="flex justify-between text-xs text-muted-foreground">
-                            <span>Methodical</span>
-                            <span>Creative</span>
+                          <div className="flex justify-between text-xs">
+                            <span className="text-muted-foreground bg-muted/50 px-2 py-0.5 rounded">Methodical</span>
+                            <span className="text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 px-2 py-0.5 rounded font-medium">Creative</span>
                           </div>
                         </div>
                         
                         {/* Precision slider */}
-                        <div className="space-y-2">
+                        <div className="space-y-3 bg-white dark:bg-background rounded-lg p-4 shadow-sm border border-indigo-100/50 dark:border-slate-800">
                           <div className="flex justify-between items-center">
                             <div className="flex items-center gap-2">
-                              <Target className="h-4 w-4 text-sky-500" />
-                              <span className="font-medium">Precision</span>
+                              <div className="w-8 h-8 rounded-full bg-sky-100 dark:bg-sky-900/30 flex items-center justify-center">
+                                <Target className="h-4 w-4 text-sky-500 dark:text-sky-400" />
+                              </div>
+                              <div>
+                                <span className="font-medium block">Precision</span>
+                                <span className="text-xs text-muted-foreground">Controls factual accuracy and detail</span>
+                              </div>
                             </div>
-                            <span className="text-sm text-muted-foreground">
+                            <span className="text-sm font-semibold px-2 py-1 bg-sky-100 dark:bg-sky-900/30 text-sky-700 dark:text-sky-400 rounded-md">
                               {Math.round(((pendingChanges?.precision !== undefined ? pendingChanges.precision : tuning?.precision) || 0.5) * 100)}%
                             </span>
                           </div>
@@ -504,22 +520,28 @@ export default function ActivateDotSpark() {
                             min={0}
                             max={1}
                             step={0.01}
+                            className="py-1"
                             onValueChange={(val) => handleSliderChange('precision', val)}
                           />
-                          <div className="flex justify-between text-xs text-muted-foreground">
-                            <span>Flexible</span>
-                            <span>Precise</span>
+                          <div className="flex justify-between text-xs">
+                            <span className="text-muted-foreground bg-muted/50 px-2 py-0.5 rounded">Flexible</span>
+                            <span className="text-sky-600 dark:text-sky-400 bg-sky-50 dark:bg-sky-900/20 px-2 py-0.5 rounded font-medium">Precise</span>
                           </div>
                         </div>
                         
                         {/* Speed slider */}
-                        <div className="space-y-2">
+                        <div className="space-y-3 bg-white dark:bg-background rounded-lg p-4 shadow-sm border border-indigo-100/50 dark:border-slate-800">
                           <div className="flex justify-between items-center">
                             <div className="flex items-center gap-2">
-                              <Gauge className="h-4 w-4 text-violet-500" />
-                              <span className="font-medium">Speed</span>
+                              <div className="w-8 h-8 rounded-full bg-violet-100 dark:bg-violet-900/30 flex items-center justify-center">
+                                <Gauge className="h-4 w-4 text-violet-500 dark:text-violet-400" />
+                              </div>
+                              <div>
+                                <span className="font-medium block">Speed</span>
+                                <span className="text-xs text-muted-foreground">Controls response time vs. depth</span>
+                              </div>
                             </div>
-                            <span className="text-sm text-muted-foreground">
+                            <span className="text-sm font-semibold px-2 py-1 bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-400 rounded-md">
                               {Math.round(((pendingChanges?.speed !== undefined ? pendingChanges.speed : tuning?.speed) || 0.5) * 100)}%
                             </span>
                           </div>
@@ -528,22 +550,28 @@ export default function ActivateDotSpark() {
                             min={0}
                             max={1}
                             step={0.01}
+                            className="py-1"
                             onValueChange={(val) => handleSliderChange('speed', val)}
                           />
-                          <div className="flex justify-between text-xs text-muted-foreground">
-                            <span>Thorough</span>
-                            <span>Quick</span>
+                          <div className="flex justify-between text-xs">
+                            <span className="text-muted-foreground bg-muted/50 px-2 py-0.5 rounded">Thorough</span>
+                            <span className="text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-900/20 px-2 py-0.5 rounded font-medium">Quick</span>
                           </div>
                         </div>
                         
                         {/* Analytical slider */}
-                        <div className="space-y-2">
+                        <div className="space-y-3 bg-white dark:bg-background rounded-lg p-4 shadow-sm border border-indigo-100/50 dark:border-slate-800">
                           <div className="flex justify-between items-center">
                             <div className="flex items-center gap-2">
-                              <BrainCog className="h-4 w-4 text-emerald-500" />
-                              <span className="font-medium">Analytical</span>
+                              <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
+                                <BrainCog className="h-4 w-4 text-emerald-500 dark:text-emerald-400" />
+                              </div>
+                              <div>
+                                <span className="font-medium block">Analytical</span>
+                                <span className="text-xs text-muted-foreground">Logical and systematic thinking</span>
+                              </div>
                             </div>
-                            <span className="text-sm text-muted-foreground">
+                            <span className="text-sm font-semibold px-2 py-1 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 rounded-md">
                               {Math.round(((pendingChanges?.analytical !== undefined ? pendingChanges.analytical : tuning?.analytical) || 0.5) * 100)}%
                             </span>
                           </div>
@@ -552,11 +580,12 @@ export default function ActivateDotSpark() {
                             min={0}
                             max={1}
                             step={0.01}
+                            className="py-1"
                             onValueChange={(val) => handleSliderChange('analytical', val)}
                           />
-                          <div className="flex justify-between text-xs text-muted-foreground">
-                            <span>Balanced</span>
-                            <span>Analytical</span>
+                          <div className="flex justify-between text-xs">
+                            <span className="text-muted-foreground bg-muted/50 px-2 py-0.5 rounded">Balanced</span>
+                            <span className="text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 px-2 py-0.5 rounded font-medium">Analytical</span>
                           </div>
                         </div>
                       </div>
