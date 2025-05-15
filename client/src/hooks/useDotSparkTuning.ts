@@ -9,10 +9,22 @@ interface TuningParams {
   creativity?: number;  // 0.0 to 1.0 - affects response variety and uniqueness
   precision?: number;   // 0.0 to 1.0 - affects factual accuracy and detail level
   speed?: number;       // 0.0 to 1.0 - affects response time vs. depth tradeoff
+  adaptability?: number; // 0.0 to 1.0 - affects how quickly DotSpark adapts to new information
   
   // Cognitive style parameters
   analytical?: number;  // 0.0 to 1.0 - logical/systematic thinking emphasis
   intuitive?: number;   // 0.0 to 1.0 - pattern recognition/insight emphasis
+  
+  // Memory parameters
+  memoryRetention?: number; // 0.0 to 1.0 - how strongly information is retained
+  memoryRecall?: number;    // 0.0 to 1.0 - how efficiently information is retrieved
+  connectionStrength?: number; // 0.0 to 1.0 - strength of connections between concepts
+  patternRecognition?: number; // 0.0 to 1.0 - ability to detect patterns across information
+  
+  // Learning parameters
+  learningRate?: number;     // 0.0 to 1.0 - speed of acquiring new information
+  conceptIntegration?: number; // 0.0 to 1.0 - how well new concepts are integrated with existing knowledge
+  curiosityIndex?: number;   // 0.0 to 1.0 - likelihood of exploring new domains
   
   // Specialty focus areas (weights for different domains)
   specialties?: {
@@ -60,11 +72,27 @@ export function useDotSparkTuning() {
       }
     },
     tuning: {
+      // Core processing parameters
       creativity: 0.7,
       precision: 0.8,
       speed: 0.5,
+      adaptability: 0.65,
+      
+      // Cognitive style parameters
       analytical: 0.8,
       intuitive: 0.6,
+      
+      // Memory parameters
+      memoryRetention: 0.75,
+      memoryRecall: 0.7,
+      connectionStrength: 0.65,
+      patternRecognition: 0.8,
+      
+      // Learning parameters
+      learningRate: 0.6,
+      conceptIntegration: 0.7,
+      curiosityIndex: 0.85,
+      
       specialties: {
         'tech': 0.9,
         'business': 0.7,

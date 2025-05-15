@@ -47,9 +47,11 @@ import { cn } from '@/lib/utils';
 
 export default function SectionedDotSparkTuningPage() {
   const [_, setLocation] = useLocation();
-  const [activeSection, setActiveSection] = useState<string>('cognitive');
   const [newFocus, setNewFocus] = useState('');
-  const [dotsparkName, setDotsparkName] = useState(localStorage.getItem('dotsparkName') || 'My DotSpark');
+  // Using fixed "My DotSpark" name for all users
+  const dotsparkName = 'My DotSpark';
+  
+  // Removed sectioned navigation for a more integrated design
   
   const { 
     status, 
@@ -163,16 +165,8 @@ export default function SectionedDotSparkTuningPage() {
     updateLearningFocus(updatedFocus);
   };
   
-  // Function to handle DotSpark name changes
-  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newName = e.target.value;
-    setDotsparkName(newName);
-    localStorage.setItem('dotsparkName', newName);
-    
-    if (newName.trim().length > 2) {
-      markSectionComplete('cognitive');
-    }
-  };
+  // We no longer need to handle name changes as we're using a fixed name
+  // Function removed as per requirements
   
   // Function to mark a section as complete
   const markSectionComplete = (section: string) => {
