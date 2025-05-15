@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from './use-toast';
 import { apiRequest } from '@/lib/queryClient';
-import { DotSparkStatus } from './useNeuralExtension';
+import { DotSparkStatus } from './useDotSpark';
 
 interface TuningParams {
   // Core processing parameters
