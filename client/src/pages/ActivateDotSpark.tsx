@@ -258,6 +258,15 @@ export default function ActivateDotSpark() {
                       <LayoutDashboard className="mr-2 h-4 w-4" />
                       Open Dashboard
                     </Button>
+                    <Button 
+                      onClick={() => setLocation('/sectioned-dotspark-tuning')} 
+                      size="lg" 
+                      variant="secondary"
+                      className="w-full"
+                    >
+                      <Brain className="mr-2 h-4 w-4" />
+                      Configure DotSpark (New)
+                    </Button>
                     <Button
                       variant="outline"
                       onClick={repairActivationStatus}

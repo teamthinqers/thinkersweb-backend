@@ -15,6 +15,7 @@ import {
   Users, 
   Plus, 
   Hash,
+  Brain,
   Settings as SettingsIcon
 } from "lucide-react";
 
@@ -56,6 +57,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isMobile, onNewEntry
     { icon: Eye, label: "Insights", path: "/insights" },
     { icon: Star, label: "Favorites", path: "/favorites" },
     { icon: Users, label: "Network", path: "/network" },
+    { icon: Brain, label: "DotSpark Config", path: "/sectioned-dotspark-tuning", isSpecial: true },
     { icon: SettingsIcon, label: "Settings", path: "/settings" },
   ];
 
@@ -94,16 +96,26 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isMobile, onNewEntry
                   className={`flex items-center px-3 py-2.5 rounded-md ${
                     location === item.path
                       ? "bg-primary/10 text-primary font-medium"
-                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                      : item.isSpecial
+                        ? "text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/20 hover:text-purple-700 dark:hover:text-purple-300 font-medium"
+                        : "text-muted-foreground hover:bg-muted hover:text-foreground"
                   }`}
                   onClick={isMobile ? onClose : undefined}
                 >
                   {React.createElement(item.icon, { 
-                    className: `mr-2 ${item.label === "Home" ? "text-primary" : ""}`, 
-                    size: item.label === "Home" ? 20 : 18 
+                    className: `mr-2 ${
+                      item.label === "Home" 
+                        ? "text-primary" 
+                        : item.isSpecial 
+                          ? "text-purple-500" 
+                          : ""
+                    }`, 
+                    size: item.label === "Home" || item.isSpecial ? 20 : 18 
                   })}
                   {item.label === "Home" ? (
                     <span className="font-medium text-primary">Home</span>
+                  ) : item.isSpecial ? (
+                    <span className="font-medium bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">{item.label}</span>
                   ) : (
                     item.label
                   )}

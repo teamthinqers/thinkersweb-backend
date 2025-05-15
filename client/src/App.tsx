@@ -179,8 +179,9 @@ function Router() {
       <Route path="/activate" component={ActivateDotSpark} />
       <Route path="/activate-dotspark" component={ActivateDotSpark} />
       <Route path="/activate-neural" component={ActivateDotSpark} /> {/* Legacy route */}
-      <Route path="/dotspark-tuning" component={DotSparkTuningPage} />
-      <Route path="/neural-tuning" component={DotSparkTuningPage} /> {/* Legacy route */}
+      <Route path="/dotspark-tuning" component={SectionedDotSparkTuningPage} />
+      <Route path="/sectioned-dotspark-tuning" component={SectionedDotSparkTuningPage} />
+      <Route path="/neural-tuning" component={SectionedDotSparkTuningPage} /> {/* Legacy route */}
       <Route path="/dotspark-capacity" component={DotSparkCapacityPage} />
       <Route path="/neural-capacity" component={DotSparkCapacityPage} /> {/* Legacy route */}
       <Route path="/testing" component={Testing} />
