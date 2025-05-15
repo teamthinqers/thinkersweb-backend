@@ -2,14 +2,29 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import WhatsAppIntegration from "@/components/settings/WhatsAppIntegration";
 import { WhatsAppLinking } from "@/components/settings/WhatsAppLinking";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Settings as SettingsIcon, Smartphone, Link } from "lucide-react";
+import { Settings as SettingsIcon, Smartphone, Link, Laptop, Download } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useLocation } from "wouter";
 
 export default function Settings() {
+  const [, setLocation] = useLocation();
+
   return (
     <div className="container mx-auto py-6 space-y-6">
-      <div className="flex items-center border-b pb-4">
-        <SettingsIcon className="mr-2 h-6 w-6" />
-        <h1 className="text-2xl font-bold tracking-tight">Settings</h1>
+      <div className="flex items-center justify-between border-b pb-4">
+        <div className="flex items-center">
+          <SettingsIcon className="mr-2 h-6 w-6" />
+          <h1 className="text-2xl font-bold tracking-tight">Settings</h1>
+        </div>
+        <Button 
+          variant="outline" 
+          size="sm"
+          className="flex items-center gap-2"
+          onClick={() => setLocation("/pwa-debug")}
+        >
+          <Laptop className="h-4 w-4" />
+          PWA Debugger
+        </Button>
       </div>
 
       <Tabs defaultValue="integrations" className="w-full">
@@ -17,6 +32,10 @@ export default function Settings() {
           <TabsTrigger value="integrations" className="flex items-center gap-1">
             <Smartphone className="h-4 w-4" />
             Integrations
+          </TabsTrigger>
+          <TabsTrigger value="app" className="flex items-center gap-1">
+            <Download className="h-4 w-4" />
+            App Installation
           </TabsTrigger>
         </TabsList>
         
