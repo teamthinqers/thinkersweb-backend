@@ -3,6 +3,7 @@ import { useLocation } from 'wouter';
 import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
 import { useNeuralTuning } from '@/hooks/useNeuralTuning';
+import { useWhatsAppStatus } from '@/hooks/useWhatsAppStatus';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
@@ -27,7 +28,10 @@ import {
   Plus,
   Bookmark,
   Microscope,
-  GraduationCap
+  GraduationCap,
+  LogIn,
+  MessageCircle,
+  LayoutDashboard
 } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import { Input } from '@/components/ui/input';
@@ -38,11 +42,13 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
+import { DotSparkWhatsAppLinking } from '@/components/dotspark/DotSparkWhatsAppLinking';
 
 export default function MyNeura() {
   const [, setLocation] = useLocation();
-  const { user, isLoading: isAuthLoading } = useAuth();
+  const { user, loginWithGoogle, isLoading: isAuthLoading } = useAuth();
   const { toast } = useToast();
+  const { isWhatsAppConnected, isActiveInLocalStorage, isWhatsAppStatusLoading } = useWhatsAppStatus();
 
   // Neural Tuning
   const { 
@@ -75,6 +81,9 @@ export default function MyNeura() {
   // Learning focus array for learning tab
   const [learningFocus, setLearningFocus] = useState<string[]>([]);
   const [newFocus, setNewFocus] = useState('');
+  
+  // WhatsApp direct link
+  const [whatsAppDirectLink, setWhatsAppDirectLink] = useState('');
   
   // Empty search handler for header
   const handleSearch = () => {};
