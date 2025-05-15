@@ -1,13 +1,60 @@
+/**
+ * Initialize Progressive Web App functionality
+ * This function handles service worker registration and other PWA-related setup
+ */
 export function initPWA() {
+  // Add PWA installation detection
+  window.addEventListener('beforeinstallprompt', (e) => {
+    // Prevent the mini-infobar from appearing on mobile
+    e.preventDefault();
+    // Store the event so it can be triggered later
+    (window as any).deferredPrompt = e;
+    console.log('PWA install prompt is available');
+    
+    // Optionally show your own install button or UI element here
+    const installButton = document.getElementById('pwa-install-button');
+    if (installButton) {
+      installButton.style.display = 'block';
+      installButton.addEventListener('click', promptInstall);
+    }
+  });
+
+  // After successful installation
+  window.addEventListener('appinstalled', () => {
+    // Clear the deferredPrompt
+    (window as any).deferredPrompt = null;
+    console.log('PWA was installed successfully');
+    
+    // Hide the install button if it exists
+    const installButton = document.getElementById('pwa-install-button');
+    if (installButton) {
+      installButton.style.display = 'none';
+    }
+  });
+
   // Check if the browser supports service workers
   if ('serviceWorker' in navigator) {
     console.log('Service worker is supported, preparing to register');
     
-    // Register the service worker - do it immediately instead of waiting for window.load
+    // Prepare PWA manifest check
+    fetch('/manifest.json')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`Manifest fetch failed: ${response.status} ${response.statusText}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('✅ Manifest loaded successfully:', data.name);
+      })
+      .catch(error => {
+        console.error('❌ Error loading manifest:', error);
+      });
+    
+    // Register the service worker immediately rather than waiting for window.load
     try {
-      // We're trying to register the service worker as soon as possible
       navigator.serviceWorker
-        .register('/service-worker.js')
+        .register('/service-worker.js', { scope: '/' })
         .then(registration => {
           console.log('✅ Service Worker registered successfully with scope:', registration.scope);
           
@@ -41,17 +88,29 @@ export function initPWA() {
         })
         .catch(error => {
           console.error('❌ Service Worker registration failed:', error);
+          console.error('Detailed error:', JSON.stringify(error));
           
-          // Try again after a delay
+          // Try again after a delay with more specific error tracking
           setTimeout(() => {
             console.log('Attempting to register service worker again...');
-            navigator.serviceWorker.register('/service-worker.js')
+            fetch('/service-worker.js')
+              .then(response => {
+                if (!response.ok) {
+                  throw new Error(`Service worker fetch failed: ${response.status} ${response.statusText}`);
+                }
+                console.log('Service worker file is accessible');
+                return navigator.serviceWorker.register('/service-worker.js', { scope: '/' });
+              })
               .then(reg => console.log('✅ Service Worker registered on retry with scope:', reg.scope))
-              .catch(err => console.error('❌ Service Worker registration failed again:', err));
+              .catch(err => {
+                console.error('❌ Service Worker registration failed again:', err);
+                console.error('Detailed retry error:', JSON.stringify(err));
+              });
           }, 3000);
         });
     } catch (error) {
       console.error('❌ Critical error registering service worker:', error);
+      console.error('Detailed critical error:', JSON.stringify(error));
     }
     
     // Also register on window load as a fallback
@@ -61,14 +120,42 @@ export function initPWA() {
         console.log('Service worker is already controlling this page on window.load');
       } else {
         console.log('Attempting to register service worker on window.load event...');
-        navigator.serviceWorker.register('/service-worker.js')
+        navigator.serviceWorker.register('/service-worker.js', { scope: '/' })
           .then(reg => console.log('✅ Service Worker registered on window.load with scope:', reg.scope))
-          .catch(err => console.error('❌ Service Worker registration failed on window.load:', err));
+          .catch(err => {
+            console.error('❌ Service Worker registration failed on window.load:', err);
+            console.error('Detailed window.load error:', JSON.stringify(err));
+          });
       }
     });
   } else {
     console.log('⚠️ Service workers are not supported by this browser.');
   }
+}
+
+/**
+ * Prompt the user to install the PWA
+ */
+export function promptInstall() {
+  const deferredPrompt = (window as any).deferredPrompt;
+  if (!deferredPrompt) {
+    console.log('Cannot prompt to install: install prompt not available');
+    return;
+  }
+  
+  // Show the install prompt
+  deferredPrompt.prompt();
+  
+  // Wait for the user to respond to the prompt
+  deferredPrompt.userChoice.then((choiceResult: { outcome: string }) => {
+    if (choiceResult.outcome === 'accepted') {
+      console.log('User accepted the install prompt');
+    } else {
+      console.log('User dismissed the install prompt');
+    }
+    // Clear the deferredPrompt variable
+    (window as any).deferredPrompt = null;
+  });
 }
 
 function showUpdateNotification() {
