@@ -581,7 +581,7 @@ export default function LandingPage() {
               <div className="absolute top-6 right-6 flex items-center justify-center w-8 h-8 rounded-full bg-[#25D366]/80 text-white font-bold text-lg">
                 3
               </div>
-              <h3 className="text-xl font-semibold mb-2">Link WhatsApp</h3>
+              <h3 className="text-xl font-semibold mb-2">Authenticate</h3>
               <p className="text-muted-foreground text-sm">Connect your phone to interact with DotSpark anywhere, anytime.</p>
               <Button 
                 size="default" 
@@ -589,7 +589,7 @@ export default function LandingPage() {
                 className="mt-4 w-full rounded-full bg-[#25D366] hover:bg-[#128C7E] text-white shadow-md hover:shadow-lg transition-all duration-300"
               >
                 <MessageSquare className="h-5 w-5 mr-2" />
-                <span>Link WhatsApp</span>
+                <span>Authenticate</span>
               </Button>
             </div>
           </div>

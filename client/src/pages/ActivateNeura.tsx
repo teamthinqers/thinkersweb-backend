@@ -373,7 +373,11 @@ export default function ActivateNeura() {
       <div className="flex-1 container mx-auto px-4 py-6 md:py-12 max-w-6xl">
         <div className="mb-8">
           <h1 className="text-3xl font-bold tracking-tight">
-            Configure Your <span className="text-primary">Neural Parameters</span>
+            {isActivated ? (
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-emerald-600 dark:from-green-400 dark:to-emerald-400">Neura Activated</span>
+            ) : (
+              <span className="text-primary">My Neura</span>
+            )}
           </h1>
           <p className="text-muted-foreground mt-2">
             Fine-tune your personal neural extension to match your unique thought patterns and cognitive style.
