@@ -96,7 +96,12 @@ export function useDotSparkTuning() {
       specialties: {
         'tech': 0.9,
         'business': 0.7,
-        'science': 0.4
+        'science': 0.4,
+        'creative': 0.5,
+        'health': 0.3,
+        'finance': 0.6,
+        'education': 0.8,
+        'social': 0.4
       },
       learningFocus: ['Machine Learning', 'Project Management', 'Data Analysis']
     },

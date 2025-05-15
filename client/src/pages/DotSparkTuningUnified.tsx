@@ -725,7 +725,7 @@ export default function DotSparkTuningUnified() {
       <Card className="bg-gradient-to-br from-indigo-50 to-violet-50 dark:from-indigo-950 dark:to-violet-950 border-none shadow-md">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Trophy className="h-5 w-5 text-amber-500" />
+            <Star className="h-5 w-5 text-amber-500" />
             DotSpark Status
           </CardTitle>
         </CardHeader>
@@ -755,7 +755,7 @@ export default function DotSparkTuningUnified() {
               <ul className="space-y-1">
                 {status?.gameElements?.unlockedCapabilities?.map((capability, i) => (
                   <li key={i} className="text-sm flex items-center gap-1.5">
-                    <Check className="h-3.5 w-3.5 text-emerald-500" />
+                    <Star className="h-3.5 w-3.5 text-emerald-500 fill-emerald-500" />
                     <span>{capability}</span>
                   </li>
                 ))}
