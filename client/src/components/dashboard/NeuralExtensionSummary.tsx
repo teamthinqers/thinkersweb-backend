@@ -9,8 +9,8 @@ import { useNeuralExtension } from '@/hooks/useNeuralExtension';
 import { cn } from '@/lib/utils';
 
 /**
- * Summary card for the Neural Extension to be displayed on the dashboard
- * This provides an overview of the neural extension status
+ * Summary card for the Cognitive OS to be displayed on the dashboard
+ * This provides an overview of the cognitive OS status
  */
 export function NeuralExtensionSummary() {
   const [_, setLocation] = useLocation();
@@ -26,9 +26,9 @@ export function NeuralExtensionSummary() {
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2">
             <BrainCircuit className="h-5 w-5 text-purple-700 dark:text-purple-400" />
-            <span>Neural Extension</span>
+            <span>Cognitive OS</span>
           </CardTitle>
-          <CardDescription>Loading neural extension data...</CardDescription>
+          <CardDescription>Loading Cognitive OS data...</CardDescription>
         </CardHeader>
         <CardContent className="opacity-50">
           <div className="h-24 rounded-md bg-purple-100 dark:bg-purple-900/30"></div>
@@ -43,13 +43,13 @@ export function NeuralExtensionSummary() {
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2 text-red-700 dark:text-red-400">
             <BrainCircuit className="h-5 w-5" />
-            <span>Neural Extension</span>
+            <span>Cognitive OS</span>
           </CardTitle>
-          <CardDescription>Unable to load neural extension data</CardDescription>
+          <CardDescription>Unable to load Cognitive OS data</CardDescription>
         </CardHeader>
         <CardContent>
           <p className="text-sm text-red-600 dark:text-red-400 mb-4">
-            There was an error connecting to your neural extension. This could be due to network issues.
+            There was an error connecting to your Cognitive OS. This could be due to network issues.
           </p>
           <Button variant="outline" onClick={() => window.location.reload()}>
             Retry Connection
@@ -73,7 +73,7 @@ export function NeuralExtensionSummary() {
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">
             <BrainCircuit className="h-5 w-5 text-purple-700 dark:text-purple-400" />
-            <span>Neural Extension</span>
+            <span>Cognitive OS</span>
           </CardTitle>
           <Badge className="bg-purple-100 text-purple-800 dark:bg-purple-900/50 dark:text-purple-200 hover:bg-purple-200 dark:hover:bg-purple-800/50">
             Level {level}

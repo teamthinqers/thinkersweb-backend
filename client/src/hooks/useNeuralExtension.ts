@@ -166,8 +166,8 @@ export function useNeuralExtension() {
   useEffect(() => {
     if (isError) {
       toast({
-        title: "Neural Extension Error",
-        description: "Unable to connect to your neural extension. Please try again later.",
+        title: "Cognitive OS Error",
+        description: "Unable to connect to your Cognitive OS. Please try again later.",
         variant: "destructive"
       });
     }
