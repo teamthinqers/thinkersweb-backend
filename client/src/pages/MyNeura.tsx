@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'wouter';
 import { useAuth } from '@/hooks/use-auth';
-import { useWhatsAppStatus } from '@/hooks/useWhatsAppStatus';
 import { useToast } from '@/hooks/use-toast';
-import { useDotSparkTuning } from '@/hooks/useDotSparkTuning';
+import { useNeuralTuning } from '@/hooks/useNeuralTuning';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
@@ -12,12 +11,6 @@ import {
   AlertCircle, 
   Brain, 
   Check, 
-  LogIn, 
-  LayoutDashboard, 
-  MessageCircle, 
-  Sparkles, 
-  RefreshCw, 
-  Wrench, 
   BrainCircuit, 
   Zap, 
   Gauge, 
@@ -28,37 +21,40 @@ import {
   ChevronLeft,
   NetworkIcon,
   Star,
-  Sliders,
-  Microscope,
-  GraduationCap,
   Target,
-  Search
+  MoreHorizontal,
+  X,
+  Plus,
+  Bookmark,
+  Microscope,
+  GraduationCap
 } from 'lucide-react';
-import { DotSparkWhatsAppLinking } from '@/components/dotspark/DotSparkWhatsAppLinking';
 import Header from '@/components/layout/Header';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Slider } from '@/components/ui/slider';
+import { 
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 
 export default function MyNeura() {
   const [, setLocation] = useLocation();
-  const { user, isLoading: isAuthLoading, loginWithGoogle } = useAuth();
+  const { user, isLoading: isAuthLoading } = useAuth();
   const { toast } = useToast();
-  const { 
-    isWhatsAppConnected, 
-    isLoading: isWhatsAppStatusLoading, 
-    isActiveInLocalStorage,
-    repairActivationStatus 
-  } = useWhatsAppStatus();
-  
-  // DotSpark Tuning
+
+  // Neural Tuning
   const { 
     tuning, 
     setTuning, 
+    gameElements, 
     status, 
     isLoading: isTuningLoading, 
-    saveTuning 
-  } = useDotSparkTuning();
+    saveTuning,
+    getAdaptationProgress,
+    formatAdaptationLevel
+  } = useNeuralTuning();
 
   // State for tracking unsaved changes
   const [unsavedChanges, setUnsavedChanges] = useState(false);
@@ -67,15 +63,18 @@ export default function MyNeura() {
   // For expertise cards
   const [selectedExpertise, setSelectedExpertise] = useState<{[key: string]: number}>({});
   
-  const [activeTab, setActiveTab] = useState<string>('parameters');
-  const [whatsAppDirectLink, setWhatsAppDirectLink] = useState('');
+  const [activeTab, setActiveTab] = useState<string>('hygiene');
+  const [dotsparkName, setDotsparkName] = useState<string>('Neura');
+  
+  // Domain filter for expertise
   const [domainFilter, setDomainFilter] = useState('');
+
+  // Is Neura activated
+  const isActivated = !!tuning && Object.keys(tuning).length > 0;
   
-  // Combined activation status
-  const isActivated = isWhatsAppConnected || isActiveInLocalStorage;
-  
-  // Progress based on setup stage
-  const progress = !user ? 33 : (!tuning || Object.keys(tuning).length === 0) ? 67 : isActivated ? 100 : 67;
+  // Learning focus array for learning tab
+  const [learningFocus, setLearningFocus] = useState<string[]>([]);
+  const [newFocus, setNewFocus] = useState('');
   
   // Empty search handler for header
   const handleSearch = () => {};
@@ -273,43 +272,133 @@ export default function MyNeura() {
       {/* Include header component */}
       <Header onSearch={handleSearch} />
       
-      <div className="flex-1 container mx-auto px-4 py-6 md:py-12 max-w-6xl">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold tracking-tight">
-            <span className="text-primary">My Neura</span>
-          </h1>
-          <p className="text-muted-foreground mt-2">
-            Fine-tune your personal neural extension to match your unique thought patterns and cognitive style.
-          </p>
+      <div className="flex-1 container mx-auto px-4 py-6 md:py-12 max-w-4xl">
+        <div className="flex items-center gap-2 mb-6">
+          <Button variant="ghost" onClick={() => setLocation('/')} className="p-2">
+            <ChevronLeft className="h-5 w-5" />
+          </Button>
+          <h1 className="text-2xl font-bold">My Neura</h1>
         </div>
         
-        {/* Activation status indicator */}
-        <div className="mb-8">
-          <div className="flex items-center mb-4">
-            <div className={`w-3 h-3 rounded-full mr-2 ${isActivated ? 'bg-green-500' : 'bg-gray-300'}`}></div>
-            <span className="font-medium">Neura Status: {isActivated ? 'Active' : 'Inactive'}</span>
+        {/* Neural Extension Level Card with Capacity Metrics */}
+        <Card className="mb-8 bg-gradient-to-br from-purple-50 to-white dark:from-purple-950/30 dark:to-gray-950 border border-purple-100 dark:border-purple-900/50 overflow-hidden">
+          <div className="relative overflow-hidden">
+            <div className="absolute -right-16 -top-16 w-48 h-48 bg-gradient-to-br from-purple-200/30 to-indigo-200/10 dark:from-purple-800/20 dark:to-indigo-800/5 rounded-full blur-3xl"></div>
           </div>
-          <div className="flex flex-wrap gap-2">
-            {!user && (
-              <Button onClick={handleLogin} className="bg-indigo-600 hover:bg-indigo-700 text-white">
-                <LogIn className="mr-2 h-4 w-4" />
-                Sign In to Configure
-              </Button>
-            )}
-            {user && !isActivated && (
-              <Button onClick={() => setActiveTab('whatsapp')} className="bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 text-white">
-                <MessageCircle className="mr-2 h-4 w-4" />
-                Connect WhatsApp
-              </Button>
-            )}
-            {isActivated && (
-              <Button onClick={() => setLocation('/dashboard')} variant="outline" className="border-green-500 text-green-600 hover:text-green-700 hover:bg-green-50">
-                <LayoutDashboard className="mr-2 h-4 w-4" />
-                Go to Dashboard
-              </Button>
-            )}
-          </div>
-        </div>
+          
+          <CardHeader className="pb-2 relative z-10">
+            <div className="flex justify-between items-center">
+              <div className="flex items-center gap-2">
+                <BrainCircuit className="h-5 w-5 text-purple-700 dark:text-purple-400" />
+                <CardTitle>
+                  <span className="font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">{dotsparkName}</span>
+                </CardTitle>
+              </div>
+              <Badge className="bg-purple-100 text-purple-800 dark:bg-purple-900/50 dark:text-purple-200 hover:bg-purple-200 dark:hover:bg-purple-800/50">
+                Level {gameElements?.level || 1}
+              </Badge>
+            </div>
+            <CardDescription>Configure how your cognitive extension processes information</CardDescription>
+          </CardHeader>
+          
+          <CardContent className="pb-4 relative z-10">
+            {/* Experience Progress */}
+            <div className="mb-4">
+              <div className="flex justify-between mb-1.5 text-sm font-medium">
+                <span>Experience</span>
+                <span>{gameElements?.experience || 0} / {gameElements?.experienceRequired || 1000} XP</span>
+              </div>
+              <Progress value={(gameElements?.experience || 0) / (gameElements?.experienceRequired || 1000) * 100} className="h-2 bg-purple-100 dark:bg-purple-950" />
+            </div>
+            
+            {/* Capacity Metrics */}
+            <div className="grid grid-cols-4 gap-2 mb-4">
+              {/* Processing Efficiency */}
+              <div className="text-center">
+                <HoverCard>
+                  <HoverCardTrigger asChild>
+                    <div className="flex flex-col items-center gap-1">
+                      <div className="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center">
+                        <Zap className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
+                      </div>
+                      <div className="text-xs font-medium">Processing</div>
+                      <div className="text-sm font-bold">{gameElements?.stats?.adaptationScore?.toFixed(0) || 'N/A'}</div>
+                    </div>
+                  </HoverCardTrigger>
+                  <HoverCardContent className="w-80">
+                    <div className="space-y-2">
+                      <h4 className="text-sm font-semibold">Processing Efficiency</h4>
+                      <p className="text-xs">Measures how efficiently Neura processes your inputs and adapts to your thinking style.</p>
+                    </div>
+                  </HoverCardContent>
+                </HoverCard>
+              </div>
+              
+              {/* Neural Connections */}
+              <div className="text-center">
+                <HoverCard>
+                  <HoverCardTrigger asChild>
+                    <div className="flex flex-col items-center gap-1">
+                      <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center">
+                        <NetworkIcon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                      </div>
+                      <div className="text-xs font-medium">Connections</div>
+                      <div className="text-sm font-bold">{gameElements?.stats?.connectionsFormed || 0}</div>
+                    </div>
+                  </HoverCardTrigger>
+                  <HoverCardContent className="w-80">
+                    <div className="space-y-2">
+                      <h4 className="text-sm font-semibold">Neural Connections</h4>
+                      <p className="text-xs">The number of connections Neura has formed between different topics and concepts.</p>
+                    </div>
+                  </HoverCardContent>
+                </HoverCard>
+              </div>
+              
+              {/* Insights */}
+              <div className="text-center">
+                <HoverCard>
+                  <HoverCardTrigger asChild>
+                    <div className="flex flex-col items-center gap-1">
+                      <div className="w-10 h-10 rounded-full bg-green-100 dark:bg-green-900/50 flex items-center justify-center">
+                        <Lightbulb className="h-5 w-5 text-green-600 dark:text-green-400" />
+                      </div>
+                      <div className="text-xs font-medium">Insights</div>
+                      <div className="text-sm font-bold">{gameElements?.stats?.insightsGenerated || 0}</div>
+                    </div>
+                  </HoverCardTrigger>
+                  <HoverCardContent className="w-80">
+                    <div className="space-y-2">
+                      <h4 className="text-sm font-semibold">Insights Generated</h4>
+                      <p className="text-xs">The number of unique insights Neura has generated based on your interactions.</p>
+                    </div>
+                  </HoverCardContent>
+                </HoverCard>
+              </div>
+              
+              {/* Messages */}
+              <div className="text-center">
+                <HoverCard>
+                  <HoverCardTrigger asChild>
+                    <div className="flex flex-col items-center gap-1">
+                      <div className="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-900/50 flex items-center justify-center">
+                        <BrainCog className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+                      </div>
+                      <div className="text-xs font-medium">Messages</div>
+                      <div className="text-sm font-bold">{gameElements?.stats?.messagesProcessed || 0}</div>
+                    </div>
+                  </HoverCardTrigger>
+                  <HoverCardContent className="w-80">
+                    <div className="space-y-2">
+                      <h4 className="text-sm font-semibold">Messages Processed</h4>
+                      <p className="text-xs">The total number of messages Neura has processed and learned from.</p>
+                    </div>
+                  </HoverCardContent>
+                </HoverCard>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
         
         {/* Floating save button for tuning changes */}
         {unsavedChanges && (
@@ -325,33 +414,487 @@ export default function MyNeura() {
           </div>
         )}
         
-        {/* Main tabs */}
-        <Tabs 
-          value={activeTab} 
-          onValueChange={setActiveTab}
-          className="w-full"
-        >
-          {/* Main navigation tabs */}
-          <TabsList className="grid w-full grid-cols-3 mb-6">
-            <TabsTrigger value="parameters" className="text-sm">
-              <div className="flex items-center">
-                <BrainCircuit className="h-4 w-4 mr-2" />
-                <span>Parameters</span>
+        {/* Neural Tuning Tabs */}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-8">
+          <TabsList className="grid grid-cols-4 mb-6">
+            <TabsTrigger value="hygiene" className="group">
+              <div className="flex flex-col items-center gap-1">
+                <span className="text-sm flex items-center gap-1">
+                  <span className="inline-block w-5 h-5 rounded-full bg-indigo-500 text-white flex items-center justify-center text-xs font-bold">1</span>
+                  Hygiene
+                </span>
+                <span className="h-1 w-full bg-indigo-300/30 group-data-[state=active]:bg-indigo-500 rounded-full transition-colors duration-300"></span>
               </div>
             </TabsTrigger>
-            <TabsTrigger value="expertise" className="text-sm">
-              <div className="flex items-center">
-                <Star className="h-4 w-4 mr-2" />
-                <span>Expertise</span>
+            <TabsTrigger value="expertise" className="group">
+              <div className="flex flex-col items-center gap-1">
+                <span className="text-sm flex items-center gap-1">
+                  <span className="inline-block w-5 h-5 rounded-full bg-blue-500 text-white flex items-center justify-center text-xs font-bold">2</span>
+                  Expertise
+                </span>
+                <span className="h-1 w-full bg-blue-300/30 group-data-[state=active]:bg-blue-500 rounded-full transition-colors duration-300"></span>
               </div>
             </TabsTrigger>
-            <TabsTrigger value="whatsapp" className="text-sm">
-              <div className="flex items-center">
-                <MessageCircle className="h-4 w-4 mr-2" />
-                <span>WhatsApp</span>
+            <TabsTrigger value="personal" className="group">
+              <div className="flex flex-col items-center gap-1">
+                <span className="text-sm flex items-center gap-1">
+                  <span className="inline-block w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xs font-bold">3</span>
+                  Personal
+                </span>
+                <span className="h-1 w-full bg-emerald-300/30 group-data-[state=active]:bg-emerald-500 rounded-full transition-colors duration-300"></span>
+              </div>
+            </TabsTrigger>
+            <TabsTrigger value="learning" className="group">
+              <div className="flex flex-col items-center gap-1">
+                <span className="text-sm flex items-center gap-1">
+                  <span className="inline-block w-5 h-5 rounded-full bg-amber-500 text-white flex items-center justify-center text-xs font-bold">4</span>
+                  Learning
+                </span>
+                <span className="h-1 w-full bg-amber-300/30 group-data-[state=active]:bg-amber-500 rounded-full transition-colors duration-300"></span>
               </div>
             </TabsTrigger>
           </TabsList>
+          
+        <TabsContent value="hygiene" className="space-y-6">
+          <Card className="border-indigo-100 dark:border-indigo-900/40 overflow-hidden">
+            <div className="absolute -right-16 -top-16 w-48 h-48 bg-gradient-to-br from-indigo-200/30 to-purple-200/10 dark:from-indigo-800/20 dark:to-purple-800/5 rounded-full blur-3xl"></div>
+            
+            <CardHeader className="relative z-10">
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 rounded-lg bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center">
+                  <BrainCircuit className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
+                </div>
+                <div>
+                  <CardTitle>Neural Hygiene Setup</CardTitle>
+                  <CardDescription>Select a preset configuration to instantly activate your neural extension</CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            
+            <CardContent className="space-y-6">
+              {/* Core Processing Parameters */}
+              <div className="space-y-2">
+                <h4 className="text-sm font-semibold">Core Processing Parameters</h4>
+                <p className="text-sm text-muted-foreground">These settings control how your neural extension processes information</p>
+              </div>
+              
+              {/* Creativity slider with enhanced visual design */}
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <div className="space-y-0.5">
+                    <h3 className="font-medium">Creativity</h3>
+                    <p className="text-sm text-muted-foreground">Influences variety and uniqueness of neural responses</p>
+                  </div>
+                  <Badge variant="outline" className="bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 dark:from-blue-950 dark:via-indigo-950 dark:to-purple-950 border border-indigo-200 dark:border-indigo-800">
+                    {Math.round((pendingChanges.creativity ?? tuning?.creativity ?? 0.5) * 100)}%
+                  </Badge>
+                </div>
+                <div className="h-2 w-full bg-gradient-to-r from-blue-100 via-indigo-200 to-purple-200 dark:from-blue-900 dark:via-indigo-800 dark:to-purple-700 rounded-full relative">
+                  <Slider
+                    defaultValue={[tuning?.creativity ?? 0.5]}
+                    value={[pendingChanges.creativity ?? tuning?.creativity ?? 0.5]}
+                    onValueChange={(value) => handleSliderChange('creativity', value)}
+                    max={1}
+                    step={0.01}
+                    className="absolute inset-0"
+                  />
+                </div>
+                <div className="flex justify-between text-xs text-muted-foreground">
+                  <span>Logical & Structured</span>
+                  <span>Creative & Exploratory</span>
+                </div>
+              </div>
+              
+              {/* Precision slider with enhanced visual design */}
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <div className="space-y-0.5">
+                    <h3 className="font-medium">Precision</h3>
+                    <p className="text-sm text-muted-foreground">Determines accuracy and attention to detail</p>
+                  </div>
+                  <Badge variant="outline" className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950 dark:to-emerald-950 border border-green-200 dark:border-green-800">
+                    {Math.round((pendingChanges.precision ?? tuning?.precision ?? 0.5) * 100)}%
+                  </Badge>
+                </div>
+                <div className="h-2 w-full bg-gradient-to-r from-green-100 to-emerald-200 dark:from-green-900 dark:to-emerald-800 rounded-full relative">
+                  <Slider
+                    defaultValue={[tuning?.precision ?? 0.5]}
+                    value={[pendingChanges.precision ?? tuning?.precision ?? 0.5]}
+                    onValueChange={(value) => handleSliderChange('precision', value)}
+                    max={1}
+                    step={0.01}
+                    className="absolute inset-0"
+                  />
+                </div>
+                <div className="flex justify-between text-xs text-muted-foreground">
+                  <span>Broad Strokes</span>
+                  <span>Highly Detailed</span>
+                </div>
+              </div>
+              
+              {/* Speed slider with enhanced visual design */}
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <div className="space-y-0.5">
+                    <h3 className="font-medium">Speed</h3>
+                    <p className="text-sm text-muted-foreground">Controls response time vs. depth tradeoff</p>
+                  </div>
+                  <Badge variant="outline" className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950 dark:to-orange-950 border border-amber-200 dark:border-amber-800">
+                    {Math.round((pendingChanges.speed ?? tuning?.speed ?? 0.5) * 100)}%
+                  </Badge>
+                </div>
+                <div className="h-2 w-full bg-gradient-to-r from-amber-100 to-orange-200 dark:from-amber-900 dark:to-orange-800 rounded-full relative">
+                  <Slider
+                    defaultValue={[tuning?.speed ?? 0.5]}
+                    value={[pendingChanges.speed ?? tuning?.speed ?? 0.5]}
+                    onValueChange={(value) => handleSliderChange('speed', value)}
+                    max={1}
+                    step={0.01}
+                    className="absolute inset-0"
+                  />
+                </div>
+                <div className="flex justify-between text-xs text-muted-foreground">
+                  <span>Deep & Thorough</span>
+                  <span>Quick & Responsive</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+        
+        <TabsContent value="expertise" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Star className="h-5 w-5 text-amber-500" />
+                Domain Specialties
+              </CardTitle>
+              <CardDescription>Adjust how your neural extension specializes in different knowledge domains</CardDescription>
+            </CardHeader>
+            
+            <CardContent className="space-y-6">
+              {/* Filter for domains */}
+              <div className="relative">
+                <Input
+                  type="text"
+                  placeholder="Filter domains..."
+                  value={domainFilter}
+                  onChange={(e) => setDomainFilter(e.target.value)}
+                  className="pl-9"
+                />
+                <div className="absolute left-3 top-2.5 text-muted-foreground">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-search"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                </div>
+              </div>
+              
+              {/* Domain group tabs */}
+              <div className="grid gap-4">
+                {domainGroups
+                  .filter(group => 
+                    domainFilter === '' || 
+                    group.name.toLowerCase().includes(domainFilter.toLowerCase()) || 
+                    group.domains.some(domain => 
+                      domain.name.toLowerCase().includes(domainFilter.toLowerCase())
+                    )
+                  )
+                  .map((group, groupIndex) => (
+                    <div key={groupIndex} className="space-y-3">
+                      <h3 className="text-md font-medium">{group.name}</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        {group.domains
+                          .filter(domain => 
+                            domainFilter === '' || 
+                            domain.name.toLowerCase().includes(domainFilter.toLowerCase())
+                          )
+                          .map((domain, domainIndex) => {
+                            // Get domain expertise level
+                            const expertiseLevel = selectedExpertise[domain.id] || 0;
+                            
+                            return (
+                              <div 
+                                key={domainIndex} 
+                                className={`rounded-lg border p-4 hover:border-primary/50 transition-colors relative overflow-hidden ${
+                                  expertiseLevel > 0 ? 'bg-gradient-to-br from-amber-50/50 to-white dark:from-amber-950/30 dark:to-transparent' : ''
+                                }`}
+                                onClick={(e) => {
+                                  createRipple(e);
+                                  // Cycle through expertise levels on click
+                                  const newLevel = (expertiseLevel >= 1) ? 0 : expertiseLevel + 0.2;
+                                  updateExpertise(domain.id, newLevel);
+                                }}
+                              >
+                                {/* Domain Icon and Name */}
+                                <div className="flex justify-between items-start mb-4">
+                                  <div className="flex items-center gap-2">
+                                    <div className={`w-9 h-9 rounded-full ${
+                                      expertiseLevel > 0 
+                                        ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-300' 
+                                        : 'bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400'
+                                    } flex items-center justify-center`}>
+                                      {React.createElement(domain.icon, { className: 'h-5 w-5' })}
+                                    </div>
+                                    <div>
+                                      <h4 className="font-medium leading-none">{domain.name}</h4>
+                                      <p className="text-xs text-muted-foreground mt-1">
+                                        {expertiseLevel > 0 ? getExpertiseLabel(expertiseLevel) : 'Not specialized'}
+                                      </p>
+                                    </div>
+                                  </div>
+                                </div>
+                                
+                                {/* Expertise Level Indicator */}
+                                <div className="space-y-2">
+                                  <div className="flex justify-between text-xs">
+                                    <span>Specialization Level</span>
+                                    <span className="font-medium">{Math.round(expertiseLevel * 100)}%</span>
+                                  </div>
+                                  <div className="h-1.5 w-full bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+                                    <div 
+                                      className="h-full bg-gradient-to-r from-amber-400 to-amber-500 dark:from-amber-500 dark:to-amber-600 rounded-full"
+                                      style={{ width: `${expertiseLevel * 100}%` }}
+                                    ></div>
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })}
+                      </div>
+                    </div>
+                  ))}
+              </div>
+              
+              {/* Mastery Score Card */}
+              <Card className="bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-950/30 dark:to-yellow-950/30 border-amber-100 dark:border-amber-900/50">
+                <CardContent className="pt-6">
+                  <div className="flex justify-between items-center mb-4">
+                    <div className="flex items-center gap-2">
+                      <div className="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-900/50 flex items-center justify-center">
+                        <Star className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold">Domain Mastery Score</h3>
+                        <p className="text-sm text-muted-foreground">Overall expertise level across all domains</p>
+                      </div>
+                    </div>
+                    <Badge className="bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-300 hover:bg-amber-200 dark:hover:bg-amber-800/50 text-sm px-2.5 py-1">
+                      {calculateMasteryScore()}%
+                    </Badge>
+                  </div>
+                  
+                  <div className="h-2 w-full bg-amber-100 dark:bg-amber-900/50 rounded-full overflow-hidden">
+                    <div 
+                      className="h-full bg-gradient-to-r from-amber-400 to-amber-500 dark:from-amber-500 dark:to-amber-600 rounded-full"
+                      style={{ width: `${calculateMasteryScore()}%` }}
+                    ></div>
+                  </div>
+                </CardContent>
+              </Card>
+            </CardContent>
+          </Card>
+        </TabsContent>
+        
+        <TabsContent value="personal" className="space-y-6">
+          <Card className="border-emerald-100 dark:border-emerald-900/40">
+            <CardHeader>
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 rounded-lg bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center">
+                  <BrainCog className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+                </div>
+                <div>
+                  <CardTitle>Cognitive Parameters</CardTitle>
+                  <CardDescription>Adjust how your neural extension thinks and processes information</CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            
+            <CardContent className="space-y-6">
+              {/* Analytical slider with enhanced visual design */}
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <div className="space-y-0.5">
+                    <h3 className="font-medium">Analytical Thinking</h3>
+                    <p className="text-sm text-muted-foreground">Logical, systematic thinking emphasis</p>
+                  </div>
+                  <Badge variant="outline" className="bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900 border border-blue-200 dark:border-blue-800">
+                    {Math.round((pendingChanges.analytical ?? tuning?.analytical ?? 0.5) * 100)}%
+                  </Badge>
+                </div>
+                <div className="h-2 w-full bg-gradient-to-r from-blue-100 to-blue-200 dark:from-blue-900 dark:to-blue-800 rounded-full relative">
+                  <Slider
+                    defaultValue={[tuning?.analytical ?? 0.5]}
+                    value={[pendingChanges.analytical ?? tuning?.analytical ?? 0.5]}
+                    onValueChange={(value) => handleSliderChange('analytical', value)}
+                    max={1}
+                    step={0.01}
+                    className="absolute inset-0"
+                  />
+                </div>
+                <div className="flex justify-between text-xs text-muted-foreground">
+                  <span>Freestyle Thinking</span>
+                  <span>Systematic Analysis</span>
+                </div>
+              </div>
+              
+              {/* Intuitive slider with enhanced visual design */}
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <div className="space-y-0.5">
+                    <h3 className="font-medium">Intuitive Thinking</h3>
+                    <p className="text-sm text-muted-foreground">Pattern recognition and insight emphasis</p>
+                  </div>
+                  <Badge variant="outline" className="bg-gradient-to-r from-violet-50 to-violet-100 dark:from-violet-950 dark:to-violet-900 border border-violet-200 dark:border-violet-800">
+                    {Math.round((pendingChanges.intuitive ?? tuning?.intuitive ?? 0.5) * 100)}%
+                  </Badge>
+                </div>
+                <div className="h-2 w-full bg-gradient-to-r from-violet-100 to-violet-200 dark:from-violet-900 dark:to-violet-800 rounded-full relative">
+                  <Slider
+                    defaultValue={[tuning?.intuitive ?? 0.5]}
+                    value={[pendingChanges.intuitive ?? tuning?.intuitive ?? 0.5]}
+                    onValueChange={(value) => handleSliderChange('intuitive', value)}
+                    max={1}
+                    step={0.01}
+                    className="absolute inset-0"
+                  />
+                </div>
+                <div className="flex justify-between text-xs text-muted-foreground">
+                  <span>Fact-Based</span>
+                  <span>Pattern-Sensing</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+        
+        <TabsContent value="learning" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Bookmark className="h-5 w-5 text-green-500" />
+                Learning Focus
+              </CardTitle>
+              <CardDescription>Direct your neural extension to focus on specific topics or skills</CardDescription>
+            </CardHeader>
+            
+            <CardContent className="space-y-4">
+              {/* Current focus areas */}
+              <div className="space-y-3">
+                <h4 className="text-sm font-semibold">Current Focus Areas</h4>
+                <p className="text-sm text-muted-foreground">
+                  {learningFocus.length > 0 
+                    ? "These are the topics your neural extension is actively learning about"
+                    : "Add topics below to direct your neural extension's learning"}
+                </p>
+                
+                <div className="flex flex-wrap gap-2 min-h-[40px]">
+                  {learningFocus.map((focus, index) => (
+                    <Badge 
+                      key={index} 
+                      variant="secondary"
+                      className="flex items-center gap-1 py-1.5 pl-3 pr-2"
+                    >
+                      {focus}
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-4 w-4 ml-1 hover:bg-secondary"
+                        onClick={() => {
+                          const newFocus = [...learningFocus];
+                          newFocus.splice(index, 1);
+                          setLearningFocus(newFocus);
+                          
+                          setPendingChanges(prev => ({
+                            ...prev,
+                            learningFocus: newFocus
+                          }));
+                          
+                          setUnsavedChanges(true);
+                        }}
+                      >
+                        <X className="h-3 w-3" />
+                      </Button>
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Add new focus */}
+              <div className="space-y-3">
+                <h4 className="text-sm font-semibold">Add Focus Area</h4>
+                <div className="flex gap-2">
+                  <Input
+                    type="text"
+                    placeholder="Enter a learning topic..."
+                    value={newFocus}
+                    onChange={(e) => setNewFocus(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && newFocus.trim()) {
+                        e.preventDefault();
+                        const updatedFocus = [...learningFocus, newFocus.trim()];
+                        setLearningFocus(updatedFocus);
+                        setNewFocus('');
+                        
+                        setPendingChanges(prev => ({
+                          ...prev,
+                          learningFocus: updatedFocus
+                        }));
+                        
+                        setUnsavedChanges(true);
+                      }
+                    }}
+                    className="flex-1"
+                  />
+                  <Button
+                    variant="default"
+                    onClick={() => {
+                      if (newFocus.trim()) {
+                        const updatedFocus = [...learningFocus, newFocus.trim()];
+                        setLearningFocus(updatedFocus);
+                        setNewFocus('');
+                        
+                        setPendingChanges(prev => ({
+                          ...prev,
+                          learningFocus: updatedFocus
+                        }));
+                        
+                        setUnsavedChanges(true);
+                      }
+                    }}
+                  >
+                    <Plus className="h-4 w-4 mr-1" />
+                    Add
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
+          {/* Activation Button */}
+          <div className="flex justify-center">
+            <Button 
+              className="w-full sm:w-auto py-6 px-8 bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white"
+              onClick={() => {
+                if (unsavedChanges) {
+                  saveChanges();
+                }
+                
+                toast({
+                  title: "Neura Activated",
+                  description: "Your neural extension is now active with your configured parameters!",
+                  variant: "default",
+                });
+              }}
+              disabled={isTuningLoading}
+            >
+              <div className="flex flex-col items-center">
+                <div className="flex items-center">
+                  <BrainCircuit className="h-5 w-5 mr-2" />
+                  <span className="text-lg font-semibold">Activate Neura</span>
+                </div>
+                <span className="text-xs mt-1">Apply all settings and activate your neural extension</span>
+              </div>
+            </Button>
+          </div>
+        </TabsContent>
           
           {/* Tab 1: Neural Parameters */}
           <TabsContent value="parameters" className="mt-4">
