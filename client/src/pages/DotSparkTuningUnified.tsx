@@ -62,6 +62,8 @@ import {
 export default function DotSparkTuningUnified() {
   const [_, setLocation] = useLocation();
   const [newFocus, setNewFocus] = useState('');
+  const [unsavedChanges, setUnsavedChanges] = useState({});
+  const [showSaveSuccess, setShowSaveSuccess] = useState(false);
   
   // Using fixed "My DotSpark Neura" name for all users
   const dotsparkName = 'My DotSpark Neura';
@@ -134,10 +136,15 @@ export default function DotSparkTuningUnified() {
     setSpecializationLevel(Math.min(100, (Object.keys(tuning?.specialties || {}).length / 8) * 100));
   }, [safeStatus]);
   
-  // Function to handle slider value changes
+  // Function to handle slider value changes without saving immediately
   const handleParameterChange = (paramName: string, value: number[]) => {
     const paramValue = value[0];
-    updateTuning({ [paramName]: paramValue });
+    
+    // Store the change in the unsavedChanges object
+    setUnsavedChanges(prev => ({
+      ...prev,
+      [paramName]: paramValue
+    }));
     
     // Simulate capacity changes based on parameter adjustments
     // In a real implementation, these would be calculated by the backend
@@ -172,13 +179,20 @@ export default function DotSparkTuningUnified() {
     }
   };
   
-  // Function to handle specialty value changes
+  // Function to handle specialty value changes without saving immediately
   const handleSpecialtyChange = (specialtyId: string, value: number[]) => {
     const specialtyValue = value[0];
-    updateTuning({
-      specialties: {
-        [specialtyId]: specialtyValue
-      }
+    
+    // Store the specialty change
+    setUnsavedChanges(prev => {
+      const currentSpecialties = { ...(prev.specialties || {}) };
+      return {
+        ...prev,
+        specialties: {
+          ...currentSpecialties,
+          [specialtyId]: specialtyValue
+        }
+      };
     });
     
     // Update specialization level based on specialty strength
@@ -192,20 +206,50 @@ export default function DotSparkTuningUnified() {
     setLearningRate(prev => Math.min(100, prev + (specialtyValue > 0.5 ? 2 : -1)));
   };
   
-  // Function to add a new focus area
+  // Function to save all pending changes
+  const saveChanges = () => {
+    if (Object.keys(unsavedChanges).length === 0) return;
+    
+    // Apply all changes at once
+    updateTuning(unsavedChanges);
+    
+    // Show success message
+    setShowSaveSuccess(true);
+    
+    // Clear unsaved changes
+    setUnsavedChanges({});
+    
+    // Hide success message after 3 seconds
+    setTimeout(() => {
+      setShowSaveSuccess(false);
+    }, 3000);
+  };
+  
+  // Function to add a new focus area without saving immediately
   const handleAddFocus = () => {
     if (!newFocus.trim()) return;
     
-    const updatedFocus = [...(status?.tuning?.learningFocus || []), newFocus.trim()];
-    updateLearningFocus(updatedFocus);
+    const currentFocus = unsavedChanges.learningFocus || status?.tuning?.learningFocus || [];
+    const updatedFocus = [...currentFocus, newFocus.trim()];
+    
+    setUnsavedChanges(prev => ({
+      ...prev,
+      learningFocus: updatedFocus
+    }));
+    
     setNewFocus('');
   };
   
-  // Function to remove a focus area
+  // Function to remove a focus area without saving immediately
   const handleRemoveFocus = (index: number) => {
-    const updatedFocus = [...(status?.tuning?.learningFocus || [])];
+    const currentFocus = unsavedChanges.learningFocus || status?.tuning?.learningFocus || [];
+    const updatedFocus = [...currentFocus];
     updatedFocus.splice(index, 1);
-    updateLearningFocus(updatedFocus);
+    
+    setUnsavedChanges(prev => ({
+      ...prev,
+      learningFocus: updatedFocus
+    }));
   };
   
   // Function to format parameter value as percentage
