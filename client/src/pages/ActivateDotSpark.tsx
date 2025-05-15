@@ -176,16 +176,16 @@ export default function ActivateDotSpark() {
           // Show success notification if this isn't a duplicate
           const hasSeenSuccess = sessionStorage.getItem('shown_whatsapp_success') === 'true';
           if (!hasSeenSuccess) {
+            toast({
+              title: "DotSpark Activated!",
+              description: "Your WhatsApp is connected and your DotSpark is now active.",
+              duration: 5000,
+            });
+            sessionStorage.setItem('shown_whatsapp_success', 'true');
+          }
+        }
       } catch (error) {
         console.error("Error handling WhatsApp status update:", error);
-      }
-          toast({
-            title: "DotSpark Activated!",
-            description: "Your WhatsApp is connected and your DotSpark is now active.",
-            duration: 5000,
-          });
-          sessionStorage.setItem('shown_whatsapp_success', 'true');
-        }
       }
     };
     
@@ -309,10 +309,14 @@ export default function ActivateDotSpark() {
           }));
           
           // Dispatch event for other components
-          const statusEvent = new CustomEvent('whatsapp-status-updated', { 
-            detail: { isActivated: true, source: source }
-          });
-          window.dispatchEvent(statusEvent);
+          try {
+            const statusEvent = new CustomEvent('whatsapp-status-updated', { 
+              detail: { isActivated: true, source: source }
+            });
+            window.dispatchEvent(statusEvent);
+          } catch (error) {
+            console.error("Error dispatching WhatsApp status event:", error);
+          }
           
           // Only show toast once
           if (!sessionStorage.getItem('activation_success_shown')) {
