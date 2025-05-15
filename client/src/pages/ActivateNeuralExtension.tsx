@@ -351,7 +351,7 @@ export default function ActivateNeuralExtension() {
     else if (showActivationSuccess && user && !hasBeenActivatedBefore) {
       // Success toast with longer duration - only for first-time activations
       toast({
-        title: "Neural Extension Activated!",
+        title: "DotSpark Activated!",
         description: "WhatsApp connection completed successfully.",
         duration: 5000,
       });
@@ -526,10 +526,10 @@ export default function ActivateNeuralExtension() {
               <div className="absolute inset-0 rounded-full border border-primary/20 animate-ping"></div>
             </div>
             <h1 className="text-2xl md:text-3xl font-bold tracking-tight mb-0.5">
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-primary to-blue-600">Neural Extension</span>
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-primary to-blue-600">DotSpark</span>
             </h1>
             <p className="text-sm text-muted-foreground">
-              Unlock your cognitive potential with DotSpark
+              Think Sharper, Stay You
             </p>
           </div>
           
@@ -592,7 +592,7 @@ export default function ActivateNeuralExtension() {
                 <CheckCircle2 className="h-5 w-5 text-green-600 dark:text-green-400" />
               </div>
               <div className="flex-1">
-                <h3 className="text-sm font-medium text-green-800 dark:text-green-300">Neural Extension Successfully Activated!</h3>
+                <h3 className="text-sm font-medium text-green-800 dark:text-green-300">DotSpark Successfully Activated!</h3>
               </div>
             </div>
           )}
@@ -709,10 +709,10 @@ export default function ActivateNeuralExtension() {
                       <Sparkles className="h-3 w-3 absolute top-2 right-2 text-green-400" />
                     </div>
                     <CardTitle className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-green-500 to-emerald-500">
-                      Neural Extension Activated
+                      DotSpark Activated
                     </CardTitle>
                     <CardDescription className="text-sm text-green-700 dark:text-green-400">
-                      Your cognitive extension is fully operational
+                      Your DotSpark is fully operational
                     </CardDescription>
                   </CardHeader>
                   
