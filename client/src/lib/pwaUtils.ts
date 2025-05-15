@@ -1,70 +1,21 @@
 /**
- * Initialize Progressive Web App functionality
- * This function handles PWA-related setup
- * NOTE: Service worker functionality is currently disabled due to compatibility issues
+ * Initialize Progressive Web App functionality - PLACEHOLDER FUNCTION
+ * PWA functionality is completely disabled to avoid runtime errors
  */
 export function initPWA() {
-  // Add PWA installation detection
-  window.addEventListener('beforeinstallprompt', (e) => {
-    // Prevent the mini-infobar from appearing on mobile
-    e.preventDefault();
-    // Store the event so it can be triggered later
-    (window as any).deferredPrompt = e;
-    console.log('PWA install prompt is available');
-    
-    // Optionally show your own install button or UI element here
-    const installButton = document.getElementById('pwa-install-button');
-    if (installButton) {
-      installButton.style.display = 'block';
-      installButton.addEventListener('click', promptInstall);
-    }
-  });
-
-  // After successful installation
-  window.addEventListener('appinstalled', () => {
-    // Clear the deferredPrompt
-    (window as any).deferredPrompt = null;
-    console.log('PWA was installed successfully');
-    
-    // Hide the install button if it exists
-    const installButton = document.getElementById('pwa-install-button');
-    if (installButton) {
-      installButton.style.display = 'none';
-    }
-  });
-
-  // Prepare PWA manifest check
-  fetch('/manifest.json')
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`Manifest fetch failed: ${response.status} ${response.statusText}`);
-      }
-      return response.json();
-    })
-    .then(data => {
-      console.log('✅ Manifest loaded successfully:', data.name);
-    })
-    .catch(error => {
-      console.error('❌ Error loading manifest:', error);
-    });
+  console.log('PWA functionality is completely disabled');
   
-  // Disable service worker functionality
+  // For safety, unregister any existing service workers
   if ('serviceWorker' in navigator) {
-    console.log('Service worker is supported, unregistering any existing service workers');
-    
-    // Unregister all service workers
-    navigator.serviceWorker.getRegistrations().then(registrations => {
-      for (const registration of registrations) {
-        registration.unregister()
-          .then(() => console.log('Unregistered existing service worker'))
-          .catch(err => console.error('Failed to unregister service worker:', err));
-      }
-    }).catch(err => {
-      console.error('Could not get service worker registrations:', err);
-    });
-    
-    // For development, we've disabled service workers to prevent runtime errors
-    console.log('Service worker functionality is currently disabled');
+    try {
+      navigator.serviceWorker.getRegistrations().then(registrations => {
+        for (const registration of registrations) {
+          registration.unregister().catch(() => {});
+        }
+      }).catch(() => {});
+    } catch (e) {
+      // Silently catch any errors
+    }
   }
 }
 
