@@ -102,26 +102,45 @@ export default function ActivateNeura() {
   
   // Save changes function
   const saveChanges = async () => {
-    if (Object.keys(pendingChanges).length > 0) {
-      try {
-        await saveTuning({
-          ...tuning,
-          ...pendingChanges
-        });
-        setUnsavedChanges(false);
-        setPendingChanges({});
+    if (Object.keys(pendingChanges).length === 0) return false;
+    
+    try {
+      // Merge pending changes with existing tuning
+      const updatedTuning = {
+        ...tuning,
+        ...pendingChanges
+      };
+      
+      if (user) {
+        // Save to backend if user is logged in
+        await saveTuning(updatedTuning);
         toast({
           title: "Parameters saved",
           description: "Your neural parameters have been saved successfully.",
           variant: "default"
         });
-      } catch (error) {
+      } else {
+        // Just store in state if not logged in
+        // This allows the user to experience Neura setup without an account
         toast({
-          title: "Error saving parameters",
-          description: "There was a problem saving your neural parameters. Please try again.",
-          variant: "destructive"
+          title: "Parameters set",
+          description: "Your neural parameters have been set for this session. Sign in to save permanently.",
+          variant: "default"
         });
       }
+      
+      // Reset state
+      setUnsavedChanges(false);
+      setPendingChanges({});
+      
+      return true;
+    } catch (error) {
+      toast({
+        title: "Error saving parameters",
+        description: "There was a problem setting your neural parameters. Please try again.",
+        variant: "destructive"
+      });
+      return false;
     }
   };
   
@@ -282,34 +301,39 @@ export default function ActivateNeura() {
     setUnsavedChanges(true);
   };
   
-  // Save pending changes to DotSpark tuning
-  const saveChanges = async () => {
-    if (!user) return;
-    
+  // Function to simply activate Neura without all the WhatsApp complexity
+  const simpleActivateNeura = async () => {
     try {
-      // Merge pending changes with existing tuning
-      const updatedTuning = {
-        ...tuning,
-        ...pendingChanges
-      };
+      // Save any pending changes first
+      if (unsavedChanges) {
+        await saveChanges();
+      }
       
-      await saveTuning(updatedTuning);
+      // Set local activation status to true 
+      localStorage.setItem("neuraActivated", "true");
+      localStorage.setItem("neuraActivatedTimestamp", new Date().toISOString());
       
-      setUnsavedChanges(false);
-      setPendingChanges({});
+      // Update state
+      setIsNeuraActivated(true);
       
+      // Show success toast
       toast({
-        title: "Settings Saved",
-        description: "Your Neura preferences have been updated.",
-        variant: "default",
+        title: "Neura Activated!",
+        description: "Your neural extension is now fully activated and ready to use.",
+        variant: "default"
       });
+      
+      return true;
     } catch (error) {
-      console.error("Error saving tuning:", error);
+      console.error("Error activating Neura:", error);
+      
       toast({
-        title: "Save Failed",
-        description: "There was a problem saving your settings. Please try again.",
-        variant: "destructive",
+        title: "Activation Error",
+        description: "There was a problem activating your Neura. Please try again.",
+        variant: "destructive"
       });
+      
+      return false;
     }
   };
   
