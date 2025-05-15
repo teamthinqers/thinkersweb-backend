@@ -307,11 +307,36 @@ export default function ActivateDotSpark() {
           onValueChange={setActiveTab}
           className="w-full"
         >
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="step1">1. Register/Sign In</TabsTrigger>
-            <TabsTrigger value="step2">2. Setup Your Neura</TabsTrigger>
-            <TabsTrigger value="step3">3. Link WhatsApp</TabsTrigger>
+          {/* Small, subtle tabs for the 3-step process */}
+          <TabsList className="grid w-full grid-cols-3 mb-2 bg-background/60 border">
+            <TabsTrigger value="step1" className="text-xs">1. Sign In</TabsTrigger>
+            <TabsTrigger value="step2" className="text-xs">2. Neural Setup</TabsTrigger>
+            <TabsTrigger value="step3" className="text-xs">3. Link WhatsApp</TabsTrigger>
           </TabsList>
+          
+          {/* Progress steps visualization */}
+          <div className="flex items-center justify-between mb-6 px-1">
+            <div className="flex flex-col items-center">
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${activeTab === 'step1' ? 'bg-primary text-primary-foreground' : (progress > 33 ? 'bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-400' : 'bg-gray-100 text-gray-400 dark:bg-gray-800')}`}>
+                {progress > 33 ? <Check className="h-4 w-4" /> : "1"}
+              </div>
+              <span className="text-xs mt-1 text-muted-foreground">Sign In</span>
+            </div>
+            <div className="h-0.5 flex-1 mx-2 bg-gray-200 dark:bg-gray-800"></div>
+            <div className="flex flex-col items-center">
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${activeTab === 'step2' ? 'bg-primary text-primary-foreground' : (progress > 67 ? 'bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-400' : 'bg-gray-100 text-gray-400 dark:bg-gray-800')}`}>
+                {progress > 67 ? <Check className="h-4 w-4" /> : "2"}
+              </div>
+              <span className="text-xs mt-1 text-muted-foreground">Neural Setup</span>
+            </div>
+            <div className="h-0.5 flex-1 mx-2 bg-gray-200 dark:bg-gray-800"></div>
+            <div className="flex flex-col items-center">
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${activeTab === 'step3' ? 'bg-primary text-primary-foreground' : (progress > 99 ? 'bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-400' : 'bg-gray-100 text-gray-400 dark:bg-gray-800')}`}>
+                {progress > 99 ? <Check className="h-4 w-4" /> : "3"}
+              </div>
+              <span className="text-xs mt-1 text-muted-foreground">WhatsApp</span>
+            </div>
+          </div>
           
           {/* Tab 1: Account Connection */}
           <TabsContent value="step1" className="mt-4">
@@ -404,10 +429,13 @@ export default function ActivateDotSpark() {
           {/* Tab 2: Neura Setup */}
           <TabsContent value="step2" className="mt-4">
             <Card>
-              <CardHeader>
-                <CardTitle>Configure Your Neura</CardTitle>
-                <CardDescription>
-                  Personalize how your cognitive extension works to match your thinking
+              <CardHeader className="text-center bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-950/40 dark:to-purple-950/40 border-b rounded-t-lg">
+                <div className="mx-auto mb-2 w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+                  <BrainCircuit className="h-8 w-8 text-primary" />
+                </div>
+                <CardTitle className="text-2xl bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400">Activate Your Neura</CardTitle>
+                <CardDescription className="max-w-md mx-auto mt-2">
+                  Fine-tune how your cognitive extension processes information to match your unique way of thinking
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -536,54 +564,81 @@ export default function ActivateDotSpark() {
                     
                     {/* Domain expertise section */}
                     <div>
-                      <h3 className="text-lg font-semibold mb-4">Domain Expertise</h3>
-                      <p className="text-sm text-muted-foreground mb-4">
-                        Tap on domains to set your expertise level. Your Neura will adapt its responses based on your knowledge.
-                      </p>
+                      <div className="text-center mb-6">
+                        <h3 className="text-xl font-semibold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400">Domain Expertise</h3>
+                        <p className="text-sm text-muted-foreground max-w-lg mx-auto">
+                          Tap on domains to set your expertise level. Your Neura will adapt its cognitive processing based on your knowledge patterns.
+                        </p>
+                      </div>
                       
                       {domainGroups.map((group) => (
-                        <div key={group.name} className="mb-6">
-                          <h4 className="text-md font-medium mb-3">{group.name}</h4>
-                          <div className="grid gap-3 md:grid-cols-3">
+                        <div key={group.name} className="mb-8">
+                          <div className="flex items-center mb-4">
+                            <div className="h-px flex-grow bg-gray-200 dark:bg-gray-800 mr-3"></div>
+                            <h4 className="text-md font-medium text-primary">{group.name}</h4>
+                            <div className="h-px flex-grow bg-gray-200 dark:bg-gray-800 ml-3"></div>
+                          </div>
+                          <div className="grid gap-4 md:grid-cols-3">
                             {group.domains.map((domain) => {
                               const Icon = domain.icon;
                               const level = selectedExpertise[domain.id] || 0;
                               const label = getExpertiseLabel(level);
                               
+                              // Determine badge color based on expertise level
+                              let badgeClass = "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400";
+                              if (level > 0.8) badgeClass = "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300";
+                              else if (level > 0.6) badgeClass = "bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-300";
+                              else if (level > 0.4) badgeClass = "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300";
+                              else if (level > 0.2) badgeClass = "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300";
+                              else if (level > 0) badgeClass = "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300";
+                              
                               return (
                                 <div
                                   key={domain.id}
-                                  className="relative overflow-hidden border rounded-lg p-4 cursor-pointer transition-all duration-200 hover:shadow-md hover:scale-[1.02] active:scale-[0.98]"
+                                  className="relative overflow-hidden border rounded-lg p-4 cursor-pointer transition-all duration-200 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] bg-background"
                                   onClick={(e) => {
-                                    // Increment the level, cycling through 0, 0.25, 0.5, 0.75, 1
-                                    const newLevel = level >= 1 ? 0 : Math.round((level + 0.25) * 100) / 100;
+                                    // Increment the level, cycling through 0, 0.2, 0.4, 0.6, 0.8, 1
+                                    const newLevel = level >= 1 ? 0 : Math.round((level + 0.2) * 100) / 100;
                                     updateExpertise(domain.id, newLevel);
                                     createRipple(e);
                                   }}
                                 >
                                   <div className="flex justify-between items-start mb-3">
                                     <div className="flex items-center gap-2">
-                                      <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center">
-                                        <Icon className="h-4 w-4 text-primary" />
+                                      <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center">
+                                        <Icon className="h-5 w-5 text-primary" />
                                       </div>
-                                      <span className="font-medium text-sm">{domain.name}</span>
+                                      <span className="font-medium">{domain.name}</span>
+                                    </div>
+                                    <div className={`px-2 py-1 rounded-full text-xs font-semibold ${badgeClass}`}>
+                                      {label}
                                     </div>
                                   </div>
                                   
-                                  <div className="mt-2">
-                                    <div className="h-2 w-full bg-muted rounded-full mb-1 overflow-hidden">
+                                  <div className="mt-3">
+                                    <div className="h-2.5 w-full bg-muted rounded-full mb-2 overflow-hidden">
                                       <div 
-                                        className="h-full bg-primary rounded-full transition-all duration-300" 
+                                        className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 dark:from-indigo-600 dark:to-purple-600 rounded-full transition-all duration-300" 
                                         style={{ width: `${level * 100}%` }}
                                       ></div>
                                     </div>
+                                    
+                                    {/* Level markers */}
+                                    <div className="flex justify-between px-0.5 mb-1">
+                                      {[0, 0.2, 0.4, 0.6, 0.8, 1].map((mark) => (
+                                        <div 
+                                          key={mark} 
+                                          className={`w-1 h-2 ${level >= mark ? 'bg-primary/70' : 'bg-gray-200 dark:bg-gray-700'}`}
+                                        ></div>
+                                      ))}
+                                    </div>
+                                    
                                     <div className="flex justify-between items-center">
+                                      <span className="text-xs text-muted-foreground">Novice</span>
                                       <span className="text-xs font-medium">
-                                        {label}
-                                      </span>
-                                      <span className="text-xs text-muted-foreground">
                                         {Math.round(level * 100)}%
                                       </span>
+                                      <span className="text-xs text-muted-foreground">Expert</span>
                                     </div>
                                   </div>
                                 </div>
