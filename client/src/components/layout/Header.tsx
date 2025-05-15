@@ -196,23 +196,23 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 <Button 
                   className="mr-1 bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white h-9 px-2 relative"
                   size="sm"
-                  onClick={() => setLocation("/activate-dotspark")}
+                  onClick={() => setLocation("/my-neura")}
                 >
-                  {/* Icon with sparkle */}
                   <div className="flex items-center relative z-10">
-                    <Check className="h-4 w-4" />
-                    <Sparkles className="h-3 w-3 ml-0.5" />
+                    <div className="relative">
+                      <Brain className="h-4 w-4" />
+                      <div className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-green-500 rounded-full"></div>
+                    </div>
                   </div>
                 </Button>
               ) : (
                 <Button 
-                  className="mr-1 bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white h-9 px-2 relative"
+                  className="mr-1 bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white h-9 px-2 relative"
                   size="sm"
-                  onClick={() => setLocation("/activate-dotspark")}
+                  onClick={() => setLocation("/activate-neura")}
                 >
                   <div className="flex items-center relative z-10">
                     <Brain className="h-4 w-4" />
-                    <Sparkles className="h-3 w-3 ml-0.5 opacity-50" />
                   </div>
                 </Button>
               )}
@@ -294,24 +294,25 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 <Button 
                   className="mr-2 bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white relative"
                   size="sm"
-                  onClick={() => setLocation("/activate-dotspark")}
+                  onClick={() => setLocation("/my-neura")}
                 >
                   <span className="relative z-10 flex items-center">
-                    <Check className="h-4 w-4 mr-1" />
-                    <span>Activated</span>
-                    <Sparkles className="h-3 w-3 ml-1" />
+                    <div className="relative mr-1.5">
+                      <Brain className="h-4 w-4" />
+                      <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-green-500 rounded-full"></div>
+                    </div>
+                    <span>My Neura</span>
                   </span>
                 </Button>
               ) : (
                 <Button 
-                  className="mr-2 bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white relative"
+                  className="mr-2 bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white relative"
                   size="sm"
-                  onClick={() => setLocation("/activate-dotspark")}
+                  onClick={() => setLocation("/activate-neura")}
                 >
                   <span className="relative z-10 flex items-center">
                     <Brain className="h-4 w-4 mr-1" />
-                    <span>Activate DotSpark</span>
-                    <Sparkles className="h-3 w-3 ml-1" />
+                    <span>Activate Neura</span>
                   </span>
                 </Button>
               )}
@@ -417,13 +418,15 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                   size="sm"
                   onClick={() => {
                     setShowMobileNav(false);
-                    setLocation("/activate-dotspark");
+                    setLocation("/my-neura");
                   }}
                 >
                   <span className="relative z-10 flex items-center">
-                    <Check className="h-4 w-4 mr-2" />
-                    <span>Activated</span>
-                    <Sparkles className="h-3 w-3 ml-1" />
+                    <div className="relative mr-2">
+                      <Brain className="h-4 w-4" />
+                      <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-green-500 rounded-full"></div>
+                    </div>
+                    <span>My Neura</span>
                   </span>
                 </Button>
               ) : (
