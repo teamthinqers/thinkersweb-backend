@@ -81,30 +81,28 @@ export default function LandingPage() {
               <Link href="/dashboard" className="text-sm font-medium hover:text-primary">
                 Dashboard
               </Link>
-              {isActivated ? (
-                <Button 
-                  className="bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white h-9 px-2 relative"
-                  size="sm"
-                  onClick={() => setLocation("/activate-neura")}
-                >
-                  {/* Icon with sparkle */}
-                  <div className="flex items-center relative z-10">
-                    <Check className="h-4 w-4" />
-                    <Sparkles className="h-3 w-3 ml-0.5" />
+              <Button 
+                className={`${isActivated 
+                  ? "bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90" 
+                  : "bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"} 
+                  text-white h-9 px-3 relative`}
+                size="sm"
+                onClick={() => setLocation("/activate-neura")}
+              >
+                <div className="flex items-center gap-2 relative z-10">
+                  <div className="flex items-center">
+                    {isActivated ? (
+                      <div className="relative">
+                        <Brain className="h-4 w-4" />
+                        <div className="absolute -top-1 -right-1 h-2 w-2 bg-green-500 rounded-full"></div>
+                      </div>
+                    ) : (
+                      <Brain className="h-4 w-4" />
+                    )}
                   </div>
-                </Button>
-              ) : (
-                <Button 
-                  className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white h-9 px-2 relative"
-                  size="sm"
-                  onClick={() => setLocation("/activate-neura")}
-                >
-                  <div className="flex items-center relative z-10">
-                    <Brain className="h-4 w-4" />
-                    <Sparkles className="h-3 w-3 ml-0.5 opacity-50" />
-                  </div>
-                </Button>
-              )}
+                  <span className="text-xs">My Neura</span>
+                </div>
+              </Button>
             </div>
             
             {/* WhatsApp button, always visible on mobile and desktop regardless of login status */}
@@ -134,23 +132,23 @@ export default function LandingPage() {
               </div>
               
               <div className="block sm:hidden" onClick={() => setLocation("/activate-neura")}>
-                {isActivated ? (
-                  <Button
-                    size="sm"
-                    className="bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white relative h-7 px-2"
-                  >
-                    <Check className="h-3.5 w-3.5 mr-1" />
-                    <span className="text-xs">Neura</span>
-                  </Button>
-                ) : (
-                  <Button
-                    size="sm"
-                    className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white relative h-7 px-2"
-                  >
-                    <Brain className="h-3.5 w-3.5 mr-1" />
-                    <span className="text-xs">Neura</span>
-                  </Button>
-                )}
+                <Button
+                  size="sm"
+                  className={`${isActivated 
+                    ? "bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90" 
+                    : "bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"} 
+                    text-white relative h-7 px-2`}
+                >
+                  <div className="flex items-center gap-1">
+                    <div className="relative">
+                      <Brain className="h-3.5 w-3.5" />
+                      {isActivated && (
+                        <div className="absolute -top-1 -right-1 h-1.5 w-1.5 bg-green-500 rounded-full"></div>
+                      )}
+                    </div>
+                    <span className="text-xs">My Neura</span>
+                  </div>
+                </Button>
               </div>
             </div>
             
@@ -241,23 +239,15 @@ export default function LandingPage() {
                       
                       <SheetClose asChild>
                         <div onClick={() => setLocation("/activate-neura")} className="py-2 hover:text-primary transition-colors flex items-center gap-2">
-                          {isActivated ? (
-                            <>
-                              <div className="flex items-center">
-                                <Check className="h-4 w-4 text-green-500" />
-                                <Sparkles className="h-3 w-3 ml-0.5 text-primary" />
-                              </div>
-                              <span>Neura Active</span>
-                            </>
-                          ) : (
-                            <>
-                              <div className="flex items-center">
-                                <Brain className="h-4 w-4 text-indigo-500" />
-                                <Sparkles className="h-3 w-3 ml-0.5 text-primary opacity-50" />
-                              </div>
-                              <span>Activate Neura</span>
-                            </>
-                          )}
+                          <div className="flex items-center">
+                            <div className="relative">
+                              <Brain className="h-4 w-4 text-indigo-500" />
+                              {isActivated && (
+                                <div className="absolute -top-1 -right-1 h-2 w-2 bg-green-500 rounded-full"></div>
+                              )}
+                            </div>
+                          </div>
+                          <span>My Neura</span>
                         </div>
                       </SheetClose>
 
