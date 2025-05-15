@@ -39,7 +39,7 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Slider } from '@/components/ui/slider';
 
-export default function ActivateDotSpark() {
+export default function ActivateNeura() {
   const [, setLocation] = useLocation();
   const { user, isLoading: isAuthLoading, loginWithGoogle } = useAuth();
   const { toast } = useToast();
@@ -286,10 +286,10 @@ export default function ActivateDotSpark() {
       <div className="flex-1 container mx-auto px-4 py-6 md:py-12 max-w-6xl">
         <div className="mb-8">
           <h1 className="text-3xl font-bold tracking-tight">
-            Activate Your <span className="text-primary">Neura</span>
+            Configure Your <span className="text-primary">Neural Parameters</span>
           </h1>
           <p className="text-muted-foreground mt-2">
-            Set up your personal cognitive extension to enhance your thinking and capture your ideas.
+            Fine-tune your personal neural extension to match your unique thought patterns and cognitive style.
           </p>
         </div>
         

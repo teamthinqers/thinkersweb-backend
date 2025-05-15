@@ -56,16 +56,16 @@ export default function LandingPage() {
               <Link href="/dashboard" className="text-sm font-medium hover:text-primary">
                 Dashboard
               </Link>
-              <Link href="/activate-dotspark" className="hidden sm:block ml-2">
+              <a href="#setup-dotspark" className="hidden sm:block ml-2">
                 <Button
                   size="sm"
                   className="bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white relative group"
                 >
                   <Brain className="h-4 w-4 mr-1" />
-                  <span>Activate DotSpark</span>
+                  <span>Setup DotSpark</span>
                   <Sparkles className="h-3 w-3 absolute top-1 right-1 text-white/80" />
                 </Button>
-              </Link>
+              </a>
             </div>
             
             {/* WhatsApp button, always visible on mobile and desktop regardless of login status */}
@@ -94,15 +94,15 @@ export default function LandingPage() {
                 </Button>
               </div>
               
-              <Link href="/activate-dotspark" className="block sm:hidden">
+              <a href="#setup-dotspark" className="block sm:hidden">
                 <Button
                   size="sm"
                   className="bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white relative h-7 px-2"
                 >
                   <Brain className="h-3.5 w-3.5 mr-1" />
-                  <span className="text-xs">Activate</span>
+                  <span className="text-xs">Setup</span>
                 </Button>
-              </Link>
+              </a>
             </div>
             
             {/* User profile or sign in button */}
@@ -191,11 +191,11 @@ export default function LandingPage() {
                       </SheetClose>
                       
                       <SheetClose asChild>
-                        <Link href="/activate-dotspark" className="py-2 hover:text-primary transition-colors flex items-center gap-2 relative">
+                        <a href="#setup-dotspark" className="py-2 hover:text-primary transition-colors flex items-center gap-2 relative">
                           <Brain className="h-4 w-4 text-primary" />
-                          <span>Activate DotSpark</span>
+                          <span>Setup DotSpark</span>
                           <Sparkles className="h-3 w-3 absolute left-1 top-6 text-indigo-400" />
-                        </Link>
+                        </a>
                       </SheetClose>
                     </div>
                     
@@ -464,7 +464,7 @@ export default function LandingPage() {
       </section>
       
       {/* Setup DotSpark 3-step process section */}
-      <section className="py-16 bg-gradient-to-b from-background to-muted/10 relative overflow-hidden">
+      <section id="setup-dotspark" className="py-16 bg-gradient-to-b from-background to-muted/10 relative overflow-hidden">
         <div className="container mx-auto px-4 md:px-6">
           <div className="text-center mb-10">
             <h2 className="text-2xl md:text-3xl font-bold">
