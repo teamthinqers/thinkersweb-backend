@@ -256,7 +256,7 @@ export function useWhatsAppStatus() {
       sessionStorage.setItem('show_activation_success', 'true');
       setShowActivationSuccess(true);
       
-      // Mark the user as having completed neural activation
+      // Mark the user as having completed DotSpark activation
       sessionStorage.setItem('dotspark_activation_completed', 'true');
       
       // Dispatch success events (both legacy and new formats)

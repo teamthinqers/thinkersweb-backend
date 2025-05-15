@@ -436,7 +436,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                   }}
                 >
                   <Brain className="h-5 w-5 mr-2" />
-                  <span>Activate Neural Extension</span>
+                  <span>Activate DotSpark</span>
                   <Sparkles className="h-3 w-3 absolute top-2 right-2" />
                 </Button>
               )}
