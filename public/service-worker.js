@@ -1,4 +1,4 @@
-const CACHE_NAME = 'dotspark-neural-extension-v1';
+const CACHE_NAME = 'dotspark-neura-v1';
 const OFFLINE_URL = '/offline.html';
 
 // Resources to cache
