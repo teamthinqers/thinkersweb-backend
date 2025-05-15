@@ -7,7 +7,7 @@ import { Progress } from '@/components/ui/progress';
 import { Sparkles, Brain, LightbulbIcon, Zap, RefreshCw } from 'lucide-react';
 import { useDotSpark } from '@/hooks/useDotSpark';
 
-export function NeuralInsights() {
+export function DotSparkInsights() {
   const { 
     status, 
     insights, 
@@ -15,7 +15,7 @@ export function NeuralInsights() {
     isLoading, 
     formatAdaptationLevel,
     refresh 
-  } = useNeuralExtension();
+  } = useDotSpark();
   
   const handleRefresh = () => {
     refresh();
@@ -27,7 +27,7 @@ export function NeuralInsights() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Brain className="h-5 w-5 text-primary" />
-            Neural Extension Insights
+            DotSpark Insights
           </CardTitle>
           <CardDescription>
             Loading neural extension data...
@@ -50,7 +50,7 @@ export function NeuralInsights() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Brain className="h-5 w-5 text-primary" />
-            Neural Extension Insights
+            DotSpark Insights
           </CardTitle>
           <CardDescription>
             Your neural extension is not yet fully activated
@@ -68,7 +68,7 @@ export function NeuralInsights() {
             </p>
             <Progress value={status?.adaptationLevel ? status.adaptationLevel * 100 : 0} className="w-full max-w-md mt-4" />
             <p className="text-sm text-muted-foreground">
-              Neural Extension Adaptation Level: {formatAdaptationLevel(status?.adaptationLevel)}
+              DotSpark Adaptation Level: {formatAdaptationLevel(status?.adaptationLevel)}
             </p>
           </div>
         </CardContent>
@@ -82,7 +82,7 @@ export function NeuralInsights() {
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">
             <Brain className="h-5 w-5 text-primary" />
-            Neural Extension Insights
+            DotSpark Insights
           </CardTitle>
           <Button 
             variant="outline" 
@@ -103,7 +103,7 @@ export function NeuralInsights() {
           <div className="flex flex-col gap-2">
             <div className="flex gap-2 items-center">
               <Sparkles className="h-4 w-4 text-amber-500" />
-              <h3 className="font-medium">Neural Insights</h3>
+              <h3 className="font-medium">DotSpark Insights</h3>
             </div>
             {insights && insights.length > 0 ? (
               <div className="space-y-3 mt-2">
