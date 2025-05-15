@@ -143,7 +143,7 @@ export default function NeuralTuningPage() {
   // Function to handle DotSpark name changes
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newName = e.target.value;
-    setNeuralName(newName);
+    setDotsparkName(newName);
     localStorage.setItem('dotsparkName', newName);
   };
   
@@ -224,7 +224,7 @@ export default function NeuralTuningPage() {
             <div className="flex items-center gap-2">
               <BrainCircuit className="h-5 w-5 text-purple-700 dark:text-purple-400" />
               <CardTitle>
-                <span className="font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">{neuralName}</span>
+                <span className="font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">{dotsparkName}</span>
               </CardTitle>
             </div>
             <Badge className="bg-purple-100 text-purple-800 dark:bg-purple-900/50 dark:text-purple-200 hover:bg-purple-200 dark:hover:bg-purple-800/50">
@@ -452,15 +452,15 @@ export default function NeuralTuningPage() {
                 <div className="relative">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="absolute left-3 top-1/2 -translate-y-1/2 text-indigo-500" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 12a6 6 0 0 0 12 0c0-1.39-.5-2.68-1.34-3.7.3-1.2.58-2.1.95-2.8a1 1 0 0 0-.17-1.14 1.8 1.8 0 0 0-2.27-.17 6 6 0 0 0-10.32 4.68A5.77 5.77 0 0 0 4.5 12c0 3.14 2.56 5.7 5.68 5.7 1.38 0 2.58-.75 3.32-1.2a10.8 10.8 0 0 0 3.5 0c.33.19.94.47 1.6.5a1.5 1.5 0 0 0 1.26-.63c.3-.38.36-.9.25-1.37C19.75 13.75 19.5 12.75 19.5 12a6 6 0 0 0-.28-1.81"></path><path d="M14 10a1 1 0 1 0 2 0 1 1 0 1 0-2 0"></path><path d="M8 10a1 1 0 1 0 2 0 1 1 0 1 0-2 0"></path></svg>
                   <Input
-                    id="neural-name"
-                    value={neuralName}
+                    id="dotspark-name"
+                    value={dotsparkName}
                     onChange={handleNameChange}
                     className="pl-10 border-indigo-200 dark:border-indigo-800 focus:border-indigo-500 dark:focus:border-indigo-500"
-                    placeholder="Enter a name for your neural extension"
+                    placeholder="Enter a name for your DotSpark"
                   />
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Give your neural extension a unique name to help personalize your experience
+                  Give your DotSpark a unique name to help personalize your experience
                 </p>
               </div>
 
