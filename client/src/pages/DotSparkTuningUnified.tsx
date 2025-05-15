@@ -34,7 +34,6 @@ import {
   Check,
   Puzzle,
   CircleSlash,
-  NetworkIcon2,
   CircleX,
   Aperture
 } from 'lucide-react';
@@ -310,12 +309,12 @@ export default function DotSparkTuningUnified() {
         </Button>
       </div>
       
-      {/* Main capacity metrics */}
+      {/* Main Neura capacity metrics */}
       <Card className="overflow-hidden border-none shadow-md bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-950 dark:to-blue-950">
         <CardContent className="pt-6">
           <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
             <Gauge className="h-5 w-5 text-blue-500" />
-            <span>DotSpark Capacity Metrics</span>
+            <span>My Neura Capacity Metrics</span>
           </h2>
           
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
