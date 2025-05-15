@@ -41,8 +41,8 @@ interface UserInsight {
   generatedAt: Date;
 }
 
-// Neural extension tuning parameters - allows users to customize how their extension works
-interface NeuralTuning {
+// DotSpark tuning parameters - allows users to customize how their DotSpark works
+interface DotSparkTuning {
   // Core processing parameters
   creativity: number; // 0.0 to 1.0 - affects response variety and uniqueness
   precision: number;  // 0.0 to 1.0 - affects factual accuracy and detail level
@@ -104,8 +104,8 @@ const userNeuralTuning = new Map<number, NeuralTuning>();
 // Store gamification elements for each user
 const userGameElements = new Map<number, NeuralGameElements>();
 
-// Default neural tuning parameters
-const DEFAULT_NEURAL_TUNING: NeuralTuning = {
+// Default DotSpark tuning parameters
+const DEFAULT_DOTSPARK_TUNING: DotSparkTuning = {
   creativity: 0.5,
   precision: 0.5,
   speed: 0.5,
@@ -754,7 +754,7 @@ export function updateGameElements(
 }
 
 /**
- * Award experience points to a user's neural extension
+ * Award experience points to a user's DotSpark
  * @param userId User ID
  * @param amount Amount of XP to award
  * @param reason Reason for the XP award (for logging)
@@ -774,11 +774,11 @@ export function awardExperience(
 }
 
 /**
- * Get the neural extension status for a user
+ * Get the DotSpark status for a user
  * @param userId User ID
  * @returns Status information
  */
-export function getNeuralExtensionStatus(userId: number): {
+export function getDotSparkStatus(userId: number): {
   isActive: boolean;
   topicsTracked: number;
   patternsDetected: number;
