@@ -6,13 +6,26 @@ import { useLocation } from "wouter";
 import { Loader2, Smartphone, MessageCircle, SendHorizonal, Check } from "lucide-react";
 import { useWhatsAppStatus } from "@/hooks/useWhatsAppStatus";
 
-export function DotSparkWhatsAppLinking() {
+interface DotSparkWhatsAppLinkingProps {
+  isActivated?: boolean;
+  isChecking?: boolean;
+  directLink?: string;
+}
+
+export function DotSparkWhatsAppLinking({
+  isActivated: externalIsActivated,
+  isChecking: externalIsChecking,
+  directLink: externalDirectLink
+}: DotSparkWhatsAppLinkingProps) {
   const { toast } = useToast();
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [linkSent, setLinkSent] = useState(false);
   const [, setLocation] = useLocation();
   const { simulateActivation, isWhatsAppConnected, phoneNumber } = useWhatsAppStatus();
+  
+  // Use external props if provided, otherwise use the hook values
+  const actualIsActivated = externalIsActivated !== undefined ? externalIsActivated : isWhatsAppConnected;
   
   // Check for special phone number
   const isSpecialPhoneNumber = phoneNumber === '+919840884459';
