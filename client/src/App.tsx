@@ -17,7 +17,7 @@ import WhatsAppAdmin from "@/pages/WhatsAppAdmin";
 import WhatsAppTest from "@/pages/WhatsAppTest";
 import WhatsAppEntries from "@/pages/WhatsAppEntries";
 import FixedEntries from "@/pages/FixedEntries";
-import ActivateDotSpark from "@/pages/ActivateNeuralExtension";
+import ActivateDotSpark from "@/pages/ActivateDotSpark";
 import DotSparkTuningPage from "@/pages/NeuralTuningPage";
 import DotSparkCapacityPage from "@/pages/NeuralCapacityPage";
 import Testing from "@/pages/Testing";
