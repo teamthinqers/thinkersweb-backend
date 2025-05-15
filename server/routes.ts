@@ -47,6 +47,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/api/health', (req, res) => {
     res.status(200).json({ status: 'ok', time: new Date().toISOString() });
   });
+  
+  // Special routes for PWA files to ensure correct MIME types
+  app.get('/service-worker.js', (req, res) => {
+    res.setHeader('Content-Type', 'application/javascript');
+    res.sendFile('service-worker.js', { root: './public' });
+  });
+  
+  app.get('/manifest.json', (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    res.sendFile('manifest.json', { root: './public' });
+  });
+  
+  app.get('/offline.html', (req, res) => {
+    res.setHeader('Content-Type', 'text/html');
+    res.sendFile('offline.html', { root: './public' });
+  });
 
   // Get entries endpoint - uses auth when available, fallback to demo user
   app.get(`${apiPrefix}/entries`, async (req: Request, res: Response) => {
