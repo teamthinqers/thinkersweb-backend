@@ -784,14 +784,14 @@ export function getDotSparkStatus(userId: number): {
   patternsDetected: number;
   insightsGenerated: number;
   adaptationLevel: number; // 0.0 to 1.0
-  tuning: NeuralTuning;
+  tuning: DotSparkTuning;
   gameElements: NeuralGameElements;
 } {
   // Get user data
   const connections = userTopicConnections.get(userId) || [];
   const patterns = userPatterns.get(userId) || [];
   const insights = userInsights.get(userId) || [];
-  const tuning = getNeuralTuning(userId);
+  const tuning = getDotSparkTuning(userId);
   const gameElements = getGameElements(userId);
   
   // Calculate adaptation level based on amount of data collected
