@@ -9,7 +9,7 @@ const DashboardPreview: React.FC = () => {
     <div className="bg-background/80 backdrop-blur-sm border rounded-xl shadow-xl overflow-hidden">
       {/* Demo Banner */}
       <div className="bg-primary/90 text-white p-2 text-center text-sm font-medium">
-        <Sparkles className="inline-block h-3 w-3 mr-1" /> Neural Extension Dashboard Preview
+        <Sparkles className="inline-block h-3 w-3 mr-1" /> DotSpark Dashboard Preview
       </div>
       
       <div className="p-4">
@@ -35,7 +35,7 @@ const DashboardPreview: React.FC = () => {
           <Card className="bg-white/70 dark:bg-black/20 overflow-hidden border p-3">
             <div className="flex justify-between items-start">
               <div>
-                <div className="text-sm font-medium">Neural Connections</div>
+                <div className="text-sm font-medium">DotSpark Connections</div>
                 <div className="flex items-baseline mt-1">
                   <div className="text-2xl font-bold tracking-tight">782</div>
                   <div className="text-xs text-emerald-500 ml-2">+32%</div>
@@ -51,7 +51,7 @@ const DashboardPreview: React.FC = () => {
           <Card className="bg-white/70 dark:bg-black/20 overflow-hidden border p-3">
             <div className="flex justify-between items-start">
               <div>
-                <div className="text-sm font-medium">Neural Achievement</div>
+                <div className="text-sm font-medium">DotSpark Achievement</div>
                 <div className="flex items-baseline mt-1">
                   <div className="text-2xl font-bold tracking-tight">Elite</div>
                   <div className="text-xs text-emerald-500 ml-2">Top 5%</div>
@@ -91,14 +91,14 @@ const DashboardPreview: React.FC = () => {
               <div className="absolute top-1/4 left-1/4 w-[40%] h-[1px] bg-primary/50 transform rotate-12 origin-left"></div>
               <div className="absolute top-1/3 right-1/3 w-[30%] h-[1px] bg-indigo-500/50 transform -rotate-12 origin-right"></div>
             </div>
-            <span className="text-xs text-muted-foreground relative z-10">Interactive Neural Network Visualization</span>
+            <span className="text-xs text-muted-foreground relative z-10">Interactive DotSpark Network Visualization</span>
           </div>
         </div>
         
         {/* Recent Entry Preview */}
         <div className="mb-2">
           <div className="flex items-center justify-between mb-2">
-            <div className="text-sm font-medium">Recent Neural Learnings</div>
+            <div className="text-sm font-medium">Recent DotSpark Learnings</div>
           </div>
           
           <Card className="bg-white/70 dark:bg-black/20 overflow-hidden border p-3">

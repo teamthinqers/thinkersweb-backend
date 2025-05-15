@@ -637,20 +637,20 @@ export function getDotSparkTuning(userId: number): DotSparkTuning {
 }
 
 /**
- * Update a user's neural tuning parameters
+ * Update a user's DotSpark tuning parameters
  * @param userId User ID
  * @param tuningParams New tuning parameters (partial update supported)
- * @returns Updated neural tuning parameters
+ * @returns Updated DotSpark tuning parameters
  */
-export function updateNeuralTuning(
+export function updateDotSparkTuning(
   userId: number, 
-  tuningParams: Partial<NeuralTuning>
-): NeuralTuning {
+  tuningParams: Partial<DotSparkTuning>
+): DotSparkTuning {
   // Get current parameters or initialize with defaults
-  const currentParams = getNeuralTuning(userId);
+  const currentParams = getDotSparkTuning(userId);
   
   // Update with new parameters (partial update)
-  const updatedParams: NeuralTuning = {
+  const updatedParams: DotSparkTuning = {
     ...currentParams,
     ...tuningParams,
     // Handle nested objects specially
@@ -663,7 +663,7 @@ export function updateNeuralTuning(
   };
   
   // Store updated parameters
-  userNeuralTuning.set(userId, updatedParams);
+  userDotSparkTuning.set(userId, updatedParams);
   
   // Check if this is the first time tuning - unlock achievement
   const gameElements = getGameElements(userId);
