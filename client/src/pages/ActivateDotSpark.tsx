@@ -30,7 +30,8 @@ import {
   Star,
   Microscope,
   GraduationCap,
-  Target
+  Target,
+  Search
 } from 'lucide-react';
 import { DotSparkWhatsAppLinking } from '@/components/dotspark/DotSparkWhatsAppLinking';
 import Header from '@/components/layout/Header';
@@ -596,11 +597,35 @@ export default function ActivateDotSpark() {
                       <div className="text-center mb-6">
                         <h3 className="text-xl font-semibold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400">Domain Expertise</h3>
                         <p className="text-sm text-muted-foreground max-w-lg mx-auto">
-                          Tap on domains to set your expertise level. Your Neura will adapt its cognitive processing based on your knowledge patterns.
+                          Tap on domains to set your expertise level. Your Neura will adapt its cognitive processing based on your unique knowledge patterns.
                         </p>
                       </div>
                       
-                      {domainGroups.map((group) => (
+                      <div className="flex justify-between items-center mb-4">
+                        <div className="flex items-center">
+                          <BrainCircuit className="h-5 w-5 text-primary mr-2" />
+                          <h3 className="text-base font-medium">Mastery Score: <span className="text-primary">{calculateMasteryScore()}</span></h3>
+                        </div>
+                        <div className="relative">
+                          <Search className="h-4 w-4 absolute left-2.5 top-2.5 text-muted-foreground" />
+                          <input
+                            type="text"
+                            placeholder="Filter domains..."
+                            className="pl-9 h-9 rounded-md border border-input bg-transparent text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                            value={domainFilter}
+                            onChange={(e) => setDomainFilter(e.target.value)}
+                          />
+                        </div>
+                      </div>
+                      
+                      {domainGroups
+                        .filter(group => {
+                          if (!domainFilter) return true;
+                          return group.domains.some(domain => 
+                            domain.name.toLowerCase().includes(domainFilter.toLowerCase())
+                          );
+                        })
+                        .map((group) => (
                         <div key={group.name} className="mb-8">
                           <div className="flex items-center mb-4">
                             <div className="h-px flex-grow bg-gray-200 dark:bg-gray-800 mr-3"></div>
@@ -608,23 +633,50 @@ export default function ActivateDotSpark() {
                             <div className="h-px flex-grow bg-gray-200 dark:bg-gray-800 ml-3"></div>
                           </div>
                           <div className="grid gap-4 md:grid-cols-3">
-                            {group.domains.map((domain) => {
+                            {group.domains
+                              .filter(domain => 
+                                !domainFilter || domain.name.toLowerCase().includes(domainFilter.toLowerCase())
+                              )
+                              .map((domain) => {
                               const Icon = domain.icon;
                               const level = selectedExpertise[domain.id] || 0;
                               const label = getExpertiseLabel(level);
                               
-                              // Determine badge color based on expertise level
+                              // Determine colors based on expertise level
                               let badgeClass = "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400";
-                              if (level > 0.8) badgeClass = "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300";
-                              else if (level > 0.6) badgeClass = "bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-300";
-                              else if (level > 0.4) badgeClass = "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300";
-                              else if (level > 0.2) badgeClass = "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300";
-                              else if (level > 0) badgeClass = "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300";
+                              let cardClass = "border";
+                              let iconBgClass = "bg-primary/10";
+                              
+                              if (level > 0.8) {
+                                badgeClass = "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300";
+                                cardClass = "border-purple-200 dark:border-purple-900/40 bg-purple-50/40 dark:bg-purple-900/10";
+                                iconBgClass = "bg-purple-100 dark:bg-purple-900/30";
+                              }
+                              else if (level > 0.6) {
+                                badgeClass = "bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-300";
+                                cardClass = "border-indigo-200 dark:border-indigo-900/40 bg-indigo-50/40 dark:bg-indigo-900/10";
+                                iconBgClass = "bg-indigo-100 dark:bg-indigo-900/30";
+                              }
+                              else if (level > 0.4) {
+                                badgeClass = "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300";
+                                cardClass = "border-blue-200 dark:border-blue-900/40 bg-blue-50/40 dark:bg-blue-900/10";
+                                iconBgClass = "bg-blue-100 dark:bg-blue-900/30";
+                              }
+                              else if (level > 0.2) {
+                                badgeClass = "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300";
+                                cardClass = "border-green-200 dark:border-green-900/40 bg-green-50/40 dark:bg-green-900/10";
+                                iconBgClass = "bg-green-100 dark:bg-green-900/30";
+                              }
+                              else if (level > 0) {
+                                badgeClass = "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300";
+                                cardClass = "border-amber-200 dark:border-amber-900/40 bg-amber-50/40 dark:bg-amber-900/10";
+                                iconBgClass = "bg-amber-100 dark:bg-amber-900/30";
+                              }
                               
                               return (
                                 <div
                                   key={domain.id}
-                                  className="relative overflow-hidden border rounded-lg p-4 cursor-pointer transition-all duration-200 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] bg-background"
+                                  className={`relative overflow-hidden rounded-lg p-4 cursor-pointer transition-all duration-200 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] ${cardClass}`}
                                   onClick={(e) => {
                                     // Increment the level, cycling through 0, 0.2, 0.4, 0.6, 0.8, 1
                                     const newLevel = level >= 1 ? 0 : Math.round((level + 0.2) * 100) / 100;
@@ -634,18 +686,18 @@ export default function ActivateDotSpark() {
                                 >
                                   <div className="flex justify-between items-start mb-3">
                                     <div className="flex items-center gap-2">
-                                      <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center">
+                                      <div className={`w-9 h-9 rounded-full ${iconBgClass} flex items-center justify-center`}>
                                         <Icon className="h-5 w-5 text-primary" />
                                       </div>
                                       <span className="font-medium">{domain.name}</span>
                                     </div>
-                                    <div className={`px-2 py-1 rounded-full text-xs font-semibold ${badgeClass}`}>
+                                    <div className={`px-2.5 py-1 rounded-full text-xs font-semibold ${badgeClass}`}>
                                       {label}
                                     </div>
                                   </div>
                                   
                                   <div className="mt-3">
-                                    <div className="h-2.5 w-full bg-muted rounded-full mb-2 overflow-hidden">
+                                    <div className="h-3 w-full bg-muted rounded-full mb-2 overflow-hidden">
                                       <div 
                                         className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 dark:from-indigo-600 dark:to-purple-600 rounded-full transition-all duration-300" 
                                         style={{ width: `${level * 100}%` }}
@@ -657,12 +709,12 @@ export default function ActivateDotSpark() {
                                       {[0, 0.2, 0.4, 0.6, 0.8, 1].map((mark) => (
                                         <div 
                                           key={mark} 
-                                          className={`w-1 h-2 ${level >= mark ? 'bg-primary/70' : 'bg-gray-200 dark:bg-gray-700'}`}
+                                          className={`w-1.5 h-2.5 rounded-sm transition-colors ${level >= mark ? 'bg-primary/70' : 'bg-gray-200 dark:bg-gray-700'}`}
                                         ></div>
                                       ))}
                                     </div>
                                     
-                                    <div className="flex justify-between items-center">
+                                    <div className="flex justify-between items-center mt-1">
                                       <span className="text-xs text-muted-foreground">Novice</span>
                                       <span className="text-xs font-medium">
                                         {Math.round(level * 100)}%
