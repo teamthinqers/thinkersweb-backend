@@ -462,6 +462,89 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+      
+      {/* Setup DotSpark 3-step process section */}
+      <section className="py-16 bg-gradient-to-b from-background to-muted/10 relative overflow-hidden">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="text-center mb-10">
+            <h2 className="text-2xl md:text-3xl font-bold">
+              Setup <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-indigo-600">DotSpark</span> in 3 Simple Steps
+            </h2>
+            <p className="text-muted-foreground mt-2 max-w-2xl mx-auto">
+              Get started with your personal neural extension in minutes
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8 max-w-5xl mx-auto">
+            {/* Step 1: Sign In */}
+            <div className="bg-card rounded-lg p-6 relative group hover:shadow-lg transition-all duration-300 border border-border/50 overflow-hidden">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:bg-primary/10 transition-colors duration-300"></div>
+              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 text-primary mb-4 relative z-10">
+                <User className="h-6 w-6" />
+              </div>
+              <div className="absolute top-6 right-6 flex items-center justify-center w-8 h-8 rounded-full bg-primary/80 text-white font-bold text-lg">
+                1
+              </div>
+              <h3 className="text-xl font-semibold mb-2">Sign In or Register</h3>
+              <p className="text-muted-foreground text-sm">Create your account to personalize your DotSpark experience.</p>
+              <Button asChild variant="outline" className="mt-4 w-full">
+                <Link href="/auth">
+                  Get Started
+                </Link>
+              </Button>
+            </div>
+            
+            {/* Step 2: Activate Neura */}
+            <div className="bg-card rounded-lg p-6 relative group hover:shadow-lg transition-all duration-300 border border-border/50 overflow-hidden">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-500/5 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:bg-indigo-500/10 transition-colors duration-300"></div>
+              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-indigo-500/10 text-indigo-500 mb-4 relative z-10">
+                <Brain className="h-6 w-6" />
+              </div>
+              <div className="absolute top-6 right-6 flex items-center justify-center w-8 h-8 rounded-full bg-indigo-500/80 text-white font-bold text-lg">
+                2
+              </div>
+              <h3 className="text-xl font-semibold mb-2">Activate Neura</h3>
+              <p className="text-muted-foreground text-sm">Configure your neural extension parameters to match your thinking style.</p>
+              <Button asChild variant="outline" className="mt-4 w-full">
+                <Link href="/activate-neura">
+                  Setup Neura
+                </Link>
+              </Button>
+            </div>
+            
+            {/* Step 3: Connect WhatsApp */}
+            <div className="bg-card rounded-lg p-6 relative group hover:shadow-lg transition-all duration-300 border border-border/50 overflow-hidden">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-[#25D366]/5 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:bg-[#25D366]/10 transition-colors duration-300"></div>
+              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-[#25D366]/10 text-[#25D366] mb-4 relative z-10">
+                <MessageCircle className="h-6 w-6" />
+              </div>
+              <div className="absolute top-6 right-6 flex items-center justify-center w-8 h-8 rounded-full bg-[#25D366]/80 text-white font-bold text-lg">
+                3
+              </div>
+              <h3 className="text-xl font-semibold mb-2">Link WhatsApp</h3>
+              <p className="text-muted-foreground text-sm">Connect your phone to interact with DotSpark anywhere, anytime.</p>
+              <CompactWhatsAppButton className="mt-4 w-full" variant="outline" />
+            </div>
+          </div>
+          
+          {/* Progress bar with conditional steps completed */}
+          <div className="max-w-md mx-auto mt-12">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-medium">Setup Progress</span>
+              <span className="text-sm font-medium">{user ? (isWhatsAppConnected ? "100%" : "67%") : "33%"}</span>
+            </div>
+            <div className="w-full bg-muted rounded-full h-2.5 dark:bg-muted/70 overflow-hidden">
+              <div className="bg-gradient-to-r from-primary to-indigo-600 h-2.5 rounded-full" 
+                   style={{ width: user ? (isWhatsAppConnected ? "100%" : "67%") : "33%" }}></div>
+            </div>
+            <div className="flex justify-between text-xs text-muted-foreground mt-1">
+              <span className={user ? "text-primary font-medium" : ""}>Sign In</span>
+              <span className={user && !isWhatsAppConnected ? "text-primary font-medium" : ""}>Activate</span>
+              <span className={isWhatsAppConnected ? "text-primary font-medium" : ""}>Connect</span>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Visual showcase section replacing the WhatsApp mockup */}
       
