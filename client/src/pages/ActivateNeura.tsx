@@ -144,35 +144,15 @@ export default function ActivateNeura() {
     }
   };
   
-  // Update repairActivationStatus to be a proper activation function
+  // Use our simplified activation function
   const activateNeura = async () => {
     setIsChecking(true);
     try {
-      // Save any pending changes first
-      if (unsavedChanges) {
-        await saveChanges();
+      const success = await simpleActivateNeura();
+      if (success) {
+        // Refresh the page to show activated state
+        window.location.reload();
       }
-      
-      // Set local activation status to true
-      localStorage.setItem("neuraActivated", "true");
-      
-      // Trigger backend activation if needed
-      await repairActivationStatus();
-      
-      toast({
-        title: "Neura Activated!",
-        description: "Your neural extension is now fully activated and ready to use.",
-        variant: "default"
-      });
-      
-      // Refresh the page to show activated state
-      window.location.reload();
-    } catch (error) {
-      toast({
-        title: "Activation Error",
-        description: "There was a problem activating your Neura. Please try again.",
-        variant: "destructive"
-      });
     } finally {
       setIsChecking(false);
     }
@@ -382,8 +362,8 @@ export default function ActivateNeura() {
     }
   };
   
-  // Determine if we're currently checking activation status
-  const isChecking = isWhatsAppStatusLoading;
+  // Use isWhatsAppStatusLoading for checking status
+  // (isChecking is already declared above)
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -1104,16 +1084,18 @@ export default function ActivateNeura() {
                   ) : (
                     user && tuning && Object.keys(tuning).length > 0 && (
                       <div className="flex space-x-3">
-                        {unsavedChanges && (
-                          <Button 
-                            onClick={saveChanges}
-                            variant="outline"
-                            className="border-purple-200 hover:bg-purple-50 dark:border-purple-800 dark:hover:bg-purple-950/50"
-                          >
-                            <Save className="mr-2 h-4 w-4" />
-                            Save Parameters
-                          </Button>
-                        )}
+                        <Button 
+                          onClick={saveChanges}
+                          variant={unsavedChanges ? "default" : "outline"}
+                          disabled={!unsavedChanges}
+                          className={unsavedChanges 
+                            ? "bg-green-500 hover:bg-green-600 text-white"
+                            : "border-purple-200 text-muted-foreground hover:bg-purple-50 dark:border-purple-800 dark:hover:bg-purple-950/50"
+                          }
+                        >
+                          <Save className="mr-2 h-4 w-4" />
+                          {unsavedChanges ? "Save Changes" : "No Changes to Save"}
+                        </Button>
                         
                         <Button 
                           onClick={activateNeura}
