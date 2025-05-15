@@ -399,17 +399,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
   
-  // Neural Extension API endpoints
+  // DotSpark API endpoints
   
-  // Get neural extension status for the current user
-  app.get(`${apiPrefix}/neural-extension/status`, isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
+  // Get DotSpark status for the current user
+  app.get(`${apiPrefix}/dotspark/status`, isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
     try {
       const userId = req.user?.id;
       if (!userId) {
         return res.status(401).json({ error: 'User not authenticated' });
       }
       
-      const { getNeuralExtensionStatus } = await import('./neural-extension');
+      const { getDotSparkStatus } = await import('./dotspark');
       const status = getNeuralExtensionStatus(userId);
       
       res.status(200).json(status);

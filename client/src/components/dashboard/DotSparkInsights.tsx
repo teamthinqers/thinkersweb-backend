@@ -30,13 +30,13 @@ export function DotSparkInsights() {
             DotSpark Insights
           </CardTitle>
           <CardDescription>
-            Loading neural extension data...
+            Loading DotSpark data...
           </CardDescription>
         </CardHeader>
         <CardContent className="flex justify-center py-6">
           <div className="flex flex-col items-center gap-2">
             <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-primary"></div>
-            <p className="text-sm text-muted-foreground">Analyzing your neural patterns</p>
+            <p className="text-sm text-muted-foreground">Analyzing your thought patterns</p>
           </div>
         </CardContent>
       </Card>
@@ -53,7 +53,7 @@ export function DotSparkInsights() {
             DotSpark Insights
           </CardTitle>
           <CardDescription>
-            Your neural extension is not yet fully activated
+            Your DotSpark is not yet fully activated
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -63,7 +63,7 @@ export function DotSparkInsights() {
               <p className="text-lg font-medium">Continue interacting to activate</p>
             </div>
             <p className="text-center text-muted-foreground">
-              Your neural extension needs more interaction data to start generating insights.
+              Your DotSpark needs more interaction data to start generating insights.
               Continue chatting on WhatsApp or through the dashboard to activate.
             </p>
             <Progress value={status?.adaptationLevel ? status.adaptationLevel * 100 : 0} className="w-full max-w-md mt-4" />
@@ -95,7 +95,7 @@ export function DotSparkInsights() {
           </Button>
         </div>
         <CardDescription>
-          Your neural extension has discovered the following insights based on your interactions
+          Your DotSpark has discovered the following insights based on your interactions
         </CardDescription>
       </CardHeader>
       <CardContent>
