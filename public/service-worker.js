@@ -1,31 +1,21 @@
-// Simple service worker with minimal functionality
-const CACHE_NAME = 'dotspark-minimal-v1';
+// Absolute minimum service worker with no functionality at all
+// Just exists to make the app installable as a PWA
 
-// Set up necessary global variables to prevent runtime errors
-self.network = { isOnline: () => true };
-self.plugin = { network: self.network };
-self.analytics = { trackEvent: () => {} };
-self.importScripts = self.importScripts || (() => {});
+// For debugging - log the complete global object
+// console.log('Service worker global object:', self);
 
-// Install event
-self.addEventListener('install', event => {
-  console.log('[Service Worker] Install');
+// Install handler - do nothing but skipWaiting
+self.addEventListener('install', function(event) {
+  console.log('[Service Worker] Installing service worker');
   self.skipWaiting();
 });
 
-// Activate event
-self.addEventListener('activate', event => {
-  console.log('[Service Worker] Activate');
+// Activate handler - do nothing but claim clients
+self.addEventListener('activate', function(event) {
+  console.log('[Service Worker] Activating service worker');
   self.clients.claim();
 });
 
-// Skip fetch intercepting completely to avoid any runtime errors
-// The service worker will still make the app installable as a PWA
-// but won't cache or intercept network requests
+// No fetch handler - we don't want to intercept any network requests
 
-// Listen for messages from clients
-self.addEventListener('message', event => {
-  if (event.data && event.data.type === 'SKIP_WAITING') {
-    self.skipWaiting();
-  }
-});
+// No message handler - we don't need to receive any messages
