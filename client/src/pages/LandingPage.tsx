@@ -652,7 +652,7 @@ export default function LandingPage() {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            <div className="bg-card border border-primary/10 rounded-xl p-6 relative hover:border-primary/30 transition-all duration-300 neural-node">
+            <div className="bg-card border border-primary/10 rounded-xl p-6 relative hover:border-primary/30 transition-all duration-300 cognitive-node">
               <div className="w-12 h-12 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-xl mb-4 shadow-inner">1</div>
               <h3 className="text-xl font-bold mb-3">Define Cognitive Pathways</h3>
               <p className="text-muted-foreground">Train your Cognitive OS by identifying the professional domains and thinking patterns you want it to emulate.</p>
@@ -661,7 +661,7 @@ export default function LandingPage() {
               </div>
             </div>
             
-            <div className="bg-card border border-primary/10 rounded-xl p-6 relative hover:border-primary/30 transition-all duration-300 neural-node">
+            <div className="bg-card border border-primary/10 rounded-xl p-6 relative hover:border-primary/30 transition-all duration-300 cognitive-node">
               <div className="w-12 h-12 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-xl mb-4 shadow-inner">2</div>
               <h3 className="text-xl font-bold mb-3">Seamless Integration</h3>
               <p className="text-muted-foreground">Connect your Cognitive OS to your daily workflow through WhatsApp, allowing for natural thought enhancement whenever needed.</p>
@@ -670,7 +670,7 @@ export default function LandingPage() {
               </div>
             </div>
             
-            <div className="bg-card border border-primary/10 rounded-xl p-6 relative hover:border-primary/30 transition-all duration-300 neural-node">
+            <div className="bg-card border border-primary/10 rounded-xl p-6 relative hover:border-primary/30 transition-all duration-300 cognitive-node">
               <div className="w-12 h-12 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-xl mb-4 shadow-inner">3</div>
               <h3 className="text-xl font-bold mb-3">Adaptive Intelligence</h3>
               <p className="text-muted-foreground">The more you interact, the more your Cognitive OS learns your preferences and thinking style, continuously improving its output.</p>
@@ -680,7 +680,7 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* Neural Explanation */}
+          {/* Cognitive OS Explanation */}
           <div className="mt-16 max-w-3xl mx-auto text-center">
             <div className="p-6 bg-card border border-primary/20 rounded-xl relative">
               <div className="absolute -top-5 left-1/2 transform -translate-x-1/2">
@@ -690,7 +690,7 @@ export default function LandingPage() {
               </div>
               <h4 className="text-xl font-bold mt-4 mb-3">Your Brain, Enhanced</h4>
               <p className="text-muted-foreground">
-                DotSpark functions as a true neural extension that adapts to your unique cognitive patterns. The more you use and tune it, the better it understands how you think. Unlike generic AI tools, your neural extension becomes personalized to your specific needs, learning from each interaction and continuously improving its ability to generate frameworks that align with your thinking style.
+                DotSpark functions as a true cognitive operating system that adapts to your unique thought patterns. The more you use and tune it, the better it understands how you think. Unlike generic AI tools, your Cognitive OS becomes personalized to your specific needs, learning from each interaction and continuously improving its ability to generate frameworks that align with your thinking style.
               </p>
             </div>
           </div>
@@ -703,7 +703,7 @@ export default function LandingPage() {
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Who <span className="gradient-heading">Benefits</span> Most</h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              DotSpark's neural extension technology empowers professionals making complex decisions
+              DotSpark's cognitive operating system empowers professionals making complex decisions
             </p>
           </div>
           
