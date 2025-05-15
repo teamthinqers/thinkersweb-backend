@@ -98,10 +98,10 @@ export function InstallPrompt() {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <BrainCircuit className="h-5 w-5 text-purple-600" />
-            <span>Install Neural Extension</span>
+            <span>Install DotSpark</span>
           </DialogTitle>
           <DialogDescription>
-            Install DotSpark as an app on your device for the best neural tuning experience. You'll be able to access your neural extension even when offline.
+            Install DotSpark as an app on your device for the best neural tuning experience. You'll be able to access your DotSpark even when offline.
           </DialogDescription>
         </DialogHeader>
         <div className="grid grid-cols-1 gap-4 py-4">

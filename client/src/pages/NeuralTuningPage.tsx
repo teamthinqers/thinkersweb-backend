@@ -47,7 +47,7 @@ export default function NeuralTuningPage() {
   const [activeTab, setActiveTab] = useState('hygiene');
   const [newFocus, setNewFocus] = useState('');
   const [focusAreas, setFocusAreas] = useState<string[]>([]);
-  const [neuralName, setNeuralName] = useState(localStorage.getItem('neuralExtensionName') || 'My Neural Extension');
+  const [neuralName, setNeuralName] = useState(localStorage.getItem('dotsparkName') || 'My DotSpark');
   
   const { 
     status, 
@@ -144,7 +144,7 @@ export default function NeuralTuningPage() {
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newName = e.target.value;
     setNeuralName(newName);
-    localStorage.setItem('neuralExtensionName', newName);
+    localStorage.setItem('dotsparkName', newName);
   };
   
   if (isLoading) {
@@ -173,7 +173,7 @@ export default function NeuralTuningPage() {
           <Button variant="ghost" onClick={() => setLocation('/')} className="p-2">
             <ChevronLeft className="h-5 w-5" />
           </Button>
-          <h1 className="text-2xl font-bold">Neural Extension Tuning</h1>
+          <h1 className="text-2xl font-bold">DotSpark Tuning</h1>
         </div>
         
         <Card className="border-red-200 dark:border-red-900/50 bg-red-50 dark:bg-red-950/20">
