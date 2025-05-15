@@ -28,6 +28,7 @@ import {
   ChevronLeft,
   NetworkIcon,
   Star,
+  Sliders,
   Microscope,
   GraduationCap,
   Target,
@@ -324,32 +325,32 @@ export default function ActivateNeura() {
         >
           {/* Small, subtle tabs for the 3-step process */}
           <TabsList className="grid w-full grid-cols-3 mb-2 bg-background/60 border">
-            <TabsTrigger value="step1" className="text-xs">1. Sign In</TabsTrigger>
-            <TabsTrigger value="step2" className="text-xs">2. Neural Setup</TabsTrigger>
-            <TabsTrigger value="step3" className="text-xs">3. Link WhatsApp</TabsTrigger>
+            <TabsTrigger value="step1" className="text-xs">Core Parameters</TabsTrigger>
+            <TabsTrigger value="step2" className="text-xs">Domain Expertise</TabsTrigger>
+            <TabsTrigger value="step3" className="text-xs">Advanced Settings</TabsTrigger>
           </TabsList>
           
-          {/* Progress steps visualization */}
+          {/* Neural parameters visualization */}
           <div className="flex items-center justify-between mb-6 px-1">
             <div className="flex flex-col items-center">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${activeTab === 'step1' ? 'bg-primary text-primary-foreground' : (progress > 33 ? 'bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-400' : 'bg-gray-100 text-gray-400 dark:bg-gray-800')}`}>
-                {progress > 33 ? <Check className="h-4 w-4" /> : "1"}
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${activeTab === 'step1' ? 'bg-primary text-primary-foreground' : 'bg-gray-100 text-gray-400 dark:bg-gray-800'}`}>
+                <BrainCircuit className="h-4 w-4" />
               </div>
-              <span className="text-xs mt-1 text-muted-foreground">Sign In</span>
+              <span className="text-xs mt-1 text-muted-foreground">Core</span>
             </div>
             <div className="h-0.5 flex-1 mx-2 bg-gray-200 dark:bg-gray-800"></div>
             <div className="flex flex-col items-center">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${activeTab === 'step2' ? 'bg-primary text-primary-foreground' : (progress > 67 ? 'bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-400' : 'bg-gray-100 text-gray-400 dark:bg-gray-800')}`}>
-                {progress > 67 ? <Check className="h-4 w-4" /> : "2"}
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${activeTab === 'step2' ? 'bg-primary text-primary-foreground' : 'bg-gray-100 text-gray-400 dark:bg-gray-800'}`}>
+                <Star className="h-4 w-4" />
               </div>
-              <span className="text-xs mt-1 text-muted-foreground">Neural Setup</span>
+              <span className="text-xs mt-1 text-muted-foreground">Expertise</span>
             </div>
             <div className="h-0.5 flex-1 mx-2 bg-gray-200 dark:bg-gray-800"></div>
             <div className="flex flex-col items-center">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${activeTab === 'step3' ? 'bg-primary text-primary-foreground' : (progress > 99 ? 'bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-400' : 'bg-gray-100 text-gray-400 dark:bg-gray-800')}`}>
-                {progress > 99 ? <Check className="h-4 w-4" /> : "3"}
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${activeTab === 'step3' ? 'bg-primary text-primary-foreground' : 'bg-gray-100 text-gray-400 dark:bg-gray-800'}`}>
+                <Sliders className="h-4 w-4" />
               </div>
-              <span className="text-xs mt-1 text-muted-foreground">WhatsApp</span>
+              <span className="text-xs mt-1 text-muted-foreground">Advanced</span>
             </div>
           </div>
           
@@ -357,88 +358,137 @@ export default function ActivateNeura() {
           <TabsContent value="step1" className="mt-4">
             <Card>
               <CardHeader>
-                <CardTitle>Create Your Neura Account</CardTitle>
+                <CardTitle className="flex items-center">
+                  <BrainCircuit className="mr-2 h-5 w-5 text-primary" />
+                  Core Neural Parameters
+                </CardTitle>
                 <CardDescription>
-                  Sign in to start the activation process.
+                  Configure the core parameters that determine how your neural extension processes information
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="flex flex-col space-y-6">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                      <Brain size={24} />
+                <div className="space-y-8">
+                  
+                  {/* Creativity slider with enhanced visual design */}
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center">
+                      <div className="space-y-0.5">
+                        <h3 className="font-medium">Creativity</h3>
+                        <p className="text-sm text-muted-foreground">Influences variety and uniqueness of neural responses</p>
+                      </div>
+                      <Badge variant="outline" className="bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 dark:from-blue-950 dark:via-indigo-950 dark:to-purple-950 border border-indigo-200 dark:border-indigo-800">
+                        {Math.round((pendingChanges.creativity ?? tuning?.creativity ?? 0.5) * 100)}%
+                      </Badge>
                     </div>
-                    <div>
-                      <h3 className="font-medium text-lg">Personal Cognitive Extension</h3>
-                      <p className="text-muted-foreground text-sm">
-                        Your Neura adapts to your unique thought patterns
-                      </p>
+                    <div className="h-2 w-full bg-gradient-to-r from-blue-100 via-indigo-200 to-purple-200 dark:from-blue-900 dark:via-indigo-800 dark:to-purple-700 rounded-full relative">
+                      <Slider
+                        defaultValue={[tuning?.creativity ?? 0.5]}
+                        value={[pendingChanges.creativity ?? tuning?.creativity ?? 0.5]}
+                        onValueChange={(value) => handleSliderChange('creativity', value)}
+                        max={1}
+                        step={0.01}
+                        className="absolute inset-0"
+                      />
+                    </div>
+                    <div className="flex justify-between text-xs text-muted-foreground">
+                      <span>Logical & Structured</span>
+                      <span>Creative & Exploratory</span>
                     </div>
                   </div>
                   
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                      <Sparkles size={24} />
+                  {/* Precision slider with enhanced visual design */}
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center">
+                      <div className="space-y-0.5">
+                        <h3 className="font-medium">Precision</h3>
+                        <p className="text-sm text-muted-foreground">Determines accuracy and attention to detail</p>
+                      </div>
+                      <Badge variant="outline" className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950 dark:to-emerald-950 border border-green-200 dark:border-green-800">
+                        {Math.round((pendingChanges.precision ?? tuning?.precision ?? 0.5) * 100)}%
+                      </Badge>
                     </div>
-                    <div>
-                      <h3 className="font-medium text-lg">Enhanced Thinking</h3>
-                      <p className="text-muted-foreground text-sm">
-                        Connect related ideas and develop deeper insights
-                      </p>
+                    <div className="h-2 w-full bg-gradient-to-r from-green-100 to-emerald-200 dark:from-green-900 dark:to-emerald-800 rounded-full relative">
+                      <Slider
+                        defaultValue={[tuning?.precision ?? 0.5]}
+                        value={[pendingChanges.precision ?? tuning?.precision ?? 0.5]}
+                        onValueChange={(value) => handleSliderChange('precision', value)}
+                        max={1}
+                        step={0.01}
+                        className="absolute inset-0"
+                      />
+                    </div>
+                    <div className="flex justify-between text-xs text-muted-foreground">
+                      <span>Generalized</span>
+                      <span>Highly Precise</span>
                     </div>
                   </div>
                   
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                      <MessageCircle size={24} />
+                  {/* Speed slider with enhanced visual design */}
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center">
+                      <div className="space-y-0.5">
+                        <h3 className="font-medium">Speed</h3>
+                        <p className="text-sm text-muted-foreground">Balances processing speed vs depth of analysis</p>
+                      </div>
+                      <Badge variant="outline" className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950 dark:to-orange-950 border border-amber-200 dark:border-amber-800">
+                        {Math.round((pendingChanges.speed ?? tuning?.speed ?? 0.5) * 100)}%
+                      </Badge>
                     </div>
-                    <div>
-                      <h3 className="font-medium text-lg">Accessible Anywhere</h3>
-                      <p className="text-muted-foreground text-sm">
-                        Capture thoughts via WhatsApp, even when offline
-                      </p>
+                    <div className="h-2 w-full bg-gradient-to-r from-amber-100 to-orange-200 dark:from-amber-900 dark:to-orange-800 rounded-full relative">
+                      <Slider
+                        defaultValue={[tuning?.speed ?? 0.5]}
+                        value={[pendingChanges.speed ?? tuning?.speed ?? 0.5]}
+                        onValueChange={(value) => handleSliderChange('speed', value)}
+                        max={1}
+                        step={0.01}
+                        className="absolute inset-0"
+                      />
+                    </div>
+                    <div className="flex justify-between text-xs text-muted-foreground">
+                      <span>Deep Analysis</span>
+                      <span>Rapid Response</span>
+                    </div>
+                  </div>
+                  
+                  {/* Analytical slider with enhanced visual design */}
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center">
+                      <div className="space-y-0.5">
+                        <h3 className="font-medium">Analytical Focus</h3>
+                        <p className="text-sm text-muted-foreground">Balance between analytical and intuitive thinking</p>
+                      </div>
+                      <Badge variant="outline" className="bg-gradient-to-r from-cyan-50 to-blue-50 dark:from-cyan-950 dark:to-blue-950 border border-cyan-200 dark:border-cyan-800">
+                        {Math.round((pendingChanges.analytical ?? tuning?.analytical ?? 0.5) * 100)}%
+                      </Badge>
+                    </div>
+                    <div className="h-2 w-full bg-gradient-to-r from-cyan-100 to-blue-200 dark:from-cyan-900 dark:to-blue-800 rounded-full relative">
+                      <Slider
+                        defaultValue={[tuning?.analytical ?? 0.5]}
+                        value={[pendingChanges.analytical ?? tuning?.analytical ?? 0.5]}
+                        onValueChange={(value) => handleSliderChange('analytical', value)}
+                        max={1}
+                        step={0.01}
+                        className="absolute inset-0"
+                      />
+                    </div>
+                    <div className="flex justify-between text-xs text-muted-foreground">
+                      <span>Intuitive/Pattern-Based</span>
+                      <span>Logical/Systematic</span>
                     </div>
                   </div>
                 </div>
               </CardContent>
-              <CardFooter>
-                <Button 
-                  onClick={handleLogin} 
-                  className="w-full" 
-                  size="lg"
-                  disabled={!!user || isAuthLoading}
-                >
-                  {isAuthLoading ? (
-                    <>
-                      <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-                      Connecting...
-                    </>
-                  ) : user ? (
-                    <>
-                      <Check className="mr-2 h-4 w-4" />
-                      Connected
-                    </>
-                  ) : (
-                    <>
-                      <LogIn className="mr-2 h-4 w-4" />
-                      Sign in with Google
-                    </>
-                  )}
+              <CardFooter className="flex justify-between">
+                <Button variant="outline" onClick={() => setActiveTab('step3')}>
+                  <Sliders className="mr-2 h-4 w-4" />
+                  Advanced Settings
+                </Button>
+                <Button onClick={() => setActiveTab('step2')} className="bg-primary hover:bg-primary/90">
+                  Domain Expertise
+                  <ChevronRight className="ml-2 h-4 w-4" />
                 </Button>
               </CardFooter>
             </Card>
-            
-            {user && (
-              <div className="mt-4 flex justify-end">
-                <Button 
-                  onClick={() => setActiveTab('step2')} 
-                  className="bg-primary hover:bg-primary/90"
-                >
-                  Next: Setup Your Neura
-                  <ChevronRight className="ml-2 h-4 w-4" />
-                </Button>
-              </div>
-            )}
           </TabsContent>
           
           {/* Tab 2: Neura Setup */}
