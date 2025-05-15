@@ -1533,8 +1533,33 @@ export default function DotSparkTuningUnified() {
                           currentValue > 0 
                             ? 'border-amber-300 dark:border-amber-700 bg-gradient-to-br from-amber-50 to-amber-100/70 dark:from-amber-950/50 dark:to-amber-900/30 shadow-md' 
                             : 'border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 hover:border-amber-200 dark:hover:border-amber-800'
-                        }`}
-                        onClick={() => {
+                        } hover:scale-[1.02] active:scale-[0.98] transition-transform duration-150`}
+                        onClick={(e) => {
+                          // Create a ripple effect
+                          const rect = e.currentTarget.getBoundingClientRect();
+                          const x = e.clientX - rect.left;
+                          const y = e.clientY - rect.top;
+                          
+                          // Add a ripple element
+                          const ripple = document.createElement('div');
+                          ripple.className = 'absolute inset-0 overflow-hidden rounded-lg pointer-events-none';
+                          
+                          const circle = document.createElement('div');
+                          const size = Math.max(rect.width, rect.height) * 2;
+                          circle.style.width = `${size}px`;
+                          circle.style.height = `${size}px`;
+                          circle.style.left = `${x - size/2}px`;
+                          circle.style.top = `${y - size/2}px`;
+                          circle.className = 'absolute rounded-full bg-amber-500/20 animate-ripple';
+                          
+                          ripple.appendChild(circle);
+                          e.currentTarget.appendChild(ripple);
+                          
+                          // Remove after animation
+                          setTimeout(() => {
+                            ripple.remove();
+                          }, 600);
+                          
                           // Calculate next level (cycling through 5 levels)
                           const nextLevel = (currentLevelIndex + 1) % 6;
                           handleSpecialtyChange(specialty.id, [nextLevel / 5]);

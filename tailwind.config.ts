@@ -79,6 +79,16 @@ export default {
             height: "0",
           },
         },
+        "ripple": {
+          "0%": { 
+            transform: "scale(0)",
+            opacity: "0.5",
+          },
+          "100%": { 
+            transform: "scale(1)",
+            opacity: "0",
+          },
+        },
 
         "ping-fast": {
           "0%": { transform: "scale(1)", opacity: "1" },
@@ -242,7 +252,8 @@ export default {
         "dash-slow": "dash-slow 15s linear infinite",
         "orbit": "orbit 4s ease-in-out infinite",
         "spark-appear": "spark-appear 1.5s ease-in-out infinite",
-        "spark-flash": "spark-flash 2s ease-in-out infinite"
+        "spark-flash": "spark-flash 2s ease-in-out infinite",
+        "ripple": "ripple 0.6s ease-out"
       },
     },
   },
