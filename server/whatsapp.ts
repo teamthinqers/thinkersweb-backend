@@ -378,10 +378,10 @@ export async function processWhatsAppMessage(from: string, messageText: string):
             });
             
             // Send activation success message with account creation info
-            const message = "✅ *Congratulations — I've set up your DotSpark account!*\n\n" +
-              `Your account has been created with email: ${userEmail}\n\n` +
-              "To access your web dashboard, go to www.dotspark.in and click 'Reset Password' to set your password.\n\n" +
-              "Your neural extension is now active! Let's begin - what would you like to explore today?";
+            const message = "✅ *Neural Extension Activated!*\n\n" +
+              `Your Neura account has been created with email: ${userEmail}\n\n` +
+              "To access your neural dashboard, visit www.dotspark.in and click 'Reset Password' to secure your account.\n\n" +
+              "Your Neura is now calibrating to your unique thinking patterns. What topic would you like to explore first?";
             
             return {
               success: true,
@@ -391,8 +391,8 @@ export async function processWhatsAppMessage(from: string, messageText: string):
             console.error("Failed to create provisional account");
             return {
               success: false,
-              message: "⚠️ *Account Creation Failed*\n\n" +
-                "I couldn't create your DotSpark account. Please try again or register directly at www.dotspark.in first."
+              message: "⚠️ *Neural Extension Setup Paused*\n\n" +
+                "Your Neura account creation was unsuccessful. Please try again or visit www.dotspark.in to set up your neural extension through the web interface."
             };
           }
         } catch (error) {
@@ -400,9 +400,9 @@ export async function processWhatsAppMessage(from: string, messageText: string):
           
           return {
             success: true,
-            message: "⚠️ *Account Creation Issue*\n\n" +
-              `We tried to create a DotSpark account for you with ${userEmail}, but encountered a technical issue.\n\n` +
-              "You can still use WhatsApp with DotSpark, but to sync with a dashboard, please create an account at www.dotspark.in and then reconnect."
+            message: "⚠️ *Neural Extension Configuration Issue*\n\n" +
+              `We attempted to set up your Neura with email ${userEmail}, but encountered a technical issue.\n\n` +
+              "You can still use your neural extension via WhatsApp, but for full dashboard access and customization, please create an account at www.dotspark.in and reconnect."
           };
         }
       }
@@ -451,16 +451,18 @@ export async function processWhatsAppMessage(from: string, messageText: string):
           try {
             // Send the full welcome message after activation
             const welcomeMessage = 
-              "Here's how DotSpark can help you:\n\n" +
-              "🧠 *Capturing Insights* - Share what you're learning and I'll organize it\n" +
-              "💬 *Answering Questions* - Ask me anything you're curious about\n" + 
-              "💡 *Brainstorming Ideas* - Let's explore possibilities together\n" +
-              "📚 *Learning New Concepts* - I can explain topics in simple terms\n" +
-              "🔄 *Having Conversations* - Chat naturally like you would with a friend\n" +
-              "📝 *Solving Problems* - I can help you work through challenges\n\n" +
-              "Simple commands:\n" +
-              "• Type 'help' anytime to see this message again\n\n" +
-              "You can also access your dashboard at www.dotspark.in for more features!";
+              "🌟 *Your Neura is now activated!*\n\n" +
+              "Your neural extension is fully operational and uniquely calibrated to your thinking patterns. Here's what your Neura can do:\n\n" +
+              "🧠 *Knowledge Processing* - I'll organize and connect your learning\n" +
+              "🔄 *Thought Extension* - Enhance your thinking capacity\n" + 
+              "💡 *Insight Generation* - Discover patterns in your ideas\n" +
+              "📊 *Concept Mapping* - Build mental frameworks effortlessly\n" +
+              "🚀 *Career Acceleration* - Develop professional expertise faster\n\n" +
+              "Quick tips:\n" +
+              "• Your Neura learns from every interaction\n" +
+              "• Check your web dashboard to see your neural parameters\n" +
+              "• Type 'help' anytime for guidance\n\n" +
+              "Access your neural dashboard at www.dotspark.in to fine-tune your extension!";
             
             await sendWhatsAppReply(from, welcomeMessage);
           } catch (error) {
