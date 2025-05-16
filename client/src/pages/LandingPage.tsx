@@ -37,30 +37,55 @@ export default function LandingPage() {
     return neuraStorage.isActivated();
   });
   
-  // Listen for Neura activation changes
+  // Track setup completion status
+  const [isSetupCompleted, setIsSetupCompleted] = useState(() => {
+    return neuraStorage.isSetupCompleted();
+  });
+  
+  // Listen for Neura activation changes and track setup completion
   useEffect(() => {
     const handleActivation = (activated: boolean) => {
       console.log("LandingPage received activation event:", activated);
       setIsNeuraActivated(activated);
+      
+      // Check if all setup steps are complete and mark setup as complete if needed
+      if (activated && user && isWhatsAppConnected) {
+        neuraStorage.markSetupCompleted();
+      }
     };
     
-    // Set up event listener using neuraStorage utility
-    const unsubscribe = neuraStorage.addActivationListener(handleActivation);
+    // Handle setup completion status changes
+    const handleSetupCompleted = (completed: boolean) => {
+      console.log("LandingPage received setup completion event:", completed);
+      setIsSetupCompleted(completed);
+    };
+    
+    // Set up event listeners using neuraStorage utility
+    const unsubscribeActivation = neuraStorage.addActivationListener(handleActivation);
+    const unsubscribeSetup = neuraStorage.addSetupCompletionListener(handleSetupCompleted);
     
     // Add event listener for storage changes (in case activation happens in another tab)
     const storageHandler = () => {
-      const status = neuraStorage.isActivated();
-      setIsNeuraActivated(status);
+      const activationStatus = neuraStorage.isActivated();
+      const setupStatus = neuraStorage.isSetupCompleted();
+      setIsNeuraActivated(activationStatus);
+      setIsSetupCompleted(setupStatus);
     };
     
     window.addEventListener('storage', storageHandler);
     
+    // Check if all steps are complete on mount/update and mark setup complete if needed
+    if (isNeuraActivated && user && isWhatsAppConnected && !isSetupCompleted) {
+      neuraStorage.markSetupCompleted();
+    }
+    
     // Clean up
     return () => {
       window.removeEventListener('storage', storageHandler);
-      unsubscribe();
+      unsubscribeActivation();
+      unsubscribeSetup();
     };
-  }, []);
+  }, [user, isNeuraActivated, isWhatsAppConnected, isSetupCompleted]);
   
   // For WhatsApp activation status
   const isActiveInLocalStorage = localStorage.getItem('whatsapp_activated') === 'true';
@@ -638,8 +663,19 @@ export default function LandingPage() {
           {/* Enhanced gamified progress tracker */}
           <div className="max-w-3xl mx-auto mt-16 relative">
             {/* Progress percentage display */}
-            <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-gradient-to-r from-primary to-indigo-600 text-white rounded-full px-4 py-1 font-bold shadow-lg">
-              {user ? (isWhatsAppConnected ? "100%" : "67%") : "33%"} Complete
+            <div className={`absolute -top-10 left-1/2 -translate-x-1/2 text-white rounded-full px-4 py-1 font-bold shadow-lg transition-all duration-500
+              ${isSetupCompleted 
+                ? 'bg-gradient-to-r from-green-500 to-emerald-600 scale-110' 
+                : 'bg-gradient-to-r from-primary to-indigo-600'}`}
+            >
+              {isSetupCompleted ? (
+                <span className="flex items-center">
+                  <CheckCircle className="h-4 w-4 mr-1.5" />
+                  <span>100% Complete</span>
+                </span>
+              ) : (
+                <span>{user ? (isNeuraActivated ? (isWhatsAppConnected ? "100%" : "67%") : "33%") : "33%"} Complete</span>
+              )}
             </div>
             
             {/* Progress path */}
