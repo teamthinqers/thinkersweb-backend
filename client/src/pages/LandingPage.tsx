@@ -27,6 +27,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 export default function LandingPage() {
   const { user, logout } = useAuth();
   const [location, setLocation] = useLocation();
+  const [contactDialogOpen, setContactDialogOpen] = useState(false);
+  const [whatsAppNumber, setWhatsAppNumber] = useState<string | null>(null);
   const { 
     isWhatsAppConnected, 
     simulateActivation, 
@@ -170,9 +172,31 @@ export default function LandingPage() {
               </Button>
             </div>
             
-            {/* WhatsApp button, always visible on mobile and desktop regardless of login status */}
+            {/* Contact options button (WhatsApp/Direct Chat), always visible on desktop regardless of login status */}
             <div className="hidden md:block">
-              <WhatsAppContactButton />
+              <Button
+                variant="outline"
+                size="default"
+                onClick={() => {
+                  // Fetch WhatsApp number first
+                  fetch('/api/whatsapp/contact')
+                    .then(res => res.json())
+                    .then(data => {
+                      setWhatsAppNumber(data.phoneNumber);
+                      setContactDialogOpen(true);
+                    })
+                    .catch(err => {
+                      console.error("Error fetching WhatsApp contact:", err);
+                      // Fallback to hardcoded number if API fails
+                      setWhatsAppNumber('16067157733');
+                      setContactDialogOpen(true);
+                    });
+                }}
+                className="bg-[#25D366] hover:bg-[#128C7E] text-white border-transparent"
+              >
+                <MessageSquare className="h-4 w-4 mr-2" />
+                Ask DotSpark
+              </Button>
             </div>
             <div className="flex items-center space-x-2 sm:space-x-3">
               <div className="block md:hidden">
@@ -181,14 +205,19 @@ export default function LandingPage() {
                   size="sm"
                   className="bg-[#25D366] hover:bg-[#128C7E] text-white px-2 py-0.5 h-7 rounded-md"
                   onClick={() => {
-                    const whatsAppNumber = '16067157733';
-                    const mobileAppLink = `whatsapp://send?phone=${whatsAppNumber}`;
-                    window.location.href = mobileAppLink;
-                    
-                    setTimeout(() => {
-                      const webFallbackUrl = `https://wa.me/${whatsAppNumber}`;
-                      window.location.href = webFallbackUrl;
-                    }, 500);
+                    // Fetch WhatsApp number first
+                    fetch('/api/whatsapp/contact')
+                      .then(res => res.json())
+                      .then(data => {
+                        setWhatsAppNumber(data.phoneNumber);
+                        setContactDialogOpen(true);
+                      })
+                      .catch(err => {
+                        console.error("Error fetching WhatsApp contact:", err);
+                        // Fallback to hardcoded number if API fails
+                        setWhatsAppNumber('16067157733');
+                        setContactDialogOpen(true);
+                      });
                   }}
                 >
                   <MessageCircle className="h-3.5 w-3.5 mr-1" />
@@ -327,12 +356,28 @@ export default function LandingPage() {
                     <div className="mt-6">
                       {!user && (
                         <SheetClose asChild>
-                          <WhatsAppContactButton 
+                          <Button 
                             variant="default"
-                            showIcon={true}
-                            label="Ask DotSpark"
-                            className="w-full"
-                          />
+                            className="w-full bg-[#25D366] hover:bg-[#128C7E] text-white border-transparent"
+                            onClick={() => {
+                              // Fetch WhatsApp number first
+                              fetch('/api/whatsapp/contact')
+                                .then(res => res.json())
+                                .then(data => {
+                                  setWhatsAppNumber(data.phoneNumber);
+                                  setContactDialogOpen(true);
+                                })
+                                .catch(err => {
+                                  console.error("Error fetching WhatsApp contact:", err);
+                                  // Fallback to hardcoded number if API fails
+                                  setWhatsAppNumber('16067157733');
+                                  setContactDialogOpen(true);
+                                });
+                            }}
+                          >
+                            <MessageSquare className="h-4 w-4 mr-2" />
+                            Ask DotSpark
+                          </Button>
                         </SheetClose>
                       )}
                       
@@ -1406,6 +1451,13 @@ export default function LandingPage() {
           </div>
         </div>
       </footer>
+      
+      {/* Contact Options Dialog */}
+      <ContactOptionsDialog 
+        open={contactDialogOpen} 
+        onOpenChange={setContactDialogOpen}
+        whatsAppNumber={whatsAppNumber}
+      />
     </div>
   );
 }
