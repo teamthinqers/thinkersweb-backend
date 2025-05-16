@@ -1,5 +1,6 @@
-// Service Worker for DotSpark Neura PWA
+// Service Worker for DotSpark Neura PWA (dotspark.in)
 const CACHE_NAME = 'dotspark-neura-v1';
+const DOMAIN = self.location.hostname;
 
 // Assets to cache on install
 const PRECACHE_ASSETS = [

@@ -3,6 +3,7 @@
   "short_name": "Neura",
   "description": "Your personal neural extension for intelligence augmentation",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#8b5cf6",
