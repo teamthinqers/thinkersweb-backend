@@ -439,7 +439,7 @@ export async function processWhatsAppMessage(from: string, messageText: string):
           `👋 Welcome to DotSpark, your personal Neura — built to mirror your mind, not overwrite it.\n\n` +
           `From here on, DotSpark will help you think sharper, reflect deeper, and make decisions aligned with your style.\n\n` +
           `Whether it's untangling a thought, framing a choice, or sharpening your clarity — just say it.\n\n` +
-          `This is your space to think. Let's begin.\n\n` +
+          `This is your space to think. Let's begin.\n\n\n` +
           `Think Sharper. Stay You.`;
         
         // Send message immediately
