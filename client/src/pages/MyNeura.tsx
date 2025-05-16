@@ -59,12 +59,40 @@ export default function MyNeura() {
   } = useNeuralTuning();
   
   // Access nested properties from status
-  const tuning = status?.tuning || {};
-  const gameElements = status?.gameElements || {};
+  const tuning = status?.tuning || {
+    creativity: 0.5,
+    precision: 0.5,
+    speed: 0.5,
+    analytical: 0.5,
+    intuitive: 0.5,
+    specialties: {},
+    learningFocus: []
+  };
+  const gameElements = status?.gameElements || {
+    level: 1,
+    experience: 0,
+    experienceRequired: 1000,
+    unlockedCapabilities: [],
+    achievements: [],
+    stats: {
+      messagesProcessed: 0,
+      insightsGenerated: 0,
+      connectionsFormed: 0,
+      adaptationScore: 0
+    }
+  };
 
   // State for tracking unsaved changes
   const [unsavedChanges, setUnsavedChanges] = useState(false);
-  const [pendingChanges, setPendingChanges] = useState({});
+  const [pendingChanges, setPendingChanges] = useState<{
+    creativity?: number;
+    precision?: number;
+    speed?: number;
+    analytical?: number;
+    intuitive?: number;
+    specialties?: Record<string, number>;
+    learningFocus?: string[];
+  }>({});
   
   // For expertise cards
   const [selectedExpertise, setSelectedExpertise] = useState<{[key: string]: number}>({});
@@ -181,7 +209,8 @@ export default function MyNeura() {
     
     // Update pending changes for specialties
     const specialties = {
-      ...pendingChanges?.specialties || tuning?.specialties || {},
+      ...(pendingChanges.specialties as Record<string, number> || {}),
+      ...(tuning.specialties as Record<string, number> || {}),
       [domainId]: level
     };
     
@@ -205,18 +234,13 @@ export default function MyNeura() {
     setUnsavedChanges(true);
   };
   
-  // Save pending changes to DotSpark tuning
+  // Save pending changes to Neural tuning
   const saveChanges = async () => {
     if (!user) return;
     
     try {
-      // Merge pending changes with existing tuning
-      const updatedTuning = {
-        ...tuning,
-        ...pendingChanges
-      };
-      
-      await saveTuning(updatedTuning);
+      // Update using the mutation function from the hook
+      updateTuning(pendingChanges);
       
       setUnsavedChanges(false);
       setPendingChanges({});
@@ -257,6 +281,19 @@ export default function MyNeura() {
         variant: "destructive",
       });
     }
+  };
+  
+  // Utility functions for neural tuning
+  const formatAdaptationLevel = (level: number): string => {
+    if (level < 20) return 'Novice';
+    if (level < 40) return 'Developing';
+    if (level < 60) return 'Advancing';
+    if (level < 80) return 'Proficient';
+    return 'Expert';
+  };
+  
+  const getAdaptationProgress = (level: number): number => {
+    return Math.min(100, Math.max(0, level));
   };
   
   // Determine if we're currently checking activation status
