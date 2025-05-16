@@ -746,7 +746,7 @@ export default function LandingPage() {
             </div>
             
             {/* Reward message when all steps are completed */}
-            {user && isActivated && isWhatsAppConnected && (
+            {user && isNeuraActivated && isWhatsAppConnected && (
               <div className="mt-8 text-center">
                 <div className="inline-block bg-gradient-to-r from-green-500 to-emerald-600 text-white px-4 py-2 rounded-lg shadow-lg animate-bounce">
                   <span className="flex items-center">
