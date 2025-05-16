@@ -183,13 +183,22 @@ function Router() {
       <Route path="/logo" component={LogoPage} />
       <Route path="/activate" component={ActivateDotSpark} />
       <Route path="/activate-dotspark" component={ActivateDotSpark} />
-      <Route path="/activate-neura" component={ActivateNeura} />
+      <Route path="/activate-neura">
+        {() => <MyNeura />}
+      </Route>
       <Route path="/my-neura">
         {() => <MyNeura />}
       </Route>
-      <Route path="/dotspark-tuning" component={DotSparkTuningUnified} />
-      <Route path="/sectioned-dotspark-tuning" component={DotSparkTuningUnified} />
-      <Route path="/neural-tuning" component={DotSparkTuningUnified} /> {/* Legacy route */}
+      {/* Legacy routes - all redirecting to My Neura page */}
+      <Route path="/dotspark-tuning">
+        {() => <MyNeura />}
+      </Route>
+      <Route path="/sectioned-dotspark-tuning">
+        {() => <MyNeura />}
+      </Route>
+      <Route path="/neural-tuning">
+        {() => <MyNeura />}
+      </Route>
       <Route path="/dotspark-capacity" component={DotSparkCapacityPage} />
       <Route path="/neural-capacity" component={DotSparkCapacityPage} /> {/* Legacy route */}
       <Route path="/pwa-debug" component={PwaDebugger} />

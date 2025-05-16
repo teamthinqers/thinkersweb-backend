@@ -87,7 +87,7 @@ export default function LandingPage() {
                   : "bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"} 
                   text-white h-9 px-3 relative`}
                 size="sm"
-                onClick={() => setLocation(isActivated ? "/my-neura" : "/activate-neura")}
+                onClick={() => setLocation("/my-neura")}
               >
                 <div className="flex items-center gap-2 relative z-10">
                   <div className="flex items-center">
@@ -100,7 +100,7 @@ export default function LandingPage() {
                       <Brain className="h-4 w-4" />
                     )}
                   </div>
-                  <span className="text-xs">{isActivated ? "My Neura" : "Activate Neura"}</span>
+                  <span className="text-xs">My Neura</span>
                 </div>
               </Button>
             </div>
@@ -131,7 +131,7 @@ export default function LandingPage() {
                 </Button>
               </div>
               
-              <div className="block sm:hidden" onClick={() => setLocation(isActivated ? "/my-neura" : "/activate-neura")}>
+              <div className="block sm:hidden" onClick={() => setLocation("/my-neura")}>
                 <Button
                   size="sm"
                   className={`${isActivated 
@@ -146,7 +146,7 @@ export default function LandingPage() {
                         <div className="absolute -top-1 -right-1 h-1.5 w-1.5 bg-green-500 rounded-full"></div>
                       )}
                     </div>
-                    <span className="text-xs">{isActivated ? "My Neura" : "Activate Neura"}</span>
+                    <span className="text-xs">My Neura</span>
                   </div>
                 </Button>
               </div>
@@ -238,7 +238,7 @@ export default function LandingPage() {
                       </SheetClose>
                       
                       <SheetClose asChild>
-                        <div onClick={() => setLocation(isActivated ? "/my-neura" : "/activate-neura")} className="py-2 hover:text-primary transition-colors flex items-center gap-2">
+                        <div onClick={() => setLocation("/my-neura")} className="py-2 hover:text-primary transition-colors flex items-center gap-2">
                           <div className="flex items-center">
                             <div className="relative">
                               <Brain className="h-4 w-4 text-indigo-500" />
@@ -247,7 +247,7 @@ export default function LandingPage() {
                               )}
                             </div>
                           </div>
-                          <span>{isActivated ? "My Neura" : "Activate Neura"}</span>
+                          <span>My Neura</span>
                         </div>
                       </SheetClose>
 
@@ -568,9 +568,9 @@ export default function LandingPage() {
               <Button 
                 variant="default" 
                 className="mt-4 w-full bg-gradient-to-r from-violet-600 to-purple-700 hover:from-purple-700 hover:to-violet-600 text-white border-0 shadow-md"
-                onClick={() => setLocation(isActivated ? "/my-neura" : "/activate-neura")}
+                onClick={() => setLocation("/my-neura")}
               >
-                {isActivated ? "My Neura Settings" : "Activate Neura"}
+                My Neura
               </Button>
             </div>
             
