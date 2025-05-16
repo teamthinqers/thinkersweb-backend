@@ -647,7 +647,7 @@ export default function LandingPage() {
               <div className="absolute top-6 right-6 flex items-center justify-center w-8 h-8 rounded-full bg-[#25D366]/80 text-white font-bold text-lg">
                 3
               </div>
-              <h3 className="text-xl font-semibold mb-2">Authenticate WhatsApp</h3>
+              <h3 className="text-xl font-semibold mb-2">Link WhatsApp</h3>
               <p className="text-muted-foreground text-sm">Connect your phone to interact with DotSpark anywhere, anytime.</p>
               <Button 
                 size="default" 
