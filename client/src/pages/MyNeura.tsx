@@ -11,6 +11,7 @@ import {
   AlertCircle, 
   Brain, 
   Check, 
+  CheckCircle,
   BrainCircuit, 
   Zap, 
   Gauge, 
@@ -326,6 +327,18 @@ export default function MyNeura() {
           </Button>
           <h1 className="text-2xl font-bold">My Neura</h1>
         </div>
+        
+        {isActivated && (
+          <div className="mb-6 p-4 rounded-lg border bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950 dark:to-emerald-950 border-green-200 dark:border-green-800">
+            <div className="flex items-center">
+              <CheckCircle className="h-6 w-6 text-green-500 mr-3" />
+              <div>
+                <h3 className="text-lg font-medium">Neura is Active</h3>
+                <p className="text-sm text-muted-foreground">Your neural extension is active and ready to assist you.</p>
+              </div>
+            </div>
+          </div>
+        )}
         
         {/* Neural Extension Level Card with Capacity Metrics */}
         <Card className="mb-8 bg-gradient-to-br from-purple-50 to-white dark:from-purple-950/30 dark:to-gray-950 border border-purple-100 dark:border-purple-900/50 overflow-hidden">
