@@ -47,8 +47,12 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
   const isMobile = useMobile();
   const [showMobileNav, setShowMobileNav] = useState(false);
   
-  // State for Neura activation using neuraStorage
-  const [isActivated, setIsActivated] = useState(neuraStorage.isActivated());
+  // State for Neura activation using neuraStorage - forced check on every render
+  const [isActivated, setIsActivated] = useState(() => {
+    const status = neuraStorage.isActivated();
+    console.log("Header initial state:", status);
+    return status;
+  });
   
   // Get WhatsApp status with our enhanced hook
   const { 

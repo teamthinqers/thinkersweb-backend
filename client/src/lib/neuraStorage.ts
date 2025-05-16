@@ -16,7 +16,12 @@ export const neuraStorage = {
    */
   isActivated(): boolean {
     try {
-      return localStorage.getItem(NEURA_ACTIVATION_KEY) === 'true';
+      // Get the value and log it for debugging
+      const value = localStorage.getItem(NEURA_ACTIVATION_KEY);
+      console.log('Checking neuraStorage activation, raw value:', value);
+      
+      // More explicit comparison to handle edge cases
+      return value === 'true';
     } catch (error) {
       console.error('Error checking Neura activation:', error);
       return false;
