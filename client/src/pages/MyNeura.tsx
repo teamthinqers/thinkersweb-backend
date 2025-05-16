@@ -31,7 +31,8 @@ import {
   GraduationCap,
   LogIn,
   MessageCircle,
-  LayoutDashboard
+  LayoutDashboard,
+  Search,
 } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import { Input } from '@/components/ui/input';
@@ -1188,55 +1189,7 @@ export default function MyNeura() {
             </Card>
           </TabsContent>
           
-          {/* Tab 3: WhatsApp Connection */}
-          <TabsContent value="whatsapp" className="mt-4">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <MessageCircle className="mr-2 h-5 w-5 text-green-500" />
-                  WhatsApp Connection
-                </CardTitle>
-                <CardDescription>
-                  Link your WhatsApp to Neura for seamless interaction through messaging
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                {!user ? (
-                  <div className="flex flex-col items-center justify-center py-12 text-center">
-                    <LogIn className="h-12 w-12 text-muted-foreground mb-4" />
-                    <h3 className="text-lg font-medium mb-2">Sign In Required</h3>
-                    <p className="text-muted-foreground mb-6 max-w-md">
-                      You need to sign in before you can connect your WhatsApp account to Neura.
-                    </p>
-                    <Button onClick={handleLogin} className="bg-indigo-600 hover:bg-indigo-700 text-white">
-                      <LogIn className="mr-2 h-4 w-4" />
-                      Sign In with Google
-                    </Button>
-                  </div>
-                ) : (
-                  <DotSparkWhatsAppLinking />
-                )}
-              </CardContent>
-              <CardFooter className="flex justify-between">
-                <Button 
-                  variant="outline"
-                  onClick={() => setActiveTab('expertise')}
-                >
-                  <ChevronLeft className="mr-2 h-4 w-4" />
-                  Back to Expertise
-                </Button>
-                {isActivated && (
-                  <Button 
-                    onClick={() => setLocation('/dashboard')}
-                    className="bg-green-500 hover:bg-green-600 text-white"
-                  >
-                    Go to Dashboard
-                    <ChevronRight className="ml-2 h-4 w-4" />
-                  </Button>
-                )}
-              </CardFooter>
-            </Card>
-          </TabsContent>
+
         </Tabs>
       </div>
     </div>
