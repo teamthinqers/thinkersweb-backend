@@ -11,14 +11,26 @@ export function IosPwaInstallPrompt() {
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
     const isStandalone = (window.navigator as any).standalone === true || window.matchMedia('(display-mode: standalone)').matches;
     
-    // Create a session storage flag to prevent showing the prompt more than once per session
-    const hasShownPrompt = sessionStorage.getItem('ios-install-prompt-shown');
+    // Check if we have a debug parameter to force showing the prompt
+    const showDebug = window.location.search.includes('debug_ios_install=true');
     
-    if (isIOS && !isStandalone && !hasShownPrompt) {
+    // For testing purposes, always show when the debug parameter is present
+    if (showDebug) {
+      const timer = setTimeout(() => {
+        setShowPrompt(true);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+    
+    // Normal behavior: show for iOS devices that aren't in standalone mode
+    // Instead of using a session flag, check if the user has dismissed the prompt
+    const hasDismissedPrompt = sessionStorage.getItem('ios-install-prompt-dismissed');
+    
+    // If it's iOS and not running as standalone, show the prompt (even if they've installed and deleted)
+    if (isIOS && !isStandalone && !hasDismissedPrompt) {
       // Delay showing the prompt to avoid interrupting initial app usage
       const timer = setTimeout(() => {
         setShowPrompt(true);
-        sessionStorage.setItem('ios-install-prompt-shown', 'true');
       }, 3000);
       
       return () => clearTimeout(timer);
@@ -26,6 +38,14 @@ export function IosPwaInstallPrompt() {
   }, []);
   
   const closePrompt = () => {
+    setShowPrompt(false);
+    // Store dismissal in session storage
+    sessionStorage.setItem('ios-install-prompt-dismissed', 'true');
+  };
+  
+  // Add a link to the full install guide
+  const viewInstallGuide = () => {
+    window.location.href = '/install-guide';
     setShowPrompt(false);
   };
   
@@ -60,14 +80,23 @@ export function IosPwaInstallPrompt() {
           <X className="h-5 w-5" />
         </button>
       </div>
-      <Button 
-        variant="default" 
-        onClick={closePrompt}
-        className="w-full mt-3 bg-gradient-to-r from-indigo-600 to-violet-600"
-      >
-        <Download className="mr-2 h-4 w-4" />
-        Install Now
-      </Button>
+      <div className="flex space-x-2 mt-3">
+        <Button 
+          variant="outline" 
+          onClick={viewInstallGuide}
+          className="flex-1"
+        >
+          View Full Guide
+        </Button>
+        <Button 
+          variant="default" 
+          onClick={closePrompt}
+          className="flex-1 bg-gradient-to-r from-indigo-600 to-violet-600"
+        >
+          <Download className="mr-2 h-4 w-4" />
+          Install Now
+        </Button>
+      </div>
     </div>
   );
 }

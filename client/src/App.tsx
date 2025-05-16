@@ -25,6 +25,7 @@ import DotSparkCapacityPage from "@/pages/DotSparkCapacityPage";
 import SectionedDotSparkTuningPage from "@/pages/SectionedDotSparkTuningPage";
 import DotSparkTuningUnified from "@/pages/DotSparkTuningUnified";
 import PwaDebugger from "@/pages/PwaDebugger";
+import PwaInstallGuide from "@/pages/PwaInstallGuide";
 import Testing from "@/pages/Testing";
 import AppLayout from "@/components/layout/AppLayout";
 import EntryDetail from "@/components/entries/EntryDetail";
@@ -200,6 +201,7 @@ function Router() {
       <Route path="/dotspark-capacity" component={DotSparkCapacityPage} />
       <Route path="/neural-capacity" component={DotSparkCapacityPage} /> {/* Legacy route */}
       <Route path="/pwa-debug" component={PwaDebugger} />
+      <Route path="/install-guide" component={PwaInstallGuide} />
       <Route path="/testing" component={Testing} />
       <Route component={NotFound} />
     </Switch>
