@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Brain, BookOpen, Users, Sparkles, BarChart2, MessageCircle, MessageSquare, User, Menu, X, Check } from "lucide-react";
+import { ArrowRight, Brain, BookOpen, Users, Sparkles, BarChart2, MessageCircle, MessageSquare, User, Menu, X, Check, CheckCircle } from "lucide-react";
 import { WhatsAppContactButton } from "@/components/landing/WhatsAppContactButton";
 import { CompactWhatsAppButton } from "@/components/landing/CompactWhatsAppButton";
 import DashboardPreview from "@/components/landing/DashboardPreview";
@@ -635,21 +635,127 @@ export default function LandingPage() {
             </div>
           </div>
           
-          {/* Progress bar with conditional steps completed */}
-          <div className="max-w-md mx-auto mt-12">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium">Setup Progress</span>
-              <span className="text-sm font-medium">{user ? (isWhatsAppConnected ? "100%" : "67%") : "33%"}</span>
+          {/* Enhanced gamified progress tracker */}
+          <div className="max-w-3xl mx-auto mt-16 relative">
+            {/* Progress percentage display */}
+            <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-gradient-to-r from-primary to-indigo-600 text-white rounded-full px-4 py-1 font-bold shadow-lg">
+              {user ? (isWhatsAppConnected ? "100%" : "67%") : "33%"} Complete
             </div>
-            <div className="w-full bg-muted rounded-full h-2.5 dark:bg-muted/70 overflow-hidden">
-              <div className="bg-gradient-to-r from-primary to-indigo-600 h-2.5 rounded-full" 
-                   style={{ width: user ? (isWhatsAppConnected ? "100%" : "67%") : "33%" }}></div>
+            
+            {/* Progress path */}
+            <div className="relative">
+              {/* Path line */}
+              <div className="absolute top-1/2 left-0 w-full h-2 bg-muted/50 rounded-full -translate-y-1/2 z-0"></div>
+              
+              {/* Active path */}
+              <div 
+                className="absolute top-1/2 left-0 h-2 bg-gradient-to-r from-primary via-indigo-500 to-violet-600 rounded-full -translate-y-1/2 z-10 transition-all duration-1000 ease-out"
+                style={{ 
+                  width: user ? (isWhatsAppConnected ? "100%" : "67%") : "33%",
+                  boxShadow: "0 0 10px rgba(124, 58, 237, 0.5)"
+                }}
+              ></div>
+              
+              {/* Step markers */}
+              <div className="flex justify-between items-center relative z-20">
+                {/* Step 1: Sign In */}
+                <div className="flex flex-col items-center">
+                  <div className={`w-14 h-14 rounded-full flex items-center justify-center shadow-lg mb-3 transition-all duration-500
+                    ${user ? 'bg-gradient-to-br from-green-400 to-emerald-600 text-white scale-110' : 'bg-card border-2 border-muted text-muted-foreground'}`}>
+                    {user ? (
+                      <CheckCircle className="h-8 w-8" />
+                    ) : (
+                      <div className="rounded-full bg-primary/10 w-10 h-10 flex items-center justify-center">
+                        <span className="font-bold text-lg">1</span>
+                      </div>
+                    )}
+                  </div>
+                  <span className={`font-medium text-sm ${user ? 'text-green-500' : 'text-muted-foreground'}`}>Sign In</span>
+                  {user && (
+                    <div className="animate-pulse mt-1 text-xs text-green-500 flex items-center">
+                      <CheckCircle className="h-3 w-3 mr-1" />
+                      <span>Completed</span>
+                    </div>
+                  )}
+                </div>
+                
+                {/* Step 2: Activate Neura */}
+                <div className="flex flex-col items-center">
+                  <div className={`w-14 h-14 rounded-full flex items-center justify-center shadow-lg mb-3 transition-all duration-500
+                    ${isNeuraActivated ? 'bg-gradient-to-br from-indigo-400 to-violet-600 text-white scale-110' : 
+                    user ? 'bg-card border-2 border-indigo-400 text-indigo-500 animate-pulse' : 
+                    'bg-card border-2 border-muted text-muted-foreground'}`}>
+                    {isNeuraActivated ? (
+                      <CheckCircle className="h-8 w-8" />
+                    ) : (
+                      <div className="rounded-full bg-indigo-500/10 w-10 h-10 flex items-center justify-center">
+                        <span className="font-bold text-lg">2</span>
+                      </div>
+                    )}
+                  </div>
+                  <span className={`font-medium text-sm
+                    ${isNeuraActivated ? 'text-indigo-500' : user ? 'text-indigo-400' : 'text-muted-foreground'}`}>
+                    Activate Neura
+                  </span>
+                  {isNeuraActivated && (
+                    <div className="animate-pulse mt-1 text-xs text-indigo-500 flex items-center">
+                      <CheckCircle className="h-3 w-3 mr-1" />
+                      <span>Completed</span>
+                    </div>
+                  )}
+                  {user && !isNeuraActivated && (
+                    <div className="mt-1 text-xs text-indigo-400 flex items-center">
+                      <ArrowRight className="h-3 w-3 mr-1" />
+                      <span>Next step</span>
+                    </div>
+                  )}
+                </div>
+                
+                {/* Step 3: Connect WhatsApp */}
+                <div className="flex flex-col items-center">
+                  <div className={`w-14 h-14 rounded-full flex items-center justify-center shadow-lg mb-3 transition-all duration-500
+                    ${isWhatsAppConnected ? 'bg-gradient-to-br from-[#25D366] to-[#128C7E] text-white scale-110' : 
+                    isNeuraActivated ? 'bg-card border-2 border-[#25D366] text-[#25D366] animate-pulse' : 
+                    'bg-card border-2 border-muted text-muted-foreground'}`}>
+                    {isWhatsAppConnected ? (
+                      <CheckCircle className="h-8 w-8" />
+                    ) : (
+                      <div className="rounded-full bg-[#25D366]/10 w-10 h-10 flex items-center justify-center">
+                        <span className="font-bold text-lg">3</span>
+                      </div>
+                    )}
+                  </div>
+                  <span className={`font-medium text-sm
+                    ${isWhatsAppConnected ? 'text-[#25D366]' : isNeuraActivated ? 'text-[#25D366]/70' : 'text-muted-foreground'}`}>
+                    Connect WhatsApp
+                  </span>
+                  {isWhatsAppConnected && (
+                    <div className="animate-pulse mt-1 text-xs text-[#25D366] flex items-center">
+                      <CheckCircle className="h-3 w-3 mr-1" />
+                      <span>Completed</span>
+                    </div>
+                  )}
+                  {isNeuraActivated && !isWhatsAppConnected && (
+                    <div className="mt-1 text-xs text-[#25D366]/70 flex items-center">
+                      <ArrowRight className="h-3 w-3 mr-1" />
+                      <span>Next step</span>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
-            <div className="flex justify-between text-xs text-muted-foreground mt-1">
-              <span className={user ? "text-primary font-medium" : ""}>Sign In</span>
-              <span className={user && !isWhatsAppConnected ? "text-primary font-medium" : ""}>Activate</span>
-              <span className={isWhatsAppConnected ? "text-primary font-medium" : ""}>Connect</span>
-            </div>
+            
+            {/* Reward message when all steps are completed */}
+            {user && isActivated && isWhatsAppConnected && (
+              <div className="mt-8 text-center">
+                <div className="inline-block bg-gradient-to-r from-green-500 to-emerald-600 text-white px-4 py-2 rounded-lg shadow-lg animate-bounce">
+                  <span className="flex items-center">
+                    <Sparkles className="h-5 w-5 mr-2" />
+                    <span className="font-bold">All set up! Your Neura is ready to assist you.</span>
+                  </span>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </section>
