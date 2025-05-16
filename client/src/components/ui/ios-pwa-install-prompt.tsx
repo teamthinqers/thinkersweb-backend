@@ -55,7 +55,7 @@ export function IosPwaInstallPrompt() {
     <div className="fixed bottom-0 left-0 right-0 z-50 p-4 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 shadow-lg">
       <div className="flex items-start justify-between">
         <div className="flex-1 mr-4">
-          <h3 className="font-bold text-lg mb-1">Install DotSpark</h3>
+          <h3 className="font-bold text-lg mb-1">How to Install DotSpark</h3>
           <p className="text-sm text-slate-600 dark:text-slate-400 mb-3">
             Add this app to your home screen for a better experience.
           </p>
@@ -87,7 +87,7 @@ export function IosPwaInstallPrompt() {
           className="w-full bg-gradient-to-r from-indigo-600 to-violet-600"
         >
           <Download className="mr-2 h-4 w-4" />
-          View Installation Guide
+          View Full Guide
         </Button>
       </div>
     </div>
