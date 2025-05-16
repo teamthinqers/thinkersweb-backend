@@ -33,6 +33,7 @@ import { AuthProvider, useAuth } from "@/hooks/use-auth";
 import { Loader2 } from "lucide-react";
 import MockDashboard from "@/components/dashboard/MockDashboard";
 import { PWAInstallButton } from "@/components/ui/pwa-install-button";
+import { IosPwaInstallPrompt } from "@/components/ui/ios-pwa-install-prompt";
 import { isRunningAsStandalone } from "@/lib/pwaUtils";
 
 // Simplified Protected route component
@@ -285,6 +286,8 @@ function App() {
         )}
         <Router />
         <Toaster />
+        {/* iOS PWA Install Prompt */}
+        <IosPwaInstallPrompt />
         {/* PWA Install Floating Button (only visible when installable) */}
         <div className="fixed bottom-4 right-4 left-4 md:left-auto z-50">
           <PWAInstallButton size="lg" className="w-full md:w-auto" />
