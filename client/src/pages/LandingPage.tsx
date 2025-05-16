@@ -685,10 +685,21 @@ export default function LandingPage() {
               
               {/* Active path */}
               <div 
-                className="absolute top-1/2 left-0 h-2 bg-gradient-to-r from-primary via-indigo-500 to-violet-600 rounded-full -translate-y-1/2 z-10 transition-all duration-1000 ease-out"
+                className={`absolute top-1/2 left-0 h-2 rounded-full -translate-y-1/2 z-10 transition-all duration-1000 ease-out
+                  ${isSetupCompleted 
+                    ? 'bg-gradient-to-r from-green-400 via-emerald-500 to-green-600 animate-pulse' 
+                    : 'bg-gradient-to-r from-primary via-indigo-500 to-violet-600'}`}
                 style={{ 
-                  width: user ? (isWhatsAppConnected ? "100%" : "67%") : "33%",
-                  boxShadow: "0 0 10px rgba(124, 58, 237, 0.5)"
+                  width: isSetupCompleted 
+                    ? "100%" 
+                    : user 
+                      ? (isNeuraActivated 
+                        ? (isWhatsAppConnected ? "100%" : "67%") 
+                        : "33%") 
+                      : "33%",
+                  boxShadow: isSetupCompleted 
+                    ? "0 0 15px rgba(16, 185, 129, 0.7)" 
+                    : "0 0 10px rgba(124, 58, 237, 0.5)"
                 }}
               ></div>
               
@@ -782,16 +793,20 @@ export default function LandingPage() {
             </div>
             
             {/* Reward message when all steps are completed */}
-            {user && isNeuraActivated && isWhatsAppConnected && (
+            {(user && isNeuraActivated && isWhatsAppConnected) || isSetupCompleted ? (
               <div className="mt-8 text-center">
-                <div className="inline-block bg-gradient-to-r from-green-500 to-emerald-600 text-white px-4 py-2 rounded-lg shadow-lg animate-bounce">
-                  <span className="flex items-center">
-                    <Sparkles className="h-5 w-5 mr-2" />
-                    <span className="font-bold">All set up! Your Neura is ready to assist you.</span>
-                  </span>
+                <div className="inline-block bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-3 rounded-lg shadow-lg animate-pulse">
+                  <div className="flex flex-col items-center">
+                    <div className="flex items-center mb-1">
+                      <Sparkles className="h-5 w-5 mr-2" />
+                      <span className="font-bold text-lg">Setup Complete!</span>
+                      <Sparkles className="h-5 w-5 ml-2" />
+                    </div>
+                    <p className="text-sm">Your Neura is ready to assist you anytime, anywhere</p>
+                  </div>
                 </div>
               </div>
-            )}
+            ) : null}
           </div>
         </div>
       </section>
