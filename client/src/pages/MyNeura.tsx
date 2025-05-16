@@ -331,7 +331,7 @@ export default function MyNeura() {
         {isActivated && (
           <div className="mb-6 p-4 rounded-lg border bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950 dark:to-emerald-950 border-green-200 dark:border-green-800">
             <div className="flex items-center">
-              <CheckCircle className="h-6 w-6 text-green-500 mr-3" />
+              <Check className="h-6 w-6 text-green-500 mr-3" />
               <div>
                 <h3 className="text-lg font-medium">Neura is Active</h3>
                 <p className="text-sm text-muted-foreground">Your neural extension is active and ready to assist you.</p>
@@ -931,7 +931,11 @@ export default function MyNeura() {
           {/* Activation Button */}
           <div className="flex justify-center">
             <Button 
-              className="w-full sm:w-auto py-6 px-8 bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white"
+              className={`w-full sm:w-auto py-6 px-8 text-white ${
+                isActivated 
+                  ? "bg-gradient-to-r from-gray-400 to-gray-500 hover:from-gray-500 hover:to-gray-600 cursor-not-allowed"
+                  : "bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600"
+              }`}
               onClick={() => {
                 activateNeura();
                 
