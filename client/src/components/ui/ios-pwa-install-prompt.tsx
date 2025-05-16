@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Download, X } from 'lucide-react';
+import { Download, X, Share, PlusCircle } from 'lucide-react';
 import { isRunningAsStandalone } from '@/lib/pwaUtils';
 
 export function IosPwaInstallPrompt() {
@@ -63,11 +63,11 @@ export function IosPwaInstallPrompt() {
             <div className="flex flex-col space-y-2">
               <div className="flex items-center space-x-2">
                 <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold">1</span>
-                <span className="text-sm">Tap <span className="inline-flex items-center px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-xs">Share</span> icon</span>
+                <span className="text-sm">Tap <span className="inline-flex items-center px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-xs"><Share className="h-3 w-3 mr-1" /> Share</span> icon</span>
               </div>
               <div className="flex items-center space-x-2">
                 <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold">2</span>
-                <span className="text-sm">Choose <span className="inline-flex items-center px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-xs">Add to Home Screen</span></span>
+                <span className="text-sm">Choose <span className="inline-flex items-center px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-xs"><PlusCircle className="h-3 w-3 mr-1" /> Add to Home Screen</span></span>
               </div>
             </div>
           </div>
