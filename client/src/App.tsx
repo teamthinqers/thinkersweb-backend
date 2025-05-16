@@ -32,9 +32,8 @@ import ChatEntryForm from "@/components/chat/ChatEntryForm";
 import { AuthProvider, useAuth } from "@/hooks/use-auth";
 import { Loader2 } from "lucide-react";
 import MockDashboard from "@/components/dashboard/MockDashboard";
-// PWA functionality has been removed
-// Empty placeholder component to avoid import errors
-const InstallPrompt = () => null;
+import { PWAInstallButton } from "@/components/ui/pwa-install-button";
+import { isRunningAsStandalone } from "@/lib/pwaUtils";
 
 // Simplified Protected route component
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -286,7 +285,10 @@ function App() {
         )}
         <Router />
         <Toaster />
-        <InstallPrompt />
+        {/* PWA Install Floating Button (only visible when installable) */}
+        <div className="fixed bottom-4 right-4 z-50">
+          <PWAInstallButton size="lg" />
+        </div>
       </AuthProvider>
     </QueryClientProvider>
   );

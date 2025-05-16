@@ -1,21 +1,47 @@
 /**
- * Initialize Progressive Web App functionality - PLACEHOLDER FUNCTION
- * PWA functionality is completely disabled to avoid runtime errors
+ * Initialize Progressive Web App functionality
+ * Registers the service worker for offline capabilities
  */
 export function initPWA() {
-  console.log('PWA functionality is completely disabled');
+  console.log('Initializing PWA functionality');
   
-  // For safety, unregister any existing service workers
   if ('serviceWorker' in navigator) {
-    try {
-      navigator.serviceWorker.getRegistrations().then(registrations => {
-        for (const registration of registrations) {
-          registration.unregister().catch(() => {});
-        }
-      }).catch(() => {});
-    } catch (e) {
-      // Silently catch any errors
-    }
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/service-worker.js')
+        .then(registration => {
+          console.log('Service Worker registered with scope:', registration.scope);
+          
+          // Set up update checking
+          setInterval(() => {
+            registration.update()
+              .then(() => console.log('Service Worker checked for updates'))
+              .catch(error => console.error('Error checking for Service Worker updates:', error));
+          }, 60 * 60 * 1000); // Check for updates every hour
+          
+          // Handle service worker updates
+          registration.addEventListener('updatefound', () => {
+            const newWorker = registration.installing;
+            if (newWorker) {
+              newWorker.addEventListener('statechange', () => {
+                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                  // New service worker is installed and ready to take over
+                  showUpdateNotification();
+                }
+              });
+            }
+          });
+        })
+        .catch(error => {
+          console.error('Service Worker registration failed:', error);
+        });
+    });
+    
+    // Add a listener for when the service worker takes control
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      console.log('Service Worker controller changed');
+    });
+  } else {
+    console.log('Service Workers are not supported in this browser');
   }
 }
 

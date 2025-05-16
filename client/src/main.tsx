@@ -5,6 +5,7 @@ import { queryClient } from "./lib/queryClient";
 import { initViteConnectionGuard } from "./lib/viteConnectionGuard";
 import { Component, ErrorInfo, ReactNode, useEffect } from "react";
 import { addResetButton, resetApplicationState } from "./lib/appReset";
+import { initPWA } from "./lib/pwaUtils";
 
 // Global polyfill for the Network object to fix the "Can't find variable: Network" error
 // This is a workaround for the Vite plugin error without modifying vite.config.ts
@@ -157,17 +158,42 @@ try {
   console.error("Failed to initialize connection guard:", err);
 }
 
-// App initialization wrapper component with reset functionality
+// App initialization wrapper component with reset functionality and PWA
 function AppWithReset() {
   useEffect(() => {
+    // Initialize Progressive Web App functionality
+    initPWA();
+    
     // Add debug reset button in development
     if (import.meta.env.MODE === 'development') {
       addResetButton();
     }
     
-    // Handle online/offline status manually without PWA
+    // Setup PWA install prompt
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      // Store the event so it can be triggered later
+      (window as any).deferredPrompt = e;
+      console.log('App can be installed! Install prompt available.');
+    });
+    
+    // Handle app installed event
+    window.addEventListener('appinstalled', () => {
+      console.log('App was installed successfully!');
+      // Clear the prompt
+      (window as any).deferredPrompt = null;
+    });
+    
+    // Handle online/offline status with PWA support
     window.addEventListener('online', () => {
       console.log('App is back online');
+      // Try to reload cached resources if we're now online
+      if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+        navigator.serviceWorker.controller.postMessage({
+          type: 'ONLINE',
+          timestamp: new Date().getTime()
+        });
+      }
     });
     
     window.addEventListener('offline', () => {
@@ -189,6 +215,8 @@ function AppWithReset() {
     
     // Return cleanup function
     return () => {
+      window.removeEventListener('beforeinstallprompt', () => {});
+      window.removeEventListener('appinstalled', () => {});
       window.removeEventListener('online', () => {});
       window.removeEventListener('offline', () => {});
     };
