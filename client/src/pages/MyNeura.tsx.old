@@ -1,37 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { useLocation } from 'wouter';
-import { useAuth } from '@/hooks/use-auth';
-import { useToast } from '@/hooks/use-toast';
-import { useDotSparkTuning } from '@/hooks/useDotSparkTuning';
-import { neuraStorage } from '@/lib/neuraStorage';
-import { Slider } from '@/components/ui/slider';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
-  BrainCircuit, 
-  Sparkles, 
-  Zap, 
-  BrainCog, 
-  Lightbulb,
-  ChevronLeft,
-  ChevronRight, 
-  Plus,
-  X,
-  Target,
-  Info, 
-  Check,
-  AlertCircle,
-  Save
-} from 'lucide-react';
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card";
+import React, { useState, useEffect } from "react";
+import { useLocation } from "wouter";
+import { useAuth } from "@/hooks/use-auth";
+import { useToast } from "@/hooks/use-toast";
+import { useDotSparkTuning } from "@/hooks/useDotSparkTuning";
+import { neuraStorage } from "@/lib/neuraStorage";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { AlertCircle, BrainCircuit, BrainCog, ChevronLeft, ChevronRight, Check, Info, Lightbulb, Plus, Save, Sparkles, Target, X, Zap } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Slider } from "@/components/ui/slider";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function MyNeura() {
@@ -630,7 +611,7 @@ export default function MyNeura() {
                       </div>
                     </HoverCardContent>
                   </HoverCard>
-                  <span className="text-sm font-medium">{Math.round((pendingChanges.creativity !== undefined ? pendingChanges.creativity : neuralTuning?.creativity || 0.5) * 100)}%</span>
+                  <span className="text-sm font-medium">{Math.round((neuralTuning?.creativity || 0.5) * 100)}%</span>
                 </div>
                 <Slider
                   value={[pendingChanges.creativity !== undefined ? pendingChanges.creativity : (neuralTuning?.creativity || 0.5)]}
@@ -664,7 +645,7 @@ export default function MyNeura() {
                       </div>
                     </HoverCardContent>
                   </HoverCard>
-                  <span className="text-sm font-medium">{Math.round((pendingChanges.precision !== undefined ? pendingChanges.precision : neuralTuning?.precision || 0.5) * 100)}%</span>
+                  <span className="text-sm font-medium">{Math.round((neuralTuning?.precision || 0.5) * 100)}%</span>
                 </div>
                 <Slider
                   value={[pendingChanges.precision !== undefined ? pendingChanges.precision : (neuralTuning?.precision || 0.5)]}
@@ -698,7 +679,7 @@ export default function MyNeura() {
                       </div>
                     </HoverCardContent>
                   </HoverCard>
-                  <span className="text-sm font-medium">{Math.round((pendingChanges.speed !== undefined ? pendingChanges.speed : neuralTuning?.speed || 0.5) * 100)}%</span>
+                  <span className="text-sm font-medium">{Math.round((neuralTuning?.speed || 0.5) * 100)}%</span>
                 </div>
                 <Slider
                   value={[pendingChanges.speed !== undefined ? pendingChanges.speed : (neuralTuning?.speed || 0.5)]}
@@ -763,7 +744,7 @@ export default function MyNeura() {
                       </div>
                     </HoverCardContent>
                   </HoverCard>
-                  <span className="text-sm font-medium">{Math.round((pendingChanges.analytical !== undefined ? pendingChanges.analytical : neuralTuning?.analytical || 0.5) * 100)}%</span>
+                  <span className="text-sm font-medium">{Math.round((neuralTuning?.analytical || 0.5) * 100)}%</span>
                 </div>
                 <Slider
                   value={[pendingChanges.analytical !== undefined ? pendingChanges.analytical : (neuralTuning?.analytical || 0.5)]}
@@ -797,7 +778,7 @@ export default function MyNeura() {
                       </div>
                     </HoverCardContent>
                   </HoverCard>
-                  <span className="text-sm font-medium">{Math.round((pendingChanges.intuitive !== undefined ? pendingChanges.intuitive : neuralTuning?.intuitive || 0.5) * 100)}%</span>
+                  <span className="text-sm font-medium">{Math.round((neuralTuning?.intuitive || 0.5) * 100)}%</span>
                 </div>
                 <Slider
                   value={[pendingChanges.intuitive !== undefined ? pendingChanges.intuitive : (neuralTuning?.intuitive || 0.5)]}
@@ -903,42 +884,27 @@ export default function MyNeura() {
                     <h4 className="text-sm font-medium mb-3">Add New Specializations</h4>
                     <div className="flex flex-wrap gap-2">
                       {availableSpecialties
-                        .filter(specialty => {
-                          // Safely handle different specialty data structures
-                          const specialtyId = typeof specialty === 'string' 
-                            ? specialty 
-                            : typeof specialty === 'object' && specialty !== null && 'id' in specialty 
-                              ? String(specialty.id) 
-                              : String(specialty);
-                          
-                          return !neuralTuning?.specialties || 
-                            !Object.keys(neuralTuning.specialties).includes(specialtyId);
-                        })
+                        .filter(specialty => !neuralTuning?.specialties || typeof specialty === 'string' ? 
+                          !Object.keys(neuralTuning.specialties).includes(specialty) :
+                          !Object.keys(neuralTuning.specialties).includes(typeof specialty === 'object' && 'id' in specialty ? specialty.id : specialty))
                         .map(specialty => {
-                          // Safely extract ID and name
-                          const specialtyId = typeof specialty === 'string' 
-                            ? specialty 
-                            : typeof specialty === 'object' && specialty !== null && 'id' in specialty 
-                              ? String(specialty.id) 
-                              : String(specialty);
-                          
-                          const specialtyName = typeof specialty === 'string' 
-                            ? specialty 
-                            : typeof specialty === 'object' && specialty !== null && 'name' in specialty 
-                              ? String(specialty.name) 
-                              : String(specialty);
+                          const specialtyId = typeof specialty === 'string' ? specialty : 
+                                            typeof specialty === 'object' && 'id' in specialty ? specialty.id : specialty;
+                          const specialtyName = typeof specialty === 'string' ? specialty : 
+                                              typeof specialty === 'object' && 'name' in specialty ? specialty.name : specialty;
                           
                           return (
                             <Badge 
-                              key={specialtyId}
+                              key={String(specialtyId)}
                               className="px-3 py-1 bg-indigo-100 hover:bg-indigo-200 text-indigo-800 dark:bg-indigo-900/50 dark:text-indigo-200 dark:hover:bg-indigo-800/50 cursor-pointer"
-                              onClick={() => handleSpecialtyChange(specialtyId, [0.5])}
+                              onClick={() => handleSpecialtyChange(String(specialtyId), [0.5])}
                             >
                               <Plus className="mr-1 h-3 w-3" />
-                              {specialtyName}
+                              {String(specialtyName)}
                             </Badge>
                           );
-                        })}
+                        })
+                      }
                     </div>
                   </div>
                 )}
