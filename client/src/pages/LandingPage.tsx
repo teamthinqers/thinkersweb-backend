@@ -655,7 +655,7 @@ export default function LandingPage() {
                 className="mt-4 w-full rounded-full bg-[#25D366] hover:bg-[#128C7E] text-white shadow-md hover:shadow-lg transition-all duration-300"
               >
                 <MessageSquare className="h-5 w-5 mr-2" />
-                <span>Authenticate WhatsApp</span>
+                <span>Authenticate</span>
               </Button>
             </div>
           </div>
