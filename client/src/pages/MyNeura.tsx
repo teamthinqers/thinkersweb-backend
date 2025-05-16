@@ -652,43 +652,73 @@ export default function MyNeura() {
       
       {/* Neural Tuning Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="flex mb-6 w-full overflow-x-auto pb-2 scrollbar-none">
-          <TabsTrigger value="core" className="group min-w-[120px] px-1 md:px-3">
-            <div className="flex flex-col items-center gap-1">
-              <span className="text-xs md:text-sm flex items-center gap-1">
-                <span className="inline-block w-5 h-5 rounded-full bg-indigo-500 text-white flex items-center justify-center text-xs font-bold">1</span>
-                <span className="whitespace-nowrap">Core Tuning</span>
+        {/* Section selector with clear category buttons */}
+        <div className="mb-6">
+          <h3 className="text-sm font-medium mb-3 text-muted-foreground">Configure Your Neura:</h3>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <button
+              onClick={() => setActiveTab('core')}
+              className={`flex flex-col items-center p-3 rounded-lg border ${
+                activeTab === 'core' 
+                  ? 'bg-indigo-50 border-indigo-400 dark:bg-indigo-950 dark:border-indigo-700' 
+                  : 'bg-background border-border hover:bg-muted/50'
+              }`}
+            >
+              <span className="flex justify-center items-center w-8 h-8 bg-indigo-100 dark:bg-indigo-900 rounded-full mb-2">
+                <Zap className={`h-4 w-4 ${activeTab === 'core' ? 'text-indigo-600 dark:text-indigo-400' : 'text-indigo-500/70 dark:text-indigo-400/70'}`} />
               </span>
-              <span className="h-1 w-full bg-indigo-300/30 group-data-[state=active]:bg-indigo-500 rounded-full transition-colors duration-300"></span>
-            </div>
-          </TabsTrigger>
-          <TabsTrigger value="cognitive" className="group min-w-[120px] px-1 md:px-3">
-            <div className="flex flex-col items-center gap-1">
-              <span className="text-xs md:text-sm flex items-center gap-1">
-                <span className="inline-block w-5 h-5 rounded-full bg-indigo-500 text-white flex items-center justify-center text-xs font-bold">2</span>
-                <span className="whitespace-nowrap">Cognitive Style</span>
+              <span className={`text-sm font-medium ${activeTab === 'core' ? 'text-indigo-600 dark:text-indigo-400' : 'text-muted-foreground'}`}>Core Tuning</span>
+            </button>
+            
+            <button
+              onClick={() => setActiveTab('cognitive')}
+              className={`flex flex-col items-center p-3 rounded-lg border ${
+                activeTab === 'cognitive' 
+                  ? 'bg-violet-50 border-violet-400 dark:bg-violet-950 dark:border-violet-700' 
+                  : 'bg-background border-border hover:bg-muted/50'
+              }`}
+            >
+              <span className="flex justify-center items-center w-8 h-8 bg-violet-100 dark:bg-violet-900 rounded-full mb-2">
+                <BrainCog className={`h-4 w-4 ${activeTab === 'cognitive' ? 'text-violet-600 dark:text-violet-400' : 'text-violet-500/70 dark:text-violet-400/70'}`} />
               </span>
-              <span className="h-1 w-full bg-indigo-300/30 group-data-[state=active]:bg-indigo-500 rounded-full transition-colors duration-300"></span>
-            </div>
-          </TabsTrigger>
-          <TabsTrigger value="expertise" className="group min-w-[120px] px-1 md:px-3">
-            <div className="flex flex-col items-center gap-1">
-              <span className="text-xs md:text-sm flex items-center gap-1">
-                <span className="inline-block w-5 h-5 rounded-full bg-indigo-500 text-white flex items-center justify-center text-xs font-bold">3</span>
-                <span className="whitespace-nowrap">Expertise Focus</span>
+              <span className={`text-sm font-medium ${activeTab === 'cognitive' ? 'text-violet-600 dark:text-violet-400' : 'text-muted-foreground'}`}>Cognitive</span>
+            </button>
+            
+            <button
+              onClick={() => setActiveTab('expertise')}
+              className={`flex flex-col items-center p-3 rounded-lg border ${
+                activeTab === 'expertise' 
+                  ? 'bg-blue-50 border-blue-400 dark:bg-blue-950 dark:border-blue-700' 
+                  : 'bg-background border-border hover:bg-muted/50'
+              }`}
+            >
+              <span className="flex justify-center items-center w-8 h-8 bg-blue-100 dark:bg-blue-900 rounded-full mb-2">
+                <Target className={`h-4 w-4 ${activeTab === 'expertise' ? 'text-blue-600 dark:text-blue-400' : 'text-blue-500/70 dark:text-blue-400/70'}`} />
               </span>
-              <span className="h-1 w-full bg-indigo-300/30 group-data-[state=active]:bg-indigo-500 rounded-full transition-colors duration-300"></span>
-            </div>
-          </TabsTrigger>
-          <TabsTrigger value="learning" className="group min-w-[120px] px-1 md:px-3">
-            <div className="flex flex-col items-center gap-1">
-              <span className="text-xs md:text-sm flex items-center gap-1">
-                <span className="inline-block w-5 h-5 rounded-full bg-indigo-500 text-white flex items-center justify-center text-xs font-bold">4</span>
-                <span className="whitespace-nowrap">Learning Focus</span>
+              <span className={`text-sm font-medium ${activeTab === 'expertise' ? 'text-blue-600 dark:text-blue-400' : 'text-muted-foreground'}`}>Expertise</span>
+            </button>
+            
+            <button
+              onClick={() => setActiveTab('learning')}
+              className={`flex flex-col items-center p-3 rounded-lg border ${
+                activeTab === 'learning' 
+                  ? 'bg-emerald-50 border-emerald-400 dark:bg-emerald-950 dark:border-emerald-700' 
+                  : 'bg-background border-border hover:bg-muted/50'
+              }`}
+            >
+              <span className="flex justify-center items-center w-8 h-8 bg-emerald-100 dark:bg-emerald-900 rounded-full mb-2">
+                <Lightbulb className={`h-4 w-4 ${activeTab === 'learning' ? 'text-emerald-600 dark:text-emerald-400' : 'text-emerald-500/70 dark:text-emerald-400/70'}`} />
               </span>
-              <span className="h-1 w-full bg-indigo-300/30 group-data-[state=active]:bg-indigo-500 rounded-full transition-colors duration-300"></span>
-            </div>
-          </TabsTrigger>
+              <span className={`text-sm font-medium ${activeTab === 'learning' ? 'text-emerald-600 dark:text-emerald-400' : 'text-muted-foreground'}`}>Learning</span>
+            </button>
+          </div>
+        </div>
+        {/* Hidden TabsList for state management - not displayed */}
+        <TabsList className="hidden">
+          <TabsTrigger value="core" />
+          <TabsTrigger value="cognitive" />
+          <TabsTrigger value="expertise" />
+          <TabsTrigger value="learning" />
         </TabsList>
         
         {/* Core Tuning Tab */}
