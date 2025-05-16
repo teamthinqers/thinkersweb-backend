@@ -75,6 +75,57 @@ export function PWAInstallButton({
     return null;
   }
 
+  // Detect device type
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+  const isAndroid = /Android/.test(navigator.userAgent);
+  const isMobile = isIOS || isAndroid;
+  
+  // Custom installation UI for mobile devices that aren't running as standalone
+  if (isMobile && !isRunningAsStandalone()) {
+    return (
+      <div className={`rounded-lg bg-gradient-to-r from-violet-600 to-purple-700 p-4 shadow-lg ${className}`}>
+        <div className="flex items-center">
+          <div className="mr-3 flex-shrink-0 text-white">
+            <Download className="h-6 w-6" />
+          </div>
+          <div className="flex-grow">
+            <h4 className="text-sm font-medium text-white">Install DotSpark Neura</h4>
+            <p className="text-xs text-white/80">
+              {isIOS 
+                ? "Tap the share button and select 'Add to Home Screen'" 
+                : "Tap the menu button and select 'Install App'"}
+            </p>
+          </div>
+          <Button
+            variant="secondary"
+            size="sm"
+            className="ml-2 bg-white/20 text-white hover:bg-white/30"
+            onClick={() => {
+              if (isIOS) {
+                toast({
+                  title: "iOS Installation Guide",
+                  description: "Tap the Share button at the bottom of your screen, then select 'Add to Home Screen'",
+                });
+              } else if (isAndroid) {
+                toast({
+                  title: "Android Installation Guide",
+                  description: "Tap the three dots menu, then select 'Install App' or 'Add to Home Screen'",
+                });
+              } else {
+                toast({
+                  title: "Installation Guide",
+                  description: "Use your browser's menu to install this app to your home screen",
+                });
+              }
+            }}
+          >
+            How?
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <Button
       variant={variant}

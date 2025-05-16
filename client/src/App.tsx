@@ -286,8 +286,8 @@ function App() {
         <Router />
         <Toaster />
         {/* PWA Install Floating Button (only visible when installable) */}
-        <div className="fixed bottom-4 right-4 z-50">
-          <PWAInstallButton size="lg" />
+        <div className="fixed bottom-4 right-4 left-4 md:left-auto z-50">
+          <PWAInstallButton size="lg" className="w-full md:w-auto" />
         </div>
       </AuthProvider>
     </QueryClientProvider>
