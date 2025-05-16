@@ -422,7 +422,7 @@ export function NeuralWhatsAppLinking() {
             
             {/* Instructions */}
             <div className="flex-1">
-              <h4 className="font-bold text-indigo-800 dark:text-indigo-300 mb-2 text-sm">Authenticate Neural Extension</h4>
+              <h4 className="font-bold text-indigo-800 dark:text-indigo-300 mb-2 text-sm">Authenticate WhatsApp</h4>
               <ol className="text-xs space-y-1 text-slate-700 dark:text-slate-300">
                 <li className="flex items-start">
                   <span className="flex-shrink-0 flex items-center justify-center bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 w-5 h-5 rounded-full mr-1 font-medium text-[10px]">1</span>
