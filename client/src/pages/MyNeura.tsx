@@ -777,7 +777,7 @@ export default function MyNeura() {
                           <h3 className="font-medium">{specialty.name}</h3>
                           <Switch
                             checked={!!(pendingChanges.specialties?.[specialty.id] ?? neuralTuning?.specialties?.[specialty.id])}
-                            onCheckedChange={(checked) => {
+                            onCheckedChange={(checked: boolean) => {
                               if (checked) {
                                 handleSpecialtyChange(specialty.id, [0.7]); // Default value when turned on
                               } else {
@@ -874,7 +874,7 @@ export default function MyNeura() {
                 
                 <div className="border rounded-lg divide-y">
                   {(pendingChanges.learningFocus ?? neuralTuning?.learningFocus)?.length ? (
-                    (pendingChanges.learningFocus ?? neuralTuning?.learningFocus)?.map((focus, index) => (
+                    (pendingChanges.learningFocus ?? neuralTuning?.learningFocus)?.map((focus: string, index: number) => (
                       <div key={index} className="flex justify-between items-center p-3">
                         <div className="flex items-center gap-2">
                           <GraduationCap className="h-5 w-5 text-indigo-500" />
