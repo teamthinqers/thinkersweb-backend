@@ -494,8 +494,8 @@ export async function processWhatsAppMessage(from: string, messageText: string):
       // Initial welcome message for first-time users
       // Keep this shorter to avoid overwhelming new users
       welcomeMessage = 
-        "✨ *Welcome to DotSpark.*\n\n" +
-        "Ask questions. Break down thoughts. Get instant clarity. It's like chatting with intelligence — ready when you are.";
+        "✨ *Welcome to Neura!*\n\n" +
+        "Your personal neural extension is now active. Ask questions, share ideas, or discuss what's on your mind — I'm here to help your thinking go further.";
       
       await sendWhatsAppReply(from, welcomeMessage);
       console.log(`Sent welcome message to first-time user at ${from}`);
@@ -504,17 +504,17 @@ export async function processWhatsAppMessage(from: string, messageText: string):
       setTimeout(async () => {
         try {
           const detailedWelcome = 
-            "Here's how I can help you:\n\n" +
-            "🧠 *Capturing Insights* - Share what you're learning and I'll organize it\n" +
-            "💬 *Answering Questions* - Ask me anything you're curious about\n" + 
-            "💡 *Brainstorming Ideas* - Let's explore possibilities together\n" +
-            "📚 *Learning New Concepts* - I can explain topics in simple terms\n" +
-            "🔄 *Having Conversations* - Chat naturally like you would with a friend\n" +
-            "📝 *Solving Problems* - I can help you work through challenges\n\n" +
-            "Simple commands:\n" +
-            "• Type 'link' to connect your WhatsApp to your DotSpark account\n" +
-            "• Type 'help' anytime to see this message again\n\n" +
-            "Feel free to chat naturally - I'm here to help with whatever you need!";
+            "Your Neura can help with:\n\n" +
+            "🧠 *Processing Knowledge* - Share what you're reading and learning\n" +
+            "💬 *Exploring Questions* - I'll analyze complex topics for you\n" + 
+            "💡 *Extending Ideas* - Let me help your thoughts go further\n" +
+            "📊 *Organizing Information* - I'll structure and connect your insights\n" +
+            "🔍 *Providing Clarity* - Get clearer perspective on challenging concepts\n" +
+            "⚡ *Accelerating Growth* - Enhance your professional learning journey\n\n" +
+            "Quick commands:\n" +
+            "• Type 'link' to connect your WhatsApp to your web dashboard\n" +
+            "• Type 'help' to see this guide again\n\n" +
+            "Just chat naturally - your neural extension adapts to your unique thinking style!";
         
           await sendWhatsAppReply(from, detailedWelcome);
         } catch (error) {
