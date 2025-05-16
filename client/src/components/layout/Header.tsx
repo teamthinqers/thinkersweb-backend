@@ -219,6 +219,15 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
               <Menu className="h-7 w-7" />
             </Button>
             
+            {/* Center logo - clickable to go to dashboard */}
+            <div 
+              className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center cursor-pointer active:opacity-80 transition-opacity"
+              onClick={() => setLocation("/dashboard")}
+            >
+              <Sparkles className="h-5 w-5 text-primary mr-1" />
+              <span className="text-lg font-bold text-primary">DotSpark</span>
+            </div>
+            
             <div className="flex items-center">
               <Button 
                 variant="ghost"
@@ -432,7 +441,13 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
       {isMobile && showMobileNav && !onMenuClick && (
         <div className="fixed inset-0 z-50 bg-white">
           <div className="flex justify-between items-center p-4 border-b">
-            <div onClick={goToDashboard} className="cursor-pointer flex items-center">
+            <div 
+              onClick={() => {
+                setShowMobileNav(false);
+                setLocation("/dashboard");
+              }} 
+              className="cursor-pointer flex items-center active:opacity-80 transition-opacity"
+            >
               <Sparkles className="h-5 w-5 text-primary mr-1.5" />
               <h2 className="text-lg font-bold text-primary">DotSpark</h2>
             </div>
