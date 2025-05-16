@@ -570,7 +570,7 @@ export default function LandingPage() {
                 className="mt-4 w-full bg-gradient-to-r from-violet-600 to-purple-700 hover:from-purple-700 hover:to-violet-600 text-white border-0 shadow-md"
                 onClick={() => setLocation("/my-neura")}
               >
-                My Neura
+                Activate Neura
               </Button>
             </div>
             
