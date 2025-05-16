@@ -111,6 +111,13 @@ export default function MyNeura() {
     localStorage.getItem('neuraActivated') === 'true'
   );
   
+  // Check localStorage for activation status on page load/revisit
+  useEffect(() => {
+    const storedActivation = localStorage.getItem('neuraActivated') === 'true';
+    setIsActivated(storedActivation);
+    console.log("Loading activation status from localStorage:", storedActivation);
+  }, []);
+  
   // Handle name change
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newName = e.target.value;
@@ -120,8 +127,16 @@ export default function MyNeura() {
   
   // Function to activate Neura
   const activateNeura = () => {
+    // Set in localStorage and update state
     localStorage.setItem('neuraActivated', 'true');
     setIsActivated(true);
+    
+    // Show activation toast
+    toast({
+      title: "Neura Activated",
+      description: "Your neural extension is now active and ready to assist you.",
+      variant: "default",
+    });
     
     // Save any pending changes
     if (unsavedChanges) {
@@ -129,6 +144,18 @@ export default function MyNeura() {
       setUnsavedChanges(false);
       setPendingChanges({});
     }
+  };
+  
+  // Function to deactivate Neura (for testing purposes)
+  const deactivateNeura = () => {
+    localStorage.setItem('neuraActivated', 'false');
+    setIsActivated(false);
+    
+    toast({
+      title: "Neura Deactivated",
+      description: "Your neural extension has been deactivated.",
+      variant: "default",
+    });
   };
   
   // Function to handle slider value changes
