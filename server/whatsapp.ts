@@ -435,13 +435,12 @@ export async function processWhatsAppMessage(from: string, messageText: string):
         }
         
         // Send activation success message with account email confirmation
-        const activationMessage = "✅ *Congratulations — your Neural Extension is now active!*\n\n" +
-          `I've successfully linked this WhatsApp number to your DotSpark account (${user.email}).\n\n` +
-          `DotSpark is now tuned to grow with your thinking.\n` +
-          `The more you interact, the sharper and more personalized it becomes.\n\n` +
-          `Say anything — a thought, a question, a decision you're stuck on.\n` +
-          `Let's begin.\n\n` +
-          `You can also access your personal dashboard for deeper insights at www.dotspark.in`;
+        const activationMessage = "✅ *You're in. Connection successful.*\n\n" +
+          `👋 Welcome to DotSpark, your personal Neura — built to mirror your mind, not overwrite it.\n\n` +
+          `From here on, DotSpark will help you think sharper, reflect deeper, and make decisions aligned with your style.\n\n` +
+          `Whether it's untangling a thought, framing a choice, or sharpening your clarity — just say it.\n\n` +
+          `This is your space to think. Let's begin.\n\n` +
+          `Think Sharper. Stay You.`;
         
         // Send message immediately
         await sendWhatsAppReply(from, activationMessage);
