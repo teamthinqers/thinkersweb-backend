@@ -219,88 +219,83 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
               <span className="font-medium text-primary">DotSpark</span>
             </div>
             
-            <div className="flex items-center gap-1">
-              {/* Menu button on far right */}
-              <Button
-                variant="ghost"
-                size="icon"
-                className="text-gray-600 hover:text-primary h-9 w-9"
-                onClick={onMenuClick || (() => setShowMobileNav(!showMobileNav))}
-              >
-                <Menu className="h-5 w-5" />
-              </Button>
-              
-              {/* Always show "My Neura" when on the My Neura page */}
+            <div className="flex items-center space-x-3">
+              {/* Neura button */}
               {location === "/my-neura" || location === "/activate-neura" ? (
                 <Button 
-                  className="mr-1 bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white h-9 px-2 relative"
+                  className="bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white h-9 w-9 p-0"
                   size="sm"
                   onClick={() => setLocation("/my-neura")}
                 >
-                  <div className="flex items-center relative z-10">
-                    <div className="relative">
-                      <Brain className="h-4 w-4" />
-                      {isActivated && <div className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-green-500 rounded-full"></div>}
-                    </div>
+                  <div className="relative">
+                    <Brain className="h-5 w-5" />
+                    {isActivated && <div className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-green-500 rounded-full"></div>}
                   </div>
                 </Button>
               ) : isActivated ? (
                 <Button 
-                  className="mr-1 bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white h-9 px-2 relative"
+                  className="bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white h-9 w-9 p-0"
                   size="sm"
                   onClick={() => setLocation("/my-neura")}
                 >
-                  <div className="flex items-center relative z-10">
-                    <div className="relative">
-                      <Brain className="h-4 w-4" />
-                      <div className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-green-500 rounded-full"></div>
-                    </div>
+                  <div className="relative">
+                    <Brain className="h-5 w-5" />
+                    <div className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-green-500 rounded-full"></div>
                   </div>
                 </Button>
               ) : (
                 <Button 
-                  className="mr-1 bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white h-9 px-2 relative"
+                  className="bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white h-9 w-9 p-0"
                   size="sm"
                   onClick={() => setLocation("/activate-neura")}
                 >
-                  <div className="flex items-center relative z-10">
-                    <Brain className="h-4 w-4" />
-                  </div>
+                  <Brain className="h-5 w-5" />
                 </Button>
               )}
+              
+              {/* Profile button */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="rounded-full p-0 h-9 w-9">
+                    <Avatar className="h-8 w-8 border-2 border-white shadow">
+                      {user?.photoURL ? (
+                        <AvatarImage src={user.photoURL} alt={user.displayName || 'User'} />
+                      ) : (
+                        <AvatarFallback className="bg-primary text-white">
+                          {user?.displayName ? user.displayName.charAt(0).toUpperCase() : 'U'}
+                        </AvatarFallback>
+                      )}
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <div className="p-2 text-sm">
+                    <p className="font-medium">{user?.displayName || 'User'}</p>
+                    <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
+                  </div>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link href="/settings" className="cursor-pointer w-full">
+                      Settings
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleLogout} className="text-red-600">
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Sign out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              
+              {/* Menu button (hamburger) on far right */}
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-gray-600 hover:text-primary h-10 w-10"
+                onClick={onMenuClick || (() => setShowMobileNav(!showMobileNav))}
+              >
+                <Menu className="h-6 w-6" />
+              </Button>
             </div>
-            
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="rounded-full">
-                  <Avatar className="h-8 w-8 border-2 border-white shadow">
-                    {user?.photoURL ? (
-                      <AvatarImage src={user.photoURL} alt={user.displayName || 'User'} />
-                    ) : (
-                      <AvatarFallback className="bg-primary text-white">
-                        {user?.displayName ? user.displayName.charAt(0).toUpperCase() : 'U'}
-                      </AvatarFallback>
-                    )}
-                  </Avatar>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                <div className="p-2 text-sm">
-                  <p className="font-medium">{user?.displayName || 'User'}</p>
-                  <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
-                </div>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                  <Link href="/settings" className="cursor-pointer w-full">
-                    Settings
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleLogout} className="text-red-600">
-                  <LogOut className="mr-2 h-4 w-4" />
-                  <span>Sign out</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
           </>
         ) : (
           <>
