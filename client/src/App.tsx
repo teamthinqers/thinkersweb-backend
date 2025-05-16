@@ -20,6 +20,10 @@ import FixedEntries from "@/pages/FixedEntries";
 import ActivateDotSpark from "@/pages/ActivateDotSpark";
 import ActivateNeura from "@/pages/ActivateNeura";
 import MyNeura from "@/pages/MyNeura";
+import NeuraTuningCore from "@/pages/NeuraTuningCore";
+import NeuraTuningCognitive from "@/pages/NeuraTuningCognitive";
+import NeuraTuningExpertise from "@/pages/NeuraTuningExpertise";
+import NeuraTuningLearning from "@/pages/NeuraTuningLearning";
 import DotSparkTuningPage from "@/pages/DotSparkTuningPage";
 import DotSparkCapacityPage from "@/pages/DotSparkCapacityPage";
 import SectionedDotSparkTuningPage from "@/pages/SectionedDotSparkTuningPage";
@@ -189,6 +193,11 @@ function Router() {
         {() => <MyNeura />}
       </Route>
       <Route path="/my-neura" component={MyNeura} />
+      {/* Neura tuning section pages */}
+      <Route path="/neura-tuning/core" component={NeuraTuningCore} />
+      <Route path="/neura-tuning/cognitive" component={NeuraTuningCognitive} />
+      <Route path="/neura-tuning/expertise" component={NeuraTuningExpertise} />
+      <Route path="/neura-tuning/learning" component={NeuraTuningLearning} />
       {/* Legacy routes - all redirecting to My Neura page */}
       <Route path="/dotspark-tuning">
         {() => <MyNeura />}

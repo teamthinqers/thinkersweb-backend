@@ -650,70 +650,194 @@ export default function MyNeura() {
         </CardContent>
       </Card>
       
-      {/* Neural Tuning Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        {/* Section selector with clear category buttons */}
-        <div className="mb-6">
-          <h3 className="text-sm font-medium mb-3 text-muted-foreground">Configure Your Neura:</h3>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-            <button
-              onClick={() => setActiveTab('core')}
-              className={`flex flex-col items-center p-3 rounded-lg border ${
-                activeTab === 'core' 
-                  ? 'bg-indigo-50 border-indigo-400 dark:bg-indigo-950 dark:border-indigo-700' 
-                  : 'bg-background border-border hover:bg-muted/50'
-              }`}
-            >
-              <span className="flex justify-center items-center w-8 h-8 bg-indigo-100 dark:bg-indigo-900 rounded-full mb-2">
-                <Zap className={`h-4 w-4 ${activeTab === 'core' ? 'text-indigo-600 dark:text-indigo-400' : 'text-indigo-500/70 dark:text-indigo-400/70'}`} />
-              </span>
-              <span className={`text-sm font-medium ${activeTab === 'core' ? 'text-indigo-600 dark:text-indigo-400' : 'text-muted-foreground'}`}>Core Tuning</span>
-            </button>
-            
-            <button
-              onClick={() => setActiveTab('cognitive')}
-              className={`flex flex-col items-center p-3 rounded-lg border ${
-                activeTab === 'cognitive' 
-                  ? 'bg-violet-50 border-violet-400 dark:bg-violet-950 dark:border-violet-700' 
-                  : 'bg-background border-border hover:bg-muted/50'
-              }`}
-            >
-              <span className="flex justify-center items-center w-8 h-8 bg-violet-100 dark:bg-violet-900 rounded-full mb-2">
-                <BrainCog className={`h-4 w-4 ${activeTab === 'cognitive' ? 'text-violet-600 dark:text-violet-400' : 'text-violet-500/70 dark:text-violet-400/70'}`} />
-              </span>
-              <span className={`text-sm font-medium ${activeTab === 'cognitive' ? 'text-violet-600 dark:text-violet-400' : 'text-muted-foreground'}`}>Cognitive</span>
-            </button>
-            
-            <button
-              onClick={() => setActiveTab('expertise')}
-              className={`flex flex-col items-center p-3 rounded-lg border ${
-                activeTab === 'expertise' 
-                  ? 'bg-blue-50 border-blue-400 dark:bg-blue-950 dark:border-blue-700' 
-                  : 'bg-background border-border hover:bg-muted/50'
-              }`}
-            >
-              <span className="flex justify-center items-center w-8 h-8 bg-blue-100 dark:bg-blue-900 rounded-full mb-2">
-                <Target className={`h-4 w-4 ${activeTab === 'expertise' ? 'text-blue-600 dark:text-blue-400' : 'text-blue-500/70 dark:text-blue-400/70'}`} />
-              </span>
-              <span className={`text-sm font-medium ${activeTab === 'expertise' ? 'text-blue-600 dark:text-blue-400' : 'text-muted-foreground'}`}>Expertise</span>
-            </button>
-            
-            <button
-              onClick={() => setActiveTab('learning')}
-              className={`flex flex-col items-center p-3 rounded-lg border ${
-                activeTab === 'learning' 
-                  ? 'bg-emerald-50 border-emerald-400 dark:bg-emerald-950 dark:border-emerald-700' 
-                  : 'bg-background border-border hover:bg-muted/50'
-              }`}
-            >
-              <span className="flex justify-center items-center w-8 h-8 bg-emerald-100 dark:bg-emerald-900 rounded-full mb-2">
-                <Lightbulb className={`h-4 w-4 ${activeTab === 'learning' ? 'text-emerald-600 dark:text-emerald-400' : 'text-emerald-500/70 dark:text-emerald-400/70'}`} />
-              </span>
-              <span className={`text-sm font-medium ${activeTab === 'learning' ? 'text-emerald-600 dark:text-emerald-400' : 'text-muted-foreground'}`}>Learning</span>
-            </button>
-          </div>
+      {/* Neural Tuning Section Cards */}
+      <div className="my-8">
+        <h2 className="text-2xl font-bold mb-6">Configure Your Neura</h2>
+        <p className="text-muted-foreground mb-8">
+          Customize your neural extension by configuring these key aspects. Each section allows you to fine-tune how your Neura thinks and learns.
+        </p>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          {/* Core Tuning Card */}
+          <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 group border-indigo-100 dark:border-indigo-900">
+            <div className="h-48 bg-gradient-to-br from-indigo-400 to-blue-600 flex items-center justify-center relative overflow-hidden">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.2),transparent_50%)]"></div>
+              <div className="z-10 p-6 flex flex-col items-center">
+                <div className="rounded-full bg-white/20 p-4 backdrop-blur-sm mb-4">
+                  <Zap className="h-12 w-12 text-white" />
+                </div>
+                <h3 className="text-xl font-bold text-white">Core Tuning</h3>
+              </div>
+            </div>
+            <CardContent className="p-6">
+              <p className="text-muted-foreground mb-4">
+                Adjust fundamental behavior parameters like creativity, precision, and speed to match your thinking style.
+              </p>
+              <ul className="space-y-2 mb-6">
+                <li className="flex items-start">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-400 mr-2 mt-0.5">
+                    <Check className="h-3.5 w-3.5" />
+                  </span>
+                  <span className="text-sm">Control creativity vs practicality</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-400 mr-2 mt-0.5">
+                    <Check className="h-3.5 w-3.5" />
+                  </span>
+                  <span className="text-sm">Balance precision and breadth</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-400 mr-2 mt-0.5">
+                    <Check className="h-3.5 w-3.5" />
+                  </span>
+                  <span className="text-sm">Set processing speed priorities</span>
+                </li>
+              </ul>
+              <Button 
+                className="w-full bg-indigo-600 hover:bg-indigo-700 group-hover:translate-y-0 translate-y-1 transition-all duration-300"
+                onClick={() => setLocation('/neura-tuning/core')}
+              >
+                Configure Core Parameters
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Cognitive Style Card */}
+          <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 group border-violet-100 dark:border-violet-900">
+            <div className="h-48 bg-gradient-to-br from-violet-400 to-purple-600 flex items-center justify-center relative overflow-hidden">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.2),transparent_50%)]"></div>
+              <div className="z-10 p-6 flex flex-col items-center">
+                <div className="rounded-full bg-white/20 p-4 backdrop-blur-sm mb-4">
+                  <BrainCog className="h-12 w-12 text-white" />
+                </div>
+                <h3 className="text-xl font-bold text-white">Cognitive Style</h3>
+              </div>
+            </div>
+            <CardContent className="p-6">
+              <p className="text-muted-foreground mb-4">
+                Define how your neural extension thinks and processes information when solving problems.
+              </p>
+              <ul className="space-y-2 mb-6">
+                <li className="flex items-start">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-violet-100 dark:bg-violet-900 text-violet-600 dark:text-violet-400 mr-2 mt-0.5">
+                    <Check className="h-3.5 w-3.5" />
+                  </span>
+                  <span className="text-sm">Analytical vs flexible thinking</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-violet-100 dark:bg-violet-900 text-violet-600 dark:text-violet-400 mr-2 mt-0.5">
+                    <Check className="h-3.5 w-3.5" />
+                  </span>
+                  <span className="text-sm">Intuitive pattern recognition</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-violet-100 dark:bg-violet-900 text-violet-600 dark:text-violet-400 mr-2 mt-0.5">
+                    <Check className="h-3.5 w-3.5" />
+                  </span>
+                  <span className="text-sm">Balance between structured and abstract</span>
+                </li>
+              </ul>
+              <Button 
+                className="w-full bg-violet-600 hover:bg-violet-700 group-hover:translate-y-0 translate-y-1 transition-all duration-300"
+                onClick={() => setLocation('/neura-tuning/cognitive')}
+              >
+                Configure Cognitive Style
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Expertise Focus Card */}
+          <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 group border-blue-100 dark:border-blue-900">
+            <div className="h-48 bg-gradient-to-br from-blue-400 to-sky-600 flex items-center justify-center relative overflow-hidden">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.2),transparent_50%)]"></div>
+              <div className="z-10 p-6 flex flex-col items-center">
+                <div className="rounded-full bg-white/20 p-4 backdrop-blur-sm mb-4">
+                  <Target className="h-12 w-12 text-white" />
+                </div>
+                <h3 className="text-xl font-bold text-white">Expertise Focus</h3>
+              </div>
+            </div>
+            <CardContent className="p-6">
+              <p className="text-muted-foreground mb-4">
+                Define knowledge domains where your neural extension specializes and provides deeper insights.
+              </p>
+              <ul className="space-y-2 mb-6">
+                <li className="flex items-start">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 mr-2 mt-0.5">
+                    <Check className="h-3.5 w-3.5" />
+                  </span>
+                  <span className="text-sm">Add specialized knowledge areas</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 mr-2 mt-0.5">
+                    <Check className="h-3.5 w-3.5" />
+                  </span>
+                  <span className="text-sm">Adjust expertise strength levels</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 mr-2 mt-0.5">
+                    <Check className="h-3.5 w-3.5" />
+                  </span>
+                  <span className="text-sm">Balance between domain specialties</span>
+                </li>
+              </ul>
+              <Button 
+                className="w-full bg-blue-600 hover:bg-blue-700 group-hover:translate-y-0 translate-y-1 transition-all duration-300"
+                onClick={() => setLocation('/neura-tuning/expertise')}
+              >
+                Configure Expertise Areas
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Learning Focus Card */}
+          <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 group border-emerald-100 dark:border-emerald-900">
+            <div className="h-48 bg-gradient-to-br from-emerald-400 to-green-600 flex items-center justify-center relative overflow-hidden">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.2),transparent_50%)]"></div>
+              <div className="z-10 p-6 flex flex-col items-center">
+                <div className="rounded-full bg-white/20 p-4 backdrop-blur-sm mb-4">
+                  <Lightbulb className="h-12 w-12 text-white" />
+                </div>
+                <h3 className="text-xl font-bold text-white">Learning Focus</h3>
+              </div>
+            </div>
+            <CardContent className="p-6">
+              <p className="text-muted-foreground mb-4">
+                Guide what topics your neural extension should prioritize learning and focus on.
+              </p>
+              <ul className="space-y-2 mb-6">
+                <li className="flex items-start">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-900 text-emerald-600 dark:text-emerald-400 mr-2 mt-0.5">
+                    <Check className="h-3.5 w-3.5" />
+                  </span>
+                  <span className="text-sm">Define key learning directives</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-900 text-emerald-600 dark:text-emerald-400 mr-2 mt-0.5">
+                    <Check className="h-3.5 w-3.5" />
+                  </span>
+                  <span className="text-sm">Prioritize topics of interest</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-900 text-emerald-600 dark:text-emerald-400 mr-2 mt-0.5">
+                    <Check className="h-3.5 w-3.5" />
+                  </span>
+                  <span className="text-sm">Add and remove learning areas</span>
+                </li>
+              </ul>
+              <Button 
+                className="w-full bg-emerald-600 hover:bg-emerald-700 group-hover:translate-y-0 translate-y-1 transition-all duration-300"
+                onClick={() => setLocation('/neura-tuning/learning')}
+              >
+                Configure Learning Focus
+              </Button>
+            </CardContent>
+          </Card>
         </div>
-        {/* Hidden TabsList for state management - not displayed */}
+      </div>
+      
+      {/* Hidden Tabs for backwards compatibility - these won't be visible */}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="hidden">
         <TabsList className="hidden">
           <TabsTrigger value="core" />
           <TabsTrigger value="cognitive" />
