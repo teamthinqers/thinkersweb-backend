@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useLocation } from 'wouter';
 import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
-import { useNeuralTuning } from '@/hooks/useNeuralTuning';
+import { useDotSparkTuning } from '@/hooks/useDotSparkTuning';
 import { neuraStorage } from '@/lib/neuraStorage';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -61,7 +61,7 @@ export default function MyNeura() {
   // Neural Extension name using neuraStorage utility
   const [neuraName, setNeuraName] = useState(neuraStorage.getName());
   
-  // Neural Tuning
+  // DotSpark Tuning
   const { 
     status, 
     isLoading: isTuningLoading, 
@@ -70,7 +70,7 @@ export default function MyNeura() {
     updateLearningFocus,
     isUpdatingFocus,
     availableSpecialties
-  } = useNeuralTuning();
+  } = useDotSparkTuning();
   
   // State for capacity metrics with animation
   const [processingEfficiency, setProcessingEfficiency] = useState<number>(65);
