@@ -422,7 +422,7 @@ export default function LandingPage() {
             </h1>
             
             {/* Subheadings */}
-            <p className="text-base md:text-lg text-muted-foreground mt-4 md:mt-4 mb-4 max-w-2xl text-center">
+            <p className="text-lg md:text-xl text-muted-foreground mt-4 md:mt-4 mb-4 max-w-2xl text-center">
               DotSpark is your personal Neura — built exclusively for business professionals to preserve your natural intelligence and thinking edge in a world overrun by AI.
             </p>
             
