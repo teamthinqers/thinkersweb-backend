@@ -219,24 +219,27 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
               <span className="font-medium text-primary">DotSpark</span>
             </div>
             
-            <div className="flex items-center">
+            <div className="flex items-center gap-1">
+              {/* Dashboard button */}
               <Button 
                 variant="ghost"
                 size="icon"
-                className="text-gray-600 hover:text-primary mr-1 h-9 w-9"
+                className="text-gray-600 hover:text-primary h-9 w-9"
                 onClick={goToDashboard}
               >
                 <LayoutDashboard className="h-5 w-5" />
               </Button>
               
-              {/* Menu button on right side */}
+              {/* Other conditional buttons would appear here */}
+              
+              {/* Menu button on far right */}
               <Button
                 variant="ghost"
                 size="icon"
-                className="text-gray-600 hover:text-primary h-11 w-11 ml-1"
+                className="text-gray-600 hover:text-primary h-9 w-9"
                 onClick={onMenuClick || (() => setShowMobileNav(!showMobileNav))}
               >
-                <Menu className="h-7 w-7" />
+                <Menu className="h-5 w-5" />
               </Button>
               
               {/* Always show "My Neura" when on the My Neura page */}
