@@ -210,16 +210,25 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
       <header className="bg-white border-b border-gray-200 px-2 py-3 flex items-center justify-between">
         {isMobile ? (
           <>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-gray-600 hover:text-primary h-11 w-11 mr-1"
-              onClick={onMenuClick || (() => setShowMobileNav(!showMobileNav))}
-            >
-              <Menu className="h-7 w-7" />
-            </Button>
-            
-
+            <div className="flex items-center">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-gray-600 hover:text-primary h-11 w-11 mr-1"
+                onClick={onMenuClick || (() => setShowMobileNav(!showMobileNav))}
+              >
+                <Menu className="h-7 w-7" />
+              </Button>
+              
+              {/* Logo in top left corner - clickable to Dashboard */}
+              <div 
+                className="flex items-center cursor-pointer active:opacity-80 transition-opacity"
+                onClick={() => setLocation("/dashboard")}
+              >
+                <Sparkles className="h-5 w-5 text-primary mr-1" />
+                <span className="font-medium text-primary">DotSpark</span>
+              </div>
+            </div>
             
             <div className="flex items-center">
               <Button 
