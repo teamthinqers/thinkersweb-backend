@@ -3,6 +3,7 @@ import { useLocation } from 'wouter';
 import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
 import { useNeuralTuning } from '@/hooks/useNeuralTuning';
+import { neuraStorage } from '@/lib/neuraStorage';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
@@ -57,8 +58,8 @@ export default function MyNeura() {
   const { user, loginWithGoogle, isLoading: isAuthLoading } = useAuth();
   const { toast } = useToast();
   
-  // Neural Extension name
-  const [neuraName, setNeuraName] = useState(localStorage.getItem('neuraName') || 'My Neural Extension');
+  // Neural Extension name using neuraStorage utility
+  const [neuraName, setNeuraName] = useState(neuraStorage.getName());
   
   // Neural Tuning
   const { 
@@ -106,52 +107,41 @@ export default function MyNeura() {
   // New focus for learning directives
   const [newFocus, setNewFocus] = useState('');
   
-  // Is Neura activated - load from localStorage
-  const [isActivated, setIsActivated] = useState<boolean>(false);
+  // Is Neura activated - using neuraStorage utility
+  const [isActivated, setIsActivated] = useState<boolean>(neuraStorage.isActivated());
   
-  // Check localStorage for activation status on page load/revisit
+  // Check for activation status on page load/revisit
   useEffect(() => {
     try {
-      const storedActivation = localStorage.getItem('neuraActivated') === 'true';
-      console.log("Loading activation status from localStorage:", storedActivation);
-      setIsActivated(storedActivation);
-      
-      // Log for debugging
-      if (storedActivation) {
-        console.log("Neura is activated in this session from localStorage");
-      } else {
-        console.log("Neura is not activated in localStorage");
-      }
+      const activated = neuraStorage.isActivated();
+      console.log("Loading activation status from neuraStorage:", activated);
+      setIsActivated(activated);
     } catch (error) {
       console.error("Error checking activation status:", error);
     }
   }, []);
   
-  // Handle name change
+  // Handle name change with neuraStorage
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newName = e.target.value;
     setNeuraName(newName);
-    localStorage.setItem('neuraName', newName);
+    neuraStorage.setName(newName);
   };
   
-  // Function to activate Neura
+  // Function to activate Neura using neuraStorage utility
   const activateNeura = () => {
     try {
-      // Set in localStorage and update state
-      localStorage.setItem('neuraActivated', 'true');
+      // Use the neuraStorage utility for consistent activation
+      neuraStorage.activate();
       setIsActivated(true);
-      console.log("Activating Neura: localStorage set to 'true', state updated");
+      console.log("Activating Neura: using neuraStorage utility");
       
-      // Force a re-render by updating another state
-      setNeuraName(prev => {
-        // If no name is set, set a default one
-        if (!prev || prev === '') {
-          const defaultName = 'My Neural Extension';
-          localStorage.setItem('neuraName', defaultName);
-          return defaultName;
-        }
-        return prev;
-      });
+      // Ensure name is set properly
+      if (!neuraName || neuraName === '') {
+        const defaultName = 'My Neural Extension';
+        neuraStorage.setName(defaultName);
+        setNeuraName(defaultName);
+      }
       
       // Show activation toast
       toast({
@@ -176,12 +166,13 @@ export default function MyNeura() {
     }
   };
   
-  // Function to deactivate Neura (for testing purposes)
+  // Function to deactivate Neura using neuraStorage utility
   const deactivateNeura = () => {
     try {
-      localStorage.setItem('neuraActivated', 'false');
+      // Use the neuraStorage utility for consistent deactivation
+      neuraStorage.deactivate();
       setIsActivated(false);
-      console.log("Deactivating Neura: localStorage set to 'false', state updated");
+      console.log("Deactivating Neura: using neuraStorage utility");
       
       toast({
         title: "Neura Deactivated",
