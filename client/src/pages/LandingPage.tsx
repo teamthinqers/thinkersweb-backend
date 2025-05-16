@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Brain, BookOpen, Users, Sparkles, BarChart2, MessageCircle, MessageSquare, User, Menu, X, Check } from "lucide-react";
@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/sheet";
 import { useAuth } from "@/hooks/use-auth";
 import { useWhatsAppStatus } from "@/hooks/useWhatsAppStatus";
+import { neuraStorage } from "@/lib/neuraStorage";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,12 +32,50 @@ export default function LandingPage() {
     forceStatusRefresh 
   } = useWhatsAppStatus();
   
-  // Check localStorage for activation status every render to ensure consistency
-  const isActiveInLocalStorage = localStorage.getItem('whatsapp_activated') === 'true';
+  // Use neuraStorage for Neura activation status
+  const [isNeuraActivated, setIsNeuraActivated] = useState(() => {
+    return neuraStorage.isActivated();
+  });
   
-  // Combined activation status check (either API confirms it or we have localStorage flag)
-  // Always check both sources for consistency across sessions
-  const isActivated = isWhatsAppConnected || isActiveInLocalStorage;
+  // Listen for Neura activation changes
+  useEffect(() => {
+    const handleActivation = (activated: boolean) => {
+      console.log("LandingPage received activation event:", activated);
+      setIsNeuraActivated(activated);
+    };
+    
+    // Set up event listener using neuraStorage utility
+    const unsubscribe = neuraStorage.addActivationListener(handleActivation);
+    
+    // Add event listener for storage changes (in case activation happens in another tab)
+    const storageHandler = () => {
+      const status = neuraStorage.isActivated();
+      setIsNeuraActivated(status);
+    };
+    
+    window.addEventListener('storage', storageHandler);
+    
+    // Clean up
+    return () => {
+      window.removeEventListener('storage', storageHandler);
+      unsubscribe();
+    };
+  }, []);
+  
+  // For WhatsApp activation status
+  const isActiveInLocalStorage = localStorage.getItem('whatsapp_activated') === 'true';
+  const isWhatsAppActivated = isWhatsAppConnected || isActiveInLocalStorage;
+  
+  // Check for activation status every 2 seconds to ensure consistency
+  useEffect(() => {
+    const checkActivationStatus = () => {
+      const status = neuraStorage.isActivated();
+      setIsNeuraActivated(status);
+    };
+    
+    const intervalId = setInterval(checkActivationStatus, 2000);
+    return () => clearInterval(intervalId);
+  }, []);
   
   // Persist activation status in localStorage if backend confirms it
   useEffect(() => {
@@ -82,7 +121,7 @@ export default function LandingPage() {
                 Dashboard
               </Link>
               <Button 
-                className={`${isActivated 
+                className={`${isNeuraActivated 
                   ? "bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90" 
                   : "bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"} 
                   text-white h-9 px-3 relative`}
@@ -91,7 +130,7 @@ export default function LandingPage() {
               >
                 <div className="flex items-center gap-2 relative z-10">
                   <div className="flex items-center">
-                    {isActivated ? (
+                    {isNeuraActivated ? (
                       <div className="relative">
                         <Brain className="h-4 w-4" />
                         <div className="absolute -top-1 -right-1 h-2 w-2 bg-green-500 rounded-full"></div>
@@ -134,7 +173,7 @@ export default function LandingPage() {
               <div className="block sm:hidden" onClick={() => setLocation("/my-neura")}>
                 <Button
                   size="sm"
-                  className={`${isActivated 
+                  className={`${isNeuraActivated 
                     ? "bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90" 
                     : "bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"} 
                     text-white relative h-7 px-2`}
@@ -142,7 +181,7 @@ export default function LandingPage() {
                   <div className="flex items-center gap-1">
                     <div className="relative">
                       <Brain className="h-3.5 w-3.5" />
-                      {isActivated && (
+                      {isNeuraActivated && (
                         <div className="absolute -top-1 -right-1 h-1.5 w-1.5 bg-green-500 rounded-full"></div>
                       )}
                     </div>
@@ -242,7 +281,7 @@ export default function LandingPage() {
                           <div className="flex items-center">
                             <div className="relative">
                               <Brain className="h-4 w-4 text-indigo-500" />
-                              {isActivated && (
+                              {isNeuraActivated && (
                                 <div className="absolute -top-1 -right-1 h-2 w-2 bg-green-500 rounded-full"></div>
                               )}
                             </div>

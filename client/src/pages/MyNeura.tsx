@@ -178,18 +178,20 @@ export default function MyNeura() {
     }
   };
   
-  // Function to handle slider value changes
+  // Function to handle slider value changes - only updates local state without saving to backend
   const handleParameterChange = (paramName: string, value: number[]) => {
     const paramValue = value[0];
     
+    // Update the pending changes object with the new parameter value
     setPendingChanges(prev => ({
       ...prev,
       [paramName]: paramValue
     }));
     
+    // Mark that we have unsaved changes
     setUnsavedChanges(true);
     
-    // Simulate capacity changes based on parameter adjustments
+    // Preview capacity changes based on parameter adjustments without saving
     // In a real implementation, these would be calculated by the backend
     if (paramName === 'creativity') {
       // Creativity affects processing efficiency and learning rate
@@ -264,8 +266,18 @@ export default function MyNeura() {
     setUnsavedChanges(true);
   };
   
-  // Save pending changes to Neural tuning
+  // Save pending changes to Neural tuning - only triggered when user clicks Save Changes
   const saveChanges = async () => {
+    if (!unsavedChanges) {
+      // No changes to save
+      toast({
+        title: "No Changes",
+        description: "No changes to save.",
+        variant: "default",
+      });
+      return;
+    }
+    
     if (!user) {
       // Prompt login if user is not authenticated
       toast({
@@ -280,19 +292,21 @@ export default function MyNeura() {
       // Update using the mutation function from the hook
       updateTuning(pendingChanges);
       
+      // Reset state after saving
       setUnsavedChanges(false);
       setPendingChanges({});
       
+      // Notify user that changes were saved successfully
       toast({
-        title: "Neural Tuning Updated",
+        title: "Changes Saved",
         description: "Your neural extension tuning parameters have been updated.",
         variant: "default",
       });
     } catch (error) {
       console.error("Error updating neural tuning:", error);
       toast({
-        title: "Update Failed",
-        description: "There was a problem updating your neural tuning settings.",
+        title: "Save Failed",
+        description: "There was a problem saving your neural tuning settings.",
         variant: "destructive",
       });
     }
@@ -337,13 +351,35 @@ export default function MyNeura() {
             <span className="text-sm font-medium">Neura Status:</span>
             <span className={`inline-flex h-3 w-3 rounded-full ${isActivated ? 'bg-green-500' : 'bg-red-500'}`}></span>
           </div>
-          <Button 
-            variant={isActivated ? "outline" : "default"} 
-            className={isActivated ? "border-green-500 text-green-600 hover:bg-green-50 dark:hover:bg-green-950" : "bg-indigo-600 hover:bg-indigo-700"} 
-            onClick={toggleNeuraActivation}
-          >
-            {isActivated ? "Deactivate Neura" : "Activate Neura"}
-          </Button>
+          <div className="flex items-center gap-2">
+            {unsavedChanges && isActivated && (
+              <Button 
+                variant="default"
+                className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-1.5"
+                onClick={saveChanges}
+                disabled={isUpdating}
+              >
+                {isUpdating ? (
+                  <span className="flex items-center gap-1.5">
+                    <span className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                    Saving...
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-1.5">
+                    <Save className="h-4 w-4" />
+                    Save Changes
+                  </span>
+                )}
+              </Button>
+            )}
+            <Button 
+              variant={isActivated ? "outline" : "default"} 
+              className={isActivated ? "border-green-500 text-green-600 hover:bg-green-50 dark:hover:bg-green-950" : "bg-indigo-600 hover:bg-indigo-700"} 
+              onClick={toggleNeuraActivation}
+            >
+              {isActivated ? "Deactivate Neura" : "Activate Neura"}
+            </Button>
+          </div>
         </div>
       </div>
       
