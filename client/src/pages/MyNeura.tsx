@@ -104,7 +104,22 @@ export default function MyNeura() {
   const [domainFilter, setDomainFilter] = useState('');
 
   // Is Neura activated
-  const isActivated = !!tuning && Object.keys(tuning).length > 0;
+  const [isActivated, setIsActivated] = useState<boolean>(
+    localStorage.getItem('neuraActivated') === 'true'
+  );
+  
+  // Function to activate Neura
+  const activateNeura = () => {
+    localStorage.setItem('neuraActivated', 'true');
+    setIsActivated(true);
+    
+    // Save any pending changes
+    if (unsavedChanges) {
+      updateTuning(pendingChanges);
+      setUnsavedChanges(false);
+      setPendingChanges({});
+    }
+  };
   
   // Learning focus array for learning tab
   const [learningFocus, setLearningFocus] = useState<string[]>([]);
@@ -905,9 +920,7 @@ export default function MyNeura() {
             <Button 
               className="w-full sm:w-auto py-6 px-8 bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white"
               onClick={() => {
-                if (unsavedChanges) {
-                  saveChanges();
-                }
+                activateNeura();
                 
                 toast({
                   title: "Neura Activated",
@@ -915,14 +928,20 @@ export default function MyNeura() {
                   variant: "default",
                 });
               }}
-              disabled={isTuningLoading}
+              disabled={isTuningLoading || isActivated}
             >
               <div className="flex flex-col items-center">
                 <div className="flex items-center">
                   <BrainCircuit className="h-5 w-5 mr-2" />
-                  <span className="text-lg font-semibold">Activate Neura</span>
+                  <span className="text-lg font-semibold">
+                    {isActivated ? "Neura Active" : "Activate Neura"}
+                  </span>
                 </div>
-                <span className="text-xs mt-1">Apply all settings and activate your neural extension</span>
+                <span className="text-xs mt-1">
+                  {isActivated 
+                    ? "Your neural extension is active and running" 
+                    : "Apply all settings and activate your neural extension"}
+                </span>
               </div>
             </Button>
           </div>
