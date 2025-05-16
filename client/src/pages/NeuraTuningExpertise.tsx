@@ -10,6 +10,12 @@ import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/h
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
+// Define specialty type for type safety
+interface Specialty {
+  id: string;
+  name: string;
+}
+
 export default function NeuraTuningExpertise() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
@@ -19,8 +25,7 @@ export default function NeuraTuningExpertise() {
     status, 
     isLoading: isTuningLoading, 
     updateTuning,
-    isUpdating,
-    availableSpecialties
+    isUpdating
   } = useDotSparkTuning();
   
   // Local state for unsaved changes
@@ -35,6 +40,25 @@ export default function NeuraTuningExpertise() {
       specialties: {},
     }
   };
+  
+  // Define available specialties
+  const staticSpecialties: Specialty[] = [
+    { id: 'science', name: 'Science' },
+    { id: 'technology', name: 'Technology' },
+    { id: 'business', name: 'Business' },
+    { id: 'creative', name: 'Creative' },
+    { id: 'education', name: 'Education' },
+    { id: 'communication', name: 'Communication' },
+    { id: 'analytics', name: 'Analytics' },
+    { id: 'humanities', name: 'Humanities' },
+    { id: 'engineering', name: 'Engineering' },
+    { id: 'healthcare', name: 'Healthcare' },
+    { id: 'personal_development', name: 'Personal Development' },
+    { id: 'research', name: 'Research' },
+    { id: 'leadership', name: 'Leadership' },
+    { id: 'finance', name: 'Finance' },
+    { id: 'design', name: 'Design' }
+  ];
   
   // Function to handle specialty value changes
   const handleSpecialtyChange = (specialtyId: string, value: number[]) => {
@@ -86,10 +110,12 @@ export default function NeuraTuningExpertise() {
   };
   
   // Prepare the specialty items for display
-  const specialties = Object.entries(neuralTuning?.specialties || {}).sort((a, b) => b[1] - a[1]);
-  const availableSpecialtyOptions = availableSpecialties?.filter(
-    option => !Object.keys(neuralTuning?.specialties || {}).includes(option)
-  ) || [];
+  const specialties = Object.entries(neuralTuning?.specialties || {}).sort((a, b) => Number(b[1]) - Number(a[1]));
+  
+  // Filter available specialties
+  const availableSpecialtyOptions = staticSpecialties.filter(specialty => 
+    !Object.keys(neuralTuning?.specialties || {}).includes(specialty.id)
+  );
   
   // Loading state
   if (isTuningLoading) {
@@ -169,44 +195,50 @@ export default function NeuraTuningExpertise() {
             
             {specialties.length > 0 ? (
               <div className="space-y-6">
-                {specialties.map(([specialty, value]) => (
-                  <div key={specialty} className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <h3 className="text-lg font-medium capitalize">{specialty}</h3>
-                        <HoverCard>
-                          <HoverCardTrigger>
-                            <Info className="h-4 w-4 text-muted-foreground" />
-                          </HoverCardTrigger>
-                          <HoverCardContent className="w-80">
-                            <div className="space-y-2">
-                              <h4 className="text-sm font-semibold capitalize">{specialty} Expertise</h4>
-                              <p className="text-sm">
-                                Controls how much your neural extension emphasizes {specialty.toLowerCase()} knowledge and perspectives. Higher values make this domain more prominent in your responses.
-                              </p>
-                            </div>
-                          </HoverCardContent>
-                        </HoverCard>
+                {specialties.map(([specialty, value]) => {
+                  // Find the display name for the specialty
+                  const specialtyInfo = staticSpecialties.find(s => s.id === specialty);
+                  const displayName = specialtyInfo?.name || specialty;
+                  
+                  return (
+                    <div key={specialty} className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <h3 className="text-lg font-medium capitalize">{displayName}</h3>
+                          <HoverCard>
+                            <HoverCardTrigger>
+                              <Info className="h-4 w-4 text-muted-foreground" />
+                            </HoverCardTrigger>
+                            <HoverCardContent className="w-80">
+                              <div className="space-y-2">
+                                <h4 className="text-sm font-semibold capitalize">{displayName} Expertise</h4>
+                                <p className="text-sm">
+                                  Controls how much your neural extension emphasizes {displayName.toLowerCase()} knowledge and perspectives. Higher values make this domain more prominent in your responses.
+                                </p>
+                              </div>
+                            </HoverCardContent>
+                          </HoverCard>
+                        </div>
+                        <span className="text-sm font-medium text-muted-foreground">
+                          {Math.round(((pendingChanges.specialties?.[specialty] ?? Number(value)) * 100))}%
+                        </span>
                       </div>
-                      <span className="text-sm font-medium text-muted-foreground">
-                        {Math.round((pendingChanges.specialties?.[specialty] ?? value) * 100)}%
-                      </span>
+                      <Slider
+                        defaultValue={[Number(value)]}
+                        max={1}
+                        step={0.01}
+                        value={[pendingChanges.specialties?.[specialty] ?? Number(value)]}
+                        onValueChange={(val) => handleSpecialtyChange(specialty, val)}
+                        className="w-full"
+                      />
+                      <div className="flex justify-between text-xs text-muted-foreground">
+                        <span>Minimal</span>
+                        <span>Moderate</span>
+                        <span>Specialized</span>
+                      </div>
                     </div>
-                    <Slider
-                      defaultValue={[value]}
-                      max={1}
-                      step={0.01}
-                      value={[pendingChanges.specialties?.[specialty] ?? value]}
-                      onValueChange={(val) => handleSpecialtyChange(specialty, val)}
-                      className="w-full"
-                    />
-                    <div className="flex justify-between text-xs text-muted-foreground">
-                      <span>Minimal</span>
-                      <span>Moderate</span>
-                      <span>Specialized</span>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             ) : (
               <div className="flex flex-col items-center justify-center py-8 border-2 border-dashed rounded-lg">
@@ -217,7 +249,7 @@ export default function NeuraTuningExpertise() {
                   onClick={() => {
                     // Add a default specialty if none exist
                     if (availableSpecialtyOptions.length > 0) {
-                      handleSpecialtyChange(availableSpecialtyOptions[0], [0.5]);
+                      handleSpecialtyChange(availableSpecialtyOptions[0].id, [0.5]);
                     }
                   }}
                   disabled={availableSpecialtyOptions.length === 0}
@@ -240,13 +272,13 @@ export default function NeuraTuningExpertise() {
                 <div className="flex flex-wrap gap-2">
                   {availableSpecialtyOptions.map((specialty) => (
                     <Badge 
-                      key={specialty}
+                      key={specialty.id}
                       variant="outline"
                       className="cursor-pointer hover:bg-blue-50 dark:hover:bg-blue-950 transition-colors capitalize py-1.5"
-                      onClick={() => handleSpecialtyChange(specialty, [0.5])}
+                      onClick={() => handleSpecialtyChange(specialty.id, [0.5])}
                     >
                       <Plus className="h-3 w-3 mr-1" />
-                      {specialty}
+                      {specialty.name}
                     </Badge>
                   ))}
                 </div>
