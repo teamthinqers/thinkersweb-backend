@@ -219,23 +219,16 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
               <Menu className="h-7 w-7" />
             </Button>
             
-            {/* Center logo - clickable to go to dashboard */}
-            <div 
-              className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center cursor-pointer active:opacity-80 transition-opacity"
-              onClick={() => setLocation("/dashboard")}
-            >
-              <Sparkles className="h-5 w-5 text-primary mr-1" />
-              <span className="text-lg font-bold text-primary">DotSpark</span>
-            </div>
+
             
             <div className="flex items-center">
               <Button 
                 variant="ghost"
                 size="icon"
                 className="text-gray-600 hover:text-primary mr-1 h-9 w-9"
-                onClick={goToLandingPage}
+                onClick={goToDashboard}
               >
-                <HomeIcon className="h-5 w-5" />
+                <LayoutDashboard className="h-5 w-5" />
               </Button>
               
               {/* Always show "My Neura" when on the My Neura page */}
