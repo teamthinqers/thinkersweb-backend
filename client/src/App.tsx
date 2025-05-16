@@ -186,9 +186,7 @@ function Router() {
       <Route path="/activate-neura">
         {() => <MyNeura />}
       </Route>
-      <Route path="/my-neura">
-        {() => <MyNeura />}
-      </Route>
+      <Route path="/my-neura" component={MyNeura} />
       {/* Legacy routes - all redirecting to My Neura page */}
       <Route path="/dotspark-tuning">
         {() => <MyNeura />}

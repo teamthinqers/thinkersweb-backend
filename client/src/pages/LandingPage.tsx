@@ -661,7 +661,7 @@ export default function LandingPage() {
           </div>
           
           {/* Enhanced gamified progress tracker */}
-          <div className="max-w-3xl mx-auto mt-16 relative">
+          <div className="max-w-2xl mx-auto mt-16 relative">
             {/* Progress percentage display */}
             <div className={`absolute -top-10 left-1/2 -translate-x-1/2 text-white rounded-full px-4 py-1 font-bold shadow-lg transition-all duration-500
               ${isSetupCompleted 
@@ -707,12 +707,12 @@ export default function LandingPage() {
               <div className="flex justify-between items-center relative z-20">
                 {/* Step 1: Sign In */}
                 <div className="flex flex-col items-center">
-                  <div className={`w-14 h-14 rounded-full flex items-center justify-center shadow-lg mb-3 transition-all duration-500
+                  <div className={`w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center shadow-lg mb-3 transition-all duration-500
                     ${user ? 'bg-gradient-to-br from-green-400 to-emerald-600 text-white scale-110' : 'bg-card border-2 border-muted text-muted-foreground'}`}>
                     {user ? (
-                      <CheckCircle className="h-8 w-8" />
+                      <CheckCircle className="h-6 w-6 md:h-8 md:w-8" />
                     ) : (
-                      <div className="rounded-full bg-primary/10 w-10 h-10 flex items-center justify-center">
+                      <div className="rounded-full bg-primary/10 w-8 h-8 md:w-10 md:h-10 flex items-center justify-center">
                         <span className="font-bold text-lg">1</span>
                       </div>
                     )}
@@ -728,14 +728,14 @@ export default function LandingPage() {
                 
                 {/* Step 2: Activate Neura */}
                 <div className="flex flex-col items-center">
-                  <div className={`w-14 h-14 rounded-full flex items-center justify-center shadow-lg mb-3 transition-all duration-500
+                  <div className={`w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center shadow-lg mb-3 transition-all duration-500
                     ${isNeuraActivated ? 'bg-gradient-to-br from-indigo-400 to-violet-600 text-white scale-110' : 
                     user ? 'bg-card border-2 border-indigo-400 text-indigo-500 animate-pulse' : 
                     'bg-card border-2 border-muted text-muted-foreground'}`}>
                     {isNeuraActivated ? (
-                      <CheckCircle className="h-8 w-8" />
+                      <CheckCircle className="h-6 w-6 md:h-8 md:w-8" />
                     ) : (
-                      <div className="rounded-full bg-indigo-500/10 w-10 h-10 flex items-center justify-center">
+                      <div className="rounded-full bg-indigo-500/10 w-8 h-8 md:w-10 md:h-10 flex items-center justify-center">
                         <span className="font-bold text-lg">2</span>
                       </div>
                     )}
@@ -760,14 +760,14 @@ export default function LandingPage() {
                 
                 {/* Step 3: Connect WhatsApp */}
                 <div className="flex flex-col items-center">
-                  <div className={`w-14 h-14 rounded-full flex items-center justify-center shadow-lg mb-3 transition-all duration-500
+                  <div className={`w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center shadow-lg mb-3 transition-all duration-500
                     ${isWhatsAppConnected ? 'bg-gradient-to-br from-[#25D366] to-[#128C7E] text-white scale-110' : 
                     isNeuraActivated ? 'bg-card border-2 border-[#25D366] text-[#25D366] animate-pulse' : 
                     'bg-card border-2 border-muted text-muted-foreground'}`}>
                     {isWhatsAppConnected ? (
-                      <CheckCircle className="h-8 w-8" />
+                      <CheckCircle className="h-6 w-6 md:h-8 md:w-8" />
                     ) : (
-                      <div className="rounded-full bg-[#25D366]/10 w-10 h-10 flex items-center justify-center">
+                      <div className="rounded-full bg-[#25D366]/10 w-8 h-8 md:w-10 md:h-10 flex items-center justify-center">
                         <span className="font-bold text-lg">3</span>
                       </div>
                     )}
