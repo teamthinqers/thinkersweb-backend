@@ -70,8 +70,8 @@ export function PWAInstallButton({
     }
   };
 
-  // If it's not installable and not installed, don't render anything
-  if (!installable && !installed) {
+  // If app is installed or not installable, don't render anything
+  if (installed || (!installable && !installed)) {
     return null;
   }
 
