@@ -94,7 +94,7 @@ export function IosPwaInstallPrompt() {
           className="flex-1 bg-gradient-to-r from-indigo-600 to-violet-600"
         >
           <Download className="mr-2 h-4 w-4" />
-          Install Now
+          How to Install
         </Button>
       </div>
     </div>
