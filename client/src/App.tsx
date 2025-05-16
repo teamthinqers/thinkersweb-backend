@@ -27,6 +27,7 @@ import DotSparkTuningUnified from "@/pages/DotSparkTuningUnified";
 import PwaDebugger from "@/pages/PwaDebugger";
 import PwaInstallGuide from "@/pages/PwaInstallGuide";
 import Testing from "@/pages/Testing";
+import ChatPage from "@/pages/chat-page";
 import AppLayout from "@/components/layout/AppLayout";
 import EntryDetail from "@/components/entries/EntryDetail";
 import ChatEntryForm from "@/components/chat/ChatEntryForm";

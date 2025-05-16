@@ -1,0 +1,97 @@
+import React from 'react';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { MessageSquare, MessageCircle } from "lucide-react";
+import { useLocation } from "wouter";
+
+interface ContactOptionsDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  whatsAppNumber: string | null;
+}
+
+export function ContactOptionsDialog({ 
+  open, 
+  onOpenChange, 
+  whatsAppNumber 
+}: ContactOptionsDialogProps) {
+  const [_, setLocation] = useLocation();
+
+  const handleWhatsAppClick = () => {
+    if (!whatsAppNumber) return;
+    
+    // Always include the default message
+    const defaultMessage = "Hey DotSpark, I've got a few things on my mind — need your thoughts";
+    const encodedMessage = encodeURIComponent(defaultMessage);
+    
+    // For mobile devices, create a direct link to the app
+    if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+      // Try to use the direct app link first
+      const whatsappUrl = `whatsapp://send?phone=${whatsAppNumber}&text=${encodedMessage}`;
+      
+      // Create and click an actual anchor element for better mobile compatibility
+      const a = document.createElement('a');
+      a.href = whatsappUrl;
+      a.setAttribute('target', '_blank');
+      a.setAttribute('rel', 'noopener noreferrer');
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      
+      // After a short delay, try the web version as fallback
+      setTimeout(() => {
+        window.open(`https://wa.me/${whatsAppNumber}?text=${encodedMessage}`, '_blank');
+      }, 1000);
+    } else {
+      // For desktop, use the web version directly
+      window.open(`https://wa.me/${whatsAppNumber}?text=${encodedMessage}`, '_blank');
+    }
+    
+    onOpenChange(false);
+  };
+
+  const handleDirectChatClick = () => {
+    // Navigate to direct chat page
+    setLocation("/chat");
+    onOpenChange(false);
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle className="text-xl">Choose Contact Method</DialogTitle>
+          <DialogDescription>
+            How would you like to connect with DotSpark?
+          </DialogDescription>
+        </DialogHeader>
+        <div className="grid grid-cols-1 gap-4 py-4 sm:grid-cols-2">
+          <Button
+            onClick={handleWhatsAppClick}
+            disabled={!whatsAppNumber}
+            className="flex flex-col items-center justify-center h-32 p-4 bg-gradient-to-r from-[#25D366] to-[#128C7E] hover:from-[#128C7E] hover:to-[#25D366] text-white border-0"
+          >
+            <MessageSquare className="h-10 w-10 mb-2" />
+            <span className="font-medium">WhatsApp</span>
+            <span className="text-xs mt-1 opacity-90">Chat from your phone</span>
+          </Button>
+          
+          <Button 
+            onClick={handleDirectChatClick}
+            className="flex flex-col items-center justify-center h-32 p-4 bg-gradient-to-r from-primary to-indigo-600 hover:from-indigo-600 hover:to-primary text-white border-0"
+          >
+            <MessageCircle className="h-10 w-10 mb-2" />
+            <span className="font-medium">Direct Chat</span>
+            <span className="text-xs mt-1 opacity-90">Chat in your browser</span>
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}

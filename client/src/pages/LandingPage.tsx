@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Brain, BookOpen, Users, Sparkles, BarChart2, MessageCircle, MessageSquare, User, Menu, X, Check, CheckCircle } from "lucide-react";
 import { WhatsAppContactButton } from "@/components/landing/WhatsAppContactButton";
 import { CompactWhatsAppButton } from "@/components/landing/CompactWhatsAppButton";
+import { ContactOptionsDialog } from "@/components/landing/ContactOptionsDialog";
 import DashboardPreview from "@/components/landing/DashboardPreview";
 import { 
   Sheet,
