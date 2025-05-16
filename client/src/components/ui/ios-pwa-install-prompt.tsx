@@ -80,21 +80,14 @@ export function IosPwaInstallPrompt() {
           <X className="h-5 w-5" />
         </button>
       </div>
-      <div className="flex space-x-2 mt-3">
-        <Button 
-          variant="outline" 
-          onClick={viewInstallGuide}
-          className="flex-1"
-        >
-          View Full Guide
-        </Button>
+      <div className="mt-3">
         <Button 
           variant="default" 
-          onClick={closePrompt}
-          className="flex-1 bg-gradient-to-r from-indigo-600 to-violet-600"
+          onClick={viewInstallGuide}
+          className="w-full bg-gradient-to-r from-indigo-600 to-violet-600"
         >
           <Download className="mr-2 h-4 w-4" />
-          How to Install
+          View Installation Guide
         </Button>
       </div>
     </div>
