@@ -84,6 +84,9 @@ export default function MyNeura() {
   // Active tab for neural tuning
   const [activeTab, setActiveTab] = useState('core');
   
+  // Track if we're on mobile for responsive layout
+  const [isMobileView, setIsMobileView] = useState(window.innerWidth < 768);
+  
   // New focus for learning directives
   const [newFocus, setNewFocus] = useState('');
   
@@ -99,6 +102,34 @@ export default function MyNeura() {
     } catch (error) {
       console.error("Error checking activation status:", error);
     }
+  }, []);
+  
+  // Handle responsive layout adjustments and persistence
+  useEffect(() => {
+    // Handle window resize for responsive layout
+    const handleResize = () => {
+      const mobileCheck = window.innerWidth < 768;
+      setIsMobileView(mobileCheck);
+    };
+    
+    // Listen for window resize events
+    window.addEventListener('resize', handleResize);
+    
+    // Set up activation state listener from storage events (for cross-tab/device persistence)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'neuraActivated') {
+        const newActivationState = e.newValue === 'true';
+        setIsActivated(newActivationState);
+      }
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    
+    // Clean up
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, []);
   
   // Handle name change with neuraStorage
