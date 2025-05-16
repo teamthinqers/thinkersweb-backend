@@ -5,16 +5,10 @@ import { useDotSparkTuning } from '@/hooks/useDotSparkTuning';
 import { Slider } from '@/components/ui/slider';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { Target, ChevronLeft, Save, Info, Plus } from 'lucide-react';
+import { Target, ChevronLeft, Save, Info, Plus, Trash2 } from 'lucide-react';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-
-// Define specialty type for type safety
-interface Specialty {
-  id: string;
-  name: string;
-}
 
 export default function NeuraTuningExpertise() {
   const [, setLocation] = useLocation();
@@ -42,23 +36,46 @@ export default function NeuraTuningExpertise() {
   };
   
   // Define available specialties
-  const staticSpecialties: Specialty[] = [
-    { id: 'science', name: 'Science' },
-    { id: 'technology', name: 'Technology' },
-    { id: 'business', name: 'Business' },
-    { id: 'creative', name: 'Creative' },
-    { id: 'education', name: 'Education' },
-    { id: 'communication', name: 'Communication' },
-    { id: 'analytics', name: 'Analytics' },
-    { id: 'humanities', name: 'Humanities' },
-    { id: 'engineering', name: 'Engineering' },
-    { id: 'healthcare', name: 'Healthcare' },
-    { id: 'personal_development', name: 'Personal Development' },
-    { id: 'research', name: 'Research' },
-    { id: 'leadership', name: 'Leadership' },
-    { id: 'finance', name: 'Finance' },
-    { id: 'design', name: 'Design' }
+  const availableSpecialtiesList = [
+    'science',
+    'technology',
+    'business',
+    'creative',
+    'education',
+    'communication',
+    'analytics',
+    'humanities',
+    'engineering',
+    'healthcare',
+    'personal_development',
+    'research',
+    'leadership',
+    'finance',
+    'design'
   ];
+  
+  // Function to get display name for specialty
+  const getDisplayName = (id: string): string => {
+    const displayMap: Record<string, string> = {
+      'science': 'Science',
+      'technology': 'Technology',
+      'business': 'Business',
+      'creative': 'Creative',
+      'education': 'Education',
+      'communication': 'Communication',
+      'analytics': 'Analytics',
+      'humanities': 'Humanities',
+      'engineering': 'Engineering',
+      'healthcare': 'Healthcare',
+      'personal_development': 'Personal Development',
+      'research': 'Research',
+      'leadership': 'Leadership',
+      'finance': 'Finance',
+      'design': 'Design'
+    };
+    
+    return displayMap[id] || id.charAt(0).toUpperCase() + id.slice(1);
+  };
   
   // Function to handle specialty value changes
   const handleSpecialtyChange = (specialtyId: string, value: number[]) => {
@@ -70,6 +87,32 @@ export default function NeuraTuningExpertise() {
         ...(prev.specialties || {}),
         [specialtyId]: specialtyValue
       }
+    }));
+    
+    setUnsavedChanges(true);
+  };
+  
+  // Function to add a new specialty
+  const addSpecialty = (specialtyId: string) => {
+    setPendingChanges(prev => ({
+      ...prev,
+      specialties: {
+        ...(prev.specialties || {}),
+        [specialtyId]: 0.5 // Default to 50%
+      }
+    }));
+    
+    setUnsavedChanges(true);
+  };
+  
+  // Function to remove a specialty
+  const removeSpecialty = (specialtyId: string) => {
+    const updatedSpecialties = { ...(pendingChanges.specialties || {}) };
+    delete updatedSpecialties[specialtyId];
+    
+    setPendingChanges(prev => ({
+      ...prev,
+      specialties: updatedSpecialties
     }));
     
     setUnsavedChanges(true);
@@ -110,11 +153,19 @@ export default function NeuraTuningExpertise() {
   };
   
   // Prepare the specialty items for display
-  const specialties = Object.entries(neuralTuning?.specialties || {}).sort((a, b) => Number(b[1]) - Number(a[1]));
+  const specialties = Object.entries(neuralTuning?.specialties || {}).sort((a, b) => {
+    // Safe number conversion
+    const valA = typeof a[1] === 'number' ? a[1] : Number(a[1]);
+    const valB = typeof b[1] === 'number' ? b[1] : Number(b[1]);
+    return valB - valA; // Sort by value descending
+  });
   
   // Filter available specialties
-  const availableSpecialtyOptions = staticSpecialties.filter(specialty => 
-    !Object.keys(neuralTuning?.specialties || {}).includes(specialty.id)
+  const availableSpecialtyOptions = availableSpecialtiesList.filter(specialty => 
+    !Object.keys({
+      ...neuralTuning?.specialties,
+      ...pendingChanges.specialties
+    }).includes(specialty)
   );
   
   // Loading state
@@ -196,9 +247,14 @@ export default function NeuraTuningExpertise() {
             {specialties.length > 0 ? (
               <div className="space-y-6">
                 {specialties.map(([specialty, value]) => {
-                  // Find the display name for the specialty
-                  const specialtyInfo = staticSpecialties.find(s => s.id === specialty);
-                  const displayName = specialtyInfo?.name || specialty;
+                  // Get display name for the specialty
+                  const displayName = getDisplayName(specialty);
+                  
+                  // Calculate the actual value to display
+                  const displayValue = pendingChanges.specialties?.[specialty] ?? value;
+                  const displayValueNumber = typeof displayValue === 'number' 
+                    ? displayValue 
+                    : Number(displayValue);
                   
                   return (
                     <div key={specialty} className="space-y-3">
@@ -218,16 +274,23 @@ export default function NeuraTuningExpertise() {
                               </div>
                             </HoverCardContent>
                           </HoverCard>
+                          <button 
+                            onClick={() => removeSpecialty(specialty)}
+                            className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 ml-1"
+                            title="Remove specialty"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </button>
                         </div>
                         <span className="text-sm font-medium text-muted-foreground">
-                          {Math.round(((pendingChanges.specialties?.[specialty] ?? Number(value)) * 100))}%
+                          {Math.round(displayValueNumber * 100)}%
                         </span>
                       </div>
                       <Slider
-                        defaultValue={[Number(value)]}
+                        defaultValue={[typeof value === 'number' ? value : Number(value)]}
                         max={1}
                         step={0.01}
-                        value={[pendingChanges.specialties?.[specialty] ?? Number(value)]}
+                        value={[typeof displayValue === 'number' ? displayValue : Number(displayValue)]}
                         onValueChange={(val) => handleSpecialtyChange(specialty, val)}
                         className="w-full"
                       />
@@ -249,7 +312,7 @@ export default function NeuraTuningExpertise() {
                   onClick={() => {
                     // Add a default specialty if none exist
                     if (availableSpecialtyOptions.length > 0) {
-                      handleSpecialtyChange(availableSpecialtyOptions[0].id, [0.5]);
+                      addSpecialty(availableSpecialtyOptions[0]);
                     }
                   }}
                   disabled={availableSpecialtyOptions.length === 0}
@@ -272,13 +335,13 @@ export default function NeuraTuningExpertise() {
                 <div className="flex flex-wrap gap-2">
                   {availableSpecialtyOptions.map((specialty) => (
                     <Badge 
-                      key={specialty.id}
+                      key={specialty}
                       variant="outline"
                       className="cursor-pointer hover:bg-blue-50 dark:hover:bg-blue-950 transition-colors capitalize py-1.5"
-                      onClick={() => handleSpecialtyChange(specialty.id, [0.5])}
+                      onClick={() => addSpecialty(specialty)}
                     >
                       <Plus className="h-3 w-3 mr-1" />
-                      {specialty.name}
+                      {getDisplayName(specialty)}
                     </Badge>
                   ))}
                 </div>
