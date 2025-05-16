@@ -432,7 +432,10 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
       {isMobile && showMobileNav && !onMenuClick && (
         <div className="fixed inset-0 z-50 bg-white">
           <div className="flex justify-between items-center p-4 border-b">
-            <h2 className="text-lg font-bold text-primary">DotSpark</h2>
+            <div onClick={goToDashboard} className="cursor-pointer flex items-center">
+              <Sparkles className="h-5 w-5 text-primary mr-1.5" />
+              <h2 className="text-lg font-bold text-primary">DotSpark</h2>
+            </div>
             <Button 
               variant="ghost" 
               size="icon"
