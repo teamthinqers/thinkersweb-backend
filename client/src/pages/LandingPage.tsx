@@ -422,11 +422,7 @@ export default function LandingPage() {
             </h1>
             
             {/* Subheadings */}
-            <p className="text-lg md:text-xl font-medium text-foreground mt-2 max-w-2xl text-center">
-              Think Sharper, Stay You
-            </p>
-            
-            <p className="text-base md:text-lg text-muted-foreground mt-1 md:mt-2 mb-4 max-w-2xl text-center">
+            <p className="text-base md:text-lg text-muted-foreground mt-4 md:mt-4 mb-4 max-w-2xl text-center">
               DotSpark is your personal Neura — built exclusively for business professionals to preserve your natural intelligence and thinking edge in a world overrun by AI.
             </p>
             
@@ -654,7 +650,7 @@ export default function LandingPage() {
                 className="mt-4 w-full rounded-full bg-[#25D366] hover:bg-[#128C7E] text-white shadow-md hover:shadow-lg transition-all duration-300"
               >
                 <MessageSquare className="h-5 w-5 mr-2" />
-                <span>Authenticate</span>
+                <span>Link WhatsApp</span>
               </Button>
             </div>
           </div>
