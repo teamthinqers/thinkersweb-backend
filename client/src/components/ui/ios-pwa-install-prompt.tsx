@@ -63,11 +63,17 @@ export function IosPwaInstallPrompt() {
             <div className="flex flex-col space-y-2">
               <div className="flex items-center space-x-2">
                 <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold">1</span>
-                <span className="text-sm">Tap <span className="inline-flex items-center px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-xs"><Share className="h-3 w-3 mr-1" /> Share</span> icon</span>
+                <div>
+                  <span className="text-sm">Tap <span className="inline-flex items-center px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-xs"><Share className="h-3 w-3 mr-1" /> Share</span> icon</span>
+                  <p className="text-xs text-slate-500 mt-1">Found at the bottom of your browser (look for the square with arrow)</p>
+                </div>
               </div>
               <div className="flex items-center space-x-2">
                 <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold">2</span>
-                <span className="text-sm">Choose <span className="inline-flex items-center px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-xs"><PlusCircle className="h-3 w-3 mr-1" /> Add to Home Screen</span></span>
+                <div>
+                  <span className="text-sm">Choose <span className="inline-flex items-center px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-xs"><PlusCircle className="h-3 w-3 mr-1" /> Add to Home Screen</span></span>
+                  <p className="text-xs text-slate-500 mt-1">Scroll down in the share menu until you see this option</p>
+                </div>
               </div>
             </div>
           </div>
