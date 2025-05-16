@@ -30,6 +30,7 @@ import {
 } from "@/components/ui/button";
 import { useMobile } from "@/hooks/use-mobile";
 import { useWhatsAppStatus } from "@/hooks/useWhatsAppStatus";
+import { neuraStorage } from "@/lib/neuraStorage";
 
 interface HeaderProps {
   onSearch: (query: string) => void;
@@ -46,6 +47,9 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
   const isMobile = useMobile();
   const [showMobileNav, setShowMobileNav] = useState(false);
   
+  // State for Neura activation using neuraStorage
+  const [isActivated, setIsActivated] = useState(neuraStorage.isActivated());
+  
   // Get WhatsApp status with our enhanced hook
   const { 
     isWhatsAppConnected, 
@@ -53,27 +57,30 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
     forceStatusRefresh 
   } = useWhatsAppStatus();
   
-  // Check localStorage for activation status every render to ensure consistency
-  const isActiveInLocalStorage = localStorage.getItem('whatsapp_activated') === 'true';
-  
-  // Combined activation status check (either API confirms it or we have localStorage flag)
-  // Always check both sources for consistency across sessions
-  const isActivated = isWhatsAppConnected || isActiveInLocalStorage;
-  
-  // Persist activation status in localStorage if backend confirms it
+  // Update activation status when component mounts
   useEffect(() => {
-    if (isWhatsAppConnected && !isActiveInLocalStorage) {
-      console.log("Backend confirms WhatsApp connection - updating localStorage");
-      localStorage.setItem('whatsapp_activated', 'true');
-    }
-  }, [isWhatsAppConnected, isActiveInLocalStorage]);
+    setIsActivated(neuraStorage.isActivated());
+  }, []);
   
-  // Debug status
-  console.log("WhatsApp status - Header:", { 
-    isWhatsAppConnected, 
-    isActiveInLocalStorage, 
-    isActivated 
-  });
+  // Check for activation status changes
+  useEffect(() => {
+    // Function to check activation
+    const checkActivation = () => {
+      const activated = neuraStorage.isActivated();
+      setIsActivated(activated);
+    };
+    
+    // Check on mount and whenever location changes (user navigates)
+    checkActivation();
+    
+    // Add event listener for storage changes (in case activation happens in another tab)
+    window.addEventListener('storage', checkActivation);
+    
+    // Clean up
+    return () => {
+      window.removeEventListener('storage', checkActivation);
+    };
+  }, [location]);
   
   // When component mounts, refresh WhatsApp status
   useEffect(() => {
@@ -82,9 +89,9 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
     if (user) {
       console.log("Header mounted, refreshing WhatsApp status");
       
-      // Check if we're activated in localStorage
-      if (isActiveInLocalStorage) {
-        // If we have a local flag, simulate activation first for immediate UI update
+      // If we're activated in neuraStorage, simulate activation first
+      if (neuraStorage.isActivated()) {
+        // Simulate activation for immediate UI update
         simulateActivation();
       }
       
@@ -93,7 +100,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
         forceStatusRefresh();
       }, 500);
     }
-  }, [user, isActiveInLocalStorage, simulateActivation, forceStatusRefresh]);
+  }, [user, simulateActivation, forceStatusRefresh]);
   
   // Add a special effect to periodically check activation status
   useEffect(() => {
@@ -101,6 +108,9 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
     // This helps ensure multi-device/multi-tab consistency
     if (user) {
       const intervalId = setInterval(() => {
+        // Check neuraStorage for activation status
+        setIsActivated(neuraStorage.isActivated());
+        // Refresh WhatsApp status as well
         forceStatusRefresh();
       }, 5000);
       
