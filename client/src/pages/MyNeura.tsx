@@ -82,6 +82,12 @@ export default function MyNeura() {
       adaptationScore: 0
     }
   };
+  
+  // State for capacity metrics with animation
+  const [processingEfficiency, setProcessingEfficiency] = useState<number>(65);
+  const [memoryCapacity, setMemoryCapacity] = useState<number>(48);
+  const [learningRate, setLearningRate] = useState<number>(52);
+  const [specializationLevel, setSpecializationLevel] = useState<number>(35);
 
   // State for tracking unsaved changes
   const [unsavedChanges, setUnsavedChanges] = useState(false);
@@ -99,7 +105,7 @@ export default function MyNeura() {
   const [selectedExpertise, setSelectedExpertise] = useState<{[key: string]: number}>({});
   
   const [activeTab, setActiveTab] = useState<string>('hygiene');
-  const [dotsparkName, setDotsparkName] = useState<string>('Neura');
+  const [neuraName, setNeuraName] = useState<string>('Neura');
   
   // Domain filter for expertise
   const [domainFilter, setDomainFilter] = useState('');
