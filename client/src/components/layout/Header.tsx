@@ -220,18 +220,6 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
             </div>
             
             <div className="flex items-center gap-1">
-              {/* Dashboard button */}
-              <Button 
-                variant="ghost"
-                size="icon"
-                className="text-gray-600 hover:text-primary h-9 w-9"
-                onClick={goToDashboard}
-              >
-                <LayoutDashboard className="h-5 w-5" />
-              </Button>
-              
-              {/* Other conditional buttons would appear here */}
-              
               {/* Menu button on far right */}
               <Button
                 variant="ghost"
