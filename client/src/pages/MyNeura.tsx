@@ -171,6 +171,23 @@ export default function MyNeura() {
   
   // Toggle Neura activation
   const toggleNeuraActivation = () => {
+    // If trying to activate and user is not signed in, prompt them to sign in
+    if (!isActivated && !user) {
+      toast({
+        title: "Sign in Required",
+        description: "Please sign in to activate your neural extension.",
+        variant: "default",
+      });
+      
+      // Optional: Redirect to auth page after a short delay
+      setTimeout(() => {
+        setLocation('/auth');
+      }, 1500);
+      
+      return;
+    }
+    
+    // Otherwise, proceed as normal
     if (isActivated) {
       deactivateNeura();
     } else {
@@ -281,10 +298,16 @@ export default function MyNeura() {
     if (!user) {
       // Prompt login if user is not authenticated
       toast({
-        title: "Login Required",
-        description: "Please login to save your neural tuning settings.",
+        title: "Sign in Required",
+        description: "Please sign in to save your neural tuning settings.",
         variant: "default",
       });
+      
+      // Redirect to auth page after a short delay
+      setTimeout(() => {
+        setLocation('/auth');
+      }, 1500);
+      
       return;
     }
     
