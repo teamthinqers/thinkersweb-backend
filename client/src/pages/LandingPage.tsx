@@ -423,7 +423,7 @@ export default function LandingPage() {
             
             {/* Subheadings */}
             <p className="text-lg md:text-xl text-muted-foreground mt-4 md:mt-4 mb-4 max-w-2xl text-center">
-              DotSpark is your personal Neura — built exclusively for business professionals to preserve your natural intelligence and thinking edge in a world overrun by AI.
+              DotSpark is your personal Neura — built exclusively for <span className="font-bold text-primary">Business Professionals</span> to preserve your <span className="font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-blue-600 dark:from-indigo-400 dark:to-blue-400">Natural Intelligence</span> and thinking edge in a world overrun by AI.
             </p>
             
             <div className="relative h-16 w-full my-2 md:my-3 overflow-hidden">
