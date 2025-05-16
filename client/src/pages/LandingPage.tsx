@@ -427,9 +427,7 @@ export default function LandingPage() {
             </p>
             
             <p className="text-base md:text-lg text-muted-foreground mt-1 md:mt-2 mb-4 max-w-2xl text-center">
-              DotSpark is your personal Neura, helping you use AI without losing yourself.<br/>
-              It's not artificial intelligence.<br/>
-              It's authentic intelligence — powered by you.
+              DotSpark is your personal Neura — built exclusively for business professionals to preserve your natural intelligence and thinking edge in a world overrun by AI.
             </p>
             
             <div className="relative h-16 w-full my-2 md:my-3 overflow-hidden">
