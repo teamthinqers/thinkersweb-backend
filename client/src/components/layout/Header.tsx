@@ -62,25 +62,38 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
     setIsActivated(neuraStorage.isActivated());
   }, []);
   
-  // Check for activation status changes
+  // Listen for Neura activation events
   useEffect(() => {
-    // Function to check activation
-    const checkActivation = () => {
-      const activated = neuraStorage.isActivated();
+    // Function to handle activation state changes
+    const handleActivation = (activated: boolean) => {
+      console.log("Header received activation event:", activated);
       setIsActivated(activated);
     };
     
-    // Check on mount and whenever location changes (user navigates)
-    checkActivation();
+    // Initial check on mount
+    const initialStatus = neuraStorage.isActivated();
+    console.log("Header initial activation check:", initialStatus);
+    setIsActivated(initialStatus);
+    
+    // Set up event listener using neuraStorage utility
+    const unsubscribe = neuraStorage.addActivationListener(handleActivation);
     
     // Add event listener for storage changes (in case activation happens in another tab)
-    window.addEventListener('storage', checkActivation);
+    const storageHandler = () => {
+      const status = neuraStorage.isActivated();
+      console.log("Storage event detected, activation status:", status);
+      setIsActivated(status);
+    };
+    
+    window.addEventListener('storage', storageHandler);
     
     // Clean up
     return () => {
-      window.removeEventListener('storage', checkActivation);
+      window.removeEventListener('storage', storageHandler);
+      // Call the unsubscribe function
+      unsubscribe();
     };
-  }, [location]);
+  }, []);
   
   // When component mounts, refresh WhatsApp status
   useEffect(() => {
