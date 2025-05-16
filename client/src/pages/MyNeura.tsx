@@ -652,39 +652,39 @@ export default function MyNeura() {
       
       {/* Neural Tuning Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid grid-cols-4 mb-6">
-          <TabsTrigger value="core" className="group">
+        <TabsList className="flex mb-6 w-full overflow-x-auto pb-2 scrollbar-none">
+          <TabsTrigger value="core" className="group min-w-[120px] px-1 md:px-3">
             <div className="flex flex-col items-center gap-1">
-              <span className="text-sm flex items-center gap-1">
+              <span className="text-xs md:text-sm flex items-center gap-1">
                 <span className="inline-block w-5 h-5 rounded-full bg-indigo-500 text-white flex items-center justify-center text-xs font-bold">1</span>
-                Core Tuning
+                <span className="whitespace-nowrap">Core Tuning</span>
               </span>
               <span className="h-1 w-full bg-indigo-300/30 group-data-[state=active]:bg-indigo-500 rounded-full transition-colors duration-300"></span>
             </div>
           </TabsTrigger>
-          <TabsTrigger value="cognitive" className="group">
+          <TabsTrigger value="cognitive" className="group min-w-[120px] px-1 md:px-3">
             <div className="flex flex-col items-center gap-1">
-              <span className="text-sm flex items-center gap-1">
+              <span className="text-xs md:text-sm flex items-center gap-1">
                 <span className="inline-block w-5 h-5 rounded-full bg-indigo-500 text-white flex items-center justify-center text-xs font-bold">2</span>
-                Cognitive Style
+                <span className="whitespace-nowrap">Cognitive Style</span>
               </span>
               <span className="h-1 w-full bg-indigo-300/30 group-data-[state=active]:bg-indigo-500 rounded-full transition-colors duration-300"></span>
             </div>
           </TabsTrigger>
-          <TabsTrigger value="expertise" className="group">
+          <TabsTrigger value="expertise" className="group min-w-[120px] px-1 md:px-3">
             <div className="flex flex-col items-center gap-1">
-              <span className="text-sm flex items-center gap-1">
+              <span className="text-xs md:text-sm flex items-center gap-1">
                 <span className="inline-block w-5 h-5 rounded-full bg-indigo-500 text-white flex items-center justify-center text-xs font-bold">3</span>
-                Expertise Focus
+                <span className="whitespace-nowrap">Expertise Focus</span>
               </span>
               <span className="h-1 w-full bg-indigo-300/30 group-data-[state=active]:bg-indigo-500 rounded-full transition-colors duration-300"></span>
             </div>
           </TabsTrigger>
-          <TabsTrigger value="learning" className="group">
+          <TabsTrigger value="learning" className="group min-w-[120px] px-1 md:px-3">
             <div className="flex flex-col items-center gap-1">
-              <span className="text-sm flex items-center gap-1">
+              <span className="text-xs md:text-sm flex items-center gap-1">
                 <span className="inline-block w-5 h-5 rounded-full bg-indigo-500 text-white flex items-center justify-center text-xs font-bold">4</span>
-                Learning Focus
+                <span className="whitespace-nowrap">Learning Focus</span>
               </span>
               <span className="h-1 w-full bg-indigo-300/30 group-data-[state=active]:bg-indigo-500 rounded-full transition-colors duration-300"></span>
             </div>
