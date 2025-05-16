@@ -496,8 +496,11 @@ export async function processWhatsAppMessage(from: string, messageText: string):
       // Initial welcome message for first-time users
       // Keep this shorter to avoid overwhelming new users
       welcomeMessage = 
-        "✨ *Welcome to Neura!*\n\n" +
-        "Your personal neural extension is now active. Ask questions, share ideas, or discuss what's on your mind — I'm here to help your thinking go further.";
+        "👋 Hey there, welcome to DotSpark — your thinking companion.\n\n" +
+        "You can ask me anything right here — ideas, decisions, frameworks, or thoughts you want to unpack.\n\n" +
+        "Want to go deeper and make DotSpark truly yours?\n" +
+        "👉 https://www.dotspark.in/my-neura — set up your personal Neura and unlock your authentic intelligence.\n\n" +
+        "Think Sharper. Stay You.";
       
       await sendWhatsAppReply(from, welcomeMessage);
       console.log(`Sent welcome message to first-time user at ${from}`);
