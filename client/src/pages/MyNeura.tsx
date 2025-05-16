@@ -106,16 +106,25 @@ export default function MyNeura() {
   // New focus for learning directives
   const [newFocus, setNewFocus] = useState('');
   
-  // Is Neura activated
-  const [isActivated, setIsActivated] = useState<boolean>(
-    localStorage.getItem('neuraActivated') === 'true'
-  );
+  // Is Neura activated - load from localStorage
+  const [isActivated, setIsActivated] = useState<boolean>(false);
   
   // Check localStorage for activation status on page load/revisit
   useEffect(() => {
-    const storedActivation = localStorage.getItem('neuraActivated') === 'true';
-    setIsActivated(storedActivation);
-    console.log("Loading activation status from localStorage:", storedActivation);
+    try {
+      const storedActivation = localStorage.getItem('neuraActivated') === 'true';
+      console.log("Loading activation status from localStorage:", storedActivation);
+      setIsActivated(storedActivation);
+      
+      // Log for debugging
+      if (storedActivation) {
+        console.log("Neura is activated in this session from localStorage");
+      } else {
+        console.log("Neura is not activated in localStorage");
+      }
+    } catch (error) {
+      console.error("Error checking activation status:", error);
+    }
   }, []);
   
   // Handle name change
@@ -127,35 +136,75 @@ export default function MyNeura() {
   
   // Function to activate Neura
   const activateNeura = () => {
-    // Set in localStorage and update state
-    localStorage.setItem('neuraActivated', 'true');
-    setIsActivated(true);
-    
-    // Show activation toast
-    toast({
-      title: "Neura Activated",
-      description: "Your neural extension is now active and ready to assist you.",
-      variant: "default",
-    });
-    
-    // Save any pending changes
-    if (unsavedChanges) {
-      updateTuning(pendingChanges);
-      setUnsavedChanges(false);
-      setPendingChanges({});
+    try {
+      // Set in localStorage and update state
+      localStorage.setItem('neuraActivated', 'true');
+      setIsActivated(true);
+      console.log("Activating Neura: localStorage set to 'true', state updated");
+      
+      // Force a re-render by updating another state
+      setNeuraName(prev => {
+        // If no name is set, set a default one
+        if (!prev || prev === '') {
+          const defaultName = 'My Neural Extension';
+          localStorage.setItem('neuraName', defaultName);
+          return defaultName;
+        }
+        return prev;
+      });
+      
+      // Show activation toast
+      toast({
+        title: "Neura Activated",
+        description: "Your neural extension is now active and ready to assist you.",
+        variant: "default",
+      });
+      
+      // Save any pending changes
+      if (unsavedChanges) {
+        updateTuning(pendingChanges);
+        setUnsavedChanges(false);
+        setPendingChanges({});
+      }
+    } catch (error) {
+      console.error("Error activating Neura:", error);
+      toast({
+        title: "Activation Failed",
+        description: "There was a problem activating your neural extension.",
+        variant: "destructive",
+      });
     }
   };
   
   // Function to deactivate Neura (for testing purposes)
   const deactivateNeura = () => {
-    localStorage.setItem('neuraActivated', 'false');
-    setIsActivated(false);
-    
-    toast({
-      title: "Neura Deactivated",
-      description: "Your neural extension has been deactivated.",
-      variant: "default",
-    });
+    try {
+      localStorage.setItem('neuraActivated', 'false');
+      setIsActivated(false);
+      console.log("Deactivating Neura: localStorage set to 'false', state updated");
+      
+      toast({
+        title: "Neura Deactivated",
+        description: "Your neural extension has been deactivated.",
+        variant: "default",
+      });
+    } catch (error) {
+      console.error("Error deactivating Neura:", error);
+      toast({
+        title: "Deactivation Failed",
+        description: "There was a problem deactivating your neural extension.",
+        variant: "destructive",
+      });
+    }
+  };
+  
+  // Toggle Neura activation
+  const toggleNeuraActivation = () => {
+    if (isActivated) {
+      deactivateNeura();
+    } else {
+      activateNeura();
+    }
   };
   
   // Function to handle slider value changes
@@ -360,20 +409,45 @@ export default function MyNeura() {
       <Header onSearch={handleSearch} />
       
       <main className="flex-1 container mx-auto px-4 py-6 md:py-12 max-w-4xl">
-        <div className="flex items-center gap-2 mb-6">
-          <Button variant="ghost" onClick={() => setLocation('/')} className="p-2">
-            <ChevronLeft className="h-5 w-5" />
-          </Button>
-          <h1 className="text-2xl font-bold">My Neura</h1>
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" onClick={() => setLocation('/')} className="p-2">
+              <ChevronLeft className="h-5 w-5" />
+            </Button>
+            <h1 className="text-2xl font-bold">My Neura</h1>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-medium">Neura Status:</span>
+              <span className={`inline-flex h-3 w-3 rounded-full ${isActivated ? 'bg-green-500' : 'bg-red-500'}`}></span>
+            </div>
+            <Button 
+              variant={isActivated ? "outline" : "default"} 
+              className={isActivated ? "border-green-500 text-green-600 hover:bg-green-50 dark:hover:bg-green-950" : "bg-indigo-600 hover:bg-indigo-700"} 
+              onClick={toggleNeuraActivation}
+            >
+              {isActivated ? "Deactivate Neura" : "Activate Neura"}
+            </Button>
+          </div>
         </div>
         
-        {isActivated && (
+        {isActivated ? (
           <div className="mb-6 p-4 rounded-lg border bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950 dark:to-emerald-950 border-green-200 dark:border-green-800">
             <div className="flex items-center">
               <Check className="h-6 w-6 text-green-500 mr-3" />
               <div>
                 <h3 className="text-lg font-medium">Neura is Active</h3>
                 <p className="text-sm text-muted-foreground">Your neural extension is active and ready to assist you.</p>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="mb-6 p-4 rounded-lg border bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950 dark:to-orange-950 border-amber-200 dark:border-amber-800">
+            <div className="flex items-center">
+              <AlertCircle className="h-6 w-6 text-amber-500 mr-3" />
+              <div>
+                <h3 className="text-lg font-medium">Neura is Inactive</h3>
+                <p className="text-sm text-muted-foreground">Activate your neural extension to begin receiving personalized insights.</p>
               </div>
             </div>
           </div>
