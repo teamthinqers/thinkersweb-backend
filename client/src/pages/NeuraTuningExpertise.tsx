@@ -40,22 +40,22 @@ const expertiseDepthProfiles: ExpertiseDepthProfile[] = [
   }
 ];
 
+// Define functional domains
+const functionalDomains = [
+  { id: 'business_strategy', name: 'Business & Strategy' },
+  { id: 'sales_revenue', name: 'Sales & Revenue' },
+  { id: 'marketing_brand', name: 'Marketing & Brand' },
+  { id: 'product_ux', name: 'Product & UX' },
+  { id: 'research_analytics', name: 'Research & Analytics' },
+  { id: 'people_culture', name: 'People & Culture' },
+  { id: 'operations_supply', name: 'Operations & Supply Chain' },
+  { id: 'tech_engineering', name: 'Tech & Engineering' },
+  { id: 'finance_legal', name: 'Finance, Legal & Compliance' }
+];
+
 export default function NeuraTuningExpertise() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
-  
-  // Define functional domains
-  const functionalDomains = [
-    { id: 'business_strategy', name: 'Business & Strategy' },
-    { id: 'sales_revenue', name: 'Sales & Revenue' },
-    { id: 'marketing_brand', name: 'Marketing & Brand' },
-    { id: 'product_ux', name: 'Product & UX' },
-    { id: 'research_analytics', name: 'Research & Analytics' },
-    { id: 'people_culture', name: 'People & Culture' },
-    { id: 'operations_supply', name: 'Operations & Supply Chain' },
-    { id: 'tech_engineering', name: 'Tech & Engineering' },
-    { id: 'finance_legal', name: 'Finance, Legal & Compliance' }
-  ];
   
   // DotSpark Tuning hook
   const { 
@@ -66,7 +66,7 @@ export default function NeuraTuningExpertise() {
   } = useDotSparkTuning();
   
   // Extract values from status for rendering
-  const { tuning } = status || { tuning: { specialties: {} } };
+  const { tuning } = status || { tuning: { specialties: {}, expertiseDepthProfile: 'strategic_builder' } };
   
   // Local state for selections and changes
   const [selectedDomains, setSelectedDomains] = useState<string[]>([]);
@@ -74,7 +74,7 @@ export default function NeuraTuningExpertise() {
   const [unsavedChanges, setUnsavedChanges] = useState(false);
   const [pendingChanges, setPendingChanges] = useState<{
     specialties?: Record<string, number>;
-    expertiseProfile?: string;
+    expertiseDepthProfile?: string;
   }>({});
   
   // Define traditional specialties (keeping for backward compatibility)
@@ -105,12 +105,12 @@ export default function NeuraTuningExpertise() {
       
       setSelectedDomains(domains);
       
-      // Set expertise profile if it exists
-      if (tuning.expertiseProfile) {
-        setSelectedDepthProfile(tuning.expertiseProfile);
+      // Set expertise depth profile if it exists
+      if (tuning.expertiseDepthProfile) {
+        setSelectedDepthProfile(tuning.expertiseDepthProfile);
       }
     }
-  }, [tuning?.specialties, tuning?.expertiseProfile]);
+  }, [tuning?.specialties, tuning?.expertiseDepthProfile]);
   
   // Function to get display name for specialty
   const getDisplayName = (id: string): string => {
@@ -178,7 +178,7 @@ export default function NeuraTuningExpertise() {
     
     setPendingChanges(prev => ({
       ...prev,
-      expertiseProfile: profileId
+      expertiseDepthProfile: profileId
     }));
     
     setUnsavedChanges(true);
