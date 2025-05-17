@@ -19,7 +19,7 @@ import {
   ArrowUpRight
 } from 'lucide-react';
 
-export default function DotSparkCapacityPage() {
+export default function MyNeuralCapacityPage() {
   const { status, isLoading, isError } = useDotSpark();
   
   if (isLoading) {
@@ -48,7 +48,7 @@ export default function DotSparkCapacityPage() {
           <Button variant="ghost" asChild className="p-2">
             <Link href="/"><ChevronLeft className="h-5 w-5" /></Link>
           </Button>
-          <h1 className="text-2xl font-bold">DotSpark Capacity</h1>
+          <h1 className="text-2xl font-bold">My Neural Capacity</h1>
         </div>
         
         <Card className="border-red-200 dark:border-red-900/50 bg-red-50 dark:bg-red-950/20">
