@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { useToast } from '@/hooks/use-toast';
 import { useDotSparkTuning } from '@/hooks/useDotSparkTuning';
 import { Slider } from '@/components/ui/slider';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { Target, ChevronLeft, Save, Info, Plus, Trash2 } from 'lucide-react';
+import { Target, ChevronLeft, Save, Info, Plus, Trash2, Check } from 'lucide-react';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Separator } from '@/components/ui/separator';
 
 export default function NeuraTuningExpertise() {
   const [, setLocation] = useLocation();
@@ -22,20 +24,20 @@ export default function NeuraTuningExpertise() {
     isUpdating
   } = useDotSparkTuning();
   
-  // Local state for unsaved changes
-  const [unsavedChanges, setUnsavedChanges] = useState(false);
-  const [pendingChanges, setPendingChanges] = useState<{
-    specialties?: Record<string, number>;
-  }>({});
+  // Define functional domains
+  const functionalDomains = [
+    { id: 'business_strategy', name: 'Business & Strategy' },
+    { id: 'sales_revenue', name: 'Sales & Revenue' },
+    { id: 'marketing_brand', name: 'Marketing & Brand' },
+    { id: 'product_ux', name: 'Product & UX' },
+    { id: 'research_analytics', name: 'Research & Analytics' },
+    { id: 'people_culture', name: 'People & Culture' },
+    { id: 'operations_supply', name: 'Operations & Supply Chain' },
+    { id: 'tech_engineering', name: 'Tech & Engineering' },
+    { id: 'finance_legal', name: 'Finance, Legal & Compliance' }
+  ];
   
-  // Extract values from status for rendering
-  const { tuning: neuralTuning } = status || { 
-    tuning: {
-      specialties: {},
-    }
-  };
-  
-  // Define available specialties
+  // Define available specialties (keeping for backward compatibility)
   const availableSpecialtiesList = [
     'science',
     'technology',
@@ -53,6 +55,32 @@ export default function NeuraTuningExpertise() {
     'finance',
     'design'
   ];
+  
+  // Extract values from status for rendering
+  const { tuning: neuralTuning } = status || { 
+    tuning: {
+      specialties: {},
+    }
+  };
+
+  // Local state for unsaved changes
+  const [unsavedChanges, setUnsavedChanges] = useState(false);
+  const [pendingChanges, setPendingChanges] = useState<{
+    specialties?: Record<string, number>;
+  }>({});
+  
+  // State for selected functional domains
+  const [selectedDomains, setSelectedDomains] = useState<string[]>([]);
+  
+  // Initialize selected domains from stored specialties
+  useEffect(() => {
+    if (neuralTuning?.specialties) {
+      const domains = Object.keys(neuralTuning.specialties)
+        .filter(key => key.includes('_') && functionalDomains.some(domain => domain.id === key));
+      
+      setSelectedDomains(domains);
+    }
+  }, [neuralTuning?.specialties]);
   
   // Function to get display name for specialty
   const getDisplayName = (id: string): string => {
@@ -88,6 +116,35 @@ export default function NeuraTuningExpertise() {
         [specialtyId]: specialtyValue
       }
     }));
+    
+    setUnsavedChanges(true);
+  };
+  
+  // Function to handle domain selection
+  const handleDomainChange = (domainId: string, checked: boolean) => {
+    if (checked) {
+      setSelectedDomains(prev => [...prev, domainId]);
+      
+      // Add to specialties with default value
+      setPendingChanges(prev => ({
+        ...prev,
+        specialties: {
+          ...(prev.specialties || {}),
+          [domainId]: 0.8 // Default to 80% for domain expertise
+        }
+      }));
+    } else {
+      setSelectedDomains(prev => prev.filter(id => id !== domainId));
+      
+      // Remove from specialties
+      const updatedSpecialties = { ...(pendingChanges.specialties || {}) };
+      delete updatedSpecialties[domainId];
+      
+      setPendingChanges(prev => ({
+        ...prev,
+        specialties: updatedSpecialties
+      }));
+    }
     
     setUnsavedChanges(true);
   };
@@ -177,7 +234,7 @@ export default function NeuraTuningExpertise() {
             <Button variant="ghost" onClick={() => setLocation('/my-neura')} className="p-2">
               <ChevronLeft className="h-5 w-5" />
             </Button>
-            <h1 className="text-2xl font-bold">Expertise Focus</h1>
+            <h1 className="text-2xl font-bold">Expertise Layer</h1>
           </div>
         </div>
         <div className="flex items-center justify-center h-[400px]">
