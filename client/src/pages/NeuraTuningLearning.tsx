@@ -701,7 +701,7 @@ export default function NeuraTuningLearning() {
                     <div className="absolute right-[38%] bottom-[15%] transform rotate-[-30deg] text-purple-400 dark:text-purple-500 animate-pulse">→</div>
                   </div>
                   
-                  {/* Exponential curve visualization */}
+                  {/* Time investment section */}
                   <div className="bg-indigo-50/60 dark:bg-indigo-950/30 rounded-lg p-4 relative overflow-hidden">
                     <div className="text-center mb-3">
                       <span className="px-3 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-indigo-500 to-purple-500 text-white">10 minutes daily = exponential growth</span>
