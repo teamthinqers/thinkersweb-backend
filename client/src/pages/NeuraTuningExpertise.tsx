@@ -328,7 +328,11 @@ export default function NeuraTuningExpertise() {
                       ${isSelected ? 'shadow-md' : ''}`}
                   >
                     <div className="flex-shrink-0 mt-1">
-                      <RadioGroupItem value={level.id} id={level.id} />
+                      <RadioGroupItem 
+                        value={level.id} 
+                        id={level.id} 
+                        className="text-blue-600 border-blue-600 focus:ring-blue-600 focus:ring-offset-2 ring-offset-white h-5 w-5" 
+                      />
                     </div>
                     <div className="flex-1 space-y-1.5">
                       <div className="flex items-center justify-between">
@@ -533,7 +537,11 @@ export default function NeuraTuningExpertise() {
                                     }`}
                                   >
                                     <div className="flex gap-2 w-full">
-                                      <RadioGroupItem value={level.id} id={`${domain.id}-${level.id}`} className="mt-1" />
+                                      <RadioGroupItem 
+                                        value={level.id} 
+                                        id={`${domain.id}-${level.id}`} 
+                                        className="mt-1 text-blue-600 border-blue-600 focus:ring-blue-600 focus:ring-offset-2 ring-offset-white h-5 w-5" 
+                                      />
                                       <div className="flex-1 space-y-1">
                                         <div className="flex items-center justify-between">
                                           <Label 
