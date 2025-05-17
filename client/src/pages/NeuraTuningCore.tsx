@@ -160,11 +160,11 @@ export default function NeuraTuningCore() {
         </CardHeader>
         
         <CardContent className="pt-6 space-y-6">
-          {/* Cognitive Pace - Featured Parameter */}
-          <div className="space-y-3 p-4 border border-indigo-200 dark:border-indigo-800 rounded-lg bg-gradient-to-r from-indigo-50/50 to-violet-50/50 dark:from-indigo-950/50 dark:to-violet-950/50">
+          {/* Cognitive Pace - Speedometer visualization */}
+          <div className="space-y-4 p-4 border border-indigo-200 dark:border-indigo-800 rounded-lg bg-gradient-to-r from-indigo-50/50 to-violet-50/50 dark:from-indigo-950/50 dark:to-violet-950/50">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <h3 className="text-lg font-medium text-indigo-700 dark:text-indigo-300">Cognitive Pace</h3>
+              <div className="flex items-start gap-2">
+                <h3 className="text-lg font-medium bg-gradient-to-r from-indigo-600 to-violet-600 inline-block text-transparent bg-clip-text">Cognitive Pace</h3>
                 <HoverCard>
                   <HoverCardTrigger>
                     <Info className="h-4 w-4 text-indigo-500 dark:text-indigo-400" />
@@ -183,15 +183,59 @@ export default function NeuraTuningCore() {
                 {Math.round((pendingChanges.cognitivePace ?? neuralTuning?.cognitivePace ?? 0.5) * 100)}%
               </span>
             </div>
-            <Slider
-              defaultValue={[neuralTuning?.cognitivePace ?? 0.5]}
-              max={1}
-              step={0.01}
-              value={[pendingChanges.cognitivePace ?? neuralTuning?.cognitivePace ?? 0.5]}
-              onValueChange={(value) => handleParameterChange('cognitivePace', value)}
-              className="w-full"
-            />
-            <div className="flex justify-between text-xs">
+            
+            {/* Speedometer visualization */}
+            <div className="relative h-36">
+              <div className="absolute bottom-0 w-full">
+                {/* Speedometer dial */}
+                <div className="relative mx-auto w-48 h-24 overflow-hidden">
+                  {/* Speedometer background */}
+                  <div className="absolute bottom-0 w-full h-48 rounded-full border-8 border-gray-200 dark:border-gray-700" style={{ borderBottomColor: 'transparent', borderLeftColor: 'transparent', borderRightColor: 'transparent' }}></div>
+                  
+                  {/* Speedometer colors/segments */}
+                  <div className="absolute bottom-0 left-0 w-full flex justify-center">
+                    <div className="h-24 w-48 relative overflow-hidden">
+                      <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-r from-blue-500 via-indigo-500 to-violet-500 rounded-tl-full rounded-tr-full opacity-30"></div>
+                    </div>
+                  </div>
+                  
+                  {/* Speedometer needle */}
+                  <div 
+                    className="absolute bottom-0 left-1/2 w-1 h-20 bg-gradient-to-t from-indigo-600 to-indigo-400 origin-bottom z-10"
+                    style={{ 
+                      transform: `translateX(-50%) rotate(${-90 + 180 * (pendingChanges.cognitivePace ?? neuralTuning?.cognitivePace ?? 0.5)}deg)`,
+                      transformOrigin: 'bottom center',
+                      transition: 'transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+                    }}
+                  ></div>
+                  
+                  {/* Needle center */}
+                  <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-4 h-4 rounded-full bg-indigo-600 dark:bg-indigo-500 shadow-md z-20"></div>
+                  
+                  {/* Speed ticks */}
+                  <div className="absolute bottom-4 w-full flex justify-between px-2">
+                    {[...Array(5)].map((_, i) => (
+                      <div key={i} className="h-3 w-0.5 bg-gray-400 dark:bg-gray-600"></div>
+                    ))}
+                  </div>
+                </div>
+                
+                {/* Sliding control */}
+                <div className="mt-4 px-4">
+                  <input
+                    type="range"
+                    min="0"
+                    max="1"
+                    step="0.01"
+                    value={pendingChanges.cognitivePace ?? neuralTuning?.cognitivePace ?? 0.5}
+                    onChange={(e) => handleParameterChange('cognitivePace', [parseFloat(e.target.value)])}
+                    className="w-full h-2 appearance-none bg-gradient-to-r from-blue-300 via-indigo-300 to-violet-300 dark:from-blue-700 dark:via-indigo-700 dark:to-violet-700 rounded-md cursor-pointer"
+                  />
+                </div>
+              </div>
+            </div>
+            
+            <div className="flex justify-between text-xs mt-3">
               <div className="flex flex-col items-center">
                 <span className="text-indigo-700 dark:text-indigo-400 font-medium">Deep Processor</span>
                 <span className="text-xs text-indigo-600/70 dark:text-indigo-400/70 mt-1">Thorough & Detailed</span>
@@ -207,11 +251,11 @@ export default function NeuraTuningCore() {
             </div>
           </div>
           
-          {/* Memory Recall */}
-          <div className="space-y-3 mt-8 border border-amber-200 dark:border-amber-800 rounded-lg p-4">
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2">
-                <h3 className="text-lg font-medium text-amber-700 dark:text-amber-300">Memory Recall Style</h3>
+          {/* Memory Recall - Brain hemisphere visualization */}
+          <div className="space-y-4 p-4 bg-gradient-to-r from-amber-50 to-blue-50 dark:from-amber-950/40 dark:to-blue-950/40 border border-amber-200 dark:border-amber-800 rounded-lg">
+            <div className="flex items-center justify-between">
+              <div className="flex items-start gap-2">
+                <h3 className="text-lg font-medium bg-gradient-to-r from-amber-600 to-blue-600 inline-block text-transparent bg-clip-text">Memory Recall Style</h3>
                 <HoverCard>
                   <HoverCardTrigger>
                     <Info className="h-4 w-4 text-amber-500 dark:text-amber-400" />
@@ -226,36 +270,109 @@ export default function NeuraTuningCore() {
                   </HoverCardContent>
                 </HoverCard>
               </div>
+              <div className="flex items-center gap-2">
+                <div className="w-1 h-8 rounded-full bg-gradient-to-b from-amber-300 to-blue-300 dark:from-amber-600 dark:to-blue-600"></div>
+                <span className="text-sm font-medium">
+                  {(pendingChanges.memoryRecall ?? neuralTuning?.memoryRecall ?? 0.5) < 0.5 ? 'Analogy-Driven' : 'Precision-Driven'}
+                </span>
+              </div>
             </div>
             
-            <div className="grid grid-cols-1 gap-4">
+            {/* Brain hemispheres visualization */}
+            <div className="relative h-44 mb-4">
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="relative w-64 h-32">
+                  {/* Brain outline */}
+                  <div className="absolute inset-0 flex items-center">
+                    {/* Left hemisphere */}
+                    <div 
+                      className={`w-1/2 h-32 rounded-l-full border-2 border-r-0 transition-all duration-300 ${
+                        (pendingChanges.memoryRecall ?? neuralTuning?.memoryRecall ?? 0.5) < 0.5
+                          ? 'border-amber-400 dark:border-amber-600 bg-gradient-to-r from-amber-100 to-amber-200 dark:from-amber-900/50 dark:to-amber-800/50' 
+                          : 'border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800'
+                      }`}
+                    ></div>
+                    
+                    {/* Right hemisphere */}
+                    <div 
+                      className={`w-1/2 h-32 rounded-r-full border-2 border-l-0 transition-all duration-300 ${
+                        (pendingChanges.memoryRecall ?? neuralTuning?.memoryRecall ?? 0.5) >= 0.5
+                          ? 'border-blue-400 dark:border-blue-600 bg-gradient-to-l from-blue-100 to-blue-200 dark:from-blue-900/50 dark:to-blue-800/50' 
+                          : 'border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800'
+                      }`}
+                    ></div>
+                  </div>
+                  
+                  {/* Brain connector line */}
+                  <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-gray-300 dark:bg-gray-700 transform -translate-x-1/2"></div>
+                  
+                  {/* Activity indicators */}
+                  {[0, 1, 2].map((i) => (
+                    <div key={i} className="absolute top-0 left-0 w-full h-full">
+                      <div 
+                        className={`absolute top-1/4 left-1/4 w-3 h-3 rounded-full transform -translate-x-1/2 -translate-y-1/2 ${
+                          (pendingChanges.memoryRecall ?? neuralTuning?.memoryRecall ?? 0.5) < 0.5 
+                            ? 'bg-amber-500 animate-pulse' : 'bg-gray-300 dark:bg-gray-700'
+                        }`}
+                        style={{ 
+                          top: `${20 + i * 30}%`, 
+                          left: `${25 - i * 5}%`,
+                          animationDelay: `${i * 0.2}s`
+                        }}
+                      ></div>
+                      
+                      <div 
+                        className={`absolute top-1/4 right-1/4 w-3 h-3 rounded-full transform translate-x-1/2 -translate-y-1/2 ${
+                          (pendingChanges.memoryRecall ?? neuralTuning?.memoryRecall ?? 0.5) >= 0.5 
+                            ? 'bg-blue-500 animate-pulse' : 'bg-gray-300 dark:bg-gray-700'
+                        }`}
+                        style={{ 
+                          top: `${20 + i * 30}%`, 
+                          right: `${25 - i * 5}%`,
+                          animationDelay: `${i * 0.2}s`
+                        }}
+                      ></div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Brain hemisphere labels */}
+              <div className="absolute bottom-0 inset-x-0 flex justify-between px-12">
+                <div className={`text-center px-3 py-1 rounded-full text-xs font-medium ${
+                  (pendingChanges.memoryRecall ?? neuralTuning?.memoryRecall ?? 0.5) < 0.5
+                    ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-300' 
+                    : 'bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400'
+                }`}>
+                  Metaphors & Themes
+                </div>
+                
+                <div className={`text-center px-3 py-1 rounded-full text-xs font-medium ${
+                  (pendingChanges.memoryRecall ?? neuralTuning?.memoryRecall ?? 0.5) >= 0.5
+                    ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300' 
+                    : 'bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400'
+                }`}>
+                  Facts & Sequences
+                </div>
+              </div>
+            </div>
+            
+            {/* Toggle options */}
+            <div className="grid grid-cols-2 gap-3">
               <div 
                 className={`relative border rounded-lg p-4 cursor-pointer transition-all ${
                   (pendingChanges.memoryRecall ?? neuralTuning?.memoryRecall ?? 0.5) < 0.5 
-                    ? "bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-950 dark:to-yellow-950 border-amber-300 dark:border-amber-700 shadow-md" 
+                    ? "bg-amber-50 dark:bg-amber-950/50 border-amber-300 dark:border-amber-700 shadow-md" 
                     : "border-gray-200 dark:border-gray-800 hover:border-amber-200 dark:hover:border-amber-800"
                 }`}
                 onClick={() => handleParameterChange('memoryRecall', [0.2])}
               >
-                <div className="flex items-start gap-3">
-                  <div className="mt-1 flex-shrink-0">
-                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                      (pendingChanges.memoryRecall ?? neuralTuning?.memoryRecall ?? 0.5) < 0.5 
-                        ? "border-amber-500 bg-amber-100 dark:bg-amber-900" 
-                        : "border-gray-300 dark:border-gray-700"
-                    }`}>
-                      {(pendingChanges.memoryRecall ?? neuralTuning?.memoryRecall ?? 0.5) < 0.5 && (
-                        <div className="w-2 h-2 rounded-full bg-amber-500"></div>
-                      )}
-                    </div>
-                  </div>
+                <div className="flex flex-col items-center text-center gap-2">
+                  <div className="text-2xl">🌀</div>
                   <div>
-                    <h4 className="text-base font-medium mb-1 flex items-center gap-2">
-                      <span role="img" aria-label="spiral" className="text-lg">🌀</span>
-                      <span className="text-amber-700 dark:text-amber-300">Analogy-Driven Recall</span>
-                    </h4>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      You connect new ideas through metaphors, comparisons, and themes. You think in "like that time when…"
+                    <h4 className="font-medium text-amber-700 dark:text-amber-300">Analogy-Driven</h4>
+                    <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                      "Like that time when..."
                     </p>
                   </div>
                 </div>
@@ -269,30 +386,17 @@ export default function NeuraTuningCore() {
               <div 
                 className={`relative border rounded-lg p-4 cursor-pointer transition-all ${
                   (pendingChanges.memoryRecall ?? neuralTuning?.memoryRecall ?? 0.5) >= 0.5 
-                    ? "bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-950 dark:to-cyan-950 border-blue-300 dark:border-blue-700 shadow-md" 
+                    ? "bg-blue-50 dark:bg-blue-950/50 border-blue-300 dark:border-blue-700 shadow-md" 
                     : "border-gray-200 dark:border-gray-800 hover:border-blue-200 dark:hover:border-blue-800"
                 }`}
                 onClick={() => handleParameterChange('memoryRecall', [0.8])}
               >
-                <div className="flex items-start gap-3">
-                  <div className="mt-1 flex-shrink-0">
-                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                      (pendingChanges.memoryRecall ?? neuralTuning?.memoryRecall ?? 0.5) >= 0.5 
-                        ? "border-blue-500 bg-blue-100 dark:bg-blue-900" 
-                        : "border-gray-300 dark:border-gray-700"
-                    }`}>
-                      {(pendingChanges.memoryRecall ?? neuralTuning?.memoryRecall ?? 0.5) >= 0.5 && (
-                        <div className="w-2 h-2 rounded-full bg-blue-500"></div>
-                      )}
-                    </div>
-                  </div>
+                <div className="flex flex-col items-center text-center gap-2">
+                  <div className="text-2xl">🔬</div>
                   <div>
-                    <h4 className="text-base font-medium mb-1 flex items-center gap-2">
-                      <span role="img" aria-label="microscope" className="text-lg">🔬</span>
-                      <span className="text-blue-700 dark:text-blue-300">Precision-Driven Recall</span>
-                    </h4>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      You remember exact facts, sequences, names, and data points. You think in "this is what happened exactly."
+                    <h4 className="font-medium text-blue-700 dark:text-blue-300">Precision-Driven</h4>
+                    <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                      "Exactly what happened..."
                     </p>
                   </div>
                 </div>
@@ -305,11 +409,11 @@ export default function NeuraTuningCore() {
             </div>
           </div>
           
-          {/* Signal Focus */}
-          <div className="space-y-3 mt-8 border border-emerald-200 dark:border-emerald-800 rounded-lg p-4">
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2">
-                <h3 className="text-lg font-medium text-emerald-700 dark:text-emerald-300">Signal Focus</h3>
+          {/* Signal Focus - Lens/Radar visualization */}
+          <div className="space-y-4 p-4 bg-gradient-to-r from-emerald-50 to-violet-50 dark:from-emerald-950/40 dark:to-violet-950/40 border border-emerald-200 dark:border-emerald-800 rounded-lg">
+            <div className="flex items-center justify-between">
+              <div className="flex items-start gap-2">
+                <h3 className="text-lg font-medium bg-gradient-to-r from-emerald-600 to-violet-600 inline-block text-transparent bg-clip-text">Signal Focus</h3>
                 <HoverCard>
                   <HoverCardTrigger>
                     <Info className="h-4 w-4 text-emerald-500 dark:text-emerald-400" />
@@ -324,6 +428,9 @@ export default function NeuraTuningCore() {
                   </HoverCardContent>
                 </HoverCard>
               </div>
+              <span className="text-sm font-medium px-3 py-1 rounded-full bg-gradient-to-r from-emerald-100 to-violet-100 dark:from-emerald-900/50 dark:to-violet-900/50 text-emerald-700 dark:text-emerald-300">
+                {(pendingChanges.signalFocus ?? neuralTuning?.signalFocus ?? 0.5) < 0.5 ? 'Narrow Beam' : 'Wide Scanner'}
+              </span>
             </div>
             
             <div className="grid grid-cols-1 gap-4">
