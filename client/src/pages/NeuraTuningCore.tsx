@@ -27,6 +27,7 @@ export default function NeuraTuningCore() {
     memoryRecall?: number;
     signalFocus?: number;
     impulseControl?: number;
+    mentalEnergyFlow?: number;
   }>({});
   
   // Extract values from status for rendering
@@ -36,6 +37,7 @@ export default function NeuraTuningCore() {
       memoryRecall: 0.5,
       signalFocus: 0.5,
       impulseControl: 0.5,
+      mentalEnergyFlow: 0.5,
     }
   };
   
@@ -457,6 +459,112 @@ export default function NeuraTuningCore() {
                 </div>
                 <span className="text-blue-700 dark:text-blue-300 font-medium">High Precision</span>
                 <span className="text-xs text-muted-foreground mt-1">Careful consideration before action</span>
+              </div>
+            </div>
+          </div>
+          
+          {/* Mental Energy Flow */}
+          <div className="space-y-3 mt-8 border border-amber-200 dark:border-amber-800 rounded-lg p-4">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <h3 className="text-lg font-medium text-amber-700 dark:text-amber-300">Mental Energy Flow</h3>
+                <HoverCard>
+                  <HoverCardTrigger>
+                    <Info className="h-4 w-4 text-amber-500 dark:text-amber-400" />
+                  </HoverCardTrigger>
+                  <HoverCardContent className="w-80">
+                    <div className="space-y-2">
+                      <h4 className="text-sm font-semibold">Mental Energy Flow Parameter</h4>
+                      <p className="text-sm">
+                        This parameter represents whether your energy spikes during execution (Action Primed) 
+                        or during planning and ideation (Reflection Primed). It affects how your cognitive 
+                        companion balances between supporting immediate action vs. contemplative thinking.
+                      </p>
+                    </div>
+                  </HoverCardContent>
+                </HoverCard>
+              </div>
+              <span className="text-sm font-medium">
+                {Math.round((pendingChanges.mentalEnergyFlow ?? neuralTuning?.mentalEnergyFlow ?? 0.5) * 100)}%
+              </span>
+            </div>
+            
+            <div className="relative h-[120px] w-full bg-gradient-to-r from-amber-50 to-blue-50 dark:from-amber-950 dark:to-blue-950 rounded-lg overflow-hidden my-4 border border-gray-200 dark:border-gray-800">
+              {/* Position indicator */}
+              <div 
+                className="absolute h-6 w-6 rounded-full bg-white shadow-lg border-2 border-blue-500 z-10 transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300"
+                style={{ 
+                  left: `${(pendingChanges.mentalEnergyFlow ?? neuralTuning?.mentalEnergyFlow ?? 0.5) * 100}%`,
+                  top: '50%'
+                }}
+              />
+              
+              {/* Action Primed Side */}
+              <div className="absolute left-0 top-0 w-1/2 h-full flex flex-col justify-center items-center text-center p-3">
+                <div className={`flex items-center justify-center w-10 h-10 rounded-full mb-2 transition-all duration-300 ${
+                  (pendingChanges.mentalEnergyFlow ?? neuralTuning?.mentalEnergyFlow ?? 0.5) < 0.4 
+                    ? 'bg-amber-100 dark:bg-amber-900 text-amber-600 dark:text-amber-300' 
+                    : 'bg-gray-100 dark:bg-gray-800 text-gray-400'
+                }`}>
+                  <Zap className="h-5 w-5" />
+                </div>
+                <h4 className={`font-medium ${
+                  (pendingChanges.mentalEnergyFlow ?? neuralTuning?.mentalEnergyFlow ?? 0.5) < 0.4 
+                    ? 'text-amber-700 dark:text-amber-300' 
+                    : 'text-gray-500'
+                }`}>Action Primed</h4>
+              </div>
+              
+              {/* Reflection Primed Side */}
+              <div className="absolute right-0 top-0 w-1/2 h-full flex flex-col justify-center items-center text-center p-3">
+                <div className={`flex items-center justify-center w-10 h-10 rounded-full mb-2 transition-all duration-300 ${
+                  (pendingChanges.mentalEnergyFlow ?? neuralTuning?.mentalEnergyFlow ?? 0.5) > 0.6 
+                    ? 'bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300' 
+                    : 'bg-gray-100 dark:bg-gray-800 text-gray-400'
+                }`}>
+                  <Search className="h-5 w-5" />
+                </div>
+                <h4 className={`font-medium ${
+                  (pendingChanges.mentalEnergyFlow ?? neuralTuning?.mentalEnergyFlow ?? 0.5) > 0.6 
+                    ? 'text-blue-700 dark:text-blue-300' 
+                    : 'text-gray-500'
+                }`}>Reflection Primed</h4>
+              </div>
+              
+              {/* Energy flow visualization */}
+              <svg className="absolute inset-0 w-full h-full overflow-visible pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none">
+                <path 
+                  d={`M0,50 C${20 + (pendingChanges.mentalEnergyFlow ?? neuralTuning?.mentalEnergyFlow ?? 0.5) * 10},20 ${80 - (pendingChanges.mentalEnergyFlow ?? neuralTuning?.mentalEnergyFlow ?? 0.5) * 10},80 100,50`} 
+                  stroke={`rgba(${251 - (pendingChanges.mentalEnergyFlow ?? neuralTuning?.mentalEnergyFlow ?? 0.5) * 150}, ${191 - (pendingChanges.mentalEnergyFlow ?? neuralTuning?.mentalEnergyFlow ?? 0.5) * 50}, ${(pendingChanges.mentalEnergyFlow ?? neuralTuning?.mentalEnergyFlow ?? 0.5) * 255}, 0.5)`}
+                  strokeWidth="3"
+                  fill="none"
+                  strokeDasharray="3,2"
+                  className="animate-pulse"
+                />
+              </svg>
+            </div>
+            
+            <Slider
+              defaultValue={[neuralTuning?.mentalEnergyFlow ?? 0.5]}
+              max={1}
+              step={0.01}
+              value={[pendingChanges.mentalEnergyFlow ?? neuralTuning?.mentalEnergyFlow ?? 0.5]}
+              onValueChange={(value) => handleParameterChange('mentalEnergyFlow', value)}
+              className="w-full"
+            />
+            
+            <div className="flex justify-between text-xs text-muted-foreground mt-1">
+              <div className="flex flex-col items-center">
+                <span className="text-amber-600 dark:text-amber-400 font-medium">Action Primed</span>
+                <span className="max-w-[120px] text-center">Energy peaks during execution</span>
+              </div>
+              <div className="flex flex-col items-center">
+                <span className="text-gray-500 font-medium">Balanced</span>
+                <span className="max-w-[120px] text-center">Flexible energy allocation</span>
+              </div>
+              <div className="flex flex-col items-center">
+                <span className="text-blue-600 dark:text-blue-400 font-medium">Reflection Primed</span>
+                <span className="max-w-[120px] text-center">Energy peaks during planning</span>
               </div>
             </div>
           </div>
