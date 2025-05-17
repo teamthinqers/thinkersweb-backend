@@ -51,17 +51,17 @@ const expertiseLevels: Profile[] = [
   {
     id: 'domain_navigator',
     name: 'Domain Navigator',
-    description: 'Broad knowledge across the domain. Connects concepts and provides context effectively.'
+    description: 'Novice level with basic understanding. Just started exploring the domain with foundational knowledge.'
   },
   {
     id: 'strategic_builder',
     name: 'Strategic Builder',
-    description: 'Deep conceptual understanding combined with practical implementation expertise.'
+    description: 'Hands-on experience with strong understanding of all key concepts and practical implementation skills.'
   },
   {
     id: 'creative_orchestrator',
     name: 'Creative Orchestrator',
-    description: 'Synthesizes multiple perspectives into novel approaches and innovative solutions.'
+    description: 'Expert level who can synthesize multiple perspectives and create innovative solutions in this domain.'
   }
 ];
 
@@ -505,26 +505,71 @@ export default function NeuraTuningExpertise() {
                             >
                               {expertiseLevels.map((level) => {
                                 const isSelected = expertiseLevel === level.id;
+                                
+                                // Define visual indicators for expertise level
+                                let expertiseBadge, expertiseColor, expertiseBg;
+                                
+                                if (level.id === 'domain_navigator') {
+                                  expertiseBadge = '🔍';
+                                  expertiseColor = isSelected ? 'text-green-700 dark:text-green-400' : '';
+                                  expertiseBg = isSelected ? 'bg-green-50 dark:bg-green-950/30' : '';
+                                } else if (level.id === 'strategic_builder') {
+                                  expertiseBadge = '🛠️';
+                                  expertiseColor = isSelected ? 'text-blue-700 dark:text-blue-400' : '';
+                                  expertiseBg = isSelected ? 'bg-blue-50 dark:bg-blue-950/30' : '';
+                                } else {
+                                  expertiseBadge = '🌟';
+                                  expertiseColor = isSelected ? 'text-purple-700 dark:text-purple-400' : '';
+                                  expertiseBg = isSelected ? 'bg-purple-50 dark:bg-purple-950/30' : '';
+                                }
+                                
                                 return (
                                   <div 
                                     key={level.id} 
-                                    className={`flex items-start space-x-2 p-3 rounded-md transition-colors duration-200 ${
+                                    className={`flex items-start p-3 rounded-md transition-all duration-200 ${
                                       isSelected 
-                                        ? 'bg-white dark:bg-gray-900 shadow-sm border border-blue-200 dark:border-blue-800/50' 
+                                        ? `shadow-sm border border-blue-200 dark:border-blue-800/50 ${expertiseBg}` 
                                         : 'hover:bg-white/80 dark:hover:bg-gray-900/50'
                                     }`}
                                   >
-                                    <RadioGroupItem value={level.id} id={`${domain.id}-${level.id}`} className="mt-1" />
-                                    <div className="space-y-1">
-                                      <Label 
-                                        htmlFor={`${domain.id}-${level.id}`} 
-                                        className={`text-sm font-medium ${isSelected ? 'text-blue-700 dark:text-blue-400' : ''}`}
-                                      >
-                                        {level.name}
-                                      </Label>
-                                      <p className="text-xs text-muted-foreground">
-                                        {level.description}
-                                      </p>
+                                    <div className="flex gap-2 w-full">
+                                      <RadioGroupItem value={level.id} id={`${domain.id}-${level.id}`} className="mt-1" />
+                                      <div className="flex-1 space-y-1">
+                                        <div className="flex items-center justify-between">
+                                          <Label 
+                                            htmlFor={`${domain.id}-${level.id}`} 
+                                            className={`text-sm font-medium ${isSelected ? expertiseColor : ''}`}
+                                          >
+                                            {level.name}
+                                            {isSelected && (
+                                              <span className="ml-2 text-xs bg-blue-100 dark:bg-blue-900 px-1.5 py-0.5 rounded text-blue-700 dark:text-blue-400">
+                                                Selected
+                                              </span>
+                                            )}
+                                          </Label>
+                                          <span className="flex-shrink-0 text-lg">{expertiseBadge}</span>
+                                        </div>
+                                        <p className="text-xs text-muted-foreground pr-6">
+                                          {level.description}
+                                        </p>
+                                        
+                                        {/* Visual expertise indicator */}
+                                        {level.id === 'domain_navigator' && (
+                                          <div className="w-full bg-gray-200 dark:bg-gray-800 rounded-full h-1.5 mt-2">
+                                            <div className="bg-green-500 h-1.5 rounded-full w-1/3"></div>
+                                          </div>
+                                        )}
+                                        {level.id === 'strategic_builder' && (
+                                          <div className="w-full bg-gray-200 dark:bg-gray-800 rounded-full h-1.5 mt-2">
+                                            <div className="bg-blue-500 h-1.5 rounded-full w-2/3"></div>
+                                          </div>
+                                        )}
+                                        {level.id === 'creative_orchestrator' && (
+                                          <div className="w-full bg-gray-200 dark:bg-gray-800 rounded-full h-1.5 mt-2">
+                                            <div className="bg-purple-500 h-1.5 rounded-full w-full"></div>
+                                          </div>
+                                        )}
+                                      </div>
                                     </div>
                                   </div>
                                 );
