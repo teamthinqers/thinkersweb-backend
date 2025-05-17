@@ -23,6 +23,7 @@ interface TuningParams {
   thoughtComplexity?: number; // 0.0 to 1.0 - simple direct (0.0) vs complex layered (1.0)
   mentalModelDensity?: number; // 0.0 to 1.0 - free thinker (0.0) vs model architect (1.0)
   patternDetectionSensitivity?: number; // 0.0 to 1.0 - local optimizer (0.0) vs system scanner (1.0)
+  decisionMakingIndex?: number; // 0.0 to 1.0 - intuitive thinking (0.0) vs structured logical thinking (1.0)
   
   // Memory parameters
   memoryRetention?: number; // 0.0 to 1.0 - how strongly information is retained
@@ -99,6 +100,7 @@ export function useDotSparkTuning() {
       thoughtComplexity: 0.5,
       mentalModelDensity: 0.5,
       patternDetectionSensitivity: 0.5,
+      decisionMakingIndex: 0.5,
       
       // Memory parameters
       memoryRetention: 0.75,

@@ -52,6 +52,7 @@ export interface DotSparkStatus {
     thoughtComplexity: number;
     mentalModelDensity: number;
     patternDetectionSensitivity: number;
+    decisionMakingIndex: number;
     
     // Memory parameters
     memoryRetention: number;
@@ -123,6 +124,10 @@ export function useDotSpark() {
       analytical: 0.8,
       intuitive: 0.6,
       contextualThinking: 0.5,
+      memoryBandwidth: 0.6,
+      thoughtComplexity: 0.7,
+      mentalModelDensity: 0.4,
+      patternDetectionSensitivity: 0.65,
       memoryRetention: 0.75,
       memoryRecall: 0.7,
       connectionStrength: 0.65,
