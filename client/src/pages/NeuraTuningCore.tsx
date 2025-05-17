@@ -28,6 +28,7 @@ export default function NeuraTuningCore() {
     speed?: number;
     cognitivePace?: number;
     memoryRecall?: number;
+    signalFocus?: number;
   }>({});
   
   // Extract values from status for rendering
@@ -38,6 +39,7 @@ export default function NeuraTuningCore() {
       speed: 0.5,
       cognitivePace: 0.5,
       memoryRecall: 0.5,
+      signalFocus: 0.5,
     }
   };
   
@@ -378,6 +380,104 @@ export default function NeuraTuningCore() {
               <span>Broad</span>
               <span>Balanced</span>
               <span>Detailed</span>
+            </div>
+          </div>
+          
+          {/* Signal Focus */}
+          <div className="space-y-3 mt-8 border border-emerald-200 dark:border-emerald-800 rounded-lg p-4">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <h3 className="text-lg font-medium text-emerald-700 dark:text-emerald-300">Signal Focus</h3>
+                <HoverCard>
+                  <HoverCardTrigger>
+                    <Info className="h-4 w-4 text-emerald-500 dark:text-emerald-400" />
+                  </HoverCardTrigger>
+                  <HoverCardContent className="w-80">
+                    <div className="space-y-2">
+                      <h4 className="text-sm font-semibold">Signal Focus Parameter</h4>
+                      <p className="text-sm">
+                        This is your brain's ability to lock on to a single goal vs juggling multiple contexts. It affects how your cognitive companion prioritizes and processes information.
+                      </p>
+                    </div>
+                  </HoverCardContent>
+                </HoverCard>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-1 gap-4">
+              <div 
+                className={`relative border rounded-lg p-4 cursor-pointer transition-all ${
+                  (pendingChanges.signalFocus ?? neuralTuning?.signalFocus ?? 0.5) < 0.5 
+                    ? "bg-gradient-to-r from-emerald-50 to-green-50 dark:from-emerald-950 dark:to-green-950 border-emerald-300 dark:border-emerald-700 shadow-md" 
+                    : "border-gray-200 dark:border-gray-800 hover:border-emerald-200 dark:hover:border-emerald-800"
+                }`}
+                onClick={() => handleParameterChange('signalFocus', [0.2])}
+              >
+                <div className="flex items-start gap-3">
+                  <div className="mt-1 flex-shrink-0">
+                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                      (pendingChanges.signalFocus ?? neuralTuning?.signalFocus ?? 0.5) < 0.5 
+                        ? "border-emerald-500 bg-emerald-100 dark:bg-emerald-900" 
+                        : "border-gray-300 dark:border-gray-700"
+                    }`}>
+                      {(pendingChanges.signalFocus ?? neuralTuning?.signalFocus ?? 0.5) < 0.5 && (
+                        <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
+                      )}
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="text-base font-medium mb-1 flex items-center gap-2">
+                      <span role="img" aria-label="laser" className="text-lg">🔦</span>
+                      <span className="text-emerald-700 dark:text-emerald-300">Narrow Beam Focus</span>
+                    </h4>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      You excel at deep concentration on a single task or goal. You prefer to complete one thing thoroughly before moving to the next.
+                    </p>
+                  </div>
+                </div>
+                {(pendingChanges.signalFocus ?? neuralTuning?.signalFocus ?? 0.5) < 0.5 && (
+                  <div className="absolute -top-2 -right-2 bg-emerald-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center">
+                    <Check className="h-3 w-3" />
+                  </div>
+                )}
+              </div>
+              
+              <div 
+                className={`relative border rounded-lg p-4 cursor-pointer transition-all ${
+                  (pendingChanges.signalFocus ?? neuralTuning?.signalFocus ?? 0.5) >= 0.5 
+                    ? "bg-gradient-to-r from-purple-50 to-violet-50 dark:from-purple-950 dark:to-violet-950 border-purple-300 dark:border-purple-700 shadow-md" 
+                    : "border-gray-200 dark:border-gray-800 hover:border-purple-200 dark:hover:border-purple-800"
+                }`}
+                onClick={() => handleParameterChange('signalFocus', [0.8])}
+              >
+                <div className="flex items-start gap-3">
+                  <div className="mt-1 flex-shrink-0">
+                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                      (pendingChanges.signalFocus ?? neuralTuning?.signalFocus ?? 0.5) >= 0.5 
+                        ? "border-purple-500 bg-purple-100 dark:bg-purple-900" 
+                        : "border-gray-300 dark:border-gray-700"
+                    }`}>
+                      {(pendingChanges.signalFocus ?? neuralTuning?.signalFocus ?? 0.5) >= 0.5 && (
+                        <div className="w-2 h-2 rounded-full bg-purple-500"></div>
+                      )}
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="text-base font-medium mb-1 flex items-center gap-2">
+                      <span role="img" aria-label="radar" className="text-lg">🔭</span>
+                      <span className="text-purple-700 dark:text-purple-300">Wide Scanner Focus</span>
+                    </h4>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      You thrive on juggling multiple tasks and contexts. You quickly shift attention between different areas and connect disparate information.
+                    </p>
+                  </div>
+                </div>
+                {(pendingChanges.signalFocus ?? neuralTuning?.signalFocus ?? 0.5) >= 0.5 && (
+                  <div className="absolute -top-2 -right-2 bg-purple-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center">
+                    <Check className="h-3 w-3" />
+                  </div>
+                )}
+              </div>
             </div>
           </div>
           
