@@ -287,7 +287,7 @@ export default function NeuraTuningExpertise() {
               <Target className="h-6 w-6 text-blue-600 dark:text-blue-400" />
             </div>
             <div>
-              <CardTitle>Expertise Focus</CardTitle>
+              <CardTitle>Expertise Layer</CardTitle>
               <CardDescription>
                 Define your neural extension's specialized knowledge domains
               </CardDescription>
@@ -296,7 +296,72 @@ export default function NeuraTuningExpertise() {
         </CardHeader>
         
         <CardContent className="pt-6 space-y-6">
+          {/* Functional Domains Section */}
+          <div className="mb-8">
+            <h3 className="text-lg font-medium mb-3">Functional Domains</h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              Select the professional domains where you have expertise. You can select multiple domains.
+            </p>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {functionalDomains.map((domain) => (
+                <div 
+                  key={domain.id} 
+                  className="flex items-start space-x-2 p-4 rounded-lg border border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-900"
+                >
+                  <Checkbox 
+                    id={domain.id}
+                    checked={selectedDomains.includes(domain.id)}
+                    onCheckedChange={(checked) => {
+                      if (checked === true) {
+                        setSelectedDomains(prev => [...prev, domain.id]);
+                        setPendingChanges(prev => ({
+                          ...prev,
+                          specialties: {
+                            ...(prev.specialties || {}),
+                            [domain.id]: 0.8
+                          }
+                        }));
+                        setUnsavedChanges(true);
+                      } else if (checked === false) {
+                        setSelectedDomains(prev => prev.filter(id => id !== domain.id));
+                        const updatedSpecialties = { ...(pendingChanges.specialties || {}) };
+                        delete updatedSpecialties[domain.id];
+                        setPendingChanges(prev => ({
+                          ...prev,
+                          specialties: updatedSpecialties
+                        }));
+                        setUnsavedChanges(true);
+                      }
+                    }}
+                    className="mt-1"
+                  />
+                  <div className="space-y-1">
+                    <label
+                      htmlFor={domain.id}
+                      className="font-medium text-sm cursor-pointer"
+                    >
+                      {domain.name}
+                    </label>
+                    <div className="text-sm text-muted-foreground">
+                      {selectedDomains.includes(domain.id) && (
+                        <div className="flex items-center text-blue-600 dark:text-blue-400">
+                          <Check className="h-3.5 w-3.5 mr-1" />
+                          <span className="text-xs">Selected</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          
+          <Separator className="my-6" />
+          
+          {/* Expertise Strength Section */}
           <div className="mb-4">
+            <h3 className="text-lg font-medium mb-3">Expertise Strength</h3>
             <p className="text-sm text-muted-foreground mb-3">
               Adjust the strength of each expertise area to influence how your neural extension responds to relevant topics.
             </p>
