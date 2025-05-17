@@ -19,6 +19,7 @@ interface TuningParams {
   analytical?: number;  // 0.0 to 1.0 - logical/systematic thinking emphasis
   intuitive?: number;   // 0.0 to 1.0 - pattern recognition/insight emphasis
   contextualThinking?: number; // 0.0 to 1.0 - contextual (0.0) vs universal (1.0) thinking
+  memoryBandwidth?: number; // 0.0 to 1.0 - short burst memory (0.0) vs deep retainer (1.0)
   
   // Memory parameters
   memoryRetention?: number; // 0.0 to 1.0 - how strongly information is retained
@@ -91,6 +92,7 @@ export function useDotSparkTuning() {
       analytical: 0.8,
       intuitive: 0.6,
       contextualThinking: 0.5,
+      memoryBandwidth: 0.5,
       
       // Memory parameters
       memoryRetention: 0.75,

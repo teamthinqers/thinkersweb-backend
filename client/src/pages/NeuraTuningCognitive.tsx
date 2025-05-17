@@ -23,17 +23,13 @@ export default function NeuraTuningCognitive() {
   // Local state for unsaved changes
   const [unsavedChanges, setUnsavedChanges] = useState(false);
   const [pendingChanges, setPendingChanges] = useState<{
-    analytical?: number;
-    intuitive?: number;
-    contextualThinking?: number;
+    memoryBandwidth?: number;
   }>({});
   
   // Extract values from status for rendering
   const { tuning: neuralTuning } = status || { 
     tuning: {
-      analytical: 0.5,
-      intuitive: 0.5,
-      contextualThinking: 0.5,
+      memoryBandwidth: 0.5,
     }
   };
   
@@ -156,124 +152,48 @@ export default function NeuraTuningCognitive() {
         </CardHeader>
         
         <CardContent className="pt-6 space-y-6">
-          {/* Analytical */}
+          {/* Memory Bandwidth */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <h3 className="text-lg font-medium">Analytical Thinking</h3>
+                <h3 className="text-lg font-medium">Memory Bandwidth</h3>
                 <HoverCard>
                   <HoverCardTrigger>
                     <Info className="h-4 w-4 text-muted-foreground" />
                   </HoverCardTrigger>
                   <HoverCardContent className="w-80">
                     <div className="space-y-2">
-                      <h4 className="text-sm font-semibold">Analytical Thinking</h4>
+                      <h4 className="text-sm font-semibold">Memory Bandwidth</h4>
                       <p className="text-sm">
-                        Controls how systematically your neural extension approaches problems. Higher values promote logical analysis and methodical thinking.
+                        Controls how much information your neural extension holds while thinking. Lower values favor quick access to essential information (Short Burst Memory), while higher values enable deeper retention of more information simultaneously (Deep Retainer).
                       </p>
                     </div>
                   </HoverCardContent>
                 </HoverCard>
               </div>
               <span className="text-sm font-medium text-muted-foreground">
-                {Math.round((pendingChanges.analytical ?? neuralTuning?.analytical ?? 0.5) * 100)}%
+                {Math.round((pendingChanges.memoryBandwidth ?? neuralTuning?.memoryBandwidth ?? 0.5) * 100)}%
               </span>
             </div>
             <Slider
-              defaultValue={[neuralTuning?.analytical ?? 0.5]}
+              defaultValue={[neuralTuning?.memoryBandwidth ?? 0.5]}
               max={1}
               step={0.01}
-              value={[pendingChanges.analytical ?? neuralTuning?.analytical ?? 0.5]}
-              onValueChange={(value) => handleParameterChange('analytical', value)}
+              value={[pendingChanges.memoryBandwidth ?? neuralTuning?.memoryBandwidth ?? 0.5]}
+              onValueChange={(value) => handleParameterChange('memoryBandwidth', value)}
               className="w-full"
             />
             <div className="flex justify-between text-xs text-muted-foreground">
-              <span>Flexible</span>
+              <span>Short Burst Memory</span>
               <span>Balanced</span>
-              <span>Structured</span>
-            </div>
-          </div>
-          
-          {/* Intuitive */}
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <h3 className="text-lg font-medium">Intuitive Thinking</h3>
-                <HoverCard>
-                  <HoverCardTrigger>
-                    <Info className="h-4 w-4 text-muted-foreground" />
-                  </HoverCardTrigger>
-                  <HoverCardContent className="w-80">
-                    <div className="space-y-2">
-                      <h4 className="text-sm font-semibold">Intuitive Thinking</h4>
-                      <p className="text-sm">
-                        Controls how much your neural extension relies on pattern recognition and holistic insights. Higher values promote connecting disparate ideas and concepts.
-                      </p>
-                    </div>
-                  </HoverCardContent>
-                </HoverCard>
-              </div>
-              <span className="text-sm font-medium text-muted-foreground">
-                {Math.round((pendingChanges.intuitive ?? neuralTuning?.intuitive ?? 0.5) * 100)}%
-              </span>
-            </div>
-            <Slider
-              defaultValue={[neuralTuning?.intuitive ?? 0.5]}
-              max={1}
-              step={0.01}
-              value={[pendingChanges.intuitive ?? neuralTuning?.intuitive ?? 0.5]}
-              onValueChange={(value) => handleParameterChange('intuitive', value)}
-              className="w-full"
-            />
-            <div className="flex justify-between text-xs text-muted-foreground">
-              <span>Literal</span>
-              <span>Balanced</span>
-              <span>Abstract</span>
-            </div>
-          </div>
-          
-          {/* Contextual vs. Universal Thinking */}
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <h3 className="text-lg font-medium">Contextual vs. Universal Thinking</h3>
-                <HoverCard>
-                  <HoverCardTrigger>
-                    <Info className="h-4 w-4 text-muted-foreground" />
-                  </HoverCardTrigger>
-                  <HoverCardContent className="w-80">
-                    <div className="space-y-2">
-                      <h4 className="text-sm font-semibold">Contextual vs. Universal Thinking</h4>
-                      <p className="text-sm">
-                        Determines whether your neural extension prioritizes situational, context-dependent thinking or focuses on universal principles and broad applications. Lower values emphasize specific contexts and adaptability to unique situations, while higher values prioritize consistent principles across different scenarios.
-                      </p>
-                    </div>
-                  </HoverCardContent>
-                </HoverCard>
-              </div>
-              <span className="text-sm font-medium text-muted-foreground">
-                {Math.round((pendingChanges.contextualThinking ?? neuralTuning?.contextualThinking ?? 0.5) * 100)}%
-              </span>
-            </div>
-            <Slider
-              defaultValue={[neuralTuning?.contextualThinking ?? 0.5]}
-              max={1}
-              step={0.01}
-              value={[pendingChanges.contextualThinking ?? neuralTuning?.contextualThinking ?? 0.5]}
-              onValueChange={(value) => handleParameterChange('contextualThinking', value)}
-              className="w-full"
-            />
-            <div className="flex justify-between text-xs text-muted-foreground">
-              <span>Situational Focus</span>
-              <span>Balanced</span>
-              <span>Universal Principles</span>
+              <span>Deep Retainer</span>
             </div>
           </div>
           
           <div className="mt-6 bg-violet-50 dark:bg-violet-950 p-4 rounded-lg border border-violet-100 dark:border-violet-900">
-            <h4 className="text-sm font-medium text-violet-800 dark:text-violet-300 mb-2">How Cognitive Style Works</h4>
+            <h4 className="text-sm font-medium text-violet-800 dark:text-violet-300 mb-2">How Memory Bandwidth Works</h4>
             <p className="text-sm text-violet-700 dark:text-violet-400">
-              The cognitive style parameters define how your neural extension approaches problems and processes information. Balancing analytical and intuitive thinking with contextual awareness creates a well-rounded assistant, while emphasizing specific parameters tailors responses to your preferred thinking style.
+              Memory Bandwidth determines how much information your Neura can hold and process simultaneously. Short Burst Memory configuration enables quick access to essential information, making it ideal for rapid decision-making and real-time responses. Deep Retainer configuration allows your Neura to maintain more complex information simultaneously, supporting deeper analysis and multifaceted problem-solving.
             </p>
           </div>
         </CardContent>

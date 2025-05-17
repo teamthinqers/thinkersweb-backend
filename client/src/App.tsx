@@ -196,6 +196,7 @@ function Router() {
       {/* Neura tuning section pages */}
       <Route path="/neura-tuning/core" component={NeuraTuningCore} />
       <Route path="/neura-tuning/cognitive" component={NeuraTuningCognitive} />
+      <Route path="/neura-tuning-cognitive" component={NeuraTuningCognitive} />
       <Route path="/neura-tuning/expertise" component={NeuraTuningExpertise} />
       <Route path="/neura-tuning/learning" component={NeuraTuningLearning} />
       {/* Legacy routes - all redirecting to My Neura page */}
