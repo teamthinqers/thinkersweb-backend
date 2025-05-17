@@ -507,10 +507,10 @@ export default function MyNeura() {
                       <span className="sr-only">How to improve capacity</span>
                     </Button>
                   </HoverCardTrigger>
-                  <HoverCardContent className="w-80 p-4">
+                  <HoverCardContent className="w-80 p-4 bg-white dark:bg-gray-950 border-2 border-indigo-200 dark:border-indigo-800 shadow-lg">
                     <div className="space-y-3">
-                      <h4 className="text-sm font-semibold">How to improve your Neural Capacity</h4>
-                      <ul className="text-sm space-y-2">
+                      <h4 className="text-sm font-semibold text-black dark:text-white">How to improve your Neural Capacity</h4>
+                      <ul className="text-sm space-y-2 text-gray-800 dark:text-gray-200">
                         <li className="flex items-start gap-2">
                           <Check className="h-4 w-4 text-green-500 flex-shrink-0 mt-0.5" />
                           <span>Use Neura regularly to increase Processing</span>
