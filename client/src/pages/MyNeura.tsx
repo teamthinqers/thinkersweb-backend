@@ -54,10 +54,11 @@ export default function MyNeura() {
   } = useDotSparkTuning();
   
   // State for capacity metrics with animation
-  const [processingEfficiency, setProcessingEfficiency] = useState<number>(65);
-  const [memoryCapacity, setMemoryCapacity] = useState<number>(48);
-  const [learningRate, setLearningRate] = useState<number>(52);
-  const [specializationLevel, setSpecializationLevel] = useState<number>(35);
+  // Users start at Level 1 with their actual percentages and upgrade as they cross thresholds
+  const [processingEfficiency, setProcessingEfficiency] = useState<number>(25);
+  const [memoryCapacity, setMemoryCapacity] = useState<number>(20);
+  const [learningRate, setLearningRate] = useState<number>(15);
+  const [specializationLevel, setSpecializationLevel] = useState<number>(10);
   
   // Update capacity metrics when status changes
   useEffect(() => {
