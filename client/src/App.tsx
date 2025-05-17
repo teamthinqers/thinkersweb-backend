@@ -193,12 +193,12 @@ function Router() {
         {() => <MyNeura />}
       </Route>
       <Route path="/my-neura" component={MyNeura} />
-      {/* Neura tuning section pages */}
+      {/* Neura tuning section pages - Order: Core, Cognitive, Learning, Expertise */}
       <Route path="/neura-tuning/core" component={NeuraTuningCore} />
       <Route path="/neura-tuning/cognitive" component={NeuraTuningCognitive} />
-      <Route path="/neura-tuning-cognitive" component={NeuraTuningCognitive} />
+      <Route path="/neura-tuning/learning" component={NeuraTuningLearning} />  
       <Route path="/neura-tuning/expertise" component={NeuraTuningExpertise} />
-      <Route path="/neura-tuning/learning" component={NeuraTuningLearning} />
+      <Route path="/neura-tuning-cognitive" component={NeuraTuningCognitive} />
       {/* Legacy routes - all redirecting to My Neura page */}
       <Route path="/dotspark-tuning">
         {() => <MyNeura />}

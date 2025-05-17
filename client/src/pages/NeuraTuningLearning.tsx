@@ -99,7 +99,7 @@ export default function NeuraTuningLearning() {
             <Button variant="ghost" onClick={() => setLocation('/my-neura')} className="p-2">
               <ChevronLeft className="h-5 w-5" />
             </Button>
-            <h1 className="text-2xl font-bold">Learning Focus</h1>
+            <h1 className="text-2xl font-bold">Learning Engine</h1>
           </div>
         </div>
         <div className="flex items-center justify-center h-[400px]">
@@ -120,7 +120,7 @@ export default function NeuraTuningLearning() {
           <Button variant="ghost" onClick={() => setLocation('/my-neura')} className="p-2">
             <ChevronLeft className="h-5 w-5" />
           </Button>
-          <h1 className="text-2xl font-bold">Learning Focus</h1>
+          <h1 className="text-2xl font-bold">Learning Engine</h1>
         </div>
         {hasChanges && (
           <Button 
@@ -144,7 +144,7 @@ export default function NeuraTuningLearning() {
         )}
       </div>
       
-      {/* Learning Focus Section Card */}
+      {/* Learning Engine Section Card */}
       <Card className="bg-white dark:bg-gray-950 shadow-md">
         <CardHeader className="bg-gradient-to-r from-emerald-50 to-green-50 dark:from-emerald-950 dark:to-green-950">
           <div className="flex items-center gap-3">
@@ -152,7 +152,7 @@ export default function NeuraTuningLearning() {
               <Lightbulb className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
             </div>
             <div>
-              <CardTitle>Learning Focus</CardTitle>
+              <CardTitle>Learning Engine</CardTitle>
               <CardDescription>
                 Guide what your neural extension should prioritize learning
               </CardDescription>
@@ -221,7 +221,7 @@ export default function NeuraTuningLearning() {
             </div>
             
             <div className="mt-6 bg-emerald-50 dark:bg-emerald-950 p-4 rounded-lg border border-emerald-100 dark:border-emerald-900">
-              <h4 className="text-sm font-medium text-emerald-800 dark:text-emerald-300 mb-2">How Learning Focus Works</h4>
+              <h4 className="text-sm font-medium text-emerald-800 dark:text-emerald-300 mb-2">How Learning Engine Works</h4>
               <p className="text-sm text-emerald-700 dark:text-emerald-400">
                 Learning directives tell your neural extension which topics to pay special attention to. It will actively improve its understanding of these areas and give them priority when answering questions or providing insights.
               </p>
