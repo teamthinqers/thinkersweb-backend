@@ -494,7 +494,35 @@ export default function MyNeura() {
             <div className="flex items-center gap-2">
               <BrainCircuit className="h-5 w-5 text-indigo-700 dark:text-indigo-400" />
               <CardTitle>
-                <span className="font-bold bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">{neuraName}</span>
+                <span className="font-bold bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">My Neural Capacity</span>
+                <HoverCard>
+                  <HoverCardTrigger asChild>
+                    <Info className="h-4 w-4 text-muted-foreground inline-block ml-1 cursor-help" />
+                  </HoverCardTrigger>
+                  <HoverCardContent className="w-80">
+                    <div className="space-y-2">
+                      <h4 className="text-sm font-semibold">How to improve your Neural Capacity</h4>
+                      <ul className="text-sm space-y-1">
+                        <li className="flex gap-2">
+                          <Check className="h-4 w-4 text-green-500 flex-shrink-0" />
+                          <span>Use Neura regularly to increase Processing</span>
+                        </li>
+                        <li className="flex gap-2">
+                          <Check className="h-4 w-4 text-green-500 flex-shrink-0" />
+                          <span>Add entries and save knowledge to boost Memory</span>
+                        </li>
+                        <li className="flex gap-2">
+                          <Check className="h-4 w-4 text-green-500 flex-shrink-0" />
+                          <span>Enable WhatsApp integration to improve Learning</span>
+                        </li>
+                        <li className="flex gap-2">
+                          <Check className="h-4 w-4 text-green-500 flex-shrink-0" />
+                          <span>Make decisions with Neura to enhance Implementation</span>
+                        </li>
+                      </ul>
+                    </div>
+                  </HoverCardContent>
+                </HoverCard>
               </CardTitle>
             </div>
             <Badge className="bg-indigo-100 text-indigo-800 dark:bg-indigo-900/50 dark:text-indigo-200 hover:bg-indigo-200 dark:hover:bg-indigo-800/50">
