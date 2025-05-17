@@ -604,149 +604,166 @@ export default function NeuraTuningLearning() {
         
         <CardContent className="pt-6">
           <div className="space-y-8">
-            {/* Section 1: Active Learning Mode */}
-            <div className="bg-gradient-to-r from-amber-50 to-amber-100/50 dark:from-amber-950/30 dark:to-amber-900/20 p-4 rounded-lg border border-amber-200 dark:border-amber-800/50">
-              <h3 className="text-lg font-medium mb-3 text-amber-800 dark:text-amber-300 flex items-center gap-2">
-                <Zap className="h-5 w-5 text-amber-600 dark:text-amber-400" />
-                Active Learning Mode
+            {/* Section 1: Learning Reinforcement Loop */}
+            <div className="bg-gradient-to-r from-indigo-50 to-purple-50/50 dark:from-indigo-950/30 dark:to-purple-900/20 p-5 rounded-lg border border-indigo-200 dark:border-indigo-800/50">
+              <h3 className="text-center text-lg font-medium mb-3 text-indigo-800 dark:text-indigo-300 flex items-center justify-center gap-2">
+                <div className="p-1.5 rounded-full bg-indigo-100 dark:bg-indigo-900/60">
+                  <Zap className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
+                </div>
+                <span className="bg-gradient-to-r from-indigo-700 to-purple-700 dark:from-indigo-400 dark:to-purple-400 bg-clip-text text-transparent">
+                  The Exponential Learning Loop
+                </span>
               </h3>
               
-              <p className="text-sm text-amber-700/90 dark:text-amber-400/90 mb-4">
-                Your Neura is always in active learning mode, continuously absorbing information from trusted sources to enhance its knowledge base.
-              </p>
-              
-              <div className="flex items-center justify-between bg-white dark:bg-gray-900 p-3 rounded-lg shadow-sm border border-amber-200 dark:border-amber-900/50">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-amber-100 dark:bg-amber-900/60 rounded-full">
-                    <Lightbulb className="h-5 w-5 text-amber-600 dark:text-amber-400" />
-                  </div>
-                  <div>
-                    <div className="text-sm font-medium text-amber-800 dark:text-amber-300">Always-On Learning</div>
-                    <div className="text-xs text-amber-600/80 dark:text-amber-400/80">Continuous behind-the-scenes knowledge acquisition</div>
-                  </div>
-                </div>
+              {/* Reinforcement loop visualization */}
+              <div className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm p-5 rounded-lg border border-indigo-200 dark:border-indigo-800 shadow-sm relative overflow-hidden mb-4">
+                {/* Background decoration */}
+                <div className="absolute -right-8 -top-8 w-24 h-24 bg-gradient-to-br from-indigo-200/30 to-purple-300/30 dark:from-indigo-900/30 dark:to-purple-800/30 rounded-full blur-xl"></div>
+                <div className="absolute -left-8 -bottom-8 w-24 h-24 bg-gradient-to-tr from-indigo-200/30 to-purple-300/30 dark:from-indigo-900/30 dark:to-purple-800/30 rounded-full blur-xl"></div>
                 
-                <div className="flex items-center gap-1.5">
-                  <span className="h-2 w-2 bg-green-500 rounded-full animate-pulse"></span>
-                  <span className="text-xs font-medium text-green-600 dark:text-green-500">Active</span>
-                </div>
-              </div>
-              
-              {/* The Exponential Effect section */}
-              <div className="mt-5">
-                {/* Reusing our exponential visualization that we created earlier */}
-                <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm p-4 rounded-lg border border-indigo-200 dark:border-indigo-800 relative overflow-hidden">
-                  {/* Main section title */}
-                  <div className="text-center mb-2">
-                    <span className="px-3 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-indigo-500 to-purple-500 text-white">10 min daily habit</span>
+                <div className="relative">
+                  {/* Main concept explanation */}
+                  <div className="flex items-start gap-4 mb-6">
+                    <div className="flex-shrink-0 p-2 bg-indigo-100 dark:bg-indigo-900/60 rounded-full">
+                      <Lightbulb className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
+                    </div>
+                    <div>
+                      <h4 className="text-base font-medium text-indigo-800 dark:text-indigo-300 mb-1">Always Learning, Always Growing</h4>
+                      <p className="text-sm text-indigo-600/80 dark:text-indigo-400/80">
+                        Your Neura constantly learns in the background while you receive daily insights, creating a 
+                        <span className="font-semibold"> positive reinforcement loop</span> that accelerates both your knowledge and Neura's capabilities.
+                      </p>
+                    </div>
                   </div>
                   
-                  {/* Knowledge growth visualization */}
-                  <div className="relative h-[120px] mb-3">
-                    {/* Exponential curve */}
-                    <svg viewBox="0 0 300 100" className="absolute inset-0 w-full h-full">
+                  {/* Reinforcement Loop Visual */}
+                  <div className="relative mx-auto max-w-[500px] h-[190px] mb-4">
+                    {/* Center brain */}
+                    <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-900/60 dark:to-purple-900/60 rounded-full flex items-center justify-center z-10 shadow-sm border border-indigo-200 dark:border-indigo-800/50">
+                      <span className="text-3xl">🧠</span>
+                    </div>
+                    
+                    {/* Rotating path */}
+                    <svg viewBox="0 0 240 200" className="absolute inset-0 w-full h-full">
                       <defs>
-                        <linearGradient id="curveGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                          <stop offset="0%" stopColor="#c7d2fe" stopOpacity="0.6" />
-                          <stop offset="100%" stopColor="#818cf8" stopOpacity="0.9" />
+                        <linearGradient id="loopGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                          <stop offset="0%" stopColor="#a5b4fc" stopOpacity="0.6" />
+                          <stop offset="100%" stopColor="#c4b5fd" stopOpacity="0.8" />
                         </linearGradient>
                       </defs>
-                      {/* Reference grid lines */}
-                      <line x1="0" y1="90" x2="300" y2="90" stroke="#e2e8f0" strokeWidth="1" strokeDasharray="2,2" />
-                      <line x1="0" y1="60" x2="300" y2="60" stroke="#e2e8f0" strokeWidth="1" strokeDasharray="2,2" />
-                      <line x1="0" y1="30" x2="300" y2="30" stroke="#e2e8f0" strokeWidth="1" strokeDasharray="2,2" />
                       
-                      {/* Linear growth reference line */}
-                      <line x1="30" y1="80" x2="270" y2="30" stroke="#cbd5e1" strokeWidth="2" strokeDasharray="3,3" />
-                      
-                      {/* Exponential curve */}
-                      <path d="M30,80 Q90,75 150,60 T210,30 Q240,15 270,5" 
-                            stroke="url(#curveGradient)" 
-                            strokeWidth="3" 
-                            fill="none" />
+                      {/* Circular path */}
+                      <ellipse cx="120" cy="100" rx="100" ry="75" fill="none" stroke="url(#loopGradient)" strokeWidth="3" strokeDasharray="4 2" className="animate-spin" style={{ animationDuration: '60s', transformOrigin: 'center' }} />
                     </svg>
                     
-                    {/* Time markers */}
-                    <div className="absolute bottom-0 left-[10%] flex flex-col items-center">
-                      <div className="w-1 h-2 bg-indigo-300 dark:bg-indigo-700"></div>
-                      <span className="text-[10px] text-indigo-500 dark:text-indigo-400">Week 1</span>
+                    {/* Neura learning node */}
+                    <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-indigo-500 to-indigo-600 dark:from-indigo-600 dark:to-indigo-700 p-3 rounded-xl shadow-md border border-indigo-400 dark:border-indigo-500">
+                      <div className="flex items-center gap-2">
+                        <div className="bg-white/90 dark:bg-indigo-900/90 p-1.5 rounded-full">
+                          <div className="h-4 w-4 border-2 border-indigo-500 dark:border-indigo-400 border-t-transparent rounded-full animate-spin"></div>
+                        </div>
+                        <div className="text-xs font-medium text-white">Active Learning Mode</div>
+                      </div>
                     </div>
                     
-                    <div className="absolute bottom-0 left-[50%] flex flex-col items-center">
-                      <div className="w-1 h-2 bg-indigo-400 dark:bg-indigo-600"></div>
-                      <span className="text-[10px] text-indigo-500 dark:text-indigo-400">Month 3</span>
+                    {/* User insights node */}
+                    <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 bg-gradient-to-r from-purple-500 to-purple-600 dark:from-purple-600 dark:to-purple-700 p-3 rounded-xl shadow-md border border-purple-400 dark:border-purple-500">
+                      <div className="flex items-center gap-2">
+                        <div className="bg-white/90 dark:bg-purple-900/90 p-1.5 rounded-full">
+                          <MessageSquare className="h-4 w-4 text-purple-500 dark:text-purple-400" />
+                        </div>
+                        <div className="text-xs font-medium text-white">Daily Learning Insights</div>
+                      </div>
                     </div>
                     
-                    <div className="absolute bottom-0 right-[10%] flex flex-col items-center">
-                      <div className="w-1 h-2 bg-indigo-500 dark:bg-indigo-500"></div>
-                      <span className="text-[10px] text-indigo-500 dark:text-indigo-400">Year 1</span>
+                    {/* Left node: You learn */}
+                    <div className="absolute left-0 top-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-gray-900 p-2 rounded-lg shadow-sm border border-indigo-200 dark:border-indigo-800/50">
+                      <div className="flex flex-col items-center">
+                        <div className="text-2xl mb-0.5">👤</div>
+                        <div className="text-xs font-medium text-indigo-800 dark:text-indigo-300">You</div>
+                        <div className="text-[10px] text-indigo-600/80 dark:text-indigo-400/80">Learn</div>
+                      </div>
                     </div>
                     
-                    {/* Knowledge bubbles */}
-                    <div className="absolute left-[10%] bottom-[30%] w-4 h-4 rounded-full bg-indigo-200 dark:bg-indigo-800 flex items-center justify-center">
-                      <span className="text-[8px] text-indigo-600 dark:text-indigo-300">5</span>
+                    {/* Right node: Neura learns */}
+                    <div className="absolute right-0 top-1/2 transform translate-x-1/2 -translate-y-1/2 bg-white dark:bg-gray-900 p-2 rounded-lg shadow-sm border border-indigo-200 dark:border-indigo-800/50">
+                      <div className="flex flex-col items-center">
+                        <div className="text-2xl mb-0.5">⚡</div>
+                        <div className="text-xs font-medium text-indigo-800 dark:text-indigo-300">Neura</div>
+                        <div className="text-[10px] text-indigo-600/80 dark:text-indigo-400/80">Learns</div>
+                      </div>
                     </div>
                     
-                    <div className="absolute left-[30%] bottom-[35%] w-5 h-5 rounded-full bg-indigo-300 dark:bg-indigo-700 flex items-center justify-center">
-                      <span className="text-[9px] text-indigo-600 dark:text-indigo-300">15</span>
-                    </div>
-                    
-                    <div className="absolute left-[50%] bottom-[45%] w-6 h-6 rounded-full bg-indigo-400 dark:bg-indigo-600 flex items-center justify-center">
-                      <span className="text-[10px] text-indigo-50">30</span>
-                    </div>
-                    
-                    <div className="absolute left-[70%] bottom-[65%] w-8 h-8 rounded-full bg-indigo-500 dark:bg-indigo-500 flex items-center justify-center animate-pulse">
-                      <span className="text-[11px] text-indigo-50">60</span>
-                    </div>
-                    
-                    <div className="absolute right-[10%] bottom-[85%] w-10 h-10 rounded-full bg-indigo-600 dark:bg-indigo-400 flex items-center justify-center animate-pulse">
-                      <span className="text-xs text-indigo-50">120+</span>
-                    </div>
-                    
-                    {/* Labels */}
-                    <div className="absolute top-0 right-4 flex flex-col items-end">
-                      <span className="text-[10px] font-medium text-indigo-600 dark:text-indigo-400">Knowledge</span>
-                      <span className="text-[8px] text-indigo-500 dark:text-indigo-500">depth & connections</span>
-                    </div>
-                    
-                    <div className="absolute bottom-0 right-4">
-                      <span className="text-[10px] font-medium text-indigo-600 dark:text-indigo-400">Time</span>
-                    </div>
-                    
-                    {/* Linear vs Exponential labels */}
-                    <div className="absolute top-[50%] left-[40%] rotate-[-10deg]">
-                      <span className="text-[8px] text-gray-500 dark:text-gray-400">Linear</span>
-                    </div>
-                    
-                    <div className="absolute top-[30%] left-[65%] rotate-[-35deg]">
-                      <span className="text-[9px] font-medium text-indigo-500 dark:text-indigo-400">Exponential</span>
-                    </div>
+                    {/* Knowledge arrows */}
+                    <div className="absolute left-[38%] top-[15%] transform rotate-[-30deg] text-indigo-400 dark:text-indigo-500 animate-pulse">→</div>
+                    <div className="absolute right-[38%] top-[15%] transform rotate-[30deg] text-indigo-400 dark:text-indigo-500 animate-pulse">←</div>
+                    <div className="absolute left-[38%] bottom-[15%] transform rotate-[30deg] text-purple-400 dark:text-purple-500 animate-pulse">←</div>
+                    <div className="absolute right-[38%] bottom-[15%] transform rotate-[-30deg] text-purple-400 dark:text-purple-500 animate-pulse">→</div>
                   </div>
                   
-                  {/* Key metrics highlighting */}
-                  <div className="grid grid-cols-3 gap-2 bg-indigo-50 dark:bg-indigo-950/30 rounded-lg p-2">
-                    <div className="flex flex-col items-center justify-center">
-                      <div className="text-2xl font-bold text-indigo-500 dark:text-indigo-400">10</div>
-                      <div className="text-[10px] text-indigo-600 dark:text-indigo-500">minutes daily</div>
+                  {/* Exponential curve visualization */}
+                  <div className="bg-indigo-50/60 dark:bg-indigo-950/30 rounded-lg p-4 relative overflow-hidden">
+                    <div className="text-center mb-3">
+                      <span className="px-3 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-indigo-500 to-purple-500 text-white">10 minutes daily = exponential growth</span>
                     </div>
                     
-                    <div className="flex items-center justify-center">
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-indigo-500 dark:text-indigo-400">
-                        <path d="M5 12H19M19 12L13 6M19 12L13 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
-                    </div>
-                    
-                    <div className="flex flex-col items-center justify-center relative">
-                      <div className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-500">60+</div>
-                      <div className="text-[10px] text-indigo-600 dark:text-indigo-500">hours yearly</div>
-                      <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-br from-indigo-400 to-purple-500 rounded-full flex items-center justify-center animate-ping opacity-75" style={{ animationDuration: '3s' }}></div>
+                    <div className="flex items-stretch gap-3">
+                      {/* Time investment card */}
+                      <div className="bg-white dark:bg-gray-900 p-3 rounded-lg shadow-sm border border-indigo-200 dark:border-indigo-800/70 flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Clock className="h-4 w-4 text-indigo-500 dark:text-indigo-400" />
+                          <span className="text-xs font-medium text-indigo-700 dark:text-indigo-300">Daily Investment</span>
+                        </div>
+                        
+                        <div className="grid grid-cols-3 gap-2">
+                          {learningTimeOptions.map((option) => (
+                            <div 
+                              key={option.value}
+                              onClick={() => enableLearningPrompts && handleLearningTimeChange(option.value)}
+                              className={`rounded-md p-1.5 text-center ${
+                                learningTime === option.value 
+                                  ? 'bg-indigo-100 dark:bg-indigo-900/50 border border-indigo-200 dark:border-indigo-800' 
+                                  : 'border border-transparent hover:bg-indigo-50 dark:hover:bg-indigo-950/30'
+                              }`}
+                            >
+                              <div className="text-sm font-semibold text-indigo-600 dark:text-indigo-400">
+                                {option.value}
+                                <span className="text-xs ml-1">min</span>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      
+                      {/* Annual result card */}
+                      <div className="bg-white dark:bg-gray-900 p-3 rounded-lg shadow-sm border border-indigo-200 dark:border-indigo-800/70 flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <PieChart className="h-4 w-4 text-indigo-500 dark:text-indigo-400" />
+                          <span className="text-xs font-medium text-indigo-700 dark:text-indigo-300">Annual Result</span>
+                        </div>
+                        
+                        <div className="flex items-center justify-center h-[48px]">
+                          <div className="relative">
+                            <div className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-500">
+                              {learningTime === '5' ? '30' : learningTime === '10' ? '60+' : '90+'}
+                            </div>
+                            <div className="text-xs text-indigo-600 dark:text-indigo-400 text-center">hours of learning</div>
+                            <div className="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-r from-indigo-400 to-purple-500 rounded-full animate-ping opacity-75" style={{ animationDuration: '2s' }}></div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
               
-              <div className="text-center text-xs text-amber-600/80 dark:text-amber-400/80 mt-3">
-                <span className="font-medium">Cross-domain learning</span> creates sharper insights and more robust knowledge connections
+              <div className="flex justify-center">
+                <div className="inline-block text-center px-4 py-2 rounded-lg bg-indigo-100/70 dark:bg-indigo-900/30 text-xs text-indigo-700 dark:text-indigo-300 max-w-md">
+                  <span className="font-medium block mb-1">Each session amplifies your knowledge exponentially</span>
+                  <span className="text-indigo-600/80 dark:text-indigo-400/80">
+                    Cross-domain learning creates sharper insights as your Neura grows alongside your daily learning habits
+                  </span>
+                </div>
               </div>
             </div>
             
