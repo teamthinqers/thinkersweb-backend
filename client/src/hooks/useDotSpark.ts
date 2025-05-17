@@ -51,6 +51,7 @@ export interface DotSparkStatus {
     memoryBandwidth: number;
     thoughtComplexity: number;
     mentalModelDensity: number;
+    patternDetectionSensitivity: number;
     
     // Memory parameters
     memoryRetention: number;

@@ -26,6 +26,7 @@ export default function NeuraTuningCognitive() {
     memoryBandwidth?: number;
     thoughtComplexity?: number;
     mentalModelDensity?: number;
+    patternDetectionSensitivity?: number;
   }>({});
   
   // Extract values from status for rendering
@@ -34,6 +35,7 @@ export default function NeuraTuningCognitive() {
       memoryBandwidth: 0.5,
       thoughtComplexity: 0.5,
       mentalModelDensity: 0.5,
+      patternDetectionSensitivity: 0.5,
     }
   };
   
@@ -267,6 +269,44 @@ export default function NeuraTuningCognitive() {
               <span>Free Thinker</span>
               <span>Balanced</span>
               <span>Model Architect</span>
+            </div>
+          </div>
+
+          {/* Pattern Detection Sensitivity */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <h3 className="text-lg font-medium">Pattern Detection Sensitivity</h3>
+                <HoverCard>
+                  <HoverCardTrigger>
+                    <Info className="h-4 w-4 text-muted-foreground" />
+                  </HoverCardTrigger>
+                  <HoverCardContent className="w-80">
+                    <div className="space-y-2">
+                      <h4 className="text-sm font-semibold">Pattern Detection Sensitivity</h4>
+                      <p className="text-sm">
+                        Reflects how easily you spot themes, loops, and connections. If you focus on optimizing details within specific areas (Local Optimizer), use lower values. If you naturally scan across systems to identify broad patterns and connections (System Scanner), use higher values.
+                      </p>
+                    </div>
+                  </HoverCardContent>
+                </HoverCard>
+              </div>
+              <span className="text-sm font-medium text-muted-foreground">
+                {Math.round((pendingChanges.patternDetectionSensitivity ?? neuralTuning?.patternDetectionSensitivity ?? 0.5) * 100)}%
+              </span>
+            </div>
+            <Slider
+              defaultValue={[neuralTuning?.patternDetectionSensitivity ?? 0.5]}
+              max={1}
+              step={0.01}
+              value={[pendingChanges.patternDetectionSensitivity ?? neuralTuning?.patternDetectionSensitivity ?? 0.5]}
+              onValueChange={(value) => handleParameterChange('patternDetectionSensitivity', value)}
+              className="w-full"
+            />
+            <div className="flex justify-between text-xs text-muted-foreground">
+              <span>Local Optimizer</span>
+              <span>Balanced</span>
+              <span>System Scanner</span>
             </div>
           </div>
 
