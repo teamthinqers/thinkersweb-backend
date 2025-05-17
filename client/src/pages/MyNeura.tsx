@@ -529,104 +529,140 @@ export default function MyNeura() {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
             {/* Processing Efficiency */}
             <div className="text-center">
-              <div className="relative w-14 h-14 sm:w-16 sm:h-16 mx-auto">
-                <svg className="w-full h-full" viewBox="0 0 100 100">
-                  <circle 
-                    cx="50" 
-                    cy="50" 
-                    r="45" 
-                    fill="none" 
-                    stroke="currentColor" 
-                    className="text-indigo-100 dark:text-indigo-950" 
-                    strokeWidth="8" 
-                  />
-                  <circle 
-                    cx="50" 
-                    cy="50" 
-                    r="45" 
-                    fill="none" 
-                    stroke="currentColor" 
-                    className="text-indigo-500 transition-all duration-500 ease-out" 
-                    strokeWidth="8" 
-                    strokeDasharray={`${2 * Math.PI * 45 * (processingEfficiency / 100)} ${2 * Math.PI * 45}`}
-                    strokeDashoffset={2 * Math.PI * 45 * 0.25}
-                  />
-                </svg>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <Zap className="h-5 w-5 text-indigo-500" />
-                </div>
-              </div>
-              <div className="text-sm font-medium mt-1">Processing</div>
-              <div className="text-xs text-muted-foreground">Usage Frequency</div>
-              <div className="text-xl font-bold">{Math.round(processingEfficiency)}%</div>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="cursor-help">
+                      <div className="relative w-14 h-14 sm:w-16 sm:h-16 mx-auto">
+                        <svg className="w-full h-full" viewBox="0 0 100 100">
+                          <circle 
+                            cx="50" 
+                            cy="50" 
+                            r="45" 
+                            fill="none" 
+                            stroke="currentColor" 
+                            className="text-indigo-100 dark:text-indigo-950" 
+                            strokeWidth="8" 
+                          />
+                          <circle 
+                            cx="50" 
+                            cy="50" 
+                            r="45" 
+                            fill="none" 
+                            stroke="currentColor" 
+                            className="text-indigo-500 transition-all duration-500 ease-out" 
+                            strokeWidth="8" 
+                            strokeDasharray={`${2 * Math.PI * 45 * (processingEfficiency / 100)} ${2 * Math.PI * 45}`}
+                            strokeDashoffset={2 * Math.PI * 45 * 0.25}
+                          />
+                        </svg>
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <Zap className="h-5 w-5 text-indigo-500" />
+                        </div>
+                      </div>
+                      <div className="text-sm font-medium mt-1">Processing</div>
+                      <div className="text-xs text-muted-foreground">Usage Frequency</div>
+                      <div className="text-xl font-bold">{Math.round(processingEfficiency)}%</div>
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom" className="bg-white dark:bg-gray-900 border border-indigo-200 dark:border-indigo-800 p-3 shadow-lg max-w-[200px]">
+                    <p className="text-sm font-medium">Processing Capacity</p>
+                    <p className="text-xs text-muted-foreground mt-1">Increases when you use Neura regularly. Higher usage frequency means better processing power.</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
             
             {/* Memory Capacity */}
             <div className="text-center">
-              <div className="relative w-14 h-14 sm:w-16 sm:h-16 mx-auto">
-                <svg className="w-full h-full" viewBox="0 0 100 100">
-                  <circle 
-                    cx="50" 
-                    cy="50" 
-                    r="45" 
-                    fill="none" 
-                    stroke="currentColor" 
-                    className="text-blue-100 dark:text-blue-950" 
-                    strokeWidth="8" 
-                  />
-                  <circle 
-                    cx="50" 
-                    cy="50" 
-                    r="45" 
-                    fill="none" 
-                    stroke="currentColor" 
-                    className="text-blue-500 transition-all duration-500 ease-out" 
-                    strokeWidth="8" 
-                    strokeDasharray={`${2 * Math.PI * 45 * (memoryCapacity / 100)} ${2 * Math.PI * 45}`}
-                    strokeDashoffset={2 * Math.PI * 45 * 0.25}
-                  />
-                </svg>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <BrainCog className="h-5 w-5 text-blue-500" />
-                </div>
-              </div>
-              <div className="text-sm font-medium mt-1">Memory</div>
-              <div className="text-xs text-muted-foreground">Entries & Storage</div>
-              <div className="text-xl font-bold">{Math.round(memoryCapacity)}%</div>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="cursor-help">
+                      <div className="relative w-14 h-14 sm:w-16 sm:h-16 mx-auto">
+                        <svg className="w-full h-full" viewBox="0 0 100 100">
+                          <circle 
+                            cx="50" 
+                            cy="50" 
+                            r="45" 
+                            fill="none" 
+                            stroke="currentColor" 
+                            className="text-blue-100 dark:text-blue-950" 
+                            strokeWidth="8" 
+                          />
+                          <circle 
+                            cx="50" 
+                            cy="50" 
+                            r="45" 
+                            fill="none" 
+                            stroke="currentColor" 
+                            className="text-blue-500 transition-all duration-500 ease-out" 
+                            strokeWidth="8" 
+                            strokeDasharray={`${2 * Math.PI * 45 * (memoryCapacity / 100)} ${2 * Math.PI * 45}`}
+                            strokeDashoffset={2 * Math.PI * 45 * 0.25}
+                          />
+                        </svg>
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <BrainCog className="h-5 w-5 text-blue-500" />
+                        </div>
+                      </div>
+                      <div className="text-sm font-medium mt-1">Memory</div>
+                      <div className="text-xs text-muted-foreground">Entries & Storage</div>
+                      <div className="text-xl font-bold">{Math.round(memoryCapacity)}%</div>
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom" className="bg-white dark:bg-gray-900 border border-blue-200 dark:border-blue-800 p-3 shadow-lg max-w-[200px]">
+                    <p className="text-sm font-medium">Memory Capacity</p>
+                    <p className="text-xs text-muted-foreground mt-1">Grows as you add entries and save knowledge in your Neura. More entries mean increased memory capacity.</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
             
             {/* Learning Rate */}
             <div className="text-center">
-              <div className="relative w-14 h-14 sm:w-16 sm:h-16 mx-auto">
-                <svg className="w-full h-full" viewBox="0 0 100 100">
-                  <circle 
-                    cx="50" 
-                    cy="50" 
-                    r="45" 
-                    fill="none" 
-                    stroke="currentColor" 
-                    className="text-purple-100 dark:text-purple-950" 
-                    strokeWidth="8" 
-                  />
-                  <circle 
-                    cx="50" 
-                    cy="50" 
-                    r="45" 
-                    fill="none" 
-                    stroke="currentColor" 
-                    className="text-purple-500 transition-all duration-500 ease-out" 
-                    strokeWidth="8" 
-                    strokeDasharray={`${2 * Math.PI * 45 * (learningRate / 100)} ${2 * Math.PI * 45}`}
-                    strokeDashoffset={2 * Math.PI * 45 * 0.25}
-                  />
-                </svg>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <Lightbulb className="h-5 w-5 text-purple-500" />
-                </div>
-              </div>
-              <div className="text-sm font-medium mt-1">Learning</div>
-              <div className="text-xs text-muted-foreground">WhatsApp Interactions</div>
-              <div className="text-xl font-bold">{Math.round(learningRate)}%</div>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="cursor-help">
+                      <div className="relative w-14 h-14 sm:w-16 sm:h-16 mx-auto">
+                        <svg className="w-full h-full" viewBox="0 0 100 100">
+                          <circle 
+                            cx="50" 
+                            cy="50" 
+                            r="45" 
+                            fill="none" 
+                            stroke="currentColor" 
+                            className="text-purple-100 dark:text-purple-950" 
+                            strokeWidth="8" 
+                          />
+                          <circle 
+                            cx="50" 
+                            cy="50" 
+                            r="45" 
+                            fill="none" 
+                            stroke="currentColor" 
+                            className="text-purple-500 transition-all duration-500 ease-out" 
+                            strokeWidth="8" 
+                            strokeDasharray={`${2 * Math.PI * 45 * (learningRate / 100)} ${2 * Math.PI * 45}`}
+                            strokeDashoffset={2 * Math.PI * 45 * 0.25}
+                          />
+                        </svg>
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <Lightbulb className="h-5 w-5 text-purple-500" />
+                        </div>
+                      </div>
+                      <div className="text-sm font-medium mt-1">Learning</div>
+                      <div className="text-xs text-muted-foreground">WhatsApp Interactions</div>
+                      <div className="text-xl font-bold">{Math.round(learningRate)}%</div>
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom" className="bg-white dark:bg-gray-900 border border-purple-200 dark:border-purple-800 p-3 shadow-lg max-w-[200px]">
+                    <p className="text-sm font-medium">Learning Capacity</p>
+                    <p className="text-xs text-muted-foreground mt-1">Improves when you enable WhatsApp integration. More interactions through WhatsApp enhance your learning rate.</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
             
             {/* Specialization Level */}
