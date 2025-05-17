@@ -20,6 +20,11 @@ export default function NeuraTuningCognitive() {
     isUpdating
   } = useDotSparkTuning();
   
+  // Scroll to top when component mounts
+  React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+  
   // Local state for unsaved changes
   const [unsavedChanges, setUnsavedChanges] = useState(false);
   const [pendingChanges, setPendingChanges] = useState<{
