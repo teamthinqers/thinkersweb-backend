@@ -2,18 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { useToast } from '@/hooks/use-toast';
 import { useDotSparkTuning } from '@/hooks/useDotSparkTuning';
-import { Slider } from '@/components/ui/slider';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Target, ChevronLeft, Save, Info, Plus, Trash2, Check } from 'lucide-react';
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
-import { Badge } from '@/components/ui/badge';
+import { Target, ChevronLeft, Save, Check } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 
-// Define expertise types
+// Define profile types
 type Profile = {
   id: string;
   name: string;
@@ -49,6 +46,25 @@ const seniorityLevels: Profile[] = [
   }
 ];
 
+// Define expertise levels within domains
+const expertiseLevels: Profile[] = [
+  {
+    id: 'domain_navigator',
+    name: 'Domain Navigator',
+    description: 'Broad knowledge across the domain. Connects concepts and provides context effectively.'
+  },
+  {
+    id: 'strategic_builder',
+    name: 'Strategic Builder',
+    description: 'Deep conceptual understanding combined with practical implementation expertise.'
+  },
+  {
+    id: 'creative_orchestrator',
+    name: 'Creative Orchestrator',
+    description: 'Synthesizes multiple perspectives into novel approaches and innovative solutions.'
+  }
+];
+
 // Define functional domains
 const functionalDomains = [
   { id: 'business_strategy', name: 'Business & Strategy' },
@@ -74,81 +90,36 @@ export default function NeuraTuningExpertise() {
     isUpdating
   } = useDotSparkTuning();
   
-  // Extract values from status for rendering
-  const { tuning } = status || { tuning: { specialties: {} } };
-  
   // Local state for selections and changes
   const [selectedDomains, setSelectedDomains] = useState<string[]>([]);
+  const [domainExpertiseLevels, setDomainExpertiseLevels] = useState<Record<string, string>>({});
   const [selectedSeniorityLevel, setSelectedSeniorityLevel] = useState<string>('mid_level_manager');
   const [unsavedChanges, setUnsavedChanges] = useState(false);
-  const [pendingChanges, setPendingChanges] = useState<{
-    specialties?: Record<string, number>;
-    seniorityLevel?: string;
-  }>({});
   
-  // Traditional specialties for backward compatibility
-  const traditionalSpecialties = [
-    'science',
-    'technology',
-    'business',
-    'creative',
-    'education',
-    'communication',
-    'analytics',
-    'humanities',
-    'engineering',
-    'healthcare',
-    'personal_development',
-    'research',
-    'leadership',
-    'finance',
-    'design'
-  ];
-  
-  // Initialize selected domains and seniority level from stored data
+  // Initialize from stored data
   useEffect(() => {
-    if (tuning?.specialties) {
-      // Set selected domains
-      const domains = Object.keys(tuning.specialties)
-        .filter(key => key.includes('_') && functionalDomains.some(domain => domain.id === key));
+    if (status?.tuning) {
+      // Extract domains from specialties if they exist
+      if (status.tuning.specialties) {
+        const domains = Object.keys(status.tuning.specialties)
+          .filter(key => key.includes('_') && functionalDomains.some(domain => domain.id === key));
+        
+        setSelectedDomains(domains);
+        
+        // Initialize expertise levels
+        const initialExpertiseLevels: Record<string, string> = {};
+        domains.forEach(domainId => {
+          initialExpertiseLevels[domainId] = 'strategic_builder';
+        });
+        setDomainExpertiseLevels(initialExpertiseLevels);
+      }
       
-      setSelectedDomains(domains);
+      // Set seniority level if it exists
+      if (status.tuning.seniority) {
+        setSelectedSeniorityLevel(status.tuning.seniority);
+      }
     }
-    
-    // Set seniority level if it exists in tuning data
-    if (tuning?.seniorityLevel) {
-      setSelectedSeniorityLevel(tuning.seniorityLevel);
-    }
-  }, [tuning]);
-  
-  // Function to get display name for specialty
-  const getDisplayName = (id: string): string => {
-    const displayMap: Record<string, string> = {
-      'science': 'Science',
-      'technology': 'Technology',
-      'business': 'Business',
-      'creative': 'Creative',
-      'education': 'Education',
-      'communication': 'Communication',
-      'analytics': 'Analytics',
-      'humanities': 'Humanities',
-      'engineering': 'Engineering',
-      'healthcare': 'Healthcare',
-      'personal_development': 'Personal Development',
-      'research': 'Research',
-      'leadership': 'Leadership',
-      'finance': 'Finance',
-      'design': 'Design'
-    };
-    
-    // Check if it's a functional domain
-    const domain = functionalDomains.find(domain => domain.id === id);
-    if (domain) {
-      return domain.name;
-    }
-    
-    return displayMap[id] || id.charAt(0).toUpperCase() + id.slice(1);
-  };
+  }, [status]);
   
   // Handle domain selection/deselection
   const handleDomainSelection = (domainId: string, checked: boolean) => {
@@ -156,85 +127,41 @@ export default function NeuraTuningExpertise() {
       // Add domain
       setSelectedDomains(prev => [...prev, domainId]);
       
-      // Add to specialties
-      setPendingChanges(prev => ({
+      // Set default expertise level
+      setDomainExpertiseLevels(prev => ({
         ...prev,
-        specialties: {
-          ...(prev.specialties || {}),
-          [domainId]: 0.8 // Default value
-        }
+        [domainId]: 'strategic_builder'
       }));
     } else {
       // Remove domain
       setSelectedDomains(prev => prev.filter(id => id !== domainId));
       
-      // Remove from specialties
-      const updatedSpecialties = { ...(pendingChanges.specialties || {}) };
-      delete updatedSpecialties[domainId];
-      
-      setPendingChanges(prev => ({
-        ...prev,
-        specialties: updatedSpecialties
-      }));
+      // Remove expertise level
+      const updatedLevels = { ...domainExpertiseLevels };
+      delete updatedLevels[domainId];
+      setDomainExpertiseLevels(updatedLevels);
     }
     
     setUnsavedChanges(true);
   };
   
+  // Handle expertise level change for a domain
+  const handleExpertiseLevelChange = (domainId: string, level: string) => {
+    setDomainExpertiseLevels(prev => ({
+      ...prev,
+      [domainId]: level
+    }));
+    
+    setUnsavedChanges(true);
+  };
+  
   // Handle seniority level change
-  const handleSeniorityLevelChange = (levelId: string) => {
-    setSelectedSeniorityLevel(levelId);
-    
-    setPendingChanges(prev => ({
-      ...prev,
-      seniorityLevel: levelId
-    }));
-    
+  const handleSeniorityLevelChange = (level: string) => {
+    setSelectedSeniorityLevel(level);
     setUnsavedChanges(true);
   };
   
-  // Function to handle traditional specialty slider changes
-  const handleSpecialtyChange = (specialtyId: string, value: number[]) => {
-    const specialtyValue = value[0];
-    
-    setPendingChanges(prev => ({
-      ...prev,
-      specialties: {
-        ...(prev.specialties || {}),
-        [specialtyId]: specialtyValue
-      }
-    }));
-    
-    setUnsavedChanges(true);
-  };
-  
-  // Function to add a new traditional specialty
-  const addSpecialty = (specialtyId: string) => {
-    setPendingChanges(prev => ({
-      ...prev,
-      specialties: {
-        ...(prev.specialties || {}),
-        [specialtyId]: 0.5 // Default to 50%
-      }
-    }));
-    
-    setUnsavedChanges(true);
-  };
-  
-  // Function to remove a specialty
-  const removeSpecialty = (specialtyId: string) => {
-    const updatedSpecialties = { ...(pendingChanges.specialties || {}) };
-    delete updatedSpecialties[specialtyId];
-    
-    setPendingChanges(prev => ({
-      ...prev,
-      specialties: updatedSpecialties
-    }));
-    
-    setUnsavedChanges(true);
-  };
-  
-  // Save pending changes to Neural tuning
+  // Save changes
   const saveChanges = async () => {
     if (!unsavedChanges) {
       toast({
@@ -246,12 +173,19 @@ export default function NeuraTuningExpertise() {
     }
     
     try {
-      // Update using the mutation function from the hook
-      updateTuning(pendingChanges);
+      // Prepare specialties with domain expertise levels
+      const specialties: Record<string, number> = {};
+      selectedDomains.forEach(domainId => {
+        specialties[domainId] = 0.8; // Default strength value
+      });
       
-      // Reset state after saving
+      // Update using mutation
+      updateTuning({
+        specialties,
+        seniority: selectedSeniorityLevel
+      });
+      
       setUnsavedChanges(false);
-      setPendingChanges({});
       
       toast({
         title: "Changes Saved",
@@ -267,24 +201,6 @@ export default function NeuraTuningExpertise() {
       });
     }
   };
-  
-  // Prepare the specialty items for display (filtering out functional domains)
-  const specialties = Object.entries(tuning?.specialties || {})
-    .filter(([id]) => !id.includes('_') || !functionalDomains.some(domain => domain.id === id))
-    .sort((a, b) => {
-      // Safe number conversion
-      const valA = typeof a[1] === 'number' ? a[1] : Number(a[1]);
-      const valB = typeof b[1] === 'number' ? b[1] : Number(b[1]);
-      return valB - valA; // Sort by value descending
-    });
-  
-  // Filter available traditional specialties 
-  const availableTraditionalSpecialties = traditionalSpecialties.filter(specialty => 
-    !Object.keys({
-      ...tuning?.specialties,
-      ...pendingChanges.specialties
-    }).includes(specialty)
-  );
   
   // Loading state
   if (isTuningLoading) {
@@ -389,132 +305,78 @@ export default function NeuraTuningExpertise() {
           
           {/* Functional Domains Section */}
           <div className="mb-8">
-            <h3 className="text-lg font-medium mb-3">Functional Domains</h3>
+            <h3 className="text-lg font-medium mb-3">Functional Domains & Expertise</h3>
             <p className="text-sm text-muted-foreground mb-4">
-              Select the professional domains where you have expertise. You can select multiple domains.
+              Select your professional domains and choose your expertise style for each domain.
             </p>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {functionalDomains.map((domain) => (
-                <div 
-                  key={domain.id} 
-                  className="flex items-start space-x-2 p-4 rounded-lg border border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-900"
-                >
-                  <Checkbox 
-                    id={domain.id}
-                    checked={selectedDomains.includes(domain.id)}
-                    onCheckedChange={(checked) => {
-                      handleDomainSelection(domain.id, checked === true);
-                    }}
-                    className="mt-1"
-                  />
-                  <div className="space-y-1">
-                    <label
-                      htmlFor={domain.id}
-                      className="font-medium text-sm cursor-pointer"
-                    >
-                      {domain.name}
-                    </label>
-                    <div className="text-sm text-muted-foreground">
-                      {selectedDomains.includes(domain.id) && (
-                        <div className="flex items-center text-blue-600 dark:text-blue-400">
-                          <Check className="h-3.5 w-3.5 mr-1" />
-                          <span className="text-xs">Selected</span>
+            <div className="space-y-6">
+              {functionalDomains.map((domain) => {
+                const isDomainSelected = selectedDomains.includes(domain.id);
+                const expertiseLevel = domainExpertiseLevels[domain.id] || 'strategic_builder';
+                
+                return (
+                  <div 
+                    key={domain.id} 
+                    className="p-5 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700 transition-all"
+                  >
+                    <div className="flex items-start gap-3 mb-2">
+                      <Checkbox 
+                        id={domain.id}
+                        checked={isDomainSelected}
+                        onCheckedChange={(checked) => {
+                          handleDomainSelection(domain.id, checked === true);
+                        }}
+                        className="mt-1"
+                      />
+                      <div className="space-y-1 flex-1">
+                        <label
+                          htmlFor={domain.id}
+                          className="font-medium text-base cursor-pointer"
+                        >
+                          {domain.name}
+                        </label>
+                        <div className="text-sm text-muted-foreground flex items-center">
+                          {isDomainSelected ? (
+                            <div className="flex items-center text-blue-600 dark:text-blue-400">
+                              <Check className="h-3.5 w-3.5 mr-1" />
+                              <span>Domain Selected</span>
+                            </div>
+                          ) : (
+                            <span>Click to add this domain to your expertise</span>
+                          )}
                         </div>
-                      )}
+                      </div>
                     </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-          
-          <Separator className="my-6" />
-          
-          {/* Traditional Specialties Section */}
-          <div className="mb-4">
-            <h3 className="text-lg font-medium mb-3">Additional Specialties</h3>
-            <p className="text-sm text-muted-foreground mb-3">
-              Adjust the strength of each additional expertise area.
-            </p>
-            
-            {specialties.length > 0 ? (
-              <div className="space-y-6">
-                {specialties.map(([specialty, value]) => {
-                  // Get display name for the specialty
-                  const displayName = getDisplayName(specialty);
-                  
-                  // Calculate the actual value to display
-                  const displayValue = pendingChanges.specialties?.[specialty] ?? value;
-                  const displayValueNumber = typeof displayValue === 'number' 
-                    ? displayValue 
-                    : Number(displayValue);
-                  
-                  return (
-                    <div key={specialty} className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <h3 className="text-base font-medium capitalize">{displayName}</h3>
-                          <HoverCard>
-                            <HoverCardTrigger>
-                              <Info className="h-4 w-4 text-muted-foreground" />
-                            </HoverCardTrigger>
-                            <HoverCardContent className="w-80">
-                              <div className="space-y-2">
-                                <h4 className="text-sm font-semibold capitalize">{displayName} Expertise</h4>
-                                <p className="text-sm">
-                                  Controls how much your neural extension emphasizes {displayName.toLowerCase()} knowledge and perspectives.
+                    
+                    {isDomainSelected && (
+                      <div className="ml-8 mt-4 bg-gray-50 dark:bg-gray-900 p-4 rounded-md border border-gray-200 dark:border-gray-800">
+                        <h4 className="text-sm font-medium mb-3">Expertise Style in {domain.name}</h4>
+                        <RadioGroup 
+                          value={expertiseLevel}
+                          onValueChange={(value) => handleExpertiseLevelChange(domain.id, value)}
+                          className="space-y-3"
+                        >
+                          {expertiseLevels.map((level) => (
+                            <div key={level.id} className="flex items-start space-x-2">
+                              <RadioGroupItem value={level.id} id={`${domain.id}-${level.id}`} className="mt-1" />
+                              <div className="space-y-1">
+                                <Label htmlFor={`${domain.id}-${level.id}`} className="text-sm font-medium">
+                                  {level.name}
+                                </Label>
+                                <p className="text-xs text-muted-foreground">
+                                  {level.description}
                                 </p>
                               </div>
-                            </HoverCardContent>
-                          </HoverCard>
-                          <button 
-                            onClick={() => removeSpecialty(specialty)}
-                            className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 ml-1"
-                            title="Remove specialty"
-                          >
-                            <Trash2 className="h-3.5 w-3.5" />
-                          </button>
-                        </div>
-                        <span className="text-sm font-medium text-muted-foreground">
-                          {Math.round(displayValueNumber * 100)}%
-                        </span>
+                            </div>
+                          ))}
+                        </RadioGroup>
                       </div>
-                      <Slider
-                        defaultValue={[typeof value === 'number' ? value : Number(value)]}
-                        max={1}
-                        step={0.01}
-                        value={[typeof displayValue === 'number' ? displayValue : Number(displayValue)]}
-                        onValueChange={(val) => handleSpecialtyChange(specialty, val)}
-                        className="w-full"
-                      />
-                    </div>
-                  );
-                })}
-              </div>
-            ) : (
-              <div className="p-4 bg-gray-100 dark:bg-gray-900 rounded-md text-center">
-                <p className="text-muted-foreground">No additional specialties added yet.</p>
-              </div>
-            )}
-            
-            {/* Add specialty button + dropdown */}
-            {availableTraditionalSpecialties.length > 0 && (
-              <div className="mt-6 flex flex-wrap gap-2">
-                <p className="w-full text-sm font-medium mb-2">Add specialty:</p>
-                {availableTraditionalSpecialties.map(specialty => (
-                  <Badge 
-                    key={specialty}
-                    variant="outline" 
-                    className="cursor-pointer flex items-center gap-1 hover:bg-blue-50 dark:hover:bg-blue-950 py-1.5 transition-colors"
-                    onClick={() => addSpecialty(specialty)}
-                  >
-                    <Plus className="h-3 w-3" />
-                    <span className="capitalize">{getDisplayName(specialty)}</span>
-                  </Badge>
-                ))}
-              </div>
-            )}
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </CardContent>
       </Card>
