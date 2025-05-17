@@ -231,9 +231,9 @@ export default function NeuraTuningCognitive() {
           </div>
 
           <div className="mt-6 bg-violet-50 dark:bg-violet-950 p-4 rounded-lg border border-violet-100 dark:border-violet-900">
-            <h4 className="text-sm font-medium text-violet-800 dark:text-violet-300 mb-2">How Cognitive Style Customization Works</h4>
+            <h4 className="text-sm font-medium text-violet-800 dark:text-violet-300 mb-2">Cognitive Style Settings</h4>
             <p className="text-sm text-violet-700 dark:text-violet-400">
-              These parameters help Neura better understand and reflect your personal cognitive style. Memory Bandwidth represents how much information you prefer to process at once—from focused key points to comprehensive details. Thought Complexity models your natural thinking patterns—from straightforward, direct reasoning to multifaceted, nuanced analysis. Adjust these settings to shape Neura's responses to match how your mind naturally works.
+              Adjust these settings to match your natural thinking patterns. Neura will adapt its responses to better reflect how your mind works.
             </p>
           </div>
         </CardContent>
