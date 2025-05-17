@@ -147,9 +147,9 @@ export default function NeuraTuningCognitive() {
               <BrainCog className="h-6 w-6 text-violet-600 dark:text-violet-400" />
             </div>
             <div>
-              <CardTitle>Memory Bandwidth</CardTitle>
+              <CardTitle>Cognitive Style</CardTitle>
               <CardDescription>
-                Control how much information your Neura holds while thinking
+                Customize how Neura adapts to your natural thinking patterns
               </CardDescription>
             </div>
           </div>
