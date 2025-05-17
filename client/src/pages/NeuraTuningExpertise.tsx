@@ -114,10 +114,12 @@ export default function NeuraTuningExpertise() {
         setDomainExpertiseLevels(initialExpertiseLevels);
       }
       
-      // Set seniority level if it exists
-      if (status.tuning.seniority) {
-        setSelectedSeniorityLevel(status.tuning.seniority);
-      }
+      // Set default seniority level if not already set
+      // Note: In the future if seniority is added to the tuning model, we can
+      // uncomment the code below to load it from the server
+      // if (status.tuning.seniority) {
+      //   setSelectedSeniorityLevel(status.tuning.seniority);
+      // }
     }
   }, [status]);
   
@@ -176,20 +178,33 @@ export default function NeuraTuningExpertise() {
       // Prepare specialties with domain expertise levels
       const specialties: Record<string, number> = {};
       selectedDomains.forEach(domainId => {
-        specialties[domainId] = 0.8; // Default strength value
+        // Set specialty strength based on expertise level
+        const expertiseLevel = domainExpertiseLevels[domainId] || 'strategic_builder';
+        let strengthValue = 0.8; // Default value
+        
+        // Adjust strength based on expertise level
+        if (expertiseLevel === 'domain_navigator') {
+          strengthValue = 0.7;
+        } else if (expertiseLevel === 'creative_orchestrator') {
+          strengthValue = 0.9;
+        }
+        
+        specialties[domainId] = strengthValue;
       });
       
-      // Update using mutation
+      // Store seniority level in localStorage for future reference
+      localStorage.setItem('neura_seniority_level', selectedSeniorityLevel);
+      
+      // Update using mutation - only pass specialties as that's what the backend expects
       updateTuning({
-        specialties,
-        seniority: selectedSeniorityLevel
+        specialties
       });
       
       setUnsavedChanges(false);
       
       toast({
-        title: "Changes Saved",
-        description: "Your expertise layer settings have been updated.",
+        title: "Expertise Updated",
+        description: "Your professional domains and expertise styles have been saved.",
         variant: "default",
       });
     } catch (error) {
@@ -258,17 +273,34 @@ export default function NeuraTuningExpertise() {
       
       {/* Expertise Layer Section Card */}
       <Card className="bg-white dark:bg-gray-950 shadow-md mb-8">
-        <CardHeader className="bg-gradient-to-r from-blue-50 to-sky-50 dark:from-blue-950 dark:to-sky-950">
+        <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950 dark:to-indigo-950">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded-full">
               <Target className="h-6 w-6 text-blue-600 dark:text-blue-400" />
             </div>
             <div>
-              <CardTitle>Expertise Layer</CardTitle>
+              <CardTitle>Professional Expertise Layer</CardTitle>
               <CardDescription>
-                Define your professional seniority and domain expertise
+                Define how your professional expertise should shape Neura's knowledge and recommendations
               </CardDescription>
             </div>
+          </div>
+          <div className="mt-4 py-3 px-4 bg-white dark:bg-gray-950 rounded-lg border border-blue-100 dark:border-blue-900">
+            <div className="grid grid-cols-5 gap-1">
+              {['🧠', '🎯', '📊', '🛠️', '📈'].map((icon, i) => (
+                <div 
+                  key={i} 
+                  className={`h-8 flex items-center justify-center rounded-md ${
+                    i % 2 === 0 ? 'bg-blue-50 dark:bg-blue-950/50' : 'bg-indigo-50 dark:bg-indigo-950/50'
+                  }`}
+                >
+                  <span className="text-xl">{icon}</span>
+                </div>
+              ))}
+            </div>
+            <p className="text-sm text-center text-muted-foreground mt-2">
+              Your expertise selections determine how Neura approaches professional topics
+            </p>
           </div>
         </CardHeader>
         
@@ -285,19 +317,67 @@ export default function NeuraTuningExpertise() {
               onValueChange={handleSeniorityLevelChange}
               className="space-y-4"
             >
-              {seniorityLevels.map((level) => (
-                <div key={level.id} className="flex items-start space-x-2 p-4 rounded-lg border border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-900">
-                  <RadioGroupItem value={level.id} id={level.id} className="mt-1" />
-                  <div className="space-y-1">
-                    <Label htmlFor={level.id} className="font-medium text-base">
-                      {level.name}
-                    </Label>
-                    <p className="text-sm text-muted-foreground">
-                      {level.description}
-                    </p>
+              {seniorityLevels.map((level) => {
+                const isSelected = selectedSeniorityLevel === level.id;
+                return (
+                  <div 
+                    key={level.id} 
+                    className={`flex items-start space-x-3 p-4 rounded-lg border 
+                      ${isSelected ? 'border-blue-300 bg-blue-50 dark:border-blue-700 dark:bg-blue-950/50' : 'border-gray-200 dark:border-gray-800'} 
+                      hover:bg-gray-50 dark:hover:bg-gray-900 transition-all duration-200
+                      ${isSelected ? 'shadow-md' : ''}`}
+                  >
+                    <div className="flex-shrink-0 mt-1">
+                      <RadioGroupItem value={level.id} id={level.id} />
+                    </div>
+                    <div className="flex-1 space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <Label htmlFor={level.id} className={`font-medium text-base cursor-pointer ${isSelected ? 'text-blue-700 dark:text-blue-400' : ''}`}>
+                          {level.name}
+                        </Label>
+                        {isSelected && (
+                          <div className="px-2 py-1 bg-blue-100 dark:bg-blue-900 rounded-full text-xs font-medium text-blue-700 dark:text-blue-400">
+                            Selected
+                          </div>
+                        )}
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        {level.description}
+                      </p>
+                      {level.id === 'early_professional' && (
+                        <div className="bg-gradient-to-r from-green-50 to-green-100 dark:from-green-950/40 dark:to-green-900/20 rounded-md p-2 mt-1 flex items-center gap-2">
+                          <div className="h-2 w-2 bg-green-500 rounded-full"></div>
+                          <span className="text-xs text-green-700 dark:text-green-400">Growing Knowledge Base</span>
+                        </div>
+                      )}
+                      {level.id === 'mid_level_manager' && (
+                        <div className="bg-gradient-to-r from-cyan-50 to-cyan-100 dark:from-cyan-950/40 dark:to-cyan-900/20 rounded-md p-2 mt-1 flex items-center gap-2">
+                          <div className="h-2 w-2 bg-cyan-500 rounded-full"></div>
+                          <span className="text-xs text-cyan-700 dark:text-cyan-400">Balanced Expertise & Leadership</span>
+                        </div>
+                      )}
+                      {level.id === 'senior_leader' && (
+                        <div className="bg-gradient-to-r from-violet-50 to-violet-100 dark:from-violet-950/40 dark:to-violet-900/20 rounded-md p-2 mt-1 flex items-center gap-2">
+                          <div className="h-2 w-2 bg-violet-500 rounded-full"></div>
+                          <span className="text-xs text-violet-700 dark:text-violet-400">Strategic Vision Focus</span>
+                        </div>
+                      )}
+                      {level.id === 'functional_head' && (
+                        <div className="bg-gradient-to-r from-amber-50 to-amber-100 dark:from-amber-950/40 dark:to-amber-900/20 rounded-md p-2 mt-1 flex items-center gap-2">
+                          <div className="h-2 w-2 bg-amber-500 rounded-full"></div>
+                          <span className="text-xs text-amber-700 dark:text-amber-400">Deep Domain Authority</span>
+                        </div>
+                      )}
+                      {level.id === 'founder_cxo' && (
+                        <div className="bg-gradient-to-r from-red-50 to-red-100 dark:from-red-950/40 dark:to-red-900/20 rounded-md p-2 mt-1 flex items-center gap-2">
+                          <div className="h-2 w-2 bg-red-500 rounded-full"></div>
+                          <span className="text-xs text-red-700 dark:text-red-400">Business Building & Vision Setting</span>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </RadioGroup>
           </div>
           
@@ -315,64 +395,145 @@ export default function NeuraTuningExpertise() {
                 const isDomainSelected = selectedDomains.includes(domain.id);
                 const expertiseLevel = domainExpertiseLevels[domain.id] || 'strategic_builder';
                 
+                // Determine domain colors and icons
+                let gradientColors, iconBg, iconClass;
+                switch(domain.id) {
+                  case 'business_strategy':
+                    gradientColors = 'from-indigo-50 to-blue-50 dark:from-indigo-950/40 dark:to-blue-950/30';
+                    iconBg = 'bg-indigo-100 dark:bg-indigo-900/60';
+                    iconClass = '📊';
+                    break;
+                  case 'sales_revenue':
+                    gradientColors = 'from-emerald-50 to-green-50 dark:from-emerald-950/40 dark:to-green-950/30';
+                    iconBg = 'bg-emerald-100 dark:bg-emerald-900/60';
+                    iconClass = '💰';
+                    break;
+                  case 'marketing_brand':
+                    gradientColors = 'from-purple-50 to-pink-50 dark:from-purple-950/40 dark:to-pink-950/30';
+                    iconBg = 'bg-purple-100 dark:bg-purple-900/60';
+                    iconClass = '🎯';
+                    break;
+                  case 'product_ux':
+                    gradientColors = 'from-sky-50 to-cyan-50 dark:from-sky-950/40 dark:to-cyan-950/30';
+                    iconBg = 'bg-sky-100 dark:bg-sky-900/60';
+                    iconClass = '💡';
+                    break;
+                  case 'research_analytics':
+                    gradientColors = 'from-amber-50 to-yellow-50 dark:from-amber-950/40 dark:to-yellow-950/30';
+                    iconBg = 'bg-amber-100 dark:bg-amber-900/60';
+                    iconClass = '📈';
+                    break;
+                  case 'people_culture':
+                    gradientColors = 'from-rose-50 to-red-50 dark:from-rose-950/40 dark:to-red-950/30';
+                    iconBg = 'bg-rose-100 dark:bg-rose-900/60';
+                    iconClass = '👥';
+                    break;
+                  case 'operations_supply':
+                    gradientColors = 'from-blue-50 to-teal-50 dark:from-blue-950/40 dark:to-teal-950/30';
+                    iconBg = 'bg-blue-100 dark:bg-blue-900/60';
+                    iconClass = '⚙️';
+                    break;
+                  case 'tech_engineering':
+                    gradientColors = 'from-violet-50 to-indigo-50 dark:from-violet-950/40 dark:to-indigo-950/30';
+                    iconBg = 'bg-violet-100 dark:bg-violet-900/60';
+                    iconClass = '💻';
+                    break;
+                  case 'finance_legal':
+                    gradientColors = 'from-gray-50 to-slate-50 dark:from-gray-900/40 dark:to-slate-900/30';
+                    iconBg = 'bg-gray-100 dark:bg-gray-800/60';
+                    iconClass = '⚖️';
+                    break;
+                  default:
+                    gradientColors = 'from-gray-50 to-gray-100 dark:from-gray-900/40 dark:to-gray-800/30';
+                    iconBg = 'bg-gray-100 dark:bg-gray-800/60';
+                    iconClass = '✨';
+                }
+                
                 return (
                   <div 
                     key={domain.id} 
-                    className="p-5 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700 transition-all"
+                    className={`p-5 rounded-xl border transition-all duration-300 transform hover:scale-[1.02] ${
+                      isDomainSelected 
+                        ? `border-2 border-blue-300 dark:border-blue-600 bg-gradient-to-br ${gradientColors} shadow-md` 
+                        : 'border-gray-200 dark:border-gray-800 hover:border-blue-200 dark:hover:border-blue-800 bg-white dark:bg-gray-950'
+                    }`}
                   >
-                    <div className="flex items-start gap-3 mb-2">
-                      <Checkbox 
-                        id={domain.id}
-                        checked={isDomainSelected}
-                        onCheckedChange={(checked) => {
-                          handleDomainSelection(domain.id, checked === true);
-                        }}
-                        className="mt-1"
-                      />
-                      <div className="space-y-1 flex-1">
-                        <label
-                          htmlFor={domain.id}
-                          className="font-medium text-base cursor-pointer"
-                        >
-                          {domain.name}
-                        </label>
-                        <div className="text-sm text-muted-foreground flex items-center">
+                    <div className="flex items-start gap-4">
+                      <div className={`flex-shrink-0 h-10 w-10 rounded-full ${iconBg} flex items-center justify-center text-xl`}>
+                        {iconClass}
+                      </div>
+                      
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between mb-2">
+                          <label
+                            htmlFor={domain.id}
+                            className={`font-semibold text-base cursor-pointer ${
+                              isDomainSelected ? 'text-blue-700 dark:text-blue-400' : ''
+                            }`}
+                          >
+                            {domain.name}
+                          </label>
+                          
+                          <Checkbox 
+                            id={domain.id}
+                            checked={isDomainSelected}
+                            onCheckedChange={(checked) => {
+                              handleDomainSelection(domain.id, checked === true);
+                            }}
+                            className={`h-5 w-5 ${isDomainSelected ? 'border-blue-500 text-blue-500' : ''}`}
+                          />
+                        </div>
+                        
+                        <div className="text-sm text-muted-foreground flex items-center mb-2">
                           {isDomainSelected ? (
                             <div className="flex items-center text-blue-600 dark:text-blue-400">
                               <Check className="h-3.5 w-3.5 mr-1" />
-                              <span>Domain Selected</span>
+                              <span>Domain Added to Your Expertise Mix</span>
                             </div>
                           ) : (
-                            <span>Click to add this domain to your expertise</span>
+                            <span>Add this domain to your professional profile</span>
                           )}
                         </div>
+                    
+                        {isDomainSelected && (
+                          <div className="mt-4 pt-4 border-t border-blue-200 dark:border-blue-800">
+                            <h4 className="text-sm font-medium mb-3 text-blue-700 dark:text-blue-400">How do you apply your expertise in {domain.name}?</h4>
+                            <RadioGroup 
+                              value={expertiseLevel}
+                              onValueChange={(value) => handleExpertiseLevelChange(domain.id, value)}
+                              className="space-y-3 mt-3"
+                            >
+                              {expertiseLevels.map((level) => {
+                                const isSelected = expertiseLevel === level.id;
+                                return (
+                                  <div 
+                                    key={level.id} 
+                                    className={`flex items-start space-x-2 p-3 rounded-md transition-colors duration-200 ${
+                                      isSelected 
+                                        ? 'bg-white dark:bg-gray-900 shadow-sm border border-blue-200 dark:border-blue-800/50' 
+                                        : 'hover:bg-white/80 dark:hover:bg-gray-900/50'
+                                    }`}
+                                  >
+                                    <RadioGroupItem value={level.id} id={`${domain.id}-${level.id}`} className="mt-1" />
+                                    <div className="space-y-1">
+                                      <Label 
+                                        htmlFor={`${domain.id}-${level.id}`} 
+                                        className={`text-sm font-medium ${isSelected ? 'text-blue-700 dark:text-blue-400' : ''}`}
+                                      >
+                                        {level.name}
+                                      </Label>
+                                      <p className="text-xs text-muted-foreground">
+                                        {level.description}
+                                      </p>
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </RadioGroup>
+                          </div>
+                        )}
                       </div>
                     </div>
-                    
-                    {isDomainSelected && (
-                      <div className="ml-8 mt-4 bg-gray-50 dark:bg-gray-900 p-4 rounded-md border border-gray-200 dark:border-gray-800">
-                        <h4 className="text-sm font-medium mb-3">Expertise Style in {domain.name}</h4>
-                        <RadioGroup 
-                          value={expertiseLevel}
-                          onValueChange={(value) => handleExpertiseLevelChange(domain.id, value)}
-                          className="space-y-3"
-                        >
-                          {expertiseLevels.map((level) => (
-                            <div key={level.id} className="flex items-start space-x-2">
-                              <RadioGroupItem value={level.id} id={`${domain.id}-${level.id}`} className="mt-1" />
-                              <div className="space-y-1">
-                                <Label htmlFor={`${domain.id}-${level.id}`} className="text-sm font-medium">
-                                  {level.name}
-                                </Label>
-                                <p className="text-xs text-muted-foreground">
-                                  {level.description}
-                                </p>
-                              </div>
-                            </div>
-                          ))}
-                        </RadioGroup>
-                      </div>
-                    )}
                   </div>
                 );
               })}
