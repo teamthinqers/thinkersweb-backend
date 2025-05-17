@@ -151,21 +151,21 @@ export default function NeuraTuningCore() {
             <div>
               <CardTitle>Core Tuning Parameters</CardTitle>
               <CardDescription>
-                Adjust the fundamental behavior of your Neural Extension
+                Adjust the fundamental behavior of your cognitive companion
               </CardDescription>
             </div>
           </div>
         </CardHeader>
         
         <CardContent className="pt-6 space-y-6">
-          {/* Cognitive Pace */}
-          <div className="space-y-3">
+          {/* Cognitive Pace - Featured Parameter */}
+          <div className="space-y-3 p-4 border border-indigo-200 dark:border-indigo-800 rounded-lg bg-gradient-to-r from-indigo-50/50 to-violet-50/50 dark:from-indigo-950/50 dark:to-violet-950/50">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <h3 className="text-lg font-medium">Cognitive Pace</h3>
+                <h3 className="text-lg font-medium text-indigo-700 dark:text-indigo-300">Cognitive Pace</h3>
                 <HoverCard>
                   <HoverCardTrigger>
-                    <Info className="h-4 w-4 text-muted-foreground" />
+                    <Info className="h-4 w-4 text-indigo-500 dark:text-indigo-400" />
                   </HoverCardTrigger>
                   <HoverCardContent className="w-80">
                     <div className="space-y-2">
@@ -177,7 +177,7 @@ export default function NeuraTuningCore() {
                   </HoverCardContent>
                 </HoverCard>
               </div>
-              <span className="text-sm font-medium text-muted-foreground">
+              <span className="text-sm font-medium px-2 py-1 bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300 rounded-full">
                 {Math.round((pendingChanges.cognitivePace ?? neuralTuning?.cognitivePace ?? 0.5) * 100)}%
               </span>
             </div>
@@ -189,10 +189,19 @@ export default function NeuraTuningCore() {
               onValueChange={(value) => handleParameterChange('cognitivePace', value)}
               className="w-full"
             />
-            <div className="flex justify-between text-xs text-muted-foreground">
-              <span>Deep Processor</span>
-              <span>Balanced</span>
-              <span>Rapid Processor</span>
+            <div className="flex justify-between text-xs">
+              <div className="flex flex-col items-center">
+                <span className="text-indigo-700 dark:text-indigo-400 font-medium">Deep Processor</span>
+                <span className="text-xs text-indigo-600/70 dark:text-indigo-400/70 mt-1">Thorough & Detailed</span>
+              </div>
+              <div className="flex flex-col items-center">
+                <span className="text-indigo-700 dark:text-indigo-400 font-medium">Balanced</span>
+                <span className="text-xs text-indigo-600/70 dark:text-indigo-400/70 mt-1">Adaptable</span>
+              </div>
+              <div className="flex flex-col items-center">
+                <span className="text-indigo-700 dark:text-indigo-400 font-medium">Rapid Processor</span>
+                <span className="text-xs text-indigo-600/70 dark:text-indigo-400/70 mt-1">Quick & Agile</span>
+              </div>
             </div>
           </div>
           
@@ -307,44 +316,6 @@ export default function NeuraTuningCore() {
               <span>Deep</span>
               <span>Balanced</span>
               <span>Quick</span>
-            </div>
-          </div>
-          
-          {/* Cognitive Pace */}
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <h3 className="text-lg font-medium">Cognitive Pace</h3>
-                <HoverCard>
-                  <HoverCardTrigger>
-                    <Info className="h-4 w-4 text-muted-foreground" />
-                  </HoverCardTrigger>
-                  <HoverCardContent className="w-80">
-                    <div className="space-y-2">
-                      <h4 className="text-sm font-semibold">Cognitive Pace Parameter</h4>
-                      <p className="text-sm">
-                        How fast your brain tends to process and switch between thoughts. Lower values indicate deeper, more focused processing, while higher values suggest rapid, agile thinking.
-                      </p>
-                    </div>
-                  </HoverCardContent>
-                </HoverCard>
-              </div>
-              <span className="text-sm font-medium text-muted-foreground">
-                {Math.round((pendingChanges.cognitivePace ?? neuralTuning?.cognitivePace ?? 0.5) * 100)}%
-              </span>
-            </div>
-            <Slider
-              defaultValue={[neuralTuning?.cognitivePace ?? 0.5]}
-              max={1}
-              step={0.01}
-              value={[pendingChanges.cognitivePace ?? neuralTuning?.cognitivePace ?? 0.5]}
-              onValueChange={(value) => handleParameterChange('cognitivePace', value)}
-              className="w-full"
-            />
-            <div className="flex justify-between text-xs text-muted-foreground">
-              <span>Deep Processor</span>
-              <span>Balanced</span>
-              <span>Rapid Processor</span>
             </div>
           </div>
         </CardContent>
