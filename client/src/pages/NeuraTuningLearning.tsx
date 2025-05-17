@@ -603,87 +603,190 @@ export default function NeuraTuningLearning() {
         </CardHeader>
         
         <CardContent className="pt-6">
-          <Tabs defaultValue="topics" className="space-y-6">
-            <TabsList className="grid grid-cols-3 w-full">
-              <TabsTrigger value="topics">Learning Topics</TabsTrigger>
-              <TabsTrigger value="resources">Resource Types</TabsTrigger>
-              <TabsTrigger value="format">Learning Format</TabsTrigger>
-            </TabsList>
+          <div className="space-y-8">
+            {/* Section 1: Active Learning Mode */}
+            <div className="bg-gradient-to-r from-amber-50 to-amber-100/50 dark:from-amber-950/30 dark:to-amber-900/20 p-4 rounded-lg border border-amber-200 dark:border-amber-800/50">
+              <h3 className="text-lg font-medium mb-3 text-amber-800 dark:text-amber-300 flex items-center gap-2">
+                <Zap className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+                Active Learning Mode
+              </h3>
+              
+              <p className="text-sm text-amber-700/90 dark:text-amber-400/90 mb-4">
+                Your Neura is always in active learning mode, continuously absorbing information from trusted sources to enhance its knowledge base.
+              </p>
+              
+              <div className="flex items-center justify-between bg-white dark:bg-gray-900 p-3 rounded-lg shadow-sm border border-amber-200 dark:border-amber-900/50">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-amber-100 dark:bg-amber-900/60 rounded-full">
+                    <Lightbulb className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+                  </div>
+                  <div>
+                    <div className="text-sm font-medium text-amber-800 dark:text-amber-300">Always-On Learning</div>
+                    <div className="text-xs text-amber-600/80 dark:text-amber-400/80">Continuous behind-the-scenes knowledge acquisition</div>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-1.5">
+                  <span className="h-2 w-2 bg-green-500 rounded-full animate-pulse"></span>
+                  <span className="text-xs font-medium text-green-600 dark:text-green-500">Active</span>
+                </div>
+              </div>
+              
+              {/* The Exponential Effect section */}
+              <div className="mt-5">
+                {/* Reusing our exponential visualization that we created earlier */}
+                <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm p-4 rounded-lg border border-indigo-200 dark:border-indigo-800 relative overflow-hidden">
+                  {/* Main section title */}
+                  <div className="text-center mb-2">
+                    <span className="px-3 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-indigo-500 to-purple-500 text-white">10 min daily habit</span>
+                  </div>
+                  
+                  {/* Knowledge growth visualization */}
+                  <div className="relative h-[120px] mb-3">
+                    {/* Exponential curve */}
+                    <svg viewBox="0 0 300 100" className="absolute inset-0 w-full h-full">
+                      <defs>
+                        <linearGradient id="curveGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                          <stop offset="0%" stopColor="#c7d2fe" stopOpacity="0.6" />
+                          <stop offset="100%" stopColor="#818cf8" stopOpacity="0.9" />
+                        </linearGradient>
+                      </defs>
+                      {/* Reference grid lines */}
+                      <line x1="0" y1="90" x2="300" y2="90" stroke="#e2e8f0" strokeWidth="1" strokeDasharray="2,2" />
+                      <line x1="0" y1="60" x2="300" y2="60" stroke="#e2e8f0" strokeWidth="1" strokeDasharray="2,2" />
+                      <line x1="0" y1="30" x2="300" y2="30" stroke="#e2e8f0" strokeWidth="1" strokeDasharray="2,2" />
+                      
+                      {/* Linear growth reference line */}
+                      <line x1="30" y1="80" x2="270" y2="30" stroke="#cbd5e1" strokeWidth="2" strokeDasharray="3,3" />
+                      
+                      {/* Exponential curve */}
+                      <path d="M30,80 Q90,75 150,60 T210,30 Q240,15 270,5" 
+                            stroke="url(#curveGradient)" 
+                            strokeWidth="3" 
+                            fill="none" />
+                    </svg>
+                    
+                    {/* Time markers */}
+                    <div className="absolute bottom-0 left-[10%] flex flex-col items-center">
+                      <div className="w-1 h-2 bg-indigo-300 dark:bg-indigo-700"></div>
+                      <span className="text-[10px] text-indigo-500 dark:text-indigo-400">Week 1</span>
+                    </div>
+                    
+                    <div className="absolute bottom-0 left-[50%] flex flex-col items-center">
+                      <div className="w-1 h-2 bg-indigo-400 dark:bg-indigo-600"></div>
+                      <span className="text-[10px] text-indigo-500 dark:text-indigo-400">Month 3</span>
+                    </div>
+                    
+                    <div className="absolute bottom-0 right-[10%] flex flex-col items-center">
+                      <div className="w-1 h-2 bg-indigo-500 dark:bg-indigo-500"></div>
+                      <span className="text-[10px] text-indigo-500 dark:text-indigo-400">Year 1</span>
+                    </div>
+                    
+                    {/* Knowledge bubbles */}
+                    <div className="absolute left-[10%] bottom-[30%] w-4 h-4 rounded-full bg-indigo-200 dark:bg-indigo-800 flex items-center justify-center">
+                      <span className="text-[8px] text-indigo-600 dark:text-indigo-300">5</span>
+                    </div>
+                    
+                    <div className="absolute left-[30%] bottom-[35%] w-5 h-5 rounded-full bg-indigo-300 dark:bg-indigo-700 flex items-center justify-center">
+                      <span className="text-[9px] text-indigo-600 dark:text-indigo-300">15</span>
+                    </div>
+                    
+                    <div className="absolute left-[50%] bottom-[45%] w-6 h-6 rounded-full bg-indigo-400 dark:bg-indigo-600 flex items-center justify-center">
+                      <span className="text-[10px] text-indigo-50">30</span>
+                    </div>
+                    
+                    <div className="absolute left-[70%] bottom-[65%] w-8 h-8 rounded-full bg-indigo-500 dark:bg-indigo-500 flex items-center justify-center animate-pulse">
+                      <span className="text-[11px] text-indigo-50">60</span>
+                    </div>
+                    
+                    <div className="absolute right-[10%] bottom-[85%] w-10 h-10 rounded-full bg-indigo-600 dark:bg-indigo-400 flex items-center justify-center animate-pulse">
+                      <span className="text-xs text-indigo-50">120+</span>
+                    </div>
+                    
+                    {/* Labels */}
+                    <div className="absolute top-0 right-4 flex flex-col items-end">
+                      <span className="text-[10px] font-medium text-indigo-600 dark:text-indigo-400">Knowledge</span>
+                      <span className="text-[8px] text-indigo-500 dark:text-indigo-500">depth & connections</span>
+                    </div>
+                    
+                    <div className="absolute bottom-0 right-4">
+                      <span className="text-[10px] font-medium text-indigo-600 dark:text-indigo-400">Time</span>
+                    </div>
+                    
+                    {/* Linear vs Exponential labels */}
+                    <div className="absolute top-[50%] left-[40%] rotate-[-10deg]">
+                      <span className="text-[8px] text-gray-500 dark:text-gray-400">Linear</span>
+                    </div>
+                    
+                    <div className="absolute top-[30%] left-[65%] rotate-[-35deg]">
+                      <span className="text-[9px] font-medium text-indigo-500 dark:text-indigo-400">Exponential</span>
+                    </div>
+                  </div>
+                  
+                  {/* Key metrics highlighting */}
+                  <div className="grid grid-cols-3 gap-2 bg-indigo-50 dark:bg-indigo-950/30 rounded-lg p-2">
+                    <div className="flex flex-col items-center justify-center">
+                      <div className="text-2xl font-bold text-indigo-500 dark:text-indigo-400">10</div>
+                      <div className="text-[10px] text-indigo-600 dark:text-indigo-500">minutes daily</div>
+                    </div>
+                    
+                    <div className="flex items-center justify-center">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-indigo-500 dark:text-indigo-400">
+                        <path d="M5 12H19M19 12L13 6M19 12L13 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    </div>
+                    
+                    <div className="flex flex-col items-center justify-center relative">
+                      <div className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-500">60+</div>
+                      <div className="text-[10px] text-indigo-600 dark:text-indigo-500">hours yearly</div>
+                      <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-br from-indigo-400 to-purple-500 rounded-full flex items-center justify-center animate-ping opacity-75" style={{ animationDuration: '3s' }}></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="text-center text-xs text-amber-600/80 dark:text-amber-400/80 mt-3">
+                <span className="font-medium">Cross-domain learning</span> creates sharper insights and more robust knowledge connections
+              </div>
+            </div>
             
-            {/* Learning Topics Tab */}
-            <TabsContent value="topics" className="space-y-6">
-              <div>
-                <h3 className="text-lg font-medium mb-2">Focus Areas</h3>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Add specific topics you want your Neura to learn about and master.
-                </p>
-                
-                <div className="flex gap-2 mb-4">
-                  <Input 
-                    placeholder="Add specific learning topic (e.g., 'Product-Market Fit', 'Growth Strategies')" 
-                    value={newTopic}
-                    onChange={(e) => setNewTopic(e.target.value)}
-                    onKeyDown={handleKeyPress}
-                    className="flex-1"
-                  />
-                  <Button 
-                    onClick={addTopic}
-                    disabled={!newTopic.trim()}
-                    variant="outline"
-                    className="flex items-center gap-1"
-                  >
-                    <Plus className="h-4 w-4" />
-                    Add Topic
-                  </Button>
-                </div>
-                
+            {/* Section 2: Focus Areas Selection */}
+            <div className="bg-white dark:bg-gray-950 rounded-lg border border-gray-200 dark:border-gray-800 shadow-sm p-4">
+              <h3 className="text-lg font-medium mb-3 flex items-center gap-2">
+                <BookOpen className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+                Learning Focus Areas
+              </h3>
+              
+              <div className="space-y-6">
+                {/* Domain Focus selection */}
                 <div>
-                  <Label className="text-sm font-medium mb-2 block">Current Learning Priorities</Label>
+                  <div className="flex items-center justify-between mb-2">
+                    <h4 className="text-sm font-medium text-gray-800 dark:text-gray-200">Domain Focus</h4>
+                    <span className="text-xs text-indigo-600 dark:text-indigo-400 italic">Prefer cross-domain learning for sharper insights</span>
+                  </div>
                   
-                  {learningTopics.length > 0 ? (
-                    <div className="flex flex-wrap gap-2 mt-2">
-                      {learningTopics.map((topic) => (
-                        <Badge 
-                          key={topic}
-                          variant="outline" 
-                          className="bg-amber-50 dark:bg-amber-950/30 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-800 flex items-center gap-1 py-1.5"
-                        >
-                          <span>{topic}</span>
-                          <button 
-                            onClick={() => removeTopic(topic)}
-                            className="h-4 w-4 rounded-full hover:bg-amber-200 dark:hover:bg-amber-800 inline-flex items-center justify-center ml-1"
-                          >
-                            <Trash2 className="h-3 w-3 text-amber-700 dark:text-amber-400" />
-                          </button>
-                        </Badge>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="p-4 bg-gray-100 dark:bg-gray-900 rounded-md text-center">
-                      <p className="text-muted-foreground">No learning topics added yet.</p>
-                    </div>
-                  )}
-                </div>
-                
-                <Separator className="my-6" />
-                
-                <div>
-                  <h3 className="text-lg font-medium mb-2">Domain Focus</h3>
-                  <p className="text-sm text-muted-foreground mb-4">
-                    Select professional domains where you want your Neura to build expertise.
-                  </p>
-                  
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                     {professionalDomains.map((domain) => (
-                      <div key={domain.id} className="flex items-center space-x-2">
+                      <div 
+                        key={domain.id} 
+                        onClick={() => handleDomainToggle(domain.id, !selectedDomains.includes(domain.id))}
+                        className={`p-3 rounded-lg border cursor-pointer transition-all flex items-center space-x-2 ${
+                          selectedDomains.includes(domain.id)
+                            ? 'border-indigo-300 bg-indigo-50 dark:border-indigo-700 dark:bg-indigo-950/30'
+                            : 'border-gray-200 dark:border-gray-800 hover:border-indigo-200 dark:hover:border-indigo-800'
+                        }`}
+                      >
                         <Checkbox 
                           id={`domain-${domain.id}`} 
                           checked={selectedDomains.includes(domain.id)}
                           onCheckedChange={(checked) => handleDomainToggle(domain.id, checked === true)}
+                          className={selectedDomains.includes(domain.id) ? 'text-indigo-600' : ''}
                         />
                         <label
                           htmlFor={`domain-${domain.id}`}
-                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                          className={`text-sm font-medium leading-none cursor-pointer ${
+                            selectedDomains.includes(domain.id) ? 'text-indigo-700 dark:text-indigo-400' : ''
+                          }`}
                         >
                           {domain.name}
                         </label>
@@ -691,177 +794,205 @@ export default function NeuraTuningLearning() {
                     ))}
                   </div>
                 </div>
-              </div>
-            </TabsContent>
-            
-            {/* Resource Types Tab */}
-            <TabsContent value="resources" className="space-y-6">
-              <div>
-                <h3 className="text-lg font-medium mb-2">Learning Resources</h3>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Select types of resources your Neura should continuously learn from.
-                </p>
                 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {learningResourceTypes.map((resource) => (
-                    <div 
-                      key={resource.id} 
-                      className={`p-4 rounded-lg border transition-all ${
-                        selectedResourceTypes.includes(resource.id)
-                          ? 'border-amber-300 bg-amber-50 dark:border-amber-700 dark:bg-amber-950/30'
-                          : 'border-gray-200 dark:border-gray-800 hover:border-amber-200 dark:hover:border-amber-800'
-                      }`}
+                <Separator />
+                
+                {/* Specific Learning Topics */}
+                <div>
+                  <h4 className="text-sm font-medium text-gray-800 dark:text-gray-200 mb-2">Specific Topics</h4>
+                  <p className="text-xs text-muted-foreground mb-4">
+                    Add specific topics you want your Neura to learn about and master.
+                  </p>
+                  
+                  <div className="flex gap-2 mb-4">
+                    <Input 
+                      placeholder="Add specific learning topic (e.g., 'Product-Market Fit', 'Growth Strategies')" 
+                      value={newTopic}
+                      onChange={(e) => setNewTopic(e.target.value)}
+                      onKeyDown={handleKeyPress}
+                      className="flex-1"
+                    />
+                    <Button 
+                      onClick={addTopic}
+                      disabled={!newTopic.trim()}
+                      variant="outline"
+                      className="flex items-center gap-1"
                     >
-                      <div className="flex items-start space-x-3">
-                        <Checkbox 
-                          id={`resource-${resource.id}`} 
-                          checked={selectedResourceTypes.includes(resource.id)}
-                          onCheckedChange={(checked) => handleResourceTypeToggle(resource.id, checked === true)}
-                          className={selectedResourceTypes.includes(resource.id) ? 'text-amber-600' : ''}
-                        />
-                        <div>
-                          <label
-                            htmlFor={`resource-${resource.id}`}
-                            className={`text-sm font-medium leading-none cursor-pointer flex items-center gap-1.5 ${
-                              selectedResourceTypes.includes(resource.id) ? 'text-amber-700 dark:text-amber-400' : ''
-                            }`}
+                      <Plus className="h-4 w-4" />
+                      Add Topic
+                    </Button>
+                  </div>
+                  
+                  <div className="rounded-lg border border-gray-200 dark:border-gray-800 p-3">
+                    <Label className="text-xs font-medium mb-2 block">Current Learning Priorities</Label>
+                    
+                    {learningTopics.length > 0 ? (
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        {learningTopics.map((topic) => (
+                          <Badge 
+                            key={topic}
+                            variant="outline" 
+                            className="bg-indigo-50 dark:bg-indigo-950/30 text-indigo-700 dark:text-indigo-400 border-indigo-200 dark:border-indigo-800 flex items-center gap-1 py-1.5"
                           >
-                            <span className="text-amber-600 dark:text-amber-400">{resource.icon}</span>
-                            {resource.name}
-                          </label>
-                          
-                          {resource.id === 'strategy_frameworks' && selectedResourceTypes.includes(resource.id) && (
-                            <div className="mt-3 pl-1 text-xs text-muted-foreground">
-                              Examples: Porter's Five Forces, BCG Matrix, SWOT Analysis, Blue Ocean Strategy
-                            </div>
-                          )}
-                          
-                          {resource.id === 'business_models' && selectedResourceTypes.includes(resource.id) && (
-                            <div className="mt-3 pl-1 text-xs text-muted-foreground">
-                              Examples: Subscription, Marketplace, Freemium, SaaS, Platform Business Models
-                            </div>
-                          )}
-                          
-                          {resource.id === 'books' && selectedResourceTypes.includes(resource.id) && (
-                            <div className="mt-3 pl-1 text-xs text-muted-foreground">
-                              Recent business publications, leadership books, industry-specific literature
-                            </div>
-                          )}
-                        </div>
+                            <span>{topic}</span>
+                            <button 
+                              onClick={() => removeTopic(topic)}
+                              className="h-4 w-4 rounded-full hover:bg-indigo-200 dark:hover:bg-indigo-800 inline-flex items-center justify-center ml-1"
+                            >
+                              <Trash2 className="h-3 w-3 text-indigo-700 dark:text-indigo-400" />
+                            </button>
+                          </Badge>
+                        ))}
                       </div>
-                    </div>
-                  ))}
-                </div>
-                
-                <div className="mt-6 bg-amber-50 dark:bg-amber-950/20 rounded-lg p-4 border border-amber-100 dark:border-amber-900/50">
-                  <div className="flex items-start gap-3">
-                    <div className="bg-amber-100 dark:bg-amber-900 h-8 w-8 rounded-full flex items-center justify-center flex-shrink-0">
-                      <Zap className="h-4 w-4 text-amber-600 dark:text-amber-400" />
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-medium text-amber-800 dark:text-amber-300">Continuous Learning</h4>
-                      <p className="text-xs text-amber-700/80 dark:text-amber-400/80 mt-1">
-                        Neura continuously learns from these resources in the background, enhancing its knowledge and insights. 
-                        The more resources you select, the more diverse its knowledge will become.
-                      </p>
-                    </div>
+                    ) : (
+                      <div className="p-4 bg-gray-100 dark:bg-gray-900 rounded-md text-center">
+                        <p className="text-muted-foreground">No learning topics added yet.</p>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
-            </TabsContent>
+            </div>
             
-            {/* Learning Format Tab */}
-            <TabsContent value="format" className="space-y-6">
-              <div>
-                <h3 className="text-lg font-medium mb-2">Learning Format Preferences</h3>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Select how you'd like to receive learning insights from your Neura via WhatsApp.
-                </p>
+            {/* Section 3: Learning Format Preferences */}
+            <div className="bg-white dark:bg-gray-950 rounded-lg border border-gray-200 dark:border-gray-800 shadow-sm p-4">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-lg font-medium flex items-center gap-2">
+                  <MessageSquare className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+                  WhatsApp Learning Preferences
+                </h3>
                 
-                <div className="space-y-4">
-                  {learningFormatOptions.map((format) => (
+                <div className="flex items-center gap-2">
+                  <Switch 
+                    checked={enableLearningPrompts} 
+                    onCheckedChange={handleLearningPromptsToggle} 
+                    id="whatsapp-learning"
+                    className="data-[state=checked]:bg-emerald-600"
+                  />
+                  <Label htmlFor="whatsapp-learning" className={`text-sm font-medium ${enableLearningPrompts ? 'text-emerald-700 dark:text-emerald-400' : 'text-gray-500 dark:text-gray-400'}`}>
+                    {enableLearningPrompts ? 'ON' : 'OFF'}
+                  </Label>
+                </div>
+              </div>
+              
+              <p className="text-sm text-muted-foreground mb-4">
+                {enableLearningPrompts 
+                  ? "Select how you'd like to receive learning insights from your Neura via WhatsApp."
+                  : "Enable to receive personalized learning updates via WhatsApp."}
+              </p>
+              
+              <div className={`grid grid-cols-1 sm:grid-cols-3 gap-3 ${!enableLearningPrompts ? 'opacity-60 pointer-events-none' : ''}`}>
+                {learningFormatOptions.map((format) => (
+                  <div 
+                    key={format.id} 
+                    onClick={() => enableLearningPrompts && handleFormatToggle(format.id, !selectedFormats.includes(format.id))}
+                    className={`p-3 rounded-lg border cursor-pointer transition-all ${
+                      selectedFormats.includes(format.id)
+                        ? 'border-emerald-300 bg-emerald-50 dark:border-emerald-700 dark:bg-emerald-950/30'
+                        : 'border-gray-200 dark:border-gray-800 hover:border-emerald-200 dark:hover:border-emerald-800'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className={`p-2 rounded-full ${selectedFormats.includes(format.id) ? 'bg-emerald-100 dark:bg-emerald-900/60' : 'bg-gray-100 dark:bg-gray-900'}`}>
+                        <span className={selectedFormats.includes(format.id) ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-500 dark:text-gray-400'}>
+                          {format.icon}
+                        </span>
+                      </div>
+                      <div>
+                        <label
+                          className={`text-sm font-medium cursor-pointer ${
+                            selectedFormats.includes(format.id) ? 'text-emerald-700 dark:text-emerald-400' : ''
+                          }`}
+                        >
+                          {format.name}
+                        </label>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {format.description}
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div className="mt-3 ml-2">
+                      <Checkbox 
+                        id={`format-${format.id}`} 
+                        checked={selectedFormats.includes(format.id)}
+                        onCheckedChange={(checked) => enableLearningPrompts && handleFormatToggle(format.id, checked === true)}
+                        className={selectedFormats.includes(format.id) ? 'text-emerald-600' : ''}
+                      />
+                      <label
+                        htmlFor={`format-${format.id}`}
+                        className="text-xs font-medium leading-none ml-2"
+                      >
+                        {selectedFormats.includes(format.id) ? 'Selected' : 'Select'}
+                      </label>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              
+              {/* Add a "Random Mix" option */}
+              <div 
+                className={`mt-3 p-3 rounded-lg border cursor-pointer transition-all ${
+                  selectedFormats.length > 1
+                    ? 'border-purple-300 bg-purple-50 dark:border-purple-700 dark:bg-purple-950/30'
+                    : 'border-gray-200 dark:border-gray-800 hover:border-purple-200 dark:hover:border-purple-800 opacity-60'
+                } ${!enableLearningPrompts ? 'opacity-60 pointer-events-none' : ''}`}
+              >
+                <div className="flex items-center gap-3">
+                  <div className={`p-2 rounded-full ${selectedFormats.length > 1 ? 'bg-purple-100 dark:bg-purple-900/60' : 'bg-gray-100 dark:bg-gray-900'}`}>
+                    <Zap className={selectedFormats.length > 1 ? 'h-5 w-5 text-purple-600 dark:text-purple-400' : 'h-5 w-5 text-gray-500 dark:text-gray-400'} />
+                  </div>
+                  <div>
+                    <div className={`text-sm font-medium cursor-pointer ${
+                      selectedFormats.length > 1 ? 'text-purple-700 dark:text-purple-400' : ''
+                    }`}>
+                      Random Mix of Selected Formats
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {selectedFormats.length > 1 
+                        ? `Automatically alternates between your ${selectedFormats.length} selected formats for variety`
+                        : "Select multiple formats above to enable random mix"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Time investment options */}
+              <div className={`mt-5 ${!enableLearningPrompts ? 'opacity-60' : ''}`}>
+                <h4 className="text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Daily Learning Time</h4>
+                
+                <div className="grid grid-cols-3 gap-2">
+                  {learningTimeOptions.map((option) => (
                     <div 
-                      key={format.id} 
-                      className={`p-4 rounded-lg border transition-all ${
-                        selectedFormats.includes(format.id)
-                          ? 'border-amber-300 bg-amber-50 dark:border-amber-700 dark:bg-amber-950/30'
-                          : 'border-gray-200 dark:border-gray-800 hover:border-amber-200 dark:hover:border-amber-800'
+                      key={option.value}
+                      onClick={() => enableLearningPrompts && handleLearningTimeChange(option.value)}
+                      className={`rounded-lg p-3 cursor-pointer transition-all text-center ${
+                        learningTime === option.value 
+                          ? 'bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 shadow-sm' 
+                          : 'border border-gray-200 dark:border-gray-800 hover:bg-emerald-50/50 dark:hover:bg-emerald-950/10'
                       }`}
                     >
-                      <div className="flex items-start">
-                        <div className="flex items-center h-5 mr-3">
-                          <Checkbox 
-                            id={`format-${format.id}`} 
-                            checked={selectedFormats.includes(format.id)}
-                            onCheckedChange={(checked) => handleFormatToggle(format.id, checked === true)}
-                            className={selectedFormats.includes(format.id) ? 'text-amber-600' : ''}
-                          />
-                        </div>
-                        <div className="flex-1">
-                          <div className="flex justify-between items-center">
-                            <label
-                              htmlFor={`format-${format.id}`}
-                              className={`text-sm font-medium cursor-pointer flex items-center gap-1.5 ${
-                                selectedFormats.includes(format.id) ? 'text-amber-700 dark:text-amber-400' : ''
-                              }`}
-                            >
-                              {format.icon}
-                              {format.name}
-                            </label>
-                            
-                            {selectedFormats.includes(format.id) && (
-                              <Badge variant="outline" className="bg-amber-100 dark:bg-amber-900 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-800">
-                                Selected
-                              </Badge>
-                            )}
-                          </div>
-                          <p className="text-xs text-muted-foreground mt-1">
-                            {format.description}
-                          </p>
-                          
-                          {/* Sample previews based on format */}
-                          {format.id === 'short_notes' && selectedFormats.includes(format.id) && (
-                            <div className="mt-3 p-2 bg-white dark:bg-gray-900 rounded border border-gray-200 dark:border-gray-800 text-xs">
-                              <span className="font-semibold block mb-1">Sample:</span>
-                              <ul className="list-disc pl-4 space-y-1">
-                                <li>Key concept 1: Brief explanation</li>
-                                <li>Key concept 2: Brief explanation</li>
-                                <li>Practical application: How to implement</li>
-                              </ul>
-                            </div>
-                          )}
-                          
-                          {format.id === 'infographics' && selectedFormats.includes(format.id) && (
-                            <div className="mt-3 p-2 bg-white dark:bg-gray-900 rounded border border-gray-200 dark:border-gray-800 text-xs">
-                              <span className="font-semibold block mb-1">Sample:</span>
-                              <div className="text-center">
-                                <span className="text-muted-foreground text-xs">[Visual data representation with clear labels, colors, and relationships]</span>
-                              </div>
-                            </div>
-                          )}
-                        </div>
+                      <div className="text-lg mb-1 flex justify-center">
+                        {option.value === '5' && '⚡'}
+                        {option.value === '10' && '⚡⚡'}
+                        {option.value === '15' && '⚡⚡⚡'}
                       </div>
+                      <span className={`text-sm font-medium block ${
+                        learningTime === option.value ? 'text-emerald-700 dark:text-emerald-400' : ''
+                      }`}>
+                        {option.label}
+                      </span>
+                      <span className="text-xs text-muted-foreground mt-1 block">
+                        {option.value === '5' && '30 hours/year'}
+                        {option.value === '10' && '60+ hours/year'}
+                        {option.value === '15' && '90+ hours/year'}
+                      </span>
                     </div>
                   ))}
                 </div>
-                
-                <div className="mt-6 bg-amber-50 dark:bg-amber-950/20 rounded-lg p-4 border border-amber-100 dark:border-amber-900/50">
-                  <div className="flex items-start gap-3">
-                    <div className="bg-amber-100 dark:bg-amber-900 h-8 w-8 rounded-full flex items-center justify-center flex-shrink-0">
-                      <MessageSquare className="h-4 w-4 text-amber-600 dark:text-amber-400" />
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-medium text-amber-800 dark:text-amber-300">WhatsApp Learning Prompts</h4>
-                      <p className="text-xs text-amber-700/80 dark:text-amber-400/80 mt-1">
-                        When enabled, Neura will send you learning insights via WhatsApp in your preferred formats.
-                        This creates a two-way learning process where both you and your Neura grow together.
-                      </p>
-                    </div>
-                  </div>
-                </div>
               </div>
-            </TabsContent>
-          </Tabs>
+            </div>
+          </div>
         </CardContent>
       </Card>
     </div>
