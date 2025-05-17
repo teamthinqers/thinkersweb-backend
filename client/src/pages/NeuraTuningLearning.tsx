@@ -768,18 +768,28 @@ export default function NeuraTuningLearning() {
             </div>
             
             {/* Section 2: Focus Areas Selection */}
-            <div className="bg-white dark:bg-gray-950 rounded-lg border border-gray-200 dark:border-gray-800 shadow-sm p-4">
-              <h3 className="text-lg font-medium mb-3 flex items-center gap-2">
-                <BookOpen className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50/50 dark:from-blue-950/30 dark:to-indigo-950/20 rounded-lg border border-blue-200 dark:border-blue-900/50 shadow-sm p-5">
+              <h3 className="text-lg font-medium mb-4 flex items-center gap-2 text-blue-800 dark:text-blue-300">
+                <div className="p-1.5 rounded-full bg-blue-100 dark:bg-blue-900/60">
+                  <BookOpen className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                </div>
                 Learning Focus Areas
               </h3>
               
-              <div className="space-y-6">
+              <div className="space-y-7">
                 {/* Domain Focus selection */}
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <h4 className="text-sm font-medium text-gray-800 dark:text-gray-200">Domain Focus</h4>
-                    <span className="text-xs text-indigo-600 dark:text-indigo-400 italic">Prefer cross-domain learning for sharper insights</span>
+                <div className="bg-white/90 dark:bg-gray-900/90 rounded-lg border border-blue-200 dark:border-blue-900/50 p-4 shadow-sm">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <div className="p-1.5 rounded-full bg-blue-100 dark:bg-blue-900/60">
+                        <PieChart className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                      </div>
+                      <h4 className="text-sm font-medium text-blue-800 dark:text-blue-300">Professional Domains</h4>
+                    </div>
+                    <div className="flex items-center gap-1 px-2 py-1 bg-blue-100/70 dark:bg-blue-900/30 rounded-full">
+                      <Zap className="h-3 w-3 text-blue-600 dark:text-blue-400" />
+                      <span className="text-[10px] text-blue-600 dark:text-blue-400 font-medium">Cross-domain learning creates sharper insights</span>
+                    </div>
                   </div>
                   
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
@@ -787,61 +797,88 @@ export default function NeuraTuningLearning() {
                       <div 
                         key={domain.id} 
                         onClick={() => handleDomainToggle(domain.id, !selectedDomains.includes(domain.id))}
-                        className={`p-3 rounded-lg border cursor-pointer transition-all flex items-center space-x-2 ${
+                        className={`p-3 rounded-lg border cursor-pointer transition-all flex flex-col items-center justify-center text-center h-24 ${
                           selectedDomains.includes(domain.id)
-                            ? 'border-indigo-300 bg-indigo-50 dark:border-indigo-700 dark:bg-indigo-950/30'
-                            : 'border-gray-200 dark:border-gray-800 hover:border-indigo-200 dark:hover:border-indigo-800'
+                            ? 'border-blue-300 bg-blue-50 dark:border-blue-700 dark:bg-blue-900/30'
+                            : 'border-gray-200 dark:border-gray-800 hover:border-blue-200 dark:hover:border-blue-800 bg-white/60 dark:bg-gray-900/60'
                         }`}
                       >
-                        <Checkbox 
-                          id={`domain-${domain.id}`} 
-                          checked={selectedDomains.includes(domain.id)}
-                          onCheckedChange={(checked) => handleDomainToggle(domain.id, checked === true)}
-                          className={selectedDomains.includes(domain.id) ? 'text-indigo-600' : ''}
-                        />
+                        <div className={`flex items-center justify-center w-8 h-8 rounded-full mb-2 ${
+                          selectedDomains.includes(domain.id)
+                            ? 'bg-blue-100 dark:bg-blue-900/60'
+                            : 'bg-gray-100 dark:bg-gray-800/60'
+                        }`}>
+                          {domain.id === 'business_strategy' && <PieChart className={`h-4 w-4 ${selectedDomains.includes(domain.id) ? 'text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-gray-400'}`} />}
+                          {domain.id === 'marketing_brand' && <MessageSquare className={`h-4 w-4 ${selectedDomains.includes(domain.id) ? 'text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-gray-400'}`} />}
+                          {domain.id === 'product_ux' && <Lightbulb className={`h-4 w-4 ${selectedDomains.includes(domain.id) ? 'text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-gray-400'}`} />}
+                          {domain.id === 'sales_revenue' && <Zap className={`h-4 w-4 ${selectedDomains.includes(domain.id) ? 'text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-gray-400'}`} />}
+                          {domain.id === 'operations_supply' && <Clock className={`h-4 w-4 ${selectedDomains.includes(domain.id) ? 'text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-gray-400'}`} />}
+                          {domain.id === 'people_culture' && <BookOpen className={`h-4 w-4 ${selectedDomains.includes(domain.id) ? 'text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-gray-400'}`} />}
+                          {domain.id === 'finance_legal' && <FileText className={`h-4 w-4 ${selectedDomains.includes(domain.id) ? 'text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-gray-400'}`} />}
+                          {domain.id === 'tech_engineering' && <Save className={`h-4 w-4 ${selectedDomains.includes(domain.id) ? 'text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-gray-400'}`} />}
+                        </div>
+                        
                         <label
-                          htmlFor={`domain-${domain.id}`}
-                          className={`text-sm font-medium leading-none cursor-pointer ${
-                            selectedDomains.includes(domain.id) ? 'text-indigo-700 dark:text-indigo-400' : ''
+                          className={`text-xs font-medium cursor-pointer ${
+                            selectedDomains.includes(domain.id) ? 'text-blue-700 dark:text-blue-400' : 'text-gray-700 dark:text-gray-300'
                           }`}
                         >
                           {domain.name}
                         </label>
+                        
+                        <div className="mt-1">
+                          <Checkbox 
+                            checked={selectedDomains.includes(domain.id)}
+                            onCheckedChange={(checked) => handleDomainToggle(domain.id, checked === true)}
+                            className={selectedDomains.includes(domain.id) ? 'text-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-white' : ''}
+                          />
+                        </div>
                       </div>
                     ))}
                   </div>
                 </div>
                 
-                <Separator />
-                
                 {/* Specific Learning Topics */}
-                <div>
-                  <h4 className="text-sm font-medium text-gray-800 dark:text-gray-200 mb-2">Specific Topics</h4>
-                  <p className="text-xs text-muted-foreground mb-4">
-                    Add specific topics you want your Neura to learn about and master.
+                <div className="bg-white/90 dark:bg-gray-900/90 rounded-lg border border-blue-200 dark:border-blue-900/50 p-4 shadow-sm">
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="p-1.5 rounded-full bg-blue-100 dark:bg-blue-900/60">
+                      <Plus className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                    </div>
+                    <h4 className="text-sm font-medium text-blue-800 dark:text-blue-300">Custom Learning Focuses</h4>
+                  </div>
+                  
+                  <p className="text-xs text-blue-600/80 dark:text-blue-400/80 mb-4 bg-blue-50/60 dark:bg-blue-950/30 px-3 py-2 rounded-lg">
+                    Add specific topics, methodologies, or skills you want Neura to focus on.
                   </p>
                   
-                  <div className="flex gap-2 mb-4">
+                  <div className="relative mb-5">
                     <Input 
-                      placeholder="Add specific learning topic (e.g., 'Product-Market Fit', 'Growth Strategies')" 
+                      placeholder="Type a learning topic (e.g., 'Product-Market Fit', 'Growth Strategies', 'Design Systems')" 
                       value={newTopic}
                       onChange={(e) => setNewTopic(e.target.value)}
                       onKeyDown={handleKeyPress}
-                      className="flex-1"
+                      className="pr-24 border-blue-200 dark:border-blue-900/50 bg-white dark:bg-gray-900"
                     />
                     <Button 
                       onClick={addTopic}
                       disabled={!newTopic.trim()}
                       variant="outline"
-                      className="flex items-center gap-1"
+                      className="absolute right-1 top-1 h-8 gap-1 border-blue-200 dark:border-blue-900 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 text-blue-700 dark:text-blue-400"
                     >
-                      <Plus className="h-4 w-4" />
-                      Add Topic
+                      <Plus className="h-3.5 w-3.5" />
+                      <span className="text-xs">Add</span>
                     </Button>
                   </div>
                   
-                  <div className="rounded-lg border border-gray-200 dark:border-gray-800 p-3">
-                    <Label className="text-xs font-medium mb-2 block">Current Learning Priorities</Label>
+                  <div className="rounded-lg border border-blue-100 dark:border-blue-900/30 bg-blue-50/50 dark:bg-blue-950/20 p-3">
+                    <div className="flex items-center justify-between mb-2">
+                      <Label className="text-xs font-medium text-blue-700 dark:text-blue-400">Current Learning Priorities</Label>
+                      {learningTopics.length > 0 && (
+                        <span className="text-[10px] text-blue-600/80 dark:text-blue-400/80">
+                          {learningTopics.length} topics
+                        </span>
+                      )}
+                    </div>
                     
                     {learningTopics.length > 0 ? (
                       <div className="flex flex-wrap gap-2 mt-2">
@@ -849,23 +886,74 @@ export default function NeuraTuningLearning() {
                           <Badge 
                             key={topic}
                             variant="outline" 
-                            className="bg-indigo-50 dark:bg-indigo-950/30 text-indigo-700 dark:text-indigo-400 border-indigo-200 dark:border-indigo-800 flex items-center gap-1 py-1.5"
+                            className="bg-white dark:bg-gray-900 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800 flex items-center gap-1 py-1.5"
                           >
                             <span>{topic}</span>
                             <button 
                               onClick={() => removeTopic(topic)}
-                              className="h-4 w-4 rounded-full hover:bg-indigo-200 dark:hover:bg-indigo-800 inline-flex items-center justify-center ml-1"
+                              className="h-4 w-4 rounded-full hover:bg-blue-100 dark:hover:bg-blue-900/60 inline-flex items-center justify-center ml-1"
                             >
-                              <Trash2 className="h-3 w-3 text-indigo-700 dark:text-indigo-400" />
+                              <Trash2 className="h-3 w-3 text-blue-700 dark:text-blue-400" />
                             </button>
                           </Badge>
                         ))}
                       </div>
                     ) : (
-                      <div className="p-4 bg-gray-100 dark:bg-gray-900 rounded-md text-center">
-                        <p className="text-muted-foreground">No learning topics added yet.</p>
+                      <div className="p-3 bg-white/80 dark:bg-gray-900/80 rounded-md text-center border border-dashed border-blue-200 dark:border-blue-900/30">
+                        <p className="text-xs text-blue-600/70 dark:text-blue-400/70">No custom topics added yet. Add topics to focus your learning.</p>
                       </div>
                     )}
+                  </div>
+                  
+                  {/* Example chips */}
+                  <div className="mt-4">
+                    <div className="text-[10px] text-blue-600/70 dark:text-blue-400/70 mb-2">Suggestions:</div>
+                    <div className="flex flex-wrap gap-1.5">
+                      <div 
+                        onClick={() => {
+                          if (!learningTopics.includes('Product-Market Fit')) {
+                            setLearningTopics(prev => [...prev, 'Product-Market Fit']);
+                            setUnsavedChanges(true);
+                          }
+                        }}
+                        className="px-2 py-1 bg-blue-50 dark:bg-blue-900/20 rounded-full text-[10px] text-blue-600 dark:text-blue-400 cursor-pointer border border-blue-100 dark:border-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/40"
+                      >
+                        Product-Market Fit
+                      </div>
+                      <div 
+                        onClick={() => {
+                          if (!learningTopics.includes('Design Systems')) {
+                            setLearningTopics(prev => [...prev, 'Design Systems']);
+                            setUnsavedChanges(true);
+                          }
+                        }}
+                        className="px-2 py-1 bg-blue-50 dark:bg-blue-900/20 rounded-full text-[10px] text-blue-600 dark:text-blue-400 cursor-pointer border border-blue-100 dark:border-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/40"
+                      >
+                        Design Systems
+                      </div>
+                      <div 
+                        onClick={() => {
+                          if (!learningTopics.includes('Growth Strategy')) {
+                            setLearningTopics(prev => [...prev, 'Growth Strategy']);
+                            setUnsavedChanges(true);
+                          }
+                        }}
+                        className="px-2 py-1 bg-blue-50 dark:bg-blue-900/20 rounded-full text-[10px] text-blue-600 dark:text-blue-400 cursor-pointer border border-blue-100 dark:border-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/40"
+                      >
+                        Growth Strategy
+                      </div>
+                      <div 
+                        onClick={() => {
+                          if (!learningTopics.includes('Leadership Development')) {
+                            setLearningTopics(prev => [...prev, 'Leadership Development']);
+                            setUnsavedChanges(true);
+                          }
+                        }}
+                        className="px-2 py-1 bg-blue-50 dark:bg-blue-900/20 rounded-full text-[10px] text-blue-600 dark:text-blue-400 cursor-pointer border border-blue-100 dark:border-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/40"
+                      >
+                        Leadership Development
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
