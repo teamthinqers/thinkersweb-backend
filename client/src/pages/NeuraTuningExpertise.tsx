@@ -4,25 +4,45 @@ import { useToast } from '@/hooks/use-toast';
 import { useDotSparkTuning } from '@/hooks/useDotSparkTuning';
 import { Slider } from '@/components/ui/slider';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Target, ChevronLeft, Save, Info, Plus, Trash2, Check } from 'lucide-react';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+
+// Define expertise depth profiles
+type ExpertiseDepthProfile = {
+  id: string;
+  name: string;
+  description: string;
+}
+
+// Define expertise depth profiles
+const expertiseDepthProfiles: ExpertiseDepthProfile[] = [
+  {
+    id: 'domain_navigator',
+    name: 'Domain Navigator',
+    description: 'Broad knowledge across multiple subjects within a domain. Provides connections and context.'
+  },
+  {
+    id: 'strategic_builder',
+    name: 'Strategic Builder',
+    description: 'Combines deep conceptual understanding with practical implementation skills. Creates solutions and frameworks.'
+  },
+  {
+    id: 'creative_orchestrator',
+    name: 'Creative Orchestrator',
+    description: 'Synthesizes multiple perspectives into novel approaches. Excels at generating innovative ideas and unique angles.'
+  }
+];
 
 export default function NeuraTuningExpertise() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
-  
-  // DotSpark Tuning hook
-  const { 
-    status, 
-    isLoading: isTuningLoading, 
-    updateTuning,
-    isUpdating
-  } = useDotSparkTuning();
   
   // Define functional domains
   const functionalDomains = [
@@ -37,7 +57,27 @@ export default function NeuraTuningExpertise() {
     { id: 'finance_legal', name: 'Finance, Legal & Compliance' }
   ];
   
-  // Define available specialties (keeping for backward compatibility)
+  // DotSpark Tuning hook
+  const { 
+    status, 
+    isLoading: isTuningLoading, 
+    updateTuning,
+    isUpdating
+  } = useDotSparkTuning();
+  
+  // Extract values from status for rendering
+  const { tuning } = status || { tuning: { specialties: {} } };
+  
+  // Local state for selections and changes
+  const [selectedDomains, setSelectedDomains] = useState<string[]>([]);
+  const [selectedDepthProfile, setSelectedDepthProfile] = useState<string>('strategic_builder');
+  const [unsavedChanges, setUnsavedChanges] = useState(false);
+  const [pendingChanges, setPendingChanges] = useState<{
+    specialties?: Record<string, number>;
+    expertiseProfile?: string;
+  }>({});
+  
+  // Define traditional specialties (keeping for backward compatibility)
   const availableSpecialtiesList = [
     'science',
     'technology',
@@ -56,31 +96,21 @@ export default function NeuraTuningExpertise() {
     'design'
   ];
   
-  // Extract values from status for rendering
-  const { tuning: neuralTuning } = status || { 
-    tuning: {
-      specialties: {},
-    }
-  };
-
-  // Local state for unsaved changes
-  const [unsavedChanges, setUnsavedChanges] = useState(false);
-  const [pendingChanges, setPendingChanges] = useState<{
-    specialties?: Record<string, number>;
-  }>({});
-  
-  // State for selected functional domains
-  const [selectedDomains, setSelectedDomains] = useState<string[]>([]);
-  
-  // Initialize selected domains from stored specialties
+  // Initialize selected domains and depth profile from stored specialties
   useEffect(() => {
-    if (neuralTuning?.specialties) {
-      const domains = Object.keys(neuralTuning.specialties)
+    if (tuning?.specialties) {
+      // Set selected domains
+      const domains = Object.keys(tuning.specialties)
         .filter(key => key.includes('_') && functionalDomains.some(domain => domain.id === key));
       
       setSelectedDomains(domains);
+      
+      // Set expertise profile if it exists
+      if (tuning.expertiseProfile) {
+        setSelectedDepthProfile(tuning.expertiseProfile);
+      }
     }
-  }, [neuralTuning?.specialties]);
+  }, [tuning?.specialties, tuning?.expertiseProfile]);
   
   // Function to get display name for specialty
   const getDisplayName = (id: string): string => {
@@ -102,7 +132,56 @@ export default function NeuraTuningExpertise() {
       'design': 'Design'
     };
     
+    // Check if it's a functional domain
+    const domain = functionalDomains.find(domain => domain.id === id);
+    if (domain) {
+      return domain.name;
+    }
+    
     return displayMap[id] || id.charAt(0).toUpperCase() + id.slice(1);
+  };
+  
+  // Handle domain selection/deselection
+  const handleDomainSelection = (domainId: string, checked: boolean) => {
+    if (checked) {
+      // Add domain
+      setSelectedDomains(prev => [...prev, domainId]);
+      
+      // Add to specialties
+      setPendingChanges(prev => ({
+        ...prev,
+        specialties: {
+          ...(prev.specialties || {}),
+          [domainId]: 0.8 // Default value
+        }
+      }));
+    } else {
+      // Remove domain
+      setSelectedDomains(prev => prev.filter(id => id !== domainId));
+      
+      // Remove from specialties
+      const updatedSpecialties = { ...(pendingChanges.specialties || {}) };
+      delete updatedSpecialties[domainId];
+      
+      setPendingChanges(prev => ({
+        ...prev,
+        specialties: updatedSpecialties
+      }));
+    }
+    
+    setUnsavedChanges(true);
+  };
+  
+  // Handle depth profile change
+  const handleDepthProfileChange = (profileId: string) => {
+    setSelectedDepthProfile(profileId);
+    
+    setPendingChanges(prev => ({
+      ...prev,
+      expertiseProfile: profileId
+    }));
+    
+    setUnsavedChanges(true);
   };
   
   // Function to handle specialty value changes
@@ -116,35 +195,6 @@ export default function NeuraTuningExpertise() {
         [specialtyId]: specialtyValue
       }
     }));
-    
-    setUnsavedChanges(true);
-  };
-  
-  // Function to handle domain selection
-  const handleDomainChange = (domainId: string, checked: boolean) => {
-    if (checked) {
-      setSelectedDomains(prev => [...prev, domainId]);
-      
-      // Add to specialties with default value
-      setPendingChanges(prev => ({
-        ...prev,
-        specialties: {
-          ...(prev.specialties || {}),
-          [domainId]: 0.8 // Default to 80% for domain expertise
-        }
-      }));
-    } else {
-      setSelectedDomains(prev => prev.filter(id => id !== domainId));
-      
-      // Remove from specialties
-      const updatedSpecialties = { ...(pendingChanges.specialties || {}) };
-      delete updatedSpecialties[domainId];
-      
-      setPendingChanges(prev => ({
-        ...prev,
-        specialties: updatedSpecialties
-      }));
-    }
     
     setUnsavedChanges(true);
   };
@@ -196,31 +246,31 @@ export default function NeuraTuningExpertise() {
       
       toast({
         title: "Changes Saved",
-        description: "Your expertise focus parameters have been updated.",
+        description: "Your expertise layer parameters have been updated.",
         variant: "default",
       });
     } catch (error) {
-      console.error("Error updating expertise focus:", error);
+      console.error("Error updating expertise layer:", error);
       toast({
         title: "Save Failed",
-        description: "There was a problem saving your expertise focus settings.",
+        description: "There was a problem saving your expertise layer settings.",
         variant: "destructive",
       });
     }
   };
   
   // Prepare the specialty items for display
-  const specialties = Object.entries(neuralTuning?.specialties || {}).sort((a, b) => {
+  const specialties = Object.entries(tuning?.specialties || {}).sort((a, b) => {
     // Safe number conversion
     const valA = typeof a[1] === 'number' ? a[1] : Number(a[1]);
     const valB = typeof b[1] === 'number' ? b[1] : Number(b[1]);
     return valB - valA; // Sort by value descending
   });
   
-  // Filter available specialties
+  // Filter available specialties 
   const availableSpecialtyOptions = availableSpecialtiesList.filter(specialty => 
     !Object.keys({
-      ...neuralTuning?.specialties,
+      ...tuning?.specialties,
       ...pendingChanges.specialties
     }).includes(specialty)
   );
@@ -255,7 +305,7 @@ export default function NeuraTuningExpertise() {
           <Button variant="ghost" onClick={() => setLocation('/my-neura')} className="p-2">
             <ChevronLeft className="h-5 w-5" />
           </Button>
-          <h1 className="text-2xl font-bold">Expertise Focus</h1>
+          <h1 className="text-2xl font-bold">Expertise Layer</h1>
         </div>
         {unsavedChanges && (
           <Button 
@@ -279,8 +329,8 @@ export default function NeuraTuningExpertise() {
         )}
       </div>
       
-      {/* Expertise Focus Section Card */}
-      <Card className="bg-white dark:bg-gray-950 shadow-md">
+      {/* Expertise Layer Section Card */}
+      <Card className="bg-white dark:bg-gray-950 shadow-md mb-8">
         <CardHeader className="bg-gradient-to-r from-blue-50 to-sky-50 dark:from-blue-950 dark:to-sky-950">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded-full">
@@ -289,13 +339,43 @@ export default function NeuraTuningExpertise() {
             <div>
               <CardTitle>Expertise Layer</CardTitle>
               <CardDescription>
-                Define your neural extension's specialized knowledge domains
+                Define your specialized knowledge domains and expertise style
               </CardDescription>
             </div>
           </div>
         </CardHeader>
         
         <CardContent className="pt-6 space-y-6">
+          {/* Expertise Depth Profile Section */}
+          <div className="mb-8">
+            <h3 className="text-lg font-medium mb-3">Expertise Depth Profile</h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              Choose how you want your expertise to be structured across your domains.
+            </p>
+            
+            <RadioGroup 
+              value={selectedDepthProfile} 
+              onValueChange={handleDepthProfileChange}
+              className="space-y-4"
+            >
+              {expertiseDepthProfiles.map((profile) => (
+                <div key={profile.id} className="flex items-start space-x-2 p-4 rounded-lg border border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-900">
+                  <RadioGroupItem value={profile.id} id={profile.id} className="mt-1" />
+                  <div className="space-y-1">
+                    <Label htmlFor={profile.id} className="font-medium text-base">
+                      {profile.name}
+                    </Label>
+                    <p className="text-sm text-muted-foreground">
+                      {profile.description}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </RadioGroup>
+          </div>
+          
+          <Separator className="my-6" />
+          
           {/* Functional Domains Section */}
           <div className="mb-8">
             <h3 className="text-lg font-medium mb-3">Functional Domains</h3>
@@ -313,26 +393,7 @@ export default function NeuraTuningExpertise() {
                     id={domain.id}
                     checked={selectedDomains.includes(domain.id)}
                     onCheckedChange={(checked) => {
-                      if (checked === true) {
-                        setSelectedDomains(prev => [...prev, domain.id]);
-                        setPendingChanges(prev => ({
-                          ...prev,
-                          specialties: {
-                            ...(prev.specialties || {}),
-                            [domain.id]: 0.8
-                          }
-                        }));
-                        setUnsavedChanges(true);
-                      } else if (checked === false) {
-                        setSelectedDomains(prev => prev.filter(id => id !== domain.id));
-                        const updatedSpecialties = { ...(pendingChanges.specialties || {}) };
-                        delete updatedSpecialties[domain.id];
-                        setPendingChanges(prev => ({
-                          ...prev,
-                          specialties: updatedSpecialties
-                        }));
-                        setUnsavedChanges(true);
-                      }
+                      handleDomainSelection(domain.id, checked === true);
                     }}
                     className="mt-1"
                   />
@@ -359,9 +420,9 @@ export default function NeuraTuningExpertise() {
           
           <Separator className="my-6" />
           
-          {/* Expertise Strength Section */}
+          {/* Traditional Specialties Section */}
           <div className="mb-4">
-            <h3 className="text-lg font-medium mb-3">Expertise Strength</h3>
+            <h3 className="text-lg font-medium mb-3">Specialty Strength</h3>
             <p className="text-sm text-muted-foreground mb-3">
               Adjust the strength of each expertise area to influence how your neural extension responds to relevant topics.
             </p>
@@ -369,6 +430,11 @@ export default function NeuraTuningExpertise() {
             {specialties.length > 0 ? (
               <div className="space-y-6">
                 {specialties.map(([specialty, value]) => {
+                  // Skip if it's a domain (they're managed separately)
+                  if (specialty.includes('_') && functionalDomains.some(domain => domain.id === specialty)) {
+                    return null;
+                  }
+                  
                   // Get display name for the specialty
                   const displayName = getDisplayName(specialty);
                   
@@ -382,7 +448,7 @@ export default function NeuraTuningExpertise() {
                     <div key={specialty} className="space-y-3">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <h3 className="text-lg font-medium capitalize">{displayName}</h3>
+                          <h3 className="text-base font-medium capitalize">{displayName}</h3>
                           <HoverCard>
                             <HoverCardTrigger>
                               <Info className="h-4 w-4 text-muted-foreground" />
@@ -416,89 +482,35 @@ export default function NeuraTuningExpertise() {
                         onValueChange={(val) => handleSpecialtyChange(specialty, val)}
                         className="w-full"
                       />
-                      <div className="flex justify-between text-xs text-muted-foreground">
-                        <span>Minimal</span>
-                        <span>Moderate</span>
-                        <span>Specialized</span>
-                      </div>
                     </div>
                   );
                 })}
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center py-8 border-2 border-dashed rounded-lg">
-                <p className="text-muted-foreground mb-4">No specialties added yet</p>
-                <Button 
-                  variant="outline" 
-                  className="group"
-                  onClick={() => {
-                    // Add a default specialty if none exist
-                    if (availableSpecialtyOptions.length > 0) {
-                      addSpecialty(availableSpecialtyOptions[0]);
-                    }
-                  }}
-                  disabled={availableSpecialtyOptions.length === 0}
-                >
-                  <Plus className="h-4 w-4 mr-2 group-hover:text-primary" />
-                  Add your first specialty
-                </Button>
+              <div className="p-4 bg-gray-100 dark:bg-gray-900 rounded-md text-center">
+                <p className="text-muted-foreground">No specialties added yet. Add some specialties below.</p>
+              </div>
+            )}
+            
+            {/* Add specialty button + dropdown */}
+            {availableSpecialtyOptions.length > 0 && (
+              <div className="mt-6 flex flex-wrap gap-2">
+                <p className="w-full text-sm font-medium mb-2">Add specialty:</p>
+                {availableSpecialtyOptions.map(specialty => (
+                  <Badge 
+                    key={specialty}
+                    variant="outline" 
+                    className="cursor-pointer flex items-center gap-1 hover:bg-blue-50 dark:hover:bg-blue-950 py-1.5 transition-colors"
+                    onClick={() => addSpecialty(specialty)}
+                  >
+                    <Plus className="h-3 w-3" />
+                    <span className="capitalize">{getDisplayName(specialty)}</span>
+                  </Badge>
+                ))}
               </div>
             )}
           </div>
-          
-          {availableSpecialtyOptions.length > 0 && (
-            <div className="mt-8 border rounded-lg p-4">
-              <h3 className="text-lg font-medium mb-3">Available Specialties</h3>
-              <p className="text-sm text-muted-foreground mb-4">
-                Add new expertise areas to customize your neural extension's knowledge domains.
-              </p>
-              
-              <ScrollArea className="h-40 rounded-md border p-4">
-                <div className="flex flex-wrap gap-2">
-                  {availableSpecialtyOptions.map((specialty) => (
-                    <Badge 
-                      key={specialty}
-                      variant="outline"
-                      className="cursor-pointer hover:bg-blue-50 dark:hover:bg-blue-950 transition-colors capitalize py-1.5"
-                      onClick={() => addSpecialty(specialty)}
-                    >
-                      <Plus className="h-3 w-3 mr-1" />
-                      {getDisplayName(specialty)}
-                    </Badge>
-                  ))}
-                </div>
-              </ScrollArea>
-            </div>
-          )}
         </CardContent>
-        
-        <CardFooter className="bg-gradient-to-r from-blue-50/50 to-sky-50/50 dark:from-blue-950/50 dark:to-sky-950/50 border-t px-6 py-4 justify-between">
-          <Button 
-            variant="outline" 
-            onClick={() => setLocation('/my-neura')}
-          >
-            Back to My Neura
-          </Button>
-          
-          <Button 
-            variant="default"
-            onClick={saveChanges}
-            disabled={!unsavedChanges || isUpdating}
-            className={unsavedChanges ? "bg-blue-600 hover:bg-blue-700" : ""}
-          >
-            {isUpdating ? (
-              <span className="flex items-center gap-1.5">
-                <span className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-                Saving...
-              </span>
-            ) : (
-              <span className="flex items-center gap-1.5">
-                <Save className="h-4 w-4 mr-1" />
-                {unsavedChanges ? "Save Changes" : "No Changes"}
-              </span>
-            )}
-          </Button>
-        </CardFooter>
       </Card>
     </div>
   );
