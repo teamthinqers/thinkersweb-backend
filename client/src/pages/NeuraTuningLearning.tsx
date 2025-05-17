@@ -324,11 +324,38 @@ export default function NeuraTuningLearning() {
               </CardDescription>
             </div>
           </div>
-          <div className="mt-4 py-3 px-4 bg-white dark:bg-gray-950 rounded-lg border border-amber-100 dark:border-amber-900">
+          <div className="mt-4 py-5 px-4 bg-gradient-to-r from-amber-50/80 to-yellow-50/80 dark:from-amber-950/80 dark:to-yellow-950/80 rounded-lg border border-amber-100 dark:border-amber-900">
+            {/* Mental Engine Visual */}
+            <div className="flex justify-center mb-4">
+              <div className="relative w-[200px] h-[120px]">
+                {/* Brain outline */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-[180px] h-[100px] rounded-t-full border-2 border-amber-300 dark:border-amber-700 border-b-0 flex items-center justify-center">
+                    <div className="w-[140px] h-[80px] rounded-t-full border-2 border-amber-400 dark:border-amber-600 border-b-0 flex items-center justify-center">
+                      <div className="w-[100px] h-[60px] rounded-t-full border-2 border-amber-500 dark:border-amber-500 border-b-0"></div>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Animated cogs/gears */}
+                <div className={`absolute top-6 left-7 w-8 h-8 rounded-full border-4 border-t-amber-500 border-r-amber-300 border-b-amber-500 border-l-amber-300 ${enableLearningPrompts ? 'animate-spin' : ''}`} style={{ animationDuration: '7s' }}></div>
+                <div className={`absolute top-8 right-7 w-6 h-6 rounded-full border-4 border-t-yellow-500 border-r-yellow-300 border-b-yellow-500 border-l-yellow-300 ${enableLearningPrompts ? 'animate-spin' : ''}`} style={{ animationDuration: '5s', animationDirection: 'reverse' }}></div>
+                
+                {/* Lightning bolts for activeness */}
+                {enableLearningPrompts && (
+                  <>
+                    <div className="absolute top-3 left-[90px] text-amber-500 text-lg">⚡</div>
+                    <div className="absolute top-10 left-[130px] text-amber-500 text-lg">⚡</div>
+                    <div className="absolute top-8 left-[50px] text-amber-500 text-lg">⚡</div>
+                  </>
+                )}
+              </div>
+            </div>
+            
             <div className="flex items-center justify-between">
               <div className="space-y-1">
-                <h3 className="text-sm font-medium">Daily Learning Prompts</h3>
-                <p className="text-xs text-muted-foreground">
+                <h3 className="text-base font-medium text-amber-800 dark:text-amber-300">Interactive Daily Learning Prompts</h3>
+                <p className="text-sm text-amber-700/90 dark:text-amber-400/90">
                   Receive what your Neura learns via WhatsApp
                 </p>
               </div>
@@ -337,44 +364,70 @@ export default function NeuraTuningLearning() {
                   checked={enableLearningPrompts} 
                   onCheckedChange={handleLearningPromptsToggle} 
                   id="learning-prompts"
+                  className="data-[state=checked]:bg-amber-600"
                 />
-                <Label htmlFor="learning-prompts" className="text-sm">
-                  {enableLearningPrompts ? 'Enabled' : 'Disabled'}
+                <Label htmlFor="learning-prompts" className={`text-sm font-medium ${enableLearningPrompts ? 'text-amber-700 dark:text-amber-400' : ''}`}>
+                  {enableLearningPrompts ? 'Activated' : 'Inactive'}
                 </Label>
               </div>
             </div>
             
-            {enableLearningPrompts && (
-              <div className="mt-4 pt-3 border-t border-amber-100 dark:border-amber-900/50">
-                <div className="grid grid-cols-3 gap-2">
-                  {learningTimeOptions.map((option) => (
-                    <div 
-                      key={option.value}
-                      className={`rounded-lg border p-3 cursor-pointer transition-all ${
-                        learningTime === option.value 
-                          ? 'border-amber-400 bg-amber-50 dark:border-amber-600 dark:bg-amber-950/40' 
-                          : 'border-gray-200 dark:border-gray-800 hover:border-amber-200 dark:hover:border-amber-800'
-                      }`}
-                      onClick={() => handleLearningTimeChange(option.value)}
-                    >
-                      <div className="flex items-center justify-between mb-1">
-                        <span className={`text-sm font-medium ${
-                          learningTime === option.value ? 'text-amber-700 dark:text-amber-400' : ''
-                        }`}>
-                          {option.label}
-                        </span>
-                        <Clock className={`h-4 w-4 ${
-                          learningTime === option.value ? 'text-amber-600 dark:text-amber-400' : 'text-gray-400'
-                        }`} />
-                      </div>
-                      <p className="text-xs text-muted-foreground">
-                        {option.description}
-                      </p>
+            <div className="mt-3 mb-5 bg-white/80 dark:bg-gray-900/60 rounded-lg p-3 text-sm border border-amber-200 dark:border-amber-800/50">
+              <p className="text-amber-800 dark:text-amber-300 font-medium mb-1">Why activate your Learning Engine?</p>
+              <p className="text-amber-700/80 dark:text-amber-400/80 text-xs">
+                Activating your Learning Engine creates a two-way knowledge exchange where:
+              </p>
+              <ul className="list-disc text-xs pl-5 mt-1 text-amber-700/80 dark:text-amber-400/80 space-y-1">
+                <li>Your Neura continuously learns from professional resources</li>
+                <li>You receive bite-sized learning prompts that compound over time</li>
+                <li>Both you and your Neura grow together through shared insights</li>
+              </ul>
+            </div>
+            
+            {/* Learning time options - always visible but disabled when learning prompts are off */}
+            <div className={`mt-4 ${!enableLearningPrompts ? 'opacity-60' : ''}`}>
+              <h4 className="text-sm font-medium text-amber-800 dark:text-amber-300 mb-2">Daily Time Investment</h4>
+              <div className="grid grid-cols-3 gap-2">
+                {learningTimeOptions.map((option) => (
+                  <div 
+                    key={option.value}
+                    className={`rounded-lg border p-3 ${enableLearningPrompts ? 'cursor-pointer' : 'cursor-not-allowed'} transition-all ${
+                      learningTime === option.value 
+                        ? 'border-amber-400 bg-amber-50 dark:border-amber-600 dark:bg-amber-950/40' 
+                        : 'border-gray-200 dark:border-gray-800 hover:border-amber-200 dark:hover:border-amber-800'
+                    }`}
+                    onClick={() => enableLearningPrompts && handleLearningTimeChange(option.value)}
+                  >
+                    <div className="flex items-center justify-between mb-1">
+                      <span className={`text-sm font-medium ${
+                        learningTime === option.value ? 'text-amber-700 dark:text-amber-400' : ''
+                      }`}>
+                        {option.label}
+                      </span>
+                      <Clock className={`h-4 w-4 ${
+                        learningTime === option.value ? 'text-amber-600 dark:text-amber-400' : 'text-gray-400'
+                      }`} />
                     </div>
-                  ))}
+                    <p className="text-xs text-muted-foreground">
+                      {option.description}
+                    </p>
+                  </div>
+                ))}
+              </div>
+              
+              <div className="mt-3 bg-amber-50/60 dark:bg-amber-950/30 p-3 rounded-lg border border-amber-100 dark:border-amber-900/50">
+                <div className="flex items-start gap-2">
+                  <div className="text-amber-600 dark:text-amber-400 text-lg mt-0.5">📈</div>
+                  <div>
+                    <p className="text-xs font-medium text-amber-800 dark:text-amber-300">The Compound Effect</p>
+                    <p className="text-xs text-amber-700/80 dark:text-amber-400/80 mt-0.5">
+                      Just 10 minutes daily adds up to <span className="font-medium">60+ hours of focused learning per year</span>. 
+                      Small, consistent investments lead to remarkable growth over time.
+                    </p>
+                  </div>
                 </div>
               </div>
-            )}
+            </div>
           </div>
         </CardHeader>
         
