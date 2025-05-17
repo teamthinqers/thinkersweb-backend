@@ -747,7 +747,7 @@ export default function MyNeura() {
           </Card>
 
           {/* Expertise Focus Card */}
-          <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 group border-blue-100 dark:border-blue-900">
+          <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 group border-blue-100 dark:border-blue-900 flex flex-col">
             <div className="h-48 bg-gradient-to-br from-blue-400 to-sky-600 flex items-center justify-center relative overflow-hidden">
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.2),transparent_50%)]"></div>
               <div className="z-10 p-6 flex flex-col items-center">
@@ -757,11 +757,11 @@ export default function MyNeura() {
                 <h3 className="text-xl font-bold text-white">Expertise Focus</h3>
               </div>
             </div>
-            <CardContent className="p-6">
+            <CardContent className="p-6 flex-1 flex flex-col">
               <p className="text-muted-foreground mb-4">
                 Define knowledge domains where your neural extension specializes and provides deeper insights.
               </p>
-              <ul className="space-y-2 mb-6">
+              <ul className="space-y-2 flex-1">
                 <li className="flex items-start">
                   <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 mr-2 mt-0.5">
                     <Check className="h-3.5 w-3.5" />
@@ -782,7 +782,7 @@ export default function MyNeura() {
                 </li>
               </ul>
               <Button 
-                className="w-full bg-blue-600 hover:bg-blue-700 group-hover:translate-y-0 translate-y-1 transition-all duration-300"
+                className="w-full bg-blue-600 hover:bg-blue-700 group-hover:translate-y-0 translate-y-1 transition-all duration-300 mt-6"
                 onClick={() => setLocation('/neura-tuning/expertise')}
               >
                 Configure Expertise Areas
@@ -791,7 +791,7 @@ export default function MyNeura() {
           </Card>
 
           {/* Learning Engine Card */}
-          <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 group border-emerald-100 dark:border-emerald-900">
+          <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 group border-emerald-100 dark:border-emerald-900 flex flex-col">
             <div className="h-48 bg-gradient-to-br from-emerald-400 to-green-600 flex items-center justify-center relative overflow-hidden">
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.2),transparent_50%)]"></div>
               <div className="z-10 p-6 flex flex-col items-center">
@@ -801,11 +801,11 @@ export default function MyNeura() {
                 <h3 className="text-xl font-bold text-white">Learning Engine</h3>
               </div>
             </div>
-            <CardContent className="p-6">
+            <CardContent className="p-6 flex-1 flex flex-col">
               <p className="text-muted-foreground mb-4">
                 Guide what topics your neural extension should prioritize learning and focus on.
               </p>
-              <ul className="space-y-2 mb-6">
+              <ul className="space-y-2 flex-1">
                 <li className="flex items-start">
                   <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-900 text-emerald-600 dark:text-emerald-400 mr-2 mt-0.5">
                     <Check className="h-3.5 w-3.5" />
@@ -826,7 +826,7 @@ export default function MyNeura() {
                 </li>
               </ul>
               <Button 
-                className="w-full bg-emerald-600 hover:bg-emerald-700 group-hover:translate-y-0 translate-y-1 transition-all duration-300"
+                className="w-full bg-emerald-600 hover:bg-emerald-700 group-hover:translate-y-0 translate-y-1 transition-all duration-300 mt-6"
                 onClick={() => setLocation('/neura-tuning/learning')}
               >
                 Configure Learning Engine
