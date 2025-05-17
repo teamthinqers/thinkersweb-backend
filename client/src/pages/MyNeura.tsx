@@ -38,6 +38,11 @@ import {
   DialogContent,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function MyNeura() {
@@ -665,7 +670,7 @@ export default function MyNeura() {
               </TooltipProvider>
             </div>
             
-            {/* Specialization Level */}
+            {/* Implementation Level */}
             <div className="text-center">
               <div className="relative w-14 h-14 sm:w-16 sm:h-16 mx-auto">
                 <svg className="w-full h-full" viewBox="0 0 100 100">
