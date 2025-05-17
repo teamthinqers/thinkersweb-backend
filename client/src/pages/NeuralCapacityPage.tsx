@@ -121,7 +121,7 @@ export default function MyNeuralCapacityPage() {
           {/* Experience and Level */}
           <div className="mb-8">
             <div className="flex justify-between mb-1.5 text-sm font-medium">
-              <span>Neural Extension Level</span>
+              <span>Neural Capacity Level</span>
               <span>{gameElements?.experience || 0} / {gameElements?.experienceRequired || 1000} XP</span>
             </div>
             <Progress 
@@ -321,11 +321,11 @@ export default function MyNeuralCapacityPage() {
             </Card>
           </div>
           
-          {/* Neural Extension Stats */}
+          {/* Neural Capacity Stats */}
           <div className="mb-8">
             <h3 className="font-medium text-sm mb-3 flex items-center gap-2">
               <History className="h-4 w-4 text-purple-700 dark:text-purple-400" />
-              Neural Extension Statistics
+              Neural Capacity Statistics
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="p-4 rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800">
@@ -395,7 +395,7 @@ export default function MyNeuralCapacityPage() {
         <CardFooter className="flex justify-between">
           <Button variant="outline" asChild>
             <Link href="/neural-tuning">
-              Tune Neural Extension
+              Tune My Neural Capacity
             </Link>
           </Button>
           <Button variant="default" className="bg-gradient-to-r from-purple-700 to-indigo-600 hover:from-purple-800 hover:to-indigo-700">
