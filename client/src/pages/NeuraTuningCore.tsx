@@ -23,9 +23,6 @@ export default function NeuraTuningCore() {
   // Local state for unsaved changes
   const [unsavedChanges, setUnsavedChanges] = useState(false);
   const [pendingChanges, setPendingChanges] = useState<{
-    creativity?: number;
-    precision?: number;
-    speed?: number;
     cognitivePace?: number;
     memoryRecall?: number;
     signalFocus?: number;
@@ -34,9 +31,6 @@ export default function NeuraTuningCore() {
   // Extract values from status for rendering
   const { tuning: neuralTuning } = status || { 
     tuning: {
-      creativity: 0.5,
-      precision: 0.5,
-      speed: 0.5,
       cognitivePace: 0.5,
       memoryRecall: 0.5,
       signalFocus: 0.5,
@@ -307,82 +301,6 @@ export default function NeuraTuningCore() {
             </div>
           </div>
           
-          {/* Creativity */}
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <h3 className="text-lg font-medium">Creativity</h3>
-                <HoverCard>
-                  <HoverCardTrigger>
-                    <Info className="h-4 w-4 text-muted-foreground" />
-                  </HoverCardTrigger>
-                  <HoverCardContent className="w-80">
-                    <div className="space-y-2">
-                      <h4 className="text-sm font-semibold">Creativity Parameter</h4>
-                      <p className="text-sm">
-                        Controls how varied and unique your neural extension's responses will be. Higher values promote more novel and diverse insights.
-                      </p>
-                    </div>
-                  </HoverCardContent>
-                </HoverCard>
-              </div>
-              <span className="text-sm font-medium text-muted-foreground">
-                {Math.round((pendingChanges.creativity ?? neuralTuning?.creativity ?? 0.5) * 100)}%
-              </span>
-            </div>
-            <Slider
-              defaultValue={[neuralTuning?.creativity ?? 0.5]}
-              max={1}
-              step={0.01}
-              value={[pendingChanges.creativity ?? neuralTuning?.creativity ?? 0.5]}
-              onValueChange={(value) => handleParameterChange('creativity', value)}
-              className="w-full"
-            />
-            <div className="flex justify-between text-xs text-muted-foreground">
-              <span>Practical</span>
-              <span>Balanced</span>
-              <span>Experimental</span>
-            </div>
-          </div>
-          
-          {/* Precision */}
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <h3 className="text-lg font-medium">Precision</h3>
-                <HoverCard>
-                  <HoverCardTrigger>
-                    <Info className="h-4 w-4 text-muted-foreground" />
-                  </HoverCardTrigger>
-                  <HoverCardContent className="w-80">
-                    <div className="space-y-2">
-                      <h4 className="text-sm font-semibold">Precision Parameter</h4>
-                      <p className="text-sm">
-                        Defines how exact and detailed your neural extension's responses will be. Higher values provide more specific, factual, and carefully constructed responses.
-                      </p>
-                    </div>
-                  </HoverCardContent>
-                </HoverCard>
-              </div>
-              <span className="text-sm font-medium text-muted-foreground">
-                {Math.round((pendingChanges.precision ?? neuralTuning?.precision ?? 0.5) * 100)}%
-              </span>
-            </div>
-            <Slider
-              defaultValue={[neuralTuning?.precision ?? 0.5]}
-              max={1}
-              step={0.01}
-              value={[pendingChanges.precision ?? neuralTuning?.precision ?? 0.5]}
-              onValueChange={(value) => handleParameterChange('precision', value)}
-              className="w-full"
-            />
-            <div className="flex justify-between text-xs text-muted-foreground">
-              <span>Broad</span>
-              <span>Balanced</span>
-              <span>Detailed</span>
-            </div>
-          </div>
-          
           {/* Signal Focus */}
           <div className="space-y-3 mt-8 border border-emerald-200 dark:border-emerald-800 rounded-lg p-4">
             <div className="flex items-center justify-between mb-3">
@@ -481,43 +399,7 @@ export default function NeuraTuningCore() {
             </div>
           </div>
           
-          {/* Speed */}
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <h3 className="text-lg font-medium">Speed</h3>
-                <HoverCard>
-                  <HoverCardTrigger>
-                    <Info className="h-4 w-4 text-muted-foreground" />
-                  </HoverCardTrigger>
-                  <HoverCardContent className="w-80">
-                    <div className="space-y-2">
-                      <h4 className="text-sm font-semibold">Speed Parameter</h4>
-                      <p className="text-sm">
-                        Controls the trade-off between response time and depth. Higher values prioritize faster responses over exhaustive analysis.
-                      </p>
-                    </div>
-                  </HoverCardContent>
-                </HoverCard>
-              </div>
-              <span className="text-sm font-medium text-muted-foreground">
-                {Math.round((pendingChanges.speed ?? neuralTuning?.speed ?? 0.5) * 100)}%
-              </span>
-            </div>
-            <Slider
-              defaultValue={[neuralTuning?.speed ?? 0.5]}
-              max={1}
-              step={0.01}
-              value={[pendingChanges.speed ?? neuralTuning?.speed ?? 0.5]}
-              onValueChange={(value) => handleParameterChange('speed', value)}
-              className="w-full"
-            />
-            <div className="flex justify-between text-xs text-muted-foreground">
-              <span>Deep</span>
-              <span>Balanced</span>
-              <span>Quick</span>
-            </div>
-          </div>
+
         </CardContent>
         
         <CardFooter className="bg-gradient-to-r from-indigo-50/50 to-blue-50/50 dark:from-indigo-950/50 dark:to-blue-950/50 border-t px-6 py-4 justify-between">

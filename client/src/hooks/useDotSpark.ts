@@ -40,6 +40,7 @@ export interface DotSparkStatus {
     speed: number;
     adaptability: number;
     cognitivePace: number;
+    signalFocus: number;
     
     // Cognitive style parameters
     analytical: number;

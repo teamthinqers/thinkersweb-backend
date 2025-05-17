@@ -11,6 +11,7 @@ interface TuningParams {
   speed?: number;       // 0.0 to 1.0 - affects response time vs. depth tradeoff
   adaptability?: number; // 0.0 to 1.0 - affects how quickly DotSpark adapts to new information
   cognitivePace?: number; // 0.0 to 1.0 - how fast brain processes and switches between thoughts
+  signalFocus?: number; // 0.0 to 1.0 - narrow beam (0.0) vs wide scanner (1.0) focus style
   
   // Cognitive style parameters
   analytical?: number;  // 0.0 to 1.0 - logical/systematic thinking emphasis
@@ -79,6 +80,7 @@ export function useDotSparkTuning() {
       speed: 0.5,
       adaptability: 0.65,
       cognitivePace: 0.5,
+      signalFocus: 0.5,
       
       // Cognitive style parameters
       analytical: 0.8,
