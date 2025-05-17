@@ -232,6 +232,44 @@ export default function NeuraTuningCognitive() {
             </div>
           </div>
 
+          {/* Mental Model Density */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <h3 className="text-lg font-medium">Mental Model Density</h3>
+                <HoverCard>
+                  <HoverCardTrigger>
+                    <Info className="h-4 w-4 text-muted-foreground" />
+                  </HoverCardTrigger>
+                  <HoverCardContent className="w-80">
+                    <div className="space-y-2">
+                      <h4 className="text-sm font-semibold">Mental Model Density</h4>
+                      <p className="text-sm">
+                        Reflects how structured your inner playbook is for solving problems. If you prefer adaptable, spontaneous thinking without rigid frameworks (Free Thinker), use lower values. If you tend to rely on organized mental frameworks and structured approaches (Model Architect), use higher values.
+                      </p>
+                    </div>
+                  </HoverCardContent>
+                </HoverCard>
+              </div>
+              <span className="text-sm font-medium text-muted-foreground">
+                {Math.round((pendingChanges.mentalModelDensity ?? neuralTuning?.mentalModelDensity ?? 0.5) * 100)}%
+              </span>
+            </div>
+            <Slider
+              defaultValue={[neuralTuning?.mentalModelDensity ?? 0.5]}
+              max={1}
+              step={0.01}
+              value={[pendingChanges.mentalModelDensity ?? neuralTuning?.mentalModelDensity ?? 0.5]}
+              onValueChange={(value) => handleParameterChange('mentalModelDensity', value)}
+              className="w-full"
+            />
+            <div className="flex justify-between text-xs text-muted-foreground">
+              <span>Free Thinker</span>
+              <span>Balanced</span>
+              <span>Model Architect</span>
+            </div>
+          </div>
+
           <div className="mt-6 bg-violet-50 dark:bg-violet-950 p-4 rounded-lg border border-violet-100 dark:border-violet-900">
             <h4 className="text-sm font-medium text-violet-800 dark:text-violet-300 mb-2">Cognitive Style Settings</h4>
             <p className="text-sm text-violet-700 dark:text-violet-400">
