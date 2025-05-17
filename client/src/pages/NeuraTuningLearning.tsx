@@ -324,111 +324,133 @@ export default function NeuraTuningLearning() {
               </CardDescription>
             </div>
           </div>
-          <div className="mt-4 py-5 px-4 bg-gradient-to-r from-amber-50/80 to-yellow-50/80 dark:from-amber-950/80 dark:to-yellow-950/80 rounded-lg border border-amber-100 dark:border-amber-900">
-            {/* Mental Engine Visual */}
-            <div className="flex justify-center mb-4">
-              <div className="relative w-[200px] h-[120px]">
-                {/* Brain outline */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-[180px] h-[100px] rounded-t-full border-2 border-amber-300 dark:border-amber-700 border-b-0 flex items-center justify-center">
-                    <div className="w-[140px] h-[80px] rounded-t-full border-2 border-amber-400 dark:border-amber-600 border-b-0 flex items-center justify-center">
-                      <div className="w-[100px] h-[60px] rounded-t-full border-2 border-amber-500 dark:border-amber-500 border-b-0"></div>
-                    </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-4">
+            {/* Learning Engine Activation */}
+            <div className="bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-yellow-950/80 dark:to-amber-950/80 rounded-xl border border-amber-200 dark:border-amber-800/70 p-4 shadow-sm overflow-hidden relative">
+              <div className="absolute -right-10 top-0 opacity-10 text-6xl">🧠</div>
+              
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-base font-semibold text-amber-900 dark:text-amber-300">Learning Engine</h3>
+                <span className="px-2 py-1 bg-amber-100 dark:bg-amber-900/60 rounded-full text-xs font-medium text-amber-700 dark:text-amber-400">Always On</span>
+              </div>
+              
+              <div className="flex justify-center mb-4">
+                <div className="relative h-[90px] w-[90px]">
+                  {/* Brain with animated gears */}
+                  <div className="absolute inset-0 bg-amber-100 dark:bg-amber-900/60 rounded-full flex items-center justify-center">
+                    <span className="text-3xl">🧠</span>
                   </div>
+                  
+                  {/* Constantly spinning gears - always active */}
+                  <div className="absolute top-1 right-0 w-5 h-5 rounded-full border-2 border-t-amber-500 border-r-amber-400 border-b-amber-500 border-l-amber-400 animate-spin" style={{ animationDuration: '6s' }}></div>
+                  <div className="absolute -bottom-1 right-6 w-6 h-6 rounded-full border-3 border-t-yellow-500 border-r-yellow-400 border-b-yellow-500 border-l-yellow-400 animate-spin" style={{ animationDuration: '8s', animationDirection: 'reverse' }}></div>
+                  <div className="absolute top-6 -left-1 w-4 h-4 rounded-full border-2 border-t-amber-600 border-r-amber-500 border-b-amber-600 border-l-amber-500 animate-spin" style={{ animationDuration: '4s' }}></div>
+                  
+                  {/* Always shows energy */}
+                  <div className="absolute -top-1 left-4 text-yellow-500 dark:text-yellow-400 text-sm">⚡</div>
                 </div>
-                
-                {/* Animated cogs/gears */}
-                <div className={`absolute top-6 left-7 w-8 h-8 rounded-full border-4 border-t-amber-500 border-r-amber-300 border-b-amber-500 border-l-amber-300 ${enableLearningPrompts ? 'animate-spin' : ''}`} style={{ animationDuration: '7s' }}></div>
-                <div className={`absolute top-8 right-7 w-6 h-6 rounded-full border-4 border-t-yellow-500 border-r-yellow-300 border-b-yellow-500 border-l-yellow-300 ${enableLearningPrompts ? 'animate-spin' : ''}`} style={{ animationDuration: '5s', animationDirection: 'reverse' }}></div>
-                
-                {/* Lightning bolts for activeness */}
-                {enableLearningPrompts && (
-                  <>
-                    <div className="absolute top-3 left-[90px] text-amber-500 text-lg">⚡</div>
-                    <div className="absolute top-10 left-[130px] text-amber-500 text-lg">⚡</div>
-                    <div className="absolute top-8 left-[50px] text-amber-500 text-lg">⚡</div>
-                  </>
-                )}
               </div>
-            </div>
-            
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <h3 className="text-base font-medium text-amber-800 dark:text-amber-300">Interactive Daily Learning Prompts</h3>
-                <p className="text-sm text-amber-700/90 dark:text-amber-400/90">
-                  Receive what your Neura learns via WhatsApp
-                </p>
-              </div>
-              <div className="flex items-center gap-2">
-                <Switch 
-                  checked={enableLearningPrompts} 
-                  onCheckedChange={handleLearningPromptsToggle} 
-                  id="learning-prompts"
-                  className="data-[state=checked]:bg-amber-600"
-                />
-                <Label htmlFor="learning-prompts" className={`text-sm font-medium ${enableLearningPrompts ? 'text-amber-700 dark:text-amber-400' : ''}`}>
-                  {enableLearningPrompts ? 'Activated' : 'Inactive'}
-                </Label>
-              </div>
-            </div>
-            
-            <div className="mt-3 mb-5 bg-white/80 dark:bg-gray-900/60 rounded-lg p-3 text-sm border border-amber-200 dark:border-amber-800/50">
-              <p className="text-amber-800 dark:text-amber-300 font-medium mb-1">Why activate your Learning Engine?</p>
-              <p className="text-amber-700/80 dark:text-amber-400/80 text-xs">
-                Activating your Learning Engine creates a two-way knowledge exchange where:
+              
+              <p className="text-xs text-center text-amber-700 dark:text-amber-400 mb-3">
+                Your Neura is always learning in the background
               </p>
-              <ul className="list-disc text-xs pl-5 mt-1 text-amber-700/80 dark:text-amber-400/80 space-y-1">
-                <li>Your Neura continuously learns from professional resources</li>
-                <li>You receive bite-sized learning prompts that compound over time</li>
-                <li>Both you and your Neura grow together through shared insights</li>
-              </ul>
+              
+              <div className="flex justify-center">
+                <div className="flex items-center gap-1.5 bg-white dark:bg-gray-900 px-3 py-1.5 rounded-full shadow-sm border border-amber-200 dark:border-amber-900/60">
+                  <span className="h-2 w-2 bg-green-500 rounded-full animate-pulse"></span>
+                  <span className="text-xs font-medium text-amber-700 dark:text-amber-400">Active</span>
+                </div>
+              </div>
             </div>
             
-            {/* Learning time options - always visible but disabled when learning prompts are off */}
-            <div className={`mt-4 ${!enableLearningPrompts ? 'opacity-60' : ''}`}>
-              <h4 className="text-sm font-medium text-amber-800 dark:text-amber-300 mb-2">Daily Time Investment</h4>
-              <div className="grid grid-cols-3 gap-2">
-                {learningTimeOptions.map((option) => (
-                  <div 
-                    key={option.value}
-                    className={`rounded-lg border p-3 ${enableLearningPrompts ? 'cursor-pointer' : 'cursor-not-allowed'} transition-all ${
-                      learningTime === option.value 
-                        ? 'border-amber-400 bg-amber-50 dark:border-amber-600 dark:bg-amber-950/40' 
-                        : 'border-gray-200 dark:border-gray-800 hover:border-amber-200 dark:hover:border-amber-800'
-                    }`}
-                    onClick={() => enableLearningPrompts && handleLearningTimeChange(option.value)}
-                  >
-                    <div className="flex items-center justify-between mb-1">
-                      <span className={`text-sm font-medium ${
-                        learningTime === option.value ? 'text-amber-700 dark:text-amber-400' : ''
+            {/* Interactive WhatsApp Learning */}
+            <div className="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-950/80 dark:to-teal-950/80 rounded-xl border border-emerald-200 dark:border-emerald-800/70 p-4 shadow-sm overflow-hidden relative">
+              <div className="absolute -right-10 top-0 opacity-10 text-6xl">💬</div>
+              
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-base font-semibold text-emerald-900 dark:text-emerald-300">WhatsApp Learning</h3>
+                <div className="flex items-center gap-1.5">
+                  <Switch 
+                    checked={enableLearningPrompts} 
+                    onCheckedChange={handleLearningPromptsToggle} 
+                    id="learning-prompts"
+                    className="data-[state=checked]:bg-emerald-600"
+                  />
+                  <Label htmlFor="learning-prompts" className={`text-xs font-medium ${enableLearningPrompts ? 'text-emerald-700 dark:text-emerald-400' : 'text-gray-500 dark:text-gray-400'}`}>
+                    {enableLearningPrompts ? 'ON' : 'OFF'}
+                  </Label>
+                </div>
+              </div>
+              
+              <div className="flex justify-center mb-3">
+                <div className="relative h-[90px] w-[90px]">
+                  {/* WhatsApp messaging visualization */}
+                  <div className={`absolute inset-0 ${enableLearningPrompts ? 'bg-emerald-100 dark:bg-emerald-900/60' : 'bg-gray-100 dark:bg-gray-800'} rounded-full flex items-center justify-center`}>
+                    <span className="text-3xl">{enableLearningPrompts ? '📲' : '📱'}</span>
+                  </div>
+                  
+                  {/* Message bubbles animation - only when enabled */}
+                  {enableLearningPrompts && (
+                    <>
+                      <div className="absolute top-0 left-6 animate-bounce" style={{ animationDuration: '2s', animationDelay: '0.5s' }}>💡</div>
+                      <div className="absolute bottom-1 right-0 animate-bounce" style={{ animationDuration: '1.5s' }}>📚</div>
+                      <div className="absolute top-8 -left-2 animate-bounce" style={{ animationDuration: '2.2s', animationDelay: '0.2s' }}>🔍</div>
+                    </>
+                  )}
+                </div>
+              </div>
+              
+              <p className="text-xs text-center text-emerald-700 dark:text-emerald-400 mb-3">
+                {enableLearningPrompts 
+                  ? "Receive daily learning snippets via WhatsApp"
+                  : "Activate to get daily insights on WhatsApp"}
+              </p>
+              
+              {/* Time investment options */}
+              {enableLearningPrompts && (
+                <div className="grid grid-cols-3 gap-1 mt-3">
+                  {learningTimeOptions.map((option) => (
+                    <div 
+                      key={option.value}
+                      className={`rounded-lg p-2 cursor-pointer transition-all text-center ${
+                        learningTime === option.value 
+                          ? 'bg-white dark:bg-gray-900 border border-emerald-300 dark:border-emerald-700 shadow-sm' 
+                          : 'border border-transparent hover:bg-white/70 dark:hover:bg-gray-900/50'
+                      }`}
+                      onClick={() => handleLearningTimeChange(option.value)}
+                    >
+                      <div className="text-lg mb-1 flex justify-center">
+                        {option.value === '5' && '⚡'}
+                        {option.value === '10' && '⚡⚡'}
+                        {option.value === '15' && '⚡⚡⚡'}
+                      </div>
+                      <span className={`text-xs font-medium block ${
+                        learningTime === option.value ? 'text-emerald-700 dark:text-emerald-400' : ''
                       }`}>
                         {option.label}
                       </span>
-                      <Clock className={`h-4 w-4 ${
-                        learningTime === option.value ? 'text-amber-600 dark:text-amber-400' : 'text-gray-400'
-                      }`} />
                     </div>
-                    <p className="text-xs text-muted-foreground">
-                      {option.description}
-                    </p>
-                  </div>
-                ))}
-              </div>
-              
-              <div className="mt-3 bg-amber-50/60 dark:bg-amber-950/30 p-3 rounded-lg border border-amber-100 dark:border-amber-900/50">
-                <div className="flex items-start gap-2">
-                  <div className="text-amber-600 dark:text-amber-400 text-lg mt-0.5">📈</div>
-                  <div>
-                    <p className="text-xs font-medium text-amber-800 dark:text-amber-300">The Compound Effect</p>
-                    <p className="text-xs text-amber-700/80 dark:text-amber-400/80 mt-0.5">
-                      Just 10 minutes daily adds up to <span className="font-medium">60+ hours of focused learning per year</span>. 
-                      Small, consistent investments lead to remarkable growth over time.
-                    </p>
-                  </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+          
+          {/* Compound effect banner - show when WhatsApp learning is activated */}
+          {enableLearningPrompts && (
+            <div className="mt-3 bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-950/30 dark:to-purple-950/30 p-3 rounded-lg border border-indigo-100 dark:border-indigo-900/50 shadow-sm">
+              <div className="flex items-center gap-2">
+                <div className="text-indigo-600 dark:text-indigo-400 text-xl flex-shrink-0">📈</div>
+                <div>
+                  <p className="text-xs font-medium text-indigo-700 dark:text-indigo-300">Small inputs, huge impact</p>
+                  <p className="text-xs text-indigo-600/90 dark:text-indigo-400/90">
+                    10 min daily = <span className="font-semibold">60+ hours yearly</span>. Micro-learning compounds!
+                  </p>
                 </div>
               </div>
             </div>
-          </div>
+          )}
         </CardHeader>
         
         <CardContent className="pt-6">
