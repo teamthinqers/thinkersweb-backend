@@ -746,7 +746,7 @@ export default function MyNeura() {
             </CardContent>
           </Card>
 
-          {/* Expertise Focus Card */}
+          {/* Expertise Layer Card */}
           <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 group border-blue-100 dark:border-blue-900 flex flex-col">
             <div className="h-48 bg-gradient-to-br from-blue-400 to-sky-600 flex items-center justify-center relative overflow-hidden">
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.2),transparent_50%)]"></div>
@@ -754,7 +754,7 @@ export default function MyNeura() {
                 <div className="rounded-full bg-white/20 p-4 backdrop-blur-sm mb-4">
                   <Target className="h-12 w-12 text-white" />
                 </div>
-                <h3 className="text-xl font-bold text-white">Expertise Focus</h3>
+                <h3 className="text-xl font-bold text-white">Expertise Layer</h3>
               </div>
             </div>
             <CardContent className="p-6 flex-1 flex flex-col">
@@ -1083,13 +1083,13 @@ export default function MyNeura() {
           </div>
         </TabsContent>
         
-        {/* Expertise Focus Tab */}
+        {/* Expertise Layer Tab */}
         <TabsContent value="expertise" className="space-y-6">
           <Card>
             <CardHeader>
               <div className="flex items-center gap-2">
                 <Target className="h-5 w-5 text-indigo-500" />
-                <CardTitle>Expertise Focus Areas</CardTitle>
+                <CardTitle>Expertise Layer Areas</CardTitle>
               </div>
               <CardDescription>Customize domain-specific expertise for your neural extension</CardDescription>
             </CardHeader>
