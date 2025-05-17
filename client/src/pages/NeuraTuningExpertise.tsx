@@ -584,6 +584,30 @@ export default function NeuraTuningExpertise() {
               })}
             </div>
           </div>
+          
+          {/* Bottom Save Button */}
+          {unsavedChanges && (
+            <div className="flex justify-end mt-6">
+              <Button 
+                variant="default"
+                className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-1.5"
+                onClick={saveChanges}
+                disabled={isUpdating}
+              >
+                {isUpdating ? (
+                  <span className="flex items-center gap-1.5">
+                    <span className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                    Saving...
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-1.5">
+                    <Save className="h-4 w-4" />
+                    Save Changes
+                  </span>
+                )}
+              </Button>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
