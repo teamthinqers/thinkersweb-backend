@@ -102,7 +102,7 @@ export default function DotSparkCapacityPage() {
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2">
               <BrainCircuit className="h-5 w-5 text-purple-700 dark:text-purple-400" />
-              <CardTitle>Neural Extension</CardTitle>
+              <CardTitle>My Neural Capacity</CardTitle>
             </div>
             <div className="flex items-center gap-2">
               <Badge className="bg-purple-100 text-purple-800 dark:bg-purple-900/50 dark:text-purple-200 hover:bg-purple-200 dark:hover:bg-purple-800/50">
@@ -110,7 +110,7 @@ export default function DotSparkCapacityPage() {
               </Badge>
             </div>
           </div>
-          <CardDescription>Visualizing your neural extension's capacity and efficiency</CardDescription>
+          <CardDescription>Tracking your neural system's capacity and performance metrics</CardDescription>
         </CardHeader>
         
         <div className="relative overflow-hidden">
