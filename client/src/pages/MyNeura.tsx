@@ -60,14 +60,19 @@ export default function MyNeura() {
   const [learningRate, setLearningRate] = useState<number>(8);
   const [specializationLevel, setSpecializationLevel] = useState<number>(5);
   
-  // Update capacity metrics when status changes
+  // Only update capacity metrics when status changes if not a new user
   useEffect(() => {
+    // Skip this effect entirely - we want fixed values for new users
+    // This effect would be updated later when users actually progress
+    // It's commented out so we understand we're using fixed values for demonstration
+    /*
     if (status) {
       setProcessingEfficiency(status.gameElements?.stats?.adaptationScore || 0);
       setMemoryCapacity(Math.min(100, ((status.gameElements?.stats?.connectionsFormed || 0) / 50) * 100));
       setLearningRate(Math.min(100, ((status.gameElements?.stats?.insightsGenerated || 0) / 20) * 100));
       setSpecializationLevel(Math.min(100, (Object.keys(status.tuning?.specialties || {}).length / 8) * 100));
     }
+    */
   }, [status]);
   
   // State for tracking unsaved changes
