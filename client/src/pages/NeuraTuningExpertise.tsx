@@ -491,7 +491,7 @@ export default function NeuraTuningExpertise() {
                               <span>Domain Added to Your Expertise Mix</span>
                             </div>
                           ) : (
-                            <span>Add this domain to your professional profile</span>
+                            <span>Tap to include this in your professional expertise blend</span>
                           )}
                         </div>
                     
