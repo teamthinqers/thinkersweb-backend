@@ -94,6 +94,7 @@ export function useDotSparkTuning() {
       intuitive: 0.6,
       contextualThinking: 0.5,
       memoryBandwidth: 0.5,
+      thoughtComplexity: 0.5,
       
       // Memory parameters
       memoryRetention: 0.75,

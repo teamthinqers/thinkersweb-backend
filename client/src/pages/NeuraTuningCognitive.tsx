@@ -167,7 +167,7 @@ export default function NeuraTuningCognitive() {
                     <div className="space-y-2">
                       <h4 className="text-sm font-semibold">Memory Bandwidth</h4>
                       <p className="text-sm">
-                        Controls how much information your neural extension holds while thinking. Lower values favor quick access to essential information (Short Burst Memory), while higher values enable deeper retention of more information simultaneously (Deep Retainer).
+                        Represents how much information you typically hold in your mind while thinking. If you prefer quick, focused thinking with essential details (Short Burst Memory), use lower values. If you tend to hold and process large amounts of information simultaneously (Deep Retainer), use higher values.
                       </p>
                     </div>
                   </HoverCardContent>
@@ -192,10 +192,48 @@ export default function NeuraTuningCognitive() {
             </div>
           </div>
           
+          {/* Thought Complexity */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <h3 className="text-lg font-medium">Thought Complexity</h3>
+                <HoverCard>
+                  <HoverCardTrigger>
+                    <Info className="h-4 w-4 text-muted-foreground" />
+                  </HoverCardTrigger>
+                  <HoverCardContent className="w-80">
+                    <div className="space-y-2">
+                      <h4 className="text-sm font-semibold">Thought Complexity</h4>
+                      <p className="text-sm">
+                        Reflects your natural thinking style. If you prefer straightforward, direct thinking that gets to the point quickly (Simple Direct), use lower values. If you tend toward nuanced, multidimensional thinking that considers many angles simultaneously (Complex Layered), use higher values.
+                      </p>
+                    </div>
+                  </HoverCardContent>
+                </HoverCard>
+              </div>
+              <span className="text-sm font-medium text-muted-foreground">
+                {Math.round((pendingChanges.thoughtComplexity ?? neuralTuning?.thoughtComplexity ?? 0.5) * 100)}%
+              </span>
+            </div>
+            <Slider
+              defaultValue={[neuralTuning?.thoughtComplexity ?? 0.5]}
+              max={1}
+              step={0.01}
+              value={[pendingChanges.thoughtComplexity ?? neuralTuning?.thoughtComplexity ?? 0.5]}
+              onValueChange={(value) => handleParameterChange('thoughtComplexity', value)}
+              className="w-full"
+            />
+            <div className="flex justify-between text-xs text-muted-foreground">
+              <span>Simple Direct</span>
+              <span>Balanced</span>
+              <span>Complex Layered</span>
+            </div>
+          </div>
+
           <div className="mt-6 bg-violet-50 dark:bg-violet-950 p-4 rounded-lg border border-violet-100 dark:border-violet-900">
-            <h4 className="text-sm font-medium text-violet-800 dark:text-violet-300 mb-2">How Memory Bandwidth Works</h4>
+            <h4 className="text-sm font-medium text-violet-800 dark:text-violet-300 mb-2">How Cognitive Style Customization Works</h4>
             <p className="text-sm text-violet-700 dark:text-violet-400">
-              Memory Bandwidth determines how much information your Neura can hold and process simultaneously. Short Burst Memory configuration enables quick access to essential information, making it ideal for rapid decision-making and real-time responses. Deep Retainer configuration allows your Neura to maintain more complex information simultaneously, supporting deeper analysis and multifaceted problem-solving.
+              These parameters help Neura better understand and reflect your personal cognitive style. Memory Bandwidth represents how much information you prefer to process at once—from focused key points to comprehensive details. Thought Complexity models your natural thinking patterns—from straightforward, direct reasoning to multifaceted, nuanced analysis. Adjust these settings to shape Neura's responses to match how your mind naturally works.
             </p>
           </div>
         </CardContent>
