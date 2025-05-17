@@ -27,6 +27,7 @@ export default function NeuraTuningCore() {
     precision?: number;
     speed?: number;
     cognitivePace?: number;
+    memoryRecall?: number;
   }>({});
   
   // Extract values from status for rendering
@@ -36,6 +37,7 @@ export default function NeuraTuningCore() {
       precision: 0.5,
       speed: 0.5,
       cognitivePace: 0.5,
+      memoryRecall: 0.5,
     }
   };
   
@@ -201,6 +203,104 @@ export default function NeuraTuningCore() {
               <div className="flex flex-col items-center">
                 <span className="text-indigo-700 dark:text-indigo-400 font-medium">Rapid Processor</span>
                 <span className="text-xs text-indigo-600/70 dark:text-indigo-400/70 mt-1">Quick & Agile</span>
+              </div>
+            </div>
+          </div>
+          
+          {/* Memory Recall */}
+          <div className="space-y-3 mt-8 border border-amber-200 dark:border-amber-800 rounded-lg p-4">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <h3 className="text-lg font-medium text-amber-700 dark:text-amber-300">Memory Recall Style</h3>
+                <HoverCard>
+                  <HoverCardTrigger>
+                    <Info className="h-4 w-4 text-amber-500 dark:text-amber-400" />
+                  </HoverCardTrigger>
+                  <HoverCardContent className="w-80">
+                    <div className="space-y-2">
+                      <h4 className="text-sm font-semibold">Memory Recall Parameter</h4>
+                      <p className="text-sm">
+                        How does your brain prefer to recall and relate information? This influences how your cognitive companion processes and connects ideas.
+                      </p>
+                    </div>
+                  </HoverCardContent>
+                </HoverCard>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-1 gap-4">
+              <div 
+                className={`relative border rounded-lg p-4 cursor-pointer transition-all ${
+                  (pendingChanges.memoryRecall ?? neuralTuning?.memoryRecall ?? 0.5) < 0.5 
+                    ? "bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-950 dark:to-yellow-950 border-amber-300 dark:border-amber-700 shadow-md" 
+                    : "border-gray-200 dark:border-gray-800 hover:border-amber-200 dark:hover:border-amber-800"
+                }`}
+                onClick={() => handleParameterChange('memoryRecall', [0.2])}
+              >
+                <div className="flex items-start gap-3">
+                  <div className="mt-1 flex-shrink-0">
+                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                      (pendingChanges.memoryRecall ?? neuralTuning?.memoryRecall ?? 0.5) < 0.5 
+                        ? "border-amber-500 bg-amber-100 dark:bg-amber-900" 
+                        : "border-gray-300 dark:border-gray-700"
+                    }`}>
+                      {(pendingChanges.memoryRecall ?? neuralTuning?.memoryRecall ?? 0.5) < 0.5 && (
+                        <div className="w-2 h-2 rounded-full bg-amber-500"></div>
+                      )}
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="text-base font-medium mb-1 flex items-center gap-2">
+                      <span role="img" aria-label="spiral" className="text-lg">🌀</span>
+                      <span className="text-amber-700 dark:text-amber-300">Analogy-Driven Recall</span>
+                    </h4>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      You connect new ideas through metaphors, comparisons, and themes. You think in "like that time when…"
+                    </p>
+                  </div>
+                </div>
+                {(pendingChanges.memoryRecall ?? neuralTuning?.memoryRecall ?? 0.5) < 0.5 && (
+                  <div className="absolute -top-2 -right-2 bg-amber-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center">
+                    <Check className="h-3 w-3" />
+                  </div>
+                )}
+              </div>
+              
+              <div 
+                className={`relative border rounded-lg p-4 cursor-pointer transition-all ${
+                  (pendingChanges.memoryRecall ?? neuralTuning?.memoryRecall ?? 0.5) >= 0.5 
+                    ? "bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-950 dark:to-cyan-950 border-blue-300 dark:border-blue-700 shadow-md" 
+                    : "border-gray-200 dark:border-gray-800 hover:border-blue-200 dark:hover:border-blue-800"
+                }`}
+                onClick={() => handleParameterChange('memoryRecall', [0.8])}
+              >
+                <div className="flex items-start gap-3">
+                  <div className="mt-1 flex-shrink-0">
+                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                      (pendingChanges.memoryRecall ?? neuralTuning?.memoryRecall ?? 0.5) >= 0.5 
+                        ? "border-blue-500 bg-blue-100 dark:bg-blue-900" 
+                        : "border-gray-300 dark:border-gray-700"
+                    }`}>
+                      {(pendingChanges.memoryRecall ?? neuralTuning?.memoryRecall ?? 0.5) >= 0.5 && (
+                        <div className="w-2 h-2 rounded-full bg-blue-500"></div>
+                      )}
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="text-base font-medium mb-1 flex items-center gap-2">
+                      <span role="img" aria-label="microscope" className="text-lg">🔬</span>
+                      <span className="text-blue-700 dark:text-blue-300">Precision-Driven Recall</span>
+                    </h4>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      You remember exact facts, sequences, names, and data points. You think in "this is what happened exactly."
+                    </p>
+                  </div>
+                </div>
+                {(pendingChanges.memoryRecall ?? neuralTuning?.memoryRecall ?? 0.5) >= 0.5 && (
+                  <div className="absolute -top-2 -right-2 bg-blue-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center">
+                    <Check className="h-3 w-3" />
+                  </div>
+                )}
               </div>
             </div>
           </div>
