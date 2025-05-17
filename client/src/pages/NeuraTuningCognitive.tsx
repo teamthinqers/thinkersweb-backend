@@ -27,6 +27,7 @@ export default function NeuraTuningCognitive() {
     thoughtComplexity?: number;
     mentalModelDensity?: number;
     patternDetectionSensitivity?: number;
+    decisionMakingIndex?: number;
   }>({});
   
   // Extract values from status for rendering
@@ -36,6 +37,7 @@ export default function NeuraTuningCognitive() {
       thoughtComplexity: 0.5,
       mentalModelDensity: 0.5,
       patternDetectionSensitivity: 0.5,
+      decisionMakingIndex: 0.5,
     }
   };
   
@@ -307,6 +309,44 @@ export default function NeuraTuningCognitive() {
               <span>Local Optimizer</span>
               <span>Balanced</span>
               <span>System Scanner</span>
+            </div>
+          </div>
+
+          {/* Decision Making Index */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <h3 className="text-lg font-medium">Decision Making Index</h3>
+                <HoverCard>
+                  <HoverCardTrigger>
+                    <Info className="h-4 w-4 text-muted-foreground" />
+                  </HoverCardTrigger>
+                  <HoverCardContent className="w-80">
+                    <div className="space-y-2">
+                      <h4 className="text-sm font-semibold">Decision Making Index</h4>
+                      <p className="text-sm">
+                        Distinguishes between intuitive and structured logical thinking. If you typically rely on gut feel, pattern recognition, or mental shortcuts and often "just know" (Intuitive Thinking), use lower values. If you prefer to break problems down step-by-step, analyze variables, and follow defined reasoning (Structured Logical Thinking), use higher values.
+                      </p>
+                    </div>
+                  </HoverCardContent>
+                </HoverCard>
+              </div>
+              <span className="text-sm font-medium text-muted-foreground">
+                {Math.round((pendingChanges.decisionMakingIndex ?? neuralTuning?.decisionMakingIndex ?? 0.5) * 100)}%
+              </span>
+            </div>
+            <Slider
+              defaultValue={[neuralTuning?.decisionMakingIndex ?? 0.5]}
+              max={1}
+              step={0.01}
+              value={[pendingChanges.decisionMakingIndex ?? neuralTuning?.decisionMakingIndex ?? 0.5]}
+              onValueChange={(value) => handleParameterChange('decisionMakingIndex', value)}
+              className="w-full"
+            />
+            <div className="flex justify-between text-xs text-muted-foreground">
+              <span>Intuitive Thinking</span>
+              <span>Balanced</span>
+              <span>Structured Logical Thinking</span>
             </div>
           </div>
 

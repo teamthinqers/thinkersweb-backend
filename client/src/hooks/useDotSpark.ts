@@ -128,6 +128,7 @@ export function useDotSpark() {
       thoughtComplexity: 0.7,
       mentalModelDensity: 0.4,
       patternDetectionSensitivity: 0.65,
+      decisionMakingIndex: 0.4,
       memoryRetention: 0.75,
       memoryRecall: 0.7,
       connectionStrength: 0.65,
