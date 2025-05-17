@@ -49,6 +49,7 @@ interface DotSparkTuning {
   speed: number;      // 0.0 to 1.0 - affects response time vs. depth tradeoff
   cognitivePace: number; // 0.0 to 1.0 - how fast brain processes and switches between thoughts
   signalFocus: number; // 0.0 to 1.0 - narrow beam (0.0) vs wide scanner (1.0) focus style
+  impulseControl: number; // 0.0 to 1.0 - high responsiveness (0.0) vs high precision (1.0)
   
   // Cognitive style parameters
   analytical: number; // 0.0 to 1.0 - logical/systematic thinking emphasis
@@ -113,6 +114,7 @@ const DEFAULT_DOTSPARK_TUNING: DotSparkTuning = {
   speed: 0.5,
   cognitivePace: 0.5,
   signalFocus: 0.5,
+  impulseControl: 0.5,
   analytical: 0.5,
   intuitive: 0.5,
   specialties: {

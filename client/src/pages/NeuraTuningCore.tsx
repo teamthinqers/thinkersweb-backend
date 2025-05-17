@@ -26,6 +26,7 @@ export default function NeuraTuningCore() {
     cognitivePace?: number;
     memoryRecall?: number;
     signalFocus?: number;
+    impulseControl?: number;
   }>({});
   
   // Extract values from status for rendering
@@ -34,6 +35,7 @@ export default function NeuraTuningCore() {
       cognitivePace: 0.5,
       memoryRecall: 0.5,
       signalFocus: 0.5,
+      impulseControl: 0.5,
     }
   };
   
@@ -399,6 +401,65 @@ export default function NeuraTuningCore() {
             </div>
           </div>
           
+          {/* Impulse Control Index */}
+          <div className="space-y-3 mt-8 border border-indigo-200 dark:border-indigo-800 rounded-lg p-4">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <h3 className="text-lg font-medium text-indigo-700 dark:text-indigo-300">Impulse Control Index</h3>
+                <HoverCard>
+                  <HoverCardTrigger>
+                    <Info className="h-4 w-4 text-indigo-500 dark:text-indigo-400" />
+                  </HoverCardTrigger>
+                  <HoverCardContent className="w-80">
+                    <div className="space-y-2">
+                      <h4 className="text-sm font-semibold">Impulse Control Parameter</h4>
+                      <p className="text-sm">
+                        This parameter balances how quickly you act vs. how long you deliberate. 
+                        At one end, high responsiveness means quick reactions. At the other end, high precision 
+                        means taking more time to consider options.
+                      </p>
+                    </div>
+                  </HoverCardContent>
+                </HoverCard>
+              </div>
+              <span className="text-sm font-medium">
+                {Math.round((pendingChanges.impulseControl ?? neuralTuning?.impulseControl ?? 0.5) * 100)}%
+              </span>
+            </div>
+            
+            <Slider
+              defaultValue={[neuralTuning?.impulseControl ?? 0.5]}
+              max={1}
+              step={0.01}
+              value={[pendingChanges.impulseControl ?? neuralTuning?.impulseControl ?? 0.5]}
+              onValueChange={(value) => handleParameterChange('impulseControl', value)}
+              className="w-full"
+            />
+            
+            <div className="grid grid-cols-3 text-center text-sm mt-2">
+              <div className="flex flex-col items-center">
+                <div className="mb-1 bg-violet-100 dark:bg-violet-900 p-1 rounded-md">
+                  <ZapIcon className="h-5 w-5 text-violet-600 dark:text-violet-400" />
+                </div>
+                <span className="text-violet-700 dark:text-violet-300 font-medium">High Responsiveness</span>
+                <span className="text-xs text-muted-foreground mt-1">Quick reactions to incoming stimuli</span>
+              </div>
+              <div className="flex flex-col items-center">
+                <div className="mb-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-md">
+                  <BalanceIcon className="h-5 w-5 text-slate-600 dark:text-slate-400" />
+                </div>
+                <span className="text-slate-700 dark:text-slate-300 font-medium">Balanced</span>
+                <span className="text-xs text-muted-foreground mt-1">Context-dependent approach</span>
+              </div>
+              <div className="flex flex-col items-center">
+                <div className="mb-1 bg-blue-100 dark:bg-blue-900 p-1 rounded-md">
+                  <SearchIcon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                </div>
+                <span className="text-blue-700 dark:text-blue-300 font-medium">High Precision</span>
+                <span className="text-xs text-muted-foreground mt-1">Careful consideration before action</span>
+              </div>
+            </div>
+          </div>
 
         </CardContent>
         

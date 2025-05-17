@@ -41,6 +41,7 @@ export interface DotSparkStatus {
     adaptability: number;
     cognitivePace: number;
     signalFocus: number;
+    impulseControl: number;
     
     // Cognitive style parameters
     analytical: number;
@@ -111,6 +112,7 @@ export function useDotSpark() {
       adaptability: 0.65,
       cognitivePace: 0.5,
       signalFocus: 0.5,
+      impulseControl: 0.5,
       analytical: 0.8,
       intuitive: 0.6,
       memoryRetention: 0.75,
