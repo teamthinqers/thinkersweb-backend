@@ -111,6 +111,8 @@ const DEFAULT_DOTSPARK_TUNING: DotSparkTuning = {
   creativity: 0.5,
   precision: 0.5,
   speed: 0.5,
+  cognitivePace: 0.5,
+  signalFocus: 0.5,
   analytical: 0.5,
   intuitive: 0.5,
   specialties: {
