@@ -5,7 +5,7 @@ import { useDotSparkTuning } from '@/hooks/useDotSparkTuning';
 import { Slider } from '@/components/ui/slider';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { Zap, ChevronLeft, Save, Info, Check } from 'lucide-react';
+import { Zap, ChevronLeft, Save, Info, Check, Search, Scale } from 'lucide-react';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 
 export default function NeuraTuningCore() {
@@ -439,21 +439,21 @@ export default function NeuraTuningCore() {
             <div className="grid grid-cols-3 text-center text-sm mt-2">
               <div className="flex flex-col items-center">
                 <div className="mb-1 bg-violet-100 dark:bg-violet-900 p-1 rounded-md">
-                  <ZapIcon className="h-5 w-5 text-violet-600 dark:text-violet-400" />
+                  <Zap className="h-5 w-5 text-violet-600 dark:text-violet-400" />
                 </div>
                 <span className="text-violet-700 dark:text-violet-300 font-medium">High Responsiveness</span>
                 <span className="text-xs text-muted-foreground mt-1">Quick reactions to incoming stimuli</span>
               </div>
               <div className="flex flex-col items-center">
                 <div className="mb-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-md">
-                  <BalanceIcon className="h-5 w-5 text-slate-600 dark:text-slate-400" />
+                  <Scale className="h-5 w-5 text-slate-600 dark:text-slate-400" />
                 </div>
                 <span className="text-slate-700 dark:text-slate-300 font-medium">Balanced</span>
                 <span className="text-xs text-muted-foreground mt-1">Context-dependent approach</span>
               </div>
               <div className="flex flex-col items-center">
                 <div className="mb-1 bg-blue-100 dark:bg-blue-900 p-1 rounded-md">
-                  <SearchIcon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                  <Search className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                 </div>
                 <span className="text-blue-700 dark:text-blue-300 font-medium">High Precision</span>
                 <span className="text-xs text-muted-foreground mt-1">Careful consideration before action</span>
