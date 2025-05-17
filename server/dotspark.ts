@@ -57,6 +57,7 @@ interface DotSparkTuning {
   intuitive: number;  // 0.0 to 1.0 - pattern recognition/insight emphasis
   contextualThinking: number; // 0.0 to 1.0 - contextual (0.0) vs universal (1.0) thinking
   memoryBandwidth: number; // 0.0 to 1.0 - short burst memory (0.0) vs deep retainer (1.0)
+  thoughtComplexity: number; // 0.0 to 1.0 - simple direct (0.0) vs complex layered (1.0)
   
   // Specialty focus areas (weights for different domains)
   specialties: {
@@ -123,6 +124,7 @@ const DEFAULT_DOTSPARK_TUNING: DotSparkTuning = {
   intuitive: 0.5,
   contextualThinking: 0.5,
   memoryBandwidth: 0.5,
+  thoughtComplexity: 0.5,
   specialties: {
     general: 1.0,
     business: 0.5,

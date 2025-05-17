@@ -48,6 +48,8 @@ export interface DotSparkStatus {
     analytical: number;
     intuitive: number;
     contextualThinking: number;
+    memoryBandwidth: number;
+    thoughtComplexity: number;
     
     // Memory parameters
     memoryRetention: number;

@@ -24,12 +24,14 @@ export default function NeuraTuningCognitive() {
   const [unsavedChanges, setUnsavedChanges] = useState(false);
   const [pendingChanges, setPendingChanges] = useState<{
     memoryBandwidth?: number;
+    thoughtComplexity?: number;
   }>({});
   
   // Extract values from status for rendering
   const { tuning: neuralTuning } = status || { 
     tuning: {
       memoryBandwidth: 0.5,
+      thoughtComplexity: 0.5,
     }
   };
   
@@ -111,7 +113,7 @@ export default function NeuraTuningCognitive() {
           <Button variant="ghost" onClick={() => setLocation('/my-neura')} className="p-2">
             <ChevronLeft className="h-5 w-5" />
           </Button>
-          <h1 className="text-2xl font-bold">Cognitive Style</h1>
+          <h1 className="text-2xl font-bold">Memory Bandwidth</h1>
         </div>
         {unsavedChanges && (
           <Button 
@@ -143,9 +145,9 @@ export default function NeuraTuningCognitive() {
               <BrainCog className="h-6 w-6 text-violet-600 dark:text-violet-400" />
             </div>
             <div>
-              <CardTitle>Cognitive Style Parameters</CardTitle>
+              <CardTitle>Memory Bandwidth</CardTitle>
               <CardDescription>
-                Define how your neural extension processes information
+                Control how much information your Neura holds while thinking
               </CardDescription>
             </div>
           </div>

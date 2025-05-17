@@ -20,6 +20,7 @@ interface TuningParams {
   intuitive?: number;   // 0.0 to 1.0 - pattern recognition/insight emphasis
   contextualThinking?: number; // 0.0 to 1.0 - contextual (0.0) vs universal (1.0) thinking
   memoryBandwidth?: number; // 0.0 to 1.0 - short burst memory (0.0) vs deep retainer (1.0)
+  thoughtComplexity?: number; // 0.0 to 1.0 - simple direct (0.0) vs complex layered (1.0)
   
   // Memory parameters
   memoryRetention?: number; // 0.0 to 1.0 - how strongly information is retained
