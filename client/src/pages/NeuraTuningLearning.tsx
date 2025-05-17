@@ -407,50 +407,80 @@ export default function NeuraTuningLearning() {
                   : "Activate to get daily insights on WhatsApp"}
               </p>
               
-              {/* Time investment options */}
-              {enableLearningPrompts && (
-                <div className="grid grid-cols-3 gap-1 mt-3">
-                  {learningTimeOptions.map((option) => (
-                    <div 
-                      key={option.value}
-                      className={`rounded-lg p-2 cursor-pointer transition-all text-center ${
-                        learningTime === option.value 
-                          ? 'bg-white dark:bg-gray-900 border border-emerald-300 dark:border-emerald-700 shadow-sm' 
-                          : 'border border-transparent hover:bg-white/70 dark:hover:bg-gray-900/50'
-                      }`}
-                      onClick={() => handleLearningTimeChange(option.value)}
-                    >
-                      <div className="text-lg mb-1 flex justify-center">
-                        {option.value === '5' && '⚡'}
-                        {option.value === '10' && '⚡⚡'}
-                        {option.value === '15' && '⚡⚡⚡'}
-                      </div>
-                      <span className={`text-xs font-medium block ${
-                        learningTime === option.value ? 'text-emerald-700 dark:text-emerald-400' : ''
-                      }`}>
-                        {option.label}
-                      </span>
+              {/* Time investment options - always visible */}
+              <div className={`grid grid-cols-3 gap-1 mt-3 ${!enableLearningPrompts ? 'opacity-70' : ''}`}>
+                {learningTimeOptions.map((option) => (
+                  <div 
+                    key={option.value}
+                    className={`rounded-lg p-2 ${enableLearningPrompts ? 'cursor-pointer' : 'cursor-default'} transition-all text-center ${
+                      learningTime === option.value 
+                        ? 'bg-white dark:bg-gray-900 border border-emerald-300 dark:border-emerald-700 shadow-sm' 
+                        : 'border border-transparent hover:bg-white/70 dark:hover:bg-gray-900/50'
+                    }`}
+                    onClick={() => enableLearningPrompts && handleLearningTimeChange(option.value)}
+                  >
+                    <div className="text-lg mb-1 flex justify-center">
+                      {option.value === '5' && '⚡'}
+                      {option.value === '10' && '⚡⚡'}
+                      {option.value === '15' && '⚡⚡⚡'}
                     </div>
-                  ))}
-                </div>
-              )}
+                    <span className={`text-xs font-medium block ${
+                      learningTime === option.value ? 'text-emerald-700 dark:text-emerald-400' : ''
+                    }`}>
+                      {option.label}
+                    </span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
           
-          {/* Compound effect banner - show when WhatsApp learning is activated */}
-          {enableLearningPrompts && (
-            <div className="mt-3 bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-950/30 dark:to-purple-950/30 p-3 rounded-lg border border-indigo-100 dark:border-indigo-900/50 shadow-sm">
-              <div className="flex items-center gap-2">
-                <div className="text-indigo-600 dark:text-indigo-400 text-xl flex-shrink-0">📈</div>
-                <div>
-                  <p className="text-xs font-medium text-indigo-700 dark:text-indigo-300">Small inputs, huge impact</p>
-                  <p className="text-xs text-indigo-600/90 dark:text-indigo-400/90">
-                    10 min daily = <span className="font-semibold">60+ hours yearly</span>. Micro-learning compounds!
+          {/* Compound effect banner - always visible */}
+          <div className={`mt-4 ${!enableLearningPrompts ? 'opacity-70' : ''}`}>
+            <div className="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-950/30 dark:to-purple-950/30 p-4 rounded-lg border border-indigo-100 dark:border-indigo-900/50 shadow-sm relative overflow-hidden">
+              {/* Visual elements */}
+              <div className="absolute right-3 top-3 text-4xl opacity-20 rotate-12">⏱️</div>
+              <div className="absolute left-24 bottom-3 text-xl opacity-20">📚</div>
+              
+              <div className="flex items-center gap-3 relative">
+                <div className="p-3 bg-indigo-100 dark:bg-indigo-900/60 rounded-full flex-shrink-0">
+                  <div className="text-xl">📈</div>
+                </div>
+                
+                <div className="space-y-2">
+                  <h3 className="text-sm font-semibold text-indigo-700 dark:text-indigo-300">The Compound Effect</h3>
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <div className="bg-white dark:bg-gray-900 py-1 px-2 rounded border border-indigo-200 dark:border-indigo-800 flex items-center gap-1.5">
+                      <span className="text-base font-bold text-indigo-600 dark:text-indigo-400">5</span>
+                      <span className="text-xs text-indigo-500 dark:text-indigo-500">min/day</span>
+                    </div>
+                    <span className="text-xs text-indigo-600 dark:text-indigo-400">=</span>
+                    <div className="bg-white dark:bg-gray-900 py-1 px-2 rounded border border-indigo-200 dark:border-indigo-800 flex items-center gap-1.5">
+                      <span className="text-base font-bold text-indigo-600 dark:text-indigo-400">30</span>
+                      <span className="text-xs text-indigo-500 dark:text-indigo-500">hours/year</span>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <div className="bg-white dark:bg-gray-900 py-1 px-2 rounded border border-indigo-200 dark:border-indigo-800 flex items-center gap-1.5">
+                      <span className="text-base font-bold text-indigo-600 dark:text-indigo-400">10</span>
+                      <span className="text-xs text-indigo-500 dark:text-indigo-500">min/day</span>
+                    </div>
+                    <span className="text-xs text-indigo-600 dark:text-indigo-400">=</span>
+                    <div className="bg-white dark:bg-gray-900 py-1 px-2 rounded border border-indigo-200 dark:border-indigo-800 flex items-center gap-1.5">
+                      <span className="text-base font-bold text-indigo-600 dark:text-indigo-400">60+</span>
+                      <span className="text-xs text-indigo-500 dark:text-indigo-500">hours/year</span>
+                    </div>
+                  </div>
+                  
+                  <p className="text-xs text-indigo-600/90 dark:text-indigo-400/90 border-t border-indigo-100 dark:border-indigo-900/50 pt-2 mt-1">
+                    Small, consistent investments lead to remarkable growth over time. 
+                    <span className="font-medium"> Micro-learning compounds!</span>
                   </p>
                 </div>
               </div>
             </div>
-          )}
+          </div>
         </CardHeader>
         
         <CardContent className="pt-6">
