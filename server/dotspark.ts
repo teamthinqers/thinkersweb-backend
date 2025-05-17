@@ -55,6 +55,7 @@ interface DotSparkTuning {
   // Cognitive style parameters
   analytical: number; // 0.0 to 1.0 - logical/systematic thinking emphasis
   intuitive: number;  // 0.0 to 1.0 - pattern recognition/insight emphasis
+  contextualThinking: number; // 0.0 to 1.0 - contextual (0.0) vs universal (1.0) thinking
   
   // Specialty focus areas (weights for different domains)
   specialties: {
@@ -119,6 +120,7 @@ const DEFAULT_DOTSPARK_TUNING: DotSparkTuning = {
   mentalEnergyFlow: 0.5,
   analytical: 0.5,
   intuitive: 0.5,
+  contextualThinking: 0.5,
   specialties: {
     general: 1.0,
     business: 0.5,

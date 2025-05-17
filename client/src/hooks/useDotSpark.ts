@@ -47,6 +47,7 @@ export interface DotSparkStatus {
     // Cognitive style parameters
     analytical: number;
     intuitive: number;
+    contextualThinking: number;
     
     // Memory parameters
     memoryRetention: number;
@@ -117,6 +118,7 @@ export function useDotSpark() {
       mentalEnergyFlow: 0.5,
       analytical: 0.8,
       intuitive: 0.6,
+      contextualThinking: 0.5,
       memoryRetention: 0.75,
       memoryRecall: 0.7,
       connectionStrength: 0.65,

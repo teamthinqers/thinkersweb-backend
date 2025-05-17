@@ -25,6 +25,7 @@ export default function NeuraTuningCognitive() {
   const [pendingChanges, setPendingChanges] = useState<{
     analytical?: number;
     intuitive?: number;
+    contextualThinking?: number;
   }>({});
   
   // Extract values from status for rendering
@@ -32,6 +33,7 @@ export default function NeuraTuningCognitive() {
     tuning: {
       analytical: 0.5,
       intuitive: 0.5,
+      contextualThinking: 0.5,
     }
   };
   
@@ -230,10 +232,48 @@ export default function NeuraTuningCognitive() {
             </div>
           </div>
           
+          {/* Contextual vs. Universal Thinking */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <h3 className="text-lg font-medium">Contextual vs. Universal Thinking</h3>
+                <HoverCard>
+                  <HoverCardTrigger>
+                    <Info className="h-4 w-4 text-muted-foreground" />
+                  </HoverCardTrigger>
+                  <HoverCardContent className="w-80">
+                    <div className="space-y-2">
+                      <h4 className="text-sm font-semibold">Contextual vs. Universal Thinking</h4>
+                      <p className="text-sm">
+                        Determines whether your neural extension prioritizes situational, context-dependent thinking or focuses on universal principles and broad applications. Lower values emphasize specific contexts and adaptability to unique situations, while higher values prioritize consistent principles across different scenarios.
+                      </p>
+                    </div>
+                  </HoverCardContent>
+                </HoverCard>
+              </div>
+              <span className="text-sm font-medium text-muted-foreground">
+                {Math.round((pendingChanges.contextualThinking ?? neuralTuning?.contextualThinking ?? 0.5) * 100)}%
+              </span>
+            </div>
+            <Slider
+              defaultValue={[neuralTuning?.contextualThinking ?? 0.5]}
+              max={1}
+              step={0.01}
+              value={[pendingChanges.contextualThinking ?? neuralTuning?.contextualThinking ?? 0.5]}
+              onValueChange={(value) => handleParameterChange('contextualThinking', value)}
+              className="w-full"
+            />
+            <div className="flex justify-between text-xs text-muted-foreground">
+              <span>Situational Focus</span>
+              <span>Balanced</span>
+              <span>Universal Principles</span>
+            </div>
+          </div>
+          
           <div className="mt-6 bg-violet-50 dark:bg-violet-950 p-4 rounded-lg border border-violet-100 dark:border-violet-900">
             <h4 className="text-sm font-medium text-violet-800 dark:text-violet-300 mb-2">How Cognitive Style Works</h4>
             <p className="text-sm text-violet-700 dark:text-violet-400">
-              The cognitive style parameters define how your neural extension approaches problems and processes information. Balancing analytical and intuitive thinking creates a well-rounded assistant, while emphasizing one over the other tailors responses to your preferred thinking style.
+              The cognitive style parameters define how your neural extension approaches problems and processes information. Balancing analytical and intuitive thinking with contextual awareness creates a well-rounded assistant, while emphasizing specific parameters tailors responses to your preferred thinking style.
             </p>
           </div>
         </CardContent>
