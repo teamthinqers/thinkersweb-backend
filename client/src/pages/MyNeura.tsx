@@ -493,30 +493,33 @@ export default function MyNeura() {
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2">
               <BrainCircuit className="h-5 w-5 text-indigo-700 dark:text-indigo-400" />
-              <CardTitle>
+              <CardTitle className="flex items-center">
                 <span className="font-bold bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">My Neural Capacity</span>
                 <HoverCard>
                   <HoverCardTrigger asChild>
-                    <Info className="h-4 w-4 text-muted-foreground inline-block ml-1 cursor-help" />
+                    <Button variant="ghost" size="icon" className="h-6 w-6 p-0 ml-1">
+                      <Info className="h-4 w-4 text-muted-foreground" />
+                      <span className="sr-only">How to improve capacity</span>
+                    </Button>
                   </HoverCardTrigger>
-                  <HoverCardContent className="w-80">
-                    <div className="space-y-2">
+                  <HoverCardContent className="w-80 p-4">
+                    <div className="space-y-3">
                       <h4 className="text-sm font-semibold">How to improve your Neural Capacity</h4>
-                      <ul className="text-sm space-y-1">
-                        <li className="flex gap-2">
-                          <Check className="h-4 w-4 text-green-500 flex-shrink-0" />
+                      <ul className="text-sm space-y-2">
+                        <li className="flex items-start gap-2">
+                          <Check className="h-4 w-4 text-green-500 flex-shrink-0 mt-0.5" />
                           <span>Use Neura regularly to increase Processing</span>
                         </li>
-                        <li className="flex gap-2">
-                          <Check className="h-4 w-4 text-green-500 flex-shrink-0" />
+                        <li className="flex items-start gap-2">
+                          <Check className="h-4 w-4 text-green-500 flex-shrink-0 mt-0.5" />
                           <span>Add entries and save knowledge to boost Memory</span>
                         </li>
-                        <li className="flex gap-2">
-                          <Check className="h-4 w-4 text-green-500 flex-shrink-0" />
+                        <li className="flex items-start gap-2">
+                          <Check className="h-4 w-4 text-green-500 flex-shrink-0 mt-0.5" />
                           <span>Enable WhatsApp integration to improve Learning</span>
                         </li>
-                        <li className="flex gap-2">
-                          <Check className="h-4 w-4 text-green-500 flex-shrink-0" />
+                        <li className="flex items-start gap-2">
+                          <Check className="h-4 w-4 text-green-500 flex-shrink-0 mt-0.5" />
                           <span>Make decisions with Neura to enhance Implementation</span>
                         </li>
                       </ul>
@@ -526,7 +529,7 @@ export default function MyNeura() {
               </CardTitle>
             </div>
             <Badge className="bg-indigo-100 text-indigo-800 dark:bg-indigo-900/50 dark:text-indigo-200 hover:bg-indigo-200 dark:hover:bg-indigo-800/50">
-              Level {gameElements?.level || 1}
+              Level 1
             </Badge>
           </div>
           <CardDescription>Track your neural system's capacity and performance metrics</CardDescription>
@@ -537,9 +540,9 @@ export default function MyNeura() {
           <div className="mb-4">
             <div className="flex justify-between mb-1.5 text-sm font-medium">
               <span>Experience</span>
-              <span>{gameElements?.experience || 0} / {gameElements?.experienceRequired || 1000} XP</span>
+              <span>125 / 1000 XP</span>
             </div>
-            <Progress value={(gameElements?.experience || 0) / (gameElements?.experienceRequired || 1000) * 100} className="h-2 bg-indigo-100 dark:bg-indigo-950" />
+            <Progress value={12.5} className="h-2 bg-indigo-100 dark:bg-indigo-950" />
           </div>
           
           {/* Capacity Metrics */}
