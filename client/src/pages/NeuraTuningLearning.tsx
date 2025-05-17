@@ -448,7 +448,7 @@ export default function NeuraTuningLearning() {
                 </div>
                 
                 <div className="space-y-2">
-                  <h3 className="text-sm font-semibold text-indigo-700 dark:text-indigo-300">The Compound Effect</h3>
+                  <h3 className="text-sm font-semibold text-indigo-700 dark:text-indigo-300">The Exponential Effect</h3>
                   <div className="flex items-center gap-3 flex-wrap">
                     <div className="bg-white dark:bg-gray-900 py-1 px-2 rounded border border-indigo-200 dark:border-indigo-800 flex items-center gap-1.5">
                       <span className="text-base font-bold text-indigo-600 dark:text-indigo-400">5</span>
@@ -474,8 +474,8 @@ export default function NeuraTuningLearning() {
                   </div>
                   
                   <p className="text-xs text-indigo-600/90 dark:text-indigo-400/90 border-t border-indigo-100 dark:border-indigo-900/50 pt-2 mt-1">
-                    Small, consistent investments lead to remarkable growth over time. 
-                    <span className="font-medium"> Micro-learning compounds!</span>
+                    Small, consistent investments lead to exponential knowledge growth over time. 
+                    <span className="font-medium"> Each session builds on the last for accelerating returns!</span>
                   </p>
                 </div>
               </div>
