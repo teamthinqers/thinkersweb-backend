@@ -158,6 +158,44 @@ export default function NeuraTuningCore() {
         </CardHeader>
         
         <CardContent className="pt-6 space-y-6">
+          {/* Cognitive Pace */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <h3 className="text-lg font-medium">Cognitive Pace</h3>
+                <HoverCard>
+                  <HoverCardTrigger>
+                    <Info className="h-4 w-4 text-muted-foreground" />
+                  </HoverCardTrigger>
+                  <HoverCardContent className="w-80">
+                    <div className="space-y-2">
+                      <h4 className="text-sm font-semibold">Cognitive Pace Parameter</h4>
+                      <p className="text-sm">
+                        How fast your brain tends to process and switch between thoughts. Lower values indicate deeper, more focused processing, while higher values suggest rapid, agile thinking.
+                      </p>
+                    </div>
+                  </HoverCardContent>
+                </HoverCard>
+              </div>
+              <span className="text-sm font-medium text-muted-foreground">
+                {Math.round((pendingChanges.cognitivePace ?? neuralTuning?.cognitivePace ?? 0.5) * 100)}%
+              </span>
+            </div>
+            <Slider
+              defaultValue={[neuralTuning?.cognitivePace ?? 0.5]}
+              max={1}
+              step={0.01}
+              value={[pendingChanges.cognitivePace ?? neuralTuning?.cognitivePace ?? 0.5]}
+              onValueChange={(value) => handleParameterChange('cognitivePace', value)}
+              className="w-full"
+            />
+            <div className="flex justify-between text-xs text-muted-foreground">
+              <span>Deep Processor</span>
+              <span>Balanced</span>
+              <span>Rapid Processor</span>
+            </div>
+          </div>
+          
           {/* Creativity */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">

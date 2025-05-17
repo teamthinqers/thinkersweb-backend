@@ -10,6 +10,7 @@ interface TuningParams {
   precision?: number;   // 0.0 to 1.0 - affects factual accuracy and detail level
   speed?: number;       // 0.0 to 1.0 - affects response time vs. depth tradeoff
   adaptability?: number; // 0.0 to 1.0 - affects how quickly DotSpark adapts to new information
+  cognitivePace?: number; // 0.0 to 1.0 - how fast brain processes and switches between thoughts
   
   // Cognitive style parameters
   analytical?: number;  // 0.0 to 1.0 - logical/systematic thinking emphasis
