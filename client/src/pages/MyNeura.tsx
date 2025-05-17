@@ -482,7 +482,7 @@ export default function MyNeura() {
       {/* Header Section with Status Indicators */}
       {renderHeader()}
       
-      {/* Neural Extension Level Card with Capacity Metrics */}
+      {/* My Neural Capacity Card with Metrics */}
       <Card className="mb-8 bg-gradient-to-br from-indigo-50 to-slate-50 dark:from-indigo-950/30 dark:to-slate-950 border border-indigo-100 dark:border-indigo-900/50 overflow-hidden">
         <div className="relative overflow-hidden">
           <div className="absolute -right-16 -top-16 w-48 h-48 bg-gradient-to-br from-indigo-200/30 to-blue-200/10 dark:from-indigo-800/20 dark:to-blue-800/5 rounded-full blur-3xl"></div>
@@ -500,7 +500,7 @@ export default function MyNeura() {
               Level {gameElements?.level || 1}
             </Badge>
           </div>
-          <CardDescription>Configure how your neural extension processes information</CardDescription>
+          <CardDescription>Track your neural system's capacity and performance metrics</CardDescription>
         </CardHeader>
         
         <CardContent className="pb-4 relative z-10">
@@ -578,6 +578,7 @@ export default function MyNeura() {
                 </div>
               </div>
               <div className="text-sm font-medium mt-1">Memory</div>
+              <div className="text-xs text-muted-foreground">Entries & Storage</div>
               <div className="text-xl font-bold">{Math.round(memoryCapacity)}%</div>
             </div>
             
