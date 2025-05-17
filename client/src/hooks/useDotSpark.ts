@@ -39,6 +39,7 @@ export interface DotSparkStatus {
     precision: number;
     speed: number;
     adaptability: number;
+    cognitivePace: number;
     
     // Cognitive style parameters
     analytical: number;
@@ -106,8 +107,17 @@ export function useDotSpark() {
       creativity: 0.7,
       precision: 0.8,
       speed: 0.5,
+      adaptability: 0.65,
+      cognitivePace: 0.5,
       analytical: 0.8,
       intuitive: 0.6,
+      memoryRetention: 0.75,
+      memoryRecall: 0.7,
+      connectionStrength: 0.65,
+      patternRecognition: 0.8,
+      learningRate: 0.6,
+      conceptIntegration: 0.7,
+      curiosityIndex: 0.85,
       specialties: {
         'tech': 0.9,
         'business': 0.7,

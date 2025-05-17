@@ -78,6 +78,7 @@ export function useDotSparkTuning() {
       precision: 0.8,
       speed: 0.5,
       adaptability: 0.65,
+      cognitivePace: 0.5,
       
       // Cognitive style parameters
       analytical: 0.8,
