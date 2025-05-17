@@ -545,6 +545,7 @@ export default function MyNeura() {
                 </div>
               </div>
               <div className="text-sm font-medium mt-1">Processing</div>
+              <div className="text-xs text-muted-foreground">Usage Frequency</div>
               <div className="text-xl font-bold">{Math.round(processingEfficiency)}%</div>
             </div>
             
@@ -612,6 +613,7 @@ export default function MyNeura() {
                 </div>
               </div>
               <div className="text-sm font-medium mt-1">Learning</div>
+              <div className="text-xs text-muted-foreground">WhatsApp Interactions</div>
               <div className="text-xl font-bold">{Math.round(learningRate)}%</div>
             </div>
             
@@ -644,7 +646,8 @@ export default function MyNeura() {
                   <Target className="h-5 w-5 text-green-500" />
                 </div>
               </div>
-              <div className="text-sm font-medium mt-1">Specialization</div>
+              <div className="text-sm font-medium mt-1">Implementation</div>
+              <div className="text-xs text-muted-foreground">Decision Making</div>
               <div className="text-xl font-bold">{Math.round(specializationLevel)}%</div>
             </div>
           </div>
