@@ -442,40 +442,91 @@ export default function NeuraTuningLearning() {
               <div className="absolute right-3 top-3 text-4xl opacity-20 rotate-12">⏱️</div>
               <div className="absolute left-24 bottom-3 text-xl opacity-20">📚</div>
               
-              <div className="flex items-center gap-3 relative">
-                <div className="p-3 bg-indigo-100 dark:bg-indigo-900/60 rounded-full flex-shrink-0">
-                  <div className="text-xl">📈</div>
+              <div className="flex items-start gap-3 relative">
+                <div className="p-3 bg-indigo-100 dark:bg-indigo-900/60 rounded-full flex-shrink-0 mt-1">
+                  <div className="text-xl animate-pulse">📈</div>
                 </div>
                 
-                <div className="space-y-2">
-                  <h3 className="text-sm font-semibold text-indigo-700 dark:text-indigo-300">The Exponential Effect</h3>
-                  <div className="flex items-center gap-3 flex-wrap">
-                    <div className="bg-white dark:bg-gray-900 py-1 px-2 rounded border border-indigo-200 dark:border-indigo-800 flex items-center gap-1.5">
-                      <span className="text-base font-bold text-indigo-600 dark:text-indigo-400">5</span>
-                      <span className="text-xs text-indigo-500 dark:text-indigo-500">min/day</span>
+                <div className="space-y-3">
+                  <h3 className="text-sm font-semibold text-indigo-700 dark:text-indigo-300 bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400 bg-clip-text text-transparent inline-block">The Exponential Effect</h3>
+                  
+                  <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm p-3 rounded-lg border border-indigo-200 dark:border-indigo-800 relative overflow-hidden">
+                    {/* Exponential curve visual element */}
+                    <div className="absolute right-0 bottom-0 w-20 h-16 opacity-10">
+                      <svg viewBox="0 0 100 80" className="w-full h-full text-indigo-600">
+                        <path d="M0,80 C20,80 30,70 40,50 C50,30 60,10 80,5 C90,2 100,0 100,0" stroke="currentColor" strokeWidth="4" fill="none" />
+                      </svg>
                     </div>
-                    <span className="text-xs text-indigo-600 dark:text-indigo-400">=</span>
-                    <div className="bg-white dark:bg-gray-900 py-1 px-2 rounded border border-indigo-200 dark:border-indigo-800 flex items-center gap-1.5">
-                      <span className="text-base font-bold text-indigo-600 dark:text-indigo-400">30</span>
-                      <span className="text-xs text-indigo-500 dark:text-indigo-500">hours/year</span>
+                    
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <div className="bg-indigo-100 dark:bg-indigo-900/60 py-1 px-2 rounded-md flex items-center justify-center w-16">
+                            <span className="text-base font-bold text-indigo-600 dark:text-indigo-400">5</span>
+                            <span className="text-xs text-indigo-500 dark:text-indigo-500 ml-1">min/day</span>
+                          </div>
+                          <span className="text-xs text-indigo-600 dark:text-indigo-400">=</span>
+                        </div>
+                        
+                        <div className="flex items-center">
+                          <div className="bg-indigo-50 dark:bg-indigo-950/30 py-1 px-2 rounded-md border border-indigo-200 dark:border-indigo-800 w-16 h-8">
+                            <div className="relative h-full flex items-center justify-center">
+                              <span className="text-base font-bold text-indigo-600 dark:text-indigo-400">30</span>
+                              <span className="text-xs text-indigo-500 dark:text-indigo-500 ml-1">hrs</span>
+                            </div>
+                          </div>
+                          <div className="flex ml-2">
+                            <div className="bg-indigo-200 dark:bg-indigo-800 h-2 w-2 rounded-full"></div>
+                            <div className="bg-indigo-300 dark:bg-indigo-700 h-2 w-2 rounded-full"></div>
+                            <div className="bg-indigo-400 dark:bg-indigo-600 h-2 w-2 rounded-full"></div>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <div className="bg-indigo-100 dark:bg-indigo-900/60 py-1 px-2 rounded-md flex items-center justify-center w-16">
+                            <span className="text-base font-bold text-indigo-600 dark:text-indigo-400">10</span>
+                            <span className="text-xs text-indigo-500 dark:text-indigo-500 ml-1">min/day</span>
+                          </div>
+                          <span className="text-xs text-indigo-600 dark:text-indigo-400">=</span>
+                        </div>
+                        
+                        <div className="flex items-center">
+                          <div className="bg-indigo-50 dark:bg-indigo-950/30 py-1 px-2 rounded-md border border-indigo-200 dark:border-indigo-800 w-16 h-8">
+                            <div className="relative h-full flex items-center justify-center">
+                              <span className="text-base font-bold text-indigo-600 dark:text-indigo-400">60</span>
+                              <span className="text-xs text-indigo-500 dark:text-indigo-500 ml-1">hrs</span>
+                              <span className="absolute -right-1 -top-1 text-xs text-indigo-600 dark:text-indigo-400">+</span>
+                            </div>
+                          </div>
+                          <div className="flex ml-2">
+                            <div className="bg-indigo-200 dark:bg-indigo-800 h-2 w-2 rounded-full"></div>
+                            <div className="bg-indigo-300 dark:bg-indigo-700 h-2 w-2 rounded-full"></div>
+                            <div className="bg-indigo-400 dark:bg-indigo-600 h-2 w-2 rounded-full"></div>
+                            <div className="bg-indigo-500 dark:bg-indigo-500 h-2 w-2 rounded-full"></div>
+                            <div className="bg-indigo-600 dark:bg-indigo-400 h-2 w-2 rounded-full"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="flex justify-center mt-3">
+                      <div className="flex items-center justify-center">
+                        <span className="inline-block w-4 h-4 rounded-full bg-indigo-200 dark:bg-indigo-800 animate-pulse"></span>
+                        <div className="h-[2px] w-8 bg-gradient-to-r from-indigo-200 to-indigo-400 dark:from-indigo-800 dark:to-indigo-600"></div>
+                        <span className="inline-block w-5 h-5 rounded-full bg-indigo-300 dark:bg-indigo-700 animate-pulse" style={{ animationDelay: "0.1s" }}></span>
+                        <div className="h-[2px] w-8 bg-gradient-to-r from-indigo-300 to-indigo-500 dark:from-indigo-700 dark:to-indigo-500"></div>
+                        <span className="inline-block w-6 h-6 rounded-full bg-indigo-400 dark:bg-indigo-600 animate-pulse" style={{ animationDelay: "0.2s" }}></span>
+                        <div className="h-[2px] w-8 bg-gradient-to-r from-indigo-400 to-indigo-600 dark:from-indigo-600 dark:to-indigo-400"></div>
+                        <span className="inline-block w-7 h-7 rounded-full bg-indigo-500 dark:bg-indigo-500 animate-pulse" style={{ animationDelay: "0.3s" }}></span>
+                      </div>
                     </div>
                   </div>
                   
-                  <div className="flex items-center gap-3 flex-wrap">
-                    <div className="bg-white dark:bg-gray-900 py-1 px-2 rounded border border-indigo-200 dark:border-indigo-800 flex items-center gap-1.5">
-                      <span className="text-base font-bold text-indigo-600 dark:text-indigo-400">10</span>
-                      <span className="text-xs text-indigo-500 dark:text-indigo-500">min/day</span>
-                    </div>
-                    <span className="text-xs text-indigo-600 dark:text-indigo-400">=</span>
-                    <div className="bg-white dark:bg-gray-900 py-1 px-2 rounded border border-indigo-200 dark:border-indigo-800 flex items-center gap-1.5">
-                      <span className="text-base font-bold text-indigo-600 dark:text-indigo-400">60+</span>
-                      <span className="text-xs text-indigo-500 dark:text-indigo-500">hours/year</span>
-                    </div>
-                  </div>
-                  
-                  <p className="text-xs text-indigo-600/90 dark:text-indigo-400/90 border-t border-indigo-100 dark:border-indigo-900/50 pt-2 mt-1">
-                    Small, consistent investments lead to exponential knowledge growth over time. 
-                    <span className="font-medium"> Each session builds on the last for accelerating returns!</span>
+                  <p className="text-xs text-indigo-600/90 dark:text-indigo-400/90 border-t border-indigo-100 dark:border-indigo-900/50 pt-2">
+                    <span className="font-medium block mb-0.5">Each session amplifies your knowledge exponentially!</span>
+                    Quick daily learning creates a knowledge network that grows faster as connections multiply.
                   </p>
                 </div>
               </div>
