@@ -93,7 +93,7 @@ export default function DotSparkCapacityPage() {
         <Button variant="ghost" asChild className="p-2">
           <Link href="/"><ChevronLeft className="h-5 w-5" /></Link>
         </Button>
-        <h1 className="text-2xl font-bold">Neural Capacity</h1>
+        <h1 className="text-2xl font-bold">My Neural Capacity</h1>
       </div>
       
       {/* Main Capacity Card */}
@@ -176,7 +176,7 @@ export default function DotSparkCapacityPage() {
                     </div>
                   </div>
                   <p className="text-xs text-muted-foreground text-center">
-                    {processingEfficiency > 75 ? 'Excellent' : processingEfficiency > 50 ? 'Good' : 'Developing'} information processing capabilities
+                    {processingEfficiency > 75 ? 'Excellent' : processingEfficiency > 50 ? 'Good' : 'Developing'} processing based on your usage frequency
                   </p>
                 </div>
               </CardContent>
@@ -222,7 +222,7 @@ export default function DotSparkCapacityPage() {
                     </div>
                   </div>
                   <p className="text-xs text-muted-foreground text-center">
-                    {memoryUtilization > 75 ? 'Advanced' : memoryUtilization > 50 ? 'Growing' : 'Basic'} knowledge retention capacity
+                    {memoryUtilization > 75 ? 'Advanced' : memoryUtilization > 50 ? 'Growing' : 'Basic'} memory linked to entries and storage
                   </p>
                 </div>
               </CardContent>
@@ -268,7 +268,7 @@ export default function DotSparkCapacityPage() {
                     </div>
                   </div>
                   <p className="text-xs text-muted-foreground text-center">
-                    {learningRate > 75 ? 'Rapid' : learningRate > 50 ? 'Steady' : 'Gradual'} knowledge acquisition rate
+                    {learningRate > 75 ? 'Rapid' : learningRate > 50 ? 'Steady' : 'Gradual'} learning from WhatsApp interactions
                   </p>
                 </div>
               </CardContent>
@@ -279,7 +279,7 @@ export default function DotSparkCapacityPage() {
               <CardHeader className="pb-2 pt-5">
                 <div className="flex items-center gap-2">
                   <Gauge className="h-4 w-4 text-amber-500" />
-                  <CardTitle className="text-base">Adaptation</CardTitle>
+                  <CardTitle className="text-base">Implementation</CardTitle>
                 </div>
               </CardHeader>
               <CardContent className="pb-5 pt-1">
@@ -310,11 +310,11 @@ export default function DotSparkCapacityPage() {
                     </svg>
                     <div className="absolute inset-0 flex items-center justify-center flex-col">
                       <span className="text-2xl font-bold text-amber-700 dark:text-amber-400">{adaptationScore}%</span>
-                      <span className="text-xs text-amber-600 dark:text-amber-500">Adaptation</span>
+                      <span className="text-xs text-amber-600 dark:text-amber-500">Capability</span>
                     </div>
                   </div>
                   <p className="text-xs text-muted-foreground text-center">
-                    {adaptationScore > 75 ? 'Highly Adaptive' : adaptationScore > 50 ? 'Adaptive' : 'Developing'} responsiveness to your needs
+                    {adaptationScore > 75 ? 'Excellent' : adaptationScore > 50 ? 'Good' : 'Developing'} usage in decision making processes
                   </p>
                 </div>
               </CardContent>
