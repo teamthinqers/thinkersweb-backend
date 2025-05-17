@@ -8,35 +8,44 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Target, ChevronLeft, Save, Info, Plus, Trash2, Check } from 'lucide-react';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { Badge } from '@/components/ui/badge';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 
-// Define expertise depth profiles
-type ExpertiseDepthProfile = {
+// Define expertise types
+type Profile = {
   id: string;
   name: string;
   description: string;
 }
 
-// Define expertise depth profiles
-const expertiseDepthProfiles: ExpertiseDepthProfile[] = [
+// Define seniority levels
+const seniorityLevels: Profile[] = [
   {
-    id: 'domain_navigator',
-    name: 'Domain Navigator',
-    description: 'Broad knowledge across multiple subjects within a domain. Provides connections and context.'
+    id: 'early_professional',
+    name: 'Early Professional',
+    description: 'Building foundational skills and knowledge in your field. 0-5 years of experience.'
   },
   {
-    id: 'strategic_builder',
-    name: 'Strategic Builder',
-    description: 'Combines deep conceptual understanding with practical implementation skills. Creates solutions and frameworks.'
+    id: 'mid_level_manager',
+    name: 'Mid-Level Manager',
+    description: 'Leading teams and projects with established expertise. 5-10 years of experience.'
   },
   {
-    id: 'creative_orchestrator',
-    name: 'Creative Orchestrator',
-    description: 'Synthesizes multiple perspectives into novel approaches. Excels at generating innovative ideas and unique angles.'
+    id: 'senior_leader',
+    name: 'Senior Leader',
+    description: 'Providing strategic direction and mentorship. 10-15 years of experience.'
+  },
+  {
+    id: 'functional_head',
+    name: 'Functional Head',
+    description: 'Leading entire functions with deep domain expertise. 15+ years of focused experience.'
+  },
+  {
+    id: 'founder_cxo',
+    name: 'Founder / CXO',
+    description: 'Executive level with broad strategic oversight and business building experience.'
   }
 ];
 
@@ -66,19 +75,19 @@ export default function NeuraTuningExpertise() {
   } = useDotSparkTuning();
   
   // Extract values from status for rendering
-  const { tuning } = status || { tuning: { specialties: {}, expertiseDepthProfile: 'strategic_builder' } };
+  const { tuning } = status || { tuning: { specialties: {} } };
   
   // Local state for selections and changes
   const [selectedDomains, setSelectedDomains] = useState<string[]>([]);
-  const [selectedDepthProfile, setSelectedDepthProfile] = useState<string>('strategic_builder');
+  const [selectedSeniorityLevel, setSelectedSeniorityLevel] = useState<string>('mid_level_manager');
   const [unsavedChanges, setUnsavedChanges] = useState(false);
   const [pendingChanges, setPendingChanges] = useState<{
     specialties?: Record<string, number>;
-    expertiseDepthProfile?: string;
+    seniorityLevel?: string;
   }>({});
   
-  // Define traditional specialties (keeping for backward compatibility)
-  const availableSpecialtiesList = [
+  // Traditional specialties for backward compatibility
+  const traditionalSpecialties = [
     'science',
     'technology',
     'business',
@@ -96,7 +105,7 @@ export default function NeuraTuningExpertise() {
     'design'
   ];
   
-  // Initialize selected domains and depth profile from stored specialties
+  // Initialize selected domains and seniority level from stored data
   useEffect(() => {
     if (tuning?.specialties) {
       // Set selected domains
@@ -104,13 +113,13 @@ export default function NeuraTuningExpertise() {
         .filter(key => key.includes('_') && functionalDomains.some(domain => domain.id === key));
       
       setSelectedDomains(domains);
-      
-      // Set expertise depth profile if it exists
-      if (tuning.expertiseDepthProfile) {
-        setSelectedDepthProfile(tuning.expertiseDepthProfile);
-      }
     }
-  }, [tuning?.specialties, tuning?.expertiseDepthProfile]);
+    
+    // Set seniority level if it exists in tuning data
+    if (tuning?.seniorityLevel) {
+      setSelectedSeniorityLevel(tuning.seniorityLevel);
+    }
+  }, [tuning]);
   
   // Function to get display name for specialty
   const getDisplayName = (id: string): string => {
@@ -172,19 +181,19 @@ export default function NeuraTuningExpertise() {
     setUnsavedChanges(true);
   };
   
-  // Handle depth profile change
-  const handleDepthProfileChange = (profileId: string) => {
-    setSelectedDepthProfile(profileId);
+  // Handle seniority level change
+  const handleSeniorityLevelChange = (levelId: string) => {
+    setSelectedSeniorityLevel(levelId);
     
     setPendingChanges(prev => ({
       ...prev,
-      expertiseDepthProfile: profileId
+      seniorityLevel: levelId
     }));
     
     setUnsavedChanges(true);
   };
   
-  // Function to handle specialty value changes
+  // Function to handle traditional specialty slider changes
   const handleSpecialtyChange = (specialtyId: string, value: number[]) => {
     const specialtyValue = value[0];
     
@@ -199,7 +208,7 @@ export default function NeuraTuningExpertise() {
     setUnsavedChanges(true);
   };
   
-  // Function to add a new specialty
+  // Function to add a new traditional specialty
   const addSpecialty = (specialtyId: string) => {
     setPendingChanges(prev => ({
       ...prev,
@@ -246,29 +255,31 @@ export default function NeuraTuningExpertise() {
       
       toast({
         title: "Changes Saved",
-        description: "Your expertise layer parameters have been updated.",
+        description: "Your expertise layer settings have been updated.",
         variant: "default",
       });
     } catch (error) {
       console.error("Error updating expertise layer:", error);
       toast({
         title: "Save Failed",
-        description: "There was a problem saving your expertise layer settings.",
+        description: "There was a problem saving your expertise settings.",
         variant: "destructive",
       });
     }
   };
   
-  // Prepare the specialty items for display
-  const specialties = Object.entries(tuning?.specialties || {}).sort((a, b) => {
-    // Safe number conversion
-    const valA = typeof a[1] === 'number' ? a[1] : Number(a[1]);
-    const valB = typeof b[1] === 'number' ? b[1] : Number(b[1]);
-    return valB - valA; // Sort by value descending
-  });
+  // Prepare the specialty items for display (filtering out functional domains)
+  const specialties = Object.entries(tuning?.specialties || {})
+    .filter(([id]) => !id.includes('_') || !functionalDomains.some(domain => domain.id === id))
+    .sort((a, b) => {
+      // Safe number conversion
+      const valA = typeof a[1] === 'number' ? a[1] : Number(a[1]);
+      const valB = typeof b[1] === 'number' ? b[1] : Number(b[1]);
+      return valB - valA; // Sort by value descending
+    });
   
-  // Filter available specialties 
-  const availableSpecialtyOptions = availableSpecialtiesList.filter(specialty => 
+  // Filter available traditional specialties 
+  const availableTraditionalSpecialties = traditionalSpecialties.filter(specialty => 
     !Object.keys({
       ...tuning?.specialties,
       ...pendingChanges.specialties
@@ -290,7 +301,7 @@ export default function NeuraTuningExpertise() {
         <div className="flex items-center justify-center h-[400px]">
           <div className="flex flex-col items-center">
             <div className="h-10 w-10 border-4 border-t-primary border-r-transparent border-b-transparent border-l-transparent rounded-full animate-spin mb-4"></div>
-            <p className="text-muted-foreground">Loading expertise parameters...</p>
+            <p className="text-muted-foreground">Loading expertise settings...</p>
           </div>
         </div>
       </div>
@@ -339,34 +350,34 @@ export default function NeuraTuningExpertise() {
             <div>
               <CardTitle>Expertise Layer</CardTitle>
               <CardDescription>
-                Define your specialized knowledge domains and expertise style
+                Define your professional seniority and domain expertise
               </CardDescription>
             </div>
           </div>
         </CardHeader>
         
         <CardContent className="pt-6 space-y-6">
-          {/* Expertise Depth Profile Section */}
+          {/* Seniority Level Section */}
           <div className="mb-8">
-            <h3 className="text-lg font-medium mb-3">Expertise Depth Profile</h3>
+            <h3 className="text-lg font-medium mb-3">Professional Seniority</h3>
             <p className="text-sm text-muted-foreground mb-4">
-              Choose how you want your expertise to be structured across your domains.
+              Select your current professional seniority level.
             </p>
             
             <RadioGroup 
-              value={selectedDepthProfile} 
-              onValueChange={handleDepthProfileChange}
+              value={selectedSeniorityLevel} 
+              onValueChange={handleSeniorityLevelChange}
               className="space-y-4"
             >
-              {expertiseDepthProfiles.map((profile) => (
-                <div key={profile.id} className="flex items-start space-x-2 p-4 rounded-lg border border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-900">
-                  <RadioGroupItem value={profile.id} id={profile.id} className="mt-1" />
+              {seniorityLevels.map((level) => (
+                <div key={level.id} className="flex items-start space-x-2 p-4 rounded-lg border border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-900">
+                  <RadioGroupItem value={level.id} id={level.id} className="mt-1" />
                   <div className="space-y-1">
-                    <Label htmlFor={profile.id} className="font-medium text-base">
-                      {profile.name}
+                    <Label htmlFor={level.id} className="font-medium text-base">
+                      {level.name}
                     </Label>
                     <p className="text-sm text-muted-foreground">
-                      {profile.description}
+                      {level.description}
                     </p>
                   </div>
                 </div>
@@ -422,19 +433,14 @@ export default function NeuraTuningExpertise() {
           
           {/* Traditional Specialties Section */}
           <div className="mb-4">
-            <h3 className="text-lg font-medium mb-3">Specialty Strength</h3>
+            <h3 className="text-lg font-medium mb-3">Additional Specialties</h3>
             <p className="text-sm text-muted-foreground mb-3">
-              Adjust the strength of each expertise area to influence how your neural extension responds to relevant topics.
+              Adjust the strength of each additional expertise area.
             </p>
             
             {specialties.length > 0 ? (
               <div className="space-y-6">
                 {specialties.map(([specialty, value]) => {
-                  // Skip if it's a domain (they're managed separately)
-                  if (specialty.includes('_') && functionalDomains.some(domain => domain.id === specialty)) {
-                    return null;
-                  }
-                  
                   // Get display name for the specialty
                   const displayName = getDisplayName(specialty);
                   
@@ -457,7 +463,7 @@ export default function NeuraTuningExpertise() {
                               <div className="space-y-2">
                                 <h4 className="text-sm font-semibold capitalize">{displayName} Expertise</h4>
                                 <p className="text-sm">
-                                  Controls how much your neural extension emphasizes {displayName.toLowerCase()} knowledge and perspectives. Higher values make this domain more prominent in your responses.
+                                  Controls how much your neural extension emphasizes {displayName.toLowerCase()} knowledge and perspectives.
                                 </p>
                               </div>
                             </HoverCardContent>
@@ -488,15 +494,15 @@ export default function NeuraTuningExpertise() {
               </div>
             ) : (
               <div className="p-4 bg-gray-100 dark:bg-gray-900 rounded-md text-center">
-                <p className="text-muted-foreground">No specialties added yet. Add some specialties below.</p>
+                <p className="text-muted-foreground">No additional specialties added yet.</p>
               </div>
             )}
             
             {/* Add specialty button + dropdown */}
-            {availableSpecialtyOptions.length > 0 && (
+            {availableTraditionalSpecialties.length > 0 && (
               <div className="mt-6 flex flex-wrap gap-2">
                 <p className="w-full text-sm font-medium mb-2">Add specialty:</p>
-                {availableSpecialtyOptions.map(specialty => (
+                {availableTraditionalSpecialties.map(specialty => (
                   <Badge 
                     key={specialty}
                     variant="outline" 
