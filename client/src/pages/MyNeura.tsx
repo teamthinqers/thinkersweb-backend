@@ -910,7 +910,7 @@ export default function MyNeura() {
                 <Sparkles className="h-5 w-5 text-indigo-500" />
                 <CardTitle>Core Processing Parameters</CardTitle>
               </div>
-              <CardDescription>Adjust how your neural extension processes information</CardDescription>
+              <CardDescription>Adjust how your neural mirror processes information</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               {/* Creativity */}
@@ -926,7 +926,7 @@ export default function MyNeura() {
                       <div className="space-y-2">
                         <h4 className="text-sm font-semibold">Creativity Level</h4>
                         <p className="text-sm">
-                          Determines how varied and unique your neural extension's responses will be. Higher values produce more novel connections between topics.
+                          Determines how varied and unique your neural mirror's responses will be. Higher values produce more novel connections between topics.
                         </p>
                       </div>
                     </HoverCardContent>
@@ -960,7 +960,7 @@ export default function MyNeura() {
                       <div className="space-y-2">
                         <h4 className="text-sm font-semibold">Precision Level</h4>
                         <p className="text-sm">
-                          Controls how factually accurate and detailed your neural extension will be. Higher values emphasize exactness over generalization.
+                          Controls how factually accurate and detailed your neural mirror will be. Higher values emphasize exactness over generalization.
                         </p>
                       </div>
                     </HoverCardContent>
@@ -1043,7 +1043,7 @@ export default function MyNeura() {
                 <BrainCog className="h-5 w-5 text-indigo-500" />
                 <CardTitle>Cognitive Style Parameters</CardTitle>
               </div>
-              <CardDescription>Define how your neural extension approaches problem-solving</CardDescription>
+              <CardDescription>Define how your neural mirror approaches problem-solving</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               {/* Analytical */}
@@ -1148,12 +1148,12 @@ export default function MyNeura() {
                 <Target className="h-5 w-5 text-indigo-500" />
                 <CardTitle>Expertise Layer Areas</CardTitle>
               </div>
-              <CardDescription>Customize domain-specific expertise for your neural extension</CardDescription>
+              <CardDescription>Customize domain-specific expertise for your neural mirror</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="mb-4">
                 <p className="text-sm text-muted-foreground">
-                  Adjust the strength of each specialization to tune how your neural extension prioritizes these domains when processing information.
+                  Adjust the strength of each specialization to tune how your neural mirror prioritizes these domains when processing information.
                 </p>
               </div>
               
@@ -1279,12 +1279,12 @@ export default function MyNeura() {
                 <Lightbulb className="h-5 w-5 text-indigo-500" />
                 <CardTitle>Learning Engine Directives</CardTitle>
               </div>
-              <CardDescription>Guide what your neural extension prioritizes learning</CardDescription>
+              <CardDescription>Guide what your neural mirror prioritizes learning</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="mb-4">
                 <p className="text-sm text-muted-foreground">
-                  Add specific topics or skills you want your neural extension to learn about and improve upon over time.
+                  Add specific topics or skills you want your neural mirror to learn about and improve upon over time.
                 </p>
               </div>
               
@@ -1342,7 +1342,7 @@ export default function MyNeura() {
                       No learning focus areas yet
                     </p>
                     <p className="text-sm text-muted-foreground">
-                      Add topics you want your neural extension to learn about
+                      Add topics you want your neural mirror to learn about
                     </p>
                   </div>
                 )}
