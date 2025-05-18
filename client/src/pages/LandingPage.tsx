@@ -527,7 +527,7 @@ export default function LandingPage() {
               <div className="mx-auto text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight">
                 <div className="relative text-center mx-auto h-[70px] sm:h-[90px] flex flex-col items-center justify-center">
                   <div className="flex items-center justify-center w-full px-4">
-                    <div className="flex flex-wrap items-center justify-center w-full max-w-[480px] mx-auto">
+                    <div className="flex flex-wrap items-center justify-center w-full max-w-[480px] mx-auto pl-10 sm:pl-0">
                       <div className="flex items-center justify-center w-full">
                         <span className="font-sans tracking-normal inline-block text-center bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-primary to-blue-600 dark:from-indigo-400 dark:via-primary dark:to-blue-400 whitespace-nowrap">
                           Your Natural Intelligence.
