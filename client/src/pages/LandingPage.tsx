@@ -509,8 +509,8 @@ export default function LandingPage() {
             {/* Heading */}
             <div className="container px-4 max-w-4xl mx-auto text-center">
               <div className="mx-auto text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight">
-                <div className="flex flex-col md:flex-row items-center justify-center md:whitespace-nowrap">
-                  <div className="font-sans tracking-normal bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-primary to-blue-600 dark:from-indigo-400 dark:via-primary dark:to-blue-400 mb-1 md:mb-0">
+                <div className="flex flex-col md:flex-row items-center justify-center">
+                  <div className="font-sans min-w-[260px] md:min-w-[330px] text-center md:text-right tracking-normal bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-primary to-blue-600 dark:from-indigo-400 dark:via-primary dark:to-blue-400 mb-1 md:mb-0">
                     Your Natural Intelligence
                   </div>
                   <div className="flex items-center">
