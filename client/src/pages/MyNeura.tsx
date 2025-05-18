@@ -728,7 +728,7 @@ export default function MyNeura() {
             </div>
             <CardContent className="p-6">
               <p className="text-muted-foreground mb-4">
-                Adjust fundamental behavior parameters like creativity, precision, and speed to match your thinking style.
+                Fine-tune how your neural mirror processes information by adjusting core parameters to match your natural thinking patterns.
               </p>
               <ul className="space-y-2 mb-6">
                 <li className="flex items-start">
@@ -772,7 +772,7 @@ export default function MyNeura() {
             </div>
             <CardContent className="p-6">
               <p className="text-muted-foreground mb-4">
-                Define how your neural extension thinks and processes information when solving problems.
+                Shape how your neural mirror reflects your unique cognitive approach, balancing analytical reasoning with intuitive insights.
               </p>
               <ul className="space-y-2 mb-6">
                 <li className="flex items-start">
@@ -816,7 +816,7 @@ export default function MyNeura() {
             </div>
             <CardContent className="p-6 flex-1 flex flex-col">
               <p className="text-muted-foreground mb-4">
-                Define knowledge domains where your neural extension specializes and provides deeper insights.
+                Customize domains where your neural mirror can reflect your professional expertise and provide deeper insights.
               </p>
               <ul className="space-y-2 flex-1">
                 <li className="flex items-start">
