@@ -426,24 +426,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: 'Message is required' });
       }
 
-      // Use OpenAI API for real chat functionality
-      const { generateChatResponse } = await import('./chat');
-      
-      // Create a conversation context with the user's message
-      const messages = [
-        {
-          role: "system",
-          content: "You are DotSpark Chat, a helpful AI assistant. Provide concise, accurate responses to user queries. Be friendly and conversational."
-        },
-        {
-          role: "user",
-          content: message
-        }
-      ];
-      
+      // Use OpenAI directly here
       try {
-        // Get response from OpenAI
-        const chatResponse = await generateChatResponse(messages);
+        // Create a conversation context with the user's message
+        const openai = new (await import('openai')).default({
+          apiKey: process.env.OPENAI_API_KEY,
+        });
+        
+        // Generate response from OpenAI
+        const response = await openai.chat.completions.create({
+          model: "gpt-4o", // the newest OpenAI model
+          messages: [
+            {
+              role: "system",
+              content: "You are DotSpark Chat, a helpful AI assistant. Provide concise, accurate responses to user queries. Be friendly and conversational."
+            },
+            {
+              role: "user",
+              content: message
+            }
+          ] as any,
+          temperature: 0.7,
+          max_tokens: 500,
+        });
+        
+        // Get the chat response from OpenAI
+        const chatResponse = response.choices[0].message.content || "I'm sorry, I couldn't process that request.";
         res.status(200).json({ reply: chatResponse });
       } catch (aiError) {
         console.error('OpenAI API error:', aiError);
@@ -451,7 +459,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Fallback to simple responses if OpenAI fails
         let reply = "";
         
-        if (message.toLowerCase().includes("hey dotspark") || message.toLowerCase().includes("hello") || message.toLowerCase().includes("hi")) {
+        // Special handling for the default prefilled message
+        if (message === "Hey DotSpark, I've got a few things on my mind - need your thoughts") {
+          reply = "I'm here to help process what's on your mind. It sounds like you have several things you'd like to discuss. Feel free to share one thing at a time, and we can work through them together. What's the first thing you'd like to talk about?";
+        } else if (message.toLowerCase().includes("hey dotspark") || message.toLowerCase().includes("hello") || message.toLowerCase().includes("hi")) {
           reply = "Hey there! I'm DotSpark Chat. How can I help you today?";
         } else if (message.toLowerCase().includes("things on my mind")) {
           reply = "I'm here to help you process your thoughts. What specifically is on your mind today?";
