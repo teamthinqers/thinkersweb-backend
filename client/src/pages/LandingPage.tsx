@@ -520,8 +520,8 @@ export default function LandingPage() {
             <div className="container px-4 max-w-4xl mx-auto text-center">
               <div className="mx-auto text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight">
                 <div className="relative text-center mx-auto h-[70px] sm:h-[90px] flex flex-col items-center justify-center px-4">
-                  <div className="flex items-center justify-center">
-                    <span className="font-sans tracking-normal inline-block bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-primary to-blue-600 dark:from-indigo-400 dark:via-primary dark:to-blue-400 whitespace-nowrap">
+                  <div className="flex items-center justify-center text-center pl-8 md:pl-0">
+                    <span className="font-sans tracking-normal inline-block bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-primary to-blue-600 dark:from-indigo-400 dark:via-primary dark:to-blue-400 whitespace-nowrap text-center">
                       Your Natural Intelligence
                     </span>
                     <span className="inline-block mx-1">.</span>
