@@ -622,7 +622,7 @@ export default function LandingPage() {
 
                   <div className="text-sm text-muted-foreground text-left relative z-10">
                     <p className="mb-2 font-medium text-green-700 dark:text-green-500">Instant ChatGPT-like experience:</p>
-                    <p className="text-xs">Start using DotSpark immediately through WhatsApp - no account required. Interact naturally like with ChatGPT.</p>
+                    <p className="text-xs">Start using AI chat immediately through WhatsApp - no account required and be assured your chats & thoughts are protected.</p>
                   </div>
                 </div>
               </div>
