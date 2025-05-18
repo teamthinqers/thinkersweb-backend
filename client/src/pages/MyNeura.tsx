@@ -860,7 +860,7 @@ export default function MyNeura() {
             </div>
             <CardContent className="p-6 flex-1 flex flex-col">
               <p className="text-muted-foreground mb-4">
-                Guide what topics your neural extension should prioritize learning and focus on.
+                Define growth areas where your neural mirror should develop awareness to better reflect your learning interests.
               </p>
               <ul className="space-y-2 flex-1">
                 <li className="flex items-start">

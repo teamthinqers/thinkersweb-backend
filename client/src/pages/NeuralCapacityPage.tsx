@@ -48,7 +48,7 @@ export default function MyNeuralCapacityPage() {
           <Button variant="ghost" asChild className="p-2">
             <Link href="/"><ChevronLeft className="h-5 w-5" /></Link>
           </Button>
-          <h1 className="text-2xl font-bold">My Neural Capacity</h1>
+          <h1 className="text-2xl font-bold">My Neural Mirror Capacity</h1>
         </div>
         
         <Card className="border-red-200 dark:border-red-900/50 bg-red-50 dark:bg-red-950/20">
@@ -93,7 +93,7 @@ export default function MyNeuralCapacityPage() {
         <Button variant="ghost" asChild className="p-2">
           <Link href="/"><ChevronLeft className="h-5 w-5" /></Link>
         </Button>
-        <h1 className="text-2xl font-bold">My Neural Capacity</h1>
+        <h1 className="text-2xl font-bold">My Neural Mirror Capacity</h1>
       </div>
       
       {/* Main Capacity Card */}
@@ -102,7 +102,7 @@ export default function MyNeuralCapacityPage() {
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2">
               <BrainCircuit className="h-5 w-5 text-purple-700 dark:text-purple-400" />
-              <CardTitle>My Neural Capacity</CardTitle>
+              <CardTitle>My Neural Mirror Capacity</CardTitle>
             </div>
             <div className="flex items-center gap-2">
               <Badge className="bg-purple-100 text-purple-800 dark:bg-purple-900/50 dark:text-purple-200 hover:bg-purple-200 dark:hover:bg-purple-800/50">
@@ -121,7 +121,7 @@ export default function MyNeuralCapacityPage() {
           {/* Experience and Level */}
           <div className="mb-8">
             <div className="flex justify-between mb-1.5 text-sm font-medium">
-              <span>Neural Capacity Level</span>
+              <span>Neural Mirror Capacity Level</span>
               <span>{gameElements?.experience || 0} / {gameElements?.experienceRequired || 1000} XP</span>
             </div>
             <Progress 
@@ -325,7 +325,7 @@ export default function MyNeuralCapacityPage() {
           <div className="mb-8">
             <h3 className="font-medium text-sm mb-3 flex items-center gap-2">
               <History className="h-4 w-4 text-purple-700 dark:text-purple-400" />
-              Neural Capacity Statistics
+              Neural Mirror Capacity Statistics
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="p-4 rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800">
@@ -395,11 +395,11 @@ export default function MyNeuralCapacityPage() {
         <CardFooter className="flex justify-between">
           <Button variant="outline" asChild>
             <Link href="/neural-tuning">
-              Tune My Neural Capacity
+              Tune My Neural Mirror Capacity
             </Link>
           </Button>
           <Button variant="default" className="bg-gradient-to-r from-purple-700 to-indigo-600 hover:from-purple-800 hover:to-indigo-700">
-            <span>Boost Neural Capacity</span>
+            <span>Boost Neural Mirror Capacity</span>
             <ArrowUpRight className="h-4 w-4 ml-2" />
           </Button>
         </CardFooter>
