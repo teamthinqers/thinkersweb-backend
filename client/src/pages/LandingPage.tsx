@@ -545,8 +545,8 @@ export default function LandingPage() {
             {/* Subheadings */}
             <div className="text-lg md:text-xl text-muted-foreground mt-4 md:mt-4 mb-4 max-w-2xl mx-auto text-center px-4">
               <p className="leading-tight md:leading-normal max-w-2xl mx-auto">
-                Built for <span className="font-semibold text-primary">Thought Leaders</span> to preserve their way of thinking,<br className="hidden md:inline" /> 
-                protect their cognitive identity, and sharpen their clarity — without surrendering it to <span className="font-semibold text-primary">AI</span>.
+                Built to preserve your way of thinking, protect your cognitive identity,<br className="hidden md:inline" /> 
+                and sharpen your clarity — without surrendering it to <span className="font-semibold text-primary">AI</span>.
               </p>
             </div>
             
