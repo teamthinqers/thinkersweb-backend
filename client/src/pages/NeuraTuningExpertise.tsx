@@ -204,14 +204,14 @@ export default function NeuraTuningExpertise() {
       
       toast({
         title: "Expertise Updated",
-        description: "Your professional domains and expertise styles have been saved.",
+        description: "Your neural mirror professional domains and expertise styles have been saved.",
         variant: "default",
       });
     } catch (error) {
       console.error("Error updating expertise layer:", error);
       toast({
         title: "Save Failed",
-        description: "There was a problem saving your expertise settings.",
+        description: "There was a problem saving your neural mirror expertise settings.",
         variant: "destructive",
       });
     }

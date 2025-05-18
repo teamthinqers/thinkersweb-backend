@@ -81,14 +81,14 @@ export default function NeuraTuningCognitive() {
       
       toast({
         title: "Changes Saved",
-        description: "Your cognitive style parameters have been updated.",
+        description: "Your neural mirror cognitive style parameters have been updated.",
         variant: "default",
       });
     } catch (error) {
       console.error("Error updating cognitive style:", error);
       toast({
         title: "Save Failed",
-        description: "There was a problem saving your cognitive style settings.",
+        description: "There was a problem saving your neural mirror cognitive style settings.",
         variant: "destructive",
       });
     }

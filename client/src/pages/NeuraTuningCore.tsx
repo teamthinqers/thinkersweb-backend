@@ -88,7 +88,7 @@ export default function NeuraTuningCore() {
       console.error("Error updating neural tuning:", error);
       toast({
         title: "Save Failed",
-        description: "There was a problem saving your neural tuning settings.",
+        description: "There was a problem saving your neural mirror tuning settings.",
         variant: "destructive",
       });
     }
