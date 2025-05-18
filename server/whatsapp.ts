@@ -269,8 +269,21 @@ export async function processWhatsAppMessage(from: string, messageText: string):
     const isActivationAttempt = !!accountLinkMatch || activationKeywords.some(keyword => lowerMessage.includes(keyword));
     console.log(`Activation attempt check: ${isActivationAttempt ? "YES" : "NO"} - ${messageText.substring(0, 30)}...`);
     
-    // For default prompt from returning users (but NOT activation attempts), we provide a special greeting
-    if (isDefaultPrompt && !isFirstTimeUser && !isActivationAttempt) {
+    // Check for exact match with our standard prefilled message
+    if (messageText === "Hey DotSpark, I've got a few things on my mind - need your thoughts") {
+      console.log(`Exact default prompt detected from user ${from}`);
+      const specialResponse = 
+        "I'm here to help process what's on your mind. It sounds like you have several things you'd like to discuss. Feel free to share one thing at a time, and we can work through them together. What's the first thing you'd like to talk about?";
+      
+      await sendWhatsAppReply(from, specialResponse);
+      
+      return {
+        success: true,
+        message: specialResponse
+      };
+    }
+    // For other default prompts from returning users (but NOT activation attempts), we provide a special greeting
+    else if (isDefaultPrompt && !isFirstTimeUser && !isActivationAttempt) {
       console.log(`Default prompt detected from returning user ${from} (not an activation attempt)`);
       const returningUserGreeting = 
         "Welcome back to DotSpark — your thinking companion.\n\n" +
