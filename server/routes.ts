@@ -417,6 +417,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // DotSpark API endpoints
   
+  // Simple chat API endpoint
+  app.post(`${apiPrefix}/chat`, async (req: Request, res: Response) => {
+    try {
+      const { message } = req.body;
+      
+      if (!message) {
+        return res.status(400).json({ error: 'Message is required' });
+      }
+
+      // Generate a response based on the input message
+      // For now, we'll just return a simple response
+      
+      // Get a friendly response
+      let reply = "";
+      
+      if (message.toLowerCase().includes("hey dotspark") || message.toLowerCase().includes("hello") || message.toLowerCase().includes("hi")) {
+        reply = "Hey there! I'm your neural mirror. How can I help you today?";
+      } else if (message.toLowerCase().includes("things on my mind")) {
+        reply = "I'm here to help you process your thoughts. What specifically is on your mind today?";
+      } else if (message.toLowerCase().includes("who are you") || message.toLowerCase().includes("what are you")) {
+        reply = "I'm DotSpark, your neural mirror designed to reflect and enhance your own thinking patterns rather than replace them.";
+      } else if (message.toLowerCase().includes("help")) {
+        reply = "I can help you organize your thoughts, provide reflections on your ideas, and assist with learning. What would you like to explore?";
+      } else {
+        reply = "I'm processing your thoughts. Could you elaborate a bit more on what you're thinking about?";
+      }
+      
+      res.status(200).json({ reply });
+    } catch (error) {
+      console.error('Chat processing error:', error);
+      res.status(500).json({ error: 'Failed to process chat message' });
+    }
+  });
+  
   // Get DotSpark status for the current user
   app.get(`${apiPrefix}/dotspark/status`, isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
     try {
