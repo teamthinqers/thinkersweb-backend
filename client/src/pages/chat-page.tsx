@@ -22,7 +22,7 @@ export default function ChatPage() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      content: 'Hey! I\'m DotSpark, your neural mirror. What\'s on your mind today?',
+      content: 'Hey! I\'m DotSpark Chat. Please let me know how I can help you?',
       isUser: false,
       timestamp: new Date(),
     },
@@ -114,7 +114,7 @@ export default function ChatPage() {
               <ArrowLeft className="h-4 w-4" />
               <span className="sr-only">Back</span>
             </Button>
-            <CardTitle className="text-xl">DotSpark Neural Mirror</CardTitle>
+            <CardTitle className="text-xl">DotSpark Chat</CardTitle>
           </div>
           <Button
             variant="ghost"

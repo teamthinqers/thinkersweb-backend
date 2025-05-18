@@ -426,25 +426,45 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: 'Message is required' });
       }
 
-      // Generate a response based on the input message
-      // For now, we'll just return a simple response
+      // Use OpenAI API for real chat functionality
+      const { generateChatResponse } = await import('./chat');
       
-      // Get a friendly response
-      let reply = "";
+      // Create a conversation context with the user's message
+      const messages = [
+        {
+          role: "system",
+          content: "You are DotSpark Chat, a helpful AI assistant. Provide concise, accurate responses to user queries. Be friendly and conversational."
+        },
+        {
+          role: "user",
+          content: message
+        }
+      ];
       
-      if (message.toLowerCase().includes("hey dotspark") || message.toLowerCase().includes("hello") || message.toLowerCase().includes("hi")) {
-        reply = "Hey there! I'm your neural mirror. How can I help you today?";
-      } else if (message.toLowerCase().includes("things on my mind")) {
-        reply = "I'm here to help you process your thoughts. What specifically is on your mind today?";
-      } else if (message.toLowerCase().includes("who are you") || message.toLowerCase().includes("what are you")) {
-        reply = "I'm DotSpark, your neural mirror designed to reflect and enhance your own thinking patterns rather than replace them.";
-      } else if (message.toLowerCase().includes("help")) {
-        reply = "I can help you organize your thoughts, provide reflections on your ideas, and assist with learning. What would you like to explore?";
-      } else {
-        reply = "I'm processing your thoughts. Could you elaborate a bit more on what you're thinking about?";
+      try {
+        // Get response from OpenAI
+        const chatResponse = await generateChatResponse(messages);
+        res.status(200).json({ reply: chatResponse });
+      } catch (aiError) {
+        console.error('OpenAI API error:', aiError);
+        
+        // Fallback to simple responses if OpenAI fails
+        let reply = "";
+        
+        if (message.toLowerCase().includes("hey dotspark") || message.toLowerCase().includes("hello") || message.toLowerCase().includes("hi")) {
+          reply = "Hey there! I'm DotSpark Chat. How can I help you today?";
+        } else if (message.toLowerCase().includes("things on my mind")) {
+          reply = "I'm here to help you process your thoughts. What specifically is on your mind today?";
+        } else if (message.toLowerCase().includes("who are you") || message.toLowerCase().includes("what are you")) {
+          reply = "I'm DotSpark Chat, designed to help answer your questions and assist with your tasks.";
+        } else if (message.toLowerCase().includes("help")) {
+          reply = "I can help you organize your thoughts, provide information, and assist with various tasks. What would you like to explore?";
+        } else {
+          reply = "I'd be happy to help. Could you elaborate a bit more on what you're asking about?";
+        }
+        
+        res.status(200).json({ reply });
       }
-      
-      res.status(200).json({ reply });
     } catch (error) {
       console.error('Chat processing error:', error);
       res.status(500).json({ error: 'Failed to process chat message' });
