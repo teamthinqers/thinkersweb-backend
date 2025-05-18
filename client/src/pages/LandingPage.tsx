@@ -697,7 +697,33 @@ export default function LandingPage() {
 
                   <div className="text-sm text-muted-foreground text-left relative z-10">
                     <p className="mb-2 font-medium text-green-700 dark:text-green-500">Instant ChatGPT-like experience:</p>
-                    <p className="text-xs">Start using AI chat immediately through WhatsApp - no account required and be assured your chats & thoughts are protected.</p>
+                    <p className="text-xs">Start using AI chat immediately - no account required and be assured your chats & thoughts are protected.</p>
+                    
+                    <div className="mt-2 flex space-x-2">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        className="text-xs px-2 bg-white hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700"
+                        asChild
+                      >
+                        <Link href="/chat">Direct Chat</Link>
+                      </Button>
+                      
+                      <Button 
+                        id="whatsapp-option-button"
+                        variant="outline" 
+                        size="sm"
+                        className="text-xs px-2 bg-white hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700"
+                        onClick={() => {
+                          // Use the direct link that's already stored in whatsappInfo
+                          if (whatsappInfo && whatsappInfo.directLink) {
+                            window.open(whatsappInfo.directLink, '_blank');
+                          }
+                        }}
+                      >
+                        WhatsApp
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </div>
