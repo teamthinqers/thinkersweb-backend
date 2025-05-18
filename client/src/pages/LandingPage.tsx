@@ -25,9 +25,9 @@ const DynamicWord = ({ words, interval = 2000 }: { words: string[], interval?: n
     return () => clearInterval(timer);
   }, [words, interval]);
   
-  // Calculate the max width based on the longest word
+  // Calculate the max width based on the longest word plus period
   const maxWordLength = words?.reduce((max, word) => 
-    word.length > max ? word.length : max, 0) || 10;
+    (word.length + 1) > max ? (word.length + 1) : max, 0) || 11; // +1 for period
   
   // Get width in pixels (approximately)
   const width = `${maxWordLength * 0.67}em`;
@@ -49,7 +49,7 @@ const DynamicWord = ({ words, interval = 2000 }: { words: string[], interval?: n
         textAlign: 'left'
       }}
     >
-      {words?.[currentIndex] || 'Preserved'}
+      {(words?.[currentIndex] || 'Preserved') + '.'}
     </span>
   );
 };
@@ -520,7 +520,7 @@ export default function LandingPage() {
             <div className="container px-4 max-w-4xl mx-auto text-center">
               <div className="mx-auto text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight">
                 <div className="relative text-center mx-auto h-[70px] sm:h-[90px] flex flex-col items-center justify-center">
-                  <div className="flex items-center justify-center w-full px-4 pl-14 sm:pl-0">
+                  <div className="flex items-center justify-center w-full px-4 pl-24 sm:pl-0">
                     <div className="flex items-center justify-center w-full max-w-[480px] mx-auto">
                       <span className="font-sans tracking-normal inline-block text-center bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-primary to-blue-600 dark:from-indigo-400 dark:via-primary dark:to-blue-400 whitespace-nowrap">
                         Your Natural Intelligence
