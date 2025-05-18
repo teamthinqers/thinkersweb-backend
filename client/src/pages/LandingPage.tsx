@@ -639,7 +639,7 @@ export default function LandingPage() {
               Setup <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-indigo-600">DotSpark</span> in 3 Simple Steps
             </h2>
             <p className="text-muted-foreground mt-2 max-w-2xl mx-auto">
-              Get started with your personal neural extension in minutes
+              Get started with your personal neural mirror in minutes
             </p>
           </div>
           
