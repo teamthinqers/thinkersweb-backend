@@ -687,51 +687,18 @@ export default function LandingPage() {
                 
                 {/* Button 2: Ask DotSpark */}
                 <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 border border-green-200 dark:border-green-900/50 rounded-xl p-4 flex flex-col items-center shadow-lg shadow-green-500/5 dark:shadow-green-900/10 relative overflow-hidden group">
-                  <WhatsAppContactButton 
-                    id="whatsapp-button"
-                    size="lg" 
-                    label="Ask DotSpark"
-                    showIcon={true}
-                    variant="default"
+                  <Button
+                    size="lg"
+                    onClick={() => setContactDialogOpen(true)}
                     className="w-full mb-3 relative overflow-hidden bg-gradient-to-r from-[#25D366] to-[#128C7E] hover:from-[#128C7E] hover:to-[#25D366] text-white border-0 shadow-lg shadow-green-500/20 hover:shadow-green-600/30 transition-all duration-300 transform hover:scale-105"
-                  />
+                  >
+                    <MessageCircle className="h-5 w-5 mr-2" />
+                    <span>Ask DotSpark</span>
+                  </Button>
 
                   <div className="text-sm text-muted-foreground text-left relative z-10">
                     <p className="mb-2 font-medium text-green-700 dark:text-green-500">Instant ChatGPT-like experience:</p>
                     <p className="text-xs">Start using AI chat immediately - no account required and be assured your chats & thoughts are protected.</p>
-                    
-                    <div className="mt-2 flex space-x-2">
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        className="text-xs px-2 bg-white hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700"
-                        asChild
-                      >
-                        <Link href="/chat">Direct Chat</Link>
-                      </Button>
-                      
-                      <Button 
-                        id="whatsapp-option-button"
-                        variant="outline" 
-                        size="sm"
-                        className="text-xs px-2 bg-white hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700"
-                        onClick={() => {
-                          // Get WhatsApp link from the whatsapp-button element
-                          const whatsappButton = document.getElementById('whatsapp-button');
-                          const whatsappHref = whatsappButton?.getAttribute('href');
-                          
-                          if (whatsappHref) {
-                            window.open(whatsappHref, '_blank');
-                          } else {
-                            // Fallback to direct WhatsApp link
-                            const defaultMessage = encodeURIComponent("Hey DotSpark, I've got a few things on my mind — need your thoughts");
-                            window.open(`https://wa.me/16067157733?text=${defaultMessage}`, '_blank');
-                          }
-                        }}
-                      >
-                        WhatsApp
-                      </Button>
-                    </div>
                   </div>
                 </div>
               </div>
