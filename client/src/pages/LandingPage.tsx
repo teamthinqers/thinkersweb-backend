@@ -27,7 +27,7 @@ const DynamicWord = ({ words, interval = 2000 }: { words: string[], interval?: n
   
   return (
     <span 
-      className={`relative inline-block transition-opacity duration-500 ${
+      className={`relative inline-block min-w-[120px] text-center transition-opacity duration-500 ${
         isAnimating 
           ? 'opacity-0 blur-sm' 
           : 'opacity-100 blur-0'
@@ -39,7 +39,7 @@ const DynamicWord = ({ words, interval = 2000 }: { words: string[], interval?: n
         backgroundImage: 'linear-gradient(135deg, #b278ff, #ff6ad5)',
       }}
     >
-      {words?.[currentIndex] || 'Preserved'}
+      {words?.[currentIndex] || 'Preserved.'}
     </span>
   );
 };
@@ -510,11 +510,11 @@ export default function LandingPage() {
             <div className="container px-4 max-w-4xl mx-auto text-center">
               <div className="mx-auto text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight">
                 <div className="flex flex-col md:flex-row items-center justify-center md:whitespace-nowrap">
-                  <div className="font-sans tracking-normal bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-primary to-blue-600 dark:from-indigo-400 dark:via-primary dark:to-blue-400">
+                  <div className="font-sans tracking-normal bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-primary to-blue-600 dark:from-indigo-400 dark:via-primary dark:to-blue-400 mb-1 md:mb-0">
                     Your Natural Intelligence
                   </div>
                   <div className="flex items-center">
-                    <span className="mx-1">.</span>
+                    <span className="hidden md:inline-block mx-1">.</span>
                     <span className="font-sans">
                       <DynamicWord words={["Preserved.", "Protected.", "Sharpened."]} interval={2000} />
                     </span>
