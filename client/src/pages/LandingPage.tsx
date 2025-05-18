@@ -645,7 +645,7 @@ export default function LandingPage() {
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8 max-w-5xl mx-auto" style={{ display: "grid", gridTemplateRows: "1fr" }}>
             {/* Step 1: Sign In */}
-            <div className="bg-card rounded-lg p-6 relative group hover:shadow-lg transition-all duration-300 border border-border/50 overflow-hidden">
+            <div className="bg-card rounded-lg p-6 relative group hover:shadow-lg transition-all duration-300 border border-border/50 overflow-hidden h-full flex flex-col">
               <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:bg-primary/10 transition-colors duration-300"></div>
               <div className="flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 text-primary mb-4 relative z-10">
                 <User className="h-6 w-6" />
@@ -655,15 +655,17 @@ export default function LandingPage() {
               </div>
               <h3 className="text-xl font-semibold mb-2">Sign In or Register</h3>
               <p className="text-muted-foreground text-sm">Create your account to personalize your DotSpark experience.</p>
-              <Button asChild variant="default" className="mt-4 w-full bg-gradient-to-r from-primary to-indigo-600 hover:from-indigo-600 hover:to-primary text-white border-0 shadow-md">
-                <Link href="/auth">
-                  Get Started
-                </Link>
-              </Button>
+              <div className="mt-auto pt-4">
+                <Button asChild variant="default" className="w-full bg-gradient-to-r from-primary to-indigo-600 hover:from-indigo-600 hover:to-primary text-white border-0 shadow-md">
+                  <Link href="/auth">
+                    Get Started
+                  </Link>
+                </Button>
+              </div>
             </div>
             
             {/* Step 2: Activate Neura */}
-            <div className="bg-card rounded-lg p-6 relative group hover:shadow-lg transition-all duration-300 border border-border/50 overflow-hidden">
+            <div className="bg-card rounded-lg p-6 relative group hover:shadow-lg transition-all duration-300 border border-border/50 overflow-hidden h-full flex flex-col">
               <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-500/5 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:bg-indigo-500/10 transition-colors duration-300"></div>
               <div className="flex items-center justify-center w-12 h-12 rounded-full bg-indigo-500/10 text-indigo-500 mb-4 relative z-10">
                 <Brain className="h-6 w-6" />
@@ -673,17 +675,19 @@ export default function LandingPage() {
               </div>
               <h3 className="text-xl font-semibold mb-2">Activate Neura</h3>
               <p className="text-muted-foreground text-sm">Configure your Neura to mirror your natural intelligence & thinking style.</p>
-              <Button 
-                variant="default" 
-                className="mt-4 w-full bg-gradient-to-r from-violet-600 to-purple-700 hover:from-purple-700 hover:to-violet-600 text-white border-0 shadow-md"
-                onClick={() => setLocation("/my-neura")}
-              >
-                Activate Neura
-              </Button>
+              <div className="mt-auto pt-4">
+                <Button 
+                  variant="default" 
+                  className="w-full bg-gradient-to-r from-violet-600 to-purple-700 hover:from-purple-700 hover:to-violet-600 text-white border-0 shadow-md"
+                  onClick={() => setLocation("/my-neura")}
+                >
+                  Activate Neura
+                </Button>
+              </div>
             </div>
             
             {/* Step 3: Connect WhatsApp */}
-            <div className="bg-card rounded-lg p-6 relative group hover:shadow-lg transition-all duration-300 border border-border/50 overflow-hidden">
+            <div className="bg-card rounded-lg p-6 relative group hover:shadow-lg transition-all duration-300 border border-border/50 overflow-hidden h-full flex flex-col">
               <div className="absolute top-0 right-0 w-24 h-24 bg-[#25D366]/5 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:bg-[#25D366]/10 transition-colors duration-300"></div>
               <div className="flex items-center justify-center w-12 h-12 rounded-full bg-[#25D366]/10 text-[#25D366] mb-4 relative z-10">
                 <MessageCircle className="h-6 w-6" />
@@ -693,14 +697,16 @@ export default function LandingPage() {
               </div>
               <h3 className="text-xl font-semibold mb-2">Link WhatsApp</h3>
               <p className="text-muted-foreground text-sm">Connect your phone to interact with DotSpark anywhere, anytime.</p>
-              <Button 
-                size="default" 
-                onClick={() => window.open("https://wa.me/16067157733?text=Hey%20DotSpark%2C%20I%27ve%20got%20a%20few%20things%20on%20my%20mind%20%E2%80%94%20need%20your%20thoughts", "_blank")}
-                className="mt-4 w-full rounded-full bg-[#25D366] hover:bg-[#128C7E] text-white shadow-md hover:shadow-lg transition-all duration-300"
-              >
-                <MessageSquare className="h-5 w-5 mr-2" />
-                <span>Link WhatsApp</span>
-              </Button>
+              <div className="mt-auto pt-4">
+                <Button 
+                  size="default" 
+                  onClick={() => window.open("https://wa.me/16067157733?text=Hey%20DotSpark%2C%20I%27ve%20got%20a%20few%20things%20on%20my%20mind%20%E2%80%94%20need%20your%20thoughts", "_blank")}
+                  className="w-full rounded-full bg-[#25D366] hover:bg-[#128C7E] text-white shadow-md hover:shadow-lg transition-all duration-300"
+                >
+                  <MessageSquare className="h-5 w-5 mr-2" />
+                  <span>Link WhatsApp</span>
+                </Button>
+              </div>
             </div>
           </div>
           
