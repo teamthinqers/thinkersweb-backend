@@ -4,7 +4,8 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useToast } from '@/hooks/use-toast';
-import { Send, Loader2 } from 'lucide-react';
+import { Send, Loader2, ArrowLeft } from 'lucide-react';
+import { Link } from 'wouter';
 import { useAuth } from '@/hooks/use-auth';
 import { UsageLimitMessage } from '@/components/ui/usage-limit-message';
 import { hasExceededLimit, getLimitMessage, incrementUsageCount } from '@/lib/usageLimits';
@@ -102,8 +103,27 @@ export default function ChatPage() {
   return (
     <div className="flex h-[calc(100vh-4rem)] flex-col">
       <Card className="flex-1 flex flex-col mx-auto w-full max-w-3xl border-none shadow-none">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-xl">DotSpark Neural Mirror</CardTitle>
+        <CardHeader className="pb-2 flex flex-row items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => window.history.back()} 
+              className="h-8 w-8 p-0"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              <span className="sr-only">Back</span>
+            </Button>
+            <CardTitle className="text-xl">DotSpark Neural Mirror</CardTitle>
+          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            asChild
+            className="text-sm"
+          >
+            <Link href="/">Home</Link>
+          </Button>
         </CardHeader>
         
         <UsageLimitMessage isLimitExceeded={limitExceeded} message={limitMessage} />
