@@ -510,8 +510,8 @@ export default function LandingPage() {
             <div className="container px-4 max-w-4xl mx-auto text-center">
               <div className="mx-auto text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight">
                 <div className="inline-flex items-center justify-center flex-nowrap whitespace-nowrap">
-                  <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-primary to-blue-600 dark:from-indigo-400 dark:via-primary dark:to-blue-400">Your Natural Intelligence.</span>
-                  <span className="inline-block ml-2">
+                  <span className="font-sans bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-primary to-blue-600 dark:from-indigo-400 dark:via-primary dark:to-blue-400">Your Natural Intelligence.</span>
+                  <span className="inline-block ml-2 font-sans">
                     <DynamicWord words={["Preserved", "Protected", "Sharpened"]} interval={2000} />
                   </span>
                 </div>
