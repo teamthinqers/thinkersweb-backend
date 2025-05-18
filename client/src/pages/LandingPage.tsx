@@ -25,9 +25,16 @@ const DynamicWord = ({ words, interval = 2000 }: { words: string[], interval?: n
     return () => clearInterval(timer);
   }, [words, interval]);
   
+  // Calculate the max width based on the longest word
+  const maxWordLength = words?.reduce((max, word) => 
+    word.length > max ? word.length : max, 0) || 10;
+  
+  // Get width in pixels (approximately)
+  const width = `${maxWordLength * 0.67}em`;
+  
   return (
     <span 
-      className={`relative inline-block min-w-[120px] text-center transition-opacity duration-500 ${
+      className={`relative inline-block text-center transition-opacity duration-500 ${
         isAnimating 
           ? 'opacity-0 blur-sm' 
           : 'opacity-100 blur-0'
@@ -37,9 +44,12 @@ const DynamicWord = ({ words, interval = 2000 }: { words: string[], interval?: n
         WebkitBackgroundClip: 'text',
         WebkitTextFillColor: 'transparent',
         backgroundImage: 'linear-gradient(135deg, #b278ff, #ff6ad5)',
+        width: width,
+        display: 'inline-block',
+        textAlign: 'left'
       }}
     >
-      {words?.[currentIndex] || 'Preserved.'}
+      {words?.[currentIndex] || 'Preserved'}
     </span>
   );
 };
@@ -509,15 +519,15 @@ export default function LandingPage() {
             {/* Heading */}
             <div className="container px-4 max-w-4xl mx-auto text-center">
               <div className="mx-auto text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight">
-                <div className="relative text-center mx-auto h-[70px] sm:h-[90px] flex items-center justify-center px-4">
-                  <div className="flex flex-wrap md:flex-nowrap justify-center items-center max-w-full">
-                    <div className="font-sans tracking-normal inline-block bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-primary to-blue-600 dark:from-indigo-400 dark:via-primary dark:to-blue-400 whitespace-nowrap text-center">
+                <div className="relative text-center mx-auto h-[70px] sm:h-[90px] flex flex-col items-center justify-center px-4">
+                  <div className="flex items-center justify-center">
+                    <span className="font-sans tracking-normal inline-block bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-primary to-blue-600 dark:from-indigo-400 dark:via-primary dark:to-blue-400 whitespace-nowrap">
                       Your Natural Intelligence
-                    </div>
-                    <div className="inline-block mx-1">.</div>
-                    <div className="font-sans inline-block whitespace-nowrap">
+                    </span>
+                    <span className="inline-block mx-1">.</span>
+                    <span className="font-sans inline-block">
                       <DynamicWord words={["Preserved", "Protected", "Sharpened"]} interval={2000} />
-                    </div>
+                    </span>
                   </div>
                 </div>
               </div>
