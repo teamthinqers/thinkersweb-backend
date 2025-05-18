@@ -711,7 +711,7 @@ export default function MyNeura() {
       <div className="my-8">
         <h2 className="text-2xl font-bold mb-6">Configure Your Neura</h2>
         <p className="text-muted-foreground mb-8">
-          Customize your neural extension by configuring these key aspects. Each section allows you to fine-tune how your Neura thinks and learns.
+          Configure each of these neural settings to mirror your natural style and intelligence.
         </p>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 auto-rows-fr">
