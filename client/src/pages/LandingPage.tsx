@@ -27,10 +27,10 @@ const DynamicWord = ({ words, interval = 2000 }: { words: string[], interval?: n
   
   return (
     <span 
-      className={`relative inline-block transition-all duration-500 ${
+      className={`relative inline-block transition-opacity duration-500 ${
         isAnimating 
-          ? 'opacity-0 transform translate-y-3 scale-95 blur-sm' 
-          : 'opacity-100 transform translate-y-0 scale-100 blur-0'
+          ? 'opacity-0 blur-sm' 
+          : 'opacity-100 blur-0'
       }`}
       style={{
         textShadow: isAnimating ? 'none' : '0 0 12px rgba(178, 120, 255, 0.5)',
@@ -507,13 +507,13 @@ export default function LandingPage() {
             </div>
             
             {/* Heading */}
-            <div className="flex flex-col items-center justify-center text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-tight">
-              <h1 className="inline-flex flex-wrap justify-center">
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-primary to-blue-600 dark:from-indigo-400 dark:via-primary dark:to-blue-400 mr-2">Your Natural Intelligence.</span>
-                <span className="min-w-[220px] sm:min-w-[280px] inline-block">
+            <div className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-tight text-center">
+              <div className="flex flex-col md:flex-row items-center justify-center space-y-2 md:space-y-0">
+                <h1 className="mb-0 pb-0 bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-primary to-blue-600 dark:from-indigo-400 dark:via-primary dark:to-blue-400 text-center md:mr-3">Your Natural Intelligence.</h1>
+                <div className="min-w-[220px] sm:min-w-[280px] h-[60px] flex items-center justify-center">
                   <DynamicWord words={["Preserved", "Protected", "Sharpened"]} interval={2000} />
-                </span>
-              </h1>
+                </div>
+              </div>
             </div>
             
             {/* Subheadings */}
