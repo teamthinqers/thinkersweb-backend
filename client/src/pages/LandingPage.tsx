@@ -508,7 +508,7 @@ export default function LandingPage() {
             
             {/* Heading */}
             <div className="container px-4 max-w-4xl mx-auto text-center">
-              <div className="mx-auto text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight">
+              <div className="mx-auto text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight">
                 <div className="text-center max-w-full overflow-hidden">
                   <div className="inline-flex flex-wrap md:flex-nowrap justify-center items-center">
                     <span className="font-sans tracking-normal inline-block bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-primary to-blue-600 dark:from-indigo-400 dark:via-primary dark:to-blue-400 whitespace-nowrap">
