@@ -50,7 +50,7 @@ export default function MyNeura() {
   const { user } = useAuth();
   const { toast } = useToast();
   
-  // Neural Extension name using neuraStorage utility
+  // Neural Mirror name using neuraStorage utility
   const [neuraName, setNeuraName] = useState(neuraStorage.getName());
   
   // DotSpark Tuning
@@ -166,7 +166,7 @@ export default function MyNeura() {
       
       // Ensure name is set properly
       if (!neuraName || neuraName === '') {
-        const defaultName = 'My Neural Extension';
+        const defaultName = 'My Neural Mirror';
         neuraStorage.setName(defaultName);
         setNeuraName(defaultName);
       }
@@ -174,7 +174,7 @@ export default function MyNeura() {
       // Show activation toast
       toast({
         title: "Neura Activated",
-        description: "Your neural extension is now active and ready to assist you.",
+        description: "Your neural mirror is now active and ready to reflect your intelligence.",
         variant: "default",
       });
       
@@ -188,7 +188,7 @@ export default function MyNeura() {
       console.error("Error activating Neura:", error);
       toast({
         title: "Activation Failed",
-        description: "There was a problem activating your neural extension.",
+        description: "There was a problem activating your neural mirror.",
         variant: "destructive",
       });
     }
@@ -204,14 +204,14 @@ export default function MyNeura() {
       
       toast({
         title: "Neura Deactivated",
-        description: "Your neural extension has been deactivated.",
+        description: "Your neural mirror has been deactivated.",
         variant: "default",
       });
     } catch (error) {
       console.error("Error deactivating Neura:", error);
       toast({
         title: "Deactivation Failed",
-        description: "There was a problem deactivating your neural extension.",
+        description: "There was a problem deactivating your neural mirror.",
         variant: "destructive",
       });
     }
@@ -223,7 +223,7 @@ export default function MyNeura() {
     if (!isActivated && !user) {
       toast({
         title: "Sign in Required",
-        description: "Please sign in to activate your neural extension.",
+        description: "Please sign in to activate your neural mirror.",
         variant: "default",
       });
       
@@ -370,7 +370,7 @@ export default function MyNeura() {
       // Notify user that changes were saved successfully
       toast({
         title: "Changes Saved",
-        description: "Your neural extension tuning parameters have been updated.",
+        description: "Your neural mirror tuning parameters have been updated.",
         variant: "default",
       });
     } catch (error) {
@@ -487,7 +487,7 @@ export default function MyNeura() {
           <div className="flex flex-col items-center">
             <BrainCircuit className="h-16 w-16 text-indigo-400 animate-pulse mb-4" />
             <h3 className="text-xl font-medium mb-2">Loading Neura...</h3>
-            <p className="text-muted-foreground">Connecting to your neural extension</p>
+            <p className="text-muted-foreground">Connecting to your neural mirror</p>
           </div>
         </div>
       </div>
