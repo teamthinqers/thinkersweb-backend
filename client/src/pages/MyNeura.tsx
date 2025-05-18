@@ -510,7 +510,7 @@ export default function MyNeura() {
             <div className="flex items-center gap-2">
               <BrainCircuit className="h-5 w-5 text-indigo-700 dark:text-indigo-400" />
               <CardTitle>
-                <span className="font-bold bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">My Neural Capacity</span>
+                <span className="font-bold bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">My Neural Mirror Capacity</span>
               </CardTitle>
             </div>
             <Badge className="bg-indigo-100 text-indigo-800 dark:bg-indigo-900/50 dark:text-indigo-200 hover:bg-indigo-200 dark:hover:bg-indigo-800/50">
