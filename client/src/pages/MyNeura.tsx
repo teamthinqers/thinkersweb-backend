@@ -714,9 +714,9 @@ export default function MyNeura() {
           Customize your neural extension by configuring these key aspects. Each section allows you to fine-tune how your Neura thinks and learns.
         </p>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 auto-rows-fr">
           {/* Core Tuning Card */}
-          <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 group border-indigo-100 dark:border-indigo-900">
+          <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 group border-indigo-100 dark:border-indigo-900 flex flex-col h-full">
             <div className="h-48 bg-gradient-to-br from-indigo-400 to-blue-600 flex items-center justify-center relative overflow-hidden">
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.2),transparent_50%)]"></div>
               <div className="z-10 p-6 flex flex-col items-center">
@@ -760,7 +760,7 @@ export default function MyNeura() {
           </Card>
 
           {/* Cognitive Style Card */}
-          <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 group border-violet-100 dark:border-violet-900">
+          <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 group border-violet-100 dark:border-violet-900 flex flex-col h-full">
             <div className="h-48 bg-gradient-to-br from-violet-400 to-purple-600 flex items-center justify-center relative overflow-hidden">
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.2),transparent_50%)]"></div>
               <div className="z-10 p-6 flex flex-col items-center">
@@ -804,7 +804,7 @@ export default function MyNeura() {
           </Card>
 
           {/* Expertise Layer Card */}
-          <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 group border-blue-100 dark:border-blue-900 flex flex-col">
+          <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 group border-blue-100 dark:border-blue-900 flex flex-col h-full">
             <div className="h-48 bg-gradient-to-br from-blue-400 to-sky-600 flex items-center justify-center relative overflow-hidden">
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.2),transparent_50%)]"></div>
               <div className="z-10 p-6 flex flex-col items-center">
@@ -848,7 +848,7 @@ export default function MyNeura() {
           </Card>
 
           {/* Learning Engine Card */}
-          <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 group border-emerald-100 dark:border-emerald-900 flex flex-col">
+          <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 group border-emerald-100 dark:border-emerald-900 flex flex-col h-full">
             <div className="h-48 bg-gradient-to-br from-emerald-400 to-green-600 flex items-center justify-center relative overflow-hidden">
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.2),transparent_50%)]"></div>
               <div className="z-10 p-6 flex flex-col items-center">
