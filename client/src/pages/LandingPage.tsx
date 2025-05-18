@@ -1,14 +1,18 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
+import { 
+  ArrowRight, Brain, BookOpen, Users, Sparkles, BarChart2, 
+  MessageCircle, MessageSquare, User, Menu, X, Check, CheckCircle 
+} from "lucide-react";
 
 // Dynamic Word component for cycling through words with animation
-function DynamicWord({ words = [], interval = 2000 }) {
+const DynamicWord = ({ words, interval = 2000 }: { words: string[], interval?: number }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   
   useEffect(() => {
-    if (words.length <= 1) return;
+    if (!words || words.length <= 1) return;
     
     const timer = setInterval(() => {
       setIsAnimating(true);
@@ -25,21 +29,20 @@ function DynamicWord({ words = [], interval = 2000 }) {
     <span 
       className={`relative inline-block transition-all duration-500 ${
         isAnimating 
-          ? 'opacity-0 transform translate-y-3 blur-sm' 
-          : 'opacity-100 transform translate-y-0 blur-0'
+          ? 'opacity-0 transform translate-y-3 scale-95 blur-sm' 
+          : 'opacity-100 transform translate-y-0 scale-100 blur-0'
       }`}
       style={{
-        textShadow: isAnimating ? 'none' : '0 0 8px rgba(178, 120, 255, 0.4)'
+        textShadow: isAnimating ? 'none' : '0 0 12px rgba(178, 120, 255, 0.5)',
+        WebkitBackgroundClip: 'text',
+        WebkitTextFillColor: 'transparent',
+        backgroundImage: 'linear-gradient(135deg, #b278ff, #ff6ad5)',
       }}
     >
-      {words[currentIndex]}
+      {words?.[currentIndex] || 'Preserved'}
     </span>
   );
-}
-import { 
-  ArrowRight, Brain, BookOpen, Users, Sparkles, BarChart2, 
-  MessageCircle, MessageSquare, User, Menu, X, Check, CheckCircle 
-} from "lucide-react";
+};
 import { WhatsAppContactButton } from "@/components/landing/WhatsAppContactButton";
 import { CompactWhatsAppButton } from "@/components/landing/CompactWhatsAppButton";
 import { ContactOptionsDialog } from "@/components/landing/ContactOptionsDialog";
@@ -504,11 +507,9 @@ export default function LandingPage() {
             </div>
             
             {/* Heading */}
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-tight text-center">
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-primary to-blue-600 dark:from-indigo-400 dark:via-primary dark:to-blue-400">Your Natural Intelligence. </span>
-              <span className="bg-clip-text text-transparent bg-gradient-to-br from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 inline-block min-w-[160px]">
-                <DynamicWord words={["Preserved", "Protected", "Sharpened"]} interval={2000} />
-              </span>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-tight text-center flex flex-wrap justify-center items-center gap-x-2">
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-primary to-blue-600 dark:from-indigo-400 dark:via-primary dark:to-blue-400">Your Natural Intelligence.</span>
+              <DynamicWord words={["Preserved", "Protected", "Sharpened"]} interval={2000} />
             </h1>
             
             {/* Subheadings */}

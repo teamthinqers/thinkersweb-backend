@@ -158,7 +158,7 @@ export default function NeuraTuningCore() {
             <div>
               <CardTitle>Core Tuning Parameters</CardTitle>
               <CardDescription>
-                Adjust the fundamental parameters to reflect your cognitive behavior
+                Fine-tune how your neural mirror reflects your unique cognitive patterns and thinking style
               </CardDescription>
             </div>
           </div>
