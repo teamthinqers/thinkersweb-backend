@@ -507,10 +507,12 @@ export default function LandingPage() {
             </div>
             
             {/* Heading */}
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-tight text-center">
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-primary to-blue-600 dark:from-indigo-400 dark:via-primary dark:to-blue-400">Your Natural Intelligence. </span>
-              <DynamicWord words={["Preserved", "Protected", "Sharpened"]} interval={2000} />
-            </h1>
+            <div className="flex items-center justify-center text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-tight">
+              <h1 className="flex flex-nowrap whitespace-nowrap">
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-primary to-blue-600 dark:from-indigo-400 dark:via-primary dark:to-blue-400">Your Natural Intelligence.&nbsp;</span>
+                <DynamicWord words={["Preserved", "Protected", "Sharpened"]} interval={2000} />
+              </h1>
+            </div>
             
             {/* Subheadings */}
             <p className="text-lg md:text-xl text-muted-foreground mt-4 md:mt-4 mb-4 max-w-2xl text-center">
