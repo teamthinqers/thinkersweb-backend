@@ -470,7 +470,7 @@ export default function MyNeura() {
             <AlertCircle className="h-6 w-6 text-amber-500 mr-3" />
             <div>
               <h3 className="text-lg font-medium">Neura is Inactive</h3>
-              <p className="text-sm text-muted-foreground">Activate your neural extension to begin receiving personalized insights.</p>
+              <p className="text-sm text-muted-foreground">Activate your neural mirror to begin receiving personalized insights.</p>
             </div>
           </div>
         </div>
