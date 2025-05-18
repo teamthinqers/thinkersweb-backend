@@ -643,7 +643,7 @@ export default function LandingPage() {
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8 max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8 max-w-5xl mx-auto" style={{ display: "grid", gridTemplateRows: "1fr" }}>
             {/* Step 1: Sign In */}
             <div className="bg-card rounded-lg p-6 relative group hover:shadow-lg transition-all duration-300 border border-border/50 overflow-hidden">
               <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:bg-primary/10 transition-colors duration-300"></div>
