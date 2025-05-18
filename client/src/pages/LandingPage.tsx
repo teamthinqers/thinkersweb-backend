@@ -672,7 +672,7 @@ export default function LandingPage() {
                 2
               </div>
               <h3 className="text-xl font-semibold mb-2">Activate Neura</h3>
-              <p className="text-muted-foreground text-sm">Configure your neural extension parameters to match your thinking style.</p>
+              <p className="text-muted-foreground text-sm">Configure your Neura to mirror your natural intelligence & thinking style.</p>
               <Button 
                 variant="default" 
                 className="mt-4 w-full bg-gradient-to-r from-violet-600 to-purple-700 hover:from-purple-700 hover:to-violet-600 text-white border-0 shadow-md"
