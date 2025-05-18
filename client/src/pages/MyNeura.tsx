@@ -460,7 +460,7 @@ export default function MyNeura() {
             <Check className="h-6 w-6 text-green-500 mr-3" />
             <div>
               <h3 className="text-lg font-medium">Neura is Active</h3>
-              <p className="text-sm text-muted-foreground">Your neural extension is active and ready to assist you.</p>
+              <p className="text-sm text-muted-foreground">Your neural mirror is active and ready to assist you.</p>
             </div>
           </div>
         </div>
