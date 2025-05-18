@@ -321,7 +321,7 @@ export default function MyNeuralCapacityPage() {
             </Card>
           </div>
           
-          {/* Neural Capacity Stats */}
+          {/* Neural Mirror Capacity Stats */}
           <div className="mb-8">
             <h3 className="font-medium text-sm mb-3 flex items-center gap-2">
               <History className="h-4 w-4 text-purple-700 dark:text-purple-400" />

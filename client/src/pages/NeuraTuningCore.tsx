@@ -269,7 +269,7 @@ export default function NeuraTuningCore() {
                     <div className="space-y-2">
                       <h4 className="text-sm font-semibold">Memory Recall Parameter</h4>
                       <p className="text-sm">
-                        How does your brain prefer to recall and relate information? This influences how your cognitive companion processes and connects ideas.
+                        How does your brain prefer to recall and relate information? This influences how your neural mirror reflects and connects your thought patterns.
                       </p>
                     </div>
                   </HoverCardContent>
@@ -427,7 +427,7 @@ export default function NeuraTuningCore() {
                     <div className="space-y-2">
                       <h4 className="text-sm font-semibold">Signal Focus Parameter</h4>
                       <p className="text-sm">
-                        This is your brain's ability to lock on to a single goal vs juggling multiple contexts. It affects how your cognitive companion prioritizes and processes information.
+                        This is your brain's ability to lock on to a single goal vs juggling multiple contexts. It affects how your neural mirror reflects your attention patterns and prioritizes information.
                       </p>
                     </div>
                   </HoverCardContent>
@@ -589,8 +589,8 @@ export default function NeuraTuningCore() {
                       <h4 className="text-sm font-semibold">Mental Energy Flow Parameter</h4>
                       <p className="text-sm">
                         This parameter represents whether your energy spikes during execution (Action Primed) 
-                        or during planning and ideation (Reflection Primed). It affects how your cognitive 
-                        companion balances between supporting immediate action vs. contemplative thinking.
+                        or during planning and ideation (Reflection Primed). It affects how your neural 
+                        mirror reflects your balance between immediate action and contemplative thinking.
                       </p>
                     </div>
                   </HoverCardContent>
