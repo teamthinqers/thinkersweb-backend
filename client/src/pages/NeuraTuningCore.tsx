@@ -158,7 +158,7 @@ export default function NeuraTuningCore() {
             <div>
               <CardTitle>Core Tuning Parameters</CardTitle>
               <CardDescription>
-                Adjust the fundamental behavior of your cognitive companion
+                Adjust the fundamental parameters to reflect your cognitive behavior
               </CardDescription>
             </div>
           </div>
