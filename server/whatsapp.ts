@@ -273,7 +273,7 @@ export async function processWhatsAppMessage(from: string, messageText: string):
     if (messageText === "Hey DotSpark, I've got a few things on my mind - need your thoughts") {
       console.log(`Exact default prompt detected from user ${from}`);
       const specialResponse = 
-        "I'm here to help process what's on your mind. It sounds like you have several things you'd like to discuss. Feel free to share one thing at a time, and we can work through them together. What's the first thing you'd like to talk about?";
+        "I'm here to help process what's on your mind. Please feel free to share and we can work on it together. What's the first thing you'd like to talk about?";
       
       await sendWhatsAppReply(from, specialResponse);
       

@@ -461,7 +461,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         // Special handling for the default prefilled message
         if (message === "Hey DotSpark, I've got a few things on my mind - need your thoughts") {
-          reply = "I'm here to help process what's on your mind. It sounds like you have several things you'd like to discuss. Feel free to share one thing at a time, and we can work through them together. What's the first thing you'd like to talk about?";
+          reply = "I'm here to help process what's on your mind. Please feel free to share and we can work on it together. What's the first thing you'd like to talk about?";
         } else if (message.toLowerCase().includes("hey dotspark") || message.toLowerCase().includes("hello") || message.toLowerCase().includes("hi")) {
           reply = "Hey there! I'm DotSpark Chat. How can I help you today?";
         } else if (message.toLowerCase().includes("things on my mind")) {
