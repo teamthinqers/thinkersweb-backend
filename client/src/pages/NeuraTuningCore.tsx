@@ -81,7 +81,7 @@ export default function NeuraTuningCore() {
       
       toast({
         title: "Changes Saved",
-        description: "Your neural extension tuning parameters have been updated.",
+        description: "Your neural mirror tuning parameters have been updated.",
         variant: "default",
       });
     } catch (error) {
