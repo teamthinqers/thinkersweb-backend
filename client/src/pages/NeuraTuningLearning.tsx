@@ -241,15 +241,15 @@ export default function NeuraTuningLearning() {
       toast({
         title: "Learning Settings Updated",
         description: enableLearningPrompts 
-          ? "Your learning settings have been saved. You'll receive prompts on WhatsApp according to your preferences."
-          : "Your learning settings have been saved.",
+          ? "Your neural mirror learning settings have been saved. You'll receive prompts on WhatsApp according to your preferences."
+          : "Your neural mirror learning settings have been saved.",
         variant: "default",
       });
     } catch (error) {
       console.error("Error updating learning settings:", error);
       toast({
         title: "Save Failed",
-        description: "There was a problem saving your learning settings.",
+        description: "There was a problem saving your neural mirror learning settings.",
         variant: "destructive",
       });
     }
