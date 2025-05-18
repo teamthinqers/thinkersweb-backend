@@ -1010,7 +1010,7 @@ export default function LandingPage() {
                   </div>
                   <div>
                     <h3 className="font-semibold text-lg">Adaptive Intelligence</h3>
-                    <p className="text-muted-foreground">Your neural extension learns from your interactions, getting smarter and more personalized over time.</p>
+                    <p className="text-muted-foreground">Your neural mirror learns from your interactions, getting smarter and more personalized over time.</p>
                   </div>
                 </div>
               </div>
@@ -1059,11 +1059,11 @@ export default function LandingPage() {
             </div>
             <div className="space-y-2">
               <h3 className="text-4xl font-bold text-primary">76%</h3>
-              <p className="text-muted-foreground">Improvement in cognitive performance when using tuned neural extensions<sup>3</sup></p>
+              <p className="text-muted-foreground">Improvement in cognitive performance when using tuned neural mirrors<sup>3</sup></p>
             </div>
             <div className="space-y-2">
               <h3 className="text-4xl font-bold text-primary">56%</h3>
-              <p className="text-muted-foreground">Greater career growth rate among professionals with neural extension integration<sup>4</sup></p>
+              <p className="text-muted-foreground">Greater career growth rate among professionals with neural mirror integration<sup>4</sup></p>
             </div>
           </div>
           <div className="text-xs text-muted-foreground/70 mt-6 text-center">
@@ -1238,7 +1238,7 @@ export default function LandingPage() {
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold">Your Business Challenge</h3>
-                  <p className="text-muted-foreground text-sm">Message to your neural extension about a complex decision</p>
+                  <p className="text-muted-foreground text-sm">Message to your neural mirror about a complex decision</p>
                 </div>
               </div>
               <div className="mt-4 pt-4 border-t border-border/50">
@@ -1262,7 +1262,7 @@ export default function LandingPage() {
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold">Knowledge Integration</h3>
-                  <p className="text-muted-foreground text-sm">Your neural extension processes relevant business knowledge</p>
+                  <p className="text-muted-foreground text-sm">Your neural mirror processes relevant business knowledge</p>
                 </div>
               </div>
               <div className="mt-4 pt-4 border-t border-border/50">
@@ -1291,7 +1291,7 @@ export default function LandingPage() {
               </div>
               <div className="mt-4 pt-4 border-t border-border/50">
                 <p className="text-sm text-muted-foreground">
-                  "Your neural extension has generated a 'Product Strategy Decision Matrix' with 7 critical evaluation criteria, weighted scoring system, and step-by-step implementation guide tailored to your specific resource constraints."
+                  "Your neural mirror has generated a 'Product Strategy Decision Matrix' with 7 critical evaluation criteria, weighted scoring system, and step-by-step implementation guide tailored to your specific resource constraints."
                 </p>
               </div>
               <div className="hidden lg:flex items-center justify-center mt-4">
@@ -1319,7 +1319,7 @@ export default function LandingPage() {
                 </div>
               </div>
               <p className="text-muted-foreground mb-4">
-                Your neural extension generated this custom framework to guide your decision:
+                Your neural mirror generated this custom framework to guide your decision:
               </p>
               <div className="bg-primary/5 border border-primary/20 rounded-lg p-5">
                 <h4 className="font-bold text-lg mb-3 text-primary text-center">Product Portfolio Optimization Framework</h4>
