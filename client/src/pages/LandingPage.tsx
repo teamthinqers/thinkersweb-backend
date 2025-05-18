@@ -520,7 +520,7 @@ export default function LandingPage() {
             
             {/* Subheadings */}
             <p className="text-lg md:text-xl text-muted-foreground mt-4 md:mt-4 mb-4 max-w-2xl text-center">
-              Built for <span className="font-bold text-primary">thought leaders</span> who want to <span className="font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-primary to-blue-600 dark:from-indigo-400 dark:via-primary dark:to-blue-400">preserve</span> their way of thinking, <span className="font-bold bg-clip-text text-transparent bg-gradient-to-br from-blue-600 via-primary to-indigo-600 dark:from-blue-400 dark:via-primary dark:to-indigo-400">protect</span> their cognitive identity, and <span className="font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-pink-500 to-indigo-600 dark:from-purple-400 dark:via-pink-400 dark:to-indigo-400">sharpen</span> their clarity — without surrendering it to AI.
+              Built for thought leaders who want to preserve their way of thinking, protect their cognitive identity, and sharpen their clarity — without surrendering it to AI.
             </p>
             
             <div className="relative h-16 w-full my-2 md:my-3 overflow-hidden">
