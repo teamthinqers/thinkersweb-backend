@@ -21,12 +21,12 @@ export default function ChatPage() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      content: 'Hello! How can I help you today?',
+      content: 'Hey! I\'m DotSpark, your neural mirror. What\'s on your mind today?',
       isUser: false,
       timestamp: new Date(),
     },
   ]);
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("Hey DotSpark, I've got a few things on my mind - need your thoughts");
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();

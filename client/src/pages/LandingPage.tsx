@@ -688,6 +688,7 @@ export default function LandingPage() {
                 {/* Button 2: Ask DotSpark */}
                 <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 border border-green-200 dark:border-green-900/50 rounded-xl p-4 flex flex-col items-center shadow-lg shadow-green-500/5 dark:shadow-green-900/10 relative overflow-hidden group">
                   <WhatsAppContactButton 
+                    id="whatsapp-button"
                     size="lg" 
                     label="Ask DotSpark"
                     showIcon={true}
@@ -715,9 +716,16 @@ export default function LandingPage() {
                         size="sm"
                         className="text-xs px-2 bg-white hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700"
                         onClick={() => {
-                          // Use the direct link that's already stored in whatsappInfo
-                          if (whatsappInfo && whatsappInfo.directLink) {
-                            window.open(whatsappInfo.directLink, '_blank');
+                          // Get WhatsApp link from the whatsapp-button element
+                          const whatsappButton = document.getElementById('whatsapp-button');
+                          const whatsappHref = whatsappButton?.getAttribute('href');
+                          
+                          if (whatsappHref) {
+                            window.open(whatsappHref, '_blank');
+                          } else {
+                            // Fallback to direct WhatsApp link
+                            const defaultMessage = encodeURIComponent("Hey DotSpark, I've got a few things on my mind — need your thoughts");
+                            window.open(`https://wa.me/16067157733?text=${defaultMessage}`, '_blank');
                           }
                         }}
                       >
