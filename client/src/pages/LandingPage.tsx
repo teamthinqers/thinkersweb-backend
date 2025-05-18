@@ -507,12 +507,14 @@ export default function LandingPage() {
             </div>
             
             {/* Heading */}
-            <div className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-tight text-center">
-              <div className="flex flex-col md:flex-row items-center justify-center space-y-2 md:space-y-0">
-                <h1 className="mb-0 pb-0 bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-primary to-blue-600 dark:from-indigo-400 dark:via-primary dark:to-blue-400 text-center md:mr-3">Your Natural Intelligence.</h1>
-                <div className="min-w-[220px] sm:min-w-[280px] h-[60px] flex items-center justify-center">
-                  <DynamicWord words={["Preserved", "Protected", "Sharpened"]} interval={2000} />
-                </div>
+            <div className="container px-4 max-w-4xl mx-auto text-center">
+              <div className="flex flex-row items-center justify-center flex-wrap">
+                <h1 className="text-3xl sm:text-4xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-none md:leading-tight">
+                  <span className="inline-block bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-primary to-blue-600 dark:from-indigo-400 dark:via-primary dark:to-blue-400">Your Natural Intelligence.</span>
+                  <span className="inline-block ml-2 h-[60px] min-w-[220px]">
+                    <DynamicWord words={["Preserved", "Protected", "Sharpened"]} interval={2000} />
+                  </span>
+                </h1>
               </div>
             </div>
             
