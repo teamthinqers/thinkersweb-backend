@@ -523,9 +523,8 @@ export default function LandingPage() {
                   <div className="flex items-center justify-center w-full px-4 pl-24 sm:pl-0">
                     <div className="flex items-center justify-center w-full max-w-[480px] mx-auto">
                       <span className="font-sans tracking-normal inline-block text-center bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-primary to-blue-600 dark:from-indigo-400 dark:via-primary dark:to-blue-400 whitespace-nowrap">
-                        Your Natural Intelligence
+                        Your Natural Intelligence.
                       </span>
-                      <span className="inline-block">.</span>
                       <span className="font-sans inline-block ml-1">
                         <DynamicWord words={["Preserved", "Protected", "Sharpened"]} interval={2000} />
                       </span>
