@@ -29,9 +29,6 @@ export default function NeuraTuningCognitive() {
   const [unsavedChanges, setUnsavedChanges] = useState(false);
   const [pendingChanges, setPendingChanges] = useState<{
     // Core tuning parameters
-    creativity?: number;
-    precision?: number;
-    speed?: number;
     cognitivePace?: number;
     signalFocus?: number;
     impulseControl?: number;
@@ -51,9 +48,6 @@ export default function NeuraTuningCognitive() {
   const { tuning: neuralTuning } = status || { 
     tuning: {
       // Core tuning parameters
-      creativity: 0.7,
-      precision: 0.8,
-      speed: 0.5,
       cognitivePace: 0.5,
       signalFocus: 0.5,
       impulseControl: 0.5,
@@ -172,188 +166,7 @@ export default function NeuraTuningCognitive() {
         )}
       </div>
       
-      {/* Core Tuning Section Card */}
-      <Card className="bg-white dark:bg-gray-950 shadow-md mb-6">
-        <CardHeader className="bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-950 dark:to-yellow-950">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-amber-100 dark:bg-amber-900 rounded-full">
-              <Settings className="h-6 w-6 text-amber-600 dark:text-amber-400" />
-            </div>
-            <div>
-              <CardTitle className="text-xl font-bold text-gray-900 dark:text-white">
-                Core Tuning
-              </CardTitle>
-              <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">
-                Fundamental processing parameters that control how your neural system operates
-              </p>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent className="p-6 space-y-8">
-          {/* Creativity Parameter */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                Creativity
-              </label>
-              <span className="text-sm text-gray-500 dark:text-gray-400">
-                {Math.round((pendingChanges.creativity ?? neuralTuning.creativity) * 100)}%
-              </span>
-            </div>
-            <Slider
-              value={[pendingChanges.creativity ?? neuralTuning.creativity]}
-              onValueChange={(value) => handleParameterChange('creativity', value)}
-              max={1}
-              min={0}
-              step={0.01}
-              className="w-full"
-            />
-            <p className="text-xs text-gray-500 dark:text-gray-400">
-              Controls response variety and uniqueness in processing
-            </p>
-          </div>
-
-          {/* Precision Parameter */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                Precision
-              </label>
-              <span className="text-sm text-gray-500 dark:text-gray-400">
-                {Math.round((pendingChanges.precision ?? neuralTuning.precision) * 100)}%
-              </span>
-            </div>
-            <Slider
-              value={[pendingChanges.precision ?? neuralTuning.precision]}
-              onValueChange={(value) => handleParameterChange('precision', value)}
-              max={1}
-              min={0}
-              step={0.01}
-              className="w-full"
-            />
-            <p className="text-xs text-gray-500 dark:text-gray-400">
-              Affects factual accuracy and detail level in responses
-            </p>
-          </div>
-
-          {/* Speed Parameter */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                Speed
-              </label>
-              <span className="text-sm text-gray-500 dark:text-gray-400">
-                {Math.round((pendingChanges.speed ?? neuralTuning.speed) * 100)}%
-              </span>
-            </div>
-            <Slider
-              value={[pendingChanges.speed ?? neuralTuning.speed]}
-              onValueChange={(value) => handleParameterChange('speed', value)}
-              max={1}
-              min={0}
-              step={0.01}
-              className="w-full"
-            />
-            <p className="text-xs text-gray-500 dark:text-gray-400">
-              Response time vs depth tradeoff optimization
-            </p>
-          </div>
-
-          {/* Cognitive Pace Parameter */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                Cognitive Pace
-              </label>
-              <span className="text-sm text-gray-500 dark:text-gray-400">
-                {Math.round((pendingChanges.cognitivePace ?? neuralTuning.cognitivePace) * 100)}%
-              </span>
-            </div>
-            <Slider
-              value={[pendingChanges.cognitivePace ?? neuralTuning.cognitivePace]}
-              onValueChange={(value) => handleParameterChange('cognitivePace', value)}
-              max={1}
-              min={0}
-              step={0.01}
-              className="w-full"
-            />
-            <p className="text-xs text-gray-500 dark:text-gray-400">
-              How fast the brain processes and switches between thoughts
-            </p>
-          </div>
-
-          {/* Signal Focus Parameter */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                Signal Focus
-              </label>
-              <span className="text-sm text-gray-500 dark:text-gray-400">
-                {Math.round((pendingChanges.signalFocus ?? neuralTuning.signalFocus) * 100)}%
-              </span>
-            </div>
-            <Slider
-              value={[pendingChanges.signalFocus ?? neuralTuning.signalFocus]}
-              onValueChange={(value) => handleParameterChange('signalFocus', value)}
-              max={1}
-              min={0}
-              step={0.01}
-              className="w-full"
-            />
-            <p className="text-xs text-gray-500 dark:text-gray-400">
-              Narrow beam focus (0%) vs wide scanner focus (100%)
-            </p>
-          </div>
-
-          {/* Impulse Control Parameter */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                Impulse Control
-              </label>
-              <span className="text-sm text-gray-500 dark:text-gray-400">
-                {Math.round((pendingChanges.impulseControl ?? neuralTuning.impulseControl) * 100)}%
-              </span>
-            </div>
-            <Slider
-              value={[pendingChanges.impulseControl ?? neuralTuning.impulseControl]}
-              onValueChange={(value) => handleParameterChange('impulseControl', value)}
-              max={1}
-              min={0}
-              step={0.01}
-              className="w-full"
-            />
-            <p className="text-xs text-gray-500 dark:text-gray-400">
-              High responsiveness (0%) vs high precision (100%)
-            </p>
-          </div>
-
-          {/* Mental Energy Flow Parameter */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                Mental Energy Flow
-              </label>
-              <span className="text-sm text-gray-500 dark:text-gray-400">
-                {Math.round((pendingChanges.mentalEnergyFlow ?? neuralTuning.mentalEnergyFlow) * 100)}%
-              </span>
-            </div>
-            <Slider
-              value={[pendingChanges.mentalEnergyFlow ?? neuralTuning.mentalEnergyFlow]}
-              onValueChange={(value) => handleParameterChange('mentalEnergyFlow', value)}
-              max={1}
-              min={0}
-              step={0.01}
-              className="w-full"
-            />
-            <p className="text-xs text-gray-500 dark:text-gray-400">
-              Action primed (0%) vs reflection primed (100%)
-            </p>
-          </div>
-        </CardContent>
-      </Card>
-      
-      {/* Cognitive Style Section Card */}
+      {/* Cognitive Shield Configuration Card */}
       <Card className="bg-white dark:bg-gray-950 shadow-md">
         <CardHeader className="bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-950 dark:to-yellow-950">
           <div className="flex items-center gap-3">
@@ -361,7 +174,7 @@ export default function NeuraTuningCognitive() {
               <BrainCog className="h-6 w-6 text-amber-600 dark:text-amber-400" />
             </div>
             <div>
-              <CardTitle>Cognitive Style</CardTitle>
+              <CardTitle>Cognitive Shield</CardTitle>
               <CardDescription>
                 Set up your Cognitive Shield to protect your thinking identity.
                 It ensures your natural intelligence stays intact while interacting with AI.
@@ -762,6 +575,98 @@ export default function NeuraTuningCognitive() {
                 </div>
               </div>
             </div>
+          </div>
+
+          {/* Cognitive Pace Parameter */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                Cognitive Pace
+              </label>
+              <span className="text-sm text-gray-500 dark:text-gray-400">
+                {Math.round((pendingChanges.cognitivePace ?? neuralTuning.cognitivePace) * 100)}%
+              </span>
+            </div>
+            <Slider
+              value={[pendingChanges.cognitivePace ?? neuralTuning.cognitivePace]}
+              onValueChange={(value) => handleParameterChange('cognitivePace', value)}
+              max={1}
+              min={0}
+              step={0.01}
+              className="w-full"
+            />
+            <p className="text-xs text-gray-500 dark:text-gray-400">
+              How fast the brain processes and switches between thoughts
+            </p>
+          </div>
+
+          {/* Signal Focus Parameter */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                Signal Focus
+              </label>
+              <span className="text-sm text-gray-500 dark:text-gray-400">
+                {Math.round((pendingChanges.signalFocus ?? neuralTuning.signalFocus) * 100)}%
+              </span>
+            </div>
+            <Slider
+              value={[pendingChanges.signalFocus ?? neuralTuning.signalFocus]}
+              onValueChange={(value) => handleParameterChange('signalFocus', value)}
+              max={1}
+              min={0}
+              step={0.01}
+              className="w-full"
+            />
+            <p className="text-xs text-gray-500 dark:text-gray-400">
+              Narrow beam focus (0%) vs wide scanner focus (100%)
+            </p>
+          </div>
+
+          {/* Impulse Control Parameter */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                Impulse Control
+              </label>
+              <span className="text-sm text-gray-500 dark:text-gray-400">
+                {Math.round((pendingChanges.impulseControl ?? neuralTuning.impulseControl) * 100)}%
+              </span>
+            </div>
+            <Slider
+              value={[pendingChanges.impulseControl ?? neuralTuning.impulseControl]}
+              onValueChange={(value) => handleParameterChange('impulseControl', value)}
+              max={1}
+              min={0}
+              step={0.01}
+              className="w-full"
+            />
+            <p className="text-xs text-gray-500 dark:text-gray-400">
+              High responsiveness (0%) vs high precision (100%)
+            </p>
+          </div>
+
+          {/* Mental Energy Flow Parameter */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                Mental Energy Flow
+              </label>
+              <span className="text-sm text-gray-500 dark:text-gray-400">
+                {Math.round((pendingChanges.mentalEnergyFlow ?? neuralTuning.mentalEnergyFlow) * 100)}%
+              </span>
+            </div>
+            <Slider
+              value={[pendingChanges.mentalEnergyFlow ?? neuralTuning.mentalEnergyFlow]}
+              onValueChange={(value) => handleParameterChange('mentalEnergyFlow', value)}
+              max={1}
+              min={0}
+              step={0.01}
+              className="w-full"
+            />
+            <p className="text-xs text-gray-500 dark:text-gray-400">
+              Action primed (0%) vs reflection primed (100%)
+            </p>
           </div>
 
 
