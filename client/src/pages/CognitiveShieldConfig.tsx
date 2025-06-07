@@ -490,15 +490,35 @@ export default function CognitiveShieldConfig() {
             </div>
 
             {/* Thought Complexity Parameter */}
-            <div className="parameter-complexity space-y-3">
+            <div className="space-y-4 p-4 rounded-lg bg-gradient-to-r from-rose-50 to-pink-50 dark:from-rose-950/20 dark:to-pink-950/20 border border-rose-200 dark:border-rose-800">
               <div className="flex items-center justify-between">
-                <Label htmlFor="thoughtComplexity" className="text-sm font-medium">
+                <Label htmlFor="thoughtComplexity" className="text-sm font-medium flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-gradient-to-r from-rose-400 to-pink-400"></div>
                   Thought Complexity
                 </Label>
-                <span className="parameter-value">
+                <span className="text-sm font-bold text-rose-700 dark:text-rose-300">
                   {Math.round((pendingChanges.thoughtComplexity ?? neuralTuning?.thoughtComplexity ?? 0.5) * 100)}%
                 </span>
               </div>
+              
+              {/* Visual complexity meter with layered pattern */}
+              <div className="relative">
+                <div className="h-3 bg-gradient-to-r from-rose-100 to-rose-200 dark:from-rose-900 dark:to-rose-800 rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-gradient-to-r from-rose-500 to-pink-500 rounded-full transition-all duration-300 relative"
+                    style={{ width: `${(pendingChanges.thoughtComplexity ?? neuralTuning?.thoughtComplexity ?? 0.5) * 100}%` }}
+                  >
+                    {/* Layered complexity effect */}
+                    <div className="absolute inset-0 flex items-center justify-end pr-1">
+                      <div className="w-1 h-1 bg-pink-200 rounded-full animate-pulse shadow-sm"></div>
+                    </div>
+                  </div>
+                </div>
+                {/* Complexity layer indicators */}
+                <div className="absolute -top-1 left-1/2 w-0.5 h-0.5 bg-rose-400 rounded-full opacity-80 animate-pulse"></div>
+                <div className="absolute -bottom-1 right-1/5 w-1 h-1 bg-pink-400 rounded-full opacity-55 animate-bounce"></div>
+              </div>
+              
               <Slider
                 id="thoughtComplexity"
                 min={0}
@@ -506,7 +526,7 @@ export default function CognitiveShieldConfig() {
                 step={0.01}
                 value={[(pendingChanges.thoughtComplexity ?? neuralTuning?.thoughtComplexity ?? 0.5)]}
                 onValueChange={(value) => handleParameterChange('thoughtComplexity', value[0])}
-                className="slider-track-glow"
+                className="complexity-slider"
               />
               <p className="text-xs text-muted-foreground">
                 Simple direct thinking (left) vs complex layered thinking (right)
