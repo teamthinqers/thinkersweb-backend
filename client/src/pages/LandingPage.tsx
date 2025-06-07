@@ -526,11 +526,8 @@ export default function LandingPage() {
                   <div className="flex items-center justify-center w-full px-4">
                     <div className="flex flex-wrap items-center justify-center w-full max-w-[480px] mx-auto pl-10 sm:pl-0">
                       <div className="flex items-center justify-center w-full">
-                        <span className="font-sans tracking-normal inline-block text-center bg-clip-text text-transparent bg-gradient-to-r from-amber-700 via-amber-600 to-amber-500 dark:from-amber-400 dark:via-amber-300 dark:to-amber-200 whitespace-nowrap">
-                          Your Natural Intelligence.
-                        </span>
-                        <span className="font-sans inline-block ml-1">
-                          <DynamicWord words={["Preserved", "Protected", "Sharpened"]} interval={2000} />
+                        <span className="font-sans tracking-normal inline-block text-center bg-clip-text text-transparent bg-gradient-to-r from-amber-700 via-amber-600 to-amber-500 dark:from-amber-400 dark:via-amber-300 dark:to-amber-200">
+                          For those who still Thin<span className="font-bold text-amber-700 bg-amber-100 dark:text-amber-400 dark:bg-amber-900/30 px-2 py-1 rounded-md ml-1">Q</span>
                         </span>
                       </div>
                     </div>
@@ -539,13 +536,7 @@ export default function LandingPage() {
               </div>
             </div>
             
-            {/* Hero tagline */}
-            <div className="text-xl md:text-2xl font-medium mt-4 mb-2 max-w-2xl mx-auto text-center px-4">
-              <p className="leading-tight">
-                For those who still Thin<span className="font-bold text-amber-700 bg-amber-100 dark:text-amber-400 dark:bg-amber-900/30 px-2 py-1 rounded-md">Q</span>
-              </p>
-            </div>
-            
+
             {/* Subheadings */}
             <div className="text-lg md:text-xl text-muted-foreground mt-4 md:mt-4 mb-4 max-w-2xl mx-auto text-center px-4">
               <p className="leading-tight md:leading-normal max-w-2xl mx-auto">
