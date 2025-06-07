@@ -377,7 +377,7 @@ export default function MyNeura() {
       console.error("Error updating neural tuning:", error);
       toast({
         title: "Save Failed",
-        description: "There was a problem saving your neural tuning settings.",
+        description: "There was a problem saving your DotSpark tuning settings.",
         variant: "destructive",
       });
     }
@@ -415,11 +415,11 @@ export default function MyNeura() {
           <Button variant="ghost" onClick={() => setLocation('/')} className="p-2">
             <ChevronLeft className="h-5 w-5" />
           </Button>
-          <h1 className="text-2xl font-bold">My Neura</h1>
+          <h1 className="text-2xl font-bold">My DotSpark</h1>
         </div>
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-2">
-            <span className="text-sm font-medium">Neura Status:</span>
+            <span className="text-sm font-medium">DotSpark Status:</span>
             <span className={`inline-flex h-3 w-3 rounded-full ${isActivated ? 'bg-green-500' : 'bg-red-500'}`}></span>
           </div>
           <div className="flex items-center gap-2">
@@ -510,14 +510,14 @@ export default function MyNeura() {
             <div className="flex items-center gap-2">
               <BrainCircuit className="h-5 w-5 text-amber-700 dark:text-amber-400" />
               <CardTitle>
-                <span className="font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">My Neural Mirror Capacity</span>
+                <span className="font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">My DotSpark Capacity</span>
               </CardTitle>
             </div>
             <Badge className="bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-200 hover:bg-amber-200 dark:hover:bg-amber-800/50">
               Level 1
             </Badge>
           </div>
-          <CardDescription>Track your neural system's capacity and performance metrics</CardDescription>
+          <CardDescription>Track your DotSpark system's capacity and performance metrics</CardDescription>
         </CardHeader>
         
         <CardContent className="pb-4 relative z-10">
@@ -572,7 +572,7 @@ export default function MyNeura() {
                   </TooltipTrigger>
                   <TooltipContent side="bottom" className="bg-white dark:bg-gray-900 border border-amber-200 dark:border-amber-800 p-3 shadow-lg max-w-[200px]">
                     <p className="text-sm font-medium">Processing Capacity</p>
-                    <p className="text-xs text-muted-foreground mt-1">Increases when you use Neura regularly. Higher usage frequency means better processing power.</p>
+                    <p className="text-xs text-muted-foreground mt-1">Increases when you use DotSpark regularly. Higher usage frequency means better processing power.</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
@@ -728,7 +728,7 @@ export default function MyNeura() {
             </div>
             <CardContent className="p-6">
               <p className="text-muted-foreground mb-4">
-                Fine-tune how your neural mirror processes information by adjusting core parameters to match your natural thinking patterns.
+                Fine-tune how your DotSpark processes information by adjusting core parameters to match your natural thinking patterns.
               </p>
               <ul className="space-y-2 mb-6">
                 <li className="flex items-start">
@@ -752,7 +752,7 @@ export default function MyNeura() {
               </ul>
               <Button 
                 className="w-full bg-amber-600 hover:bg-amber-700 group-hover:translate-y-0 translate-y-1 transition-all duration-300"
-                onClick={() => setLocation('/neura-tuning/core')}
+                onClick={() => setLocation('/dotspark-tuning/core')}
               >
                 Configure Core Parameters
               </Button>
@@ -772,7 +772,7 @@ export default function MyNeura() {
             </div>
             <CardContent className="p-6">
               <p className="text-muted-foreground mb-4">
-                Shape how your neural mirror reflects your unique cognitive approach, balancing analytical reasoning with intuitive insights.
+                Shape how your DotSpark reflects your unique cognitive approach, balancing analytical reasoning with intuitive insights.
               </p>
               <ul className="space-y-2 mb-6">
                 <li className="flex items-start">
