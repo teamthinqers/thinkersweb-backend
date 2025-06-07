@@ -84,7 +84,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children, onNewEntry }) => {
               >
                 <Download size={18} />
                 <span>Install App</span>
-                <Badge variant="outline" className="ml-1 bg-purple-600 text-white border-purple-500">
+                <Badge variant="outline" className="ml-1 bg-amber-600 text-white border-amber-500">
                   New
                 </Badge>
               </Button>

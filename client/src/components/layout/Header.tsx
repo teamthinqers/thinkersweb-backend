@@ -223,7 +223,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
               {/* Neura button */}
               {location === "/my-neura" || location === "/activate-neura" ? (
                 <Button 
-                  className="bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white h-9 w-9 p-0"
+                  className="bg-gradient-to-r from-amber-700 to-primary hover:from-amber-800 hover:to-primary/90 text-white h-9 w-9 p-0"
                   size="sm"
                   onClick={() => setLocation("/my-neura")}
                 >
@@ -234,7 +234,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 </Button>
               ) : isActivated ? (
                 <Button 
-                  className="bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white h-9 w-9 p-0"
+                  className="bg-gradient-to-r from-amber-700 to-primary hover:from-amber-800 hover:to-primary/90 text-white h-9 w-9 p-0"
                   size="sm"
                   onClick={() => setLocation("/my-neura")}
                 >
@@ -245,7 +245,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 </Button>
               ) : (
                 <Button 
-                  className="bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white h-9 w-9 p-0"
+                  className="bg-gradient-to-r from-orange-700 to-amber-800 hover:from-orange-800 hover:to-amber-900 text-white h-9 w-9 p-0"
                   size="sm"
                   onClick={() => setLocation("/activate-neura")}
                 >
@@ -340,7 +340,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
               {/* Always show "My Neura" when on the My Neura page */}
               {location === "/my-neura" || location === "/activate-neura" ? (
                 <Button 
-                  className="mr-2 bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white relative"
+                  className="mr-2 bg-gradient-to-r from-amber-700 to-primary hover:from-amber-800 hover:to-primary/90 text-white relative"
                   size="sm"
                   onClick={() => setLocation("/my-neura")}
                 >
@@ -354,7 +354,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 </Button>
               ) : isActivated ? (
                 <Button 
-                  className="mr-2 bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white relative"
+                  className="mr-2 bg-gradient-to-r from-amber-700 to-primary hover:from-amber-800 hover:to-primary/90 text-white relative"
                   size="sm"
                   onClick={() => setLocation("/my-neura")}
                 >
@@ -368,7 +368,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 </Button>
               ) : (
                 <Button 
-                  className="mr-2 bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white relative"
+                  className="mr-2 bg-gradient-to-r from-orange-700 to-amber-800 hover:from-orange-800 hover:to-amber-900 text-white relative"
                   size="sm"
                   onClick={() => setLocation("/activate-neura")}
                 >
@@ -485,7 +485,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
               
               {isActivated ? (
                 <Button 
-                  className="w-full justify-start mb-2 bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white relative"
+                  className="w-full justify-start mb-2 bg-gradient-to-r from-amber-700 to-primary hover:from-amber-800 hover:to-primary/90 text-white relative"
                   size="sm"
                   onClick={() => {
                     setShowMobileNav(false);
@@ -502,7 +502,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 </Button>
               ) : (
                 <Button 
-                  className="w-full justify-start mb-2 bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white relative"
+                  className="w-full justify-start mb-2 bg-gradient-to-r from-orange-700 to-amber-800 hover:from-orange-800 hover:to-amber-900 text-white relative"
                   size="sm"
                   onClick={() => {
                     setShowMobileNav(false);
