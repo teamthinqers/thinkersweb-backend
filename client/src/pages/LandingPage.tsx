@@ -533,17 +533,17 @@ export default function LandingPage() {
                         {/* Left side spark network alongside the text */}
                         <div className="absolute left-0 top-1/2 -translate-y-1/2 w-12 h-full pointer-events-none">
                           <div className="absolute top-0 left-2">
-                            <div className="w-1.5 h-1.5 bg-amber-500/50 rounded-full animate-pulse-slow shadow-amber-500/20 shadow-md"></div>
-                            <div className="absolute top-3 left-2 w-1 h-1 bg-amber-600/60 rounded-full animate-pulse-slow delay-500"></div>
-                            <div className="absolute top-6 left-0 w-1.5 h-1.5 bg-amber-400/70 rounded-full animate-pulse-slow delay-1000"></div>
+                            <div className="w-2.5 h-2.5 bg-amber-500/80 rounded-full animate-pulse-slow shadow-amber-500/40 shadow-lg"></div>
+                            <div className="absolute top-3 left-2 w-2 h-2 bg-amber-600/85 rounded-full animate-pulse-slow delay-500 shadow-amber-600/30 shadow-md"></div>
+                            <div className="absolute top-6 left-0 w-2.5 h-2.5 bg-amber-400/90 rounded-full animate-pulse-slow delay-1000 shadow-amber-400/40 shadow-lg"></div>
                             
                             {/* Connection lines */}
-                            <div className="absolute top-1 left-1 w-4 h-[0.5px] bg-gradient-to-r from-amber-500/30 to-amber-600/15 rotate-45 opacity-0 animate-spark-appear delay-1500"></div>
-                            <div className="absolute top-4 left-1 w-3 h-[0.5px] bg-gradient-to-r from-amber-600/25 to-amber-400/15 rotate-90 opacity-0 animate-spark-appear delay-2000"></div>
+                            <div className="absolute top-1 left-1 w-5 h-[1px] bg-gradient-to-r from-amber-500/60 to-amber-600/40 rotate-45 opacity-0 animate-spark-appear delay-1500"></div>
+                            <div className="absolute top-4 left-1 w-4 h-[1px] bg-gradient-to-r from-amber-600/55 to-amber-400/35 rotate-90 opacity-0 animate-spark-appear delay-2000"></div>
                             
                             {/* Spark burst */}
                             <div className="absolute -top-1 left-1 opacity-0 animate-spark-flash delay-2500">
-                              <svg width="8" height="8" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M13 2L4.5 13.5H11.5L11 22L19.5 10.5H12.5L13 2Z" fill="#f59e0b" />
                               </svg>
                             </div>
@@ -551,69 +551,69 @@ export default function LandingPage() {
                           
                           {/* Middle left network */}
                           <div className="absolute top-1/2 left-1 -translate-y-1/2">
-                            <div className="w-1 h-1 bg-amber-500/40 rounded-full animate-pulse-slow delay-1800"></div>
-                            <div className="absolute top-2 left-1 w-1.5 h-1.5 bg-amber-600/50 rounded-full animate-pulse-slow delay-2300 shadow-amber-600/15 shadow-sm"></div>
-                            <div className="absolute -top-1 left-3 w-1 h-1 bg-amber-400/60 rounded-full animate-pulse-slow delay-2800"></div>
+                            <div className="w-2 h-2 bg-amber-500/70 rounded-full animate-pulse-slow delay-1800 shadow-amber-500/30 shadow-sm"></div>
+                            <div className="absolute top-2 left-1 w-2.5 h-2.5 bg-amber-600/75 rounded-full animate-pulse-slow delay-2300 shadow-amber-600/35 shadow-md"></div>
+                            <div className="absolute -top-1 left-3 w-2 h-2 bg-amber-400/80 rounded-full animate-pulse-slow delay-2800 shadow-amber-400/30 shadow-sm"></div>
                             
                             {/* Neural connections */}
-                            <div className="absolute top-1 left-1 w-3 h-[0.5px] bg-amber-500/25 rotate-30 opacity-0 animate-spark-appear delay-3200"></div>
-                            <div className="absolute top-1 left-2 w-2 h-[0.5px] bg-amber-400/30 -rotate-45 opacity-0 animate-spark-appear delay-3600"></div>
+                            <div className="absolute top-1 left-1 w-4 h-[1px] bg-amber-500/50 rotate-30 opacity-0 animate-spark-appear delay-3200"></div>
+                            <div className="absolute top-1 left-2 w-3 h-[1px] bg-amber-400/55 -rotate-45 opacity-0 animate-spark-appear delay-3600"></div>
                           </div>
                           
                           {/* Lower left cluster */}
                           <div className="absolute bottom-0 left-3">
-                            <div className="w-1 h-1 bg-amber-500/50 rounded-full animate-pulse-slow delay-3000"></div>
-                            <div className="absolute bottom-2 left-2 w-1.5 h-1.5 bg-amber-600/60 rounded-full animate-pulse-slow delay-3500"></div>
-                            <div className="absolute bottom-0 left-4 w-1 h-1 bg-amber-400/50 rounded-full animate-pulse-slow delay-4000"></div>
+                            <div className="w-2 h-2 bg-amber-500/75 rounded-full animate-pulse-slow delay-3000 shadow-amber-500/30 shadow-sm"></div>
+                            <div className="absolute bottom-2 left-2 w-2.5 h-2.5 bg-amber-600/80 rounded-full animate-pulse-slow delay-3500 shadow-amber-600/35 shadow-md"></div>
+                            <div className="absolute bottom-0 left-4 w-2 h-2 bg-amber-400/75 rounded-full animate-pulse-slow delay-4000 shadow-amber-400/30 shadow-sm"></div>
                             
                             {/* Connection web */}
-                            <div className="absolute bottom-1 left-1 w-4 h-[0.5px] bg-gradient-to-r from-amber-500/20 to-amber-400/10 -rotate-30 opacity-0 animate-spark-appear delay-4400"></div>
+                            <div className="absolute bottom-1 left-1 w-5 h-[1px] bg-gradient-to-r from-amber-500/45 to-amber-400/25 -rotate-30 opacity-0 animate-spark-appear delay-4400"></div>
                           </div>
                         </div>
                         
                         {/* Right side spark network alongside the text */}
                         <div className="absolute right-0 top-1/2 -translate-y-1/2 w-12 h-full pointer-events-none">
                           <div className="absolute top-0 right-2">
-                            <div className="w-1.5 h-1.5 bg-amber-600/55 rounded-full animate-pulse-slow delay-300 shadow-amber-600/20 shadow-md"></div>
-                            <div className="absolute top-4 right-2 w-1 h-1 bg-amber-500/70 rounded-full animate-pulse-slow delay-800"></div>
-                            <div className="absolute top-7 right-0 w-1.5 h-1.5 bg-amber-400/65 rounded-full animate-pulse-slow delay-1300"></div>
+                            <div className="w-2.5 h-2.5 bg-amber-600/85 rounded-full animate-pulse-slow delay-300 shadow-amber-600/40 shadow-lg"></div>
+                            <div className="absolute top-4 right-2 w-2 h-2 bg-amber-500/90 rounded-full animate-pulse-slow delay-800 shadow-amber-500/35 shadow-md"></div>
+                            <div className="absolute top-7 right-0 w-2.5 h-2.5 bg-amber-400/85 rounded-full animate-pulse-slow delay-1300 shadow-amber-400/40 shadow-lg"></div>
                             
                             {/* Dynamic connections */}
-                            <div className="absolute top-2 right-1 w-3 h-[0.5px] bg-gradient-to-l from-amber-600/30 to-amber-500/15 -rotate-45 opacity-0 animate-spark-appear delay-1700"></div>
-                            <div className="absolute top-5 right-1 w-2 h-[0.5px] bg-amber-400/25 rotate-90 opacity-0 animate-spark-appear delay-2100"></div>
+                            <div className="absolute top-2 right-1 w-4 h-[1px] bg-gradient-to-l from-amber-600/60 to-amber-500/35 -rotate-45 opacity-0 animate-spark-appear delay-1700"></div>
+                            <div className="absolute top-5 right-1 w-3 h-[1px] bg-amber-400/50 rotate-90 opacity-0 animate-spark-appear delay-2100"></div>
                             
                             {/* Enhanced spark burst */}
                             <div className="absolute -top-1 right-1 opacity-0 animate-spark-flash delay-2800">
-                              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M13 2L4.5 13.5H11.5L11 22L19.5 10.5H12.5L13 2Z" fill="#f59e0b" />
                               </svg>
                               {/* Radiating rays */}
-                              <div className="absolute w-3 h-[0.5px] bg-amber-500/40 rotate-0 -translate-x-1/2 opacity-0 animate-spark-appear delay-3000"></div>
-                              <div className="absolute w-3 h-[0.5px] bg-amber-500/40 rotate-45 -translate-x-1/2 opacity-0 animate-spark-appear delay-3100"></div>
-                              <div className="absolute w-3 h-[0.5px] bg-amber-500/40 rotate-90 -translate-x-1/2 opacity-0 animate-spark-appear delay-3200"></div>
-                              <div className="absolute w-3 h-[0.5px] bg-amber-500/40 rotate-135 -translate-x-1/2 opacity-0 animate-spark-appear delay-3300"></div>
+                              <div className="absolute w-4 h-[1px] bg-amber-500/70 rotate-0 -translate-x-1/2 opacity-0 animate-spark-appear delay-3000"></div>
+                              <div className="absolute w-4 h-[1px] bg-amber-500/70 rotate-45 -translate-x-1/2 opacity-0 animate-spark-appear delay-3100"></div>
+                              <div className="absolute w-4 h-[1px] bg-amber-500/70 rotate-90 -translate-x-1/2 opacity-0 animate-spark-appear delay-3200"></div>
+                              <div className="absolute w-4 h-[1px] bg-amber-500/70 rotate-135 -translate-x-1/2 opacity-0 animate-spark-appear delay-3300"></div>
                             </div>
                           </div>
                           
                           {/* Middle right network */}
                           <div className="absolute top-1/2 right-1 -translate-y-1/2">
-                            <div className="w-1.5 h-1.5 bg-amber-600/50 rounded-full animate-pulse-slow delay-2000 shadow-amber-600/15 shadow-sm"></div>
-                            <div className="absolute top-3 right-2 w-1 h-1 bg-amber-500/40 rounded-full animate-pulse-slow delay-2500"></div>
-                            <div className="absolute -top-2 right-3 w-1 h-1 bg-amber-400/60 rounded-full animate-pulse-slow delay-3000"></div>
+                            <div className="w-2.5 h-2.5 bg-amber-600/75 rounded-full animate-pulse-slow delay-2000 shadow-amber-600/35 shadow-md"></div>
+                            <div className="absolute top-3 right-2 w-2 h-2 bg-amber-500/70 rounded-full animate-pulse-slow delay-2500 shadow-amber-500/30 shadow-sm"></div>
+                            <div className="absolute -top-2 right-3 w-2 h-2 bg-amber-400/80 rounded-full animate-pulse-slow delay-3000 shadow-amber-400/35 shadow-sm"></div>
                             
                             {/* Neural pathways */}
-                            <div className="absolute top-1 right-1 w-3 h-[0.5px] bg-amber-500/25 -rotate-30 opacity-0 animate-spark-appear delay-3400"></div>
-                            <div className="absolute top-0 right-2 w-2 h-[0.5px] bg-amber-400/20 rotate-45 opacity-0 animate-spark-appear delay-3800"></div>
+                            <div className="absolute top-1 right-1 w-4 h-[1px] bg-amber-500/50 -rotate-30 opacity-0 animate-spark-appear delay-3400"></div>
+                            <div className="absolute top-0 right-2 w-3 h-[1px] bg-amber-400/45 rotate-45 opacity-0 animate-spark-appear delay-3800"></div>
                           </div>
                           
                           {/* Lower right cluster */}
                           <div className="absolute bottom-0 right-3">
-                            <div className="w-1.5 h-1.5 bg-amber-600/45 rounded-full animate-pulse-slow delay-3300 shadow-amber-600/15 shadow-sm"></div>
-                            <div className="absolute bottom-3 right-1 w-1 h-1 bg-amber-500/65 rounded-full animate-pulse-slow delay-3800"></div>
-                            <div className="absolute bottom-0 right-4 w-1 h-1 bg-amber-400/55 rounded-full animate-pulse-slow delay-4300"></div>
+                            <div className="w-2.5 h-2.5 bg-amber-600/70 rounded-full animate-pulse-slow delay-3300 shadow-amber-600/35 shadow-md"></div>
+                            <div className="absolute bottom-3 right-1 w-2 h-2 bg-amber-500/85 rounded-full animate-pulse-slow delay-3800 shadow-amber-500/30 shadow-sm"></div>
+                            <div className="absolute bottom-0 right-4 w-2 h-2 bg-amber-400/75 rounded-full animate-pulse-slow delay-4300 shadow-amber-400/30 shadow-sm"></div>
                             
                             {/* Final connection burst */}
-                            <div className="absolute bottom-2 right-2 w-4 h-[0.5px] bg-gradient-to-l from-amber-500/20 to-transparent rotate-30 opacity-0 animate-spark-appear delay-4700"></div>
+                            <div className="absolute bottom-2 right-2 w-5 h-[1px] bg-gradient-to-l from-amber-500/45 to-transparent rotate-30 opacity-0 animate-spark-appear delay-4700"></div>
                           </div>
                         </div>
                       </div>
