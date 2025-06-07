@@ -22,10 +22,10 @@ export function DotSparkSummary() {
   
   if (isLoading) {
     return (
-      <Card className="w-full mb-8 bg-gradient-to-br from-purple-50 to-white dark:from-purple-950/30 dark:to-gray-950 border border-purple-100 dark:border-purple-900/50 animate-pulse overflow-hidden">
+      <Card className="w-full mb-8 bg-gradient-to-br from-amber-50 to-white dark:from-amber-950/30 dark:to-gray-950 border border-amber-100 dark:border-amber-900/50 animate-pulse overflow-hidden">
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2">
-            <BrainCircuit className="h-5 w-5 text-purple-700 dark:text-purple-400" />
+            <BrainCircuit className="h-5 w-5 text-amber-700 dark:text-amber-400" />
             <span>DotSpark</span>
           </CardTitle>
           <CardDescription>Loading DotSpark data...</CardDescription>

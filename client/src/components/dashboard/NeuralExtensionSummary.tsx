@@ -68,7 +68,7 @@ export function DotSparkSummary() {
   const topTopics = status.topicsTracked?.slice(0, 3) || [];
   
   return (
-    <Card className="w-full mb-8 bg-gradient-to-br from-purple-50 to-white dark:from-purple-950/30 dark:to-gray-950 border border-purple-100 dark:border-purple-900/50 overflow-hidden">
+    <Card className="w-full mb-8 bg-gradient-to-br from-amber-50 to-white dark:from-amber-950/30 dark:to-gray-950 border border-amber-100 dark:border-amber-900/50 overflow-hidden">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">
@@ -88,22 +88,22 @@ export function DotSparkSummary() {
             <span>Experience</span>
             <span>{experience} / {experienceRequired} XP</span>
           </div>
-          <Progress value={progressPercentage} className="h-2 bg-purple-100 dark:bg-purple-950" />
+          <Progress value={progressPercentage} className="h-2 bg-amber-100 dark:bg-amber-950" />
         </div>
         
         <div className="grid grid-cols-3 gap-2 mb-4">
-          <div className="bg-purple-50 dark:bg-purple-950/40 rounded-md p-2 text-center">
-            <Sparkles className="h-4 w-4 mx-auto mb-1 text-purple-700 dark:text-purple-400" />
+          <div className="bg-amber-50 dark:bg-amber-950/40 rounded-md p-2 text-center">
+            <Sparkles className="h-4 w-4 mx-auto mb-1 text-amber-700 dark:text-amber-400" />
             <p className="text-xs font-medium">Creativity</p>
             <p className="text-lg font-semibold">{Math.floor(tuning.creativity * 100)}%</p>
           </div>
-          <div className="bg-purple-50 dark:bg-purple-950/40 rounded-md p-2 text-center">
-            <Zap className="h-4 w-4 mx-auto mb-1 text-purple-700 dark:text-purple-400" />
+          <div className="bg-amber-50 dark:bg-amber-950/40 rounded-md p-2 text-center">
+            <Zap className="h-4 w-4 mx-auto mb-1 text-amber-700 dark:text-amber-400" />
             <p className="text-xs font-medium">Precision</p>
             <p className="text-lg font-semibold">{Math.floor(tuning.precision * 100)}%</p>
           </div>
-          <div className="bg-purple-50 dark:bg-purple-950/40 rounded-md p-2 text-center">
-            <Star className="h-4 w-4 mx-auto mb-1 text-purple-700 dark:text-purple-400" />
+          <div className="bg-amber-50 dark:bg-amber-950/40 rounded-md p-2 text-center">
+            <Star className="h-4 w-4 mx-auto mb-1 text-amber-700 dark:text-amber-400" />
             <p className="text-xs font-medium">Adaptation</p>
             <p className="text-lg font-semibold">{Math.floor(adaptationLevel)}%</p>
           </div>
@@ -114,7 +114,7 @@ export function DotSparkSummary() {
             <h4 className="text-sm font-medium mb-2">Unlocked Capabilities</h4>
             <div className="flex flex-wrap gap-1.5">
               {unlockedCapabilities.map((capability, index) => (
-                <Badge key={index} variant="outline" className="bg-purple-50/50 dark:bg-purple-950/20">
+                <Badge key={index} variant="outline" className="bg-amber-50/50 dark:bg-amber-950/20">
                   {capability}
                 </Badge>
               ))}
@@ -130,7 +130,7 @@ export function DotSparkSummary() {
                 <Badge key={index} className={cn(
                   "bg-gradient-to-r",
                   index === 0 ? "from-amber-500 to-orange-500" : 
-                  index === 1 ? "from-blue-500 to-indigo-500" : 
+                  index === 1 ? "from-orange-500 to-amber-500" : 
                   "from-green-500 to-emerald-500"
                 )}>
                   {topic}
@@ -142,7 +142,7 @@ export function DotSparkSummary() {
         
         <Button 
           onClick={handleTuneClick}
-          className="w-full bg-gradient-to-r from-purple-700 to-purple-500 hover:from-purple-800 hover:to-purple-600">
+          className="w-full bg-gradient-to-r from-amber-700 to-amber-500 hover:from-amber-800 hover:to-amber-600">
           Tune Your Cognitive OS
           <ChevronRight className="h-4 w-4 ml-1" />
         </Button>
