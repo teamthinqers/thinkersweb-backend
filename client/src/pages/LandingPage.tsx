@@ -546,87 +546,74 @@ export default function LandingPage() {
             </div>
             
             <div className="relative h-16 w-full my-2 md:my-3 overflow-hidden">
-              {/* Main straight line */}
-              <div className="absolute left-0 top-1/2 w-full h-[1.5px] bg-gradient-to-r from-transparent via-indigo-500/70 to-transparent transform -translate-y-1/2"></div>
-              
-              {/* Dots along the line - some with spark effects */}
-              <div className="absolute left-[15%] top-1/2 w-2 h-2 bg-primary/60 rounded-full animate-pulse-slow transform -translate-y-1/2"></div>
-              
-              {/* Dot with spark */}
-              <div className="absolute left-[25%] top-1/2 transform -translate-y-1/2">
-                <div className="w-2 h-2 bg-primary/90 rounded-full animate-pulse-slow delay-300"></div>
-                
-                {/* Spark symbol */}
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 opacity-0 animate-spark-flash delay-1900">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M13 2L4.5 13.5H11.5L11 22L19.5 10.5H12.5L13 2Z" fill="#3b82f6" stroke="#3b82f6" strokeWidth="1" />
-                  </svg>
+              {/* Non-linear dot spark representations around hero */}
+              <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                {/* Upper left cluster */}
+                <div className="absolute top-0 left-8">
+                  <div className="w-1.5 h-1.5 bg-amber-500/40 rounded-full animate-pulse-slow"></div>
+                  <div className="absolute top-3 left-2 w-1 h-1 bg-amber-600/60 rounded-full animate-pulse-slow delay-500"></div>
+                  <div className="absolute -top-1 left-4 w-2 h-2 bg-amber-400/50 rounded-full animate-pulse-slow delay-1000">
+                    <div className="absolute -top-2 left-1/2 -translate-x-1/2 opacity-0 animate-spark-flash delay-2000">
+                      <svg width="8" height="8" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M13 2L4.5 13.5H11.5L11 22L19.5 10.5H12.5L13 2Z" fill="#f59e0b" />
+                      </svg>
+                    </div>
+                  </div>
                 </div>
-                
-                {/* Spark rays */}
-                <div className="absolute w-4 h-[1px] bg-primary/80 rotate-0 -translate-x-1/2 opacity-0 animate-spark-appear delay-2000"></div>
-                <div className="absolute w-4 h-[1px] bg-primary/80 rotate-45 -translate-x-1/2 opacity-0 animate-spark-appear delay-2100"></div>
-                <div className="absolute w-4 h-[1px] bg-primary/80 rotate-90 -translate-x-1/2 opacity-0 animate-spark-appear delay-2200"></div>
-                <div className="absolute w-4 h-[1px] bg-primary/80 rotate-135 -translate-x-1/2 opacity-0 animate-spark-appear delay-2300"></div>
-              </div>
-              
-              <div className="absolute left-[35%] top-1/2 w-2 h-2 bg-indigo-500/60 rounded-full animate-pulse-slow delay-500 transform -translate-y-1/2"></div>
-              <div className="absolute left-[45%] top-1/2 w-2 h-2 bg-indigo-500/70 rounded-full animate-pulse-slow delay-200 transform -translate-y-1/2"></div>
-              
-              {/* Center dot with spark */}
-              <div className="absolute left-[50%] top-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                <div className="w-3 h-3 bg-indigo-500/90 rounded-full animate-pulse-slow"></div>
-                
-                {/* Spark symbol */}
-                <div className="absolute -top-5 left-1/2 -translate-x-1/2 opacity-0 animate-spark-flash delay-2900">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M13 2L4.5 13.5H11.5L11 22L19.5 10.5H12.5L13 2Z" fill="#6366f1" stroke="#6366f1" strokeWidth="1" />
-                  </svg>
+
+                {/* Upper right cluster */}
+                <div className="absolute top-0 right-12">
+                  <div className="w-2 h-2 bg-amber-600/50 rounded-full animate-pulse-slow delay-300"></div>
+                  <div className="absolute top-4 right-3 w-1 h-1 bg-amber-500/70 rounded-full animate-pulse-slow delay-800"></div>
+                  <div className="absolute -top-2 right-5 w-1.5 h-1.5 bg-amber-400/60 rounded-full animate-pulse-slow delay-1300">
+                    <div className="absolute w-3 h-[0.5px] bg-amber-500/70 rotate-45 -translate-x-1/2 opacity-0 animate-spark-appear delay-2500"></div>
+                    <div className="absolute w-3 h-[0.5px] bg-amber-500/70 -rotate-45 -translate-x-1/2 opacity-0 animate-spark-appear delay-2600"></div>
+                  </div>
                 </div>
-                
-                {/* Spark rays */}
-                <div className="absolute w-6 h-[1.5px] bg-indigo-500/80 rotate-0 -translate-x-1/2 opacity-0 animate-spark-appear delay-3000"></div>
-                <div className="absolute w-6 h-[1.5px] bg-indigo-500/80 rotate-45 -translate-x-1/2 opacity-0 animate-spark-appear delay-3100"></div>
-                <div className="absolute w-6 h-[1.5px] bg-indigo-500/80 rotate-90 -translate-x-1/2 opacity-0 animate-spark-appear delay-3200"></div>
-                <div className="absolute w-6 h-[1.5px] bg-indigo-500/80 rotate-135 -translate-x-1/2 opacity-0 animate-spark-appear delay-3300"></div>
-              </div>
-              
-              <div className="absolute left-[55%] top-1/2 w-2 h-2 bg-indigo-500/70 rounded-full animate-pulse-slow delay-400 transform -translate-y-1/2"></div>
-              <div className="absolute left-[65%] top-1/2 w-2 h-2 bg-blue-500/60 rounded-full animate-pulse-slow delay-600 transform -translate-y-1/2"></div>
-              
-              {/* Dot with spark */}
-              <div className="absolute left-[75%] top-1/2 transform -translate-y-1/2">
-                <div className="w-2 h-2 bg-blue-500/90 rounded-full animate-pulse-slow delay-100"></div>
-                
-                {/* Spark symbol */}
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 opacity-0 animate-spark-flash delay-4900">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M13 2L4.5 13.5H11.5L11 22L19.5 10.5H12.5L13 2Z" fill="#3b82f6" stroke="#3b82f6" strokeWidth="1" />
-                  </svg>
+
+                {/* Middle left floating dots */}
+                <div className="absolute top-1/2 left-4 -translate-y-1/2">
+                  <div className="w-1 h-1 bg-amber-500/30 rounded-full animate-pulse-slow delay-1500"></div>
+                  <div className="absolute top-6 left-1 w-1.5 h-1.5 bg-amber-600/40 rounded-full animate-pulse-slow delay-2000"></div>
+                  <div className="absolute -top-3 left-3 w-1 h-1 bg-amber-400/50 rounded-full animate-pulse-slow delay-2500"></div>
                 </div>
-                
-                {/* Spark rays */}
-                <div className="absolute w-4 h-[1px] bg-blue-500/80 rotate-0 -translate-x-1/2 opacity-0 animate-spark-appear delay-5000"></div>
-                <div className="absolute w-4 h-[1px] bg-blue-500/80 rotate-45 -translate-x-1/2 opacity-0 animate-spark-appear delay-5100"></div>
-                <div className="absolute w-4 h-[1px] bg-blue-500/80 rotate-90 -translate-x-1/2 opacity-0 animate-spark-appear delay-5200"></div>
-                <div className="absolute w-4 h-[1px] bg-blue-500/80 rotate-135 -translate-x-1/2 opacity-0 animate-spark-appear delay-5300"></div>
+
+                {/* Middle right floating dots */}
+                <div className="absolute top-1/2 right-6 -translate-y-1/2">
+                  <div className="w-1.5 h-1.5 bg-amber-600/45 rounded-full animate-pulse-slow delay-1800"></div>
+                  <div className="absolute top-5 right-2 w-1 h-1 bg-amber-500/35 rounded-full animate-pulse-slow delay-2300"></div>
+                  <div className="absolute -top-4 right-4 w-2 h-2 bg-amber-400/55 rounded-full animate-pulse-slow delay-2800">
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 opacity-0 animate-spark-flash delay-3500">
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M13 2L4.5 13.5H11.5L11 22L19.5 10.5H12.5L13 2Z" fill="#f59e0b" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Lower left cluster */}
+                <div className="absolute bottom-0 left-16">
+                  <div className="w-1 h-1 bg-amber-500/40 rounded-full animate-pulse-slow delay-3000"></div>
+                  <div className="absolute bottom-3 left-3 w-1.5 h-1.5 bg-amber-600/50 rounded-full animate-pulse-slow delay-3500"></div>
+                  <div className="absolute bottom-1 left-6 w-1 h-1 bg-amber-400/45 rounded-full animate-pulse-slow delay-4000"></div>
+                </div>
+
+                {/* Lower right cluster */}
+                <div className="absolute bottom-0 right-20">
+                  <div className="w-1.5 h-1.5 bg-amber-600/40 rounded-full animate-pulse-slow delay-3300"></div>
+                  <div className="absolute bottom-4 right-1 w-1 h-1 bg-amber-500/60 rounded-full animate-pulse-slow delay-3800"></div>
+                  <div className="absolute bottom-2 right-4 w-2 h-2 bg-amber-400/50 rounded-full animate-pulse-slow delay-4300">
+                    <div className="absolute w-4 h-[0.5px] bg-amber-500/60 rotate-0 -translate-x-1/2 opacity-0 animate-spark-appear delay-4800"></div>
+                    <div className="absolute w-4 h-[0.5px] bg-amber-500/60 rotate-90 -translate-x-1/2 opacity-0 animate-spark-appear delay-4900"></div>
+                  </div>
+                </div>
+
+                {/* Floating center accent dots */}
+                <div className="absolute top-1/3 left-1/3 w-1 h-1 bg-amber-500/30 rounded-full animate-pulse-slow delay-5000"></div>
+                <div className="absolute top-2/3 right-1/3 w-1 h-1 bg-amber-600/40 rounded-full animate-pulse-slow delay-5500"></div>
+                <div className="absolute top-1/4 right-1/4 w-1 h-1 bg-amber-400/35 rounded-full animate-pulse-slow delay-6000"></div>
+                <div className="absolute bottom-1/3 left-1/4 w-1 h-1 bg-amber-500/45 rounded-full animate-pulse-slow delay-6500"></div>
               </div>
-              
-              <div className="absolute left-[85%] top-1/2 w-2 h-2 bg-blue-500/60 rounded-full animate-pulse-slow delay-700 transform -translate-y-1/2"></div>
-              
-              {/* Sparks between specific dots */}
-              <div className="absolute left-[20%] top-1/2 w-[40px] h-[1px] bg-gradient-to-r from-primary/80 to-transparent opacity-0 animate-spark-appear delay-1200"></div>
-              <div className="absolute left-[30%] top-1/2 w-[40px] h-[1px] bg-gradient-to-r from-primary/80 to-transparent opacity-0 animate-spark-appear delay-3600"></div>
-              <div className="absolute left-[40%] top-1/2 w-[40px] h-[1px] bg-gradient-to-r from-indigo-500/80 to-transparent opacity-0 animate-spark-appear delay-5400"></div>
-              <div className="absolute left-[60%] top-1/2 w-[40px] h-[1px] bg-gradient-to-r from-indigo-500/80 to-transparent opacity-0 animate-spark-appear delay-2400"></div>
-              <div className="absolute left-[70%] top-1/2 w-[40px] h-[1px] bg-gradient-to-r from-blue-500/80 to-transparent opacity-0 animate-spark-appear delay-6000"></div>
-              <div className="absolute left-[80%] top-1/2 w-[40px] h-[1px] bg-gradient-to-r from-blue-500/80 to-transparent opacity-0 animate-spark-appear delay-4800"></div>
-              
-              {/* Flash sparks */}
-              <div className="absolute left-[25%] top-[calc(50%-2px)] w-1 h-1 bg-white rounded-full opacity-0 animate-spark-flash delay-2000"></div>
-              <div className="absolute left-[45%] top-[calc(50%-2px)] w-1 h-1 bg-white rounded-full opacity-0 animate-spark-flash delay-4000"></div>
-              <div className="absolute left-[65%] top-[calc(50%-2px)] w-1 h-1 bg-white rounded-full opacity-0 animate-spark-flash delay-6000"></div>
-              <div className="absolute left-[80%] top-[calc(50%-2px)] w-1 h-1 bg-white rounded-full opacity-0 animate-spark-flash delay-8000"></div>
             </div>
             
             {/* Action buttons with explanation boxes - Centered */}
