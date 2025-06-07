@@ -761,36 +761,25 @@ export default function MyNeura() {
                 <h3 className="text-xl font-bold text-white">Expertise Layer (Optional)</h3>
               </div>
             </div>
-            <CardContent className="p-6 flex-1 flex flex-col">
+            <CardContent className="p-6">
               <p className="text-muted-foreground mb-4">
                 Customize domains where your DotSpark can reflect your professional expertise and provide deeper insights.
               </p>
-              <ul className="space-y-2 flex-1">
-                <li className="flex items-start">
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-orange-100 dark:bg-orange-900 text-orange-600 dark:text-orange-400 mr-2 mt-0.5">
-                    <Check className="h-3.5 w-3.5" />
-                  </span>
-                  <span className="text-sm">Add specialized knowledge areas</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-orange-100 dark:bg-orange-900 text-orange-600 dark:text-orange-400 mr-2 mt-0.5">
-                    <Check className="h-3.5 w-3.5" />
-                  </span>
-                  <span className="text-sm">Adjust expertise strength levels</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-orange-100 dark:bg-orange-900 text-orange-600 dark:text-orange-400 mr-2 mt-0.5">
-                    <Check className="h-3.5 w-3.5" />
-                  </span>
-                  <span className="text-sm">Balance between domain specialties</span>
-                </li>
-              </ul>
-              <Button 
-                className="w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-red-600 hover:to-orange-600 group-hover:translate-y-0 translate-y-1 transition-all duration-300 mt-6"
-                onClick={() => setLocation('/dotspark-tuning/expertise')}
-              >
-                Configure Expertise Areas
-              </Button>
+              <div className="flex gap-3">
+                <Button 
+                  className="flex-1 bg-gradient-to-r from-orange-600 to-red-600 hover:from-red-600 hover:to-orange-600 group-hover:translate-y-0 translate-y-1 transition-all duration-300"
+                  onClick={() => setLocation('/dotspark-tuning/expertise')}
+                >
+                  Configure
+                </Button>
+                <Button 
+                  variant="outline"
+                  className="flex-1 group-hover:translate-y-0 translate-y-1 transition-all duration-300"
+                  onClick={() => setActiveTab('learning')}
+                >
+                  Skip
+                </Button>
+              </div>
             </CardContent>
           </Card>
 
@@ -895,125 +884,29 @@ export default function MyNeura() {
               </div>
               <CardDescription>Customize domain-specific expertise for your DotSpark</CardDescription>
             </CardHeader>
-            <CardContent>
-              <div className="mb-4">
-                <p className="text-sm text-muted-foreground">
-                  Adjust the strength of each specialization to tune how your DotSpark prioritizes these domains when processing information.
+            <CardContent className="space-y-6">
+              <div className="text-center py-8">
+                <p className="text-muted-foreground mb-6">
+                  Customize domains where your DotSpark can reflect your professional expertise and provide deeper insights.
                 </p>
-              </div>
-              
-              <div className="space-y-6">
-                {/* Specialties from current tuning */}
-                {neuralTuning?.specialties && Object.entries(neuralTuning.specialties).map(([specialty, value]) => (
-                  <div key={specialty} className="space-y-3">
-                    <div className="flex justify-between items-center">
-                      <span className="text-base font-medium">{specialty}</span>
-                      <span className="text-sm font-medium">
-                        {Math.round((pendingChanges.specialties?.[specialty] !== undefined 
-                          ? pendingChanges.specialties[specialty] 
-                          : value) * 100)}%
-                      </span>
-                    </div>
-                    <Slider
-                      value={[pendingChanges.specialties?.[specialty] !== undefined 
-                        ? pendingChanges.specialties[specialty] 
-                        : value]}
-                      min={0}
-                      max={1}
-                      step={0.05}
-                      onValueChange={(val) => handleSpecialtyChange(specialty, val)}
-                      className="cursor-pointer"
-                    />
-                    <div className="flex justify-between text-xs text-muted-foreground">
-                      <span>Basic Knowledge</span>
-                      <span>Expert Level</span>
-                    </div>
-                  </div>
-                ))}
-                
-                {/* Default specialties if none are set */}
-                {(!neuralTuning?.specialties || Object.keys(neuralTuning.specialties).length === 0) && (
-                  <div className="py-4 text-center">
-                    <p className="text-muted-foreground mb-2">
-                      You haven't added any expertise specializations yet.
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      Start by adding domains like "Business Strategy," "Technical Research," or "Creative Writing."
-                    </p>
-                  </div>
-                )}
-                
-                {/* Available specialties to add */}
-                {availableSpecialties && availableSpecialties.length > 0 && (
-                  <div className="mt-6 pt-6 border-t">
-                    <h4 className="text-sm font-medium mb-3">Add New Specializations</h4>
-                    <div className="flex flex-wrap gap-2">
-                      {availableSpecialties
-                        .filter(specialty => {
-                          // Safely handle different specialty data structures
-                          const specialtyId = typeof specialty === 'string' 
-                            ? specialty 
-                            : typeof specialty === 'object' && specialty !== null && 'id' in specialty 
-                              ? String(specialty.id) 
-                              : String(specialty);
-                          
-                          return !neuralTuning?.specialties || 
-                            !Object.keys(neuralTuning.specialties).includes(specialtyId);
-                        })
-                        .map(specialty => {
-                          // Safely extract ID and name
-                          const specialtyId = typeof specialty === 'string' 
-                            ? specialty 
-                            : typeof specialty === 'object' && specialty !== null && 'id' in specialty 
-                              ? String(specialty.id) 
-                              : String(specialty);
-                          
-                          const specialtyName = typeof specialty === 'string' 
-                            ? specialty 
-                            : typeof specialty === 'object' && specialty !== null && 'name' in specialty 
-                              ? String(specialty.name) 
-                              : String(specialty);
-                          
-                          return (
-                            <Badge 
-                              key={specialtyId}
-                              className="px-3 py-1 bg-amber-100 hover:bg-amber-200 text-amber-800 dark:bg-amber-900/50 dark:text-amber-200 dark:hover:bg-amber-800/50 cursor-pointer"
-                              onClick={() => handleSpecialtyChange(specialtyId, [0.5])}
-                            >
-                              <Plus className="mr-1 h-3 w-3" />
-                              {specialtyName}
-                            </Badge>
-                          );
-                        })}
-                    </div>
-                  </div>
-                )}
+                <div className="flex gap-3 max-w-md mx-auto">
+                  <Button 
+                    className="flex-1 bg-gradient-to-r from-orange-600 to-red-600 hover:from-red-600 hover:to-orange-600"
+                    onClick={() => setLocation('/dotspark-tuning/expertise')}
+                  >
+                    Configure
+                  </Button>
+                  <Button 
+                    variant="outline"
+                    className="flex-1"
+                    onClick={() => setActiveTab('learning')}
+                  >
+                    Skip
+                  </Button>
+                </div>
               </div>
             </CardContent>
           </Card>
-          
-          <div className="flex justify-between">
-            <Button 
-              variant="outline" 
-              onClick={() => setActiveTab('cognitive')}
-            >
-              <ChevronLeft className="mr-1 h-4 w-4" /> Previous 
-            </Button>
-            <div className="flex items-center gap-2">
-              {unsavedChanges && (
-                <span className="text-sm text-amber-600 dark:text-amber-400">
-                  You have unsaved changes
-                </span>
-              )}
-              <Button 
-                variant="default" 
-                className="bg-amber-600 hover:bg-amber-700"
-                onClick={() => setActiveTab('learning')}
-              >
-                Next Step <ChevronRight className="ml-1 h-4 w-4" />
-              </Button>
-            </div>
-          </div>
         </TabsContent>
         
         {/* Learning Engine Tab */}
