@@ -540,8 +540,8 @@ export default function LandingPage() {
             {/* Subheadings */}
             <div className="text-lg md:text-xl text-muted-foreground mt-4 md:mt-4 mb-4 max-w-2xl mx-auto text-center px-4">
               <p className="leading-tight md:leading-normal max-w-2xl mx-auto">
-                Built on inspirations from ancient Indian wisdom, to preserve and sharpen<br className="hidden md:inline" /> 
-                your natural intelligence in a <span className="font-semibold text-amber-700 dark:text-amber-400">synthetic world.</span>
+                Built on inspirations from <span className="font-semibold text-amber-700 dark:text-amber-400">ancient Indian wisdom</span>, to preserve and sharpen<br className="hidden md:inline" /> 
+                your <span className="font-semibold text-amber-700 dark:text-amber-400">natural intelligence</span> in a <span className="font-semibold text-amber-700 dark:text-amber-400">synthetic world.</span>
               </p>
             </div>
             
