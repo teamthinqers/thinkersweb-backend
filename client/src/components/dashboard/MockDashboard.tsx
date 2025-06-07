@@ -144,12 +144,12 @@ const MockDashboard: React.FC = () => {
             </CardContent>
           </Card>
 
-          <Card className="overflow-hidden border-t-4 border-t-indigo-500">
+          <Card className="overflow-hidden border-t-4 border-t-amber-500">
             <CardHeader className="pb-1 pt-3">
               <div className="flex justify-between items-start">
                 <CardTitle className="text-sm font-medium">Content Processed</CardTitle>
-                <div className="h-8 w-8 rounded-full bg-indigo-500/10 flex items-center justify-center">
-                  <BookOpen className="h-4 w-4 text-indigo-500" />
+                <div className="h-8 w-8 rounded-full bg-amber-500/10 flex items-center justify-center">
+                  <BookOpen className="h-4 w-4 text-amber-500" />
                 </div>
               </div>
             </CardHeader>
@@ -162,7 +162,7 @@ const MockDashboard: React.FC = () => {
                 </div>
               </div>
               <div className="text-xs text-muted-foreground mt-2">
-                <span className="text-indigo-500">218 articles</span> • <span className="text-violet-500">94 books</span>
+                <span className="text-amber-700">218 articles</span> • <span className="text-orange-700">94 books</span>
               </div>
             </CardContent>
           </Card>
@@ -252,7 +252,7 @@ const MockDashboard: React.FC = () => {
         </div>
 
         {/* Brain-Network Mapping Section */}
-        <div className="mb-10 bg-gradient-to-r from-indigo-50 to-violet-50 dark:from-indigo-950 dark:to-violet-950 rounded-xl p-6 border shadow-sm">
+        <div className="mb-10 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950 dark:to-orange-950 rounded-xl p-6 border shadow-sm">
           <div className="flex flex-col lg:flex-row gap-6">
             <div className="lg:w-1/2">
               <h2 className="text-xl font-bold mb-3 flex items-center">
@@ -269,8 +269,8 @@ const MockDashboard: React.FC = () => {
                   <div className="text-2xl font-bold text-primary">782</div>
                   <div className="text-xs text-center text-muted-foreground">Knowledge Connections</div>
                 </div>
-                <div className="bg-white dark:bg-gray-900 rounded-lg p-3 border border-indigo-500/10 flex flex-col items-center">
-                  <div className="text-2xl font-bold text-indigo-500">8</div>
+                <div className="bg-white dark:bg-gray-900 rounded-lg p-3 border border-amber-500/10 flex flex-col items-center">
+                  <div className="text-2xl font-bold text-amber-700">8</div>
                   <div className="text-xs text-center text-muted-foreground">Knowledge Domains</div>
                 </div>
                 <div className="bg-white dark:bg-gray-900 rounded-lg p-3 border border-emerald-500/10 flex flex-col items-center">
@@ -285,7 +285,7 @@ const MockDashboard: React.FC = () => {
               
               <div className="flex items-center gap-2 mb-4">
                 <div className="w-full h-1.5 bg-gray-200 dark:bg-gray-800 rounded-full overflow-hidden">
-                  <div className="h-full bg-gradient-to-r from-primary to-indigo-500 rounded-full" style={{ width: "78%" }}></div>
+                  <div className="h-full bg-gradient-to-r from-primary to-amber-500 rounded-full" style={{ width: "78%" }}></div>
                 </div>
                 <span className="text-xs font-medium">78%</span>
               </div>
@@ -299,10 +299,10 @@ const MockDashboard: React.FC = () => {
               <div className="absolute inset-0 opacity-70">
                 {/* Neural nodes */}
                 <div className="absolute top-1/4 left-1/4 h-4 w-4 rounded-full bg-primary animate-pulse"></div>
-                <div className="absolute top-1/3 right-1/3 h-5 w-5 rounded-full bg-indigo-500 animate-pulse delay-150"></div>
+                <div className="absolute top-1/3 right-1/3 h-5 w-5 rounded-full bg-amber-500 animate-pulse delay-150"></div>
                 <div className="absolute bottom-1/4 right-1/4 h-3 w-3 rounded-full bg-emerald-500 animate-pulse delay-300"></div>
                 <div className="absolute bottom-1/3 left-1/3 h-4 w-4 rounded-full bg-amber-500 animate-pulse delay-500"></div>
-                <div className="absolute top-1/2 left-1/2 h-6 w-6 rounded-full bg-violet-500 animate-pulse delay-700"></div>
+                <div className="absolute top-1/2 left-1/2 h-6 w-6 rounded-full bg-orange-500 animate-pulse delay-700"></div>
                 
                 {/* Neural connections */}
                 <div className="absolute top-1/4 left-1/4 w-[30%] h-[1px] bg-primary transform rotate-30 origin-left"></div>
