@@ -758,7 +758,7 @@ export default function MyNeura() {
                 <div className="rounded-full bg-white/20 p-4 backdrop-blur-sm mb-4">
                   <Target className="h-12 w-12 text-white" />
                 </div>
-                <h3 className="text-xl font-bold text-white">Expertise Layer</h3>
+                <h3 className="text-xl font-bold text-white">Expertise Layer (Optional)</h3>
               </div>
             </div>
             <CardContent className="p-6 flex-1 flex flex-col">
@@ -891,7 +891,7 @@ export default function MyNeura() {
             <CardHeader>
               <div className="flex items-center gap-2">
                 <Target className="h-5 w-5 text-amber-500" />
-                <CardTitle>Expertise Layer Areas</CardTitle>
+                <CardTitle>Expertise Layer Areas (Optional)</CardTitle>
               </div>
               <CardDescription>Customize domain-specific expertise for your DotSpark</CardDescription>
             </CardHeader>
