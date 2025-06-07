@@ -547,7 +547,7 @@ export default function LandingPage() {
                   <div className="flex items-center justify-center w-full px-4">
                     <div className="flex items-center justify-center w-full max-w-[480px] mx-auto">
                       <span className="font-sans tracking-normal text-center bg-clip-text text-transparent bg-gradient-to-r from-amber-700 via-amber-600 to-amber-500 dark:from-amber-400 dark:via-amber-300 dark:to-amber-200 whitespace-nowrap">
-                        For those who still thin<span className="relative inline-block ml-1 px-3 py-2 bg-gradient-to-br from-amber-600 to-amber-700 dark:from-amber-500 dark:to-amber-600 text-white font-bold rounded-lg shadow-lg transform rotate-1 hover:rotate-0 transition-transform duration-300 border-2 border-amber-500/20">Q</span>
+                        For those who still thin<span className="relative inline-block px-3 py-2 bg-gradient-to-br from-amber-600 to-amber-700 dark:from-amber-500 dark:to-amber-600 text-white font-bold rounded-lg shadow-lg transform rotate-1 hover:rotate-0 transition-transform duration-300 border-2 border-amber-500/20">Q</span>
                       </span>
                     </div>
                   </div>
