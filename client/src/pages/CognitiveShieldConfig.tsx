@@ -3,13 +3,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
-import { useNeuralTuning } from "@/hooks/useNeuralTuning";
+import { useDotSparkTuning } from "@/hooks/useDotSparkTuning";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
 export default function CognitiveShieldConfig() {
-  const { status, isLoading } = useNeuralTuning();
+  const { status, isLoading } = useDotSparkTuning();
   const neuralTuning = status?.tuning;
   const { toast } = useToast();
   const [pendingChanges, setPendingChanges] = useState<Record<string, number>>({});
