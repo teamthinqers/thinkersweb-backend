@@ -136,7 +136,7 @@ export function DotSparkInsights() {
           
           <div className="flex flex-col gap-2">
             <div className="flex gap-2 items-center">
-              <Zap className="h-4 w-4 text-violet-500" />
+              <Zap className="h-4 w-4 text-amber-700" />
               <h3 className="font-medium">Recommended Topics</h3>
             </div>
             {recommendations && recommendations.length > 0 ? (

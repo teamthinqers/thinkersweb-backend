@@ -39,8 +39,8 @@ const MockDashboard: React.FC = () => {
       <MockDashboardHeader />
       <div className="container mx-auto px-4 py-6 flex-1">
         {/* Demo indicator banner */}
-        <div className="bg-indigo-600 text-white rounded-lg p-3 mb-6 shadow-md border border-indigo-500 relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-indigo-600/0 via-indigo-500/30 to-indigo-600/0 animate-pulse"></div>
+        <div className="bg-amber-700 text-white rounded-lg p-3 mb-6 shadow-md border border-amber-600 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-amber-700/0 via-amber-600/30 to-amber-700/0 animate-pulse"></div>
           <div className="flex items-center justify-center font-medium relative z-10">
             <Sparkles className="h-4 w-4 mr-2" />
             <span>DEMO DASHBOARD</span>
@@ -72,7 +72,7 @@ const MockDashboard: React.FC = () => {
             <div className="flex items-center gap-3">
               <div className="text-xs bg-black/5 dark:bg-white/5 rounded-full px-3 py-1.5 grid grid-cols-3 gap-1">
                 <div className="flex items-center gap-1">
-                  <BookOpen className="h-3 w-3 text-indigo-500" />
+                  <BookOpen className="h-3 w-3 text-amber-700" />
                   <span className="font-medium">142</span>
                 </div>
                 <div className="flex items-center gap-1">
@@ -97,7 +97,7 @@ const MockDashboard: React.FC = () => {
         </div>
 
         {/* Brain efficiency metrics */}
-        <div className="mb-8 bg-gradient-to-r from-violet-50 to-indigo-50 dark:from-violet-950 dark:to-indigo-950 rounded-xl p-6 border shadow-sm">
+        <div className="mb-8 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950 dark:to-orange-950 rounded-xl p-6 border shadow-sm">
           <div className="flex flex-col md:flex-row items-center justify-between mb-6">
             <div className="mb-4 md:mb-0">
               <h2 className="text-xl font-bold mb-2 flex items-center">
@@ -113,7 +113,7 @@ const MockDashboard: React.FC = () => {
           </div>
           
           <div className="relative h-7 bg-gray-200 dark:bg-gray-800 rounded-full overflow-hidden mb-2">
-            <div className="absolute top-0 left-0 h-full bg-gradient-to-r from-primary to-violet-500 rounded-full" style={{ width: "97%" }}></div>
+            <div className="absolute top-0 left-0 h-full bg-gradient-to-r from-primary to-amber-500 rounded-full" style={{ width: "97%" }}></div>
             <div className="absolute top-0 left-0 w-full h-full flex items-center justify-end pr-2">
               <span className="text-xs font-bold text-white mr-1">97%</span>
             </div>
