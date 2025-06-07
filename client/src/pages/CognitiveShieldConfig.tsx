@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useLocation } from 'wouter';
 import { useToast } from '@/hooks/use-toast';
-import { useNeuralTuning } from '@/hooks/useNeuralTuning';
+import { useDotSparkTuning } from '@/hooks/useDotSparkTuning';
 import { Slider } from '@/components/ui/slider';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -12,13 +12,13 @@ export default function CognitiveShieldConfig() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   
-  // Neural Tuning hook
+  // DotSpark Tuning hook
   const { 
     status, 
     isLoading: isTuningLoading, 
     updateTuning,
     isUpdating
-  } = useNeuralTuning();
+  } = useDotSparkTuning();
   
   // Scroll to top when component mounts
   React.useEffect(() => {
@@ -31,11 +31,18 @@ export default function CognitiveShieldConfig() {
     creativity?: number;
     precision?: number;
     speed?: number;
+    cognitivePace?: number;
+    signalFocus?: number;
+    impulseControl?: number;
+    mentalEnergyFlow?: number;
     analytical?: number;
     intuitive?: number;
     contextualThinking?: number;
     memoryBandwidth?: number;
     thoughtComplexity?: number;
+    mentalModelDensity?: number;
+    patternDetectionSensitivity?: number;
+    decisionMakingIndex?: number;
   }>({});
   
   // Extract values from status for rendering
