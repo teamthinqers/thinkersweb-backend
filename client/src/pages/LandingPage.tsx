@@ -218,7 +218,7 @@ export default function LandingPage() {
                     {isNeuraActivated ? (
                       <div className="relative">
                         <Brain className="h-4 w-4" />
-                        <div className="absolute -top-1 -right-1 h-2 w-2 bg-green-500 rounded-full"></div>
+                        <div className="absolute -top-1 -right-1 h-2 w-2 bg-orange-500 rounded-full"></div>
                       </div>
                     ) : (
                       <Brain className="h-4 w-4" />
@@ -470,18 +470,36 @@ export default function LandingPage() {
           <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-amber-500/3 dark:bg-amber-400/5 rounded-full blur-3xl opacity-60 -translate-y-1/2 translate-x-1/3"></div>
           <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-orange-500/3 dark:bg-orange-400/5 rounded-full blur-3xl opacity-60 translate-y-1/3 -translate-x-1/4"></div>
           
-          {/* Simplified dot pattern - fewer, more strategic placement */}
-          <div className="absolute left-[25%] top-[35%] w-1 h-1 bg-amber-500/40 rounded-full animate-pulse-slow"></div>
-          <div className="absolute left-[30%] top-[50%] w-1.5 h-1.5 bg-amber-600/50 rounded-full animate-pulse-slow delay-1000"></div>
-          <div className="absolute left-[35%] top-[65%] w-1 h-1 bg-amber-400/40 rounded-full animate-pulse-slow delay-2000"></div>
+          {/* Enhanced blinking dots pattern filling white spaces */}
+          <div className="absolute left-[15%] top-[25%] w-1 h-1 bg-amber-500/40 rounded-full animate-pulse"></div>
+          <div className="absolute left-[20%] top-[35%] w-0.5 h-0.5 bg-amber-400/50 rounded-full animate-pulse" style={{animationDelay: '0.5s'}}></div>
+          <div className="absolute left-[25%] top-[45%] w-1.5 h-1.5 bg-amber-600/60 rounded-full animate-pulse" style={{animationDelay: '1s'}}></div>
+          <div className="absolute left-[30%] top-[55%] w-1 h-1 bg-orange-500/40 rounded-full animate-pulse" style={{animationDelay: '1.5s'}}></div>
+          <div className="absolute left-[35%] top-[65%] w-0.5 h-0.5 bg-orange-400/50 rounded-full animate-pulse" style={{animationDelay: '2s'}}></div>
           
-          <div className="absolute right-[25%] top-[40%] w-1 h-1 bg-orange-500/40 rounded-full animate-pulse-slow delay-500"></div>
-          <div className="absolute right-[30%] top-[55%] w-1.5 h-1.5 bg-orange-600/50 rounded-full animate-pulse-slow delay-1500"></div>
-          <div className="absolute right-[35%] top-[30%] w-1 h-1 bg-orange-400/40 rounded-full animate-pulse-slow delay-2500"></div>
+          <div className="absolute right-[15%] top-[30%] w-1 h-1 bg-orange-500/40 rounded-full animate-pulse" style={{animationDelay: '0.3s'}}></div>
+          <div className="absolute right-[20%] top-[40%] w-0.5 h-0.5 bg-orange-400/50 rounded-full animate-pulse" style={{animationDelay: '0.8s'}}></div>
+          <div className="absolute right-[25%] top-[50%] w-1.5 h-1.5 bg-amber-600/60 rounded-full animate-pulse" style={{animationDelay: '1.3s'}}></div>
+          <div className="absolute right-[30%] top-[60%] w-1 h-1 bg-amber-500/40 rounded-full animate-pulse" style={{animationDelay: '1.8s'}}></div>
+          <div className="absolute right-[35%] top-[20%] w-0.5 h-0.5 bg-amber-400/50 rounded-full animate-pulse" style={{animationDelay: '2.3s'}}></div>
           
-          {/* Minimal connection lines */}
-          <div className="absolute left-[28%] top-[42%] w-[8px] h-[1px] bg-gradient-to-r from-amber-500/30 to-transparent rotate-[25deg] opacity-0 animate-spark-appear delay-3000"></div>
-          <div className="absolute right-[28%] top-[47%] w-[8px] h-[1px] bg-gradient-to-l from-orange-500/30 to-transparent rotate-[155deg] opacity-0 animate-spark-appear delay-4000"></div>
+          {/* Additional scattered dots */}
+          <div className="absolute left-[12%] top-[45%] w-0.5 h-0.5 bg-yellow-500/30 rounded-full animate-pulse" style={{animationDelay: '3s'}}></div>
+          <div className="absolute left-[40%] top-[25%] w-0.5 h-0.5 bg-yellow-400/40 rounded-full animate-pulse" style={{animationDelay: '3.5s'}}></div>
+          <div className="absolute right-[12%] top-[55%] w-0.5 h-0.5 bg-yellow-500/30 rounded-full animate-pulse" style={{animationDelay: '4s'}}></div>
+          <div className="absolute right-[40%] top-[35%] w-0.5 h-0.5 bg-yellow-400/40 rounded-full animate-pulse" style={{animationDelay: '4.5s'}}></div>
+          
+          {/* Sparkling connection lines */}
+          <div className="absolute left-[18%] top-[30%] w-[6px] h-[1px] bg-gradient-to-r from-amber-500/20 to-transparent rotate-[25deg] animate-pulse" style={{animationDelay: '2.5s'}}></div>
+          <div className="absolute left-[28%] top-[48%] w-[8px] h-[1px] bg-gradient-to-r from-orange-500/25 to-transparent rotate-[15deg] animate-pulse" style={{animationDelay: '3.2s'}}></div>
+          <div className="absolute right-[18%] top-[45%] w-[6px] h-[1px] bg-gradient-to-l from-amber-500/20 to-transparent rotate-[155deg] animate-pulse" style={{animationDelay: '3.8s'}}></div>
+          <div className="absolute right-[28%] top-[25%] w-[8px] h-[1px] bg-gradient-to-l from-orange-500/25 to-transparent rotate-[165deg] animate-pulse" style={{animationDelay: '4.3s'}}></div>
+          
+          {/* Tiny sparkles */}
+          <div className="absolute left-[22%] top-[38%] text-amber-400/30 text-xs animate-pulse" style={{animationDelay: '5s'}}>✦</div>
+          <div className="absolute left-[33%] top-[52%] text-orange-400/30 text-xs animate-pulse" style={{animationDelay: '5.5s'}}>✦</div>
+          <div className="absolute right-[22%] top-[42%] text-amber-400/30 text-xs animate-pulse" style={{animationDelay: '6s'}}>✦</div>
+          <div className="absolute right-[33%] top-[28%] text-orange-400/30 text-xs animate-pulse" style={{animationDelay: '6.5s'}}>✦</div>
         </div>
         
         <div className="container mx-auto px-4 md:px-6 relative z-10">
@@ -571,6 +589,10 @@ export default function LandingPage() {
                 
                 {/* Button 2: Ask DotSpark */}
                 <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 border border-green-200 dark:border-green-900/50 rounded-xl p-4 flex flex-col items-center shadow-lg shadow-green-500/5 dark:shadow-green-900/10 relative overflow-hidden group">
+                  {/* Blinking dots around WhatsApp section */}
+                  <div className="absolute top-2 right-2 w-0.5 h-0.5 bg-green-400/40 rounded-full animate-pulse" style={{animationDelay: '10s'}}></div>
+                  <div className="absolute bottom-2 left-2 w-0.5 h-0.5 bg-emerald-500/30 rounded-full animate-pulse" style={{animationDelay: '10.5s'}}></div>
+                  <div className="absolute top-1/2 right-1 w-0.5 h-0.5 bg-green-500/20 rounded-full animate-pulse" style={{animationDelay: '11s'}}></div>
                   <Button
                     size="lg"
                     onClick={() => setContactDialogOpen(true)}
@@ -669,6 +691,15 @@ export default function LandingPage() {
           
           {/* Enhanced gamified progress tracker */}
           <div className="max-w-2xl mx-auto mt-16 relative">
+            {/* Additional blinking dots around setup section */}
+            <div className="absolute -left-8 top-[20%] w-0.5 h-0.5 bg-amber-400/40 rounded-full animate-pulse" style={{animationDelay: '7s'}}></div>
+            <div className="absolute -left-12 top-[60%] w-1 h-1 bg-orange-500/30 rounded-full animate-pulse" style={{animationDelay: '7.5s'}}></div>
+            <div className="absolute -right-8 top-[30%] w-0.5 h-0.5 bg-amber-500/40 rounded-full animate-pulse" style={{animationDelay: '8s'}}></div>
+            <div className="absolute -right-12 top-[70%] w-1 h-1 bg-orange-400/30 rounded-full animate-pulse" style={{animationDelay: '8.5s'}}></div>
+            
+            {/* Tiny sparks around progress area */}
+            <div className="absolute -left-6 top-[40%] text-yellow-400/20 text-xs animate-pulse" style={{animationDelay: '9s'}}>✦</div>
+            <div className="absolute -right-6 top-[50%] text-yellow-500/20 text-xs animate-pulse" style={{animationDelay: '9.5s'}}>✦</div>
             {/* Progress percentage display */}
             <div className={`absolute -top-10 left-1/2 -translate-x-1/2 text-white rounded-full px-4 py-1 font-bold shadow-lg transition-all duration-500
               ${isSetupCompleted 
