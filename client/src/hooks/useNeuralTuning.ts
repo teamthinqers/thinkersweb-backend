@@ -24,6 +24,11 @@ interface TuningParams {
   memoryBandwidth?: number; // 0.0 to 1.0 - short burst memory (0.0) vs deep retainer (1.0)
   thoughtComplexity?: number; // 0.0 to 1.0 - simple direct (0.0) vs complex layered (1.0)
   
+  // Additional cognitive parameters
+  mentalModelDensity?: number; // 0.0 to 1.0 - free thinker (0.0) vs model architect (1.0)
+  patternDetectionSensitivity?: number; // 0.0 to 1.0 - local optimizer (0.0) vs system scanner (1.0)
+  decisionMakingIndex?: number; // 0.0 to 1.0 - intuitive thinking (0.0) vs structured logical thinking (1.0)
+  
   // Specialty focus areas (weights for different domains)
   specialties?: {
     [domain: string]: number; // 0.0 to 1.0
