@@ -31,18 +31,11 @@ export default function NeuraTuningCognitive() {
     creativity?: number;
     precision?: number;
     speed?: number;
-    cognitivePace?: number;
-    signalFocus?: number;
-    impulseControl?: number;
-    mentalEnergyFlow?: number;
     analytical?: number;
     intuitive?: number;
     contextualThinking?: number;
     memoryBandwidth?: number;
     thoughtComplexity?: number;
-    mentalModelDensity?: number;
-    patternDetectionSensitivity?: number;
-    decisionMakingIndex?: number;
   }>({});
   
   // Extract values from status for rendering
@@ -51,18 +44,11 @@ export default function NeuraTuningCognitive() {
       creativity: 0.7,
       precision: 0.8,
       speed: 0.5,
-      cognitivePace: 0.6,
-      signalFocus: 0.4,
-      impulseControl: 0.7,
-      mentalEnergyFlow: 0.5,
       analytical: 0.8,
       intuitive: 0.6,
       contextualThinking: 0.6,
       memoryBandwidth: 0.7,
       thoughtComplexity: 0.5,
-      mentalModelDensity: 0.6,
-      patternDetectionSensitivity: 0.7,
-      decisionMakingIndex: 0.8,
     }
   };
   

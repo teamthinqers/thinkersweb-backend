@@ -2,34 +2,20 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from './use-toast';
 import { apiRequest } from '@/lib/queryClient';
-interface NeuralExtensionStatus {
-  isActive: boolean;
-  gameElements: any;
-  tuning: any;
-  topicsTracked: string[];
-  adaptationLevel: number;
-  patternsDetected: any[];
-}
+import { NeuralExtensionStatus } from './useNeuralExtension';
 
 interface TuningParams {
   // Core processing parameters
-  creativity?: number; // 0.0 to 1.0 - affects response variety and uniqueness
-  precision?: number;  // 0.0 to 1.0 - affects factual accuracy and detail level
-  speed?: number;      // 0.0 to 1.0 - affects response time vs. depth tradeoff
-  cognitivePace?: number; // 0.0 to 1.0 - how fast brain processes and switches between thoughts
-  signalFocus?: number; // 0.0 to 1.0 - narrow beam (0.0) vs wide scanner (1.0) focus style
-  impulseControl?: number; // 0.0 to 1.0 - high responsiveness (0.0) vs high precision (1.0)
-  mentalEnergyFlow?: number; // 0.0 to 1.0 - action primed (0.0) vs reflection primed (1.0)
+  creativity?: number;  // 0.0 to 1.0 - affects response variety and uniqueness
+  precision?: number;   // 0.0 to 1.0 - affects factual accuracy and detail level
+  speed?: number;       // 0.0 to 1.0 - affects response time vs. depth tradeoff
   
   // Cognitive style parameters
-  analytical?: number; // 0.0 to 1.0 - logical/systematic thinking emphasis
-  intuitive?: number;  // 0.0 to 1.0 - pattern recognition/insight emphasis
+  analytical?: number;  // 0.0 to 1.0 - logical/systematic thinking emphasis
+  intuitive?: number;   // 0.0 to 1.0 - pattern recognition/insight emphasis
   contextualThinking?: number; // 0.0 to 1.0 - contextual (0.0) vs universal (1.0) thinking
   memoryBandwidth?: number; // 0.0 to 1.0 - short burst memory (0.0) vs deep retainer (1.0)
   thoughtComplexity?: number; // 0.0 to 1.0 - simple direct (0.0) vs complex layered (1.0)
-  mentalModelDensity?: number; // 0.0 to 1.0 - free thinker (0.0) vs model architect (1.0)
-  patternDetectionSensitivity?: number; // 0.0 to 1.0 - local optimizer (0.0) vs system scanner (1.0)
-  decisionMakingIndex?: number; // 0.0 to 1.0 - intuitive thinking (0.0) vs structured logical thinking (1.0)
   
   // Specialty focus areas (weights for different domains)
   specialties?: {
@@ -80,18 +66,11 @@ export function useNeuralTuning() {
       creativity: 0.7,
       precision: 0.8,
       speed: 0.5,
-      cognitivePace: 0.6,
-      signalFocus: 0.4,
-      impulseControl: 0.7,
-      mentalEnergyFlow: 0.5,
       analytical: 0.8,
       intuitive: 0.6,
       contextualThinking: 0.6,
       memoryBandwidth: 0.7,
       thoughtComplexity: 0.5,
-      mentalModelDensity: 0.6,
-      patternDetectionSensitivity: 0.7,
-      decisionMakingIndex: 0.8,
       specialties: {
         'tech': 0.9,
         'business': 0.7,
