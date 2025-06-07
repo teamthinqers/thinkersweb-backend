@@ -852,7 +852,7 @@ export default function MyNeura() {
                     max={1}
                     step={0.01}
                     value={[(pendingChanges.creativity ?? neuralTuning?.creativity ?? 0.5)]}
-                    onValueChange={(value) => handleParameterChange('creativity', value)}
+                    onValueChange={(value) => handleParameterChange('creativity', value[0])}
                     className="w-full"
                   />
                   <p className="text-xs text-muted-foreground">
@@ -876,7 +876,7 @@ export default function MyNeura() {
                     max={1}
                     step={0.01}
                     value={[(pendingChanges.precision ?? neuralTuning?.precision ?? 0.5)]}
-                    onValueChange={(value) => handleParameterChange('precision', value)}
+                    onValueChange={(value) => handleParameterChange('precision', value[0])}
                     className="w-full"
                   />
                   <p className="text-xs text-muted-foreground">
@@ -900,7 +900,7 @@ export default function MyNeura() {
                     max={1}
                     step={0.01}
                     value={[(pendingChanges.speed ?? neuralTuning?.speed ?? 0.5)]}
-                    onValueChange={(value) => handleParameterChange('speed', value)}
+                    onValueChange={(value) => handleParameterChange('speed', value[0])}
                     className="w-full"
                   />
                   <p className="text-xs text-muted-foreground">
