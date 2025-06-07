@@ -728,47 +728,102 @@ export default function CognitiveShieldConfig() {
               </p>
             </div>
 
-            {/* Thought Complexity Parameter */}
-            <div className="space-y-4 p-4 rounded-lg bg-gradient-to-r from-rose-50 to-pink-50 dark:from-rose-950/20 dark:to-pink-950/20 border border-rose-200 dark:border-rose-800">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="thoughtComplexity" className="text-sm font-medium flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-gradient-to-r from-rose-400 to-pink-400"></div>
-                  Thought Complexity
-                </Label>
-                <span className="text-sm font-bold text-rose-700 dark:text-rose-300">
-                  {Math.round((pendingChanges.thoughtComplexity ?? neuralTuning?.thoughtComplexity ?? 0.5) * 100)}%
-                </span>
-              </div>
-              
-              {/* Visual complexity meter with layered pattern */}
-              <div className="relative">
-                <div className="h-3 bg-gradient-to-r from-rose-100 to-rose-200 dark:from-rose-900 dark:to-rose-800 rounded-full overflow-hidden">
-                  <div 
-                    className="h-full bg-gradient-to-r from-rose-500 to-pink-500 rounded-full transition-all duration-300 relative"
-                    style={{ width: `${(pendingChanges.thoughtComplexity ?? neuralTuning?.thoughtComplexity ?? 0.5) * 100}%` }}
-                  >
-                    {/* Layered complexity effect */}
-                    <div className="absolute inset-0 flex items-center justify-end pr-1">
-                      <div className="w-1 h-1 bg-pink-200 rounded-full animate-pulse shadow-sm"></div>
+            {/* Thought Complexity Parameter - Layered Stack Interface */}
+            <div className="relative overflow-hidden space-y-4 p-6 rounded-xl bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950/30 dark:to-amber-900/20 border-2 border-amber-300 dark:border-amber-700 shadow-lg">
+              <div className="flex items-center justify-between relative z-10">
+                <Label className="text-base font-semibold flex items-center gap-3">
+                  <div className="relative">
+                    <div className="w-5 h-5 bg-gradient-to-br from-amber-500 to-amber-600 rounded-md shadow-md border border-amber-600 dark:border-amber-400 relative overflow-hidden">
+                      {/* Layered pattern inside icon */}
+                      <div className="absolute inset-1 space-y-0.5">
+                        <div className="w-full h-0.5 bg-amber-200 rounded-sm"></div>
+                        <div className="w-full h-0.5 bg-amber-300 rounded-sm"></div>
+                        <div className="w-full h-0.5 bg-amber-400 rounded-sm"></div>
+                      </div>
                     </div>
                   </div>
+                  <span className="text-amber-700 dark:text-amber-300">Thought Complexity</span>
+                </Label>
+                <div className="px-3 py-1 bg-gradient-to-r from-amber-200 to-amber-300 dark:from-amber-800 dark:to-amber-700 rounded-lg border border-amber-300 dark:border-amber-600">
+                  <span className="text-sm font-bold text-amber-800 dark:text-amber-200 font-mono">
+                    {Math.round((pendingChanges.thoughtComplexity ?? neuralTuning?.thoughtComplexity ?? 0.5) * 100)}%
+                  </span>
                 </div>
-                {/* Complexity layer indicators */}
-                <div className="absolute -top-1 left-1/2 w-0.5 h-0.5 bg-rose-400 rounded-full opacity-80 animate-pulse"></div>
-                <div className="absolute -bottom-1 right-1/5 w-1 h-1 bg-pink-400 rounded-full opacity-55 animate-bounce"></div>
               </div>
               
-              <Slider
-                id="thoughtComplexity"
-                min={0}
-                max={1}
-                step={0.01}
-                value={[(pendingChanges.thoughtComplexity ?? neuralTuning?.thoughtComplexity ?? 0.5)]}
-                onValueChange={(value) => handleParameterChange('thoughtComplexity', value[0])}
-                className="complexity-slider"
-              />
-              <p className="text-xs text-muted-foreground">
-                Simple direct thinking (left) vs complex layered thinking (right)
+              {/* Layered Stack Selector */}
+              <div className="space-y-4">
+                <div className="text-center text-sm font-medium text-amber-700 dark:text-amber-300">
+                  Build complexity layers
+                </div>
+                
+                <div className="flex justify-center">
+                  <div className="relative">
+                    {/* Stack layers */}
+                    {Array.from({ length: 5 }, (_, index) => {
+                      const layerValue = (index + 1) / 5;
+                      const currentValue = pendingChanges.thoughtComplexity ?? neuralTuning?.thoughtComplexity ?? 0.5;
+                      const isActive = currentValue >= layerValue;
+                      const layerNames = ['Base', 'Context', 'Analysis', 'Synthesis', 'Meta'];
+                      const layerName = layerNames[index];
+                      
+                      return (
+                        <button
+                          key={index}
+                          onClick={() => handleParameterChange('thoughtComplexity', layerValue)}
+                          className={`
+                            relative block w-32 h-8 mb-1 rounded-md border-2 transition-all duration-300 transform hover:scale-105
+                            ${isActive 
+                              ? 'bg-amber-300 dark:bg-amber-700 border-amber-600 dark:border-amber-400 shadow-lg' 
+                              : 'bg-amber-100 dark:bg-amber-900 border-amber-400 dark:border-amber-600 hover:border-amber-500'
+                            }
+                          `}
+                          style={{
+                            marginBottom: index === 4 ? '0' : '4px',
+                            transform: `translateY(${(4-index) * 2}px)`,
+                            zIndex: index + 1
+                          }}
+                        >
+                          <div className="flex items-center justify-between h-full px-3">
+                            <span className="text-xs font-semibold text-amber-800 dark:text-amber-200">
+                              {layerName}
+                            </span>
+                            <span className="text-xs text-amber-600 dark:text-amber-400">
+                              L{index + 1}
+                            </span>
+                          </div>
+                          
+                          {/* Layer connection lines */}
+                          {isActive && index < 4 && (
+                            <div className="absolute top-full left-1/2 w-px h-1 bg-amber-500 transform -translate-x-0.5" />
+                          )}
+                        </button>
+                      );
+                    }).reverse()}
+                  </div>
+                </div>
+                
+                {/* Complexity description */}
+                <div className="text-center p-3 bg-amber-100 dark:bg-amber-900 rounded-lg border border-amber-200 dark:border-amber-800">
+                  <div className="text-sm font-medium text-amber-700 dark:text-amber-300">
+                    {(() => {
+                      const value = pendingChanges.thoughtComplexity ?? neuralTuning?.thoughtComplexity ?? 0.5;
+                      const activeLayerCount = Math.ceil(value * 5);
+                      const descriptions = [
+                        "Base thinking - Direct responses",
+                        "Context aware - Situational factors", 
+                        "Analytical depth - Multiple perspectives",
+                        "Synthesis mode - Complex integrations",
+                        "Meta-cognitive - Thinking about thinking"
+                      ];
+                      return `${activeLayerCount} Layer${activeLayerCount !== 1 ? 's' : ''} Active: ${descriptions[activeLayerCount - 1]}`;
+                    })()}
+                  </div>
+                </div>
+              </div>
+              
+              <p className="text-xs text-amber-700 dark:text-amber-300 font-medium text-center">
+                Click layers to adjust thinking complexity depth
               </p>
             </div>
           </div>
