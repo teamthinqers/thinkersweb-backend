@@ -2,7 +2,14 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from './use-toast';
 import { apiRequest } from '@/lib/queryClient';
-import { NeuralExtensionStatus } from './useNeuralExtension';
+interface NeuralExtensionStatus {
+  isActive: boolean;
+  gameElements: any;
+  tuning: any;
+  topicsTracked: string[];
+  adaptationLevel: number;
+  patternsDetected: any[];
+}
 
 interface TuningParams {
   // Core processing parameters
