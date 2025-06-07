@@ -174,178 +174,196 @@ export default function CognitiveShieldConfig() {
               <h3 className="text-lg font-semibold text-amber-700 dark:text-amber-300">Core Tuning</h3>
             </div>
             
-            {/* Creativity Parameter - Artist's Palette Theme */}
-            <div className="relative overflow-hidden space-y-4 p-6 rounded-xl bg-gradient-to-br from-orange-100 via-yellow-50 to-amber-100 dark:from-orange-950/30 dark:via-yellow-950/20 dark:to-amber-950/30 border-2 border-orange-300 dark:border-orange-700 shadow-lg">
-              {/* Floating paint drops background */}
-              <div className="absolute top-2 right-4 w-2 h-2 bg-orange-400 rounded-full opacity-40 animate-bounce" style={{ animationDelay: '0.5s' }}></div>
-              <div className="absolute top-6 right-8 w-1 h-1 bg-yellow-500 rounded-full opacity-60 animate-ping" style={{ animationDelay: '1s' }}></div>
-              <div className="absolute bottom-4 left-6 w-1.5 h-1.5 bg-amber-500 rounded-full opacity-50 animate-pulse" style={{ animationDelay: '1.5s' }}></div>
-              
+            {/* Creativity Parameter - Color Palette Selector */}
+            <div className="relative overflow-hidden space-y-4 p-6 rounded-xl bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950/30 dark:to-amber-900/20 border-2 border-amber-300 dark:border-amber-700 shadow-lg">
               <div className="flex items-center justify-between relative z-10">
-                <Label htmlFor="creativity" className="text-base font-semibold flex items-center gap-3">
+                <Label className="text-base font-semibold flex items-center gap-3">
                   <div className="relative">
-                    <div className="w-5 h-5 bg-gradient-to-br from-orange-400 via-yellow-400 to-amber-400 rounded-lg shadow-md"></div>
-                    <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-orange-300 rounded-full animate-pulse"></div>
+                    <div className="w-5 h-5 bg-gradient-to-br from-amber-400 to-amber-600 rounded-lg shadow-md"></div>
+                    <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-amber-300 rounded-full animate-pulse"></div>
                   </div>
-                  <span className="bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">Creativity Level</span>
+                  <span className="text-amber-700 dark:text-amber-300">Creativity Level</span>
                 </Label>
-                <div className="px-3 py-1 bg-gradient-to-r from-orange-200 to-amber-200 dark:from-orange-800 dark:to-amber-800 rounded-full">
-                  <span className="text-sm font-bold text-orange-800 dark:text-orange-200">
+                <div className="px-3 py-1 bg-gradient-to-r from-amber-200 to-amber-300 dark:from-amber-800 dark:to-amber-700 rounded-full">
+                  <span className="text-sm font-bold text-amber-800 dark:text-amber-200">
                     {Math.round((pendingChanges.creativity ?? neuralTuning?.creativity ?? 0.5) * 100)}%
                   </span>
                 </div>
               </div>
               
-              {/* Artist's brush stroke meter */}
-              <div className="relative h-4 bg-gradient-to-r from-orange-200 via-yellow-200 to-amber-200 dark:from-orange-900 dark:via-yellow-900 dark:to-amber-900 rounded-full overflow-hidden shadow-inner">
-                <div 
-                  className="h-full bg-gradient-to-r from-orange-500 via-yellow-400 to-amber-500 rounded-full transition-all duration-500 relative shadow-lg"
-                  style={{ width: `${(pendingChanges.creativity ?? neuralTuning?.creativity ?? 0.5) * 100}%` }}
-                >
-                  {/* Paint brush effect */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulse"></div>
-                  <div className="absolute right-1 top-1 bottom-1 w-2 bg-yellow-200 rounded-full animate-ping opacity-75"></div>
-                </div>
-                {/* Paint splatters */}
-                <div className="absolute top-0 left-1/4 w-1 h-1 bg-orange-400 rounded-full animate-bounce opacity-60"></div>
-                <div className="absolute bottom-0 right-1/3 w-0.5 h-0.5 bg-yellow-500 rounded-full animate-pulse opacity-80"></div>
+              {/* Color palette selector */}
+              <div className="grid grid-cols-10 gap-2">
+                {Array.from({ length: 10 }, (_, i) => {
+                  const value = (i + 1) / 10;
+                  const isSelected = Math.abs(value - (pendingChanges.creativity ?? neuralTuning?.creativity ?? 0.5)) < 0.05;
+                  return (
+                    <button
+                      key={i}
+                      onClick={() => handleParameterChange('creativity', value)}
+                      className={`
+                        w-8 h-8 rounded-lg border-2 transition-all duration-300 transform hover:scale-110
+                        ${isSelected 
+                          ? 'border-amber-600 dark:border-amber-400 shadow-lg scale-110' 
+                          : 'border-amber-300 dark:border-amber-600 hover:border-amber-500'
+                        }
+                      `}
+                      style={{
+                        background: `linear-gradient(135deg, 
+                          hsl(${20 + i * 4}, ${60 + i * 4}%, ${50 + i * 2}%),
+                          hsl(${30 + i * 3}, ${70 + i * 3}%, ${60 + i * 1}%)
+                        )`
+                      }}
+                    />
+                  );
+                })}
               </div>
               
-              <Slider
-                id="creativity"
-                min={0}
-                max={1}
-                step={0.01}
-                value={[(pendingChanges.creativity ?? neuralTuning?.creativity ?? 0.5)]}
-                onValueChange={(value) => handleParameterChange('creativity', value[0])}
-                className="creativity-slider"
-              />
-              <p className="text-xs text-orange-700 dark:text-orange-300 font-medium">
-                🎨 Balance structured thinking (left) and creative exploration (right)
+              <p className="text-xs text-amber-700 dark:text-amber-300 font-medium text-center">
+                Select creativity intensity by choosing a color palette
               </p>
             </div>
 
-            {/* Precision Parameter - Laser Targeting Theme */}
-            <div className="relative overflow-hidden space-y-4 p-6 rounded-xl bg-gradient-to-br from-red-100 via-orange-50 to-red-100 dark:from-red-950/30 dark:via-orange-950/20 dark:to-red-950/30 border-2 border-red-400 dark:border-red-600 shadow-lg">
-              {/* Targeting crosshairs background */}
-              <div className="absolute inset-0 opacity-10">
-                <div className="absolute top-1/2 left-0 right-0 h-px bg-red-400 transform -translate-y-0.5"></div>
-                <div className="absolute left-1/2 top-0 bottom-0 w-px bg-red-400 transform -translate-x-0.5"></div>
-              </div>
-              {/* Floating targeting dots */}
-              <div className="absolute top-3 right-6 w-1 h-1 bg-red-500 rounded-full animate-ping opacity-70"></div>
-              <div className="absolute top-8 right-3 w-0.5 h-0.5 bg-orange-600 rounded-full animate-pulse opacity-80"></div>
-              <div className="absolute bottom-3 left-4 w-1 h-1 bg-red-400 rounded-full animate-bounce opacity-60"></div>
-              
+            {/* Precision Parameter - Targeting Dial */}
+            <div className="relative overflow-hidden space-y-4 p-6 rounded-xl bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950/30 dark:to-amber-900/20 border-2 border-amber-300 dark:border-amber-700 shadow-lg">
               <div className="flex items-center justify-between relative z-10">
-                <Label htmlFor="precision" className="text-base font-semibold flex items-center gap-3">
+                <Label className="text-base font-semibold flex items-center gap-3">
                   <div className="relative">
-                    <div className="w-5 h-5 bg-gradient-to-br from-red-500 to-orange-500 rounded-sm shadow-md border border-red-600 dark:border-red-400"></div>
+                    <div className="w-5 h-5 bg-gradient-to-br from-amber-400 to-amber-600 rounded-sm shadow-md border border-amber-600 dark:border-amber-400"></div>
                     <div className="absolute inset-0 flex items-center justify-center">
                       <div className="w-1 h-1 bg-white rounded-full"></div>
                     </div>
-                    <div className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 border border-red-400 rounded-full animate-ping"></div>
                   </div>
-                  <span className="bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">Precision Focus</span>
+                  <span className="text-amber-700 dark:text-amber-300">Precision Focus</span>
                 </Label>
-                <div className="px-3 py-1 bg-gradient-to-r from-red-200 to-orange-200 dark:from-red-800 dark:to-orange-800 rounded-lg border border-red-300 dark:border-red-600">
-                  <span className="text-sm font-bold text-red-800 dark:text-red-200 font-mono">
+                <div className="px-3 py-1 bg-gradient-to-r from-amber-200 to-amber-300 dark:from-amber-800 dark:to-amber-700 rounded-lg border border-amber-300 dark:border-amber-600">
+                  <span className="text-sm font-bold text-amber-800 dark:text-amber-200 font-mono">
                     {Math.round((pendingChanges.precision ?? neuralTuning?.precision ?? 0.5) * 100)}%
                   </span>
                 </div>
               </div>
               
-              {/* Laser beam precision meter */}
-              <div className="relative h-4 bg-gradient-to-r from-red-200 via-orange-200 to-red-200 dark:from-red-900 dark:via-orange-900 dark:to-red-900 rounded-sm overflow-hidden shadow-inner border border-red-300 dark:border-red-700">
-                <div 
-                  className="h-full bg-gradient-to-r from-red-600 via-orange-500 to-red-500 rounded-sm transition-all duration-300 relative shadow-lg"
-                  style={{ width: `${(pendingChanges.precision ?? neuralTuning?.precision ?? 0.5) * 100}%` }}
-                >
-                  {/* Laser beam effect */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-red-300/50 to-red-100 animate-pulse"></div>
-                  <div className="absolute right-0 top-0 bottom-0 w-1 bg-red-200 shadow-lg animate-ping"></div>
-                  {/* Targeting line */}
-                  <div className="absolute right-2 top-1 bottom-1 w-px bg-white/80"></div>
+              {/* Targeting Dial */}
+              <div className="flex justify-center">
+                <div className="relative w-32 h-32">
+                  {/* Dial background */}
+                  <div className="absolute inset-0 rounded-full border-4 border-amber-300 dark:border-amber-600 bg-gradient-to-br from-amber-100 to-amber-200 dark:from-amber-900 dark:to-amber-800"></div>
+                  
+                  {/* Precision markers */}
+                  {Array.from({ length: 10 }, (_, i) => {
+                    const angle = (i * 36) - 90; // 0-360 degrees, starting from top
+                    const isQuarter = i % 2.5 === 0;
+                    return (
+                      <div
+                        key={i}
+                        className={`absolute w-0.5 ${isQuarter ? 'h-4 bg-amber-600' : 'h-2 bg-amber-400'} top-1 left-1/2 origin-bottom transform -translate-x-0.5`}
+                        style={{ transform: `translateX(-50%) rotate(${angle}deg)` }}
+                      />
+                    );
+                  })}
+                  
+                  {/* Targeting needle */}
+                  <div
+                    className="absolute w-1 h-12 bg-amber-700 dark:bg-amber-300 top-2 left-1/2 origin-bottom transform -translate-x-0.5 transition-transform duration-300"
+                    style={{
+                      transform: `translateX(-50%) rotate(${((pendingChanges.precision ?? neuralTuning?.precision ?? 0.5) * 180) - 90}deg)`
+                    }}
+                  >
+                    <div className="absolute top-0 left-1/2 w-2 h-2 bg-amber-600 rounded-full transform -translate-x-1/2 -translate-y-1"></div>
+                  </div>
+                  
+                  {/* Center dot */}
+                  <div className="absolute top-1/2 left-1/2 w-3 h-3 bg-amber-600 dark:bg-amber-400 rounded-full transform -translate-x-1/2 -translate-y-1/2 border-2 border-white"></div>
+                  
+                  {/* Click zones for precision adjustment */}
+                  <button
+                    className="absolute inset-0 rounded-full cursor-pointer opacity-0 hover:opacity-10 bg-amber-500 transition-opacity"
+                    onClick={(e) => {
+                      const rect = e.currentTarget.getBoundingClientRect();
+                      const centerX = rect.left + rect.width / 2;
+                      const centerY = rect.top + rect.height / 2;
+                      const angle = Math.atan2(e.clientY - centerY, e.clientX - centerX);
+                      let normalizedAngle = (angle + Math.PI / 2) / Math.PI;
+                      if (normalizedAngle < 0) normalizedAngle += 2;
+                      if (normalizedAngle > 1) normalizedAngle = 1;
+                      handleParameterChange('precision', Math.max(0, Math.min(1, normalizedAngle)));
+                    }}
+                  />
                 </div>
-                {/* Precision markers */}
-                <div className="absolute top-0 left-1/3 w-px h-full bg-red-400 opacity-30"></div>
-                <div className="absolute top-0 right-1/4 w-px h-full bg-orange-400 opacity-40"></div>
               </div>
               
-              <Slider
-                id="precision"
-                min={0}
-                max={1}
-                step={0.01}
-                value={[(pendingChanges.precision ?? neuralTuning?.precision ?? 0.5)]}
-                onValueChange={(value) => handleParameterChange('precision', value[0])}
-                className="precision-slider"
-              />
-              <p className="text-xs text-red-700 dark:text-red-300 font-medium">
-                🎯 Broad concepts (left) vs detailed accuracy (right)
+              <p className="text-xs text-amber-700 dark:text-amber-300 font-medium text-center">
+                Click on the dial to adjust precision targeting
               </p>
             </div>
 
-            {/* Processing Speed Parameter - Lightning Bolt Theme */}
-            <div className="relative overflow-hidden space-y-4 p-6 rounded-xl bg-gradient-to-br from-yellow-100 via-amber-50 to-yellow-100 dark:from-yellow-950/30 dark:via-amber-950/20 dark:to-yellow-950/30 border-2 border-yellow-400 dark:border-yellow-600 shadow-lg">
-              {/* Lightning bolt background pattern */}
-              <div className="absolute top-2 right-8 transform rotate-12">
-                <div className="w-3 h-0.5 bg-yellow-400 opacity-30"></div>
-                <div className="w-2 h-0.5 bg-yellow-500 opacity-40 ml-1 mt-0.5"></div>
-                <div className="w-1 h-0.5 bg-yellow-600 opacity-50 ml-2 mt-0.5"></div>
-              </div>
-              {/* Electric sparks */}
-              <div className="absolute top-4 right-3 w-1 h-1 bg-yellow-500 rounded-full animate-ping opacity-80" style={{ animationDelay: '0.3s' }}></div>
-              <div className="absolute top-8 right-12 w-0.5 h-0.5 bg-amber-500 rounded-full animate-pulse opacity-70" style={{ animationDelay: '0.8s' }}></div>
-              <div className="absolute bottom-5 left-8 w-1 h-1 bg-yellow-400 rounded-full animate-bounce opacity-60" style={{ animationDelay: '1.2s' }}></div>
-              
+            {/* Processing Speed Parameter - Speed Burst Buttons */}
+            <div className="relative overflow-hidden space-y-4 p-6 rounded-xl bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950/30 dark:to-amber-900/20 border-2 border-amber-300 dark:border-amber-700 shadow-lg">
               <div className="flex items-center justify-between relative z-10">
-                <Label htmlFor="speed" className="text-base font-semibold flex items-center gap-3">
+                <Label className="text-base font-semibold flex items-center gap-3">
                   <div className="relative">
-                    <div className="w-5 h-5 bg-gradient-to-br from-yellow-400 to-amber-500 rounded-md shadow-md transform rotate-45"></div>
+                    <div className="w-5 h-5 bg-gradient-to-br from-amber-400 to-amber-600 rounded-md shadow-md transform rotate-45"></div>
                     <div className="absolute inset-0 flex items-center justify-center transform -rotate-45">
                       <div className="w-2 h-0.5 bg-white"></div>
                     </div>
-                    <div className="absolute -top-1 -right-1 w-2 h-2 border border-yellow-400 rounded-full animate-ping opacity-60"></div>
                   </div>
-                  <span className="bg-gradient-to-r from-yellow-600 to-amber-600 bg-clip-text text-transparent">Processing Speed</span>
+                  <span className="text-amber-700 dark:text-amber-300">Processing Speed</span>
                 </Label>
-                <div className="px-3 py-1 bg-gradient-to-r from-yellow-200 to-amber-200 dark:from-yellow-800 dark:to-amber-800 rounded-lg border border-yellow-300 dark:border-yellow-600">
-                  <span className="text-sm font-bold text-yellow-800 dark:text-yellow-200 font-mono">
+                <div className="px-3 py-1 bg-gradient-to-r from-amber-200 to-amber-300 dark:from-amber-800 dark:to-amber-700 rounded-lg border border-amber-300 dark:border-amber-600">
+                  <span className="text-sm font-bold text-amber-800 dark:text-amber-200 font-mono">
                     {Math.round((pendingChanges.speed ?? neuralTuning?.speed ?? 0.5) * 100)}%
                   </span>
                 </div>
               </div>
               
-              {/* Lightning bolt speed meter */}
-              <div className="relative h-4 bg-gradient-to-r from-yellow-200 via-amber-200 to-yellow-200 dark:from-yellow-900 dark:via-amber-900 dark:to-yellow-900 rounded-md overflow-hidden shadow-inner border border-yellow-300 dark:border-yellow-700">
-                <div 
-                  className="h-full bg-gradient-to-r from-yellow-500 via-amber-400 to-yellow-400 rounded-md transition-all duration-200 relative shadow-lg"
-                  style={{ width: `${(pendingChanges.speed ?? neuralTuning?.speed ?? 0.5) * 100}%` }}
-                >
-                  {/* Electric current effect */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-yellow-200/70 to-white/40 animate-pulse"></div>
-                  <div className="absolute right-0 top-0 bottom-0 w-1 bg-yellow-100 shadow-lg animate-ping"></div>
-                  {/* Lightning zigzag */}
-                  <div className="absolute right-1 top-1 w-2 h-0.5 bg-white/90 transform rotate-12"></div>
-                  <div className="absolute right-2 bottom-1 w-1 h-0.5 bg-white/80 transform -rotate-12"></div>
-                </div>
-                {/* Speed trail markers */}
-                <div className="absolute top-0 left-1/4 w-0.5 h-full bg-yellow-400 opacity-40 transform skew-x-12"></div>
-                <div className="absolute top-0 right-1/3 w-0.5 h-full bg-amber-400 opacity-50 transform skew-x-12"></div>
+              {/* Speed Burst Buttons */}
+              <div className="grid grid-cols-5 gap-2">
+                {['Slow', 'Steady', 'Moderate', 'Fast', 'Burst'].map((speed, index) => {
+                  const value = (index + 1) / 5;
+                  const currentValue = pendingChanges.speed ?? neuralTuning?.speed ?? 0.5;
+                  const isActive = Math.abs(value - currentValue) < 0.1;
+                  const intensity = index + 1;
+                  
+                  return (
+                    <button
+                      key={speed}
+                      onClick={() => handleParameterChange('speed', value)}
+                      className={`
+                        relative h-16 rounded-lg border-2 transition-all duration-300 transform hover:scale-105 group
+                        ${isActive 
+                          ? 'border-amber-600 dark:border-amber-400 bg-amber-200 dark:bg-amber-800 shadow-lg scale-105' 
+                          : 'border-amber-300 dark:border-amber-600 bg-amber-100 dark:bg-amber-900 hover:border-amber-500'
+                        }
+                      `}
+                    >
+                      {/* Speed lines effect */}
+                      <div className="absolute inset-0 rounded-lg overflow-hidden">
+                        {Array.from({ length: intensity }, (_, i) => (
+                          <div
+                            key={i}
+                            className={`absolute w-full h-0.5 bg-amber-500 opacity-60 transform -skew-x-12 transition-transform duration-500 ${isActive ? 'animate-pulse' : ''}`}
+                            style={{
+                              top: `${20 + i * 15}%`,
+                              animationDelay: `${i * 0.1}s`
+                            }}
+                          />
+                        ))}
+                      </div>
+                      
+                      <div className="relative z-10 flex flex-col items-center justify-center h-full">
+                        <div className="text-xs font-semibold text-amber-700 dark:text-amber-300 mb-1">
+                          {speed}
+                        </div>
+                        <div className="text-xs text-amber-600 dark:text-amber-400">
+                          {Math.round(value * 100)}%
+                        </div>
+                      </div>
+                    </button>
+                  );
+                })}
               </div>
               
-              <Slider
-                id="speed"
-                min={0}
-                max={1}
-                step={0.01}
-                value={[(pendingChanges.speed ?? neuralTuning?.speed ?? 0.5)]}
-                onValueChange={(value) => handleParameterChange('speed', value[0])}
-                className="speed-slider"
-              />
-              <p className="text-xs text-yellow-700 dark:text-yellow-300 font-medium">
-                ⚡ Deep reflection (left) vs quick response time (right)
+              <p className="text-xs text-amber-700 dark:text-amber-300 font-medium text-center">
+                Select processing speed intensity level
               </p>
             </div>
           </div>
@@ -356,250 +374,357 @@ export default function CognitiveShieldConfig() {
               <h3 className="text-lg font-semibold text-amber-700 dark:text-amber-300">Cognitive Style</h3>
             </div>
             
-            {/* Analytical Parameter - Digital Circuit Grid Theme */}
-            <div className="relative overflow-hidden space-y-4 p-6 rounded-xl bg-gradient-to-br from-blue-100 via-indigo-50 to-blue-100 dark:from-blue-950/30 dark:via-indigo-950/20 dark:to-blue-950/30 border-2 border-blue-400 dark:border-blue-600 shadow-lg">
-              {/* Circuit board pattern background */}
-              <div className="absolute inset-0 opacity-20">
-                <div className="absolute top-4 left-4 w-8 h-px bg-blue-400"></div>
-                <div className="absolute top-4 left-12 w-px h-4 bg-blue-400"></div>
-                <div className="absolute top-8 left-8 w-4 h-px bg-blue-400"></div>
-                <div className="absolute bottom-6 right-6 w-6 h-px bg-indigo-400"></div>
-                <div className="absolute bottom-6 right-6 w-px h-3 bg-indigo-400"></div>
-              </div>
-              {/* Digital nodes */}
-              <div className="absolute top-3 right-5 w-1.5 h-1.5 bg-blue-500 rounded-sm animate-pulse opacity-70" style={{ animationDelay: '0.4s' }}></div>
-              <div className="absolute top-7 right-10 w-1 h-1 bg-indigo-500 rounded-sm animate-ping opacity-60" style={{ animationDelay: '0.9s' }}></div>
-              <div className="absolute bottom-4 left-6 w-1 h-1 bg-blue-400 rounded-sm animate-bounce opacity-50" style={{ animationDelay: '1.3s' }}></div>
-              
+            {/* Analytical Thinking Parameter - Toggle Switches */}
+            <div className="relative overflow-hidden space-y-4 p-6 rounded-xl bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950/30 dark:to-amber-900/20 border-2 border-amber-300 dark:border-amber-700 shadow-lg">
               <div className="flex items-center justify-between relative z-10">
-                <Label htmlFor="analytical" className="text-base font-semibold flex items-center gap-3">
+                <Label className="text-base font-semibold flex items-center gap-3">
                   <div className="relative">
-                    <div className="w-5 h-5 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-sm shadow-md border border-blue-600 dark:border-blue-400"></div>
+                    <div className="w-5 h-5 bg-gradient-to-br from-amber-500 to-amber-600 rounded-sm shadow-md border border-amber-600 dark:border-amber-400"></div>
                     <div className="absolute inset-1 grid grid-cols-2 gap-0.5">
-                      <div className="w-1 h-1 bg-blue-200 rounded-sm"></div>
-                      <div className="w-1 h-1 bg-blue-300 rounded-sm"></div>
-                      <div className="w-1 h-1 bg-blue-300 rounded-sm"></div>
-                      <div className="w-1 h-1 bg-blue-200 rounded-sm"></div>
+                      <div className="w-1 h-1 bg-amber-200 rounded-sm"></div>
+                      <div className="w-1 h-1 bg-amber-300 rounded-sm"></div>
+                      <div className="w-1 h-1 bg-amber-300 rounded-sm"></div>
+                      <div className="w-1 h-1 bg-amber-200 rounded-sm"></div>
                     </div>
-                    <div className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 border border-blue-400 rounded-sm animate-ping"></div>
                   </div>
-                  <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Analytical Thinking</span>
+                  <span className="text-amber-700 dark:text-amber-300">Analytical Thinking</span>
                 </Label>
-                <div className="px-3 py-1 bg-gradient-to-r from-blue-200 to-indigo-200 dark:from-blue-800 dark:to-indigo-800 rounded-lg border border-blue-300 dark:border-blue-600">
-                  <span className="text-sm font-bold text-blue-800 dark:text-blue-200 font-mono">
+                <div className="px-3 py-1 bg-gradient-to-r from-amber-200 to-amber-300 dark:from-amber-800 dark:to-amber-700 rounded-lg border border-amber-300 dark:border-amber-600">
+                  <span className="text-sm font-bold text-amber-800 dark:text-amber-200 font-mono">
                     {Math.round((pendingChanges.analytical ?? neuralTuning?.analytical ?? 0.5) * 100)}%
                   </span>
                 </div>
               </div>
               
-              {/* Circuit board progress meter */}
-              <div className="relative h-4 bg-gradient-to-r from-blue-200 via-indigo-200 to-blue-200 dark:from-blue-900 dark:via-indigo-900 dark:to-blue-900 rounded-sm overflow-hidden shadow-inner border border-blue-300 dark:border-blue-700">
-                <div 
-                  className="h-full bg-gradient-to-r from-blue-600 via-indigo-500 to-blue-500 rounded-sm transition-all duration-400 relative shadow-lg"
-                  style={{ width: `${(pendingChanges.analytical ?? neuralTuning?.analytical ?? 0.5) * 100}%` }}
-                >
-                  {/* Digital processing effect */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-300/60 to-blue-100/80 animate-pulse"></div>
-                  <div className="absolute right-0 top-0 bottom-0 w-1 bg-blue-100 shadow-lg animate-ping"></div>
-                  {/* Circuit traces */}
-                  <div className="absolute right-1 top-1 w-2 h-0.5 bg-white/90"></div>
-                  <div className="absolute right-2 top-1 w-0.5 h-1 bg-white/80"></div>
-                  <div className="absolute right-1 bottom-1 w-1 h-0.5 bg-white/70"></div>
-                </div>
-                {/* Logic gates indicators */}
-                <div className="absolute top-0 left-1/4 w-1 h-full bg-blue-400 opacity-40"></div>
-                <div className="absolute top-0 right-1/3 w-0.5 h-full bg-indigo-400 opacity-50"></div>
+              {/* Logic Toggle Switches */}
+              <div className="space-y-3">
+                {['Basic Logic', 'Pattern Analysis', 'System Thinking', 'Deep Analysis', 'Expert Logic'].map((level, index) => {
+                  const threshold = (index + 1) / 5;
+                  const currentValue = pendingChanges.analytical ?? neuralTuning?.analytical ?? 0.5;
+                  const isActive = currentValue >= threshold;
+                  
+                  return (
+                    <div key={level} className="flex items-center justify-between p-3 rounded-lg bg-amber-100 dark:bg-amber-900 border border-amber-200 dark:border-amber-800">
+                      <div className="flex items-center gap-3">
+                        <div className="text-sm font-medium text-amber-700 dark:text-amber-300">
+                          {level}
+                        </div>
+                        <div className="text-xs text-amber-600 dark:text-amber-400">
+                          {Math.round(threshold * 100)}%+
+                        </div>
+                      </div>
+                      
+                      <button
+                        onClick={() => {
+                          const newValue = isActive ? Math.max(0, threshold - 0.01) : threshold;
+                          handleParameterChange('analytical', newValue);
+                        }}
+                        className={`
+                          relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 focus:outline-none
+                          ${isActive ? 'bg-amber-600' : 'bg-amber-300 dark:bg-amber-700'}
+                        `}
+                      >
+                        <span
+                          className={`
+                            inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-200
+                            ${isActive ? 'translate-x-6' : 'translate-x-1'}
+                          `}
+                        />
+                      </button>
+                    </div>
+                  );
+                })}
               </div>
               
-              <Slider
-                id="analytical"
-                min={0}
-                max={1}
-                step={0.01}
-                value={[(pendingChanges.analytical ?? neuralTuning?.analytical ?? 0.5)]}
-                onValueChange={(value) => handleParameterChange('analytical', value[0])}
-                className="analytical-slider"
-              />
-              <p className="text-xs text-blue-700 dark:text-blue-300 font-medium">
-                🔬 Emphasis on logical/systematic thinking and structured analysis
+              <p className="text-xs text-amber-700 dark:text-amber-300 font-medium text-center">
+                Toggle analytical thinking levels on or off
               </p>
             </div>
 
-            {/* Intuitive Parameter - Mystical Flow Theme */}
-            <div className="relative overflow-hidden space-y-4 p-6 rounded-xl bg-gradient-to-br from-purple-100 via-pink-50 to-purple-100 dark:from-purple-950/30 dark:via-pink-950/20 dark:to-purple-950/30 border-2 border-purple-400 dark:border-purple-600 shadow-lg">
-              {/* Mystical flowing pattern background */}
-              <div className="absolute inset-0 opacity-15">
-                <div className="absolute top-3 left-6 w-8 h-2 bg-purple-400 rounded-full transform rotate-12"></div>
-                <div className="absolute top-8 left-10 w-6 h-1 bg-pink-400 rounded-full transform -rotate-6"></div>
-                <div className="absolute bottom-6 right-8 w-10 h-1 bg-purple-500 rounded-full transform rotate-45"></div>
-                <div className="absolute bottom-10 right-4 w-4 h-2 bg-pink-500 rounded-full transform -rotate-12"></div>
-              </div>
-              {/* Floating mystical orbs */}
-              <div className="absolute top-4 right-6 w-2 h-2 bg-purple-500 rounded-full animate-pulse opacity-60" style={{ animationDelay: '0.6s' }}></div>
-              <div className="absolute top-9 right-12 w-1 h-1 bg-pink-500 rounded-full animate-ping opacity-70" style={{ animationDelay: '1.1s' }}></div>
-              <div className="absolute bottom-5 left-8 w-1.5 h-1.5 bg-purple-400 rounded-full animate-bounce opacity-50" style={{ animationDelay: '1.6s' }}></div>
-              
+            {/* Intuitive Processing Parameter - Flow Range Selector */}
+            <div className="relative overflow-hidden space-y-4 p-6 rounded-xl bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950/30 dark:to-amber-900/20 border-2 border-amber-300 dark:border-amber-700 shadow-lg">
               <div className="flex items-center justify-between relative z-10">
-                <Label htmlFor="intuitive" className="text-base font-semibold flex items-center gap-3">
+                <Label className="text-base font-semibold flex items-center gap-3">
                   <div className="relative">
-                    <div className="w-5 h-5 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full shadow-md border border-purple-600 dark:border-purple-400"></div>
+                    <div className="w-5 h-5 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full shadow-md border border-amber-600 dark:border-amber-400"></div>
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-2 h-2 bg-purple-200 rounded-full animate-pulse"></div>
+                      <div className="w-2 h-2 bg-amber-200 rounded-full animate-pulse"></div>
                     </div>
-                    <div className="absolute -top-1 -right-1 w-2 h-2 border border-pink-400 rounded-full animate-ping opacity-60"></div>
                   </div>
-                  <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">Intuitive Processing</span>
+                  <span className="text-amber-700 dark:text-amber-300">Intuitive Processing</span>
                 </Label>
-                <div className="px-3 py-1 bg-gradient-to-r from-purple-200 to-pink-200 dark:from-purple-800 dark:to-pink-800 rounded-full border border-purple-300 dark:border-purple-600">
-                  <span className="text-sm font-bold text-purple-800 dark:text-purple-200 font-mono">
+                <div className="px-3 py-1 bg-gradient-to-r from-amber-200 to-amber-300 dark:from-amber-800 dark:to-amber-700 rounded-full border border-amber-300 dark:border-amber-600">
+                  <span className="text-sm font-bold text-amber-800 dark:text-amber-200 font-mono">
                     {Math.round((pendingChanges.intuitive ?? neuralTuning?.intuitive ?? 0.5) * 100)}%
                   </span>
                 </div>
               </div>
               
-              {/* Mystical flow progress meter */}
-              <div className="relative h-4 bg-gradient-to-r from-purple-200 via-pink-200 to-purple-200 dark:from-purple-900 dark:via-pink-900 dark:to-purple-900 rounded-full overflow-hidden shadow-inner border border-purple-300 dark:border-purple-700">
-                <div 
-                  className="h-full bg-gradient-to-r from-purple-600 via-pink-500 to-purple-500 rounded-full transition-all duration-500 relative shadow-lg"
-                  style={{ width: `${(pendingChanges.intuitive ?? neuralTuning?.intuitive ?? 0.5) * 100}%` }}
-                >
-                  {/* Mystical energy flow effect */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-purple-300/50 to-pink-200/70 animate-pulse"></div>
-                  <div className="absolute right-0 top-0 bottom-0 w-1 bg-pink-100 shadow-lg animate-ping"></div>
-                  {/* Flowing essence */}
-                  <div className="absolute right-1 top-1 w-2 h-1 bg-white/80 rounded-full transform rotate-12"></div>
-                  <div className="absolute right-2 bottom-1 w-1 h-1 bg-white/90 rounded-full"></div>
+              {/* Flow Range Selector */}
+              <div className="space-y-4">
+                <div className="text-center text-sm font-medium text-amber-700 dark:text-amber-300 mb-3">
+                  Select intuition flow range
                 </div>
-                {/* Flow stream indicators */}
-                <div className="absolute top-0 left-1/5 w-0.5 h-full bg-purple-400 opacity-40 transform skew-x-6"></div>
-                <div className="absolute top-0 right-1/4 w-1 h-full bg-pink-400 opacity-50 transform -skew-x-6"></div>
+                
+                <div className="relative">
+                  {/* Flow visualization background */}
+                  <div className="h-20 bg-gradient-to-r from-amber-100 to-amber-200 dark:from-amber-900 dark:to-amber-800 rounded-lg border border-amber-300 dark:border-amber-600 overflow-hidden">
+                    {/* Flowing lines effect */}
+                    {Array.from({ length: 6 }, (_, i) => (
+                      <div
+                        key={i}
+                        className="absolute w-full h-1 bg-amber-400 opacity-30 transform skew-x-12 animate-pulse"
+                        style={{
+                          top: `${15 + i * 12}%`,
+                          animationDelay: `${i * 0.2}s`,
+                          animationDuration: '2s'
+                        }}
+                      />
+                    ))}
+                  </div>
+                  
+                  {/* Range selection zones */}
+                  <div className="absolute inset-0 grid grid-cols-5 gap-1 p-2">
+                    {['Logic', 'Balanced', 'Intuitive', 'Flow', 'Pure'].map((mode, index) => {
+                      const value = (index + 1) / 5;
+                      const currentValue = pendingChanges.intuitive ?? neuralTuning?.intuitive ?? 0.5;
+                      const isSelected = Math.abs(value - currentValue) < 0.1;
+                      
+                      return (
+                        <button
+                          key={mode}
+                          onClick={() => handleParameterChange('intuitive', value)}
+                          className={`
+                            relative h-full rounded-md border-2 transition-all duration-300 transform hover:scale-105 flex flex-col items-center justify-center gap-1
+                            ${isSelected 
+                              ? 'border-amber-600 dark:border-amber-400 bg-amber-300 dark:bg-amber-700 shadow-lg scale-105' 
+                              : 'border-amber-400 dark:border-amber-600 bg-amber-200 dark:bg-amber-800 hover:border-amber-500'
+                            }
+                          `}
+                        >
+                          <div className="text-xs font-semibold text-amber-800 dark:text-amber-200">
+                            {mode}
+                          </div>
+                          <div className="text-xs text-amber-600 dark:text-amber-400">
+                            {Math.round(value * 100)}%
+                          </div>
+                          
+                          {/* Flow intensity indicator */}
+                          <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2">
+                            {Array.from({ length: index + 1 }, (_, i) => (
+                              <div
+                                key={i}
+                                className={`w-1 h-1 bg-amber-600 rounded-full inline-block mr-0.5 ${isSelected ? 'animate-pulse' : ''}`}
+                                style={{ animationDelay: `${i * 0.1}s` }}
+                              />
+                            ))}
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
               </div>
               
-              <Slider
-                id="intuitive"
-                min={0}
-                max={1}
-                step={0.01}
-                value={[(pendingChanges.intuitive ?? neuralTuning?.intuitive ?? 0.5)]}
-                onValueChange={(value) => handleParameterChange('intuitive', value[0])}
-                className="intuitive-slider"
-              />
-              <p className="text-xs text-purple-700 dark:text-purple-300 font-medium">
-                🔮 Pattern recognition and insight-based thinking emphasis
+              <p className="text-xs text-amber-700 dark:text-amber-300 font-medium text-center">
+                Choose your intuitive processing flow mode
               </p>
             </div>
 
-            {/* Contextual Thinking Parameter - Network Connectivity Theme */}
-            <div className="relative overflow-hidden space-y-4 p-6 rounded-xl bg-gradient-to-br from-teal-100 via-cyan-50 to-teal-100 dark:from-teal-950/30 dark:via-cyan-950/20 dark:to-teal-950/30 border-2 border-teal-400 dark:border-teal-600 shadow-lg">
-              {/* Network connectivity pattern background */}
-              <div className="absolute inset-0 opacity-20">
-                <div className="absolute top-4 left-6 w-1 h-1 bg-teal-400 rounded-full"></div>
-                <div className="absolute top-4 left-6 w-8 h-px bg-teal-400 transform rotate-12"></div>
-                <div className="absolute top-6 left-14 w-1 h-1 bg-cyan-400 rounded-full"></div>
-                <div className="absolute top-6 left-14 w-6 h-px bg-cyan-400 transform -rotate-45"></div>
-                <div className="absolute bottom-8 right-10 w-1 h-1 bg-teal-500 rounded-full"></div>
-                <div className="absolute bottom-8 right-10 w-4 h-px bg-teal-500 transform rotate-45"></div>
-              </div>
-              {/* Network nodes */}
-              <div className="absolute top-3 right-6 w-1.5 h-1.5 bg-teal-500 rounded-full animate-pulse opacity-70" style={{ animationDelay: '0.5s' }}></div>
-              <div className="absolute top-8 right-11 w-1 h-1 bg-cyan-500 rounded-full animate-ping opacity-60" style={{ animationDelay: '1s' }}></div>
-              <div className="absolute bottom-4 left-7 w-1 h-1 bg-teal-400 rounded-full animate-bounce opacity-50" style={{ animationDelay: '1.4s' }}></div>
-              
+            {/* Contextual Thinking Parameter - Step Selector */}
+            <div className="relative overflow-hidden space-y-4 p-6 rounded-xl bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950/30 dark:to-amber-900/20 border-2 border-amber-300 dark:border-amber-700 shadow-lg">
               <div className="flex items-center justify-between relative z-10">
-                <Label htmlFor="contextualThinking" className="text-base font-semibold flex items-center gap-3">
+                <Label className="text-base font-semibold flex items-center gap-3">
                   <div className="relative">
-                    <div className="w-5 h-5 bg-gradient-to-br from-teal-500 to-cyan-500 rounded-md shadow-md border border-teal-600 dark:border-teal-400"></div>
+                    <div className="w-5 h-5 bg-gradient-to-br from-amber-500 to-amber-600 rounded-md shadow-md border border-amber-600 dark:border-amber-400"></div>
                     <div className="absolute inset-1">
-                      <div className="w-1 h-1 bg-teal-200 rounded-full absolute top-0 left-0"></div>
-                      <div className="w-1 h-1 bg-cyan-200 rounded-full absolute top-0 right-0"></div>
-                      <div className="w-1 h-1 bg-teal-300 rounded-full absolute bottom-0 left-1"></div>
-                      <div className="w-px h-2 bg-cyan-200 absolute top-0.5 left-1.5"></div>
+                      <div className="w-1 h-1 bg-amber-200 rounded-full absolute top-0 left-0"></div>
+                      <div className="w-1 h-1 bg-amber-300 rounded-full absolute top-0 right-0"></div>
+                      <div className="w-1 h-1 bg-amber-300 rounded-full absolute bottom-0 left-1"></div>
+                      <div className="w-px h-2 bg-amber-200 absolute top-0.5 left-1.5"></div>
                     </div>
-                    <div className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 border border-cyan-400 rounded-full animate-ping"></div>
                   </div>
-                  <span className="bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent">Contextual Thinking</span>
+                  <span className="text-amber-700 dark:text-amber-300">Contextual Thinking</span>
                 </Label>
-                <div className="px-3 py-1 bg-gradient-to-r from-teal-200 to-cyan-200 dark:from-teal-800 dark:to-cyan-800 rounded-lg border border-teal-300 dark:border-teal-600">
-                  <span className="text-sm font-bold text-teal-800 dark:text-teal-200 font-mono">
+                <div className="px-3 py-1 bg-gradient-to-r from-amber-200 to-amber-300 dark:from-amber-800 dark:to-amber-700 rounded-lg border border-amber-300 dark:border-amber-600">
+                  <span className="text-sm font-bold text-amber-800 dark:text-amber-200 font-mono">
                     {Math.round((pendingChanges.contextualThinking ?? neuralTuning?.contextualThinking ?? 0.5) * 100)}%
                   </span>
                 </div>
               </div>
               
-              {/* Network connectivity progress meter */}
-              <div className="relative h-4 bg-gradient-to-r from-teal-200 via-cyan-200 to-teal-200 dark:from-teal-900 dark:via-cyan-900 dark:to-teal-900 rounded-md overflow-hidden shadow-inner border border-teal-300 dark:border-teal-700">
-                <div 
-                  className="h-full bg-gradient-to-r from-teal-600 via-cyan-500 to-teal-500 rounded-md transition-all duration-400 relative shadow-lg"
-                  style={{ width: `${(pendingChanges.contextualThinking ?? neuralTuning?.contextualThinking ?? 0.5) * 100}%` }}
-                >
-                  {/* Network pulse effect */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-teal-300/60 to-cyan-200/70 animate-pulse"></div>
-                  <div className="absolute right-0 top-0 bottom-0 w-1 bg-cyan-100 shadow-lg animate-ping"></div>
-                  {/* Connection lines */}
-                  <div className="absolute right-1 top-1 w-2 h-0.5 bg-white/80 transform rotate-6"></div>
-                  <div className="absolute right-3 top-2 w-1 h-0.5 bg-white/90 transform -rotate-12"></div>
-                  <div className="absolute right-2 bottom-1 w-1.5 h-0.5 bg-white/70"></div>
+              {/* Step Selector with Context Levels */}
+              <div className="space-y-3">
+                <div className="text-center text-sm font-medium text-amber-700 dark:text-amber-300">
+                  Select context awareness level
                 </div>
-                {/* Network topology indicators */}
-                <div className="absolute top-0 left-1/6 w-0.5 h-full bg-teal-400 opacity-40"></div>
-                <div className="absolute top-0 right-1/5 w-1 h-full bg-cyan-400 opacity-50"></div>
-              </div>
-              
-              <Slider
-                id="contextualThinking"
-                min={0}
-                max={1}
-                step={0.01}
-                value={[(pendingChanges.contextualThinking ?? neuralTuning?.contextualThinking ?? 0.5)]}
-                onValueChange={(value) => handleParameterChange('contextualThinking', value[0])}
-                className="contextual-slider"
-              />
-              <p className="text-xs text-teal-700 dark:text-teal-300 font-medium">
-                🌐 Contextual considerations (left) vs universal principles (right)
-              </p>
-            </div>
-
-            {/* Memory Bandwidth Parameter */}
-            <div className="space-y-4 p-4 rounded-lg bg-gradient-to-r from-emerald-50 to-green-50 dark:from-emerald-950/20 dark:to-green-950/20 border border-emerald-200 dark:border-emerald-800">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="memoryBandwidth" className="text-sm font-medium flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-gradient-to-r from-emerald-400 to-green-400"></div>
-                  Memory Bandwidth
-                </Label>
-                <span className="text-sm font-bold text-emerald-700 dark:text-emerald-300">
-                  {Math.round((pendingChanges.memoryBandwidth ?? neuralTuning?.memoryBandwidth ?? 0.5) * 100)}%
-                </span>
-              </div>
-              
-              {/* Visual memory meter with data stream effect */}
-              <div className="relative">
-                <div className="h-3 bg-gradient-to-r from-emerald-100 to-emerald-200 dark:from-emerald-900 dark:to-emerald-800 rounded-full overflow-hidden">
-                  <div 
-                    className="h-full bg-gradient-to-r from-emerald-500 to-green-500 rounded-full transition-all duration-300 relative"
-                    style={{ width: `${(pendingChanges.memoryBandwidth ?? neuralTuning?.memoryBandwidth ?? 0.5) * 100}%` }}
-                  >
-                    {/* Data stream effect */}
-                    <div className="absolute inset-0 flex items-center justify-end pr-1">
-                      <div className="w-1 h-1 bg-green-200 rounded-full animate-ping"></div>
+                
+                <div className="flex justify-center">
+                  <div className="relative">
+                    {/* Step track */}
+                    <div className="h-2 w-64 bg-amber-200 dark:bg-amber-800 rounded-full relative">
+                      {/* Progress fill */}
+                      <div 
+                        className="h-full bg-gradient-to-r from-amber-500 to-amber-600 rounded-full transition-all duration-300"
+                        style={{ width: `${(pendingChanges.contextualThinking ?? neuralTuning?.contextualThinking ?? 0.5) * 100}%` }}
+                      />
+                      
+                      {/* Step indicators */}
+                      {[0, 0.25, 0.5, 0.75, 1].map((step, index) => {
+                        const currentValue = pendingChanges.contextualThinking ?? neuralTuning?.contextualThinking ?? 0.5;
+                        const isActive = currentValue >= step;
+                        const isSelected = Math.abs(currentValue - step) < 0.05;
+                        
+                        return (
+                          <button
+                            key={index}
+                            onClick={() => handleParameterChange('contextualThinking', step)}
+                            className={`
+                              absolute top-1/2 transform -translate-y-1/2 w-4 h-4 rounded-full border-2 transition-all duration-300 hover:scale-125
+                              ${isSelected 
+                                ? 'bg-amber-600 border-amber-800 dark:border-amber-400 shadow-lg scale-125' 
+                                : isActive 
+                                  ? 'bg-amber-500 border-amber-700 dark:border-amber-500' 
+                                  : 'bg-amber-200 border-amber-400 dark:bg-amber-700 dark:border-amber-600'
+                              }
+                            `}
+                            style={{ left: `${step * 100}%`, marginLeft: '-8px' }}
+                          />
+                        );
+                      })}
+                    </div>
+                    
+                    {/* Step labels */}
+                    <div className="flex justify-between mt-3 text-xs text-amber-600 dark:text-amber-400">
+                      <span className="text-center w-12 -ml-6">Local</span>
+                      <span className="text-center w-12 -ml-6">Situational</span>
+                      <span className="text-center w-12 -ml-6">Balanced</span>
+                      <span className="text-center w-12 -ml-6">Broad</span>
+                      <span className="text-center w-12 -ml-6">Universal</span>
                     </div>
                   </div>
                 </div>
-                {/* Memory stream indicators */}
-                <div className="absolute -top-1 left-3/5 w-0.5 h-0.5 bg-emerald-400 rounded-full opacity-85 animate-pulse"></div>
-                <div className="absolute -bottom-1 right-2/5 w-1 h-1 bg-green-400 rounded-full opacity-65 animate-ping"></div>
+                
+                {/* Current level description */}
+                <div className="text-center p-3 bg-amber-100 dark:bg-amber-900 rounded-lg border border-amber-200 dark:border-amber-800">
+                  <div className="text-sm font-medium text-amber-700 dark:text-amber-300">
+                    {(() => {
+                      const value = pendingChanges.contextualThinking ?? neuralTuning?.contextualThinking ?? 0.5;
+                      if (value < 0.2) return "Local Focus - Immediate context priority";
+                      if (value < 0.4) return "Situational - Current environment aware";
+                      if (value < 0.6) return "Balanced - Context and principles";
+                      if (value < 0.8) return "Broad Perspective - Wide context view";
+                      return "Universal - Principle-based thinking";
+                    })()}
+                  </div>
+                </div>
               </div>
               
-              <Slider
-                id="memoryBandwidth"
-                min={0}
-                max={1}
-                step={0.01}
-                value={[(pendingChanges.memoryBandwidth ?? neuralTuning?.memoryBandwidth ?? 0.5)]}
-                onValueChange={(value) => handleParameterChange('memoryBandwidth', value[0])}
-                className="memory-slider"
-              />
-              <p className="text-xs text-muted-foreground">
-                Short burst memory (left) vs deep retainer memory (right)
+              <p className="text-xs text-amber-700 dark:text-amber-300 font-medium text-center">
+                Click on the steps to adjust contextual thinking level
+              </p>
+            </div>
+
+            {/* Memory Bandwidth Parameter - Memory Bank Selector */}
+            <div className="relative overflow-hidden space-y-4 p-6 rounded-xl bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950/30 dark:to-amber-900/20 border-2 border-amber-300 dark:border-amber-700 shadow-lg">
+              <div className="flex items-center justify-between relative z-10">
+                <Label className="text-base font-semibold flex items-center gap-3">
+                  <div className="relative">
+                    <div className="w-5 h-5 bg-gradient-to-br from-amber-500 to-amber-600 rounded-lg shadow-md border border-amber-600 dark:border-amber-400"></div>
+                    <div className="absolute inset-1 grid grid-cols-3 gap-0.5">
+                      <div className="w-0.5 h-1 bg-amber-200 rounded-sm"></div>
+                      <div className="w-0.5 h-1 bg-amber-300 rounded-sm"></div>
+                      <div className="w-0.5 h-1 bg-amber-200 rounded-sm"></div>
+                      <div className="w-0.5 h-1 bg-amber-300 rounded-sm"></div>
+                      <div className="w-0.5 h-1 bg-amber-400 rounded-sm"></div>
+                      <div className="w-0.5 h-1 bg-amber-300 rounded-sm"></div>
+                    </div>
+                  </div>
+                  <span className="text-amber-700 dark:text-amber-300">Memory Bandwidth</span>
+                </Label>
+                <div className="px-3 py-1 bg-gradient-to-r from-amber-200 to-amber-300 dark:from-amber-800 dark:to-amber-700 rounded-lg border border-amber-300 dark:border-amber-600">
+                  <span className="text-sm font-bold text-amber-800 dark:text-amber-200 font-mono">
+                    {Math.round((pendingChanges.memoryBandwidth ?? neuralTuning?.memoryBandwidth ?? 0.5) * 100)}%
+                  </span>
+                </div>
+              </div>
+              
+              {/* Memory Banks Grid */}
+              <div className="space-y-3">
+                <div className="text-center text-sm font-medium text-amber-700 dark:text-amber-300">
+                  Configure memory storage banks
+                </div>
+                
+                <div className="grid grid-cols-4 gap-3">
+                  {['Cache', 'Buffer', 'Store', 'Archive'].map((bank, index) => {
+                    const threshold = (index + 1) / 4;
+                    const currentValue = pendingChanges.memoryBandwidth ?? neuralTuning?.memoryBandwidth ?? 0.5;
+                    const isActive = currentValue >= threshold;
+                    const capacity = Math.min(currentValue * 4 - index, 1);
+                    
+                    return (
+                      <button
+                        key={bank}
+                        onClick={() => handleParameterChange('memoryBandwidth', threshold)}
+                        className={`
+                          relative h-20 rounded-lg border-2 transition-all duration-300 transform hover:scale-105 flex flex-col items-center justify-center gap-1
+                          ${isActive 
+                            ? 'border-amber-600 dark:border-amber-400 bg-amber-200 dark:bg-amber-800 shadow-lg' 
+                            : 'border-amber-400 dark:border-amber-600 bg-amber-100 dark:bg-amber-900 hover:border-amber-500'
+                          }
+                        `}
+                      >
+                        {/* Memory bank visualization */}
+                        <div className="flex flex-col gap-1 mb-2">
+                          {Array.from({ length: 3 }, (_, i) => (
+                            <div
+                              key={i}
+                              className={`w-8 h-1 rounded-sm transition-all duration-300 ${
+                                isActive && capacity > i / 3 ? 'bg-amber-600' : 'bg-amber-300'
+                              }`}
+                            />
+                          ))}
+                        </div>
+                        
+                        <div className="text-xs font-semibold text-amber-800 dark:text-amber-200">
+                          {bank}
+                        </div>
+                        <div className="text-xs text-amber-600 dark:text-amber-400">
+                          {Math.round(threshold * 100)}%
+                        </div>
+                        
+                        {/* Activity indicator */}
+                        {isActive && (
+                          <div className="absolute top-1 right-1 w-2 h-2 bg-amber-600 rounded-full animate-pulse" />
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+                
+                {/* Memory utilization display */}
+                <div className="mt-4 p-3 bg-amber-100 dark:bg-amber-900 rounded-lg border border-amber-200 dark:border-amber-800">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm font-medium text-amber-700 dark:text-amber-300">Memory Utilization</span>
+                    <div className="flex gap-1">
+                      {Array.from({ length: 8 }, (_, i) => {
+                        const isUsed = (pendingChanges.memoryBandwidth ?? neuralTuning?.memoryBandwidth ?? 0.5) > i / 8;
+                        return (
+                          <div
+                            key={i}
+                            className={`w-2 h-4 rounded-sm transition-all duration-300 ${
+                              isUsed ? 'bg-amber-600' : 'bg-amber-300'
+                            }`}
+                          />
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <p className="text-xs text-amber-700 dark:text-amber-300 font-medium text-center">
+                Click to activate memory banks and adjust bandwidth
               </p>
             </div>
 
