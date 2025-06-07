@@ -569,25 +569,128 @@ export default function NeuraTuningCognitive() {
             </div>
           </div>
 
-          {/* Cognitive Pace Parameter */}
-          <div className="space-y-4">
+          {/* Cognitive Pace - Stunning Meter Visualization */}
+          <div className="space-y-4 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/40 dark:to-orange-950/40 p-6 rounded-lg border border-amber-100 dark:border-amber-900">
             <div className="flex items-center justify-between">
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                Cognitive Pace
-              </label>
-
+              <div className="flex items-start gap-2">
+                <h3 className="text-lg font-medium bg-gradient-to-r from-amber-600 to-orange-600 inline-block text-transparent bg-clip-text">Cognitive Pace</h3>
+                <HoverCard>
+                  <HoverCardTrigger>
+                    <Info className="h-4 w-4 text-amber-400" />
+                  </HoverCardTrigger>
+                  <HoverCardContent className="w-80">
+                    <div className="space-y-2">
+                      <h4 className="text-sm font-semibold">Cognitive Pace</h4>
+                      <p className="text-sm">
+                        Controls how your mind processes information. Deep processors are thorough and detail-oriented, taking time to analyze deeply. Rapid processors are quick and agile, making fast connections. Balanced mode provides optimal flexibility between speed and depth.
+                      </p>
+                    </div>
+                  </HoverCardContent>
+                </HoverCard>
+              </div>
             </div>
-            <Slider
-              value={[pendingChanges.cognitivePace ?? neuralTuning.cognitivePace]}
-              onValueChange={(value) => handleParameterChange('cognitivePace', value)}
-              max={1}
-              min={0}
-              step={0.01}
-              className="w-full"
-            />
-            <p className="text-xs text-gray-500 dark:text-gray-400">
-              How fast the brain processes and switches between thoughts
-            </p>
+            
+            <div className="relative py-6">
+              {/* Main meter container */}
+              <div className="relative h-20 bg-gradient-to-r from-blue-100 via-green-100 to-red-100 dark:from-blue-950/40 dark:via-green-950/40 dark:to-red-950/40 rounded-full border-2 border-amber-200 dark:border-amber-800 shadow-inner">
+                
+                {/* Speed zones */}
+                <div className="absolute inset-0 flex items-center">
+                  {/* Deep Processor Zone */}
+                  <div className="flex-1 flex items-center justify-center">
+                    <div className="text-center">
+                      <div className="text-xs font-medium text-blue-600 dark:text-blue-400">Deep</div>
+                      <div className="text-xs text-blue-500 dark:text-blue-500">Processor</div>
+                    </div>
+                  </div>
+                  
+                  {/* Balanced Zone */}
+                  <div className="flex-1 flex items-center justify-center">
+                    <div className="text-center">
+                      <div className="text-xs font-medium text-green-600 dark:text-green-400">Balanced</div>
+                      <div className="text-xs text-green-500 dark:text-green-500">Mode</div>
+                    </div>
+                  </div>
+                  
+                  {/* Rapid Processor Zone */}
+                  <div className="flex-1 flex items-center justify-center">
+                    <div className="text-center">
+                      <div className="text-xs font-medium text-red-600 dark:text-red-400">Rapid</div>
+                      <div className="text-xs text-red-500 dark:text-red-500">Processor</div>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Indicator needle */}
+                <div 
+                  className="absolute top-0 bottom-0 w-1 transition-all duration-500 ease-out"
+                  style={{ 
+                    left: `${(pendingChanges.cognitivePace ?? neuralTuning.cognitivePace) * 100}%`,
+                    transform: 'translateX(-50%)'
+                  }}
+                >
+                  <div className="h-full w-full bg-gradient-to-b from-amber-400 to-amber-600 rounded-full shadow-lg"></div>
+                  {/* Needle top indicator */}
+                  <div className="absolute -top-2 left-1/2 transform -translate-x-1/2">
+                    <div className="w-0 h-0 border-l-2 border-r-2 border-b-4 border-transparent border-b-amber-500"></div>
+                  </div>
+                  {/* Needle bottom indicator */}
+                  <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2">
+                    <div className="w-0 h-0 border-l-2 border-r-2 border-t-4 border-transparent border-t-amber-500"></div>
+                  </div>
+                </div>
+                
+                {/* Zone markers */}
+                <div className="absolute top-0 bottom-0 left-1/3 w-0.5 bg-gray-300 dark:bg-gray-600"></div>
+                <div className="absolute top-0 bottom-0 left-2/3 w-0.5 bg-gray-300 dark:bg-gray-600"></div>
+              </div>
+              
+              {/* Current mode display */}
+              <div className="mt-4 text-center">
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 border-amber-200 dark:border-amber-800 bg-white dark:bg-gray-900">
+                  {(() => {
+                    const value = pendingChanges.cognitivePace ?? neuralTuning.cognitivePace;
+                    if (value < 0.33) {
+                      return (
+                        <>
+                          <div className="w-3 h-3 rounded-full bg-gradient-to-r from-blue-400 to-blue-600"></div>
+                          <span className="text-sm font-medium text-blue-600 dark:text-blue-400">Deep Processor Mode</span>
+                        </>
+                      );
+                    } else if (value < 0.67) {
+                      return (
+                        <>
+                          <div className="w-3 h-3 rounded-full bg-gradient-to-r from-green-400 to-green-600"></div>
+                          <span className="text-sm font-medium text-green-600 dark:text-green-400">Balanced Mode</span>
+                        </>
+                      );
+                    } else {
+                      return (
+                        <>
+                          <div className="w-3 h-3 rounded-full bg-gradient-to-r from-red-400 to-red-600"></div>
+                          <span className="text-sm font-medium text-red-600 dark:text-red-400">Rapid Processor Mode</span>
+                        </>
+                      );
+                    }
+                  })()}
+                </div>
+              </div>
+              
+              {/* Interactive slider (invisible overlay) */}
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.01"
+                value={pendingChanges.cognitivePace ?? neuralTuning.cognitivePace}
+                onChange={(e) => handleParameterChange('cognitivePace', [parseFloat(e.target.value)])}
+                className="absolute top-0 left-0 w-full h-20 opacity-0 cursor-pointer"
+              />
+            </div>
+            
+            <div className="text-xs text-gray-500 dark:text-gray-400 text-center">
+              Adjust how your mind processes information - from thorough analysis to rapid connections
+            </div>
           </div>
 
           {/* Signal Focus Parameter */}
