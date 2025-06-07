@@ -197,12 +197,12 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
   };
 
   // Direct navigation with Link component
-  const goToDashboard = () => {
+  const goToMyNeura = () => {
     if (isMobile) {
       setShowMobileNav(false);
     }
     // Direct navigation
-    setLocation("/dashboard");
+    setLocation("/my-neura");
   };
 
   return (
@@ -210,10 +210,10 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
       <header className="bg-white border-b border-gray-200 px-2 py-3 flex items-center justify-between">
         {isMobile ? (
           <>
-            {/* Logo on left that's clickable to Dashboard */}
+            {/* Logo on left that's clickable to My Neura */}
             <div 
               className="flex items-center cursor-pointer active:opacity-80 transition-opacity"
-              onClick={() => setLocation("/dashboard")}
+              onClick={() => setLocation("/my-neura")}
             >
               <Sparkles className="h-5 w-5 text-primary mr-1" />
               <span className="font-medium text-primary">DotSpark</span>
@@ -331,10 +331,10 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 variant="ghost" 
                 size="sm" 
                 className="mr-2"
-                onClick={goToDashboard}
+                onClick={goToMyNeura}
               >
-                <LayoutDashboard className="h-4 w-4 mr-1" />
-                Dashboard
+                <Brain className="h-4 w-4 mr-1" />
+                My DotSpark
               </Button>
               
               {/* Always show "My Neura" when on the My Neura page */}
@@ -431,7 +431,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
             <div 
               onClick={() => {
                 setShowMobileNav(false);
-                setLocation("/dashboard");
+                setLocation("/my-neura");
               }} 
               className="cursor-pointer flex items-center active:opacity-80 transition-opacity"
             >
@@ -477,10 +477,10 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 variant="ghost" 
                 size="sm" 
                 className="w-full justify-start mb-2"
-                onClick={goToDashboard}
+                onClick={goToMyNeura}
               >
-                <LayoutDashboard className="h-5 w-5 mr-2" />
-                Dashboard
+                <Brain className="h-5 w-5 mr-2" />
+                My DotSpark
               </Button>
               
               {isActivated ? (
