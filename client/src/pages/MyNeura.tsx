@@ -732,12 +732,21 @@ export default function MyNeura() {
               <p className="text-muted-foreground mb-4">
                 Set up your Cognitive Shield to protect your thinking identity. It ensures your natural intelligence stays intact while interacting with AI.
               </p>
-              <Button 
-                className="w-full bg-orange-600 hover:bg-orange-700 group-hover:translate-y-0 translate-y-1 transition-all duration-300"
-                onClick={() => setLocation('/dotspark-tuning/cognitive')}
-              >
-                Configure Cognitive Shield
-              </Button>
+              <div className="flex gap-3">
+                <Button 
+                  className="flex-1 bg-orange-600 hover:bg-orange-700 group-hover:translate-y-0 translate-y-1 transition-all duration-300"
+                  onClick={() => setLocation('/dotspark-tuning/cognitive')}
+                >
+                  Configure Shield
+                </Button>
+                <Button 
+                  variant="outline"
+                  className="flex-1 group-hover:translate-y-0 translate-y-1 transition-all duration-300"
+                  onClick={() => setActiveTab('expertise')}
+                >
+                  Skip for Now
+                </Button>
+              </div>
             </CardContent>
           </Card>
 
@@ -853,24 +862,27 @@ export default function MyNeura() {
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="text-center py-8">
-                <p className="text-muted-foreground mb-4">
+                <p className="text-muted-foreground mb-6">
                   Set up your Cognitive Shield to protect your thinking identity. It ensures your natural intelligence stays intact while interacting with AI.
                 </p>
+                <div className="flex gap-3 max-w-md mx-auto">
+                  <Button 
+                    className="flex-1 bg-orange-600 hover:bg-orange-700"
+                    onClick={() => setLocation('/dotspark-tuning/cognitive')}
+                  >
+                    Configure Shield
+                  </Button>
+                  <Button 
+                    variant="outline"
+                    className="flex-1"
+                    onClick={() => setActiveTab('expertise')}
+                  >
+                    Skip for Now
+                  </Button>
+                </div>
               </div>
             </CardContent>
           </Card>
-          
-          <div className="flex justify-end">
-            <div className="flex items-center gap-2">
-              <Button 
-                variant="default" 
-                className="bg-amber-600 hover:bg-amber-700"
-                onClick={() => setActiveTab('expertise')}
-              >
-                Next Step <ChevronRight className="ml-1 h-4 w-4" />
-              </Button>
-            </div>
-          </div>
         </TabsContent>
         
         {/* Expertise Layer Tab */}
