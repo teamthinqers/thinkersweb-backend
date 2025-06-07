@@ -48,6 +48,28 @@
       border-color: rgba(var(--primary), 0.8);
     }
   }
+
+  @keyframes flow-left {
+    0%, 100% { 
+      opacity: 0.6;
+      transform: translateX(0);
+    }
+    50% { 
+      opacity: 0.8;
+      transform: translateX(-10px);
+    }
+  }
+
+  @keyframes flow-right {
+    0%, 100% { 
+      opacity: 0.6;
+      transform: translateX(0);
+    }
+    50% { 
+      opacity: 0.8;
+      transform: translateX(10px);
+    }
+  }
   
   /* Neural node styles */
   .neural-node {

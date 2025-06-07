@@ -694,10 +694,10 @@ export default function NeuraTuningCognitive() {
           </div>
 
           {/* Signal Focus - Beam Width Visualization */}
-          <div className="space-y-4 bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-950/40 dark:to-yellow-950/40 p-6 rounded-lg border border-amber-100 dark:border-amber-900">
+          <div className="space-y-4 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/40 dark:to-orange-950/40 p-6 rounded-lg border border-amber-100 dark:border-amber-900">
             <div className="flex items-center justify-between">
               <div className="flex items-start gap-2">
-                <h3 className="text-lg font-medium bg-gradient-to-r from-amber-600 to-yellow-600 inline-block text-transparent bg-clip-text">Signal Focus</h3>
+                <h3 className="text-lg font-medium bg-gradient-to-r from-amber-600 to-orange-600 inline-block text-transparent bg-clip-text">Signal Focus</h3>
                 <HoverCard>
                   <HoverCardTrigger>
                     <Info className="h-4 w-4 text-amber-400" />
@@ -716,13 +716,13 @@ export default function NeuraTuningCognitive() {
             
             <div className="relative py-8">
               {/* Focus beam visualization */}
-              <div className="relative h-32 bg-gradient-to-b from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 rounded-lg overflow-hidden border border-amber-200 dark:border-amber-800">
+              <div className="relative h-32 bg-gradient-to-b from-amber-100 to-orange-100 dark:from-amber-900/60 dark:to-orange-900/60 rounded-lg overflow-hidden border border-amber-200 dark:border-amber-800">
                 
                 {/* Background grid pattern */}
                 <div className="absolute inset-0 opacity-20">
                   <div className="grid grid-cols-8 grid-rows-6 h-full w-full">
                     {[...Array(48)].map((_, i) => (
-                      <div key={i} className="border border-gray-300 dark:border-gray-600"></div>
+                      <div key={i} className="border border-amber-300 dark:border-amber-700"></div>
                     ))}
                   </div>
                 </div>
@@ -730,7 +730,7 @@ export default function NeuraTuningCognitive() {
                 {/* Focus beam */}
                 <div className="absolute top-0 left-1/2 transform -translate-x-1/2 h-full">
                   <div 
-                    className="h-full bg-gradient-to-b from-yellow-400 via-amber-500 to-orange-600 opacity-80 transition-all duration-700 ease-out"
+                    className="h-full bg-gradient-to-b from-amber-400 via-orange-500 to-amber-600 opacity-80 transition-all duration-700 ease-out"
                     style={{ 
                       width: `${Math.max(4, (pendingChanges.signalFocus ?? neuralTuning.signalFocus) * 120)}px`,
                       clipPath: 'polygon(40% 0%, 60% 0%, 100% 100%, 0% 100%)'
@@ -740,14 +740,14 @@ export default function NeuraTuningCognitive() {
                 
                 {/* Focal point indicators */}
                 <div className="absolute top-2 left-1/2 transform -translate-x-1/2">
-                  <div className="w-2 h-2 rounded-full bg-white shadow-lg animate-pulse"></div>
+                  <div className="w-2 h-2 rounded-full bg-amber-100 shadow-lg animate-pulse"></div>
                 </div>
                 
                 {/* Focus labels */}
-                <div className="absolute bottom-2 left-2 text-xs font-medium text-purple-600 dark:text-purple-400">
+                <div className="absolute bottom-2 left-2 text-xs font-medium text-amber-700 dark:text-amber-300">
                   Narrow Beam
                 </div>
-                <div className="absolute bottom-2 right-2 text-xs font-medium text-orange-600 dark:text-orange-400">
+                <div className="absolute bottom-2 right-2 text-xs font-medium text-orange-700 dark:text-orange-300">
                   Wide Scanner
                 </div>
               </div>
@@ -760,22 +760,22 @@ export default function NeuraTuningCognitive() {
                     if (value < 0.33) {
                       return (
                         <>
-                          <div className="w-3 h-3 rounded-full bg-gradient-to-r from-purple-400 to-purple-600"></div>
-                          <span className="text-sm font-medium text-purple-600 dark:text-purple-400">Narrow Beam Focus</span>
+                          <div className="w-3 h-3 rounded-full bg-gradient-to-r from-amber-400 to-amber-600"></div>
+                          <span className="text-sm font-medium text-amber-700 dark:text-amber-300">Narrow Beam Focus</span>
                         </>
                       );
                     } else if (value < 0.67) {
                       return (
                         <>
-                          <div className="w-3 h-3 rounded-full bg-gradient-to-r from-amber-400 to-amber-600"></div>
-                          <span className="text-sm font-medium text-amber-600 dark:text-amber-400">Adaptive Focus</span>
+                          <div className="w-3 h-3 rounded-full bg-gradient-to-r from-amber-500 to-orange-500"></div>
+                          <span className="text-sm font-medium text-orange-600 dark:text-orange-400">Adaptive Focus</span>
                         </>
                       );
                     } else {
                       return (
                         <>
-                          <div className="w-3 h-3 rounded-full bg-gradient-to-r from-orange-400 to-orange-600"></div>
-                          <span className="text-sm font-medium text-orange-600 dark:text-orange-400">Wide Scanner Focus</span>
+                          <div className="w-3 h-3 rounded-full bg-gradient-to-r from-orange-500 to-amber-600"></div>
+                          <span className="text-sm font-medium text-orange-700 dark:text-orange-300">Wide Scanner Focus</span>
                         </>
                       );
                     }
@@ -800,46 +800,285 @@ export default function NeuraTuningCognitive() {
             </div>
           </div>
 
-          {/* Impulse Control Parameter */}
-          <div className="space-y-4">
+          {/* Impulse Control - Balance Scale Visualization */}
+          <div className="space-y-4 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/40 dark:to-orange-950/40 p-6 rounded-lg border border-amber-100 dark:border-amber-900">
             <div className="flex items-center justify-between">
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                Impulse Control
-              </label>
-
+              <div className="flex items-start gap-2">
+                <h3 className="text-lg font-medium bg-gradient-to-r from-amber-600 to-orange-600 inline-block text-transparent bg-clip-text">Impulse Control</h3>
+                <HoverCard>
+                  <HoverCardTrigger>
+                    <Info className="h-4 w-4 text-amber-400" />
+                  </HoverCardTrigger>
+                  <HoverCardContent className="w-80">
+                    <div className="space-y-2">
+                      <h4 className="text-sm font-semibold">Impulse Control</h4>
+                      <p className="text-sm">
+                        Balances responsiveness versus precision. High responsiveness enables quick reactions and spontaneous thinking, while high precision emphasizes careful consideration and measured responses.
+                      </p>
+                    </div>
+                  </HoverCardContent>
+                </HoverCard>
+              </div>
             </div>
-            <Slider
-              value={[pendingChanges.impulseControl ?? neuralTuning.impulseControl]}
-              onValueChange={(value) => handleParameterChange('impulseControl', value)}
-              max={1}
-              min={0}
-              step={0.01}
-              className="w-full"
-            />
-            <p className="text-xs text-gray-500 dark:text-gray-400">
-              High responsiveness (0%) vs high precision (100%)
-            </p>
+            
+            <div className="relative py-8">
+              {/* Balance scale visualization */}
+              <div className="relative h-40">
+                {/* Scale base */}
+                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-4 h-24 bg-gradient-to-b from-amber-400 to-amber-600 rounded-lg"></div>
+                
+                {/* Scale fulcrum */}
+                <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 w-8 h-4 bg-gradient-to-r from-orange-400 to-orange-600 rounded-full"></div>
+                
+                {/* Scale beam */}
+                <div 
+                  className="absolute bottom-22 left-1/2 transform -translate-x-1/2 w-64 h-2 bg-gradient-to-r from-amber-300 to-amber-500 rounded-full transition-all duration-700 ease-out origin-center"
+                  style={{
+                    transform: `translateX(-50%) rotate(${((pendingChanges.impulseControl ?? neuralTuning.impulseControl) - 0.5) * 30}deg)`
+                  }}
+                ></div>
+                
+                {/* Left pan (Responsiveness) */}
+                <div 
+                  className="absolute w-20 h-16 bg-gradient-to-b from-amber-200 to-amber-400 rounded-lg border-2 border-amber-600 transition-all duration-700 ease-out"
+                  style={{
+                    bottom: `${85 + ((pendingChanges.impulseControl ?? neuralTuning.impulseControl) - 0.5) * -20}px`,
+                    left: `${20 + ((pendingChanges.impulseControl ?? neuralTuning.impulseControl) - 0.5) * -10}px`
+                  }}
+                >
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="text-center">
+                      <div className="text-xs font-bold text-amber-800">Quick</div>
+                      <div className="text-xs text-amber-700">Response</div>
+                    </div>
+                  </div>
+                  {/* Chain */}
+                  <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 w-0.5 h-8 bg-amber-600"></div>
+                </div>
+                
+                {/* Right pan (Precision) */}
+                <div 
+                  className="absolute w-20 h-16 bg-gradient-to-b from-orange-200 to-orange-400 rounded-lg border-2 border-orange-600 transition-all duration-700 ease-out"
+                  style={{
+                    bottom: `${85 + ((pendingChanges.impulseControl ?? neuralTuning.impulseControl) - 0.5) * 20}px`,
+                    right: `${20 + ((pendingChanges.impulseControl ?? neuralTuning.impulseControl) - 0.5) * 10}px`
+                  }}
+                >
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="text-center">
+                      <div className="text-xs font-bold text-orange-800">High</div>
+                      <div className="text-xs text-orange-700">Precision</div>
+                    </div>
+                  </div>
+                  {/* Chain */}
+                  <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 w-0.5 h-8 bg-orange-600"></div>
+                </div>
+                
+                {/* Weight indicators */}
+                <div 
+                  className="absolute w-4 h-4 bg-amber-600 rounded-full transition-all duration-700 ease-out"
+                  style={{
+                    bottom: `${105 + ((pendingChanges.impulseControl ?? neuralTuning.impulseControl) - 0.5) * -20}px`,
+                    left: `${40 + ((pendingChanges.impulseControl ?? neuralTuning.impulseControl) - 0.5) * -10}px`
+                  }}
+                ></div>
+                <div 
+                  className="absolute w-4 h-4 bg-orange-600 rounded-full transition-all duration-700 ease-out"
+                  style={{
+                    bottom: `${105 + ((pendingChanges.impulseControl ?? neuralTuning.impulseControl) - 0.5) * 20}px`,
+                    right: `${40 + ((pendingChanges.impulseControl ?? neuralTuning.impulseControl) - 0.5) * 10}px`
+                  }}
+                ></div>
+              </div>
+              
+              {/* Current balance mode */}
+              <div className="mt-4 text-center">
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 border-amber-200 dark:border-amber-800 bg-white dark:bg-gray-900">
+                  {(() => {
+                    const value = pendingChanges.impulseControl ?? neuralTuning.impulseControl;
+                    if (value < 0.33) {
+                      return (
+                        <>
+                          <div className="w-3 h-3 rounded-full bg-gradient-to-r from-amber-400 to-amber-600"></div>
+                          <span className="text-sm font-medium text-amber-700 dark:text-amber-300">High Responsiveness</span>
+                        </>
+                      );
+                    } else if (value < 0.67) {
+                      return (
+                        <>
+                          <div className="w-3 h-3 rounded-full bg-gradient-to-r from-amber-500 to-orange-500"></div>
+                          <span className="text-sm font-medium text-orange-600 dark:text-orange-400">Balanced Control</span>
+                        </>
+                      );
+                    } else {
+                      return (
+                        <>
+                          <div className="w-3 h-3 rounded-full bg-gradient-to-r from-orange-500 to-orange-600"></div>
+                          <span className="text-sm font-medium text-orange-700 dark:text-orange-300">High Precision</span>
+                        </>
+                      );
+                    }
+                  })()}
+                </div>
+              </div>
+              
+              {/* Interactive slider */}
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.01"
+                value={pendingChanges.impulseControl ?? neuralTuning.impulseControl}
+                onChange={(e) => handleParameterChange('impulseControl', [parseFloat(e.target.value)])}
+                className="absolute top-0 left-0 w-full h-40 opacity-0 cursor-pointer"
+              />
+            </div>
+            
+            <div className="text-xs text-gray-500 dark:text-gray-400 text-center">
+              Balance quick responses with careful precision
+            </div>
           </div>
 
-          {/* Mental Energy Flow Parameter */}
-          <div className="space-y-4">
+          {/* Mental Energy Flow - River Flow Visualization */}
+          <div className="space-y-4 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/40 dark:to-orange-950/40 p-6 rounded-lg border border-amber-100 dark:border-amber-900">
             <div className="flex items-center justify-between">
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                Mental Energy Flow
-              </label>
-
+              <div className="flex items-start gap-2">
+                <h3 className="text-lg font-medium bg-gradient-to-r from-amber-600 to-orange-600 inline-block text-transparent bg-clip-text">Mental Energy Flow</h3>
+                <HoverCard>
+                  <HoverCardTrigger>
+                    <Info className="h-4 w-4 text-amber-400" />
+                  </HoverCardTrigger>
+                  <HoverCardContent className="w-80">
+                    <div className="space-y-2">
+                      <h4 className="text-sm font-semibold">Mental Energy Flow</h4>
+                      <p className="text-sm">
+                        Controls your mental energy direction. Action-primed flow channels energy toward immediate doing and implementation, while reflection-primed flow directs energy toward deep thinking and contemplation.
+                      </p>
+                    </div>
+                  </HoverCardContent>
+                </HoverCard>
+              </div>
             </div>
-            <Slider
-              value={[pendingChanges.mentalEnergyFlow ?? neuralTuning.mentalEnergyFlow]}
-              onValueChange={(value) => handleParameterChange('mentalEnergyFlow', value)}
-              max={1}
-              min={0}
-              step={0.01}
-              className="w-full"
-            />
-            <p className="text-xs text-gray-500 dark:text-gray-400">
-              Action primed (0%) vs reflection primed (100%)
-            </p>
+            
+            <div className="relative py-8">
+              {/* River flow visualization */}
+              <div className="relative h-32 bg-gradient-to-r from-amber-100 via-orange-100 to-amber-100 dark:from-amber-900/60 dark:via-orange-900/60 dark:to-amber-900/60 rounded-2xl overflow-hidden border border-amber-200 dark:border-amber-800">
+                
+                {/* River bed pattern */}
+                <div className="absolute inset-0 opacity-30">
+                  <svg width="100%" height="100%" viewBox="0 0 400 128">
+                    <defs>
+                      <pattern id="riverPattern" x="0" y="0" width="40" height="20" patternUnits="userSpaceOnUse">
+                        <path d="M0,10 Q20,0 40,10 Q20,20 0,10" fill="none" stroke="currentColor" strokeWidth="0.5" className="text-amber-300"/>
+                      </pattern>
+                    </defs>
+                    <rect width="100%" height="100%" fill="url(#riverPattern)" />
+                  </svg>
+                </div>
+                
+                {/* Energy flow streams */}
+                <div className="absolute inset-0 flex">
+                  {/* Action stream (left side) */}
+                  <div className="flex-1 relative overflow-hidden">
+                    <div 
+                      className="absolute inset-0 bg-gradient-to-r from-amber-400 to-transparent opacity-60 transition-all duration-1000 ease-out"
+                      style={{
+                        width: `${Math.max(20, (1 - (pendingChanges.mentalEnergyFlow ?? neuralTuning.mentalEnergyFlow)) * 100)}%`,
+                        animation: 'flow-left 3s ease-in-out infinite'
+                      }}
+                    ></div>
+                    <div className="absolute bottom-2 left-2 text-xs font-medium text-amber-800 dark:text-amber-200">
+                      Action
+                    </div>
+                  </div>
+                  
+                  {/* Reflection stream (right side) */}
+                  <div className="flex-1 relative overflow-hidden">
+                    <div 
+                      className="absolute inset-0 bg-gradient-to-l from-orange-400 to-transparent opacity-60 transition-all duration-1000 ease-out ml-auto"
+                      style={{
+                        width: `${Math.max(20, (pendingChanges.mentalEnergyFlow ?? neuralTuning.mentalEnergyFlow) * 100)}%`,
+                        animation: 'flow-right 3s ease-in-out infinite'
+                      }}
+                    ></div>
+                    <div className="absolute bottom-2 right-2 text-xs font-medium text-orange-800 dark:text-orange-200">
+                      Reflection
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Central energy indicator */}
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                  <div className="w-6 h-6 bg-gradient-to-br from-amber-300 to-orange-500 rounded-full shadow-lg animate-pulse border-2 border-white"></div>
+                </div>
+                
+                {/* Flow direction arrows */}
+                <div 
+                  className="absolute top-4 transition-all duration-1000 ease-out"
+                  style={{
+                    left: `${20 + (1 - (pendingChanges.mentalEnergyFlow ?? neuralTuning.mentalEnergyFlow)) * 30}%`,
+                    opacity: (1 - (pendingChanges.mentalEnergyFlow ?? neuralTuning.mentalEnergyFlow)) * 0.8 + 0.2
+                  }}
+                >
+                  <div className="text-amber-600 dark:text-amber-400">→</div>
+                </div>
+                <div 
+                  className="absolute top-4 transition-all duration-1000 ease-out"
+                  style={{
+                    right: `${20 + (pendingChanges.mentalEnergyFlow ?? neuralTuning.mentalEnergyFlow) * 30}%`,
+                    opacity: (pendingChanges.mentalEnergyFlow ?? neuralTuning.mentalEnergyFlow) * 0.8 + 0.2
+                  }}
+                >
+                  <div className="text-orange-600 dark:text-orange-400">←</div>
+                </div>
+              </div>
+              
+              {/* Current flow mode */}
+              <div className="mt-4 text-center">
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 border-amber-200 dark:border-amber-800 bg-white dark:bg-gray-900">
+                  {(() => {
+                    const value = pendingChanges.mentalEnergyFlow ?? neuralTuning.mentalEnergyFlow;
+                    if (value < 0.33) {
+                      return (
+                        <>
+                          <div className="w-3 h-3 rounded-full bg-gradient-to-r from-amber-400 to-amber-600"></div>
+                          <span className="text-sm font-medium text-amber-700 dark:text-amber-300">Action Primed</span>
+                        </>
+                      );
+                    } else if (value < 0.67) {
+                      return (
+                        <>
+                          <div className="w-3 h-3 rounded-full bg-gradient-to-r from-amber-500 to-orange-500"></div>
+                          <span className="text-sm font-medium text-orange-600 dark:text-orange-400">Balanced Flow</span>
+                        </>
+                      );
+                    } else {
+                      return (
+                        <>
+                          <div className="w-3 h-3 rounded-full bg-gradient-to-r from-orange-500 to-orange-600"></div>
+                          <span className="text-sm font-medium text-orange-700 dark:text-orange-300">Reflection Primed</span>
+                        </>
+                      );
+                    }
+                  })()}
+                </div>
+              </div>
+              
+              {/* Interactive slider */}
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.01"
+                value={pendingChanges.mentalEnergyFlow ?? neuralTuning.mentalEnergyFlow}
+                onChange={(e) => handleParameterChange('mentalEnergyFlow', [parseFloat(e.target.value)])}
+                className="absolute top-0 left-0 w-full h-32 opacity-0 cursor-pointer"
+              />
+            </div>
+            
+            <div className="text-xs text-gray-500 dark:text-gray-400 text-center">
+              Direct your mental energy - from immediate action to deep contemplation
+            </div>
           </div>
 
 
