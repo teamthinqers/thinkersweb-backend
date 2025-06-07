@@ -746,7 +746,7 @@ export default function MyNeura() {
               <div className="flex gap-3">
                 <Button 
                   className="flex-1 bg-gradient-to-r from-amber-700 to-orange-700 hover:from-amber-800 hover:to-orange-800 text-amber-50 group-hover:translate-y-0 translate-y-1 transition-all duration-300"
-                  onClick={() => setLocation('/dotspark-tuning/cognitive')}
+                  onClick={() => setActiveTab('cognitive')}
                 >
                   Configure Shield
                 </Button>
@@ -790,7 +790,7 @@ export default function MyNeura() {
               <div className="flex gap-3">
                 <Button 
                   className="flex-1 bg-gradient-to-r from-amber-700 to-orange-700 hover:from-amber-800 hover:to-orange-800 text-amber-50 group-hover:translate-y-0 translate-y-1 transition-all duration-300"
-                  onClick={() => setLocation('/dotspark-tuning/expertise')}
+                  onClick={() => setActiveTab('expertise')}
                 >
                   Configure
                 </Button>
@@ -809,8 +809,8 @@ export default function MyNeura() {
         </div>
       </div>
       
-      {/* Hidden Tabs for backwards compatibility - these won't be visible */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="hidden">
+      {/* Configuration Tabs */}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-8">
         <TabsList className="hidden">
           <TabsTrigger value="cognitive" />
           <TabsTrigger value="expertise" />
