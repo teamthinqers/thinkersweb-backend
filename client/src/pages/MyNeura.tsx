@@ -509,10 +509,11 @@ export default function MyNeura() {
           </CardHeader>
           <CardContent>
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className="grid w-full grid-cols-3">
-                <TabsTrigger value="core">Core Parameters</TabsTrigger>
-                <TabsTrigger value="cognitive">Cognitive Style</TabsTrigger>
-                <TabsTrigger value="learning">Learning Focus</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-4">
+                <TabsTrigger value="core">Core</TabsTrigger>
+                <TabsTrigger value="cognitive">Cognitive</TabsTrigger>
+                <TabsTrigger value="memory">Memory</TabsTrigger>
+                <TabsTrigger value="learning">Learning</TabsTrigger>
               </TabsList>
               
               {/* Core Parameters Tab */}
@@ -825,9 +826,377 @@ export default function MyNeura() {
                 </div>
               </TabsContent>
 
+              {/* Memory Tab */}
+              <TabsContent value="memory" className="space-y-6 mt-6">
+                <div className="grid gap-6">
+                  {/* Memory System Parameters */}
+                  <div className="space-y-4">
+                    <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Memory System</h4>
+                    
+                    {/* Memory Bandwidth */}
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <label className="text-sm font-medium flex items-center gap-2">
+                          <BrainCircuit className="h-4 w-4" />
+                          Memory Bandwidth
+                          <HoverCard>
+                            <HoverCardTrigger>
+                              <Info className="h-4 w-4 text-muted-foreground cursor-help" />
+                            </HoverCardTrigger>
+                            <HoverCardContent>
+                              <p className="text-sm">Memory capacity: short burst memory (0.0) vs deep retainer (1.0). Controls how much information is held in working memory.</p>
+                            </HoverCardContent>
+                          </HoverCard>
+                        </label>
+                        <span className="text-sm font-mono bg-muted px-2 py-1 rounded">
+                          {getCurrentValue('memoryBandwidth').toFixed(2)}
+                        </span>
+                      </div>
+                      <Slider
+                        value={[getCurrentValue('memoryBandwidth')]}
+                        onValueChange={(value) => handleParameterChange('memoryBandwidth', value[0])}
+                        max={1}
+                        min={0}
+                        step={0.01}
+                        className="w-full"
+                      />
+                    </div>
+
+                    {/* Memory Retention */}
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <label className="text-sm font-medium flex items-center gap-2">
+                          <Sparkles className="h-4 w-4" />
+                          Memory Retention
+                          <HoverCard>
+                            <HoverCardTrigger>
+                              <Info className="h-4 w-4 text-muted-foreground cursor-help" />
+                            </HoverCardTrigger>
+                            <HoverCardContent>
+                              <p className="text-sm">How strongly information is retained in long-term memory. Higher values improve information persistence.</p>
+                            </HoverCardContent>
+                          </HoverCard>
+                        </label>
+                        <span className="text-sm font-mono bg-muted px-2 py-1 rounded">
+                          {getCurrentValue('memoryRetention').toFixed(2)}
+                        </span>
+                      </div>
+                      <Slider
+                        value={[getCurrentValue('memoryRetention')]}
+                        onValueChange={(value) => handleParameterChange('memoryRetention', value[0])}
+                        max={1}
+                        min={0}
+                        step={0.01}
+                        className="w-full"
+                      />
+                    </div>
+
+                    {/* Memory Recall */}
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <label className="text-sm font-medium flex items-center gap-2">
+                          <Lightbulb className="h-4 w-4" />
+                          Memory Recall
+                          <HoverCard>
+                            <HoverCardTrigger>
+                              <Info className="h-4 w-4 text-muted-foreground cursor-help" />
+                            </HoverCardTrigger>
+                            <HoverCardContent>
+                              <p className="text-sm">How efficiently information is retrieved from memory. Affects speed and accuracy of memory access.</p>
+                            </HoverCardContent>
+                          </HoverCard>
+                        </label>
+                        <span className="text-sm font-mono bg-muted px-2 py-1 rounded">
+                          {getCurrentValue('memoryRecall').toFixed(2)}
+                        </span>
+                      </div>
+                      <Slider
+                        value={[getCurrentValue('memoryRecall')]}
+                        onValueChange={(value) => handleParameterChange('memoryRecall', value[0])}
+                        max={1}
+                        min={0}
+                        step={0.01}
+                        className="w-full"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Cognitive Architecture Parameters */}
+                  <div className="space-y-4">
+                    <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Cognitive Architecture</h4>
+                    
+                    {/* Thought Complexity */}
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <label className="text-sm font-medium flex items-center gap-2">
+                          <BrainCog className="h-4 w-4" />
+                          Thought Complexity
+                          <HoverCard>
+                            <HoverCardTrigger>
+                              <Info className="h-4 w-4 text-muted-foreground cursor-help" />
+                            </HoverCardTrigger>
+                            <HoverCardContent>
+                              <p className="text-sm">Thinking depth: simple direct (0.0) vs complex layered (1.0). Controls conceptual sophistication.</p>
+                            </HoverCardContent>
+                          </HoverCard>
+                        </label>
+                        <span className="text-sm font-mono bg-muted px-2 py-1 rounded">
+                          {getCurrentValue('thoughtComplexity').toFixed(2)}
+                        </span>
+                      </div>
+                      <Slider
+                        value={[getCurrentValue('thoughtComplexity')]}
+                        onValueChange={(value) => handleParameterChange('thoughtComplexity', value[0])}
+                        max={1}
+                        min={0}
+                        step={0.01}
+                        className="w-full"
+                      />
+                    </div>
+
+                    {/* Mental Model Density */}
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <label className="text-sm font-medium flex items-center gap-2">
+                          <Target className="h-4 w-4" />
+                          Mental Model Density
+                          <HoverCard>
+                            <HoverCardTrigger>
+                              <Info className="h-4 w-4 text-muted-foreground cursor-help" />
+                            </HoverCardTrigger>
+                            <HoverCardContent>
+                              <p className="text-sm">Modeling approach: free thinker (0.0) vs model architect (1.0). Controls systematic framework usage.</p>
+                            </HoverCardContent>
+                          </HoverCard>
+                        </label>
+                        <span className="text-sm font-mono bg-muted px-2 py-1 rounded">
+                          {getCurrentValue('mentalModelDensity').toFixed(2)}
+                        </span>
+                      </div>
+                      <Slider
+                        value={[getCurrentValue('mentalModelDensity')]}
+                        onValueChange={(value) => handleParameterChange('mentalModelDensity', value[0])}
+                        max={1}
+                        min={0}
+                        step={0.01}
+                        className="w-full"
+                      />
+                    </div>
+
+                    {/* Pattern Detection Sensitivity */}
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <label className="text-sm font-medium flex items-center gap-2">
+                          <Sparkles className="h-4 w-4" />
+                          Pattern Detection
+                          <HoverCard>
+                            <HoverCardTrigger>
+                              <Info className="h-4 w-4 text-muted-foreground cursor-help" />
+                            </HoverCardTrigger>
+                            <HoverCardContent>
+                              <p className="text-sm">Detection scope: local optimizer (0.0) vs system scanner (1.0). Controls pattern recognition breadth.</p>
+                            </HoverCardContent>
+                          </HoverCard>
+                        </label>
+                        <span className="text-sm font-mono bg-muted px-2 py-1 rounded">
+                          {getCurrentValue('patternDetectionSensitivity').toFixed(2)}
+                        </span>
+                      </div>
+                      <Slider
+                        value={[getCurrentValue('patternDetectionSensitivity')]}
+                        onValueChange={(value) => handleParameterChange('patternDetectionSensitivity', value[0])}
+                        max={1}
+                        min={0}
+                        step={0.01}
+                        className="w-full"
+                      />
+                    </div>
+
+                    {/* Decision Making Index */}
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <label className="text-sm font-medium flex items-center gap-2">
+                          <BrainCog className="h-4 w-4" />
+                          Decision Making
+                          <HoverCard>
+                            <HoverCardTrigger>
+                              <Info className="h-4 w-4 text-muted-foreground cursor-help" />
+                            </HoverCardTrigger>
+                            <HoverCardContent>
+                              <p className="text-sm">Decision style: intuitive thinking (0.0) vs structured logical thinking (1.0). Controls decision-making approach.</p>
+                            </HoverCardContent>
+                          </HoverCard>
+                        </label>
+                        <span className="text-sm font-mono bg-muted px-2 py-1 rounded">
+                          {getCurrentValue('decisionMakingIndex').toFixed(2)}
+                        </span>
+                      </div>
+                      <Slider
+                        value={[getCurrentValue('decisionMakingIndex')]}
+                        onValueChange={(value) => handleParameterChange('decisionMakingIndex', value[0])}
+                        max={1}
+                        min={0}
+                        step={0.01}
+                        className="w-full"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </TabsContent>
+
               {/* Learning Focus Tab */}
               <TabsContent value="learning" className="space-y-6 mt-6">
                 <div className="space-y-4">
+                  {/* Learning System Parameters */}
+                  <div className="space-y-4">
+                    <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Learning System</h4>
+                    
+                    {/* Learning Rate */}
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <label className="text-sm font-medium flex items-center gap-2">
+                          <Zap className="h-4 w-4" />
+                          Learning Rate
+                          <HoverCard>
+                            <HoverCardTrigger>
+                              <Info className="h-4 w-4 text-muted-foreground cursor-help" />
+                            </HoverCardTrigger>
+                            <HoverCardContent>
+                              <p className="text-sm">Speed of acquiring new information. Higher values enable faster learning and adaptation.</p>
+                            </HoverCardContent>
+                          </HoverCard>
+                        </label>
+                        <span className="text-sm font-mono bg-muted px-2 py-1 rounded">
+                          {getCurrentValue('learningRate').toFixed(2)}
+                        </span>
+                      </div>
+                      <Slider
+                        value={[getCurrentValue('learningRate')]}
+                        onValueChange={(value) => handleParameterChange('learningRate', value[0])}
+                        max={1}
+                        min={0}
+                        step={0.01}
+                        className="w-full"
+                      />
+                    </div>
+
+                    {/* Concept Integration */}
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <label className="text-sm font-medium flex items-center gap-2">
+                          <BrainCircuit className="h-4 w-4" />
+                          Concept Integration
+                          <HoverCard>
+                            <HoverCardTrigger>
+                              <Info className="h-4 w-4 text-muted-foreground cursor-help" />
+                            </HoverCardTrigger>
+                            <HoverCardContent>
+                              <p className="text-sm">How well new concepts are integrated with existing knowledge. Controls knowledge synthesis quality.</p>
+                            </HoverCardContent>
+                          </HoverCard>
+                        </label>
+                        <span className="text-sm font-mono bg-muted px-2 py-1 rounded">
+                          {getCurrentValue('conceptIntegration').toFixed(2)}
+                        </span>
+                      </div>
+                      <Slider
+                        value={[getCurrentValue('conceptIntegration')]}
+                        onValueChange={(value) => handleParameterChange('conceptIntegration', value[0])}
+                        max={1}
+                        min={0}
+                        step={0.01}
+                        className="w-full"
+                      />
+                    </div>
+
+                    {/* Curiosity Index */}
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <label className="text-sm font-medium flex items-center gap-2">
+                          <Lightbulb className="h-4 w-4" />
+                          Curiosity Index
+                          <HoverCard>
+                            <HoverCardTrigger>
+                              <Info className="h-4 w-4 text-muted-foreground cursor-help" />
+                            </HoverCardTrigger>
+                            <HoverCardContent>
+                              <p className="text-sm">Likelihood of exploring new domains and seeking novel information. Controls intellectual exploration drive.</p>
+                            </HoverCardContent>
+                          </HoverCard>
+                        </label>
+                        <span className="text-sm font-mono bg-muted px-2 py-1 rounded">
+                          {getCurrentValue('curiosityIndex').toFixed(2)}
+                        </span>
+                      </div>
+                      <Slider
+                        value={[getCurrentValue('curiosityIndex')]}
+                        onValueChange={(value) => handleParameterChange('curiosityIndex', value[0])}
+                        max={1}
+                        min={0}
+                        step={0.01}
+                        className="w-full"
+                      />
+                    </div>
+
+                    {/* Connection Strength */}
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <label className="text-sm font-medium flex items-center gap-2">
+                          <Target className="h-4 w-4" />
+                          Connection Strength
+                          <HoverCard>
+                            <HoverCardTrigger>
+                              <Info className="h-4 w-4 text-muted-foreground cursor-help" />
+                            </HoverCardTrigger>
+                            <HoverCardContent>
+                              <p className="text-sm">Strength of connections between concepts. Higher values improve knowledge network coherence.</p>
+                            </HoverCardContent>
+                          </HoverCard>
+                        </label>
+                        <span className="text-sm font-mono bg-muted px-2 py-1 rounded">
+                          {getCurrentValue('connectionStrength').toFixed(2)}
+                        </span>
+                      </div>
+                      <Slider
+                        value={[getCurrentValue('connectionStrength')]}
+                        onValueChange={(value) => handleParameterChange('connectionStrength', value[0])}
+                        max={1}
+                        min={0}
+                        step={0.01}
+                        className="w-full"
+                      />
+                    </div>
+
+                    {/* Pattern Recognition */}
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <label className="text-sm font-medium flex items-center gap-2">
+                          <Sparkles className="h-4 w-4" />
+                          Pattern Recognition
+                          <HoverCard>
+                            <HoverCardTrigger>
+                              <Info className="h-4 w-4 text-muted-foreground cursor-help" />
+                            </HoverCardTrigger>
+                            <HoverCardContent>
+                              <p className="text-sm">Ability to detect patterns across information. Enhances insight generation and knowledge discovery.</p>
+                            </HoverCardContent>
+                          </HoverCard>
+                        </label>
+                        <span className="text-sm font-mono bg-muted px-2 py-1 rounded">
+                          {getCurrentValue('patternRecognition').toFixed(2)}
+                        </span>
+                      </div>
+                      <Slider
+                        value={[getCurrentValue('patternRecognition')]}
+                        onValueChange={(value) => handleParameterChange('patternRecognition', value[0])}
+                        max={1}
+                        min={0}
+                        step={0.01}
+                        className="w-full"
+                      />
+                    </div>
+                  </div>
+                  
                   <div>
                     <h4 className="text-sm font-medium mb-2">Active Learning Directives</h4>
                     <div className="flex flex-wrap gap-2 mb-4">
@@ -862,30 +1231,26 @@ export default function MyNeura() {
                   <div>
                     <h4 className="text-sm font-medium mb-2">Specialty Weights</h4>
                     <div className="space-y-4">
-                      {availableSpecialties.map((specialty) => {
-                        const specialtyKey = typeof specialty === 'string' ? specialty : specialty.id;
-                        const specialtyName = typeof specialty === 'string' ? specialty : specialty.name;
-                        return (
-                          <div key={specialtyKey} className="space-y-2">
-                            <div className="flex items-center justify-between">
-                              <label className="text-sm font-medium capitalize">
-                                {specialtyName}
-                              </label>
-                              <span className="text-sm font-mono bg-muted px-2 py-1 rounded">
-                                {((pendingChanges.specialties?.[specialtyKey] ?? tuning?.specialties?.[specialtyKey]) || 0).toFixed(2)}
-                              </span>
-                            </div>
-                            <Slider
-                              value={[(pendingChanges.specialties?.[specialtyKey] ?? tuning?.specialties?.[specialtyKey]) || 0]}
-                              onValueChange={(value) => handleSpecialtyChange(specialtyKey, value[0])}
-                              max={1}
-                              min={0}
-                              step={0.01}
-                              className="w-full"
-                            />
+                      {availableSpecialties.map((specialty) => (
+                        <div key={specialty.id} className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <label className="text-sm font-medium">
+                              {specialty.name}
+                            </label>
+                            <span className="text-sm font-mono bg-muted px-2 py-1 rounded">
+                              {((pendingChanges.specialties?.[specialty.id] ?? tuning?.specialties?.[specialty.id]) || 0).toFixed(2)}
+                            </span>
                           </div>
-                        );
-                      })}
+                          <Slider
+                            value={[(pendingChanges.specialties?.[specialty.id] ?? tuning?.specialties?.[specialty.id]) || 0]}
+                            onValueChange={(value) => handleSpecialtyChange(specialty.id, value[0])}
+                            max={1}
+                            min={0}
+                            step={0.01}
+                            className="w-full"
+                          />
+                        </div>
+                      ))}
                     </div>
                   </div>
                 </div>
