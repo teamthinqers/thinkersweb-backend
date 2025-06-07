@@ -109,7 +109,7 @@ export default function NeuraTuningCognitive() {
             <Button variant="ghost" onClick={() => setLocation('/my-neura')} className="p-2">
               <ChevronLeft className="h-5 w-5" />
             </Button>
-            <h1 className="text-2xl font-bold">Cognitive Style</h1>
+            <h1 className="text-2xl font-bold">Cognitive Shield</h1>
           </div>
         </div>
         <div className="flex items-center justify-center h-[400px]">
@@ -130,7 +130,7 @@ export default function NeuraTuningCognitive() {
           <Button variant="ghost" onClick={() => setLocation('/my-neura')} className="p-2">
             <ChevronLeft className="h-5 w-5" />
           </Button>
-          <h1 className="text-2xl font-bold">Cognitive Style</h1>
+          <h1 className="text-2xl font-bold">Cognitive Shield</h1>
         </div>
         {unsavedChanges && (
           <Button 
