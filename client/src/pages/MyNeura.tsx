@@ -370,7 +370,7 @@ export default function MyNeura() {
       // Notify user that changes were saved successfully
       toast({
         title: "Changes Saved",
-        description: "Your neural mirror tuning parameters have been updated.",
+        description: "Your DotSpark tuning parameters have been updated.",
         variant: "default",
       });
     } catch (error) {
@@ -446,9 +446,9 @@ export default function MyNeura() {
             <Button 
               variant={isActivated ? "outline" : "default"} 
               className={isActivated ? "border-green-500 text-green-600 hover:bg-green-50 dark:hover:bg-green-950" : "bg-amber-600 hover:bg-amber-700"} 
-              onClick={toggleNeuraActivation}
+              onClick={toggleDotSparkActivation}
             >
-              {isActivated ? "Deactivate Neura" : "Activate Neura"}
+              {isActivated ? "Deactivate DotSpark" : "Activate DotSpark"}
             </Button>
           </div>
         </div>
@@ -459,8 +459,8 @@ export default function MyNeura() {
           <div className="flex items-center">
             <Check className="h-6 w-6 text-green-500 mr-3" />
             <div>
-              <h3 className="text-lg font-medium">Neura is Active</h3>
-              <p className="text-sm text-muted-foreground">Your neural mirror is active and ready to assist you.</p>
+              <h3 className="text-lg font-medium">DotSpark is Active</h3>
+              <p className="text-sm text-muted-foreground">Your DotSpark is active and ready to assist you.</p>
             </div>
           </div>
         </div>
@@ -469,8 +469,8 @@ export default function MyNeura() {
           <div className="flex items-center">
             <AlertCircle className="h-6 w-6 text-amber-500 mr-3" />
             <div>
-              <h3 className="text-lg font-medium">Neura is Inactive</h3>
-              <p className="text-sm text-muted-foreground">Activate your neural mirror to begin receiving personalized insights.</p>
+              <h3 className="text-lg font-medium">DotSpark is Inactive</h3>
+              <p className="text-sm text-muted-foreground">Activate your DotSpark to begin receiving personalized insights.</p>
             </div>
           </div>
         </div>
@@ -486,8 +486,8 @@ export default function MyNeura() {
         <div className="flex items-center justify-center h-[400px]">
           <div className="flex flex-col items-center">
             <BrainCircuit className="h-16 w-16 text-amber-400 animate-pulse mb-4" />
-            <h3 className="text-xl font-medium mb-2">Loading Neura...</h3>
-            <p className="text-muted-foreground">Connecting to your neural mirror</p>
+            <h3 className="text-xl font-medium mb-2">Loading DotSpark...</h3>
+            <p className="text-muted-foreground">Connecting to your DotSpark</p>
           </div>
         </div>
       </div>
@@ -816,7 +816,7 @@ export default function MyNeura() {
             </div>
             <CardContent className="p-6 flex-1 flex flex-col">
               <p className="text-muted-foreground mb-4">
-                Customize domains where your neural mirror can reflect your professional expertise and provide deeper insights.
+                Customize domains where your DotSpark can reflect your professional expertise and provide deeper insights.
               </p>
               <ul className="space-y-2 flex-1">
                 <li className="flex items-start">
@@ -840,7 +840,7 @@ export default function MyNeura() {
               </ul>
               <Button 
                 className="w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-red-600 hover:to-orange-600 group-hover:translate-y-0 translate-y-1 transition-all duration-300 mt-6"
-                onClick={() => setLocation('/neura-tuning/expertise')}
+                onClick={() => setLocation('/dotspark-tuning/expertise')}
               >
                 Configure Expertise Areas
               </Button>
@@ -860,7 +860,7 @@ export default function MyNeura() {
             </div>
             <CardContent className="p-6 flex-1 flex flex-col">
               <p className="text-muted-foreground mb-4">
-                Define growth areas where your neural mirror should develop awareness to better reflect your learning interests.
+                Define growth areas where your DotSpark should develop awareness to better reflect your learning interests.
               </p>
               <ul className="space-y-2 flex-1">
                 <li className="flex items-start">
@@ -884,7 +884,7 @@ export default function MyNeura() {
               </ul>
               <Button 
                 className="w-full bg-gradient-to-r from-amber-600 to-orange-600 hover:from-orange-600 hover:to-amber-600 group-hover:translate-y-0 translate-y-1 transition-all duration-300 mt-6"
-                onClick={() => setLocation('/neura-tuning/learning')}
+                onClick={() => setLocation('/dotspark-tuning/learning')}
               >
                 Configure Learning Engine
               </Button>
