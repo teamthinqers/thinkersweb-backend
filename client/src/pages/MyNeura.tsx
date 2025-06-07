@@ -745,76 +745,206 @@ export default function MyNeura() {
                   Configure these parameters to shield you from biases while using AI.
                 </p>
                 
-                {/* Creativity Parameter */}
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <Label htmlFor="creativity" className="text-sm font-medium">
-                      Creativity Level
-                    </Label>
-                    <span className="text-sm text-muted-foreground">
-                      {Math.round((pendingChanges.creativity ?? neuralTuning?.creativity ?? 0.5) * 100)}%
-                    </span>
+                {/* Core Tuning Section */}
+                <div className="border-b border-amber-200 dark:border-amber-800 pb-4">
+                  <h4 className="font-semibold text-amber-700 dark:text-amber-300 mb-4">Core Tuning</h4>
+                  
+                  {/* Creativity Parameter */}
+                  <div className="space-y-3 mb-4">
+                    <div className="flex items-center justify-between">
+                      <Label htmlFor="creativity" className="text-sm font-medium">
+                        Creativity Level
+                      </Label>
+                      <span className="text-sm text-amber-700 dark:text-amber-300 font-medium">
+                        {Math.round((pendingChanges.creativity ?? neuralTuning?.creativity ?? 0.5) * 100)}%
+                      </span>
+                    </div>
+                    <Slider
+                      id="creativity"
+                      min={0}
+                      max={1}
+                      step={0.01}
+                      value={[(pendingChanges.creativity ?? neuralTuning?.creativity ?? 0.5)]}
+                      onValueChange={(value) => handleParameterChange('creativity', value[0])}
+                      className="w-full"
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Balance between structured thinking (left) and creative exploration (right)
+                    </p>
                   </div>
-                  <Slider
-                    id="creativity"
-                    min={0}
-                    max={1}
-                    step={0.01}
-                    value={[(pendingChanges.creativity ?? neuralTuning?.creativity ?? 0.5)]}
-                    onValueChange={(value) => handleParameterChange('creativity', value[0])}
-                    className="w-full"
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    Balance between structured thinking (left) and creative exploration (right)
-                  </p>
+
+                  {/* Precision Parameter */}
+                  <div className="space-y-3 mb-4">
+                    <div className="flex items-center justify-between">
+                      <Label htmlFor="precision" className="text-sm font-medium">
+                        Precision Focus
+                      </Label>
+                      <span className="text-sm text-amber-700 dark:text-amber-300 font-medium">
+                        {Math.round((pendingChanges.precision ?? neuralTuning?.precision ?? 0.5) * 100)}%
+                      </span>
+                    </div>
+                    <Slider
+                      id="precision"
+                      min={0}
+                      max={1}
+                      step={0.01}
+                      value={[(pendingChanges.precision ?? neuralTuning?.precision ?? 0.5)]}
+                      onValueChange={(value) => handleParameterChange('precision', value[0])}
+                      className="w-full"
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Emphasis on broad concepts (left) vs detailed accuracy (right)
+                    </p>
+                  </div>
+
+                  {/* Processing Speed Parameter */}
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <Label htmlFor="speed" className="text-sm font-medium">
+                        Processing Speed
+                      </Label>
+                      <span className="text-sm text-amber-700 dark:text-amber-300 font-medium">
+                        {Math.round((pendingChanges.speed ?? neuralTuning?.speed ?? 0.5) * 100)}%
+                      </span>
+                    </div>
+                    <Slider
+                      id="speed"
+                      min={0}
+                      max={1}
+                      step={0.01}
+                      value={[(pendingChanges.speed ?? neuralTuning?.speed ?? 0.5)]}
+                      onValueChange={(value) => handleParameterChange('speed', value[0])}
+                      className="w-full"
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Deep reflection (left) vs quick response time (right)
+                    </p>
+                  </div>
                 </div>
 
-                {/* Precision Parameter */}
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <Label htmlFor="precision" className="text-sm font-medium">
-                      Precision Focus
-                    </Label>
-                    <span className="text-sm text-muted-foreground">
-                      {Math.round((pendingChanges.precision ?? neuralTuning?.precision ?? 0.5) * 100)}%
-                    </span>
+                {/* Cognitive Style Section */}
+                <div>
+                  <h4 className="font-semibold text-amber-700 dark:text-amber-300 mb-4">Cognitive Style</h4>
+                  
+                  {/* Analytical Parameter */}
+                  <div className="space-y-3 mb-4">
+                    <div className="flex items-center justify-between">
+                      <Label htmlFor="analytical" className="text-sm font-medium">
+                        Analytical Thinking
+                      </Label>
+                      <span className="text-sm text-amber-700 dark:text-amber-300 font-medium">
+                        {Math.round((pendingChanges.analytical ?? neuralTuning?.analytical ?? 0.5) * 100)}%
+                      </span>
+                    </div>
+                    <Slider
+                      id="analytical"
+                      min={0}
+                      max={1}
+                      step={0.01}
+                      value={[(pendingChanges.analytical ?? neuralTuning?.analytical ?? 0.5)]}
+                      onValueChange={(value) => handleParameterChange('analytical', value[0])}
+                      className="w-full"
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Emphasis on logical/systematic thinking and structured analysis
+                    </p>
                   </div>
-                  <Slider
-                    id="precision"
-                    min={0}
-                    max={1}
-                    step={0.01}
-                    value={[(pendingChanges.precision ?? neuralTuning?.precision ?? 0.5)]}
-                    onValueChange={(value) => handleParameterChange('precision', value[0])}
-                    className="w-full"
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    Emphasis on broad concepts (left) vs detailed accuracy (right)
-                  </p>
-                </div>
 
-                {/* Processing Speed Parameter */}
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <Label htmlFor="speed" className="text-sm font-medium">
-                      Processing Speed
-                    </Label>
-                    <span className="text-sm text-muted-foreground">
-                      {Math.round((pendingChanges.speed ?? neuralTuning?.speed ?? 0.5) * 100)}%
-                    </span>
+                  {/* Intuitive Parameter */}
+                  <div className="space-y-3 mb-4">
+                    <div className="flex items-center justify-between">
+                      <Label htmlFor="intuitive" className="text-sm font-medium">
+                        Intuitive Processing
+                      </Label>
+                      <span className="text-sm text-amber-700 dark:text-amber-300 font-medium">
+                        {Math.round((pendingChanges.intuitive ?? neuralTuning?.intuitive ?? 0.5) * 100)}%
+                      </span>
+                    </div>
+                    <Slider
+                      id="intuitive"
+                      min={0}
+                      max={1}
+                      step={0.01}
+                      value={[(pendingChanges.intuitive ?? neuralTuning?.intuitive ?? 0.5)]}
+                      onValueChange={(value) => handleParameterChange('intuitive', value[0])}
+                      className="w-full"
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Pattern recognition and insight-based thinking emphasis
+                    </p>
                   </div>
-                  <Slider
-                    id="speed"
-                    min={0}
-                    max={1}
-                    step={0.01}
-                    value={[(pendingChanges.speed ?? neuralTuning?.speed ?? 0.5)]}
-                    onValueChange={(value) => handleParameterChange('speed', value[0])}
-                    className="w-full"
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    Deep reflection (left) vs quick response time (right)
-                  </p>
+
+                  {/* Contextual Thinking Parameter */}
+                  <div className="space-y-3 mb-4">
+                    <div className="flex items-center justify-between">
+                      <Label htmlFor="contextualThinking" className="text-sm font-medium">
+                        Contextual Thinking
+                      </Label>
+                      <span className="text-sm text-amber-700 dark:text-amber-300 font-medium">
+                        {Math.round((pendingChanges.contextualThinking ?? neuralTuning?.contextualThinking ?? 0.5) * 100)}%
+                      </span>
+                    </div>
+                    <Slider
+                      id="contextualThinking"
+                      min={0}
+                      max={1}
+                      step={0.01}
+                      value={[(pendingChanges.contextualThinking ?? neuralTuning?.contextualThinking ?? 0.5)]}
+                      onValueChange={(value) => handleParameterChange('contextualThinking', value[0])}
+                      className="w-full"
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Contextual considerations (left) vs universal principles (right)
+                    </p>
+                  </div>
+
+                  {/* Memory Bandwidth Parameter */}
+                  <div className="space-y-3 mb-4">
+                    <div className="flex items-center justify-between">
+                      <Label htmlFor="memoryBandwidth" className="text-sm font-medium">
+                        Memory Bandwidth
+                      </Label>
+                      <span className="text-sm text-amber-700 dark:text-amber-300 font-medium">
+                        {Math.round((pendingChanges.memoryBandwidth ?? neuralTuning?.memoryBandwidth ?? 0.5) * 100)}%
+                      </span>
+                    </div>
+                    <Slider
+                      id="memoryBandwidth"
+                      min={0}
+                      max={1}
+                      step={0.01}
+                      value={[(pendingChanges.memoryBandwidth ?? neuralTuning?.memoryBandwidth ?? 0.5)]}
+                      onValueChange={(value) => handleParameterChange('memoryBandwidth', value[0])}
+                      className="w-full"
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Short burst memory (left) vs deep retainer memory (right)
+                    </p>
+                  </div>
+
+                  {/* Thought Complexity Parameter */}
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <Label htmlFor="thoughtComplexity" className="text-sm font-medium">
+                        Thought Complexity
+                      </Label>
+                      <span className="text-sm text-amber-700 dark:text-amber-300 font-medium">
+                        {Math.round((pendingChanges.thoughtComplexity ?? neuralTuning?.thoughtComplexity ?? 0.5) * 100)}%
+                      </span>
+                    </div>
+                    <Slider
+                      id="thoughtComplexity"
+                      min={0}
+                      max={1}
+                      step={0.01}
+                      value={[(pendingChanges.thoughtComplexity ?? neuralTuning?.thoughtComplexity ?? 0.5)]}
+                      onValueChange={(value) => handleParameterChange('thoughtComplexity', value[0])}
+                      className="w-full"
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Simple direct thinking (left) vs complex layered thinking (right)
+                    </p>
+                  </div>
                 </div>
 
                 <div className="flex gap-3 pt-4">
