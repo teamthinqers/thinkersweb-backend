@@ -470,34 +470,58 @@ export default function LandingPage() {
           <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-amber-500/3 dark:bg-amber-400/5 rounded-full blur-3xl opacity-60 -translate-y-1/2 translate-x-1/3"></div>
           <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-orange-500/3 dark:bg-orange-400/5 rounded-full blur-3xl opacity-60 translate-y-1/3 -translate-x-1/4"></div>
           
-          {/* Enhanced blinking dots pattern filling white spaces */}
-          <div className="absolute left-[15%] top-[25%] w-1 h-1 bg-amber-500/40 rounded-full animate-pulse"></div>
-          <div className="absolute left-[20%] top-[35%] w-0.5 h-0.5 bg-amber-400/50 rounded-full animate-pulse" style={{animationDelay: '0.5s'}}></div>
-          <div className="absolute left-[25%] top-[45%] w-1.5 h-1.5 bg-amber-600/60 rounded-full animate-pulse" style={{animationDelay: '1s'}}></div>
-          <div className="absolute left-[30%] top-[55%] w-1 h-1 bg-orange-500/40 rounded-full animate-pulse" style={{animationDelay: '1.5s'}}></div>
-          <div className="absolute left-[35%] top-[65%] w-0.5 h-0.5 bg-orange-400/50 rounded-full animate-pulse" style={{animationDelay: '2s'}}></div>
+          {/* Enhanced blinking dots pattern with more scattered elements */}
+          {/* Left side dots */}
+          <div className="absolute left-[8%] top-[15%] w-1 h-1 bg-amber-700/50 rounded-full animate-pulse"></div>
+          <div className="absolute left-[12%] top-[28%] w-0.5 h-0.5 bg-orange-600/60 rounded-full animate-pulse" style={{animationDelay: '0.3s'}}></div>
+          <div className="absolute left-[15%] top-[25%] w-1 h-1 bg-amber-500/40 rounded-full animate-pulse" style={{animationDelay: '0.6s'}}></div>
+          <div className="absolute left-[18%] top-[42%] w-1.5 h-1.5 bg-yellow-700/50 rounded-full animate-pulse" style={{animationDelay: '0.9s'}}></div>
+          <div className="absolute left-[20%] top-[35%] w-0.5 h-0.5 bg-amber-400/50 rounded-full animate-pulse" style={{animationDelay: '1.2s'}}></div>
+          <div className="absolute left-[25%] top-[45%] w-1.5 h-1.5 bg-amber-600/60 rounded-full animate-pulse" style={{animationDelay: '1.5s'}}></div>
+          <div className="absolute left-[28%] top-[18%] w-1 h-1 bg-orange-700/45 rounded-full animate-pulse" style={{animationDelay: '1.8s'}}></div>
+          <div className="absolute left-[30%] top-[55%] w-1 h-1 bg-orange-500/40 rounded-full animate-pulse" style={{animationDelay: '2.1s'}}></div>
+          <div className="absolute left-[35%] top-[65%] w-0.5 h-0.5 bg-orange-400/50 rounded-full animate-pulse" style={{animationDelay: '2.4s'}}></div>
+          <div className="absolute left-[38%] top-[32%] w-1.5 h-1.5 bg-yellow-600/55 rounded-full animate-pulse" style={{animationDelay: '2.7s'}}></div>
+          <div className="absolute left-[40%] top-[25%] w-0.5 h-0.5 bg-yellow-400/40 rounded-full animate-pulse" style={{animationDelay: '3s'}}></div>
+          <div className="absolute left-[42%] top-[58%] w-1 h-1 bg-amber-700/45 rounded-full animate-pulse" style={{animationDelay: '3.3s'}}></div>
           
-          <div className="absolute right-[15%] top-[30%] w-1 h-1 bg-orange-500/40 rounded-full animate-pulse" style={{animationDelay: '0.3s'}}></div>
-          <div className="absolute right-[20%] top-[40%] w-0.5 h-0.5 bg-orange-400/50 rounded-full animate-pulse" style={{animationDelay: '0.8s'}}></div>
-          <div className="absolute right-[25%] top-[50%] w-1.5 h-1.5 bg-amber-600/60 rounded-full animate-pulse" style={{animationDelay: '1.3s'}}></div>
-          <div className="absolute right-[30%] top-[60%] w-1 h-1 bg-amber-500/40 rounded-full animate-pulse" style={{animationDelay: '1.8s'}}></div>
-          <div className="absolute right-[35%] top-[20%] w-0.5 h-0.5 bg-amber-400/50 rounded-full animate-pulse" style={{animationDelay: '2.3s'}}></div>
+          {/* Right side dots */}
+          <div className="absolute right-[8%] top-[22%] w-1 h-1 bg-orange-700/50 rounded-full animate-pulse" style={{animationDelay: '0.4s'}}></div>
+          <div className="absolute right-[12%] top-[38%] w-0.5 h-0.5 bg-amber-600/60 rounded-full animate-pulse" style={{animationDelay: '0.7s'}}></div>
+          <div className="absolute right-[15%] top-[30%] w-1 h-1 bg-orange-500/40 rounded-full" style={{animationDelay: '1s'}}></div>
+          <div className="absolute right-[18%] top-[52%] w-1.5 h-1.5 bg-yellow-700/50 rounded-full animate-pulse" style={{animationDelay: '1.3s'}}></div>
+          <div className="absolute right-[20%] top-[40%] w-0.5 h-0.5 bg-orange-400/50 rounded-full animate-pulse" style={{animationDelay: '1.6s'}}></div>
+          <div className="absolute right-[25%] top-[50%] w-1.5 h-1.5 bg-amber-600/60 rounded-full animate-pulse" style={{animationDelay: '1.9s'}}></div>
+          <div className="absolute right-[28%] top-[15%] w-1 h-1 bg-orange-700/45 rounded-full animate-pulse" style={{animationDelay: '2.2s'}}></div>
+          <div className="absolute right-[30%] top-[60%] w-1 h-1 bg-amber-500/40 rounded-full animate-pulse" style={{animationDelay: '2.5s'}}></div>
+          <div className="absolute right-[35%] top-[20%] w-0.5 h-0.5 bg-amber-400/50 rounded-full animate-pulse" style={{animationDelay: '2.8s'}}></div>
+          <div className="absolute right-[38%] top-[45%] w-1.5 h-1.5 bg-yellow-600/55 rounded-full animate-pulse" style={{animationDelay: '3.1s'}}></div>
+          <div className="absolute right-[40%] top-[35%] w-0.5 h-0.5 bg-yellow-400/40 rounded-full animate-pulse" style={{animationDelay: '3.4s'}}></div>
+          <div className="absolute right-[42%] top-[68%] w-1 h-1 bg-amber-700/45 rounded-full animate-pulse" style={{animationDelay: '3.7s'}}></div>
           
-          {/* Additional scattered dots */}
-          <div className="absolute left-[12%] top-[45%] w-0.5 h-0.5 bg-yellow-500/30 rounded-full animate-pulse" style={{animationDelay: '3s'}}></div>
-          <div className="absolute left-[40%] top-[25%] w-0.5 h-0.5 bg-yellow-400/40 rounded-full animate-pulse" style={{animationDelay: '3.5s'}}></div>
-          <div className="absolute right-[12%] top-[55%] w-0.5 h-0.5 bg-yellow-500/30 rounded-full animate-pulse" style={{animationDelay: '4s'}}></div>
-          <div className="absolute right-[40%] top-[35%] w-0.5 h-0.5 bg-yellow-400/40 rounded-full animate-pulse" style={{animationDelay: '4.5s'}}></div>
+          {/* Center scattered dots */}
+          <div className="absolute left-[48%] top-[12%] w-0.5 h-0.5 bg-orange-600/40 rounded-full animate-pulse" style={{animationDelay: '4s'}}></div>
+          <div className="absolute left-[52%] top-[28%] w-1 h-1 bg-amber-700/50 rounded-full animate-pulse" style={{animationDelay: '4.3s'}}></div>
+          <div className="absolute left-[55%] top-[62%] w-0.5 h-0.5 bg-yellow-500/35 rounded-full animate-pulse" style={{animationDelay: '4.6s'}}></div>
+          <div className="absolute left-[58%] top-[45%] w-1.5 h-1.5 bg-orange-700/55 rounded-full animate-pulse" style={{animationDelay: '4.9s'}}></div>
           
-          {/* Sparkling connection lines */}
-          <div className="absolute left-[18%] top-[30%] w-[6px] h-[1px] bg-gradient-to-r from-amber-500/20 to-transparent rotate-[25deg] animate-pulse" style={{animationDelay: '2.5s'}}></div>
-          <div className="absolute left-[28%] top-[48%] w-[8px] h-[1px] bg-gradient-to-r from-orange-500/25 to-transparent rotate-[15deg] animate-pulse" style={{animationDelay: '3.2s'}}></div>
-          <div className="absolute right-[18%] top-[45%] w-[6px] h-[1px] bg-gradient-to-l from-amber-500/20 to-transparent rotate-[155deg] animate-pulse" style={{animationDelay: '3.8s'}}></div>
-          <div className="absolute right-[28%] top-[25%] w-[8px] h-[1px] bg-gradient-to-l from-orange-500/25 to-transparent rotate-[165deg] animate-pulse" style={{animationDelay: '4.3s'}}></div>
+          {/* Frequent sparkling connection lines with brownish golden effect */}
+          <div className="absolute left-[18%] top-[30%] w-[8px] h-[1px] bg-gradient-to-r from-amber-700/30 to-transparent rotate-[25deg] animate-pulse" style={{animationDelay: '0.8s'}}></div>
+          <div className="absolute left-[28%] top-[48%] w-[10px] h-[1px] bg-gradient-to-r from-orange-700/35 to-transparent rotate-[15deg] animate-pulse" style={{animationDelay: '1.4s'}}></div>
+          <div className="absolute left-[35%] top-[22%] w-[6px] h-[1px] bg-gradient-to-r from-yellow-700/25 to-transparent rotate-[45deg] animate-pulse" style={{animationDelay: '2s'}}></div>
+          <div className="absolute right-[18%] top-[45%] w-[8px] h-[1px] bg-gradient-to-l from-amber-700/30 to-transparent rotate-[155deg] animate-pulse" style={{animationDelay: '2.6s'}}></div>
+          <div className="absolute right-[28%] top-[25%] w-[10px] h-[1px] bg-gradient-to-l from-orange-700/35 to-transparent rotate-[165deg] animate-pulse" style={{animationDelay: '3.2s'}}></div>
+          <div className="absolute right-[35%] top-[58%] w-[6px] h-[1px] bg-gradient-to-l from-yellow-700/25 to-transparent rotate-[135deg] animate-pulse" style={{animationDelay: '3.8s'}}></div>
           
-          {/* Tiny sparkles */}
-          <div className="absolute left-[22%] top-[38%] text-amber-400/30 text-xs animate-pulse" style={{animationDelay: '5s'}}>✦</div>
-          <div className="absolute left-[33%] top-[52%] text-orange-400/30 text-xs animate-pulse" style={{animationDelay: '5.5s'}}>✦</div>
+          {/* More frequent legible sparks with brownish golden effect */}
+          <div className="absolute left-[22%] top-[38%] text-amber-700/50 text-sm animate-pulse font-bold" style={{animationDelay: '1.2s'}}>✦</div>
+          <div className="absolute left-[33%] top-[52%] text-orange-700/50 text-sm animate-pulse font-bold" style={{animationDelay: '1.8s'}}>✧</div>
+          <div className="absolute left-[16%] top-[58%] text-yellow-700/45 text-sm animate-pulse font-bold" style={{animationDelay: '2.4s'}}>✦</div>
+          <div className="absolute right-[22%] top-[33%] text-amber-700/50 text-sm animate-pulse font-bold" style={{animationDelay: '3s'}}>✧</div>
+          <div className="absolute right-[33%] top-[48%] text-orange-700/50 text-sm animate-pulse font-bold" style={{animationDelay: '3.6s'}}>✦</div>
+          <div className="absolute right-[16%] top-[63%] text-yellow-700/45 text-sm animate-pulse font-bold" style={{animationDelay: '4.2s'}}>✧</div>
+          <div className="absolute left-[48%] top-[35%] text-amber-600/45 text-sm animate-pulse font-bold" style={{animationDelay: '4.8s'}}>✦</div>
+          <div className="absolute left-[52%] top-[18%] text-orange-600/40 text-sm animate-pulse font-bold" style={{animationDelay: '5.4s'}}>✧</div>
           <div className="absolute right-[22%] top-[42%] text-amber-400/30 text-xs animate-pulse" style={{animationDelay: '6s'}}>✦</div>
           <div className="absolute right-[33%] top-[28%] text-orange-400/30 text-xs animate-pulse" style={{animationDelay: '6.5s'}}>✦</div>
         </div>
