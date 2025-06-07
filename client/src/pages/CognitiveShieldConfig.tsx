@@ -51,11 +51,18 @@ export default function CognitiveShieldConfig() {
       creativity: 0.7,
       precision: 0.8,
       speed: 0.5,
+      cognitivePace: 0.5,
+      signalFocus: 0.5,
+      impulseControl: 0.5,
+      mentalEnergyFlow: 0.5,
       analytical: 0.8,
       intuitive: 0.6,
-      contextualThinking: 0.6,
-      memoryBandwidth: 0.7,
+      contextualThinking: 0.5,
+      memoryBandwidth: 0.5,
       thoughtComplexity: 0.5,
+      mentalModelDensity: 0.5,
+      patternDetectionSensitivity: 0.5,
+      decisionMakingIndex: 0.5,
     }
   };
   
