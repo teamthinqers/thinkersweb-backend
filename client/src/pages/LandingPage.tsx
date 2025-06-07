@@ -205,9 +205,6 @@ export default function LandingPage() {
               <Link href="/" className="text-sm font-medium hover:text-primary">
                 Home
               </Link>
-              <Link href="/dashboard" className="text-sm font-medium hover:text-primary">
-                Dashboard
-              </Link>
               <Button 
                 className={`${isNeuraActivated 
                   ? "bg-gradient-to-r from-amber-700 to-primary hover:from-amber-800 hover:to-primary/90" 
