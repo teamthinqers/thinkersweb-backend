@@ -592,7 +592,7 @@ export default function MyNeura() {
                             r="45" 
                             fill="none" 
                             stroke="currentColor" 
-                            className="text-blue-100 dark:text-blue-950" 
+                            className="text-amber-100 dark:text-amber-950" 
                             strokeWidth="8" 
                           />
                           <circle 
@@ -601,14 +601,14 @@ export default function MyNeura() {
                             r="45" 
                             fill="none" 
                             stroke="currentColor" 
-                            className="text-blue-500 transition-all duration-500 ease-out" 
+                            className="text-amber-600 transition-all duration-500 ease-out" 
                             strokeWidth="8" 
                             strokeDasharray={`${2 * Math.PI * 45 * (memoryCapacity / 100)} ${2 * Math.PI * 45}`}
                             strokeDashoffset={2 * Math.PI * 45 * 0.25}
                           />
                         </svg>
                         <div className="absolute inset-0 flex items-center justify-center">
-                          <BrainCog className="h-5 w-5 text-blue-500" />
+                          <BrainCog className="h-5 w-5 text-amber-600" />
                         </div>
                       </div>
                       <div className="text-sm font-medium mt-1">Memory</div>
@@ -616,7 +616,7 @@ export default function MyNeura() {
                       <div className="text-xl font-bold">{Math.round(memoryCapacity)}%</div>
                     </div>
                   </TooltipTrigger>
-                  <TooltipContent side="bottom" className="bg-white dark:bg-gray-900 border border-blue-200 dark:border-blue-800 p-3 shadow-lg max-w-[200px]">
+                  <TooltipContent side="bottom" className="bg-white dark:bg-gray-900 border border-amber-200 dark:border-amber-800 p-3 shadow-lg max-w-[200px]">
                     <p className="text-sm font-medium">Memory Capacity</p>
                     <p className="text-xs text-muted-foreground mt-1">Grows as you add entries and save knowledge in your DotSpark. More entries mean increased memory capacity.</p>
                   </TooltipContent>
@@ -647,14 +647,14 @@ export default function MyNeura() {
                             r="45" 
                             fill="none" 
                             stroke="currentColor" 
-                            className="text-orange-500 transition-all duration-500 ease-out" 
+                            className="text-orange-600 transition-all duration-500 ease-out" 
                             strokeWidth="8" 
                             strokeDasharray={`${2 * Math.PI * 45 * (learningRate / 100)} ${2 * Math.PI * 45}`}
                             strokeDashoffset={2 * Math.PI * 45 * 0.25}
                           />
                         </svg>
                         <div className="absolute inset-0 flex items-center justify-center">
-                          <Lightbulb className="h-5 w-5 text-orange-500" />
+                          <Lightbulb className="h-5 w-5 text-orange-600" />
                         </div>
                       </div>
                       <div className="text-sm font-medium mt-1">Learning</div>
@@ -680,7 +680,7 @@ export default function MyNeura() {
                     r="45" 
                     fill="none" 
                     stroke="currentColor" 
-                    className="text-green-100 dark:text-green-950" 
+                    className="text-yellow-100 dark:text-yellow-950" 
                     strokeWidth="8" 
                   />
                   <circle 
@@ -689,14 +689,14 @@ export default function MyNeura() {
                     r="45" 
                     fill="none" 
                     stroke="currentColor" 
-                    className="text-green-500 transition-all duration-500 ease-out" 
+                    className="text-yellow-600 transition-all duration-500 ease-out" 
                     strokeWidth="8" 
                     strokeDasharray={`${2 * Math.PI * 45 * (specializationLevel / 100)} ${2 * Math.PI * 45}`}
                     strokeDashoffset={2 * Math.PI * 45 * 0.25}
                   />
                 </svg>
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <Target className="h-5 w-5 text-green-500" />
+                  <Target className="h-5 w-5 text-yellow-600" />
                 </div>
               </div>
               <div className="text-sm font-medium mt-1">Implementation</div>
