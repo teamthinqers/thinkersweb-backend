@@ -168,290 +168,261 @@ export default function CognitiveShieldConfig() {
         </CardHeader>
         
         <CardContent className="pt-6 space-y-8">
-          {/* Core Tuning Section */}
-          <div className="space-y-6">
-            <div className="border-b border-amber-200 dark:border-amber-800 pb-2">
-              <h3 className="text-lg font-semibold text-amber-700 dark:text-amber-300">Core Tuning</h3>
-            </div>
+          {/* Parameters Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Left Column */}
+            <div className="space-y-6">
+              <div className="border-b border-amber-200 dark:border-amber-800 pb-2">
+                <h3 className="text-lg font-semibold text-amber-700 dark:text-amber-300">Core Parameters</h3>
+              </div>
             
-            {/* Creativity Parameter - Color Palette Selector */}
-            <div className="relative overflow-hidden space-y-4 p-6 rounded-xl bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950/30 dark:to-amber-900/20 border-2 border-amber-300 dark:border-amber-700 shadow-lg">
-              <div className="flex items-center justify-between relative z-10">
-                <Label className="text-base font-semibold flex items-center gap-3">
-                  <div className="relative">
-                    <div className="w-5 h-5 bg-gradient-to-br from-amber-400 to-amber-600 rounded-lg shadow-md"></div>
-                    <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-amber-300 rounded-full animate-pulse"></div>
-                  </div>
-                  <span className="text-amber-700 dark:text-amber-300">Creativity Level</span>
-                </Label>
-                <div className="px-3 py-1 bg-gradient-to-r from-amber-200 to-amber-300 dark:from-amber-800 dark:to-amber-700 rounded-full">
-                  <span className="text-sm font-bold text-amber-800 dark:text-amber-200">
+              {/* Creativity Parameter */}
+              <div className="space-y-4 p-4 rounded-lg bg-gradient-to-r from-amber-50 to-amber-100 dark:from-amber-950/20 dark:to-amber-900/20 border border-amber-200 dark:border-amber-800">
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="creativity" className="text-sm font-medium flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-gradient-to-r from-amber-400 to-amber-600"></div>
+                    Creativity
+                  </Label>
+                  <span className="text-sm font-bold text-amber-700 dark:text-amber-300">
                     {Math.round((pendingChanges.creativity ?? neuralTuning?.creativity ?? 0.5) * 100)}%
                   </span>
                 </div>
+                
+                <Slider
+                  id="creativity"
+                  min={0}
+                  max={1}
+                  step={0.01}
+                  value={[(pendingChanges.creativity ?? neuralTuning?.creativity ?? 0.5)]}
+                  onValueChange={(value) => handleParameterChange('creativity', value[0])}
+                  className="creativity-slider"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Conventional approach (left) vs innovative thinking (right)
+                </p>
               </div>
-              
-              {/* Color palette selector */}
-              <div className="grid grid-cols-10 gap-2">
-                {Array.from({ length: 10 }, (_, i) => {
-                  const value = (i + 1) / 10;
-                  const isSelected = Math.abs(value - (pendingChanges.creativity ?? neuralTuning?.creativity ?? 0.5)) < 0.05;
-                  return (
-                    <button
-                      key={i}
-                      onClick={() => handleParameterChange('creativity', value)}
-                      className={`
-                        w-8 h-8 rounded-lg border-2 transition-all duration-300 transform hover:scale-110
-                        ${isSelected 
-                          ? 'border-amber-600 dark:border-amber-400 shadow-lg scale-110' 
-                          : 'border-amber-300 dark:border-amber-600 hover:border-amber-500'
-                        }
-                      `}
-                      style={{
-                        background: `linear-gradient(135deg, 
-                          hsl(${20 + i * 4}, ${60 + i * 4}%, ${50 + i * 2}%),
-                          hsl(${30 + i * 3}, ${70 + i * 3}%, ${60 + i * 1}%)
-                        )`
-                      }}
-                    />
-                  );
-                })}
-              </div>
-              
-              <p className="text-xs text-amber-700 dark:text-amber-300 font-medium text-center">
-                Select creativity intensity by choosing a color palette
-              </p>
-            </div>
 
-            {/* Precision Parameter - Targeting Dial */}
-            <div className="relative overflow-hidden space-y-4 p-6 rounded-xl bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950/30 dark:to-amber-900/20 border-2 border-amber-300 dark:border-amber-700 shadow-lg">
-              <div className="flex items-center justify-between relative z-10">
-                <Label className="text-base font-semibold flex items-center gap-3">
-                  <div className="relative">
-                    <div className="w-5 h-5 bg-gradient-to-br from-amber-400 to-amber-600 rounded-sm shadow-md border border-amber-600 dark:border-amber-400"></div>
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-1 h-1 bg-white rounded-full"></div>
-                    </div>
-                  </div>
-                  <span className="text-amber-700 dark:text-amber-300">Precision Focus</span>
-                </Label>
-                <div className="px-3 py-1 bg-gradient-to-r from-amber-200 to-amber-300 dark:from-amber-800 dark:to-amber-700 rounded-lg border border-amber-300 dark:border-amber-600">
-                  <span className="text-sm font-bold text-amber-800 dark:text-amber-200 font-mono">
+              {/* Precision Parameter */}
+              <div className="space-y-4 p-4 rounded-lg bg-gradient-to-r from-amber-50 to-amber-100 dark:from-amber-950/20 dark:to-amber-900/20 border border-amber-200 dark:border-amber-800">
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="precision" className="text-sm font-medium flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-sm bg-gradient-to-r from-amber-400 to-amber-600"></div>
+                    Precision
+                  </Label>
+                  <span className="text-sm font-bold text-amber-700 dark:text-amber-300">
                     {Math.round((pendingChanges.precision ?? neuralTuning?.precision ?? 0.5) * 100)}%
                   </span>
                 </div>
+                
+                <Slider
+                  id="precision"
+                  min={0}
+                  max={1}
+                  step={0.01}
+                  value={[(pendingChanges.precision ?? neuralTuning?.precision ?? 0.5)]}
+                  onValueChange={(value) => handleParameterChange('precision', value[0])}
+                  className="precision-slider"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Broad overview (left) vs precise detail focus (right)
+                </p>
               </div>
-              
-              {/* Targeting Dial */}
-              <div className="flex justify-center">
-                <div className="relative w-32 h-32">
-                  {/* Dial background */}
-                  <div className="absolute inset-0 rounded-full border-4 border-amber-300 dark:border-amber-600 bg-gradient-to-br from-amber-100 to-amber-200 dark:from-amber-900 dark:to-amber-800"></div>
-                  
-                  {/* Precision markers */}
-                  {Array.from({ length: 10 }, (_, i) => {
-                    const angle = (i * 36) - 90; // 0-360 degrees, starting from top
-                    const isQuarter = i % 2.5 === 0;
-                    return (
-                      <div
-                        key={i}
-                        className={`absolute w-0.5 ${isQuarter ? 'h-4 bg-amber-600' : 'h-2 bg-amber-400'} top-1 left-1/2 origin-bottom transform -translate-x-0.5`}
-                        style={{ transform: `translateX(-50%) rotate(${angle}deg)` }}
-                      />
-                    );
-                  })}
-                  
-                  {/* Targeting needle */}
-                  <div
-                    className="absolute w-1 h-12 bg-amber-700 dark:bg-amber-300 top-2 left-1/2 origin-bottom transform -translate-x-0.5 transition-transform duration-300"
-                    style={{
-                      transform: `translateX(-50%) rotate(${((pendingChanges.precision ?? neuralTuning?.precision ?? 0.5) * 180) - 90}deg)`
-                    }}
-                  >
-                    <div className="absolute top-0 left-1/2 w-2 h-2 bg-amber-600 rounded-full transform -translate-x-1/2 -translate-y-1"></div>
-                  </div>
-                  
-                  {/* Center dot */}
-                  <div className="absolute top-1/2 left-1/2 w-3 h-3 bg-amber-600 dark:bg-amber-400 rounded-full transform -translate-x-1/2 -translate-y-1/2 border-2 border-white"></div>
-                  
-                  {/* Click zones for precision adjustment */}
-                  <button
-                    className="absolute inset-0 rounded-full cursor-pointer opacity-0 hover:opacity-10 bg-amber-500 transition-opacity"
-                    onClick={(e) => {
-                      const rect = e.currentTarget.getBoundingClientRect();
-                      const centerX = rect.left + rect.width / 2;
-                      const centerY = rect.top + rect.height / 2;
-                      const angle = Math.atan2(e.clientY - centerY, e.clientX - centerX);
-                      let normalizedAngle = (angle + Math.PI / 2) / Math.PI;
-                      if (normalizedAngle < 0) normalizedAngle += 2;
-                      if (normalizedAngle > 1) normalizedAngle = 1;
-                      handleParameterChange('precision', Math.max(0, Math.min(1, normalizedAngle)));
-                    }}
-                  />
-                </div>
-              </div>
-              
-              <p className="text-xs text-amber-700 dark:text-amber-300 font-medium text-center">
-                Click on the dial to adjust precision targeting
-              </p>
-            </div>
 
-            {/* Processing Speed Parameter - Speed Burst Buttons */}
-            <div className="relative overflow-hidden space-y-4 p-6 rounded-xl bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950/30 dark:to-amber-900/20 border-2 border-amber-300 dark:border-amber-700 shadow-lg">
-              <div className="flex items-center justify-between relative z-10">
-                <Label className="text-base font-semibold flex items-center gap-3">
-                  <div className="relative">
-                    <div className="w-5 h-5 bg-gradient-to-br from-amber-400 to-amber-600 rounded-md shadow-md transform rotate-45"></div>
-                    <div className="absolute inset-0 flex items-center justify-center transform -rotate-45">
-                      <div className="w-2 h-0.5 bg-white"></div>
-                    </div>
-                  </div>
-                  <span className="text-amber-700 dark:text-amber-300">Processing Speed</span>
-                </Label>
-                <div className="px-3 py-1 bg-gradient-to-r from-amber-200 to-amber-300 dark:from-amber-800 dark:to-amber-700 rounded-lg border border-amber-300 dark:border-amber-600">
-                  <span className="text-sm font-bold text-amber-800 dark:text-amber-200 font-mono">
+              {/* Processing Speed Parameter */}
+              <div className="space-y-4 p-4 rounded-lg bg-gradient-to-r from-amber-50 to-amber-100 dark:from-amber-950/20 dark:to-amber-900/20 border border-amber-200 dark:border-amber-800">
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="speed" className="text-sm font-medium flex items-center gap-2">
+                    <div className="w-3 h-3 bg-gradient-to-r from-amber-400 to-amber-600 transform rotate-45"></div>
+                    Processing Speed
+                  </Label>
+                  <span className="text-sm font-bold text-amber-700 dark:text-amber-300">
                     {Math.round((pendingChanges.speed ?? neuralTuning?.speed ?? 0.5) * 100)}%
                   </span>
                 </div>
+                
+                <Slider
+                  id="speed"
+                  min={0}
+                  max={1}
+                  step={0.01}
+                  value={[(pendingChanges.speed ?? neuralTuning?.speed ?? 0.5)]}
+                  onValueChange={(value) => handleParameterChange('speed', value[0])}
+                  className="speed-slider"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Slow and thorough (left) vs fast processing (right)
+                </p>
               </div>
-              
-              {/* Speed Burst Buttons */}
-              <div className="grid grid-cols-5 gap-2">
-                {['Slow', 'Steady', 'Moderate', 'Fast', 'Burst'].map((speed, index) => {
-                  const value = (index + 1) / 5;
-                  const currentValue = pendingChanges.speed ?? neuralTuning?.speed ?? 0.5;
-                  const isActive = Math.abs(value - currentValue) < 0.1;
-                  const intensity = index + 1;
-                  
-                  return (
-                    <button
-                      key={speed}
-                      onClick={() => handleParameterChange('speed', value)}
-                      className={`
-                        relative h-16 rounded-lg border-2 transition-all duration-300 transform hover:scale-105 group
-                        ${isActive 
-                          ? 'border-amber-600 dark:border-amber-400 bg-amber-200 dark:bg-amber-800 shadow-lg scale-105' 
-                          : 'border-amber-300 dark:border-amber-600 bg-amber-100 dark:bg-amber-900 hover:border-amber-500'
-                        }
-                      `}
-                    >
-                      {/* Speed lines effect */}
-                      <div className="absolute inset-0 rounded-lg overflow-hidden">
-                        {Array.from({ length: intensity }, (_, i) => (
-                          <div
-                            key={i}
-                            className={`absolute w-full h-0.5 bg-amber-500 opacity-60 transform -skew-x-12 transition-transform duration-500 ${isActive ? 'animate-pulse' : ''}`}
-                            style={{
-                              top: `${20 + i * 15}%`,
-                              animationDelay: `${i * 0.1}s`
-                            }}
-                          />
-                        ))}
-                      </div>
-                      
-                      <div className="relative z-10 flex flex-col items-center justify-center h-full">
-                        <div className="text-xs font-semibold text-amber-700 dark:text-amber-300 mb-1">
-                          {speed}
-                        </div>
-                        <div className="text-xs text-amber-600 dark:text-amber-400">
-                          {Math.round(value * 100)}%
-                        </div>
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-              
-              <p className="text-xs text-amber-700 dark:text-amber-300 font-medium text-center">
-                Select processing speed intensity level
-              </p>
-            </div>
-          </div>
 
-          {/* Cognitive Style Section */}
-          <div className="space-y-6">
-            <div className="border-b border-amber-200 dark:border-amber-800 pb-2">
-              <h3 className="text-lg font-semibold text-amber-700 dark:text-amber-300">Cognitive Style</h3>
-            </div>
-            
-            {/* Analytical Thinking Parameter - Toggle Switches */}
-            <div className="relative overflow-hidden space-y-4 p-6 rounded-xl bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950/30 dark:to-amber-900/20 border-2 border-amber-300 dark:border-amber-700 shadow-lg">
-              <div className="flex items-center justify-between relative z-10">
-                <Label className="text-base font-semibold flex items-center gap-3">
-                  <div className="relative">
-                    <div className="w-5 h-5 bg-gradient-to-br from-amber-500 to-amber-600 rounded-sm shadow-md border border-amber-600 dark:border-amber-400"></div>
-                    <div className="absolute inset-1 grid grid-cols-2 gap-0.5">
-                      <div className="w-1 h-1 bg-amber-200 rounded-sm"></div>
-                      <div className="w-1 h-1 bg-amber-300 rounded-sm"></div>
-                      <div className="w-1 h-1 bg-amber-300 rounded-sm"></div>
-                      <div className="w-1 h-1 bg-amber-200 rounded-sm"></div>
-                    </div>
-                  </div>
-                  <span className="text-amber-700 dark:text-amber-300">Analytical Thinking</span>
-                </Label>
-                <div className="px-3 py-1 bg-gradient-to-r from-amber-200 to-amber-300 dark:from-amber-800 dark:to-amber-700 rounded-lg border border-amber-300 dark:border-amber-600">
-                  <span className="text-sm font-bold text-amber-800 dark:text-amber-200 font-mono">
+              {/* Analytical Thinking Parameter */}
+              <div className="space-y-4 p-4 rounded-lg bg-gradient-to-r from-amber-50 to-amber-100 dark:from-amber-950/20 dark:to-amber-900/20 border border-amber-200 dark:border-amber-800">
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="analytical" className="text-sm font-medium flex items-center gap-2">
+                    <div className="w-3 h-3 bg-gradient-to-r from-amber-400 to-amber-600 rounded-sm"></div>
+                    Analytical Thinking
+                  </Label>
+                  <span className="text-sm font-bold text-amber-700 dark:text-amber-300">
                     {Math.round((pendingChanges.analytical ?? neuralTuning?.analytical ?? 0.5) * 100)}%
                   </span>
                 </div>
+                
+                <Slider
+                  id="analytical"
+                  min={0}
+                  max={1}
+                  step={0.01}
+                  value={[(pendingChanges.analytical ?? neuralTuning?.analytical ?? 0.5)]}
+                  onValueChange={(value) => handleParameterChange('analytical', value[0])}
+                  className="analytical-slider"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Intuitive responses (left) vs logical analysis (right)
+                </p>
               </div>
-              
-              {/* Logic Toggle Switches */}
-              <div className="space-y-3">
-                {['Basic Logic', 'Pattern Analysis', 'System Thinking', 'Deep Analysis', 'Expert Logic'].map((level, index) => {
-                  const threshold = (index + 1) / 5;
-                  const currentValue = pendingChanges.analytical ?? neuralTuning?.analytical ?? 0.5;
-                  const isActive = currentValue >= threshold;
-                  
-                  return (
-                    <div key={level} className="flex items-center justify-between p-3 rounded-lg bg-amber-100 dark:bg-amber-900 border border-amber-200 dark:border-amber-800">
-                      <div className="flex items-center gap-3">
-                        <div className="text-sm font-medium text-amber-700 dark:text-amber-300">
-                          {level}
-                        </div>
-                        <div className="text-xs text-amber-600 dark:text-amber-400">
-                          {Math.round(threshold * 100)}%+
-                        </div>
-                      </div>
-                      
-                      <button
-                        onClick={() => {
-                          const newValue = isActive ? Math.max(0, threshold - 0.01) : threshold;
-                          handleParameterChange('analytical', newValue);
-                        }}
-                        className={`
-                          relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 focus:outline-none
-                          ${isActive ? 'bg-amber-600' : 'bg-amber-300 dark:bg-amber-700'}
-                        `}
-                      >
-                        <span
-                          className={`
-                            inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-200
-                            ${isActive ? 'translate-x-6' : 'translate-x-1'}
-                          `}
-                        />
-                      </button>
-                    </div>
-                  );
-                })}
-              </div>
-              
-              <p className="text-xs text-amber-700 dark:text-amber-300 font-medium text-center">
-                Toggle analytical thinking levels on or off
-              </p>
             </div>
 
-            {/* Intuitive Processing Parameter - Flow Range Selector */}
-            <div className="relative overflow-hidden space-y-4 p-6 rounded-xl bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950/30 dark:to-amber-900/20 border-2 border-amber-300 dark:border-amber-700 shadow-lg">
-              <div className="flex items-center justify-between relative z-10">
-                <Label className="text-base font-semibold flex items-center gap-3">
-                  <div className="relative">
-                    <div className="w-5 h-5 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full shadow-md border border-amber-600 dark:border-amber-400"></div>
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-2 h-2 bg-amber-200 rounded-full animate-pulse"></div>
-                    </div>
-                  </div>
-                  <span className="text-amber-700 dark:text-amber-300">Intuitive Processing</span>
+            {/* Right Column */}
+            <div className="space-y-6">
+              <div className="border-b border-amber-200 dark:border-amber-800 pb-2">
+                <h3 className="text-lg font-semibold text-amber-700 dark:text-amber-300">Advanced Settings</h3>
+              </div>
+
+              {/* Intuitive Processing Parameter */}
+              <div className="space-y-4 p-4 rounded-lg bg-gradient-to-r from-amber-50 to-amber-100 dark:from-amber-950/20 dark:to-amber-900/20 border border-amber-200 dark:border-amber-800">
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="intuitive" className="text-sm font-medium flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-gradient-to-r from-amber-400 to-amber-600"></div>
+                    Intuitive Processing
+                  </Label>
+                  <span className="text-sm font-bold text-amber-700 dark:text-amber-300">
+                    {Math.round((pendingChanges.intuitive ?? neuralTuning?.intuitive ?? 0.5) * 100)}%
+                  </span>
+                </div>
+                
+                <Slider
+                  id="intuitive"
+                  min={0}
+                  max={1}
+                  step={0.01}
+                  value={[(pendingChanges.intuitive ?? neuralTuning?.intuitive ?? 0.5)]}
+                  onValueChange={(value) => handleParameterChange('intuitive', value[0])}
+                  className="intuitive-slider"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Pattern recognition (left) vs insight emphasis (right)
+                </p>
+              </div>
+
+              {/* Contextual Thinking Parameter */}
+              <div className="space-y-4 p-4 rounded-lg bg-gradient-to-r from-amber-50 to-amber-100 dark:from-amber-950/20 dark:to-amber-900/20 border border-amber-200 dark:border-amber-800">
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="contextualThinking" className="text-sm font-medium flex items-center gap-2">
+                    <div className="w-3 h-3 bg-gradient-to-r from-amber-400 to-amber-600"></div>
+                    Contextual Thinking
+                  </Label>
+                  <span className="text-sm font-bold text-amber-700 dark:text-amber-300">
+                    {Math.round((pendingChanges.contextualThinking ?? neuralTuning?.contextualThinking ?? 0.5) * 100)}%
+                  </span>
+                </div>
+                
+                <Slider
+                  id="contextualThinking"
+                  min={0}
+                  max={1}
+                  step={0.01}
+                  value={[(pendingChanges.contextualThinking ?? neuralTuning?.contextualThinking ?? 0.5)]}
+                  onValueChange={(value) => handleParameterChange('contextualThinking', value[0])}
+                  className="contextual-slider"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Contextual considerations (left) vs universal principles (right)
+                </p>
+              </div>
+
+              {/* Memory Bandwidth Parameter */}
+              <div className="space-y-4 p-4 rounded-lg bg-gradient-to-r from-amber-50 to-amber-100 dark:from-amber-950/20 dark:to-amber-900/20 border border-amber-200 dark:border-amber-800">
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="memoryBandwidth" className="text-sm font-medium flex items-center gap-2">
+                    <div className="w-3 h-3 bg-gradient-to-r from-amber-400 to-amber-600"></div>
+                    Memory Bandwidth
+                  </Label>
+                  <span className="text-sm font-bold text-amber-700 dark:text-amber-300">
+                    {Math.round((pendingChanges.memoryBandwidth ?? neuralTuning?.memoryBandwidth ?? 0.5) * 100)}%
+                  </span>
+                </div>
+                
+                <Slider
+                  id="memoryBandwidth"
+                  min={0}
+                  max={1}
+                  step={0.01}
+                  value={[(pendingChanges.memoryBandwidth ?? neuralTuning?.memoryBandwidth ?? 0.5)]}
+                  onValueChange={(value) => handleParameterChange('memoryBandwidth', value[0])}
+                  className="memory-slider"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Short burst memory (left) vs deep retainer memory (right)
+                </p>
+              </div>
+
+              {/* Thought Complexity Parameter */}
+              <div className="space-y-4 p-4 rounded-lg bg-gradient-to-r from-amber-50 to-amber-100 dark:from-amber-950/20 dark:to-amber-900/20 border border-amber-200 dark:border-amber-800">
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="thoughtComplexity" className="text-sm font-medium flex items-center gap-2">
+                    <div className="w-3 h-3 bg-gradient-to-r from-amber-400 to-amber-600"></div>
+                    Thought Complexity
+                  </Label>
+                  <span className="text-sm font-bold text-amber-700 dark:text-amber-300">
+                    {Math.round((pendingChanges.thoughtComplexity ?? neuralTuning?.thoughtComplexity ?? 0.5) * 100)}%
+                  </span>
+                </div>
+                
+                <Slider
+                  id="thoughtComplexity"
+                  min={0}
+                  max={1}
+                  step={0.01}
+                  value={[(pendingChanges.thoughtComplexity ?? neuralTuning?.thoughtComplexity ?? 0.5)]}
+                  onValueChange={(value) => handleParameterChange('thoughtComplexity', value[0])}
+                  className="complexity-slider"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Simple direct thinking (left) vs complex layered thinking (right)
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t border-amber-200 dark:border-amber-800">
+            <Button
+              onClick={handleSave}
+              disabled={saveMutation.isPending || Object.keys(pendingChanges).length === 0}
+              className="flex-1 bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white font-semibold py-2 px-6 rounded-lg shadow-lg transition-all duration-200 disabled:opacity-50"
+            >
+              {saveMutation.isPending ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                  Applying Changes...
+                </>
+              ) : (
+                <>Save Configuration</>
+              )}
+            </Button>
+            
+            <Button
+              onClick={handleReset}
+              variant="outline"
+              disabled={saveMutation.isPending || Object.keys(pendingChanges).length === 0}
+              className="flex-1 border-2 border-amber-300 dark:border-amber-700 text-amber-700 dark:text-amber-300 hover:bg-amber-50 dark:hover:bg-amber-950/20 font-semibold py-2 px-6 rounded-lg transition-all duration-200"
+            >
+              Reset Changes
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
                 </Label>
                 <div className="px-3 py-1 bg-gradient-to-r from-amber-200 to-amber-300 dark:from-amber-800 dark:to-amber-700 rounded-full border border-amber-300 dark:border-amber-600">
                   <span className="text-sm font-bold text-amber-800 dark:text-amber-200 font-mono">
