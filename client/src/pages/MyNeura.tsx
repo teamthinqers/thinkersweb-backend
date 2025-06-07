@@ -740,99 +740,8 @@ export default function MyNeura() {
               </div>
             </div>
             <CardContent className="p-6 bg-gradient-to-b from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30">
-              <p className="text-muted-foreground mb-4">
-                Set up your Cognitive Shield to protect your thinking identity. It ensures your natural intelligence stays intact while interacting with AI.
-              </p>
-              <div className="flex gap-3">
-                <Button 
-                  className="flex-1 bg-gradient-to-r from-amber-700 to-orange-700 hover:from-amber-800 hover:to-orange-800 text-amber-50 group-hover:translate-y-0 translate-y-1 transition-all duration-300"
-                  onClick={() => setActiveTab('cognitive')}
-                >
-                  Configure Shield
-                </Button>
-                <Button 
-                  variant="outline"
-                  className="flex-1 border-amber-300 text-amber-700 hover:bg-amber-100 dark:border-amber-700 dark:text-amber-300 dark:hover:bg-amber-950 group-hover:translate-y-0 translate-y-1 transition-all duration-300"
-                  onClick={() => setActiveTab('expertise')}
-                >
-                  Skip for Now
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Expertise Layer Card */}
-          <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 group border-amber-200 dark:border-amber-800 flex flex-col h-full relative">
-            <div className="h-48 bg-gradient-to-br from-amber-800 to-orange-900 flex items-center justify-center relative overflow-hidden">
-              {/* Subtle organic spark network */}
-              <div className="absolute inset-0">
-                <div className="absolute top-6 left-8 w-0.5 h-0.5 bg-amber-400 rounded-full opacity-70"></div>
-                <div className="absolute top-16 right-10 w-1 h-1 bg-orange-400 rounded-full opacity-60"></div>
-                <div className="absolute bottom-12 left-16 w-0.5 h-0.5 bg-yellow-500 rounded-full opacity-80"></div>
-                <div className="absolute bottom-8 right-8 w-1 h-1 bg-amber-500 rounded-full opacity-50"></div>
-                <div className="absolute top-20 left-1/2 w-0.5 h-0.5 bg-orange-500 rounded-full opacity-70"></div>
-                {/* Connecting lines */}
-                <div className="absolute top-6 left-8 w-8 h-px bg-gradient-to-r from-amber-400 to-transparent opacity-30"></div>
-                <div className="absolute bottom-12 left-16 w-12 h-px bg-gradient-to-r from-yellow-500 to-transparent opacity-20"></div>
-              </div>
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(251,191,36,0.1),transparent_70%)]"></div>
-              <div className="z-10 p-6 flex flex-col items-center">
-                <div className="rounded-full bg-amber-900/40 p-4 backdrop-blur-sm mb-4 border border-amber-600/30">
-                  <Target className="h-12 w-12 text-amber-100" />
-                </div>
-                <h3 className="text-xl font-bold text-amber-50">Expertise Layer (Optional)</h3>
-              </div>
-            </div>
-            <CardContent className="p-6 bg-gradient-to-b from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30">
-              <p className="text-muted-foreground mb-4">
-                Customize domains where your DotSpark can reflect your professional expertise and provide deeper insights.
-              </p>
-              <div className="flex gap-3">
-                <Button 
-                  className="flex-1 bg-gradient-to-r from-amber-700 to-orange-700 hover:from-amber-800 hover:to-orange-800 text-amber-50 group-hover:translate-y-0 translate-y-1 transition-all duration-300"
-                  onClick={() => setActiveTab('expertise')}
-                >
-                  Configure
-                </Button>
-                <Button 
-                  variant="outline"
-                  className="flex-1 border-amber-300 text-amber-700 hover:bg-amber-100 dark:border-amber-700 dark:text-amber-300 dark:hover:bg-amber-950 group-hover:translate-y-0 translate-y-1 transition-all duration-300"
-                  onClick={() => toast({ title: "Setup Complete", description: "Your DotSpark configuration is ready!" })}
-                >
-                  Skip
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-
-
-        </div>
-      </div>
-      
-      {/* Configuration Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-8">
-        <TabsList className="hidden">
-          <TabsTrigger value="cognitive" />
-          <TabsTrigger value="expertise" />
-        </TabsList>
-        
-
-        
-        {/* Cognitive Shield Tab */}
-        <TabsContent value="cognitive" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <div className="flex items-center gap-2">
-                <BrainCog className="h-5 w-5 text-amber-500" />
-                <CardTitle>Cognitive Shield Configuration</CardTitle>
-              </div>
-              <CardDescription>Configure core parameters to protect your thinking identity</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              {/* Core Parameters Section */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Cognitive Shield</h3>
-                <p className="text-sm text-muted-foreground">
+              <div className="space-y-6">
+                <p className="text-muted-foreground">
                   Configure these parameters to shield you from biases while using AI.
                 </p>
                 
@@ -907,72 +816,78 @@ export default function MyNeura() {
                     Deep reflection (left) vs quick response time (right)
                   </p>
                 </div>
-              </div>
 
-              <div className="flex justify-between pt-4">
-                <Button 
-                  variant="outline" 
-                  onClick={() => setActiveTab('expertise')}
-                >
-                  <ChevronRight className="mr-1 h-4 w-4" /> Next 
-                </Button>
-                <div className="flex items-center gap-2">
-                  {unsavedChanges && (
-                    <span className="text-sm text-amber-600 dark:text-amber-400">
-                      You have unsaved changes
-                    </span>
-                  )}
+                <div className="flex gap-3 pt-4">
                   <Button 
                     disabled={isUpdating}
                     variant="default" 
-                    className="bg-amber-600 hover:bg-amber-700"
+                    className="flex-1 bg-amber-600 hover:bg-amber-700"
                     onClick={saveChanges}
                   >
                     <Save className="mr-1 h-4 w-4" />
                     Save Shield Settings
                   </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-        
-        {/* Expertise Layer Tab */}
-        <TabsContent value="expertise" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <div className="flex items-center gap-2">
-                <Target className="h-5 w-5 text-amber-500" />
-                <CardTitle>Expertise Layer Areas (Optional)</CardTitle>
-              </div>
-              <CardDescription>Customize domain-specific expertise for your DotSpark</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="text-center py-8">
-                <p className="text-muted-foreground mb-6">
-                  Customize domains where your DotSpark can reflect your professional expertise and provide deeper insights.
-                </p>
-                <div className="flex gap-3 max-w-md mx-auto">
-                  <Button 
-                    className="flex-1 bg-gradient-to-r from-orange-600 to-red-600 hover:from-red-600 hover:to-orange-600"
-                    onClick={() => setLocation('/dotspark-tuning/expertise')}
-                  >
-                    Configure
-                  </Button>
                   <Button 
                     variant="outline"
-                    className="flex-1"
-                    onClick={() => toast({ title: "Setup Complete", description: "Your DotSpark configuration is ready!" })}
+                    className="flex-1 border-amber-300 text-amber-700 hover:bg-amber-100 dark:border-amber-700 dark:text-amber-300 dark:hover:bg-amber-950"
+                    onClick={() => setActiveTab('expertise')}
                   >
-                    Skip
+                    Next: Expertise
                   </Button>
                 </div>
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
 
-      </Tabs>
+          {/* Expertise Layer Card */}
+          <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 group border-amber-200 dark:border-amber-800 flex flex-col h-full relative">
+            <div className="h-48 bg-gradient-to-br from-amber-800 to-orange-900 flex items-center justify-center relative overflow-hidden">
+              {/* Subtle organic spark network */}
+              <div className="absolute inset-0">
+                <div className="absolute top-6 left-8 w-0.5 h-0.5 bg-amber-400 rounded-full opacity-70"></div>
+                <div className="absolute top-16 right-10 w-1 h-1 bg-orange-400 rounded-full opacity-60"></div>
+                <div className="absolute bottom-12 left-16 w-0.5 h-0.5 bg-yellow-500 rounded-full opacity-80"></div>
+                <div className="absolute bottom-8 right-8 w-1 h-1 bg-amber-500 rounded-full opacity-50"></div>
+                <div className="absolute top-20 left-1/2 w-0.5 h-0.5 bg-orange-500 rounded-full opacity-70"></div>
+                {/* Connecting lines */}
+                <div className="absolute top-6 left-8 w-8 h-px bg-gradient-to-r from-amber-400 to-transparent opacity-30"></div>
+                <div className="absolute bottom-12 left-16 w-12 h-px bg-gradient-to-r from-yellow-500 to-transparent opacity-20"></div>
+              </div>
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(251,191,36,0.1),transparent_70%)]"></div>
+              <div className="z-10 p-6 flex flex-col items-center">
+                <div className="rounded-full bg-amber-900/40 p-4 backdrop-blur-sm mb-4 border border-amber-600/30">
+                  <Target className="h-12 w-12 text-amber-100" />
+                </div>
+                <h3 className="text-xl font-bold text-amber-50">Expertise Layer (Optional)</h3>
+              </div>
+            </div>
+            <CardContent className="p-6 bg-gradient-to-b from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30">
+              <p className="text-muted-foreground mb-4">
+                Customize domains where your DotSpark can reflect your professional expertise and provide deeper insights.
+              </p>
+              <div className="flex gap-3">
+                <Button 
+                  className="flex-1 bg-gradient-to-r from-amber-700 to-orange-700 hover:from-amber-800 hover:to-orange-800 text-amber-50 group-hover:translate-y-0 translate-y-1 transition-all duration-300"
+                  onClick={() => setActiveTab('expertise')}
+                >
+                  Configure
+                </Button>
+                <Button 
+                  variant="outline"
+                  className="flex-1 border-amber-300 text-amber-700 hover:bg-amber-100 dark:border-amber-700 dark:text-amber-300 dark:hover:bg-amber-950 group-hover:translate-y-0 translate-y-1 transition-all duration-300"
+                  onClick={() => toast({ title: "Setup Complete", description: "Your DotSpark configuration is ready!" })}
+                >
+                  Skip
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+
+        </div>
+      </div>
+      
+
       
       {/* Save button fixed at bottom if changes are unsaved */}
       {unsavedChanges && (
