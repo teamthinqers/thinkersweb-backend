@@ -718,22 +718,25 @@ export default function MyNeura() {
 
 
           {/* Cognitive Shield Card */}
-          <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 group border-amber-100 dark:border-amber-900 flex flex-col h-full relative">
-            <div className="h-48 bg-gradient-to-br from-amber-600 to-orange-700 flex items-center justify-center relative overflow-hidden">
-              {/* Animated spark particles */}
+          <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 group border-amber-200 dark:border-amber-800 flex flex-col h-full relative">
+            <div className="h-48 bg-gradient-to-br from-amber-800 to-orange-900 flex items-center justify-center relative overflow-hidden">
+              {/* Subtle organic spark network */}
               <div className="absolute inset-0">
-                <div className="absolute top-4 left-6 w-1 h-1 bg-yellow-300 rounded-full animate-pulse"></div>
-                <div className="absolute top-12 right-8 w-1.5 h-1.5 bg-amber-300 rounded-full animate-pulse delay-300"></div>
-                <div className="absolute bottom-8 left-12 w-1 h-1 bg-orange-300 rounded-full animate-pulse delay-700"></div>
-                <div className="absolute bottom-6 right-6 w-1.5 h-1.5 bg-yellow-400 rounded-full animate-pulse delay-500"></div>
-                <div className="absolute top-16 left-1/3 w-1 h-1 bg-amber-400 rounded-full animate-pulse delay-1000"></div>
+                <div className="absolute top-6 left-8 w-0.5 h-0.5 bg-amber-400 rounded-full opacity-70"></div>
+                <div className="absolute top-16 right-10 w-1 h-1 bg-orange-400 rounded-full opacity-60"></div>
+                <div className="absolute bottom-12 left-16 w-0.5 h-0.5 bg-yellow-500 rounded-full opacity-80"></div>
+                <div className="absolute bottom-8 right-8 w-1 h-1 bg-amber-500 rounded-full opacity-50"></div>
+                <div className="absolute top-20 left-1/2 w-0.5 h-0.5 bg-orange-500 rounded-full opacity-70"></div>
+                {/* Connecting lines */}
+                <div className="absolute top-6 left-8 w-8 h-px bg-gradient-to-r from-amber-400 to-transparent opacity-30"></div>
+                <div className="absolute bottom-12 left-16 w-12 h-px bg-gradient-to-r from-yellow-500 to-transparent opacity-20"></div>
               </div>
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.1),transparent_60%)]"></div>
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(251,191,36,0.1),transparent_70%)]"></div>
               <div className="z-10 p-6 flex flex-col items-center">
-                <div className="rounded-full bg-amber-100/30 p-4 backdrop-blur-sm mb-4">
-                  <BrainCog className="h-12 w-12 text-white" />
+                <div className="rounded-full bg-amber-900/40 p-4 backdrop-blur-sm mb-4 border border-amber-600/30">
+                  <BrainCog className="h-12 w-12 text-amber-100" />
                 </div>
-                <h3 className="text-xl font-bold text-white">Cognitive Shield (Recommended)</h3>
+                <h3 className="text-xl font-bold text-amber-50">Cognitive Shield (Recommended)</h3>
               </div>
             </div>
             <CardContent className="p-6">
@@ -742,14 +745,14 @@ export default function MyNeura() {
               </p>
               <div className="flex gap-3">
                 <Button 
-                  className="flex-1 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 group-hover:translate-y-0 translate-y-1 transition-all duration-300"
+                  className="flex-1 bg-gradient-to-r from-amber-700 to-orange-700 hover:from-amber-800 hover:to-orange-800 text-amber-50 group-hover:translate-y-0 translate-y-1 transition-all duration-300"
                   onClick={() => setLocation('/dotspark-tuning/cognitive')}
                 >
                   Configure Shield
                 </Button>
                 <Button 
                   variant="outline"
-                  className="flex-1 border-amber-200 hover:bg-amber-50 dark:border-amber-800 dark:hover:bg-amber-950 group-hover:translate-y-0 translate-y-1 transition-all duration-300"
+                  className="flex-1 border-amber-300 text-amber-700 hover:bg-amber-100 dark:border-amber-700 dark:text-amber-300 dark:hover:bg-amber-950 group-hover:translate-y-0 translate-y-1 transition-all duration-300"
                   onClick={() => setActiveTab('expertise')}
                 >
                   Skip for Now
@@ -759,22 +762,25 @@ export default function MyNeura() {
           </Card>
 
           {/* Expertise Layer Card */}
-          <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 group border-yellow-100 dark:border-yellow-900 flex flex-col h-full relative">
-            <div className="h-48 bg-gradient-to-br from-yellow-600 to-amber-700 flex items-center justify-center relative overflow-hidden">
-              {/* Animated spark particles */}
+          <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 group border-yellow-200 dark:border-yellow-800 flex flex-col h-full relative">
+            <div className="h-48 bg-gradient-to-br from-yellow-800 to-amber-900 flex items-center justify-center relative overflow-hidden">
+              {/* Subtle organic spark network */}
               <div className="absolute inset-0">
-                <div className="absolute top-6 right-4 w-1 h-1 bg-orange-300 rounded-full animate-pulse delay-200"></div>
-                <div className="absolute top-10 left-10 w-1.5 h-1.5 bg-yellow-300 rounded-full animate-pulse delay-600"></div>
-                <div className="absolute bottom-10 right-10 w-1 h-1 bg-amber-300 rounded-full animate-pulse delay-900"></div>
-                <div className="absolute bottom-4 left-8 w-1.5 h-1.5 bg-orange-400 rounded-full animate-pulse delay-400"></div>
-                <div className="absolute top-20 right-1/3 w-1 h-1 bg-yellow-400 rounded-full animate-pulse delay-800"></div>
+                <div className="absolute top-8 right-6 w-0.5 h-0.5 bg-yellow-400 rounded-full opacity-60"></div>
+                <div className="absolute top-12 left-12 w-1 h-1 bg-amber-400 rounded-full opacity-70"></div>
+                <div className="absolute bottom-10 right-12 w-0.5 h-0.5 bg-orange-400 rounded-full opacity-50"></div>
+                <div className="absolute bottom-6 left-10 w-1 h-1 bg-yellow-500 rounded-full opacity-80"></div>
+                <div className="absolute top-18 right-1/2 w-0.5 h-0.5 bg-amber-500 rounded-full opacity-60"></div>
+                {/* Connecting lines */}
+                <div className="absolute top-12 left-12 w-10 h-px bg-gradient-to-r from-amber-400 to-transparent opacity-25"></div>
+                <div className="absolute bottom-6 left-10 w-6 h-px bg-gradient-to-r from-yellow-500 to-transparent opacity-30"></div>
               </div>
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.1),transparent_60%)]"></div>
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(234,179,8,0.1),transparent_70%)]"></div>
               <div className="z-10 p-6 flex flex-col items-center">
-                <div className="rounded-full bg-yellow-100/30 p-4 backdrop-blur-sm mb-4">
-                  <Target className="h-12 w-12 text-white" />
+                <div className="rounded-full bg-yellow-900/40 p-4 backdrop-blur-sm mb-4 border border-yellow-600/30">
+                  <Target className="h-12 w-12 text-yellow-100" />
                 </div>
-                <h3 className="text-xl font-bold text-white">Expertise Layer (Optional)</h3>
+                <h3 className="text-xl font-bold text-yellow-50">Expertise Layer (Optional)</h3>
               </div>
             </div>
             <CardContent className="p-6">
@@ -783,14 +789,14 @@ export default function MyNeura() {
               </p>
               <div className="flex gap-3">
                 <Button 
-                  className="flex-1 bg-gradient-to-r from-yellow-600 to-amber-600 hover:from-yellow-700 hover:to-amber-700 group-hover:translate-y-0 translate-y-1 transition-all duration-300"
+                  className="flex-1 bg-gradient-to-r from-yellow-700 to-amber-700 hover:from-yellow-800 hover:to-amber-800 text-yellow-50 group-hover:translate-y-0 translate-y-1 transition-all duration-300"
                   onClick={() => setLocation('/dotspark-tuning/expertise')}
                 >
                   Configure
                 </Button>
                 <Button 
                   variant="outline"
-                  className="flex-1 border-yellow-200 hover:bg-yellow-50 dark:border-yellow-800 dark:hover:bg-yellow-950 group-hover:translate-y-0 translate-y-1 transition-all duration-300"
+                  className="flex-1 border-yellow-300 text-yellow-700 hover:bg-yellow-100 dark:border-yellow-700 dark:text-yellow-300 dark:hover:bg-yellow-950 group-hover:translate-y-0 translate-y-1 transition-all duration-300"
                   onClick={() => toast({ title: "Setup Complete", description: "Your DotSpark configuration is ready!" })}
                 >
                   Skip
