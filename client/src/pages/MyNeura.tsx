@@ -1148,12 +1148,12 @@ export default function MyNeura() {
                 <Target className="h-5 w-5 text-amber-500" />
                 <CardTitle>Expertise Layer Areas</CardTitle>
               </div>
-              <CardDescription>Customize domain-specific expertise for your neural mirror</CardDescription>
+              <CardDescription>Customize domain-specific expertise for your DotSpark</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="mb-4">
                 <p className="text-sm text-muted-foreground">
-                  Adjust the strength of each specialization to tune how your neural mirror prioritizes these domains when processing information.
+                  Adjust the strength of each specialization to tune how your DotSpark prioritizes these domains when processing information.
                 </p>
               </div>
               
@@ -1279,12 +1279,12 @@ export default function MyNeura() {
                 <Lightbulb className="h-5 w-5 text-amber-500" />
                 <CardTitle>Learning Engine Directives</CardTitle>
               </div>
-              <CardDescription>Guide what your neural mirror prioritizes learning</CardDescription>
+              <CardDescription>Guide what your DotSpark prioritizes learning</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="mb-4">
                 <p className="text-sm text-muted-foreground">
-                  Add specific topics or skills you want your neural mirror to learn about and improve upon over time.
+                  Add specific topics or skills you want your DotSpark to learn about and improve upon over time.
                 </p>
               </div>
               
@@ -1342,7 +1342,7 @@ export default function MyNeura() {
                       No learning focus areas yet
                     </p>
                     <p className="text-sm text-muted-foreground">
-                      Add topics you want your neural mirror to learn about
+                      Add topics you want your DotSpark to learn about
                     </p>
                   </div>
                 )}
