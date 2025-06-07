@@ -751,7 +751,7 @@ export default function LandingPage() {
               <div className="mt-auto pt-4">
                 <Button 
                   variant="default" 
-                  className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-red-500 hover:to-orange-500 text-white border-0 shadow-md"
+                  className="w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-red-600 hover:to-orange-600 text-white border-0 shadow-md hover:shadow-lg transition-all duration-300"
                   onClick={() => setLocation("/my-neura")}
                 >
                   Activate DotSpark
