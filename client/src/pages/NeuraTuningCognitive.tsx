@@ -693,25 +693,111 @@ export default function NeuraTuningCognitive() {
             </div>
           </div>
 
-          {/* Signal Focus Parameter */}
-          <div className="space-y-4">
+          {/* Signal Focus - Beam Width Visualization */}
+          <div className="space-y-4 bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-950/40 dark:to-yellow-950/40 p-6 rounded-lg border border-amber-100 dark:border-amber-900">
             <div className="flex items-center justify-between">
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                Signal Focus
-              </label>
-
+              <div className="flex items-start gap-2">
+                <h3 className="text-lg font-medium bg-gradient-to-r from-amber-600 to-yellow-600 inline-block text-transparent bg-clip-text">Signal Focus</h3>
+                <HoverCard>
+                  <HoverCardTrigger>
+                    <Info className="h-4 w-4 text-amber-400" />
+                  </HoverCardTrigger>
+                  <HoverCardContent className="w-80">
+                    <div className="space-y-2">
+                      <h4 className="text-sm font-semibold">Signal Focus</h4>
+                      <p className="text-sm">
+                        Controls your attention style. Narrow beam focus concentrates intensely on specific details, while wide scanner focus takes in broad patterns and connections across multiple areas simultaneously.
+                      </p>
+                    </div>
+                  </HoverCardContent>
+                </HoverCard>
+              </div>
             </div>
-            <Slider
-              value={[pendingChanges.signalFocus ?? neuralTuning.signalFocus]}
-              onValueChange={(value) => handleParameterChange('signalFocus', value)}
-              max={1}
-              min={0}
-              step={0.01}
-              className="w-full"
-            />
-            <p className="text-xs text-gray-500 dark:text-gray-400">
-              Narrow beam focus (0%) vs wide scanner focus (100%)
-            </p>
+            
+            <div className="relative py-8">
+              {/* Focus beam visualization */}
+              <div className="relative h-32 bg-gradient-to-b from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 rounded-lg overflow-hidden border border-amber-200 dark:border-amber-800">
+                
+                {/* Background grid pattern */}
+                <div className="absolute inset-0 opacity-20">
+                  <div className="grid grid-cols-8 grid-rows-6 h-full w-full">
+                    {[...Array(48)].map((_, i) => (
+                      <div key={i} className="border border-gray-300 dark:border-gray-600"></div>
+                    ))}
+                  </div>
+                </div>
+                
+                {/* Focus beam */}
+                <div className="absolute top-0 left-1/2 transform -translate-x-1/2 h-full">
+                  <div 
+                    className="h-full bg-gradient-to-b from-yellow-400 via-amber-500 to-orange-600 opacity-80 transition-all duration-700 ease-out"
+                    style={{ 
+                      width: `${Math.max(4, (pendingChanges.signalFocus ?? neuralTuning.signalFocus) * 120)}px`,
+                      clipPath: 'polygon(40% 0%, 60% 0%, 100% 100%, 0% 100%)'
+                    }}
+                  ></div>
+                </div>
+                
+                {/* Focal point indicators */}
+                <div className="absolute top-2 left-1/2 transform -translate-x-1/2">
+                  <div className="w-2 h-2 rounded-full bg-white shadow-lg animate-pulse"></div>
+                </div>
+                
+                {/* Focus labels */}
+                <div className="absolute bottom-2 left-2 text-xs font-medium text-purple-600 dark:text-purple-400">
+                  Narrow Beam
+                </div>
+                <div className="absolute bottom-2 right-2 text-xs font-medium text-orange-600 dark:text-orange-400">
+                  Wide Scanner
+                </div>
+              </div>
+              
+              {/* Current focus mode */}
+              <div className="mt-4 text-center">
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 border-amber-200 dark:border-amber-800 bg-white dark:bg-gray-900">
+                  {(() => {
+                    const value = pendingChanges.signalFocus ?? neuralTuning.signalFocus;
+                    if (value < 0.33) {
+                      return (
+                        <>
+                          <div className="w-3 h-3 rounded-full bg-gradient-to-r from-purple-400 to-purple-600"></div>
+                          <span className="text-sm font-medium text-purple-600 dark:text-purple-400">Narrow Beam Focus</span>
+                        </>
+                      );
+                    } else if (value < 0.67) {
+                      return (
+                        <>
+                          <div className="w-3 h-3 rounded-full bg-gradient-to-r from-amber-400 to-amber-600"></div>
+                          <span className="text-sm font-medium text-amber-600 dark:text-amber-400">Adaptive Focus</span>
+                        </>
+                      );
+                    } else {
+                      return (
+                        <>
+                          <div className="w-3 h-3 rounded-full bg-gradient-to-r from-orange-400 to-orange-600"></div>
+                          <span className="text-sm font-medium text-orange-600 dark:text-orange-400">Wide Scanner Focus</span>
+                        </>
+                      );
+                    }
+                  })()}
+                </div>
+              </div>
+              
+              {/* Interactive slider */}
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.01"
+                value={pendingChanges.signalFocus ?? neuralTuning.signalFocus}
+                onChange={(e) => handleParameterChange('signalFocus', [parseFloat(e.target.value)])}
+                className="absolute top-0 left-0 w-full h-32 opacity-0 cursor-pointer"
+              />
+            </div>
+            
+            <div className="text-xs text-gray-500 dark:text-gray-400 text-center">
+              Control your attention style - from laser focus to broad awareness
+            </div>
           </div>
 
           {/* Impulse Control Parameter */}
