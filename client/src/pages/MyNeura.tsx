@@ -804,8 +804,8 @@ export default function MyNeura() {
           </Card>
 
           {/* Expertise Layer Card */}
-          <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 group border-blue-100 dark:border-blue-900 flex flex-col h-full">
-            <div className="h-48 bg-gradient-to-br from-blue-400 to-sky-600 flex items-center justify-center relative overflow-hidden">
+          <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 group border-orange-100 dark:border-orange-900 flex flex-col h-full">
+            <div className="h-48 bg-gradient-to-br from-orange-400 to-red-600 flex items-center justify-center relative overflow-hidden">
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.2),transparent_50%)]"></div>
               <div className="z-10 p-6 flex flex-col items-center">
                 <div className="rounded-full bg-white/20 p-4 backdrop-blur-sm mb-4">
@@ -820,26 +820,26 @@ export default function MyNeura() {
               </p>
               <ul className="space-y-2 flex-1">
                 <li className="flex items-start">
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 mr-2 mt-0.5">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-orange-100 dark:bg-orange-900 text-orange-600 dark:text-orange-400 mr-2 mt-0.5">
                     <Check className="h-3.5 w-3.5" />
                   </span>
                   <span className="text-sm">Add specialized knowledge areas</span>
                 </li>
                 <li className="flex items-start">
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 mr-2 mt-0.5">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-orange-100 dark:bg-orange-900 text-orange-600 dark:text-orange-400 mr-2 mt-0.5">
                     <Check className="h-3.5 w-3.5" />
                   </span>
                   <span className="text-sm">Adjust expertise strength levels</span>
                 </li>
                 <li className="flex items-start">
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 mr-2 mt-0.5">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-orange-100 dark:bg-orange-900 text-orange-600 dark:text-orange-400 mr-2 mt-0.5">
                     <Check className="h-3.5 w-3.5" />
                   </span>
                   <span className="text-sm">Balance between domain specialties</span>
                 </li>
               </ul>
               <Button 
-                className="w-full bg-blue-600 hover:bg-blue-700 group-hover:translate-y-0 translate-y-1 transition-all duration-300 mt-6"
+                className="w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-red-600 hover:to-orange-600 group-hover:translate-y-0 translate-y-1 transition-all duration-300 mt-6"
                 onClick={() => setLocation('/neura-tuning/expertise')}
               >
                 Configure Expertise Areas
@@ -848,8 +848,8 @@ export default function MyNeura() {
           </Card>
 
           {/* Learning Engine Card */}
-          <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 group border-emerald-100 dark:border-emerald-900 flex flex-col h-full">
-            <div className="h-48 bg-gradient-to-br from-emerald-400 to-green-600 flex items-center justify-center relative overflow-hidden">
+          <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 group border-amber-100 dark:border-amber-900 flex flex-col h-full">
+            <div className="h-48 bg-gradient-to-br from-amber-400 to-orange-600 flex items-center justify-center relative overflow-hidden">
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.2),transparent_50%)]"></div>
               <div className="z-10 p-6 flex flex-col items-center">
                 <div className="rounded-full bg-white/20 p-4 backdrop-blur-sm mb-4">
@@ -864,26 +864,26 @@ export default function MyNeura() {
               </p>
               <ul className="space-y-2 flex-1">
                 <li className="flex items-start">
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-900 text-emerald-600 dark:text-emerald-400 mr-2 mt-0.5">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-amber-100 dark:bg-amber-900 text-amber-600 dark:text-amber-400 mr-2 mt-0.5">
                     <Check className="h-3.5 w-3.5" />
                   </span>
                   <span className="text-sm">Define key learning directives</span>
                 </li>
                 <li className="flex items-start">
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-900 text-emerald-600 dark:text-emerald-400 mr-2 mt-0.5">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-amber-100 dark:bg-amber-900 text-amber-600 dark:text-amber-400 mr-2 mt-0.5">
                     <Check className="h-3.5 w-3.5" />
                   </span>
                   <span className="text-sm">Prioritize topics of interest</span>
                 </li>
                 <li className="flex items-start">
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-900 text-emerald-600 dark:text-emerald-400 mr-2 mt-0.5">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-amber-100 dark:bg-amber-900 text-amber-600 dark:text-amber-400 mr-2 mt-0.5">
                     <Check className="h-3.5 w-3.5" />
                   </span>
                   <span className="text-sm">Add and remove learning areas</span>
                 </li>
               </ul>
               <Button 
-                className="w-full bg-emerald-600 hover:bg-emerald-700 group-hover:translate-y-0 translate-y-1 transition-all duration-300 mt-6"
+                className="w-full bg-gradient-to-r from-amber-600 to-orange-600 hover:from-orange-600 hover:to-amber-600 group-hover:translate-y-0 translate-y-1 transition-all duration-300 mt-6"
                 onClick={() => setLocation('/neura-tuning/learning')}
               >
                 Configure Learning Engine
