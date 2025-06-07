@@ -775,7 +775,7 @@ export default function MyNeura() {
                 <Button 
                   variant="outline"
                   className="flex-1 group-hover:translate-y-0 translate-y-1 transition-all duration-300"
-                  onClick={() => setActiveTab('learning')}
+                  onClick={() => toast({ title: "Setup Complete", description: "Your DotSpark configuration is ready!" })}
                 >
                   Skip
                 </Button>
@@ -783,49 +783,7 @@ export default function MyNeura() {
             </CardContent>
           </Card>
 
-          {/* Learning Engine Card */}
-          <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 group border-amber-100 dark:border-amber-900 flex flex-col h-full">
-            <div className="h-48 bg-gradient-to-br from-amber-400 to-orange-600 flex items-center justify-center relative overflow-hidden">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.2),transparent_50%)]"></div>
-              <div className="z-10 p-6 flex flex-col items-center">
-                <div className="rounded-full bg-white/20 p-4 backdrop-blur-sm mb-4">
-                  <Lightbulb className="h-12 w-12 text-white" />
-                </div>
-                <h3 className="text-xl font-bold text-white">Learning Engine</h3>
-              </div>
-            </div>
-            <CardContent className="p-6 flex-1 flex flex-col">
-              <p className="text-muted-foreground mb-4">
-                Define growth areas where your DotSpark should develop awareness to better reflect your learning interests.
-              </p>
-              <ul className="space-y-2 flex-1">
-                <li className="flex items-start">
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-amber-100 dark:bg-amber-900 text-amber-600 dark:text-amber-400 mr-2 mt-0.5">
-                    <Check className="h-3.5 w-3.5" />
-                  </span>
-                  <span className="text-sm">Define key learning directives</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-amber-100 dark:bg-amber-900 text-amber-600 dark:text-amber-400 mr-2 mt-0.5">
-                    <Check className="h-3.5 w-3.5" />
-                  </span>
-                  <span className="text-sm">Prioritize topics of interest</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-amber-100 dark:bg-amber-900 text-amber-600 dark:text-amber-400 mr-2 mt-0.5">
-                    <Check className="h-3.5 w-3.5" />
-                  </span>
-                  <span className="text-sm">Add and remove learning areas</span>
-                </li>
-              </ul>
-              <Button 
-                className="w-full bg-gradient-to-r from-amber-600 to-orange-600 hover:from-orange-600 hover:to-amber-600 group-hover:translate-y-0 translate-y-1 transition-all duration-300 mt-6"
-                onClick={() => setLocation('/dotspark-tuning/learning')}
-              >
-                Configure Learning Engine
-              </Button>
-            </CardContent>
-          </Card>
+
         </div>
       </div>
       
@@ -834,7 +792,6 @@ export default function MyNeura() {
         <TabsList className="hidden">
           <TabsTrigger value="cognitive" />
           <TabsTrigger value="expertise" />
-          <TabsTrigger value="learning" />
         </TabsList>
         
 
@@ -899,7 +856,7 @@ export default function MyNeura() {
                   <Button 
                     variant="outline"
                     className="flex-1"
-                    onClick={() => setActiveTab('learning')}
+                    onClick={() => toast({ title: "Setup Complete", description: "Your DotSpark configuration is ready!" })}
                   >
                     Skip
                   </Button>
@@ -908,111 +865,7 @@ export default function MyNeura() {
             </CardContent>
           </Card>
         </TabsContent>
-        
-        {/* Learning Engine Tab */}
-        <TabsContent value="learning" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <div className="flex items-center gap-2">
-                <Lightbulb className="h-5 w-5 text-amber-500" />
-                <CardTitle>Learning Engine Directives</CardTitle>
-              </div>
-              <CardDescription>Guide what your DotSpark prioritizes learning</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="mb-4">
-                <p className="text-sm text-muted-foreground">
-                  Add specific topics or skills you want your DotSpark to learn about and improve upon over time.
-                </p>
-              </div>
-              
-              {/* Add new focus area */}
-              <div className="flex gap-2 mb-6">
-                <Input
-                  placeholder="Add new learning focus (e.g., Machine Learning Fundamentals)"
-                  value={newFocus}
-                  onChange={(e) => setNewFocus(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && handleAddFocus()}
-                  className="flex-1"
-                />
-                <Button 
-                  variant="outline" 
-                  className="shrink-0"
-                  onClick={handleAddFocus}
-                >
-                  <Plus className="h-4 w-4" />
-                  Add
-                </Button>
-              </div>
-              
-              {/* Current focus areas */}
-              <div className="space-y-2">
-                {(pendingChanges.learningFocus || neuralTuning?.learningFocus || []).length > 0 ? (
-                  <div className="rounded-md border">
-                    <ScrollArea className="h-[200px]">
-                      <div className="p-4 pt-0">
-                        <div className="h-2" />
-                        {(pendingChanges.learningFocus || neuralTuning?.learningFocus || []).map((focus, index) => (
-                          <div 
-                            key={focus + index}
-                            className="flex items-center justify-between py-3 border-b last:border-b-0"
-                          >
-                            <div className="flex items-center gap-2">
-                              <Lightbulb className="h-4 w-4 text-amber-500" />
-                              <span>{focus}</span>
-                            </div>
-                            <Button 
-                              variant="ghost" 
-                              size="sm"
-                              onClick={() => handleRemoveFocus(index)}
-                              className="h-8 w-8 p-0"
-                            >
-                              <X className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        ))}
-                      </div>
-                    </ScrollArea>
-                  </div>
-                ) : (
-                  <div className="py-8 text-center border rounded-md">
-                    <p className="text-muted-foreground mb-2">
-                      No learning focus areas yet
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      Add topics you want your DotSpark to learn about
-                    </p>
-                  </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-          
-          <div className="flex justify-between">
-            <Button 
-              variant="outline" 
-              onClick={() => setActiveTab('expertise')}
-            >
-              <ChevronLeft className="mr-1 h-4 w-4" /> Previous 
-            </Button>
-            <div className="flex items-center gap-2">
-              {unsavedChanges && (
-                <span className="text-sm text-amber-600 dark:text-amber-400">
-                  You have unsaved changes
-                </span>
-              )}
-              <Button 
-                disabled={isUpdating}
-                variant="default" 
-                className="bg-amber-600 hover:bg-amber-700"
-                onClick={saveChanges}
-              >
-                <Save className="mr-1 h-4 w-4" />
-                Save Changes
-              </Button>
-            </div>
-          </div>
-        </TabsContent>
+
       </Tabs>
       
       {/* Save button fixed at bottom if changes are unsaved */}
