@@ -840,7 +840,7 @@ export default function LandingPage() {
                       <span className="font-bold text-lg">Setup Complete!</span>
                       <Sparkles className="h-5 w-5 ml-2" />
                     </div>
-                    <p className="text-sm">Your Neura is ready to assist you anytime, anywhere</p>
+                    <p className="text-sm">Your DotSpark is ready to assist you anytime, anywhere</p>
                   </div>
                 </div>
               </div>
