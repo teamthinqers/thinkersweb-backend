@@ -760,12 +760,12 @@ export default function LandingPage() {
             </div>
             
             {/* Step 3: Connect WhatsApp */}
-            <div className="bg-card rounded-lg p-6 relative group hover:shadow-lg transition-all duration-300 border border-red-200/30 dark:border-red-800/30 overflow-hidden h-full flex flex-col">
-              <div className="absolute top-0 right-0 w-24 h-24 bg-red-500/5 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:bg-red-500/10 transition-colors duration-300"></div>
-              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-red-500/10 text-red-600 mb-4 relative z-10">
+            <div className="bg-card rounded-lg p-6 relative group hover:shadow-lg transition-all duration-300 border border-[#25D366]/30 dark:border-[#25D366]/30 overflow-hidden h-full flex flex-col">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-[#25D366]/5 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:bg-[#25D366]/10 transition-colors duration-300"></div>
+              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-[#25D366]/10 text-[#25D366] mb-4 relative z-10">
                 <MessageCircle className="h-6 w-6" />
               </div>
-              <div className="absolute top-6 right-6 flex items-center justify-center w-8 h-8 rounded-full bg-red-500/80 text-white font-bold text-lg">
+              <div className="absolute top-6 right-6 flex items-center justify-center w-8 h-8 rounded-full bg-[#25D366]/80 text-white font-bold text-lg">
                 3
               </div>
               <h3 className="text-xl font-semibold mb-2">Link WhatsApp</h3>
@@ -774,7 +774,7 @@ export default function LandingPage() {
                 <Button 
                   size="default" 
                   onClick={() => window.open("https://wa.me/16067157733?text=Hey%20DotSpark%2C%20I%27ve%20got%20a%20few%20things%20on%20my%20mind%20%E2%80%94%20need%20your%20thoughts", "_blank")}
-                  className="w-full rounded-full bg-gradient-to-r from-red-500 to-pink-600 hover:from-pink-600 hover:to-red-500 text-white shadow-md hover:shadow-lg transition-all duration-300"
+                  className="w-full rounded-full bg-[#25D366] hover:bg-[#128C7E] text-white shadow-md hover:shadow-lg transition-all duration-300"
                 >
                   <MessageSquare className="h-5 w-5 mr-2" />
                   <span>Link WhatsApp</span>
