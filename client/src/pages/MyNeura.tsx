@@ -715,49 +715,7 @@ export default function MyNeura() {
         </p>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 auto-rows-fr">
-          {/* Core Tuning Card */}
-          <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 group border-amber-100 dark:border-amber-900 flex flex-col h-full">
-            <div className="h-48 bg-gradient-to-br from-amber-400 to-blue-600 flex items-center justify-center relative overflow-hidden">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.2),transparent_50%)]"></div>
-              <div className="z-10 p-6 flex flex-col items-center">
-                <div className="rounded-full bg-white/20 p-4 backdrop-blur-sm mb-4">
-                  <Zap className="h-12 w-12 text-white" />
-                </div>
-                <h3 className="text-xl font-bold text-white">Core Tuning</h3>
-              </div>
-            </div>
-            <CardContent className="p-6">
-              <p className="text-muted-foreground mb-4">
-                Fine-tune how your DotSpark processes information by adjusting core parameters to match your natural thinking patterns.
-              </p>
-              <ul className="space-y-2 mb-6">
-                <li className="flex items-start">
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-amber-100 dark:bg-amber-900 text-amber-600 dark:text-amber-400 mr-2 mt-0.5">
-                    <Check className="h-3.5 w-3.5" />
-                  </span>
-                  <span className="text-sm">Control creativity vs practicality</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-amber-100 dark:bg-amber-900 text-amber-600 dark:text-amber-400 mr-2 mt-0.5">
-                    <Check className="h-3.5 w-3.5" />
-                  </span>
-                  <span className="text-sm">Balance precision and breadth</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-amber-100 dark:bg-amber-900 text-amber-600 dark:text-amber-400 mr-2 mt-0.5">
-                    <Check className="h-3.5 w-3.5" />
-                  </span>
-                  <span className="text-sm">Set processing speed priorities</span>
-                </li>
-              </ul>
-              <Button 
-                className="w-full bg-amber-600 hover:bg-amber-700 group-hover:translate-y-0 translate-y-1 transition-all duration-300"
-                onClick={() => setLocation('/dotspark-tuning/core')}
-              >
-                Configure Core Parameters
-              </Button>
-            </CardContent>
-          </Card>
+
 
           {/* Cognitive Style Card */}
           <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 group border-orange-100 dark:border-orange-900 flex flex-col h-full">
@@ -896,21 +854,22 @@ export default function MyNeura() {
       {/* Hidden Tabs for backwards compatibility - these won't be visible */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="hidden">
         <TabsList className="hidden">
-          <TabsTrigger value="core" />
           <TabsTrigger value="cognitive" />
           <TabsTrigger value="expertise" />
           <TabsTrigger value="learning" />
         </TabsList>
         
-        {/* Core Tuning Tab */}
-        <TabsContent value="core" className="space-y-6">
+
+        
+        {/* Cognitive Style Tab */}
+        <TabsContent value="cognitive" className="space-y-6">
           <Card>
             <CardHeader>
               <div className="flex items-center gap-2">
-                <Sparkles className="h-5 w-5 text-amber-500" />
-                <CardTitle>Core Processing Parameters</CardTitle>
+                <BrainCog className="h-5 w-5 text-amber-500" />
+                <CardTitle>Cognitive Style Parameters</CardTitle>
               </div>
-              <CardDescription>Adjust how your DotSpark processes information</CardDescription>
+              <CardDescription>Define how your DotSpark approaches problem-solving</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               {/* Creativity */}
@@ -1014,38 +973,7 @@ export default function MyNeura() {
                   <span>Quick Response</span>
                 </div>
               </div>
-            </CardContent>
-          </Card>
-          
-          <div className="flex justify-end">
-            <div className="flex items-center gap-2">
-              {unsavedChanges && (
-                <span className="text-sm text-amber-600 dark:text-amber-400">
-                  You have unsaved changes
-                </span>
-              )}
-              <Button 
-                variant="default" 
-                className="bg-amber-600 hover:bg-amber-700"
-                onClick={() => setActiveTab('cognitive')}
-              >
-                Next Step <ChevronRight className="ml-1 h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-        </TabsContent>
-        
-        {/* Cognitive Style Tab */}
-        <TabsContent value="cognitive" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <div className="flex items-center gap-2">
-                <BrainCog className="h-5 w-5 text-amber-500" />
-                <CardTitle>Cognitive Style Parameters</CardTitle>
-              </div>
-              <CardDescription>Define how your DotSpark approaches problem-solving</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
+
               {/* Analytical */}
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
@@ -1116,13 +1044,7 @@ export default function MyNeura() {
             </CardContent>
           </Card>
           
-          <div className="flex justify-between">
-            <Button 
-              variant="outline" 
-              onClick={() => setActiveTab('core')}
-            >
-              <ChevronLeft className="mr-1 h-4 w-4" /> Previous 
-            </Button>
+          <div className="flex justify-end">
             <div className="flex items-center gap-2">
               {unsavedChanges && (
                 <span className="text-sm text-amber-600 dark:text-amber-400">
