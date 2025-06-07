@@ -831,9 +831,9 @@ export default function MyNeura() {
             <CardContent className="space-y-6">
               {/* Core Parameters Section */}
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Core Processing Parameters</h3>
+                <h3 className="text-lg font-semibold">Cognitive Shield</h3>
                 <p className="text-sm text-muted-foreground">
-                  These fundamental settings establish how your DotSpark processes information while preserving your natural thinking patterns.
+                  Configure these parameters to shield you from biases while using AI.
                 </p>
                 
                 {/* Creativity Parameter */}
