@@ -363,7 +363,8 @@ export default function NeuraTuningCognitive() {
             <div>
               <CardTitle>Cognitive Style</CardTitle>
               <CardDescription>
-                Customize how Neura adapts to your natural thinking patterns
+                Set up your Cognitive Shield to protect your thinking identity.
+                It ensures your natural intelligence stays intact while interacting with AI.
               </CardDescription>
             </div>
           </div>
