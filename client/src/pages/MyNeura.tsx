@@ -546,7 +546,7 @@ export default function MyNeura() {
                             r="45" 
                             fill="none" 
                             stroke="currentColor" 
-                            className="text-indigo-100 dark:text-indigo-950" 
+                            className="text-amber-100 dark:text-amber-950" 
                             strokeWidth="8" 
                           />
                           <circle 
@@ -555,14 +555,14 @@ export default function MyNeura() {
                             r="45" 
                             fill="none" 
                             stroke="currentColor" 
-                            className="text-indigo-500 transition-all duration-500 ease-out" 
+                            className="text-amber-500 transition-all duration-500 ease-out" 
                             strokeWidth="8" 
                             strokeDasharray={`${2 * Math.PI * 45 * (processingEfficiency / 100)} ${2 * Math.PI * 45}`}
                             strokeDashoffset={2 * Math.PI * 45 * 0.25}
                           />
                         </svg>
                         <div className="absolute inset-0 flex items-center justify-center">
-                          <Zap className="h-5 w-5 text-indigo-500" />
+                          <Zap className="h-5 w-5 text-amber-500" />
                         </div>
                       </div>
                       <div className="text-sm font-medium mt-1">Processing</div>
@@ -570,7 +570,7 @@ export default function MyNeura() {
                       <div className="text-xl font-bold">{Math.round(processingEfficiency)}%</div>
                     </div>
                   </TooltipTrigger>
-                  <TooltipContent side="bottom" className="bg-white dark:bg-gray-900 border border-indigo-200 dark:border-indigo-800 p-3 shadow-lg max-w-[200px]">
+                  <TooltipContent side="bottom" className="bg-white dark:bg-gray-900 border border-amber-200 dark:border-amber-800 p-3 shadow-lg max-w-[200px]">
                     <p className="text-sm font-medium">Processing Capacity</p>
                     <p className="text-xs text-muted-foreground mt-1">Increases when you use Neura regularly. Higher usage frequency means better processing power.</p>
                   </TooltipContent>
@@ -638,7 +638,7 @@ export default function MyNeura() {
                             r="45" 
                             fill="none" 
                             stroke="currentColor" 
-                            className="text-purple-100 dark:text-purple-950" 
+                            className="text-orange-100 dark:text-orange-950" 
                             strokeWidth="8" 
                           />
                           <circle 
@@ -647,14 +647,14 @@ export default function MyNeura() {
                             r="45" 
                             fill="none" 
                             stroke="currentColor" 
-                            className="text-purple-500 transition-all duration-500 ease-out" 
+                            className="text-orange-500 transition-all duration-500 ease-out" 
                             strokeWidth="8" 
                             strokeDasharray={`${2 * Math.PI * 45 * (learningRate / 100)} ${2 * Math.PI * 45}`}
                             strokeDashoffset={2 * Math.PI * 45 * 0.25}
                           />
                         </svg>
                         <div className="absolute inset-0 flex items-center justify-center">
-                          <Lightbulb className="h-5 w-5 text-purple-500" />
+                          <Lightbulb className="h-5 w-5 text-orange-500" />
                         </div>
                       </div>
                       <div className="text-sm font-medium mt-1">Learning</div>
@@ -662,7 +662,7 @@ export default function MyNeura() {
                       <div className="text-xl font-bold">{Math.round(learningRate)}%</div>
                     </div>
                   </TooltipTrigger>
-                  <TooltipContent side="bottom" className="bg-white dark:bg-gray-900 border border-purple-200 dark:border-purple-800 p-3 shadow-lg max-w-[200px]">
+                  <TooltipContent side="bottom" className="bg-white dark:bg-gray-900 border border-orange-200 dark:border-orange-800 p-3 shadow-lg max-w-[200px]">
                     <p className="text-sm font-medium">Learning Capacity</p>
                     <p className="text-xs text-muted-foreground mt-1">Improves when you enable WhatsApp integration. More interactions through WhatsApp enhance your learning rate.</p>
                   </TooltipContent>
@@ -716,8 +716,8 @@ export default function MyNeura() {
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 auto-rows-fr">
           {/* Core Tuning Card */}
-          <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 group border-indigo-100 dark:border-indigo-900 flex flex-col h-full">
-            <div className="h-48 bg-gradient-to-br from-indigo-400 to-blue-600 flex items-center justify-center relative overflow-hidden">
+          <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 group border-amber-100 dark:border-amber-900 flex flex-col h-full">
+            <div className="h-48 bg-gradient-to-br from-amber-400 to-blue-600 flex items-center justify-center relative overflow-hidden">
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.2),transparent_50%)]"></div>
               <div className="z-10 p-6 flex flex-col items-center">
                 <div className="rounded-full bg-white/20 p-4 backdrop-blur-sm mb-4">
@@ -732,26 +732,26 @@ export default function MyNeura() {
               </p>
               <ul className="space-y-2 mb-6">
                 <li className="flex items-start">
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-400 mr-2 mt-0.5">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-amber-100 dark:bg-amber-900 text-amber-600 dark:text-amber-400 mr-2 mt-0.5">
                     <Check className="h-3.5 w-3.5" />
                   </span>
                   <span className="text-sm">Control creativity vs practicality</span>
                 </li>
                 <li className="flex items-start">
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-400 mr-2 mt-0.5">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-amber-100 dark:bg-amber-900 text-amber-600 dark:text-amber-400 mr-2 mt-0.5">
                     <Check className="h-3.5 w-3.5" />
                   </span>
                   <span className="text-sm">Balance precision and breadth</span>
                 </li>
                 <li className="flex items-start">
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-400 mr-2 mt-0.5">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-amber-100 dark:bg-amber-900 text-amber-600 dark:text-amber-400 mr-2 mt-0.5">
                     <Check className="h-3.5 w-3.5" />
                   </span>
                   <span className="text-sm">Set processing speed priorities</span>
                 </li>
               </ul>
               <Button 
-                className="w-full bg-indigo-600 hover:bg-indigo-700 group-hover:translate-y-0 translate-y-1 transition-all duration-300"
+                className="w-full bg-amber-600 hover:bg-amber-700 group-hover:translate-y-0 translate-y-1 transition-all duration-300"
                 onClick={() => setLocation('/neura-tuning/core')}
               >
                 Configure Core Parameters
@@ -760,8 +760,8 @@ export default function MyNeura() {
           </Card>
 
           {/* Cognitive Style Card */}
-          <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 group border-violet-100 dark:border-violet-900 flex flex-col h-full">
-            <div className="h-48 bg-gradient-to-br from-violet-400 to-purple-600 flex items-center justify-center relative overflow-hidden">
+          <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 group border-orange-100 dark:border-orange-900 flex flex-col h-full">
+            <div className="h-48 bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center relative overflow-hidden">
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.2),transparent_50%)]"></div>
               <div className="z-10 p-6 flex flex-col items-center">
                 <div className="rounded-full bg-white/20 p-4 backdrop-blur-sm mb-4">
@@ -776,26 +776,26 @@ export default function MyNeura() {
               </p>
               <ul className="space-y-2 mb-6">
                 <li className="flex items-start">
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-violet-100 dark:bg-violet-900 text-violet-600 dark:text-violet-400 mr-2 mt-0.5">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-orange-100 dark:bg-orange-900 text-orange-600 dark:text-orange-400 mr-2 mt-0.5">
                     <Check className="h-3.5 w-3.5" />
                   </span>
                   <span className="text-sm">Analytical vs flexible thinking</span>
                 </li>
                 <li className="flex items-start">
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-violet-100 dark:bg-violet-900 text-violet-600 dark:text-violet-400 mr-2 mt-0.5">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-orange-100 dark:bg-orange-900 text-orange-600 dark:text-orange-400 mr-2 mt-0.5">
                     <Check className="h-3.5 w-3.5" />
                   </span>
                   <span className="text-sm">Intuitive pattern recognition</span>
                 </li>
                 <li className="flex items-start">
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-violet-100 dark:bg-violet-900 text-violet-600 dark:text-violet-400 mr-2 mt-0.5">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-orange-100 dark:bg-orange-900 text-orange-600 dark:text-orange-400 mr-2 mt-0.5">
                     <Check className="h-3.5 w-3.5" />
                   </span>
                   <span className="text-sm">Balance between structured and abstract</span>
                 </li>
               </ul>
               <Button 
-                className="w-full bg-violet-600 hover:bg-violet-700 group-hover:translate-y-0 translate-y-1 transition-all duration-300"
+                className="w-full bg-orange-600 hover:bg-orange-700 group-hover:translate-y-0 translate-y-1 transition-all duration-300"
                 onClick={() => setLocation('/neura-tuning/cognitive')}
               >
                 Configure Cognitive Style
@@ -907,7 +907,7 @@ export default function MyNeura() {
           <Card>
             <CardHeader>
               <div className="flex items-center gap-2">
-                <Sparkles className="h-5 w-5 text-indigo-500" />
+                <Sparkles className="h-5 w-5 text-amber-500" />
                 <CardTitle>Core Processing Parameters</CardTitle>
               </div>
               <CardDescription>Adjust how your neural mirror processes information</CardDescription>
@@ -1026,7 +1026,7 @@ export default function MyNeura() {
               )}
               <Button 
                 variant="default" 
-                className="bg-indigo-600 hover:bg-indigo-700"
+                className="bg-amber-600 hover:bg-amber-700"
                 onClick={() => setActiveTab('cognitive')}
               >
                 Next Step <ChevronRight className="ml-1 h-4 w-4" />
@@ -1040,7 +1040,7 @@ export default function MyNeura() {
           <Card>
             <CardHeader>
               <div className="flex items-center gap-2">
-                <BrainCog className="h-5 w-5 text-indigo-500" />
+                <BrainCog className="h-5 w-5 text-amber-500" />
                 <CardTitle>Cognitive Style Parameters</CardTitle>
               </div>
               <CardDescription>Define how your neural mirror approaches problem-solving</CardDescription>
@@ -1131,7 +1131,7 @@ export default function MyNeura() {
               )}
               <Button 
                 variant="default" 
-                className="bg-indigo-600 hover:bg-indigo-700"
+                className="bg-amber-600 hover:bg-amber-700"
                 onClick={() => setActiveTab('expertise')}
               >
                 Next Step <ChevronRight className="ml-1 h-4 w-4" />
@@ -1145,7 +1145,7 @@ export default function MyNeura() {
           <Card>
             <CardHeader>
               <div className="flex items-center gap-2">
-                <Target className="h-5 w-5 text-indigo-500" />
+                <Target className="h-5 w-5 text-amber-500" />
                 <CardTitle>Expertise Layer Areas</CardTitle>
               </div>
               <CardDescription>Customize domain-specific expertise for your neural mirror</CardDescription>
@@ -1232,7 +1232,7 @@ export default function MyNeura() {
                           return (
                             <Badge 
                               key={specialtyId}
-                              className="px-3 py-1 bg-indigo-100 hover:bg-indigo-200 text-indigo-800 dark:bg-indigo-900/50 dark:text-indigo-200 dark:hover:bg-indigo-800/50 cursor-pointer"
+                              className="px-3 py-1 bg-amber-100 hover:bg-amber-200 text-amber-800 dark:bg-amber-900/50 dark:text-amber-200 dark:hover:bg-amber-800/50 cursor-pointer"
                               onClick={() => handleSpecialtyChange(specialtyId, [0.5])}
                             >
                               <Plus className="mr-1 h-3 w-3" />
@@ -1262,7 +1262,7 @@ export default function MyNeura() {
               )}
               <Button 
                 variant="default" 
-                className="bg-indigo-600 hover:bg-indigo-700"
+                className="bg-amber-600 hover:bg-amber-700"
                 onClick={() => setActiveTab('learning')}
               >
                 Next Step <ChevronRight className="ml-1 h-4 w-4" />
@@ -1276,7 +1276,7 @@ export default function MyNeura() {
           <Card>
             <CardHeader>
               <div className="flex items-center gap-2">
-                <Lightbulb className="h-5 w-5 text-indigo-500" />
+                <Lightbulb className="h-5 w-5 text-amber-500" />
                 <CardTitle>Learning Engine Directives</CardTitle>
               </div>
               <CardDescription>Guide what your neural mirror prioritizes learning</CardDescription>
@@ -1320,7 +1320,7 @@ export default function MyNeura() {
                             className="flex items-center justify-between py-3 border-b last:border-b-0"
                           >
                             <div className="flex items-center gap-2">
-                              <Lightbulb className="h-4 w-4 text-indigo-500" />
+                              <Lightbulb className="h-4 w-4 text-amber-500" />
                               <span>{focus}</span>
                             </div>
                             <Button 
@@ -1366,7 +1366,7 @@ export default function MyNeura() {
               <Button 
                 disabled={isUpdating}
                 variant="default" 
-                className="bg-indigo-600 hover:bg-indigo-700"
+                className="bg-amber-600 hover:bg-amber-700"
                 onClick={saveChanges}
               >
                 <Save className="mr-1 h-4 w-4" />
@@ -1388,7 +1388,7 @@ export default function MyNeura() {
             <Button 
               disabled={isUpdating}
               variant="default" 
-              className="bg-indigo-600 hover:bg-indigo-700"
+              className="bg-amber-600 hover:bg-amber-700"
               onClick={saveChanges}
             >
               <Save className="mr-1 h-4 w-4" />
