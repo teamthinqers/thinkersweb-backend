@@ -8,6 +8,7 @@ import { Slider } from '@/components/ui/slider';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -244,8 +245,7 @@ export default function MyNeura() {
   };
   
   // Function to handle slider value changes - only updates local state without saving to backend
-  const handleParameterChange = (paramName: string, value: number[]) => {
-    const paramValue = value[0];
+  const handleParameterChange = (paramName: string, paramValue: number) => {
     
     // Update the pending changes object with the new parameter value
     setPendingChanges(prev => ({
@@ -824,28 +824,112 @@ export default function MyNeura() {
             <CardHeader>
               <div className="flex items-center gap-2">
                 <BrainCog className="h-5 w-5 text-amber-500" />
-                <CardTitle>Cognitive Shield (Recommended)</CardTitle>
+                <CardTitle>Cognitive Shield Configuration</CardTitle>
               </div>
-              <CardDescription>Set up your Cognitive Shield to protect your thinking identity</CardDescription>
+              <CardDescription>Configure core parameters to protect your thinking identity</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div className="text-center py-8">
-                <p className="text-muted-foreground mb-6">
-                  Set up your Cognitive Shield to protect your thinking identity. It ensures your natural intelligence stays intact while interacting with AI.
+              {/* Core Parameters Section */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Core Processing Parameters</h3>
+                <p className="text-sm text-muted-foreground">
+                  These fundamental settings establish how your DotSpark processes information while preserving your natural thinking patterns.
                 </p>
-                <div className="flex gap-3 max-w-md mx-auto">
+                
+                {/* Creativity Parameter */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="creativity" className="text-sm font-medium">
+                      Creativity Level
+                    </Label>
+                    <span className="text-sm text-muted-foreground">
+                      {Math.round((pendingChanges.creativity ?? neuralTuning?.creativity ?? 0.5) * 100)}%
+                    </span>
+                  </div>
+                  <Slider
+                    id="creativity"
+                    min={0}
+                    max={1}
+                    step={0.01}
+                    value={[(pendingChanges.creativity ?? neuralTuning?.creativity ?? 0.5)]}
+                    onValueChange={(value) => handleParameterChange('creativity', value)}
+                    className="w-full"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Balance between structured thinking (left) and creative exploration (right)
+                  </p>
+                </div>
+
+                {/* Precision Parameter */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="precision" className="text-sm font-medium">
+                      Precision Focus
+                    </Label>
+                    <span className="text-sm text-muted-foreground">
+                      {Math.round((pendingChanges.precision ?? neuralTuning?.precision ?? 0.5) * 100)}%
+                    </span>
+                  </div>
+                  <Slider
+                    id="precision"
+                    min={0}
+                    max={1}
+                    step={0.01}
+                    value={[(pendingChanges.precision ?? neuralTuning?.precision ?? 0.5)]}
+                    onValueChange={(value) => handleParameterChange('precision', value)}
+                    className="w-full"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Emphasis on broad concepts (left) vs detailed accuracy (right)
+                  </p>
+                </div>
+
+                {/* Processing Speed Parameter */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="speed" className="text-sm font-medium">
+                      Processing Speed
+                    </Label>
+                    <span className="text-sm text-muted-foreground">
+                      {Math.round((pendingChanges.speed ?? neuralTuning?.speed ?? 0.5) * 100)}%
+                    </span>
+                  </div>
+                  <Slider
+                    id="speed"
+                    min={0}
+                    max={1}
+                    step={0.01}
+                    value={[(pendingChanges.speed ?? neuralTuning?.speed ?? 0.5)]}
+                    onValueChange={(value) => handleParameterChange('speed', value)}
+                    className="w-full"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Deep reflection (left) vs quick response time (right)
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex justify-between pt-4">
+                <Button 
+                  variant="outline" 
+                  onClick={() => setActiveTab('expertise')}
+                >
+                  <ChevronRight className="mr-1 h-4 w-4" /> Next 
+                </Button>
+                <div className="flex items-center gap-2">
+                  {unsavedChanges && (
+                    <span className="text-sm text-amber-600 dark:text-amber-400">
+                      You have unsaved changes
+                    </span>
+                  )}
                   <Button 
-                    className="flex-1 bg-orange-600 hover:bg-orange-700"
-                    onClick={() => setLocation('/dotspark-tuning/cognitive')}
+                    disabled={isUpdating}
+                    variant="default" 
+                    className="bg-amber-600 hover:bg-amber-700"
+                    onClick={saveChanges}
                   >
-                    Configure Shield
-                  </Button>
-                  <Button 
-                    variant="outline"
-                    className="flex-1"
-                    onClick={() => setActiveTab('expertise')}
-                  >
-                    Skip for Now
+                    <Save className="mr-1 h-4 w-4" />
+                    Save Shield Settings
                   </Button>
                 </div>
               </div>
