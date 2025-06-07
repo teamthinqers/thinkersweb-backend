@@ -355,10 +355,10 @@ export default function NeuraTuningCognitive() {
       
       {/* Cognitive Style Section Card */}
       <Card className="bg-white dark:bg-gray-950 shadow-md">
-        <CardHeader className="bg-gradient-to-r from-violet-50 to-purple-50 dark:from-violet-950 dark:to-purple-950">
+        <CardHeader className="bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-950 dark:to-yellow-950">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-violet-100 dark:bg-violet-900 rounded-full">
-              <BrainCog className="h-6 w-6 text-violet-600 dark:text-violet-400" />
+            <div className="p-2 bg-amber-100 dark:bg-amber-900 rounded-full">
+              <BrainCog className="h-6 w-6 text-amber-600 dark:text-amber-400" />
             </div>
             <div>
               <CardTitle>Cognitive Style</CardTitle>
@@ -372,13 +372,13 @@ export default function NeuraTuningCognitive() {
         
         <CardContent className="pt-6 space-y-6">
           {/* Memory Bandwidth - Bar visualization */}
-          <div className="space-y-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/40 dark:to-indigo-950/40 p-4 rounded-lg border border-blue-100 dark:border-blue-900">
+          <div className="space-y-4 bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-950/40 dark:to-yellow-950/40 p-4 rounded-lg border border-amber-100 dark:border-amber-900">
             <div className="flex items-center justify-between">
               <div className="flex items-start gap-2">
-                <h3 className="text-lg font-medium bg-gradient-to-r from-blue-600 to-indigo-600 inline-block text-transparent bg-clip-text">Memory Bandwidth</h3>
+                <h3 className="text-lg font-medium bg-gradient-to-r from-amber-600 to-yellow-600 inline-block text-transparent bg-clip-text">Memory Bandwidth</h3>
                 <HoverCard>
                   <HoverCardTrigger>
-                    <Info className="h-4 w-4 text-blue-400" />
+                    <Info className="h-4 w-4 text-amber-400" />
                   </HoverCardTrigger>
                   <HoverCardContent className="w-80">
                     <div className="space-y-2">
@@ -398,7 +398,7 @@ export default function NeuraTuningCognitive() {
             <div className="relative pt-3">
               <div className="flex items-center mb-2">
                 <div 
-                  className="h-3 bg-gradient-to-r from-blue-200 to-blue-600 rounded-full overflow-hidden" 
+                  className="h-3 bg-gradient-to-r from-amber-200 to-amber-600 rounded-full overflow-hidden" 
                   style={{ width: `${(pendingChanges.memoryBandwidth ?? neuralTuning?.memoryBandwidth ?? 0.5) * 100}%` }}
                 >
                 </div>
@@ -421,19 +421,19 @@ export default function NeuraTuningCognitive() {
             </div>
             
             <div className="flex justify-between text-xs">
-              <span className="text-blue-500 font-medium">Short Burst Memory</span>
-              <span className="text-indigo-600 font-medium">Deep Retainer</span>
+              <span className="text-amber-500 font-medium">Short Burst Memory</span>
+              <span className="text-yellow-600 font-medium">Deep Retainer</span>
             </div>
           </div>
           
           {/* Thought Complexity - Layer visualization */}
-          <div className="space-y-4 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/40 dark:to-emerald-950/40 p-4 rounded-lg border border-green-100 dark:border-green-900">
+          <div className="space-y-4 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/40 dark:to-orange-950/40 p-4 rounded-lg border border-amber-100 dark:border-amber-900">
             <div className="flex items-center justify-between">
               <div className="flex items-start gap-2">
-                <h3 className="text-lg font-medium bg-gradient-to-r from-green-600 to-emerald-600 inline-block text-transparent bg-clip-text">Thought Complexity</h3>
+                <h3 className="text-lg font-medium bg-gradient-to-r from-amber-600 to-orange-600 inline-block text-transparent bg-clip-text">Thought Complexity</h3>
                 <HoverCard>
                   <HoverCardTrigger>
-                    <Info className="h-4 w-4 text-green-400" />
+                    <Info className="h-4 w-4 text-amber-400" />
                   </HoverCardTrigger>
                   <HoverCardContent className="w-80">
                     <div className="space-y-2">
@@ -445,7 +445,7 @@ export default function NeuraTuningCognitive() {
                   </HoverCardContent>
                 </HoverCard>
               </div>
-              <span className="text-sm font-medium text-green-600 dark:text-green-400">
+              <span className="text-sm font-medium text-amber-600 dark:text-amber-400">
                 {Math.round((pendingChanges.thoughtComplexity ?? neuralTuning?.thoughtComplexity ?? 0.5) * 100)}%
               </span>
             </div>
