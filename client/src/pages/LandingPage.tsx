@@ -512,7 +512,7 @@ export default function LandingPage() {
             <div className="text-lg md:text-xl text-muted-foreground mt-4 md:mt-4 mb-4 max-w-2xl mx-auto text-center px-4">
               <p className="leading-tight md:leading-normal max-w-2xl mx-auto">
                 Built on inspirations from <span className="font-semibold text-amber-700 dark:text-amber-400">ancient Indian wisdom</span>,<br className="hidden md:inline" /> 
-                to preserve and sharpen your <span className="font-semibold text-amber-700 dark:text-amber-400">natural intelligence</span> in a synthetic world.
+                to preserve and sharpen your <span className="font-semibold text-amber-700 dark:text-amber-400">Natural Intelligence</span> in a synthetic world.
               </p>
             </div>
             
