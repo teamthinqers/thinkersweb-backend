@@ -16,7 +16,7 @@ export default function CognitiveShieldConfig() {
   const { 
     status, 
     isLoading: isTuningLoading, 
-    updateTuning: updateTuningMutation,
+    updateTuning,
     isUpdating
   } = useNeuralTuning();
   
@@ -76,7 +76,7 @@ export default function CognitiveShieldConfig() {
     }
 
     try {
-      await updateTuning(pendingChanges);
+      updateTuning(pendingChanges);
       
       toast({
         title: "Shield Updated",
