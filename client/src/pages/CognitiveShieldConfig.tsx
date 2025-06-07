@@ -489,34 +489,60 @@ export default function CognitiveShieldConfig() {
               </p>
             </div>
 
-            {/* Contextual Thinking Parameter */}
-            <div className="space-y-4 p-4 rounded-lg bg-gradient-to-r from-teal-50 to-cyan-50 dark:from-teal-950/20 dark:to-cyan-950/20 border border-teal-200 dark:border-teal-800">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="contextualThinking" className="text-sm font-medium flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-gradient-to-r from-teal-400 to-cyan-400"></div>
-                  Contextual Thinking
+            {/* Contextual Thinking Parameter - Network Connectivity Theme */}
+            <div className="relative overflow-hidden space-y-4 p-6 rounded-xl bg-gradient-to-br from-teal-100 via-cyan-50 to-teal-100 dark:from-teal-950/30 dark:via-cyan-950/20 dark:to-teal-950/30 border-2 border-teal-400 dark:border-teal-600 shadow-lg">
+              {/* Network connectivity pattern background */}
+              <div className="absolute inset-0 opacity-20">
+                <div className="absolute top-4 left-6 w-1 h-1 bg-teal-400 rounded-full"></div>
+                <div className="absolute top-4 left-6 w-8 h-px bg-teal-400 transform rotate-12"></div>
+                <div className="absolute top-6 left-14 w-1 h-1 bg-cyan-400 rounded-full"></div>
+                <div className="absolute top-6 left-14 w-6 h-px bg-cyan-400 transform -rotate-45"></div>
+                <div className="absolute bottom-8 right-10 w-1 h-1 bg-teal-500 rounded-full"></div>
+                <div className="absolute bottom-8 right-10 w-4 h-px bg-teal-500 transform rotate-45"></div>
+              </div>
+              {/* Network nodes */}
+              <div className="absolute top-3 right-6 w-1.5 h-1.5 bg-teal-500 rounded-full animate-pulse opacity-70" style={{ animationDelay: '0.5s' }}></div>
+              <div className="absolute top-8 right-11 w-1 h-1 bg-cyan-500 rounded-full animate-ping opacity-60" style={{ animationDelay: '1s' }}></div>
+              <div className="absolute bottom-4 left-7 w-1 h-1 bg-teal-400 rounded-full animate-bounce opacity-50" style={{ animationDelay: '1.4s' }}></div>
+              
+              <div className="flex items-center justify-between relative z-10">
+                <Label htmlFor="contextualThinking" className="text-base font-semibold flex items-center gap-3">
+                  <div className="relative">
+                    <div className="w-5 h-5 bg-gradient-to-br from-teal-500 to-cyan-500 rounded-md shadow-md border border-teal-600 dark:border-teal-400"></div>
+                    <div className="absolute inset-1">
+                      <div className="w-1 h-1 bg-teal-200 rounded-full absolute top-0 left-0"></div>
+                      <div className="w-1 h-1 bg-cyan-200 rounded-full absolute top-0 right-0"></div>
+                      <div className="w-1 h-1 bg-teal-300 rounded-full absolute bottom-0 left-1"></div>
+                      <div className="w-px h-2 bg-cyan-200 absolute top-0.5 left-1.5"></div>
+                    </div>
+                    <div className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 border border-cyan-400 rounded-full animate-ping"></div>
+                  </div>
+                  <span className="bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent">Contextual Thinking</span>
                 </Label>
-                <span className="text-sm font-bold text-teal-700 dark:text-teal-300">
-                  {Math.round((pendingChanges.contextualThinking ?? neuralTuning?.contextualThinking ?? 0.5) * 100)}%
-                </span>
+                <div className="px-3 py-1 bg-gradient-to-r from-teal-200 to-cyan-200 dark:from-teal-800 dark:to-cyan-800 rounded-lg border border-teal-300 dark:border-teal-600">
+                  <span className="text-sm font-bold text-teal-800 dark:text-teal-200 font-mono">
+                    {Math.round((pendingChanges.contextualThinking ?? neuralTuning?.contextualThinking ?? 0.5) * 100)}%
+                  </span>
+                </div>
               </div>
               
-              {/* Visual contextual meter with network pattern */}
-              <div className="relative">
-                <div className="h-3 bg-gradient-to-r from-teal-100 to-teal-200 dark:from-teal-900 dark:to-teal-800 rounded-full overflow-hidden">
-                  <div 
-                    className="h-full bg-gradient-to-r from-teal-500 to-cyan-500 rounded-full transition-all duration-300 relative"
-                    style={{ width: `${(pendingChanges.contextualThinking ?? neuralTuning?.contextualThinking ?? 0.5) * 100}%` }}
-                  >
-                    {/* Network pattern effect */}
-                    <div className="absolute inset-0 flex items-center justify-end pr-1">
-                      <div className="w-1 h-1 bg-cyan-200 rounded-full animate-pulse"></div>
-                    </div>
-                  </div>
+              {/* Network connectivity progress meter */}
+              <div className="relative h-4 bg-gradient-to-r from-teal-200 via-cyan-200 to-teal-200 dark:from-teal-900 dark:via-cyan-900 dark:to-teal-900 rounded-md overflow-hidden shadow-inner border border-teal-300 dark:border-teal-700">
+                <div 
+                  className="h-full bg-gradient-to-r from-teal-600 via-cyan-500 to-teal-500 rounded-md transition-all duration-400 relative shadow-lg"
+                  style={{ width: `${(pendingChanges.contextualThinking ?? neuralTuning?.contextualThinking ?? 0.5) * 100}%` }}
+                >
+                  {/* Network pulse effect */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-teal-300/60 to-cyan-200/70 animate-pulse"></div>
+                  <div className="absolute right-0 top-0 bottom-0 w-1 bg-cyan-100 shadow-lg animate-ping"></div>
+                  {/* Connection lines */}
+                  <div className="absolute right-1 top-1 w-2 h-0.5 bg-white/80 transform rotate-6"></div>
+                  <div className="absolute right-3 top-2 w-1 h-0.5 bg-white/90 transform -rotate-12"></div>
+                  <div className="absolute right-2 bottom-1 w-1.5 h-0.5 bg-white/70"></div>
                 </div>
-                {/* Contextual network indicators */}
-                <div className="absolute -top-1 right-1/3 w-0.5 h-0.5 bg-teal-400 rounded-full opacity-75 animate-ping"></div>
-                <div className="absolute -bottom-1 left-1/2 w-1 h-1 bg-cyan-400 rounded-full opacity-60 animate-pulse"></div>
+                {/* Network topology indicators */}
+                <div className="absolute top-0 left-1/6 w-0.5 h-full bg-teal-400 opacity-40"></div>
+                <div className="absolute top-0 right-1/5 w-1 h-full bg-cyan-400 opacity-50"></div>
               </div>
               
               <Slider
@@ -528,8 +554,8 @@ export default function CognitiveShieldConfig() {
                 onValueChange={(value) => handleParameterChange('contextualThinking', value[0])}
                 className="contextual-slider"
               />
-              <p className="text-xs text-muted-foreground">
-                Contextual considerations (left) vs universal principles (right)
+              <p className="text-xs text-teal-700 dark:text-teal-300 font-medium">
+                🌐 Contextual considerations (left) vs universal principles (right)
               </p>
             </div>
 
