@@ -283,6 +283,121 @@
   .typewriter {
     @apply overflow-hidden border-r-4 border-primary/70 whitespace-nowrap animate-typing;
   }
+
+  /* Parameter slider visual effects with golden theme */
+  .parameter-creativity {
+    @apply relative overflow-hidden rounded-lg p-4 bg-gradient-to-r from-amber-50 to-orange-100 dark:from-amber-950/20 dark:to-orange-950/20 border border-amber-200 dark:border-amber-800/50;
+  }
+  
+  .parameter-creativity::before {
+    content: "";
+    @apply absolute inset-0 bg-gradient-to-r from-amber-400/10 to-orange-400/10 opacity-0 transition-opacity duration-300;
+  }
+  
+  .parameter-creativity:hover::before {
+    @apply opacity-100;
+  }
+
+  .parameter-precision {
+    @apply relative overflow-hidden rounded-lg p-4 bg-gradient-to-r from-orange-50 to-yellow-100 dark:from-orange-950/20 dark:to-yellow-950/20 border border-orange-200 dark:border-orange-800/50;
+  }
+  
+  .parameter-precision::before {
+    content: "";
+    @apply absolute inset-0 bg-gradient-to-r from-orange-400/10 to-yellow-400/10 opacity-0 transition-opacity duration-300;
+  }
+  
+  .parameter-precision:hover::before {
+    @apply opacity-100;
+  }
+
+  .parameter-speed {
+    @apply relative overflow-hidden rounded-lg p-4 bg-gradient-to-r from-yellow-50 to-amber-100 dark:from-yellow-950/20 dark:to-amber-950/20 border border-yellow-200 dark:border-yellow-800/50;
+  }
+  
+  .parameter-speed::before {
+    content: "";
+    @apply absolute inset-0 bg-gradient-to-r from-yellow-400/10 to-amber-400/10 opacity-0 transition-opacity duration-300;
+  }
+  
+  .parameter-speed:hover::before {
+    @apply opacity-100;
+  }
+
+  .parameter-analytical {
+    @apply relative overflow-hidden rounded-lg p-4 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20 border border-amber-200 dark:border-amber-800/50;
+  }
+  
+  .parameter-analytical::before {
+    content: "";
+    @apply absolute inset-0 bg-gradient-to-r from-amber-300/10 to-orange-300/10 opacity-0 transition-opacity duration-300;
+  }
+  
+  .parameter-analytical:hover::before {
+    @apply opacity-100;
+  }
+
+  .parameter-intuitive {
+    @apply relative overflow-hidden rounded-lg p-4 bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-950/20 dark:to-amber-950/20 border border-orange-200 dark:border-orange-800/50;
+  }
+  
+  .parameter-intuitive::before {
+    content: "";
+    @apply absolute inset-0 bg-gradient-to-r from-orange-300/10 to-amber-300/10 opacity-0 transition-opacity duration-300;
+  }
+  
+  .parameter-intuitive:hover::before {
+    @apply opacity-100;
+  }
+
+  .parameter-contextual {
+    @apply relative overflow-hidden rounded-lg p-4 bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-950/20 dark:to-orange-950/20 border border-yellow-200 dark:border-yellow-800/50;
+  }
+  
+  .parameter-contextual::before {
+    content: "";
+    @apply absolute inset-0 bg-gradient-to-r from-yellow-300/10 to-orange-300/10 opacity-0 transition-opacity duration-300;
+  }
+  
+  .parameter-contextual:hover::before {
+    @apply opacity-100;
+  }
+
+  .parameter-memory {
+    @apply relative overflow-hidden rounded-lg p-4 bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-950/20 dark:to-yellow-950/20 border border-amber-200 dark:border-amber-800/50;
+  }
+  
+  .parameter-memory::before {
+    content: "";
+    @apply absolute inset-0 bg-gradient-to-r from-amber-300/10 to-yellow-300/10 opacity-0 transition-opacity duration-300;
+  }
+  
+  .parameter-memory:hover::before {
+    @apply opacity-100;
+  }
+
+  .parameter-complexity {
+    @apply relative overflow-hidden rounded-lg p-4 bg-gradient-to-r from-orange-50 to-yellow-50 dark:from-orange-950/20 dark:to-yellow-950/20 border border-orange-200 dark:border-orange-800/50;
+  }
+  
+  .parameter-complexity::before {
+    content: "";
+    @apply absolute inset-0 bg-gradient-to-r from-orange-300/10 to-yellow-300/10 opacity-0 transition-opacity duration-300;
+  }
+  
+  .parameter-complexity:hover::before {
+    @apply opacity-100;
+  }
+
+  /* Slider track animations */
+  .slider-track-glow {
+    @apply transition-all duration-300 hover:drop-shadow-sm;
+  }
+
+  /* Parameter value display with pulse effect */
+  .parameter-value {
+    @apply text-amber-700 dark:text-amber-300 font-medium transition-all duration-200 hover:scale-105;
+  }
 }
 
 /* Rich text content styling */

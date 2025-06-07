@@ -13,6 +13,9 @@ interface TuningParams {
   // Cognitive style parameters
   analytical?: number;  // 0.0 to 1.0 - logical/systematic thinking emphasis
   intuitive?: number;   // 0.0 to 1.0 - pattern recognition/insight emphasis
+  contextualThinking?: number; // 0.0 to 1.0 - contextual (0.0) vs universal (1.0) thinking
+  memoryBandwidth?: number; // 0.0 to 1.0 - short burst memory (0.0) vs deep retainer (1.0)
+  thoughtComplexity?: number; // 0.0 to 1.0 - simple direct (0.0) vs complex layered (1.0)
   
   // Specialty focus areas (weights for different domains)
   specialties?: {
@@ -65,6 +68,9 @@ export function useNeuralTuning() {
       speed: 0.5,
       analytical: 0.8,
       intuitive: 0.6,
+      contextualThinking: 0.6,
+      memoryBandwidth: 0.7,
+      thoughtComplexity: 0.5,
       specialties: {
         'tech': 0.9,
         'business': 0.7,

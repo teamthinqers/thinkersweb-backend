@@ -28,21 +28,27 @@ export default function NeuraTuningCognitive() {
   // Local state for unsaved changes
   const [unsavedChanges, setUnsavedChanges] = useState(false);
   const [pendingChanges, setPendingChanges] = useState<{
+    creativity?: number;
+    precision?: number;
+    speed?: number;
+    analytical?: number;
+    intuitive?: number;
+    contextualThinking?: number;
     memoryBandwidth?: number;
     thoughtComplexity?: number;
-    mentalModelDensity?: number;
-    patternDetectionSensitivity?: number;
-    decisionMakingIndex?: number;
   }>({});
   
   // Extract values from status for rendering
   const { tuning: neuralTuning } = status || { 
     tuning: {
-      memoryBandwidth: 0.5,
+      creativity: 0.7,
+      precision: 0.8,
+      speed: 0.5,
+      analytical: 0.8,
+      intuitive: 0.6,
+      contextualThinking: 0.6,
+      memoryBandwidth: 0.7,
       thoughtComplexity: 0.5,
-      mentalModelDensity: 0.5,
-      patternDetectionSensitivity: 0.5,
-      decisionMakingIndex: 0.5,
     }
   };
   
