@@ -749,15 +749,15 @@ export default function LandingPage() {
               <div className="absolute top-6 right-6 flex items-center justify-center w-8 h-8 rounded-full bg-indigo-500/80 text-white font-bold text-lg">
                 2
               </div>
-              <h3 className="text-xl font-semibold mb-2">Activate Neura</h3>
-              <p className="text-muted-foreground text-sm">Configure your Neura to mirror your natural intelligence & thinking style.</p>
+              <h3 className="text-xl font-semibold mb-2">Activate DotSpark</h3>
+              <p className="text-muted-foreground text-sm">Configure your DotSpark to mirror your natural intelligence & thinking style.</p>
               <div className="mt-auto pt-4">
                 <Button 
                   variant="default" 
                   className="w-full bg-gradient-to-r from-violet-600 to-purple-700 hover:from-purple-700 hover:to-violet-600 text-white border-0 shadow-md"
                   onClick={() => setLocation("/my-neura")}
                 >
-                  Activate Neura
+                  Activate DotSpark
                 </Button>
               </div>
             </div>
@@ -868,7 +868,7 @@ export default function LandingPage() {
                   </div>
                   <span className={`font-medium text-sm
                     ${isNeuraActivated ? 'text-indigo-500' : user ? 'text-indigo-400' : 'text-muted-foreground'}`}>
-                    Activate Neura
+                    Activate DotSpark
                   </span>
                   {isNeuraActivated && (
                     <div className="animate-pulse mt-1 text-xs text-indigo-500 flex items-center">
