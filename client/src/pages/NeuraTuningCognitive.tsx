@@ -147,7 +147,7 @@ export default function NeuraTuningCognitive() {
         {unsavedChanges && (
           <Button 
             variant="default"
-            className="bg-violet-600 hover:bg-violet-700 text-white flex items-center gap-1.5"
+            className="bg-amber-600 hover:bg-amber-700 text-white flex items-center gap-1.5 border-amber-600"
             onClick={saveChanges}
             disabled={isUpdating}
           >
