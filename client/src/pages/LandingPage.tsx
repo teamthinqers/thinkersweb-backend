@@ -464,51 +464,24 @@ export default function LandingPage() {
       
       {/* Enhanced Hero Section with Visual Elements - Centered for all screens */}
       <section className="relative pt-6 pb-8 md:py-12 lg:py-16 overflow-hidden">
-        {/* Background visual elements with simplified neural dot patterns */}
+        {/* Background visual elements with simplified DotSpark patterns */}
         <div className="absolute inset-0 z-0">
-          {/* Subtle gradient background effects */}
-          <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/5 rounded-full blur-3xl opacity-60 -translate-y-1/2 translate-x-1/3"></div>
-          <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-blue-500/5 dark:bg-blue-500/10 rounded-full blur-3xl opacity-60 translate-y-1/3 -translate-x-1/4"></div>
+          {/* Subtle gradient background effects using warm amber/orange color scheme */}
+          <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-amber-500/3 dark:bg-amber-400/5 rounded-full blur-3xl opacity-60 -translate-y-1/2 translate-x-1/3"></div>
+          <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-orange-500/3 dark:bg-orange-400/5 rounded-full blur-3xl opacity-60 translate-y-1/3 -translate-x-1/4"></div>
           
-          <div className="absolute left-[35%] top-[30%] w-1 h-1 bg-primary/40 rounded-full animate-pulse-slow"></div>
-          <div className="absolute left-[32%] top-[40%] w-1 h-1 bg-primary/50 rounded-full animate-pulse-slow delay-300"></div>
-          <div className="absolute left-[34%] top-[50%] w-1 h-1 bg-primary/60 rounded-full animate-pulse-slow delay-500"></div>
-          <div className="absolute left-[31%] top-[60%] w-1 h-1 bg-primary/40 rounded-full animate-pulse-slow delay-700"></div>
-          <div className="absolute left-[36%] top-[35%] w-0.5 h-0.5 bg-primary/30 rounded-full animate-pulse-slow delay-100"></div>
-          <div className="absolute left-[33%] top-[45%] w-0.5 h-0.5 bg-primary/30 rounded-full animate-pulse-slow delay-600"></div>
-          <div className="absolute left-[35%] top-[55%] w-0.5 h-0.5 bg-primary/30 rounded-full animate-pulse-slow delay-200"></div>
+          {/* Simplified dot pattern - fewer, more strategic placement */}
+          <div className="absolute left-[25%] top-[35%] w-1 h-1 bg-amber-500/40 rounded-full animate-pulse-slow"></div>
+          <div className="absolute left-[30%] top-[50%] w-1.5 h-1.5 bg-amber-600/50 rounded-full animate-pulse-slow delay-1000"></div>
+          <div className="absolute left-[35%] top-[65%] w-1 h-1 bg-amber-400/40 rounded-full animate-pulse-slow delay-2000"></div>
           
-          <div className="absolute right-[35%] top-[30%] w-1 h-1 bg-blue-500/40 rounded-full animate-pulse-slow delay-400"></div>
-          <div className="absolute right-[32%] top-[40%] w-1 h-1 bg-blue-500/50 rounded-full animate-pulse-slow delay-900"></div>
-          <div className="absolute right-[34%] top-[50%] w-1 h-1 bg-blue-500/60 rounded-full animate-pulse-slow delay-600"></div>
-          <div className="absolute right-[31%] top-[60%] w-1 h-1 bg-blue-500/40 rounded-full animate-pulse-slow delay-800"></div>
-          <div className="absolute right-[36%] top-[35%] w-0.5 h-0.5 bg-blue-500/30 rounded-full animate-pulse-slow delay-300"></div>
-          <div className="absolute right-[33%] top-[45%] w-0.5 h-0.5 bg-blue-500/30 rounded-full animate-pulse-slow delay-100"></div>
-          <div className="absolute right-[35%] top-[55%] w-0.5 h-0.5 bg-blue-500/30 rounded-full animate-pulse-slow delay-700"></div>
+          <div className="absolute right-[25%] top-[40%] w-1 h-1 bg-orange-500/40 rounded-full animate-pulse-slow delay-500"></div>
+          <div className="absolute right-[30%] top-[55%] w-1.5 h-1.5 bg-orange-600/50 rounded-full animate-pulse-slow delay-1500"></div>
+          <div className="absolute right-[35%] top-[30%] w-1 h-1 bg-orange-400/40 rounded-full animate-pulse-slow delay-2500"></div>
           
-          <div className="absolute left-[40%] top-[25%] w-0.5 h-0.5 bg-indigo-500/30 rounded-full animate-pulse-slow delay-200"></div>
-          <div className="absolute left-[45%] top-[23%] w-0.5 h-0.5 bg-indigo-500/30 rounded-full animate-pulse-slow delay-800"></div>
-          <div className="absolute left-[50%] top-[22%] w-0.5 h-0.5 bg-indigo-500/40 rounded-full animate-pulse-slow delay-500"></div>
-          <div className="absolute left-[55%] top-[23%] w-0.5 h-0.5 bg-indigo-500/30 rounded-full animate-pulse-slow delay-300"></div>
-          <div className="absolute left-[60%] top-[25%] w-0.5 h-0.5 bg-indigo-500/30 rounded-full animate-pulse-slow delay-700"></div>
-          
-          <div className="absolute left-[40%] top-[65%] w-0.5 h-0.5 bg-indigo-500/30 rounded-full animate-pulse-slow delay-400"></div>
-          <div className="absolute left-[45%] top-[67%] w-0.5 h-0.5 bg-indigo-500/30 rounded-full animate-pulse-slow delay-100"></div>
-          <div className="absolute left-[50%] top-[68%] w-0.5 h-0.5 bg-indigo-500/40 rounded-full animate-pulse-slow delay-600"></div>
-          <div className="absolute left-[55%] top-[67%] w-0.5 h-0.5 bg-indigo-500/30 rounded-full animate-pulse-slow delay-300"></div>
-          <div className="absolute left-[60%] top-[65%] w-0.5 h-0.5 bg-indigo-500/30 rounded-full animate-pulse-slow delay-900"></div>
-          
-          <div className="absolute left-[33%] top-[35%] w-[12px] h-[1px] bg-gradient-to-r from-primary/60 to-transparent rotate-[15deg] opacity-0 animate-spark-appear"></div>
-          <div className="absolute right-[33%] top-[40%] w-[12px] h-[1px] bg-gradient-to-l from-blue-500/60 to-transparent rotate-[160deg] opacity-0 animate-spark-appear delay-1200"></div>
-          <div className="absolute left-[40%] top-[50%] w-[12px] h-[1px] bg-gradient-to-r from-indigo-500/60 to-transparent rotate-[45deg] opacity-0 animate-spark-appear delay-2400"></div>
-          <div className="absolute right-[40%] top-[45%] w-[12px] h-[1px] bg-gradient-to-l from-primary/60 to-transparent rotate-[120deg] opacity-0 animate-spark-appear delay-3600"></div>
-          <div className="absolute left-[45%] top-[60%] w-[12px] h-[1px] bg-gradient-to-r from-blue-500/60 to-transparent rotate-[210deg] opacity-0 animate-spark-appear delay-4800"></div>
-          <div className="absolute right-[45%] top-[30%] w-[12px] h-[1px] bg-gradient-to-l from-indigo-500/60 to-transparent rotate-[330deg] opacity-0 animate-spark-appear delay-6000"></div>
-          
-          <div className="absolute left-[38%] top-[42%] w-0.5 h-0.5 bg-white rounded-full opacity-0 animate-spark-flash delay-1800"></div>
-          <div className="absolute right-[38%] top-[42%] w-0.5 h-0.5 bg-white rounded-full opacity-0 animate-spark-flash delay-3000"></div>
-          <div className="absolute left-[47%] top-[55%] w-0.5 h-0.5 bg-white rounded-full opacity-0 animate-spark-flash delay-4200"></div>
-          <div className="absolute right-[47%] top-[35%] w-0.5 h-0.5 bg-white rounded-full opacity-0 animate-spark-flash delay-5400"></div>
+          {/* Minimal connection lines */}
+          <div className="absolute left-[28%] top-[42%] w-[8px] h-[1px] bg-gradient-to-r from-amber-500/30 to-transparent rotate-[25deg] opacity-0 animate-spark-appear delay-3000"></div>
+          <div className="absolute right-[28%] top-[47%] w-[8px] h-[1px] bg-gradient-to-l from-orange-500/30 to-transparent rotate-[155deg] opacity-0 animate-spark-appear delay-4000"></div>
         </div>
         
         <div className="container mx-auto px-4 md:px-6 relative z-10">
@@ -524,10 +497,10 @@ export default function LandingPage() {
               <div className="mx-auto text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight">
                 <div className="relative text-center mx-auto h-[70px] sm:h-[90px] flex flex-col items-center justify-center">
                   <div className="flex items-center justify-center w-full px-4">
-                    <div className="flex flex-wrap items-center justify-center w-full max-w-[480px] mx-auto pl-10 sm:pl-0 relative">
+                    <div className="flex items-center justify-center w-full max-w-[480px] mx-auto relative">
                       <div className="flex items-center justify-center w-full relative">
-                        <span className="font-sans tracking-normal inline-block text-center bg-clip-text text-transparent bg-gradient-to-r from-amber-700 via-amber-600 to-amber-500 dark:from-amber-400 dark:via-amber-300 dark:to-amber-200">
-                          For those who still Thin<span className="relative inline-block ml-1 px-3 py-2 bg-gradient-to-br from-amber-600 to-amber-700 dark:from-amber-500 dark:to-amber-600 text-white font-bold rounded-lg shadow-lg transform rotate-1 hover:rotate-0 transition-transform duration-300 border-2 border-amber-500/20">Q</span>
+                        <span className="font-sans tracking-normal inline-block text-center bg-clip-text text-transparent bg-gradient-to-r from-amber-700 via-amber-600 to-amber-500 dark:from-amber-400 dark:via-amber-300 dark:to-amber-200 whitespace-nowrap">
+                          For those who still thin<span className="relative inline-block ml-1 px-3 py-2 bg-gradient-to-br from-amber-600 to-amber-700 dark:from-amber-500 dark:to-amber-600 text-white font-bold rounded-lg shadow-lg transform rotate-1 hover:rotate-0 transition-transform duration-300 border-2 border-amber-500/20">Q</span>
                         </span>
                         
                         {/* Left side spark network alongside the text */}
@@ -822,7 +795,7 @@ export default function LandingPage() {
                       : "33%",
                   boxShadow: isSetupCompleted 
                     ? "0 0 15px rgba(16, 185, 129, 0.7)" 
-                    : "0 0 10px rgba(124, 58, 237, 0.5)"
+                    : "0 0 10px rgba(245, 158, 11, 0.5)"
                 }}
               ></div>
               
@@ -849,32 +822,32 @@ export default function LandingPage() {
                   )}
                 </div>
                 
-                {/* Step 2: Activate Neura */}
+                {/* Step 2: Activate DotSpark */}
                 <div className="flex flex-col items-center">
                   <div className={`w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center shadow-lg mb-3 transition-all duration-500
-                    ${isNeuraActivated ? 'bg-gradient-to-br from-indigo-400 to-violet-600 text-white scale-110' : 
-                    user ? 'bg-card border-2 border-indigo-400 text-indigo-500 animate-pulse' : 
+                    ${isNeuraActivated ? 'bg-gradient-to-br from-amber-500 to-orange-600 text-white scale-110' : 
+                    user ? 'bg-card border-2 border-amber-400 text-amber-500 animate-pulse' : 
                     'bg-card border-2 border-muted text-muted-foreground'}`}>
                     {isNeuraActivated ? (
                       <CheckCircle className="h-6 w-6 md:h-8 md:w-8" />
                     ) : (
-                      <div className="rounded-full bg-indigo-500/10 w-8 h-8 md:w-10 md:h-10 flex items-center justify-center">
+                      <div className="rounded-full bg-amber-500/10 w-8 h-8 md:w-10 md:h-10 flex items-center justify-center">
                         <span className="font-bold text-lg">2</span>
                       </div>
                     )}
                   </div>
                   <span className={`font-medium text-sm
-                    ${isNeuraActivated ? 'text-indigo-500' : user ? 'text-indigo-400' : 'text-muted-foreground'}`}>
+                    ${isNeuraActivated ? 'text-amber-600' : user ? 'text-amber-500' : 'text-muted-foreground'}`}>
                     Activate DotSpark
                   </span>
                   {isNeuraActivated && (
-                    <div className="animate-pulse mt-1 text-xs text-indigo-500 flex items-center">
+                    <div className="animate-pulse mt-1 text-xs text-amber-600 flex items-center">
                       <CheckCircle className="h-3 w-3 mr-1" />
                       <span>Completed</span>
                     </div>
                   )}
                   {user && !isNeuraActivated && (
-                    <div className="mt-1 text-xs text-indigo-400 flex items-center">
+                    <div className="mt-1 text-xs text-amber-500 flex items-center">
                       <ArrowRight className="h-3 w-3 mr-1" />
                       <span>Next step</span>
                     </div>
