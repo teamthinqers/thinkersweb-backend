@@ -50,8 +50,8 @@ export default function MyNeura() {
   const { user } = useAuth();
   const { toast } = useToast();
   
-  // Neural Mirror name using neuraStorage utility
-  const [neuraName, setNeuraName] = useState(neuraStorage.getName());
+  // DotSpark name using neuraStorage utility
+  const [dotSparkName, setDotSparkName] = useState(neuraStorage.getName());
   
   // DotSpark Tuning
   const { 
@@ -152,29 +152,29 @@ export default function MyNeura() {
   // Handle name change with neuraStorage
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newName = e.target.value;
-    setNeuraName(newName);
+    setDotSparkName(newName);
     neuraStorage.setName(newName);
   };
   
-  // Function to activate Neura using neuraStorage utility
-  const activateNeura = () => {
+  // Function to activate DotSpark using neuraStorage utility
+  const activateDotSpark = () => {
     try {
       // Use the neuraStorage utility for consistent activation
       neuraStorage.activate();
       setIsActivated(true);
-      console.log("Activating Neura: using neuraStorage utility");
+      console.log("Activating DotSpark: using neuraStorage utility");
       
       // Ensure name is set properly
-      if (!neuraName || neuraName === '') {
-        const defaultName = 'My Neural Mirror';
+      if (!dotSparkName || dotSparkName === '') {
+        const defaultName = 'My DotSpark';
         neuraStorage.setName(defaultName);
-        setNeuraName(defaultName);
+        setDotSparkName(defaultName);
       }
       
       // Show activation toast
       toast({
-        title: "Neura Activated",
-        description: "Your neural mirror is now active and ready to reflect your intelligence.",
+        title: "DotSpark Activated",
+        description: "Your DotSpark is now active and ready to enhance your intelligence.",
         variant: "default",
       });
       
@@ -194,21 +194,21 @@ export default function MyNeura() {
     }
   };
   
-  // Function to deactivate Neura using neuraStorage utility
-  const deactivateNeura = () => {
+  // Function to deactivate DotSpark using neuraStorage utility
+  const deactivateDotSpark = () => {
     try {
       // Use the neuraStorage utility for consistent deactivation
       neuraStorage.deactivate();
       setIsActivated(false);
-      console.log("Deactivating Neura: using neuraStorage utility");
+      console.log("Deactivating DotSpark: using neuraStorage utility");
       
       toast({
-        title: "Neura Deactivated",
-        description: "Your neural mirror has been deactivated.",
+        title: "DotSpark Deactivated",
+        description: "Your DotSpark has been deactivated.",
         variant: "default",
       });
     } catch (error) {
-      console.error("Error deactivating Neura:", error);
+      console.error("Error deactivating DotSpark:", error);
       toast({
         title: "Deactivation Failed",
         description: "There was a problem deactivating your neural mirror.",
@@ -217,13 +217,13 @@ export default function MyNeura() {
     }
   };
   
-  // Toggle Neura activation
-  const toggleNeuraActivation = () => {
+  // Toggle DotSpark activation
+  const toggleDotSparkActivation = () => {
     // If trying to activate and user is not signed in, prompt them to sign in
     if (!isActivated && !user) {
       toast({
         title: "Sign in Required",
-        description: "Please sign in to activate your neural mirror.",
+        description: "Please sign in to activate your DotSpark.",
         variant: "default",
       });
       
@@ -237,9 +237,9 @@ export default function MyNeura() {
     
     // Otherwise, proceed as normal
     if (isActivated) {
-      deactivateNeura();
+      deactivateDotSpark();
     } else {
-      activateNeura();
+      activateDotSpark();
     }
   };
   
@@ -618,7 +618,7 @@ export default function MyNeura() {
                   </TooltipTrigger>
                   <TooltipContent side="bottom" className="bg-white dark:bg-gray-900 border border-blue-200 dark:border-blue-800 p-3 shadow-lg max-w-[200px]">
                     <p className="text-sm font-medium">Memory Capacity</p>
-                    <p className="text-xs text-muted-foreground mt-1">Grows as you add entries and save knowledge in your Neura. More entries mean increased memory capacity.</p>
+                    <p className="text-xs text-muted-foreground mt-1">Grows as you add entries and save knowledge in your DotSpark. More entries mean increased memory capacity.</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
