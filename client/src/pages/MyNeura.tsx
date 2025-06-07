@@ -730,33 +730,13 @@ export default function MyNeura() {
             </div>
             <CardContent className="p-6">
               <p className="text-muted-foreground mb-4">
-                Configure all core parameters that shape how your DotSpark processes information and reflects your unique cognitive approach.
+                Set up your Cognitive Shield to protect your thinking identity. It ensures your natural intelligence stays intact while interacting with AI.
               </p>
-              <ul className="space-y-2 mb-6">
-                <li className="flex items-start">
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-orange-100 dark:bg-orange-900 text-orange-600 dark:text-orange-400 mr-2 mt-0.5">
-                    <Check className="h-3.5 w-3.5" />
-                  </span>
-                  <span className="text-sm">Creativity vs precision balance</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-orange-100 dark:bg-orange-900 text-orange-600 dark:text-orange-400 mr-2 mt-0.5">
-                    <Check className="h-3.5 w-3.5" />
-                  </span>
-                  <span className="text-sm">Processing speed preferences</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-orange-100 dark:bg-orange-900 text-orange-600 dark:text-orange-400 mr-2 mt-0.5">
-                    <Check className="h-3.5 w-3.5" />
-                  </span>
-                  <span className="text-sm">Analytical vs intuitive thinking</span>
-                </li>
-              </ul>
               <Button 
                 className="w-full bg-orange-600 hover:bg-orange-700 group-hover:translate-y-0 translate-y-1 transition-all duration-300"
                 onClick={() => setLocation('/dotspark-tuning/cognitive')}
               >
-                Configure Cognitive Style
+                Configure Cognitive Shield
               </Button>
             </CardContent>
           </Card>
@@ -867,190 +847,21 @@ export default function MyNeura() {
             <CardHeader>
               <div className="flex items-center gap-2">
                 <BrainCog className="h-5 w-5 text-amber-500" />
-                <CardTitle>Cognitive Style Parameters</CardTitle>
+                <CardTitle>Cognitive Shield</CardTitle>
               </div>
-              <CardDescription>Define how your DotSpark approaches problem-solving</CardDescription>
+              <CardDescription>Set up your Cognitive Shield to protect your thinking identity</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              {/* Creativity */}
-              <div className="space-y-3">
-                <div className="flex justify-between items-center">
-                  <HoverCard>
-                    <HoverCardTrigger asChild>
-                      <button className="flex items-center gap-1 text-base font-medium cursor-help">
-                        Creativity <Info className="h-4 w-4 text-muted-foreground" />
-                      </button>
-                    </HoverCardTrigger>
-                    <HoverCardContent className="w-80">
-                      <div className="space-y-2">
-                        <h4 className="text-sm font-semibold">Creativity Level</h4>
-                        <p className="text-sm">
-                          Determines how varied and unique your DotSpark's responses will be. Higher values produce more novel connections between topics.
-                        </p>
-                      </div>
-                    </HoverCardContent>
-                  </HoverCard>
-                  <span className="text-sm font-medium">{Math.round((pendingChanges.creativity !== undefined ? pendingChanges.creativity : neuralTuning?.creativity || 0.5) * 100)}%</span>
-                </div>
-                <Slider
-                  value={[pendingChanges.creativity !== undefined ? pendingChanges.creativity : (neuralTuning?.creativity || 0.5)]}
-                  min={0}
-                  max={1}
-                  step={0.05}
-                  onValueChange={(value) => handleParameterChange('creativity', value)}
-                  className="cursor-pointer"
-                />
-                <div className="flex justify-between text-xs text-muted-foreground">
-                  <span>Focused & Precise</span>
-                  <span>Novel & Exploratory</span>
-                </div>
-              </div>
-              
-              {/* Precision */}
-              <div className="space-y-3">
-                <div className="flex justify-between items-center">
-                  <HoverCard>
-                    <HoverCardTrigger asChild>
-                      <button className="flex items-center gap-1 text-base font-medium cursor-help">
-                        Precision <Info className="h-4 w-4 text-muted-foreground" />
-                      </button>
-                    </HoverCardTrigger>
-                    <HoverCardContent className="w-80">
-                      <div className="space-y-2">
-                        <h4 className="text-sm font-semibold">Precision Level</h4>
-                        <p className="text-sm">
-                          Controls how factually accurate and detailed your DotSpark will be. Higher values emphasize exactness over generalization.
-                        </p>
-                      </div>
-                    </HoverCardContent>
-                  </HoverCard>
-                  <span className="text-sm font-medium">{Math.round((pendingChanges.precision !== undefined ? pendingChanges.precision : neuralTuning?.precision || 0.5) * 100)}%</span>
-                </div>
-                <Slider
-                  value={[pendingChanges.precision !== undefined ? pendingChanges.precision : (neuralTuning?.precision || 0.5)]}
-                  min={0}
-                  max={1}
-                  step={0.05}
-                  onValueChange={(value) => handleParameterChange('precision', value)}
-                  className="cursor-pointer"
-                />
-                <div className="flex justify-between text-xs text-muted-foreground">
-                  <span>General Understanding</span>
-                  <span>Exact Details</span>
-                </div>
-              </div>
-              
-              {/* Speed */}
-              <div className="space-y-3">
-                <div className="flex justify-between items-center">
-                  <HoverCard>
-                    <HoverCardTrigger asChild>
-                      <button className="flex items-center gap-1 text-base font-medium cursor-help">
-                        Processing Speed <Info className="h-4 w-4 text-muted-foreground" />
-                      </button>
-                    </HoverCardTrigger>
-                    <HoverCardContent className="w-80">
-                      <div className="space-y-2">
-                        <h4 className="text-sm font-semibold">Processing Speed</h4>
-                        <p className="text-sm">
-                          Balances response time against comprehensiveness. Higher speeds may sacrifice some depth for quicker responses.
-                        </p>
-                      </div>
-                    </HoverCardContent>
-                  </HoverCard>
-                  <span className="text-sm font-medium">{Math.round((pendingChanges.speed !== undefined ? pendingChanges.speed : neuralTuning?.speed || 0.5) * 100)}%</span>
-                </div>
-                <Slider
-                  value={[pendingChanges.speed !== undefined ? pendingChanges.speed : (neuralTuning?.speed || 0.5)]}
-                  min={0}
-                  max={1}
-                  step={0.05}
-                  onValueChange={(value) => handleParameterChange('speed', value)}
-                  className="cursor-pointer"
-                />
-                <div className="flex justify-between text-xs text-muted-foreground">
-                  <span>In-depth Analysis</span>
-                  <span>Quick Response</span>
-                </div>
-              </div>
-
-              {/* Analytical */}
-              <div className="space-y-3">
-                <div className="flex justify-between items-center">
-                  <HoverCard>
-                    <HoverCardTrigger asChild>
-                      <button className="flex items-center gap-1 text-base font-medium cursor-help">
-                        Analytical Thinking <Info className="h-4 w-4 text-muted-foreground" />
-                      </button>
-                    </HoverCardTrigger>
-                    <HoverCardContent className="w-80">
-                      <div className="space-y-2">
-                        <h4 className="text-sm font-semibold">Analytical Thinking</h4>
-                        <p className="text-sm">
-                          Emphasizes logical, systematic processing of information. Higher values provide more structured analysis with clear reasoning.
-                        </p>
-                      </div>
-                    </HoverCardContent>
-                  </HoverCard>
-                  <span className="text-sm font-medium">{Math.round((pendingChanges.analytical !== undefined ? pendingChanges.analytical : neuralTuning?.analytical || 0.5) * 100)}%</span>
-                </div>
-                <Slider
-                  value={[pendingChanges.analytical !== undefined ? pendingChanges.analytical : (neuralTuning?.analytical || 0.5)]}
-                  min={0}
-                  max={1}
-                  step={0.05}
-                  onValueChange={(value) => handleParameterChange('analytical', value)}
-                  className="cursor-pointer"
-                />
-                <div className="flex justify-between text-xs text-muted-foreground">
-                  <span>Fluid Reasoning</span>
-                  <span>Structured Analysis</span>
-                </div>
-              </div>
-              
-              {/* Intuitive */}
-              <div className="space-y-3">
-                <div className="flex justify-between items-center">
-                  <HoverCard>
-                    <HoverCardTrigger asChild>
-                      <button className="flex items-center gap-1 text-base font-medium cursor-help">
-                        Intuitive Thinking <Info className="h-4 w-4 text-muted-foreground" />
-                      </button>
-                    </HoverCardTrigger>
-                    <HoverCardContent className="w-80">
-                      <div className="space-y-2">
-                        <h4 className="text-sm font-semibold">Intuitive Thinking</h4>
-                        <p className="text-sm">
-                          Focuses on pattern recognition and insight generation. Higher values lead to more holistic perspectives and "connecting the dots".
-                        </p>
-                      </div>
-                    </HoverCardContent>
-                  </HoverCard>
-                  <span className="text-sm font-medium">{Math.round((pendingChanges.intuitive !== undefined ? pendingChanges.intuitive : neuralTuning?.intuitive || 0.5) * 100)}%</span>
-                </div>
-                <Slider
-                  value={[pendingChanges.intuitive !== undefined ? pendingChanges.intuitive : (neuralTuning?.intuitive || 0.5)]}
-                  min={0}
-                  max={1}
-                  step={0.05}
-                  onValueChange={(value) => handleParameterChange('intuitive', value)}
-                  className="cursor-pointer"
-                />
-                <div className="flex justify-between text-xs text-muted-foreground">
-                  <span>Direct Observation</span>
-                  <span>Pattern Recognition</span>
-                </div>
+              <div className="text-center py-8">
+                <p className="text-muted-foreground mb-4">
+                  Set up your Cognitive Shield to protect your thinking identity. It ensures your natural intelligence stays intact while interacting with AI.
+                </p>
               </div>
             </CardContent>
           </Card>
           
           <div className="flex justify-end">
             <div className="flex items-center gap-2">
-              {unsavedChanges && (
-                <span className="text-sm text-amber-600 dark:text-amber-400">
-                  You have unsaved changes
-                </span>
-              )}
               <Button 
                 variant="default" 
                 className="bg-amber-600 hover:bg-amber-700"
