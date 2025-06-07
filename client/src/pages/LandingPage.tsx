@@ -539,6 +539,13 @@ export default function LandingPage() {
               </div>
             </div>
             
+            {/* Hero tagline */}
+            <div className="text-xl md:text-2xl font-medium mt-4 mb-2 max-w-2xl mx-auto text-center px-4">
+              <p className="leading-tight">
+                For those who still Thin<span className="font-bold text-amber-700 bg-amber-100 dark:text-amber-400 dark:bg-amber-900/30 px-2 py-1 rounded-md">Q</span>
+              </p>
+            </div>
+            
             {/* Subheadings */}
             <div className="text-lg md:text-xl text-muted-foreground mt-4 md:mt-4 mb-4 max-w-2xl mx-auto text-center px-4">
               <p className="leading-tight md:leading-normal max-w-2xl mx-auto">
