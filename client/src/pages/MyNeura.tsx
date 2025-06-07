@@ -1,37 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { useLocation } from 'wouter';
-import { useAuth } from '@/hooks/use-auth';
-import { useToast } from '@/hooks/use-toast';
-import { useDotSparkTuning } from '@/hooks/useDotSparkTuning';
-import { neuraStorage } from '@/lib/neuraStorage';
-import { Slider } from '@/components/ui/slider';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
-  BrainCircuit, 
-  Sparkles, 
-  Zap, 
-  BrainCog, 
-  Lightbulb,
-  ChevronLeft,
-  ChevronRight, 
-  Plus,
-  X,
-  Target,
-  Info, 
-  Check,
-  AlertCircle,
-  Save
-} from 'lucide-react';
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card";
+import React, { useState, useEffect } from "react";
+import { useLocation } from "wouter";
+import { useAuth } from "@/hooks/use-auth";
+import { useToast } from "@/hooks/use-toast";
+import { useDotSparkTuning } from "@/hooks/useDotSparkTuning";
+import { neuraStorage } from "@/lib/neuraStorage";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { AlertCircle, BrainCircuit, BrainCog, ChevronLeft, ChevronRight, Check, Info, Lightbulb, Plus, Save, Sparkles, Target, X, Zap } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Slider } from "@/components/ui/slider";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function MyNeura() {
@@ -75,35 +56,14 @@ export default function MyNeura() {
     creativity?: number;
     precision?: number;
     speed?: number;
-    adaptability?: number;
-    cognitivePace?: number;
-    signalFocus?: number;
-    impulseControl?: number;
-    mentalEnergyFlow?: number;
     analytical?: number;
     intuitive?: number;
-    contextualThinking?: number;
-    memoryBandwidth?: number;
-    thoughtComplexity?: number;
-    mentalModelDensity?: number;
-    patternDetectionSensitivity?: number;
-    decisionMakingIndex?: number;
-    memoryRetention?: number;
-    memoryRecall?: number;
-    connectionStrength?: number;
-    patternRecognition?: number;
-    learningRate?: number;
-    conceptIntegration?: number;
-    curiosityIndex?: number;
     specialties?: Record<string, number>;
     learningFocus?: string[];
   }>({});
   
   // Active tab for neural tuning
   const [activeTab, setActiveTab] = useState('core');
-  
-  // Track if we're on mobile for responsive layout
-  const [isMobileView, setIsMobileView] = useState(window.innerWidth < 768);
   
   // New focus for learning directives
   const [newFocus, setNewFocus] = useState('');
@@ -118,75 +78,18 @@ export default function MyNeura() {
       console.log("Loading activation status from neuraStorage:", activated);
       setIsActivated(activated);
     } catch (error) {
-      console.error("Error reading activation status:", error);
-      setIsActivated(false);
+      console.error("Error checking activation status:", error);
     }
   }, []);
   
-  // Update window size on resize
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobileView(window.innerWidth < 768);
-    };
-    
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-  
-  // Update neura name when it changes in localStorage
-  useEffect(() => {
-    const handleStorageChange = () => {
-      setNeuraName(neuraStorage.getName());
-    };
-    
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
-  }, []);
-  
-  // Destructure status for easier access
-  const tuning = status?.tuning;
-  const gameElements = status?.gameElements;
-  
-  // Save changes to backend
-  const saveChanges = async () => {
-    if (!pendingChanges || Object.keys(pendingChanges).length === 0) {
-      return;
-    }
-    
-    try {
-      // Separate learning focus from other tuning parameters
-      const { learningFocus, ...tuningParams } = pendingChanges;
-      
-      // Update tuning parameters if present
-      if (Object.keys(tuningParams).length > 0) {
-        await updateTuning(tuningParams);
-      }
-      
-      // Update learning focus if present
-      if (learningFocus) {
-        await updateLearningFocus(learningFocus);
-      }
-      
-      // Clear pending changes and mark as saved
-      setPendingChanges({});
-      setUnsavedChanges(false);
-      
-      toast({
-        title: "Settings Saved",
-        description: "Your Neura tuning has been updated successfully.",
-        variant: "default",
-      });
-    } catch (error) {
-      console.error("Error saving changes:", error);
-      toast({
-        title: "Save Failed",
-        description: "Failed to save your changes. Please try again.",
-        variant: "destructive",
-      });
-    }
+  // Handle name change with neuraStorage
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newName = e.target.value;
+    setNeuraName(newName);
+    neuraStorage.setName(newName);
   };
   
-  // Function to activate Neura
+  // Function to activate Neura using neuraStorage utility
   const activateNeura = () => {
     try {
       // Use the neuraStorage utility for consistent activation
@@ -194,84 +97,57 @@ export default function MyNeura() {
       setIsActivated(true);
       console.log("Activating Neura: using neuraStorage utility");
       
+      // Ensure name is set properly
+      const currentName = neuraStorage.getName();
+      if (!currentName) {
+        neuraStorage.setName(neuraName || 'Neura');
+      }
+      
       toast({
         title: "Neura Activated",
-        description: "Your neural extension is now active and ready to assist you.",
-        variant: "default",
+        description: "Your neural extension is now active and learning from your interactions.",
       });
     } catch (error) {
       console.error("Error activating Neura:", error);
       toast({
-        title: "Activation Failed",
-        description: "There was a problem activating your Neura.",
+        title: "Activation Error",
+        description: "Failed to activate Neura. Please try again.",
         variant: "destructive",
       });
     }
   };
   
-  // Function to deactivate Neura
+  // Function to deactivate Neura using neuraStorage utility
   const deactivateNeura = () => {
     try {
-      // Use the neuraStorage utility for consistent deactivation
       neuraStorage.deactivate();
       setIsActivated(false);
       console.log("Deactivating Neura: using neuraStorage utility");
       
       toast({
         title: "Neura Deactivated",
-        description: "Your Neura has been deactivated.",
-        variant: "default",
+        description: "Your neural extension has been deactivated.",
       });
     } catch (error) {
       console.error("Error deactivating Neura:", error);
       toast({
-        title: "Deactivation Failed",
-        description: "There was a problem deactivating your Neura.",
+        title: "Deactivation Error",
+        description: "Failed to deactivate Neura. Please try again.",
         variant: "destructive",
       });
     }
   };
   
-  // Toggle Neura activation
-  const toggleNeuraActivation = () => {
-    // If trying to activate and user is not signed in, prompt them to sign in
-    if (!isActivated && !user) {
-      toast({
-        title: "Sign in Required",
-        description: "Please sign in to activate your Neura.",
-        variant: "default",
-      });
-      
-      // Optional: Redirect to auth page after a short delay
-      setTimeout(() => {
-        setLocation('/auth');
-      }, 1500);
-      
-      return;
-    }
-    
-    // Otherwise, proceed as normal
-    if (isActivated) {
-      deactivateNeura();
-    } else {
-      activateNeura();
-    }
-  };
-  
-  // Function to handle slider value changes - only updates local state without saving to backend
-  const handleParameterChange = (paramName: string, paramValue: number) => {
-    
-    // Update the pending changes object with the new parameter value
+  // Handle parameter changes
+  const handleParameterChange = (param: string, value: number) => {
     setPendingChanges(prev => ({
       ...prev,
-      [paramName]: paramValue
+      [param]: value
     }));
-    
-    // Mark that there are unsaved changes
     setUnsavedChanges(true);
   };
   
-  // Function to handle specialty weight changes
+  // Handle specialty weight changes
   const handleSpecialtyChange = (specialty: string, weight: number) => {
     setPendingChanges(prev => ({
       ...prev,
@@ -283,135 +159,162 @@ export default function MyNeura() {
     setUnsavedChanges(true);
   };
   
-  // Function to add new learning focus
-  const addLearningFocus = () => {
-    if (newFocus.trim() && tuning?.learningFocus) {
-      const updatedFocus = [...tuning.learningFocus, newFocus.trim()];
-      setPendingChanges(prev => ({
-        ...prev,
-        learningFocus: updatedFocus
-      }));
-      setNewFocus('');
-      setUnsavedChanges(true);
+  // Save changes
+  const handleSaveChanges = async () => {
+    if (!unsavedChanges) return;
+    
+    try {
+      updateTuning.mutate(pendingChanges, {
+        onSuccess: () => {
+          setPendingChanges({});
+          setUnsavedChanges(false);
+          toast({
+            title: "Settings Saved",
+            description: "Your DotSpark tuning has been updated.",
+          });
+        },
+        onError: () => {
+          toast({
+            title: "Save Failed",
+            description: "Failed to save tuning settings. Please try again.",
+            variant: "destructive",
+          });
+        }
+      });
+    } catch (error) {
+      toast({
+        title: "Save Failed", 
+        description: "Failed to save tuning settings. Please try again.",
+        variant: "destructive",
+      });
     }
   };
   
-  // Function to remove learning focus
-  const removeLearningFocus = (focusToRemove: string) => {
-    if (tuning?.learningFocus) {
-      const updatedFocus = tuning.learningFocus.filter(focus => focus !== focusToRemove);
-      setPendingChanges(prev => ({
-        ...prev,
-        learningFocus: updatedFocus
-      }));
-      setUnsavedChanges(true);
-    }
+  // Reset changes
+  const handleResetChanges = () => {
+    setPendingChanges({});
+    setUnsavedChanges(false);
   };
   
-  // Get current value for a parameter (pending change or current tuning value)
-  const getCurrentValue = (paramName: string): number => {
-    // First check if there's a pending change
-    if (pendingChanges[paramName as keyof typeof pendingChanges] !== undefined) {
-      return pendingChanges[paramName as keyof typeof pendingChanges] as number;
+  // Get current value for a parameter (with pending changes)
+  const getCurrentValue = (param: string) => {
+    if (pendingChanges[param as keyof typeof pendingChanges] !== undefined) {
+      return pendingChanges[param as keyof typeof pendingChanges] as number;
+    }
+    return status?.tuning?.[param as keyof typeof status.tuning] as number || 0;
+  };
+  
+  // Get current learning focus (with pending changes)
+  const getCurrentLearningFocus = () => {
+    return pendingChanges.learningFocus || status?.tuning?.learningFocus || [];
+  };
+  
+  // Handle add learning focus
+  const handleAddLearningFocus = () => {
+    if (!newFocus.trim()) return;
+    
+    const currentFocus = getCurrentLearningFocus();
+    if (currentFocus.includes(newFocus.trim())) {
+      toast({
+        title: "Duplicate Focus",
+        description: "This learning focus already exists.",
+        variant: "destructive",
+      });
+      return;
     }
     
-    // Otherwise return the current tuning value
-    return tuning?.[paramName as keyof typeof tuning] as number || 0;
+    setPendingChanges(prev => ({
+      ...prev,
+      learningFocus: [...currentFocus, newFocus.trim()]
+    }));
+    setUnsavedChanges(true);
+    setNewFocus('');
   };
   
-  // Get current learning focus (pending or current)
-  const getCurrentLearningFocus = (): string[] => {
-    if (pendingChanges.learningFocus) {
-      return pendingChanges.learningFocus;
-    }
-    return tuning?.learningFocus || [];
+  // Handle remove learning focus
+  const handleRemoveLearningFocus = (focus: string) => {
+    const currentFocus = getCurrentLearningFocus();
+    setPendingChanges(prev => ({
+      ...prev,
+      learningFocus: currentFocus.filter(f => f !== focus)
+    }));
+    setUnsavedChanges(true);
   };
   
-  // Render header with consistent styling
-  const renderHeader = () => (
-    <>
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-3">
-          <Button 
-            variant="ghost" 
-            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg"
-            onClick={() => setLocation('/')}
-          >
-            <ChevronLeft className="h-5 w-5" />
-          </Button>
-          <h1 className="text-2xl font-bold">My Neura</h1>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-medium">Neura Status:</span>
-            <span className={`inline-flex h-3 w-3 rounded-full ${isActivated ? 'bg-green-500' : 'bg-red-500'}`}></span>
-          </div>
-          <div className="flex items-center gap-2">
-            {unsavedChanges && isActivated && (
-              <Button 
-                variant="default"
-                className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-1.5"
-                onClick={saveChanges}
-                disabled={isUpdating}
-              >
-                {isUpdating ? (
-                  <span className="flex items-center gap-1.5">
-                    <span className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-                    Saving...
-                  </span>
-                ) : (
-                  <span className="flex items-center gap-1.5">
-                    <Save className="h-4 w-4" />
-                    Save Changes
-                  </span>
-                )}
-              </Button>
-            )}
-            <Button 
-              variant={isActivated ? "outline" : "default"} 
-              className={isActivated ? "border-green-500 text-green-600 hover:bg-green-50 dark:hover:bg-green-950" : "bg-indigo-600 hover:bg-indigo-700"} 
-              onClick={toggleNeuraActivation}
-            >
-              {isActivated ? "Deactivate Neura" : "Activate Neura"}
-            </Button>
-          </div>
-        </div>
-      </div>
-      
-      {isActivated ? (
-        <div className="mb-6 p-4 rounded-lg border bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950 dark:to-emerald-950 border-green-200 dark:border-green-800">
-          <div className="flex items-center">
-            <Check className="h-6 w-6 text-green-500 mr-3" />
-            <div>
-              <h3 className="text-lg font-medium">Neura is Active</h3>
-              <p className="text-sm text-muted-foreground">Your neural extension is active and ready to assist you.</p>
-            </div>
-          </div>
-        </div>
-      ) : (
-        <div className="mb-6 p-4 rounded-lg border bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950 dark:to-orange-950 border-amber-200 dark:border-amber-800">
-          <div className="flex items-center">
-            <AlertCircle className="h-6 w-6 text-amber-500 mr-3" />
-            <div>
-              <h3 className="text-lg font-medium">Neura is Inactive</h3>
-              <p className="text-sm text-muted-foreground">Activate your neural extension to begin receiving personalized insights.</p>
-            </div>
-          </div>
-        </div>
-      )}
-    </>
-  );
-
-  // Loading state
   if (isTuningLoading) {
     return (
-      <div className="container max-w-4xl mx-auto py-6 px-4">
-        {renderHeader()}
-        <div className="flex items-center justify-center h-[400px]">
-          <div className="flex flex-col items-center">
-            <BrainCircuit className="h-16 w-16 text-indigo-400 animate-pulse mb-4" />
-            <h3 className="text-xl font-medium mb-2">Loading Neura...</h3>
-            <p className="text-muted-foreground">Connecting to your neural extension</p>
+      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-cyan-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-800 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-500 mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading neural configuration...</p>
+        </div>
+      </div>
+    );
+  }
+
+  const tuning = status?.tuning;
+  const gameElements = status?.gameElements;
+
+  if (!isActivated) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-cyan-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-800">
+        <div className="container mx-auto px-4 py-8">
+          {/* Header */}
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center gap-4">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setLocation("/")}
+                className="text-muted-foreground hover:text-foreground"
+              >
+                <ChevronLeft className="h-4 w-4 mr-1" />
+                Back to Dashboard
+              </Button>
+            </div>
+          </div>
+
+          {/* Activation Card */}
+          <div className="max-w-2xl mx-auto">
+            <Card className="text-center border-2 border-dashed border-indigo-200 dark:border-indigo-800">
+              <CardHeader className="pb-6">
+                <div className="w-16 h-16 bg-indigo-100 dark:bg-indigo-900 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <BrainCircuit className="h-8 w-8 text-indigo-600 dark:text-indigo-400" />
+                </div>
+                <CardTitle className="text-2xl text-indigo-900 dark:text-indigo-100">Activate Your Neura</CardTitle>
+                <CardDescription className="text-lg">
+                  Your personal neural extension is ready to be activated. Once active, it will learn from your interactions and adapt to your cognitive patterns.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="space-y-4">
+                  <div>
+                    <label className="text-sm font-medium text-left block mb-2">Neural Extension Name</label>
+                    <Input
+                      value={neuraName}
+                      onChange={handleNameChange}
+                      placeholder="Enter a name for your neural extension"
+                      className="text-center text-lg font-medium"
+                    />
+                  </div>
+                </div>
+                
+                <Button
+                  onClick={activateNeura}
+                  size="lg"
+                  className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold py-3 px-8 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
+                >
+                  <Sparkles className="h-5 w-5 mr-2" />
+                  Activate Neura
+                </Button>
+                
+                <div className="text-sm text-muted-foreground space-y-2">
+                  <p>• Your neural extension will begin learning from your interactions</p>
+                  <p>• Cognitive patterns will be analyzed and optimized</p>
+                  <p>• All data remains private and secure</p>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>
@@ -419,859 +322,489 @@ export default function MyNeura() {
   }
 
   return (
-    <div className="container max-w-4xl mx-auto py-6 px-4">
-      {/* Header Section with Status Indicators */}
-      {renderHeader()}
-      
-      {/* Neural Extension Level Card with Capacity Metrics */}
-      <Card className="mb-8 bg-gradient-to-br from-indigo-50 to-slate-50 dark:from-indigo-950/30 dark:to-slate-950 border border-indigo-100 dark:border-indigo-900/50 overflow-hidden">
-        <div className="relative overflow-hidden">
-          <div className="absolute -right-16 -top-16 w-48 h-48 bg-gradient-to-br from-indigo-200/30 to-blue-200/10 dark:from-indigo-800/20 dark:to-blue-800/5 rounded-full blur-3xl"></div>
-        </div>
-        
-        <CardHeader className="pb-2 relative z-10">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-2">
-              <BrainCircuit className="h-5 w-5 text-indigo-700 dark:text-indigo-400" />
-              <CardTitle>
-                <span className="font-bold bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">{neuraName}</span>
-              </CardTitle>
-            </div>
-            <Badge className="bg-indigo-100 text-indigo-800 dark:bg-indigo-900/50 dark:text-indigo-200 hover:bg-indigo-200 dark:hover:bg-indigo-800/50">
-              Level {gameElements?.level || 1}
-            </Badge>
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-cyan-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-800">
+      <div className="container mx-auto px-4 py-8 space-y-8">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setLocation("/")}
+              className="text-muted-foreground hover:text-foreground"
+            >
+              <ChevronLeft className="h-4 w-4 mr-1" />
+              Back to Dashboard
+            </Button>
           </div>
-        </CardHeader>
-        
-        <CardContent className="pt-0 relative z-10">
-          <div className="grid md:grid-cols-2 gap-4">
-            <div className="space-y-4">
-              <div>
-                <div className="flex justify-between text-sm mb-1">
-                  <span className="font-medium">Processing Efficiency</span>
-                  <span className="text-muted-foreground">{Math.round(processingEfficiency)}%</span>
+          
+          {/* Save/Reset Controls */}
+          {unsavedChanges && (
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleResetChanges}
+                className="text-muted-foreground"
+              >
+                <X className="h-4 w-4 mr-1" />
+                Reset
+              </Button>
+              <Button
+                size="sm"
+                onClick={handleSaveChanges}
+                disabled={isUpdating}
+                className="bg-indigo-600 hover:bg-indigo-700"
+              >
+                {isUpdating ? (
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-1" />
+                ) : (
+                  <Save className="h-4 w-4 mr-1" />
+                )}
+                Save Changes
+              </Button>
+            </div>
+          )}
+        </div>
+
+        {/* Neural Extension Status Card */}
+        <Card className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white border-0">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+                  <BrainCircuit className="h-6 w-6" />
                 </div>
-                <Progress value={processingEfficiency} className="h-2" />
+                <div>
+                  <h2 className="text-xl font-bold">{neuraName}</h2>
+                  <p className="text-indigo-100">Neural Extension • Level {gameElements?.level || 1}</p>
+                </div>
               </div>
-              
-              <div>
-                <div className="flex justify-between text-sm mb-1">
-                  <span className="font-medium">Memory Capacity</span>
-                  <span className="text-muted-foreground">{Math.round(memoryCapacity)}%</span>
-                </div>
-                <Progress value={memoryCapacity} className="h-2" />
+              <div className="text-right">
+                <div className="text-2xl font-bold">{Math.round((gameElements?.experience || 0) / (gameElements?.experienceRequired || 1000) * 100)}%</div>
+                <div className="text-sm text-indigo-100">Progress</div>
               </div>
             </div>
             
-            <div className="space-y-4">
-              <div>
-                <div className="flex justify-between text-sm mb-1">
-                  <span className="font-medium">Learning Rate</span>
-                  <span className="text-muted-foreground">{Math.round(learningRate)}%</span>
+            {/* Experience Bar */}
+            <div className="mb-4">
+              <div className="flex justify-between mb-1.5 text-sm font-medium">
+                <span>Experience</span>
+                <span>{gameElements?.experience || 0} / {gameElements?.experienceRequired || 1000} XP</span>
+              </div>
+              <Progress value={(gameElements?.experience || 0) / (gameElements?.experienceRequired || 1000) * 100} className="h-2 bg-indigo-100 dark:bg-indigo-950" />
+            </div>
+            
+            {/* Capacity Metrics */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
+              {/* Processing Efficiency */}
+              <div className="text-center">
+                <div className="relative w-14 h-14 sm:w-16 sm:h-16 mx-auto">
+                  <svg className="w-full h-full" viewBox="0 0 100 100">
+                    <circle 
+                      cx="50" 
+                      cy="50" 
+                      r="45" 
+                      fill="none" 
+                      stroke="currentColor" 
+                      className="text-indigo-100 dark:text-indigo-950" 
+                      strokeWidth="8" 
+                    />
+                    <circle 
+                      cx="50" 
+                      cy="50" 
+                      r="45" 
+                      fill="none" 
+                      stroke="currentColor" 
+                      className="text-indigo-500 transition-all duration-500 ease-out" 
+                      strokeWidth="8" 
+                      strokeDasharray={`${2 * Math.PI * 45 * (processingEfficiency / 100)} ${2 * Math.PI * 45}`}
+                      strokeDashoffset={2 * Math.PI * 45 * 0.25}
+                    />
+                  </svg>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <Zap className="h-5 w-5 text-indigo-500" />
+                  </div>
                 </div>
-                <Progress value={learningRate} className="h-2" />
+                <div className="text-sm font-medium mt-1">Processing</div>
+                <div className="text-xl font-bold">{Math.round(processingEfficiency)}%</div>
               </div>
               
-              <div>
-                <div className="flex justify-between text-sm mb-1">
-                  <span className="font-medium">Specialization Level</span>
-                  <span className="text-muted-foreground">{Math.round(specializationLevel)}%</span>
+              {/* Memory Capacity */}
+              <div className="text-center">
+                <div className="relative w-14 h-14 sm:w-16 sm:h-16 mx-auto">
+                  <svg className="w-full h-full" viewBox="0 0 100 100">
+                    <circle 
+                      cx="50" 
+                      cy="50" 
+                      r="45" 
+                      fill="none" 
+                      stroke="currentColor" 
+                      className="text-blue-100 dark:text-blue-950" 
+                      strokeWidth="8" 
+                    />
+                    <circle 
+                      cx="50" 
+                      cy="50" 
+                      r="45" 
+                      fill="none" 
+                      stroke="currentColor" 
+                      className="text-blue-500 transition-all duration-500 ease-out" 
+                      strokeWidth="8" 
+                      strokeDasharray={`${2 * Math.PI * 45 * (memoryCapacity / 100)} ${2 * Math.PI * 45}`}
+                      strokeDashoffset={2 * Math.PI * 45 * 0.25}
+                    />
+                  </svg>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <BrainCog className="h-5 w-5 text-blue-500" />
+                  </div>
                 </div>
-                <Progress value={specializationLevel} className="h-2" />
+                <div className="text-sm font-medium mt-1">Memory</div>
+                <div className="text-xl font-bold">{Math.round(memoryCapacity)}%</div>
+              </div>
+              
+              {/* Learning Rate */}
+              <div className="text-center">
+                <div className="relative w-14 h-14 sm:w-16 sm:h-16 mx-auto">
+                  <svg className="w-full h-full" viewBox="0 0 100 100">
+                    <circle 
+                      cx="50" 
+                      cy="50" 
+                      r="45" 
+                      fill="none" 
+                      stroke="currentColor" 
+                      className="text-purple-100 dark:text-purple-950" 
+                      strokeWidth="8" 
+                    />
+                    <circle 
+                      cx="50" 
+                      cy="50" 
+                      r="45" 
+                      fill="none" 
+                      stroke="currentColor" 
+                      className="text-purple-500 transition-all duration-500 ease-out" 
+                      strokeWidth="8" 
+                      strokeDasharray={`${2 * Math.PI * 45 * (learningRate / 100)} ${2 * Math.PI * 45}`}
+                      strokeDashoffset={2 * Math.PI * 45 * 0.25}
+                    />
+                  </svg>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <Lightbulb className="h-5 w-5 text-purple-500" />
+                  </div>
+                </div>
+                <div className="text-sm font-medium mt-1">Learning</div>
+                <div className="text-xl font-bold">{Math.round(learningRate)}%</div>
+              </div>
+              
+              {/* Specialization Level */}
+              <div className="text-center">
+                <div className="relative w-14 h-14 sm:w-16 sm:h-16 mx-auto">
+                  <svg className="w-full h-full" viewBox="0 0 100 100">
+                    <circle 
+                      cx="50" 
+                      cy="50" 
+                      r="45" 
+                      fill="none" 
+                      stroke="currentColor" 
+                      className="text-green-100 dark:text-green-950" 
+                      strokeWidth="8" 
+                    />
+                    <circle 
+                      cx="50" 
+                      cy="50" 
+                      r="45" 
+                      fill="none" 
+                      stroke="currentColor" 
+                      className="text-green-500 transition-all duration-500 ease-out" 
+                      strokeWidth="8" 
+                      strokeDasharray={`${2 * Math.PI * 45 * (specializationLevel / 100)} ${2 * Math.PI * 45}`}
+                      strokeDashoffset={2 * Math.PI * 45 * 0.25}
+                    />
+                  </svg>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <Target className="h-5 w-5 text-green-500" />
+                  </div>
+                </div>
+                <div className="text-sm font-medium mt-1">Specialization</div>
+                <div className="text-xl font-bold">{Math.round(specializationLevel)}%</div>
               </div>
             </div>
-          </div>
-          
-          <div className="mt-4 flex items-center justify-between">
-            <div className="flex items-center gap-4 text-sm text-muted-foreground">
-              <span>Experience: {gameElements?.experience || 0} / {gameElements?.experienceRequired || 100}</span>
-              <span>Messages Processed: {gameElements?.stats?.messagesProcessed || 0}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-amber-500" />
-              <span className="text-sm font-medium">{gameElements?.unlockedCapabilities?.length || 0} Capabilities</span>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+        
+        {/* DotSpark Configuration */}
+        <div className="grid lg:grid-cols-2 gap-8">
+          {/* Cognitive Shield Section */}
+          <Card className="border-2 border-amber-200 dark:border-amber-800 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30">
+            <CardHeader>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
+                  <BrainCog className="h-5 w-5 text-white" />
+                </div>
+                <div>
+                  <CardTitle className="text-xl text-amber-900 dark:text-amber-100">Cognitive Shield</CardTitle>
+                  <CardDescription className="text-amber-700 dark:text-amber-300">
+                    Core neural processing parameters
+                  </CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* Cognitive Pace */}
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <HoverCard>
+                    <HoverCardTrigger asChild>
+                      <Button variant="ghost" className="p-0 h-auto font-medium text-left justify-start text-amber-800 dark:text-amber-200">
+                        <div className="flex items-center gap-2">
+                          <Zap className="h-4 w-4 text-amber-600" />
+                          Cognitive Pace
+                          <Info className="h-4 w-4 text-amber-500" />
+                        </div>
+                      </Button>
+                    </HoverCardTrigger>
+                    <HoverCardContent className="w-80">
+                      <div className="space-y-2">
+                        <h4 className="text-sm font-semibold">Cognitive Pace</h4>
+                        <p className="text-sm text-muted-foreground">
+                          How fast your brain processes and switches between thoughts. Higher values enable quicker cognitive transitions.
+                        </p>
+                      </div>
+                    </HoverCardContent>
+                  </HoverCard>
+                  <span className="text-sm font-mono bg-amber-100 dark:bg-amber-900 text-amber-800 dark:text-amber-200 px-2 py-1 rounded">
+                    {getCurrentValue('cognitivePace').toFixed(2)}
+                  </span>
+                </div>
+                <Slider
+                  value={[getCurrentValue('cognitivePace')]}
+                  onValueChange={(value) => handleParameterChange('cognitivePace', value[0])}
+                  max={1}
+                  min={0}
+                  step={0.01}
+                  className="w-full [&_.relative]:bg-amber-200 dark:[&_.relative]:bg-amber-800 [&_[role=slider]]:bg-amber-500 [&_[role=slider]]:border-amber-600"
+                />
+              </div>
 
-      {/* Neural Tuning Tabs */}
-      {isActivated ? (
+              {/* Signal Focus */}
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <HoverCard>
+                    <HoverCardTrigger asChild>
+                      <Button variant="ghost" className="p-0 h-auto font-medium text-left justify-start text-amber-800 dark:text-amber-200">
+                        <div className="flex items-center gap-2">
+                          <Target className="h-4 w-4 text-amber-600" />
+                          Signal Focus
+                          <Info className="h-4 w-4 text-amber-500" />
+                        </div>
+                      </Button>
+                    </HoverCardTrigger>
+                    <HoverCardContent className="w-80">
+                      <div className="space-y-2">
+                        <h4 className="text-sm font-semibold">Signal Focus</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Narrow beam (0.0) vs wide scanner (1.0) focus style. Controls attention breadth and depth.
+                        </p>
+                      </div>
+                    </HoverCardContent>
+                  </HoverCard>
+                  <span className="text-sm font-mono bg-amber-100 dark:bg-amber-900 text-amber-800 dark:text-amber-200 px-2 py-1 rounded">
+                    {getCurrentValue('signalFocus').toFixed(2)}
+                  </span>
+                </div>
+                <Slider
+                  value={[getCurrentValue('signalFocus')]}
+                  onValueChange={(value) => handleParameterChange('signalFocus', value[0])}
+                  max={1}
+                  min={0}
+                  step={0.01}
+                  className="w-full [&_.relative]:bg-amber-200 dark:[&_.relative]:bg-amber-800 [&_[role=slider]]:bg-amber-500 [&_[role=slider]]:border-amber-600"
+                />
+              </div>
+
+              {/* Impulse Control */}
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <HoverCard>
+                    <HoverCardTrigger asChild>
+                      <Button variant="ghost" className="p-0 h-auto font-medium text-left justify-start text-amber-800 dark:text-amber-200">
+                        <div className="flex items-center gap-2">
+                          <BrainCircuit className="h-4 w-4 text-amber-600" />
+                          Impulse Control
+                          <Info className="h-4 w-4 text-amber-500" />
+                        </div>
+                      </Button>
+                    </HoverCardTrigger>
+                    <HoverCardContent className="w-80">
+                      <div className="space-y-2">
+                        <h4 className="text-sm font-semibold">Impulse Control</h4>
+                        <p className="text-sm text-muted-foreground">
+                          High responsiveness (0.0) vs high precision (1.0). Balances quick reactions with careful consideration.
+                        </p>
+                      </div>
+                    </HoverCardContent>
+                  </HoverCard>
+                  <span className="text-sm font-mono bg-amber-100 dark:bg-amber-900 text-amber-800 dark:text-amber-200 px-2 py-1 rounded">
+                    {getCurrentValue('impulseControl').toFixed(2)}
+                  </span>
+                </div>
+                <Slider
+                  value={[getCurrentValue('impulseControl')]}
+                  onValueChange={(value) => handleParameterChange('impulseControl', value[0])}
+                  max={1}
+                  min={0}
+                  step={0.01}
+                  className="w-full [&_.relative]:bg-amber-200 dark:[&_.relative]:bg-amber-800 [&_[role=slider]]:bg-amber-500 [&_[role=slider]]:border-amber-600"
+                />
+              </div>
+
+              {/* Mental Energy Flow */}
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <HoverCard>
+                    <HoverCardTrigger asChild>
+                      <Button variant="ghost" className="p-0 h-auto font-medium text-left justify-start text-amber-800 dark:text-amber-200">
+                        <div className="flex items-center gap-2">
+                          <Sparkles className="h-4 w-4 text-amber-600" />
+                          Mental Energy Flow
+                          <Info className="h-4 w-4 text-amber-500" />
+                        </div>
+                      </Button>
+                    </HoverCardTrigger>
+                    <HoverCardContent className="w-80">
+                      <div className="space-y-2">
+                        <h4 className="text-sm font-semibold">Mental Energy Flow</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Action primed (0.0) vs reflection primed (1.0). Controls the balance between doing and thinking.
+                        </p>
+                      </div>
+                    </HoverCardContent>
+                  </HoverCard>
+                  <span className="text-sm font-mono bg-amber-100 dark:bg-amber-900 text-amber-800 dark:text-amber-200 px-2 py-1 rounded">
+                    {getCurrentValue('mentalEnergyFlow').toFixed(2)}
+                  </span>
+                </div>
+                <Slider
+                  value={[getCurrentValue('mentalEnergyFlow')]}
+                  onValueChange={(value) => handleParameterChange('mentalEnergyFlow', value[0])}
+                  max={1}
+                  min={0}
+                  step={0.01}
+                  className="w-full [&_.relative]:bg-amber-200 dark:[&_.relative]:bg-amber-800 [&_[role=slider]]:bg-amber-500 [&_[role=slider]]:border-amber-600"
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Expertise Layer Section */}
+          <Card className="border-2 border-indigo-200 dark:border-indigo-800 bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-950/30 dark:to-purple-950/30">
+            <CardHeader>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+                  <Target className="h-5 w-5 text-white" />
+                </div>
+                <div>
+                  <CardTitle className="text-xl text-indigo-900 dark:text-indigo-100">Expertise Layer</CardTitle>
+                  <CardDescription className="text-indigo-700 dark:text-indigo-300">
+                    Domain specialization and knowledge weights
+                  </CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-4">
+                <h4 className="text-sm font-semibold text-indigo-800 dark:text-indigo-200 uppercase tracking-wide">Specialty Domains</h4>
+                <div className="space-y-4">
+                  {availableSpecialties.map((specialty) => (
+                    <div key={specialty.id} className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <label className="text-sm font-medium text-indigo-800 dark:text-indigo-200">
+                          {specialty.name}
+                        </label>
+                        <span className="text-sm font-mono bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200 px-2 py-1 rounded">
+                          {((pendingChanges.specialties?.[specialty.id] ?? tuning?.specialties?.[specialty.id]) || 0).toFixed(2)}
+                        </span>
+                      </div>
+                      <Slider
+                        value={[(pendingChanges.specialties?.[specialty.id] ?? tuning?.specialties?.[specialty.id]) || 0]}
+                        onValueChange={(value) => handleSpecialtyChange(specialty.id, value[0])}
+                        max={1}
+                        min={0}
+                        step={0.01}
+                        className="w-full [&_.relative]:bg-indigo-200 dark:[&_.relative]:bg-indigo-800 [&_[role=slider]]:bg-indigo-500 [&_[role=slider]]:border-indigo-600"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Learning Focus */}
+              <div className="space-y-4">
+                <h4 className="text-sm font-semibold text-indigo-800 dark:text-indigo-200 uppercase tracking-wide">Learning Directives</h4>
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {getCurrentLearningFocus().map((focus, index) => (
+                    <Badge key={index} variant="secondary" className="flex items-center gap-1 bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200">
+                      {focus}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-4 w-4 p-0 hover:bg-destructive hover:text-destructive-foreground ml-1"
+                        onClick={() => handleRemoveLearningFocus(focus)}
+                      >
+                        <X className="h-3 w-3" />
+                      </Button>
+                    </Badge>
+                  ))}
+                </div>
+                
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="Add new learning focus..."
+                    value={newFocus}
+                    onChange={(e) => setNewFocus(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && handleAddLearningFocus()}
+                    className="flex-1 border-indigo-200 dark:border-indigo-800 focus:border-indigo-500"
+                  />
+                  <Button
+                    onClick={handleAddLearningFocus}
+                    disabled={!newFocus.trim()}
+                    className="shrink-0 bg-indigo-600 hover:bg-indigo-700"
+                  >
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+        
+        {/* Quick Actions */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <BrainCog className="h-5 w-5" />
-              Neural Tuning
+              <AlertCircle className="h-5 w-5 text-amber-500" />
+              Neural Extension Management
             </CardTitle>
-            <CardDescription>
-              Customize your Neura's cognitive parameters and learning directives
-            </CardDescription>
           </CardHeader>
           <CardContent>
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className="grid w-full grid-cols-4">
-                <TabsTrigger value="core">Core</TabsTrigger>
-                <TabsTrigger value="cognitive">Cognitive</TabsTrigger>
-                <TabsTrigger value="memory">Memory</TabsTrigger>
-                <TabsTrigger value="learning">Learning</TabsTrigger>
-              </TabsList>
-              
-              {/* Core Parameters Tab */}
-              <TabsContent value="core" className="space-y-6 mt-6">
-                <div className="grid gap-6">
-                  {/* Creativity Parameter */}
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <label className="text-sm font-medium flex items-center gap-2">
-                        <Lightbulb className="h-4 w-4" />
-                        Creativity
-                        <HoverCard>
-                          <HoverCardTrigger>
-                            <Info className="h-4 w-4 text-muted-foreground cursor-help" />
-                          </HoverCardTrigger>
-                          <HoverCardContent>
-                            <p className="text-sm">Controls how innovative and varied your Neura's responses are. Higher values encourage more creative and original thinking.</p>
-                          </HoverCardContent>
-                        </HoverCard>
-                      </label>
-                      <span className="text-sm font-mono bg-muted px-2 py-1 rounded">
-                        {getCurrentValue('creativity').toFixed(2)}
-                      </span>
-                    </div>
-                    <Slider
-                      value={[getCurrentValue('creativity')]}
-                      onValueChange={(value) => handleParameterChange('creativity', value[0])}
-                      max={1}
-                      min={0}
-                      step={0.01}
-                      className="w-full"
-                    />
-                  </div>
-
-                  {/* Precision Parameter */}
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <label className="text-sm font-medium flex items-center gap-2">
-                        <Target className="h-4 w-4" />
-                        Precision
-                        <HoverCard>
-                          <HoverCardTrigger>
-                            <Info className="h-4 w-4 text-muted-foreground cursor-help" />
-                          </HoverCardTrigger>
-                          <HoverCardContent>
-                            <p className="text-sm">Affects factual accuracy and attention to detail. Higher values result in more precise and methodical responses.</p>
-                          </HoverCardContent>
-                        </HoverCard>
-                      </label>
-                      <span className="text-sm font-mono bg-muted px-2 py-1 rounded">
-                        {getCurrentValue('precision').toFixed(2)}
-                      </span>
-                    </div>
-                    <Slider
-                      value={[getCurrentValue('precision')]}
-                      onValueChange={(value) => handleParameterChange('precision', value[0])}
-                      max={1}
-                      min={0}
-                      step={0.01}
-                      className="w-full"
-                    />
-                  </div>
-
-                  {/* Speed Parameter */}
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <label className="text-sm font-medium flex items-center gap-2">
-                        <Zap className="h-4 w-4" />
-                        Response Speed
-                        <HoverCard>
-                          <HoverCardTrigger>
-                            <Info className="h-4 w-4 text-muted-foreground cursor-help" />
-                          </HoverCardTrigger>
-                          <HoverCardContent>
-                            <p className="text-sm">Balances response time versus depth. Higher values prioritize quicker responses, lower values allow for more thorough analysis.</p>
-                          </HoverCardContent>
-                        </HoverCard>
-                      </label>
-                      <span className="text-sm font-mono bg-muted px-2 py-1 rounded">
-                        {getCurrentValue('speed').toFixed(2)}
-                      </span>
-                    </div>
-                    <Slider
-                      value={[getCurrentValue('speed')]}
-                      onValueChange={(value) => handleParameterChange('speed', value[0])}
-                      max={1}
-                      min={0}
-                      step={0.01}
-                      className="w-full"
-                    />
-                  </div>
-                </div>
-              </TabsContent>
-
-              {/* Cognitive Style Tab */}
-              <TabsContent value="cognitive" className="space-y-6 mt-6">
-                <div className="grid gap-6">
-                  {/* Core Cognitive Parameters */}
-                  <div className="space-y-4">
-                    <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Core Cognitive Patterns</h4>
-                    
-                    {/* Cognitive Pace */}
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <label className="text-sm font-medium flex items-center gap-2">
-                          <Zap className="h-4 w-4" />
-                          Cognitive Pace
-                          <HoverCard>
-                            <HoverCardTrigger>
-                              <Info className="h-4 w-4 text-muted-foreground cursor-help" />
-                            </HoverCardTrigger>
-                            <HoverCardContent>
-                              <p className="text-sm">How fast your brain processes and switches between thoughts. Higher values enable rapid thought transitions.</p>
-                            </HoverCardContent>
-                          </HoverCard>
-                        </label>
-                        <span className="text-sm font-mono bg-muted px-2 py-1 rounded">
-                          {getCurrentValue('cognitivePace').toFixed(2)}
-                        </span>
-                      </div>
-                      <Slider
-                        value={[getCurrentValue('cognitivePace')]}
-                        onValueChange={(value) => handleParameterChange('cognitivePace', value[0])}
-                        max={1}
-                        min={0}
-                        step={0.01}
-                        className="w-full"
-                      />
-                    </div>
-
-                    {/* Signal Focus */}
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <label className="text-sm font-medium flex items-center gap-2">
-                          <Target className="h-4 w-4" />
-                          Signal Focus
-                          <HoverCard>
-                            <HoverCardTrigger>
-                              <Info className="h-4 w-4 text-muted-foreground cursor-help" />
-                            </HoverCardTrigger>
-                            <HoverCardContent>
-                              <p className="text-sm">Focus style: narrow beam (0.0) for deep concentration vs wide scanner (1.0) for broad awareness.</p>
-                            </HoverCardContent>
-                          </HoverCard>
-                        </label>
-                        <span className="text-sm font-mono bg-muted px-2 py-1 rounded">
-                          {getCurrentValue('signalFocus').toFixed(2)}
-                        </span>
-                      </div>
-                      <Slider
-                        value={[getCurrentValue('signalFocus')]}
-                        onValueChange={(value) => handleParameterChange('signalFocus', value[0])}
-                        max={1}
-                        min={0}
-                        step={0.01}
-                        className="w-full"
-                      />
-                    </div>
-
-                    {/* Impulse Control */}
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <label className="text-sm font-medium flex items-center gap-2">
-                          <BrainCog className="h-4 w-4" />
-                          Impulse Control
-                          <HoverCard>
-                            <HoverCardTrigger>
-                              <Info className="h-4 w-4 text-muted-foreground cursor-help" />
-                            </HoverCardTrigger>
-                            <HoverCardContent>
-                              <p className="text-sm">Balance between high responsiveness (0.0) and high precision (1.0). Controls reaction vs reflection.</p>
-                            </HoverCardContent>
-                          </HoverCard>
-                        </label>
-                        <span className="text-sm font-mono bg-muted px-2 py-1 rounded">
-                          {getCurrentValue('impulseControl').toFixed(2)}
-                        </span>
-                      </div>
-                      <Slider
-                        value={[getCurrentValue('impulseControl')]}
-                        onValueChange={(value) => handleParameterChange('impulseControl', value[0])}
-                        max={1}
-                        min={0}
-                        step={0.01}
-                        className="w-full"
-                      />
-                    </div>
-
-                    {/* Mental Energy Flow */}
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <label className="text-sm font-medium flex items-center gap-2">
-                          <Sparkles className="h-4 w-4" />
-                          Mental Energy Flow
-                          <HoverCard>
-                            <HoverCardTrigger>
-                              <Info className="h-4 w-4 text-muted-foreground cursor-help" />
-                            </HoverCardTrigger>
-                            <HoverCardContent>
-                              <p className="text-sm">Energy orientation: action primed (0.0) for immediate execution vs reflection primed (1.0) for deep analysis.</p>
-                            </HoverCardContent>
-                          </HoverCard>
-                        </label>
-                        <span className="text-sm font-mono bg-muted px-2 py-1 rounded">
-                          {getCurrentValue('mentalEnergyFlow').toFixed(2)}
-                        </span>
-                      </div>
-                      <Slider
-                        value={[getCurrentValue('mentalEnergyFlow')]}
-                        onValueChange={(value) => handleParameterChange('mentalEnergyFlow', value[0])}
-                        max={1}
-                        min={0}
-                        step={0.01}
-                        className="w-full"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Thinking Style Parameters */}
-                  <div className="space-y-4">
-                    <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Thinking Style</h4>
-                    
-                    {/* Analytical Parameter */}
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <label className="text-sm font-medium flex items-center gap-2">
-                          <BrainCog className="h-4 w-4" />
-                          Analytical Thinking
-                          <HoverCard>
-                            <HoverCardTrigger>
-                              <Info className="h-4 w-4 text-muted-foreground cursor-help" />
-                            </HoverCardTrigger>
-                            <HoverCardContent>
-                              <p className="text-sm">Emphasizes logical, systematic, and structured thinking approaches.</p>
-                            </HoverCardContent>
-                          </HoverCard>
-                        </label>
-                        <span className="text-sm font-mono bg-muted px-2 py-1 rounded">
-                          {getCurrentValue('analytical').toFixed(2)}
-                        </span>
-                      </div>
-                      <Slider
-                        value={[getCurrentValue('analytical')]}
-                        onValueChange={(value) => handleParameterChange('analytical', value[0])}
-                        max={1}
-                        min={0}
-                        step={0.01}
-                        className="w-full"
-                      />
-                    </div>
-
-                    {/* Intuitive Parameter */}
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <label className="text-sm font-medium flex items-center gap-2">
-                          <Sparkles className="h-4 w-4" />
-                          Intuitive Thinking
-                          <HoverCard>
-                            <HoverCardTrigger>
-                              <Info className="h-4 w-4 text-muted-foreground cursor-help" />
-                            </HoverCardTrigger>
-                            <HoverCardContent>
-                              <p className="text-sm">Focuses on pattern recognition, insights, and holistic understanding.</p>
-                            </HoverCardContent>
-                          </HoverCard>
-                        </label>
-                        <span className="text-sm font-mono bg-muted px-2 py-1 rounded">
-                          {getCurrentValue('intuitive').toFixed(2)}
-                        </span>
-                      </div>
-                      <Slider
-                        value={[getCurrentValue('intuitive')]}
-                        onValueChange={(value) => handleParameterChange('intuitive', value[0])}
-                        max={1}
-                        min={0}
-                        step={0.01}
-                        className="w-full"
-                      />
-                    </div>
-
-                    {/* Contextual Thinking */}
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <label className="text-sm font-medium flex items-center gap-2">
-                          <Lightbulb className="h-4 w-4" />
-                          Contextual Thinking
-                          <HoverCard>
-                            <HoverCardTrigger>
-                              <Info className="h-4 w-4 text-muted-foreground cursor-help" />
-                            </HoverCardTrigger>
-                            <HoverCardContent>
-                              <p className="text-sm">Thinking scope: contextual (0.0) focuses on specific situations vs universal (1.0) seeks broad principles.</p>
-                            </HoverCardContent>
-                          </HoverCard>
-                        </label>
-                        <span className="text-sm font-mono bg-muted px-2 py-1 rounded">
-                          {getCurrentValue('contextualThinking').toFixed(2)}
-                        </span>
-                      </div>
-                      <Slider
-                        value={[getCurrentValue('contextualThinking')]}
-                        onValueChange={(value) => handleParameterChange('contextualThinking', value[0])}
-                        max={1}
-                        min={0}
-                        step={0.01}
-                        className="w-full"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </TabsContent>
-
-              {/* Memory Tab */}
-              <TabsContent value="memory" className="space-y-6 mt-6">
-                <div className="grid gap-6">
-                  {/* Memory System Parameters */}
-                  <div className="space-y-4">
-                    <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Memory System</h4>
-                    
-                    {/* Memory Bandwidth */}
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <label className="text-sm font-medium flex items-center gap-2">
-                          <BrainCircuit className="h-4 w-4" />
-                          Memory Bandwidth
-                          <HoverCard>
-                            <HoverCardTrigger>
-                              <Info className="h-4 w-4 text-muted-foreground cursor-help" />
-                            </HoverCardTrigger>
-                            <HoverCardContent>
-                              <p className="text-sm">Memory capacity: short burst memory (0.0) vs deep retainer (1.0). Controls how much information is held in working memory.</p>
-                            </HoverCardContent>
-                          </HoverCard>
-                        </label>
-                        <span className="text-sm font-mono bg-muted px-2 py-1 rounded">
-                          {getCurrentValue('memoryBandwidth').toFixed(2)}
-                        </span>
-                      </div>
-                      <Slider
-                        value={[getCurrentValue('memoryBandwidth')]}
-                        onValueChange={(value) => handleParameterChange('memoryBandwidth', value[0])}
-                        max={1}
-                        min={0}
-                        step={0.01}
-                        className="w-full"
-                      />
-                    </div>
-
-                    {/* Memory Retention */}
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <label className="text-sm font-medium flex items-center gap-2">
-                          <Sparkles className="h-4 w-4" />
-                          Memory Retention
-                          <HoverCard>
-                            <HoverCardTrigger>
-                              <Info className="h-4 w-4 text-muted-foreground cursor-help" />
-                            </HoverCardTrigger>
-                            <HoverCardContent>
-                              <p className="text-sm">How strongly information is retained in long-term memory. Higher values improve information persistence.</p>
-                            </HoverCardContent>
-                          </HoverCard>
-                        </label>
-                        <span className="text-sm font-mono bg-muted px-2 py-1 rounded">
-                          {getCurrentValue('memoryRetention').toFixed(2)}
-                        </span>
-                      </div>
-                      <Slider
-                        value={[getCurrentValue('memoryRetention')]}
-                        onValueChange={(value) => handleParameterChange('memoryRetention', value[0])}
-                        max={1}
-                        min={0}
-                        step={0.01}
-                        className="w-full"
-                      />
-                    </div>
-
-                    {/* Memory Recall */}
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <label className="text-sm font-medium flex items-center gap-2">
-                          <Lightbulb className="h-4 w-4" />
-                          Memory Recall
-                          <HoverCard>
-                            <HoverCardTrigger>
-                              <Info className="h-4 w-4 text-muted-foreground cursor-help" />
-                            </HoverCardTrigger>
-                            <HoverCardContent>
-                              <p className="text-sm">How efficiently information is retrieved from memory. Affects speed and accuracy of memory access.</p>
-                            </HoverCardContent>
-                          </HoverCard>
-                        </label>
-                        <span className="text-sm font-mono bg-muted px-2 py-1 rounded">
-                          {getCurrentValue('memoryRecall').toFixed(2)}
-                        </span>
-                      </div>
-                      <Slider
-                        value={[getCurrentValue('memoryRecall')]}
-                        onValueChange={(value) => handleParameterChange('memoryRecall', value[0])}
-                        max={1}
-                        min={0}
-                        step={0.01}
-                        className="w-full"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Cognitive Architecture Parameters */}
-                  <div className="space-y-4">
-                    <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Cognitive Architecture</h4>
-                    
-                    {/* Thought Complexity */}
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <label className="text-sm font-medium flex items-center gap-2">
-                          <BrainCog className="h-4 w-4" />
-                          Thought Complexity
-                          <HoverCard>
-                            <HoverCardTrigger>
-                              <Info className="h-4 w-4 text-muted-foreground cursor-help" />
-                            </HoverCardTrigger>
-                            <HoverCardContent>
-                              <p className="text-sm">Thinking depth: simple direct (0.0) vs complex layered (1.0). Controls conceptual sophistication.</p>
-                            </HoverCardContent>
-                          </HoverCard>
-                        </label>
-                        <span className="text-sm font-mono bg-muted px-2 py-1 rounded">
-                          {getCurrentValue('thoughtComplexity').toFixed(2)}
-                        </span>
-                      </div>
-                      <Slider
-                        value={[getCurrentValue('thoughtComplexity')]}
-                        onValueChange={(value) => handleParameterChange('thoughtComplexity', value[0])}
-                        max={1}
-                        min={0}
-                        step={0.01}
-                        className="w-full"
-                      />
-                    </div>
-
-                    {/* Mental Model Density */}
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <label className="text-sm font-medium flex items-center gap-2">
-                          <Target className="h-4 w-4" />
-                          Mental Model Density
-                          <HoverCard>
-                            <HoverCardTrigger>
-                              <Info className="h-4 w-4 text-muted-foreground cursor-help" />
-                            </HoverCardTrigger>
-                            <HoverCardContent>
-                              <p className="text-sm">Modeling approach: free thinker (0.0) vs model architect (1.0). Controls systematic framework usage.</p>
-                            </HoverCardContent>
-                          </HoverCard>
-                        </label>
-                        <span className="text-sm font-mono bg-muted px-2 py-1 rounded">
-                          {getCurrentValue('mentalModelDensity').toFixed(2)}
-                        </span>
-                      </div>
-                      <Slider
-                        value={[getCurrentValue('mentalModelDensity')]}
-                        onValueChange={(value) => handleParameterChange('mentalModelDensity', value[0])}
-                        max={1}
-                        min={0}
-                        step={0.01}
-                        className="w-full"
-                      />
-                    </div>
-
-                    {/* Pattern Detection Sensitivity */}
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <label className="text-sm font-medium flex items-center gap-2">
-                          <Sparkles className="h-4 w-4" />
-                          Pattern Detection
-                          <HoverCard>
-                            <HoverCardTrigger>
-                              <Info className="h-4 w-4 text-muted-foreground cursor-help" />
-                            </HoverCardTrigger>
-                            <HoverCardContent>
-                              <p className="text-sm">Detection scope: local optimizer (0.0) vs system scanner (1.0). Controls pattern recognition breadth.</p>
-                            </HoverCardContent>
-                          </HoverCard>
-                        </label>
-                        <span className="text-sm font-mono bg-muted px-2 py-1 rounded">
-                          {getCurrentValue('patternDetectionSensitivity').toFixed(2)}
-                        </span>
-                      </div>
-                      <Slider
-                        value={[getCurrentValue('patternDetectionSensitivity')]}
-                        onValueChange={(value) => handleParameterChange('patternDetectionSensitivity', value[0])}
-                        max={1}
-                        min={0}
-                        step={0.01}
-                        className="w-full"
-                      />
-                    </div>
-
-                    {/* Decision Making Index */}
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <label className="text-sm font-medium flex items-center gap-2">
-                          <BrainCog className="h-4 w-4" />
-                          Decision Making
-                          <HoverCard>
-                            <HoverCardTrigger>
-                              <Info className="h-4 w-4 text-muted-foreground cursor-help" />
-                            </HoverCardTrigger>
-                            <HoverCardContent>
-                              <p className="text-sm">Decision style: intuitive thinking (0.0) vs structured logical thinking (1.0). Controls decision-making approach.</p>
-                            </HoverCardContent>
-                          </HoverCard>
-                        </label>
-                        <span className="text-sm font-mono bg-muted px-2 py-1 rounded">
-                          {getCurrentValue('decisionMakingIndex').toFixed(2)}
-                        </span>
-                      </div>
-                      <Slider
-                        value={[getCurrentValue('decisionMakingIndex')]}
-                        onValueChange={(value) => handleParameterChange('decisionMakingIndex', value[0])}
-                        max={1}
-                        min={0}
-                        step={0.01}
-                        className="w-full"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </TabsContent>
-
-              {/* Learning Focus Tab */}
-              <TabsContent value="learning" className="space-y-6 mt-6">
-                <div className="space-y-4">
-                  {/* Learning System Parameters */}
-                  <div className="space-y-4">
-                    <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Learning System</h4>
-                    
-                    {/* Learning Rate */}
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <label className="text-sm font-medium flex items-center gap-2">
-                          <Zap className="h-4 w-4" />
-                          Learning Rate
-                          <HoverCard>
-                            <HoverCardTrigger>
-                              <Info className="h-4 w-4 text-muted-foreground cursor-help" />
-                            </HoverCardTrigger>
-                            <HoverCardContent>
-                              <p className="text-sm">Speed of acquiring new information. Higher values enable faster learning and adaptation.</p>
-                            </HoverCardContent>
-                          </HoverCard>
-                        </label>
-                        <span className="text-sm font-mono bg-muted px-2 py-1 rounded">
-                          {getCurrentValue('learningRate').toFixed(2)}
-                        </span>
-                      </div>
-                      <Slider
-                        value={[getCurrentValue('learningRate')]}
-                        onValueChange={(value) => handleParameterChange('learningRate', value[0])}
-                        max={1}
-                        min={0}
-                        step={0.01}
-                        className="w-full"
-                      />
-                    </div>
-
-                    {/* Concept Integration */}
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <label className="text-sm font-medium flex items-center gap-2">
-                          <BrainCircuit className="h-4 w-4" />
-                          Concept Integration
-                          <HoverCard>
-                            <HoverCardTrigger>
-                              <Info className="h-4 w-4 text-muted-foreground cursor-help" />
-                            </HoverCardTrigger>
-                            <HoverCardContent>
-                              <p className="text-sm">How well new concepts are integrated with existing knowledge. Controls knowledge synthesis quality.</p>
-                            </HoverCardContent>
-                          </HoverCard>
-                        </label>
-                        <span className="text-sm font-mono bg-muted px-2 py-1 rounded">
-                          {getCurrentValue('conceptIntegration').toFixed(2)}
-                        </span>
-                      </div>
-                      <Slider
-                        value={[getCurrentValue('conceptIntegration')]}
-                        onValueChange={(value) => handleParameterChange('conceptIntegration', value[0])}
-                        max={1}
-                        min={0}
-                        step={0.01}
-                        className="w-full"
-                      />
-                    </div>
-
-                    {/* Curiosity Index */}
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <label className="text-sm font-medium flex items-center gap-2">
-                          <Lightbulb className="h-4 w-4" />
-                          Curiosity Index
-                          <HoverCard>
-                            <HoverCardTrigger>
-                              <Info className="h-4 w-4 text-muted-foreground cursor-help" />
-                            </HoverCardTrigger>
-                            <HoverCardContent>
-                              <p className="text-sm">Likelihood of exploring new domains and seeking novel information. Controls intellectual exploration drive.</p>
-                            </HoverCardContent>
-                          </HoverCard>
-                        </label>
-                        <span className="text-sm font-mono bg-muted px-2 py-1 rounded">
-                          {getCurrentValue('curiosityIndex').toFixed(2)}
-                        </span>
-                      </div>
-                      <Slider
-                        value={[getCurrentValue('curiosityIndex')]}
-                        onValueChange={(value) => handleParameterChange('curiosityIndex', value[0])}
-                        max={1}
-                        min={0}
-                        step={0.01}
-                        className="w-full"
-                      />
-                    </div>
-
-                    {/* Connection Strength */}
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <label className="text-sm font-medium flex items-center gap-2">
-                          <Target className="h-4 w-4" />
-                          Connection Strength
-                          <HoverCard>
-                            <HoverCardTrigger>
-                              <Info className="h-4 w-4 text-muted-foreground cursor-help" />
-                            </HoverCardTrigger>
-                            <HoverCardContent>
-                              <p className="text-sm">Strength of connections between concepts. Higher values improve knowledge network coherence.</p>
-                            </HoverCardContent>
-                          </HoverCard>
-                        </label>
-                        <span className="text-sm font-mono bg-muted px-2 py-1 rounded">
-                          {getCurrentValue('connectionStrength').toFixed(2)}
-                        </span>
-                      </div>
-                      <Slider
-                        value={[getCurrentValue('connectionStrength')]}
-                        onValueChange={(value) => handleParameterChange('connectionStrength', value[0])}
-                        max={1}
-                        min={0}
-                        step={0.01}
-                        className="w-full"
-                      />
-                    </div>
-
-                    {/* Pattern Recognition */}
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <label className="text-sm font-medium flex items-center gap-2">
-                          <Sparkles className="h-4 w-4" />
-                          Pattern Recognition
-                          <HoverCard>
-                            <HoverCardTrigger>
-                              <Info className="h-4 w-4 text-muted-foreground cursor-help" />
-                            </HoverCardTrigger>
-                            <HoverCardContent>
-                              <p className="text-sm">Ability to detect patterns across information. Enhances insight generation and knowledge discovery.</p>
-                            </HoverCardContent>
-                          </HoverCard>
-                        </label>
-                        <span className="text-sm font-mono bg-muted px-2 py-1 rounded">
-                          {getCurrentValue('patternRecognition').toFixed(2)}
-                        </span>
-                      </div>
-                      <Slider
-                        value={[getCurrentValue('patternRecognition')]}
-                        onValueChange={(value) => handleParameterChange('patternRecognition', value[0])}
-                        max={1}
-                        min={0}
-                        step={0.01}
-                        className="w-full"
-                      />
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <h4 className="text-sm font-medium mb-2">Active Learning Directives</h4>
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {getCurrentLearningFocus().map((focus, index) => (
-                        <Badge key={index} variant="secondary" className="flex items-center gap-1">
-                          {focus}
-                          <X 
-                            className="h-3 w-3 cursor-pointer hover:text-destructive" 
-                            onClick={() => removeLearningFocus(focus)}
-                          />
-                        </Badge>
-                      ))}
-                    </div>
-                    
-                    <div className="flex gap-2">
-                      <Input
-                        placeholder="Add new learning focus..."
-                        value={newFocus}
-                        onChange={(e) => setNewFocus(e.target.value)}
-                        onKeyPress={(e) => e.key === 'Enter' && addLearningFocus()}
-                      />
-                      <Button 
-                        onClick={addLearningFocus}
-                        size="sm"
-                        disabled={!newFocus.trim()}
-                      >
-                        <Plus className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-
-                  <div>
-                    <h4 className="text-sm font-medium mb-2">Specialty Weights</h4>
-                    <div className="space-y-4">
-                      {availableSpecialties.map((specialty) => (
-                        <div key={specialty.id} className="space-y-2">
-                          <div className="flex items-center justify-between">
-                            <label className="text-sm font-medium">
-                              {specialty.name}
-                            </label>
-                            <span className="text-sm font-mono bg-muted px-2 py-1 rounded">
-                              {((pendingChanges.specialties?.[specialty.id] ?? tuning?.specialties?.[specialty.id]) || 0).toFixed(2)}
-                            </span>
-                          </div>
-                          <Slider
-                            value={[(pendingChanges.specialties?.[specialty.id] ?? tuning?.specialties?.[specialty.id]) || 0]}
-                            onValueChange={(value) => handleSpecialtyChange(specialty.id, value[0])}
-                            max={1}
-                            min={0}
-                            step={0.01}
-                            className="w-full"
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </TabsContent>
-            </Tabs>
+            <div className="flex items-center justify-between">
+              <div>
+                <h4 className="font-medium">Deactivate Neural Extension</h4>
+                <p className="text-sm text-muted-foreground">
+                  Temporarily disable learning and adaptation features
+                </p>
+              </div>
+              <Button
+                variant="outline"
+                onClick={deactivateNeura}
+                className="text-amber-600 border-amber-200 hover:bg-amber-50 hover:text-amber-700"
+              >
+                Deactivate
+              </Button>
+            </div>
           </CardContent>
         </Card>
-      ) : (
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center py-12">
-            <BrainCircuit className="h-16 w-16 text-muted-foreground/50 mb-4" />
-            <h3 className="text-xl font-medium mb-2">Neura Not Active</h3>
-            <p className="text-muted-foreground text-center mb-6 max-w-md">
-              Activate your neural extension to access tuning parameters and customize your cognitive experience.
-            </p>
-            <Button onClick={toggleNeuraActivation} className="bg-indigo-600 hover:bg-indigo-700">
-              Activate Neura
-            </Button>
-          </CardContent>
-        </Card>
-      )}
+      </div>
     </div>
   );
 }
