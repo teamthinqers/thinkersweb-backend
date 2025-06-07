@@ -203,9 +203,7 @@ export default function NeuraTuningCognitive() {
                   </HoverCardContent>
                 </HoverCard>
               </div>
-              <span className="text-sm font-medium text-blue-600 dark:text-blue-400">
-                {Math.round((pendingChanges.memoryBandwidth ?? neuralTuning?.memoryBandwidth ?? 0.5) * 100)}%
-              </span>
+
             </div>
             
             <div className="relative pt-3">
@@ -258,9 +256,7 @@ export default function NeuraTuningCognitive() {
                   </HoverCardContent>
                 </HoverCard>
               </div>
-              <span className="text-sm font-medium text-amber-600 dark:text-amber-400">
-                {Math.round((pendingChanges.thoughtComplexity ?? neuralTuning?.thoughtComplexity ?? 0.5) * 100)}%
-              </span>
+
             </div>
             
             <div className="py-2 relative">
@@ -342,9 +338,7 @@ export default function NeuraTuningCognitive() {
                   </HoverCardContent>
                 </HoverCard>
               </div>
-              <span className="text-sm font-medium text-amber-600 dark:text-amber-400">
-                {Math.round((pendingChanges.mentalModelDensity ?? neuralTuning?.mentalModelDensity ?? 0.5) * 100)}%
-              </span>
+
             </div>
             
             <div className="py-2">
@@ -406,9 +400,7 @@ export default function NeuraTuningCognitive() {
                   </HoverCardContent>
                 </HoverCard>
               </div>
-              <span className="text-sm font-medium text-purple-600 dark:text-purple-400">
-                {Math.round((pendingChanges.patternDetectionSensitivity ?? neuralTuning?.patternDetectionSensitivity ?? 0.5) * 100)}%
-              </span>
+
             </div>
             
             <div className="relative py-4">
@@ -583,9 +575,7 @@ export default function NeuraTuningCognitive() {
               <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
                 Cognitive Pace
               </label>
-              <span className="text-sm text-gray-500 dark:text-gray-400">
-                {Math.round((pendingChanges.cognitivePace ?? neuralTuning.cognitivePace) * 100)}%
-              </span>
+
             </div>
             <Slider
               value={[pendingChanges.cognitivePace ?? neuralTuning.cognitivePace]}
@@ -606,9 +596,7 @@ export default function NeuraTuningCognitive() {
               <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
                 Signal Focus
               </label>
-              <span className="text-sm text-gray-500 dark:text-gray-400">
-                {Math.round((pendingChanges.signalFocus ?? neuralTuning.signalFocus) * 100)}%
-              </span>
+
             </div>
             <Slider
               value={[pendingChanges.signalFocus ?? neuralTuning.signalFocus]}
@@ -629,9 +617,7 @@ export default function NeuraTuningCognitive() {
               <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
                 Impulse Control
               </label>
-              <span className="text-sm text-gray-500 dark:text-gray-400">
-                {Math.round((pendingChanges.impulseControl ?? neuralTuning.impulseControl) * 100)}%
-              </span>
+
             </div>
             <Slider
               value={[pendingChanges.impulseControl ?? neuralTuning.impulseControl]}
