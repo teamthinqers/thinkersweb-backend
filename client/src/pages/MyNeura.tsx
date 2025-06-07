@@ -739,7 +739,7 @@ export default function MyNeura() {
                 <h3 className="text-xl font-bold text-amber-50">Cognitive Shield (Recommended)</h3>
               </div>
             </div>
-            <CardContent className="p-6">
+            <CardContent className="p-6 bg-gradient-to-b from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30">
               <p className="text-muted-foreground mb-4">
                 Set up your Cognitive Shield to protect your thinking identity. It ensures your natural intelligence stays intact while interacting with AI.
               </p>
@@ -783,7 +783,7 @@ export default function MyNeura() {
                 <h3 className="text-xl font-bold text-yellow-50">Expertise Layer (Optional)</h3>
               </div>
             </div>
-            <CardContent className="p-6">
+            <CardContent className="p-6 bg-gradient-to-b from-yellow-50 to-amber-50 dark:from-yellow-950/30 dark:to-amber-950/30">
               <p className="text-muted-foreground mb-4">
                 Customize domains where your DotSpark can reflect your professional expertise and provide deeper insights.
               </p>
