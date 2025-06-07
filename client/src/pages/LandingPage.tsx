@@ -708,31 +708,28 @@ export default function LandingPage() {
       </section>
       
       {/* Setup DotSpark 3-step process section */}
-      <section id="setup-dotspark" className="py-16 bg-gradient-to-b from-background to-muted/10 relative overflow-hidden">
+      <section id="setup-dotspark" className="py-16 bg-gradient-to-b from-amber-50/30 to-orange-50/20 dark:from-amber-950/20 dark:to-orange-950/10 relative overflow-hidden">
         <div className="container mx-auto px-4 md:px-6">
           <div className="text-center mb-10">
             <h2 className="text-2xl md:text-3xl font-bold">
-              Setup <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-indigo-600">DotSpark</span> in 3 Simple Steps
+              Setup <span className="bg-clip-text text-transparent bg-gradient-to-r from-amber-600 to-orange-600">DotSpark</span> in 3 Simple Steps
             </h2>
-            <p className="text-muted-foreground mt-2 max-w-2xl mx-auto">
-              Get started with your personal neural mirror in minutes
-            </p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8 max-w-5xl mx-auto" style={{ display: "grid", gridTemplateRows: "1fr" }}>
             {/* Step 1: Sign In */}
-            <div className="bg-card rounded-lg p-6 relative group hover:shadow-lg transition-all duration-300 border border-border/50 overflow-hidden h-full flex flex-col">
-              <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:bg-primary/10 transition-colors duration-300"></div>
-              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 text-primary mb-4 relative z-10">
+            <div className="bg-card rounded-lg p-6 relative group hover:shadow-lg transition-all duration-300 border border-amber-200/30 dark:border-amber-800/30 overflow-hidden h-full flex flex-col">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-amber-500/5 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:bg-amber-500/10 transition-colors duration-300"></div>
+              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-amber-500/10 text-amber-600 mb-4 relative z-10">
                 <User className="h-6 w-6" />
               </div>
-              <div className="absolute top-6 right-6 flex items-center justify-center w-8 h-8 rounded-full bg-primary/80 text-white font-bold text-lg">
+              <div className="absolute top-6 right-6 flex items-center justify-center w-8 h-8 rounded-full bg-amber-500/80 text-white font-bold text-lg">
                 1
               </div>
               <h3 className="text-xl font-semibold mb-2">Sign In or Register</h3>
               <p className="text-muted-foreground text-sm">Create your account to personalize your DotSpark experience.</p>
               <div className="mt-auto pt-4">
-                <Button asChild variant="default" className="w-full bg-gradient-to-r from-primary to-indigo-600 hover:from-indigo-600 hover:to-primary text-white border-0 shadow-md">
+                <Button asChild variant="default" className="w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-orange-600 hover:to-amber-500 text-white border-0 shadow-md">
                   <Link href="/auth">
                     Get Started
                   </Link>
@@ -740,13 +737,13 @@ export default function LandingPage() {
               </div>
             </div>
             
-            {/* Step 2: Activate Neura */}
-            <div className="bg-card rounded-lg p-6 relative group hover:shadow-lg transition-all duration-300 border border-border/50 overflow-hidden h-full flex flex-col">
-              <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-500/5 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:bg-indigo-500/10 transition-colors duration-300"></div>
-              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-indigo-500/10 text-indigo-500 mb-4 relative z-10">
+            {/* Step 2: Activate DotSpark */}
+            <div className="bg-card rounded-lg p-6 relative group hover:shadow-lg transition-all duration-300 border border-orange-200/30 dark:border-orange-800/30 overflow-hidden h-full flex flex-col">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-orange-500/5 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:bg-orange-500/10 transition-colors duration-300"></div>
+              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-orange-500/10 text-orange-600 mb-4 relative z-10">
                 <Brain className="h-6 w-6" />
               </div>
-              <div className="absolute top-6 right-6 flex items-center justify-center w-8 h-8 rounded-full bg-indigo-500/80 text-white font-bold text-lg">
+              <div className="absolute top-6 right-6 flex items-center justify-center w-8 h-8 rounded-full bg-orange-500/80 text-white font-bold text-lg">
                 2
               </div>
               <h3 className="text-xl font-semibold mb-2">Activate DotSpark</h3>
@@ -754,7 +751,7 @@ export default function LandingPage() {
               <div className="mt-auto pt-4">
                 <Button 
                   variant="default" 
-                  className="w-full bg-gradient-to-r from-violet-600 to-purple-700 hover:from-purple-700 hover:to-violet-600 text-white border-0 shadow-md"
+                  className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-red-500 hover:to-orange-500 text-white border-0 shadow-md"
                   onClick={() => setLocation("/my-neura")}
                 >
                   Activate DotSpark
@@ -763,12 +760,12 @@ export default function LandingPage() {
             </div>
             
             {/* Step 3: Connect WhatsApp */}
-            <div className="bg-card rounded-lg p-6 relative group hover:shadow-lg transition-all duration-300 border border-border/50 overflow-hidden h-full flex flex-col">
-              <div className="absolute top-0 right-0 w-24 h-24 bg-[#25D366]/5 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:bg-[#25D366]/10 transition-colors duration-300"></div>
-              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-[#25D366]/10 text-[#25D366] mb-4 relative z-10">
+            <div className="bg-card rounded-lg p-6 relative group hover:shadow-lg transition-all duration-300 border border-red-200/30 dark:border-red-800/30 overflow-hidden h-full flex flex-col">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-red-500/5 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:bg-red-500/10 transition-colors duration-300"></div>
+              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-red-500/10 text-red-600 mb-4 relative z-10">
                 <MessageCircle className="h-6 w-6" />
               </div>
-              <div className="absolute top-6 right-6 flex items-center justify-center w-8 h-8 rounded-full bg-[#25D366]/80 text-white font-bold text-lg">
+              <div className="absolute top-6 right-6 flex items-center justify-center w-8 h-8 rounded-full bg-red-500/80 text-white font-bold text-lg">
                 3
               </div>
               <h3 className="text-xl font-semibold mb-2">Link WhatsApp</h3>
@@ -777,7 +774,7 @@ export default function LandingPage() {
                 <Button 
                   size="default" 
                   onClick={() => window.open("https://wa.me/16067157733?text=Hey%20DotSpark%2C%20I%27ve%20got%20a%20few%20things%20on%20my%20mind%20%E2%80%94%20need%20your%20thoughts", "_blank")}
-                  className="w-full rounded-full bg-[#25D366] hover:bg-[#128C7E] text-white shadow-md hover:shadow-lg transition-all duration-300"
+                  className="w-full rounded-full bg-gradient-to-r from-red-500 to-pink-600 hover:from-pink-600 hover:to-red-500 text-white shadow-md hover:shadow-lg transition-all duration-300"
                 >
                   <MessageSquare className="h-5 w-5 mr-2" />
                   <span>Link WhatsApp</span>
@@ -792,7 +789,7 @@ export default function LandingPage() {
             <div className={`absolute -top-10 left-1/2 -translate-x-1/2 text-white rounded-full px-4 py-1 font-bold shadow-lg transition-all duration-500
               ${isSetupCompleted 
                 ? 'bg-gradient-to-r from-green-500 to-emerald-600 scale-110' 
-                : 'bg-gradient-to-r from-primary to-indigo-600'}`}
+                : 'bg-gradient-to-r from-amber-500 to-orange-600'}`}
             >
               {isSetupCompleted ? (
                 <span className="flex items-center">
@@ -814,7 +811,7 @@ export default function LandingPage() {
                 className={`absolute top-1/2 left-0 h-2 rounded-full -translate-y-1/2 z-10 transition-all duration-1000 ease-out
                   ${isSetupCompleted 
                     ? 'bg-gradient-to-r from-green-400 via-emerald-500 to-green-600 animate-pulse' 
-                    : 'bg-gradient-to-r from-primary via-indigo-500 to-violet-600'}`}
+                    : 'bg-gradient-to-r from-amber-500 via-orange-500 to-red-500'}`}
                 style={{ 
                   width: isSetupCompleted 
                     ? "100%" 
