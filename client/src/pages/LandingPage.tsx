@@ -210,8 +210,8 @@ export default function LandingPage() {
               </Link>
               <Button 
                 className={`${isNeuraActivated 
-                  ? "bg-gradient-to-r from-amber-600 to-primary hover:from-amber-700 hover:to-primary/90" 
-                  : "bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700"} 
+                  ? "bg-gradient-to-r from-amber-700 to-primary hover:from-amber-800 hover:to-primary/90" 
+                  : "bg-gradient-to-r from-amber-800 to-amber-700 hover:from-amber-900 hover:to-amber-800"} 
                   text-white h-9 px-3 relative`}
                 size="sm"
                 onClick={() => setLocation("/my-neura")}
@@ -289,8 +289,8 @@ export default function LandingPage() {
                 <Button
                   size="sm"
                   className={`${isNeuraActivated 
-                    ? "bg-gradient-to-r from-amber-600 to-primary hover:from-amber-700 hover:to-primary/90" 
-                    : "bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700"} 
+                    ? "bg-gradient-to-r from-amber-700 to-primary hover:from-amber-800 hover:to-primary/90" 
+                    : "bg-gradient-to-r from-amber-800 to-amber-700 hover:from-amber-900 hover:to-amber-800"} 
                     text-white relative h-7 px-2`}
                 >
                   <div className="flex items-center gap-1">
