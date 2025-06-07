@@ -762,41 +762,41 @@ export default function MyNeura() {
           </Card>
 
           {/* Expertise Layer Card */}
-          <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 group border-yellow-200 dark:border-yellow-800 flex flex-col h-full relative">
-            <div className="h-48 bg-gradient-to-br from-yellow-800 to-amber-900 flex items-center justify-center relative overflow-hidden">
+          <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 group border-orange-200 dark:border-orange-800 flex flex-col h-full relative">
+            <div className="h-48 bg-gradient-to-br from-orange-800 to-amber-900 flex items-center justify-center relative overflow-hidden">
               {/* Subtle organic spark network */}
               <div className="absolute inset-0">
-                <div className="absolute top-8 right-6 w-0.5 h-0.5 bg-yellow-400 rounded-full opacity-60"></div>
+                <div className="absolute top-8 right-6 w-0.5 h-0.5 bg-orange-400 rounded-full opacity-60"></div>
                 <div className="absolute top-12 left-12 w-1 h-1 bg-amber-400 rounded-full opacity-70"></div>
-                <div className="absolute bottom-10 right-12 w-0.5 h-0.5 bg-orange-400 rounded-full opacity-50"></div>
-                <div className="absolute bottom-6 left-10 w-1 h-1 bg-yellow-500 rounded-full opacity-80"></div>
+                <div className="absolute bottom-10 right-12 w-0.5 h-0.5 bg-yellow-400 rounded-full opacity-50"></div>
+                <div className="absolute bottom-6 left-10 w-1 h-1 bg-orange-500 rounded-full opacity-80"></div>
                 <div className="absolute top-18 right-1/2 w-0.5 h-0.5 bg-amber-500 rounded-full opacity-60"></div>
                 {/* Connecting lines */}
                 <div className="absolute top-12 left-12 w-10 h-px bg-gradient-to-r from-amber-400 to-transparent opacity-25"></div>
-                <div className="absolute bottom-6 left-10 w-6 h-px bg-gradient-to-r from-yellow-500 to-transparent opacity-30"></div>
+                <div className="absolute bottom-6 left-10 w-6 h-px bg-gradient-to-r from-orange-500 to-transparent opacity-30"></div>
               </div>
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(234,179,8,0.1),transparent_70%)]"></div>
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(251,146,60,0.1),transparent_70%)]"></div>
               <div className="z-10 p-6 flex flex-col items-center">
-                <div className="rounded-full bg-yellow-900/40 p-4 backdrop-blur-sm mb-4 border border-yellow-600/30">
-                  <Target className="h-12 w-12 text-yellow-100" />
+                <div className="rounded-full bg-orange-900/40 p-4 backdrop-blur-sm mb-4 border border-orange-600/30">
+                  <Target className="h-12 w-12 text-orange-100" />
                 </div>
-                <h3 className="text-xl font-bold text-yellow-50">Expertise Layer (Optional)</h3>
+                <h3 className="text-xl font-bold text-orange-50">Expertise Layer (Optional)</h3>
               </div>
             </div>
-            <CardContent className="p-6 bg-gradient-to-b from-yellow-50 to-amber-50 dark:from-yellow-950/30 dark:to-amber-950/30">
+            <CardContent className="p-6 bg-gradient-to-b from-orange-50 to-amber-50 dark:from-orange-950/30 dark:to-amber-950/30">
               <p className="text-muted-foreground mb-4">
                 Customize domains where your DotSpark can reflect your professional expertise and provide deeper insights.
               </p>
               <div className="flex gap-3">
                 <Button 
-                  className="flex-1 bg-gradient-to-r from-yellow-700 to-amber-700 hover:from-yellow-800 hover:to-amber-800 text-yellow-50 group-hover:translate-y-0 translate-y-1 transition-all duration-300"
+                  className="flex-1 bg-gradient-to-r from-orange-700 to-amber-700 hover:from-orange-800 hover:to-amber-800 text-orange-50 group-hover:translate-y-0 translate-y-1 transition-all duration-300 shadow-md"
                   onClick={() => setLocation('/dotspark-tuning/expertise')}
                 >
                   Configure
                 </Button>
                 <Button 
                   variant="outline"
-                  className="flex-1 border-yellow-300 text-yellow-700 hover:bg-yellow-100 dark:border-yellow-700 dark:text-yellow-300 dark:hover:bg-yellow-950 group-hover:translate-y-0 translate-y-1 transition-all duration-300"
+                  className="flex-1 border-orange-300 text-orange-700 hover:bg-orange-100 dark:border-orange-700 dark:text-orange-300 dark:hover:bg-orange-950 group-hover:translate-y-0 translate-y-1 transition-all duration-300 shadow-sm"
                   onClick={() => toast({ title: "Setup Complete", description: "Your DotSpark configuration is ready!" })}
                 >
                   Skip
