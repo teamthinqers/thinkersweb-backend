@@ -764,27 +764,22 @@ export default function NeuraTuningCognitive() {
             </div>
           </div>
 
-          <div className="mt-6 bg-violet-50 dark:bg-violet-950 p-4 rounded-lg border border-violet-100 dark:border-violet-900">
-            <h4 className="text-sm font-medium text-violet-800 dark:text-violet-300 mb-2">Cognitive Style Settings</h4>
-            <p className="text-sm text-violet-700 dark:text-violet-400">
-              Adjust these settings to match your natural thinking patterns. Neura will adapt its responses to better reflect how your mind works.
-            </p>
-          </div>
+
         </CardContent>
         
-        <CardFooter className="bg-gradient-to-r from-violet-50/50 to-purple-50/50 dark:from-violet-950/50 dark:to-purple-950/50 border-t px-6 py-4 justify-between">
+        <CardFooter className="bg-gradient-to-r from-amber-50/50 to-yellow-50/50 dark:from-amber-950/50 dark:to-yellow-950/50 border-t px-6 py-4 justify-between">
           <Button 
             variant="outline" 
             onClick={() => setLocation('/my-neura')}
           >
-            Back to My Neura
+            Back to DotSpark
           </Button>
           
           <Button 
             variant="default"
             onClick={saveChanges}
             disabled={!unsavedChanges || isUpdating}
-            className={unsavedChanges ? "bg-violet-600 hover:bg-violet-700" : ""}
+            className={unsavedChanges ? "bg-amber-600 hover:bg-amber-700" : ""}
           >
             {isUpdating ? (
               <span className="flex items-center gap-1.5">
