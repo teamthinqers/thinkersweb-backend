@@ -210,8 +210,8 @@ export default function LandingPage() {
               </Link>
               <Button 
                 className={`${isNeuraActivated 
-                  ? "bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90" 
-                  : "bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"} 
+                  ? "bg-gradient-to-r from-amber-600 to-primary hover:from-amber-700 hover:to-primary/90" 
+                  : "bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700"} 
                   text-white h-9 px-3 relative`}
                 size="sm"
                 onClick={() => setLocation("/my-neura")}
@@ -227,7 +227,7 @@ export default function LandingPage() {
                       <Brain className="h-4 w-4" />
                     )}
                   </div>
-                  <span className="text-xs">My Neura</span>
+                  <span className="text-xs">My DotSpark</span>
                 </div>
               </Button>
             </div>
@@ -289,8 +289,8 @@ export default function LandingPage() {
                 <Button
                   size="sm"
                   className={`${isNeuraActivated 
-                    ? "bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90" 
-                    : "bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"} 
+                    ? "bg-gradient-to-r from-amber-600 to-primary hover:from-amber-700 hover:to-primary/90" 
+                    : "bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700"} 
                     text-white relative h-7 px-2`}
                 >
                   <div className="flex items-center gap-1">
@@ -300,7 +300,7 @@ export default function LandingPage() {
                         <div className="absolute -top-1 -right-1 h-1.5 w-1.5 bg-green-500 rounded-full"></div>
                       )}
                     </div>
-                    <span className="text-xs">My Neura</span>
+                    <span className="text-xs">My DotSpark</span>
                   </div>
                 </Button>
               </div>
