@@ -445,7 +445,7 @@ export default function MyNeura() {
             )}
             <Button 
               variant={isActivated ? "outline" : "default"} 
-              className={isActivated ? "border-green-500 text-green-600 hover:bg-green-50 dark:hover:bg-green-950" : "bg-indigo-600 hover:bg-indigo-700"} 
+              className={isActivated ? "border-green-500 text-green-600 hover:bg-green-50 dark:hover:bg-green-950" : "bg-amber-600 hover:bg-amber-700"} 
               onClick={toggleNeuraActivation}
             >
               {isActivated ? "Deactivate Neura" : "Activate Neura"}
@@ -485,7 +485,7 @@ export default function MyNeura() {
         {renderHeader()}
         <div className="flex items-center justify-center h-[400px]">
           <div className="flex flex-col items-center">
-            <BrainCircuit className="h-16 w-16 text-indigo-400 animate-pulse mb-4" />
+            <BrainCircuit className="h-16 w-16 text-amber-400 animate-pulse mb-4" />
             <h3 className="text-xl font-medium mb-2">Loading Neura...</h3>
             <p className="text-muted-foreground">Connecting to your neural mirror</p>
           </div>
@@ -500,20 +500,20 @@ export default function MyNeura() {
       {renderHeader()}
       
       {/* My Neural Capacity Card with Metrics */}
-      <Card className="mb-8 bg-gradient-to-br from-indigo-50 to-slate-50 dark:from-indigo-950/30 dark:to-slate-950 border border-indigo-100 dark:border-indigo-900/50 overflow-hidden">
+      <Card className="mb-8 bg-gradient-to-br from-amber-50 to-slate-50 dark:from-amber-950/30 dark:to-slate-950 border border-amber-100 dark:border-amber-900/50 overflow-hidden">
         <div className="relative overflow-hidden">
-          <div className="absolute -right-16 -top-16 w-48 h-48 bg-gradient-to-br from-indigo-200/30 to-blue-200/10 dark:from-indigo-800/20 dark:to-blue-800/5 rounded-full blur-3xl"></div>
+          <div className="absolute -right-16 -top-16 w-48 h-48 bg-gradient-to-br from-amber-200/30 to-orange-200/10 dark:from-amber-800/20 dark:to-orange-800/5 rounded-full blur-3xl"></div>
         </div>
         
         <CardHeader className="pb-2 relative z-10">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2">
-              <BrainCircuit className="h-5 w-5 text-indigo-700 dark:text-indigo-400" />
+              <BrainCircuit className="h-5 w-5 text-amber-700 dark:text-amber-400" />
               <CardTitle>
-                <span className="font-bold bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">My Neural Mirror Capacity</span>
+                <span className="font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">My Neural Mirror Capacity</span>
               </CardTitle>
             </div>
-            <Badge className="bg-indigo-100 text-indigo-800 dark:bg-indigo-900/50 dark:text-indigo-200 hover:bg-indigo-200 dark:hover:bg-indigo-800/50">
+            <Badge className="bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-200 hover:bg-amber-200 dark:hover:bg-amber-800/50">
               Level 1
             </Badge>
           </div>
@@ -527,7 +527,7 @@ export default function MyNeura() {
               <span>Experience</span>
               <span>125 / 1000 XP</span>
             </div>
-            <Progress value={12.5} className="h-2 bg-indigo-100 dark:bg-indigo-950" />
+            <Progress value={12.5} className="h-2 bg-amber-100 dark:bg-amber-950" />
           </div>
           
           {/* Capacity Metrics */}
