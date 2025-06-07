@@ -533,7 +533,7 @@ export default function LandingPage() {
                 <div className="bg-gradient-to-br from-primary/5 to-indigo-500/5 dark:from-primary/10 dark:to-indigo-500/10 border border-primary/20 dark:border-primary/30 rounded-xl p-4 flex flex-col items-center shadow-lg shadow-primary/5 dark:shadow-primary/10 relative overflow-hidden group">
                   {/* Only show "Activated" status if the user is logged in AND WhatsApp is connected */}
                   {user && isWhatsAppConnected ? (
-                    <Button size="lg" asChild className="w-full mb-3 relative overflow-hidden bg-gradient-to-r from-green-600 to-emerald-500 hover:from-emerald-600 hover:to-green-500 border-0 shadow-lg shadow-green-500/20 hover:shadow-emerald-500/30 transition-all duration-300 transform hover:scale-105 group">
+                    <Button size="lg" asChild className="w-full mb-3 relative overflow-hidden bg-gradient-to-r from-orange-600 to-red-500 hover:from-red-600 hover:to-orange-500 border-0 shadow-lg shadow-orange-500/20 hover:shadow-red-500/30 transition-all duration-300 transform hover:scale-105 group">
                       <Link href="/dashboard" className="flex items-center justify-center relative z-10">
                         <Check className="mr-2 h-5 w-5" />
                         <span>DotSpark Activated</span>
@@ -672,7 +672,7 @@ export default function LandingPage() {
             {/* Progress percentage display */}
             <div className={`absolute -top-10 left-1/2 -translate-x-1/2 text-white rounded-full px-4 py-1 font-bold shadow-lg transition-all duration-500
               ${isSetupCompleted 
-                ? 'bg-gradient-to-r from-green-500 to-emerald-600 scale-110' 
+                ? 'bg-gradient-to-r from-orange-500 to-red-600 scale-110' 
                 : 'bg-gradient-to-r from-amber-500 to-orange-600'}`}
             >
               {isSetupCompleted ? (
@@ -694,7 +694,7 @@ export default function LandingPage() {
               <div 
                 className={`absolute top-1/2 left-0 h-2 rounded-full -translate-y-1/2 z-10 transition-all duration-1000 ease-out
                   ${isSetupCompleted 
-                    ? 'bg-gradient-to-r from-green-400 via-emerald-500 to-green-600 animate-pulse' 
+                    ? 'bg-gradient-to-r from-orange-400 via-red-500 to-red-600 animate-pulse' 
                     : 'bg-gradient-to-r from-amber-500 via-orange-500 to-red-500'}`}
                 style={{ 
                   width: isSetupCompleted 
@@ -705,7 +705,7 @@ export default function LandingPage() {
                         : "33%") 
                       : "33%",
                   boxShadow: isSetupCompleted 
-                    ? "0 0 15px rgba(16, 185, 129, 0.7)" 
+                    ? "0 0 15px rgba(239, 68, 68, 0.7)" 
                     : "0 0 10px rgba(245, 158, 11, 0.5)"
                 }}
               ></div>
@@ -715,7 +715,7 @@ export default function LandingPage() {
                 {/* Step 1: Sign In */}
                 <div className="flex flex-col items-center">
                   <div className={`w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center shadow-lg mb-3 transition-all duration-500
-                    ${user ? 'bg-gradient-to-br from-green-400 to-emerald-600 text-white scale-110' : 'bg-card border-2 border-muted text-muted-foreground'}`}>
+                    ${user ? 'bg-gradient-to-br from-amber-400 to-orange-600 text-white scale-110' : 'bg-card border-2 border-muted text-muted-foreground'}`}>
                     {user ? (
                       <CheckCircle className="h-6 w-6 md:h-8 md:w-8" />
                     ) : (
@@ -724,9 +724,9 @@ export default function LandingPage() {
                       </div>
                     )}
                   </div>
-                  <span className={`font-medium text-sm ${user ? 'text-green-500' : 'text-muted-foreground'}`}>Sign In</span>
+                  <span className={`font-medium text-sm ${user ? 'text-orange-500' : 'text-muted-foreground'}`}>Sign In</span>
                   {user && (
-                    <div className="animate-pulse mt-1 text-xs text-green-500 flex items-center">
+                    <div className="animate-pulse mt-1 text-xs text-orange-500 flex items-center">
                       <CheckCircle className="h-3 w-3 mr-1" />
                       <span>Completed</span>
                     </div>
