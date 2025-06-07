@@ -659,7 +659,7 @@ export default function LandingPage() {
                       </Link>
                     </Button>
                   ) : (
-                    <Button size="lg" asChild className="w-full mb-3 relative overflow-hidden bg-gradient-to-r from-primary to-indigo-600 hover:from-indigo-600 hover:to-primary border-0 shadow-lg shadow-primary/20 hover:shadow-indigo-500/30 transition-all duration-300 transform hover:scale-105 group">
+                    <Button size="lg" asChild className="w-full mb-3 relative overflow-hidden bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-600 border-0 shadow-lg shadow-amber-600/20 hover:shadow-amber-700/30 transition-all duration-300 transform hover:scale-105 group">
                       <a href="#setup-dotspark" className="flex items-center justify-center relative z-10">
                         <Sparkles className="mr-2 h-5 w-5" />
                         <span>Setup DotSpark</span>
