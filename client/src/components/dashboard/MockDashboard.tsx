@@ -306,10 +306,10 @@ const MockDashboard: React.FC = () => {
                 
                 {/* Neural connections */}
                 <div className="absolute top-1/4 left-1/4 w-[30%] h-[1px] bg-primary transform rotate-30 origin-left"></div>
-                <div className="absolute top-1/3 right-1/3 w-[25%] h-[1px] bg-indigo-500 transform -rotate-15 origin-left"></div>
+                <div className="absolute top-1/3 right-1/3 w-[25%] h-[1px] bg-amber-500 transform -rotate-15 origin-left"></div>
                 <div className="absolute bottom-1/4 right-1/4 w-[40%] h-[1px] bg-emerald-500 transform rotate-45 origin-right"></div>
                 <div className="absolute bottom-1/3 left-1/3 w-[35%] h-[1px] bg-amber-500 transform -rotate-30 origin-right"></div>
-                <div className="absolute top-1/2 left-1/2 w-[20%] h-[1px] bg-violet-500 transform rotate-60 origin-bottom"></div>
+                <div className="absolute top-1/2 left-1/2 w-[20%] h-[1px] bg-orange-500 transform rotate-60 origin-bottom"></div>
               </div>
               
               <div className="relative z-10 p-4 bg-white/80 dark:bg-gray-900/80 rounded-lg shadow-lg text-center">
