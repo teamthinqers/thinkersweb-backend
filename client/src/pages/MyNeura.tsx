@@ -745,14 +745,14 @@ export default function MyNeura() {
               </p>
               <div className="flex gap-3">
                 <Button 
-                  className="flex-1 bg-gradient-to-r from-amber-700 to-orange-700 hover:from-amber-800 hover:to-orange-800 text-amber-50 group-hover:translate-y-0 translate-y-1 transition-all duration-300"
+                  className="flex-1 bg-gradient-to-r from-amber-700 to-orange-700 hover:from-amber-800 hover:to-orange-800 text-amber-50 group-hover:translate-y-0 translate-y-1 transition-all duration-300 h-10"
                   onClick={() => setLocation('/dotspark-tuning/cognitive')}
                 >
                   Configure Shield
                 </Button>
                 <Button 
                   variant="outline"
-                  className="flex-1 border-amber-300 text-amber-700 hover:bg-amber-100 dark:border-amber-700 dark:text-amber-300 dark:hover:bg-amber-950 group-hover:translate-y-0 translate-y-1 transition-all duration-300"
+                  className="flex-1 border-amber-300 text-amber-700 hover:bg-amber-100 dark:border-amber-700 dark:text-amber-300 dark:hover:bg-amber-950 group-hover:translate-y-0 translate-y-1 transition-all duration-300 h-10"
                   onClick={() => setActiveTab('expertise')}
                 >
                   Skip for Now
@@ -789,17 +789,17 @@ export default function MyNeura() {
               </p>
               <div className="flex gap-3">
                 <Button 
-                  className="flex-1 bg-gradient-to-r from-amber-700 to-orange-700 hover:from-amber-800 hover:to-orange-800 text-amber-50 group-hover:translate-y-0 translate-y-1 transition-all duration-300"
+                  className="flex-1 bg-gradient-to-r from-amber-700 to-orange-700 hover:from-amber-800 hover:to-orange-800 text-amber-50 group-hover:translate-y-0 translate-y-1 transition-all duration-300 h-10"
                   onClick={() => setActiveTab('expertise')}
                 >
-                  Configure
+                  Configure Expertise
                 </Button>
                 <Button 
                   variant="outline"
-                  className="flex-1 border-amber-300 text-amber-700 hover:bg-amber-100 dark:border-amber-700 dark:text-amber-300 dark:hover:bg-amber-950 group-hover:translate-y-0 translate-y-1 transition-all duration-300"
+                  className="flex-1 border-amber-300 text-amber-700 hover:bg-amber-100 dark:border-amber-700 dark:text-amber-300 dark:hover:bg-amber-950 group-hover:translate-y-0 translate-y-1 transition-all duration-300 h-10"
                   onClick={() => toast({ title: "Setup Complete", description: "Your DotSpark configuration is ready!" })}
                 >
-                  Skip
+                  Skip for Now
                 </Button>
               </div>
             </CardContent>
