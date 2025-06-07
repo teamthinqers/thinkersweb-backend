@@ -493,9 +493,7 @@ export default function NeuraTuningCognitive() {
                   </HoverCardContent>
                 </HoverCard>
               </div>
-              <span className="text-sm font-medium text-rose-600 dark:text-rose-400">
-                {Math.round((pendingChanges.decisionMakingIndex ?? neuralTuning?.decisionMakingIndex ?? 0.5) * 100)}%
-              </span>
+
             </div>
             
             <div className="py-3 relative">
@@ -693,7 +691,7 @@ export default function NeuraTuningCognitive() {
             </div>
           </div>
 
-          {/* Signal Focus - Beam Width Visualization */}
+          {/* Signal Focus - Radar/Spotlight Visualization */}
           <div className="space-y-4 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/40 dark:to-orange-950/40 p-6 rounded-lg border border-amber-100 dark:border-amber-900">
             <div className="flex items-center justify-between">
               <div className="flex items-start gap-2">
@@ -715,40 +713,77 @@ export default function NeuraTuningCognitive() {
             </div>
             
             <div className="relative py-8">
-              {/* Focus beam visualization */}
-              <div className="relative h-32 bg-gradient-to-b from-amber-100 to-orange-100 dark:from-amber-900/60 dark:to-orange-900/60 rounded-lg overflow-hidden border border-amber-200 dark:border-amber-800">
+              {/* Radar/Spotlight visualization */}
+              <div className="relative h-40 bg-gradient-to-br from-amber-100 to-orange-100 dark:from-amber-900/60 dark:to-orange-900/60 rounded-full overflow-hidden border-2 border-amber-200 dark:border-amber-800">
                 
-                {/* Background grid pattern */}
-                <div className="absolute inset-0 opacity-20">
-                  <div className="grid grid-cols-8 grid-rows-6 h-full w-full">
-                    {[...Array(48)].map((_, i) => (
-                      <div key={i} className="border border-amber-300 dark:border-amber-700"></div>
-                    ))}
-                  </div>
+                {/* Background radar grid */}
+                <div className="absolute inset-0">
+                  {/* Concentric circles */}
+                  {[...Array(4)].map((_, i) => (
+                    <div 
+                      key={i}
+                      className="absolute border border-amber-300/30 dark:border-amber-600/30 rounded-full"
+                      style={{
+                        width: `${(i + 1) * 25}%`,
+                        height: `${(i + 1) * 25}%`,
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)'
+                      }}
+                    ></div>
+                  ))}
+                  {/* Cross lines */}
+                  <div className="absolute top-0 bottom-0 left-1/2 w-0.5 bg-amber-300/30 dark:bg-amber-600/30 transform -translate-x-1/2"></div>
+                  <div className="absolute left-0 right-0 top-1/2 h-0.5 bg-amber-300/30 dark:bg-amber-600/30 transform -translate-y-1/2"></div>
                 </div>
                 
-                {/* Focus beam */}
-                <div className="absolute top-0 left-1/2 transform -translate-x-1/2 h-full">
+                {/* Focus beam/sweep */}
+                <div 
+                  className="absolute top-1/2 left-1/2 origin-bottom transition-all duration-700 ease-out"
+                  style={{
+                    transform: 'translate(-50%, -100%)',
+                    clipPath: `polygon(0% 100%, ${50 - (pendingChanges.signalFocus ?? neuralTuning.signalFocus) * 40}% 0%, ${50 + (pendingChanges.signalFocus ?? neuralTuning.signalFocus) * 40}% 0%)`
+                  }}
+                >
                   <div 
-                    className="h-full bg-gradient-to-b from-amber-400 via-orange-500 to-amber-600 opacity-80 transition-all duration-700 ease-out"
-                    style={{ 
-                      width: `${Math.max(4, (pendingChanges.signalFocus ?? neuralTuning.signalFocus) * 120)}px`,
-                      clipPath: 'polygon(40% 0%, 60% 0%, 100% 100%, 0% 100%)'
+                    className="w-40 h-40 bg-gradient-to-t from-amber-400/80 via-orange-400/60 to-transparent"
+                    style={{
+                      transform: 'rotate(0deg)',
+                      transformOrigin: 'bottom center'
                     }}
                   ></div>
                 </div>
                 
-                {/* Focal point indicators */}
-                <div className="absolute top-2 left-1/2 transform -translate-x-1/2">
-                  <div className="w-2 h-2 rounded-full bg-amber-100 shadow-lg animate-pulse"></div>
+                {/* Central source point */}
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                  <div className="w-4 h-4 bg-gradient-to-br from-amber-400 to-orange-600 rounded-full shadow-lg animate-pulse border-2 border-white"></div>
                 </div>
                 
-                {/* Focus labels */}
+                {/* Detected targets/signals */}
+                {[...Array(8)].map((_, i) => {
+                  const angle = (i * 45) * Math.PI / 180;
+                  const distance = 50 + Math.random() * 40;
+                  const opacity = (pendingChanges.signalFocus ?? neuralTuning.signalFocus) > 0.6 ? 0.8 : 0.3;
+                  return (
+                    <div 
+                      key={i}
+                      className="absolute w-2 h-2 bg-amber-500 rounded-full animate-pulse transition-opacity duration-700"
+                      style={{
+                        left: `${50 + Math.cos(angle) * distance}%`,
+                        top: `${50 + Math.sin(angle) * distance}%`,
+                        opacity,
+                        animationDelay: `${i * 200}ms`
+                      }}
+                    ></div>
+                  );
+                })}
+                
+                {/* Focus mode indicators */}
                 <div className="absolute bottom-2 left-2 text-xs font-medium text-amber-700 dark:text-amber-300">
-                  Narrow Beam
+                  Laser Focus
                 </div>
                 <div className="absolute bottom-2 right-2 text-xs font-medium text-orange-700 dark:text-orange-300">
-                  Wide Scanner
+                  Wide Scan
                 </div>
               </div>
               
@@ -761,7 +796,7 @@ export default function NeuraTuningCognitive() {
                       return (
                         <>
                           <div className="w-3 h-3 rounded-full bg-gradient-to-r from-amber-400 to-amber-600"></div>
-                          <span className="text-sm font-medium text-amber-700 dark:text-amber-300">Narrow Beam Focus</span>
+                          <span className="text-sm font-medium text-amber-700 dark:text-amber-300">Laser Focus Mode</span>
                         </>
                       );
                     } else if (value < 0.67) {
@@ -774,8 +809,8 @@ export default function NeuraTuningCognitive() {
                     } else {
                       return (
                         <>
-                          <div className="w-3 h-3 rounded-full bg-gradient-to-r from-orange-500 to-amber-600"></div>
-                          <span className="text-sm font-medium text-orange-700 dark:text-orange-300">Wide Scanner Focus</span>
+                          <div className="w-3 h-3 rounded-full bg-gradient-to-r from-orange-500 to-orange-600"></div>
+                          <span className="text-sm font-medium text-orange-700 dark:text-orange-300">Wide Scan Mode</span>
                         </>
                       );
                     }
@@ -791,12 +826,12 @@ export default function NeuraTuningCognitive() {
                 step="0.01"
                 value={pendingChanges.signalFocus ?? neuralTuning.signalFocus}
                 onChange={(e) => handleParameterChange('signalFocus', [parseFloat(e.target.value)])}
-                className="absolute top-0 left-0 w-full h-32 opacity-0 cursor-pointer"
+                className="absolute top-0 left-0 w-full h-40 opacity-0 cursor-pointer"
               />
             </div>
             
             <div className="text-xs text-gray-500 dark:text-gray-400 text-center">
-              Control your attention style - from laser focus to broad awareness
+              Control your attention radar - from pinpoint precision to panoramic awareness
             </div>
           </div>
 
@@ -939,7 +974,7 @@ export default function NeuraTuningCognitive() {
             </div>
           </div>
 
-          {/* Mental Energy Flow - River Flow Visualization */}
+          {/* Mental Energy Flow - Electrical Circuit Visualization */}
           <div className="space-y-4 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/40 dark:to-orange-950/40 p-6 rounded-lg border border-amber-100 dark:border-amber-900">
             <div className="flex items-center justify-between">
               <div className="flex items-start gap-2">
@@ -961,75 +996,122 @@ export default function NeuraTuningCognitive() {
             </div>
             
             <div className="relative py-8">
-              {/* River flow visualization */}
-              <div className="relative h-32 bg-gradient-to-r from-amber-100 via-orange-100 to-amber-100 dark:from-amber-900/60 dark:via-orange-900/60 dark:to-amber-900/60 rounded-2xl overflow-hidden border border-amber-200 dark:border-amber-800">
+              {/* Electrical circuit visualization */}
+              <div className="relative h-36 bg-gradient-to-b from-amber-100 to-orange-100 dark:from-amber-900/60 dark:to-orange-900/60 rounded-xl overflow-hidden border border-amber-200 dark:border-amber-800">
                 
-                {/* River bed pattern */}
-                <div className="absolute inset-0 opacity-30">
-                  <svg width="100%" height="100%" viewBox="0 0 400 128">
+                {/* Circuit board pattern */}
+                <div className="absolute inset-0 opacity-20">
+                  <svg width="100%" height="100%">
                     <defs>
-                      <pattern id="riverPattern" x="0" y="0" width="40" height="20" patternUnits="userSpaceOnUse">
-                        <path d="M0,10 Q20,0 40,10 Q20,20 0,10" fill="none" stroke="currentColor" strokeWidth="0.5" className="text-amber-300"/>
+                      <pattern id="circuitPattern" x="0" y="0" width="30" height="30" patternUnits="userSpaceOnUse">
+                        <circle cx="15" cy="15" r="1" fill="currentColor" className="text-amber-400"/>
+                        <line x1="15" y1="0" x2="15" y2="30" stroke="currentColor" strokeWidth="0.5" className="text-amber-300"/>
+                        <line x1="0" y1="15" x2="30" y2="15" stroke="currentColor" strokeWidth="0.5" className="text-amber-300"/>
                       </pattern>
                     </defs>
-                    <rect width="100%" height="100%" fill="url(#riverPattern)" />
+                    <rect width="100%" height="100%" fill="url(#circuitPattern)" />
                   </svg>
                 </div>
                 
-                {/* Energy flow streams */}
-                <div className="absolute inset-0 flex">
-                  {/* Action stream (left side) */}
-                  <div className="flex-1 relative overflow-hidden">
-                    <div 
-                      className="absolute inset-0 bg-gradient-to-r from-amber-400 to-transparent opacity-60 transition-all duration-1000 ease-out"
-                      style={{
-                        width: `${Math.max(20, (1 - (pendingChanges.mentalEnergyFlow ?? neuralTuning.mentalEnergyFlow)) * 100)}%`,
-                        animation: 'flow-left 3s ease-in-out infinite'
-                      }}
-                    ></div>
-                    <div className="absolute bottom-2 left-2 text-xs font-medium text-amber-800 dark:text-amber-200">
-                      Action
+                {/* Energy pathways */}
+                <div className="absolute inset-0 flex items-center">
+                  {/* Central power source */}
+                  <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                    <div className="w-8 h-8 bg-gradient-to-br from-amber-400 to-orange-600 rounded-full shadow-lg border-2 border-white animate-pulse">
+                      <div className="absolute inset-2 bg-amber-200 rounded-full"></div>
                     </div>
                   </div>
                   
-                  {/* Reflection stream (right side) */}
-                  <div className="flex-1 relative overflow-hidden">
-                    <div 
-                      className="absolute inset-0 bg-gradient-to-l from-orange-400 to-transparent opacity-60 transition-all duration-1000 ease-out ml-auto"
-                      style={{
-                        width: `${Math.max(20, (pendingChanges.mentalEnergyFlow ?? neuralTuning.mentalEnergyFlow) * 100)}%`,
-                        animation: 'flow-right 3s ease-in-out infinite'
-                      }}
-                    ></div>
-                    <div className="absolute bottom-2 right-2 text-xs font-medium text-orange-800 dark:text-orange-200">
-                      Reflection
+                  {/* Action pathway (left) */}
+                  <div className="absolute left-4 top-1/2 transform -translate-y-1/2">
+                    <div className="flex items-center gap-2">
+                      <div className="w-6 h-6 bg-amber-500 rounded border-2 border-amber-600 flex items-center justify-center">
+                        <div className="w-2 h-2 bg-white rounded"></div>
+                      </div>
+                      <div className="text-xs font-medium text-amber-700 dark:text-amber-300">ACTION</div>
                     </div>
                   </div>
+                  
+                  {/* Reflection pathway (right) */}
+                  <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
+                    <div className="flex items-center gap-2">
+                      <div className="text-xs font-medium text-orange-700 dark:text-orange-300">REFLECTION</div>
+                      <div className="w-6 h-6 bg-orange-500 rounded-full border-2 border-orange-600 flex items-center justify-center">
+                        <div className="w-2 h-2 bg-white rounded-full"></div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Energy flow lines */}
+                  <svg className="absolute inset-0 w-full h-full">
+                    {/* Action flow line */}
+                    <line 
+                      x1="50%" 
+                      y1="50%" 
+                      x2="15%" 
+                      y2="50%" 
+                      stroke="currentColor" 
+                      strokeWidth="3" 
+                      className="text-amber-500"
+                      style={{
+                        opacity: (1 - (pendingChanges.mentalEnergyFlow ?? neuralTuning.mentalEnergyFlow)) * 0.8 + 0.2,
+                        strokeDasharray: '8,4',
+                        animation: 'flow-left 2s linear infinite'
+                      }}
+                    />
+                    {/* Reflection flow line */}
+                    <line 
+                      x1="50%" 
+                      y1="50%" 
+                      x2="85%" 
+                      y2="50%" 
+                      stroke="currentColor" 
+                      strokeWidth="3" 
+                      className="text-orange-500"
+                      style={{
+                        opacity: (pendingChanges.mentalEnergyFlow ?? neuralTuning.mentalEnergyFlow) * 0.8 + 0.2,
+                        strokeDasharray: '8,4',
+                        animation: 'flow-right 2s linear infinite'
+                      }}
+                    />
+                  </svg>
+                  
+                  {/* Energy particles */}
+                  {[...Array(6)].map((_, i) => (
+                    <div 
+                      key={i}
+                      className="absolute w-2 h-2 bg-amber-400 rounded-full animate-pulse"
+                      style={{
+                        left: `${30 + i * 8}%`,
+                        top: `${45 + (i % 2 === 0 ? 5 : -5)}%`,
+                        animationDelay: `${i * 300}ms`,
+                        opacity: Math.random() * 0.6 + 0.4
+                      }}
+                    ></div>
+                  ))}
                 </div>
                 
-                {/* Central energy indicator */}
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                  <div className="w-6 h-6 bg-gradient-to-br from-amber-300 to-orange-500 rounded-full shadow-lg animate-pulse border-2 border-white"></div>
-                </div>
-                
-                {/* Flow direction arrows */}
-                <div 
-                  className="absolute top-4 transition-all duration-1000 ease-out"
-                  style={{
-                    left: `${20 + (1 - (pendingChanges.mentalEnergyFlow ?? neuralTuning.mentalEnergyFlow)) * 30}%`,
-                    opacity: (1 - (pendingChanges.mentalEnergyFlow ?? neuralTuning.mentalEnergyFlow)) * 0.8 + 0.2
-                  }}
-                >
-                  <div className="text-amber-600 dark:text-amber-400">→</div>
-                </div>
-                <div 
-                  className="absolute top-4 transition-all duration-1000 ease-out"
-                  style={{
-                    right: `${20 + (pendingChanges.mentalEnergyFlow ?? neuralTuning.mentalEnergyFlow) * 30}%`,
-                    opacity: (pendingChanges.mentalEnergyFlow ?? neuralTuning.mentalEnergyFlow) * 0.8 + 0.2
-                  }}
-                >
-                  <div className="text-orange-600 dark:text-orange-400">←</div>
+                {/* Energy meter displays */}
+                <div className="absolute bottom-2 left-4 right-4 flex justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="w-12 h-2 bg-amber-200 dark:bg-amber-800 rounded-full overflow-hidden">
+                      <div 
+                        className="h-full bg-amber-500 transition-all duration-700"
+                        style={{ width: `${(1 - (pendingChanges.mentalEnergyFlow ?? neuralTuning.mentalEnergyFlow)) * 100}%` }}
+                      ></div>
+                    </div>
+                    <span className="text-xs text-amber-600 dark:text-amber-400">Do</span>
+                  </div>
+                  
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-orange-600 dark:text-orange-400">Think</span>
+                    <div className="w-12 h-2 bg-orange-200 dark:bg-orange-800 rounded-full overflow-hidden">
+                      <div 
+                        className="h-full bg-orange-500 transition-all duration-700"
+                        style={{ width: `${(pendingChanges.mentalEnergyFlow ?? neuralTuning.mentalEnergyFlow) * 100}%` }}
+                      ></div>
+                    </div>
+                  </div>
                 </div>
               </div>
               
@@ -1042,21 +1124,21 @@ export default function NeuraTuningCognitive() {
                       return (
                         <>
                           <div className="w-3 h-3 rounded-full bg-gradient-to-r from-amber-400 to-amber-600"></div>
-                          <span className="text-sm font-medium text-amber-700 dark:text-amber-300">Action Primed</span>
+                          <span className="text-sm font-medium text-amber-700 dark:text-amber-300">Action Circuit Active</span>
                         </>
                       );
                     } else if (value < 0.67) {
                       return (
                         <>
                           <div className="w-3 h-3 rounded-full bg-gradient-to-r from-amber-500 to-orange-500"></div>
-                          <span className="text-sm font-medium text-orange-600 dark:text-orange-400">Balanced Flow</span>
+                          <span className="text-sm font-medium text-orange-600 dark:text-orange-400">Balanced Current</span>
                         </>
                       );
                     } else {
                       return (
                         <>
                           <div className="w-3 h-3 rounded-full bg-gradient-to-r from-orange-500 to-orange-600"></div>
-                          <span className="text-sm font-medium text-orange-700 dark:text-orange-300">Reflection Primed</span>
+                          <span className="text-sm font-medium text-orange-700 dark:text-orange-300">Reflection Circuit Active</span>
                         </>
                       );
                     }
@@ -1072,12 +1154,12 @@ export default function NeuraTuningCognitive() {
                 step="0.01"
                 value={pendingChanges.mentalEnergyFlow ?? neuralTuning.mentalEnergyFlow}
                 onChange={(e) => handleParameterChange('mentalEnergyFlow', [parseFloat(e.target.value)])}
-                className="absolute top-0 left-0 w-full h-32 opacity-0 cursor-pointer"
+                className="absolute top-0 left-0 w-full h-36 opacity-0 cursor-pointer"
               />
             </div>
             
             <div className="text-xs text-gray-500 dark:text-gray-400 text-center">
-              Direct your mental energy - from immediate action to deep contemplation
+              Route your mental energy circuits - from execution mode to contemplation mode
             </div>
           </div>
 
@@ -1096,7 +1178,7 @@ export default function NeuraTuningCognitive() {
             variant="default"
             onClick={saveChanges}
             disabled={!unsavedChanges || isUpdating}
-            className={unsavedChanges ? "bg-amber-600 hover:bg-amber-700" : ""}
+            className={unsavedChanges ? "bg-amber-600 hover:bg-amber-700 text-white border-amber-600" : "bg-gray-400 text-gray-600 cursor-not-allowed"}
           >
             {isUpdating ? (
               <span className="flex items-center gap-1.5">

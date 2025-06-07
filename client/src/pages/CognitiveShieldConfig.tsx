@@ -1258,11 +1258,7 @@ export default function CognitiveShieldConfig() {
                   </div>
                   <span className="text-amber-700 dark:text-amber-300">Decision Making Index</span>
                 </Label>
-                <div className="px-3 py-1 bg-gradient-to-r from-amber-200 to-amber-300 dark:from-amber-800 dark:to-amber-700 rounded-lg border border-amber-300 dark:border-amber-600">
-                  <span className="text-sm font-bold text-amber-800 dark:text-amber-200 font-mono">
-                    {Math.round((pendingChanges.decisionMakingIndex ?? neuralTuning?.decisionMakingIndex ?? 0.6) * 100)}%
-                  </span>
-                </div>
+
               </div>
               
               <div className="space-y-3">
