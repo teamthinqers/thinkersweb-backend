@@ -294,7 +294,7 @@ export default function LandingPage() {
                     <div className="relative">
                       <Brain className="h-3.5 w-3.5" />
                       {isNeuraActivated && (
-                        <div className="absolute -top-1 -right-1 h-1.5 w-1.5 bg-green-500 rounded-full"></div>
+                        <div className="absolute -top-1 -right-1 h-1.5 w-1.5 bg-orange-500 rounded-full"></div>
                       )}
                     </div>
                     <span className="text-xs">My DotSpark</span>
@@ -394,7 +394,7 @@ export default function LandingPage() {
                             <div className="relative">
                               <Brain className="h-4 w-4 text-indigo-500" />
                               {isNeuraActivated && (
-                                <div className="absolute -top-1 -right-1 h-2 w-2 bg-green-500 rounded-full"></div>
+                                <div className="absolute -top-1 -right-1 h-2 w-2 bg-orange-500 rounded-full"></div>
                               )}
                             </div>
                           </div>
@@ -833,7 +833,7 @@ export default function LandingPage() {
             {/* Reward message when all steps are completed */}
             {(user && isNeuraActivated && isWhatsAppConnected) || isSetupCompleted ? (
               <div className="mt-8 text-center">
-                <div className="inline-block bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-3 rounded-lg shadow-lg animate-pulse">
+                <div className="inline-block bg-gradient-to-r from-orange-500 to-red-600 text-white px-6 py-3 rounded-lg shadow-lg animate-pulse">
                   <div className="flex flex-col items-center">
                     <div className="flex items-center mb-1">
                       <Sparkles className="h-5 w-5 mr-2" />
