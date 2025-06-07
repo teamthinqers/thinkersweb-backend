@@ -90,7 +90,7 @@ export function IosPwaInstallPrompt() {
         <Button 
           variant="default" 
           onClick={viewInstallGuide}
-          className="w-full bg-gradient-to-r from-indigo-600 to-violet-600"
+          className="w-full bg-gradient-to-r from-amber-700 to-orange-800"
         >
           <Download className="mr-2 h-4 w-4" />
           View Full Guide

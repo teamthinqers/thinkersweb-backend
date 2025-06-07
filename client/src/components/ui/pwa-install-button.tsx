@@ -83,7 +83,7 @@ export function PWAInstallButton({
   // Custom installation UI for mobile devices that aren't running as standalone
   if (isMobile && !isRunningAsStandalone()) {
     return (
-      <div className={`rounded-lg bg-gradient-to-r from-violet-600 to-purple-700 p-4 shadow-lg ${className}`}>
+      <div className={`rounded-lg bg-gradient-to-r from-amber-700 to-orange-800 p-4 shadow-lg ${className}`}>
         <div className="flex items-center">
           <div className="mr-3 flex-shrink-0 text-white">
             <Download className="h-6 w-6" />

@@ -70,7 +70,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isMobile, onNewEntry
       <div className="px-6 py-5 border-b">
         <h1 className="text-xl font-bold flex items-center">
           <LightbulbIcon className="mr-2 h-6 w-6 text-primary" />
-          <span className="bg-gradient-to-r from-primary to-indigo-400 bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
             DotSpark
           </span>
         </h1>
@@ -97,7 +97,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isMobile, onNewEntry
                     location === item.path
                       ? "bg-primary/10 text-primary font-medium"
                       : item.isSpecial
-                        ? "text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/20 hover:text-purple-700 dark:hover:text-purple-300 font-medium"
+                        ? "text-amber-700 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 hover:text-amber-800 dark:hover:text-amber-300 font-medium"
                         : "text-muted-foreground hover:bg-muted hover:text-foreground"
                   }`}
                   onClick={isMobile ? onClose : undefined}
@@ -107,7 +107,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isMobile, onNewEntry
                       item.label === "Home" 
                         ? "text-primary" 
                         : item.isSpecial 
-                          ? "text-purple-500" 
+                          ? "text-amber-600" 
                           : ""
                     }`, 
                     size: item.label === "Home" || item.isSpecial ? 20 : 18 
@@ -115,7 +115,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isMobile, onNewEntry
                   {item.label === "Home" ? (
                     <span className="font-medium text-primary">Home</span>
                   ) : item.isSpecial ? (
-                    <span className="font-medium bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">{item.label}</span>
+                    <span className="font-medium bg-gradient-to-r from-amber-700 to-orange-800 bg-clip-text text-transparent">{item.label}</span>
                   ) : (
                     item.label
                   )}

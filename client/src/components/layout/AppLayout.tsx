@@ -80,7 +80,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children, onNewEntry }) => {
             <div className="fixed bottom-4 right-4 z-50" id="pwa-install-button">
               <Button 
                 onClick={handleInstallClick}
-                className="flex items-center gap-2 bg-purple-700 hover:bg-purple-800"
+                className="flex items-center gap-2 bg-amber-700 hover:bg-amber-800"
               >
                 <Download size={18} />
                 <span>Install App</span>
