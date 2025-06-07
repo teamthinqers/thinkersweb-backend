@@ -99,7 +99,7 @@ export default function MyNeura() {
   }>({});
   
   // Active tab for neural tuning
-  const [activeTab, setActiveTab] = useState('core');
+  const [activeTab, setActiveTab] = useState('cognitive');
   
   // Track if we're on mobile for responsive layout
   const [isMobileView, setIsMobileView] = useState(window.innerWidth < 768);
@@ -730,26 +730,26 @@ export default function MyNeura() {
             </div>
             <CardContent className="p-6">
               <p className="text-muted-foreground mb-4">
-                Shape how your DotSpark reflects your unique cognitive approach, balancing analytical reasoning with intuitive insights.
+                Configure all core parameters that shape how your DotSpark processes information and reflects your unique cognitive approach.
               </p>
               <ul className="space-y-2 mb-6">
                 <li className="flex items-start">
                   <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-orange-100 dark:bg-orange-900 text-orange-600 dark:text-orange-400 mr-2 mt-0.5">
                     <Check className="h-3.5 w-3.5" />
                   </span>
-                  <span className="text-sm">Analytical vs flexible thinking</span>
+                  <span className="text-sm">Creativity vs precision balance</span>
                 </li>
                 <li className="flex items-start">
                   <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-orange-100 dark:bg-orange-900 text-orange-600 dark:text-orange-400 mr-2 mt-0.5">
                     <Check className="h-3.5 w-3.5" />
                   </span>
-                  <span className="text-sm">Intuitive pattern recognition</span>
+                  <span className="text-sm">Processing speed preferences</span>
                 </li>
                 <li className="flex items-start">
                   <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-orange-100 dark:bg-orange-900 text-orange-600 dark:text-orange-400 mr-2 mt-0.5">
                     <Check className="h-3.5 w-3.5" />
                   </span>
-                  <span className="text-sm">Balance between structured and abstract</span>
+                  <span className="text-sm">Analytical vs intuitive thinking</span>
                 </li>
               </ul>
               <Button 
