@@ -826,6 +826,483 @@ export default function CognitiveShieldConfig() {
                 Click layers to adjust thinking complexity depth
               </p>
             </div>
+
+            {/* Cognitive Pace Parameter - Pulse Speed Selector */}
+            <div className="relative overflow-hidden space-y-4 p-6 rounded-xl bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950/30 dark:to-amber-900/20 border-2 border-amber-300 dark:border-amber-700 shadow-lg">
+              <div className="flex items-center justify-between relative z-10">
+                <Label className="text-base font-semibold flex items-center gap-3">
+                  <div className="relative">
+                    <div className="w-5 h-5 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full shadow-md border border-amber-600 dark:border-amber-400">
+                      <div className="absolute inset-1 bg-amber-200 rounded-full animate-pulse"></div>
+                    </div>
+                  </div>
+                  <span className="text-amber-700 dark:text-amber-300">Cognitive Pace</span>
+                </Label>
+                <div className="px-3 py-1 bg-gradient-to-r from-amber-200 to-amber-300 dark:from-amber-800 dark:to-amber-700 rounded-lg border border-amber-300 dark:border-amber-600">
+                  <span className="text-sm font-bold text-amber-800 dark:text-amber-200 font-mono">
+                    {Math.round((pendingChanges.cognitivePace ?? neuralTuning?.cognitivePace ?? 0.6) * 100)}%
+                  </span>
+                </div>
+              </div>
+              
+              <div className="space-y-3">
+                <div className="text-center text-sm font-medium text-amber-700 dark:text-amber-300">
+                  Adjust thinking speed and switching rate
+                </div>
+                
+                <div className="flex justify-center items-center gap-4">
+                  {[0.2, 0.4, 0.6, 0.8, 1.0].map((pace, index) => {
+                    const currentValue = pendingChanges.cognitivePace ?? neuralTuning?.cognitivePace ?? 0.6;
+                    const isSelected = Math.abs(currentValue - pace) < 0.1;
+                    const paceLabels = ['Slow', 'Steady', 'Balanced', 'Quick', 'Rapid'];
+                    
+                    return (
+                      <button
+                        key={index}
+                        onClick={() => handleParameterChange('cognitivePace', pace)}
+                        className={`
+                          relative w-12 h-12 rounded-full border-2 transition-all duration-300 transform hover:scale-110
+                          ${isSelected 
+                            ? 'bg-amber-500 border-amber-700 dark:border-amber-300 shadow-lg scale-110' 
+                            : 'bg-amber-200 border-amber-400 dark:bg-amber-800 dark:border-amber-600'
+                          }
+                        `}
+                      >
+                        <div className={`absolute inset-2 rounded-full ${isSelected ? 'bg-amber-200 animate-pulse' : 'bg-amber-300'}`} />
+                        <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-xs font-medium text-amber-700 dark:text-amber-300">
+                          {paceLabels[index]}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+              
+              <p className="text-xs text-amber-700 dark:text-amber-300 font-medium text-center">
+                Controls thought processing speed and cognitive switching rate
+              </p>
+            </div>
+
+            {/* Signal Focus Parameter - Beam Width Selector */}
+            <div className="relative overflow-hidden space-y-4 p-6 rounded-xl bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950/30 dark:to-amber-900/20 border-2 border-amber-300 dark:border-amber-700 shadow-lg">
+              <div className="flex items-center justify-between relative z-10">
+                <Label className="text-base font-semibold flex items-center gap-3">
+                  <div className="relative">
+                    <div className="w-5 h-5 bg-gradient-to-br from-amber-500 to-amber-600 rounded-md shadow-md border border-amber-600 dark:border-amber-400">
+                      <div className="absolute inset-1 bg-gradient-to-r from-amber-200 to-amber-300 rounded-sm"></div>
+                    </div>
+                  </div>
+                  <span className="text-amber-700 dark:text-amber-300">Signal Focus</span>
+                </Label>
+                <div className="px-3 py-1 bg-gradient-to-r from-amber-200 to-amber-300 dark:from-amber-800 dark:to-amber-700 rounded-lg border border-amber-300 dark:border-amber-600">
+                  <span className="text-sm font-bold text-amber-800 dark:text-amber-200 font-mono">
+                    {Math.round((pendingChanges.signalFocus ?? neuralTuning?.signalFocus ?? 0.7) * 100)}%
+                  </span>
+                </div>
+              </div>
+              
+              <div className="space-y-3">
+                <div className="text-center text-sm font-medium text-amber-700 dark:text-amber-300">
+                  Adjust attention beam width
+                </div>
+                
+                <div className="flex justify-center">
+                  <div className="relative w-64 h-16 bg-amber-100 dark:bg-amber-900 rounded-lg border border-amber-200 dark:border-amber-800 overflow-hidden">
+                    {/* Focus beam visualization */}
+                    <div 
+                      className="absolute top-2 bottom-2 bg-gradient-to-r from-amber-500 to-amber-600 rounded-sm transition-all duration-300"
+                      style={{ 
+                        left: '8px',
+                        right: '8px',
+                        height: `${(pendingChanges.signalFocus ?? neuralTuning?.signalFocus ?? 0.7) * 48 + 8}px`,
+                        top: `${24 - (pendingChanges.signalFocus ?? neuralTuning?.signalFocus ?? 0.7) * 24}px`
+                      }}
+                    />
+                    
+                    {/* Interactive zones */}
+                    {[0.2, 0.4, 0.6, 0.8, 1.0].map((focus, index) => (
+                      <button
+                        key={index}
+                        onClick={() => handleParameterChange('signalFocus', focus)}
+                        className="absolute inset-0 opacity-0 hover:opacity-10 bg-amber-500 transition-opacity duration-200"
+                        style={{ left: `${index * 20}%`, width: '20%' }}
+                      />
+                    ))}
+                    
+                    {/* Focus labels */}
+                    <div className="absolute -bottom-6 left-0 right-0 flex justify-between text-xs text-amber-600 dark:text-amber-400">
+                      <span>Narrow</span>
+                      <span>Focused</span>
+                      <span>Balanced</span>
+                      <span>Broad</span>
+                      <span>Wide</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <p className="text-xs text-amber-700 dark:text-amber-300 font-medium text-center">
+                Narrow beam focus vs wide scanner attention style
+              </p>
+            </div>
+
+            {/* Impulse Control Parameter - Throttle Control */}
+            <div className="relative overflow-hidden space-y-4 p-6 rounded-xl bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950/30 dark:to-amber-900/20 border-2 border-amber-300 dark:border-amber-700 shadow-lg">
+              <div className="flex items-center justify-between relative z-10">
+                <Label className="text-base font-semibold flex items-center gap-3">
+                  <div className="relative">
+                    <div className="w-5 h-5 bg-gradient-to-br from-amber-500 to-amber-600 rounded-lg shadow-md border border-amber-600 dark:border-amber-400">
+                      <div className="absolute inset-1 bg-amber-200 rounded-sm"></div>
+                      <div className="absolute inset-2 bg-amber-400 rounded-sm"></div>
+                    </div>
+                  </div>
+                  <span className="text-amber-700 dark:text-amber-300">Impulse Control</span>
+                </Label>
+                <div className="px-3 py-1 bg-gradient-to-r from-amber-200 to-amber-300 dark:from-amber-800 dark:to-amber-700 rounded-lg border border-amber-300 dark:border-amber-600">
+                  <span className="text-sm font-bold text-amber-800 dark:text-amber-200 font-mono">
+                    {Math.round((pendingChanges.impulseControl ?? neuralTuning?.impulseControl ?? 0.6) * 100)}%
+                  </span>
+                </div>
+              </div>
+              
+              <div className="space-y-3">
+                <div className="text-center text-sm font-medium text-amber-700 dark:text-amber-300">
+                  Balance responsiveness vs precision
+                </div>
+                
+                <div className="flex justify-center items-center">
+                  <div className="relative w-48 h-8">
+                    {/* Throttle track */}
+                    <div className="absolute inset-0 bg-amber-200 dark:bg-amber-800 rounded-full"></div>
+                    
+                    {/* Throttle handle */}
+                    <div 
+                      className="absolute top-0 bottom-0 w-8 bg-amber-600 rounded-full border-2 border-amber-700 dark:border-amber-300 cursor-pointer shadow-lg transition-all duration-300 hover:scale-110"
+                      style={{ left: `${(pendingChanges.impulseControl ?? neuralTuning?.impulseControl ?? 0.6) * (192 - 32)}px` }}
+                      onClick={(e) => {
+                        const rect = e.currentTarget.parentElement!.getBoundingClientRect();
+                        const clickX = e.clientX - rect.left;
+                        const newValue = Math.max(0, Math.min(1, clickX / (192 - 32)));
+                        handleParameterChange('impulseControl', newValue);
+                      }}
+                    >
+                      <div className="absolute inset-1 bg-amber-200 rounded-full"></div>
+                    </div>
+                    
+                    {/* Click zones for easier interaction */}
+                    <div 
+                      className="absolute inset-0 cursor-pointer"
+                      onClick={(e) => {
+                        const rect = e.currentTarget.getBoundingClientRect();
+                        const clickX = e.clientX - rect.left;
+                        const newValue = Math.max(0, Math.min(1, clickX / 192));
+                        handleParameterChange('impulseControl', newValue);
+                      }}
+                    />
+                    
+                    {/* Labels */}
+                    <div className="absolute -bottom-6 left-0 right-0 flex justify-between text-xs text-amber-600 dark:text-amber-400">
+                      <span>Responsive</span>
+                      <span>Precise</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <p className="text-xs text-amber-700 dark:text-amber-300 font-medium text-center">
+                High responsiveness vs high precision control
+              </p>
+            </div>
+
+            {/* Mental Energy Flow Parameter - Flow Direction Selector */}
+            <div className="relative overflow-hidden space-y-4 p-6 rounded-xl bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950/30 dark:to-amber-900/20 border-2 border-amber-300 dark:border-amber-700 shadow-lg">
+              <div className="flex items-center justify-between relative z-10">
+                <Label className="text-base font-semibold flex items-center gap-3">
+                  <div className="relative">
+                    <div className="w-5 h-5 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full shadow-md border border-amber-600 dark:border-amber-400">
+                      <div className="absolute inset-1 bg-amber-200 rounded-full"></div>
+                      <div className="absolute top-1 left-1.5 w-1 h-3 bg-amber-500 rounded-sm transform rotate-45"></div>
+                    </div>
+                  </div>
+                  <span className="text-amber-700 dark:text-amber-300">Mental Energy Flow</span>
+                </Label>
+                <div className="px-3 py-1 bg-gradient-to-r from-amber-200 to-amber-300 dark:from-amber-800 dark:to-amber-700 rounded-lg border border-amber-300 dark:border-amber-600">
+                  <span className="text-sm font-bold text-amber-800 dark:text-amber-200 font-mono">
+                    {Math.round((pendingChanges.mentalEnergyFlow ?? neuralTuning?.mentalEnergyFlow ?? 0.5) * 100)}%
+                  </span>
+                </div>
+              </div>
+              
+              <div className="space-y-3">
+                <div className="text-center text-sm font-medium text-amber-700 dark:text-amber-300">
+                  Choose energy flow direction
+                </div>
+                
+                <div className="flex justify-center gap-6">
+                  <button
+                    onClick={() => handleParameterChange('mentalEnergyFlow', 0.2)}
+                    className={`
+                      flex flex-col items-center gap-2 p-4 rounded-lg border-2 transition-all duration-300 transform hover:scale-105
+                      ${(pendingChanges.mentalEnergyFlow ?? neuralTuning?.mentalEnergyFlow ?? 0.5) < 0.4
+                        ? 'border-amber-600 bg-amber-200 dark:bg-amber-800 shadow-lg' 
+                        : 'border-amber-400 bg-amber-100 dark:bg-amber-900'
+                      }
+                    `}
+                  >
+                    <div className="w-8 h-8 bg-amber-500 rounded-full flex items-center justify-center">
+                      <div className="w-2 h-2 bg-amber-200 rounded-full animate-bounce"></div>
+                    </div>
+                    <span className="text-xs font-semibold text-amber-800 dark:text-amber-200">Action</span>
+                  </button>
+                  
+                  <button
+                    onClick={() => handleParameterChange('mentalEnergyFlow', 0.5)}
+                    className={`
+                      flex flex-col items-center gap-2 p-4 rounded-lg border-2 transition-all duration-300 transform hover:scale-105
+                      ${Math.abs((pendingChanges.mentalEnergyFlow ?? neuralTuning?.mentalEnergyFlow ?? 0.5) - 0.5) < 0.2
+                        ? 'border-amber-600 bg-amber-200 dark:bg-amber-800 shadow-lg' 
+                        : 'border-amber-400 bg-amber-100 dark:bg-amber-900'
+                      }
+                    `}
+                  >
+                    <div className="w-8 h-8 bg-amber-500 rounded-full flex items-center justify-center">
+                      <div className="w-2 h-2 bg-amber-200 rounded-full animate-pulse"></div>
+                    </div>
+                    <span className="text-xs font-semibold text-amber-800 dark:text-amber-200">Balanced</span>
+                  </button>
+                  
+                  <button
+                    onClick={() => handleParameterChange('mentalEnergyFlow', 0.8)}
+                    className={`
+                      flex flex-col items-center gap-2 p-4 rounded-lg border-2 transition-all duration-300 transform hover:scale-105
+                      ${(pendingChanges.mentalEnergyFlow ?? neuralTuning?.mentalEnergyFlow ?? 0.5) > 0.6
+                        ? 'border-amber-600 bg-amber-200 dark:bg-amber-800 shadow-lg' 
+                        : 'border-amber-400 bg-amber-100 dark:bg-amber-900'
+                      }
+                    `}
+                  >
+                    <div className="w-8 h-8 bg-amber-500 rounded-full flex items-center justify-center">
+                      <div className="w-2 h-2 bg-amber-200 rounded-full animate-ping"></div>
+                    </div>
+                    <span className="text-xs font-semibold text-amber-800 dark:text-amber-200">Reflection</span>
+                  </button>
+                </div>
+              </div>
+              
+              <p className="text-xs text-amber-700 dark:text-amber-300 font-medium text-center">
+                Action primed vs reflection primed energy flow
+              </p>
+            </div>
+
+            {/* Mental Model Density Parameter - Architecture Builder */}
+            <div className="relative overflow-hidden space-y-4 p-6 rounded-xl bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950/30 dark:to-amber-900/20 border-2 border-amber-300 dark:border-amber-700 shadow-lg">
+              <div className="flex items-center justify-between relative z-10">
+                <Label className="text-base font-semibold flex items-center gap-3">
+                  <div className="relative">
+                    <div className="w-5 h-5 bg-gradient-to-br from-amber-500 to-amber-600 rounded-sm shadow-md border border-amber-600 dark:border-amber-400">
+                      <div className="absolute inset-1 grid grid-cols-2 gap-0.5">
+                        <div className="bg-amber-200 rounded-sm"></div>
+                        <div className="bg-amber-300 rounded-sm"></div>
+                        <div className="bg-amber-300 rounded-sm"></div>
+                        <div className="bg-amber-400 rounded-sm"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <span className="text-amber-700 dark:text-amber-300">Mental Model Density</span>
+                </Label>
+                <div className="px-3 py-1 bg-gradient-to-r from-amber-200 to-amber-300 dark:from-amber-800 dark:to-amber-700 rounded-lg border border-amber-300 dark:border-amber-600">
+                  <span className="text-sm font-bold text-amber-800 dark:text-amber-200 font-mono">
+                    {Math.round((pendingChanges.mentalModelDensity ?? neuralTuning?.mentalModelDensity ?? 0.6) * 100)}%
+                  </span>
+                </div>
+              </div>
+              
+              <div className="space-y-3">
+                <div className="text-center text-sm font-medium text-amber-700 dark:text-amber-300">
+                  Build mental model architecture
+                </div>
+                
+                <div className="grid grid-cols-5 gap-2">
+                  {Array.from({ length: 5 }, (_, index) => {
+                    const density = (index + 1) / 5;
+                    const currentValue = pendingChanges.mentalModelDensity ?? neuralTuning?.mentalModelDensity ?? 0.6;
+                    const isActive = currentValue >= density;
+                    const modelTypes = ['Free', 'Loose', 'Structured', 'Dense', 'Architect'];
+                    
+                    return (
+                      <button
+                        key={index}
+                        onClick={() => handleParameterChange('mentalModelDensity', density)}
+                        className={`
+                          relative h-16 rounded-lg border-2 transition-all duration-300 transform hover:scale-105 flex flex-col items-center justify-center
+                          ${isActive 
+                            ? 'border-amber-600 bg-amber-200 dark:bg-amber-800 shadow-lg' 
+                            : 'border-amber-400 bg-amber-100 dark:bg-amber-900'
+                          }
+                        `}
+                      >
+                        <div className="grid grid-cols-2 gap-0.5 mb-1">
+                          {Array.from({ length: 4 }, (_, i) => (
+                            <div
+                              key={i}
+                              className={`w-1 h-1 rounded-sm ${
+                                isActive && i < index + 1 ? 'bg-amber-600' : 'bg-amber-300'
+                              }`}
+                            />
+                          ))}
+                        </div>
+                        <span className="text-xs font-semibold text-amber-800 dark:text-amber-200">
+                          {modelTypes[index]}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+              
+              <p className="text-xs text-amber-700 dark:text-amber-300 font-medium text-center">
+                Free thinker vs model architect cognitive style
+              </p>
+            </div>
+
+            {/* Pattern Detection Sensitivity Parameter - Scanner Range */}
+            <div className="relative overflow-hidden space-y-4 p-6 rounded-xl bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950/30 dark:to-amber-900/20 border-2 border-amber-300 dark:border-amber-700 shadow-lg">
+              <div className="flex items-center justify-between relative z-10">
+                <Label className="text-base font-semibold flex items-center gap-3">
+                  <div className="relative">
+                    <div className="w-5 h-5 bg-gradient-to-br from-amber-500 to-amber-600 rounded-full shadow-md border border-amber-600 dark:border-amber-400">
+                      <div className="absolute inset-1 bg-amber-200 rounded-full"></div>
+                      <div className="absolute inset-2 bg-amber-400 rounded-full animate-pulse"></div>
+                    </div>
+                  </div>
+                  <span className="text-amber-700 dark:text-amber-300">Pattern Detection</span>
+                </Label>
+                <div className="px-3 py-1 bg-gradient-to-r from-amber-200 to-amber-300 dark:from-amber-800 dark:to-amber-700 rounded-lg border border-amber-300 dark:border-amber-600">
+                  <span className="text-sm font-bold text-amber-800 dark:text-amber-200 font-mono">
+                    {Math.round((pendingChanges.patternDetectionSensitivity ?? neuralTuning?.patternDetectionSensitivity ?? 0.7) * 100)}%
+                  </span>
+                </div>
+              </div>
+              
+              <div className="space-y-3">
+                <div className="text-center text-sm font-medium text-amber-700 dark:text-amber-300">
+                  Adjust pattern scanning sensitivity
+                </div>
+                
+                <div className="flex justify-center">
+                  <div className="relative w-64 h-32 bg-amber-100 dark:bg-amber-900 rounded-lg border border-amber-200 dark:border-amber-800 overflow-hidden">
+                    {/* Scanner range visualization */}
+                    <div 
+                      className="absolute bottom-0 left-1/2 transform -translate-x-1/2 bg-gradient-to-t from-amber-500 to-transparent rounded-t-full transition-all duration-300"
+                      style={{ 
+                        width: `${(pendingChanges.patternDetectionSensitivity ?? neuralTuning?.patternDetectionSensitivity ?? 0.7) * 120 + 20}px`,
+                        height: `${(pendingChanges.patternDetectionSensitivity ?? neuralTuning?.patternDetectionSensitivity ?? 0.7) * 80 + 20}px`
+                      }}
+                    />
+                    
+                    {/* Scanner control buttons */}
+                    <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex gap-2">
+                      {[0.2, 0.4, 0.6, 0.8, 1.0].map((sensitivity, index) => (
+                        <button
+                          key={index}
+                          onClick={() => handleParameterChange('patternDetectionSensitivity', sensitivity)}
+                          className={`
+                            w-6 h-6 rounded-full border-2 transition-all duration-300 hover:scale-110
+                            ${Math.abs((pendingChanges.patternDetectionSensitivity ?? neuralTuning?.patternDetectionSensitivity ?? 0.7) - sensitivity) < 0.1
+                              ? 'bg-amber-600 border-amber-800 shadow-lg' 
+                              : 'bg-amber-200 border-amber-400'
+                            }
+                          `}
+                        />
+                      ))}
+                    </div>
+                    
+                    {/* Range labels */}
+                    <div className="absolute -bottom-6 left-0 right-0 flex justify-between text-xs text-amber-600 dark:text-amber-400">
+                      <span>Local</span>
+                      <span>System</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <p className="text-xs text-amber-700 dark:text-amber-300 font-medium text-center">
+                Local optimizer vs system scanner pattern detection
+              </p>
+            </div>
+
+            {/* Decision Making Index Parameter - Logic Scale */}
+            <div className="relative overflow-hidden space-y-4 p-6 rounded-xl bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950/30 dark:to-amber-900/20 border-2 border-amber-300 dark:border-amber-700 shadow-lg">
+              <div className="flex items-center justify-between relative z-10">
+                <Label className="text-base font-semibold flex items-center gap-3">
+                  <div className="relative">
+                    <div className="w-5 h-5 bg-gradient-to-br from-amber-500 to-amber-600 rounded-lg shadow-md border border-amber-600 dark:border-amber-400">
+                      <div className="absolute inset-1 bg-amber-200 rounded-sm"></div>
+                      <div className="absolute top-1 left-1 w-1 h-1 bg-amber-500 rounded-full"></div>
+                      <div className="absolute bottom-1 right-1 w-1 h-1 bg-amber-600 rounded-sm"></div>
+                    </div>
+                  </div>
+                  <span className="text-amber-700 dark:text-amber-300">Decision Making Index</span>
+                </Label>
+                <div className="px-3 py-1 bg-gradient-to-r from-amber-200 to-amber-300 dark:from-amber-800 dark:to-amber-700 rounded-lg border border-amber-300 dark:border-amber-600">
+                  <span className="text-sm font-bold text-amber-800 dark:text-amber-200 font-mono">
+                    {Math.round((pendingChanges.decisionMakingIndex ?? neuralTuning?.decisionMakingIndex ?? 0.6) * 100)}%
+                  </span>
+                </div>
+              </div>
+              
+              <div className="space-y-3">
+                <div className="text-center text-sm font-medium text-amber-700 dark:text-amber-300">
+                  Balance intuitive vs logical decision making
+                </div>
+                
+                <div className="flex justify-center items-center gap-2">
+                  {/* Intuitive side */}
+                  <div className="text-center">
+                    <div className="w-12 h-8 bg-amber-200 dark:bg-amber-800 rounded-l-full border border-amber-300 dark:border-amber-700 flex items-center justify-center">
+                      <div className="w-3 h-3 bg-amber-500 rounded-full animate-pulse"></div>
+                    </div>
+                    <span className="text-xs text-amber-600 dark:text-amber-400 mt-1 block">Intuitive</span>
+                  </div>
+                  
+                  {/* Scale */}
+                  <div className="flex-1 max-w-48">
+                    <div 
+                      className="h-6 bg-amber-200 dark:bg-amber-800 rounded-full cursor-pointer relative border border-amber-300 dark:border-amber-700"
+                      onClick={(e) => {
+                        const rect = e.currentTarget.getBoundingClientRect();
+                        const clickX = e.clientX - rect.left;
+                        const newValue = Math.max(0, Math.min(1, clickX / rect.width));
+                        handleParameterChange('decisionMakingIndex', newValue);
+                      }}
+                    >
+                      <div 
+                        className="h-full bg-gradient-to-r from-amber-500 to-amber-600 rounded-full transition-all duration-300"
+                        style={{ width: `${(pendingChanges.decisionMakingIndex ?? neuralTuning?.decisionMakingIndex ?? 0.6) * 100}%` }}
+                      />
+                      <div 
+                        className="absolute top-0 bottom-0 w-4 bg-amber-700 rounded-full border-2 border-amber-800 dark:border-amber-300 transition-all duration-300"
+                        style={{ left: `${(pendingChanges.decisionMakingIndex ?? neuralTuning?.decisionMakingIndex ?? 0.6) * 100 - 8}%` }}
+                      >
+                        <div className="absolute inset-1 bg-amber-200 rounded-full"></div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Logical side */}
+                  <div className="text-center">
+                    <div className="w-12 h-8 bg-amber-200 dark:bg-amber-800 rounded-r-full border border-amber-300 dark:border-amber-700 flex items-center justify-center">
+                      <div className="w-3 h-3 bg-amber-600 rounded-sm"></div>
+                    </div>
+                    <span className="text-xs text-amber-600 dark:text-amber-400 mt-1 block">Logical</span>
+                  </div>
+                </div>
+              </div>
+              
+              <p className="text-xs text-amber-700 dark:text-amber-300 font-medium text-center">
+                Intuitive thinking vs structured logical thinking
+              </p>
+            </div>
           </div>
 
           {/* Action Buttons */}
