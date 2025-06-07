@@ -638,9 +638,7 @@ export default function NeuraTuningCognitive() {
               <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
                 Mental Energy Flow
               </label>
-              <span className="text-sm text-gray-500 dark:text-gray-400">
-                {Math.round((pendingChanges.mentalEnergyFlow ?? neuralTuning.mentalEnergyFlow) * 100)}%
-              </span>
+
             </div>
             <Slider
               value={[pendingChanges.mentalEnergyFlow ?? neuralTuning.mentalEnergyFlow]}
