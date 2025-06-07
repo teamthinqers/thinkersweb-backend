@@ -513,15 +513,21 @@ export default function LandingPage() {
           <div className="absolute right-[28%] top-[25%] w-[10px] h-[1px] bg-gradient-to-l from-orange-700/35 to-transparent rotate-[165deg] animate-pulse" style={{animationDelay: '3.2s'}}></div>
           <div className="absolute right-[35%] top-[58%] w-[6px] h-[1px] bg-gradient-to-l from-yellow-700/25 to-transparent rotate-[135deg] animate-pulse" style={{animationDelay: '3.8s'}}></div>
           
-          {/* More frequent legible sparks with brownish golden effect */}
-          <div className="absolute left-[22%] top-[38%] text-amber-700/50 text-sm animate-pulse font-bold" style={{animationDelay: '1.2s'}}>✦</div>
-          <div className="absolute left-[33%] top-[52%] text-orange-700/50 text-sm animate-pulse font-bold" style={{animationDelay: '1.8s'}}>✧</div>
-          <div className="absolute left-[16%] top-[58%] text-yellow-700/45 text-sm animate-pulse font-bold" style={{animationDelay: '2.4s'}}>✦</div>
-          <div className="absolute right-[22%] top-[33%] text-amber-700/50 text-sm animate-pulse font-bold" style={{animationDelay: '3s'}}>✧</div>
-          <div className="absolute right-[33%] top-[48%] text-orange-700/50 text-sm animate-pulse font-bold" style={{animationDelay: '3.6s'}}>✦</div>
-          <div className="absolute right-[16%] top-[63%] text-yellow-700/45 text-sm animate-pulse font-bold" style={{animationDelay: '4.2s'}}>✧</div>
-          <div className="absolute left-[48%] top-[35%] text-amber-600/45 text-sm animate-pulse font-bold" style={{animationDelay: '4.8s'}}>✦</div>
-          <div className="absolute left-[52%] top-[18%] text-orange-600/40 text-sm animate-pulse font-bold" style={{animationDelay: '5.4s'}}>✧</div>
+          {/* Bold, big, and highly visible sparks with brownish golden effect */}
+          <div className="absolute left-[22%] top-[38%] text-amber-700/80 text-2xl animate-pulse font-black" style={{animationDelay: '1.2s', textShadow: '0 0 8px rgba(180, 83, 9, 0.6)'}}>✦</div>
+          <div className="absolute left-[33%] top-[52%] text-orange-700/80 text-2xl animate-pulse font-black" style={{animationDelay: '1.8s', textShadow: '0 0 8px rgba(154, 52, 18, 0.6)'}}>✧</div>
+          <div className="absolute left-[16%] top-[58%] text-yellow-700/75 text-2xl animate-pulse font-black" style={{animationDelay: '2.4s', textShadow: '0 0 8px rgba(161, 98, 7, 0.6)'}}>✦</div>
+          <div className="absolute right-[22%] top-[33%] text-amber-700/80 text-2xl animate-pulse font-black" style={{animationDelay: '3s', textShadow: '0 0 8px rgba(180, 83, 9, 0.6)'}}>✧</div>
+          <div className="absolute right-[33%] top-[48%] text-orange-700/80 text-2xl animate-pulse font-black" style={{animationDelay: '3.6s', textShadow: '0 0 8px rgba(154, 52, 18, 0.6)'}}>✦</div>
+          <div className="absolute right-[16%] top-[63%] text-yellow-700/75 text-2xl animate-pulse font-black" style={{animationDelay: '4.2s', textShadow: '0 0 8px rgba(161, 98, 7, 0.6)'}}>✧</div>
+          <div className="absolute left-[48%] top-[35%] text-amber-600/75 text-2xl animate-pulse font-black" style={{animationDelay: '4.8s', textShadow: '0 0 8px rgba(217, 119, 6, 0.6)'}}>✦</div>
+          <div className="absolute left-[52%] top-[18%] text-orange-600/70 text-2xl animate-pulse font-black" style={{animationDelay: '5.4s', textShadow: '0 0 8px rgba(234, 88, 12, 0.6)'}}>✧</div>
+          
+          {/* Additional large sparks for more visibility */}
+          <div className="absolute left-[10%] top-[72%] text-amber-700/85 text-3xl animate-pulse font-black" style={{animationDelay: '0.5s', textShadow: '0 0 12px rgba(180, 83, 9, 0.8)'}}>✦</div>
+          <div className="absolute right-[10%] top-[18%] text-orange-700/85 text-3xl animate-pulse font-black" style={{animationDelay: '1.1s', textShadow: '0 0 12px rgba(154, 52, 18, 0.8)'}}>✧</div>
+          <div className="absolute left-[60%] top-[55%] text-yellow-700/80 text-3xl animate-pulse font-black" style={{animationDelay: '2.7s', textShadow: '0 0 12px rgba(161, 98, 7, 0.8)'}}>✦</div>
+          <div className="absolute right-[55%] top-[72%] text-amber-600/80 text-3xl animate-pulse font-black" style={{animationDelay: '4.1s', textShadow: '0 0 12px rgba(217, 119, 6, 0.8)'}}>✧</div>
           <div className="absolute right-[22%] top-[42%] text-amber-400/30 text-xs animate-pulse" style={{animationDelay: '6s'}}>✦</div>
           <div className="absolute right-[33%] top-[28%] text-orange-400/30 text-xs animate-pulse" style={{animationDelay: '6.5s'}}>✦</div>
         </div>
