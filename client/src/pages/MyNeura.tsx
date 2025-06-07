@@ -185,10 +185,10 @@ export default function MyNeura() {
         setPendingChanges({});
       }
     } catch (error) {
-      console.error("Error activating Neura:", error);
+      console.error("Error activating DotSpark:", error);
       toast({
         title: "Activation Failed",
-        description: "There was a problem activating your neural mirror.",
+        description: "There was a problem activating your DotSpark.",
         variant: "destructive",
       });
     }
@@ -211,7 +211,7 @@ export default function MyNeura() {
       console.error("Error deactivating DotSpark:", error);
       toast({
         title: "Deactivation Failed",
-        description: "There was a problem deactivating your neural mirror.",
+        description: "There was a problem deactivating your DotSpark.",
         variant: "destructive",
       });
     }
@@ -796,7 +796,7 @@ export default function MyNeura() {
               </ul>
               <Button 
                 className="w-full bg-orange-600 hover:bg-orange-700 group-hover:translate-y-0 translate-y-1 transition-all duration-300"
-                onClick={() => setLocation('/neura-tuning/cognitive')}
+                onClick={() => setLocation('/dotspark-tuning/cognitive')}
               >
                 Configure Cognitive Style
               </Button>
@@ -910,7 +910,7 @@ export default function MyNeura() {
                 <Sparkles className="h-5 w-5 text-amber-500" />
                 <CardTitle>Core Processing Parameters</CardTitle>
               </div>
-              <CardDescription>Adjust how your neural mirror processes information</CardDescription>
+              <CardDescription>Adjust how your DotSpark processes information</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               {/* Creativity */}
@@ -926,7 +926,7 @@ export default function MyNeura() {
                       <div className="space-y-2">
                         <h4 className="text-sm font-semibold">Creativity Level</h4>
                         <p className="text-sm">
-                          Determines how varied and unique your neural mirror's responses will be. Higher values produce more novel connections between topics.
+                          Determines how varied and unique your DotSpark's responses will be. Higher values produce more novel connections between topics.
                         </p>
                       </div>
                     </HoverCardContent>
@@ -960,7 +960,7 @@ export default function MyNeura() {
                       <div className="space-y-2">
                         <h4 className="text-sm font-semibold">Precision Level</h4>
                         <p className="text-sm">
-                          Controls how factually accurate and detailed your neural mirror will be. Higher values emphasize exactness over generalization.
+                          Controls how factually accurate and detailed your DotSpark will be. Higher values emphasize exactness over generalization.
                         </p>
                       </div>
                     </HoverCardContent>
@@ -1043,7 +1043,7 @@ export default function MyNeura() {
                 <BrainCog className="h-5 w-5 text-amber-500" />
                 <CardTitle>Cognitive Style Parameters</CardTitle>
               </div>
-              <CardDescription>Define how your neural mirror approaches problem-solving</CardDescription>
+              <CardDescription>Define how your DotSpark approaches problem-solving</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               {/* Analytical */}
