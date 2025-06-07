@@ -22,16 +22,16 @@ export function DotSparkSummary() {
   
   if (isLoading) {
     return (
-      <Card className="w-full mb-8 bg-gradient-to-br from-purple-50 to-white dark:from-purple-950/30 dark:to-gray-950 border border-purple-100 dark:border-purple-900/50 animate-pulse overflow-hidden">
+      <Card className="w-full mb-8 bg-gradient-to-br from-amber-50 to-white dark:from-amber-950/30 dark:to-gray-950 border border-amber-100 dark:border-amber-900/50 animate-pulse overflow-hidden">
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2">
-            <BrainCircuit className="h-5 w-5 text-purple-700 dark:text-purple-400" />
+            <BrainCircuit className="h-5 w-5 text-amber-700 dark:text-amber-400" />
             <span>Cognitive OS</span>
           </CardTitle>
           <CardDescription>Loading Cognitive OS data...</CardDescription>
         </CardHeader>
         <CardContent className="opacity-50">
-          <div className="h-24 rounded-md bg-purple-100 dark:bg-purple-900/30"></div>
+          <div className="h-24 rounded-md bg-amber-100 dark:bg-amber-900/30"></div>
         </CardContent>
       </Card>
     );
@@ -72,10 +72,10 @@ export function DotSparkSummary() {
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">
-            <BrainCircuit className="h-5 w-5 text-purple-700 dark:text-purple-400" />
+            <BrainCircuit className="h-5 w-5 text-amber-700 dark:text-amber-400" />
             <span>Cognitive OS</span>
           </CardTitle>
-          <Badge className="bg-purple-100 text-purple-800 dark:bg-purple-900/50 dark:text-purple-200 hover:bg-purple-200 dark:hover:bg-purple-800/50">
+          <Badge className="bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-200 hover:bg-amber-200 dark:hover:bg-amber-800/50">
             Level {level}
           </Badge>
         </div>

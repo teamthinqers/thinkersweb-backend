@@ -16,7 +16,7 @@ const InsightSection: React.FC = () => {
             <BrainCircuit className="text-primary mr-2 h-5 w-5" />
             Personal Insights
           </h2>
-          <div className="text-gray-600 bg-indigo-50 p-4 rounded-lg border border-indigo-100">
+          <div className="text-gray-600 bg-amber-50 p-4 rounded-lg border border-amber-100">
             <p>Loading your personalized insights...</p>
           </div>
         </CardContent>
@@ -47,7 +47,7 @@ const InsightSection: React.FC = () => {
           <BrainCircuit className="text-primary mr-2 h-5 w-5" />
           Personal Insights
         </h2>
-        <div className="text-gray-600 bg-indigo-50 p-4 rounded-lg border border-indigo-100">
+        <div className="text-gray-600 bg-amber-50 p-4 rounded-lg border border-amber-100">
           <p className="mb-2 font-medium">Based on your recent entries, you seem to be focusing on:</p>
           <ul className="list-disc pl-5 space-y-1">
             {insights?.focusAreas && insights.focusAreas.length > 0 ? (

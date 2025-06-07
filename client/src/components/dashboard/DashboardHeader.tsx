@@ -92,7 +92,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onNewEntry }) => {
           <Button
             onClick={handleOpenEntryForm}
             size="sm"
-            className="bg-violet-600 hover:bg-violet-700 text-white shadow-md flex items-center"
+            className="bg-amber-700 hover:bg-amber-800 text-white shadow-md flex items-center"
           >
             <MessageCircle className="h-4 w-4 mr-1.5" />
             <span>Chat Entry</span>
