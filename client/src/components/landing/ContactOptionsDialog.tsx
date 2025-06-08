@@ -75,20 +75,18 @@ export function ContactOptionsDialog({
           <Button
             onClick={handleWhatsAppClick}
             disabled={!whatsAppNumber}
-            className="flex flex-col items-center justify-center h-24 p-4 bg-gradient-to-r from-[#25D366] to-[#128C7E] hover:from-[#128C7E] hover:to-[#25D366] text-white border-0"
+            className="flex flex-col items-center justify-center h-20 p-4 bg-gradient-to-r from-[#25D366] to-[#128C7E] hover:from-[#128C7E] hover:to-[#25D366] text-white border-0"
           >
-            <MessageSquare className="h-8 w-8 mb-1" />
+            <MessageSquare className="h-8 w-8 mb-2" />
             <span className="font-medium">WhatsApp</span>
-            <span className="text-xs mt-1 opacity-90">Chat from your phone</span>
           </Button>
           
           <Button 
             onClick={handleDirectChatClick}
-            className="flex flex-col items-center justify-center h-24 p-4 bg-gradient-to-r from-primary to-indigo-600 hover:from-indigo-600 hover:to-primary text-white border-0"
+            className="flex flex-col items-center justify-center h-20 p-4 bg-gradient-to-r from-primary to-indigo-600 hover:from-indigo-600 hover:to-primary text-white border-0"
           >
-            <MessageCircle className="h-8 w-8 mb-1" />
+            <MessageCircle className="h-8 w-8 mb-2" />
             <span className="font-medium">Direct Chat</span>
-            <span className="text-xs mt-1 opacity-90">Chat in your browser</span>
           </Button>
         </div>
       </DialogContent>
