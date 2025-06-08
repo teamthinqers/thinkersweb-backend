@@ -201,8 +201,8 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
     if (isMobile) {
       setShowMobileNav(false);
     }
-    // Direct navigation
-    setLocation("/my-neura");
+    // Direct navigation to dashboard (My Neura)
+    setLocation("/dashboard");
   };
 
   return (
@@ -213,7 +213,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
             {/* Logo on left that's clickable to My Neura */}
             <div 
               className="flex items-center cursor-pointer active:opacity-80 transition-opacity"
-              onClick={() => setLocation("/my-neura")}
+              onClick={() => setLocation("/dashboard")}
             >
               <Sparkles className="h-5 w-5 text-primary mr-1" />
               <span className="font-medium text-primary">DotSpark</span>
@@ -221,11 +221,11 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
             
             <div className="flex items-center space-x-3">
               {/* Neura button */}
-              {location === "/my-neura" || location === "/activate-neura" ? (
+              {location === "/dashboard" || location === "/my-neura" || location === "/activate-neura" ? (
                 <Button 
                   className="bg-gradient-to-r from-amber-700 to-primary hover:from-amber-800 hover:to-primary/90 text-white h-9 w-9 p-0"
                   size="sm"
-                  onClick={() => setLocation("/my-neura")}
+                  onClick={() => setLocation("/dashboard")}
                 >
                   <div className="relative">
                     <Brain className="h-5 w-5" />
@@ -236,7 +236,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 <Button 
                   className="bg-gradient-to-r from-amber-700 to-primary hover:from-amber-800 hover:to-primary/90 text-white h-9 w-9 p-0"
                   size="sm"
-                  onClick={() => setLocation("/my-neura")}
+                  onClick={() => setLocation("/dashboard")}
                 >
                   <div className="relative">
                     <Brain className="h-5 w-5" />
@@ -327,22 +327,13 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
             </div>
 
             <div className="ml-4 flex items-center">
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className="mr-2"
-                onClick={goToMyNeura}
-              >
-                <Brain className="h-4 w-4 mr-1" />
-                My DotSpark
-              </Button>
               
-              {/* Always show "My Neura" when on the My Neura page */}
-              {location === "/my-neura" || location === "/activate-neura" ? (
+              {/* Always show "My Neura" when on dashboard or related pages */}
+              {location === "/dashboard" || location === "/my-neura" || location === "/activate-neura" ? (
                 <Button 
                   className="mr-2 bg-gradient-to-r from-amber-700 to-primary hover:from-amber-800 hover:to-primary/90 text-white relative"
                   size="sm"
-                  onClick={() => setLocation("/my-neura")}
+                  onClick={() => setLocation("/dashboard")}
                 >
                   <span className="relative z-10 flex items-center">
                     <div className="relative mr-1.5">
@@ -356,7 +347,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 <Button 
                   className="mr-2 bg-gradient-to-r from-amber-700 to-primary hover:from-amber-800 hover:to-primary/90 text-white relative"
                   size="sm"
-                  onClick={() => setLocation("/my-neura")}
+                  onClick={() => setLocation("/dashboard")}
                 >
                   <span className="relative z-10 flex items-center">
                     <div className="relative mr-1.5">
