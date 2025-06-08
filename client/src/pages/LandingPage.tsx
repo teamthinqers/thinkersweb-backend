@@ -1171,7 +1171,7 @@ export default function LandingPage() {
               </Button>
               <Button size="lg" variant="outline" className="bg-transparent border-white text-white hover:bg-white/10 btn-bounce w-full sm:w-auto" asChild>
                 <Link href="/dashboard" className="px-4 md:px-8 justify-center">
-                  Explore Dashboard
+                  Explore DotSpark Neura
                 </Link>
               </Button>
             </div>
