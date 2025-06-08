@@ -64,9 +64,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isMobile, onNewEntry
                       ? "bg-primary/10 text-primary font-medium"
                       : item.isSpecial
                         ? "text-amber-700 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 hover:text-amber-800 dark:hover:text-amber-300 font-medium"
-                        : item.isAdvanced
-                          ? "text-blue-700 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-800 dark:hover:text-blue-300 font-medium"
-                          : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                        : "text-muted-foreground hover:bg-muted hover:text-foreground"
                   }`}
                   onClick={isMobile ? onClose : undefined}
                 >
@@ -77,9 +75,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isMobile, onNewEntry
                           ? "text-foreground" 
                           : item.isSpecial 
                             ? isActivated ? "text-amber-600 animate-pulse" : "text-amber-600"
-                            : item.isAdvanced
-                              ? "text-blue-600"
-                              : ""
+                            : ""
                       }`, 
                       size: item.label === "Home" || item.isSpecial ? 20 : 18 
                     })}
