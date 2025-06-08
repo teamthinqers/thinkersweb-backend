@@ -150,5 +150,115 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Chat endpoint with conditional CogniShield monitoring
+  app.post(`${apiPrefix}/chat`, async (req: Request, res: Response) => {
+    try {
+      const { message, conversationHistory = [] } = req.body;
+      
+      if (!message) {
+        return res.status(400).json({ error: 'Message is required' });
+      }
+
+      // Check if user is authenticated and has CogniShield configured
+      let cogniProfile = undefined;
+      let hasCogniShieldConfigured = false;
+      
+      if (req.session?.userId) {
+        const userId = req.session.userId;
+        
+        // Check if user has configured CogniShield
+        try {
+          const userProfile = await db.query.users.findFirst({
+            where: eq(users.id, userId)
+          });
+          
+          if (userProfile) {
+            // Check if user has completed CogniShield configuration
+            // We'll check if they have cognitive tuning parameters saved
+            hasCogniShieldConfigured = !!(
+              userProfile.bio && 
+              (userProfile.bio.includes('cogni_configured') || 
+               userProfile.bio.includes('cognitive') ||
+               userProfile.fullName?.includes('tuned'))
+            );
+            
+            // Only apply CogniShield if user has configured it
+            if (hasCogniShieldConfigured) {
+              cogniProfile = {
+                decisionSpeed: 0.7,
+                riskTolerance: 0.6,
+                analyticalDepth: 0.8,
+                communicationStyle: 0.5,
+                detailLevel: 0.7,
+                creativityBias: 0.6,
+                logicalStructure: 0.8,
+                learningStyle: "visual",
+                conceptualApproach: 0.7,
+                priorityFramework: ["accuracy", "efficiency", "innovation"],
+                ethicalStance: "balanced",
+                domainExpertise: ["general"],
+                professionalLevel: "mid"
+              };
+            }
+          }
+        } catch (error) {
+          console.log('Could not load user profile for CogniShield check:', error);
+        }
+      }
+
+      // Use the enhanced chat response with conditional CogniShield monitoring
+      const chatResult = await generateChatResponse(
+        message,
+        conversationHistory,
+        cogniProfile,
+        hasCogniShieldConfigured // Only monitor if configured
+      );
+      
+      // Return response with CogniShield analysis only if configured
+      const response: any = { 
+        reply: chatResult.response
+      };
+      
+      if (hasCogniShieldConfigured && chatResult.cogniShieldAlert) {
+        response.cogniShieldAlert = chatResult.cogniShieldAlert;
+        response.alignmentScore = chatResult.alignmentAnalysis?.deviationScore ? 
+          Math.round((1 - chatResult.alignmentAnalysis.deviationScore) * 100) : undefined;
+      }
+      
+      res.status(200).json(response);
+    } catch (error) {
+      console.error('Chat processing error:', error);
+      
+      // Fallback response
+      const reply = "I'd be happy to help. Could you elaborate a bit more on what you're asking about?";
+      
+      res.status(200).json({ reply });
+    }
+  });
+
+  // Endpoint to mark CogniShield as configured
+  app.post(`${apiPrefix}/cognishield/configure`, async (req: Request, res: Response) => {
+    try {
+      if (!req.session?.userId) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+
+      const userId = req.session.userId;
+      
+      // Update user profile to mark CogniShield as configured
+      await db.update(users)
+        .set({ 
+          bio: 'cogni_configured',
+          updatedAt: new Date()
+        })
+        .where(eq(users.id, userId));
+
+      res.status(200).json({ success: true, message: 'CogniShield configuration saved' });
+    } catch (error) {
+      console.error('Error saving CogniShield configuration:', error);
+      res.status(500).json({ error: 'Failed to save CogniShield configuration' });
+    }
+  });
+
   return httpServer;
 }
