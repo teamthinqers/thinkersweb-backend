@@ -599,11 +599,11 @@ export default function LandingPage() {
                 </div>
                 
                 {/* Button 2: Ask DotSpark */}
-                <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 border border-green-200 dark:border-green-900/50 rounded-xl p-4 flex flex-col items-center shadow-lg shadow-green-500/5 dark:shadow-green-900/10 relative overflow-hidden group">
+                <div className="bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-950/30 dark:to-amber-950/30 border border-orange-200 dark:border-orange-900/50 rounded-xl p-4 flex flex-col items-center shadow-lg shadow-orange-500/5 dark:shadow-orange-900/10 relative overflow-hidden group">
                   {/* Blinking dots around WhatsApp section */}
-                  <div className="absolute top-2 right-2 w-0.5 h-0.5 bg-green-400/40 rounded-full animate-pulse" style={{animationDelay: '10s'}}></div>
-                  <div className="absolute bottom-2 left-2 w-0.5 h-0.5 bg-emerald-500/30 rounded-full animate-pulse" style={{animationDelay: '10.5s'}}></div>
-                  <div className="absolute top-1/2 right-1 w-0.5 h-0.5 bg-green-500/20 rounded-full animate-pulse" style={{animationDelay: '11s'}}></div>
+                  <div className="absolute top-2 right-2 w-0.5 h-0.5 bg-orange-400/40 rounded-full animate-pulse" style={{animationDelay: '10s'}}></div>
+                  <div className="absolute bottom-2 left-2 w-0.5 h-0.5 bg-amber-500/30 rounded-full animate-pulse" style={{animationDelay: '10.5s'}}></div>
+                  <div className="absolute top-1/2 right-1 w-0.5 h-0.5 bg-orange-500/20 rounded-full animate-pulse" style={{animationDelay: '11s'}}></div>
                   <Button
                     size="lg"
                     onClick={() => setContactDialogOpen(true)}
@@ -614,7 +614,7 @@ export default function LandingPage() {
                   </Button>
 
                   <div className="text-sm text-muted-foreground text-left relative z-10">
-                    <p className="mb-2 font-medium text-green-700 dark:text-green-500">Instant ChatGPT-like experience:</p>
+                    <p className="mb-2 font-medium text-orange-700 dark:text-orange-500">Instant ChatGPT-like experience:</p>
                     <p className="text-xs">Start using AI chat immediately - no account required and be assured your chats & thoughts are protected.</p>
                   </div>
                 </div>
@@ -676,12 +676,12 @@ export default function LandingPage() {
             </div>
             
             {/* Step 3: Install Web App */}
-            <div className="bg-card rounded-lg p-6 relative group hover:shadow-lg transition-all duration-300 border border-emerald-200/30 dark:border-emerald-800/30 overflow-hidden h-full flex flex-col">
-              <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/5 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:bg-emerald-500/10 transition-colors duration-300"></div>
-              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/10 text-emerald-600 mb-4 relative z-10">
+            <div className="bg-card rounded-lg p-6 relative group hover:shadow-lg transition-all duration-300 border border-orange-200/30 dark:border-orange-800/30 overflow-hidden h-full flex flex-col">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-orange-500/5 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:bg-orange-500/10 transition-colors duration-300"></div>
+              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-orange-500/10 text-orange-600 mb-4 relative z-10">
                 <Download className="h-6 w-6" />
               </div>
-              <div className="absolute top-6 right-6 flex items-center justify-center w-8 h-8 rounded-full bg-emerald-500/80 text-white font-bold text-lg">
+              <div className="absolute top-6 right-6 flex items-center justify-center w-8 h-8 rounded-full bg-orange-500/80 text-white font-bold text-lg">
                 3
               </div>
               <h3 className="text-xl font-semibold mb-2">Install Web App</h3>
@@ -689,7 +689,7 @@ export default function LandingPage() {
               <div className="mt-auto pt-4">
                 <Button 
                   onClick={() => setInstallDialogOpen(true)}
-                  className="w-full !bg-gradient-to-r !from-emerald-600 !to-green-600 hover:!from-green-600 hover:!to-emerald-600 text-white border-0 shadow-md hover:shadow-lg transition-all duration-300"
+                  className="w-full !bg-gradient-to-r !from-orange-600 !to-amber-600 hover:!from-amber-600 hover:!to-orange-600 text-white border-0 shadow-md hover:shadow-lg transition-all duration-300"
                 >
                   <Download className="h-5 w-5 mr-2" />
                   <span>Install App</span>
