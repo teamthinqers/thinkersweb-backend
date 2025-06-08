@@ -106,6 +106,14 @@ export default function LandingPage() {
     return neuraStorage.isActivated();
   });
   
+  // Track PWA installation status
+  const [isPWAInstalled, setIsPWAInstalled] = useState(() => {
+    // Check if app is running in standalone mode (PWA installed)
+    return window.matchMedia('(display-mode: standalone)').matches || 
+           (window.navigator as any).standalone === true ||
+           document.referrer.includes('android-app://');
+  });
+  
   // Track setup completion status
   const [isSetupCompleted, setIsSetupCompleted] = useState(() => {
     return neuraStorage.isSetupCompleted();
