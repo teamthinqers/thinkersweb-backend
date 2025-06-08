@@ -26,7 +26,8 @@ import {
   Info, 
   Check,
   AlertCircle,
-  Save
+  Save,
+  Edit
 } from 'lucide-react';
 import {
   Tooltip,
@@ -98,6 +99,10 @@ export default function MyNeura() {
     specialties?: Record<string, number>;
     learningFocus?: string[];
   }>({});
+  
+  // State for tracking configured sections
+  const [cognitiveShieldConfigured, setCognitiveShieldConfigured] = useState(false);
+  const [expertiseLayerConfigured, setExpertiseLayerConfigured] = useState(false);
   
   // Active tab for neural tuning
   const [activeTab, setActiveTab] = useState('cognitive');
@@ -736,26 +741,30 @@ export default function MyNeura() {
                 <div className="rounded-full bg-amber-900/40 p-4 backdrop-blur-sm mb-4 border border-amber-600/30">
                   <BrainCog className="h-12 w-12 text-amber-100" />
                 </div>
-                <h3 className="text-xl font-bold text-amber-50">Cognitive Shield (Recommended)</h3>
+                <h3 className="text-xl font-bold text-amber-50">Cogni Shield (Recommended)</h3>
               </div>
             </div>
             <CardContent className="p-6 bg-gradient-to-b from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30">
               <p className="text-muted-foreground mb-4">
                 Configure these parameters to shield you from biases while using AI.
               </p>
-              <div className="flex gap-3">
+              <div className="flex justify-center">
                 <Button 
-                  className="flex-1 bg-gradient-to-r from-amber-700 to-orange-700 hover:from-amber-800 hover:to-orange-800 text-amber-50 group-hover:translate-y-0 translate-y-1 transition-all duration-300 h-10"
-                  onClick={() => setLocation('/dotspark-tuning/cognitive')}
+                  className={`flex items-center gap-2 ${cognitiveShieldConfigured 
+                    ? 'bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700' 
+                    : 'bg-gradient-to-r from-amber-700 to-orange-700 hover:from-amber-800 hover:to-orange-800'
+                  } text-white group-hover:translate-y-0 translate-y-1 transition-all duration-300 h-10 px-6`}
+                  onClick={() => {
+                    if (cognitiveShieldConfigured) {
+                      setLocation('/dotspark-tuning/cognitive');
+                    } else {
+                      setLocation('/dotspark-tuning/cognitive');
+                      setCognitiveShieldConfigured(true);
+                    }
+                  }}
                 >
-                  Configure Shield
-                </Button>
-                <Button 
-                  variant="outline"
-                  className="flex-1 border-amber-300 text-amber-700 hover:bg-amber-100 dark:border-amber-700 dark:text-amber-300 dark:hover:bg-amber-950 group-hover:translate-y-0 translate-y-1 transition-all duration-300 h-10"
-                  onClick={() => setActiveTab('expertise')}
-                >
-                  Skip for Now
+                  {cognitiveShieldConfigured && <Edit className="h-4 w-4" />}
+                  {cognitiveShieldConfigured ? 'Configured' : 'Configure Shield'}
                 </Button>
               </div>
             </CardContent>
@@ -787,19 +796,23 @@ export default function MyNeura() {
               <p className="text-muted-foreground mb-4">
                 Customize domains where your DotSpark can reflect your professional expertise and provide deeper insights.
               </p>
-              <div className="flex gap-3">
+              <div className="flex justify-center">
                 <Button 
-                  className="flex-1 bg-gradient-to-r from-amber-700 to-orange-700 hover:from-amber-800 hover:to-orange-800 text-amber-50 group-hover:translate-y-0 translate-y-1 transition-all duration-300 h-10"
-                  onClick={() => setActiveTab('expertise')}
+                  className={`flex items-center gap-2 ${expertiseLayerConfigured 
+                    ? 'bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700' 
+                    : 'bg-gradient-to-r from-amber-700 to-orange-700 hover:from-amber-800 hover:to-orange-800'
+                  } text-white group-hover:translate-y-0 translate-y-1 transition-all duration-300 h-10 px-6`}
+                  onClick={() => {
+                    if (expertiseLayerConfigured) {
+                      setActiveTab('expertise');
+                    } else {
+                      setActiveTab('expertise');
+                      setExpertiseLayerConfigured(true);
+                    }
+                  }}
                 >
-                  Configure Expertise
-                </Button>
-                <Button 
-                  variant="outline"
-                  className="flex-1 border-amber-300 text-amber-700 hover:bg-amber-100 dark:border-amber-700 dark:text-amber-300 dark:hover:bg-amber-950 group-hover:translate-y-0 translate-y-1 transition-all duration-300 h-10"
-                  onClick={() => toast({ title: "Setup Complete", description: "Your DotSpark configuration is ready!" })}
-                >
-                  Skip for Now
+                  {expertiseLayerConfigured && <Edit className="h-4 w-4" />}
+                  {expertiseLayerConfigured ? 'Configured' : 'Configure Expertise'}
                 </Button>
               </div>
             </CardContent>
