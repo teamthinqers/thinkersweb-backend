@@ -56,13 +56,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isMobile, onNewEntry
 
   const navItems = [
     { icon: LightbulbIcon, label: "Home", path: "/" },
+    { icon: Sparkles, label: "My DotSpark", path: "/sectioned-dotspark-tuning", isSpecial: true, showActivationSpark: true },
     { icon: Brain, label: "My Neura", path: "/dashboard", showActivationDot: true },
-    { icon: BookOpen, label: "All Entries", path: "/entries" },
-    { icon: Eye, label: "Insights", path: "/insights" },
-    { icon: Star, label: "Favorites", path: "/favorites" },
-    { icon: Users, label: "Network", path: "/network" },
-    { icon: Sparkles, label: "DotSpark Config", path: "/sectioned-dotspark-tuning", isSpecial: true, showActivationSpark: true },
-    { icon: SettingsIcon, label: "Settings", path: "/settings" },
   ];
 
   const sidebarClasses = isMobile

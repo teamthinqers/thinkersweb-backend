@@ -304,19 +304,6 @@ export default function LandingPage() {
                     <span className="text-xs">My Neura</span>
                   </div>
                 </Button>
-                <Button
-                  size="sm"
-                  className={`${isNeuraActivated 
-                    ? "bg-gradient-to-r from-amber-700 to-primary hover:from-amber-800 hover:to-primary/90" 
-                    : "bg-gradient-to-r from-amber-800 to-amber-700 hover:from-amber-900 hover:to-amber-800"} 
-                    text-white relative h-7 px-2`}
-                  onClick={() => setLocation("/sectioned-dotspark-tuning")}
-                >
-                  <div className="flex items-center gap-1">
-                    <Sparkles className="h-3.5 w-3.5" />
-                    <span className="text-xs">My DotSpark</span>
-                  </div>
-                </Button>
               </div>
             </div>
             
