@@ -17,6 +17,11 @@ import {
   type User 
 } from "@shared/schema";
 import { processEntryFromChat, generateChatResponse, type Message } from "./chat";
+import { 
+  analyzeCognitiveAlignment, 
+  monitorConversationAlignment, 
+  type CogniShieldProfile 
+} from './cogni-shield';
 import { connectionsService } from "./connections";
 import { db } from "@db";
 import { setupAuth, isAuthenticated } from "./auth";

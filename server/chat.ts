@@ -1,4 +1,12 @@
 import OpenAI from "openai";
+import { 
+  analyzeCognitiveAlignment, 
+  generateAlignedResponse, 
+  generateCogniShieldSystemPrompt,
+  monitorConversationAlignment,
+  type CogniShieldProfile,
+  type DeviationAnalysis 
+} from "./cogni-shield";
 
 // Initialize OpenAI client
 const openai = new OpenAI({
@@ -89,24 +97,37 @@ export async function processEntryFromChat(
 }
 
 /**
- * Generate assistant messages to simulate a conversation about the learning
+ * Generate assistant messages with CogniShield alignment monitoring
  */
 export async function generateChatResponse(
   userInput: string,
-  messages: Message[] = []
-): Promise<string> {
+  messages: Message[] = [],
+  cogniProfile?: CogniShieldProfile,
+  monitorAlignment: boolean = true
+): Promise<{
+  response: string;
+  alignmentAnalysis?: DeviationAnalysis;
+  suggestedCorrections?: string[];
+}> {
   try {
-    // Add system message if not already in history
-    if (!messages.some(m => m.role === "system")) {
-      messages.unshift({
-        role: "system",
-        content: `You are a helpful learning assistant called DotSpark AI. Your job is to engage with the user
+    // Use CogniShield system prompt if profile is available
+    let systemPrompt = `You are a helpful learning assistant called DotSpark AI. Your job is to engage with the user
         about their learning experiences and help them reflect more deeply on what they've learned.
         Ask thoughtful follow-up questions about their learning, suggest ways to apply it, 
         or identify connections to other topics they might be interested in.
         Be brief, friendly, and encouraging. Always end with a question to encourage further conversation.
         If the user's message seems like a learning insight rather than a question, respond in a way that
-        acknowledges their learning but also encourages them to reflect further.`
+        acknowledges their learning but also encourages them to reflect further.`;
+
+    if (cogniProfile) {
+      systemPrompt = generateCogniShieldSystemPrompt(cogniProfile);
+    }
+
+    // Add system message if not already in history
+    if (!messages.some(m => m.role === "system")) {
+      messages.unshift({
+        role: "system",
+        content: systemPrompt
       });
     }
 
@@ -124,11 +145,54 @@ export async function generateChatResponse(
       max_tokens: 200,
     });
 
-    // Return the response content
-    return response.choices[0].message.content || "I didn't quite catch that. Can you tell me more about what you learned?";
+    const aiResponse = response.choices[0].message.content || "I didn't quite catch that. Can you tell me more about what you learned?";
+
+    // Perform alignment analysis if CogniShield profile is available and monitoring is enabled
+    let alignmentAnalysis: DeviationAnalysis | undefined;
+    let suggestedCorrections: string[] | undefined;
+
+    if (cogniProfile && monitorAlignment && aiResponse) {
+      alignmentAnalysis = await analyzeCognitiveAlignment(
+        aiResponse,
+        userInput,
+        cogniProfile
+      );
+
+      if (alignmentAnalysis.hasDeviation && alignmentAnalysis.deviationScore > 0.3) {
+        suggestedCorrections = alignmentAnalysis.suggestedCorrections;
+        
+        // If deviation is significant, generate an aligned response
+        if (alignmentAnalysis.deviationScore > 0.6 && alignmentAnalysis.alignmentPrompt) {
+          const correctedResponse = await generateAlignedResponse(
+            userInput,
+            alignmentAnalysis.alignmentPrompt,
+            cogniProfile
+          );
+          
+          if (correctedResponse) {
+            return {
+              response: correctedResponse,
+              alignmentAnalysis,
+              suggestedCorrections
+            };
+          }
+        }
+      }
+    }
+
+    return {
+      response: aiResponse,
+      alignmentAnalysis,
+      suggestedCorrections
+    };
+
   } catch (error) {
     console.error("Error generating chat response:", error);
-    return "I'm having trouble processing that right now. Can you try again?";
+    return {
+      response: "I'm having trouble processing that right now. Can you try again?",
+      alignmentAnalysis: undefined,
+      suggestedCorrections: undefined
+    };
   }
 }
 
