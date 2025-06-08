@@ -102,6 +102,19 @@ export default function NeuraTuningCognitive() {
       // Mark cognitive shield as configured in localStorage
       localStorage.setItem('cognitiveShieldConfigured', 'true');
       
+      // Mark CogniShield as configured on the server
+      try {
+        await fetch('/api/cognishield/configure', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include'
+        });
+      } catch (error) {
+        console.log('Note: Could not save CogniShield configuration status to server');
+      }
+      
       // Reset saved status after 2 seconds
       setTimeout(() => {
         setJustSaved(false);
