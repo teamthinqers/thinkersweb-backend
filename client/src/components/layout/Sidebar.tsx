@@ -15,6 +15,7 @@ import {
   Plus, 
   Hash,
   Brain,
+  Sparkles,
   Settings as SettingsIcon
 } from "lucide-react";
 
@@ -51,12 +52,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isMobile, onNewEntry
 
   const navItems = [
     { icon: LightbulbIcon, label: "Home", path: "/" },
-    { icon: Brain, label: "My Neura", path: "/dashboard" },
+    { icon: Brain, label: "My Neura", path: "/dashboard", showActivationDot: true },
     { icon: BookOpen, label: "All Entries", path: "/entries" },
     { icon: Eye, label: "Insights", path: "/insights" },
     { icon: Star, label: "Favorites", path: "/favorites" },
     { icon: Users, label: "Network", path: "/network" },
-    { icon: Brain, label: "DotSpark Config", path: "/sectioned-dotspark-tuning", isSpecial: true },
+    { icon: Sparkles, label: "DotSpark Config", path: "/sectioned-dotspark-tuning", isSpecial: true, showActivationSpark: true },
     { icon: SettingsIcon, label: "Settings", path: "/settings" },
   ];
 
