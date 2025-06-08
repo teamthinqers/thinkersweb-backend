@@ -1518,14 +1518,18 @@ export default function LandingPage() {
               <ol className="text-sm space-y-2 ml-2">
                 <li className="flex items-start gap-2">
                   <span className="flex-shrink-0 w-5 h-5 bg-green-100 dark:bg-green-900/30 text-green-600 text-xs rounded-full flex items-center justify-center font-medium">1</span>
-                  <span>Tap the menu button (⋮) in your browser</span>
+                  <span>Open <a href="https://www.dotspark.in" target="_blank" rel="noopener noreferrer" className="font-semibold underline hover:text-green-700">https://www.dotspark.in</a> in your mobile browser</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="flex-shrink-0 w-5 h-5 bg-green-100 dark:bg-green-900/30 text-green-600 text-xs rounded-full flex items-center justify-center font-medium">2</span>
-                  <span>Select "Install app" or "Add to Home screen"</span>
+                  <span>Tap the menu button (⋮) in your browser</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="flex-shrink-0 w-5 h-5 bg-green-100 dark:bg-green-900/30 text-green-600 text-xs rounded-full flex items-center justify-center font-medium">3</span>
+                  <span>Select "Install app" or "Add to Home screen"</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="flex-shrink-0 w-5 h-5 bg-green-100 dark:bg-green-900/30 text-green-600 text-xs rounded-full flex items-center justify-center font-medium">4</span>
                   <span>Confirm installation when prompted</span>
                 </li>
               </ol>
@@ -1545,14 +1549,18 @@ export default function LandingPage() {
               <ol className="text-sm space-y-2 ml-2">
                 <li className="flex items-start gap-2">
                   <span className="flex-shrink-0 w-5 h-5 bg-blue-100 dark:bg-blue-900/30 text-blue-600 text-xs rounded-full flex items-center justify-center font-medium">1</span>
-                  <span>Tap the Share button <Share className="inline h-3 w-3" /> at the bottom</span>
+                  <span>Open <a href="https://www.dotspark.in" target="_blank" rel="noopener noreferrer" className="font-semibold underline hover:text-blue-700">https://www.dotspark.in</a> in Safari browser</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="flex-shrink-0 w-5 h-5 bg-blue-100 dark:bg-blue-900/30 text-blue-600 text-xs rounded-full flex items-center justify-center font-medium">2</span>
-                  <span>Scroll down and tap "Add to Home Screen"</span>
+                  <span>Tap the Share button <Share className="inline h-3 w-3" /> at the bottom</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="flex-shrink-0 w-5 h-5 bg-blue-100 dark:bg-blue-900/30 text-blue-600 text-xs rounded-full flex items-center justify-center font-medium">3</span>
+                  <span>Scroll down and tap "Add to Home Screen"</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="flex-shrink-0 w-5 h-5 bg-blue-100 dark:bg-blue-900/30 text-blue-600 text-xs rounded-full flex items-center justify-center font-medium">4</span>
                   <span>Tap "Add" in the top right corner</span>
                 </li>
               </ol>
