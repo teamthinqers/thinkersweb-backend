@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { 
-  LightbulbIcon, 
+  Home, 
   Brain,
   Sparkles
 } from "lucide-react";
@@ -28,7 +28,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isMobile, onNewEntry
   if (!isOpen) return null;
 
   const navItems = [
-    { icon: LightbulbIcon, label: "Home", path: "/" },
+    { icon: Home, label: "Home", path: "/" },
     { icon: Sparkles, label: "My DotSpark", path: "/sectioned-dotspark-tuning", isSpecial: true, showActivationSpark: true },
     { icon: Brain, label: "My Neura", path: "/dashboard", showActivationDot: true },
   ];
@@ -41,8 +41,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isMobile, onNewEntry
     <div className={sidebarClasses}>
       <div className="px-6 py-5 border-b">
         <h1 className="text-xl font-bold flex items-center">
-          <LightbulbIcon className="mr-2 h-6 w-6 text-primary" />
-          <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+          <Sparkles className="mr-2 h-6 w-6 text-amber-600" />
+          <span className="bg-gradient-to-r from-amber-700 to-orange-800 bg-clip-text text-transparent">
             DotSpark
           </span>
         </h1>
@@ -71,7 +71,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isMobile, onNewEntry
                     {React.createElement(item.icon, { 
                       className: `${
                         item.label === "Home" 
-                          ? "text-primary" 
+                          ? "text-foreground" 
                           : item.isSpecial 
                             ? isActivated ? "text-amber-600 animate-pulse" : "text-amber-600"
                             : ""
@@ -82,9 +82,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isMobile, onNewEntry
                       <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-green-500 rounded-full"></div>
                     )}
                   </div>
-                  {item.label === "Home" ? (
-                    <span className="font-medium text-primary">Home</span>
-                  ) : item.isSpecial ? (
+                  {item.isSpecial ? (
                     <span className="font-medium bg-gradient-to-r from-amber-700 to-orange-800 bg-clip-text text-transparent">{item.label}</span>
                   ) : (
                     item.label
