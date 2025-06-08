@@ -32,6 +32,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isMobile, onNewEntry
     { icon: Home, label: "Home", path: "/" },
     { icon: Sparkles, label: "My DotSpark", path: "/sectioned-dotspark-tuning", isSpecial: true, showActivationSpark: true },
     { icon: Brain, label: "My Neura", path: "/dashboard", showActivationDot: true },
+    { icon: Shield, label: "CogniShield Monitor", path: "/cognishield-monitor", isAdvanced: true },
   ];
 
   const sidebarClasses = isMobile
@@ -64,7 +65,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isMobile, onNewEntry
                       ? "bg-primary/10 text-primary font-medium"
                       : item.isSpecial
                         ? "text-amber-700 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 hover:text-amber-800 dark:hover:text-amber-300 font-medium"
-                        : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                        : item.isAdvanced
+                          ? "text-blue-700 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-800 dark:hover:text-blue-300 font-medium"
+                          : "text-muted-foreground hover:bg-muted hover:text-foreground"
                   }`}
                   onClick={isMobile ? onClose : undefined}
                 >
@@ -75,7 +78,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isMobile, onNewEntry
                           ? "text-foreground" 
                           : item.isSpecial 
                             ? isActivated ? "text-amber-600 animate-pulse" : "text-amber-600"
-                            : ""
+                            : item.isAdvanced
+                              ? "text-blue-600"
+                              : ""
                       }`, 
                       size: item.label === "Home" || item.isSpecial ? 20 : 18 
                     })}
@@ -85,6 +90,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isMobile, onNewEntry
                   </div>
                   {item.isSpecial ? (
                     <span className="font-medium bg-gradient-to-r from-amber-700 to-orange-800 bg-clip-text text-transparent">{item.label}</span>
+                  ) : item.isAdvanced ? (
+                    <span className="font-medium text-blue-700 dark:text-blue-400">{item.label}</span>
                   ) : (
                     item.label
                   )}
