@@ -87,6 +87,7 @@ export default function MyNeura() {
   
   // State for tracking unsaved changes
   const [unsavedChanges, setUnsavedChanges] = useState(false);
+  const [justSaved, setJustSaved] = useState(false);
   const [pendingChanges, setPendingChanges] = useState<{
     creativity?: number;
     precision?: number;
@@ -449,13 +450,16 @@ export default function MyNeura() {
       // Reset state after saving
       setUnsavedChanges(false);
       setPendingChanges({});
+      setJustSaved(true);
       
-      // Notify user that changes were saved successfully
-      toast({
-        title: "Changes Saved",
-        description: "Your DotSpark tuning parameters have been updated.",
-        variant: "default",
-      });
+      // Mark the sections as configured after saving
+      setCognitiveShieldConfigured(true);
+      setExpertiseLayerConfigured(true);
+      
+      // Reset saved status after 2 seconds
+      setTimeout(() => {
+        setJustSaved(false);
+      }, 2000);
     } catch (error) {
       console.error("Error updating neural tuning:", error);
       toast({
@@ -828,20 +832,14 @@ export default function MyNeura() {
               </p>
               <div className="flex justify-center mt-auto">
                 <Button 
-                  className={`flex items-center justify-center gap-2 w-48 ${cognitiveShieldConfigured 
-                    ? 'bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700' 
-                    : 'bg-gradient-to-r from-amber-700 to-orange-700 hover:from-amber-800 hover:to-orange-800'
-                  } text-white group-hover:translate-y-0 translate-y-1 transition-all duration-300 h-10`}
+                  className="flex items-center justify-center gap-2 w-48 bg-gradient-to-r from-amber-700 to-orange-700 hover:from-amber-800 hover:to-orange-800 text-white group-hover:translate-y-0 translate-y-1 transition-all duration-300 h-10 relative"
                   onClick={() => {
-                    if (cognitiveShieldConfigured) {
-                      setLocation('/dotspark-tuning/cognitive');
-                    } else {
-                      setLocation('/dotspark-tuning/cognitive');
-                      setCognitiveShieldConfigured(true);
-                    }
+                    setLocation('/dotspark-tuning/cognitive');
                   }}
                 >
-                  {cognitiveShieldConfigured && <Edit className="h-4 w-4" />}
+                  {cognitiveShieldConfigured && (
+                    <Edit className="h-3 w-3 absolute -top-1 -right-1 bg-white text-amber-700 rounded-full p-0.5" />
+                  )}
                   {cognitiveShieldConfigured ? 'Configured' : 'Configure Shield'}
                 </Button>
               </div>
@@ -876,20 +874,14 @@ export default function MyNeura() {
               </p>
               <div className="flex justify-center mt-auto">
                 <Button 
-                  className={`flex items-center justify-center gap-2 w-48 ${expertiseLayerConfigured 
-                    ? 'bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700' 
-                    : 'bg-gradient-to-r from-amber-700 to-orange-700 hover:from-amber-800 hover:to-orange-800'
-                  } text-white group-hover:translate-y-0 translate-y-1 transition-all duration-300 h-10`}
+                  className="flex items-center justify-center gap-2 w-48 bg-gradient-to-r from-amber-700 to-orange-700 hover:from-amber-800 hover:to-orange-800 text-white group-hover:translate-y-0 translate-y-1 transition-all duration-300 h-10 relative"
                   onClick={() => {
-                    if (expertiseLayerConfigured) {
-                      setActiveTab('expertise');
-                    } else {
-                      setActiveTab('expertise');
-                      setExpertiseLayerConfigured(true);
-                    }
+                    setLocation('/dotspark-tuning/expertise');
                   }}
                 >
-                  {expertiseLayerConfigured && <Edit className="h-4 w-4" />}
+                  {expertiseLayerConfigured && (
+                    <Edit className="h-3 w-3 absolute -top-1 -right-1 bg-white text-amber-700 rounded-full p-0.5" />
+                  )}
                   {expertiseLayerConfigured ? 'Configured' : 'Configure Expertise'}
                 </Button>
               </div>
@@ -911,13 +903,22 @@ export default function MyNeura() {
               <span className="text-sm font-medium">You have unsaved changes</span>
             </div>
             <Button 
-              disabled={isUpdating}
+              disabled={isUpdating || justSaved}
               variant="default" 
-              className="bg-amber-600 hover:bg-amber-700"
+              className={justSaved ? "bg-green-600 hover:bg-green-700" : "bg-amber-600 hover:bg-amber-700"}
               onClick={saveChanges}
             >
-              <Save className="mr-1 h-4 w-4" />
-              Save Changes
+              {justSaved ? (
+                <>
+                  <Check className="mr-1 h-4 w-4" />
+                  Saved
+                </>
+              ) : (
+                <>
+                  <Save className="mr-1 h-4 w-4" />
+                  Save Changes
+                </>
+              )}
             </Button>
           </div>
         </div>
