@@ -909,67 +909,112 @@ export default function LandingPage() {
         <div className="container mx-auto px-4 md:px-6">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-8">How <span className="gradient-heading">DotSpark</span> Works?</h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Watch as scattered thoughts transform into connected insights through exponential neural connections
+            
+            <p className="text-lg text-foreground max-w-4xl mx-auto mb-12 leading-relaxed">
+              DotSpark is inspired by ancient Indian methods of layered thinking, where raw and valuable thoughts were preserved and connected over time. It helps you capture these meaningful dots and gradually links them based on your unique way of thinking. When such dots from progressive thinkers come together, they create an exponential, compounding effect — building a thinking edge that no AI can replace.
             </p>
           </div>
           
           <div className="relative max-w-6xl mx-auto">
-            {/* Multi-dimensional dot visualization */}
-            <div className="relative h-[500px] bg-gradient-to-br from-slate-50/50 to-amber-50/50 dark:from-slate-950/50 dark:to-amber-950/50 rounded-2xl border border-amber-200/30 dark:border-amber-800/30 overflow-hidden">
+            {/* Enhanced multi-dimensional dot visualization */}
+            <div className="relative h-[500px] bg-gradient-to-br from-amber-50/30 to-amber-100/30 dark:from-amber-950/30 dark:to-amber-900/30 rounded-2xl border-2 border-amber-200 dark:border-amber-800 overflow-hidden shadow-xl">
               
-              {/* Background grid pattern */}
-              <div className="absolute inset-0 opacity-10">
+              {/* Background pattern */}
+              <div className="absolute inset-0 opacity-20">
                 <div className="absolute w-full h-full" style={{
-                  backgroundImage: `radial-gradient(circle at 1px 1px, rgba(251, 191, 36, 0.3) 1px, transparent 0)`,
-                  backgroundSize: '40px 40px'
+                  backgroundImage: `radial-gradient(circle at 2px 2px, rgba(180, 83, 9, 0.4) 1px, transparent 0)`,
+                  backgroundSize: '60px 60px'
                 }}></div>
               </div>
               
-              {/* Layer 1: Scattered individual dots (thoughts) */}
+              {/* Layer 1: Interconnected dots (thoughts) */}
               <div className="absolute inset-0">
-                {/* Top layer scattered dots */}
-                <div className="absolute top-[15%] left-[10%] w-3 h-3 rounded-full bg-slate-400 animate-pulse"></div>
-                <div className="absolute top-[25%] left-[15%] w-2 h-2 rounded-full bg-slate-400 animate-pulse" style={{animationDelay: '0.5s'}}></div>
-                <div className="absolute top-[35%] left-[8%] w-2.5 h-2.5 rounded-full bg-slate-400 animate-pulse" style={{animationDelay: '1s'}}></div>
-                <div className="absolute top-[45%] left-[12%] w-2 h-2 rounded-full bg-slate-400 animate-pulse" style={{animationDelay: '1.5s'}}></div>
+                {/* Main thought dots - amber themed */}
+                <div className="absolute top-[12%] left-[8%] w-4 h-4 rounded-full bg-amber-600 dark:bg-amber-500 animate-pulse shadow-lg shadow-amber-500/50"></div>
+                <div className="absolute top-[18%] left-[25%] w-3 h-3 rounded-full bg-amber-700 dark:bg-amber-600 animate-pulse shadow-lg shadow-amber-600/50" style={{animationDelay: '0.3s'}}></div>
+                <div className="absolute top-[28%] left-[15%] w-3.5 h-3.5 rounded-full bg-amber-600 dark:bg-amber-500 animate-pulse shadow-lg shadow-amber-500/50" style={{animationDelay: '0.8s'}}></div>
+                <div className="absolute top-[38%] left-[5%] w-2.5 h-2.5 rounded-full bg-amber-700 dark:bg-amber-600 animate-pulse shadow-lg shadow-amber-600/50" style={{animationDelay: '1.2s'}}></div>
+                <div className="absolute top-[48%] left-[18%] w-3 h-3 rounded-full bg-amber-600 dark:bg-amber-500 animate-pulse shadow-lg shadow-amber-500/50" style={{animationDelay: '1.6s'}}></div>
                 
-                <div className="absolute top-[20%] right-[10%] w-2.5 h-2.5 rounded-full bg-slate-400 animate-pulse" style={{animationDelay: '0.3s'}}></div>
-                <div className="absolute top-[30%] right-[15%] w-2 h-2 rounded-full bg-slate-400 animate-pulse" style={{animationDelay: '0.8s'}}></div>
-                <div className="absolute top-[40%] right-[8%] w-3 h-3 rounded-full bg-slate-400 animate-pulse" style={{animationDelay: '1.3s'}}></div>
+                <div className="absolute top-[15%] right-[8%] w-3.5 h-3.5 rounded-full bg-amber-600 dark:bg-amber-500 animate-pulse shadow-lg shadow-amber-500/50" style={{animationDelay: '0.2s'}}></div>
+                <div className="absolute top-[25%] right-[22%] w-3 h-3 rounded-full bg-amber-700 dark:bg-amber-600 animate-pulse shadow-lg shadow-amber-600/50" style={{animationDelay: '0.7s'}}></div>
+                <div className="absolute top-[35%] right-[10%] w-4 h-4 rounded-full bg-amber-600 dark:bg-amber-500 animate-pulse shadow-lg shadow-amber-500/50" style={{animationDelay: '1.1s'}}></div>
+                <div className="absolute top-[45%] right-[25%] w-2.5 h-2.5 rounded-full bg-amber-700 dark:bg-amber-600 animate-pulse shadow-lg shadow-amber-600/50" style={{animationDelay: '1.5s'}}></div>
                 
-                <div className="absolute bottom-[25%] left-[20%] w-2 h-2 rounded-full bg-slate-400 animate-pulse" style={{animationDelay: '0.7s'}}></div>
-                <div className="absolute bottom-[35%] left-[25%] w-2.5 h-2.5 rounded-full bg-slate-400 animate-pulse" style={{animationDelay: '1.2s'}}></div>
-                <div className="absolute bottom-[20%] right-[20%] w-2 h-2 rounded-full bg-slate-400 animate-pulse" style={{animationDelay: '0.4s'}}></div>
+                <div className="absolute bottom-[15%] left-[12%] w-3 h-3 rounded-full bg-amber-600 dark:bg-amber-500 animate-pulse shadow-lg shadow-amber-500/50" style={{animationDelay: '0.5s'}}></div>
+                <div className="absolute bottom-[25%] left-[28%] w-3.5 h-3.5 rounded-full bg-amber-700 dark:bg-amber-600 animate-pulse shadow-lg shadow-amber-600/50" style={{animationDelay: '0.9s'}}></div>
+                <div className="absolute bottom-[35%] left-[8%] w-2.5 h-2.5 rounded-full bg-amber-600 dark:bg-amber-500 animate-pulse shadow-lg shadow-amber-500/50" style={{animationDelay: '1.3s'}}></div>
+                <div className="absolute bottom-[18%] right-[15%] w-3 h-3 rounded-full bg-amber-700 dark:bg-amber-600 animate-pulse shadow-lg shadow-amber-600/50" style={{animationDelay: '0.6s'}}></div>
+                <div className="absolute bottom-[28%] right-[8%] w-3.5 h-3.5 rounded-full bg-amber-600 dark:bg-amber-500 animate-pulse shadow-lg shadow-amber-500/50" style={{animationDelay: '1.0s'}}></div>
+                
+                {/* Additional connection dots */}
+                <div className="absolute top-[32%] left-[45%] w-2.5 h-2.5 rounded-full bg-amber-700 dark:bg-amber-600 animate-pulse shadow-lg shadow-amber-600/50" style={{animationDelay: '0.4s'}}></div>
+                <div className="absolute top-[55%] left-[35%] w-3 h-3 rounded-full bg-amber-600 dark:bg-amber-500 animate-pulse shadow-lg shadow-amber-500/50" style={{animationDelay: '1.4s'}}></div>
+                <div className="absolute top-[42%] right-[38%] w-2.5 h-2.5 rounded-full bg-amber-700 dark:bg-amber-600 animate-pulse shadow-lg shadow-amber-600/50" style={{animationDelay: '0.9s'}}></div>
+                <div className="absolute bottom-[42%] right-[45%] w-3 h-3 rounded-full bg-amber-600 dark:bg-amber-500 animate-pulse shadow-lg shadow-amber-500/50" style={{animationDelay: '1.7s'}}></div>
               </div>
               
-              {/* Layer 2: Connecting lines (neural pathways forming) */}
+              {/* Layer 2: Interconnecting lines */}
               <div className="absolute inset-0">
-                {/* Animated connection lines */}
                 <svg className="absolute inset-0 w-full h-full" viewBox="0 0 800 500">
                   <defs>
-                    <linearGradient id="connectionGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.6"/>
-                      <stop offset="100%" stopColor="#d97706" stopOpacity="0.3"/>
+                    <linearGradient id="amberConnection" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#b45309" stopOpacity="0.7"/>
+                      <stop offset="50%" stopColor="#d97706" stopOpacity="0.5"/>
+                      <stop offset="100%" stopColor="#f59e0b" stopOpacity="0.3"/>
+                    </linearGradient>
+                    <linearGradient id="amberConnection2" x1="0%" y1="100%" x2="100%" y2="0%">
+                      <stop offset="0%" stopColor="#92400e" stopOpacity="0.6"/>
+                      <stop offset="100%" stopColor="#d97706" stopOpacity="0.4"/>
                     </linearGradient>
                   </defs>
                   
-                  {/* Connection lines with animation */}
-                  <path d="M80 75 Q200 150 400 250" stroke="url(#connectionGradient)" strokeWidth="2" fill="none" 
-                        className="animate-pulse" strokeDasharray="5,5">
-                    <animate attributeName="stroke-dashoffset" values="0;10;0" dur="3s" repeatCount="indefinite"/>
+                  {/* Dense network of connections */}
+                  <path d="M64 60 Q200 120 400 250" stroke="url(#amberConnection)" strokeWidth="2" fill="none" strokeDasharray="3,3">
+                    <animate attributeName="stroke-dashoffset" values="0;6;0" dur="2s" repeatCount="indefinite"/>
                   </path>
-                  <path d="M720 100 Q600 200 400 250" stroke="url(#connectionGradient)" strokeWidth="2" fill="none" 
-                        className="animate-pulse" strokeDasharray="5,5" style={{animationDelay: '0.5s'}}>
-                    <animate attributeName="stroke-dashoffset" values="0;10;0" dur="3s" repeatCount="indefinite"/>
+                  <path d="M200 90 Q350 180 400 250" stroke="url(#amberConnection2)" strokeWidth="1.5" fill="none" strokeDasharray="4,4" style={{animationDelay: '0.3s'}}>
+                    <animate attributeName="stroke-dashoffset" values="0;8;0" dur="2.5s" repeatCount="indefinite"/>
                   </path>
-                  <path d="M160 375 Q300 300 400 250" stroke="url(#connectionGradient)" strokeWidth="2" fill="none" 
-                        className="animate-pulse" strokeDasharray="5,5" style={{animationDelay: '1s'}}>
-                    <animate attributeName="stroke-dashoffset" values="0;10;0" dur="3s" repeatCount="indefinite"/>
+                  <path d="M120 140 Q280 200 400 250" stroke="url(#amberConnection)" strokeWidth="2" fill="none" strokeDasharray="3,3" style={{animationDelay: '0.6s'}}>
+                    <animate attributeName="stroke-dashoffset" values="0;6;0" dur="2.2s" repeatCount="indefinite"/>
                   </path>
-                  <path d="M640 400 Q500 300 400 250" stroke="url(#connectionGradient)" strokeWidth="2" fill="none" 
-                        className="animate-pulse" strokeDasharray="5,5" style={{animationDelay: '1.5s'}}>
-                    <animate attributeName="stroke-dashoffset" values="0;10;0" dur="3s" repeatCount="indefinite"/>
+                  <path d="M40 190 Q220 220 400 250" stroke="url(#amberConnection2)" strokeWidth="1.5" fill="none" strokeDasharray="4,4" style={{animationDelay: '0.9s'}}>
+                    <animate attributeName="stroke-dashoffset" values="0;8;0" dur="2.8s" repeatCount="indefinite"/>
+                  </path>
+                  <path d="M144 240 Q270 245 400 250" stroke="url(#amberConnection)" strokeWidth="2" fill="none" strokeDasharray="3,3" style={{animationDelay: '1.2s'}}>
+                    <animate attributeName="stroke-dashoffset" values="0;6;0" dur="2.3s" repeatCount="indefinite"/>
+                  </path>
+                  
+                  {/* Right side connections */}
+                  <path d="M760 75 Q600 160 400 250" stroke="url(#amberConnection)" strokeWidth="2" fill="none" strokeDasharray="3,3" style={{animationDelay: '0.4s'}}>
+                    <animate attributeName="stroke-dashoffset" values="0;6;0" dur="2.4s" repeatCount="indefinite"/>
+                  </path>
+                  <path d="M624 125 Q512 188 400 250" stroke="url(#amberConnection2)" strokeWidth="1.5" fill="none" strokeDasharray="4,4" style={{animationDelay: '0.7s'}}>
+                    <animate attributeName="stroke-dashoffset" values="0;8;0" dur="2.6s" repeatCount="indefinite"/>
+                  </path>
+                  <path d="M760 175 Q580 212 400 250" stroke="url(#amberConnection)" strokeWidth="2" fill="none" strokeDasharray="3,3" style={{animationDelay: '1.0s'}}>
+                    <animate attributeName="stroke-dashoffset" values="0;6;0" dur="2.1s" repeatCount="indefinite"/>
+                  </path>
+                  <path d="M600 225 Q500 238 400 250" stroke="url(#amberConnection2)" strokeWidth="1.5" fill="none" strokeDasharray="4,4" style={{animationDelay: '1.3s'}}>
+                    <animate attributeName="stroke-dashoffset" values="0;8;0" dur="2.7s" repeatCount="indefinite"/>
+                  </path>
+                  
+                  {/* Bottom connections */}
+                  <path d="M96 425 Q248 338 400 250" stroke="url(#amberConnection)" strokeWidth="2" fill="none" strokeDasharray="3,3" style={{animationDelay: '0.5s'}}>
+                    <animate attributeName="stroke-dashoffset" values="0;6;0" dur="2.9s" repeatCount="indefinite"/>
+                  </path>
+                  <path d="M224 400 Q312 325 400 250" stroke="url(#amberConnection2)" strokeWidth="1.5" fill="none" strokeDasharray="4,4" style={{animationDelay: '0.8s'}}>
+                    <animate attributeName="stroke-dashoffset" values="0;8;0" dur="2.4s" repeatCount="indefinite"/>
+                  </path>
+                  <path d="M64 350 Q232 300 400 250" stroke="url(#amberConnection)" strokeWidth="2" fill="none" strokeDasharray="3,3" style={{animationDelay: '1.1s'}}>
+                    <animate attributeName="stroke-dashoffset" values="0;6;0" dur="2.2s" repeatCount="indefinite"/>
+                  </path>
+                  <path d="M680 425 Q540 338 400 250" stroke="url(#amberConnection2)" strokeWidth="1.5" fill="none" strokeDasharray="4,4" style={{animationDelay: '1.4s'}}>
+                    <animate attributeName="stroke-dashoffset" values="0;8;0" dur="2.6s" repeatCount="indefinite"/>
+                  </path>
+                  <path d="M760 360 Q580 305 400 250" stroke="url(#amberConnection)" strokeWidth="2" fill="none" strokeDasharray="3,3" style={{animationDelay: '0.2s'}}>
+                    <animate attributeName="stroke-dashoffset" values="0;6;0" dur="2.8s" repeatCount="indefinite"/>
                   </path>
                 </svg>
               </div>
@@ -978,39 +1023,55 @@ export default function LandingPage() {
               <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
                 <div className="relative">
                   {/* Pulsing rings */}
-                  <div className="absolute inset-0 w-16 h-16 rounded-full border-2 border-amber-400/40 animate-ping"></div>
-                  <div className="absolute inset-0 w-20 h-20 rounded-full border-2 border-amber-500/30 animate-ping" style={{animationDelay: '0.5s'}}></div>
-                  <div className="absolute inset-0 w-24 h-24 rounded-full border-2 border-amber-600/20 animate-ping" style={{animationDelay: '1s'}}></div>
+                  <div className="absolute inset-0 w-20 h-20 rounded-full border-3 border-amber-500/40 animate-ping"></div>
+                  <div className="absolute inset-0 w-24 h-24 rounded-full border-2 border-amber-600/30 animate-ping" style={{animationDelay: '0.5s'}}></div>
+                  <div className="absolute inset-0 w-28 h-28 rounded-full border-2 border-amber-700/20 animate-ping" style={{animationDelay: '1s'}}></div>
                   
                   {/* Central hub */}
-                  <div className="relative w-12 h-12 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 shadow-lg shadow-amber-500/50 flex items-center justify-center">
-                    <Sparkles className="h-6 w-6 text-white animate-pulse" />
+                  <div className="relative w-16 h-16 rounded-full bg-gradient-to-br from-amber-500 to-amber-700 shadow-2xl shadow-amber-500/60 flex items-center justify-center border-2 border-amber-400">
+                    <Sparkles className="h-8 w-8 text-white animate-pulse" />
                   </div>
                 </div>
               </div>
               
-              {/* Layer 4: Emerging sparks (insights) */}
+              {/* Layer 4: Sparks throughout the visualization */}
               <div className="absolute inset-0">
-                {/* Sparkle effects */}
-                <div className="absolute top-[30%] left-[60%] w-4 h-4 rounded-full bg-yellow-300 shadow-lg shadow-yellow-300/50 animate-bounce" style={{animationDelay: '2s'}}></div>
-                <div className="absolute top-[60%] left-[30%] w-3 h-3 rounded-full bg-yellow-400 shadow-lg shadow-yellow-400/50 animate-bounce" style={{animationDelay: '2.5s'}}></div>
-                <div className="absolute top-[40%] right-[25%] w-3.5 h-3.5 rounded-full bg-yellow-300 shadow-lg shadow-yellow-300/50 animate-bounce" style={{animationDelay: '3s'}}></div>
-                <div className="absolute bottom-[40%] left-[65%] w-2.5 h-2.5 rounded-full bg-yellow-400 shadow-lg shadow-yellow-400/50 animate-bounce" style={{animationDelay: '2.2s'}}></div>
+                {/* Scattered sparks */}
+                <div className="absolute top-[22%] left-[65%] animate-float">
+                  <Sparkles className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+                </div>
+                <div className="absolute top-[58%] left-[28%] animate-float-slow">
+                  <Sparkles className="h-3 w-3 text-amber-700 dark:text-amber-500" />
+                </div>
+                <div className="absolute top-[38%] right-[22%] animate-float-delay">
+                  <Sparkles className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+                </div>
+                <div className="absolute bottom-[35%] left-[72%] animate-float">
+                  <Sparkles className="h-3 w-3 text-amber-700 dark:text-amber-500" />
+                </div>
+                <div className="absolute top-[68%] right-[35%] animate-float-slow">
+                  <Sparkles className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+                </div>
+                <div className="absolute bottom-[22%] right-[68%] animate-float-delay">
+                  <Sparkles className="h-3 w-3 text-amber-700 dark:text-amber-500" />
+                </div>
+                <div className="absolute top-[85%] left-[45%] animate-float">
+                  <Sparkles className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+                </div>
+                <div className="absolute top-[12%] left-[55%] animate-float-slow">
+                  <Sparkles className="h-3 w-3 text-amber-700 dark:text-amber-500" />
+                </div>
                 
-                {/* Floating sparkle particles */}
-                <div className="absolute top-[25%] left-[70%] animate-float">
-                  <Sparkles className="h-3 w-3 text-yellow-400" />
-                </div>
-                <div className="absolute top-[70%] left-[25%] animate-float-slow">
-                  <Sparkles className="h-4 w-4 text-yellow-300" />
-                </div>
-                <div className="absolute top-[35%] right-[30%] animate-float-delay">
-                  <Sparkles className="h-3.5 w-3.5 text-yellow-400" />
-                </div>
+                {/* Bouncing spark effects */}
+                <div className="absolute top-[28%] left-[78%] w-3 h-3 rounded-full bg-amber-400 shadow-lg shadow-amber-400/60 animate-bounce" style={{animationDelay: '1.8s'}}></div>
+                <div className="absolute top-[72%] left-[18%] w-2.5 h-2.5 rounded-full bg-amber-500 shadow-lg shadow-amber-500/60 animate-bounce" style={{animationDelay: '2.2s'}}></div>
+                <div className="absolute top-[45%] right-[12%] w-3.5 h-3.5 rounded-full bg-amber-400 shadow-lg shadow-amber-400/60 animate-bounce" style={{animationDelay: '1.6s'}}></div>
+                <div className="absolute bottom-[52%] left-[85%] w-2.5 h-2.5 rounded-full bg-amber-500 shadow-lg shadow-amber-500/60 animate-bounce" style={{animationDelay: '2.4s'}}></div>
+                <div className="absolute bottom-[68%] right-[78%] w-3 h-3 rounded-full bg-amber-400 shadow-lg shadow-amber-400/60 animate-bounce" style={{animationDelay: '2.0s'}}></div>
               </div>
               
-              {/* Exponential effect overlay */}
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-amber-100/10 to-transparent animate-pulse"></div>
+              {/* Exponential glow overlay */}
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-amber-200/10 dark:via-amber-900/10 to-transparent animate-pulse"></div>
             </div>
             
             {/* Process steps */}
