@@ -510,7 +510,10 @@ export default function MyNeura() {
           <Button variant="ghost" onClick={() => setLocation('/')} className="p-2 flex-shrink-0">
             <ChevronLeft className="h-5 w-5" />
           </Button>
-          <h1 className="text-xl sm:text-2xl font-bold truncate">My DotSpark</h1>
+          <div className="flex items-center gap-2">
+            <Sparkles className="h-6 w-6 text-amber-600 dark:text-amber-400" />
+            <span className="text-lg font-semibold text-amber-700 dark:text-amber-300">DotSpark</span>
+          </div>
         </div>
         
         {/* Mobile layout - stack vertically */}
