@@ -210,10 +210,10 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
       <header className="bg-white border-b border-gray-200 px-2 py-3 flex items-center justify-between">
         {isMobile ? (
           <>
-            {/* Logo on left that's clickable to My Neura */}
+            {/* Logo on left that's clickable to My DotSpark */}
             <div 
               className="flex items-center cursor-pointer active:opacity-80 transition-opacity"
-              onClick={() => setLocation("/dashboard")}
+              onClick={() => setLocation("/dotspark-tuning")}
             >
               <Sparkles className="h-5 w-5 text-primary mr-1" />
               <span className="font-medium text-primary">DotSpark</span>
@@ -373,7 +373,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
             <div 
               onClick={() => {
                 setShowMobileNav(false);
-                setLocation("/my-neura");
+                setLocation("/dotspark-tuning");
               }} 
               className="cursor-pointer flex items-center active:opacity-80 transition-opacity"
             >
