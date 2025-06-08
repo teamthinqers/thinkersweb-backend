@@ -667,7 +667,7 @@ export default function LandingPage() {
               <p className="text-muted-foreground text-sm">Configure your DotSpark to mirror your natural intelligence & thinking style.</p>
               <div className="mt-auto pt-4">
                 <Button 
-                  className="w-full !bg-gradient-to-r !from-orange-600 !to-red-600 hover:!from-red-600 hover:!to-orange-600 text-white border-0 shadow-md hover:shadow-lg transition-all duration-300"
+                  className="w-full !bg-gradient-to-r !from-amber-500 !to-orange-600 hover:!from-orange-600 hover:!to-amber-500 text-white border-0 shadow-md hover:shadow-lg transition-all duration-300"
                   onClick={() => setLocation("/sectioned-dotspark-tuning")}
                 >
                   Activate DotSpark
@@ -831,6 +831,12 @@ export default function LandingPage() {
                     <div className="mt-1 text-xs text-orange-500 flex items-center">
                       <ArrowRight className="h-3 w-3 mr-1" />
                       <span>Ready to install</span>
+                    </div>
+                  )}
+                  {isNeuraActivated && isPWAInstalled && (
+                    <div className="mt-1 text-xs text-green-600 flex items-center">
+                      <CheckCircle className="h-3 w-3 mr-1" />
+                      <span>Installed</span>
                     </div>
                   )}
                 </div>
