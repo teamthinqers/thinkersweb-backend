@@ -8,7 +8,6 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { 
   LightbulbIcon, 
   PlusIcon, 
-  LayoutDashboard, 
   BookOpen, 
   Eye, 
   Star, 
@@ -52,7 +51,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isMobile, onNewEntry
 
   const navItems = [
     { icon: LightbulbIcon, label: "Home", path: "/" },
-    { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
     { icon: BookOpen, label: "All Entries", path: "/entries" },
     { icon: Eye, label: "Insights", path: "/insights" },
     { icon: Star, label: "Favorites", path: "/favorites" },
