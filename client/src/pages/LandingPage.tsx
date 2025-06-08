@@ -236,7 +236,7 @@ export default function LandingPage() {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Header with navigation - fixed at top */}
-      <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
+      <header className="border-b bg-gradient-to-r from-slate-50 to-amber-50 dark:from-slate-900 dark:to-amber-950/50 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 shadow-sm">
         <div className="container flex h-16 items-center justify-between px-2 sm:px-4 md:px-6">
           <div className="flex items-center">
             <div 
