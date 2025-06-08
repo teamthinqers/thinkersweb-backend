@@ -133,7 +133,8 @@ export default function MyNeura() {
       });
       
       if (response.ok) {
-        // Code is valid, activate DotSpark
+        // Code is valid, mark invite as validated and activate DotSpark
+        neuraStorage.markInviteValidated();
         neuraStorage.activate();
         setShowInviteDialog(false);
         setInviteCode('');

@@ -3,6 +3,7 @@ const NEURA_ACTIVATION_KEY = 'neuraActivated';
 const NEURA_NAME_KEY = 'neuraName';
 const NEURA_EVENT = 'neura-state-changed';
 const SETUP_COMPLETED_KEY = 'setupCompleted';
+const INVITE_VALIDATED_KEY = 'inviteValidated';
 
 // Custom event for Neura state changes
 export interface NeuraStateEvent extends CustomEvent {
@@ -46,6 +47,30 @@ export const neuraStorage = {
     } catch (error) {
       console.error('Error checking setup completion status:', error);
       return false;
+    }
+  },
+
+  /**
+   * Check if invite code has been validated before
+   */
+  isInviteValidated(): boolean {
+    try {
+      const value = localStorage.getItem(INVITE_VALIDATED_KEY);
+      return value === 'true';
+    } catch (error) {
+      console.error('Error checking invite validation status:', error);
+      return false;
+    }
+  },
+
+  /**
+   * Mark invite code as validated
+   */
+  markInviteValidated(): void {
+    try {
+      localStorage.setItem(INVITE_VALIDATED_KEY, 'true');
+    } catch (error) {
+      console.error('Error marking invite as validated:', error);
     }
   },
 
