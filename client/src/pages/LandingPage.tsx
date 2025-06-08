@@ -206,25 +206,31 @@ export default function LandingPage() {
                 Home
               </Link>
               <Button 
+                className="bg-gradient-to-r from-amber-700 to-primary hover:from-amber-800 hover:to-primary/90 text-white h-9 px-3 relative shadow-md"
+                size="sm"
+                onClick={() => setLocation("/dashboard")}
+              >
+                <div className="flex items-center gap-2 relative z-10">
+                  <div className="relative">
+                    <Brain className="h-4 w-4" />
+                    {isNeuraActivated && <div className="absolute -top-1 -right-1 h-2 w-2 bg-green-500 rounded-full animate-pulse"></div>}
+                  </div>
+                  <span className="text-xs">My Neura</span>
+                </div>
+              </Button>
+              <Button 
                 className={`${isNeuraActivated 
                   ? "bg-gradient-to-r from-amber-700 to-primary hover:from-amber-800 hover:to-primary/90" 
                   : "bg-gradient-to-r from-amber-800 to-amber-700 hover:from-amber-900 hover:to-amber-800"} 
                   text-white h-9 px-3 relative`}
                 size="sm"
-                onClick={() => setLocation("/dashboard")}
+                onClick={() => setLocation("/sectioned-dotspark-tuning")}
               >
                 <div className="flex items-center gap-2 relative z-10">
                   <div className="flex items-center">
-                    {isNeuraActivated ? (
-                      <div className="relative">
-                        <Brain className="h-4 w-4" />
-                        <div className="absolute -top-1 -right-1 h-2 w-2 bg-green-500 rounded-full animate-pulse"></div>
-                      </div>
-                    ) : (
-                      <Brain className="h-4 w-4" />
-                    )}
+                    <Sparkles className="h-4 w-4" />
                   </div>
-                  <span className="text-xs">My Neura</span>
+                  <span className="text-xs">My DotSpark</span>
                 </div>
               </Button>
             </div>
@@ -282,21 +288,32 @@ export default function LandingPage() {
                 </Button>
               </div>
               
-              <div className="block sm:hidden" onClick={() => setLocation("/my-neura")}>
+              <div className="flex sm:hidden gap-1">
+                <Button
+                  size="sm"
+                  className="bg-gradient-to-r from-amber-700 to-primary hover:from-amber-800 hover:to-primary/90 text-white relative h-7 px-2 shadow-md"
+                  onClick={() => setLocation("/dashboard")}
+                >
+                  <div className="flex items-center gap-1">
+                    <div className="relative">
+                      <Brain className="h-3.5 w-3.5" />
+                      {isNeuraActivated && (
+                        <div className="absolute -top-1 -right-1 h-1.5 w-1.5 bg-green-500 rounded-full animate-pulse"></div>
+                      )}
+                    </div>
+                    <span className="text-xs">My Neura</span>
+                  </div>
+                </Button>
                 <Button
                   size="sm"
                   className={`${isNeuraActivated 
                     ? "bg-gradient-to-r from-amber-700 to-primary hover:from-amber-800 hover:to-primary/90" 
                     : "bg-gradient-to-r from-amber-800 to-amber-700 hover:from-amber-900 hover:to-amber-800"} 
                     text-white relative h-7 px-2`}
+                  onClick={() => setLocation("/sectioned-dotspark-tuning")}
                 >
                   <div className="flex items-center gap-1">
-                    <div className="relative">
-                      <Brain className="h-3.5 w-3.5" />
-                      {isNeuraActivated && (
-                        <div className="absolute -top-1 -right-1 h-1.5 w-1.5 bg-orange-500 rounded-full"></div>
-                      )}
-                    </div>
+                    <Sparkles className="h-3.5 w-3.5" />
                     <span className="text-xs">My DotSpark</span>
                   </div>
                 </Button>
