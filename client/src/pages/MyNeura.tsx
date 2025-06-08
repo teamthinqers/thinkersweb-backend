@@ -38,6 +38,9 @@ import {
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import {
@@ -104,8 +107,70 @@ export default function MyNeura() {
   const [cognitiveShieldConfigured, setCognitiveShieldConfigured] = useState(false);
   const [expertiseLayerConfigured, setExpertiseLayerConfigured] = useState(false);
   
+  // State for invite code modal
+  const [showInviteDialog, setShowInviteDialog] = useState(false);
+  const [inviteCode, setInviteCode] = useState('');
+  const [isValidatingCode, setIsValidatingCode] = useState(false);
+  
   // Active tab for neural tuning
   const [activeTab, setActiveTab] = useState('cognitive');
+  
+  // Function to validate invite code and activate DotSpark
+  const handleInviteCodeSubmit = async () => {
+    if (!inviteCode.trim()) {
+      toast({
+        title: "Invalid Code",
+        description: "Please enter an invite code.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    setIsValidatingCode(true);
+    
+    try {
+      // Validate the invite code with the server
+      const response = await fetch('/api/validate-invite-code', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ inviteCode: inviteCode.trim() }),
+      });
+      
+      if (response.ok) {
+        // Code is valid, activate DotSpark
+        neuraStorage.activate();
+        setShowInviteDialog(false);
+        setInviteCode('');
+        setIsActivated(true);
+        toast({
+          title: "Welcome to DotSpark!",
+          description: "Your exclusive access has been activated.",
+        });
+      } else {
+        const error = await response.json();
+        toast({
+          title: "Invalid Invite Code",
+          description: error.message || "The invite code you entered is not valid.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Connection Error",
+        description: "Unable to validate invite code. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsValidatingCode(false);
+    }
+  };
+  
+  // Function to handle Activate DotSpark button click
+  const handleActivateDotSpark = () => {
+    setShowInviteDialog(true);
+  };
   
   // Track if we're on mobile for responsive layout
   const [isMobileView, setIsMobileView] = useState(window.innerWidth < 768);
@@ -451,7 +516,7 @@ export default function MyNeura() {
             <Button 
               variant={isActivated ? "outline" : "default"} 
               className={isActivated ? "border-green-500 text-green-600 hover:bg-green-50 dark:hover:bg-green-950" : "bg-amber-600 hover:bg-amber-700"} 
-              onClick={toggleDotSparkActivation}
+              onClick={isActivated ? deactivateDotSpark : handleActivateDotSpark}
             >
               {isActivated ? "Deactivate DotSpark" : "Activate DotSpark"}
             </Button>
