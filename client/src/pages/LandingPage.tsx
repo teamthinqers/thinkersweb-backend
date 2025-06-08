@@ -735,13 +735,13 @@ export default function LandingPage() {
               </div>
             </div>
             
-            {/* Step 3: Download WebApp */}
-            <div className="bg-card rounded-lg p-6 relative group hover:shadow-lg transition-all duration-300 border border-blue-200/30 dark:border-blue-800/30 overflow-hidden h-full flex flex-col">
-              <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/5 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:bg-blue-500/10 transition-colors duration-300"></div>
-              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/10 text-blue-600 mb-4 relative z-10">
+            {/* Step 3: Install Web App */}
+            <div className="bg-card rounded-lg p-6 relative group hover:shadow-lg transition-all duration-300 border border-emerald-200/30 dark:border-emerald-800/30 overflow-hidden h-full flex flex-col">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/5 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:bg-emerald-500/10 transition-colors duration-300"></div>
+              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/10 text-emerald-600 mb-4 relative z-10">
                 <Download className="h-6 w-6" />
               </div>
-              <div className="absolute top-6 right-6 flex items-center justify-center w-8 h-8 rounded-full bg-blue-500/80 text-white font-bold text-lg">
+              <div className="absolute top-6 right-6 flex items-center justify-center w-8 h-8 rounded-full bg-emerald-500/80 text-white font-bold text-lg">
                 3
               </div>
               <h3 className="text-xl font-semibold mb-2">Install Web App</h3>
@@ -750,7 +750,7 @@ export default function LandingPage() {
                 <Button 
                   size="default" 
                   onClick={() => setInstallDialogOpen(true)}
-                  className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-emerald-600 hover:to-green-600 text-white shadow-md hover:shadow-lg transition-all duration-300"
+                  className="w-full bg-gradient-to-r from-emerald-600 to-green-600 hover:from-green-600 hover:to-emerald-600 text-white shadow-md hover:shadow-lg transition-all duration-300"
                 >
                   <Download className="h-5 w-5 mr-2" />
                   <span>Install App</span>

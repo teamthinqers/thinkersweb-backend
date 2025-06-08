@@ -37,7 +37,7 @@ export function ContactOptionsDialog({
       markFirstChatDone();
     }
     
-    // For mobile devices, create a direct link to the app
+    // For mobile devices, try the app first then fallback to web
     if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
       // Try to use the direct app link first
       const whatsappUrl = `whatsapp://send?phone=${whatsAppNumber}&text=${encodedMessage}`;
@@ -56,7 +56,7 @@ export function ContactOptionsDialog({
         window.open(`https://wa.me/${whatsAppNumber}?text=${encodedMessage}`, '_blank');
       }, 1000);
     } else {
-      // For desktop, use the web version directly
+      // For desktop/laptop, use WhatsApp Web - works if user has WhatsApp Web session or app installed
       window.open(`https://wa.me/${whatsAppNumber}?text=${encodedMessage}`, '_blank');
     }
     
