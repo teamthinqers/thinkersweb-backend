@@ -827,48 +827,6 @@ export default function MyNeura() {
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 auto-rows-fr">
 
-          {/* CogniShield Card */}
-          <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 group border-amber-200 dark:border-amber-800 flex flex-col h-full relative">
-            <div className="h-48 bg-gradient-to-br from-amber-800 to-orange-900 flex items-center justify-center relative overflow-hidden">
-              {/* Subtle organic spark network */}
-              <div className="absolute inset-0">
-                <div className="absolute top-6 left-8 w-0.5 h-0.5 bg-amber-400 rounded-full opacity-70"></div>
-                <div className="absolute top-16 right-10 w-1 h-1 bg-orange-400 rounded-full opacity-60"></div>
-                <div className="absolute bottom-12 left-16 w-0.5 h-0.5 bg-yellow-500 rounded-full opacity-80"></div>
-                <div className="absolute bottom-8 right-8 w-1 h-1 bg-amber-500 rounded-full opacity-50"></div>
-                <div className="absolute top-20 left-1/2 w-0.5 h-0.5 bg-orange-500 rounded-full opacity-70"></div>
-                {/* Connecting lines */}
-                <div className="absolute top-6 left-8 w-8 h-px bg-gradient-to-r from-amber-400 to-transparent opacity-30"></div>
-                <div className="absolute bottom-12 left-16 w-12 h-px bg-gradient-to-r from-yellow-500 to-transparent opacity-20"></div>
-              </div>
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(251,191,36,0.1),transparent_70%)]"></div>
-              <div className="z-10 p-6 flex flex-col items-center">
-                <div className="rounded-full bg-amber-900/40 p-4 backdrop-blur-sm mb-4 border border-amber-600/30">
-                  <Shield className="h-12 w-12 text-amber-100" />
-                </div>
-                <h3 className="text-xl font-bold text-amber-50">CogniShield</h3>
-              </div>
-            </div>
-            <CardContent className="p-6 bg-gradient-to-b from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 flex flex-col justify-between min-h-[120px]">
-              <p className="text-muted-foreground mb-4 flex-1">
-                Configure your cognitive shield to monitor AI alignment with your thinking patterns.
-              </p>
-              <div className="flex justify-center mt-auto">
-                <Button 
-                  className="flex items-center justify-center gap-2 w-48 bg-gradient-to-r from-amber-700 to-orange-700 hover:from-amber-800 hover:to-orange-800 text-white group-hover:translate-y-0 translate-y-1 transition-all duration-300 h-10 relative"
-                  onClick={() => {
-                    setLocation('/cognitive-shield-config');
-                  }}
-                >
-                  {cognitiveShieldConfigured && (
-                    <Edit className="h-3 w-3 absolute -top-1 -right-1 bg-white text-amber-700 rounded-full p-0.5" />
-                  )}
-                  {cognitiveShieldConfigured ? 'Configured' : 'Configure Shield'}
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-
           {/* Expertise Layer Card */}
           <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 group border-amber-200 dark:border-amber-800 flex flex-col h-full relative">
             <div className="h-48 bg-gradient-to-br from-amber-800 to-orange-900 flex items-center justify-center relative overflow-hidden">
