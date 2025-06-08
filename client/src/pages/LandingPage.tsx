@@ -685,7 +685,7 @@ export default function LandingPage() {
                 3
               </div>
               <h3 className="text-xl font-semibold mb-2">Install Web App</h3>
-              <p className="text-muted-foreground text-sm">Download the WebApp for quick access.</p>
+              <p className="text-muted-foreground text-sm">Download the Web App for better experience.</p>
               <div className="mt-auto pt-4">
                 <Button 
                   onClick={() => setInstallDialogOpen(true)}
