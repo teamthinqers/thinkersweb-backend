@@ -10,25 +10,13 @@ import {
   Users, 
   Lightbulb, 
   Brain, 
-  BookOpen, 
-  BarChart2, 
-  BrainCog,
-  BrainCircuit,
   Download, 
   Smartphone,
   Monitor,
   Share,
   CheckCircle2,
   AlertCircle,
-  MapPin,
-  CalendarDays,
-  Clock,
-  Star,
   Zap,
-  Target,
-  Gauge,
-  TrendingUp,
-  Award,
   Sparkles
 } from "lucide-react";
 import { Link } from "wouter";
@@ -53,7 +41,7 @@ export default function LandingPage() {
       const elements = document.querySelectorAll('.parallax-element');
       elements.forEach((element, index) => {
         const speed = 0.5 + (index * 0.1);
-        (element as HTMLElement).style.transform = `translateY(${scrolled * speed}px)`;
+        (element as HTMLElement).style.transform = \`translateY(\${scrolled * speed}px)\`;
       });
     };
 
@@ -318,3 +306,152 @@ export default function LandingPage() {
               
               <Progress 
                 value={whatsAppStatus?.isRegistered ? 92 : 46} 
+                className="h-3 mb-4" 
+              />
+              
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="h-4 w-4 text-green-600" />
+                  <span>Account Created</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="h-4 w-4 text-green-600" />
+                  <span>DotSpark Activated</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  {whatsAppStatus?.isRegistered ? (
+                    <CheckCircle2 className="h-4 w-4 text-green-600" />
+                  ) : (
+                    <AlertCircle className="h-4 w-4 text-amber-600" />
+                  )}
+                  <span>WhatsApp Connected</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  {whatsAppStatus?.isRegistered ? (
+                    <CheckCircle2 className="h-4 w-4 text-green-600" />
+                  ) : (
+                    <div className="h-4 w-4 rounded-full border-2 border-muted-foreground" />
+                  )}
+                  <span>First Conversation</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* NEW CONTENT WILL BE ADDED HERE */}
+
+      {/* Contact Options Dialog */}
+      <ContactOptionsDialog 
+        open={contactDialogOpen} 
+        onOpenChange={setContactDialogOpen}
+        phoneNumber={whatsAppNumber}
+      />
+
+      {/* PWA Install Guide Dialog */}
+      <Dialog open={installDialogOpen} onOpenChange={setInstallDialogOpen}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Download className="h-5 w-5" />
+              Install DotSpark Web App
+            </DialogTitle>
+            <DialogDescription>
+              Get the best experience by installing DotSpark as a web app on your device
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-6">
+            {/* Android Instructions */}
+            <div className="border rounded-lg p-4 hover:bg-muted/50 transition-colors">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="flex-shrink-0 w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
+                  <Smartphone className="h-5 w-5 text-green-600" />
+                </div>
+                <div>
+                  <h4 className="font-semibold text-sm">Android Devices</h4>
+                  <p className="text-xs text-muted-foreground">Chrome, Firefox, or Samsung Internet</p>
+                </div>
+              </div>
+              <ol className="text-sm space-y-2 ml-2">
+                <li className="flex items-start gap-2">
+                  <span className="flex-shrink-0 w-5 h-5 bg-green-100 dark:bg-green-900/30 text-green-600 text-xs rounded-full flex items-center justify-center font-medium">1</span>
+                  <span>Open <a href="https://www.dotspark.in" target="_blank" rel="noopener noreferrer" className="font-semibold underline hover:text-green-700">https://www.dotspark.in</a> in your mobile browser</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="flex-shrink-0 w-5 h-5 bg-green-100 dark:bg-green-900/30 text-green-600 text-xs rounded-full flex items-center justify-center font-medium">2</span>
+                  <span>Tap the menu button (⋮) in your browser</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="flex-shrink-0 w-5 h-5 bg-green-100 dark:bg-green-900/30 text-green-600 text-xs rounded-full flex items-center justify-center font-medium">3</span>
+                  <span>Select "Install app" or "Add to Home screen"</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="flex-shrink-0 w-5 h-5 bg-green-100 dark:bg-green-900/30 text-green-600 text-xs rounded-full flex items-center justify-center font-medium">4</span>
+                  <span>Confirm installation when prompted</span>
+                </li>
+              </ol>
+            </div>
+
+            {/* iOS Instructions */}
+            <div className="border rounded-lg p-4 hover:bg-muted/50 transition-colors">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="flex-shrink-0 w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
+                  <Smartphone className="h-5 w-5 text-blue-600" />
+                </div>
+                <div>
+                  <h4 className="font-semibold text-sm">iPhone & iPad</h4>
+                  <p className="text-xs text-muted-foreground">Safari browser</p>
+                </div>
+              </div>
+              <ol className="text-sm space-y-2 ml-2">
+                <li className="flex items-start gap-2">
+                  <span className="flex-shrink-0 w-5 h-5 bg-blue-100 dark:bg-blue-900/30 text-blue-600 text-xs rounded-full flex items-center justify-center font-medium">1</span>
+                  <span>Open <a href="https://www.dotspark.in" target="_blank" rel="noopener noreferrer" className="font-semibold underline hover:text-blue-700">https://www.dotspark.in</a> in Safari browser</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="flex-shrink-0 w-5 h-5 bg-blue-100 dark:bg-blue-900/30 text-blue-600 text-xs rounded-full flex items-center justify-center font-medium">2</span>
+                  <span>Tap the Share button <Share className="inline h-3 w-3" /> at the bottom</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="flex-shrink-0 w-5 h-5 bg-blue-100 dark:bg-blue-900/30 text-blue-600 text-xs rounded-full flex items-center justify-center font-medium">3</span>
+                  <span>Scroll down and tap "Add to Home Screen"</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="flex-shrink-0 w-5 h-5 bg-blue-100 dark:bg-blue-900/30 text-blue-600 text-xs rounded-full flex items-center justify-center font-medium">4</span>
+                  <span>Tap "Add" in the top right corner</span>
+                </li>
+              </ol>
+            </div>
+
+            {/* Easy Alternative */}
+            <div className="border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/50 rounded-lg p-4">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="flex-shrink-0 w-10 h-10 bg-amber-100 dark:bg-amber-900/30 rounded-lg flex items-center justify-center">
+                  <Monitor className="h-5 w-5 text-amber-600" />
+                </div>
+                <div>
+                  <h4 className="font-semibold text-sm text-amber-800 dark:text-amber-200">Easy Alternative</h4>
+                  <p className="text-xs text-amber-700 dark:text-amber-300">Works on any mobile device</p>
+                </div>
+              </div>
+              <div className="text-sm text-amber-800 dark:text-amber-200 ml-2">
+                <p className="mb-2">Open <a href="https://www.dotspark.in" target="_blank" rel="noopener noreferrer" className="font-semibold underline hover:text-amber-900 dark:hover:text-amber-100">https://www.dotspark.in</a> in your mobile browser</p>
+                <p className="text-xs text-amber-700 dark:text-amber-300">You'll see a guide at the bottom to download the WebApp automatically</p>
+              </div>
+            </div>
+
+            <div className="pt-2">
+              <Button 
+                onClick={() => setInstallDialogOpen(false)} 
+                className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-emerald-600 hover:to-green-600"
+              >
+                Got it!
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}
