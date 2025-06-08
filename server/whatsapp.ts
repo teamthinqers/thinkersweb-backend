@@ -220,8 +220,8 @@ export async function processWhatsAppMessage(from: string, messageText: string):
       "Hi DotSpark",
       "got a few things on my mind",
       "need your thoughts",
-      "please connect my Neural Extension",
-      "connect my Neural Extension"
+      "please connect my DotSpark Extension",
+      "connect my DotSpark Extension"
     ];
     
     const isDefaultPrompt = defaultPromptPatterns.some(pattern => 
@@ -232,7 +232,7 @@ export async function processWhatsAppMessage(from: string, messageText: string):
     
     // Check for activation attempts including account linking
     const activationKeywords = [
-      'neural extension', 
+      'dotspark extension', 
       'connect my', 
       'dotspark account', 
       'link my account', 
@@ -242,11 +242,11 @@ export async function processWhatsAppMessage(from: string, messageText: string):
     ];
     const lowerMessage = messageText.toLowerCase();
     
-    // Check if this is an account linking request (neural extension activation)
+    // Check if this is an account linking request (DotSpark extension activation)
     // Use multiple patterns to catch variations of the activation message
     const linkingPatterns = [
       // Standard format from our UI
-      /please connect my Neural Extension via WhatsApp\.?\s*My DotSpark account is\s*([\w.%+-]+@[\w.-]+\.[A-Za-z]{2,})/i,
+      /please connect my DotSpark Extension via WhatsApp\.?\s*My DotSpark account is\s*([\w.%+-]+@[\w.-]+\.[A-Za-z]{2,})/i,
       
       // More permissive patterns to catch message variations
       /hey dotspark,? please connect.*account is\s*([\w.%+-]+@[\w.-]+\.[A-Za-z]{2,})/i,
@@ -298,7 +298,7 @@ export async function processWhatsAppMessage(from: string, messageText: string):
       };
     }
     
-    // Handle account linking requests (neural extension activation)
+    // Handle account linking requests (DotSpark extension activation)
     if (accountLinkMatch && accountLinkMatch[1]) {
       // Log the entire message for debugging
       console.log(`Full message for account linking: "${messageText}"`);

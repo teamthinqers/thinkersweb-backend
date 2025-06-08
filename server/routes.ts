@@ -131,7 +131,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: 'Phone number is required' });
       }
       
-      console.log(`Registering WhatsApp neural extension for: ${phoneNumber}`);
+      console.log(`Registering WhatsApp DotSpark extension for: ${phoneNumber}`);
       
       // Register directly without verification
       const result = await registerWhatsAppUser(userId, phoneNumber);
@@ -139,14 +139,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (result.success) {
         res.status(200).json({
           success: true,
-          message: "Your neural extension is now activated. You can now chat with DotSpark directly through WhatsApp."
+          message: "Your DotSpark extension is now activated. You can now chat with DotSpark directly through WhatsApp."
         });
       } else {
         res.status(400).json({ success: false, error: result.message });
       }
     } catch (err) {
       console.error("WhatsApp direct registration error:", err);
-      res.status(500).json({ success: false, error: 'Failed to register for WhatsApp neural extension' });
+      res.status(500).json({ success: false, error: 'Failed to register for WhatsApp DotSpark extension' });
     }
   });
 
