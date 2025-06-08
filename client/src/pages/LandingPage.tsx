@@ -544,7 +544,7 @@ export default function LandingPage() {
                   <div className="flex items-center justify-center w-full px-4">
                     <div className="flex items-center justify-center w-full max-w-[480px] mx-auto">
                       <span className="font-sans tracking-normal text-center bg-clip-text text-transparent bg-gradient-to-r from-amber-700 via-amber-600 to-amber-500 dark:from-amber-400 dark:via-amber-300 dark:to-amber-200 whitespace-nowrap">
-                        For those who still thin<span className="relative inline-block ml-2 px-3 py-2 bg-gradient-to-br from-amber-600 to-amber-700 dark:from-amber-500 dark:to-amber-600 text-white font-bold rounded-lg shadow-lg transform rotate-1 hover:rotate-0 transition-transform duration-300 border-2 border-amber-500/20">Q</span>
+                        For the OG Thin<span className="relative inline-block ml-2 px-3 py-2 bg-gradient-to-br from-amber-600 to-amber-700 dark:from-amber-500 dark:to-amber-600 text-white font-bold rounded-lg shadow-lg transform rotate-1 hover:rotate-0 transition-transform duration-300 border-2 border-amber-500/20">Q</span>ers
                       </span>
                     </div>
                   </div>
@@ -557,7 +557,7 @@ export default function LandingPage() {
             <div className="text-lg md:text-xl text-muted-foreground mt-4 md:mt-4 mb-4 max-w-2xl mx-auto text-center px-4">
               <p className="leading-tight md:leading-normal max-w-2xl mx-auto">
                 Built on inspirations from <span className="font-semibold text-amber-700 dark:text-amber-400">ancient Indian wisdom</span>,<br className="hidden md:inline" /> 
-                to preserve and sharpen your <span className="font-semibold text-amber-700 dark:text-amber-400">Natural Intelligence</span> in a synthetic world.
+                to preserve and sharpen your <span className="font-semibold text-amber-700 dark:text-amber-400">Natural Intelligence</span> in an AI Driven World.
               </p>
             </div>
             
