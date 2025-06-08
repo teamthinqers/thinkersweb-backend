@@ -569,8 +569,8 @@ export default function LandingPage() {
             {/* Action buttons with explanation boxes - Centered */}
             {user ? (
               <Button size="lg" asChild className="w-full md:w-2/3 relative overflow-hidden group mt-1">
-                <Link href="/dashboard" className="flex items-center justify-center">
-                  <span className="relative z-10">Go to Dashboard</span>
+                <Link href="/sectioned-dotspark-tuning" className="flex items-center justify-center">
+                  <span className="relative z-10">Go to My DotSpark</span>
                   <ArrowRight className="ml-2 h-5 w-5 relative z-10 group-hover:translate-x-1 transition-transform" />
                   <div className="absolute inset-0 bg-gradient-to-r from-primary to-primary/80 opacity-90 group-hover:opacity-100 transition-opacity"></div>
                 </Link>
