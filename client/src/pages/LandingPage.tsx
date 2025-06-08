@@ -689,7 +689,7 @@ export default function LandingPage() {
               <div className="mt-auto pt-4">
                 <Button 
                   onClick={() => setInstallDialogOpen(true)}
-                  className="w-full !bg-gradient-to-r !from-orange-600 !to-amber-600 hover:!from-amber-600 hover:!to-orange-600 text-white border-0 shadow-md hover:shadow-lg transition-all duration-300"
+                  className="w-full !bg-gradient-to-r !from-amber-500 !to-orange-600 hover:!from-orange-600 hover:!to-amber-500 text-white border-0 shadow-md hover:shadow-lg transition-all duration-300"
                 >
                   <Download className="h-5 w-5 mr-2" />
                   <span>Install App</span>
