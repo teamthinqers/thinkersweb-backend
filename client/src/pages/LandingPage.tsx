@@ -126,7 +126,7 @@ export default function LandingPage() {
       setIsNeuraActivated(activated);
       
       // Check if all setup steps are complete and mark setup as complete if needed
-      if (activated && user && isWhatsAppConnected) {
+      if (activated && user && isWhatsAppConnected && isPWAInstalled) {
         neuraStorage.markSetupCompleted();
       }
     };
@@ -152,7 +152,7 @@ export default function LandingPage() {
     window.addEventListener('storage', storageHandler);
     
     // Check if all steps are complete on mount/update and mark setup complete if needed
-    if (isNeuraActivated && user && isWhatsAppConnected && !isSetupCompleted) {
+    if (isNeuraActivated && user && isWhatsAppConnected && isPWAInstalled && !isSetupCompleted) {
       neuraStorage.markSetupCompleted();
     }
     
@@ -162,7 +162,33 @@ export default function LandingPage() {
       unsubscribeActivation();
       unsubscribeSetup();
     };
-  }, [user, isNeuraActivated, isWhatsAppConnected, isSetupCompleted]);
+  }, [user, isNeuraActivated, isWhatsAppConnected, isPWAInstalled, isSetupCompleted]);
+
+  // Add PWA installation event listeners
+  useEffect(() => {
+    const handleDisplayModeChange = () => {
+      const isInstalled = window.matchMedia('(display-mode: standalone)').matches || 
+                         (window.navigator as any).standalone === true ||
+                         document.referrer.includes('android-app://');
+      setIsPWAInstalled(isInstalled);
+    };
+
+    // Listen for display mode changes
+    const mediaQuery = window.matchMedia('(display-mode: standalone)');
+    mediaQuery.addEventListener('change', handleDisplayModeChange);
+
+    // Listen for appinstalled event (when PWA is installed)
+    const handleAppInstalled = () => {
+      setIsPWAInstalled(true);
+    };
+
+    window.addEventListener('appinstalled', handleAppInstalled);
+
+    return () => {
+      mediaQuery.removeEventListener('change', handleDisplayModeChange);
+      window.removeEventListener('appinstalled', handleAppInstalled);
+    };
+  }, []);
   
   // For WhatsApp activation status
   const isActiveInLocalStorage = localStorage.getItem('whatsapp_activated') === 'true';
@@ -756,7 +782,7 @@ export default function LandingPage() {
                   <span>100% Complete</span>
                 </span>
               ) : (
-                <span>{user ? (isNeuraActivated ? "100%" : "50%") : "0%"} Complete</span>
+                <span>{user ? (isNeuraActivated ? (isPWAInstalled ? "100%" : "67%") : "33%") : "0%"} Complete</span>
               )}
             </div>
             
@@ -775,7 +801,7 @@ export default function LandingPage() {
                   width: isSetupCompleted 
                     ? "100%" 
                     : user 
-                      ? (isNeuraActivated ? "100%" : "50%") 
+                      ? (isNeuraActivated ? (isPWAInstalled ? "100%" : "67%") : "33%") 
                       : "0%",
                   boxShadow: isSetupCompleted 
                     ? "0 0 15px rgba(239, 68, 68, 0.7)" 
@@ -838,32 +864,38 @@ export default function LandingPage() {
                   )}
                 </div>
                 
-                {/* Step 3: Download WebApp */}
+                {/* Step 3: Install Web App */}
                 <div className="flex flex-col items-center">
                   <div className={`w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center shadow-lg mb-3 transition-all duration-500
-                    ${isNeuraActivated ? 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white scale-110' : 
-                    user ? 'bg-card border-2 border-blue-500 text-blue-500 animate-pulse' : 
+                    ${isPWAInstalled ? 'bg-gradient-to-br from-emerald-500 to-green-600 text-white scale-110' : 
+                    isNeuraActivated ? 'bg-card border-2 border-emerald-500 text-emerald-500 animate-pulse' : 
                     'bg-card border-2 border-muted text-muted-foreground'}`}>
-                    {isNeuraActivated ? (
+                    {isPWAInstalled ? (
                       <CheckCircle className="h-6 w-6 md:h-8 md:w-8" />
                     ) : (
-                      <div className="rounded-full bg-blue-500/10 w-8 h-8 md:w-10 md:h-10 flex items-center justify-center">
+                      <div className="rounded-full bg-emerald-500/10 w-8 h-8 md:w-10 md:h-10 flex items-center justify-center">
                         <span className="font-bold text-lg">3</span>
                       </div>
                     )}
                   </div>
                   <span className={`font-medium text-sm
-                    ${isNeuraActivated ? 'text-blue-600' : user ? 'text-blue-500/70' : 'text-muted-foreground'}`}>
+                    ${isPWAInstalled ? 'text-emerald-600' : isNeuraActivated ? 'text-emerald-500' : 'text-muted-foreground'}`}>
                     Install Web App
                   </span>
-                  {isNeuraActivated && (
-                    <div className="animate-pulse mt-1 text-xs text-blue-600 flex items-center">
+                  {isPWAInstalled && (
+                    <div className="animate-pulse mt-1 text-xs text-emerald-600 flex items-center">
                       <CheckCircle className="h-3 w-3 mr-1" />
-                      <span>Ready to install</span>
+                      <span>Installed</span>
                     </div>
                   )}
-                  {user && !isNeuraActivated && (
-                    <div className="mt-1 text-xs text-blue-500/70 flex items-center">
+                  {isNeuraActivated && !isPWAInstalled && (
+                    <div className="mt-1 text-xs text-emerald-500 flex items-center">
+                      <ArrowRight className="h-3 w-3 mr-1" />
+                      <span>Next step</span>
+                    </div>
+                  )}
+                  {!isNeuraActivated && (
+                    <div className="mt-1 text-xs text-muted-foreground flex items-center">
                       <ArrowRight className="h-3 w-3 mr-1" />
                       <span>Coming soon</span>
                     </div>
