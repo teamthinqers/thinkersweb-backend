@@ -208,13 +208,9 @@ function Router() {
       <Route path="/neura-tuning-cognitive" component={NeuraTuningCognitive} />
       <Route path="/cognitive-shield-config" component={NeuraTuningCognitive} />
 
-      {/* Legacy routes - all redirecting to My Neura page */}
-      <Route path="/dotspark-tuning">
-        {() => <MyNeura />}
-      </Route>
-      <Route path="/sectioned-dotspark-tuning">
-        {() => <MyNeura />}
-      </Route>
+      {/* DotSpark tuning main page */}
+      <Route path="/dotspark-tuning" component={SectionedDotSparkTuningPage} />
+      <Route path="/sectioned-dotspark-tuning" component={SectionedDotSparkTuningPage} />
       <Route path="/neural-tuning">
         {() => <MyNeura />}
       </Route>
