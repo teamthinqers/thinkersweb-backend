@@ -381,36 +381,29 @@ export default function LandingPage() {
                     
                     <div className="flex flex-col gap-4">
                       <SheetClose asChild>
-                        <Link href="/" className="py-2 hover:text-primary transition-colors">
-                          Home
+                        <Link href="/" className="py-2 hover:text-primary transition-colors flex items-center gap-2">
+                          <Sparkles className="h-4 w-4 text-primary" />
+                          <span>Home</span>
                         </Link>
                       </SheetClose>
                       
                       <SheetClose asChild>
-                        <Link href="/dashboard" className="py-2 hover:text-primary transition-colors">
-                          Dashboard
-                        </Link>
+                        <div onClick={() => setLocation("/sectioned-dotspark-tuning")} className="py-2 hover:text-primary transition-colors flex items-center gap-2 cursor-pointer">
+                          <Sparkles className="h-4 w-4 text-amber-600" />
+                          <span className="font-medium bg-gradient-to-r from-amber-700 to-orange-800 bg-clip-text text-transparent">My DotSpark</span>
+                        </div>
                       </SheetClose>
                       
                       <SheetClose asChild>
-                        <div onClick={() => setLocation("/my-neura")} className="py-2 hover:text-primary transition-colors flex items-center gap-2">
-                          <div className="flex items-center">
-                            <div className="relative">
-                              <Brain className="h-4 w-4 text-indigo-500" />
-                              {isNeuraActivated && (
-                                <div className="absolute -top-1 -right-1 h-2 w-2 bg-orange-500 rounded-full"></div>
-                              )}
-                            </div>
+                        <div onClick={() => setLocation("/dashboard")} className="py-2 hover:text-primary transition-colors flex items-center gap-2 cursor-pointer">
+                          <div className="relative">
+                            <Brain className="h-4 w-4" />
+                            {isNeuraActivated && (
+                              <div className="absolute -top-1 -right-1 h-2 w-2 bg-green-500 rounded-full"></div>
+                            )}
                           </div>
                           <span>My Neura</span>
                         </div>
-                      </SheetClose>
-
-                      <SheetClose asChild>
-                        <a href="#setup-dotspark" className="py-2 hover:text-primary transition-colors flex items-center gap-2 relative">
-                          <Sparkles className="h-4 w-4 text-primary" />
-                          <span>Setup DotSpark</span>
-                        </a>
                       </SheetClose>
                     </div>
                     
