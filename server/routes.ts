@@ -1149,5 +1149,72 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // CogniShield - Cognitive Alignment Monitoring API endpoints
+  app.post(`${apiPrefix}/cognishield/analyze`, isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const { aiResponse, userInput, cogniProfile } = req.body;
+      
+      if (!aiResponse || !userInput || !cogniProfile) {
+        return res.status(400).json({ error: 'AI response, user input, and CogniShield profile are required' });
+      }
+
+      const analysis = await analyzeCognitiveAlignment(aiResponse, userInput, cogniProfile);
+      
+      res.json({
+        success: true,
+        analysis
+      });
+    } catch (error) {
+      console.error('Error analyzing cognitive alignment:', error);
+      res.status(500).json({ error: 'Failed to analyze cognitive alignment' });
+    }
+  });
+
+  app.post(`${apiPrefix}/cognishield/monitor`, isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const { messages, cogniProfile } = req.body;
+      
+      if (!messages || !cogniProfile) {
+        return res.status(400).json({ error: 'Messages and CogniShield profile are required' });
+      }
+
+      const monitoring = await monitorConversationAlignment(messages, cogniProfile);
+      
+      res.json({
+        success: true,
+        monitoring
+      });
+    } catch (error) {
+      console.error('Error monitoring conversation alignment:', error);
+      res.status(500).json({ error: 'Failed to monitor conversation alignment' });
+    }
+  });
+
+  // Enhanced chat endpoint with CogniShield integration
+  app.post(`${apiPrefix}/chat/cognishield`, isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const { userInput, messages = [], cogniProfile, monitorAlignment = true } = req.body;
+      
+      if (!userInput) {
+        return res.status(400).json({ error: 'User input is required' });
+      }
+
+      const result = await generateChatResponse(
+        userInput, 
+        messages, 
+        cogniProfile, 
+        monitorAlignment
+      );
+      
+      res.json({
+        success: true,
+        ...result
+      });
+    } catch (error) {
+      console.error('Error generating CogniShield chat response:', error);
+      res.status(500).json({ error: 'Failed to generate chat response' });
+    }
+  });
+
   return httpServer;
 }

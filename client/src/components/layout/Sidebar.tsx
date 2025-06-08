@@ -6,7 +6,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { 
   Home, 
   Brain,
-  Sparkles
+  Sparkles,
+  Shield
 } from "lucide-react";
 import { neuraStorage } from "@/lib/neuraStorage";
 

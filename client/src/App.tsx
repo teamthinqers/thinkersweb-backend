@@ -25,6 +25,7 @@ import NeuraTuningCognitive from "@/pages/NeuraTuningCognitive";
 import NeuraTuningExpertise from "@/pages/NeuraTuningExpertise";
 import NeuraTuningLearning from "@/pages/NeuraTuningLearning";
 import CognitiveShieldConfig from "@/pages/CognitiveShieldConfig";
+import CogniShieldMonitor from "@/pages/CogniShieldMonitor";
 import DotSparkTuningPage from "@/pages/DotSparkTuningPage";
 import DotSparkCapacityPage from "@/pages/DotSparkCapacityPage";
 import SectionedDotSparkTuningPage from "@/pages/SectionedDotSparkTuningPage";
@@ -206,6 +207,7 @@ function Router() {
       <Route path="/neura-tuning/expertise" component={NeuraTuningExpertise} />
       <Route path="/neura-tuning-cognitive" component={NeuraTuningCognitive} />
       <Route path="/cognitive-shield-config" component={NeuraTuningCognitive} />
+      <Route path="/cognishield-monitor" component={CogniShieldMonitor} />
       {/* Legacy routes - all redirecting to My Neura page */}
       <Route path="/dotspark-tuning">
         {() => <MyNeura />}
