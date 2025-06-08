@@ -594,13 +594,13 @@ export default function LandingPage() {
                     </Button>
                   ) : (
                     <Button size="lg" asChild className="w-full mb-3 relative overflow-hidden bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-600 border-0 shadow-lg shadow-amber-600/20 hover:shadow-amber-700/30 transition-all duration-300 transform hover:scale-105 group">
-                      <a href="#setup-dotspark" className="flex items-center justify-center relative z-10">
+                      <Link href="/sectioned-dotspark-tuning" className="flex items-center justify-center relative z-10">
                         <Sparkles className="mr-2 h-5 w-5" />
-                        <span>Setup DotSpark</span>
+                        <span>Activate DotSpark</span>
                         <div className="absolute top-0 left-0 w-full h-full overflow-hidden">
                           <div className="h-4 w-4 absolute top-1/2 left-3 transform -translate-y-1/2 text-white opacity-80 animate-pulse" />
                         </div>
-                      </a>
+                      </Link>
                     </Button>
                   )}
                   
