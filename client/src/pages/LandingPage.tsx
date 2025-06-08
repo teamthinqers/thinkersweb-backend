@@ -298,7 +298,7 @@ export default function LandingPage() {
                       setContactDialogOpen(true);
                     });
                 }}
-                className="bg-[#25D366] hover:bg-[#128C7E] text-white border-transparent"
+                className="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-orange-600 hover:to-amber-600 text-white border-transparent"
               >
                 <MessageSquare className="h-4 w-4 mr-2" />
                 Ask DotSpark
@@ -455,7 +455,7 @@ export default function LandingPage() {
                         <SheetClose asChild>
                           <Button 
                             variant="default"
-                            className="w-full bg-[#25D366] hover:bg-[#128C7E] text-white border-transparent"
+                            className="w-full bg-gradient-to-r from-amber-600 to-orange-600 hover:from-orange-600 hover:to-amber-600 text-white border-transparent"
                             onClick={() => {
                               // Fetch WhatsApp number first
                               fetch('/api/whatsapp/contact')
@@ -607,7 +607,7 @@ export default function LandingPage() {
                   <Button
                     size="lg"
                     onClick={() => setContactDialogOpen(true)}
-                    className="w-full mb-3 relative overflow-hidden bg-gradient-to-r from-[#25D366] to-[#128C7E] hover:from-[#128C7E] hover:to-[#25D366] text-white border-0 shadow-lg shadow-green-500/20 hover:shadow-green-600/30 transition-all duration-300 transform hover:scale-105"
+                    className="w-full mb-3 relative overflow-hidden bg-gradient-to-r from-amber-600 to-orange-600 hover:from-orange-600 hover:to-amber-600 text-white border-0 shadow-lg shadow-orange-500/20 hover:shadow-orange-600/30 transition-all duration-300 transform hover:scale-105"
                   >
                     <MessageCircle className="h-5 w-5 mr-2" />
                     <span>Ask DotSpark</span>
