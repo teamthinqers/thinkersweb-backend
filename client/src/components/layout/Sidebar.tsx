@@ -32,7 +32,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isMobile, onNewEntry
     { icon: Home, label: "Home", path: "/" },
     { icon: Sparkles, label: "My DotSpark", path: "/sectioned-dotspark-tuning", isSpecial: true, showActivationSpark: true },
     { icon: Brain, label: "My Neura", path: "/dashboard", showActivationDot: true },
-    { icon: Shield, label: "CogniShield Monitor", path: "/cognishield-monitor", isAdvanced: true },
   ];
 
   const sidebarClasses = isMobile
