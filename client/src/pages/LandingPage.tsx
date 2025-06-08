@@ -864,115 +864,41 @@ export default function LandingPage() {
 
       {/* Visual showcase section replacing the WhatsApp mockup */}
       
-      {/* Cognitive Enhancement Section */}
+      {/* Why DotSpark Section */}
       <section className="py-24 relative overflow-hidden bg-gradient-to-b from-background to-muted/30">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Advanced <span className="gradient-heading">Cognitive Enhancement</span> Technology</h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              DotSpark functions as your neural bridge to professional knowledge, continuously learning from industry resources and adapting to your thinking patterns.
-            </p>
-          </div>
-          
-          <div className="grid md:grid-cols-2 gap-16 items-center">
-            {/* DotSpark Chip Visualization */}
-            <div className="relative order-2 md:order-1">
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-secondary/5 rounded-xl transform rotate-3"></div>
-              <div className="relative bg-black/5 dark:bg-white/5 border rounded-xl p-6 shadow-lg overflow-hidden h-[400px]">
-                {/* Brain Nodes and Connections Visualization */}
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[320px] h-[320px]">
-                  {/* Central Node */}
-                  <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
-                                  w-12 h-12 rounded-full bg-gradient-to-br from-primary to-secondary 
-                                  shadow-lg shadow-primary/20 z-20 animate-pulse">
-                    <div className="absolute inset-0 rounded-full border-4 border-white/10"></div>
-                  </div>
-                  
-                  {/* Dot nodes with connections */}
-                  <div className="absolute top-[15%] left-[20%] w-6 h-6 rounded-full 
-                                 bg-primary/80 shadow-sm shadow-primary/20 animate-float">
-                    <div className="absolute h-[100px] w-[1px] bg-gradient-to-b from-primary/80 to-transparent 
-                                   origin-top top-full left-1/2 transform -translate-x-1/2 -rotate-30"></div>
-                  </div>
-                  
-                  <div className="absolute top-[25%] right-[15%] w-5 h-5 rounded-full 
-                                 bg-secondary/80 shadow-sm shadow-secondary/20 animate-float-slow">
-                    <div className="absolute h-[120px] w-[1px] bg-gradient-to-b from-secondary/80 to-transparent 
-                                   origin-top top-full right-1/2 transform translate-x-1/2 rotate-25"></div>
-                  </div>
-                  
-                  <div className="absolute bottom-[20%] left-[25%] w-4 h-4 rounded-full 
-                                 bg-primary/70 shadow-sm shadow-primary/20 animate-float-delay">
-                    <div className="absolute h-[100px] w-[1px] bg-gradient-to-t from-primary/70 to-transparent 
-                                   origin-bottom bottom-full left-1/2 transform -translate-x-1/2 rotate-35"></div>
-                  </div>
-                  
-                  <div className="absolute bottom-[15%] right-[20%] w-6 h-6 rounded-full 
-                                 bg-secondary/70 shadow-sm shadow-secondary/20 animate-float-delay-slow">
-                    <div className="absolute h-[130px] w-[1px] bg-gradient-to-t from-secondary/70 to-transparent 
-                                   origin-bottom bottom-full right-1/2 transform translate-x-1/2 -rotate-30"></div>
-                  </div>
-                  
-                  {/* Sparks */}
-                  <div className="absolute top-[40%] left-[40%] w-4 h-4 rounded-full 
-                                 bg-yellow-300/90 shadow-lg shadow-yellow-300/30 animate-sparkling">
-                    <div className="absolute inset-0 rounded-full border-2 border-yellow-200/30"></div>
-                  </div>
-                  
-                  <div className="absolute bottom-[40%] right-[35%] w-3 h-3 rounded-full 
-                                 bg-yellow-300/90 shadow-lg shadow-yellow-300/30 animate-sparkling-delayed">
-                    <div className="absolute inset-0 rounded-full border-2 border-yellow-200/30"></div>
-                  </div>
-                  
-                  {/* Connection lines */}
-                  <div className="absolute inset-0 rounded-full border-2 border-primary/20 animate-ping-slow"></div>
-                  <div className="absolute inset-0 rounded-full border-4 border-primary/10 animate-ping-slower"></div>
-                </div>
-                
-                {/* Circuit-like patterns in background */}
-                <div className="absolute bottom-0 left-0 w-full h-1/3 opacity-20">
-                  <div className="absolute bottom-8 left-8 w-[200px] h-[1px] bg-primary"></div>
-                  <div className="absolute bottom-8 left-8 w-[1px] h-[40px] bg-primary"></div>
-                  <div className="absolute bottom-8 right-8 w-[150px] h-[1px] bg-secondary"></div>
-                  <div className="absolute bottom-8 right-8 w-[1px] h-[30px] bg-secondary"></div>
-                  <div className="absolute bottom-16 left-24 w-[80px] h-[1px] bg-primary"></div>
-                </div>
-              </div>
-            </div>
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-8">Why <span className="gradient-heading">DotSpark</span>?</h2>
             
-            {/* Key Features */}
-            <div className="space-y-8 order-1 md:order-2">
-              <div className="space-y-6">
-                <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mt-0.5">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-lg">Professional Knowledge Aggregation</h3>
-                    <p className="text-muted-foreground">DotSpark continuously learns from top business books, articles, and resources in your field.</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mt-0.5">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="14 2 18 6 7 17 3 17 3 13 14 2"></polygon><line x1="3" y1="22" x2="21" y2="22"></line></svg>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-lg">Framework Generation</h3>
-                    <p className="text-muted-foreground">Get customized decision frameworks and templates tailored to your specific professional challenges.</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mt-0.5">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z"></path></svg>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-lg">Adaptive Intelligence</h3>
-                    <p className="text-muted-foreground">Your neural mirror learns from your interactions, getting smarter and more personalized over time.</p>
-                  </div>
-                </div>
+            <div className="max-w-4xl mx-auto space-y-6 text-lg leading-relaxed">
+              <p className="text-foreground font-medium">
+                Human evolution was never shaped by the masses — it was led by the few who chose to think.
+              </p>
+              
+              <p className="text-muted-foreground">
+                From fire to frameworks, progress has always come from those who questioned, connected, and carved their own path.
+              </p>
+              
+              <p className="text-foreground font-semibold text-xl">
+                DotSpark is built for them.
+              </p>
+              
+              <div className="space-y-3 text-muted-foreground">
+                <p>Not for the ones who let AI think for them.</p>
+                <p>Not for the ones who follow default prompts.</p>
               </div>
+              
+              <p className="text-foreground font-medium text-xl">
+                It's for the OG Thinkers, those who believe human intelligence is still the sharpest edge.
+              </p>
+              
+              <div className="space-y-3 text-muted-foreground">
+                <p>AI isn't the enemy. It should assist, not replace. Support, not decide.</p>
+              </div>
+              
+              <p className="text-foreground font-bold text-xl bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
+                DotSpark keeps thinking where it belongs — with you.
+              </p>
             </div>
           </div>
         </div>
