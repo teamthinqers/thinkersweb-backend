@@ -1570,7 +1570,7 @@ export default function LandingPage() {
                 </div>
               </div>
               <div className="text-sm text-amber-800 dark:text-amber-200 ml-2">
-                <p className="mb-2">Open <span className="font-semibold">dotspark.in</span> in your mobile browser</p>
+                <p className="mb-2">Open <a href="https://dotspark.in" target="_blank" rel="noopener noreferrer" className="font-semibold underline hover:text-amber-900 dark:hover:text-amber-100">https://dotspark.in</a> in your mobile browser</p>
                 <p className="text-xs text-amber-700 dark:text-amber-300">You'll see a guide at the bottom to download the WebApp automatically</p>
               </div>
             </div>
