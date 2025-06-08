@@ -710,7 +710,7 @@ export default function LandingPage() {
               <div className="absolute top-6 right-6 flex items-center justify-center w-8 h-8 rounded-full bg-blue-500/80 text-white font-bold text-lg">
                 3
               </div>
-              <h3 className="text-xl font-semibold mb-2">Download WebApp</h3>
+              <h3 className="text-xl font-semibold mb-2">Install Web App</h3>
               <p className="text-muted-foreground text-sm">Install DotSpark App on your mobile for better experience.</p>
               <div className="mt-auto pt-4">
                 <Button 
@@ -846,7 +846,7 @@ export default function LandingPage() {
                   </div>
                   <span className={`font-medium text-sm
                     ${isNeuraActivated ? 'text-blue-600' : user ? 'text-blue-500/70' : 'text-muted-foreground'}`}>
-                    Download WebApp
+                    Install Web App
                   </span>
                   {isNeuraActivated && (
                     <div className="animate-pulse mt-1 text-xs text-blue-600 flex items-center">
