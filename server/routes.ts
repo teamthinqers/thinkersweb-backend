@@ -9,7 +9,6 @@ import {
   insertConnectionSchema, 
   insertSharedEntrySchema, 
   sharedEntries, 
-  entries,
   entryTags, 
   users, 
   whatsappOtpVerifications,
@@ -17,11 +16,6 @@ import {
   type User 
 } from "@shared/schema";
 import { processEntryFromChat, generateChatResponse, type Message } from "./chat";
-import { 
-  analyzeCognitiveAlignment, 
-  monitorConversationAlignment, 
-  type CogniShieldProfile 
-} from './cogni-shield';
 import { connectionsService } from "./connections";
 import { db } from "@db";
 import { setupAuth, isAuthenticated } from "./auth";
@@ -31,6 +25,8 @@ import {
   registerWhatsAppUser,
   unregisterWhatsAppUser,
   getWhatsAppStatus,
+  requestWhatsAppOTP,
+  verifyWhatsAppOTP
 } from "./whatsapp";
 import { eq, inArray, and, lt, desc } from "drizzle-orm";
 import twilio from "twilio";
@@ -52,1191 +48,1132 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/api/health', (req, res) => {
     res.status(200).json({ status: 'ok', time: new Date().toISOString() });
   });
-
-  // Invite code validation endpoint
-  app.post('/api/validate-invite-code', (req: Request, res: Response) => {
-    const { inviteCode } = req.body;
-    
-    if (!inviteCode || typeof inviteCode !== 'string') {
-      return res.status(400).json({ 
-        message: 'Invite code is required' 
-      });
-    }
-    
-    // Check if the invite code matches the expected value
-    if (inviteCode.trim().toUpperCase() === 'DOTSPARKSOCIAL') {
-      return res.status(200).json({ 
-        message: 'Invite code is valid',
-        success: true 
-      });
-    } else {
-      return res.status(401).json({ 
-        message: 'Invalid invite code. Please check your code and try again.' 
-      });
-    }
-  });
   
-  // Special routes for PWA files to ensure correct MIME types
-  app.get('/service-worker.js', (req, res) => {
-    res.setHeader('Content-Type', 'application/javascript');
-    res.sendFile('service-worker.js', { root: './public' });
-  });
-  
-  app.get('/manifest.json', (req, res) => {
-    res.setHeader('Content-Type', 'application/json');
-    res.sendFile('manifest.json', { root: './public' });
-  });
-  
-  app.get('/offline.html', (req, res) => {
-    res.setHeader('Content-Type', 'text/html');
-    res.sendFile('offline.html', { root: './public' });
-  });
-
-  // Get entries endpoint - uses auth when available, fallback to demo user
-  app.get(`${apiPrefix}/entries`, async (req: Request, res: Response) => {
-    try {
-      // Allow direct user ID specification for debugging/special pages
-      const directUserId = req.query.directUserId ? parseInt(req.query.directUserId as string) : undefined;
-      
-      // Get the authenticated user ID if available, otherwise fallback to demo user
-      let userId = 1; // Demo user ID as fallback
-      
-      if (directUserId) {
-        // Use the direct user ID if specified
-        userId = directUserId;
-        console.log(`⭐️ Using direct user ID: ${userId} from query parameter`);
-      } else if (req.isAuthenticated && req.isAuthenticated() && (req as AuthenticatedRequest).user?.id) {
-        // Otherwise use the authenticated user ID
-        userId = (req as AuthenticatedRequest).user.id;
-        console.log(`⭐️ Getting entries for authenticated user ID: ${userId}`);
-      } else {
-        console.log(`⭐️ Using demo user ID: ${userId} (no authenticated user)`);
-      }
-
-      // Parse query parameters
-      const limit = req.query.limit ? parseInt(req.query.limit as string) : 10;
-      const offset = req.query.offset ? parseInt(req.query.offset as string) : 0;
-      const categoryId = req.query.categoryId ? parseInt(req.query.categoryId as string) : undefined;
-      const tagIds = req.query.tagIds 
-        ? (req.query.tagIds as string).split(',').map(id => parseInt(id)) 
-        : undefined;
-      const searchQuery = req.query.search as string | undefined;
-      const isFavorite = req.query.favorite 
-        ? req.query.favorite === 'true' 
-        : undefined;
-      const sortBy = req.query.sortBy as string || 'createdAt';
-      const sortOrder = req.query.sortOrder as 'asc' | 'desc' || 'desc';
-      
-      // Add extensive logging to debug issues
-      console.log(`📝 Entries request details:
-      - User ID: ${userId}
-      - Limit: ${limit}, Offset: ${offset}
-      - Category ID: ${categoryId || 'none'}
-      - Sort: ${sortBy} ${sortOrder}
-      - Search: ${searchQuery || 'none'}
-      - Favorite: ${isFavorite !== undefined ? String(isFavorite) : 'not specified'}`);
-      
-      // Get entries with user ID filter
-      const result = await storage.getAllEntries({
-        userId,
-        categoryId,
-        tagIds,
-        searchQuery,
-        isFavorite,
-        limit,
-        offset,
-        sortBy,
-        sortOrder
-      });
-
-      console.log(`📋 Found ${result.entries.length} entries (total: ${result.total})`);
-      
-      // For debugging, log first entry if available
-      if (result.entries.length > 0) {
-        console.log(`📄 First entry: ID ${result.entries[0].id}, Title: ${result.entries[0].title}`);
-      }
-
-      res.json(result);
-    } catch (error) {
-      console.error('Error getting entries:', error);
-      res.status(500).json({ error: 'Failed to get entries' });
-    }
-  });
-
-  // Get single entry endpoint - temporarily bypassing authentication for debugging
-  app.get(`${apiPrefix}/entries/:id`, async (req: Request, res: Response) => {
-    try {
-      const entryId = parseInt(req.params.id);
-      // Temporary hardcoded userId for debugging
-      const userId = 1; // Assuming user ID 1 exists for testing
-
-      const entry = await storage.getEntryWithDetails(entryId);
-      
-      if (!entry) {
-        return res.status(404).json({ error: 'Entry not found' });
-      }
-      
-      // Make sure the user can only access their own entries
-      if (entry.userId !== userId) {
-        return res.status(403).json({ error: 'Access denied' });
-      }
-      
-      res.json(entry);
-    } catch (error) {
-      console.error('Error getting entry:', error);
-      res.status(500).json({ error: 'Failed to get entry' });
-    }
-  });
-  
-  // Create entry endpoint - uses auth when available, fallback to demo user
-  app.post(`${apiPrefix}/entries`, async (req: Request, res: Response) => {
-    try {
-      // Get the authenticated user ID if available, otherwise fallback to demo user
-      let userId = 1; // Demo user ID as fallback
-      
-      // Check if this is an authenticated request
-      if (req.isAuthenticated && req.isAuthenticated() && (req as AuthenticatedRequest).user?.id) {
-        userId = (req as AuthenticatedRequest).user.id;
-        console.log(`⭐️ Creating entry for authenticated user ID: ${userId}`);
-      } else {
-        console.log(`⭐️ Creating entry for demo user ID: ${userId} (no authenticated user)`);
-      }
-      
-      const { title, content, categoryId, tagIds, visibility, isFavorite } = req.body;
-      
-      if (!content) {
-        return res.status(400).json({ error: 'Content is required' });
-      }
-      
-      console.log(`⭐️ Creating entry with title: "${title?.substring(0, 30) || 'Untitled'}" for user ${userId}`);
-
-      // Create entry with user ID
-      const entryData = {
-        userId,
-        title: title || `Entry - ${new Date().toLocaleString()}`,
-        content,
-        categoryId: categoryId || null,
-        visibility: visibility || 'private',
-        isFavorite: isFavorite || false
-      };
-      
-      // Insert entry and get the created entry back
-      const [newEntry] = await db.insert(entries).values(entryData).returning();
-      console.log(`⭐️ Created entry ID: ${newEntry.id}`);
-      
-      // If tags were provided, associate them with the entry
-      if (tagIds && Array.isArray(tagIds) && tagIds.length > 0) {
-        const entryTagValues = tagIds.map(tagId => ({
-          entryId: newEntry.id,
-          tagId
-        }));
-        
-        try {
-          await db.insert(entryTags).values(entryTagValues);
-          console.log(`⭐️ Added ${tagIds.length} tags to entry ID: ${newEntry.id}`);
-        } catch (tagError) {
-          console.error(`Error adding tags to entry: ${tagError}`);
-          // Continue even if tag association fails
-        }
-      }
-      
-      res.status(201).json(newEntry);
-    } catch (error) {
-      console.error('Error creating entry:', error);
-      res.status(500).json({ error: 'Failed to create entry' });
-    }
-  });
-
-  // Setup authentication middleware
+  // Set up authentication
   setupAuth(app);
 
-  // Firebase authentication endpoint - creates/updates user on login
-  app.post(`${apiPrefix}/auth/firebase`, async (req: Request, res: Response) => {
+  // Error handler middleware for API routes
+  const handleApiError = (err: any, res: any) => {
+    console.error("API Error:", err);
+
+    if (err instanceof z.ZodError) {
+      return res.status(400).json({ message: "Validation error", errors: err.format() });
+    }
+
+    return res.status(500).json({ message: "Internal server error" });
+  };
+
+  // Categories endpoints
+  app.get(`${apiPrefix}/categories`, async (req, res) => {
     try {
-      const { uid, email, displayName, persistent = true } = req.body;
+      const withCount = req.query.withCount === "true";
+      const categories = withCount
+        ? await storage.getCategoryWithEntryCount()
+        : await storage.getAllCategories();
+      res.json(categories);
+    } catch (err) {
+      handleApiError(err, res);
+    }
+  });
+
+  app.post(`${apiPrefix}/categories`, async (req, res) => {
+    try {
+      const data = insertCategorySchema.parse(req.body);
+      const newCategory = await storage.createCategory(data);
+      res.status(201).json(newCategory);
+    } catch (err) {
+      handleApiError(err, res);
+    }
+  });
+
+  app.put(`${apiPrefix}/categories/:id`, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid category ID" });
+      }
+
+      const data = insertCategorySchema.partial().parse(req.body);
+      const updatedCategory = await storage.updateCategory(id, data);
+
+      if (!updatedCategory) {
+        return res.status(404).json({ message: "Category not found" });
+      }
+
+      res.json(updatedCategory);
+    } catch (err) {
+      handleApiError(err, res);
+    }
+  });
+
+  app.delete(`${apiPrefix}/categories/:id`, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid category ID" });
+      }
+
+      await storage.deleteCategory(id);
+      res.status(204).send();
+    } catch (err) {
+      handleApiError(err, res);
+    }
+  });
+
+  // Tags endpoints
+  app.get(`${apiPrefix}/tags`, async (req, res) => {
+    try {
+      const withCount = req.query.withCount === "true";
+      const tags = withCount
+        ? await storage.getTagsWithCount()
+        : await storage.getAllTags();
+      res.json(tags);
+    } catch (err) {
+      handleApiError(err, res);
+    }
+  });
+
+  app.post(`${apiPrefix}/tags`, async (req, res) => {
+    try {
+      const data = insertTagSchema.parse(req.body);
+      const newTag = await storage.createTag(data);
+      res.status(201).json(newTag);
+    } catch (err) {
+      handleApiError(err, res);
+    }
+  });
+
+  app.put(`${apiPrefix}/tags/:id`, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid tag ID" });
+      }
+
+      const data = insertTagSchema.parse(req.body);
+      const updatedTag = await storage.updateTag(id, data);
+
+      if (!updatedTag) {
+        return res.status(404).json({ message: "Tag not found" });
+      }
+
+      res.json(updatedTag);
+    } catch (err) {
+      handleApiError(err, res);
+    }
+  });
+
+  app.delete(`${apiPrefix}/tags/:id`, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid tag ID" });
+      }
+
+      await storage.deleteTag(id);
+      res.status(204).send();
+    } catch (err) {
+      handleApiError(err, res);
+    }
+  });
+
+  // Related tags
+  app.get(`${apiPrefix}/tags/:id/related`, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid tag ID" });
+      }
+
+      const relatedTags = await storage.getRelatedTags(id);
+      res.json(relatedTags);
+    } catch (err) {
+      handleApiError(err, res);
+    }
+  });
+
+  // Entries endpoints
+  app.get(`${apiPrefix}/entries`, async (req, res) => {
+    try {
+      const { categoryId, tagIds, search, favorite, limit, offset, sortBy, sortOrder } = req.query;
       
-      if (!uid || !email) {
-        return res.status(400).json({ error: "Missing required fields" });
+      const options = {
+        categoryId: categoryId ? parseInt(categoryId as string) : undefined,
+        tagIds: tagIds ? (tagIds as string).split(',').map(id => parseInt(id)) : undefined,
+        searchQuery: search as string,
+        isFavorite: favorite === 'true' ? true : undefined,
+        limit: limit ? parseInt(limit as string) : 10,
+        offset: offset ? parseInt(offset as string) : 0,
+        sortBy: sortBy as string || 'createdAt',
+        sortOrder: (sortOrder as 'asc' | 'desc') || 'desc'
+      };
+      
+      const result = await storage.getAllEntries(options);
+      res.json(result);
+    } catch (err) {
+      handleApiError(err, res);
+    }
+  });
+
+  app.get(`${apiPrefix}/entries/search`, async (req, res) => {
+    try {
+      const query = req.query.q as string;
+      if (!query || query.length < 2) {
+        return res.status(400).json({ message: "Search query must be at least 2 characters" });
+      }
+
+      const entries = await storage.searchEntries(query);
+      res.json(entries);
+    } catch (err) {
+      handleApiError(err, res);
+    }
+  });
+
+  app.get(`${apiPrefix}/entries/:id`, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid entry ID" });
+      }
+
+      const entry = await storage.getEntryWithDetails(id);
+      if (!entry) {
+        return res.status(404).json({ message: "Entry not found" });
+      }
+
+      res.json(entry);
+    } catch (err) {
+      handleApiError(err, res);
+    }
+  });
+
+  app.post(`${apiPrefix}/entries`, async (req, res) => {
+    try {
+      // Create separate schema for API validation
+      const apiSchema = z.object({
+        title: z.string().min(3, "Title must be at least 3 characters"),
+        content: z.string().min(10, "Content must be at least 10 characters"),
+        categoryId: z.number().optional(),
+        isFavorite: z.boolean().optional(),
+        tagIds: z.array(z.number()).optional(),
+        relatedEntryIds: z.array(z.number()).optional(),
+      });
+
+      const data = apiSchema.parse(req.body);
+      const newEntry = await storage.createEntry(data);
+      res.status(201).json(newEntry);
+    } catch (err) {
+      handleApiError(err, res);
+    }
+  });
+
+  app.put(`${apiPrefix}/entries/:id`, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid entry ID" });
+      }
+
+      // Create separate schema for API validation
+      const apiSchema = z.object({
+        title: z.string().min(3, "Title must be at least 3 characters").optional(),
+        content: z.string().min(10, "Content must be at least 10 characters").optional(),
+        categoryId: z.number().nullable().optional(),
+        isFavorite: z.boolean().optional(),
+        tagIds: z.array(z.number()).optional(),
+        relatedEntryIds: z.array(z.number()).optional(),
+      });
+
+      const data = apiSchema.parse(req.body);
+      const updatedEntry = await storage.updateEntry(id, data);
+
+      if (!updatedEntry) {
+        return res.status(404).json({ message: "Entry not found" });
+      }
+
+      res.json(updatedEntry);
+    } catch (err) {
+      handleApiError(err, res);
+    }
+  });
+
+  app.put(`${apiPrefix}/entries/:id/favorite`, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid entry ID" });
+      }
+
+      const updatedEntry = await storage.toggleFavorite(id);
+
+      if (!updatedEntry) {
+        return res.status(404).json({ message: "Entry not found" });
+      }
+
+      res.json(updatedEntry);
+    } catch (err) {
+      handleApiError(err, res);
+    }
+  });
+
+  app.delete(`${apiPrefix}/entries/:id`, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid entry ID" });
+      }
+
+      await storage.deleteEntry(id);
+      res.status(204).send();
+    } catch (err) {
+      handleApiError(err, res);
+    }
+  });
+
+  // Analytics endpoints
+  app.get(`${apiPrefix}/analytics/categories`, async (req, res) => {
+    try {
+      const data = await storage.getEntriesByCategory();
+      res.json(data);
+    } catch (err) {
+      handleApiError(err, res);
+    }
+  });
+
+  app.get(`${apiPrefix}/analytics/frequency`, async (req, res) => {
+    try {
+      const weeks = req.query.weeks ? parseInt(req.query.weeks as string) : 8;
+      const data = await storage.getEntryFrequencyByWeek(weeks);
+      res.json(data);
+    } catch (err) {
+      handleApiError(err, res);
+    }
+  });
+
+  app.get(`${apiPrefix}/insights`, async (req, res) => {
+    try {
+      const insights = await storage.getInsights();
+      res.json(insights);
+    } catch (err) {
+      handleApiError(err, res);
+    }
+  });
+  
+  // Firebase Authentication endpoint has been moved to auth.ts
+
+  // User and connection endpoints
+  // For demo purposes, we'll use a hardcoded user ID (1) until auth is implemented
+  const DEMO_USER_ID = 1;
+  
+  // Get all connections for the current user
+  app.get(`${apiPrefix}/connections`, async (req, res) => {
+    try {
+      const connections = await connectionsService.getUserConnections(DEMO_USER_ID);
+      res.json(connections);
+    } catch (err) {
+      handleApiError(err, res);
+    }
+  });
+  
+  // Get all pending connection requests for the current user
+  app.get(`${apiPrefix}/connections/requests`, async (req, res) => {
+    try {
+      const requests = await connectionsService.getConnectionRequests(DEMO_USER_ID);
+      res.json(requests);
+    } catch (err) {
+      handleApiError(err, res);
+    }
+  });
+  
+  // Create a new connection request
+  app.post(`${apiPrefix}/connections`, async (req, res) => {
+    try {
+      const { connectedUserId } = req.body;
+      
+      if (!connectedUserId) {
+        return res.status(400).json({ message: "Connected user ID is required" });
       }
       
-      // Check if user exists
-      let user = await db.query.users.findFirst({
-        where: eq(users.firebaseUid, uid)
+      const newConnection = await connectionsService.createConnectionRequest(
+        DEMO_USER_ID,
+        connectedUserId
+      );
+      
+      res.status(201).json(newConnection);
+    } catch (err) {
+      handleApiError(err, res);
+    }
+  });
+  
+  // Accept a connection request
+  app.post(`${apiPrefix}/connections/:id/accept`, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid connection ID" });
+      }
+      
+      const updatedConnection = await connectionsService.acceptConnectionRequest(id, DEMO_USER_ID);
+      res.json(updatedConnection);
+    } catch (err) {
+      handleApiError(err, res);
+    }
+  });
+  
+  // Reject a connection request
+  app.post(`${apiPrefix}/connections/:id/reject`, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid connection ID" });
+      }
+      
+      await connectionsService.rejectConnectionRequest(id, DEMO_USER_ID);
+      res.status(204).send();
+    } catch (err) {
+      handleApiError(err, res);
+    }
+  });
+  
+  // Remove a connection
+  app.delete(`${apiPrefix}/connections/:id`, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid connection ID" });
+      }
+      
+      await connectionsService.removeConnection(id, DEMO_USER_ID);
+      res.status(204).send();
+    } catch (err) {
+      handleApiError(err, res);
+    }
+  });
+  
+  // Search for users
+  app.get(`${apiPrefix}/users/search`, async (req, res) => {
+    try {
+      const query = req.query.q as string;
+      if (!query || query.length < 2) {
+        return res.status(400).json({ message: "Search query must be at least 2 characters" });
+      }
+      
+      const users = await connectionsService.searchUsers(query, DEMO_USER_ID);
+      res.json(users);
+    } catch (err) {
+      handleApiError(err, res);
+    }
+  });
+  
+  // Share an entry with a connection
+  app.post(`${apiPrefix}/entries/share`, async (req, res) => {
+    try {
+      const { entryId, sharedWithUserId } = req.body;
+      
+      if (!entryId || !sharedWithUserId) {
+        return res.status(400).json({ 
+          message: "Entry ID and shared with user ID are required" 
+        });
+      }
+      
+      // First verify this is the user's entry
+      const entry = await storage.getEntryById(entryId);
+      if (!entry) {
+        return res.status(404).json({ message: "Entry not found" });
+      }
+      
+      // Then verify these users are connected
+      const connectionStatus = await connectionsService.getConnectionStatus(
+        DEMO_USER_ID, 
+        sharedWithUserId
+      );
+      
+      if (!connectionStatus.isConnected) {
+        return res.status(403).json({ 
+          message: "You can only share entries with your connections" 
+        });
+      }
+      
+      // Create the shared entry
+      const [sharedEntry] = await db.insert(sharedEntries)
+        .values({
+          entryId,
+          sharedWithUserId,
+          permissions: "read" // Default permission
+        })
+        .returning();
+      
+      res.status(201).json({ ...sharedEntry, count: 1 });
+    } catch (err) {
+      handleApiError(err, res);
+    }
+  });
+  
+  // Share entries by tags with a connection
+  app.post(`${apiPrefix}/entries/share-by-tags`, async (req, res) => {
+    try {
+      const { tagIds, sharedWithUserId } = req.body;
+      
+      if (!tagIds || !tagIds.length || !sharedWithUserId) {
+        return res.status(400).json({ 
+          message: "Tag IDs and shared with user ID are required" 
+        });
+      }
+      
+      // Verify these users are connected
+      const connectionStatus = await connectionsService.getConnectionStatus(
+        DEMO_USER_ID, 
+        sharedWithUserId
+      );
+      
+      if (!connectionStatus.isConnected) {
+        return res.status(403).json({ 
+          message: "You can only share entries with your connections" 
+        });
+      }
+      
+      // Get entries with the specified tags that belong to the current user
+      // First get entries that have any of these tags
+      const entryTagsWithTagIds = await db.query.entryTags.findMany({
+        where: (et, { inArray }) => inArray(et.tagId, tagIds)
       });
       
-      // If user doesn't exist, create a new one
-      if (!user) {
-        console.log(`Creating new user from Firebase auth: ${email}`);
-        
-        // Generate a unique username based on email
-        const username = email.split('@')[0].toLowerCase() + 
-                        Math.floor(Math.random() * 1000).toString();
-        
-        // Insert the new user
-        const [newUser] = await db.insert(users).values({
-          email,
-          username,
-          firebaseUid: uid,
-          fullName: displayName || null,
-          password: '', // Firebase users don't have a password
-          createdAt: new Date(),
-          updatedAt: new Date()
-        }).returning();
-        
-        user = newUser;
-        
-        // Add isNewUser flag for frontend to show welcome/onboarding
-        user.isNewUser = true;
-      } else {
-        // Update existing user's info if needed
-        if (displayName && !user.fullName) {
-          await db.update(users)
-            .set({ 
-              fullName: displayName,
-              updatedAt: new Date()
-            })
-            .where(eq(users.id, user.id));
-          
-          user.fullName = displayName;
+      const entryIdsWithTags = entryTagsWithTagIds.map(et => et.entryId);
+      
+      // Then get only entries that belong to the current user
+      const entriesWithTags = await db.query.entries.findMany({
+        where: (entries, { eq, and, inArray }) => and(
+          eq(entries.userId, DEMO_USER_ID),
+          inArray(entries.id, entryIdsWithTags)
+        )
+      });
+      
+      if (entriesWithTags.length === 0) {
+        return res.status(404).json({ 
+          message: "No entries found with the selected tags" 
+        });
+      }
+      
+      // Create shared entries
+      const sharedEntryValues = entriesWithTags.map(entry => ({
+        entryId: entry.id,
+        sharedWithUserId,
+        permissions: "read" // Default permission
+      }));
+      
+      const result = await db.insert(sharedEntries)
+        .values(sharedEntryValues)
+        .onConflictDoNothing() // In case some entries are already shared
+        .returning();
+      
+      res.status(201).json({ count: result.length });
+    } catch (err) {
+      handleApiError(err, res);
+    }
+  });
+  
+  // Share all entries with a connection
+  app.post(`${apiPrefix}/entries/share-all`, async (req, res) => {
+    try {
+      const { sharedWithUserId } = req.body;
+      
+      if (!sharedWithUserId) {
+        return res.status(400).json({ 
+          message: "Shared with user ID is required" 
+        });
+      }
+      
+      // Verify these users are connected
+      const connectionStatus = await connectionsService.getConnectionStatus(
+        DEMO_USER_ID, 
+        sharedWithUserId
+      );
+      
+      if (!connectionStatus.isConnected) {
+        return res.status(403).json({ 
+          message: "You can only share entries with your connections" 
+        });
+      }
+      
+      // Get all entries from the current user
+      const userEntries = await db.query.entries.findMany({
+        where: (entries, { eq }) => eq(entries.userId, DEMO_USER_ID)
+      });
+      
+      if (userEntries.length === 0) {
+        return res.status(404).json({ 
+          message: "No entries found to share" 
+        });
+      }
+      
+      // Create shared entries
+      const sharedEntryValues = userEntries.map(entry => ({
+        entryId: entry.id,
+        sharedWithUserId,
+        permissions: "read" // Default permission
+      }));
+      
+      const result = await db.insert(sharedEntries)
+        .values(sharedEntryValues)
+        .onConflictDoNothing() // In case some entries are already shared
+        .returning();
+      
+      res.status(201).json({ count: result.length });
+    } catch (err) {
+      handleApiError(err, res);
+    }
+  });
+  
+  // Network insights from shared entries
+  app.get(`${apiPrefix}/network/insights`, async (req, res) => {
+    try {
+      // Get the user's connections
+      const connections = await connectionsService.getUserConnections(DEMO_USER_ID);
+      const connectionUserIds = connections.map(conn => conn.connectedUserId);
+      
+      // Get entries shared with the user
+      const sharedEntriesData = await db.query.sharedEntries.findMany({
+        where: (sharedEntries, { eq }) => eq(sharedEntries.sharedWithUserId, DEMO_USER_ID),
+        with: {
+          entry: {
+            with: {
+              category: true,
+              tags: {
+                with: {
+                  tag: true
+                }
+              }
+            }
+          }
         }
-      }
+      });
       
-      // Store user in session with persistent flag
-      if (req.session) {
-        req.session.userId = user.id;
-        req.session.firebaseUid = uid;
-        req.session.lastActivity = Date.now();
-        req.session.persistent = persistent;
+      // Instead of relying on the ORM relation in the query, we'll directly query for shared entries
+      // Get IDs of entries that the user has shared with others
+      const sharedByUserIdsQuery = await db.query.sharedEntries.findMany({
+        where: (sharedEntries, { and, eq, inArray }) => and(
+          inArray(sharedEntries.sharedWithUserId, connectionUserIds)
+        )
+      });
+      
+      // Process the data to extract insights
+      
+      // 1. Top categories from shared entries
+      const categoryCounts: Record<string, { name: string; count: number; color: string }> = {};
+      sharedEntriesData.forEach(shared => {
+        if (shared.entry?.category) {
+          const category = shared.entry.category;
+          const categoryId = String(category.id);
+          if (!categoryCounts[categoryId]) {
+            categoryCounts[categoryId] = {
+              name: category.name,
+              count: 0,
+              color: category.color || "#6366f1"
+            };
+          }
+          categoryCounts[categoryId].count++;
+        }
+      });
+      
+      const topCategories = Object.values(categoryCounts)
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 5);
+      
+      // 2. Top tags from shared entries
+      const tagCounts: Record<string, { name: string; count: number }> = {};
+      sharedEntriesData.forEach(shared => {
+        if (shared.entry?.tags) {
+          shared.entry.tags.forEach(entryTag => {
+            const tag = entryTag.tag;
+            const tagId = String(tag.id);
+            if (!tagCounts[tagId]) {
+              tagCounts[tagId] = {
+                name: tag.name,
+                count: 0
+              };
+            }
+            tagCounts[tagId].count++;
+          });
+        }
+      });
+      
+      const topTags = Object.values(tagCounts)
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 5);
+      
+      // 3. Learning trends over time (last 6 weeks)
+      const now = new Date();
+      const sixWeeksAgo = new Date();
+      sixWeeksAgo.setDate(sixWeeksAgo.getDate() - 42); // 6 weeks
+      
+      const weeksMap: Record<string, number> = {};
+      for (let i = 0; i < 6; i++) {
+        const date = new Date();
+        date.setDate(date.getDate() - (i * 7));
+        const weekStart = new Date(date);
+        weekStart.setDate(weekStart.getDate() - weekStart.getDay()); // Start of week (Sunday)
         
-        console.log(`User session established for ${email} (persistent: ${persistent})`);
+        // Format as MM/DD
+        const month = (weekStart.getMonth() + 1).toString().padStart(2, '0');
+        const day = weekStart.getDate().toString().padStart(2, '0');
+        
+        weeksMap[`${month}/${day}`] = 0;
       }
       
-      // Return user object
-      res.status(200).json(user);
-    } catch (error) {
-      console.error('Error in Firebase auth endpoint:', error);
-      res.status(500).json({ error: 'Authentication failed' });
+      sharedEntriesData.forEach(shared => {
+        if (shared.entry?.createdAt) {
+          const entryDate = new Date(shared.entry.createdAt);
+          if (entryDate >= sixWeeksAgo && entryDate <= now) {
+            const weekStart = new Date(entryDate);
+            weekStart.setDate(weekStart.getDate() - weekStart.getDay()); // Start of week (Sunday)
+            
+            // Format as MM/DD
+            const month = (weekStart.getMonth() + 1).toString().padStart(2, '0');
+            const day = weekStart.getDate().toString().padStart(2, '0');
+            
+            const weekKey = `${month}/${day}`;
+            if (weekKey in weeksMap) {
+              weeksMap[weekKey]++;
+            }
+          }
+        }
+      });
+      
+      const learningTrends = Object.entries(weeksMap)
+        .map(([week, count]) => ({ week, count }))
+        .reverse(); // Chronological order
+      
+      // 4. Trending topics (extracted from content analysis)
+      // In a real app, we would use NLP to extract topics
+      const trendingTopics = Array.from(new Set(
+        sharedEntriesData
+          .filter(shared => shared.entry?.title)
+          .flatMap(shared => {
+            if (!shared.entry?.title) return [];
+            const title = shared.entry.title.toLowerCase();
+            return title.split(' ')
+              .filter(word => word.length > 4) // Simple filter for meaningful words
+              .map(word => word.charAt(0).toUpperCase() + word.slice(1)); // Capitalize
+          })
+      )).slice(0, 10);
+      
+      // 5. Connection insights
+      const connectionInsights = [
+        `You've shared ${sharedByUserIdsQuery.length} entries with your network.`,
+        `Your network has shared ${sharedEntriesData.length} entries with you.`,
+        `The most popular category in your network is ${topCategories.length > 0 ? topCategories[0].name : 'not available yet'}.`,
+        `The most discussed topic is ${topTags.length > 0 ? topTags[0].name : 'not available yet'}.`
+      ];
+      
+      // 6. Learning patterns
+      // This would typically use more sophisticated analysis
+      const learningPatterns = [
+        "Most learning entries in your network are created on weekdays.",
+        "Health and Technology are complementary learning areas in your network.",
+        "Your connections tend to focus on practical skills rather than theoretical concepts.",
+        "Many shared entries include actionable steps and implementation strategies."
+      ];
+      
+      res.json({
+        connectionCount: connections.length,
+        sharedEntriesCount: sharedEntriesData.length,
+        entriesSharedByUserCount: sharedByUserIdsQuery.length,
+        topCategories,
+        topTags,
+        learningTrends,
+        trendingTopics,
+        connectionInsights,
+        learningPatterns
+      });
+      
+    } catch (err) {
+      handleApiError(err, res);
+    }
+  });
+
+  // Chat interface endpoints
+  app.post(`${apiPrefix}/chat/process`, async (req, res) => {
+    try {
+      const { message, messages } = req.body;
+      
+      if (!message) {
+        return res.status(400).json({ message: "Message is required" });
+      }
+
+      // Process the user's message to create an entry
+      const processedEntry = await processEntryFromChat(message, messages);
+      
+      // Find or create tags
+      let tagIds: number[] = [];
+      if (processedEntry.tagNames && processedEntry.tagNames.length > 0) {
+        const tagPromises = processedEntry.tagNames.map(async (tagName) => {
+          // Check if tag exists
+          const existingTags = await storage.getAllTags();
+          const existingTag = existingTags.find(t => 
+            t.name.toLowerCase() === tagName.toLowerCase()
+          );
+          
+          if (existingTag) {
+            return existingTag.id;
+          } else {
+            // Create new tag
+            const newTag = await storage.createTag({ name: tagName });
+            return newTag.id;
+          }
+        });
+        
+        tagIds = await Promise.all(tagPromises);
+      }
+      
+      // Create the entry with the processed data
+      const newEntry = await storage.createEntry({
+        title: processedEntry.title,
+        content: processedEntry.content,
+        categoryId: processedEntry.categoryId,
+        tagIds: tagIds
+      });
+      
+      res.status(201).json({ entry: newEntry, success: true });
+    } catch (err) {
+      console.error("Chat processing error:", err);
+      handleApiError(err, res);
     }
   });
   
-  // Session recovery endpoint - allows client to recover session without Firebase
-  app.post(`${apiPrefix}/auth/recover`, async (req: Request, res: Response) => {
+  app.post(`${apiPrefix}/chat/respond`, async (req, res) => {
     try {
-      const { uid, email, persistent = true } = req.body;
+      const { message, messages } = req.body;
       
-      if (!uid) {
-        return res.status(400).json({ error: "Missing Firebase UID" });
+      if (!message) {
+        return res.status(400).json({ message: "Message is required" });
       }
       
-      // Check if user exists with this Firebase UID
-      const user = await db.query.users.findFirst({
-        where: eq(users.firebaseUid, uid)
+      // Generate a response to the user's message
+      const response = await generateChatResponse(message, messages);
+      
+      res.json({ 
+        response,
+        success: true
       });
-      
-      if (!user) {
-        console.log(`Session recovery failed: No user found with Firebase UID ${uid}`);
-        return res.status(404).json({ error: "User not found" });
-      }
-      
-      // Check if email matches if provided (additional security)
-      if (email && user.email !== email) {
-        console.log(`Session recovery denied: Email mismatch for UID ${uid}`);
-        return res.status(403).json({ error: "Email mismatch" });
-      }
-      
-      // Create a new session for the user
-      if (req.session) {
-        req.session.userId = user.id;
-        req.session.firebaseUid = uid;
-        req.session.lastActivity = Date.now();
-        req.session.persistent = persistent;
-        
-        console.log(`Session recovered for ${user.email} (ID: ${user.id})`);
-      }
-      
-      // Return user data
-      res.status(200).json(user);
-    } catch (error) {
-      console.error('Error recovering session:', error);
-      res.status(500).json({ error: 'Session recovery failed' });
-    }
-  });
-  
-  // Session refresh endpoint - keeps session alive
-  app.post(`${apiPrefix}/auth/refresh`, async (req: Request, res: Response) => {
-    try {
-      // If no session exists, return error
-      if (!req.session || !req.session.userId) {
-        return res.status(401).json({ error: "No active session" });
-      }
-      
-      // Update last activity timestamp
-      req.session.lastActivity = Date.now();
-      
-      // Return success with user ID
-      res.status(200).json({ 
-        success: true, 
-        timestamp: req.session.lastActivity,
-        userId: req.session.userId
-      });
-    } catch (error) {
-      console.error('Error refreshing session:', error);
-      res.status(500).json({ error: 'Session refresh failed' });
+    } catch (err) {
+      console.error("Chat response error:", err);
+      handleApiError(err, res);
     }
   });
 
   // DotSpark WhatsApp Chatbot Endpoints
   
-  // Debug endpoint to simulate a WhatsApp message
-  app.post(`${apiPrefix}/whatsapp/test-message`, async (req: Request, res: Response) => {
-    try {
-      const { message, phoneNumber, userId } = req.body;
-      
-      if (!message || !userId) {
-        return res.status(400).json({ error: 'Message and userId are required' });
-      }
-
-      console.log(`⭐️ TEST: Creating entry for test WhatsApp message from user ID: ${userId}`);
-      
-      // Format current time in a readable way for the title
-      const timestamp = new Date().toLocaleString('en-US', {
-        year: 'numeric',
-        month: 'numeric',
-        day: 'numeric',
-        hour: 'numeric',
-        minute: 'numeric',
-        hour12: true
-      });
-      
-      const entryData = {
-        userId,
-        title: `Test WhatsApp - ${timestamp}`,
-        content: message,
-        visibility: "private",
-        isFavorite: false
-      };
-      
-      const [newEntry] = await db.insert(entries).values(entryData).returning();
-      console.log(`⭐️ TEST: Created entry ID ${newEntry.id} for test WhatsApp message`);
-
-      // Return success with the new entry
-      res.status(201).json({ 
-        success: true, 
-        entry: newEntry,
-        message: `Created new entry with ID ${newEntry.id}`
-      });
-    } catch (error) {
-      console.error("Error creating test WhatsApp entry:", error);
-      res.status(500).json({ error: 'Failed to create test WhatsApp entry' });
-    }
-  });
-  
   // Use the WhatsApp Business API webhook router for all WhatsApp webhook requests
   app.use(`${apiPrefix}/whatsapp/webhook`, whatsappWebhookRouter);
-  
-  // Special test endpoint for WhatsApp webhook verification
-  app.get(`${apiPrefix}/whatsapp/test-webhook`, (req, res) => {
-    console.log("⭐️ WhatsApp webhook test endpoint accessed");
-    res.status(200).json({ 
-      status: 'ok', 
-      message: 'This test endpoint confirms that the WhatsApp webhook route is properly registered.'
-    });
-  });
-  
-  // DotSpark API endpoints
-  
-  // Enhanced chat API endpoint with integrated CogniShield monitoring
-  app.post(`${apiPrefix}/chat`, async (req: Request, res: Response) => {
-    try {
-      const { message, conversationHistory = [] } = req.body;
-      
-      if (!message) {
-        return res.status(400).json({ error: 'Message is required' });
+
+  // Register a phone number for DotSpark WhatsApp chatbot
+        console.log("❌ Received invalid Twilio WhatsApp message:", req.body);
+        // Not a valid message or missing required fields
+        return res.status(200).send(); // Always return 200 to Twilio
       }
 
-      // Get user's CogniShield profile if authenticated
-      let cogniProfile = undefined;
-      let userId = null;
+      console.log(`Received WhatsApp message from ${from}: ${messageText}`);
       
-      if (req.session?.userId) {
-        userId = req.session.userId;
-        
-        // Load user's cognitive profile for CogniShield monitoring
-        try {
-          const userProfile = await db.query.users.findFirst({
-            where: eq(users.id, userId)
-          });
-          
-          if (userProfile) {
-            // Generate or load CogniShield profile based on user's DotSpark tuning
-            cogniProfile = {
-              decisionSpeed: 0.7,
-              riskTolerance: 0.6,
-              analyticalDepth: 0.8,
-              communicationStyle: 0.5,
-              detailLevel: 0.7,
-              creativityBias: 0.6,
-              logicalStructure: 0.8,
-              learningStyle: "visual",
-              conceptualApproach: 0.7,
-              priorityFramework: ["accuracy", "efficiency", "innovation"],
-              ethicalStance: "balanced",
-              domainExpertise: ["general"],
-              professionalLevel: "mid"
-            };
-          }
-        } catch (error) {
-          console.log('Could not load user profile for CogniShield:', error);
-        }
+      // Log test mode status to help with debugging
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`[TEST MODE ACTIVE] WhatsApp test phone numbers will be automatically registered to demo user ID 1`);
+        console.log(`[TEST MODE ACTIVE] No verification needed for WhatsApp in development environment`);
       }
 
-      // Use the enhanced chat response with CogniShield monitoring
-      const chatResult = await generateChatResponse(
-        message,
-        conversationHistory,
-        cogniProfile,
-        true // Enable monitoring
-      );
+      // Process the message and get a response
+      const response = await processWhatsAppMessage(from, messageText);
       
-      // Return response with CogniShield analysis
-      res.status(200).json({ 
-        reply: chatResult.response,
-        cogniShieldAlert: chatResult.cogniShieldAlert,
-        alignmentScore: chatResult.alignmentAnalysis?.deviationScore ? 
-          Math.round((1 - chatResult.alignmentAnalysis.deviationScore) * 100) : undefined
-      });
-    } catch (aiError) {
-        console.error('OpenAI API error:', aiError);
-        
-        // Fallback to simple responses if OpenAI fails
-        let reply = "";
-        
-        // Special handling for the default prefilled message
-        if (message === "Hey DotSpark, I've got a few things on my mind - need your thoughts") {
-          reply = "I'm here to help process what's on your mind. Please feel free to share and we can work on it together. What's the first thing you'd like to talk about?";
-        } else if (message.toLowerCase().includes("hey dotspark") || message.toLowerCase().includes("hello") || message.toLowerCase().includes("hi")) {
-          reply = "Hey there! I'm DotSpark Chat. How can I help you today?";
-        } else if (message.toLowerCase().includes("things on my mind")) {
-          reply = "I'm here to help you process your thoughts. What specifically is on your mind today?";
-        } else if (message.toLowerCase().includes("who are you") || message.toLowerCase().includes("what are you")) {
-          reply = "I'm DotSpark Chat, designed to help answer your questions and assist with your tasks.";
-        } else if (message.toLowerCase().includes("help")) {
-          reply = "I can help you organize your thoughts, provide information, and assist with various tasks. What would you like to explore?";
-        } else {
-          reply = "I'd be happy to help. Could you elaborate a bit more on what you're asking about?";
-        }
-        
-        res.status(200).json({ reply });
-      }
-    } catch (error) {
-      console.error('Chat processing error:', error);
-      res.status(500).json({ error: 'Failed to process chat message' });
-    }
-  });
-  
-  // Get DotSpark status for the current user
-  app.get(`${apiPrefix}/dotspark/status`, isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
-    try {
-      const userId = req.user?.id;
-      if (!userId) {
-        return res.status(401).json({ error: 'User not authenticated' });
-      }
+      // Create a TwiML response to send back to the user
+      const twiml = new twilio.twiml.MessagingResponse();
       
-      const { getDotSparkStatus } = await import('./dotspark');
-      const status = getDotSparkStatus(userId);
-      
-      res.status(200).json(status);
-    } catch (error) {
-      console.error("Error getting DotSpark status:", error);
-      res.status(500).json({ error: 'Failed to get DotSpark status' });
-    }
-  });
-  
-  // Get insights generated by DotSpark
-  app.get(`${apiPrefix}/dotspark/insights`, isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
-    try {
-      const userId = req.user?.id;
-      if (!userId) {
-        return res.status(401).json({ error: 'User not authenticated' });
-      }
-      
-      const { generateUserInsights } = await import('./dotspark');
-      const insights = await generateUserInsights(userId);
-      
-      res.status(200).json({ insights });
-    } catch (error) {
-      console.error("Error generating DotSpark insights:", error);
-      res.status(500).json({ error: 'Failed to generate insights' });
-    }
-  });
-  
-  // Get topic recommendations based on user history
-  app.get(`${apiPrefix}/dotspark/recommendations`, isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
-    try {
-      const userId = req.user?.id;
-      if (!userId) {
-        return res.status(401).json({ error: 'User not authenticated' });
-      }
-      
-      const { getRecommendedTopics } = await import('./dotspark');
-      const topics = await getRecommendedTopics(userId);
-      
-      res.status(200).json({ topics });
-    } catch (error) {
-      console.error("Error getting topic recommendations:", error);
-      res.status(500).json({ error: 'Failed to get topic recommendations' });
-    }
-  });
-
-  // Update DotSpark tuning parameters
-  app.post(`${apiPrefix}/dotspark/tune`, isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
-    try {
-      const userId = req.user?.id;
-      if (!userId) {
-        return res.status(401).json({ error: 'User not authenticated' });
-      }
-      
-      // Validate request body
-      const tuningSchema = z.object({
-        creativity: z.number().min(0).max(1).optional(),
-        precision: z.number().min(0).max(1).optional(),
-        speed: z.number().min(0).max(1).optional(),
-        analytical: z.number().min(0).max(1).optional(),
-        intuitive: z.number().min(0).max(1).optional(),
-        specialties: z.record(z.string(), z.number().min(0).max(1)).optional(),
-        learningFocus: z.array(z.string()).optional()
-      });
-      
-      const validatedData = tuningSchema.parse(req.body);
-      
-      // Update DotSpark tuning
-      const { updateDotSparkTuning, getDotSparkTuning } = await import('./dotspark');
-      const updatedTuning = updateDotSparkTuning(userId, validatedData);
-      
-      // Award experience for tuning their DotSpark
-      const { updateGameElements, awardExperience } = await import('./dotspark');
-      
-      // Check if the dotspark-tuner achievement should be unlocked
-      const gameElements = await import('./dotspark').then(m => m.getGameElements(userId));
-      const dotsparkTunerAchievement = gameElements.achievements.find(a => a.id === 'dotspark-tuner' || a.id === 'neural-tuner'); // Support both IDs for backward compatibility
-      
-      if (dotsparkTunerAchievement && !dotsparkTunerAchievement.unlocked) {
-        // Unlock achievement
-        const updatedAchievements = gameElements.achievements.map(a => 
-          (a.id === 'dotspark-tuner' || a.id === 'neural-tuner') 
-            ? { ...a, unlocked: true, progress: 1, unlockedAt: new Date().toISOString() }
-            : a
-        );
-        
-        updateGameElements(userId, { 
-          achievements: updatedAchievements 
-        });
-        
-        // Award extra XP for first-time tuning
-        awardExperience(userId, 25, 'Completed first DotSpark tuning');
+      if (response && response.message) {
+        // Add the message to the TwiML response
+        twiml.message(response.message);
+        console.log("Sending WhatsApp chatbot reply:", response.message);
       } else {
-        // Regular XP for tuning
-        awardExperience(userId, 5, 'Updated DotSpark tuning');
+        // Send a default message if something went wrong
+        twiml.message("Sorry, I couldn't process your message. Please try again later.");
       }
+
+      // Send the TwiML response back to Twilio
+      res.writeHead(200, { 'Content-Type': 'text/xml' });
+      res.end(twiml.toString());
+    } catch (err) {
+      console.error("WhatsApp chatbot webhook error:", err);
+      // Create an error TwiML response
+      const twiml = new twilio.twiml.MessagingResponse();
+      twiml.message("Sorry, something went wrong. Please try again later.");
       
-      res.status(200).json(updatedTuning);
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        return res.status(400).json({ error: 'Invalid tuning parameters', details: error.errors });
-      }
-      console.error("Error updating DotSpark tuning:", error);
-      res.status(500).json({ error: 'Failed to update DotSpark tuning' });
-    }
-  });
-  
-  // Debug endpoint to simulate a WhatsApp message through UI
-  app.post(`${apiPrefix}/whatsapp/simulate`, isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
-    try {
-      if (!req.user) {
-        return res.status(401).json({ error: "Authentication required" });
-      }
-      
-      const { message } = req.body;
-      if (!message) {
-        return res.status(400).json({ error: "Message is required" });
-      }
-      
-      console.log(`⭐️ Simulating WhatsApp message from user ${req.user.id}: ${message}`);
-      
-      // Process the message as if it came from WhatsApp
-      const from = "whatsapp:+12345678900"; // Fake WhatsApp number
-      const response = await processWhatsAppMessage(from, message);
-      
-      // Create an entry connected to this user's account
-      try {
-        console.log(`⭐️ Creating entry for simulated WhatsApp message`);
-        
-        const entryData = {
-          userId: req.user.id,
-          title: `WhatsApp Simulation - ${new Date().toLocaleString()}`,
-          content: message,
-          visibility: "private",
-          isFavorite: false
-        };
-        
-        await db.insert(entries).values(entryData);
-        console.log(`⭐️ Entry created successfully for simulated message`);
-      } catch (entryError) {
-        console.error("Error creating entry for simulated message:", entryError);
-      }
-      
-      return res.status(200).json({ 
-        success: true, 
-        response: response.message,
-        message: "WhatsApp message simulated and entry created" 
-      });
-    } catch (error) {
-      console.error("Error in WhatsApp simulate route:", error);
-      return res.status(500).json({ error: "Internal server error" });
+      // Still return 200 as Twilio expects
+      res.writeHead(200, { 'Content-Type': 'text/xml' });
+      res.end(twiml.toString());
     }
   });
 
   // Register a phone number for DotSpark WhatsApp chatbot
-  app.post(`${apiPrefix}/whatsapp/register`, isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
+  app.post(`${apiPrefix}/whatsapp/register`, async (req, res) => {
     try {
-      const userId = req.user?.id || 1; // Default to demo user in dev environment
+      // For demo purposes using DEMO_USER_ID, in production this would use authenticated user
+      const userId = DEMO_USER_ID; 
       const { phoneNumber } = req.body;
       
       if (!phoneNumber) {
-        return res.status(400).json({ error: 'Phone number is required' });
+        return res.status(400).json({ message: "Phone number is required" });
       }
       
       const result = await registerWhatsAppUser(userId, phoneNumber);
-      res.status(200).json(result);
+      
+      if (result.success) {
+        return res.status(201).json(result);
+      } else {
+        return res.status(400).json(result);
+      }
     } catch (err) {
       console.error("WhatsApp chatbot registration error:", err);
-      res.status(500).json({ error: 'Failed to register for WhatsApp chatbot' });
+      handleApiError(err, res);
     }
   });
 
   // Unregister a phone number from DotSpark WhatsApp chatbot
-  app.post(`${apiPrefix}/whatsapp/unregister`, isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
+  app.post(`${apiPrefix}/whatsapp/unregister`, async (req, res) => {
     try {
-      const userId = req.user?.id || 1; // Default to demo user in dev environment
+      // For demo purposes using DEMO_USER_ID, in production this would use authenticated user
+      const userId = DEMO_USER_ID;
       
       const result = await unregisterWhatsAppUser(userId);
-      res.status(200).json(result);
+      
+      if (result.success) {
+        return res.status(200).json(result);
+      } else {
+        return res.status(400).json(result);
+      }
     } catch (err) {
       console.error("WhatsApp chatbot unregistration error:", err);
-      res.status(500).json({ error: 'Failed to unregister from WhatsApp chatbot' });
+      handleApiError(err, res);
     }
   });
 
   // Get DotSpark WhatsApp chatbot status
-  app.get(`${apiPrefix}/whatsapp/status`, isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
+  app.get(`${apiPrefix}/whatsapp/status`, async (req, res) => {
     try {
-      // Get the actual authenticated user ID - never default to a demo user for status checks
-      const userId = req.user?.id;
+      // For demo purposes using DEMO_USER_ID, in production this would use authenticated user
+      const userId = DEMO_USER_ID;
       
-      // If no user ID is available, return a proper error
-      if (!userId) {
-        console.log("WhatsApp status check without user ID");
-        return res.status(401).json({ 
-          isRegistered: false,
-          error: 'User not authenticated' 
-        });
-      }
+      // Clean up expired OTP verifications first
+      await db.delete(whatsappOtpVerifications)
+        .where(and(
+          eq(whatsappOtpVerifications.userId, userId),
+          lt(whatsappOtpVerifications.expiresAt, new Date())
+        ));
       
-      console.log(`Getting WhatsApp status for user ID: ${userId}`);
-      
-      // Get status from the database
       const status = await getWhatsAppStatus(userId);
-      
-      // Add isConnected field explicitly for frontend use
-      console.log(`Returning WhatsApp status to client:`, status);
-      
-      res.status(200).json({
-        isRegistered: status.isRegistered,
-        phoneNumber: status.phoneNumber,
-        isConnected: status.isConnected || false,
-        userId: status.userId
-      });
+      res.json(status);
     } catch (err) {
       console.error("WhatsApp chatbot status error:", err);
-      // Even on error, return a properly formatted response
-      res.status(500).json({ 
-        isRegistered: false,
-        error: 'Failed to get WhatsApp chatbot status' 
-      });
-    }
-  });
-
-  // Public debug endpoint to test WhatsApp message processing
-  app.post(`${apiPrefix}/whatsapp/test-processing`, async (req: Request, res: Response) => {
-    try {
-      const { phoneNumber, message } = req.body;
-      
-      if (!phoneNumber || !message) {
-        return res.status(400).json({ error: "phoneNumber and message are required" });
-      }
-      
-      console.log(`⭐️ Testing WhatsApp message processing from ${phoneNumber}: ${message}`);
-      
-      // Format the phone number as a WhatsApp number
-      const formattedNumber = phoneNumber.startsWith('whatsapp:') 
-        ? phoneNumber 
-        : `whatsapp:${phoneNumber}`;
-      
-      // Process the message but don't save entries
-      const response = await processWhatsAppMessage(formattedNumber, message);
-      
-      return res.status(200).json({ 
-        success: true, 
-        response: response.message,
-        message: "WhatsApp message processing tested" 
-      });
-    } catch (error) {
-      console.error("Error in WhatsApp test processing route:", error);
-      return res.status(500).json({ error: "Internal server error" });
+      handleApiError(err, res);
     }
   });
   
   // Get WhatsApp contact number for the frontend
-  app.get(`${apiPrefix}/whatsapp/contact`, async (req: Request, res: Response) => {
+  app.get(`${apiPrefix}/whatsapp/contact`, async (req, res) => {
     try {
-      // Use Twilio WhatsApp number directly - hardcoded to ensure consistency
-      const whatsappNumber = "16067157733"; // Your Twilio WhatsApp number
-      
-      // Default welcome message
-      const defaultMessage = encodeURIComponent("Hey DotSpark, I've got a few things on my mind — need your thoughts");
+      // Use the actual WhatsApp number directly
+      const whatsappNumber = "15557649526"; // Removing the + from +15557649526
       
       // Log the WhatsApp number being used
-      console.log(`Using Twilio WhatsApp number: ${whatsappNumber}`);
+      console.log(`Using direct WhatsApp number: ${whatsappNumber}`);
       
-      // Use the standard WhatsApp click-to-chat link format with pre-filled message
-      res.status(200).json({
+      // Use the standard WhatsApp click-to-chat link format for direct numbers
+      const directLink = `https://api.whatsapp.com/send?phone=${whatsappNumber}`;
+      
+      // Return both the phone number and direct API URL
+      res.json({ 
         phoneNumber: whatsappNumber,
-        directLink: `https://wa.me/${whatsappNumber}?text=${defaultMessage}`,
-        defaultMessage: "Hey DotSpark, I've got a few things on my mind — need your thoughts"
+        directLink: directLink
       });
     } catch (err) {
       console.error("WhatsApp contact number error:", err);
-      res.status(500).json({ error: 'Failed to get WhatsApp contact information' });
-    }
-  });
-  
-  // Special route to fix WhatsApp activation that was lost
-  app.post(`${apiPrefix}/whatsapp/fix-activation`, isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
-    try {
-      const userId = req.user?.id;
-      if (!userId) {
-        return res.status(401).json({ error: 'User not authenticated' });
-      }
-      
-      const { phoneNumber } = req.body;
-      
-      console.log(`⚙️ Fix activation request for user ${userId}, phone: ${phoneNumber || 'not provided'}`);
-      
-      // First, check if this user has any WhatsApp records
-      const userWhatsappRecords = await db.query.whatsappUsers.findMany({
-        where: eq(whatsappUsers.userId, userId),
-        orderBy: [desc(whatsappUsers.lastMessageSentAt)]
-      });
-      
-      if (userWhatsappRecords.length === 0) {
-        console.log(`⚙️ No WhatsApp records found for user ${userId}`);
-        
-        // If phone number was provided, create a new record
-        if (phoneNumber) {
-          console.log(`⚙️ Creating new WhatsApp record for ${phoneNumber}`);
-          
-          await db.insert(whatsappUsers)
-            .values({
-              userId: userId,
-              phoneNumber: phoneNumber,
-              active: true,
-              lastMessageSentAt: new Date()
-            });
-            
-          return res.json({
-            success: true,
-            message: 'New WhatsApp activation created',
-            isRegistered: true,
-            isConnected: true,
-            phoneNumber
-          });
-        } else {
-          return res.status(404).json({ 
-            error: 'No WhatsApp records found and no phone number provided' 
-          });
-        }
-      }
-      
-      // If we have records but none are active, make the most recent one active
-      if (!userWhatsappRecords.some(record => record.active)) {
-        const mostRecent = userWhatsappRecords[0];
-        
-        console.log(`⚙️ Reactivating most recent WhatsApp record: ${mostRecent.phoneNumber}`);
-        
-        await db.update(whatsappUsers)
-          .set({
-            active: true,
-            lastMessageSentAt: new Date()
-          })
-          .where(eq(whatsappUsers.id, mostRecent.id));
-          
-        return res.json({
-          success: true,
-          message: 'WhatsApp activation restored',
-          isRegistered: true,
-          isConnected: true,
-          phoneNumber: mostRecent.phoneNumber
-        });
-      }
-      
-      // If we have records and at least one is active, return success
-      const activeRecord = userWhatsappRecords.find(record => record.active);
-      
-      return res.json({
-        success: true,
-        message: 'WhatsApp already active',
-        isRegistered: true,
-        isConnected: true,
-        phoneNumber: activeRecord?.phoneNumber
-      });
-    } catch (error) {
-      console.error('Error fixing WhatsApp activation:', error);
-      return res.status(500).json({ error: 'Failed to fix WhatsApp activation' });
+      handleApiError(err, res);
     }
   });
 
-  // Special route to ensure the problematic phone number is properly activated
-  app.post(`${apiPrefix}/whatsapp/special-activation`, isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
+  // Direct WhatsApp registration (no OTP needed)
+  app.post(`${apiPrefix}/whatsapp/register-direct`, async (req, res) => {
     try {
-      const userId = req.user?.id;
-      if (!userId) {
-        return res.status(401).json({ error: 'User not authenticated' });
-      }
+      console.log("Received direct WhatsApp registration request:", req.body);
       
+      // For demo purposes using DEMO_USER_ID, or user ID if authenticated
+      const userId = req.isAuthenticated() ? (req.user as Express.User).id : DEMO_USER_ID;
       const { phoneNumber } = req.body;
       
-      // Only handle the specific number
-      if (phoneNumber !== '+919840884459') {
-        return res.status(400).json({ error: 'Invalid phone number for special activation' });
+      if (!phoneNumber) {
+        console.log("Error: Phone number is required");
+        return res.status(400).json({ message: "Phone number is required" });
       }
       
-      console.log(`🔥 SPECIAL ACTIVATION for ${phoneNumber} - User ID: ${userId}`);
+      console.log(`Registering WhatsApp neural extension for: ${phoneNumber}`);
       
-      // 1. First check if the number exists
-      const existingUser = await db.query.whatsappUsers.findFirst({
-        where: eq(whatsappUsers.phoneNumber, phoneNumber)
-      });
+      // Directly register the number without OTP verification
+      const result = await registerWhatsAppUser(userId, phoneNumber);
+      console.log("Direct registration result:", JSON.stringify(result));
       
-      if (existingUser) {
-        // Update existing record
-        await db.update(whatsappUsers)
-          .set({
-            userId: userId,
-            active: true,
-            lastMessageSentAt: new Date()
-          })
-          .where(eq(whatsappUsers.phoneNumber, phoneNumber));
-          
-        console.log(`🔥 Updated existing record for ${phoneNumber}`);
-      } else {
-        // Create new record
-        await db.insert(whatsappUsers)
-          .values({
-            userId: userId,
-            phoneNumber: phoneNumber,
-            active: true,
-            lastMessageSentAt: new Date()
-          });
-          
-        console.log(`🔥 Created new record for ${phoneNumber}`);
-      }
-      
-      // Return success
-      return res.json({
-        success: true,
-        phoneNumber: phoneNumber,
-        isRegistered: true,
-        isConnected: true,
-        userId: userId,
-        message: 'Special WhatsApp activation successful'
-      });
-    } catch (error) {
-      console.error('Error in special WhatsApp activation:', error);
-      return res.status(500).json({ error: 'Special activation failed' });
-    }
-  });
-  
-  // Special debugging endpoint to diagnose WhatsApp numbers in the database
-  app.get(`${apiPrefix}/whatsapp/debug-numbers`, async (req: Request, res: Response) => {
-    try {
-      console.log(`⭐️ Running WhatsApp number debug endpoint`);
-      
-      // Get all WhatsApp users from the database
-      const whatsappUsers = await db.query.whatsappUsers.findMany();
-      
-      const formattedUsers = whatsappUsers.map(user => ({
-        userId: user.userId,
-        phoneNumber: user.phoneNumber,
-        active: user.active,
-        lastMessageSentAt: user.lastMessageSentAt?.toISOString()
-      }));
-      
-      console.log(`⭐️ Found ${whatsappUsers.length} WhatsApp users in database:`);
-      formattedUsers.forEach((user, i) => {
-        console.log(`  ${i+1}. User ID: ${user.userId}, Phone: ${user.phoneNumber}, Active: ${user.active}`);
-      });
-      
-      // Get recent entries to compare
-      const recentEntries = await db.select()
-        .from(entries)
-        .orderBy(desc(entries.createdAt))
-        .limit(10);
-      
-      console.log(`⭐️ Recent entries (${recentEntries.length} total):`);
-      recentEntries.forEach((entry, i) => {
-        console.log(`  ${i+1}. Entry ID: ${entry.id}, User ID: ${entry.userId}, Title: ${entry.title}, Created: ${entry.createdAt.toISOString()}`);
-      });
-      
-      res.json({
-        whatsappUsers: formattedUsers,
-        recentEntries: recentEntries.map(entry => ({
-          id: entry.id,
-          userId: entry.userId,
-          title: entry.title,
-          createdAt: entry.createdAt
-        }))
-      });
-    } catch (error) {
-      console.error('Error debugging WhatsApp numbers:', error);
-      res.status(500).json({ error: 'Failed to debug WhatsApp numbers' });
-    }
-  });
-  
-  // Simplified WhatsApp number registration - just enter your phone and user ID
-  app.post(`${apiPrefix}/whatsapp/link-number`, async (req: Request, res: Response) => {
-    try {
-      const { phoneNumber, userId } = req.body;
-      
-      if (!phoneNumber || !userId) {
-        return res.status(400).json({ error: 'Phone number and user ID are required' });
-      }
-      
-      // Normalize and standardize phone number format
-      let normalizedPhone = phoneNumber.trim();
-      if (normalizedPhone.startsWith('whatsapp:')) {
-        normalizedPhone = normalizedPhone.replace('whatsapp:', '').trim();
-      }
-      
-      // Make sure it has a + prefix for international format
-      const standardizedPhone = normalizedPhone.startsWith('+') 
-        ? normalizedPhone 
-        : `+${normalizedPhone}`;
-      
-      console.log(`⭐️ Linking phone ${standardizedPhone} to user ID: ${userId}`);
-      
-      // Check if this phone is already registered
-      const existingUser = await db.query.whatsappUsers.findFirst({
-        where: eq(whatsappUsers.phoneNumber, standardizedPhone)
-      });
-      
-      if (existingUser) {
-        // Update the existing record
-        await db.update(whatsappUsers)
-          .set({ 
-            userId: userId,
-            active: true,
-            lastMessageSentAt: new Date()
-          })
-          .where(eq(whatsappUsers.phoneNumber, standardizedPhone));
-          
-        console.log(`⭐️ Updated existing WhatsApp user - changed user ID from ${existingUser.userId} to ${userId}`);
-      } else {
-        // Create a new record
-        const [newUser] = await db.insert(whatsappUsers).values({
-          userId: userId,
-          phoneNumber: standardizedPhone,
-          active: true,
-          lastMessageSentAt: new Date()
-        }).returning();
-        
-        console.log(`⭐️ Created new WhatsApp user: ${JSON.stringify(newUser)}`);
-      }
-      
-      res.status(200).json({ 
-        success: true, 
-        message: `Your phone number ${standardizedPhone} has been linked to user ID ${userId}` 
-      });
-    } catch (error) {
-      console.error('Error linking WhatsApp number:', error);
-      res.status(500).json({ error: 'Failed to link WhatsApp number' });
-    }
-  });
-  
-  // Simple endpoint to get the current user's ID
-  app.get(`${apiPrefix}/current-user`, async (req: Request, res: Response) => {
-    try {
-      // Get the current user ID
-      const userId = req.user?.id || 0;
-      const isAuthenticated = req.isAuthenticated();
-      
-      console.log(`⭐️ Current user ID check: ${userId} (authenticated: ${isAuthenticated})`);
-      
-      res.json({
-        userId,
-        isAuthenticated,
-        sessionData: req.session
-      });
-    } catch (error) {
-      console.error('Error getting current user:', error);
-      res.status(500).json({ error: 'Failed to get current user' });
-    }
-  });
-  
-  // Generate a linking code for connecting WhatsApp to a DotSpark account
-  app.post(`${apiPrefix}/whatsapp/generate-link-code`, isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
-    try {
-      // Require user to be logged in - no demo user fallback
-      if (!req.user || !req.user.id) {
-        return res.status(401).json({ 
-          error: 'Authentication required',
-          message: 'You must log in to generate a WhatsApp link code'
+      if (result.success) {
+        return res.status(200).json({
+          success: true,
+          message: "Your neural extension is now activated. You can now chat with DotSpark directly through WhatsApp."
         });
+      } else {
+        return res.status(400).json(result);
       }
+    } catch (err) {
+      console.error("WhatsApp direct registration error:", err);
+      handleApiError(err, res);
+    }
+  });
+  
+  // Cancel pending WhatsApp verification
+  app.post(`${apiPrefix}/whatsapp/cancel-verification`, async (req, res) => {
+    try {
+      // For demo purposes using DEMO_USER_ID, in production this would use authenticated user
+      const userId = DEMO_USER_ID;
       
-      const userId = req.user.id;
-      console.log("Generating WhatsApp link code for user ID:", userId);
-      
-      // Generate a random 6-digit code
-      const linkCode = Math.floor(100000 + Math.random() * 900000).toString();
-      
-      // Store the code in the database with a 15-minute expiration
-      const expiresAt = new Date();
-      expiresAt.setMinutes(expiresAt.getMinutes() + 15); // 15 minute expiration
-      
-      // Delete any previous unverified codes for this user
+      // Delete all pending verifications for this user
       await db.delete(whatsappOtpVerifications)
         .where(and(
           eq(whatsappOtpVerifications.userId, userId),
           eq(whatsappOtpVerifications.verified, false)
         ));
       
-      // Insert the new verification code
-      await db.insert(whatsappOtpVerifications).values({
-        userId,
-        phoneNumber: "pending", // Temporary placeholder, will be filled when user sends code from WhatsApp
-        otpCode: linkCode,
-        verified: false,
-        expiresAt,
+      return res.status(200).json({ 
+        success: true, 
+        message: "Verification canceled successfully"
       });
-      
-      // Return the code to the client
-      res.status(200).json({ 
-        linkCode,
-        expiresAt,
-        message: "Send this code to the WhatsApp number within 15 minutes to link your account"
-      });
-      
     } catch (err) {
-      console.error("Error generating WhatsApp link code:", err);
-      res.status(500).json({ error: 'Failed to generate link code' });
+      console.error("WhatsApp verification cancellation error:", err);
+      handleApiError(err, res);
+    }
+  });
+  
+  // ADMIN ONLY: Register a phone number directly without verification (for testing)
+  app.post(`${apiPrefix}/whatsapp/admin-register`, async (req, res) => {
+    try {
+      const { phoneNumber } = req.body;
+      
+      if (!phoneNumber) {
+        return res.status(400).json({ 
+          success: false, 
+          message: "Phone number is required" 
+        });
+      }
+      
+      // Import the registration function from the script
+      const { registerPhoneNumber } = await import("../scripts/register-whatsapp-number");
+      
+      // Use the function to register the phone number
+      const success = await registerPhoneNumber(phoneNumber);
+      
+      if (success) {
+        return res.status(201).json({
+          success: true,
+          message: `Phone number ${phoneNumber} was successfully registered or updated`
+        });
+      } else {
+        return res.status(500).json({
+          success: false,
+          message: `Failed to register phone number ${phoneNumber}`
+        });
+      }
+    } catch (err) {
+      console.error("Admin WhatsApp registration error:", err);
+      handleApiError(err, res);
     }
   });
 
-  // Direct WhatsApp registration (no OTP needed)
-  app.post(`${apiPrefix}/whatsapp/direct-register`, isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
+  // New WhatsApp Admin Endpoints
+  app.get(`${apiPrefix}/whatsapp/admin/numbers`, isAuthenticated, async (req, res) => {
     try {
-      console.log("Received direct WhatsApp registration request:", req.body);
-      
-      const userId = req.user?.id || 1; // Default to demo user in dev environment
+      const numbers = await db.query.whatsappUsers.findMany({
+        orderBy: (whatsappUsers, { desc }) => [desc(whatsappUsers.createdAt)]
+      });
+      res.json(numbers);
+    } catch (error) {
+      console.error('Error fetching WhatsApp numbers:', error);
+      res.status(500).json({ error: 'Failed to fetch WhatsApp numbers' });
+    }
+  });
+  
+  app.post(`${apiPrefix}/whatsapp/admin/register`, isAuthenticated, async (req, res) => {
+    try {
       const { phoneNumber } = req.body;
       
       if (!phoneNumber) {
         return res.status(400).json({ error: 'Phone number is required' });
       }
       
-      console.log(`Registering WhatsApp DotSpark for: ${phoneNumber}`);
+      // Standardize phone number format
+      const formattedNumber = phoneNumber.startsWith('+') ? phoneNumber : `+${phoneNumber}`;
       
-      // Register directly without verification
-      const result = await registerWhatsAppUser(userId, phoneNumber);
+      // Check if already exists
+      const existing = await db.query.whatsappUsers.findFirst({
+        where: eq(whatsappUsers.phoneNumber, formattedNumber)
+      });
       
-      if (result.success) {
-        res.status(200).json({
-          success: true,
-          message: "Your DotSpark is now activated. You can now chat with it directly through WhatsApp."
+      if (existing) {
+        // Reactivate if it exists but is inactive
+        if (!existing.active) {
+          await db.update(whatsappUsers)
+            .set({ active: true, updatedAt: new Date() })
+            .where(eq(whatsappUsers.id, existing.id));
+          
+          return res.status(200).json({ 
+            message: 'WhatsApp number reactivated successfully',
+            number: formattedNumber
+          });
+        }
+        
+        return res.status(200).json({ 
+          message: 'WhatsApp number already registered',
+          number: formattedNumber
         });
-      } else {
-        res.status(400).json({ success: false, error: result.message });
       }
-    } catch (err) {
-      console.error("WhatsApp direct registration error:", err);
-      res.status(500).json({ success: false, error: 'Failed to register for WhatsApp DotSpark' });
-    }
-  });
-
-  // CogniShield - Cognitive Alignment Monitoring API endpoints
-  app.post(`${apiPrefix}/cognishield/analyze`, isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
-    try {
-      const { aiResponse, userInput, cogniProfile } = req.body;
       
-      if (!aiResponse || !userInput || !cogniProfile) {
-        return res.status(400).json({ error: 'AI response, user input, and CogniShield profile are required' });
-      }
-
-      const analysis = await analyzeCognitiveAlignment(aiResponse, userInput, cogniProfile);
+      // Register new number for the current user
+      const user = req.user as Express.User;
+      const result = await db.insert(whatsappUsers).values({
+        userId: user.id,
+        phoneNumber: formattedNumber,
+        active: true,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }).returning();
       
-      res.json({
-        success: true,
-        analysis
+      res.status(201).json({ 
+        message: 'WhatsApp number registered successfully',
+        number: result[0]
       });
     } catch (error) {
-      console.error('Error analyzing cognitive alignment:', error);
-      res.status(500).json({ error: 'Failed to analyze cognitive alignment' });
+      console.error('Error registering WhatsApp number:', error);
+      res.status(500).json({ error: 'Failed to register WhatsApp number' });
     }
   });
-
-  app.post(`${apiPrefix}/cognishield/monitor`, isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
+  
+  app.delete(`${apiPrefix}/whatsapp/admin/number/:id`, isAuthenticated, async (req, res) => {
     try {
-      const { messages, cogniProfile } = req.body;
+      const id = parseInt(req.params.id);
       
-      if (!messages || !cogniProfile) {
-        return res.status(400).json({ error: 'Messages and CogniShield profile are required' });
+      if (isNaN(id)) {
+        return res.status(400).json({ error: 'Invalid ID format' });
       }
-
-      const monitoring = await monitorConversationAlignment(messages, cogniProfile);
       
-      res.json({
-        success: true,
-        monitoring
-      });
+      // Soft delete (deactivate) the number
+      await db.update(whatsappUsers)
+        .set({ active: false, updatedAt: new Date() })
+        .where(eq(whatsappUsers.id, id));
+      
+      res.status(200).json({ message: 'WhatsApp number deactivated successfully' });
     } catch (error) {
-      console.error('Error monitoring conversation alignment:', error);
-      res.status(500).json({ error: 'Failed to monitor conversation alignment' });
-    }
-  });
-
-  // Enhanced chat endpoint with CogniShield integration
-  app.post(`${apiPrefix}/chat/cognishield`, isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
-    try {
-      const { userInput, messages = [], cogniProfile, monitorAlignment = true } = req.body;
-      
-      if (!userInput) {
-        return res.status(400).json({ error: 'User input is required' });
-      }
-
-      const result = await generateChatResponse(
-        userInput, 
-        messages, 
-        cogniProfile, 
-        monitorAlignment
-      );
-      
-      res.json({
-        success: true,
-        ...result
-      });
-    } catch (error) {
-      console.error('Error generating CogniShield chat response:', error);
-      res.status(500).json({ error: 'Failed to generate chat response' });
+      console.error('Error deactivating WhatsApp number:', error);
+      res.status(500).json({ error: 'Failed to deactivate WhatsApp number' });
     }
   });
 
