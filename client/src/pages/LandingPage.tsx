@@ -904,6 +904,149 @@ export default function LandingPage() {
         </div>
       </section>
       
+      {/* How DotSpark Works Section */}
+      <section className="py-24 relative overflow-hidden bg-gradient-to-b from-muted/30 to-background">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-8">How <span className="gradient-heading">DotSpark</span> Works?</h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              Watch as scattered thoughts transform into connected insights through exponential neural connections
+            </p>
+          </div>
+          
+          <div className="relative max-w-6xl mx-auto">
+            {/* Multi-dimensional dot visualization */}
+            <div className="relative h-[500px] bg-gradient-to-br from-slate-50/50 to-amber-50/50 dark:from-slate-950/50 dark:to-amber-950/50 rounded-2xl border border-amber-200/30 dark:border-amber-800/30 overflow-hidden">
+              
+              {/* Background grid pattern */}
+              <div className="absolute inset-0 opacity-10">
+                <div className="absolute w-full h-full" style={{
+                  backgroundImage: `radial-gradient(circle at 1px 1px, rgba(251, 191, 36, 0.3) 1px, transparent 0)`,
+                  backgroundSize: '40px 40px'
+                }}></div>
+              </div>
+              
+              {/* Layer 1: Scattered individual dots (thoughts) */}
+              <div className="absolute inset-0">
+                {/* Top layer scattered dots */}
+                <div className="absolute top-[15%] left-[10%] w-3 h-3 rounded-full bg-slate-400 animate-pulse"></div>
+                <div className="absolute top-[25%] left-[15%] w-2 h-2 rounded-full bg-slate-400 animate-pulse" style={{animationDelay: '0.5s'}}></div>
+                <div className="absolute top-[35%] left-[8%] w-2.5 h-2.5 rounded-full bg-slate-400 animate-pulse" style={{animationDelay: '1s'}}></div>
+                <div className="absolute top-[45%] left-[12%] w-2 h-2 rounded-full bg-slate-400 animate-pulse" style={{animationDelay: '1.5s'}}></div>
+                
+                <div className="absolute top-[20%] right-[10%] w-2.5 h-2.5 rounded-full bg-slate-400 animate-pulse" style={{animationDelay: '0.3s'}}></div>
+                <div className="absolute top-[30%] right-[15%] w-2 h-2 rounded-full bg-slate-400 animate-pulse" style={{animationDelay: '0.8s'}}></div>
+                <div className="absolute top-[40%] right-[8%] w-3 h-3 rounded-full bg-slate-400 animate-pulse" style={{animationDelay: '1.3s'}}></div>
+                
+                <div className="absolute bottom-[25%] left-[20%] w-2 h-2 rounded-full bg-slate-400 animate-pulse" style={{animationDelay: '0.7s'}}></div>
+                <div className="absolute bottom-[35%] left-[25%] w-2.5 h-2.5 rounded-full bg-slate-400 animate-pulse" style={{animationDelay: '1.2s'}}></div>
+                <div className="absolute bottom-[20%] right-[20%] w-2 h-2 rounded-full bg-slate-400 animate-pulse" style={{animationDelay: '0.4s'}}></div>
+              </div>
+              
+              {/* Layer 2: Connecting lines (neural pathways forming) */}
+              <div className="absolute inset-0">
+                {/* Animated connection lines */}
+                <svg className="absolute inset-0 w-full h-full" viewBox="0 0 800 500">
+                  <defs>
+                    <linearGradient id="connectionGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.6"/>
+                      <stop offset="100%" stopColor="#d97706" stopOpacity="0.3"/>
+                    </linearGradient>
+                  </defs>
+                  
+                  {/* Connection lines with animation */}
+                  <path d="M80 75 Q200 150 400 250" stroke="url(#connectionGradient)" strokeWidth="2" fill="none" 
+                        className="animate-pulse" strokeDasharray="5,5">
+                    <animate attributeName="stroke-dashoffset" values="0;10;0" dur="3s" repeatCount="indefinite"/>
+                  </path>
+                  <path d="M720 100 Q600 200 400 250" stroke="url(#connectionGradient)" strokeWidth="2" fill="none" 
+                        className="animate-pulse" strokeDasharray="5,5" style={{animationDelay: '0.5s'}}>
+                    <animate attributeName="stroke-dashoffset" values="0;10;0" dur="3s" repeatCount="indefinite"/>
+                  </path>
+                  <path d="M160 375 Q300 300 400 250" stroke="url(#connectionGradient)" strokeWidth="2" fill="none" 
+                        className="animate-pulse" strokeDasharray="5,5" style={{animationDelay: '1s'}}>
+                    <animate attributeName="stroke-dashoffset" values="0;10;0" dur="3s" repeatCount="indefinite"/>
+                  </path>
+                  <path d="M640 400 Q500 300 400 250" stroke="url(#connectionGradient)" strokeWidth="2" fill="none" 
+                        className="animate-pulse" strokeDasharray="5,5" style={{animationDelay: '1.5s'}}>
+                    <animate attributeName="stroke-dashoffset" values="0;10;0" dur="3s" repeatCount="indefinite"/>
+                  </path>
+                </svg>
+              </div>
+              
+              {/* Layer 3: Central convergence point */}
+              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                <div className="relative">
+                  {/* Pulsing rings */}
+                  <div className="absolute inset-0 w-16 h-16 rounded-full border-2 border-amber-400/40 animate-ping"></div>
+                  <div className="absolute inset-0 w-20 h-20 rounded-full border-2 border-amber-500/30 animate-ping" style={{animationDelay: '0.5s'}}></div>
+                  <div className="absolute inset-0 w-24 h-24 rounded-full border-2 border-amber-600/20 animate-ping" style={{animationDelay: '1s'}}></div>
+                  
+                  {/* Central hub */}
+                  <div className="relative w-12 h-12 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 shadow-lg shadow-amber-500/50 flex items-center justify-center">
+                    <Sparkles className="h-6 w-6 text-white animate-pulse" />
+                  </div>
+                </div>
+              </div>
+              
+              {/* Layer 4: Emerging sparks (insights) */}
+              <div className="absolute inset-0">
+                {/* Sparkle effects */}
+                <div className="absolute top-[30%] left-[60%] w-4 h-4 rounded-full bg-yellow-300 shadow-lg shadow-yellow-300/50 animate-bounce" style={{animationDelay: '2s'}}></div>
+                <div className="absolute top-[60%] left-[30%] w-3 h-3 rounded-full bg-yellow-400 shadow-lg shadow-yellow-400/50 animate-bounce" style={{animationDelay: '2.5s'}}></div>
+                <div className="absolute top-[40%] right-[25%] w-3.5 h-3.5 rounded-full bg-yellow-300 shadow-lg shadow-yellow-300/50 animate-bounce" style={{animationDelay: '3s'}}></div>
+                <div className="absolute bottom-[40%] left-[65%] w-2.5 h-2.5 rounded-full bg-yellow-400 shadow-lg shadow-yellow-400/50 animate-bounce" style={{animationDelay: '2.2s'}}></div>
+                
+                {/* Floating sparkle particles */}
+                <div className="absolute top-[25%] left-[70%] animate-float">
+                  <Sparkles className="h-3 w-3 text-yellow-400" />
+                </div>
+                <div className="absolute top-[70%] left-[25%] animate-float-slow">
+                  <Sparkles className="h-4 w-4 text-yellow-300" />
+                </div>
+                <div className="absolute top-[35%] right-[30%] animate-float-delay">
+                  <Sparkles className="h-3.5 w-3.5 text-yellow-400" />
+                </div>
+              </div>
+              
+              {/* Exponential effect overlay */}
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-amber-100/10 to-transparent animate-pulse"></div>
+            </div>
+            
+            {/* Process steps */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
+              <div className="text-center">
+                <div className="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mx-auto mb-4 shadow-lg">
+                  <div className="w-3 h-3 rounded-full bg-slate-400"></div>
+                </div>
+                <h3 className="text-xl font-bold mb-2">Scattered Thoughts</h3>
+                <p className="text-muted-foreground">Individual ideas and concepts floating in isolation</p>
+              </div>
+              
+              <div className="text-center">
+                <div className="w-16 h-16 rounded-full bg-amber-100 dark:bg-amber-900/50 flex items-center justify-center mx-auto mb-4 shadow-lg">
+                  <div className="flex space-x-1">
+                    <div className="w-2 h-2 rounded-full bg-amber-500"></div>
+                    <div className="w-2 h-2 rounded-full bg-amber-600"></div>
+                    <div className="w-2 h-2 rounded-full bg-amber-500"></div>
+                  </div>
+                </div>
+                <h3 className="text-xl font-bold mb-2">Neural Connections</h3>
+                <p className="text-muted-foreground">DotSpark forms exponential pathways between concepts</p>
+              </div>
+              
+              <div className="text-center">
+                <div className="w-16 h-16 rounded-full bg-yellow-100 dark:bg-yellow-900/50 flex items-center justify-center mx-auto mb-4 shadow-lg">
+                  <Sparkles className="h-8 w-8 text-yellow-600 dark:text-yellow-400" />
+                </div>
+                <h3 className="text-xl font-bold mb-2">Insight Sparks</h3>
+                <p className="text-muted-foreground">Connected thoughts create breakthrough insights</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      
       {/* Dashboard Preview Section */}
       <section className="py-24 bg-gradient-to-b from-muted/30 to-background relative overflow-hidden">
         <div className="container mx-auto px-4 md:px-6">
