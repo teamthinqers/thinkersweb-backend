@@ -505,23 +505,28 @@ export default function MyNeura() {
   // Header section with status and controls
   const renderHeader = () => (
     <>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
         <div className="flex items-center gap-2">
-          <Button variant="ghost" onClick={() => setLocation('/')} className="p-2">
+          <Button variant="ghost" onClick={() => setLocation('/')} className="p-2 flex-shrink-0">
             <ChevronLeft className="h-5 w-5" />
           </Button>
-          <h1 className="text-2xl font-bold">My DotSpark</h1>
+          <h1 className="text-xl sm:text-2xl font-bold truncate">My DotSpark</h1>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-medium">DotSpark Status:</span>
-            <span className={`inline-flex h-3 w-3 rounded-full ${isActivated ? 'bg-green-500' : 'bg-red-500'}`}></span>
+        
+        {/* Mobile layout - stack vertically */}
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-2">
+          <div className="flex items-center gap-2 justify-center sm:justify-start">
+            <span className="text-sm font-medium whitespace-nowrap">Status:</span>
+            <span className={`inline-flex h-3 w-3 rounded-full flex-shrink-0 ${isActivated ? 'bg-green-500' : 'bg-red-500'}`}></span>
+            <span className="text-sm font-medium">{isActivated ? 'Active' : 'Inactive'}</span>
           </div>
-          <div className="flex items-center gap-2">
+          
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
             {unsavedChanges && isActivated && (
               <Button 
                 variant="default"
-                className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-1.5"
+                size="sm"
+                className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-1.5 justify-center whitespace-nowrap"
                 onClick={saveChanges}
                 disabled={isUpdating}
               >
@@ -533,17 +538,24 @@ export default function MyNeura() {
                 ) : (
                   <span className="flex items-center gap-1.5">
                     <Save className="h-4 w-4" />
-                    Save Changes
+                    <span className="hidden sm:inline">Save Changes</span>
+                    <span className="sm:hidden">Save</span>
                   </span>
                 )}
               </Button>
             )}
             <Button 
               variant={isActivated ? "outline" : "default"} 
-              className={isActivated ? "border-green-500 text-green-600 hover:bg-green-50 dark:hover:bg-green-950" : "bg-amber-600 hover:bg-amber-700"} 
+              size="sm"
+              className={`flex items-center justify-center whitespace-nowrap ${
+                isActivated 
+                  ? "border-green-500 text-green-600 hover:bg-green-50 dark:hover:bg-green-950" 
+                  : "bg-amber-600 hover:bg-amber-700"
+              }`}
               onClick={isActivated ? deactivateDotSpark : handleActivateDotSpark}
             >
-              {isActivated ? "Deactivate DotSpark" : "Activate DotSpark"}
+              <span className="hidden sm:inline">{isActivated ? "Deactivate DotSpark" : "Activate DotSpark"}</span>
+              <span className="sm:hidden">{isActivated ? "Deactivate" : "Activate"}</span>
             </Button>
           </div>
         </div>
