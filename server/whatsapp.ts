@@ -391,10 +391,10 @@ export async function processWhatsAppMessage(from: string, messageText: string):
             });
             
             // Send activation success message with account creation info
-            const message = "✅ *Neural Extension Activated!*\n\n" +
-              `Your Neura account has been created with email: ${userEmail}\n\n` +
-              "To access your neural dashboard, visit www.dotspark.in and click 'Reset Password' to secure your account.\n\n" +
-              "Your Neura is now calibrating to your unique thinking patterns. What topic would you like to explore first?";
+            const message = "✅ *DotSpark Extension Activated!*\n\n" +
+              `Your DotSpark account has been created with email: ${userEmail}\n\n` +
+              "To access your DotSpark dashboard, visit www.dotspark.in and click 'Reset Password' to secure your account.\n\n" +
+              "Your DotSpark is now calibrating to your unique thinking patterns. What topic would you like to explore first?";
             
             return {
               success: true,
@@ -449,7 +449,7 @@ export async function processWhatsAppMessage(from: string, messageText: string):
         
         // Send activation success message with account email confirmation
         const activationMessage = "✅ *You're in. Connection successful.*\n\n" +
-          `👋 Welcome to DotSpark, your personal Neura — built to mirror your mind, not overwrite it.\n\n` +
+          `👋 Welcome to DotSpark, your personal neural extension — built to mirror your mind, not overwrite it.\n\n` +
           `From here on, DotSpark will help you think sharper, reflect deeper, and make decisions aligned with your style.\n\n` +
           `Whether it's untangling a thought, framing a choice, or sharpening your clarity — just say it.\n\n` +
           `This is your space to think. Let's begin.\n\n\n` +
@@ -463,18 +463,18 @@ export async function processWhatsAppMessage(from: string, messageText: string):
           try {
             // Send the full welcome message after activation
             const welcomeMessage = 
-              "🌟 *Your Neura is now activated!*\n\n" +
-              "Your neural extension is fully operational and uniquely calibrated to your thinking patterns. Here's what your Neura can do:\n\n" +
+              "🌟 *Your DotSpark is now activated!*\n\n" +
+              "Your neural extension is fully operational and uniquely calibrated to your thinking patterns. Here's what your DotSpark can do:\n\n" +
               "🧠 *Knowledge Processing* - I'll organize and connect your learning\n" +
               "🔄 *Thought Extension* - Enhance your thinking capacity\n" + 
               "💡 *Insight Generation* - Discover patterns in your ideas\n" +
               "📊 *Concept Mapping* - Build mental frameworks effortlessly\n" +
               "🚀 *Career Acceleration* - Develop professional expertise faster\n\n" +
               "Quick tips:\n" +
-              "• Your Neura learns from every interaction\n" +
+              "• Your DotSpark learns from every interaction\n" +
               "• Check your web dashboard to see your neural parameters\n" +
               "• Type 'help' anytime for guidance\n\n" +
-              "Access your neural dashboard at www.dotspark.in to fine-tune your extension!";
+              "Access your DotSpark dashboard at www.dotspark.in to fine-tune your extension!";
             
             await sendWhatsAppReply(from, welcomeMessage);
           } catch (error) {
