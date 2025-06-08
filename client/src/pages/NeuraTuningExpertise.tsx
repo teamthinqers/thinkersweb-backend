@@ -75,7 +75,8 @@ const functionalDomains = [
   { id: 'people_culture', name: 'People & Culture' },
   { id: 'operations_supply', name: 'Operations & Supply Chain' },
   { id: 'tech_engineering', name: 'Tech & Engineering' },
-  { id: 'finance_legal', name: 'Finance, Legal & Compliance' }
+  { id: 'finance_legal', name: 'Finance, Legal & Compliance' },
+  { id: 'pharma_healthcare', name: 'Pharma & Healthcare' }
 ];
 
 export default function NeuraTuningExpertise() {
@@ -256,7 +257,7 @@ export default function NeuraTuningExpertise() {
         {unsavedChanges && (
           <Button 
             variant="default"
-            className={justSaved ? "bg-green-600 hover:bg-green-700 text-white flex items-center gap-1.5" : "bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-1.5"}
+            className={justSaved ? "bg-green-600 hover:bg-green-700 text-white flex items-center gap-1.5" : "bg-amber-600 hover:bg-amber-700 text-white flex items-center gap-1.5"}
             onClick={saveChanges}
             disabled={isUpdating || justSaved}
           >

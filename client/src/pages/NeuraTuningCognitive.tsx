@@ -151,14 +151,19 @@ export default function NeuraTuningCognitive() {
         {unsavedChanges && (
           <Button 
             variant="default"
-            className="bg-amber-600 hover:bg-amber-700 text-white flex items-center gap-1.5 border-amber-600"
+            className={justSaved ? "bg-green-600 hover:bg-green-700 text-white flex items-center gap-1.5" : "bg-amber-600 hover:bg-amber-700 text-white flex items-center gap-1.5 border-amber-600"}
             onClick={saveChanges}
-            disabled={isUpdating}
+            disabled={isUpdating || justSaved}
           >
             {isUpdating ? (
               <span className="flex items-center gap-1.5">
                 <span className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
                 Saving...
+              </span>
+            ) : justSaved ? (
+              <span className="flex items-center gap-1.5">
+                <Check className="h-4 w-4" />
+                Saved
               </span>
             ) : (
               <span className="flex items-center gap-1.5">
