@@ -222,13 +222,13 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
             <div className="flex items-center space-x-3">
               {/* My Neura button - always visible */}
               <Button 
-                className="bg-gradient-to-r from-amber-700 to-primary hover:from-amber-800 hover:to-primary/90 text-white h-9 w-9 p-0"
+                className="bg-gradient-to-r from-amber-700 to-primary hover:from-amber-800 hover:to-primary/90 text-white h-9 w-9 p-0 shadow-md"
                 size="sm"
                 onClick={() => setLocation("/dashboard")}
               >
                 <div className="relative">
                   <Brain className="h-5 w-5" />
-                  {isActivated && <div className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-green-500 rounded-full"></div>}
+                  {isActivated && <div className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>}
                 </div>
               </Button>
               
@@ -309,19 +309,18 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
               
               {/* My Neura button - always visible */}
               <Button 
-                className="mr-2 bg-gradient-to-r from-amber-700 to-primary hover:from-amber-800 hover:to-primary/90 text-white relative"
+                className="mr-3 bg-gradient-to-r from-amber-700 to-primary hover:from-amber-800 hover:to-primary/90 text-white relative shadow-md"
                 size="sm"
                 onClick={() => setLocation("/dashboard")}
               >
                 <span className="relative z-10 flex items-center">
                   <div className="relative mr-1.5">
                     <Brain className="h-4 w-4" />
-                    {isActivated && <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-green-500 rounded-full"></div>}
+                    {isActivated && <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>}
                   </div>
                   <span>My Neura</span>
                 </span>
               </Button>
-              
               
               <button 
                 className="p-2 rounded-full text-gray-400 hover:text-gray-500 hover:bg-gray-100 mr-2"
