@@ -879,7 +879,7 @@ export default function LandingPage() {
                 From fire to frameworks, progress has always come from those who questioned, connected, and carved their own path.
               </p>
               
-              <p className="font-semibold text-xl">
+              <p className="font-semibold text-xl text-amber-800 dark:text-amber-600">
                 DotSpark is built for them.
               </p>
               
@@ -888,7 +888,7 @@ export default function LandingPage() {
                 <p>Not for the ones who follow default prompts.</p>
               </div>
               
-              <p className="font-medium text-xl">
+              <p className="font-medium text-xl text-amber-800 dark:text-amber-600">
                 It's for the OG Thinkers, those who believe human intelligence is still the sharpest edge.
               </p>
               
