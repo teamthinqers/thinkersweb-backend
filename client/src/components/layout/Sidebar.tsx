@@ -85,8 +85,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isMobile, onNewEntry
                   </div>
                   {item.isSpecial ? (
                     <span className="font-medium bg-gradient-to-r from-amber-700 to-orange-800 bg-clip-text text-transparent">{item.label}</span>
-                  ) : item.isAdvanced ? (
-                    <span className="font-medium text-blue-700 dark:text-blue-400">{item.label}</span>
                   ) : (
                     item.label
                   )}

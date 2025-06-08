@@ -80,6 +80,9 @@ export default function SectionedDotSparkTuningPage() {
     expertise: false
   });
   
+  // Active section state
+  const [activeSection, setActiveSection] = useState<'cognitive' | 'memory' | 'learning' | 'expertise'>('cognitive');
+  
   // Update capacity metrics when status changes
   useEffect(() => {
     if (status) {
@@ -167,8 +170,10 @@ export default function SectionedDotSparkTuningPage() {
     updateLearningFocus(updatedFocus);
   };
   
-  // We no longer need to handle name changes as we're using a fixed name
-  // Function removed as per requirements
+  // Function to handle name changes (placeholder for compatibility)
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Name is fixed as "My DotSpark" - this function is kept for compatibility
+  };
   
   // Function to mark a section as complete
   const markSectionComplete = (section: string) => {
@@ -180,19 +185,25 @@ export default function SectionedDotSparkTuningPage() {
   
   // Function to navigate to next section
   const goToNextSection = () => {
-    const sections = ['cognitive', 'memory', 'learning', 'expertise'];
+    const sections: ('cognitive' | 'memory' | 'learning' | 'expertise')[] = ['cognitive', 'memory', 'learning', 'expertise'];
     const currentIndex = sections.indexOf(activeSection);
     if (currentIndex < sections.length - 1) {
-      setActiveSection(sections[currentIndex + 1]);
+      const nextSection = sections[currentIndex + 1];
+      if (nextSection) {
+        setActiveSection(nextSection);
+      }
     }
   };
   
   // Function to navigate to previous section
   const goToPreviousSection = () => {
-    const sections = ['cognitive', 'memory', 'learning', 'expertise'];
+    const sections: ('cognitive' | 'memory' | 'learning' | 'expertise')[] = ['cognitive', 'memory', 'learning', 'expertise'];
     const currentIndex = sections.indexOf(activeSection);
     if (currentIndex > 0) {
-      setActiveSection(sections[currentIndex - 1]);
+      const previousSection = sections[currentIndex - 1];
+      if (previousSection) {
+        setActiveSection(previousSection);
+      }
     }
   };
   
@@ -485,34 +496,34 @@ export default function SectionedDotSparkTuningPage() {
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           {/* CogniShield Configuration Card */}
-          <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 group border-blue-200 dark:border-blue-800 flex flex-col h-full relative">
-            <div className="h-48 bg-gradient-to-br from-blue-800 to-indigo-900 flex items-center justify-center relative overflow-hidden">
+          <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 group border-amber-200 dark:border-amber-800 flex flex-col h-full relative">
+            <div className="h-48 bg-gradient-to-br from-amber-800 to-orange-900 flex items-center justify-center relative overflow-hidden">
               {/* Subtle neural network pattern */}
               <div className="absolute inset-0">
-                <div className="absolute top-8 left-6 w-0.5 h-0.5 bg-blue-400 rounded-full opacity-70"></div>
-                <div className="absolute top-12 right-12 w-1 h-1 bg-indigo-400 rounded-full opacity-60"></div>
-                <div className="absolute bottom-16 left-12 w-0.5 h-0.5 bg-cyan-500 rounded-full opacity-80"></div>
-                <div className="absolute bottom-10 right-6 w-1 h-1 bg-blue-500 rounded-full opacity-50"></div>
-                <div className="absolute top-24 left-1/2 w-0.5 h-0.5 bg-indigo-500 rounded-full opacity-70"></div>
+                <div className="absolute top-8 left-6 w-0.5 h-0.5 bg-amber-400 rounded-full opacity-70"></div>
+                <div className="absolute top-12 right-12 w-1 h-1 bg-orange-400 rounded-full opacity-60"></div>
+                <div className="absolute bottom-16 left-12 w-0.5 h-0.5 bg-yellow-500 rounded-full opacity-80"></div>
+                <div className="absolute bottom-10 right-6 w-1 h-1 bg-amber-500 rounded-full opacity-50"></div>
+                <div className="absolute top-24 left-1/2 w-0.5 h-0.5 bg-orange-500 rounded-full opacity-70"></div>
                 {/* Connecting lines */}
-                <div className="absolute top-8 left-6 w-6 h-px bg-gradient-to-r from-blue-400 to-transparent opacity-30"></div>
-                <div className="absolute bottom-16 left-12 w-10 h-px bg-gradient-to-r from-cyan-500 to-transparent opacity-20"></div>
+                <div className="absolute top-8 left-6 w-6 h-px bg-gradient-to-r from-amber-400 to-transparent opacity-30"></div>
+                <div className="absolute bottom-16 left-12 w-10 h-px bg-gradient-to-r from-yellow-500 to-transparent opacity-20"></div>
               </div>
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.1),transparent_70%)]"></div>
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(245,158,11,0.1),transparent_70%)]"></div>
               <div className="z-10 p-6 flex flex-col items-center">
-                <div className="rounded-full bg-blue-900/40 p-4 backdrop-blur-sm mb-4 border border-blue-600/30">
-                  <Shield className="h-12 w-12 text-blue-100" />
+                <div className="rounded-full bg-amber-900/40 p-4 backdrop-blur-sm mb-4 border border-amber-600/30">
+                  <Shield className="h-12 w-12 text-amber-100" />
                 </div>
-                <h3 className="text-xl font-bold text-blue-50">CogniShield</h3>
+                <h3 className="text-xl font-bold text-amber-50">CogniShield</h3>
               </div>
             </div>
-            <CardContent className="p-6 bg-gradient-to-b from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 flex flex-col justify-between min-h-[120px]">
+            <CardContent className="p-6 bg-gradient-to-b from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 flex flex-col justify-between min-h-[120px]">
               <p className="text-muted-foreground mb-4 flex-1">
                 Configure your cognitive shield to monitor AI alignment with your thinking patterns.
               </p>
               <div className="flex justify-center mt-auto">
                 <Button 
-                  className="flex items-center justify-center gap-2 w-48 bg-gradient-to-r from-blue-700 to-indigo-700 hover:from-blue-800 hover:to-indigo-800 text-white group-hover:translate-y-0 translate-y-1 transition-all duration-300 h-10 relative"
+                  className="flex items-center justify-center gap-2 w-48 bg-gradient-to-r from-amber-700 to-orange-700 hover:from-amber-800 hover:to-orange-800 text-white group-hover:translate-y-0 translate-y-1 transition-all duration-300 h-10 relative"
                   onClick={() => {
                     setLocation('/cognitive-shield-config');
                   }}
@@ -1070,8 +1081,8 @@ export default function SectionedDotSparkTuningPage() {
                   </div>
                   
                   <div className="flex flex-wrap gap-2 mb-4 min-h-[60px]">
-                    {tuning?.learningFocus?.length > 0 ? (
-                      tuning.learningFocus.map((focus, index) => (
+                    {(tuning?.learningFocus?.length ?? 0) > 0 ? (
+                      (tuning?.learningFocus || []).map((focus, index) => (
                         <div key={index} className="group flex items-center gap-1 rounded-full bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 py-1.5 pl-3 pr-1.5 text-sm hover:bg-emerald-100 dark:hover:bg-emerald-900/30 transition-colors">
                           <span>{focus}</span>
                           <Button
