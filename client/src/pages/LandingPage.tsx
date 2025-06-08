@@ -185,6 +185,7 @@ export default function LandingPage() {
     // Listen for appinstalled event (when PWA is installed)
     const handleAppInstalled = () => {
       setIsPWAInstalled(true);
+      localStorage.setItem('pwa-installed', 'true');
     };
 
     window.addEventListener('appinstalled', handleAppInstalled);
