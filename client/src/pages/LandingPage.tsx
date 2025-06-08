@@ -762,7 +762,7 @@ export default function LandingPage() {
                       </div>
                     )}
                   </div>
-                  <span className={`font-medium text-sm ${user ? 'text-orange-500' : 'text-muted-foreground'}`}>Sign In</span>
+                  <span className={`font-bold text-sm ${user ? 'text-orange-500' : 'text-muted-foreground'}`}>Sign In</span>
                   {user && (
                     <div className="animate-pulse mt-1 text-xs text-orange-500 flex items-center">
                       <CheckCircle className="h-3 w-3 mr-1" />
@@ -785,7 +785,7 @@ export default function LandingPage() {
                       </div>
                     )}
                   </div>
-                  <span className={`font-medium text-sm
+                  <span className={`font-bold text-sm
                     ${isNeuraActivated ? 'text-amber-600' : user ? 'text-amber-500' : 'text-muted-foreground'}`}>
                     Activate DotSpark
                   </span>
@@ -806,29 +806,29 @@ export default function LandingPage() {
                 {/* Step 3: Install Web App */}
                 <div className="flex flex-col items-center">
                   <div className={`w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center shadow-lg mb-3 transition-all duration-500
-                    ${isPWAInstalled ? 'bg-gradient-to-br from-emerald-500 to-green-600 text-white scale-110' : 
-                    isNeuraActivated ? 'bg-card border-2 border-emerald-500 text-emerald-500 animate-pulse' : 
+                    ${isPWAInstalled ? 'bg-gradient-to-br from-orange-500 to-red-600 text-white scale-110' : 
+                    isNeuraActivated ? 'bg-card border-2 border-orange-500 text-orange-500 animate-pulse' : 
                     'bg-card border-2 border-muted text-muted-foreground'}`}>
                     {isPWAInstalled ? (
                       <CheckCircle className="h-6 w-6 md:h-8 md:w-8" />
                     ) : (
-                      <div className="rounded-full bg-emerald-500/20 w-8 h-8 md:w-10 md:h-10 flex items-center justify-center">
-                        <span className="font-bold text-lg text-emerald-600">3</span>
+                      <div className="rounded-full bg-orange-500/20 w-8 h-8 md:w-10 md:h-10 flex items-center justify-center">
+                        <span className="font-bold text-lg text-orange-600">3</span>
                       </div>
                     )}
                   </div>
-                  <span className={`font-medium text-sm
-                    ${isPWAInstalled ? 'text-emerald-600' : isNeuraActivated ? 'text-emerald-500' : 'text-muted-foreground'}`}>
+                  <span className={`font-bold text-sm
+                    ${isPWAInstalled ? 'text-orange-600' : isNeuraActivated ? 'text-orange-500' : 'text-muted-foreground'}`}>
                     Install Web App
                   </span>
                   {isPWAInstalled && (
-                    <div className="animate-pulse mt-1 text-xs text-emerald-600 flex items-center">
+                    <div className="animate-pulse mt-1 text-xs text-orange-600 flex items-center">
                       <CheckCircle className="h-3 w-3 mr-1" />
                       <span>Installed</span>
                     </div>
                   )}
                   {isNeuraActivated && !isPWAInstalled && (
-                    <div className="mt-1 text-xs text-emerald-500 flex items-center">
+                    <div className="mt-1 text-xs text-orange-500 flex items-center">
                       <ArrowRight className="h-3 w-3 mr-1" />
                       <span>Ready to install</span>
                     </div>
