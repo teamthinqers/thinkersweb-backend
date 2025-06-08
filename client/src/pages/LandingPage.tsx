@@ -870,33 +870,33 @@ export default function LandingPage() {
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-8">Why <span className="gradient-heading">DotSpark</span>?</h2>
             
-            <div className="max-w-4xl mx-auto space-y-6 text-lg leading-relaxed">
-              <p className="text-foreground font-medium">
+            <div className="max-w-4xl mx-auto space-y-8 text-lg leading-relaxed text-foreground">
+              <p className="font-medium">
                 Human evolution was never shaped by the masses — it was led by the few who chose to think.
               </p>
               
-              <p className="text-muted-foreground">
+              <p>
                 From fire to frameworks, progress has always come from those who questioned, connected, and carved their own path.
               </p>
               
-              <p className="text-foreground font-semibold text-xl">
+              <p className="font-semibold text-xl">
                 DotSpark is built for them.
               </p>
               
-              <div className="space-y-3 text-muted-foreground">
+              <div className="space-y-2">
                 <p>Not for the ones who let AI think for them.</p>
                 <p>Not for the ones who follow default prompts.</p>
               </div>
               
-              <p className="text-foreground font-medium text-xl">
+              <p className="font-medium text-xl">
                 It's for the OG Thinkers, those who believe human intelligence is still the sharpest edge.
               </p>
               
-              <div className="space-y-3 text-muted-foreground">
-                <p>AI isn't the enemy. It should assist, not replace. Support, not decide.</p>
-              </div>
+              <p>
+                AI isn't the enemy. It should assist, not replace. Support, not decide.
+              </p>
               
-              <p className="text-foreground font-bold text-xl bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
+              <p className="font-bold text-xl text-amber-700 dark:text-amber-400">
                 DotSpark keeps thinking where it belongs — with you.
               </p>
             </div>
