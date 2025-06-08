@@ -891,13 +891,7 @@ export default function LandingPage() {
                   {isNeuraActivated && !isPWAInstalled && (
                     <div className="mt-1 text-xs text-emerald-500 flex items-center">
                       <ArrowRight className="h-3 w-3 mr-1" />
-                      <span>Next step</span>
-                    </div>
-                  )}
-                  {!isNeuraActivated && (
-                    <div className="mt-1 text-xs text-muted-foreground flex items-center">
-                      <ArrowRight className="h-3 w-3 mr-1" />
-                      <span>Coming soon</span>
+                      <span>Ready to install</span>
                     </div>
                   )}
                 </div>
