@@ -1185,8 +1185,8 @@ export default function LandingPage() {
         <div className="container mx-auto px-4 md:px-6">
           <div className="flex flex-col md:flex-row justify-between items-center w-full">
             <div className="flex items-center mb-4 md:mb-0">
-              <Sparkles className="h-4 w-4 md:h-5 md:w-5 text-primary mr-2" />
-              <span className="text-lg md:text-xl font-bold">DotSpark</span>
+              <Sparkles className="h-4 w-4 md:h-5 md:w-5 text-amber-600 dark:text-amber-400 mr-2" />
+              <span className="text-lg md:text-xl font-bold text-amber-700 dark:text-amber-400">DotSpark</span>
             </div>
             
             <div className="text-xs md:text-sm text-muted-foreground">
