@@ -71,6 +71,11 @@ export default function MyNeura() {
   const [learningRate, setLearningRate] = useState<number>(8);
   const [specializationLevel, setSpecializationLevel] = useState<number>(5);
   
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   // Only update capacity metrics when status changes if not a new user
   useEffect(() => {
     // Skip this effect entirely - we want fixed values for new users

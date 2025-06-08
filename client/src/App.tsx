@@ -195,6 +195,7 @@ function Router() {
         {() => <MyNeura />}
       </Route>
       <Route path="/my-neura" component={MyNeura} />
+      <Route path="/neura" component={MyNeura} />
       {/* DotSpark tuning section pages - Order: Core, Cognitive, Learning, Expertise */}
       <Route path="/dotspark-tuning/core" component={NeuraTuningCore} />
       <Route path="/dotspark-tuning/cognitive" component={NeuraTuningCognitive} />

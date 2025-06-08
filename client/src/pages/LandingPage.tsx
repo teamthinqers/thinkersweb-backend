@@ -1169,8 +1169,8 @@ export default function LandingPage() {
                   <span className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity"></span>
                 </Link>
               </Button>
-              <Button size="lg" variant="outline" className="bg-transparent border-white text-white hover:bg-white/10 btn-bounce w-full sm:w-auto" asChild>
-                <Link href="/dashboard" className="px-4 md:px-8 justify-center">
+              <Button size="lg" variant="outline" className="bg-white/20 border-white text-white hover:bg-white/30 btn-bounce w-full sm:w-auto" asChild>
+                <Link href="/neura" className="px-4 md:px-8 justify-center">
                   Explore DotSpark Neura
                 </Link>
               </Button>
