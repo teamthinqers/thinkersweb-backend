@@ -8,7 +8,8 @@ import { Send, Loader2, ArrowLeft } from 'lucide-react';
 import { Link } from 'wouter';
 import { useAuth } from '@/hooks/use-auth';
 import { UsageLimitMessage } from '@/components/ui/usage-limit-message';
-import { hasExceededLimit, getLimitMessage, incrementUsageCount } from '@/lib/usageLimits';
+import { hasExceededLimit, getLimitMessage, incrementUsageCount, isFirstChat, markFirstChatDone } from '@/lib/usageLimits';
+import { getNeuraActivationStatus } from '@/lib/neuraStorage';
 import axios from 'axios';
 
 type Message = {
@@ -27,16 +28,22 @@ export default function ChatPage() {
       timestamp: new Date(),
     },
   ]);
-  const [inputValue, setInputValue] = useState("Hey DotSpark, I've got a few things on my mind - need your thoughts");
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   const { user } = useAuth();
   const isRegistered = !!user;
+  const isActivated = getNeuraActivationStatus();
+  const isFirstTime = isFirstChat();
+  
+  // Set default message only for first-time users
+  const [inputValue, setInputValue] = useState(
+    isFirstTime ? "Hey DotSpark, I've got a few things on my mind - need your assistance" : ""
+  );
   
   // Check if user has exceeded their limit
-  const limitExceeded = hasExceededLimit(isRegistered);
-  const limitMessage = getLimitMessage(isRegistered);
+  const limitExceeded = hasExceededLimit(isRegistered, isActivated);
+  const limitMessage = getLimitMessage(isRegistered, isActivated);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });

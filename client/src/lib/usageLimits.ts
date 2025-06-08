@@ -3,11 +3,13 @@
  */
 
 const TRIAL_USER_LIMIT = 10; // Max number of prompts for unregistered users
-const REGISTERED_USER_LIMIT = 25; // Max number of prompts for registered users
+const REGISTERED_USER_LIMIT = 20; // Max number of prompts for registered users
+const ACTIVATED_USER_LIMIT = -1; // Unlimited for users who have activated DotSpark
 
 // Local storage keys
 const USAGE_COUNT_KEY = 'dotspark_usage_count';
 const DEVICE_ID_KEY = 'dotspark_device_id';
+const FIRST_CHAT_KEY = 'dotspark_first_chat_done';
 
 /**
  * Generate a unique device ID if not already present
@@ -56,9 +58,14 @@ export function resetUsageCount(): void {
 /**
  * Check if the user has exceeded their usage limit
  * @param isRegistered Whether the user is registered or not
+ * @param isActivated Whether the user has activated DotSpark
  * @returns Whether the user has exceeded their limit
  */
-export function hasExceededLimit(isRegistered: boolean): boolean {
+export function hasExceededLimit(isRegistered: boolean, isActivated: boolean = false): boolean {
+  if (isActivated) {
+    return false; // Unlimited usage for activated users
+  }
+  
   const count = getUsageCount();
   const limit = isRegistered ? REGISTERED_USER_LIMIT : TRIAL_USER_LIMIT;
   return count >= limit;
@@ -67,22 +74,47 @@ export function hasExceededLimit(isRegistered: boolean): boolean {
 /**
  * Get the appropriate limit message based on user registration status
  * @param isRegistered Whether the user is registered or not
+ * @param isActivated Whether the user has activated DotSpark
  * @returns The limit message to display
  */
-export function getLimitMessage(isRegistered: boolean): string {
-  if (isRegistered) {
-    return "You have exceeded your limit, contact DotSpark team for continued usage.";
-  } else {
-    return "You have exceeded the usage limit for trial users. Contact DotSpark team or Register to continue using.";
+export function getLimitMessage(isRegistered: boolean, isActivated: boolean = false): string {
+  if (isActivated) {
+    return ""; // No limit message for activated users
   }
+  
+  if (isRegistered) {
+    return "Please contact DotSpark team for continued usage";
+  } else {
+    return "Please contact DotSpark team for continued usage";
+  }
+}
+
+/**
+ * Check if this is the user's first chat interaction
+ * @returns Whether this is the first chat
+ */
+export function isFirstChat(): boolean {
+  return !localStorage.getItem(FIRST_CHAT_KEY);
+}
+
+/**
+ * Mark that the user has completed their first chat
+ */
+export function markFirstChatDone(): void {
+  localStorage.setItem(FIRST_CHAT_KEY, 'true');
 }
 
 /**
  * Get the remaining prompts for the user
  * @param isRegistered Whether the user is registered or not
+ * @param isActivated Whether the user has activated DotSpark
  * @returns The number of prompts remaining
  */
-export function getRemainingPrompts(isRegistered: boolean): number {
+export function getRemainingPrompts(isRegistered: boolean, isActivated: boolean = false): number {
+  if (isActivated) {
+    return -1; // Unlimited
+  }
+  
   const count = getUsageCount();
   const limit = isRegistered ? REGISTERED_USER_LIMIT : TRIAL_USER_LIMIT;
   return Math.max(0, limit - count);
