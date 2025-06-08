@@ -12,6 +12,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { 
   BrainCircuit, 
   Sparkles, 
@@ -35,14 +36,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+
 import {
   HoverCard,
   HoverCardContent,
@@ -909,6 +903,65 @@ export default function MyNeura() {
           </div>
         </div>
       )}
+      
+      {/* Invite Code Dialog */}
+      <Dialog open={showInviteDialog} onOpenChange={setShowInviteDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Sparkles className="h-5 w-5 text-amber-600" />
+              Activate DotSpark
+            </DialogTitle>
+            <DialogDescription>
+              DotSpark is an exclusive service. Please enter your invite code to activate your account.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="inviteCode">Invite Code</Label>
+              <Input
+                id="inviteCode"
+                placeholder="Enter your invite code"
+                value={inviteCode}
+                onChange={(e) => setInviteCode(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    handleInviteCodeSubmit();
+                  }
+                }}
+                disabled={isValidatingCode}
+                className="mt-1"
+              />
+            </div>
+            <div className="flex gap-2 justify-end">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setShowInviteDialog(false);
+                  setInviteCode('');
+                }}
+                disabled={isValidatingCode}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleInviteCodeSubmit}
+                disabled={isValidatingCode || !inviteCode.trim()}
+                className="bg-amber-600 hover:bg-amber-700"
+              >
+                {isValidatingCode ? (
+                  <span className="flex items-center gap-2">
+                    <span className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                    Validating...
+                  </span>
+                ) : (
+                  'Activate DotSpark'
+                )}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

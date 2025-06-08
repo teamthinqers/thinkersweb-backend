@@ -47,6 +47,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/api/health', (req, res) => {
     res.status(200).json({ status: 'ok', time: new Date().toISOString() });
   });
+
+  // Invite code validation endpoint
+  app.post('/api/validate-invite-code', (req: Request, res: Response) => {
+    const { inviteCode } = req.body;
+    
+    if (!inviteCode || typeof inviteCode !== 'string') {
+      return res.status(400).json({ 
+        message: 'Invite code is required' 
+      });
+    }
+    
+    // Check if the invite code matches the expected value
+    if (inviteCode.trim().toUpperCase() === 'DOTSPARKSOCIAL') {
+      return res.status(200).json({ 
+        message: 'Invite code is valid',
+        success: true 
+      });
+    } else {
+      return res.status(401).json({ 
+        message: 'Invalid invite code. Please check your code and try again.' 
+      });
+    }
+  });
   
   // Special routes for PWA files to ensure correct MIME types
   app.get('/service-worker.js', (req, res) => {
