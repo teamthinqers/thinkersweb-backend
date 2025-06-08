@@ -1099,7 +1099,7 @@ export default function LandingPage() {
           </div>
           
           {/* Content below visualization */}
-          <div className="text-center max-w-4xl mx-auto">
+          <div className="text-center max-w-4xl mx-auto mt-12">
             <p className="text-lg text-foreground leading-relaxed">
               DotSpark is inspired by ancient Indian methods of layered thinking, where raw and valuable thoughts were preserved and connected over time. It helps you capture these meaningful dots and gradually links them based on your unique way of thinking. When such dots from progressive thinkers come together, they create an exponential, compounding spark — building a thinking edge that no AI can replace.
             </p>
