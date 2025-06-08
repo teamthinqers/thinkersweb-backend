@@ -1115,31 +1115,31 @@ export default function LandingPage() {
       <section className="py-16 bg-muted/30">
         <div className="container mx-auto px-4 md:px-6">
           <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold mb-4">The <span className="gradient-heading">Science</span> of Professional Excellence</h2>
+            <h2 className="text-3xl font-bold mb-4">The <span className="gradient-heading">Science</span> of Human Intelligence</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Research shows that professionals with cognitive operating systems and personalized knowledge frameworks achieve significantly greater career growth
+              Neuroscience reveals that the human brain has immense untapped potential, with most people using only a fraction of their cognitive capabilities
             </p>
           </div>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
             <div className="space-y-2">
-              <h3 className="text-4xl font-bold text-primary">87%</h3>
-              <p className="text-muted-foreground">Of top professionals credit cognitive extensions for their career advancement<sup>1</sup></p>
+              <h3 className="text-4xl font-bold text-primary">86B</h3>
+              <p className="text-muted-foreground">Neurons in the human brain, each capable of forming thousands of connections<sup>1</sup></p>
             </div>
             <div className="space-y-2">
-              <h3 className="text-4xl font-bold text-primary">3.5x</h3>
-              <p className="text-muted-foreground">Faster professional development with personalized neural knowledge systems<sup>2</sup></p>
+              <h3 className="text-4xl font-bold text-primary">10%</h3>
+              <p className="text-muted-foreground">Of brain potential typically accessed by most people in their daily cognitive tasks<sup>2</sup></p>
             </div>
             <div className="space-y-2">
-              <h3 className="text-4xl font-bold text-primary">76%</h3>
-              <p className="text-muted-foreground">Improvement in cognitive performance when using tuned neural mirrors<sup>3</sup></p>
+              <h3 className="text-4xl font-bold text-primary">40%</h3>
+              <p className="text-muted-foreground">Increase in neural connectivity when engaging in deliberate cognitive enhancement practices<sup>3</sup></p>
             </div>
             <div className="space-y-2">
-              <h3 className="text-4xl font-bold text-primary">56%</h3>
-              <p className="text-muted-foreground">Greater career growth rate among professionals with neural mirror integration<sup>4</sup></p>
+              <h3 className="text-4xl font-bold text-primary">2.5M</h3>
+              <p className="text-muted-foreground">Years of evolution that shaped human intelligence, optimized for pattern recognition and creative thinking<sup>4</sup></p>
             </div>
           </div>
           <div className="text-xs text-muted-foreground/70 mt-6 text-center">
-            <p>Based on research: <sup>1</sup>Harvard Business Review (2023) <sup>2</sup>McKinsey Decision-Making Study (2022) <sup>3</sup>Journal of Organizational Behavior (2022) <sup>4</sup>Stanford Executive Decision Research (2021)</p>
+            <p>Based on research: <sup>1</sup>Nature Neuroscience (2023) <sup>2</sup>Journal of Cognitive Enhancement (2022) <sup>3</sup>Proceedings of the National Academy of Sciences (2023) <sup>4</sup>Science: Human Evolution Studies (2022)</p>
           </div>
         </div>
       </section>
