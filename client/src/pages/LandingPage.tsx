@@ -241,10 +241,10 @@ export default function LandingPage() {
           <div className="flex items-center">
             <div 
               className="flex items-center gap-1 cursor-pointer active:opacity-80 transition-opacity" 
-              onClick={() => setLocation("/dashboard")}
+              onClick={() => setLocation("/dotspark-tuning")}
             >
               <Sparkles className="h-5 w-5 text-primary" />
-              <span className="text-xl font-bold">DotSpark</span>
+              <span className="text-xl font-bold text-amber-800 dark:text-amber-600">DotSpark</span>
             </div>
           </div>
           
