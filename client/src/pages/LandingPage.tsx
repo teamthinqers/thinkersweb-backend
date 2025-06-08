@@ -3,7 +3,8 @@ import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { 
   ArrowRight, Brain, BookOpen, Users, Sparkles, BarChart2, 
-  MessageCircle, MessageSquare, User, Menu, X, Check, CheckCircle, Download 
+  MessageCircle, MessageSquare, User, Menu, X, Check, CheckCircle, Download,
+  Smartphone, Monitor, Share, Plus
 } from "lucide-react";
 
 // Dynamic Word component for cycling through words with animation
@@ -80,11 +81,19 @@ import {
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 export default function LandingPage() {
   const { user, logout } = useAuth();
   const [location, setLocation] = useLocation();
   const [contactDialogOpen, setContactDialogOpen] = useState(false);
+  const [installDialogOpen, setInstallDialogOpen] = useState(false);
   const [whatsAppNumber, setWhatsAppNumber] = useState<string | null>(null);
   const { 
     isWhatsAppConnected, 
@@ -702,18 +711,12 @@ export default function LandingPage() {
                 3
               </div>
               <h3 className="text-xl font-semibold mb-2">Download WebApp</h3>
-              <p className="text-muted-foreground text-sm">Install DotSpark on your device for quick access and offline capabilities.</p>
+              <p className="text-muted-foreground text-sm">Install DotSpark App on your mobile for better experience.</p>
               <div className="mt-auto pt-4">
                 <Button 
                   size="default" 
-                  onClick={() => {
-                    // Trigger PWA install prompt if available
-                    if ('serviceWorker' in navigator) {
-                      // For now, just show an alert with instructions
-                      alert('To install DotSpark as an app:\n\n• On mobile: Tap the share button and select "Add to Home Screen"\n• On desktop: Look for the install icon in your browser\'s address bar');
-                    }
-                  }}
-                  className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-indigo-600 hover:to-blue-600 text-white shadow-md hover:shadow-lg transition-all duration-300"
+                  onClick={() => setInstallDialogOpen(true)}
+                  className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-emerald-600 hover:to-green-600 text-white shadow-md hover:shadow-lg transition-all duration-300"
                 >
                   <Download className="h-5 w-5 mr-2" />
                   <span>Install App</span>
@@ -1486,6 +1489,103 @@ export default function LandingPage() {
         onOpenChange={setContactDialogOpen}
         whatsAppNumber={whatsAppNumber}
       />
+
+      {/* Mobile App Installation Dialog */}
+      <Dialog open={installDialogOpen} onOpenChange={setInstallDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Download className="h-5 w-5 text-green-600" />
+              Install DotSpark App
+            </DialogTitle>
+            <DialogDescription>
+              Choose your device type for specific installation instructions
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4">
+            {/* Android Instructions */}
+            <div className="border rounded-lg p-4 hover:bg-muted/50 transition-colors">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="flex-shrink-0 w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
+                  <Smartphone className="h-5 w-5 text-green-600" />
+                </div>
+                <div>
+                  <h4 className="font-semibold text-sm">Android Devices</h4>
+                  <p className="text-xs text-muted-foreground">Chrome, Samsung Internet, Edge</p>
+                </div>
+              </div>
+              <ol className="text-sm space-y-2 ml-2">
+                <li className="flex items-start gap-2">
+                  <span className="flex-shrink-0 w-5 h-5 bg-green-100 dark:bg-green-900/30 text-green-600 text-xs rounded-full flex items-center justify-center font-medium">1</span>
+                  <span>Tap the menu button (⋮) in your browser</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="flex-shrink-0 w-5 h-5 bg-green-100 dark:bg-green-900/30 text-green-600 text-xs rounded-full flex items-center justify-center font-medium">2</span>
+                  <span>Select "Install app" or "Add to Home screen"</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="flex-shrink-0 w-5 h-5 bg-green-100 dark:bg-green-900/30 text-green-600 text-xs rounded-full flex items-center justify-center font-medium">3</span>
+                  <span>Confirm installation when prompted</span>
+                </li>
+              </ol>
+            </div>
+
+            {/* iOS Instructions */}
+            <div className="border rounded-lg p-4 hover:bg-muted/50 transition-colors">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="flex-shrink-0 w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
+                  <Smartphone className="h-5 w-5 text-blue-600" />
+                </div>
+                <div>
+                  <h4 className="font-semibold text-sm">iPhone & iPad</h4>
+                  <p className="text-xs text-muted-foreground">Safari browser</p>
+                </div>
+              </div>
+              <ol className="text-sm space-y-2 ml-2">
+                <li className="flex items-start gap-2">
+                  <span className="flex-shrink-0 w-5 h-5 bg-blue-100 dark:bg-blue-900/30 text-blue-600 text-xs rounded-full flex items-center justify-center font-medium">1</span>
+                  <span>Tap the Share button <Share className="inline h-3 w-3" /> at the bottom</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="flex-shrink-0 w-5 h-5 bg-blue-100 dark:bg-blue-900/30 text-blue-600 text-xs rounded-full flex items-center justify-center font-medium">2</span>
+                  <span>Scroll down and tap "Add to Home Screen"</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="flex-shrink-0 w-5 h-5 bg-blue-100 dark:bg-blue-900/30 text-blue-600 text-xs rounded-full flex items-center justify-center font-medium">3</span>
+                  <span>Tap "Add" in the top right corner</span>
+                </li>
+              </ol>
+            </div>
+
+            {/* Easy Alternative */}
+            <div className="border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/50 rounded-lg p-4">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="flex-shrink-0 w-10 h-10 bg-amber-100 dark:bg-amber-900/30 rounded-lg flex items-center justify-center">
+                  <Monitor className="h-5 w-5 text-amber-600" />
+                </div>
+                <div>
+                  <h4 className="font-semibold text-sm text-amber-800 dark:text-amber-200">Easy Alternative</h4>
+                  <p className="text-xs text-amber-700 dark:text-amber-300">Works on any mobile device</p>
+                </div>
+              </div>
+              <div className="text-sm text-amber-800 dark:text-amber-200 ml-2">
+                <p className="mb-2">Open <span className="font-semibold">dotspark.in</span> in your mobile browser</p>
+                <p className="text-xs text-amber-700 dark:text-amber-300">You'll see a guide at the bottom to download the WebApp automatically</p>
+              </div>
+            </div>
+
+            <div className="pt-2">
+              <Button 
+                onClick={() => setInstallDialogOpen(false)} 
+                className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-emerald-600 hover:to-green-600"
+              >
+                Got it!
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
