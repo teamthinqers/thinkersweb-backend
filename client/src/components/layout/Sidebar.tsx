@@ -18,6 +18,7 @@ import {
   Sparkles,
   Settings as SettingsIcon
 } from "lucide-react";
+import { neuraStorage } from "@/lib/neuraStorage";
 
 // Define interfaces for category and tag
 interface CategoryWithCount {
@@ -44,6 +45,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isMobile, onNewEntry
   const [location] = useLocation();
   const { categories, isLoading: categoriesLoading } = useCategories(true);
   const { tags, isLoading: tagsLoading } = useTags(true);
+  
+  // Check activation status from neuraStorage
+  const isActivated = neuraStorage.isActivated();
 
   // Only show top 10 most used tags in sidebar
   const topTags = tags?.slice(0, 10) || [];
@@ -102,16 +106,21 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isMobile, onNewEntry
                   }`}
                   onClick={isMobile ? onClose : undefined}
                 >
-                  {React.createElement(item.icon, { 
-                    className: `mr-2 ${
-                      item.label === "Home" 
-                        ? "text-primary" 
-                        : item.isSpecial 
-                          ? "text-amber-600" 
-                          : ""
-                    }`, 
-                    size: item.label === "Home" || item.isSpecial ? 20 : 18 
-                  })}
+                  <div className="relative mr-2">
+                    {React.createElement(item.icon, { 
+                      className: `${
+                        item.label === "Home" 
+                          ? "text-primary" 
+                          : item.isSpecial 
+                            ? isActivated ? "text-amber-600 animate-pulse" : "text-amber-600"
+                            : ""
+                      }`, 
+                      size: item.label === "Home" || item.isSpecial ? 20 : 18 
+                    })}
+                    {item.showActivationDot && isActivated && (
+                      <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-green-500 rounded-full"></div>
+                    )}
+                  </div>
                   {item.label === "Home" ? (
                     <span className="font-medium text-primary">Home</span>
                   ) : item.isSpecial ? (
