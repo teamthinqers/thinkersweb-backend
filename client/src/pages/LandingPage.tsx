@@ -911,7 +911,7 @@ export default function LandingPage() {
             <h2 className="text-3xl md:text-4xl font-bold mb-8">How <span className="gradient-heading">DotSpark</span> Works?</h2>
             
             <p className="text-lg text-foreground max-w-4xl mx-auto mb-12 leading-relaxed">
-              DotSpark is inspired by ancient Indian methods of layered thinking, where raw and valuable thoughts were preserved and connected over time. It helps you capture these meaningful dots and gradually links them based on your unique way of thinking. When such dots from progressive thinkers come together, they create an exponential, compounding effect — building a thinking edge that no AI can replace.
+              DotSpark is inspired by ancient Indian methods of layered thinking, where raw and valuable thoughts were preserved and connected over time. It helps you capture these meaningful dots and gradually links them based on your unique way of thinking. When such dots from progressive thinkers come together, they create an exponential, compounding spark — building a thinking edge that no AI can replace.
             </p>
           </div>
           
