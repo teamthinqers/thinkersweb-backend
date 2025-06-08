@@ -908,14 +908,10 @@ export default function LandingPage() {
       <section className="py-24 relative overflow-hidden bg-gradient-to-b from-muted/30 to-background">
         <div className="container mx-auto px-4 md:px-6">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-8">How <span className="gradient-heading">DotSpark</span> Works?</h2>
-            
-            <p className="text-lg text-foreground max-w-4xl mx-auto mb-12 leading-relaxed">
-              DotSpark is inspired by ancient Indian methods of layered thinking, where raw and valuable thoughts were preserved and connected over time. It helps you capture these meaningful dots and gradually links them based on your unique way of thinking. When such dots from progressive thinkers come together, they create an exponential, compounding spark — building a thinking edge that no AI can replace.
-            </p>
+            <h2 className="text-3xl md:text-4xl font-bold mb-12">How <span className="gradient-heading">DotSpark</span> Works?</h2>
           </div>
           
-          <div className="relative max-w-6xl mx-auto">
+          <div className="relative max-w-6xl mx-auto mb-16">
             {/* Enhanced multi-dimensional dot visualization */}
             <div className="relative h-[500px] bg-gradient-to-br from-amber-50/30 to-amber-100/30 dark:from-amber-950/30 dark:to-amber-900/30 rounded-2xl border-2 border-amber-200 dark:border-amber-800 overflow-hidden shadow-xl">
               
@@ -969,69 +965,96 @@ export default function LandingPage() {
                     </linearGradient>
                   </defs>
                   
-                  {/* Dense network of connections */}
-                  <path d="M64 60 Q200 120 400 250" stroke="url(#amberConnection)" strokeWidth="2" fill="none" strokeDasharray="3,3">
+                  {/* Distributed network connections - no central convergence */}
+                  
+                  {/* Left to center-left connections */}
+                  <path d="M64 60 Q160 140 224 160" stroke="url(#amberConnection)" strokeWidth="2" fill="none" strokeDasharray="3,3">
                     <animate attributeName="stroke-dashoffset" values="0;6;0" dur="2s" repeatCount="indefinite"/>
                   </path>
-                  <path d="M200 90 Q350 180 400 250" stroke="url(#amberConnection2)" strokeWidth="1.5" fill="none" strokeDasharray="4,4" style={{animationDelay: '0.3s'}}>
+                  <path d="M200 90 Q280 180 336 210" stroke="url(#amberConnection2)" strokeWidth="1.5" fill="none" strokeDasharray="4,4" style={{animationDelay: '0.3s'}}>
                     <animate attributeName="stroke-dashoffset" values="0;8;0" dur="2.5s" repeatCount="indefinite"/>
                   </path>
-                  <path d="M120 140 Q280 200 400 250" stroke="url(#amberConnection)" strokeWidth="2" fill="none" strokeDasharray="3,3" style={{animationDelay: '0.6s'}}>
+                  <path d="M120 140 Q200 200 384 225" stroke="url(#amberConnection)" strokeWidth="2" fill="none" strokeDasharray="3,3" style={{animationDelay: '0.6s'}}>
                     <animate attributeName="stroke-dashoffset" values="0;6;0" dur="2.2s" repeatCount="indefinite"/>
                   </path>
-                  <path d="M40 190 Q220 220 400 250" stroke="url(#amberConnection2)" strokeWidth="1.5" fill="none" strokeDasharray="4,4" style={{animationDelay: '0.9s'}}>
+                  <path d="M40 190 Q180 240 304 270" stroke="url(#amberConnection2)" strokeWidth="1.5" fill="none" strokeDasharray="4,4" style={{animationDelay: '0.9s'}}>
                     <animate attributeName="stroke-dashoffset" values="0;8;0" dur="2.8s" repeatCount="indefinite"/>
                   </path>
-                  <path d="M144 240 Q270 245 400 250" stroke="url(#amberConnection)" strokeWidth="2" fill="none" strokeDasharray="3,3" style={{animationDelay: '1.2s'}}>
+                  <path d="M144 240 Q240 290 360 310" stroke="url(#amberConnection)" strokeWidth="2" fill="none" strokeDasharray="3,3" style={{animationDelay: '1.2s'}}>
                     <animate attributeName="stroke-dashoffset" values="0;6;0" dur="2.3s" repeatCount="indefinite"/>
                   </path>
                   
-                  {/* Right side connections */}
-                  <path d="M760 75 Q600 160 400 250" stroke="url(#amberConnection)" strokeWidth="2" fill="none" strokeDasharray="3,3" style={{animationDelay: '0.4s'}}>
+                  {/* Right to center-right connections */}
+                  <path d="M760 75 Q620 140 496 240" stroke="url(#amberConnection)" strokeWidth="2" fill="none" strokeDasharray="3,3" style={{animationDelay: '0.4s'}}>
                     <animate attributeName="stroke-dashoffset" values="0;6;0" dur="2.4s" repeatCount="indefinite"/>
                   </path>
-                  <path d="M624 125 Q512 188 400 250" stroke="url(#amberConnection2)" strokeWidth="1.5" fill="none" strokeDasharray="4,4" style={{animationDelay: '0.7s'}}>
+                  <path d="M624 125 Q540 180 464 290" stroke="url(#amberConnection2)" strokeWidth="1.5" fill="none" strokeDasharray="4,4" style={{animationDelay: '0.7s'}}>
                     <animate attributeName="stroke-dashoffset" values="0;8;0" dur="2.6s" repeatCount="indefinite"/>
                   </path>
-                  <path d="M760 175 Q580 212 400 250" stroke="url(#amberConnection)" strokeWidth="2" fill="none" strokeDasharray="3,3" style={{animationDelay: '1.0s'}}>
+                  <path d="M760 175 Q620 220 440 275" stroke="url(#amberConnection)" strokeWidth="2" fill="none" strokeDasharray="3,3" style={{animationDelay: '1.0s'}}>
                     <animate attributeName="stroke-dashoffset" values="0;6;0" dur="2.1s" repeatCount="indefinite"/>
                   </path>
-                  <path d="M600 225 Q500 238 400 250" stroke="url(#amberConnection2)" strokeWidth="1.5" fill="none" strokeDasharray="4,4" style={{animationDelay: '1.3s'}}>
+                  <path d="M600 225 Q520 260 416 260" stroke="url(#amberConnection2)" strokeWidth="1.5" fill="none" strokeDasharray="4,4" style={{animationDelay: '1.3s'}}>
                     <animate attributeName="stroke-dashoffset" values="0;8;0" dur="2.7s" repeatCount="indefinite"/>
                   </path>
                   
-                  {/* Bottom connections */}
-                  <path d="M96 425 Q248 338 400 250" stroke="url(#amberConnection)" strokeWidth="2" fill="none" strokeDasharray="3,3" style={{animationDelay: '0.5s'}}>
+                  {/* Cross connections */}
+                  <path d="M200 90 Q400 120 464 290" stroke="url(#amberConnection)" strokeWidth="1.5" fill="none" strokeDasharray="4,4" style={{animationDelay: '0.5s'}}>
+                    <animate attributeName="stroke-dashoffset" values="0;8;0" dur="2.9s" repeatCount="indefinite"/>
+                  </path>
+                  <path d="M624 125 Q400 160 224 400" stroke="url(#amberConnection2)" strokeWidth="1.5" fill="none" strokeDasharray="3,3" style={{animationDelay: '0.8s'}}>
+                    <animate attributeName="stroke-dashoffset" values="0;6;0" dur="2.4s" repeatCount="indefinite"/>
+                  </path>
+                  <path d="M120 140 Q350 200 600 225" stroke="url(#amberConnection)" strokeWidth="1.5" fill="none" strokeDasharray="4,4" style={{animationDelay: '1.1s'}}>
+                    <animate attributeName="stroke-dashoffset" values="0;8;0" dur="2.2s" repeatCount="indefinite"/>
+                  </path>
+                  
+                  {/* Bottom region connections */}
+                  <path d="M96 425 Q200 360 304 270" stroke="url(#amberConnection)" strokeWidth="2" fill="none" strokeDasharray="3,3" style={{animationDelay: '0.5s'}}>
                     <animate attributeName="stroke-dashoffset" values="0;6;0" dur="2.9s" repeatCount="indefinite"/>
                   </path>
-                  <path d="M224 400 Q312 325 400 250" stroke="url(#amberConnection2)" strokeWidth="1.5" fill="none" strokeDasharray="4,4" style={{animationDelay: '0.8s'}}>
+                  <path d="M224 400 Q340 340 416 260" stroke="url(#amberConnection2)" strokeWidth="1.5" fill="none" strokeDasharray="4,4" style={{animationDelay: '0.8s'}}>
                     <animate attributeName="stroke-dashoffset" values="0;8;0" dur="2.4s" repeatCount="indefinite"/>
                   </path>
-                  <path d="M64 350 Q232 300 400 250" stroke="url(#amberConnection)" strokeWidth="2" fill="none" strokeDasharray="3,3" style={{animationDelay: '1.1s'}}>
-                    <animate attributeName="stroke-dashoffset" values="0;6;0" dur="2.2s" repeatCount="indefinite"/>
+                  <path d="M680 425 Q580 360 496 240" stroke="url(#amberConnection)" strokeWidth="2" fill="none" strokeDasharray="3,3" style={{animationDelay: '1.4s'}}>
+                    <animate attributeName="stroke-dashoffset" values="0;6;0" dur="2.6s" repeatCount="indefinite"/>
                   </path>
-                  <path d="M680 425 Q540 338 400 250" stroke="url(#amberConnection2)" strokeWidth="1.5" fill="none" strokeDasharray="4,4" style={{animationDelay: '1.4s'}}>
-                    <animate attributeName="stroke-dashoffset" values="0;8;0" dur="2.6s" repeatCount="indefinite"/>
+                  <path d="M760 360 Q640 300 440 275" stroke="url(#amberConnection2)" strokeWidth="1.5" fill="none" strokeDasharray="4,4" style={{animationDelay: '0.2s'}}>
+                    <animate attributeName="stroke-dashoffset" values="0;8;0" dur="2.8s" repeatCount="indefinite"/>
                   </path>
-                  <path d="M760 360 Q580 305 400 250" stroke="url(#amberConnection)" strokeWidth="2" fill="none" strokeDasharray="3,3" style={{animationDelay: '0.2s'}}>
-                    <animate attributeName="stroke-dashoffset" values="0;6;0" dur="2.8s" repeatCount="indefinite"/>
+                  
+                  {/* Inter-center connections */}
+                  <path d="M384 225 Q400 240 416 260" stroke="url(#amberConnection)" strokeWidth="2" fill="none" strokeDasharray="2,2" style={{animationDelay: '1.5s'}}>
+                    <animate attributeName="stroke-dashoffset" values="0;4;0" dur="1.8s" repeatCount="indefinite"/>
+                  </path>
+                  <path d="M336 210 Q370 230 376 235" stroke="url(#amberConnection2)" strokeWidth="1.5" fill="none" strokeDasharray="3,3" style={{animationDelay: '1.7s'}}>
+                    <animate attributeName="stroke-dashoffset" values="0;6;0" dur="2.0s" repeatCount="indefinite"/>
+                  </path>
+                  <path d="M304 270 Q350 280 384 225" stroke="url(#amberConnection)" strokeWidth="1.5" fill="none" strokeDasharray="4,4" style={{animationDelay: '0.6s'}}>
+                    <animate attributeName="stroke-dashoffset" values="0;8;0" dur="2.3s" repeatCount="indefinite"/>
                   </path>
                 </svg>
               </div>
               
-              {/* Layer 3: Central convergence point */}
-              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                <div className="relative">
-                  {/* Pulsing rings */}
-                  <div className="absolute inset-0 w-20 h-20 rounded-full border-3 border-amber-500/40 animate-ping"></div>
-                  <div className="absolute inset-0 w-24 h-24 rounded-full border-2 border-amber-600/30 animate-ping" style={{animationDelay: '0.5s'}}></div>
-                  <div className="absolute inset-0 w-28 h-28 rounded-full border-2 border-amber-700/20 animate-ping" style={{animationDelay: '1s'}}></div>
-                  
-                  {/* Central hub */}
-                  <div className="relative w-16 h-16 rounded-full bg-gradient-to-br from-amber-500 to-amber-700 shadow-2xl shadow-amber-500/60 flex items-center justify-center border-2 border-amber-400">
-                    <Sparkles className="h-8 w-8 text-white animate-pulse" />
-                  </div>
-                </div>
+              {/* Layer 3: More distributed dots for exponential network */}
+              <div className="absolute inset-0">
+                {/* Central region dots */}
+                <div className="absolute top-[45%] left-[48%] w-4 h-4 rounded-full bg-amber-500 dark:bg-amber-400 animate-pulse shadow-lg shadow-amber-500/60" style={{animationDelay: '0.2s'}}></div>
+                <div className="absolute top-[52%] left-[52%] w-3.5 h-3.5 rounded-full bg-amber-600 dark:bg-amber-500 animate-pulse shadow-lg shadow-amber-600/60" style={{animationDelay: '0.7s'}}></div>
+                <div className="absolute top-[48%] left-[45%] w-3 h-3 rounded-full bg-amber-700 dark:bg-amber-600 animate-pulse shadow-lg shadow-amber-700/60" style={{animationDelay: '1.1s'}}></div>
+                <div className="absolute top-[55%] left-[47%] w-2.5 h-2.5 rounded-full bg-amber-500 dark:bg-amber-400 animate-pulse shadow-lg shadow-amber-500/60" style={{animationDelay: '1.4s'}}></div>
+                
+                {/* Mid-region connecting dots */}
+                <div className="absolute top-[62%] left-[42%] w-3 h-3 rounded-full bg-amber-600 dark:bg-amber-500 animate-pulse shadow-lg shadow-amber-600/60" style={{animationDelay: '0.5s'}}></div>
+                <div className="absolute top-[38%] left-[58%] w-3.5 h-3.5 rounded-full bg-amber-700 dark:bg-amber-600 animate-pulse shadow-lg shadow-amber-700/60" style={{animationDelay: '0.9s'}}></div>
+                <div className="absolute top-[65%] left-[55%] w-2.5 h-2.5 rounded-full bg-amber-500 dark:bg-amber-400 animate-pulse shadow-lg shadow-amber-500/60" style={{animationDelay: '1.3s'}}></div>
+                <div className="absolute top-[35%] left-[42%] w-3 h-3 rounded-full bg-amber-600 dark:bg-amber-500 animate-pulse shadow-lg shadow-amber-600/60" style={{animationDelay: '1.6s'}}></div>
+                
+                {/* Outer connecting layer */}
+                <div className="absolute top-[25%] left-[62%] w-2.5 h-2.5 rounded-full bg-amber-700 dark:bg-amber-600 animate-pulse shadow-lg shadow-amber-700/60" style={{animationDelay: '0.4s'}}></div>
+                <div className="absolute top-[75%] left-[38%] w-3 h-3 rounded-full bg-amber-500 dark:bg-amber-400 animate-pulse shadow-lg shadow-amber-500/60" style={{animationDelay: '0.8s'}}></div>
+                <div className="absolute top-[22%] left-[48%] w-2.5 h-2.5 rounded-full bg-amber-600 dark:bg-amber-500 animate-pulse shadow-lg shadow-amber-600/60" style={{animationDelay: '1.2s'}}></div>
+                <div className="absolute top-[78%] left-[52%] w-3 h-3 rounded-full bg-amber-700 dark:bg-amber-600 animate-pulse shadow-lg shadow-amber-700/60" style={{animationDelay: '1.5s'}}></div>
               </div>
               
               {/* Layer 4: Sparks throughout the visualization */}
@@ -1073,37 +1096,13 @@ export default function LandingPage() {
               {/* Exponential glow overlay */}
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-amber-200/10 dark:via-amber-900/10 to-transparent animate-pulse"></div>
             </div>
-            
-            {/* Process steps */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
-              <div className="text-center">
-                <div className="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mx-auto mb-4 shadow-lg">
-                  <div className="w-3 h-3 rounded-full bg-slate-400"></div>
-                </div>
-                <h3 className="text-xl font-bold mb-2">Scattered Thoughts</h3>
-                <p className="text-muted-foreground">Individual ideas and concepts floating in isolation</p>
-              </div>
-              
-              <div className="text-center">
-                <div className="w-16 h-16 rounded-full bg-amber-100 dark:bg-amber-900/50 flex items-center justify-center mx-auto mb-4 shadow-lg">
-                  <div className="flex space-x-1">
-                    <div className="w-2 h-2 rounded-full bg-amber-500"></div>
-                    <div className="w-2 h-2 rounded-full bg-amber-600"></div>
-                    <div className="w-2 h-2 rounded-full bg-amber-500"></div>
-                  </div>
-                </div>
-                <h3 className="text-xl font-bold mb-2">Neural Connections</h3>
-                <p className="text-muted-foreground">DotSpark forms exponential pathways between concepts</p>
-              </div>
-              
-              <div className="text-center">
-                <div className="w-16 h-16 rounded-full bg-yellow-100 dark:bg-yellow-900/50 flex items-center justify-center mx-auto mb-4 shadow-lg">
-                  <Sparkles className="h-8 w-8 text-yellow-600 dark:text-yellow-400" />
-                </div>
-                <h3 className="text-xl font-bold mb-2">Insight Sparks</h3>
-                <p className="text-muted-foreground">Connected thoughts create breakthrough insights</p>
-              </div>
-            </div>
+          </div>
+          
+          {/* Content below visualization */}
+          <div className="text-center max-w-4xl mx-auto">
+            <p className="text-lg text-foreground leading-relaxed">
+              DotSpark is inspired by ancient Indian methods of layered thinking, where raw and valuable thoughts were preserved and connected over time. It helps you capture these meaningful dots and gradually links them based on your unique way of thinking. When such dots from progressive thinkers come together, they create an exponential, compounding spark — building a thinking edge that no AI can replace.
+            </p>
           </div>
         </div>
       </section>
