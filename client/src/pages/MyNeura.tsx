@@ -750,10 +750,10 @@ export default function MyNeura() {
               </p>
               <div className="flex justify-center">
                 <Button 
-                  className={`flex items-center gap-2 ${cognitiveShieldConfigured 
+                  className={`flex items-center justify-center gap-2 w-48 ${cognitiveShieldConfigured 
                     ? 'bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700' 
                     : 'bg-gradient-to-r from-amber-700 to-orange-700 hover:from-amber-800 hover:to-orange-800'
-                  } text-white group-hover:translate-y-0 translate-y-1 transition-all duration-300 h-10 px-6`}
+                  } text-white group-hover:translate-y-0 translate-y-1 transition-all duration-300 h-10`}
                   onClick={() => {
                     if (cognitiveShieldConfigured) {
                       setLocation('/dotspark-tuning/cognitive');
@@ -798,10 +798,10 @@ export default function MyNeura() {
               </p>
               <div className="flex justify-center">
                 <Button 
-                  className={`flex items-center gap-2 ${expertiseLayerConfigured 
+                  className={`flex items-center justify-center gap-2 w-48 ${expertiseLayerConfigured 
                     ? 'bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700' 
                     : 'bg-gradient-to-r from-amber-700 to-orange-700 hover:from-amber-800 hover:to-orange-800'
-                  } text-white group-hover:translate-y-0 translate-y-1 transition-all duration-300 h-10 px-6`}
+                  } text-white group-hover:translate-y-0 translate-y-1 transition-all duration-300 h-10`}
                   onClick={() => {
                     if (expertiseLayerConfigured) {
                       setActiveTab('expertise');
