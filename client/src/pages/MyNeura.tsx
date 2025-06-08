@@ -711,7 +711,7 @@ export default function MyNeura() {
       <div className="my-8">
         <h2 className="text-2xl font-bold mb-6">Configure Your DotSpark Add Ons</h2>
         <p className="text-muted-foreground mb-8">
-          Configure each of these DotSpark Add Ons to mirror your natural style and intelligence which communicating with AI
+          Configure each of these DotSpark Add Ons to mirror your natural style and intelligence which communicating with AI.
         </p>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 auto-rows-fr">
