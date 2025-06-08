@@ -75,8 +75,26 @@ const functionalDomains = [
   { id: 'people_culture', name: 'People & Culture' },
   { id: 'operations_supply', name: 'Operations & Supply Chain' },
   { id: 'tech_engineering', name: 'Tech & Engineering' },
-  { id: 'finance_legal', name: 'Finance, Legal & Compliance' },
-  { id: 'pharma_healthcare', name: 'Pharma & Healthcare' }
+  { id: 'finance_legal', name: 'Finance, Legal & Compliance' }
+];
+
+// Define industry domains
+const industryDomains = [
+  { id: 'healthcare', name: 'Healthcare' },
+  { id: 'edtech', name: 'Ed-Tech' },
+  { id: 'fintech', name: 'FinTech' },
+  { id: 'logistics', name: 'Logistics' },
+  { id: 'retail_ecommerce', name: 'Retail & E-commerce' },
+  { id: 'manufacturing', name: 'Manufacturing' },
+  { id: 'energy', name: 'Energy' },
+  { id: 'real_estate', name: 'Real Estate' },
+  { id: 'media_entertainment', name: 'Media & Entertainment' },
+  { id: 'automotive', name: 'Automotive' },
+  { id: 'telecommunications', name: 'Telecommunications' },
+  { id: 'agriculture', name: 'Agriculture' },
+  { id: 'consulting', name: 'Consulting' },
+  { id: 'government', name: 'Government & Public Sector' },
+  { id: 'nonprofits', name: 'Non-profits' }
 ];
 
 export default function NeuraTuningExpertise() {
@@ -94,6 +112,7 @@ export default function NeuraTuningExpertise() {
   // Local state for selections and changes
   const [selectedDomains, setSelectedDomains] = useState<string[]>([]);
   const [domainExpertiseLevels, setDomainExpertiseLevels] = useState<Record<string, string>>({});
+  const [selectedIndustryDomains, setSelectedIndustryDomains] = useState<string[]>([]);
   const [selectedSeniorityLevel, setSelectedSeniorityLevel] = useState<string>('mid_level_manager');
   const [unsavedChanges, setUnsavedChanges] = useState(false);
   const [justSaved, setJustSaved] = useState(false);
@@ -103,12 +122,21 @@ export default function NeuraTuningExpertise() {
     if (status?.tuning) {
       // Extract domains from specialties if they exist
       if (status.tuning.specialties) {
-        const domains = Object.keys(status.tuning.specialties)
-          .filter(key => key.includes('_') && functionalDomains.some(domain => domain.id === key));
+        // Separate functional domains and industry domains
+        const functionalDomainIds = functionalDomains.map(d => d.id);
+        const industryDomainIds = industryDomains.map(d => d.id);
         
+        const allStoredDomains = Object.keys(status.tuning.specialties);
+        
+        // Filter functional domains
+        const domains = allStoredDomains.filter(key => functionalDomainIds.includes(key));
         setSelectedDomains(domains);
         
-        // Initialize expertise levels
+        // Filter industry domains
+        const industryDomainsFromStorage = allStoredDomains.filter(key => industryDomainIds.includes(key));
+        setSelectedIndustryDomains(industryDomainsFromStorage);
+        
+        // Initialize expertise levels for functional domains
         const initialExpertiseLevels: Record<string, string> = {};
         domains.forEach(domainId => {
           initialExpertiseLevels[domainId] = 'strategic_builder';
@@ -116,12 +144,11 @@ export default function NeuraTuningExpertise() {
         setDomainExpertiseLevels(initialExpertiseLevels);
       }
       
-      // Set default seniority level if not already set
-      // Note: In the future if seniority is added to the tuning model, we can
-      // uncomment the code below to load it from the server
-      // if (status.tuning.seniority) {
-      //   setSelectedSeniorityLevel(status.tuning.seniority);
-      // }
+      // Load seniority level from localStorage
+      const storedSeniority = localStorage.getItem('neura_seniority_level');
+      if (storedSeniority) {
+        setSelectedSeniorityLevel(storedSeniority);
+      }
     }
   }, [status]);
   
@@ -158,6 +185,17 @@ export default function NeuraTuningExpertise() {
     
     setUnsavedChanges(true);
   };
+
+  // Handle industry domain selection/deselection
+  const handleIndustryDomainSelection = (domainId: string, checked: boolean) => {
+    if (checked) {
+      setSelectedIndustryDomains(prev => [...prev, domainId]);
+    } else {
+      setSelectedIndustryDomains(prev => prev.filter(id => id !== domainId));
+    }
+    
+    setUnsavedChanges(true);
+  };
   
   // Handle seniority level change
   const handleSeniorityLevelChange = (level: string) => {
@@ -177,8 +215,10 @@ export default function NeuraTuningExpertise() {
     }
     
     try {
-      // Prepare specialties with domain expertise levels
+      // Prepare specialties with domain expertise levels and industry domains
       const specialties: Record<string, number> = {};
+      
+      // Add functional domains with expertise levels
       selectedDomains.forEach(domainId => {
         // Set specialty strength based on expertise level
         const expertiseLevel = domainExpertiseLevels[domainId] || 'strategic_builder';
@@ -192,6 +232,11 @@ export default function NeuraTuningExpertise() {
         }
         
         specialties[domainId] = strengthValue;
+      });
+      
+      // Add industry domains with default strength
+      selectedIndustryDomains.forEach(domainId => {
+        specialties[domainId] = 0.6; // Industry familiarity level
       });
       
       // Store seniority level in localStorage for future reference
@@ -393,6 +438,45 @@ export default function NeuraTuningExpertise() {
                 );
               })}
             </RadioGroup>
+          </div>
+          
+          <Separator className="my-6" />
+          
+          {/* Industry Domains Section */}
+          <div className="mb-8">
+            <h3 className="text-lg font-medium mb-3">Choose your relevant domains</h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              Select the industry domains where you have experience or interest.
+            </p>
+            
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+              {industryDomains.map((domain) => {
+                const isSelected = selectedIndustryDomains.includes(domain.id);
+                
+                return (
+                  <div 
+                    key={domain.id}
+                    className={`
+                      flex items-center space-x-3 p-3 rounded-lg border cursor-pointer transition-all duration-200 hover:shadow-sm
+                      ${isSelected 
+                        ? 'border-amber-300 bg-amber-50 dark:border-amber-700 dark:bg-amber-950/50 shadow-sm' 
+                        : 'border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-900'
+                      }
+                    `}
+                    onClick={() => handleIndustryDomainSelection(domain.id, !isSelected)}
+                  >
+                    <Checkbox 
+                      checked={isSelected}
+                      onChange={() => {}} // Handled by parent div onClick
+                      className="data-[state=checked]:bg-amber-600 data-[state=checked]:border-amber-600"
+                    />
+                    <span className={`text-sm font-medium ${isSelected ? 'text-amber-700 dark:text-amber-400' : ''}`}>
+                      {domain.name}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
           </div>
           
           <Separator className="my-6" />
