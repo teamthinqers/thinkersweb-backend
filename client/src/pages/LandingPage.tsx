@@ -923,31 +923,39 @@ export default function LandingPage() {
                 }}></div>
               </div>
               
-              {/* Layer 1: Interconnected dots (thoughts) */}
+              {/* Layer 1: Evenly distributed dots across canvas */}
               <div className="absolute inset-0">
-                {/* Main thought dots - amber themed */}
-                <div className="absolute top-[12%] left-[8%] w-4 h-4 rounded-full bg-amber-600 dark:bg-amber-500 animate-pulse shadow-lg shadow-amber-500/50"></div>
-                <div className="absolute top-[18%] left-[25%] w-3 h-3 rounded-full bg-amber-700 dark:bg-amber-600 animate-pulse shadow-lg shadow-amber-600/50" style={{animationDelay: '0.3s'}}></div>
-                <div className="absolute top-[28%] left-[15%] w-3.5 h-3.5 rounded-full bg-amber-600 dark:bg-amber-500 animate-pulse shadow-lg shadow-amber-500/50" style={{animationDelay: '0.8s'}}></div>
-                <div className="absolute top-[38%] left-[5%] w-2.5 h-2.5 rounded-full bg-amber-700 dark:bg-amber-600 animate-pulse shadow-lg shadow-amber-600/50" style={{animationDelay: '1.2s'}}></div>
-                <div className="absolute top-[48%] left-[18%] w-3 h-3 rounded-full bg-amber-600 dark:bg-amber-500 animate-pulse shadow-lg shadow-amber-500/50" style={{animationDelay: '1.6s'}}></div>
+                {/* Top row - distributed horizontally */}
+                <div className="absolute top-[15%] left-[12%] w-4 h-4 rounded-full bg-amber-600 dark:bg-amber-500 animate-pulse shadow-lg shadow-amber-500/50"></div>
+                <div className="absolute top-[18%] left-[32%] w-3 h-3 rounded-full bg-amber-700 dark:bg-amber-600 animate-pulse shadow-lg shadow-amber-600/50" style={{animationDelay: '0.3s'}}></div>
+                <div className="absolute top-[12%] left-[52%] w-3.5 h-3.5 rounded-full bg-amber-600 dark:bg-amber-500 animate-pulse shadow-lg shadow-amber-500/50" style={{animationDelay: '0.8s'}}></div>
+                <div className="absolute top-[20%] left-[72%] w-2.5 h-2.5 rounded-full bg-amber-700 dark:bg-amber-600 animate-pulse shadow-lg shadow-amber-600/50" style={{animationDelay: '1.2s'}}></div>
+                <div className="absolute top-[16%] left-[88%] w-3 h-3 rounded-full bg-amber-600 dark:bg-amber-500 animate-pulse shadow-lg shadow-amber-500/50" style={{animationDelay: '1.6s'}}></div>
                 
-                <div className="absolute top-[15%] right-[8%] w-3.5 h-3.5 rounded-full bg-amber-600 dark:bg-amber-500 animate-pulse shadow-lg shadow-amber-500/50" style={{animationDelay: '0.2s'}}></div>
-                <div className="absolute top-[25%] right-[22%] w-3 h-3 rounded-full bg-amber-700 dark:bg-amber-600 animate-pulse shadow-lg shadow-amber-600/50" style={{animationDelay: '0.7s'}}></div>
-                <div className="absolute top-[35%] right-[10%] w-4 h-4 rounded-full bg-amber-600 dark:bg-amber-500 animate-pulse shadow-lg shadow-amber-500/50" style={{animationDelay: '1.1s'}}></div>
-                <div className="absolute top-[45%] right-[25%] w-2.5 h-2.5 rounded-full bg-amber-700 dark:bg-amber-600 animate-pulse shadow-lg shadow-amber-600/50" style={{animationDelay: '1.5s'}}></div>
+                {/* Second row */}
+                <div className="absolute top-[32%] left-[8%] w-3.5 h-3.5 rounded-full bg-amber-600 dark:bg-amber-500 animate-pulse shadow-lg shadow-amber-500/50" style={{animationDelay: '0.2s'}}></div>
+                <div className="absolute top-[35%] left-[25%] w-3 h-3 rounded-full bg-amber-700 dark:bg-amber-600 animate-pulse shadow-lg shadow-amber-600/50" style={{animationDelay: '0.7s'}}></div>
+                <div className="absolute top-[28%] left-[45%] w-4 h-4 rounded-full bg-amber-600 dark:bg-amber-500 animate-pulse shadow-lg shadow-amber-500/50" style={{animationDelay: '1.1s'}}></div>
+                <div className="absolute top-[38%] left-[65%] w-2.5 h-2.5 rounded-full bg-amber-700 dark:bg-amber-600 animate-pulse shadow-lg shadow-amber-600/50" style={{animationDelay: '1.5s'}}></div>
+                <div className="absolute top-[30%] left-[82%] w-3.5 h-3.5 rounded-full bg-amber-600 dark:bg-amber-500 animate-pulse shadow-lg shadow-amber-500/50" style={{animationDelay: '0.4s'}}></div>
                 
-                <div className="absolute bottom-[15%] left-[12%] w-3 h-3 rounded-full bg-amber-600 dark:bg-amber-500 animate-pulse shadow-lg shadow-amber-500/50" style={{animationDelay: '0.5s'}}></div>
-                <div className="absolute bottom-[25%] left-[28%] w-3.5 h-3.5 rounded-full bg-amber-700 dark:bg-amber-600 animate-pulse shadow-lg shadow-amber-600/50" style={{animationDelay: '0.9s'}}></div>
-                <div className="absolute bottom-[35%] left-[8%] w-2.5 h-2.5 rounded-full bg-amber-600 dark:bg-amber-500 animate-pulse shadow-lg shadow-amber-500/50" style={{animationDelay: '1.3s'}}></div>
-                <div className="absolute bottom-[18%] right-[15%] w-3 h-3 rounded-full bg-amber-700 dark:bg-amber-600 animate-pulse shadow-lg shadow-amber-600/50" style={{animationDelay: '0.6s'}}></div>
-                <div className="absolute bottom-[28%] right-[8%] w-3.5 h-3.5 rounded-full bg-amber-600 dark:bg-amber-500 animate-pulse shadow-lg shadow-amber-500/50" style={{animationDelay: '1.0s'}}></div>
+                {/* Middle row */}
+                <div className="absolute top-[48%] left-[15%] w-3 h-3 rounded-full bg-amber-600 dark:bg-amber-500 animate-pulse shadow-lg shadow-amber-500/50" style={{animationDelay: '0.5s'}}></div>
+                <div className="absolute top-[52%] left-[38%] w-4.5 h-4.5 rounded-full bg-amber-700 dark:bg-amber-600 animate-pulse shadow-lg shadow-amber-600/50" style={{animationDelay: '0.9s'}}></div>
+                <div className="absolute top-[45%] left-[58%] w-3 h-3 rounded-full bg-amber-600 dark:bg-amber-500 animate-pulse shadow-lg shadow-amber-500/50" style={{animationDelay: '1.3s'}}></div>
+                <div className="absolute top-[50%] left-[78%] w-2.5 h-2.5 rounded-full bg-amber-700 dark:bg-amber-600 animate-pulse shadow-lg shadow-amber-600/50" style={{animationDelay: '1.7s'}}></div>
                 
-                {/* Additional connection dots */}
-                <div className="absolute top-[32%] left-[45%] w-2.5 h-2.5 rounded-full bg-amber-700 dark:bg-amber-600 animate-pulse shadow-lg shadow-amber-600/50" style={{animationDelay: '0.4s'}}></div>
-                <div className="absolute top-[55%] left-[35%] w-3 h-3 rounded-full bg-amber-600 dark:bg-amber-500 animate-pulse shadow-lg shadow-amber-500/50" style={{animationDelay: '1.4s'}}></div>
-                <div className="absolute top-[42%] right-[38%] w-2.5 h-2.5 rounded-full bg-amber-700 dark:bg-amber-600 animate-pulse shadow-lg shadow-amber-600/50" style={{animationDelay: '0.9s'}}></div>
-                <div className="absolute bottom-[42%] right-[45%] w-3 h-3 rounded-full bg-amber-600 dark:bg-amber-500 animate-pulse shadow-lg shadow-amber-500/50" style={{animationDelay: '1.7s'}}></div>
+                {/* Fourth row */}
+                <div className="absolute top-[65%] left-[20%] w-3.5 h-3.5 rounded-full bg-amber-600 dark:bg-amber-500 animate-pulse shadow-lg shadow-amber-500/50" style={{animationDelay: '0.6s'}}></div>
+                <div className="absolute top-[68%] left-[42%] w-3 h-3 rounded-full bg-amber-700 dark:bg-amber-600 animate-pulse shadow-lg shadow-amber-600/50" style={{animationDelay: '1.0s'}}></div>
+                <div className="absolute top-[62%] left-[62%] w-4 h-4 rounded-full bg-amber-600 dark:bg-amber-500 animate-pulse shadow-lg shadow-amber-500/50" style={{animationDelay: '1.4s'}}></div>
+                <div className="absolute top-[70%] left-[85%] w-2.5 h-2.5 rounded-full bg-amber-700 dark:bg-amber-600 animate-pulse shadow-lg shadow-amber-600/50" style={{animationDelay: '1.8s'}}></div>
+                
+                {/* Bottom row */}
+                <div className="absolute top-[82%] left-[12%] w-3 h-3 rounded-full bg-amber-600 dark:bg-amber-500 animate-pulse shadow-lg shadow-amber-500/50" style={{animationDelay: '0.8s'}}></div>
+                <div className="absolute top-[85%] left-[35%] w-3.5 h-3.5 rounded-full bg-amber-700 dark:bg-amber-600 animate-pulse shadow-lg shadow-amber-600/50" style={{animationDelay: '1.2s'}}></div>
+                <div className="absolute top-[80%] left-[55%] w-3 h-3 rounded-full bg-amber-600 dark:bg-amber-500 animate-pulse shadow-lg shadow-amber-500/50" style={{animationDelay: '1.6s'}}></div>
+                <div className="absolute top-[88%] left-[75%] w-2.5 h-2.5 rounded-full bg-amber-700 dark:bg-amber-600 animate-pulse shadow-lg shadow-amber-600/50" style={{animationDelay: '2.0s'}}></div>
               </div>
               
               {/* Layer 2: Interconnecting lines */}
@@ -965,73 +973,69 @@ export default function LandingPage() {
                     </linearGradient>
                   </defs>
                   
-                  {/* Distributed network connections - no central convergence */}
+                  {/* Evenly distributed network connections */}
                   
-                  {/* Left to center-left connections */}
-                  <path d="M64 60 Q160 140 224 160" stroke="url(#amberConnection)" strokeWidth="2" fill="none" strokeDasharray="3,3">
+                  {/* Horizontal connections across rows */}
+                  <path d="M96 75 Q200 90 256 90" stroke="url(#amberConnection)" strokeWidth="2" fill="none" strokeDasharray="3,3">
                     <animate attributeName="stroke-dashoffset" values="0;6;0" dur="2s" repeatCount="indefinite"/>
                   </path>
-                  <path d="M200 90 Q280 180 336 210" stroke="url(#amberConnection2)" strokeWidth="1.5" fill="none" strokeDasharray="4,4" style={{animationDelay: '0.3s'}}>
+                  <path d="M256 90 Q400 85 416 100" stroke="url(#amberConnection2)" strokeWidth="1.5" fill="none" strokeDasharray="4,4" style={{animationDelay: '0.3s'}}>
                     <animate attributeName="stroke-dashoffset" values="0;8;0" dur="2.5s" repeatCount="indefinite"/>
                   </path>
-                  <path d="M120 140 Q200 200 384 225" stroke="url(#amberConnection)" strokeWidth="2" fill="none" strokeDasharray="3,3" style={{animationDelay: '0.6s'}}>
+                  <path d="M416 100 Q550 95 576 100" stroke="url(#amberConnection)" strokeWidth="2" fill="none" strokeDasharray="3,3" style={{animationDelay: '0.6s'}}>
                     <animate attributeName="stroke-dashoffset" values="0;6;0" dur="2.2s" repeatCount="indefinite"/>
                   </path>
-                  <path d="M40 190 Q180 240 304 270" stroke="url(#amberConnection2)" strokeWidth="1.5" fill="none" strokeDasharray="4,4" style={{animationDelay: '0.9s'}}>
+                  
+                  {/* Vertical connections between rows */}
+                  <path d="M200 175 Q210 200 200 240" stroke="url(#amberConnection2)" strokeWidth="1.5" fill="none" strokeDasharray="4,4" style={{animationDelay: '0.9s'}}>
                     <animate attributeName="stroke-dashoffset" values="0;8;0" dur="2.8s" repeatCount="indefinite"/>
                   </path>
-                  <path d="M144 240 Q240 290 360 310" stroke="url(#amberConnection)" strokeWidth="2" fill="none" strokeDasharray="3,3" style={{animationDelay: '1.2s'}}>
+                  <path d="M360 140 Q370 200 304 260" stroke="url(#amberConnection)" strokeWidth="2" fill="none" strokeDasharray="3,3" style={{animationDelay: '1.2s'}}>
                     <animate attributeName="stroke-dashoffset" values="0;6;0" dur="2.3s" repeatCount="indefinite"/>
                   </path>
-                  
-                  {/* Right to center-right connections */}
-                  <path d="M760 75 Q620 140 496 240" stroke="url(#amberConnection)" strokeWidth="2" fill="none" strokeDasharray="3,3" style={{animationDelay: '0.4s'}}>
-                    <animate attributeName="stroke-dashoffset" values="0;6;0" dur="2.4s" repeatCount="indefinite"/>
+                  <path d="M520 190 Q510 250 464 290" stroke="url(#amberConnection2)" strokeWidth="1.5" fill="none" strokeDasharray="4,4" style={{animationDelay: '0.4s'}}>
+                    <animate attributeName="stroke-dashoffset" values="0;8;0" dur="2.4s" repeatCount="indefinite"/>
                   </path>
-                  <path d="M624 125 Q540 180 464 290" stroke="url(#amberConnection2)" strokeWidth="1.5" fill="none" strokeDasharray="4,4" style={{animationDelay: '0.7s'}}>
+                  
+                  {/* Diagonal cross connections */}
+                  <path d="M96 75 Q300 200 464 290" stroke="url(#amberConnection)" strokeWidth="1.5" fill="none" strokeDasharray="4,4" style={{animationDelay: '0.7s'}}>
                     <animate attributeName="stroke-dashoffset" values="0;8;0" dur="2.6s" repeatCount="indefinite"/>
                   </path>
-                  <path d="M760 175 Q620 220 440 275" stroke="url(#amberConnection)" strokeWidth="2" fill="none" strokeDasharray="3,3" style={{animationDelay: '1.0s'}}>
+                  <path d="M576 100 Q400 200 160 325" stroke="url(#amberConnection2)" strokeWidth="1.5" fill="none" strokeDasharray="3,3" style={{animationDelay: '1.0s'}}>
                     <animate attributeName="stroke-dashoffset" values="0;6;0" dur="2.1s" repeatCount="indefinite"/>
                   </path>
-                  <path d="M600 225 Q520 260 416 260" stroke="url(#amberConnection2)" strokeWidth="1.5" fill="none" strokeDasharray="4,4" style={{animationDelay: '1.3s'}}>
+                  <path d="M120 240 Q350 280 624 390" stroke="url(#amberConnection)" strokeWidth="1.5" fill="none" strokeDasharray="4,4" style={{animationDelay: '1.3s'}}>
                     <animate attributeName="stroke-dashoffset" values="0;8;0" dur="2.7s" repeatCount="indefinite"/>
                   </path>
                   
-                  {/* Cross connections */}
-                  <path d="M200 90 Q400 120 464 290" stroke="url(#amberConnection)" strokeWidth="1.5" fill="none" strokeDasharray="4,4" style={{animationDelay: '0.5s'}}>
-                    <animate attributeName="stroke-dashoffset" values="0;8;0" dur="2.9s" repeatCount="indefinite"/>
-                  </path>
-                  <path d="M624 125 Q400 160 224 400" stroke="url(#amberConnection2)" strokeWidth="1.5" fill="none" strokeDasharray="3,3" style={{animationDelay: '0.8s'}}>
-                    <animate attributeName="stroke-dashoffset" values="0;6;0" dur="2.4s" repeatCount="indefinite"/>
-                  </path>
-                  <path d="M120 140 Q350 200 600 225" stroke="url(#amberConnection)" strokeWidth="1.5" fill="none" strokeDasharray="4,4" style={{animationDelay: '1.1s'}}>
-                    <animate attributeName="stroke-dashoffset" values="0;8;0" dur="2.2s" repeatCount="indefinite"/>
-                  </path>
-                  
-                  {/* Bottom region connections */}
-                  <path d="M96 425 Q200 360 304 270" stroke="url(#amberConnection)" strokeWidth="2" fill="none" strokeDasharray="3,3" style={{animationDelay: '0.5s'}}>
+                  {/* Middle row connections */}
+                  <path d="M120 240 Q280 260 464 225" stroke="url(#amberConnection2)" strokeWidth="2" fill="none" strokeDasharray="3,3" style={{animationDelay: '0.5s'}}>
                     <animate attributeName="stroke-dashoffset" values="0;6;0" dur="2.9s" repeatCount="indefinite"/>
                   </path>
-                  <path d="M224 400 Q340 340 416 260" stroke="url(#amberConnection2)" strokeWidth="1.5" fill="none" strokeDasharray="4,4" style={{animationDelay: '0.8s'}}>
+                  <path d="M304 260 Q450 245 624 250" stroke="url(#amberConnection)" strokeWidth="1.5" fill="none" strokeDasharray="4,4" style={{animationDelay: '0.8s'}}>
                     <animate attributeName="stroke-dashoffset" values="0;8;0" dur="2.4s" repeatCount="indefinite"/>
                   </path>
-                  <path d="M680 425 Q580 360 496 240" stroke="url(#amberConnection)" strokeWidth="2" fill="none" strokeDasharray="3,3" style={{animationDelay: '1.4s'}}>
+                  
+                  {/* Bottom row network */}
+                  <path d="M160 325 Q300 340 336 340" stroke="url(#amberConnection2)" strokeWidth="2" fill="none" strokeDasharray="3,3" style={{animationDelay: '1.4s'}}>
                     <animate attributeName="stroke-dashoffset" values="0;6;0" dur="2.6s" repeatCount="indefinite"/>
                   </path>
-                  <path d="M760 360 Q640 300 440 275" stroke="url(#amberConnection2)" strokeWidth="1.5" fill="none" strokeDasharray="4,4" style={{animationDelay: '0.2s'}}>
+                  <path d="M336 340 Q450 350 496 310" stroke="url(#amberConnection)" strokeWidth="1.5" fill="none" strokeDasharray="4,4" style={{animationDelay: '0.2s'}}>
                     <animate attributeName="stroke-dashoffset" values="0;8;0" dur="2.8s" repeatCount="indefinite"/>
                   </path>
+                  <path d="M496 310 Q600 330 680 350" stroke="url(#amberConnection2)" strokeWidth="2" fill="none" strokeDasharray="3,3" style={{animationDelay: '1.5s'}}>
+                    <animate attributeName="stroke-dashoffset" values="0;6;0" dur="1.8s" repeatCount="indefinite"/>
+                  </path>
                   
-                  {/* Inter-center connections */}
-                  <path d="M384 225 Q400 240 416 260" stroke="url(#amberConnection)" strokeWidth="2" fill="none" strokeDasharray="2,2" style={{animationDelay: '1.5s'}}>
-                    <animate attributeName="stroke-dashoffset" values="0;4;0" dur="1.8s" repeatCount="indefinite"/>
+                  {/* Final bottom connections */}
+                  <path d="M96 410 Q250 420 280 400" stroke="url(#amberConnection)" strokeWidth="1.5" fill="none" strokeDasharray="4,4" style={{animationDelay: '1.7s'}}>
+                    <animate attributeName="stroke-dashoffset" values="0;8;0" dur="2.0s" repeatCount="indefinite"/>
                   </path>
-                  <path d="M336 210 Q370 230 376 235" stroke="url(#amberConnection2)" strokeWidth="1.5" fill="none" strokeDasharray="3,3" style={{animationDelay: '1.7s'}}>
-                    <animate attributeName="stroke-dashoffset" values="0;6;0" dur="2.0s" repeatCount="indefinite"/>
+                  <path d="M280 400 Q400 405 440 400" stroke="url(#amberConnection2)" strokeWidth="2" fill="none" strokeDasharray="3,3" style={{animationDelay: '0.6s'}}>
+                    <animate attributeName="stroke-dashoffset" values="0;6;0" dur="2.3s" repeatCount="indefinite"/>
                   </path>
-                  <path d="M304 270 Q350 280 384 225" stroke="url(#amberConnection)" strokeWidth="1.5" fill="none" strokeDasharray="4,4" style={{animationDelay: '0.6s'}}>
-                    <animate attributeName="stroke-dashoffset" values="0;8;0" dur="2.3s" repeatCount="indefinite"/>
+                  <path d="M440 400 Q550 410 600 440" stroke="url(#amberConnection)" strokeWidth="1.5" fill="none" strokeDasharray="4,4" style={{animationDelay: '1.1s'}}>
+                    <animate attributeName="stroke-dashoffset" values="0;8;0" dur="2.5s" repeatCount="indefinite"/>
                   </path>
                 </svg>
               </div>
