@@ -705,7 +705,7 @@ export default function LandingPage() {
               <h3 className="text-xl font-semibold mb-2">Sign In or Register</h3>
               <p className="text-muted-foreground text-sm">Create your account to personalize your DotSpark experience.</p>
               <div className="mt-auto pt-4">
-                <Button asChild className="w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-orange-600 hover:to-amber-500 text-white border-0 shadow-md hover:shadow-lg transition-all duration-300">
+                <Button asChild className="w-full !bg-gradient-to-r !from-amber-500 !to-orange-600 hover:!from-orange-600 hover:!to-amber-500 text-white border-0 shadow-md hover:shadow-lg transition-all duration-300">
                   <Link href="/auth">
                     Get Started
                   </Link>
@@ -726,7 +726,7 @@ export default function LandingPage() {
               <p className="text-muted-foreground text-sm">Configure your DotSpark to mirror your natural intelligence & thinking style.</p>
               <div className="mt-auto pt-4">
                 <Button 
-                  className="w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-red-600 hover:to-orange-600 text-white border-0 shadow-md hover:shadow-lg transition-all duration-300"
+                  className="w-full !bg-gradient-to-r !from-orange-600 !to-red-600 hover:!from-red-600 hover:!to-orange-600 text-white border-0 shadow-md hover:shadow-lg transition-all duration-300"
                   onClick={() => setLocation("/sectioned-dotspark-tuning")}
                 >
                   Activate DotSpark
@@ -748,7 +748,7 @@ export default function LandingPage() {
               <div className="mt-auto pt-4">
                 <Button 
                   onClick={() => setInstallDialogOpen(true)}
-                  className="w-full bg-gradient-to-r from-emerald-600 to-green-600 hover:from-green-600 hover:to-emerald-600 text-white border-0 shadow-md hover:shadow-lg transition-all duration-300"
+                  className="w-full !bg-gradient-to-r !from-emerald-600 !to-green-600 hover:!from-green-600 hover:!to-emerald-600 text-white border-0 shadow-md hover:shadow-lg transition-all duration-300"
                 >
                   <Download className="h-5 w-5 mr-2" />
                   <span>Install App</span>
