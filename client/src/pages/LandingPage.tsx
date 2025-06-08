@@ -20,10 +20,8 @@ import {
   Sparkles
 } from "lucide-react";
 import { Link } from "wouter";
-import { ContactOptionsDialog } from "@/components/ui/contact-options-dialog";
 
 export default function LandingPage() {
-  const [contactDialogOpen, setContactDialogOpen] = useState(false);
   const [installDialogOpen, setInstallDialogOpen] = useState(false);
 
   // Query WhatsApp status
@@ -32,16 +30,15 @@ export default function LandingPage() {
     retry: false,
   });
 
-  const whatsAppNumber = whatsAppStatus?.phoneNumber || "+1234567890";
+  const isRegistered = whatsAppStatus && (whatsAppStatus as any).isRegistered;
 
   useEffect(() => {
-    // Auto-scroll functionality for hero section
     const handleScroll = () => {
       const scrolled = window.scrollY;
       const elements = document.querySelectorAll('.parallax-element');
       elements.forEach((element, index) => {
         const speed = 0.5 + (index * 0.1);
-        (element as HTMLElement).style.transform = \`translateY(\${scrolled * speed}px)\`;
+        (element as HTMLElement).style.transform = 'translateY(' + scrolled * speed + 'px)';
       });
     };
 
@@ -53,7 +50,6 @@ export default function LandingPage() {
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-gradient-to-b from-slate-50 to-amber-50/30 dark:from-slate-950 dark:to-amber-950/10 min-h-screen flex items-center">
-        {/* Background Elements */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/5 rounded-full blur-3xl animate-pulse-slow parallax-element"></div>
           <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-secondary/5 rounded-full blur-3xl animate-pulse-slow parallax-element" style={{animationDelay: '2s'}}></div>
@@ -84,7 +80,7 @@ export default function LandingPage() {
                 <Button 
                   size="lg" 
                   className="text-lg px-8 py-6 bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 shadow-lg shadow-primary/25"
-                  onClick={() => setContactDialogOpen(true)}
+                  onClick={() => window.open('https://wa.me/+19293571048?text=DOTSPARKSOCIAL', '_blank')}
                 >
                   <MessageCircle className="mr-2 h-5 w-5" />
                   Start Your Journey
@@ -148,7 +144,7 @@ export default function LandingPage() {
 
                 <Button 
                   className="w-full bg-gradient-to-r from-primary to-secondary" 
-                  onClick={() => setContactDialogOpen(true)}
+                  onClick={() => window.open('https://wa.me/+19293571048?text=DOTSPARKSOCIAL', '_blank')}
                 >
                   Experience DotSpark
                 </Button>
@@ -220,7 +216,6 @@ export default function LandingPage() {
             </div>
 
             <div className="grid md:grid-cols-2 gap-8">
-              {/* WhatsApp Status */}
               <Card className="relative overflow-hidden">
                 <CardContent className="p-6">
                   <div className="flex items-center gap-4 mb-4">
@@ -238,7 +233,7 @@ export default function LandingPage() {
                       <span className="text-sm font-medium">Connection Status</span>
                       {statusLoading ? (
                         <Badge variant="outline">Checking...</Badge>
-                      ) : whatsAppStatus?.isRegistered ? (
+                      ) : isRegistered ? (
                         <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">
                           <CheckCircle2 className="w-3 h-3 mr-1" />
                           Connected
@@ -251,10 +246,10 @@ export default function LandingPage() {
                       )}
                     </div>
                     
-                    <Progress value={whatsAppStatus?.isRegistered ? 100 : 0} className="h-2" />
+                    <Progress value={isRegistered ? 100 : 0} className="h-2" />
                     
                     <div className="text-xs text-muted-foreground">
-                      {whatsAppStatus?.isRegistered 
+                      {isRegistered 
                         ? "Ready for neural conversations via WhatsApp"
                         : "Send 'DOTSPARKSOCIAL' to activate your connection"
                       }
@@ -263,7 +258,6 @@ export default function LandingPage() {
                 </CardContent>
               </Card>
 
-              {/* DotSpark Activation Status */}
               <Card className="relative overflow-hidden">
                 <CardContent className="p-6">
                   <div className="flex items-center gap-4 mb-4">
@@ -295,17 +289,16 @@ export default function LandingPage() {
               </Card>
             </div>
 
-            {/* Overall Progress Completion */}
             <div className="mt-8 p-6 bg-gradient-to-r from-primary/5 to-secondary/5 rounded-xl border border-primary/20">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold">Setup Completion</h3>
                 <Badge className="bg-gradient-to-r from-primary to-secondary text-white">
-                  {whatsAppStatus?.isRegistered ? "92%" : "46%"} Complete
+                  {isRegistered ? "92%" : "46%"} Complete
                 </Badge>
               </div>
               
               <Progress 
-                value={whatsAppStatus?.isRegistered ? 92 : 46} 
+                value={isRegistered ? 92 : 46} 
                 className="h-3 mb-4" 
               />
               
@@ -319,7 +312,7 @@ export default function LandingPage() {
                   <span>DotSpark Activated</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  {whatsAppStatus?.isRegistered ? (
+                  {isRegistered ? (
                     <CheckCircle2 className="h-4 w-4 text-green-600" />
                   ) : (
                     <AlertCircle className="h-4 w-4 text-amber-600" />
@@ -327,7 +320,7 @@ export default function LandingPage() {
                   <span>WhatsApp Connected</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  {whatsAppStatus?.isRegistered ? (
+                  {isRegistered ? (
                     <CheckCircle2 className="h-4 w-4 text-green-600" />
                   ) : (
                     <div className="h-4 w-4 rounded-full border-2 border-muted-foreground" />
@@ -342,14 +335,6 @@ export default function LandingPage() {
 
       {/* NEW CONTENT WILL BE ADDED HERE */}
 
-      {/* Contact Options Dialog */}
-      <ContactOptionsDialog 
-        open={contactDialogOpen} 
-        onOpenChange={setContactDialogOpen}
-        phoneNumber={whatsAppNumber}
-      />
-
-      {/* PWA Install Guide Dialog */}
       <Dialog open={installDialogOpen} onOpenChange={setInstallDialogOpen}>
         <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
@@ -362,7 +347,6 @@ export default function LandingPage() {
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-6">
-            {/* Android Instructions */}
             <div className="border rounded-lg p-4 hover:bg-muted/50 transition-colors">
               <div className="flex items-center gap-3 mb-3">
                 <div className="flex-shrink-0 w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
@@ -393,7 +377,6 @@ export default function LandingPage() {
               </ol>
             </div>
 
-            {/* iOS Instructions */}
             <div className="border rounded-lg p-4 hover:bg-muted/50 transition-colors">
               <div className="flex items-center gap-3 mb-3">
                 <div className="flex-shrink-0 w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
@@ -424,7 +407,6 @@ export default function LandingPage() {
               </ol>
             </div>
 
-            {/* Easy Alternative */}
             <div className="border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/50 rounded-lg p-4">
               <div className="flex items-center gap-3 mb-3">
                 <div className="flex-shrink-0 w-10 h-10 bg-amber-100 dark:bg-amber-900/30 rounded-lg flex items-center justify-center">
