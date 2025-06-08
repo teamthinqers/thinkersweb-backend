@@ -9,7 +9,7 @@ import { Link } from 'wouter';
 import { useAuth } from '@/hooks/use-auth';
 import { UsageLimitMessage } from '@/components/ui/usage-limit-message';
 import { hasExceededLimit, getLimitMessage, incrementUsageCount, isFirstChat, markFirstChatDone } from '@/lib/usageLimits';
-import { getNeuraActivationStatus } from '@/lib/neuraStorage';
+import { neuraStorage } from '@/lib/neuraStorage';
 import axios from 'axios';
 
 type Message = {
@@ -33,7 +33,7 @@ export default function ChatPage() {
   const { toast } = useToast();
   const { user } = useAuth();
   const isRegistered = !!user;
-  const isActivated = getNeuraActivationStatus();
+  const isActivated = neuraStorage.isActivated();
   const isFirstTime = isFirstChat();
   
   // Set default message only for first-time users
@@ -69,6 +69,11 @@ export default function ChatPage() {
     setIsLoading(true);
 
     try {
+      // Mark first chat as done if this is the first interaction
+      if (isFirstTime) {
+        markFirstChatDone();
+      }
+      
       // Increment usage count
       incrementUsageCount();
       

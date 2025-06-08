@@ -9,6 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { MessageSquare, MessageCircle } from "lucide-react";
 import { useLocation } from "wouter";
+import { isFirstChat, markFirstChatDone } from '@/lib/usageLimits';
 
 interface ContactOptionsDialogProps {
   open: boolean;
@@ -26,9 +27,15 @@ export function ContactOptionsDialog({
   const handleWhatsAppClick = () => {
     if (!whatsAppNumber) return;
     
-    // Always include the default message
-    const defaultMessage = "Hey DotSpark, I've got a few things on my mind — need your thoughts";
+    // Only include default message for first-time users
+    const isFirstTime = isFirstChat();
+    const defaultMessage = isFirstTime ? "Hey DotSpark, I've got a few things on my mind - need your assistance" : "";
     const encodedMessage = encodeURIComponent(defaultMessage);
+    
+    // Mark first chat as done if this is the first interaction
+    if (isFirstTime) {
+      markFirstChatDone();
+    }
     
     // For mobile devices, create a direct link to the app
     if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {

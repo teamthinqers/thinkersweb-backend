@@ -6,7 +6,8 @@ import { Request, Response, NextFunction } from 'express';
 
 // Constants for usage limits
 const TRIAL_USER_LIMIT = 10; // Max number of prompts for unregistered users
-const REGISTERED_USER_LIMIT = 25; // Max number of prompts for registered users
+const REGISTERED_USER_LIMIT = 20; // Max number of prompts for registered users
+// Activated DotSpark users have unlimited usage
 
 // Map to store device usage (this will reset on server restart - in a production app, this should be stored in the database)
 const deviceUsageMap = new Map<string, number>();
