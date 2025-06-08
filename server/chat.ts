@@ -108,6 +108,7 @@ export async function generateChatResponse(
   response: string;
   alignmentAnalysis?: DeviationAnalysis;
   suggestedCorrections?: string[];
+  cogniShieldAlert?: string;
 }> {
   try {
     // Use CogniShield system prompt if profile is available
@@ -180,10 +181,17 @@ export async function generateChatResponse(
       }
     }
 
+    // Generate CogniShield alert if there are deviations
+    let cogniShieldAlert: string | undefined;
+    if (alignmentAnalysis?.hasDeviation && alignmentAnalysis.deviationScore > 0.4) {
+      cogniShieldAlert = `🧠 CogniShield Notice: This response may not fully align with your cognitive style (${Math.round(alignmentAnalysis.deviationScore * 100)}% deviation detected). ${alignmentAnalysis.suggestedCorrections?.[0] || 'Consider adjusting the approach to better match your thinking patterns.'}`;
+    }
+
     return {
       response: aiResponse,
       alignmentAnalysis,
-      suggestedCorrections
+      suggestedCorrections,
+      cogniShieldAlert
     };
 
   } catch (error) {

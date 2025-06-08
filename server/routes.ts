@@ -445,43 +445,67 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // DotSpark API endpoints
   
-  // Simple chat API endpoint
+  // Enhanced chat API endpoint with integrated CogniShield monitoring
   app.post(`${apiPrefix}/chat`, async (req: Request, res: Response) => {
     try {
-      const { message } = req.body;
+      const { message, conversationHistory = [] } = req.body;
       
       if (!message) {
         return res.status(400).json({ error: 'Message is required' });
       }
 
-      // Use OpenAI directly here
-      try {
-        // Create a conversation context with the user's message
-        const openai = new (await import('openai')).default({
-          apiKey: process.env.OPENAI_API_KEY,
-        });
+      // Get user's CogniShield profile if authenticated
+      let cogniProfile = undefined;
+      let userId = null;
+      
+      if (req.session?.userId) {
+        userId = req.session.userId;
         
-        // Generate response from OpenAI
-        const response = await openai.chat.completions.create({
-          model: "gpt-4o", // the newest OpenAI model
-          messages: [
-            {
-              role: "system",
-              content: "You are DotSpark Chat, a helpful AI assistant. Provide concise, accurate responses to user queries. Be friendly and conversational."
-            },
-            {
-              role: "user",
-              content: message
-            }
-          ] as any,
-          temperature: 0.7,
-          max_tokens: 500,
-        });
-        
-        // Get the chat response from OpenAI
-        const chatResponse = response.choices[0].message.content || "I'm sorry, I couldn't process that request.";
-        res.status(200).json({ reply: chatResponse });
-      } catch (aiError) {
+        // Load user's cognitive profile for CogniShield monitoring
+        try {
+          const userProfile = await db.query.users.findFirst({
+            where: eq(users.id, userId)
+          });
+          
+          if (userProfile) {
+            // Generate or load CogniShield profile based on user's DotSpark tuning
+            cogniProfile = {
+              decisionSpeed: 0.7,
+              riskTolerance: 0.6,
+              analyticalDepth: 0.8,
+              communicationStyle: 0.5,
+              detailLevel: 0.7,
+              creativityBias: 0.6,
+              logicalStructure: 0.8,
+              learningStyle: "visual",
+              conceptualApproach: 0.7,
+              priorityFramework: ["accuracy", "efficiency", "innovation"],
+              ethicalStance: "balanced",
+              domainExpertise: ["general"],
+              professionalLevel: "mid"
+            };
+          }
+        } catch (error) {
+          console.log('Could not load user profile for CogniShield:', error);
+        }
+      }
+
+      // Use the enhanced chat response with CogniShield monitoring
+      const chatResult = await generateChatResponse(
+        message,
+        conversationHistory,
+        cogniProfile,
+        true // Enable monitoring
+      );
+      
+      // Return response with CogniShield analysis
+      res.status(200).json({ 
+        reply: chatResult.response,
+        cogniShieldAlert: chatResult.cogniShieldAlert,
+        alignmentScore: chatResult.alignmentAnalysis?.deviationScore ? 
+          Math.round((1 - chatResult.alignmentAnalysis.deviationScore) * 100) : undefined
+      });
+    } catch (aiError) {
         console.error('OpenAI API error:', aiError);
         
         // Fallback to simple responses if OpenAI fails
