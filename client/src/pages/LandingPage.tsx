@@ -685,7 +685,7 @@ export default function LandingPage() {
                 <Button 
                   variant="default" 
                   className="w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-red-600 hover:to-orange-600 text-white border-0 shadow-md hover:shadow-lg transition-all duration-300"
-                  onClick={() => setLocation("/dashboard")}
+                  onClick={() => setLocation("/sectioned-dotspark-tuning")}
                 >
                   Activate DotSpark
                 </Button>
