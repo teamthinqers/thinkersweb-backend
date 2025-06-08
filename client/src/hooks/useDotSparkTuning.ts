@@ -191,8 +191,8 @@ export function useDotSparkTuning() {
       queryClient.setQueryData(['/api/dotspark/status'], data);
       
       toast({
-        title: "DotSpark Updated",
-        description: "Your DotSpark tuning parameters have been updated.",
+        title: "Configuration Saved",
+        description: "Your DotSpark Add On parameters have been updated.",
       });
     },
     onError: (error) => {

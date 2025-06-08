@@ -206,11 +206,6 @@ export default function NeuraTuningExpertise() {
   // Save changes
   const saveChanges = async () => {
     if (!unsavedChanges) {
-      toast({
-        title: "No Changes",
-        description: "No changes to save.",
-        variant: "default",
-      });
       return;
     }
     
@@ -688,28 +683,42 @@ export default function NeuraTuningExpertise() {
           </div>
           
           {/* Bottom Save Button */}
-          {unsavedChanges && (
-            <div className="flex justify-end mt-6">
-              <Button 
-                variant="default"
-                className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-1.5"
-                onClick={saveChanges}
-                disabled={isUpdating}
-              >
-                {isUpdating ? (
-                  <span className="flex items-center gap-1.5">
-                    <span className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-                    Saving...
-                  </span>
-                ) : (
-                  <span className="flex items-center gap-1.5">
-                    <Save className="h-4 w-4" />
-                    Save Changes
-                  </span>
-                )}
-              </Button>
-            </div>
-          )}
+          <div className="flex justify-end mt-6">
+            <Button 
+              variant="default"
+              className={`flex items-center gap-1.5 ${
+                justSaved 
+                  ? "bg-green-600 hover:bg-green-700 text-white" 
+                  : unsavedChanges 
+                    ? "bg-amber-600 hover:bg-amber-700 text-white" 
+                    : "bg-gray-400 hover:bg-gray-500 text-white cursor-not-allowed"
+              }`}
+              onClick={saveChanges}
+              disabled={isUpdating || (!unsavedChanges && !justSaved)}
+            >
+              {isUpdating ? (
+                <span className="flex items-center gap-1.5">
+                  <span className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                  Saving...
+                </span>
+              ) : justSaved ? (
+                <span className="flex items-center gap-1.5">
+                  <Check className="h-4 w-4" />
+                  Saved
+                </span>
+              ) : unsavedChanges ? (
+                <span className="flex items-center gap-1.5">
+                  <Save className="h-4 w-4" />
+                  Save Changes
+                </span>
+              ) : (
+                <span className="flex items-center gap-1.5">
+                  <Check className="h-4 w-4" />
+                  Saved
+                </span>
+              )}
+            </Button>
+          </div>
         </CardContent>
       </Card>
     </div>
