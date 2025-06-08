@@ -53,6 +53,9 @@ export default function SectionedDotSparkTuningPage() {
   // Using fixed "My DotSpark" name for all users
   const dotsparkName = 'My DotSpark';
   
+  // Debug log to verify component is loading
+  console.log('SectionedDotSparkTuningPage component is rendering');
+  
   // Removed sectioned navigation for a more integrated design
   
   const { 
