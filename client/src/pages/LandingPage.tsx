@@ -211,20 +211,20 @@ export default function LandingPage() {
                   : "bg-gradient-to-r from-amber-800 to-amber-700 hover:from-amber-900 hover:to-amber-800"} 
                   text-white h-9 px-3 relative`}
                 size="sm"
-                onClick={() => setLocation("/my-neura")}
+                onClick={() => setLocation("/dashboard")}
               >
                 <div className="flex items-center gap-2 relative z-10">
                   <div className="flex items-center">
                     {isNeuraActivated ? (
                       <div className="relative">
                         <Brain className="h-4 w-4" />
-                        <div className="absolute -top-1 -right-1 h-2 w-2 bg-orange-500 rounded-full"></div>
+                        <div className="absolute -top-1 -right-1 h-2 w-2 bg-green-500 rounded-full animate-pulse"></div>
                       </div>
                     ) : (
                       <Brain className="h-4 w-4" />
                     )}
                   </div>
-                  <span className="text-xs">My DotSpark</span>
+                  <span className="text-xs">My Neura</span>
                 </div>
               </Button>
             </div>
@@ -688,7 +688,7 @@ export default function LandingPage() {
                 <Button 
                   variant="default" 
                   className="w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-red-600 hover:to-orange-600 text-white border-0 shadow-md hover:shadow-lg transition-all duration-300"
-                  onClick={() => setLocation("/my-neura")}
+                  onClick={() => setLocation("/dashboard")}
                 >
                   Activate DotSpark
                 </Button>
