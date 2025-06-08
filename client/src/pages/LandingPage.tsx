@@ -816,8 +816,8 @@ export default function LandingPage() {
                     {user ? (
                       <CheckCircle className="h-6 w-6 md:h-8 md:w-8" />
                     ) : (
-                      <div className="rounded-full bg-primary/10 w-8 h-8 md:w-10 md:h-10 flex items-center justify-center">
-                        <span className="font-bold text-lg">1</span>
+                      <div className="rounded-full bg-amber-500/20 w-8 h-8 md:w-10 md:h-10 flex items-center justify-center">
+                        <span className="font-bold text-lg text-amber-600">1</span>
                       </div>
                     )}
                   </div>
@@ -839,8 +839,8 @@ export default function LandingPage() {
                     {isNeuraActivated ? (
                       <CheckCircle className="h-6 w-6 md:h-8 md:w-8" />
                     ) : (
-                      <div className="rounded-full bg-amber-500/10 w-8 h-8 md:w-10 md:h-10 flex items-center justify-center">
-                        <span className="font-bold text-lg">2</span>
+                      <div className="rounded-full bg-orange-500/20 w-8 h-8 md:w-10 md:h-10 flex items-center justify-center">
+                        <span className="font-bold text-lg text-orange-600">2</span>
                       </div>
                     )}
                   </div>
@@ -871,8 +871,8 @@ export default function LandingPage() {
                     {isPWAInstalled ? (
                       <CheckCircle className="h-6 w-6 md:h-8 md:w-8" />
                     ) : (
-                      <div className="rounded-full bg-emerald-500/10 w-8 h-8 md:w-10 md:h-10 flex items-center justify-center">
-                        <span className="font-bold text-lg">3</span>
+                      <div className="rounded-full bg-emerald-500/20 w-8 h-8 md:w-10 md:h-10 flex items-center justify-center">
+                        <span className="font-bold text-lg text-emerald-600">3</span>
                       </div>
                     )}
                   </div>
