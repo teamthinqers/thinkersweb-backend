@@ -593,7 +593,7 @@ export default function LandingPage() {
                     <ol className="list-decimal list-inside space-y-1 text-xs">
                       <li>Sign up for an account</li>
                       <li>Activate your DotSpark</li>
-                      <li>Download the WebApp for quick access</li>
+                      <li>Download the Web App for better experience</li>
                     </ol>
                   </div>
                 </div>
