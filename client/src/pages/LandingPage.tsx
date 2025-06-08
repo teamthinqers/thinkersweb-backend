@@ -1156,10 +1156,10 @@ export default function LandingPage() {
         <div className="container mx-auto px-4 md:px-6 text-center relative z-10">
           <div className="max-w-3xl mx-auto">
             <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 text-white">
-              Ready to Amplify Your Professional Cognitive Power?
+              Ready to Join the ThinQers' Tribe?
             </h2>
             <p className="text-base sm:text-lg md:text-xl text-white/90 max-w-2xl mx-auto mb-6 md:mb-10">
-              Join innovative professionals who are extending their cognitive capabilities with neural frameworks, achieving breakthrough results and career advancement.
+              Explore the edge of untapped human intelligence and keep your thinking truly yours.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center mobile-stack">
               <Button size="lg" variant="default" className="bg-white text-primary font-bold shadow-lg btn-bounce group relative overflow-hidden border-2 border-white hover:bg-white/90 w-full sm:w-auto" asChild>
