@@ -283,10 +283,10 @@ export default function NeuraTuningExpertise() {
       
       {/* Expertise Layer Section Card */}
       <Card className="bg-white dark:bg-gray-950 shadow-md mb-8">
-        <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950 dark:to-indigo-950">
+        <CardHeader className="bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-950 dark:to-yellow-950">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded-full">
-              <Target className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+            <div className="p-2 bg-amber-100 dark:bg-amber-900 rounded-full">
+              <Target className="h-6 w-6 text-amber-600 dark:text-amber-400" />
             </div>
             <div>
               <CardTitle>Professional Expertise Layer</CardTitle>
@@ -295,13 +295,13 @@ export default function NeuraTuningExpertise() {
               </CardDescription>
             </div>
           </div>
-          <div className="mt-4 py-3 px-4 bg-white dark:bg-gray-950 rounded-lg border border-blue-100 dark:border-blue-900">
+          <div className="mt-4 py-3 px-4 bg-white dark:bg-gray-950 rounded-lg border border-amber-100 dark:border-amber-900">
             <div className="grid grid-cols-5 gap-1">
               {['🧠', '🎯', '📊', '🛠️', '📈'].map((icon, i) => (
                 <div 
                   key={i} 
                   className={`h-8 flex items-center justify-center rounded-md ${
-                    i % 2 === 0 ? 'bg-blue-50 dark:bg-blue-950/50' : 'bg-indigo-50 dark:bg-indigo-950/50'
+                    i % 2 === 0 ? 'bg-amber-50 dark:bg-amber-950/50' : 'bg-yellow-50 dark:bg-yellow-950/50'
                   }`}
                 >
                   <span className="text-xl">{icon}</span>
@@ -333,7 +333,7 @@ export default function NeuraTuningExpertise() {
                   <div 
                     key={level.id} 
                     className={`flex items-start space-x-3 p-4 rounded-lg border 
-                      ${isSelected ? 'border-blue-300 bg-blue-50 dark:border-blue-700 dark:bg-blue-950/50' : 'border-gray-200 dark:border-gray-800'} 
+                      ${isSelected ? 'border-amber-300 bg-amber-50 dark:border-amber-700 dark:bg-amber-950/50' : 'border-gray-200 dark:border-gray-800'} 
                       hover:bg-gray-50 dark:hover:bg-gray-900 transition-all duration-200
                       ${isSelected ? 'shadow-md' : ''}`}
                   >
@@ -341,16 +341,16 @@ export default function NeuraTuningExpertise() {
                       <RadioGroupItem 
                         value={level.id} 
                         id={level.id} 
-                        className="text-blue-600 border-blue-600 focus:ring-blue-600 focus:ring-offset-2 ring-offset-white h-5 w-5" 
+                        className="text-amber-600 border-amber-600 focus:ring-amber-600 focus:ring-offset-2 ring-offset-white h-5 w-5" 
                       />
                     </div>
                     <div className="flex-1 space-y-1.5">
                       <div className="flex items-center justify-between">
-                        <Label htmlFor={level.id} className={`font-medium text-base cursor-pointer ${isSelected ? 'text-blue-700 dark:text-blue-400' : ''}`}>
+                        <Label htmlFor={level.id} className={`font-medium text-base cursor-pointer ${isSelected ? 'text-amber-700 dark:text-amber-400' : ''}`}>
                           {level.name}
                         </Label>
                         {isSelected && (
-                          <div className="px-2 py-1 bg-blue-100 dark:bg-blue-900 rounded-full text-xs font-medium text-blue-700 dark:text-blue-400">
+                          <div className="px-2 py-1 bg-amber-100 dark:bg-amber-900 rounded-full text-xs font-medium text-amber-700 dark:text-amber-400">
                             Selected
                           </div>
                         )}
@@ -510,8 +510,8 @@ export default function NeuraTuningExpertise() {
                         </div>
                     
                         {isDomainSelected && (
-                          <div className="mt-4 pt-4 border-t border-blue-200 dark:border-blue-800">
-                            <h4 className="text-sm font-medium mb-3 text-blue-700 dark:text-blue-400">How do you apply your expertise in {domain.name}?</h4>
+                          <div className="mt-4 pt-4 border-t border-amber-200 dark:border-amber-800">
+                            <h4 className="text-sm font-medium mb-3 text-amber-700 dark:text-amber-400">How do you apply your expertise in {domain.name}?</h4>
                             <RadioGroup 
                               value={expertiseLevel}
                               onValueChange={(value) => handleExpertiseLevelChange(domain.id, value)}
@@ -550,7 +550,7 @@ export default function NeuraTuningExpertise() {
                                       <RadioGroupItem 
                                         value={level.id} 
                                         id={`${domain.id}-${level.id}`} 
-                                        className="mt-1 text-blue-600 border-blue-600 focus:ring-blue-600 focus:ring-offset-2 ring-offset-white h-5 w-5" 
+                                        className="mt-1 text-amber-600 border-amber-600 focus:ring-amber-600 focus:ring-offset-2 ring-offset-white h-5 w-5" 
                                       />
                                       <div className="flex-1 space-y-1">
                                         <div className="flex items-center justify-between">
@@ -560,7 +560,7 @@ export default function NeuraTuningExpertise() {
                                           >
                                             {level.name}
                                             {isSelected && (
-                                              <span className="ml-2 text-xs bg-blue-100 dark:bg-blue-900 px-1.5 py-0.5 rounded text-blue-700 dark:text-blue-400">
+                                              <span className="ml-2 text-xs bg-amber-100 dark:bg-amber-900 px-1.5 py-0.5 rounded text-amber-700 dark:text-amber-400">
                                                 Selected
                                               </span>
                                             )}
@@ -579,7 +579,7 @@ export default function NeuraTuningExpertise() {
                                         )}
                                         {level.id === 'strategic_builder' && (
                                           <div className="w-full bg-gray-200 dark:bg-gray-800 rounded-full h-1.5 mt-2">
-                                            <div className="bg-blue-500 h-1.5 rounded-full w-2/3"></div>
+                                            <div className="bg-amber-500 h-1.5 rounded-full w-2/3"></div>
                                           </div>
                                         )}
                                         {level.id === 'creative_orchestrator' && (
