@@ -399,9 +399,9 @@ export default function NeuraTuningExpertise() {
           
           {/* Functional Domains Section */}
           <div className="mb-8">
-            <h3 className="text-lg font-medium mb-3">Functional Domains & Expertise</h3>
+            <h3 className="text-lg font-medium mb-3">Functions & Expertise</h3>
             <p className="text-sm text-muted-foreground mb-4">
-              Select your professional domains and choose your expertise style for each domain.
+              Select your relevant functions and choose your expertise level accordingly.
             </p>
             
             <div className="space-y-6">
