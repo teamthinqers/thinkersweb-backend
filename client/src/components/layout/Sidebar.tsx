@@ -43,7 +43,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isMobile, onNewEntry
       <div className="px-6 py-5 border-b">
         <h1 className="text-xl font-bold flex items-center">
           <Sparkles className="mr-2 h-6 w-6 text-amber-600 dark:text-amber-400" />
-          <span className="bg-gradient-to-r from-amber-700 to-orange-800 dark:from-amber-400 dark:to-orange-400 bg-clip-text text-transparent">
+          <span className="text-amber-700 dark:text-amber-400 font-bold">
             DotSpark
           </span>
         </h1>
@@ -88,9 +88,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isMobile, onNewEntry
                     )}
                   </div>
                   {item.isSpecial ? (
-                    <span className="font-medium bg-gradient-to-r from-amber-700 to-orange-800 bg-clip-text text-transparent">{item.label}</span>
+                    <span className="font-medium text-amber-700 dark:text-amber-400">{item.label}</span>
                   ) : (
-                    item.label
+                    <span className={`${location === item.path ? "text-amber-800 dark:text-amber-200" : "text-muted-foreground"}`}>{item.label}</span>
                   )}
                 </Link>
               </li>
