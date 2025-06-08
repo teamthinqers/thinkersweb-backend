@@ -3,7 +3,7 @@ import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { 
   ArrowRight, Brain, BookOpen, Users, Sparkles, BarChart2, 
-  MessageCircle, MessageSquare, User, Menu, X, Check, CheckCircle 
+  MessageCircle, MessageSquare, User, Menu, X, Check, CheckCircle, Download 
 } from "lucide-react";
 
 // Dynamic Word component for cycling through words with animation
@@ -609,7 +609,7 @@ export default function LandingPage() {
                     <ol className="list-decimal list-inside space-y-1 text-xs">
                       <li>Sign up for an account</li>
                       <li>Activate your DotSpark</li>
-                      <li>Link your WhatsApp for personalized insights</li>
+                      <li>Download the WebApp for quick access</li>
                     </ol>
                   </div>
                 </div>
@@ -692,25 +692,31 @@ export default function LandingPage() {
               </div>
             </div>
             
-            {/* Step 3: Connect WhatsApp */}
-            <div className="bg-card rounded-lg p-6 relative group hover:shadow-lg transition-all duration-300 border border-[#25D366]/30 dark:border-[#25D366]/30 overflow-hidden h-full flex flex-col">
-              <div className="absolute top-0 right-0 w-24 h-24 bg-[#25D366]/5 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:bg-[#25D366]/10 transition-colors duration-300"></div>
-              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-[#25D366]/10 text-[#25D366] mb-4 relative z-10">
-                <MessageCircle className="h-6 w-6" />
+            {/* Step 3: Download WebApp */}
+            <div className="bg-card rounded-lg p-6 relative group hover:shadow-lg transition-all duration-300 border border-blue-200/30 dark:border-blue-800/30 overflow-hidden h-full flex flex-col">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/5 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:bg-blue-500/10 transition-colors duration-300"></div>
+              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-blue-500/10 text-blue-600 mb-4 relative z-10">
+                <Download className="h-6 w-6" />
               </div>
-              <div className="absolute top-6 right-6 flex items-center justify-center w-8 h-8 rounded-full bg-[#25D366]/80 text-white font-bold text-lg">
+              <div className="absolute top-6 right-6 flex items-center justify-center w-8 h-8 rounded-full bg-blue-500/80 text-white font-bold text-lg">
                 3
               </div>
-              <h3 className="text-xl font-semibold mb-2">Link WhatsApp</h3>
-              <p className="text-muted-foreground text-sm">Connect your phone to interact with DotSpark anywhere, anytime.</p>
+              <h3 className="text-xl font-semibold mb-2">Download WebApp</h3>
+              <p className="text-muted-foreground text-sm">Install DotSpark on your device for quick access and offline capabilities.</p>
               <div className="mt-auto pt-4">
                 <Button 
                   size="default" 
-                  onClick={() => window.open("https://wa.me/16067157733?text=Hey%20DotSpark%2C%20I%27ve%20got%20a%20few%20things%20on%20my%20mind%20%E2%80%94%20need%20your%20thoughts", "_blank")}
-                  className="w-full rounded-full bg-[#25D366] hover:bg-[#128C7E] text-white shadow-md hover:shadow-lg transition-all duration-300"
+                  onClick={() => {
+                    // Trigger PWA install prompt if available
+                    if ('serviceWorker' in navigator) {
+                      // For now, just show an alert with instructions
+                      alert('To install DotSpark as an app:\n\n• On mobile: Tap the share button and select "Add to Home Screen"\n• On desktop: Look for the install icon in your browser\'s address bar');
+                    }
+                  }}
+                  className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-indigo-600 hover:to-blue-600 text-white shadow-md hover:shadow-lg transition-all duration-300"
                 >
-                  <MessageSquare className="h-5 w-5 mr-2" />
-                  <span>Link WhatsApp</span>
+                  <Download className="h-5 w-5 mr-2" />
+                  <span>Install App</span>
                 </Button>
               </div>
             </div>
@@ -739,7 +745,7 @@ export default function LandingPage() {
                   <span>100% Complete</span>
                 </span>
               ) : (
-                <span>{user ? (isNeuraActivated ? (isWhatsAppConnected ? "100%" : "67%") : "33%") : "33%"} Complete</span>
+                <span>{user ? (isNeuraActivated ? "100%" : "50%") : "0%"} Complete</span>
               )}
             </div>
             
@@ -758,10 +764,8 @@ export default function LandingPage() {
                   width: isSetupCompleted 
                     ? "100%" 
                     : user 
-                      ? (isNeuraActivated 
-                        ? (isWhatsAppConnected ? "100%" : "67%") 
-                        : "33%") 
-                      : "33%",
+                      ? (isNeuraActivated ? "100%" : "50%") 
+                      : "0%",
                   boxShadow: isSetupCompleted 
                     ? "0 0 15px rgba(239, 68, 68, 0.7)" 
                     : "0 0 10px rgba(245, 158, 11, 0.5)"
@@ -823,34 +827,34 @@ export default function LandingPage() {
                   )}
                 </div>
                 
-                {/* Step 3: Connect WhatsApp */}
+                {/* Step 3: Download WebApp */}
                 <div className="flex flex-col items-center">
                   <div className={`w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center shadow-lg mb-3 transition-all duration-500
-                    ${isWhatsAppConnected ? 'bg-gradient-to-br from-[#25D366] to-[#128C7E] text-white scale-110' : 
-                    isNeuraActivated ? 'bg-card border-2 border-[#25D366] text-[#25D366] animate-pulse' : 
+                    ${isNeuraActivated ? 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white scale-110' : 
+                    user ? 'bg-card border-2 border-blue-500 text-blue-500 animate-pulse' : 
                     'bg-card border-2 border-muted text-muted-foreground'}`}>
-                    {isWhatsAppConnected ? (
+                    {isNeuraActivated ? (
                       <CheckCircle className="h-6 w-6 md:h-8 md:w-8" />
                     ) : (
-                      <div className="rounded-full bg-[#25D366]/10 w-8 h-8 md:w-10 md:h-10 flex items-center justify-center">
+                      <div className="rounded-full bg-blue-500/10 w-8 h-8 md:w-10 md:h-10 flex items-center justify-center">
                         <span className="font-bold text-lg">3</span>
                       </div>
                     )}
                   </div>
                   <span className={`font-medium text-sm
-                    ${isWhatsAppConnected ? 'text-[#25D366]' : isNeuraActivated ? 'text-[#25D366]/70' : 'text-muted-foreground'}`}>
-                    Connect WhatsApp
+                    ${isNeuraActivated ? 'text-blue-600' : user ? 'text-blue-500/70' : 'text-muted-foreground'}`}>
+                    Download WebApp
                   </span>
-                  {isWhatsAppConnected && (
-                    <div className="animate-pulse mt-1 text-xs text-[#25D366] flex items-center">
+                  {isNeuraActivated && (
+                    <div className="animate-pulse mt-1 text-xs text-blue-600 flex items-center">
                       <CheckCircle className="h-3 w-3 mr-1" />
-                      <span>Completed</span>
+                      <span>Ready to install</span>
                     </div>
                   )}
-                  {isNeuraActivated && !isWhatsAppConnected && (
-                    <div className="mt-1 text-xs text-[#25D366]/70 flex items-center">
+                  {user && !isNeuraActivated && (
+                    <div className="mt-1 text-xs text-blue-500/70 flex items-center">
                       <ArrowRight className="h-3 w-3 mr-1" />
-                      <span>Next step</span>
+                      <span>Coming soon</span>
                     </div>
                   )}
                 </div>
@@ -858,7 +862,7 @@ export default function LandingPage() {
             </div>
             
             {/* Reward message when all steps are completed */}
-            {(user && isNeuraActivated && isWhatsAppConnected) || isSetupCompleted ? (
+            {(user && isNeuraActivated) || isSetupCompleted ? (
               <div className="mt-8 text-center">
                 <div className="inline-block bg-gradient-to-r from-orange-500 to-red-600 text-white px-6 py-3 rounded-lg shadow-lg animate-pulse">
                   <div className="flex flex-col items-center">
