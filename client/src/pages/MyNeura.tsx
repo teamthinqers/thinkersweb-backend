@@ -162,10 +162,7 @@ export default function MyNeura() {
     }
   };
   
-  // Function to handle Activate DotSpark button click
-  const handleActivateDotSpark = () => {
-    setShowInviteDialog(true);
-  };
+
   
   // Track if we're on mobile for responsive layout
   const [isMobileView, setIsMobileView] = useState(window.innerWidth < 768);
@@ -222,6 +219,27 @@ export default function MyNeura() {
     neuraStorage.setName(newName);
   };
   
+  // Function to handle DotSpark activation with invite validation
+  const handleActivateDotSpark = () => {
+    // Check if user has been authenticated before activating
+    if (!user) {
+      toast({
+        title: "Authentication Required",
+        description: "Please sign in to activate your DotSpark.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    // If invite has been validated before, activate directly
+    if (neuraStorage.isInviteValidated()) {
+      activateDotSpark();
+    } else {
+      // First time activation - show invite code dialog
+      setShowInviteDialog(true);
+    }
+  };
+
   // Function to activate DotSpark using neuraStorage utility
   const activateDotSpark = () => {
     try {
