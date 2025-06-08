@@ -794,7 +794,7 @@ export default function MyNeura() {
             </div>
             <CardContent className="p-6 bg-gradient-to-b from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 flex flex-col justify-between h-32">
               <p className="text-muted-foreground mb-4 flex-1">
-                Customize domains where your DotSpark can reflect your professional expertise and provide deeper insights.
+                Configure your professional expertise layer for domain specific insights.
               </p>
               <div className="flex justify-center">
                 <Button 
