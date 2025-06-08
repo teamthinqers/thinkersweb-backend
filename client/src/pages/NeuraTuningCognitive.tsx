@@ -5,7 +5,7 @@ import { useDotSparkTuning } from '@/hooks/useDotSparkTuning';
 import { Slider } from '@/components/ui/slider';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { BrainCog, ChevronLeft, Save, Info, Settings } from 'lucide-react';
+import { BrainCog, ChevronLeft, Save, Info, Settings, Check } from 'lucide-react';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 
 export default function NeuraTuningCognitive() {
