@@ -109,9 +109,14 @@ export default function LandingPage() {
   // Track PWA installation status
   const [isPWAInstalled, setIsPWAInstalled] = useState(() => {
     // Check if app is running in standalone mode (PWA installed)
-    return window.matchMedia('(display-mode: standalone)').matches || 
-           (window.navigator as any).standalone === true ||
-           document.referrer.includes('android-app://');
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
+                        (window.navigator as any).standalone === true ||
+                        document.referrer.includes('android-app://');
+    
+    // Also check localStorage for installation status
+    const wasInstalled = localStorage.getItem('pwa-installed') === 'true';
+    
+    return isStandalone || wasInstalled;
   });
   
   // Track setup completion status
@@ -309,7 +314,7 @@ export default function LandingPage() {
                 <Button
                   variant="default"
                   size="sm"
-                  className="bg-[#25D366] hover:bg-[#128C7E] text-white px-2 py-0.5 h-7 rounded-md"
+                  className="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-orange-600 hover:to-amber-600 text-white px-2 py-0.5 h-7 rounded-md"
                   onClick={() => {
                     // Fetch WhatsApp number first
                     fetch('/api/whatsapp/contact')
@@ -831,12 +836,6 @@ export default function LandingPage() {
                     <div className="mt-1 text-xs text-orange-500 flex items-center">
                       <ArrowRight className="h-3 w-3 mr-1" />
                       <span>Ready to install</span>
-                    </div>
-                  )}
-                  {isNeuraActivated && isPWAInstalled && (
-                    <div className="mt-1 text-xs text-green-600 flex items-center">
-                      <CheckCircle className="h-3 w-3 mr-1" />
-                      <span>Installed</span>
                     </div>
                   )}
                 </div>
