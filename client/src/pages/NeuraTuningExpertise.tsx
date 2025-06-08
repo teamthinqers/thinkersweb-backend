@@ -95,6 +95,7 @@ export default function NeuraTuningExpertise() {
   const [domainExpertiseLevels, setDomainExpertiseLevels] = useState<Record<string, string>>({});
   const [selectedSeniorityLevel, setSelectedSeniorityLevel] = useState<string>('mid_level_manager');
   const [unsavedChanges, setUnsavedChanges] = useState(false);
+  const [justSaved, setJustSaved] = useState(false);
   
   // Initialize from stored data
   useEffect(() => {
@@ -201,12 +202,15 @@ export default function NeuraTuningExpertise() {
       });
       
       setUnsavedChanges(false);
+      setJustSaved(true);
       
-      toast({
-        title: "Expertise Updated",
-        description: "Your neural mirror professional domains and expertise styles have been saved.",
-        variant: "default",
-      });
+      // Mark expertise as configured in localStorage for MyNeura page
+      localStorage.setItem('expertiseLayerConfigured', 'true');
+      
+      // Reset saved status after 2 seconds
+      setTimeout(() => {
+        setJustSaved(false);
+      }, 2000);
     } catch (error) {
       console.error("Error updating expertise layer:", error);
       toast({
@@ -252,14 +256,19 @@ export default function NeuraTuningExpertise() {
         {unsavedChanges && (
           <Button 
             variant="default"
-            className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-1.5"
+            className={justSaved ? "bg-green-600 hover:bg-green-700 text-white flex items-center gap-1.5" : "bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-1.5"}
             onClick={saveChanges}
-            disabled={isUpdating}
+            disabled={isUpdating || justSaved}
           >
             {isUpdating ? (
               <span className="flex items-center gap-1.5">
                 <span className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
                 Saving...
+              </span>
+            ) : justSaved ? (
+              <span className="flex items-center gap-1.5">
+                <Check className="h-4 w-4" />
+                Saved
               </span>
             ) : (
               <span className="flex items-center gap-1.5">

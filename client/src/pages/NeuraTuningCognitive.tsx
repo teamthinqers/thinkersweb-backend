@@ -27,6 +27,7 @@ export default function NeuraTuningCognitive() {
   
   // Local state for unsaved changes
   const [unsavedChanges, setUnsavedChanges] = useState(false);
+  const [justSaved, setJustSaved] = useState(false);
   const [pendingChanges, setPendingChanges] = useState<{
     // Core tuning parameters
     cognitivePace?: number;
@@ -96,12 +97,15 @@ export default function NeuraTuningCognitive() {
       // Reset state after saving
       setUnsavedChanges(false);
       setPendingChanges({});
+      setJustSaved(true);
       
-      toast({
-        title: "Changes Saved",
-        description: "Your neural mirror cognitive style parameters have been updated.",
-        variant: "default",
-      });
+      // Mark cognitive shield as configured in localStorage
+      localStorage.setItem('cognitiveShieldConfigured', 'true');
+      
+      // Reset saved status after 2 seconds
+      setTimeout(() => {
+        setJustSaved(false);
+      }, 2000);
     } catch (error) {
       console.error("Error updating cognitive style:", error);
       toast({

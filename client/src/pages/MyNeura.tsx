@@ -102,6 +102,14 @@ export default function MyNeura() {
   const [cognitiveShieldConfigured, setCognitiveShieldConfigured] = useState(false);
   const [expertiseLayerConfigured, setExpertiseLayerConfigured] = useState(false);
   
+  // Check localStorage for configuration status
+  useEffect(() => {
+    const cognitiveConfigured = localStorage.getItem('cognitiveShieldConfigured') === 'true';
+    const expertiseConfigured = localStorage.getItem('expertiseLayerConfigured') === 'true';
+    setCognitiveShieldConfigured(cognitiveConfigured);
+    setExpertiseLayerConfigured(expertiseConfigured);
+  }, []);
+  
   // State for invite code modal
   const [showInviteDialog, setShowInviteDialog] = useState(false);
   const [inviteCode, setInviteCode] = useState('');
