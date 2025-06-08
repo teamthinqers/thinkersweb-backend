@@ -377,8 +377,8 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
               }} 
               className="cursor-pointer flex items-center active:opacity-80 transition-opacity"
             >
-              <Sparkles className="h-5 w-5 text-primary mr-1.5" />
-              <h2 className="text-lg font-bold text-primary">DotSpark</h2>
+              <Sparkles className="h-5 w-5 text-amber-600 mr-1.5" />
+              <h2 className="text-lg font-bold text-amber-700">DotSpark</h2>
             </div>
             <Button 
               variant="ghost" 
@@ -408,20 +408,20 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
               <Button 
                 variant="ghost" 
                 size="sm" 
-                className="w-full justify-start mb-2"
+                className="w-full justify-start mb-2 text-amber-700 hover:text-amber-800 hover:bg-amber-50"
                 onClick={goToLandingPage}
               >
-                <HomeIcon className="h-5 w-5 mr-2" />
+                <HomeIcon className="h-5 w-5 mr-2 text-amber-600" />
                 Home
               </Button>
               
               <Button 
                 variant="ghost" 
                 size="sm" 
-                className="w-full justify-start mb-2"
+                className="w-full justify-start mb-2 text-amber-700 hover:text-amber-800 hover:bg-amber-50"
                 onClick={goToMyNeura}
               >
-                <Brain className="h-5 w-5 mr-2" />
+                <Brain className="h-5 w-5 mr-2 text-amber-600" />
                 My DotSpark
               </Button>
               
