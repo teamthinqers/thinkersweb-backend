@@ -58,12 +58,13 @@ export async function processEntryFromChat(
       content: userInput,
     });
 
-    // Generate response from OpenAI
+    // Generate response from OpenAI with optimized settings
     const response = await openai.chat.completions.create({
-      model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
+      model: "gpt-4o-mini", // Faster model for quicker responses
       messages: messages as any,
       response_format: { type: "json_object" },
-      temperature: 0.7,
+      temperature: 0.3,
+      max_tokens: 300, // Reduced for faster processing
     });
 
     // Get the response content
@@ -138,12 +139,12 @@ export async function generateChatResponse(
       content: userInput,
     });
 
-    // Generate response from OpenAI
+    // Generate response from OpenAI with optimized settings
     const response = await openai.chat.completions.create({
-      model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
-      messages: messages as any,
-      temperature: 0.8,
-      max_tokens: 200,
+      model: "gpt-4o-mini", // Faster model for quicker responses
+      messages: messages.slice(-6) as any, // Keep only recent context for speed
+      temperature: 0.5,
+      max_tokens: 150, // Reduced for faster processing
     });
 
     const aiResponse = response.choices[0].message.content || "I didn't quite catch that. Can you tell me more about what you learned?";

@@ -48,7 +48,7 @@ const conversationHistories = new Map<string, Message[]>();
 const MAX_HISTORY_LENGTH = 20;
 
 // For optimized responses, we use a smaller context window
-const OPTIMIZED_HISTORY_LENGTH = 8;
+const OPTIMIZED_HISTORY_LENGTH = 4;
 
 /**
  * Optimize conversation history for faster response times
@@ -167,13 +167,13 @@ export async function generateAdvancedResponse(
     const optimizedHistory = optimizeHistoryForResponse(history);
       
     const response = await openai.chat.completions.create({
-      model: "gpt-4o",
+      model: "gpt-4o-mini",  // Much faster model for quick responses
       messages: optimizedHistory,
-      temperature: 0.7,     // Balanced for both speed and creativity
-      max_tokens: 800,      // Reduced for faster response time
-      top_p: 0.9,           // Slightly reduced for faster token selection
-      frequency_penalty: 0.3, // Reduced to improve response time
-      presence_penalty: 0.3,  // Reduced to improve response time
+      temperature: 0.5,      // Optimized for speed
+      max_tokens: 400,       // Reduced significantly for faster response
+      top_p: 0.8,            // Optimized for faster token selection
+      frequency_penalty: 0.1, // Minimal for speed
+      presence_penalty: 0.1,  // Minimal for speed
     });
 
     const responseText = response.choices[0]?.message?.content?.trim() || 
@@ -214,72 +214,47 @@ export async function analyzeContentType(text: string): Promise<{
   isLearning: boolean;
   confidence: number;
 }> {
-  try {
-    // Simple pattern-based check first for efficiency
-    if (text.length < 20 || /^(yes|no|ok|thanks)/i.test(text)) {
-      return {
-        isQuestion: false,
-        isConversational: true,
-        isLearning: false,
-        confidence: 0.9
-      };
-    }
-    
-    if (text.endsWith('?')) {
-      return {
-        isQuestion: true,
-        isConversational: true,
-        isLearning: false,
-        confidence: 0.9
-      };
-    }
-    
-    // For more complex content, use GPT-4o
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o",
-      messages: [
-        {
-          role: "system",
-          content: `Analyze the following text and determine if it is:
-          1. A question (seeking information)
-          2. A conversational message (short reply, greeting, etc.)
-          3. A learning insight (sharing knowledge or an insight)
-          
-          Respond with JSON only in this format:
-          {
-            "isQuestion": boolean,
-            "isConversational": boolean,
-            "isLearning": boolean,
-            "confidence": number (0-1)
-          }`
-        },
-        {
-          role: "user",
-          content: text
-        }
-      ],
-      temperature: 0.1,
-      response_format: { type: "json_object" }
-    });
-    
-    const content = response.choices[0].message.content || '{"isQuestion":false,"isConversational":true,"isLearning":false,"confidence":0.5}';
-    const result = JSON.parse(content);
+  // Use fast pattern-based analysis instead of API calls for speed
+  const trimmedText = text.trim().toLowerCase();
+  
+  // Short conversational responses
+  if (text.length < 20 || /^(yes|no|ok|thanks|hi|hello|hey|bye|goodbye)/i.test(trimmedText)) {
     return {
-      isQuestion: result.isQuestion,
-      isConversational: result.isConversational,
-      isLearning: result.isLearning,
-      confidence: result.confidence
-    };
-  } catch (error) {
-    console.error("Error analyzing content with OpenAI:", error);
-    // Default to a conservative analysis if API fails
-    return {
-      isQuestion: text.includes('?'),
-      isConversational: text.length < 30,
-      isLearning: text.length > 100,
-      confidence: 0.5
+      isQuestion: false,
+      isConversational: true,
+      isLearning: false,
+      confidence: 0.95
     };
   }
+  
+  // Clear questions
+  if (text.endsWith('?') || /^(what|how|why|when|where|who|which|whose|whom|can you|could you|will you|would you|do you|did you|are you|is it)/i.test(trimmedText)) {
+    return {
+      isQuestion: true,
+      isConversational: true,
+      isLearning: false,
+      confidence: 0.9
+    };
+  }
+  
+  // Learning content indicators
+  if (text.length > 80 && (/learned|discovered|insight|understand|realize|found that|noticed that|key takeaway/i.test(trimmedText) || 
+      /today i|yesterday i|just learned|interesting fact|did you know/i.test(trimmedText))) {
+    return {
+      isQuestion: false,
+      isConversational: false,
+      isLearning: true,
+      confidence: 0.85
+    };
+  }
+  
+  // Default categorization based on length and content
+  return {
+    isQuestion: false,
+    isConversational: text.length < 50,
+    isLearning: text.length > 100,
+    confidence: 0.7
+  };
 }
 
 /**
@@ -294,37 +269,30 @@ export async function processLearningEntry(text: string): Promise<{
 } | null> {
   try {
     const response = await openai.chat.completions.create({
-      model: "gpt-4o",
+      model: "gpt-4o-mini",  // Faster model for entry processing
       messages: [
         {
           role: "system",
-          content: `You are an AI that extracts structured learning insights from text.
-          Identify the main learning point and create a well-structured entry from the user's message.
-          Respond with JSON only in this format:
-          {
-            "title": "A concise, clear title summarizing the main insight (max 100 chars)",
-            "content": "The full content, well-formatted and clear (max 1000 chars)",
-            "tags": ["tag1", "tag2"] (3-5 relevant tags)
-          }`
+          content: `Extract title, content, and tags from learning text. JSON format:
+          {"title": "Brief title (max 80 chars)", "content": "Clean content (max 500 chars)", "tags": ["tag1", "tag2"]}`
         },
         {
           role: "user",
           content: text
         }
       ],
-      temperature: 0.2,
+      temperature: 0.1,
+      max_tokens: 200,  // Reduced for faster processing
       response_format: { type: "json_object" }
     });
     
     const content = response.choices[0]?.message?.content || '{"title":"Learning Entry","content":"No content provided","tags":["general"]}';
     const result = JSON.parse(content);
     
-    // For now, use a default category ID
-    // You could enhance this by having the AI suggest a category
     return {
       title: result.title.slice(0, 100),
       content: result.content.slice(0, 1000),
-      tagNames: result.tags.slice(0, 5)
+      tagNames: result.tags.slice(0, 3)  // Reduced for speed
     };
   } catch (error) {
     console.error("Error processing learning entry with OpenAI:", error);
