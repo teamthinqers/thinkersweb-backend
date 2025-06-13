@@ -244,7 +244,7 @@ export default function LandingPage() {
               className="flex items-center px-4 py-3 rounded-lg hover:bg-white/50 dark:hover:bg-slate-800/50 cursor-pointer transition-all duration-200 ease-in-out" 
               onClick={() => setLocation("/dotspark-tuning")}
             >
-              <img src="/dotspark-logo-brown.jpg" alt="DotSpark" className="h-10 w-auto object-contain rounded-md shadow-sm" />
+              <img src="/dotspark-logo-brown.jpg" alt="DotSpark" className="h-14 w-auto object-contain rounded-md shadow-sm" />
             </div>
           </div>
           
