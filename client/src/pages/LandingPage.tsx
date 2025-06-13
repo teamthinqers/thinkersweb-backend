@@ -237,14 +237,14 @@ export default function LandingPage() {
     <div className="flex flex-col min-h-screen">
       {/* Header with navigation - fixed at top */}
       <header className="border-b border-amber-200/40 dark:border-amber-700/40 bg-gradient-to-r from-white via-amber-50/80 to-amber-100/90 dark:from-slate-900 dark:via-amber-950/20 dark:to-slate-900 backdrop-blur-sm supports-[backdrop-filter]:bg-background/95 sticky top-0 z-50 shadow-lg">
-        <div className="container flex h-18 items-center justify-between px-4 sm:px-6 md:px-8">
+        <div className="container flex h-24 items-center justify-between px-4 sm:px-6 md:px-8">
           {/* Logo section - enhanced with padding and subtle background */}
           <div className="flex items-center py-2">
             <div 
               className="flex items-center px-4 py-3 rounded-md hover:bg-amber-100/50 dark:hover:bg-amber-900/30 cursor-pointer transition-all duration-200 ease-in-out" 
               onClick={() => setLocation("/dotspark-tuning")}
             >
-              <img src="/dotspark-logo-header.jpg" alt="DotSpark" className="h-12 w-auto object-contain rounded-sm" />
+              <img src="/dotspark-logo-header.jpg" alt="DotSpark" className="h-20 w-auto object-contain rounded-sm" />
             </div>
           </div>
           
