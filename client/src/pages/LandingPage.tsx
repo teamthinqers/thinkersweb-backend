@@ -513,8 +513,8 @@ export default function LandingPage() {
         <div className="container mx-auto px-4 md:px-6 relative z-10">
           <div className="flex flex-col items-center max-w-3xl mx-auto">
             {/* Centered badge */}
-            <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1.5 text-sm text-primary mb-2">
-              <img src="/dotspark-logo-small.jpg" alt="DotSpark" className="h-4 w-4 rounded-sm" />
+            <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-2 text-sm text-primary mb-2">
+              <img src="/dotspark-logo-icon.jpeg" alt="DotSpark" className="h-8 w-8 rounded" />
               <span>Introducing DotSpark</span>
             </div>
             
