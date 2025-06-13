@@ -243,7 +243,7 @@ export default function LandingPage() {
               className="flex items-center gap-1 cursor-pointer active:opacity-80 transition-opacity" 
               onClick={() => setLocation("/dotspark-tuning")}
             >
-              <Sparkles className="h-5 w-5 text-primary" />
+              <img src="/dotspark-logo-small.jpg" alt="DotSpark" className="h-5 w-5 rounded-sm" />
               <span className="text-xl font-bold text-amber-800 dark:text-amber-600">DotSpark</span>
             </div>
           </div>
@@ -418,7 +418,7 @@ export default function LandingPage() {
                   <div className="flex flex-col h-full">
                     <div className="mb-6 pb-2 border-b flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <Sparkles className="h-5 w-5 text-primary" />
+                        <img src="/dotspark-logo-small.jpg" alt="DotSpark" className="h-5 w-5 rounded-sm" />
                         <span className="font-bold">DotSpark</span>
                       </div>
                       <SheetClose asChild>
@@ -431,14 +431,14 @@ export default function LandingPage() {
                     <div className="flex flex-col gap-4">
                       <SheetClose asChild>
                         <Link href="/" className="py-2 hover:text-primary transition-colors flex items-center gap-2">
-                          <Sparkles className="h-4 w-4 text-primary" />
+                          <img src="/dotspark-logo-small.jpg" alt="DotSpark" className="h-4 w-4 rounded-sm" />
                           <span>Home</span>
                         </Link>
                       </SheetClose>
                       
                       <SheetClose asChild>
                         <div onClick={() => setLocation("/sectioned-dotspark-tuning")} className="py-2 hover:text-primary transition-colors flex items-center gap-2 cursor-pointer">
-                          <Sparkles className="h-4 w-4 text-amber-600" />
+                          <img src="/dotspark-logo-small.jpg" alt="DotSpark" className="h-4 w-4 rounded-sm" />
                           <span className="font-medium bg-gradient-to-r from-amber-700 to-orange-800 bg-clip-text text-transparent">My DotSpark</span>
                         </div>
                       </SheetClose>
@@ -523,7 +523,7 @@ export default function LandingPage() {
           <div className="flex flex-col items-center max-w-3xl mx-auto">
             {/* Centered badge */}
             <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1.5 text-sm text-primary mb-2">
-              <Sparkles className="h-4 w-4" />
+              <img src="/dotspark-logo-small.jpg" alt="DotSpark" className="h-4 w-4 rounded-sm" />
               <span>Introducing DotSpark</span>
             </div>
             

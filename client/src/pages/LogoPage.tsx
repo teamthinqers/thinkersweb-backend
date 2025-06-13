@@ -17,41 +17,41 @@ export default function LogoPage() {
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div className="flex flex-col items-center gap-4 border p-6 rounded-lg">
-          <div className="w-40 h-40 flex items-center justify-center">
-            <img src={logoBase64} alt="DotSpark Logo" className="w-full h-full object-contain" />
+          <div className="w-40 h-40 flex items-center justify-center bg-white rounded-lg border">
+            <img src="/dotspark-logo-white-bg.jpg" alt="DotSpark Logo" className="w-full h-full object-contain rounded-lg" />
           </div>
-          <h2 className="text-xl font-bold">Full Logo</h2>
-          <p className="text-muted-foreground text-center text-sm">DotSpark logo with background circle</p>
+          <h2 className="text-xl font-bold">Logo - White Background</h2>
+          <p className="text-muted-foreground text-center text-sm">DotSpark logo for white/light backgrounds</p>
           <Button asChild>
-            <a href="/logo.svg" download="dotspark-logo.svg">Download SVG</a>
+            <a href="/dotspark-logo-white-bg.jpg" download="dotspark-logo-white-bg.jpg">Download JPG</a>
           </Button>
         </div>
         
         <div className="flex flex-col items-center gap-4 border p-6 rounded-lg">
-          <div className="w-40 h-40 flex items-center justify-center">
-            <img src={transparentLogoBase64} alt="DotSpark Transparent Logo" className="w-full h-full object-contain" />
+          <div className="w-40 h-40 flex items-center justify-center bg-gray-900 rounded-lg border">
+            <img src="/dotspark-logo.jpg" alt="DotSpark Logo" className="w-full h-full object-contain rounded-lg" />
           </div>
-          <h2 className="text-xl font-bold">Transparent Logo</h2>
-          <p className="text-muted-foreground text-center text-sm">DotSpark logo with transparent background</p>
+          <h2 className="text-xl font-bold">Logo - Dark Background</h2>
+          <p className="text-muted-foreground text-center text-sm">DotSpark logo for dark backgrounds</p>
           <Button asChild>
-            <a href="/logo-transparent.svg" download="dotspark-logo-transparent.svg">Download SVG</a>
+            <a href="/dotspark-logo.jpg" download="dotspark-logo.jpg">Download JPG</a>
           </Button>
         </div>
         
         <div className="flex flex-col items-center gap-4 border p-6 rounded-lg">
-          <div className="w-40 h-40 flex items-center justify-center">
-            <img src={iconBase64} alt="DotSpark Icon" className="w-full h-full object-contain" />
+          <div className="w-40 h-40 flex items-center justify-center bg-white rounded-lg border">
+            <img src="/dotspark-logo-small.jpg" alt="DotSpark Small Logo" className="w-full h-full object-contain rounded-lg" />
           </div>
-          <h2 className="text-xl font-bold">Simple Icon</h2>
-          <p className="text-muted-foreground text-center text-sm">DotSpark icon only</p>
+          <h2 className="text-xl font-bold">Small Logo</h2>
+          <p className="text-muted-foreground text-center text-sm">DotSpark compact logo for icons</p>
           <Button asChild>
-            <a href="/icon.svg" download="dotspark-icon.svg">Download SVG</a>
+            <a href="/dotspark-logo-small.jpg" download="dotspark-logo-small.jpg">Download JPG</a>
           </Button>
         </div>
       </div>
       
       <p className="mt-8 text-muted-foreground text-sm max-w-md text-center">
-        If the download links don't work, please right-click on the logos above and select "Save image as..." to download them.
+        Right-click on any logo above and select "Save image as..." to download them to your device.
       </p>
       
       <Button variant="outline" asChild className="mt-4">
