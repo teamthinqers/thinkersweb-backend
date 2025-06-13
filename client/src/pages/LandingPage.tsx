@@ -244,7 +244,7 @@ export default function LandingPage() {
               className="flex items-center p-2 rounded-lg hover:bg-white/50 dark:hover:bg-slate-800/50 cursor-pointer transition-all duration-200 ease-in-out" 
               onClick={() => setLocation("/dotspark-tuning")}
             >
-              <img src="/dotspark-logo-white-bg.jpg" alt="DotSpark" className="h-10 w-auto rounded-md shadow-sm" />
+              <img src="/dotspark-logo-white-bg.jpg" alt="DotSpark" className="h-12 w-auto rounded-md shadow-sm" />
             </div>
           </div>
           
@@ -297,6 +297,7 @@ export default function LandingPage() {
                       setContactDialogOpen(true);
                     });
                 }}
+                className="bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white border-0"
               >
                 <MessageSquare className="h-4 w-4 mr-2" />
                 Ask DotSpark
@@ -322,6 +323,7 @@ export default function LandingPage() {
                         setContactDialogOpen(true);
                       });
                   }}
+                  className="bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white border-0"
                 >
                   <MessageCircle className="h-3.5 w-3.5 mr-1" />
                   <span className="text-xs">Ask</span>
