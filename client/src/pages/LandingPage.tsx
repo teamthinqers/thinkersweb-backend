@@ -307,7 +307,7 @@ export default function LandingPage() {
               <div className="block md:hidden">
                 <Button
                   variant="outline"
-                  size="sm"
+                  size="icon"
                   onClick={() => {
                     // Fetch WhatsApp number first
                     fetch('/api/whatsapp/contact')
@@ -323,10 +323,10 @@ export default function LandingPage() {
                         setContactDialogOpen(true);
                       });
                   }}
-                  className="bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white border-0"
+                  className="bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white border-0 h-8 w-8"
+                  title="Ask DotSpark"
                 >
-                  <MessageCircle className="h-3.5 w-3.5 mr-1" />
-                  <span className="text-xs">Ask</span>
+                  <MessageSquare className="h-4 w-4" />
                 </Button>
               </div>
               
