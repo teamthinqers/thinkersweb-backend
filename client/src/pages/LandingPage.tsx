@@ -279,7 +279,7 @@ export default function LandingPage() {
                   <div className="flex items-center">
                     <Sparkles className="h-4 w-4" />
                   </div>
-                  <span className="text-sm">My DotSpark</span>
+                  <span className="text-sm">DotSpark</span>
                 </div>
               </Button>
             </div>
@@ -337,20 +337,33 @@ export default function LandingPage() {
                 </Button>
               </div>
               
-              <div className="flex sm:hidden gap-2">
+              <div className="flex sm:hidden gap-1">
                 <Button
                   size="sm"
-                  className="bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white relative h-8 px-2 shadow-md font-medium"
+                  className="bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white relative h-7 px-2 shadow-md font-medium"
                   onClick={() => setLocation("/dashboard")}
                 >
                   <div className="flex items-center gap-1">
                     <div className="relative">
-                      <Brain className="h-3.5 w-3.5" />
+                      <Brain className="h-3 w-3" />
                       {isNeuraActivated && (
-                        <div className="absolute -top-1 -right-1 h-1.5 w-1.5 bg-green-400 rounded-full animate-pulse"></div>
+                        <div className="absolute -top-0.5 -right-0.5 h-1 w-1 bg-green-400 rounded-full animate-pulse"></div>
                       )}
                     </div>
                     <span className="text-xs">Neura</span>
+                  </div>
+                </Button>
+                <Button
+                  size="sm"
+                  className={`${isNeuraActivated 
+                    ? "bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700" 
+                    : "bg-gradient-to-r from-amber-700 to-orange-700 hover:from-amber-800 hover:to-orange-800"} 
+                    text-white h-7 px-2 relative shadow-md font-medium`}
+                  onClick={() => setLocation("/sectioned-dotspark-tuning")}
+                >
+                  <div className="flex items-center gap-1">
+                    <Sparkles className="h-3 w-3" />
+                    <span className="text-xs">Spark</span>
                   </div>
                 </Button>
               </div>
