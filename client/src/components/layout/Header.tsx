@@ -377,8 +377,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
               }} 
               className="cursor-pointer flex items-center active:opacity-80 transition-opacity"
             >
-              <img src="/dotspark-logo-small.jpg" alt="DotSpark Logo" className="h-6 w-6 mr-1.5 rounded-sm" />
-              <h2 className="text-lg font-bold text-amber-700">DotSpark</h2>
+              <img src="/dotspark-logo-white-bg.jpg" alt="DotSpark" className="h-8 w-auto rounded-sm" />
             </div>
             <Button 
               variant="ghost" 

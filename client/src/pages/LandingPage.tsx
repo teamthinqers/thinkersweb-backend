@@ -243,8 +243,7 @@ export default function LandingPage() {
               className="flex items-center gap-1 cursor-pointer active:opacity-80 transition-opacity" 
               onClick={() => setLocation("/dotspark-tuning")}
             >
-              <img src="/dotspark-logo-small.jpg" alt="DotSpark" className="h-5 w-5 rounded-sm" />
-              <span className="text-xl font-bold text-amber-800 dark:text-amber-600">DotSpark</span>
+              <img src="/dotspark-logo-white-bg.jpg" alt="DotSpark" className="h-8 w-auto rounded-sm" />
             </div>
           </div>
           
@@ -418,8 +417,7 @@ export default function LandingPage() {
                   <div className="flex flex-col h-full">
                     <div className="mb-6 pb-2 border-b flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <img src="/dotspark-logo-small.jpg" alt="DotSpark" className="h-5 w-5 rounded-sm" />
-                        <span className="font-bold">DotSpark</span>
+                        <img src="/dotspark-logo-white-bg.jpg" alt="DotSpark" className="h-6 w-auto rounded-sm" />
                       </div>
                       <SheetClose asChild>
                         <Button variant="ghost" size="icon">

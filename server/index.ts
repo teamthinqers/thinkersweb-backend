@@ -30,6 +30,9 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// Add static file serving for public directory in development mode
+app.use(express.static(path.join(__dirname, '..', 'public')));
+
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
