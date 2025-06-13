@@ -575,10 +575,7 @@ export default function MyNeura() {
       {isActivated ? (
         <div className="mb-6 p-4 rounded-lg border bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950 dark:to-emerald-950 border-green-200 dark:border-green-800">
           <div className="flex items-center">
-            <div className="relative mr-3">
-              <img src="/dotspark-logo-header.png?v=3" alt="DotSpark" className="h-6 w-16 object-contain" />
-              <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
-            </div>
+            <img src="/dotspark-logo-header.png?v=3" alt="DotSpark" className="h-6 w-6 object-contain mr-3" />
             <div>
               <h3 className="text-lg font-medium">DotSpark is Active</h3>
               <p className="text-sm text-muted-foreground">Your DotSpark is active and ready to assist you.</p>
@@ -588,10 +585,7 @@ export default function MyNeura() {
       ) : (
         <div className="mb-6 p-4 rounded-lg border bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950 dark:to-orange-950 border-amber-200 dark:border-amber-800">
           <div className="flex items-center">
-            <div className="relative mr-3">
-              <img src="/dotspark-logo-header.png?v=3" alt="DotSpark" className="h-6 w-16 object-contain opacity-60" />
-              <div className="absolute -top-1 -right-1 w-3 h-3 bg-amber-500 rounded-full border-2 border-white"></div>
-            </div>
+            <img src="/dotspark-logo-header.png?v=3" alt="DotSpark" className="h-6 w-6 object-contain mr-3 opacity-60" />
             <div>
               <h3 className="text-lg font-medium">DotSpark is Inactive</h3>
               <p className="text-sm text-muted-foreground">Activate your DotSpark to begin receiving personalized insights.</p>
