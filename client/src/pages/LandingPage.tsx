@@ -243,7 +243,7 @@ export default function LandingPage() {
               className="flex items-center gap-1 cursor-pointer active:opacity-80 transition-opacity" 
               onClick={() => setLocation("/dotspark-tuning")}
             >
-              <img src="/dotspark-logo-white-bg.jpg" alt="DotSpark" className="h-8 w-auto rounded-sm" />
+              <img src="/dotspark-logo.jpg" alt="DotSpark" className="h-10 w-auto rounded-sm" />
             </div>
           </div>
           
