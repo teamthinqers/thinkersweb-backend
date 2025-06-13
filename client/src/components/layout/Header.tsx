@@ -377,7 +377,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
               }} 
               className="cursor-pointer flex items-center active:opacity-80 transition-opacity"
             >
-              <Sparkles className="h-5 w-5 text-amber-600 mr-1.5" />
+              <img src="/dotspark-logo-small.jpg" alt="DotSpark Logo" className="h-6 w-6 mr-1.5 rounded-sm" />
               <h2 className="text-lg font-bold text-amber-700">DotSpark</h2>
             </div>
             <Button 
