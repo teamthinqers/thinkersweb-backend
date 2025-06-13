@@ -237,7 +237,7 @@ export default function LandingPage() {
     <div className="flex flex-col min-h-screen">
       {/* Header with navigation - fixed at top */}
       <header className="border-b bg-gradient-to-r from-white via-slate-50 to-amber-50/80 dark:from-slate-900 dark:to-amber-950/50 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 shadow-sm">
-        <div className="container flex h-16 items-center justify-between px-4 sm:px-6 md:px-8">
+        <div className="container flex h-18 items-center justify-between px-4 sm:px-6 md:px-8">
           {/* Logo section - enhanced with padding and subtle background */}
           <div className="flex items-center py-2">
             <div 
