@@ -655,7 +655,7 @@ export default function LandingPage() {
             <div className="bg-card rounded-lg p-6 relative group hover:shadow-lg transition-all duration-300 border border-orange-200/30 dark:border-orange-800/30 overflow-hidden h-full flex flex-col">
               <div className="absolute top-0 right-0 w-24 h-24 bg-orange-500/5 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:bg-orange-500/10 transition-colors duration-300"></div>
               <div className="flex items-center justify-center w-12 h-12 rounded-full bg-orange-500/10 text-orange-600 mb-4 relative z-10">
-                <img src="/dotspark-logo-small.jpg" alt="DotSpark" className="h-6 w-6 rounded-sm" />
+                <img src="/dotspark-logo-white-bg.jpg" alt="DotSpark" className="h-6 w-6 rounded-sm" />
               </div>
               <div className="absolute top-6 right-6 flex items-center justify-center w-8 h-8 rounded-full bg-orange-500/80 text-white font-bold text-lg">
                 2
@@ -1176,7 +1176,7 @@ export default function LandingPage() {
         <div className="container mx-auto px-4 md:px-6">
           <div className="flex flex-col md:flex-row justify-between items-center w-full">
             <div className="flex items-center mb-4 md:mb-0">
-              <Sparkles className="h-4 w-4 md:h-5 md:w-5 text-amber-600 dark:text-amber-400 mr-2" />
+              <img src="/dotspark-logo-white-bg.jpg" alt="DotSpark" className="h-6 w-auto rounded-sm mr-2" />
               <span className="text-lg md:text-xl font-bold text-amber-700 dark:text-amber-400">DotSpark</span>
             </div>
             
