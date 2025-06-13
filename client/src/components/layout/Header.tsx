@@ -10,7 +10,8 @@ import {
   LayoutDashboard,
   Brain, 
   Sparkles,
-  Check
+  Check,
+  MessageSquare
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
@@ -215,11 +216,29 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
               className="flex items-center cursor-pointer active:opacity-80 transition-opacity"
               onClick={() => setLocation("/dashboard")}
             >
-              <Sparkles className="h-5 w-5 text-primary mr-1" />
-              <span className="font-medium text-primary">DotSpark</span>
+              <img src="/dotspark-logo-header.png?v=3" alt="DotSpark" className="h-8 w-24 object-contain" />
             </div>
             
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-2">
+              {/* Ask DotSpark button */}
+              <Button 
+                className="bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white h-9 w-9 p-0 shadow-md"
+                size="icon"
+                onClick={() => {
+                  const whatsAppNumber = '16067157733';
+                  const defaultMessage = encodeURIComponent("Hey DotSpark, I've got a few things on my mind — need your thoughts");
+                  const mobileAppLink = `whatsapp://send?phone=${whatsAppNumber}&text=${defaultMessage}`;
+                  window.location.href = mobileAppLink;
+                  setTimeout(() => {
+                    const webFallbackUrl = `https://wa.me/${whatsAppNumber}?text=${defaultMessage}`;
+                    window.location.href = webFallbackUrl;
+                  }, 500);
+                }}
+                title="Ask DotSpark"
+              >
+                <MessageSquare className="h-4 w-4" />
+              </Button>
+              
               {/* My Neura button - always visible */}
               <Button 
                 className="bg-gradient-to-r from-amber-700 to-primary hover:from-amber-800 hover:to-primary/90 text-white h-9 w-9 p-0 shadow-md"
