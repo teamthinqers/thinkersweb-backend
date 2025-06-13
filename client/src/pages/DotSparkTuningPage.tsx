@@ -224,7 +224,7 @@ export default function DotSparkTuningPage() {
         <CardHeader className="pb-2 relative z-10">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2">
-              <BrainCircuit className="h-5 w-5 text-purple-700 dark:text-purple-400" />
+              <img src="/dotspark-logo.jpg" alt="DotSpark" className="h-5 w-auto rounded-sm" />
               <CardTitle>
                 <span className="font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">{dotsparkName}</span>
               </CardTitle>
