@@ -29,6 +29,7 @@ export default function ChatPage() {
     },
   ]);
   const [isLoading, setIsLoading] = useState(false);
+  const [predictiveResponse, setPredictiveResponse] = useState<string>('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   const { user } = useAuth();
@@ -53,10 +54,25 @@ export default function ChatPage() {
     scrollToBottom();
   }, [messages]);
 
+  // Instant response prediction based on common patterns
+  const predictInstantResponse = (input: string): string | null => {
+    const trimmed = input.trim().toLowerCase();
+    
+    if (/^(hi|hello|hey)$/i.test(trimmed)) return "Hi there! What's on your mind today?";
+    if (/^(thanks|thank you)$/i.test(trimmed)) return "You're welcome! Anything else I can help with?";
+    if (/^(yes|yeah|yep)$/i.test(trimmed)) return "Great! Tell me more about that.";
+    if (/^(no|nope)$/i.test(trimmed)) return "No problem! What else can I help you with?";
+    if (/^(ok|okay)$/i.test(trimmed)) return "Perfect! What would you like to explore next?";
+    if (/^(bye|goodbye)$/i.test(trimmed)) return "See you later! Feel free to reach out anytime.";
+    if (/^(how are you|how's it going)$/i.test(trimmed)) return "I'm doing well, thanks for asking! How can I assist you today?";
+    if (/^(what.*your name|who are you)$/i.test(trimmed)) return "I'm DotSpark, your AI learning companion. How can I help you today?";
+    
+    return null;
+  };
+
   const handleSendMessage = async () => {
     if (!inputValue.trim() || isLoading || limitExceeded) return;
 
-    // Add user message
     const userMessage: Message = {
       id: Date.now().toString(),
       content: inputValue,
@@ -65,40 +81,69 @@ export default function ChatPage() {
     };
 
     setMessages((prev) => [...prev, userMessage]);
+    
+    // Check for instant response first
+    const instantResponse = predictInstantResponse(inputValue);
     setInputValue('');
+
+    if (instantResponse) {
+      // Immediate response for common patterns
+      const botMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        content: instantResponse,
+        isUser: false,
+        timestamp: new Date(),
+      };
+      
+      // Add response immediately without API call
+      setTimeout(() => {
+        setMessages((prev) => [...prev, botMessage]);
+      }, 100); // Minimal delay for natural feel
+      
+      if (isFirstTime) markFirstChatDone();
+      incrementUsageCount();
+      return;
+    }
+
     setIsLoading(true);
 
     try {
-      // Mark first chat as done if this is the first interaction
-      if (isFirstTime) {
-        markFirstChatDone();
-      }
-      
-      // Increment usage count
+      if (isFirstTime) markFirstChatDone();
       incrementUsageCount();
-      
-      // If this increment causes us to hit the limit, we'll still process this message
-      // but show the limit message after
 
-      // Make API request to get bot response
+      // Add immediate typing indicator
+      const typingMessage: Message = {
+        id: 'typing',
+        content: '...',
+        isUser: false,
+        timestamp: new Date(),
+      };
+      setMessages((prev) => [...prev, typingMessage]);
+
       const response = await axios.post('/api/chat', {
         message: userMessage.content,
       });
 
-      // Add bot message
-      const botMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        content: response.data.reply || "I'm sorry, I couldn't process that request.",
-        isUser: false,
-        timestamp: new Date(),
-      };
+      // Remove typing indicator and add real response
+      setMessages((prev) => {
+        const filtered = prev.filter(msg => msg.id !== 'typing');
+        const botMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          content: response.data.reply || "Let me help you with that.",
+          isUser: false,
+          timestamp: new Date(),
+        };
+        return [...filtered, botMessage];
+      });
 
-      setMessages((prev) => [...prev, botMessage]);
     } catch (error) {
       console.error('Error sending message:', error);
+      // Remove typing indicator on error
+      setMessages((prev) => prev.filter(msg => msg.id !== 'typing'));
+      
       toast({
-        title: 'Error',
-        description: 'Failed to send message. Please try again.',
+        title: 'Connection Issue',
+        description: 'Please try again in a moment.',
         variant: 'destructive',
       });
     } finally {

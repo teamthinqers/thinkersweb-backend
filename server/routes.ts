@@ -212,17 +212,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
 
-      // Use the enhanced chat response with conditional CogniShield monitoring
+      // Generate response with performance tracking
       const chatResult = await generateChatResponse(
         message,
         conversationHistory,
         cogniProfile,
-        hasCogniShieldConfigured // Only monitor if configured
+        hasCogniShieldConfigured
       );
       
-      // Return response with CogniShield analysis only if configured
+      const responseTime = Date.now() - startTime;
+      console.log(`Chat response generated in ${responseTime}ms`);
+      
       const response: any = { 
-        reply: chatResult.response
+        reply: chatResult.response,
+        responseTime
       };
       
       if (hasCogniShieldConfigured && chatResult.cogniShieldAlert) {
