@@ -579,13 +579,13 @@ export default function LandingPage() {
                           <div className="absolute top-1/2 left-2/3 w-0.5 h-10 bg-white/10 animate-pulse" style={{animationDelay: '0.4s'}}></div>
                           <div className="absolute top-1/2 left-3/4 w-0.5 h-8 bg-white/10 animate-pulse" style={{animationDelay: '0.5s'}}></div>
                         </div>
-                        <Sparkles className="h-4 w-4 ml-2 relative z-20" />
+                        <img src="/dotspark-logo-small.jpg" alt="DotSpark" className="h-4 w-4 ml-2 relative z-20 rounded-sm" />
                       </Link>
                     </Button>
                   ) : (
                     <Button size="lg" asChild className="w-full mb-3 relative overflow-hidden bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-600 border-0 shadow-lg shadow-amber-600/20 hover:shadow-amber-700/30 transition-all duration-300 transform hover:scale-105 group">
                       <Link href="/sectioned-dotspark-tuning" className="flex items-center justify-center relative z-10">
-                        <Sparkles className="mr-2 h-5 w-5" />
+                        <img src="/dotspark-logo-small.jpg" alt="DotSpark" className="mr-2 h-5 w-5 rounded-sm" />
                         <span>Activate DotSpark</span>
                         <div className="absolute top-0 left-0 w-full h-full overflow-hidden">
                           <div className="h-4 w-4 absolute top-1/2 left-3 transform -translate-y-1/2 text-white opacity-80 animate-pulse" />
@@ -664,7 +664,7 @@ export default function LandingPage() {
             <div className="bg-card rounded-lg p-6 relative group hover:shadow-lg transition-all duration-300 border border-orange-200/30 dark:border-orange-800/30 overflow-hidden h-full flex flex-col">
               <div className="absolute top-0 right-0 w-24 h-24 bg-orange-500/5 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:bg-orange-500/10 transition-colors duration-300"></div>
               <div className="flex items-center justify-center w-12 h-12 rounded-full bg-orange-500/10 text-orange-600 mb-4 relative z-10">
-                <Sparkles className="h-6 w-6" />
+                <img src="/dotspark-logo-small.jpg" alt="DotSpark" className="h-6 w-6 rounded-sm" />
               </div>
               <div className="absolute top-6 right-6 flex items-center justify-center w-8 h-8 rounded-full bg-orange-500/80 text-white font-bold text-lg">
                 2
