@@ -1177,8 +1177,7 @@ export default function LandingPage() {
         <div className="container mx-auto px-4 md:px-6">
           <div className="flex flex-col md:flex-row justify-between items-center w-full">
             <div className="flex items-center mb-4 md:mb-0">
-              <img src="/dotspark-logo-white-bg.jpg" alt="DotSpark" className="h-6 w-auto rounded-sm mr-2" />
-              <span className="text-lg md:text-xl font-bold text-amber-700 dark:text-amber-400">DotSpark</span>
+              <img src="/dotspark-logo.jpg" alt="DotSpark" className="h-8 w-auto rounded-sm" />
             </div>
             
             <div className="text-xs md:text-sm text-muted-foreground">
