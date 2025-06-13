@@ -236,12 +236,12 @@ export default function LandingPage() {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Header with navigation - fixed at top */}
-      <header className="border-b border-slate-200/60 dark:border-slate-700/60 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 backdrop-blur-sm supports-[backdrop-filter]:bg-background/95 sticky top-0 z-50 shadow-lg">
+      <header className="border-b border-amber-200/40 dark:border-amber-700/40 bg-gradient-to-r from-white via-amber-50/80 to-amber-100/90 dark:from-slate-900 dark:via-amber-950/20 dark:to-slate-900 backdrop-blur-sm supports-[backdrop-filter]:bg-background/95 sticky top-0 z-50 shadow-lg">
         <div className="container flex h-18 items-center justify-between px-4 sm:px-6 md:px-8">
           {/* Logo section - enhanced with padding and subtle background */}
           <div className="flex items-center py-2">
             <div 
-              className="flex items-center px-4 py-3 rounded-md hover:bg-white/10 dark:hover:bg-white/5 cursor-pointer transition-all duration-200 ease-in-out" 
+              className="flex items-center px-4 py-3 rounded-md hover:bg-amber-100/50 dark:hover:bg-amber-900/30 cursor-pointer transition-all duration-200 ease-in-out" 
               onClick={() => setLocation("/dotspark-tuning")}
             >
               <img src="/dotspark-logo-header.jpg" alt="DotSpark" className="h-12 w-auto object-contain rounded-sm" />
@@ -251,7 +251,7 @@ export default function LandingPage() {
           <div className="flex items-center gap-3 md:gap-4">
             {/* Desktop navigation */}
             <div className="hidden md:flex items-center gap-4">
-              <Link href="/" className="text-sm font-medium text-slate-300 hover:text-white transition-colors px-2 py-1 rounded">
+              <Link href="/" className="text-sm font-medium text-slate-700 hover:text-amber-700 dark:text-slate-300 dark:hover:text-amber-300 transition-colors px-2 py-1 rounded">
                 Home
               </Link>
               <Button 
