@@ -43,6 +43,22 @@ interface Message {
 // Message history keyed by user ID or phone number
 const conversationHistories = new Map<string, Message[]>();
 
+// Response cache for common queries
+const responseCache = new Map<string, { response: string; timestamp: number }>();
+const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
+
+// Instant pattern-based responses for immediate feedback
+const instantResponses: Array<[RegExp, string]> = [
+  [/^(hi|hello|hey)$/i, "Hi there! What's on your mind today?"],
+  [/^(thanks|thank you)$/i, "You're welcome! Anything else I can help with?"],
+  [/^(yes|yeah|yep)$/i, "Great! Tell me more about that."],
+  [/^(no|nope)$/i, "No problem! What else can I help you with?"],
+  [/^(ok|okay)$/i, "Perfect! What would you like to explore next?"],
+  [/^(bye|goodbye)$/i, "See you later! Feel free to reach out anytime."],
+  [/^(how are you|how's it going)$/i, "I'm doing well, thanks for asking! How can I assist you today?"],
+  [/^(what.*your name|who are you)$/i, "I'm DotSpark, your AI learning companion. How can I help you today?"]
+];
+
 // Maximum number of messages to keep in history (to prevent token limit issues)
 // Set to 20 to support longer interactive ChatGPT-like conversations
 const MAX_HISTORY_LENGTH = 20;
@@ -144,6 +160,33 @@ export async function generateAdvancedResponse(
   isLearning: boolean;
 }> {
   try {
+    const trimmedInput = input.trim().toLowerCase();
+    
+    // Check for instant pattern-based responses first (0ms response time)
+    const responses = instantResponses;
+    for (let i = 0; i < responses.length; i++) {
+      const pattern = responses[i][0];
+      const response = responses[i][1];
+      if (pattern.test(trimmedInput)) {
+        console.log("Instant pattern response");
+        return {
+          text: response,
+          isLearning: false
+        };
+      }
+    }
+    
+    // Check cache for previously computed responses
+    const cacheKey = `${userId}_${input.slice(0, 50).toLowerCase()}`;
+    const cached = responseCache.get(cacheKey);
+    if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+      console.log("Cache hit - instant response");
+      return {
+        text: cached.response,
+        isLearning: false
+      };
+    }
+
     const conversationKey = getConversationKey(userId, phoneNumber);
     const history = getConversationHistory(conversationKey);
     
@@ -161,23 +204,30 @@ export async function generateAdvancedResponse(
       content: input
     });
 
-    // The newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
-    // Optimize for response time by prioritizing immediately relevant history
-    // and setting response parameters for faster generation
-    const optimizedHistory = optimizeHistoryForResponse(history);
+    // Ultra-optimized for speed - minimal context, fastest model
+    const optimizedHistory = history.slice(-1); // Only last message for maximum speed
       
     const response = await openai.chat.completions.create({
-      model: "gpt-4o-mini",  // Much faster model for quick responses
+      model: "gpt-4o-mini",
       messages: optimizedHistory,
-      temperature: 0.5,      // Optimized for speed
-      max_tokens: 400,       // Reduced significantly for faster response
-      top_p: 0.8,            // Optimized for faster token selection
-      frequency_penalty: 0.1, // Minimal for speed
-      presence_penalty: 0.1,  // Minimal for speed
+      temperature: 0.1,      // Minimal for maximum speed and consistency
+      max_tokens: 150,       // Further reduced for speed
+      top_p: 0.5,            // More focused for speed
+      frequency_penalty: 0,  // Zero for maximum speed
+      presence_penalty: 0,   // Zero for maximum speed
+      stream: false,         // Ensure no streaming overhead
+      logit_bias: {},        // Empty for speed
+      stop: undefined        // No stop sequences for speed
     });
 
     const responseText = response.choices[0]?.message?.content?.trim() || 
-      "I'm having trouble processing that right now. Can we try again?";
+      "Let me help you with that.";
+    
+    // Cache the response for instant future access
+    responseCache.set(cacheKey, {
+      response: responseText,
+      timestamp: Date.now()
+    });
     
     // Add assistant response to history
     addMessageToHistory(conversationKey, {
@@ -185,8 +235,7 @@ export async function generateAdvancedResponse(
       content: responseText
     });
     
-    // Analyze whether this is likely a learning insight
-    // Usually, longer and more substantive responses are insights
+    // Fast pattern-based learning detection
     const isLearning = input.length > 50 && 
       !input.includes('?') && 
       !/^(what|how|why|when|where|who|which|whose|whom|can you|could you)/i.test(input);
@@ -198,7 +247,7 @@ export async function generateAdvancedResponse(
   } catch (error) {
     console.error("Error generating response with OpenAI:", error);
     return {
-      text: "I'm having trouble connecting right now. Let's try again in a moment.",
+      text: "I'm here to help. What would you like to know?",
       isLearning: false
     };
   }

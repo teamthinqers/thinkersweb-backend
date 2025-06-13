@@ -152,12 +152,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Chat endpoint with conditional CogniShield monitoring
   app.post(`${apiPrefix}/chat`, async (req: Request, res: Response) => {
+    const startTime = Date.now();
+    
     try {
       const { message, conversationHistory = [] } = req.body;
       
       if (!message) {
         return res.status(400).json({ error: 'Message is required' });
       }
+      
+      // Set headers for immediate response
+      res.setHeader('Cache-Control', 'no-cache');
+      res.setHeader('Connection', 'keep-alive');
 
       // Check if user is authenticated and has CogniShield configured
       let cogniProfile = undefined;
