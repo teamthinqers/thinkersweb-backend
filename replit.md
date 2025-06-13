@@ -132,11 +132,6 @@ Changelog:
   * Set PWA app name to "DotSpark" (both name and short_name)
   * Implemented user's specific brown background logo as app icon
   * Updated CogniShield description to emphasize cognitive identity preservation
-- June 13, 2025. Fixed PWA icon caching issues:
-  * Removed all conflicting icon files from public directory
-  * Created fresh manifest (app-manifest.json) with clean file references
-  * Generated properly sized 192x192 and 512x512 PNG icons from user's exact logo
-  * Updated HTML to reference new manifest and favicon paths
 ```
 
 ## User Preferences
