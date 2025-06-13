@@ -244,7 +244,7 @@ export default function LandingPage() {
               className="flex items-center px-4 py-3 rounded-md hover:bg-amber-100/50 dark:hover:bg-amber-900/30 cursor-pointer transition-all duration-200 ease-in-out" 
               onClick={() => setLocation("/dotspark-tuning")}
             >
-              <img src="/dotspark-logo-header.png?v=3" alt="DotSpark" className="h-16 w-48 object-contain rounded-sm" />
+              <img src="/dotspark-logo-header.png?v=3" alt="DotSpark" className="h-16 w-56 object-contain rounded-sm" />
             </div>
           </div>
           
@@ -281,7 +281,7 @@ export default function LandingPage() {
             <div className="hidden md:block">
               <Button
                 variant="outline"
-                size="default"
+                size="icon"
                 onClick={() => {
                   // Fetch WhatsApp number first
                   fetch('/api/whatsapp/contact')
@@ -298,9 +298,9 @@ export default function LandingPage() {
                     });
                 }}
                 className="bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white border-0"
+                title="Ask DotSpark"
               >
-                <MessageSquare className="h-4 w-4 mr-2" />
-                Ask DotSpark
+                <MessageSquare className="h-4 w-4" />
               </Button>
             </div>
             <div className="flex items-center space-x-3">
