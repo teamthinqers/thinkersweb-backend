@@ -204,24 +204,89 @@ export async function generateAdvancedResponse(
       content: input
     });
 
-    // Ultra-optimized for speed - minimal context, fastest model
-    const optimizedHistory = history.slice(-1); // Only last message for maximum speed
+    // Ultra-optimized for WhatsApp-level speed
+    const optimizedHistory = [
+      {
+        role: "system" as const,
+        content: "You are DotSpark AI. Be helpful, brief, and conversational. Respond in 1-2 sentences max."
+      },
+      {
+        role: "user" as const,
+        content: input
+      }
+    ];
       
+    // Check if query needs real-time data (weather, news, current events)
+    const needsRealTimeData = /\b(weather|temperature|forecast|news|current|today|now|latest|stock|price)\b/i.test(input);
+    
     const response = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+      model: needsRealTimeData ? "gpt-4o" : "gpt-4o-mini", // Use full model for real-time queries
       messages: optimizedHistory,
-      temperature: 0.1,      // Minimal for maximum speed and consistency
-      max_tokens: 150,       // Further reduced for speed
-      top_p: 0.5,            // More focused for speed
-      frequency_penalty: 0,  // Zero for maximum speed
-      presence_penalty: 0,   // Zero for maximum speed
-      stream: false,         // Ensure no streaming overhead
-      logit_bias: {},        // Empty for speed
-      stop: undefined        // No stop sequences for speed
+      temperature: 0.0,
+      max_tokens: needsRealTimeData ? 300 : 100, // More tokens for complex real-time responses
+      top_p: 0.3,
+      frequency_penalty: 0,
+      presence_penalty: 0,
+      stream: false,
+      tools: needsRealTimeData ? [
+        {
+          type: "function",
+          function: {
+            name: "search_web",
+            description: "Search the web for current information including weather, news, and real-time data",
+            parameters: {
+              type: "object",
+              properties: {
+                query: {
+                  type: "string",
+                  description: "The search query for current information"
+                }
+              },
+              required: ["query"]
+            }
+          }
+        }
+      ] : undefined
     });
 
-    const responseText = response.choices[0]?.message?.content?.trim() || 
-      "Let me help you with that.";
+    // Handle tool calls for real-time data
+    const message = response.choices[0]?.message;
+    let responseText = message?.content?.trim() || "";
+    
+    if (message?.tool_calls && message.tool_calls.length > 0) {
+      const toolCall = message.tool_calls[0];
+      if (toolCall.function.name === "search_web") {
+        try {
+          const searchQuery = JSON.parse(toolCall.function.arguments).query;
+          const searchResult = await performWebSearch(searchQuery);
+          
+          // Get final response with search results
+          const followupResponse = await openai.chat.completions.create({
+            model: "gpt-4o-mini",
+            messages: [
+              ...optimizedHistory,
+              message,
+              {
+                role: "tool",
+                content: searchResult,
+                tool_call_id: toolCall.id
+              }
+            ],
+            temperature: 0.1,
+            max_tokens: 200
+          });
+          
+          responseText = followupResponse.choices[0]?.message?.content?.trim() || responseText;
+        } catch (error) {
+          console.error("Error performing web search:", error);
+          responseText = "I'd be happy to help with current information, but I'm having trouble accessing real-time data right now. Could you try asking in a different way?";
+        }
+      }
+    }
+    
+    if (!responseText) {
+      responseText = "Let me help you with that.";
+    }
     
     // Cache the response for instant future access
     responseCache.set(cacheKey, {

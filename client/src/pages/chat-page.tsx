@@ -54,18 +54,36 @@ export default function ChatPage() {
     scrollToBottom();
   }, [messages]);
 
-  // Instant response prediction based on common patterns
+  // Extensive instant response patterns for WhatsApp-level speed
   const predictInstantResponse = (input: string): string | null => {
     const trimmed = input.trim().toLowerCase();
     
-    if (/^(hi|hello|hey)$/i.test(trimmed)) return "Hi there! What's on your mind today?";
-    if (/^(thanks|thank you)$/i.test(trimmed)) return "You're welcome! Anything else I can help with?";
-    if (/^(yes|yeah|yep)$/i.test(trimmed)) return "Great! Tell me more about that.";
-    if (/^(no|nope)$/i.test(trimmed)) return "No problem! What else can I help you with?";
-    if (/^(ok|okay)$/i.test(trimmed)) return "Perfect! What would you like to explore next?";
-    if (/^(bye|goodbye)$/i.test(trimmed)) return "See you later! Feel free to reach out anytime.";
-    if (/^(how are you|how's it going)$/i.test(trimmed)) return "I'm doing well, thanks for asking! How can I assist you today?";
-    if (/^(what.*your name|who are you)$/i.test(trimmed)) return "I'm DotSpark, your AI learning companion. How can I help you today?";
+    // Greetings
+    if (/^(hi|hello|hey|hiya|howdy)$/i.test(trimmed)) return "Hi there! What's on your mind?";
+    if (/^(good morning|morning)$/i.test(trimmed)) return "Good morning! How can I help you today?";
+    if (/^(good afternoon|afternoon)$/i.test(trimmed)) return "Good afternoon! What would you like to explore?";
+    if (/^(good evening|evening)$/i.test(trimmed)) return "Good evening! How can I assist you?";
+    
+    // Acknowledgments
+    if (/^(thanks|thank you|ty|thx)$/i.test(trimmed)) return "You're welcome! Anything else?";
+    if (/^(yes|yeah|yep|yup|sure)$/i.test(trimmed)) return "Great! Tell me more.";
+    if (/^(no|nope|nah)$/i.test(trimmed)) return "No problem! What else can I help with?";
+    if (/^(ok|okay|alright|cool)$/i.test(trimmed)) return "Perfect! What's next?";
+    
+    // Farewells
+    if (/^(bye|goodbye|see you|later|cya)$/i.test(trimmed)) return "See you later! Feel free to reach out anytime.";
+    
+    // Status/Identity
+    if (/^(how are you|how's it going|what's up)$/i.test(trimmed)) return "I'm doing well! How can I assist you?";
+    if (/^(what.*your name|who are you)$/i.test(trimmed)) return "I'm DotSpark, your AI companion. What can I help you with?";
+    
+    // Quick questions
+    if (/^(help|what can you do)$/i.test(trimmed)) return "I can help with learning, questions, and conversations. What's on your mind?";
+    if (/^(test|testing|hello world)$/i.test(trimmed)) return "I'm here and ready to help! What would you like to know?";
+    
+    // Common short responses
+    if (/^(wow|amazing|nice|great|awesome)$/i.test(trimmed)) return "Glad you think so! Want to explore more?";
+    if (/^(hmm|interesting)$/i.test(trimmed)) return "What's got you thinking? I'd love to hear more.";
     
     return null;
   };
@@ -95,10 +113,8 @@ export default function ChatPage() {
         timestamp: new Date(),
       };
       
-      // Add response immediately without API call
-      setTimeout(() => {
-        setMessages((prev) => [...prev, botMessage]);
-      }, 100); // Minimal delay for natural feel
+      // Add response immediately without any delay
+      setMessages((prev) => [...prev, botMessage]);
       
       if (isFirstTime) markFirstChatDone();
       incrementUsageCount();
@@ -111,30 +127,55 @@ export default function ChatPage() {
       if (isFirstTime) markFirstChatDone();
       incrementUsageCount();
 
-      // Add immediate typing indicator
-      const typingMessage: Message = {
-        id: 'typing',
-        content: '...',
+      // Start showing response immediately while API processes
+      const responseId = (Date.now() + 1).toString();
+      
+      // Add a partial response immediately for instant feedback
+      const partialMessage: Message = {
+        id: responseId,
+        content: '',
         isUser: false,
         timestamp: new Date(),
       };
-      setMessages((prev) => [...prev, typingMessage]);
+      setMessages((prev) => [...prev, partialMessage]);
 
-      const response = await axios.post('/api/chat', {
-        message: userMessage.content,
-      });
+      // Simulate typing effect while waiting for API
+      const typingWords = ['I', 'understand.', 'Let', 'me', 'help', 'you', 'with', 'that.'];
+      let wordIndex = 0;
+      
+      const typingInterval = setInterval(() => {
+        if (wordIndex < typingWords.length) {
+          const currentText = typingWords.slice(0, wordIndex + 1).join(' ');
+          setMessages((prev) => 
+            prev.map(msg => 
+              msg.id === responseId 
+                ? { ...msg, content: currentText }
+                : msg
+            )
+          );
+          wordIndex++;
+        }
+      }, 200); // Fast typing simulation
 
-      // Remove typing indicator and add real response
-      setMessages((prev) => {
-        const filtered = prev.filter(msg => msg.id !== 'typing');
-        const botMessage: Message = {
-          id: (Date.now() + 1).toString(),
-          content: response.data.reply || "Let me help you with that.",
-          isUser: false,
-          timestamp: new Date(),
-        };
-        return [...filtered, botMessage];
-      });
+      try {
+        const response = await axios.post('/api/chat', {
+          message: userMessage.content,
+        });
+
+        // Clear typing simulation and show real response
+        clearInterval(typingInterval);
+        
+        setMessages((prev) => 
+          prev.map(msg => 
+            msg.id === responseId 
+              ? { ...msg, content: response.data.reply || "I'm here to help you." }
+              : msg
+          )
+        );
+      } catch (error) {
+        clearInterval(typingInterval);
+        throw error;
+      }
 
     } catch (error) {
       console.error('Error sending message:', error);
