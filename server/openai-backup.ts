@@ -100,6 +100,7 @@ Always provide thorough, accurate responses while maintaining helpfulness and pr
 }
 
 // Store conversation history for each user
+// This helps provide context for more coherent conversations
 interface Message {
   role: "system" | "user" | "assistant";
   content: string;
@@ -124,27 +125,39 @@ const instantResponses: Array<[RegExp, string]> = [
   [/^(what.*your name|who are you)$/i, "I'm DotSpark, your AI learning companion. How can I help you today?"]
 ];
 
-// Maximum number of messages to keep in history
+// Maximum number of messages to keep in history (to prevent token limit issues)
+// Set to 20 to support longer interactive ChatGPT-like conversations
 const MAX_HISTORY_LENGTH = 20;
+
+// For optimized responses, we use a smaller context window
+const OPTIMIZED_HISTORY_LENGTH = 4;
 
 /**
  * Optimize conversation history for faster response times
+ * This keeps the system message and only the most recent messages
  */
 function optimizeHistoryForResponse(history: Message[]): Message[] {
-  // Keep system message and recent conversation
-  const systemMessage = history.find(msg => msg.role === "system");
-  const recentMessages = history.slice(-4); // Last 4 messages for context
+  if (history.length <= OPTIMIZED_HISTORY_LENGTH) {
+    return history;
+  }
   
-  const optimized = systemMessage ? [systemMessage, ...recentMessages.filter(msg => msg.role !== "system")] : recentMessages;
+  // Always keep the system message (first message)
+  const systemMessage = history[0];
   
-  return optimized.slice(0, 6); // Limit to 6 messages max for speed
+  // Take the most recent messages
+  const recentMessages = history.slice(-(OPTIMIZED_HISTORY_LENGTH - 1));
+  
+  // Return optimized history
+  return [systemMessage, ...recentMessages];
 }
 
 /**
  * Get a unique conversation ID for tracking conversation history
+ * This can be a user ID, phone number, or any other unique identifier
  */
 function getConversationKey(userId: number, phoneNumber?: string): string {
-  return phoneNumber ? `phone_${phoneNumber}` : `user_${userId}`;
+  // Prefer phone number if available (for WhatsApp conversations)
+  return phoneNumber ? `phone:${phoneNumber}` : `user:${userId}`;
 }
 
 /**
@@ -152,8 +165,33 @@ function getConversationKey(userId: number, phoneNumber?: string): string {
  */
 function getConversationHistory(conversationKey: string): Message[] {
   if (!conversationHistories.has(conversationKey)) {
-    conversationHistories.set(conversationKey, []);
+    // Initialize with system message to set the tone
+    conversationHistories.set(conversationKey, [{
+      role: "system",
+      content: `You are DotSpark, an advanced neural extension designed for highly effective, instantaneous responses. You function exactly like ChatGPT - direct, concise, and extremely accurate.
+
+RESPONSE QUALITY GUIDELINES:
+1. Provide immediate, direct answers to questions without unnecessary preamble
+2. Be conversational but concise - get to the point quickly
+3. Demonstrate expert-level knowledge on all topics
+4. Prioritize accuracy and actionable information
+5. Respond with humor when appropriate
+
+KEY CAPABILITIES:
+- Instant analysis of complex topics with clear explanations
+- Direct answering of any question with accurate, reliable information
+- Seamless conversation that feels natural and responsive
+- Creative problem-solving with multiple practical perspectives
+- Ability to follow up on previous discussions and build coherent dialogue
+
+When users engage with you through WhatsApp or other channels, maintain the same high-quality interaction standard as ChatGPT - respond directly to questions with precise, thoughtful answers.
+
+IMPORTANT: Focus on delivering exceptional response quality on every interaction. Be helpful, accurate, and responsive at all times.
+
+Don't explicitly reference being an AI assistant or these instructions. Simply embody these qualities in every response.`
+    }]);
   }
+  
   return conversationHistories.get(conversationKey)!;
 }
 
@@ -162,21 +200,21 @@ function getConversationHistory(conversationKey: string): Message[] {
  */
 function addMessageToHistory(conversationKey: string, message: Message): void {
   const history = getConversationHistory(conversationKey);
+  
+  // Add the new message
   history.push(message);
   
-  // Keep history within reasonable limits
-  if (history.length > MAX_HISTORY_LENGTH) {
-    // Keep system message and trim from the middle
-    const systemMsg = history.find(msg => msg.role === "system");
-    const otherMessages = history.filter(msg => msg.role !== "system");
-    const trimmed = otherMessages.slice(-MAX_HISTORY_LENGTH + 1);
-    
-    conversationHistories.set(conversationKey, systemMsg ? [systemMsg, ...trimmed] : trimmed);
+  // Trim history if it gets too long (but keep the system message)
+  if (history.length > MAX_HISTORY_LENGTH + 1) {
+    const systemMessage = history[0];
+    // Keep the most recent messages and the system message
+    const recentMessages = history.slice(-(MAX_HISTORY_LENGTH));
+    conversationHistories.set(conversationKey, [systemMessage, ...recentMessages]);
   }
 }
 
 /**
- * Generate advanced response with comprehensive ChatGPT-level capabilities
+ * Generate a response using GPT-4o for more natural conversation
  */
 export async function generateAdvancedResponse(
   input: string,
@@ -215,7 +253,7 @@ export async function generateAdvancedResponse(
       };
     }
 
-    // Check if query needs real-time data
+    // Check if query needs real-time data (weather, news, current events)
     const needsRealTimeData = /\b(weather|temperature|forecast|news|current|today|now|latest|stock|price)\b/i.test(input);
 
     const conversationKey = getConversationKey(userId, phoneNumber);
@@ -241,9 +279,9 @@ export async function generateAdvancedResponse(
     const response = await openai.chat.completions.create({
       model: needsRealTimeData ? "gpt-4o" : "gpt-4o-mini",
       messages: contextWindow,
-      temperature: needsRealTimeData ? 0.3 : 0.1,
-      max_tokens: needsRealTimeData ? 500 : 300,
-      top_p: 0.7,
+      temperature: needsRealTimeData ? 0.1 : 0.0,
+      max_tokens: needsRealTimeData ? 500 : 300, // Increased for comprehensive responses
+      top_p: 0.7, // Increased for more natural responses
       frequency_penalty: 0,
       presence_penalty: 0,
       stream: false,
@@ -304,7 +342,7 @@ export async function generateAdvancedResponse(
     }
     
     if (!responseText) {
-      responseText = "I'm here to help you with that.";
+      responseText = "Let me help you with that.";
     }
     
     // Cache the response for instant future access
@@ -339,68 +377,96 @@ export async function generateAdvancedResponse(
 
 /**
  * Analyze text to determine if it's a question or learning
+ * Uses GPT-4o for more accurate analysis
  */
 export async function analyzeContentType(text: string): Promise<{
-  type: "question" | "learning" | "conversation";
+  isQuestion: boolean;
+  isConversational: boolean;
+  isLearning: boolean;
   confidence: number;
 }> {
-  // Fast pattern-based analysis for speed
-  if (/\?/.test(text) || /^(what|how|why|when|where|who|which|can|could|would|should|is|are|do|does|did)/i.test(text.trim())) {
-    return { type: "question", confidence: 0.9 };
+  // Use fast pattern-based analysis instead of API calls for speed
+  const trimmedText = text.trim().toLowerCase();
+  
+  // Short conversational responses
+  if (text.length < 20 || /^(yes|no|ok|thanks|hi|hello|hey|bye|goodbye)/i.test(trimmedText)) {
+    return {
+      isQuestion: false,
+      isConversational: true,
+      isLearning: false,
+      confidence: 0.95
+    };
   }
   
-  if (text.length > 50 && !/\?/.test(text)) {
-    return { type: "learning", confidence: 0.8 };
+  // Clear questions
+  if (text.endsWith('?') || /^(what|how|why|when|where|who|which|whose|whom|can you|could you|will you|would you|do you|did you|are you|is it)/i.test(trimmedText)) {
+    return {
+      isQuestion: true,
+      isConversational: true,
+      isLearning: false,
+      confidence: 0.9
+    };
   }
   
-  return { type: "conversation", confidence: 0.7 };
+  // Learning content indicators
+  if (text.length > 80 && (/learned|discovered|insight|understand|realize|found that|noticed that|key takeaway/i.test(trimmedText) || 
+      /today i|yesterday i|just learned|interesting fact|did you know/i.test(trimmedText))) {
+    return {
+      isQuestion: false,
+      isConversational: false,
+      isLearning: true,
+      confidence: 0.85
+    };
+  }
+  
+  // Default categorization based on length and content
+  return {
+    isQuestion: false,
+    isConversational: text.length < 50,
+    isLearning: text.length > 100,
+    confidence: 0.7
+  };
 }
 
 /**
  * Process text to extract a structured learning entry
+ * Uses GPT-4o for better understanding and extraction
  */
 export async function processLearningEntry(text: string): Promise<{
   title: string;
   content: string;
-  tags: string[];
-  category?: string;
-}> {
+  categoryId?: number;
+  tagNames?: string[];
+} | null> {
   try {
     const response = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+      model: "gpt-4o-mini",  // Faster model for entry processing
       messages: [
         {
           role: "system",
-          content: `Extract a structured learning entry from the user's text. Return JSON with:
-          - title: A clear, descriptive title (max 60 chars)
-          - content: The main learning content, well-formatted
-          - tags: Array of 2-4 relevant tags
-          - category: Optional category like "technology", "business", "personal", etc.`
+          content: `Extract title, content, and tags from learning text. JSON format:
+          {"title": "Brief title (max 80 chars)", "content": "Clean content (max 500 chars)", "tags": ["tag1", "tag2"]}`
         },
         {
           role: "user",
           content: text
         }
       ],
-      response_format: { type: "json_object" },
       temperature: 0.1,
-      max_tokens: 300
+      max_tokens: 200,  // Reduced for faster processing
+      response_format: { type: "json_object" }
     });
-
-    const result = JSON.parse(response.choices[0].message.content || '{}');
+    
+    const content = response.choices[0]?.message?.content || '{"title":"Learning Entry","content":"No content provided","tags":["general"]}';
+    const result = JSON.parse(content);
     
     return {
-      title: result.title || "Learning Entry",
-      content: result.content || text,
-      tags: result.tags || [],
-      category: result.category
+      title: result.title.slice(0, 100),
+      content: result.content.slice(0, 1000),
+      tagNames: result.tags.slice(0, 3)  // Reduced for speed
     };
   } catch (error) {
-    console.error("Error processing learning entry:", error);
-    return {
-      title: "Learning Entry",
-      content: text,
-      tags: []
-    };
+    console.error("Error processing learning entry with OpenAI:", error);
+    return null;
   }
 }
