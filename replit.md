@@ -128,6 +128,10 @@ Changelog:
   * Increased MyNeura page header logo size to h-12 w-12
   * Updated MyDotSpark status section logos with new icon
   * Enhanced Dashboard DotSparkSummary component with new logo icon
+- June 13, 2025. Updated PWA configuration:
+  * Set PWA app name to "DotSpark" (both name and short_name)
+  * Implemented user's specific brown background logo as app icon
+  * Updated CogniShield description to emphasize cognitive identity preservation
 ```
 
 ## User Preferences
