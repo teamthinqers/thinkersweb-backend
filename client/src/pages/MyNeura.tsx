@@ -520,7 +520,7 @@ export default function MyNeura() {
             className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity" 
             onClick={() => setLocation('/dotspark-tuning')}
           >
-            <img src="/dotspark-logo-icon.jpeg" alt="DotSpark" className="h-8 w-8 object-contain rounded" />
+            <img src="/dotspark-logo-icon.jpeg" alt="DotSpark" className="h-12 w-12 object-contain rounded" />
             <span className="text-xl font-semibold text-amber-700 dark:text-amber-300">DotSpark</span>
           </div>
         </div>
