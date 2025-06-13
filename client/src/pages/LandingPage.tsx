@@ -241,10 +241,10 @@ export default function LandingPage() {
           {/* Logo section - enhanced with padding and subtle background */}
           <div className="flex items-center py-2">
             <div 
-              className="flex items-center px-4 py-3 rounded-lg hover:bg-white/50 dark:hover:bg-slate-800/50 cursor-pointer transition-all duration-200 ease-in-out" 
+              className="flex items-center px-3 py-2 rounded-lg hover:bg-white/50 dark:hover:bg-slate-800/50 cursor-pointer transition-all duration-200 ease-in-out" 
               onClick={() => setLocation("/dotspark-tuning")}
             >
-              <img src="/dotspark-logo-brown.jpg" alt="DotSpark" className="h-8 w-auto object-contain rounded-md shadow-sm" />
+              <img src="/dotspark-logo-brown.jpg" alt="DotSpark" className="h-7 w-auto object-contain rounded-md shadow-sm" />
             </div>
           </div>
           
