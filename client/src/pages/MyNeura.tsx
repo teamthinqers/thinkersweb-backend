@@ -575,7 +575,7 @@ export default function MyNeura() {
       {isActivated ? (
         <div className="mb-6 p-4 rounded-lg border bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950 dark:to-emerald-950 border-green-200 dark:border-green-800">
           <div className="flex items-center">
-            <img src="/dotspark-logo-icon.jpeg" alt="DotSpark" className="h-6 w-6 object-contain mr-3 rounded" />
+            <img src="/dotspark-logo-icon.jpeg" alt="DotSpark" className="h-10 w-10 object-contain mr-4 rounded" />
             <div>
               <h3 className="text-lg font-medium">DotSpark is Active</h3>
               <p className="text-sm text-muted-foreground">Your DotSpark is active and ready to assist you.</p>
@@ -585,7 +585,7 @@ export default function MyNeura() {
       ) : (
         <div className="mb-6 p-4 rounded-lg border bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950 dark:to-orange-950 border-amber-200 dark:border-amber-800">
           <div className="flex items-center">
-            <img src="/dotspark-logo-icon.jpeg" alt="DotSpark" className="h-6 w-6 object-contain mr-3 opacity-60 rounded" />
+            <img src="/dotspark-logo-icon.jpeg" alt="DotSpark" className="h-10 w-10 object-contain mr-4 opacity-60 rounded" />
             <div>
               <h3 className="text-lg font-medium">DotSpark is Inactive</h3>
               <p className="text-sm text-muted-foreground">Activate your DotSpark to begin receiving personalized insights.</p>
