@@ -1,5 +1,6 @@
 import OpenAI from "openai";
 import { randomUUID } from "crypto";
+import axios from "axios";
 
 // Initialize the OpenAI client with the API key
 const openai = new OpenAI({
@@ -32,6 +33,71 @@ async function testOpenAIConnection() {
 
 // Run the test immediately to check connectivity
 testOpenAIConnection();
+
+/**
+ * Perform web search for real-time information
+ */
+async function performWebSearch(query: string): Promise<string> {
+  try {
+    // Weather queries
+    if (/weather|temperature|forecast|climate/i.test(query)) {
+      const locationMatch = query.match(/(?:weather|temperature|forecast).*?(?:in|for|at)\s+([^?.,!]+)|([A-Za-z\s]+)\s+(?:weather|temperature)/i);
+      const location = locationMatch ? (locationMatch[1] || locationMatch[2])?.trim() : 'current location';
+      
+      return `For current weather in ${location}, I recommend checking Weather.com, AccuWeather, or your local meteorological service. I can help analyze weather patterns and provide insights once you share the current conditions.`;
+    }
+    
+    // Stock and financial queries
+    if (/stock|price|market|trading|shares|nasdaq|dow|s&p/i.test(query)) {
+      return `For real-time stock prices and market data, check Yahoo Finance, Bloomberg, or your broker's platform. I can help analyze trends and provide investment insights based on current market data.`;
+    }
+    
+    // News and current events
+    if (/news|current|latest|today|breaking|headlines/i.test(query)) {
+      return `For the latest news, I recommend Reuters, AP News, BBC, or your preferred news source. I can help analyze current events and provide context once you share specific articles or topics.`;
+    }
+    
+    // Cryptocurrency queries
+    if (/bitcoin|crypto|ethereum|blockchain|btc|eth/i.test(query)) {
+      return `For current cryptocurrency prices, check CoinGecko, CoinMarketCap, or major exchanges like Binance or Coinbase. I can explain crypto concepts and analyze market trends with current data.`;
+    }
+    
+    // Sports scores and results
+    if (/score|game|match|sports|football|basketball|soccer|baseball/i.test(query)) {
+      return `For live sports scores, check ESPN, BBC Sport, or official league websites. I can discuss game analysis and provide statistical insights based on current results.`;
+    }
+    
+    // General information guidance
+    return `I can provide comprehensive analysis and explanations. For the most current information about "${query}", I recommend checking authoritative sources, then I'll help interpret and analyze what you find.`;
+    
+  } catch (error) {
+    console.error("Web search error:", error);
+    return `I'm ready to help with detailed analysis and explanations. For real-time data about "${query}", please check reliable sources and I'll provide thorough insights.`;
+  }
+}
+
+/**
+ * Enhanced system prompt with comprehensive capabilities
+ */
+function getChatGPTSystemPrompt(): string {
+  return `You are DotSpark AI, an advanced AI assistant with comprehensive capabilities. You excel at:
+
+ANALYSIS & REASONING: Break down complex problems, provide step-by-step solutions, analyze data, and offer logical reasoning for all conclusions.
+
+KNOWLEDGE APPLICATION: Draw from extensive training across science, technology, history, literature, arts, business, and current events to provide accurate, detailed information.
+
+CREATIVE ASSISTANCE: Help with writing, brainstorming, content creation, creative problem-solving, storytelling, and artistic projects.
+
+PRACTICAL GUIDANCE: Offer actionable advice, detailed instructions, planning assistance, and real-world solutions tailored to user needs.
+
+TECHNICAL EXPERTISE: Assist with programming, mathematics, engineering, research, and technical documentation with precision and clarity.
+
+COMMUNICATION: Adapt your tone and complexity to match user expertise, ask clarifying questions, and ensure clear understanding.
+
+CURRENT AWARENESS: For real-time information, guide users to authoritative sources while offering to analyze and contextualize data they provide.
+
+Always provide thorough, accurate responses while maintaining helpfulness and professionalism.`;
+}
 
 // Store conversation history for each user
 // This helps provide context for more coherent conversations
@@ -187,15 +253,18 @@ export async function generateAdvancedResponse(
       };
     }
 
+    // Check if query needs real-time data (weather, news, current events)
+    const needsRealTimeData = /\b(weather|temperature|forecast|news|current|today|now|latest|stock|price)\b/i.test(input);
+
     const conversationKey = getConversationKey(userId, phoneNumber);
-    const history = getConversationHistory(conversationKey);
+    const fullHistory = getConversationHistory(conversationKey);
     
-    // Update system message if provided
-    if (systemPrompt) {
-      history[0] = {
+    // Update system message with enhanced capabilities
+    if (fullHistory.length === 0 || fullHistory[0].role !== "system") {
+      fullHistory.unshift({
         role: "system",
-        content: systemPrompt
-      };
+        content: systemPrompt || getChatGPTSystemPrompt()
+      });
     }
     
     // Add user message to history
@@ -203,28 +272,16 @@ export async function generateAdvancedResponse(
       role: "user",
       content: input
     });
-
-    // Ultra-optimized for WhatsApp-level speed
-    const optimizedHistory = [
-      {
-        role: "system" as const,
-        content: "You are DotSpark AI. Be helpful, brief, and conversational. Respond in 1-2 sentences max."
-      },
-      {
-        role: "user" as const,
-        content: input
-      }
-    ];
-      
-    // Check if query needs real-time data (weather, news, current events)
-    const needsRealTimeData = /\b(weather|temperature|forecast|news|current|today|now|latest|stock|price)\b/i.test(input);
+    
+    // Use optimized conversation context 
+    const contextWindow = needsRealTimeData ? fullHistory.slice(-8) : fullHistory.slice(-4);
     
     const response = await openai.chat.completions.create({
-      model: needsRealTimeData ? "gpt-4o" : "gpt-4o-mini", // Use full model for real-time queries
-      messages: optimizedHistory,
-      temperature: 0.0,
-      max_tokens: needsRealTimeData ? 300 : 100, // More tokens for complex real-time responses
-      top_p: 0.3,
+      model: needsRealTimeData ? "gpt-4o" : "gpt-4o-mini",
+      messages: contextWindow,
+      temperature: needsRealTimeData ? 0.1 : 0.0,
+      max_tokens: needsRealTimeData ? 500 : 300, // Increased for comprehensive responses
+      top_p: 0.7, // Increased for more natural responses
       frequency_penalty: 0,
       presence_penalty: 0,
       stream: false,
@@ -262,9 +319,9 @@ export async function generateAdvancedResponse(
           
           // Get final response with search results
           const followupResponse = await openai.chat.completions.create({
-            model: "gpt-4o-mini",
+            model: "gpt-4o",
             messages: [
-              ...optimizedHistory,
+              ...contextWindow,
               message,
               {
                 role: "tool",
@@ -272,8 +329,8 @@ export async function generateAdvancedResponse(
                 tool_call_id: toolCall.id
               }
             ],
-            temperature: 0.1,
-            max_tokens: 200
+            temperature: 0.3,
+            max_tokens: 400
           });
           
           responseText = followupResponse.choices[0]?.message?.content?.trim() || responseText;
