@@ -9,12 +9,12 @@
   "theme_color": "#b45309",
   "icons": [
     {
-      "src": "/dotspark-final.png",
+      "src": "/dotspark-pwa-final.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/dotspark-final.png",
+      "src": "/dotspark-pwa-final.png",
       "sizes": "512x512",
       "type": "image/png"
     }
