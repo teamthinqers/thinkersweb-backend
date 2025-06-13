@@ -244,7 +244,7 @@ export default function LandingPage() {
               className="flex items-center p-2 rounded-lg hover:bg-white/50 dark:hover:bg-slate-800/50 cursor-pointer transition-all duration-200 ease-in-out" 
               onClick={() => setLocation("/dotspark-tuning")}
             >
-              <img src="/dotspark-logo.jpg" alt="DotSpark" className="h-10 w-auto rounded-md shadow-sm" />
+              <img src="/dotspark-logo-white-bg.jpg" alt="DotSpark" className="h-10 w-auto rounded-md shadow-sm" />
             </div>
           </div>
           
@@ -255,30 +255,23 @@ export default function LandingPage() {
                 Home
               </Link>
               <Button 
-                className="bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white h-10 px-4 relative shadow-lg border-0 font-medium"
                 size="sm"
                 onClick={() => setLocation("/dashboard")}
               >
-                <div className="flex items-center gap-2 relative z-10">
+                <div className="flex items-center gap-2">
                   <div className="relative">
                     <Brain className="h-4 w-4" />
-                    {isNeuraActivated && <div className="absolute -top-1 -right-1 h-2 w-2 bg-green-400 rounded-full animate-pulse shadow-sm"></div>}
+                    {isNeuraActivated && <div className="absolute -top-1 -right-1 h-2 w-2 bg-green-500 rounded-full animate-pulse"></div>}
                   </div>
                   <span className="text-sm">Neura</span>
                 </div>
               </Button>
               <Button 
-                className={`${isNeuraActivated 
-                  ? "bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700" 
-                  : "bg-gradient-to-r from-amber-700 to-orange-700 hover:from-amber-800 hover:to-orange-800"} 
-                  text-white h-10 px-4 relative shadow-lg border-0 font-medium`}
                 size="sm"
                 onClick={() => setLocation("/sectioned-dotspark-tuning")}
               >
-                <div className="flex items-center gap-2 relative z-10">
-                  <div className="flex items-center">
-                    <Sparkles className="h-4 w-4" />
-                  </div>
+                <div className="flex items-center gap-2">
+                  <Sparkles className="h-4 w-4" />
                   <span className="text-sm">DotSpark</span>
                 </div>
               </Button>
@@ -304,7 +297,6 @@ export default function LandingPage() {
                       setContactDialogOpen(true);
                     });
                 }}
-                className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white border-0 h-10 px-4 shadow-lg font-medium"
               >
                 <MessageSquare className="h-4 w-4 mr-2" />
                 Ask DotSpark
@@ -313,9 +305,8 @@ export default function LandingPage() {
             <div className="flex items-center space-x-3">
               <div className="block md:hidden">
                 <Button
-                  variant="default"
+                  variant="outline"
                   size="sm"
-                  className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-3 py-1 h-8 rounded-md shadow-md font-medium"
                   onClick={() => {
                     // Fetch WhatsApp number first
                     fetch('/api/whatsapp/contact')
@@ -340,14 +331,13 @@ export default function LandingPage() {
               <div className="flex sm:hidden gap-1">
                 <Button
                   size="sm"
-                  className="bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white relative h-7 px-2 shadow-md font-medium"
                   onClick={() => setLocation("/dashboard")}
                 >
                   <div className="flex items-center gap-1">
                     <div className="relative">
                       <Brain className="h-3 w-3" />
                       {isNeuraActivated && (
-                        <div className="absolute -top-0.5 -right-0.5 h-1 w-1 bg-green-400 rounded-full animate-pulse"></div>
+                        <div className="absolute -top-0.5 -right-0.5 h-1 w-1 bg-green-500 rounded-full animate-pulse"></div>
                       )}
                     </div>
                     <span className="text-xs">Neura</span>
@@ -355,10 +345,6 @@ export default function LandingPage() {
                 </Button>
                 <Button
                   size="sm"
-                  className={`${isNeuraActivated 
-                    ? "bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700" 
-                    : "bg-gradient-to-r from-amber-700 to-orange-700 hover:from-amber-800 hover:to-orange-800"} 
-                    text-white h-7 px-2 relative shadow-md font-medium`}
                   onClick={() => setLocation("/sectioned-dotspark-tuning")}
                 >
                   <div className="flex items-center gap-1">
