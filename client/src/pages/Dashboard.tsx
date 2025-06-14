@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Mic, Type, Eye, Brain, Network, Zap } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Mic, Type, Eye, Brain, Network, Zap, Search } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 
 // Data structure for dots
@@ -28,6 +29,7 @@ interface Wheel {
 
 const Dashboard: React.FC = () => {
   const [activeView, setActiveView] = useState<'mindmap' | 'wheels'>('mindmap');
+  const [searchTerm, setSearchTerm] = useState('');
 
   // Fetch real dots from API
   const { data: dots = [], isLoading } = useQuery({
@@ -215,62 +217,78 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="container mx-auto px-4 py-6">
+      {/* Header */}
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-800 mb-2">Neural Dashboard</h1>
-        <p className="text-gray-600">View and explore your captured thoughts and insights</p>
+        <h1 className="text-2xl font-bold text-gray-800 mb-4">My DotSpark Neura</h1>
+        
+        {/* Search Bar */}
+        <div className="relative mb-6">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <Input
+            type="text"
+            placeholder="Enter keywords to search for a Dot"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="pl-10 h-12 text-base border-2 focus:border-amber-500 focus:ring-amber-500/20 rounded-xl"
+          />
+        </div>
       </div>
 
-      <Tabs value={activeView} onValueChange={(value) => setActiveView(value as 'mindmap' | 'wheels')}>
-        <TabsList className="grid w-full grid-cols-2 mb-6">
-          <TabsTrigger value="mindmap" className="flex items-center gap-2">
-            <Brain className="w-4 h-4" />
-            Mind Map
-          </TabsTrigger>
-          <TabsTrigger value="wheels" className="flex items-center gap-2">
-            <Network className="w-4 h-4" />
-            Wheels View
-          </TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="mindmap" className="space-y-6">
-          <MindMapView />
-          
-          {/* Recent Dots */}
-          <div>
-            <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-              <Zap className="w-5 h-5 text-yellow-500" />
-              Recent Dots
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {dots.length > 0 ? (
-                dots.slice(0, 6).map((dot: Dot) => (
-                  <DotCard key={dot.id} dot={dot} />
-                ))
-              ) : (
-                <div className="col-span-full text-center py-8">
-                  <Eye className="w-12 h-12 mx-auto mb-4 text-gray-400" />
-                  <p className="text-gray-600">No dots captured yet</p>
-                  <p className="text-sm text-gray-500">Use the floating dot to capture your first thought</p>
-                </div>
-              )}
-            </div>
+      {/* Recent Dots Section */}
+      <div className="mb-8">
+        <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+          <Zap className="w-5 h-5 text-yellow-500" />
+          Recent Dots
+        </h2>
+        <div className="bg-white border rounded-xl p-4 max-h-96 overflow-y-auto">
+          <div className="space-y-4">
+            {dots.length > 0 ? (
+              dots.slice(0, 4).map((dot: Dot) => (
+                <DotCard key={dot.id} dot={dot} />
+              ))
+            ) : (
+              <div className="text-center py-8">
+                <Eye className="w-12 h-12 mx-auto mb-4 text-gray-400" />
+                <p className="text-gray-600">No dots captured yet</p>
+                <p className="text-sm text-gray-500">Use the floating dot to capture your first thought</p>
+              </div>
+            )}
           </div>
-        </TabsContent>
+        </div>
+      </div>
 
-        <TabsContent value="wheels" className="space-y-6">
-          <div>
-            <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-              <Network className="w-5 h-5 text-blue-500" />
-              Thought Wheels
-            </h2>
+      {/* Dot Wheels Section */}
+      <div className="mb-8">
+        <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+          <Network className="w-5 h-5 text-blue-500" />
+          Dot Wheels
+        </h2>
+        
+        <Tabs value={activeView} onValueChange={(value) => setActiveView(value as 'mindmap' | 'wheels')}>
+          <TabsList className="grid w-full grid-cols-2 mb-6">
+            <TabsTrigger value="mindmap" className="flex items-center gap-2">
+              <Brain className="w-4 h-4" />
+              Mind Map
+            </TabsTrigger>
+            <TabsTrigger value="wheels" className="flex items-center gap-2">
+              <Network className="w-4 h-4" />
+              Wheels View
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="mindmap" className="space-y-6">
+            <MindMapView />
+          </TabsContent>
+
+          <TabsContent value="wheels" className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {wheels.map(wheel => (
                 <WheelCard key={wheel.id} wheel={wheel} />
               ))}
             </div>
-          </div>
-        </TabsContent>
-      </Tabs>
+          </TabsContent>
+        </Tabs>
+      </div>
     </div>
   );
 };
