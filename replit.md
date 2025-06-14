@@ -177,6 +177,7 @@ Changelog:
   * Implemented choice-based UI: voice capture, text input, or access full app
   * Eliminated dual installation complexity - users install one "Dot" icon
   * Added seamless transition option to full DotSpark experience when needed
+  * Set PWA start_url to /dot so users immediately see capture interface upon installation
 ```
 
 ## User Preferences
