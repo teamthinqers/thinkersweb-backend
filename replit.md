@@ -171,13 +171,13 @@ Changelog:
   * Improved accessibility with proper ARIA labels and keyboard support
   * Added window resize handling and viewport boundary constraints
   * Optimized for home screen PWA usage with persistent positioning
-- June 14, 2025. Unified Dot PWA installation solution:
-  * Converted main PWA manifest to "Dot" instead of "DotSpark" for single installation
+- June 14, 2025. Unified DotSpark PWA installation solution:
   * Created dedicated /dot route with streamlined capture interface
   * Implemented choice-based UI: voice capture, text input, or access full app
-  * Eliminated dual installation complexity - users install one "Dot" icon
+  * Eliminated dual installation complexity - users install one "DotSpark" PWA
   * Added seamless transition option to full DotSpark experience when needed
   * Set PWA start_url to /dot so users immediately see capture interface upon installation
+  * PWA installs as "DotSpark" with focused thought capture as entry point
 ```
 
 ## User Preferences

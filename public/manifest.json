@@ -1,6 +1,6 @@
 {
-  "name": "Dot",
-  "short_name": "Dot",
+  "name": "DotSpark",
+  "short_name": "DotSpark",
   "description": "Instant thought capture with your personal Dot",
   "start_url": "/dot?v=1",
   "scope": "/",
