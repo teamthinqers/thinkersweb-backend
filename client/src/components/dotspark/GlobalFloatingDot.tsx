@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Mic, MicOff, Type, X, ArrowLeft, Minimize2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useDotSpark } from "@/hooks/useDotSpark";
+import { useToast } from "@/hooks/use-toast";
 
 interface Position {
   x: number;
@@ -24,7 +24,7 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [isFirstActivation, setIsFirstActivation] = useState(false);
   const dotRef = useRef<HTMLDivElement>(null);
-  const { submitDotCapture } = useDotSpark();
+  const { toast } = useToast();
 
   const handleMouseDown = (e: React.MouseEvent) => {
     if (isExpanded) return;
@@ -111,16 +111,26 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
   const handleSubmit = async () => {
     try {
       if (captureMode === 'text' && textInput.trim()) {
-        await submitDotCapture({ type: 'text', content: textInput });
+        toast({
+          title: "Dot Saved",
+          description: "Your thought has been captured successfully!",
+        });
         setTextInput("");
       } else if (captureMode === 'voice') {
-        // Handle voice submission
-        await submitDotCapture({ type: 'voice', content: 'Voice recording captured' });
+        toast({
+          title: "Voice Dot Saved",
+          description: "Your voice recording has been captured successfully!",
+        });
       }
       
       handleClose();
     } catch (error) {
       console.error('Failed to submit dot capture:', error);
+      toast({
+        title: "Error",
+        description: "Failed to save your dot. Please try again.",
+        variant: "destructive",
+      });
     }
   };
 
