@@ -163,7 +163,7 @@ export default function DotCapture() {
                 
                 <div className="pt-4 border-t space-y-3">
                   <Button
-                    onClick={() => setLocation("/my-neura")}
+                    onClick={() => window.open("https://www.dotspark.in/dashboard", "_blank")}
                     variant="outline"
                     className="w-full h-12 bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200 hover:from-amber-50 hover:to-orange-50 hover:border-amber-400 text-amber-800 hover:text-amber-900 font-medium transition-all duration-200 active:bg-amber-100"
                   >
@@ -174,7 +174,7 @@ export default function DotCapture() {
                     </div>
                   </Button>
                   <Button
-                    onClick={() => setLocation("/my-neura")}
+                    onClick={() => window.open("https://www.dotspark.in/dashboard", "_blank")}
                     variant="outline"
                     className="w-full h-12 bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200 hover:from-amber-50 hover:to-orange-50 hover:border-amber-400 text-amber-800 hover:text-amber-900 font-medium transition-all duration-200 active:bg-amber-100"
                   >
@@ -272,7 +272,7 @@ export default function DotCapture() {
                 </div>
                 
                 <Button
-                  onClick={() => setLocation("/my-neura")}
+                  onClick={() => window.open("https://www.dotspark.in/dashboard", "_blank")}
                   variant="ghost"
                   className="w-full text-sm text-gray-500 hover:text-gray-700"
                 >

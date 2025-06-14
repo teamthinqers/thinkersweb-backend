@@ -221,6 +221,10 @@ Changelog:
   * Enhanced text button with blue gradient background matching voice button quality
   * Fixed navigation button readability issues preventing white text on click
   * Improved button styling with consistent color schemes and hover states
+- June 14, 2025. Updated PWA navigation to external DotSpark dashboard:
+  * "Open DotSpark App", "My Neura", and "Access Neura" buttons now redirect to https://www.dotspark.in/dashboard
+  * All navigation buttons open external URL in new tab using window.open() with _blank target
+  * PWA interface now seamlessly connects users to the full DotSpark application dashboard
 - June 14, 2025. Updated DotSpark PWA color theme and navigation:
   * Changed Text button background from blue to amber/orange gradient matching logo theme
   * Updated My Neura button to use amber/orange colors instead of blue
