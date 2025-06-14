@@ -5,7 +5,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useLocation } from "wouter";
 import { Loader2, Smartphone, MessageCircle, SendHorizonal, Check } from "lucide-react";
 import { useWhatsAppStatus } from "@/hooks/useWhatsAppStatus";
-import { pwaPermissionManager } from "@/lib/pwaPermissions";
+
 
 export function NeuralWhatsAppLinking() {
   const { toast } = useToast();
@@ -239,11 +239,7 @@ export function NeuralWhatsAppLinking() {
     try {
       setLoading(true);
       
-      // Request PWA permissions first to eliminate popup friction
-      const permissionsGranted = await pwaPermissionManager.grantAllPermissions();
-      if (!permissionsGranted) {
-        console.log("PWA permissions not granted, proceeding anyway");
-      }
+
       
       // Get the user's email or fallback to user ID
       const userEmail = user?.email;

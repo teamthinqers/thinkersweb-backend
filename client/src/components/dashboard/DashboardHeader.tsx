@@ -5,7 +5,7 @@ import { useMobile } from "@/hooks/use-mobile";
 import ChatEntryForm from "@/components/chat/ChatEntryForm";
 import { useWhatsAppStatus } from "@/hooks/useWhatsAppStatus";
 import { ContactOptionsDialog } from "@/components/landing/ContactOptionsDialog";
-import { pwaPermissionManager } from "@/lib/pwaPermissions";
+
 
 // Interface for props to allow parent component to pass openNewEntry function
 interface DashboardHeaderProps {

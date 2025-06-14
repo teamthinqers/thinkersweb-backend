@@ -102,8 +102,7 @@ export default function LandingPage() {
     forceStatusRefresh 
   } = useWhatsAppStatus();
   
-  // PWA permission management to eliminate popup friction
-  const { PermissionPrompt } = usePWAPermissionPrompt('general');
+
   
   // Use neuraStorage for Neura activation status
   const [isNeuraActivated, setIsNeuraActivated] = useState(() => {
@@ -1302,8 +1301,7 @@ export default function LandingPage() {
         </DialogContent>
       </Dialog>
 
-      {/* PWA Permission Prompt - handles all popup permissions upfront */}
-      <PermissionPrompt />
+
     </div>
   );
 }

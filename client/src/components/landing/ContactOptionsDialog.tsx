@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { MessageSquare, MessageCircle } from "lucide-react";
 import { useLocation } from "wouter";
 import { isFirstChat, markFirstChatDone } from '@/lib/usageLimits';
-import { pwaPermissionManager } from "@/lib/pwaPermissions";
+
 
 interface ContactOptionsDialogProps {
   open: boolean;
