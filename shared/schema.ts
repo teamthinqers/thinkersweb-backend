@@ -246,6 +246,150 @@ export const insertWhatsappUserSchema = createInsertSchema(whatsappUsers, {
 export type InsertWhatsappUser = z.infer<typeof insertWhatsappUserSchema>;
 export type WhatsappUser = typeof whatsappUsers.$inferSelect;
 
+// Wheels - collections of related dots
+export const wheels = pgTable("wheels", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  name: text("name").notNull(),
+  category: text("category").notNull(),
+  color: text("color").notNull().default("#8B5CF6"),
+  positionX: integer("position_x").default(100).notNull(),
+  positionY: integer("position_y").default(100).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const wheelsRelations = relations(wheels, ({ one, many }) => ({
+  user: one(users, {
+    fields: [wheels.userId],
+    references: [users.id],
+  }),
+  dots: many(dots),
+  sourceConnections: many(wheelConnections, { relationName: "sourceWheel" }),
+  targetConnections: many(wheelConnections, { relationName: "targetWheel" }),
+}));
+
+// Dots - three-layer thought structure
+export const dots = pgTable("dots", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  wheelId: integer("wheel_id").references(() => wheels.id),
+  summary: text("summary").notNull(), // Layer 1: 220 chars max
+  anchor: text("anchor").notNull(), // Layer 2: 300 chars max
+  pulse: text("pulse").notNull(), // Layer 3: 1 word emotion
+  sourceType: text("source_type").notNull().default("text"), // voice, text, hybrid
+  originalAudioUrl: text("original_audio_url"), // For voice dots
+  transcriptionConfidence: integer("transcription_confidence"), // 0-100
+  processingStatus: text("processing_status").notNull().default("processed"), // raw, transcribed, processed, enhanced
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const dotsRelations = relations(dots, ({ one, many }) => ({
+  user: one(users, {
+    fields: [dots.userId],
+    references: [users.id],
+  }),
+  wheel: one(wheels, {
+    fields: [dots.wheelId],
+    references: [wheels.id],
+  }),
+  sourceConnections: many(dotConnections, { relationName: "sourceDot" }),
+  targetConnections: many(dotConnections, { relationName: "targetDot" }),
+}));
+
+// Connections between wheels
+export const wheelConnections = pgTable("wheel_connections", {
+  id: serial("id").primaryKey(),
+  sourceWheelId: integer("source_wheel_id").references(() => wheels.id).notNull(),
+  targetWheelId: integer("target_wheel_id").references(() => wheels.id).notNull(),
+  connectionType: text("connection_type").notNull().default("related"), // logical, temporal, emotional
+  strength: integer("strength").default(50).notNull(), // 0-100
+  reasonForConnection: text("reason_for_connection"), // AI-generated explanation
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const wheelConnectionsRelations = relations(wheelConnections, ({ one }) => ({
+  sourceWheel: one(wheels, {
+    fields: [wheelConnections.sourceWheelId],
+    references: [wheels.id],
+    relationName: "sourceWheel",
+  }),
+  targetWheel: one(wheels, {
+    fields: [wheelConnections.targetWheelId],
+    references: [wheels.id],
+    relationName: "targetWheel",
+  }),
+}));
+
+// Connections between individual dots
+export const dotConnections = pgTable("dot_connections", {
+  id: serial("id").primaryKey(),
+  sourceDotId: integer("source_dot_id").references(() => dots.id).notNull(),
+  targetDotId: integer("target_dot_id").references(() => dots.id).notNull(),
+  connectionType: text("connection_type").notNull().default("related"),
+  strength: integer("strength").default(50).notNull(),
+  reasonForConnection: text("reason_for_connection"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const dotConnectionsRelations = relations(dotConnections, ({ one }) => ({
+  sourceDot: one(dots, {
+    fields: [dotConnections.sourceDotId],
+    references: [dots.id],
+    relationName: "sourceDot",
+  }),
+  targetDot: one(dots, {
+    fields: [dotConnections.targetDotId],
+    references: [dots.id],
+    relationName: "targetDot",
+  }),
+}));
+
+// Validation schemas
+export const insertWheelSchema = createInsertSchema(wheels, {
+  name: (schema) => schema.min(2, "Wheel name must be at least 2 characters"),
+  category: (schema) => schema.min(2, "Category must be at least 2 characters"),
+  color: (schema) => schema.optional(),
+  positionX: (schema) => schema.optional(),
+  positionY: (schema) => schema.optional(),
+});
+
+export const insertDotSchema = createInsertSchema(dots, {
+  summary: (schema) => schema.min(1, "Summary is required").max(220, "Summary must be 220 characters or less"),
+  anchor: (schema) => schema.min(1, "Anchor text is required").max(300, "Anchor text must be 300 characters or less"),
+  pulse: (schema) => schema.min(1, "Pulse emotion is required").refine(
+    (val) => val.trim().split(/\s+/).length === 1,
+    "Pulse must be exactly one word"
+  ),
+  sourceType: (schema) => schema.optional(),
+  wheelId: (schema) => schema.optional(),
+  originalAudioUrl: (schema) => schema.optional(),
+  transcriptionConfidence: (schema) => schema.optional(),
+  processingStatus: (schema) => schema.optional(),
+});
+
+export const insertWheelConnectionSchema = createInsertSchema(wheelConnections, {
+  connectionType: (schema) => schema.optional(),
+  strength: (schema) => schema.optional(),
+  reasonForConnection: (schema) => schema.optional(),
+});
+
+export const insertDotConnectionSchema = createInsertSchema(dotConnections, {
+  connectionType: (schema) => schema.optional(),
+  strength: (schema) => schema.optional(),
+  reasonForConnection: (schema) => schema.optional(),
+});
+
+export type InsertWheel = z.infer<typeof insertWheelSchema>;
+export type Wheel = typeof wheels.$inferSelect;
+export type InsertDot = z.infer<typeof insertDotSchema>;
+export type Dot = typeof dots.$inferSelect;
+export type InsertWheelConnection = z.infer<typeof insertWheelConnectionSchema>;
+export type WheelConnection = typeof wheelConnections.$inferSelect;
+export type InsertDotConnection = z.infer<typeof insertDotConnectionSchema>;
+export type DotConnection = typeof dotConnections.$inferSelect;
+
 // WhatsApp OTP verification schema
 export const whatsappOtpVerifications = pgTable("whatsapp_otp_verifications", {
   id: serial("id").primaryKey(),
