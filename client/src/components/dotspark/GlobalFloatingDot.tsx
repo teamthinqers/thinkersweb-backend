@@ -57,10 +57,9 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
     const startY = e.clientY - position.y;
 
     const handleMouseMove = (e: MouseEvent) => {
-      const newX = Math.max(0, Math.min(window.innerWidth - 40, e.clientX - startX));
-      const newY = Math.max(0, Math.min(window.innerHeight - 40, e.clientY - startY));
+      const newX = Math.max(0, Math.min(window.innerWidth - 48, e.clientX - startX));
+      const newY = Math.max(0, Math.min(window.innerHeight - 48, e.clientY - startY));
       setPosition({ x: newX, y: newY });
-      localStorage.setItem('global-floating-dot-position', JSON.stringify({ x: newX, y: newY }));
     };
 
     const handleMouseUp = () => {
@@ -286,12 +285,13 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
         <div
           ref={dotRef}
           className={cn(
-            "fixed z-[9999] transition-all duration-300 ease-in-out",
-            isDragging ? "cursor-grabbing" : "cursor-grab"
+            "fixed z-[9999] transition-all duration-150 ease-out",
+            isDragging ? "cursor-grabbing scale-110" : "cursor-grab hover:scale-105"
           )}
           style={{
-            left: position.x,
-            top: position.y
+            left: `${position.x}px`,
+            top: `${position.y}px`,
+            transition: isDragging ? 'none' : 'all 0.15s ease-out'
           }}
           onMouseDown={handleMouseDown}
           onTouchStart={handleTouchStart}

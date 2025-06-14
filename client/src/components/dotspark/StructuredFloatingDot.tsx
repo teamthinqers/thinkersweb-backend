@@ -431,17 +431,25 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                       </div>
                     </div>
 
-                    <div className="p-3 bg-green-50 rounded-lg border border-green-200">
-                      <label className="block text-sm font-medium mb-2 text-green-700">
-                        Layer 3: Pulse (One word)
-                      </label>
-                      <p className="text-xs text-gray-600 mb-2">Single emotion word</p>
+                    <div className="p-4 bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl border-2 border-purple-200 shadow-sm hover:shadow-md transition-all duration-300">
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="w-6 h-6 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center">
+                          <span className="text-white text-xs font-bold">3</span>
+                        </div>
+                        <label className="text-sm font-semibold text-purple-700">
+                          Layer 3: Pulse (1 word)
+                        </label>
+                      </div>
                       <Input
                         value={structuredInput.pulse}
                         onChange={(e) => setStructuredInput(prev => ({...prev, pulse: e.target.value}))}
-                        placeholder="excited, curious, focused..."
-                        className="text-sm border-green-300 focus:border-green-500"
+                        placeholder="excited"
+                        maxLength={20}
+                        className="text-center border-2 border-purple-300 focus:border-purple-500 focus:ring-purple-400 bg-white/80 backdrop-blur-sm font-medium"
                       />
+                      <div className="text-xs text-purple-600 mt-2 text-center">
+                        Your emotional state in one word
+                      </div>
                     </div>
 
                     <Button 
@@ -470,72 +478,81 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                   </div>
                   
                   <div className="space-y-3">
-                    <div className="p-3 bg-amber-50 rounded-lg border border-amber-200">
-                      <div className="flex items-center justify-between mb-2">
-                        <h5 className="text-sm font-medium text-amber-700">Step 1: Summary (20-30 sec)</h5>
-                        {voiceSteps.summary && <span className="text-xs text-green-600">✓ Done</span>}
+                    <div className="p-4 bg-gradient-to-br from-orange-50 to-amber-50 rounded-xl border-2 border-orange-200 shadow-sm hover:shadow-md transition-all duration-300">
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="w-6 h-6 rounded-full bg-gradient-to-r from-orange-500 to-amber-500 flex items-center justify-center">
+                          <span className="text-white text-xs font-bold">1</span>
+                        </div>
+                        <h5 className="text-sm font-semibold text-orange-700">Layer 1: Dot (20-30 sec)</h5>
+                        {voiceSteps.summary && <span className="text-xs text-green-600 ml-auto">✓ Done</span>}
                       </div>
-                      <p className="text-xs text-gray-700 mb-2">
+                      <p className="text-xs text-orange-600 mb-3">
                         "Start with your core insight. What's the main thought?"
                       </p>
                       <Button
                         variant={isRecording && currentStep === 1 ? 'destructive' : 'default'}
                         onClick={() => handleVoiceStep(1)}
-                        className="w-full h-10 text-sm"
+                        className="w-full h-10 text-sm bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white"
                       >
                         <Mic className="h-4 w-4 mr-2" />
-                        {isRecording && currentStep === 1 ? 'Recording...' : 'Record Summary'}
+                        {isRecording && currentStep === 1 ? 'Recording...' : 'Record Dot'}
                       </Button>
                       {voiceSteps.summary && (
-                        <div className="mt-2 p-2 bg-white rounded text-xs">
+                        <div className="mt-3 p-3 bg-white/80 rounded-lg text-xs border border-orange-200">
                           {voiceSteps.summary.substring(0, 50)}... ({voiceSteps.summary.length}/220)
                         </div>
                       )}
                     </div>
 
-                    <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
-                      <div className="flex items-center justify-between mb-2">
-                        <h5 className="text-sm font-medium text-blue-700">Step 2: Anchor (30-40 sec)</h5>
-                        {voiceSteps.anchor && <span className="text-xs text-green-600">✓ Done</span>}
+                    <div className="p-4 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border-2 border-blue-200 shadow-sm hover:shadow-md transition-all duration-300">
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="w-6 h-6 rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 flex items-center justify-center">
+                          <span className="text-white text-xs font-bold">2</span>
+                        </div>
+                        <h5 className="text-sm font-semibold text-blue-700">Layer 2: Anchor (30-40 sec)</h5>
+                        {voiceSteps.anchor && <span className="text-xs text-green-600 ml-auto">✓ Done</span>}
                       </div>
-                      <p className="text-xs text-gray-700 mb-2">
+                      <p className="text-xs text-blue-600 mb-3">
                         "Now provide context. What will help you remember this?"
                       </p>
                       <Button
                         variant={isRecording && currentStep === 2 ? 'destructive' : 'default'}
                         onClick={() => handleVoiceStep(2)}
-                        className="w-full h-10 text-sm"
+                        className="w-full h-10 text-sm bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white"
                         disabled={!voiceSteps.summary}
                       >
                         <Mic className="h-4 w-4 mr-2" />
                         {isRecording && currentStep === 2 ? 'Recording...' : 'Record Anchor'}
                       </Button>
                       {voiceSteps.anchor && (
-                        <div className="mt-2 p-2 bg-white rounded text-xs">
+                        <div className="mt-3 p-3 bg-white/80 rounded-lg text-xs border border-blue-200">
                           {voiceSteps.anchor.substring(0, 50)}... ({voiceSteps.anchor.length}/300)
                         </div>
                       )}
                     </div>
 
-                    <div className="p-3 bg-green-50 rounded-lg border border-green-200">
-                      <div className="flex items-center justify-between mb-2">
-                        <h5 className="text-sm font-medium text-green-700">Step 3: Pulse (5 sec)</h5>
-                        {voiceSteps.pulse && <span className="text-xs text-green-600">✓ Done</span>}
+                    <div className="p-4 bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl border-2 border-purple-200 shadow-sm hover:shadow-md transition-all duration-300">
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="w-6 h-6 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center">
+                          <span className="text-white text-xs font-bold">3</span>
+                        </div>
+                        <h5 className="text-sm font-semibold text-purple-700">Layer 3: Pulse (5 sec)</h5>
+                        {voiceSteps.pulse && <span className="text-xs text-green-600 ml-auto">✓ Done</span>}
                       </div>
-                      <p className="text-xs text-gray-700 mb-2">
+                      <p className="text-xs text-purple-600 mb-3">
                         "Finally, say one emotion word that captures how you feel."
                       </p>
                       <Button
                         variant={isRecording && currentStep === 3 ? 'destructive' : 'default'}
                         onClick={() => handleVoiceStep(3)}
-                        className="w-full h-10 text-sm"
+                        className="w-full h-10 text-sm bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
                         disabled={!voiceSteps.anchor}
                       >
                         <Mic className="h-4 w-4 mr-2" />
                         {isRecording && currentStep === 3 ? 'Recording...' : 'Record Pulse'}
                       </Button>
                       {voiceSteps.pulse && (
-                        <div className="mt-2 p-2 bg-white rounded text-xs">
+                        <div className="mt-3 p-3 bg-white/80 rounded-lg text-xs border border-purple-200 text-center font-medium">
                           Pulse: "{voiceSteps.pulse}"
                         </div>
                       )}
