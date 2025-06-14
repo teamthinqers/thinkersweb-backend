@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Textarea } from '@/components/ui/textarea';
-import { Mic, MicOff, Type, X, Brain } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { useToast } from '@/hooks/use-toast';
+import { useState, useRef, useEffect } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Mic, MicOff, Type, X, ArrowLeft } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
 
 interface Position {
   x: number;
@@ -16,160 +16,150 @@ interface PWAFloatingDotProps {
 }
 
 export function PWAFloatingDot({ isActive }: PWAFloatingDotProps) {
-  const [position, setPosition] = useState<Position>(() => {
-    const saved = localStorage.getItem('pwa-dot-position');
-    return saved ? JSON.parse(saved) : { x: 20, y: 100 };
-  });
-  const [isDragging, setIsDragging] = useState(false);
+  const [position, setPosition] = useState<Position>({ x: 320, y: 180 });
   const [isExpanded, setIsExpanded] = useState(false);
   const [captureMode, setCaptureMode] = useState<'voice' | 'text' | null>(null);
   const [isRecording, setIsRecording] = useState(false);
-  const [textInput, setTextInput] = useState('');
-  const [dragOffset, setDragOffset] = useState<Position>({ x: 0, y: 0 });
-  const { toast } = useToast();
-
-  // Don't render if not active
-  if (!isActive) return null;
+  const [textInput, setTextInput] = useState("");
+  const [isDragging, setIsDragging] = useState(false);
+  const dotRef = useRef<HTMLDivElement>(null);
+  const { submitDotCapture } = useDotSpark();
 
   const handleMouseDown = (e: React.MouseEvent) => {
     if (isExpanded) return;
-    
+    e.preventDefault();
     setIsDragging(true);
-    const rect = e.currentTarget.getBoundingClientRect();
-    setDragOffset({
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top
-    });
-  };
-
-  const handleMouseMove = (e: MouseEvent) => {
-    if (!isDragging || isExpanded) return;
     
-    const newPosition = {
-      x: Math.max(0, Math.min(window.innerWidth - 60, e.clientX - dragOffset.x)),
-      y: Math.max(0, Math.min(window.innerHeight - 60, e.clientY - dragOffset.y))
+    const startX = e.clientX - position.x;
+    const startY = e.clientY - position.y;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const newX = Math.max(0, Math.min(window.innerWidth - 40, e.clientX - startX));
+      const newY = Math.max(0, Math.min(window.innerHeight - 40, e.clientY - startY));
+      setPosition({ x: newX, y: newY });
+      localStorage.setItem('pwa-floating-dot-position', JSON.stringify({ x: newX, y: newY }));
     };
-    
-    setPosition(newPosition);
-  };
 
-  const handleMouseUp = () => {
-    if (isDragging) {
+    const handleMouseUp = () => {
       setIsDragging(false);
-      localStorage.setItem('pwa-dot-position', JSON.stringify(position));
-    }
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
   };
 
   const handleTouchStart = (e: React.TouchEvent) => {
     if (isExpanded) return;
-    
-    const touch = e.touches[0];
-    setIsDragging(true);
-    const rect = e.currentTarget.getBoundingClientRect();
-    setDragOffset({
-      x: touch.clientX - rect.left,
-      y: touch.clientY - rect.top
-    });
-  };
-
-  const handleTouchMove = (e: TouchEvent) => {
-    if (!isDragging || isExpanded) return;
-    
     e.preventDefault();
-    const touch = e.touches[0];
-    const newPosition = {
-      x: Math.max(0, Math.min(window.innerWidth - 60, touch.clientX - dragOffset.x)),
-      y: Math.max(0, Math.min(window.innerHeight - 60, touch.clientY - dragOffset.y))
-    };
+    setIsDragging(true);
     
-    setPosition(newPosition);
-  };
+    const touch = e.touches[0];
+    const startX = touch.clientX - position.x;
+    const startY = touch.clientY - position.y;
 
-  const handleTouchEnd = () => {
-    if (isDragging) {
+    const handleTouchMove = (e: TouchEvent) => {
+      const touch = e.touches[0];
+      const newX = Math.max(0, Math.min(window.innerWidth - 40, touch.clientX - startX));
+      const newY = Math.max(0, Math.min(window.innerHeight - 40, touch.clientY - startY));
+      setPosition({ x: newX, y: newY });
+      localStorage.setItem('pwa-floating-dot-position', JSON.stringify({ x: newX, y: newY }));
+    };
+
+    const handleTouchEnd = () => {
       setIsDragging(false);
-      localStorage.setItem('pwa-dot-position', JSON.stringify(position));
-    }
-  };
+      document.removeEventListener('touchmove', handleTouchMove);
+      document.removeEventListener('touchend', handleTouchEnd);
+    };
 
-  useEffect(() => {
-    if (isDragging) {
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mouseup', handleMouseUp);
-      document.addEventListener('touchmove', handleTouchMove, { passive: false });
-      document.addEventListener('touchend', handleTouchEnd);
-      
-      return () => {
-        document.removeEventListener('mousemove', handleMouseMove);
-        document.removeEventListener('mouseup', handleMouseUp);
-        document.removeEventListener('touchmove', handleTouchMove);
-        document.removeEventListener('touchend', handleTouchEnd);
-      };
-    }
-  }, [isDragging, dragOffset]);
+    document.addEventListener('touchmove', handleTouchMove);
+    document.addEventListener('touchend', handleTouchEnd);
+  };
 
   const handleClick = () => {
-    if (!isDragging) {
+    if (!isDragging && !isExpanded) {
       setIsExpanded(true);
     }
   };
 
+  const handleClose = () => {
+    setIsExpanded(false);
+    setCaptureMode(null);
+    setTextInput("");
+    setIsRecording(false);
+  };
+
   const handleModeSelect = (mode: 'voice' | 'text') => {
     setCaptureMode(mode);
-  };
-
-  const handleVoiceToggle = () => {
-    setIsRecording(!isRecording);
-    // Voice recording logic would go here
-  };
-
-  const handleSubmit = () => {
-    if (!textInput.trim()) {
-      toast({
-        title: "No content to save",
-        description: "Please add some text or use voice recording",
-        variant: "destructive"
-      });
-      return;
+    if (mode === 'voice') {
+      startRecording();
     }
-
-    toast({
-      title: "Dot saved!",
-      description: "Your insight has been captured",
-    });
-
-    // Reset interface
-    setTextInput('');
-    setCaptureMode(null);
-    setIsExpanded(false);
   };
+
+  const startRecording = () => {
+    setIsRecording(true);
+    // Voice recording logic would go here
+    setTimeout(() => {
+      setIsRecording(false);
+      // Simulate voice capture completion
+    }, 3000);
+  };
+
+  const handleSubmit = async () => {
+    try {
+      if (captureMode === 'text' && textInput.trim()) {
+        await submitDotCapture({ type: 'text', content: textInput });
+        setTextInput("");
+      } else if (captureMode === 'voice') {
+        // Handle voice submission
+        await submitDotCapture({ type: 'voice', content: 'Voice recording captured' });
+      }
+      
+      handleClose();
+    } catch (error) {
+      console.error('Failed to submit dot capture:', error);
+    }
+  };
+
+  useEffect(() => {
+    const savedPosition = localStorage.getItem('pwa-floating-dot-position');
+    if (savedPosition) {
+      try {
+        const parsed = JSON.parse(savedPosition);
+        setPosition(parsed);
+      } catch (error) {
+        console.error('Failed to parse saved position:', error);
+      }
+    }
+  }, []);
+
+  if (!isActive) return null;
 
   return (
-    <div
-      className={cn(
-        "fixed z-50 select-none",
-        isDragging ? "cursor-grabbing" : "cursor-grab"
-      )}
-      style={{
-        left: position.x,
-        top: position.y,
-      }}
-    >
+    <div>
       {!isExpanded ? (
-        /* Collapsed Dot Button */
+        /* Collapsed Floating Dot */
         <div
-          className="w-14 h-14 bg-gradient-to-br from-amber-600 to-orange-700 hover:from-amber-700 hover:to-orange-800 rounded-full shadow-lg flex items-center justify-center transition-all duration-200 hover:scale-105 animate-pulse"
+          ref={dotRef}
+          className={cn(
+            "fixed z-[9999] transition-all duration-300 ease-in-out",
+            isDragging ? "cursor-grabbing" : "cursor-grab"
+          )}
+          style={{
+            left: position.x,
+            top: position.y
+          }}
           onMouseDown={handleMouseDown}
           onTouchStart={handleTouchStart}
           onClick={handleClick}
-          role="button"
-          tabIndex={0}
-          aria-label="Open DotSpark thought capture"
         >
-          <div className="w-3 h-3 rounded-full bg-white"></div>
+          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-600 to-orange-700 flex items-center justify-center animate-pulse shadow-lg hover:shadow-xl transition-shadow">
+            <div className="w-3 h-3 rounded-full bg-white"></div>
+          </div>
         </div>
       ) : (
-        /* Expanded Interface - Fixed Position in Screen Center */
+        /* Expanded Interface - Centered on Screen */
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/20 backdrop-blur-sm">
           <Card className="w-80 bg-white shadow-2xl border-0 rounded-2xl overflow-hidden">
             <CardContent className="p-0">
@@ -214,66 +204,76 @@ export function PWAFloatingDot({ isActive }: PWAFloatingDotProps) {
                     Close
                   </Button>
                 </div>
-            ) : (
-              /* Capture Interface */
-              <div className="p-6 space-y-6">
-                <div className="flex items-center justify-between">
-                  <Button
-                    variant="ghost"
-                    onClick={() => setCaptureMode(null)}
-                    className="h-8 w-8 p-0 rounded-full hover:bg-gray-100"
-                  >
-                    <X className="w-4 h-4" />
-                  </Button>
-                  <h3 className="text-lg font-semibold text-gray-800">
-                    {captureMode === 'voice' ? 'Voice Capture' : 'Text Capture'}
-                  </h3>
-                  <div className="w-8"></div>
-                </div>
-
-                {captureMode === 'voice' && (
-                  <div className="text-center space-y-4">
+              ) : (
+                /* Capture Interface */
+                <div className="p-6 space-y-6">
+                  <div className="flex items-center justify-between">
                     <Button
-                      onClick={handleVoiceToggle}
-                      className={cn(
-                        "w-20 h-20 rounded-full transition-all duration-300 shadow-lg",
-                        isRecording 
-                          ? "bg-red-500 hover:bg-red-600 animate-pulse" 
-                          : "bg-gradient-to-br from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700"
-                      )}
+                      variant="ghost"
+                      onClick={() => setCaptureMode(null)}
+                      className="h-8 w-8 p-0 rounded-full hover:bg-gray-100"
                     >
-                      {isRecording ? (
-                        <MicOff className="w-8 h-8" />
-                      ) : (
-                        <Mic className="w-8 h-8" />
-                      )}
+                      <ArrowLeft className="w-4 h-4" />
                     </Button>
-                    <p className="text-sm text-gray-600">
-                      {isRecording ? 'Listening... Tap to stop' : 'Tap to start recording'}
-                    </p>
+                    <h3 className="text-lg font-semibold text-gray-800">
+                      {captureMode === 'voice' ? 'Voice Capture' : 'Text Capture'}
+                    </h3>
+                    <Button
+                      variant="ghost"
+                      onClick={handleClose}
+                      className="h-8 w-8 p-0 rounded-full hover:bg-gray-100"
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
                   </div>
-                )}
 
-                <Textarea
-                  value={textInput}
-                  onChange={(e) => setTextInput(e.target.value)}
-                  placeholder={captureMode === 'voice' 
-                    ? "Your speech will appear here..." 
-                    : "Type your thoughts and insights..."
-                  }
-                  className="min-h-[120px] text-base resize-none rounded-xl border-2 border-gray-200 focus:border-amber-400 p-4"
-                  readOnly={captureMode === 'voice' && isRecording}
-                />
-
-                <Button 
-                  onClick={handleSubmit}
-                  className="w-full h-12 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl text-lg font-semibold shadow-lg"
-                  disabled={!textInput.trim()}
-                >
-                  Save a Dot
-                </Button>
-              </div>
-            )}
+                  {captureMode === 'voice' ? (
+                    <div className="text-center space-y-6">
+                      <div className="flex justify-center">
+                        <div className={cn(
+                          "w-20 h-20 rounded-full flex items-center justify-center transition-all duration-300",
+                          isRecording 
+                            ? "bg-red-500 animate-pulse" 
+                            : "bg-gradient-to-br from-amber-500 to-orange-600"
+                        )}>
+                          {isRecording ? (
+                            <MicOff className="w-8 h-8 text-white" />
+                          ) : (
+                            <Mic className="w-8 h-8 text-white" />
+                          )}
+                        </div>
+                      </div>
+                      <p className="text-gray-600">
+                        {isRecording ? "Recording..." : "Tap to start recording"}
+                      </p>
+                      {!isRecording && (
+                        <Button 
+                          onClick={startRecording}
+                          className="w-full h-12 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl text-lg font-semibold shadow-lg"
+                        >
+                          Start Recording
+                        </Button>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      <Textarea
+                        value={textInput}
+                        onChange={(e) => setTextInput(e.target.value)}
+                        placeholder="Enter your thought here..."
+                        className="min-h-32 text-base resize-none border-2 focus:border-amber-500 focus:ring-amber-500/20 rounded-xl"
+                      />
+                      <Button 
+                        onClick={handleSubmit}
+                        className="w-full h-12 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl text-lg font-semibold shadow-lg"
+                        disabled={!textInput.trim()}
+                      >
+                        Save a Dot
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
