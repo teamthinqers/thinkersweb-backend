@@ -191,14 +191,14 @@ export function PWAFloatingDot({ isActive }: PWAFloatingDotProps) {
               <div className="p-6 space-y-6">
                 <div className="text-center space-y-2">
                   <div className="flex justify-center mb-4">
-                    <div className="w-16 h-16 rounded-full bg-white border-2 border-amber-200 flex items-center justify-center overflow-hidden shadow-sm">
+                    <div className="w-16 h-16 rounded-full flex items-center justify-center overflow-hidden">
                       <img 
                         src="/attached_assets/dot_spark_logo-03_1749842817686.jpg" 
                         alt="DotSpark" 
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover rounded-full"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
-                          target.src = "/dotspark-brown-bg-icon.jpeg";
+                          target.src = "/dotspark-pwa-final.png";
                           target.onerror = () => {
                             target.src = "/dotspark-logo-icon.jpeg";
                           };

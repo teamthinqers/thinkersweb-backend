@@ -231,6 +231,11 @@ Changelog:
   * Fixed duplicate dots issue in mobile browser by separating desktop and PWA rendering
   * Created dedicated PWAFloatingDot component for standalone PWA mode with cross-page availability
   * Updated save button text from "Save Dot" to "Save a Dot" for consistency across all interfaces
+- June 14, 2025. Final floating dot logo and duplicate cleanup:
+  * Updated floating dot to use only brown circular dot logo instead of full logo element
+  * Removed duplicate FloatingDot component from DotSparkSettings that caused double dots on Neural page
+  * Changed logo above "Save a Dot" heading from white background full logo to circular dot icon only
+  * Achieved consistent circular dot icon usage throughout all floating dot interfaces
 - June 14, 2025. Updated PWA navigation to external DotSpark URLs:
   * "Open DotSpark App" button redirects to https://www.dotspark.in/my-neura
   * "My Neura" and "Access Neura" buttons redirect to https://www.dotspark.in/dashboard

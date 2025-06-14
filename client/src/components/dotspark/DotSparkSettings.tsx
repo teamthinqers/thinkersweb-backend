@@ -13,7 +13,7 @@ import {
   Zap,
   BrainCircuit
 } from "lucide-react";
-import { FloatingDot } from "./FloatingDot";
+
 import { useToast } from "@/hooks/use-toast";
 import { neuraStorage } from "@/lib/neuraStorage";
 
@@ -251,13 +251,7 @@ export function DotSparkSettings() {
         </div>
       </div>
 
-      {/* Render floating dot when DotSpark is activated */}
-      {isDotSparkActivated && (
-        <FloatingDot 
-          enabled={isDotSparkActivated}
-          onToggle={() => {}} // No toggle needed - controlled by DotSpark activation
-        />
-      )}
+
     </div>
   );
 }
