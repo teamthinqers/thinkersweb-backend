@@ -281,17 +281,15 @@ export function FloatingDot({ enabled, onToggle, className }: FloatingDotProps) 
         tabIndex={0}
       >
         <div className={cn(
-          "w-14 h-14 rounded-full shadow-lg transition-all duration-300",
-          "bg-gradient-to-br from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700",
-          "flex items-center justify-center text-white",
-          "border-2 border-white/20 hover:border-white/40",
+          "w-14 h-14 transition-all duration-300",
+          "flex items-center justify-center",
           "hover:scale-110 active:scale-95",
-          "overflow-hidden"
+          "drop-shadow-lg hover:drop-shadow-xl"
         )}>
           <img 
             src="/dotspark-pwa-final.png" 
             alt="DotSpark" 
-            className="w-8 h-8 rounded-sm"
+            className="w-14 h-14 rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
             draggable={false}
           />
         </div>
