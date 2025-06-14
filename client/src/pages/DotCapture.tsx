@@ -10,7 +10,8 @@ import {
   Send, 
   Globe,
   ArrowLeft,
-  Brain
+  Brain,
+  Sparkles
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
@@ -139,52 +140,69 @@ export default function DotCapture() {
 
           {/* Main Interface */}
           {showOptions ? (
-            /* Initial Options with Floating Dot */
-            <Card className="bg-white/80 backdrop-blur">
-              <CardContent className="p-6 space-y-6">
-                <p className="text-center text-gray-700 font-medium">
-                  Tap the blinking dot to save your thoughts
-                </p>
-                
-                {/* Blinking Floating Dot */}
-                <div className="flex justify-center">
-                  <div 
-                    className="w-16 h-16 rounded-full bg-gradient-to-br from-amber-600 to-orange-700 flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer animate-pulse"
-                    onClick={() => {
-                      setShowOptions(false);
-                      setCaptureMode('text');
-                    }}
-                  >
-                    <div className="w-6 h-6 rounded-full bg-white"></div>
-                  </div>
+            /* Enhanced Navigation Interface */
+            <Card className="bg-white/90 backdrop-blur-md border-0 shadow-2xl relative overflow-hidden">
+              <CardContent className="p-8 space-y-8 relative z-10">
+                {/* Animated dot connections background */}
+                <div className="absolute inset-0 z-0 opacity-20">
+                  {/* Connecting lines with animation */}
+                  <div className="absolute top-1/4 left-1/4 w-24 h-[1px] bg-gradient-to-r from-amber-400 to-orange-500 animate-pulse"></div>
+                  <div className="absolute top-1/2 right-1/4 w-20 h-[1px] bg-gradient-to-l from-amber-400 to-orange-500 animate-pulse delay-300"></div>
+                  <div className="absolute bottom-1/3 left-1/3 w-16 h-[1px] bg-gradient-to-r from-orange-400 to-amber-500 animate-pulse delay-500"></div>
+                  
+                  {/* Animated dots */}
+                  <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-amber-500 rounded-full animate-ping"></div>
+                  <div className="absolute top-1/2 right-1/4 w-1.5 h-1.5 bg-orange-500 rounded-full animate-ping delay-200"></div>
+                  <div className="absolute bottom-1/3 left-1/3 w-2 h-2 bg-amber-600 rounded-full animate-ping delay-400"></div>
+                  <div className="absolute top-3/4 right-1/3 w-1 h-1 bg-orange-400 rounded-full animate-ping delay-600"></div>
+                  
+                  {/* Spark effects */}
+                  <div className="absolute top-1/3 right-1/2 w-0.5 h-0.5 bg-yellow-400 rounded-full animate-ping delay-100"></div>
+                  <div className="absolute bottom-1/2 left-1/2 w-0.5 h-0.5 bg-yellow-300 rounded-full animate-ping delay-700"></div>
                 </div>
                 
-                <p className="text-center text-sm text-gray-600">
-                  Your valuable thoughts are stored as connected dots to spark progressive insights
-                </p>
-                
-                <div className="pt-4 border-t space-y-3">
+                {/* Enhanced Navigation Buttons */}
+                <div className="space-y-4">
                   <Button
                     onClick={() => window.open("https://www.dotspark.in/my-neura", "_blank")}
-                    variant="outline"
-                    className="w-full h-12 bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200 hover:from-amber-50 hover:to-orange-50 hover:border-amber-400 text-amber-800 hover:text-amber-900 font-medium transition-all duration-200 active:bg-amber-100"
+                    className="w-full h-16 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-600 hover:via-orange-600 hover:to-amber-700 text-white rounded-2xl shadow-xl border-0 transform transition-all duration-300 hover:scale-105 hover:shadow-2xl group relative overflow-hidden"
                   >
-                    <Globe className="w-5 h-5 mr-3 text-amber-700" />
-                    <div className="text-left">
-                      <div className="text-sm">Open DotSpark App</div>
-                      <div className="text-xs text-amber-600">Access full neural features</div>
+                    {/* Button glow effect */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/20 to-orange-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl"></div>
+                    
+                    <div className="relative z-10 flex items-center justify-center gap-3">
+                      <div className="p-2 bg-white/20 rounded-xl">
+                        <Sparkles className="w-6 h-6" />
+                      </div>
+                      <div className="flex flex-col items-start">
+                        <span className="text-lg font-bold">Open DotSpark App</span>
+                        <span className="text-sm opacity-90">Access full neural features</span>
+                      </div>
                     </div>
+                    
+                    {/* Animated spark */}
+                    <div className="absolute top-2 right-3 w-1 h-1 bg-yellow-300 rounded-full animate-ping opacity-70"></div>
                   </Button>
+                  
                   <Button
-                    onClick={() => window.open("https://www.dotspark.in/dashboard", "_blank")}
-                    variant="outline"
-                    className="w-full h-12 bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200 hover:from-amber-50 hover:to-orange-50 hover:border-amber-400 text-amber-800 hover:text-amber-900 font-medium transition-all duration-200 active:bg-amber-100"
+                    onClick={() => window.open("https://www.dotspark.in/my-neura", "_blank")}
+                    className="w-full h-16 bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-600 hover:from-indigo-600 hover:via-purple-600 hover:to-indigo-700 text-white rounded-2xl shadow-xl border-0 transform transition-all duration-300 hover:scale-105 hover:shadow-2xl group relative overflow-hidden"
                   >
-                    <Brain className="w-5 h-5 mr-3 text-amber-700" />
-                    <div className="text-left">
-                      <div className="text-sm">My Neura</div>
-                      <div className="text-xs text-amber-600">View neural insights & settings</div>
+                    {/* Button glow effect */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 to-purple-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl"></div>
+                    
+                    <div className="relative z-10 flex items-center justify-center gap-3">
+                      <div className="p-2 bg-white/20 rounded-xl">
+                        <Brain className="w-6 h-6" />
+                      </div>
+                      <div className="flex flex-col items-start">
+                        <span className="text-lg font-bold">My Neura</span>
+                        <span className="text-sm opacity-90">Neural intelligence dashboard</span>
+                      </div>
                     </div>
+                    
+                    {/* Animated neural pulse */}
+                    <div className="absolute top-2 right-3 w-1 h-1 bg-blue-300 rounded-full animate-ping opacity-70 delay-300"></div>
                   </Button>
                 </div>
               </CardContent>
