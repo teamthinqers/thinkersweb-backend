@@ -274,18 +274,7 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
               {captureMode === 'select' && (
                 <div className="p-6 space-y-6">
                   <div className="flex items-center justify-between mb-4">
-                    {isRunningAsStandalone() ? (
-                      <Button
-                        variant="ghost"
-                        onClick={() => window.location.href = '/dot'}
-                        className="h-8 w-8 p-0 rounded-full"
-                        title="Back to Dot Interface"
-                      >
-                        <ArrowLeft className="w-4 h-4" />
-                      </Button>
-                    ) : (
-                      <div className="w-8"></div>
-                    )}
+                    <div className="w-8"></div>
                     <h3 className="text-xl font-semibold text-gray-800">Save a Dot</h3>
                     <Button
                       variant="ghost"
