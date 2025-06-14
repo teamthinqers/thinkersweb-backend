@@ -117,14 +117,17 @@ export default function DotCapture() {
           
           {/* Dot Logo Header */}
           <div className="text-center space-y-4">
-            <div className="mx-auto w-24 h-24 flex items-center justify-center">
+            <div className="mx-auto w-24 h-24 rounded-full bg-white border-2 border-amber-200 flex items-center justify-center overflow-hidden shadow-lg">
               <img 
-                src="/dotspark-pwa-final.png" 
+                src="/attached_assets/dot_spark_logo-03_1749842817686.jpg" 
                 alt="DotSpark" 
-                className="w-20 h-20 object-contain"
+                className="w-full h-full object-cover"
                 onError={(e) => {
-                  console.log('Image failed to load, trying fallback');
-                  e.currentTarget.src = '/dotspark-logo-icon.jpeg';
+                  const target = e.target as HTMLImageElement;
+                  target.src = "/dotspark-brown-bg-icon.jpeg";
+                  target.onerror = () => {
+                    target.src = "/dotspark-logo-icon.jpeg";
+                  };
                 }}
               />
             </div>
@@ -140,7 +143,7 @@ export default function DotCapture() {
             <Card className="bg-white/80 backdrop-blur">
               <CardContent className="p-6 space-y-4">
                 <p className="text-center text-gray-700 font-medium">
-                  How would you like to capture your Dots?
+                  How would you like to capture your Dot?
                 </p>
                 
                 <div className="space-y-3">

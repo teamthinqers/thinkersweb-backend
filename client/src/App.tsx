@@ -42,6 +42,7 @@ import EntryDetail from "@/components/entries/EntryDetail";
 import ChatEntryForm from "@/components/chat/ChatEntryForm";
 import { AuthProvider, useAuth } from "@/hooks/use-auth";
 import { GlobalFloatingDot } from "@/components/dotspark/GlobalFloatingDot";
+import { PWAFloatingDot } from "@/components/dotspark/PWAFloatingDot";
 import { neuraStorage } from "@/lib/neuraStorage";
 import { Loader2 } from "lucide-react";
 import MockDashboard from "@/components/dashboard/MockDashboard";
@@ -356,8 +357,8 @@ function App() {
         )}
         <Router />
         <Toaster />
-        {/* Global Floating Dot for Desktop Browser Users */}
-        {!isRunningAsStandalone() && (
+        {/* Global Floating Dot - Only for non-PWA desktop/mobile browsers */}
+        {!isRunningAsStandalone() && !window.matchMedia('(max-width: 768px)').matches && (
           <GlobalFloatingDot isActive={isDotSparkActive || neuraStorage.isActivated()} />
         )}
         {/* iOS PWA Install Prompt */}
