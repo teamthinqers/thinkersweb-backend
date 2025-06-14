@@ -10,240 +10,161 @@ import {
   Mic, 
   Type, 
   Move, 
-  Eye,
-  EyeOff,
   Zap,
   BrainCircuit
 } from "lucide-react";
 import { FloatingDot } from "./FloatingDot";
 import { useToast } from "@/hooks/use-toast";
+import { neuraStorage } from "@/lib/neuraStorage";
 
 export function DotSparkSettings() {
-  const [floatingDotEnabled, setFloatingDotEnabled] = useState(false);
   const [voiceEnabled, setVoiceEnabled] = useState(true);
   const [textEnabled, setTextEnabled] = useState(true);
-  const [dotVisible, setDotVisible] = useState(true);
   const { toast } = useToast();
+  
+  // Check if DotSpark is activated - floating dot appears automatically when DotSpark is active
+  const isDotSparkActivated = neuraStorage.isActivated();
 
   // Load settings from localStorage
   useEffect(() => {
     const savedSettings = localStorage.getItem('dotspark-settings');
     if (savedSettings) {
       const settings = JSON.parse(savedSettings);
-      setFloatingDotEnabled(settings.floatingDotEnabled ?? false);
       setVoiceEnabled(settings.voiceEnabled ?? true);
       setTextEnabled(settings.textEnabled ?? true);
-      setDotVisible(settings.dotVisible ?? true);
     }
   }, []);
 
   // Save settings to localStorage
   const saveSettings = (newSettings: any) => {
     const settings = {
-      floatingDotEnabled,
       voiceEnabled,
       textEnabled,
-      dotVisible,
       ...newSettings
     };
     localStorage.setItem('dotspark-settings', JSON.stringify(settings));
   };
 
-  const handleFloatingDotToggle = (enabled: boolean) => {
-    setFloatingDotEnabled(enabled);
-    saveSettings({ floatingDotEnabled: enabled });
-    
-    if (enabled) {
-      toast({
-        title: "Floating Dot Activated",
-        description: "You can now capture thoughts anywhere with the floating dot",
-      });
-    } else {
-      toast({
-        title: "Floating Dot Deactivated",
-        description: "The floating dot has been hidden",
-      });
-    }
-  };
-
   const handleVoiceToggle = (enabled: boolean) => {
     setVoiceEnabled(enabled);
     saveSettings({ voiceEnabled: enabled });
+    
+    toast({
+      title: enabled ? "Voice capture enabled" : "Voice capture disabled",
+      description: enabled ? "You can now capture thoughts using voice input" : "Voice input has been disabled",
+    });
   };
 
   const handleTextToggle = (enabled: boolean) => {
     setTextEnabled(enabled);
     saveSettings({ textEnabled: enabled });
-  };
-
-  const handleVisibilityToggle = (visible: boolean) => {
-    setDotVisible(visible);
-    saveSettings({ dotVisible: visible });
-  };
-
-  const resetDotPosition = () => {
-    localStorage.removeItem('dotspark-dot-position');
+    
     toast({
-      title: "Position Reset",
-      description: "Floating dot position has been reset to default",
+      title: enabled ? "Text capture enabled" : "Text capture disabled",
+      description: enabled ? "You can now capture thoughts using text input" : "Text input has been disabled",
     });
   };
 
   return (
     <div className="space-y-6">
-      {/* Main Toggle Card */}
-      <Card className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 border-amber-200 dark:border-amber-800/50">
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center">
-                <Circle className="h-5 w-5 text-white fill-current" />
-              </div>
-              <div>
-                <CardTitle className="text-lg">Floating Dot</CardTitle>
-                <CardDescription>Quick thought capture anywhere on screen</CardDescription>
-              </div>
-            </div>
-            <Switch
-              checked={floatingDotEnabled}
-              onCheckedChange={handleFloatingDotToggle}
-              className="data-[state=checked]:bg-amber-600"
-            />
+      {/* Dot capture status */}
+      <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/50 dark:to-orange-950/50 rounded-lg p-4 border border-amber-200 dark:border-amber-800">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h3 className="text-lg font-semibold text-amber-900 dark:text-amber-100">Dot capture status</h3>
+            <p className="text-sm text-amber-700 dark:text-amber-300">
+              {isDotSparkActivated 
+                ? "DotSpark is active - floating dot is available for thought capture"
+                : "Activate DotSpark above to enable the floating dot"
+              }
+            </p>
           </div>
-        </CardHeader>
-        
-        {floatingDotEnabled && (
-          <CardContent className="pt-0">
-            <div className="space-y-4">
+          <div className="flex items-center gap-2">
+            <Circle 
+              className={`h-4 w-4 ${
+                isDotSparkActivated 
+                  ? 'text-green-600 fill-green-600' 
+                  : 'text-gray-400'
+              }`} 
+            />
+            <Badge 
+              variant={isDotSparkActivated ? "default" : "secondary"}
+              className={isDotSparkActivated 
+                ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200" 
+                : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400"
+              }
+            >
+              {isDotSparkActivated ? "Active" : "Inactive"}
+            </Badge>
+          </div>
+        </div>
+
+        {/* Capture method toggles - only show when DotSpark is activated */}
+        {isDotSparkActivated && (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="flex items-center justify-between p-3 bg-white/50 dark:bg-gray-800/50 rounded-lg">
                 <div className="flex items-center gap-2">
-                  <Eye className="h-4 w-4 text-muted-foreground" />
-                  <Label htmlFor="dot-visibility">Show floating dot</Label>
+                  <Type className="h-4 w-4 text-blue-600" />
+                  <Label htmlFor="text-capture">Text capture</Label>
                 </div>
                 <Switch
-                  id="dot-visibility"
-                  checked={dotVisible}
-                  onCheckedChange={handleVisibilityToggle}
+                  id="text-capture"
+                  checked={textEnabled}
+                  onCheckedChange={handleTextToggle}
                 />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="flex items-center justify-between p-3 bg-white/50 dark:bg-gray-800/50 rounded-lg">
-                  <div className="flex items-center gap-2">
-                    <Type className="h-4 w-4 text-blue-600" />
-                    <Label htmlFor="text-capture">Text capture</Label>
-                  </div>
-                  <Switch
-                    id="text-capture"
-                    checked={textEnabled}
-                    onCheckedChange={handleTextToggle}
-                  />
-                </div>
-
-                <div className="flex items-center justify-between p-3 bg-white/50 dark:bg-gray-800/50 rounded-lg">
-                  <div className="flex items-center gap-2">
-                    <Mic className="h-4 w-4 text-purple-600" />
-                    <Label htmlFor="voice-capture">Voice capture</Label>
-                  </div>
-                  <Switch
-                    id="voice-capture"
-                    checked={voiceEnabled}
-                    onCheckedChange={handleVoiceToggle}
-                  />
-                </div>
-              </div>
-
               <div className="flex items-center justify-between p-3 bg-white/50 dark:bg-gray-800/50 rounded-lg">
                 <div className="flex items-center gap-2">
-                  <Move className="h-4 w-4 text-muted-foreground" />
-                  <div>
-                    <Label>Dot Position</Label>
-                    <p className="text-xs text-muted-foreground">Drag the dot to reposition</p>
-                  </div>
+                  <Mic className="h-4 w-4 text-purple-600" />
+                  <Label htmlFor="voice-capture">Voice capture</Label>
                 </div>
-                <Button
-                  onClick={resetDotPosition}
-                  variant="outline"
-                  size="sm"
-                  className="text-xs"
-                >
-                  Reset
-                </Button>
+                <Switch
+                  id="voice-capture"
+                  checked={voiceEnabled}
+                  onCheckedChange={handleVoiceToggle}
+                />
               </div>
             </div>
-          </CardContent>
+
+            <div className="flex items-center justify-between p-3 bg-white/50 dark:bg-gray-800/50 rounded-lg mt-4">
+              <div className="flex items-center gap-2">
+                <Move className="h-4 w-4 text-green-600" />
+                <Label>Draggable positioning</Label>
+              </div>
+              <Badge variant="secondary" className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                Always enabled
+              </Badge>
+            </div>
+          </>
         )}
-      </Card>
-
-      {/* Feature Status */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Settings className="h-5 w-5" />
-            Feature Status
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
-              <div className="flex items-center gap-2">
-                <BrainCircuit className="h-4 w-4 text-amber-600" />
-                <span className="text-sm font-medium">Floating Dot</span>
-              </div>
-              <Badge variant={floatingDotEnabled ? "default" : "secondary"}>
-                {floatingDotEnabled ? "Active" : "Inactive"}
-              </Badge>
-            </div>
-
-            <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
-              <div className="flex items-center gap-2">
-                <Mic className="h-4 w-4 text-purple-600" />
-                <span className="text-sm font-medium">Voice Recognition</span>
-              </div>
-              <Badge variant={
-                'webkitSpeechRecognition' in window || 'SpeechRecognition' in window 
-                  ? "default" 
-                  : "destructive"
-              }>
-                {'webkitSpeechRecognition' in window || 'SpeechRecognition' in window 
-                  ? "Supported" 
-                  : "Not Supported"}
-              </Badge>
-            </div>
-
-            <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
-              <div className="flex items-center gap-2">
-                <Zap className="h-4 w-4 text-green-600" />
-                <span className="text-sm font-medium">Quick Capture</span>
-              </div>
-              <Badge variant={floatingDotEnabled && (textEnabled || voiceEnabled) ? "default" : "secondary"}>
-                {floatingDotEnabled && (textEnabled || voiceEnabled) ? "Ready" : "Disabled"}
-              </Badge>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      </div>
 
       {/* Instructions */}
-      {floatingDotEnabled && (
-        <Card className="bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-800/50">
-          <CardHeader>
-            <CardTitle className="text-blue-800 dark:text-blue-200">How to Use</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2 text-sm text-blue-700 dark:text-blue-300">
-            <p>• <strong>Click</strong> the floating dot to open the capture interface</p>
-            <p>• <strong>Drag</strong> the dot to reposition it anywhere on screen</p>
-            <p>• <strong>Choose</strong> between text or voice input for your thoughts</p>
-            <p>• <strong>Captured thoughts</strong> are automatically saved to your DotSpark entries</p>
-          </CardContent>
-        </Card>
-      )}
+      <div className="bg-blue-50 dark:bg-blue-950/50 rounded-lg p-4 border border-blue-200 dark:border-blue-800">
+        <div className="flex items-start gap-3">
+          <BrainCircuit className="h-5 w-5 text-blue-600 mt-0.5" />
+          <div>
+            <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-1">How to use DotSpark thought capture</h4>
+            <ul className="text-sm text-blue-700 dark:text-blue-300 space-y-1">
+              <li>• Activate DotSpark using the toggle at the top of the page</li>
+              <li>• The floating dot will appear automatically when DotSpark is active</li>
+              <li>• Click the dot to capture thoughts via text or voice</li>
+              <li>• Drag the dot to reposition it anywhere on screen</li>
+              <li>• Your thoughts are instantly processed and organized</li>
+            </ul>
+          </div>
+        </div>
+      </div>
 
-      {/* Floating Dot Component */}
-      <FloatingDot 
-        enabled={floatingDotEnabled && dotVisible} 
-        onToggle={handleFloatingDotToggle}
-      />
+      {/* Render floating dot when DotSpark is activated */}
+      {isDotSparkActivated && (
+        <FloatingDot 
+          enabled={isDotSparkActivated}
+          onToggle={() => {}} // No toggle needed - controlled by DotSpark activation
+        />
+      )}
     </div>
   );
 }
