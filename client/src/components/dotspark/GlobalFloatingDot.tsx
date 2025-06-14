@@ -297,22 +297,8 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
             localStorage.setItem('dotspark-dot-interacted', 'true');
           }}
         >
-          <div className="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden">
-            <img 
-              src="/attached_assets/dot_spark_logo-03_1749842817686.jpg" 
-              alt="DotSpark" 
-              className="w-full h-full object-cover rounded-full"
-              draggable={false}
-              onError={(e) => {
-                // Fallback to public directory logo
-                const target = e.target as HTMLImageElement;
-                target.src = "/dotspark-pwa-final.png";
-                target.onerror = () => {
-                  // Final fallback
-                  target.src = "/dotspark-logo-icon.jpeg";
-                };
-              }}
-            />
+          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-600 to-orange-700 flex items-center justify-center animate-pulse">
+            <div className="w-3 h-3 rounded-full bg-white"></div>
           </div>
         </div>
       ) : (
@@ -325,19 +311,8 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
                 {/* Header */}
                 <div className="text-center space-y-2">
                   <div className="flex justify-center mb-4">
-                    <div className="w-16 h-16 rounded-full flex items-center justify-center overflow-hidden">
-                      <img 
-                        src="/attached_assets/dot_spark_logo-03_1749842817686.jpg" 
-                        alt="DotSpark" 
-                        className="w-full h-full object-cover rounded-full"
-                        onError={(e) => {
-                          const target = e.target as HTMLImageElement;
-                          target.src = "/dotspark-pwa-final.png";
-                          target.onerror = () => {
-                            target.src = "/dotspark-logo-icon.jpeg";
-                          };
-                        }}
-                      />
+                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-amber-600 to-orange-700 flex items-center justify-center shadow-lg">
+                      <div className="w-6 h-6 rounded-full bg-white"></div>
                     </div>
                   </div>
                   <h2 className="text-xl font-bold bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent">

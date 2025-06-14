@@ -244,6 +244,11 @@ Changelog:
   * Reduced activation polling frequency from 1 second to 5 seconds for better performance
   * Removed excessive console logging from DotSpark activation checks
   * Improved overall application performance and console cleanliness
+- June 14, 2025. Simplified floating dot design:
+  * Replaced all logo images with pure CSS design: brown gradient circle with white center dot
+  * Added blinking animation with animate-pulse for visual feedback
+  * Eliminated image loading complications and fallback handling
+  * Achieved consistent brown background with solid white dot across all floating dot interfaces
 - June 14, 2025. Updated PWA navigation to external DotSpark URLs:
   * "Open DotSpark App" button redirects to https://www.dotspark.in/my-neura
   * "My Neura" and "Access Neura" buttons redirect to https://www.dotspark.in/dashboard
