@@ -209,6 +209,11 @@ Changelog:
   * Implemented proper navigation functionality for My Neura button
   * Enhanced visual hierarchy with larger icons and improved spacing
   * Added smooth hover transitions and brand-specific color schemes
+- June 14, 2025. Cleaned up Dot Settings interface:
+  * Removed floating dot active status button and indicators from Dot Settings section
+  * Removed "Level 1" tag from Dot Settings header for cleaner appearance
+  * Simplified Dot Settings to focus purely on capture mode configuration
+  * Updated header layout to show only Settings icon and title without status badges
 ```
 
 ## User Preferences
