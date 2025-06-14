@@ -297,16 +297,20 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
             localStorage.setItem('dotspark-dot-interacted', 'true');
           }}
         >
-          <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center overflow-hidden">
+          <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center overflow-hidden shadow-sm border">
             <img 
-              src="/dotspark-logo-icon.jpeg" 
+              src="/attached_assets/dot_spark_logo-03_1749842817686.jpg" 
               alt="DotSpark" 
-              className="w-8 h-8 object-contain"
+              className="w-full h-full object-cover"
               draggable={false}
               onError={(e) => {
-                // Fallback to another logo if this one fails
+                // Fallback to public directory logo
                 const target = e.target as HTMLImageElement;
                 target.src = "/dotspark-brown-bg-icon.jpeg";
+                target.onerror = () => {
+                  // Final fallback
+                  target.src = "/dotspark-logo-icon.jpeg";
+                };
               }}
             />
           </div>
@@ -321,14 +325,17 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
                 {/* Header */}
                 <div className="text-center space-y-2">
                   <div className="flex justify-center mb-4">
-                    <div className="w-16 h-16 rounded-full bg-amber-100 border-2 border-amber-200 flex items-center justify-center overflow-hidden">
+                    <div className="w-16 h-16 rounded-full bg-white border-2 border-amber-200 flex items-center justify-center overflow-hidden shadow-sm">
                       <img 
-                        src="/dotspark-logo-icon.jpeg" 
+                        src="/attached_assets/dot_spark_logo-03_1749842817686.jpg" 
                         alt="DotSpark" 
-                        className="w-12 h-12 object-contain"
+                        className="w-full h-full object-cover"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
                           target.src = "/dotspark-brown-bg-icon.jpeg";
+                          target.onerror = () => {
+                            target.src = "/dotspark-logo-icon.jpeg";
+                          };
                         }}
                       />
                     </div>
@@ -343,17 +350,16 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
                 <div className="space-y-4">
                   <Button
                     onClick={() => handleModeSelect('voice')}
-                    className="w-full h-16 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl shadow-lg text-lg font-semibold"
+                    className="w-full h-16 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl shadow-lg text-lg font-semibold transition-all duration-200"
                   >
                     <Mic className="w-6 h-6 mr-3" />
                     Voice
                   </Button>
                   <Button
                     onClick={() => handleModeSelect('text')}
-                    variant="outline"
-                    className="w-full h-16 bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-200 hover:from-amber-50 hover:to-orange-50 hover:border-amber-400 text-amber-800 hover:text-amber-900 rounded-xl text-lg font-semibold"
+                    className="w-full h-16 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl shadow-lg text-lg font-semibold transition-all duration-200"
                   >
-                    <Type className="w-6 h-6 mr-3 text-amber-700" />
+                    <Type className="w-6 h-6 mr-3" />
                     Text
                   </Button>
                 </div>

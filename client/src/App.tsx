@@ -254,7 +254,7 @@ function App() {
     checkActivation();
     
     // Check periodically to ensure we catch activation changes
-    const interval = setInterval(checkActivation, 2000);
+    const interval = setInterval(checkActivation, 1000);
     
     // Listen for storage changes (when DotSpark is activated/deactivated)
     const handleStorageChange = (e: StorageEvent) => {
@@ -357,8 +357,8 @@ function App() {
         <Router />
         <Toaster />
         {/* Global Floating Dot for Desktop Browser Users */}
-        {(isDotSparkActive || neuraStorage.isActivated()) && !isRunningAsStandalone() && (
-          <GlobalFloatingDot isActive={true} />
+        {!isRunningAsStandalone() && (
+          <GlobalFloatingDot isActive={isDotSparkActive || neuraStorage.isActivated()} />
         )}
         {/* iOS PWA Install Prompt */}
         <IosPwaInstallPrompt />
