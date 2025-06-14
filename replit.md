@@ -292,6 +292,11 @@ Changelog:
   * Added "Save a Dot" button with orange-amber-yellow gradient matching theme colors
   * Changed My Neura button color to amber/orange theme to match brand consistency
   * Updated My Neura button navigation to /dashboard for proper routing
+- June 14, 2025. Comprehensive PWA dot interface improvements:
+  * Enhanced floating dot with multiple pulsing rings and intense blinking for maximum visibility
+  * Fixed "Save a Dot" button to show voice/text choice dialog matching floating dot behavior
+  * Updated "Open DotSpark App" button text from "Access full neural features" to "Access full App"
+  * Aligned all button icons with consistent flex centering for perfect straight alignment
 - June 14, 2025. Updated home page "Explore DotSpark Neura" button:
   * Changed from internal navigation (/neura) to external redirect to https://www.dotspark.in/dashboard
   * Button now opens dashboard in new tab for seamless access to full application features
