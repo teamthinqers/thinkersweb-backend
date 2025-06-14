@@ -342,13 +342,7 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                       <ArrowLeft className="w-4 h-4" />
                     </Button>
                     <h3 className="font-medium">Three Layer Text Input</h3>
-                    <Button
-                      variant="ghost"
-                      onClick={isRunningAsStandalone() ? () => window.location.href = '/dot' : handleClose}
-                      className="h-8 w-8 p-0 rounded-full"
-                    >
-                      {isRunningAsStandalone() ? <ArrowLeft className="w-4 h-4" /> : <X className="w-4 h-4" />}
-                    </Button>
+                    <div className="w-8"></div>
                   </div>
                   
                   <div className="space-y-3">
@@ -421,13 +415,7 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                       <ArrowLeft className="w-4 h-4" />
                     </Button>
                     <h3 className="font-medium">Voice Guided Prompts</h3>
-                    <Button
-                      variant="ghost"
-                      onClick={isRunningAsStandalone() ? () => window.location.href = '/dot' : handleClose}
-                      className="h-8 w-8 p-0 rounded-full"
-                    >
-                      {isRunningAsStandalone() ? <ArrowLeft className="w-4 h-4" /> : <X className="w-4 h-4" />}
-                    </Button>
+                    <div className="w-8"></div>
                   </div>
                   
                   <div className="space-y-3">
