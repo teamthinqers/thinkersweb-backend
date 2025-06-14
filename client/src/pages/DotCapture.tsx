@@ -139,30 +139,29 @@ export default function DotCapture() {
 
           {/* Main Interface */}
           {showOptions ? (
-            /* Initial Options */
+            /* Initial Options with Floating Dot */
             <Card className="bg-white/80 backdrop-blur">
-              <CardContent className="p-6 space-y-4">
+              <CardContent className="p-6 space-y-6">
                 <p className="text-center text-gray-700 font-medium">
-                  How would you like to capture your Dot?
+                  Tap the blinking dot to save your thoughts
                 </p>
                 
-                <div className="space-y-3">
-                  <Button
-                    onClick={handleVoiceToggle}
-                    className="w-full h-14 text-lg bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700"
+                {/* Blinking Floating Dot */}
+                <div className="flex justify-center">
+                  <div 
+                    className="w-16 h-16 rounded-full bg-gradient-to-br from-amber-600 to-orange-700 flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer animate-pulse"
+                    onClick={() => {
+                      setShowOptions(false);
+                      setCaptureMode('text');
+                    }}
                   >
-                    <Mic className="w-6 h-6 mr-3" />
-                    Voice
-                  </Button>
-                  
-                  <Button
-                    onClick={handleTextMode}
-                    className="w-full h-14 text-lg bg-gradient-to-r from-amber-600 to-orange-700 hover:from-amber-700 hover:to-orange-800 text-white"
-                  >
-                    <Type className="w-6 h-6 mr-3" />
-                    Text
-                  </Button>
+                    <div className="w-6 h-6 rounded-full bg-white"></div>
+                  </div>
                 </div>
+                
+                <p className="text-center text-sm text-gray-600">
+                  Your valuable thoughts are stored as connected dots to spark progressive insights
+                </p>
                 
                 <div className="pt-4 border-t space-y-3">
                   <Button

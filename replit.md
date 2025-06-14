@@ -270,6 +270,12 @@ Changelog:
   * Changed placeholder text to "Enter your thoughts here" across all text capture interfaces
   * Updated FloatingDot, DotCapture, GlobalFloatingDot, and PWAFloatingDot components
   * Maintained consistent user experience across web browser and PWA modes
+- June 14, 2025. Streamlined PWA Dot Interface:
+  * Removed text and voice buttons from main PWA interface
+  * Replaced with single blinking floating dot that users tap to save thoughts
+  * Added clear instruction: "Tap the blinking dot to save your thoughts"
+  * PWAFloatingDot component maintains spontaneous blinking animation
+  * Simplified user experience eliminates choice paralysis
 - June 14, 2025. Updated home page "Explore DotSpark Neura" button:
   * Changed from internal navigation (/neura) to external redirect to https://www.dotspark.in/dashboard
   * Button now opens dashboard in new tab for seamless access to full application features
