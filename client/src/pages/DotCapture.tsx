@@ -134,7 +134,7 @@ export default function DotCapture() {
             </div>
             <div>
               <h1 className="text-3xl font-bold bg-gradient-to-r from-amber-700 to-orange-800 bg-clip-text text-transparent">DotSpark</h1>
-              <p className="text-gray-600">Capture your Thoughts/Insights as Dots instantly</p>
+              <p className="text-gray-600">Capture your Thoughts/Insights as Dots Instantly!</p>
             </div>
           </div>
 
@@ -334,7 +334,7 @@ export default function DotCapture() {
           {/* Quick Tips */}
           <div className="text-center space-y-2">
             <p className="text-sm text-gray-500">
-              Your valuable thoughts are stored as connected dots to spark progressive insights
+              Your valuable thoughts are stored as connected dots to Spark Progressive Insights
             </p>
           </div>
         </div>
