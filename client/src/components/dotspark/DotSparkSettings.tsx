@@ -113,77 +113,172 @@ export function DotSparkSettings() {
       </div>
 
       {/* Mode Selection - always visible */}
-      <div className="space-y-4">
-        <h4 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Choose your capture mode</h4>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="space-y-6">
+        <div className="text-center">
+          <h4 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">Choose your capture mode</h4>
+          <p className="text-sm text-gray-600 dark:text-gray-400">Select how you prefer to capture your thoughts with DotSpark</p>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Voice Only */}
-          <button
+          <div
             onClick={() => handleModeChange('voice')}
-            className={`p-4 rounded-lg border-2 transition-all ${
+            className={`group relative cursor-pointer rounded-xl p-6 transition-all duration-300 transform hover:scale-105 hover:shadow-lg ${
               captureMode === 'voice'
-                ? 'border-purple-500 bg-purple-50 dark:bg-purple-950/50'
-                : 'border-gray-200 dark:border-gray-700 hover:border-purple-300'
+                ? 'bg-gradient-to-br from-purple-500 to-purple-600 text-white shadow-purple-500/25 shadow-xl'
+                : 'bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 hover:border-purple-300 dark:hover:border-purple-600 hover:shadow-md'
             }`}
           >
-            <div className="flex flex-col items-center gap-3">
-              <Mic className={`h-8 w-8 ${captureMode === 'voice' ? 'text-purple-600' : 'text-gray-500'}`} />
-              <div className="text-center">
-                <div className={`text-sm font-semibold ${captureMode === 'voice' ? 'text-purple-900 dark:text-purple-100' : 'text-gray-600 dark:text-gray-400'}`}>
-                  Voice Only
-                </div>
-                <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                  Speak your thoughts
-                </div>
+            <div className="flex flex-col items-center gap-4">
+              <div className={`p-3 rounded-full ${
+                captureMode === 'voice' 
+                  ? 'bg-white/20' 
+                  : 'bg-purple-100 dark:bg-purple-900/30'
+              }`}>
+                <Mic className={`h-8 w-8 ${
+                  captureMode === 'voice' 
+                    ? 'text-white' 
+                    : 'text-purple-600 dark:text-purple-400'
+                }`} />
               </div>
+              
+              <div className="text-center">
+                <h5 className={`text-lg font-bold mb-1 ${
+                  captureMode === 'voice' 
+                    ? 'text-white' 
+                    : 'text-gray-900 dark:text-gray-100'
+                }`}>
+                  Voice Only
+                </h5>
+                <p className={`text-sm ${
+                  captureMode === 'voice' 
+                    ? 'text-white/80' 
+                    : 'text-gray-600 dark:text-gray-400'
+                }`}>
+                  Speak your thoughts naturally
+                </p>
+              </div>
+              
+              {captureMode === 'voice' && (
+                <div className="absolute -top-2 -right-2 bg-white rounded-full p-1">
+                  <div className="bg-purple-500 rounded-full p-1">
+                    <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                </div>
+              )}
             </div>
-          </button>
+          </div>
 
           {/* Text Only */}
-          <button
+          <div
             onClick={() => handleModeChange('text')}
-            className={`p-4 rounded-lg border-2 transition-all ${
+            className={`group relative cursor-pointer rounded-xl p-6 transition-all duration-300 transform hover:scale-105 hover:shadow-lg ${
               captureMode === 'text'
-                ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/50'
-                : 'border-gray-200 dark:border-gray-700 hover:border-blue-300'
+                ? 'bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-blue-500/25 shadow-xl'
+                : 'bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-md'
             }`}
           >
-            <div className="flex flex-col items-center gap-3">
-              <Type className={`h-8 w-8 ${captureMode === 'text' ? 'text-blue-600' : 'text-gray-500'}`} />
-              <div className="text-center">
-                <div className={`text-sm font-semibold ${captureMode === 'text' ? 'text-blue-900 dark:text-blue-100' : 'text-gray-600 dark:text-gray-400'}`}>
-                  Text Only
-                </div>
-                <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                  Type your thoughts
-                </div>
+            <div className="flex flex-col items-center gap-4">
+              <div className={`p-3 rounded-full ${
+                captureMode === 'text' 
+                  ? 'bg-white/20' 
+                  : 'bg-blue-100 dark:bg-blue-900/30'
+              }`}>
+                <Type className={`h-8 w-8 ${
+                  captureMode === 'text' 
+                    ? 'text-white' 
+                    : 'text-blue-600 dark:text-blue-400'
+                }`} />
               </div>
+              
+              <div className="text-center">
+                <h5 className={`text-lg font-bold mb-1 ${
+                  captureMode === 'text' 
+                    ? 'text-white' 
+                    : 'text-gray-900 dark:text-gray-100'
+                }`}>
+                  Text Only
+                </h5>
+                <p className={`text-sm ${
+                  captureMode === 'text' 
+                    ? 'text-white/80' 
+                    : 'text-gray-600 dark:text-gray-400'
+                }`}>
+                  Type your thoughts precisely
+                </p>
+              </div>
+              
+              {captureMode === 'text' && (
+                <div className="absolute -top-2 -right-2 bg-white rounded-full p-1">
+                  <div className="bg-blue-500 rounded-full p-1">
+                    <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                </div>
+              )}
             </div>
-          </button>
+          </div>
 
           {/* Hybrid Mode */}
-          <button
+          <div
             onClick={() => handleModeChange('hybrid')}
-            className={`p-4 rounded-lg border-2 transition-all ${
+            className={`group relative cursor-pointer rounded-xl p-6 transition-all duration-300 transform hover:scale-105 hover:shadow-lg ${
               captureMode === 'hybrid'
-                ? 'border-green-500 bg-green-50 dark:bg-green-950/50'
-                : 'border-gray-200 dark:border-gray-700 hover:border-green-300'
+                ? 'bg-gradient-to-br from-green-500 to-green-600 text-white shadow-green-500/25 shadow-xl'
+                : 'bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 hover:border-green-300 dark:hover:border-green-600 hover:shadow-md'
             }`}
           >
-            <div className="flex flex-col items-center gap-3">
-              <div className="flex items-center gap-1">
-                <Mic className={`h-6 w-6 ${captureMode === 'hybrid' ? 'text-green-600' : 'text-gray-500'}`} />
-                <Type className={`h-6 w-6 ${captureMode === 'hybrid' ? 'text-green-600' : 'text-gray-500'}`} />
+            <div className="flex flex-col items-center gap-4">
+              <div className={`p-3 rounded-full ${
+                captureMode === 'hybrid' 
+                  ? 'bg-white/20' 
+                  : 'bg-green-100 dark:bg-green-900/30'
+              }`}>
+                <div className="flex items-center gap-1">
+                  <Mic className={`h-6 w-6 ${
+                    captureMode === 'hybrid' 
+                      ? 'text-white' 
+                      : 'text-green-600 dark:text-green-400'
+                  }`} />
+                  <Type className={`h-6 w-6 ${
+                    captureMode === 'hybrid' 
+                      ? 'text-white' 
+                      : 'text-green-600 dark:text-green-400'
+                  }`} />
+                </div>
               </div>
+              
               <div className="text-center">
-                <div className={`text-sm font-semibold ${captureMode === 'hybrid' ? 'text-green-900 dark:text-green-100' : 'text-gray-600 dark:text-gray-400'}`}>
+                <h5 className={`text-lg font-bold mb-1 ${
+                  captureMode === 'hybrid' 
+                    ? 'text-white' 
+                    : 'text-gray-900 dark:text-gray-100'
+                }`}>
                   Hybrid Mode
-                </div>
-                <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                  Voice or text
-                </div>
+                </h5>
+                <p className={`text-sm ${
+                  captureMode === 'hybrid' 
+                    ? 'text-white/80' 
+                    : 'text-gray-600 dark:text-gray-400'
+                }`}>
+                  Switch between voice & text
+                </p>
               </div>
+              
+              {captureMode === 'hybrid' && (
+                <div className="absolute -top-2 -right-2 bg-white rounded-full p-1">
+                  <div className="bg-green-500 rounded-full p-1">
+                    <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                </div>
+              )}
             </div>
-          </button>
+          </div>
         </div>
       </div>
 
