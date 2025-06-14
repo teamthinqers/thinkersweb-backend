@@ -297,11 +297,11 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
             localStorage.setItem('dotspark-dot-interacted', 'true');
           }}
         >
-          <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center overflow-hidden shadow-sm border">
+          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center overflow-hidden shadow-sm border border-white">
             <img 
               src="/attached_assets/dot_spark_logo-03_1749842817686.jpg" 
               alt="DotSpark" 
-              className="w-full h-full object-cover"
+              className="w-8 h-8 object-contain"
               draggable={false}
               onError={(e) => {
                 // Fallback to public directory logo
