@@ -315,6 +315,12 @@ Changelog:
 - June 14, 2025. Updated PWA interface copy:
   * Changed "Capture your Thoughts/Insights as Dots instantly" to "Capture your Thoughts/Insights as Dots Instantly!"
   * Updated "Your valuable thoughts are stored as connected dots to spark progressive insights" to "Your valuable thoughts are stored as connected dots to Spark Progressive Insights"
+- June 14, 2025. Added PWA-specific navigation to floating dot interface:
+  * Added backspace button in PWA mode that navigates back to /dot interface
+  * PWA users see "Back to Dot Interface" instead of "Close" in main floating dot screen
+  * PWA users see backspace arrow instead of X close icon in capture screens
+  * Web browser users continue to see standard close/minimize buttons unchanged
+  * Implemented automatic PWA standalone mode detection using isRunningAsStandalone() utility
 - June 14, 2025. Updated home page "Explore DotSpark Neura" button:
   * Changed from internal navigation (/neura) to external redirect to https://www.dotspark.in/dashboard
   * Button now opens dashboard in new tab for seamless access to full application features

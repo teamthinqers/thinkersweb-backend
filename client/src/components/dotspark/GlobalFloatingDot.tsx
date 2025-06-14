@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Mic, MicOff, Type, X, ArrowLeft, Minimize2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
+import { isRunningAsStandalone } from "@/lib/pwaUtils";
 
 interface Position {
   x: number;
@@ -245,16 +246,27 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
                     </Button>
                   </div>
 
-                  {/* Close button */}
+                  {/* Close/Back button */}
                   <div className="pt-4 border-t">
-                    <Button
-                      variant="ghost"
-                      onClick={handleClose}
-                      className="w-full text-gray-500 hover:text-gray-700"
-                    >
-                      <Minimize2 className="w-4 h-4 mr-2" />
-                      Close
-                    </Button>
+                    {isRunningAsStandalone() ? (
+                      <Button
+                        variant="ghost"
+                        onClick={() => window.location.href = '/dot'}
+                        className="w-full text-gray-500 hover:text-gray-700"
+                      >
+                        <ArrowLeft className="w-4 h-4 mr-2" />
+                        Back to Dot Interface
+                      </Button>
+                    ) : (
+                      <Button
+                        variant="ghost"
+                        onClick={handleClose}
+                        className="w-full text-gray-500 hover:text-gray-700"
+                      >
+                        <Minimize2 className="w-4 h-4 mr-2" />
+                        Close
+                      </Button>
+                    )}
                   </div>
                 </div>
               ) : (
@@ -273,10 +285,10 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
                     </h3>
                     <Button
                       variant="ghost"
-                      onClick={handleClose}
+                      onClick={isRunningAsStandalone() ? () => window.location.href = '/dot' : handleClose}
                       className="h-8 w-8 p-0 rounded-full hover:bg-gray-100"
                     >
-                      <X className="w-4 h-4" />
+                      {isRunningAsStandalone() ? <ArrowLeft className="w-4 h-4" /> : <X className="w-4 h-4" />}
                     </Button>
                   </div>
 
