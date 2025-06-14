@@ -262,6 +262,10 @@ Changelog:
   * Removed PWA mode restriction from GlobalFloatingDot component
   * Floating dot now appears consistently in both web browser and PWA standalone modes
   * Users can access the blinking dot functionality across all environments when DotSpark is activated
+- June 14, 2025. Enhanced PWA hamburger menu:
+  * Increased DotSpark logo size from h-8 to h-10 for better visibility in mobile menu
+  * Confirmed Home menu item already includes HomeIcon as requested
+  * Maintained consistent amber/orange color theming throughout mobile navigation
 - June 14, 2025. Updated home page "Explore DotSpark Neura" button:
   * Changed from internal navigation (/neura) to external redirect to https://www.dotspark.in/dashboard
   * Button now opens dashboard in new tab for seamless access to full application features
