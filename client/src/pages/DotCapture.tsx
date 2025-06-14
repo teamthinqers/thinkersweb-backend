@@ -193,26 +193,61 @@ export default function DotCapture() {
             <Card className="bg-white/80 backdrop-blur">
               <CardContent className="p-6 space-y-4">
                 {captureMode === 'voice' && (
-                  <div className="text-center space-y-4">
-                    <Button
-                      onClick={handleVoiceToggle}
-                      size="lg"
-                      className={cn(
-                        "w-24 h-24 rounded-full transition-all duration-300",
-                        isRecording 
-                          ? "bg-red-500 hover:bg-red-600 scale-110 animate-pulse" 
-                          : "bg-gradient-to-br from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700"
-                      )}
+                  <>
+                    <div className="flex justify-start mb-4">
+                      <Button 
+                        onClick={() => {
+                          setShowOptions(true);
+                          setTextInput('');
+                          setIsRecording(false);
+                        }}
+                        variant="outline"
+                        size="sm"
+                        className="h-8 px-3"
+                      >
+                        <ArrowLeft className="w-4 h-4 mr-1" />
+                        Back
+                      </Button>
+                    </div>
+                    <div className="text-center space-y-4">
+                      <Button
+                        onClick={handleVoiceToggle}
+                        size="lg"
+                        className={cn(
+                          "w-24 h-24 rounded-full transition-all duration-300",
+                          isRecording 
+                            ? "bg-red-500 hover:bg-red-600 scale-110 animate-pulse" 
+                            : "bg-gradient-to-br from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700"
+                        )}
+                      >
+                        {isRecording ? (
+                          <MicOff className="w-8 h-8" />
+                        ) : (
+                          <Mic className="w-8 h-8" />
+                        )}
+                      </Button>
+                      <p className="text-gray-600 font-medium">
+                        {isRecording ? 'Listening... Tap to stop' : 'Tap to start recording'}
+                      </p>
+                    </div>
+                  </>
+                )}
+
+                {captureMode === 'text' && (
+                  <div className="flex justify-start mb-4">
+                    <Button 
+                      onClick={() => {
+                        setShowOptions(true);
+                        setTextInput('');
+                        setIsRecording(false);
+                      }}
+                      variant="outline"
+                      size="sm"
+                      className="h-8 px-3"
                     >
-                      {isRecording ? (
-                        <MicOff className="w-8 h-8" />
-                      ) : (
-                        <Mic className="w-8 h-8" />
-                      )}
+                      <ArrowLeft className="w-4 h-4 mr-1" />
+                      Back
                     </Button>
-                    <p className="text-gray-600 font-medium">
-                      {isRecording ? 'Listening... Tap to stop' : 'Tap to start recording'}
-                    </p>
                   </div>
                 )}
 
@@ -230,21 +265,10 @@ export default function DotCapture() {
                 <div className="flex gap-2">
                   <Button 
                     onClick={handleSubmit}
-                    className="flex-1 h-12"
+                    className="w-full h-12"
                     disabled={!textInput.trim()}
                   >
                     Save Dot
-                  </Button>
-                  <Button 
-                    onClick={() => {
-                      setShowOptions(true);
-                      setTextInput('');
-                      setIsRecording(false);
-                    }}
-                    variant="outline"
-                    className="h-12 px-4"
-                  >
-                    <ArrowLeft className="w-4 h-4" />
                   </Button>
                 </div>
                 

@@ -214,6 +214,13 @@ Changelog:
   * Removed "Level 1" tag from Dot Settings header for cleaner appearance
   * Simplified Dot Settings to focus purely on capture mode configuration
   * Updated header layout to show only Settings icon and title without status badges
+- June 14, 2025. Enhanced DotSpark PWA capture interface navigation:
+  * Added backspace buttons at the top of both voice and text capture sections
+  * Removed redundant backspace button from bottom action bar for cleaner interface
+  * Made "Save Dot" button full width for improved usability
+  * Enhanced text button with blue gradient background matching voice button quality
+  * Fixed navigation button readability issues preventing white text on click
+  * Improved button styling with consistent color schemes and hover states
 ```
 
 ## User Preferences
