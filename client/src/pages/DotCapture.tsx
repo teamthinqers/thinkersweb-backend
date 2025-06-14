@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent } from '@/components/ui/card';
@@ -15,6 +16,7 @@ import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 
 export default function DotCapture() {
+  const [, setLocation] = useLocation();
   const [isRecording, setIsRecording] = useState(false);
   const [textInput, setTextInput] = useState('');
   const [captureMode, setCaptureMode] = useState<'voice' | 'text'>('voice');
@@ -161,10 +163,7 @@ export default function DotCapture() {
                 
                 <div className="pt-4 border-t space-y-3">
                   <Button
-                    onClick={() => {
-                      // Navigate to My Neura page
-                      window.location.href = '/my-neura';
-                    }}
+                    onClick={() => setLocation("/my-neura")}
                     variant="outline"
                     className="w-full h-12 bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200 hover:from-amber-50 hover:to-orange-50 hover:border-amber-400 text-amber-800 hover:text-amber-900 font-medium transition-all duration-200 active:bg-amber-100"
                   >
@@ -175,10 +174,7 @@ export default function DotCapture() {
                     </div>
                   </Button>
                   <Button
-                    onClick={() => {
-                      // Navigate to My Neura page
-                      window.location.href = '/my-neura';
-                    }}
+                    onClick={() => setLocation("/my-neura")}
                     variant="outline"
                     className="w-full h-12 bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200 hover:from-amber-50 hover:to-orange-50 hover:border-amber-400 text-amber-800 hover:text-amber-900 font-medium transition-all duration-200 active:bg-amber-100"
                   >
@@ -276,10 +272,7 @@ export default function DotCapture() {
                 </div>
                 
                 <Button
-                  onClick={() => {
-                    // Navigate to My Neura page
-                    window.location.href = '/my-neura';
-                  }}
+                  onClick={() => setLocation("/my-neura")}
                   variant="ghost"
                   className="w-full text-sm text-gray-500 hover:text-gray-700"
                 >
