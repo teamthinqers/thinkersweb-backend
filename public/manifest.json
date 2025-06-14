@@ -1,8 +1,8 @@
 {
-  "name": "DotSpark",
-  "short_name": "DotSpark",
-  "description": "Your personal neural extension that adapts to your unique thought patterns",
-  "start_url": "/?v=4",
+  "name": "Dot",
+  "short_name": "Dot",
+  "description": "Instant thought capture with your personal Dot",
+  "start_url": "/dot?v=1",
   "scope": "/",
   "display": "standalone",
   "background_color": "#ffffff",
@@ -19,30 +19,7 @@
       "type": "image/png"
     }
   ],
-  "shortcuts": [
-    {
-      "name": "Quick Capture",
-      "url": "/quick-capture",
-      "description": "Instantly capture your thoughts with the Dot",
-      "icons": [
-        {
-          "src": "/dotspark-pwa-final.png",
-          "sizes": "96x96",
-          "type": "image/png"
-        }
-      ]
-    },
-    {
-      "name": "Tune My Neura",
-      "url": "/dotspark-tuning",
-      "description": "Tune your Neura's cognitive parameters"
-    },
-    {
-      "name": "Neural Capacity",
-      "url": "/dotspark-capacity",
-      "description": "View your Neura's capacity and capabilities"
-    }
-  ],
+
   "related_applications": [],
   "prefer_related_applications": false,
   "screenshots": [],
