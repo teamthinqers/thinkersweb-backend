@@ -141,19 +141,29 @@ export function DotSparkSettings() {
         )}
       </div>
 
-      {/* Instructions */}
-      <div className="bg-blue-50 dark:bg-blue-950/50 rounded-lg p-4 border border-blue-200 dark:border-blue-800">
-        <div className="flex items-start gap-3">
-          <BrainCircuit className="h-5 w-5 text-blue-600 mt-0.5" />
-          <div>
-            <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-1">How to use DotSpark thought capture</h4>
-            <ul className="text-sm text-blue-700 dark:text-blue-300 space-y-1">
-              <li>• Activate DotSpark using the toggle at the top of the page</li>
-              <li>• The floating dot will appear automatically when DotSpark is active</li>
-              <li>• Click the dot to capture thoughts via text or voice</li>
-              <li>• Drag the dot to reposition it anywhere on screen</li>
-              <li>• Your thoughts are instantly processed and organized</li>
-            </ul>
+      {/* Additional Settings - always visible */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Zap className="h-4 w-4 text-amber-600" />
+              <Label>Processing mode</Label>
+            </div>
+            <Badge variant="secondary" className="bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200">
+              Smart
+            </Badge>
+          </div>
+        </div>
+
+        <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <BrainCircuit className="h-4 w-4 text-purple-600" />
+              <Label>Memory sync</Label>
+            </div>
+            <Badge variant="secondary" className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+              Active
+            </Badge>
           </div>
         </div>
       </div>
