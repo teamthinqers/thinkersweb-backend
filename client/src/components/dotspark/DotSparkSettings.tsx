@@ -137,7 +137,6 @@ export function DotSparkSettings() {
                     id="text-capture"
                     checked={textEnabled}
                     onCheckedChange={handleTextToggle}
-                    size="sm"
                   />
                 </div>
 
@@ -150,7 +149,6 @@ export function DotSparkSettings() {
                     id="voice-capture"
                     checked={voiceEnabled}
                     onCheckedChange={handleVoiceToggle}
-                    size="sm"
                   />
                 </div>
               </div>

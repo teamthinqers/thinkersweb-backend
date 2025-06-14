@@ -29,7 +29,8 @@ import {
   AlertCircle,
   Save,
   Edit,
-  Shield
+  Shield,
+  Settings
 } from 'lucide-react';
 import {
   Tooltip,
@@ -628,7 +629,7 @@ export default function MyNeura() {
         <CardHeader className="pb-2 relative z-10">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2">
-              <BrainCircuit className="h-5 w-5 text-amber-700 dark:text-amber-400" />
+              <Settings className="h-5 w-5 text-amber-700 dark:text-amber-400" />
               <CardTitle>
                 <span className="font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">DotSpark Settings</span>
               </CardTitle>
@@ -637,193 +638,11 @@ export default function MyNeura() {
               Level 1
             </Badge>
           </div>
-          <CardDescription>Configure your DotSpark features and thought capture settings</CardDescription>
+          <CardDescription>Configure your DotSpark settings to capture your valuable thoughts</CardDescription>
         </CardHeader>
         
         <CardContent className="pb-4 relative z-10">
-          {/* Experience Progress */}
-          <div className="mb-4">
-            <div className="flex justify-between mb-1.5 text-sm font-medium">
-              <span>Experience</span>
-              <span>125 / 1000 XP</span>
-            </div>
-            <Progress value={12.5} className="h-2 bg-amber-100 dark:bg-amber-950" />
-          </div>
-          
-          {/* Capacity Metrics */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
-            {/* Processing Efficiency */}
-            <div className="text-center">
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div className="cursor-help">
-                      <div className="relative w-14 h-14 sm:w-16 sm:h-16 mx-auto">
-                        <svg className="w-full h-full" viewBox="0 0 100 100">
-                          <circle 
-                            cx="50" 
-                            cy="50" 
-                            r="45" 
-                            fill="none" 
-                            stroke="currentColor" 
-                            className="text-amber-100 dark:text-amber-950" 
-                            strokeWidth="8" 
-                          />
-                          <circle 
-                            cx="50" 
-                            cy="50" 
-                            r="45" 
-                            fill="none" 
-                            stroke="currentColor" 
-                            className="text-amber-500 transition-all duration-500 ease-out" 
-                            strokeWidth="8" 
-                            strokeDasharray={`${2 * Math.PI * 45 * (processingEfficiency / 100)} ${2 * Math.PI * 45}`}
-                            strokeDashoffset={2 * Math.PI * 45 * 0.25}
-                          />
-                        </svg>
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <Zap className="h-5 w-5 text-amber-500" />
-                        </div>
-                      </div>
-                      <div className="text-sm font-medium mt-1">Processing</div>
-                      <div className="text-xs text-muted-foreground">Usage Frequency</div>
-                      <div className="text-xl font-bold">{Math.round(processingEfficiency)}%</div>
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent side="bottom" className="bg-white dark:bg-gray-900 border border-amber-200 dark:border-amber-800 p-3 shadow-lg max-w-[200px]">
-                    <p className="text-sm font-medium">Processing Capacity</p>
-                    <p className="text-xs text-muted-foreground mt-1">Increases when you use DotSpark regularly. Higher usage frequency means better processing power.</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
-            
-            {/* Memory Capacity */}
-            <div className="text-center">
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div className="cursor-help">
-                      <div className="relative w-14 h-14 sm:w-16 sm:h-16 mx-auto">
-                        <svg className="w-full h-full" viewBox="0 0 100 100">
-                          <circle 
-                            cx="50" 
-                            cy="50" 
-                            r="45" 
-                            fill="none" 
-                            stroke="currentColor" 
-                            className="text-amber-100 dark:text-amber-950" 
-                            strokeWidth="8" 
-                          />
-                          <circle 
-                            cx="50" 
-                            cy="50" 
-                            r="45" 
-                            fill="none" 
-                            stroke="currentColor" 
-                            className="text-amber-600 transition-all duration-500 ease-out" 
-                            strokeWidth="8" 
-                            strokeDasharray={`${2 * Math.PI * 45 * (memoryCapacity / 100)} ${2 * Math.PI * 45}`}
-                            strokeDashoffset={2 * Math.PI * 45 * 0.25}
-                          />
-                        </svg>
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <BrainCog className="h-5 w-5 text-amber-600" />
-                        </div>
-                      </div>
-                      <div className="text-sm font-medium mt-1">Memory</div>
-                      <div className="text-xs text-muted-foreground">Entries & Storage</div>
-                      <div className="text-xl font-bold">{Math.round(memoryCapacity)}%</div>
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent side="bottom" className="bg-white dark:bg-gray-900 border border-amber-200 dark:border-amber-800 p-3 shadow-lg max-w-[200px]">
-                    <p className="text-sm font-medium">Memory Capacity</p>
-                    <p className="text-xs text-muted-foreground mt-1">Grows as you add entries and save knowledge in your DotSpark. More entries mean increased memory capacity.</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
-            
-            {/* Learning Rate */}
-            <div className="text-center">
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div className="cursor-help">
-                      <div className="relative w-14 h-14 sm:w-16 sm:h-16 mx-auto">
-                        <svg className="w-full h-full" viewBox="0 0 100 100">
-                          <circle 
-                            cx="50" 
-                            cy="50" 
-                            r="45" 
-                            fill="none" 
-                            stroke="currentColor" 
-                            className="text-orange-100 dark:text-orange-950" 
-                            strokeWidth="8" 
-                          />
-                          <circle 
-                            cx="50" 
-                            cy="50" 
-                            r="45" 
-                            fill="none" 
-                            stroke="currentColor" 
-                            className="text-orange-600 transition-all duration-500 ease-out" 
-                            strokeWidth="8" 
-                            strokeDasharray={`${2 * Math.PI * 45 * (learningRate / 100)} ${2 * Math.PI * 45}`}
-                            strokeDashoffset={2 * Math.PI * 45 * 0.25}
-                          />
-                        </svg>
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <Lightbulb className="h-5 w-5 text-orange-600" />
-                        </div>
-                      </div>
-                      <div className="text-sm font-medium mt-1">Learning</div>
-                      <div className="text-xs text-muted-foreground">WhatsApp Interactions</div>
-                      <div className="text-xl font-bold">{Math.round(learningRate)}%</div>
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent side="bottom" className="bg-white dark:bg-gray-900 border border-orange-200 dark:border-orange-800 p-3 shadow-lg max-w-[200px]">
-                    <p className="text-sm font-medium">Learning Capacity</p>
-                    <p className="text-xs text-muted-foreground mt-1">Improves when you enable WhatsApp integration. More interactions through WhatsApp enhance your learning rate.</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
-            
-            {/* Implementation Level */}
-            <div className="text-center">
-              <div className="relative w-14 h-14 sm:w-16 sm:h-16 mx-auto">
-                <svg className="w-full h-full" viewBox="0 0 100 100">
-                  <circle 
-                    cx="50" 
-                    cy="50" 
-                    r="45" 
-                    fill="none" 
-                    stroke="currentColor" 
-                    className="text-yellow-100 dark:text-yellow-950" 
-                    strokeWidth="8" 
-                  />
-                  <circle 
-                    cx="50" 
-                    cy="50" 
-                    r="45" 
-                    fill="none" 
-                    stroke="currentColor" 
-                    className="text-yellow-600 transition-all duration-500 ease-out" 
-                    strokeWidth="8" 
-                    strokeDasharray={`${2 * Math.PI * 45 * (specializationLevel / 100)} ${2 * Math.PI * 45}`}
-                    strokeDashoffset={2 * Math.PI * 45 * 0.25}
-                  />
-                </svg>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <Target className="h-5 w-5 text-yellow-600" />
-                </div>
-              </div>
-              <div className="text-sm font-medium mt-1">Implementation</div>
-              <div className="text-xs text-muted-foreground">Decision Making</div>
-              <div className="text-xl font-bold">{Math.round(specializationLevel)}%</div>
-            </div>
-          </div>
+          <DotSparkSettings />
         </CardContent>
       </Card>
       
