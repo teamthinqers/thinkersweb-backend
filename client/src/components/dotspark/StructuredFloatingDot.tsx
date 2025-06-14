@@ -51,6 +51,7 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
   
   const [isDragging, setIsDragging] = useState(false);
   const [isFirstActivation, setIsFirstActivation] = useState(false);
+  const [showExitWarning, setShowExitWarning] = useState(false);
   const dotRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
@@ -131,13 +132,32 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
     }
   };
 
+  // Check if there are unsaved changes
+  const hasUnsavedChanges = () => {
+    if (captureMode === 'text') {
+      return structuredInput.summary.trim() || structuredInput.anchor.trim() || structuredInput.pulse.trim();
+    } else if (captureMode === 'voice') {
+      return voiceSteps.summary.trim() || voiceSteps.anchor.trim() || voiceSteps.pulse.trim();
+    }
+    return false;
+  };
+
   const handleClose = () => {
+    if (hasUnsavedChanges()) {
+      setShowExitWarning(true);
+    } else {
+      confirmClose();
+    }
+  };
+
+  const confirmClose = () => {
     setIsExpanded(false);
     setCaptureMode('select');
     setStructuredInput({ summary: '', anchor: '', pulse: '' });
     setVoiceSteps({ summary: '', anchor: '', pulse: '' });
     setCurrentStep(1);
     setIsRecording(false);
+    setShowExitWarning(false);
   };
 
   const handleVoiceStep = (step: 1 | 2 | 3) => {
@@ -803,6 +823,32 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
           </Card>
         </div>
       )}
+      
+      {/* Unsaved Changes Warning Dialog */}
+      <AlertDialog open={showExitWarning} onOpenChange={setShowExitWarning}>
+        <AlertDialogContent className="sm:max-w-md">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2">
+              <AlertTriangle className="w-5 h-5 text-amber-500" />
+              Your Dot is unsaved
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to exit? Your progress will be lost if you haven't saved your dot.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>
+              Continue editing
+            </AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={confirmClose}
+              className="bg-red-500 hover:bg-red-600"
+            >
+              Exit without saving
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
