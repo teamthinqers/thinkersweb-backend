@@ -145,6 +145,12 @@ Changelog:
   * Converted all WhatsApp buttons from JavaScript handlers to direct HTML links
   * Eliminated browser popup blocker warnings by using standard link navigation
   * Removed unnecessary PWA permission system that was causing build complexity
+  * Fixed all remaining window.open() calls in WhatsApp components:
+    - DotSparkWhatsAppLinking.tsx: Converted to window.location.href
+    - NeuralWhatsAppLinking.tsx: Converted to window.location.href
+    - WhatsAppPromo.tsx: Converted to window.location.href
+    - ContactOptionsDialog.tsx: Converted to window.location.href
+    - CompactWhatsAppButton.tsx: Already using proper navigation
 ```
 
 ## User Preferences
