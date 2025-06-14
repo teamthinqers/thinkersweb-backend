@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Mic, MicOff, Type, X, Send, Circle } from "lucide-react";
+import { Mic, MicOff, Type, X, Send } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
@@ -65,11 +65,16 @@ export function FloatingDot({ enabled, onToggle, className }: FloatingDotProps) 
     }
   }, [toast]);
 
-  // Load saved position
+  // Load saved position and handle PWA/home screen positioning
   useEffect(() => {
     const savedPosition = localStorage.getItem('dotspark-dot-position');
     if (savedPosition) {
       setPosition(JSON.parse(savedPosition));
+    } else {
+      // Default position for PWA - bottom right with some margin
+      const defaultX = Math.max(0, window.innerWidth - 80);
+      const defaultY = Math.max(0, window.innerHeight - 120);
+      setPosition({ x: defaultX, y: defaultY });
     }
   }, []);
 
@@ -78,6 +83,22 @@ export function FloatingDot({ enabled, onToggle, className }: FloatingDotProps) 
     localStorage.setItem('dotspark-dot-position', JSON.stringify(position));
   }, [position]);
 
+  // Handle window resize to keep dot in viewport
+  useEffect(() => {
+    const handleResize = () => {
+      const maxX = window.innerWidth - 60;
+      const maxY = window.innerHeight - 60;
+      
+      setPosition(prev => ({
+        x: Math.max(0, Math.min(prev.x, maxX)),
+        y: Math.max(0, Math.min(prev.y, maxY))
+      }));
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const handleMouseDown = (e: React.MouseEvent) => {
     if (isExpanded) return; // Don't drag when expanded
     
@@ -85,6 +106,17 @@ export function FloatingDot({ enabled, onToggle, className }: FloatingDotProps) 
     setDragStart({
       x: e.clientX - position.x,
       y: e.clientY - position.y
+    });
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (isExpanded) return; // Don't drag when expanded
+    
+    const touch = e.touches[0];
+    setIsDragging(true);
+    setDragStart({
+      x: touch.clientX - position.x,
+      y: touch.clientY - position.y
     });
   };
 
@@ -106,7 +138,31 @@ export function FloatingDot({ enabled, onToggle, className }: FloatingDotProps) 
     });
   };
 
+  const handleTouchMove = (e: TouchEvent) => {
+    if (!isDragging) return;
+    e.preventDefault(); // Prevent scrolling
+    
+    const touch = e.touches[0];
+    const newPosition = {
+      x: touch.clientX - dragStart.x,
+      y: touch.clientY - dragStart.y
+    };
+    
+    // Keep within viewport bounds
+    const maxX = window.innerWidth - 60;
+    const maxY = window.innerHeight - 60;
+    
+    setPosition({
+      x: Math.max(0, Math.min(newPosition.x, maxX)),
+      y: Math.max(0, Math.min(newPosition.y, maxY))
+    });
+  };
+
   const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  const handleTouchEnd = () => {
     setIsDragging(false);
   };
 
@@ -114,9 +170,13 @@ export function FloatingDot({ enabled, onToggle, className }: FloatingDotProps) 
     if (isDragging) {
       document.addEventListener('mousemove', handleMouseMove);
       document.addEventListener('mouseup', handleMouseUp);
+      document.addEventListener('touchmove', handleTouchMove, { passive: false });
+      document.addEventListener('touchend', handleTouchEnd);
       return () => {
         document.removeEventListener('mousemove', handleMouseMove);
         document.removeEventListener('mouseup', handleMouseUp);
+        document.removeEventListener('touchmove', handleTouchMove);
+        document.removeEventListener('touchend', handleTouchEnd);
       };
     }
   }, [isDragging, dragStart]);
@@ -195,11 +255,12 @@ export function FloatingDot({ enabled, onToggle, className }: FloatingDotProps) 
 
   return (
     <>
-      {/* Floating Dot */}
+      {/* Floating Dot - Enhanced for PWA */}
       <div
         ref={dotRef}
         className={cn(
-          "fixed z-50 transition-all duration-300 cursor-pointer select-none",
+          "fixed z-[9999] transition-all duration-300 cursor-pointer select-none",
+          "will-change-transform touch-none", // Better mobile performance
           isDragging ? "cursor-grabbing" : "cursor-grab",
           isExpanded ? "pointer-events-none" : "pointer-events-auto",
           className
@@ -207,19 +268,32 @@ export function FloatingDot({ enabled, onToggle, className }: FloatingDotProps) 
         style={{
           left: position.x,
           top: position.y,
-          transform: isExpanded ? 'scale(0)' : 'scale(1)'
+          transform: isExpanded ? 'scale(0)' : 'scale(1)',
+          WebkitTransform: isExpanded ? 'scale(0)' : 'scale(1)', // Safari compatibility
+          position: 'fixed',
+          zIndex: 9999
         }}
         onMouseDown={handleMouseDown}
+        onTouchStart={handleTouchStart}
         onClick={handleDotClick}
+        role="button"
+        aria-label="DotSpark floating capture button"
+        tabIndex={0}
       >
         <div className={cn(
           "w-14 h-14 rounded-full shadow-lg transition-all duration-300",
           "bg-gradient-to-br from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700",
           "flex items-center justify-center text-white",
           "border-2 border-white/20 hover:border-white/40",
-          "hover:scale-110 active:scale-95"
+          "hover:scale-110 active:scale-95",
+          "overflow-hidden"
         )}>
-          <Circle className="h-6 w-6 fill-current" />
+          <img 
+            src="/dotspark-pwa-final.png" 
+            alt="DotSpark" 
+            className="w-8 h-8 rounded-sm"
+            draggable={false}
+          />
         </div>
       </div>
 
