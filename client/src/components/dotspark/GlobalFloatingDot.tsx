@@ -238,8 +238,8 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
       
       // Simulate voice processing
       setTimeout(() => {
-        const mockTranscript = step === 1 ? "Simulated summary from voice input" :
-                             step === 2 ? "Simulated anchor context from voice input" :
+        const mockTranscript = step === 1 ? "voice input" :
+                             step === 2 ? "voice input" :
                              "excited";
         
         setVoiceSteps(prev => ({
