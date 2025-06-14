@@ -164,6 +164,13 @@ Changelog:
   * Updated step 2 button from "Activate DotSpark" to "Activate Dot"
   * Updated step 2 description from "Configure your DotSpark to mirror your natural intelligence & thinking style" to "Configure the Dot settings to capture your valuable thoughts"
   * Improved messaging alignment with dot-focused branding and value proposition
+- June 14, 2025. Enhanced floating dot with logo integration and PWA optimization:
+  * Replaced circle icon with DotSpark logo icon (/dotspark-pwa-final.png)
+  * Added comprehensive mobile touch support for dragging functionality
+  * Enhanced PWA compatibility with higher z-index and better positioning
+  * Improved accessibility with proper ARIA labels and keyboard support
+  * Added window resize handling and viewport boundary constraints
+  * Optimized for home screen PWA usage with persistent positioning
 ```
 
 ## User Preferences
