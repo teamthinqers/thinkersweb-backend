@@ -70,7 +70,7 @@ export function DotSparkSettings() {
       <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/50 dark:to-orange-950/50 rounded-lg p-4 border border-amber-200 dark:border-amber-800">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h3 className="text-lg font-semibold text-amber-900 dark:text-amber-100">Dot capture status</h3>
+            <h3 className="text-lg font-semibold text-amber-900 dark:text-amber-100">Floating dot</h3>
             <p className="text-sm text-amber-700 dark:text-amber-300">
               {isDotSparkActivated 
                 ? "DotSpark is active - floating dot is available for thought capture"
