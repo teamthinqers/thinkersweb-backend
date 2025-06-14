@@ -140,7 +140,11 @@ Changelog:
 - June 14, 2025. Fixed dashboard navigation issues:
   * Header logo and "DotSpark" text now navigate to My Neura page (/my-neura) instead of dashboard
   * Hamburger menu "Home" link now correctly navigates to home page (/) instead of dashboard
-  * Integrated comprehensive PWA permission system to eliminate popup friction across WhatsApp features
+  * Updated sidebar branding with proper DotSpark logo icons
+- June 14, 2025. Resolved WhatsApp popup warnings:
+  * Converted all WhatsApp buttons from JavaScript handlers to direct HTML links
+  * Eliminated browser popup blocker warnings by using standard link navigation
+  * Removed unnecessary PWA permission system that was causing build complexity
 ```
 
 ## User Preferences

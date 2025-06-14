@@ -28,11 +28,7 @@ export function ContactOptionsDialog({
   const handleWhatsAppClick = async () => {
     if (!whatsAppNumber) return;
     
-    // Request PWA permissions first to eliminate popup friction
-    const permissionsGranted = await pwaPermissionManager.grantAllPermissions();
-    if (!permissionsGranted) {
-      console.log("PWA permissions not granted, proceeding anyway");
-    }
+
     
     // Only include default message for first-time users
     const isFirstTime = isFirstChat();

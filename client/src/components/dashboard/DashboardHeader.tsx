@@ -46,12 +46,6 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onNewEntry }) => {
   
   // Handle chat button click - opens contact options dialog
   const handleChatClick = async () => {
-    // Request PWA permissions first to eliminate popup friction
-    const permissionsGranted = await pwaPermissionManager.grantAllPermissions();
-    if (!permissionsGranted) {
-      console.log("PWA permissions not granted, proceeding anyway");
-    }
-    
     setContactDialogOpen(true);
   };
 

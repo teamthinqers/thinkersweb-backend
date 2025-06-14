@@ -1,14 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Smartphone, MessageCircle } from "lucide-react";
-import { pwaPermissionManager } from "@/lib/pwaPermissions";
-
 // Function to open WhatsApp chat directly in the app
 async function openWhatsAppChat() {
-  // Request PWA permissions first to eliminate popup friction
-  const permissionsGranted = await pwaPermissionManager.grantAllPermissions();
-  if (!permissionsGranted) {
-    console.log("PWA permissions not granted, proceeding anyway");
-  }
 
   // Your production Twilio WhatsApp number
   const whatsappNumber = "16067157733";
