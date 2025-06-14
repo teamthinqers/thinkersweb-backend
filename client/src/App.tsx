@@ -34,6 +34,7 @@ import PwaDebugger from "@/pages/PwaDebugger";
 import PwaInstallGuide from "@/pages/PwaInstallGuide";
 import Testing from "@/pages/Testing";
 import ChatPage from "@/pages/chat-page";
+import QuickCapture from "@/pages/QuickCapture";
 import AppLayout from "@/components/layout/AppLayout";
 import EntryDetail from "@/components/entries/EntryDetail";
 import ChatEntryForm from "@/components/chat/ChatEntryForm";
@@ -189,6 +190,7 @@ function Router() {
       <Route path="/whatsapp-entries" component={WhatsAppEntries} />
       <Route path="/fixed-entries" component={FixedEntries} />
       <Route path="/logo" component={LogoPage} />
+      <Route path="/quick-capture" component={QuickCapture} />
       <Route path="/activate" component={ActivateDotSpark} />
       <Route path="/activate-dotspark" component={ActivateDotSpark} />
       <Route path="/activate-neura">

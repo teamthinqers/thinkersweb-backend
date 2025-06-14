@@ -21,6 +21,18 @@
   ],
   "shortcuts": [
     {
+      "name": "Quick Capture",
+      "url": "/quick-capture",
+      "description": "Instantly capture your thoughts with the Dot",
+      "icons": [
+        {
+          "src": "/dotspark-pwa-final.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
       "name": "Tune My Neura",
       "url": "/dotspark-tuning",
       "description": "Tune your Neura's cognitive parameters"
