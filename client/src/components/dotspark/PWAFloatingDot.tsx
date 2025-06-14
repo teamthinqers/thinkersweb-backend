@@ -270,7 +270,7 @@ export function PWAFloatingDot({ isActive }: PWAFloatingDotProps) {
                       <Textarea
                         value={textInput}
                         onChange={(e) => setTextInput(e.target.value)}
-                        placeholder="Enter your thought here..."
+                        placeholder="Enter your thoughts here"
                         className="min-h-32 text-base resize-none border-2 focus:border-amber-500 focus:ring-amber-500/20 rounded-xl"
                       />
                       <Button 

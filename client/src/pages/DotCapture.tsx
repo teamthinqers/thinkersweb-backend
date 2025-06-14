@@ -258,7 +258,7 @@ export default function DotCapture() {
                   onChange={(e) => setTextInput(e.target.value)}
                   placeholder={captureMode === 'voice' 
                     ? "Your speech will appear here..." 
-                    : "Type your thoughts here..."
+                    : "Enter your thoughts here"
                   }
                   className="min-h-[120px] text-lg"
                   readOnly={captureMode === 'voice' && isRecording}

@@ -266,6 +266,10 @@ Changelog:
   * Increased DotSpark logo size from h-8 to h-10 for better visibility in mobile menu
   * Confirmed Home menu item already includes HomeIcon as requested
   * Maintained consistent amber/orange color theming throughout mobile navigation
+- June 14, 2025. Updated text capture placeholder text:
+  * Changed placeholder text to "Enter your thoughts here" across all text capture interfaces
+  * Updated FloatingDot, DotCapture, GlobalFloatingDot, and PWAFloatingDot components
+  * Maintained consistent user experience across web browser and PWA modes
 - June 14, 2025. Updated home page "Explore DotSpark Neura" button:
   * Changed from internal navigation (/neura) to external redirect to https://www.dotspark.in/dashboard
   * Button now opens dashboard in new tab for seamless access to full application features

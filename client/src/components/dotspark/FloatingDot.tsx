@@ -348,7 +348,7 @@ export function FloatingDot({ enabled, onToggle, className }: FloatingDotProps) 
                   <Input
                     value={textInput}
                     onChange={(e) => setTextInput(e.target.value)}
-                    placeholder="What's on your mind?"
+                    placeholder="Enter your thoughts here"
                     className="w-full"
                     autoFocus
                     onKeyPress={(e) => e.key === 'Enter' && handleSubmit()}
