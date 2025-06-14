@@ -749,7 +749,7 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                       </Button>
                       {voiceSteps.summary && (
                         <div className="mt-3 p-3 bg-white/80 rounded-lg text-xs border border-amber-200">
-                          {voiceSteps.summary.substring(0, 50)}... ({voiceSteps.summary.length}/220)
+                          {voiceSteps.summary.substring(0, 50)}... ({voiceSteps.summary.length}/220 charac)
                         </div>
                       )}
                     </div>
@@ -776,7 +776,7 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                       </Button>
                       {voiceSteps.anchor && (
                         <div className="mt-3 p-3 bg-white/80 rounded-lg text-xs border border-amber-200">
-                          {voiceSteps.anchor.substring(0, 50)}... ({voiceSteps.anchor.length}/300)
+                          {voiceSteps.anchor.substring(0, 50)}... ({voiceSteps.anchor.length}/300 charac)
                         </div>
                       )}
                     </div>

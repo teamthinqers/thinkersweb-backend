@@ -414,6 +414,11 @@ Changelog:
   * Enhanced center display with bouncing completion indicator and numerical progress counter (0/3, 1/3, 2/3, ⭐)
   * Applied consistent gamification across both text and voice capture modes with unique motivational messages
   * Added victory burst effects and multi-colored sparkles for achievement celebration
+- June 14, 2025. Enhanced voice input character count display:
+  * Updated voice input simulation to show "voice input" instead of verbose placeholder text
+  * Added "charac" suffix to character count display for clarity (e.g., "11/220 charac")
+  * Applied changes to StructuredFloatingDot component for both Layer 1 and Layer 2
+  * Implemented unsaved changes warning dialog with amber warning icon and protective messaging
 ```
 
 ## User Preferences
