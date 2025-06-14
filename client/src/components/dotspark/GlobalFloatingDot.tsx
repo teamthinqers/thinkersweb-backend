@@ -297,17 +297,19 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
             localStorage.setItem('dotspark-dot-interacted', 'true');
           }}
         >
-          <img 
-            src="/dotspark-logo-icon.jpeg" 
-            alt="DotSpark" 
-            className="w-10 h-10 rounded-full object-cover"
-            draggable={false}
-            onError={(e) => {
-              // Fallback to another logo if this one fails
-              const target = e.target as HTMLImageElement;
-              target.src = "/dotspark-brown-bg-icon.jpeg";
-            }}
-          />
+          <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center overflow-hidden">
+            <img 
+              src="/dotspark-logo-icon.jpeg" 
+              alt="DotSpark" 
+              className="w-8 h-8 object-contain"
+              draggable={false}
+              onError={(e) => {
+                // Fallback to another logo if this one fails
+                const target = e.target as HTMLImageElement;
+                target.src = "/dotspark-brown-bg-icon.jpeg";
+              }}
+            />
+          </div>
         </div>
       ) : (
         /* Expanded Interface - PWA Style */
@@ -319,20 +321,22 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
                 {/* Header */}
                 <div className="text-center space-y-2">
                   <div className="flex justify-center mb-4">
-                    <img 
-                      src="/dotspark-logo-icon.jpeg" 
-                      alt="DotSpark" 
-                      className="w-16 h-16 rounded-full object-cover"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src = "/dotspark-brown-bg-icon.jpeg";
-                      }}
-                    />
+                    <div className="w-16 h-16 rounded-full bg-amber-100 border-2 border-amber-200 flex items-center justify-center overflow-hidden">
+                      <img 
+                        src="/dotspark-logo-icon.jpeg" 
+                        alt="DotSpark" 
+                        className="w-12 h-12 object-contain"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.src = "/dotspark-brown-bg-icon.jpeg";
+                        }}
+                      />
+                    </div>
                   </div>
                   <h2 className="text-xl font-bold bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent">
-                    DotSpark
+                    Save a Dot
                   </h2>
-                  <p className="text-sm text-gray-600">How would you like to capture your Dots?</p>
+                  <p className="text-sm text-gray-600">How would you like to capture your Dot?</p>
                 </div>
 
                 {/* Mode Selection Buttons */}
@@ -347,7 +351,7 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
                   <Button
                     onClick={() => handleModeSelect('text')}
                     variant="outline"
-                    className="w-full h-16 bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-200 hover:border-amber-400 text-amber-800 rounded-xl text-lg font-semibold"
+                    className="w-full h-16 bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-200 hover:from-amber-50 hover:to-orange-50 hover:border-amber-400 text-amber-800 hover:text-amber-900 rounded-xl text-lg font-semibold"
                   >
                     <Type className="w-6 h-6 mr-3 text-amber-700" />
                     Text

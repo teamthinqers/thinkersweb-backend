@@ -247,10 +247,14 @@ function App() {
     // Initial check
     const checkActivation = () => {
       const isActive = neuraStorage.isActivated();
+      console.log('DotSpark activation check:', isActive);
       setIsDotSparkActive(isActive);
     };
     
     checkActivation();
+    
+    // Check periodically to ensure we catch activation changes
+    const interval = setInterval(checkActivation, 2000);
     
     // Listen for storage changes (when DotSpark is activated/deactivated)
     const handleStorageChange = (e: StorageEvent) => {
@@ -261,6 +265,7 @@ function App() {
     
     // Listen for custom events from neuraStorage
     const handleNeuraStateChange = (e: CustomEvent) => {
+      console.log('Neura state changed event:', e.detail.activated);
       setIsDotSparkActive(e.detail.activated);
     };
     
@@ -268,6 +273,7 @@ function App() {
     window.addEventListener('neura-state-changed', handleNeuraStateChange as EventListener);
     
     return () => {
+      clearInterval(interval);
       window.removeEventListener('storage', handleStorageChange);
       window.removeEventListener('neura-state-changed', handleNeuraStateChange as EventListener);
     };
@@ -351,8 +357,8 @@ function App() {
         <Router />
         <Toaster />
         {/* Global Floating Dot for Desktop Browser Users */}
-        {isDotSparkActive && !isRunningAsStandalone() && (
-          <GlobalFloatingDot isActive={isDotSparkActive} />
+        {(isDotSparkActive || neuraStorage.isActivated()) && !isRunningAsStandalone() && (
+          <GlobalFloatingDot isActive={true} />
         )}
         {/* iOS PWA Install Prompt */}
         <IosPwaInstallPrompt />
