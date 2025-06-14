@@ -152,8 +152,7 @@ export default function DotCapture() {
                   
                   <Button
                     onClick={handleTextMode}
-                    variant="outline"
-                    className="w-full h-14 text-lg border-2 hover:bg-amber-50"
+                    className="w-full h-14 text-lg bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white"
                   >
                     <Type className="w-6 h-6 mr-3" />
                     Text
@@ -164,9 +163,9 @@ export default function DotCapture() {
                   <Button
                     onClick={handleOpenFullApp}
                     variant="outline"
-                    className="w-full h-12 bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200 hover:from-amber-100 hover:to-orange-100 hover:border-amber-300 text-amber-800 font-medium transition-all duration-200"
+                    className="w-full h-12 bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200 hover:from-amber-50 hover:to-orange-50 hover:border-amber-400 text-amber-800 hover:text-amber-900 font-medium transition-all duration-200 active:bg-amber-100"
                   >
-                    <Globe className="w-5 h-5 mr-3" />
+                    <Globe className="w-5 h-5 mr-3 text-amber-700" />
                     <div className="text-left">
                       <div className="text-sm">Open DotSpark App</div>
                       <div className="text-xs text-amber-600">Access full neural features</div>
@@ -178,9 +177,9 @@ export default function DotCapture() {
                       window.location.href = '/my-neura';
                     }}
                     variant="outline"
-                    className="w-full h-12 bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200 hover:from-blue-100 hover:to-indigo-100 hover:border-blue-300 text-blue-800 font-medium transition-all duration-200"
+                    className="w-full h-12 bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200 hover:from-blue-50 hover:to-indigo-50 hover:border-blue-400 text-blue-800 hover:text-blue-900 font-medium transition-all duration-200 active:bg-blue-100"
                   >
-                    <Brain className="w-5 h-5 mr-3" />
+                    <Brain className="w-5 h-5 mr-3 text-blue-700" />
                     <div className="text-left">
                       <div className="text-sm">My Neura</div>
                       <div className="text-xs text-blue-600">View neural insights & settings</div>
