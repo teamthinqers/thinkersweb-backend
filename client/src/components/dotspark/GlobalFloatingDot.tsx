@@ -310,108 +310,124 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
           />
         </div>
       ) : (
-        /* Expanded Interface */
-        <Card className="w-80 bg-white/95 backdrop-blur shadow-xl border-amber-200">
-          <CardContent className="p-4 space-y-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <img 
-                  src="/dotspark-pwa-final.png" 
-                  alt="DotSpark" 
-                  className="w-6 h-6 rounded-full"
-                />
-                <span className="font-medium text-gray-800">Capture Thought</span>
-              </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleClose}
-                className="h-6 w-6 p-0"
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
-
+        /* Expanded Interface - PWA Style */
+        <Card className="w-96 bg-white shadow-2xl border-0 rounded-2xl overflow-hidden">
+          <CardContent className="p-0">
             {!captureMode ? (
-              /* Mode Selection */
-              <div className="space-y-2">
-                <p className="text-sm text-gray-600">How would you like to capture?</p>
-                <div className="flex gap-2">
+              /* Mode Selection - PWA Style */
+              <div className="p-6 space-y-6">
+                {/* Header */}
+                <div className="text-center space-y-2">
+                  <div className="flex justify-center mb-4">
+                    <img 
+                      src="/dotspark-logo-icon.jpeg" 
+                      alt="DotSpark" 
+                      className="w-16 h-16 rounded-full object-cover"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = "/dotspark-brown-bg-icon.jpeg";
+                      }}
+                    />
+                  </div>
+                  <h2 className="text-xl font-bold bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent">
+                    DotSpark
+                  </h2>
+                  <p className="text-sm text-gray-600">How would you like to capture your Dots?</p>
+                </div>
+
+                {/* Mode Selection Buttons */}
+                <div className="space-y-4">
                   <Button
                     onClick={() => handleModeSelect('voice')}
-                    className="flex-1 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700"
-                    size="sm"
+                    className="w-full h-16 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl shadow-lg text-lg font-semibold"
                   >
-                    <Mic className="w-4 h-4 mr-1" />
+                    <Mic className="w-6 h-6 mr-3" />
                     Voice
                   </Button>
                   <Button
                     onClick={() => handleModeSelect('text')}
                     variant="outline"
-                    className="flex-1"
-                    size="sm"
+                    className="w-full h-16 bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-200 hover:border-amber-400 text-amber-800 rounded-xl text-lg font-semibold"
                   >
-                    <Type className="w-4 h-4 mr-1" />
+                    <Type className="w-6 h-6 mr-3 text-amber-700" />
                     Text
+                  </Button>
+                </div>
+
+                {/* Close button */}
+                <div className="pt-4 border-t">
+                  <Button
+                    variant="ghost"
+                    onClick={handleClose}
+                    className="w-full text-gray-500 hover:text-gray-700"
+                  >
+                    <Minimize2 className="w-4 h-4 mr-2" />
+                    Minimize
                   </Button>
                 </div>
               </div>
             ) : (
-              /* Capture Interface */
-              <div className="space-y-3">
+              /* Capture Interface - PWA Style */
+              <div className="p-6 space-y-6">
+                {/* Header with back button */}
+                <div className="flex items-center justify-between">
+                  <Button
+                    variant="ghost"
+                    onClick={() => setCaptureMode(null)}
+                    className="h-8 w-8 p-0 rounded-full hover:bg-gray-100"
+                  >
+                    <X className="w-4 h-4" />
+                  </Button>
+                  <h3 className="text-lg font-semibold text-gray-800">
+                    {captureMode === 'voice' ? 'Voice Capture' : 'Text Capture'}
+                  </h3>
+                  <div className="w-8"></div>
+                </div>
+
+                {/* Voice Recording Interface */}
                 {captureMode === 'voice' && (
-                  <div className="text-center">
+                  <div className="text-center space-y-4">
                     <Button
                       onClick={handleVoiceToggle}
                       className={cn(
-                        "w-12 h-12 rounded-full transition-all duration-300",
+                        "w-20 h-20 rounded-full transition-all duration-300 shadow-lg",
                         isRecording 
                           ? "bg-red-500 hover:bg-red-600 animate-pulse" 
                           : "bg-gradient-to-br from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700"
                       )}
                     >
                       {isRecording ? (
-                        <MicOff className="w-5 h-5" />
+                        <MicOff className="w-8 h-8" />
                       ) : (
-                        <Mic className="w-5 h-5" />
+                        <Mic className="w-8 h-8" />
                       )}
                     </Button>
-                    <p className="text-xs text-gray-500 mt-1">
-                      {isRecording ? 'Listening...' : 'Tap to record'}
+                    <p className="text-sm text-gray-600">
+                      {isRecording ? 'Listening... Tap to stop' : 'Tap to start recording'}
                     </p>
                   </div>
                 )}
 
+                {/* Text Input */}
                 <Textarea
                   value={textInput}
                   onChange={(e) => setTextInput(e.target.value)}
                   placeholder={captureMode === 'voice' 
                     ? "Your speech will appear here..." 
-                    : "Type your thoughts..."
+                    : "Type your thoughts and insights..."
                   }
-                  className="min-h-[80px] text-sm resize-none"
+                  className="min-h-[120px] text-base resize-none rounded-xl border-2 border-gray-200 focus:border-amber-400 p-4"
                   readOnly={captureMode === 'voice' && isRecording}
                 />
 
-                <div className="flex gap-2">
-                  <Button 
-                    onClick={handleSubmit}
-                    className="flex-1 h-8"
-                    disabled={!textInput.trim()}
-                    size="sm"
-                  >
-                    <Send className="w-3 h-3 mr-1" />
-                    Save
-                  </Button>
-                  <Button 
-                    onClick={() => setCaptureMode(null)}
-                    variant="outline"
-                    className="h-8 px-3"
-                    size="sm"
-                  >
-                    <Minimize2 className="w-3 h-3" />
-                  </Button>
-                </div>
+                {/* Save Button */}
+                <Button 
+                  onClick={handleSubmit}
+                  className="w-full h-12 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl text-lg font-semibold shadow-lg"
+                  disabled={!textInput.trim()}
+                >
+                  Save Dot
+                </Button>
               </div>
             )}
           </CardContent>

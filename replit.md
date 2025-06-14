@@ -235,6 +235,13 @@ Changelog:
   * Added special positioning logic for first-time activation to place dot near activation area
   * Enhanced visual appearance with amber gradient background and improved shadows
   * Added subtle pulse animation for newly activated dots that stops after first interaction
+- June 14, 2025. Implemented global floating dot with PWA-style interface:
+  * Enhanced floating dot to provide same experience as PWA dot interface across all website pages
+  * Updated expanded interface with large logo, gradient buttons, and enhanced typography
+  * Voice capture now features large 20x20 recording button with proper visual feedback
+  * Text capture includes enhanced text area with amber focus styling and rounded corners
+  * Save button redesigned with full-width amber gradient matching PWA style
+  * Dot remains draggable and accessible on all pages when DotSpark is activated
 - June 14, 2025. Updated DotSpark PWA color theme and navigation:
   * Changed Text button background from blue to amber/orange gradient matching logo theme
   * Updated My Neura button to use amber/orange colors instead of blue
