@@ -44,6 +44,51 @@ const Dashboard: React.FC = () => {
     }
   });
 
+  // Example data for preview mode when no dots exist
+  const exampleDots: Dot[] = [
+    {
+      id: "example-1",
+      summary: "Learned about microservices architecture patterns and their trade-offs in distributed systems",
+      anchor: "Discussed with senior architect about breaking down monolith, focusing on domain boundaries and data consistency challenges",
+      pulse: "curious",
+      wheelId: "example-wheel-1",
+      timestamp: new Date(),
+      sourceType: 'text'
+    },
+    {
+      id: "example-2", 
+      summary: "Completed advanced React patterns workshop covering render props, higher-order components",
+      anchor: "Workshop by Kent C. Dodds, practiced compound components pattern with real examples from UI libraries",
+      pulse: "focused",
+      wheelId: "example-wheel-1",
+      timestamp: new Date(),
+      sourceType: 'voice'
+    },
+    {
+      id: "example-3",
+      summary: "Started morning meditation routine, noticed improved focus and reduced anxiety levels",
+      anchor: "Using Headspace app, 10-minute sessions before work, tracking mood changes and productivity correlations",
+      pulse: "calm",
+      wheelId: "example-wheel-2", 
+      timestamp: new Date(),
+      sourceType: 'hybrid'
+    }
+  ];
+
+  // Search functionality
+  React.useEffect(() => {
+    if (searchTerm.trim()) {
+      const filtered = dots.filter((dot: Dot) => 
+        dot.summary.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        dot.anchor.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        dot.pulse.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setSearchResults(filtered);
+    } else {
+      setSearchResults([]);
+    }
+  }, [searchTerm, dots]);
+
   // Mock wheels data for visualization
   const [wheels] = useState<Wheel[]>([
     {
@@ -348,16 +393,49 @@ const Dashboard: React.FC = () => {
           </h2>
           <div className="bg-white/80 backdrop-blur border-2 border-amber-200 rounded-xl p-4 max-h-96 overflow-y-auto shadow-lg">
             <div className="space-y-4">
-              {dots.length > 0 ? (
-                dots.slice(0, 4).map((dot: Dot) => (
-                  <DotCard key={dot.id} dot={dot} />
-                ))
-              ) : (
-                <div className="text-center py-8">
-                  <Eye className="w-12 h-12 mx-auto mb-4 text-gray-400" />
-                  <p className="text-gray-600">No dots captured yet</p>
-                  <p className="text-sm text-gray-500">Use the floating dot to capture your first thought</p>
+              {/* Search Results */}
+              {searchResults.length > 0 && (
+                <div className="mb-4">
+                  <h3 className="text-sm font-semibold text-amber-800 mb-2">Search Results ({searchResults.length})</h3>
+                  {searchResults.slice(0, 3).map((dot: Dot) => (
+                    <DotCard 
+                      key={dot.id} 
+                      dot={dot} 
+                      onClick={() => setViewFullDot(dot)}
+                    />
+                  ))}
                 </div>
+              )}
+              
+              {/* Recent Dots or Examples */}
+              {searchTerm.trim() === '' && (
+                <>
+                  {dots.length > 0 ? (
+                    dots.slice(0, 4).map((dot: Dot) => (
+                      <DotCard 
+                        key={dot.id} 
+                        dot={dot} 
+                        onClick={() => setViewFullDot(dot)}
+                      />
+                    ))
+                  ) : (
+                    <>
+                      <div className="mb-3 text-center">
+                        <Badge className="bg-orange-100 text-orange-700 border-orange-200">
+                          Preview Examples
+                        </Badge>
+                      </div>
+                      {exampleDots.map((dot: Dot) => (
+                        <DotCard 
+                          key={dot.id} 
+                          dot={dot} 
+                          isPreview={true}
+                          onClick={() => setViewFullDot(dot)}
+                        />
+                      ))}
+                    </>
+                  )}
+                </>
               )}
             </div>
           </div>
@@ -375,6 +453,11 @@ const Dashboard: React.FC = () => {
           <DotWheelsMap wheels={wheels} />
         </div>
       </div>
+      
+      {/* Full Dot View Modal */}
+      {viewFullDot && (
+        <DotFullView dot={viewFullDot} onClose={() => setViewFullDot(null)} />
+      )}
     </div>
   );
 };

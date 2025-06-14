@@ -432,6 +432,20 @@ Changelog:
   * Added hover cards showing wheel details, dots preview, and connection information
   * Enhanced visual design with gradient circles, animated connection lines, and floating statistics
   * Implemented responsive wheel positioning with scale animations and interactive hover effects
+- June 14, 2025. Comprehensive dashboard enhancements with improved readability and functionality:
+  * Added brain icon to "My DotSpark Neura" header for enhanced branding
+  * Fixed floating dot position persistence - now stays where users place it using localStorage
+  * Improved color scheme with white/transparent backgrounds for better readability instead of golden gradients
+  * Removed "Neural Constellation" heading from Dot Wheels Map for cleaner interface
+  * Added "Total Dots" and "Total Wheels" buttons in top right corner of map
+  * Made Dot Wheels Map scrollable with draggable screen for exploring large maps
+  * Implemented clickable wheel selection with highlight boxes and "Open dot full view" option
+  * Added comprehensive search functionality that filters dots and displays results with full dot view
+  * Enhanced Recent Dots section to show example preview dots when empty with "Preview" tags
+  * Added DotFullView modal component showing all three layers (summary, anchor, pulse) with voice playback icons
+  * Updated all text displays to show summary in text format regardless of source type (voice/text/hybrid)
+  * Added click-to-open functionality throughout Recent Dots and search results for full dot viewing
+  * Empty Dot Wheels Map now shows preview state with "Start saving your Dots to get a similar map" message
 ```
 
 ## User Preferences
