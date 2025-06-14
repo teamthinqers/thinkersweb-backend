@@ -11,7 +11,18 @@ export default function QuickCapture() {
   const [isRecording, setIsRecording] = useState(false);
   const [textInput, setTextInput] = useState('');
   const [captureMode, setCaptureMode] = useState<'voice' | 'text'>('voice');
+  const [isStandalone, setIsStandalone] = useState(false);
   const { toast } = useToast();
+
+  // Check if running as standalone dot capture app
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const standalone = urlParams.get('standalone') === 'true';
+    const isPWA = window.matchMedia('(display-mode: standalone)').matches ||
+                  (window.navigator as any).standalone ||
+                  document.referrer.includes('android-app://');
+    setIsStandalone(standalone || isPWA);
+  }, []);
 
   // Speech recognition setup
   useEffect(() => {
@@ -91,20 +102,32 @@ export default function QuickCapture() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-100 p-4 overflow-y-auto">
       <div className="max-w-2xl mx-auto pb-8">
-        {/* Header */}
+        {/* Header - Minimal for standalone, full for in-app */}
         <div className="flex items-center gap-4 mb-8">
-          <Link href="/" className="p-2 rounded-full bg-white/80 hover:bg-white transition-colors">
-            <ArrowLeft className="w-5 h-5 text-gray-600" />
-          </Link>
+          {!isStandalone && (
+            <Link href="/" className="p-2 rounded-full bg-white/80 hover:bg-white transition-colors">
+              <ArrowLeft className="w-5 h-5 text-gray-600" />
+            </Link>
+          )}
           <div className="flex items-center gap-3">
             <img 
               src="/dotspark-pwa-final.png" 
-              alt="DotSpark" 
-              className="w-12 h-12 rounded-full shadow-lg"
+              alt="Dot" 
+              className={cn(
+                "rounded-full shadow-lg",
+                isStandalone ? "w-16 h-16" : "w-12 h-12"
+              )}
             />
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Quick Capture</h1>
-              <p className="text-gray-600">Capture your thoughts instantly</p>
+              <h1 className={cn(
+                "font-bold text-gray-900",
+                isStandalone ? "text-3xl" : "text-2xl"
+              )}>
+                {isStandalone ? "Capture Dot" : "Quick Capture"}
+              </h1>
+              <p className="text-gray-600">
+                {isStandalone ? "Save your thoughts instantly" : "Capture your thoughts instantly"}
+              </p>
             </div>
           </div>
         </div>

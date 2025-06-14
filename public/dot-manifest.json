@@ -1,0 +1,27 @@
+{
+  "name": "Dot Capture",
+  "short_name": "Dot",
+  "description": "Quick thought capture with your personal Dot",
+  "start_url": "/quick-capture?standalone=true",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#b45309",
+  "theme_color": "#b45309",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/dotspark-pwa-final.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/dotspark-pwa-final.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["productivity", "utilities"],
+  "screenshots": []
+}
