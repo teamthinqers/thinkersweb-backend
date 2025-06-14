@@ -176,8 +176,8 @@ export default function DotCapture() {
                   </Button>
                   <Button
                     onClick={() => {
-                      // Navigate to dashboard
-                      window.location.href = '/';
+                      // Navigate to My Neura page
+                      window.location.href = '/my-neura';
                     }}
                     variant="outline"
                     className="w-full h-12 bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200 hover:from-amber-50 hover:to-orange-50 hover:border-amber-400 text-amber-800 hover:text-amber-900 font-medium transition-all duration-200 active:bg-amber-100"
@@ -277,8 +277,8 @@ export default function DotCapture() {
                 
                 <Button
                   onClick={() => {
-                    // Navigate to dashboard
-                    window.location.href = '/';
+                    // Navigate to My Neura page
+                    window.location.href = '/my-neura';
                   }}
                   variant="ghost"
                   className="w-full text-sm text-gray-500 hover:text-gray-700"
