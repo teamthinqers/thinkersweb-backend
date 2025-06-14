@@ -203,6 +203,12 @@ Changelog:
   * Updated button text from "Save Thought" to "Save Dot" for brand consistency  
   * Added backspace functionality to both voice and text screens with arrow button
   * Optimized neuraStorage polling to eliminate excessive console logging
+- June 14, 2025. Enhanced DotSpark PWA navigation button experience:
+  * Redesigned "Open DotSpark App" and "My Neura" buttons with gradient backgrounds
+  * Added two-line layout with descriptive subtitles for better user understanding
+  * Implemented proper navigation functionality for My Neura button
+  * Enhanced visual hierarchy with larger icons and improved spacing
+  * Added smooth hover transitions and brand-specific color schemes
 ```
 
 ## User Preferences
