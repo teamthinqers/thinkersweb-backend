@@ -62,8 +62,8 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
     const startY = e.clientY - position.y;
 
     const handleMouseMove = (e: MouseEvent) => {
-      const newX = Math.max(0, Math.min(window.innerWidth - 40, e.clientX - startX));
-      const newY = Math.max(0, Math.min(window.innerHeight - 40, e.clientY - startY));
+      const newX = Math.max(0, Math.min(window.innerWidth - 48, e.clientX - startX));
+      const newY = Math.max(0, Math.min(window.innerHeight - 48, e.clientY - startY));
       setPosition({ x: newX, y: newY });
     };
 
@@ -76,6 +76,33 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
 
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (isExpanded) return;
+    e.preventDefault();
+    setIsDragging(true);
+    
+    const touch = e.touches[0];
+    const startX = touch.clientX - position.x;
+    const startY = touch.clientY - position.y;
+
+    const handleTouchMove = (e: TouchEvent) => {
+      const touch = e.touches[0];
+      const newX = Math.max(0, Math.min(window.innerWidth - 48, touch.clientX - startX));
+      const newY = Math.max(0, Math.min(window.innerHeight - 48, touch.clientY - startY));
+      setPosition({ x: newX, y: newY });
+    };
+
+    const handleTouchEnd = () => {
+      setIsDragging(false);
+      localStorage.setItem('global-floating-dot-position', JSON.stringify(position));
+      document.removeEventListener('touchmove', handleTouchMove);
+      document.removeEventListener('touchend', handleTouchEnd);
+    };
+
+    document.addEventListener('touchmove', handleTouchMove, { passive: false });
+    document.addEventListener('touchend', handleTouchEnd);
   };
 
   const handleClick = () => {
@@ -249,20 +276,33 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
       <div
         ref={dotRef}
         className={cn(
-          "absolute pointer-events-auto cursor-pointer transition-all duration-300",
-          isExpanded ? "hidden" : "block"
+          "absolute pointer-events-auto cursor-move transition-all duration-300",
+          isExpanded ? "hidden" : "block",
+          isDragging ? "scale-110 z-60" : "hover:scale-105"
         )}
-        style={{ left: position.x, top: position.y }}
+        style={{ 
+          left: `${position.x}px`, 
+          top: `${position.y}px`,
+          transform: isDragging ? 'scale(1.1)' : undefined
+        }}
         onMouseDown={handleMouseDown}
+        onTouchStart={handleTouchStart}
         onClick={handleClick}
       >
         <div className="relative">
-          <div className="w-12 h-12 rounded-full bg-gradient-to-r from-amber-500 to-orange-600 shadow-lg flex items-center justify-center">
-            <div className="w-3 h-3 bg-white rounded-full"></div>
+          {/* Multiple pulsing rings for enhanced visibility */}
+          <div className="absolute inset-0 w-12 h-12 rounded-full bg-amber-500/40 animate-ping"></div>
+          <div className="absolute inset-1 w-10 h-10 rounded-full bg-orange-500/50 animate-ping" style={{ animationDelay: '0.5s' }}></div>
+          <div className="absolute inset-2 w-8 h-8 rounded-full bg-yellow-500/60 animate-ping" style={{ animationDelay: '1s' }}></div>
+          
+          {/* Main dot with intense blinking */}
+          <div className="relative w-12 h-12 rounded-full bg-gradient-to-br from-amber-600 to-orange-700 flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 animate-pulse">
+            <div className="w-4 h-4 rounded-full bg-white animate-pulse" style={{ animationDelay: '0.3s' }}></div>
+            
+            {/* Attention-grabbing blinking indicator */}
+            <div className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-yellow-400 animate-ping"></div>
+            <div className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-white animate-pulse" style={{ animationDelay: '0.7s' }}></div>
           </div>
-          {/* Pulsing rings for visibility */}
-          <div className="absolute inset-0 w-12 h-12 rounded-full bg-amber-400 opacity-30 animate-pulse"></div>
-          <div className="absolute inset-0 w-12 h-12 rounded-full bg-amber-300 opacity-20 animate-pulse animation-delay-500"></div>
         </div>
       </div>
 
