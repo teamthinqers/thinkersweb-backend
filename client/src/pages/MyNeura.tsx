@@ -631,7 +631,7 @@ export default function MyNeura() {
             <div className="flex items-center gap-2">
               <Settings className="h-5 w-5 text-amber-700 dark:text-amber-400" />
               <CardTitle>
-                <span className="font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">DotSpark Settings</span>
+                <span className="font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">Dot Settings</span>
               </CardTitle>
             </div>
             <Badge className="bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-200 hover:bg-amber-200 dark:hover:bg-amber-800/50">

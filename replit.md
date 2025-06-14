@@ -151,13 +151,14 @@ Changelog:
     - WhatsAppPromo.tsx: Converted to window.location.href
     - ContactOptionsDialog.tsx: Converted to window.location.href
     - CompactWhatsAppButton.tsx: Already using proper navigation
-- June 14, 2025. DotSpark Settings section updates:
-  * Replaced capacity metrics with DotSpark Settings component using settings icon
+- June 14, 2025. Dot Settings section updates:
+  * Replaced capacity metrics with Dot Settings component using settings icon
   * Updated description to "Configure your dot capture settings"
   * Implemented automatic floating dot activation when DotSpark is enabled (no separate toggle)
-  * Added Voice mode, Text mode, and Hybrid mode selection interface
+  * Added Voice Only, Text Only, and Hybrid Mode selection interface with enhanced UX
   * Renamed section heading from "Dot capture status" to "Floating dot"
-  * Created visual mode selection cards with color-coded states and persistent localStorage settings
+  * Created premium visual mode selection cards with gradients, animations, and checkmark indicators
+  * Final rename from "DotSpark Settings" to "Dot Settings" for cleaner branding
 ```
 
 ## User Preferences
