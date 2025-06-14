@@ -66,50 +66,19 @@ export function DotSparkSettings() {
 
   return (
     <div className="space-y-6">
-      {/* Dot capture status */}
+      {/* Dot Settings header */}
       <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/50 dark:to-orange-950/50 rounded-lg p-4 border border-amber-200 dark:border-amber-800">
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-3">
+          <div className="p-2 bg-amber-100 dark:bg-amber-900/50 rounded-lg">
+            <Settings className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+          </div>
           <div>
-            <h3 className="text-lg font-semibold text-amber-900 dark:text-amber-100">Floating dot</h3>
+            <h3 className="text-lg font-semibold text-amber-900 dark:text-amber-100">Dot Settings</h3>
             <p className="text-sm text-amber-700 dark:text-amber-300">
-              {isDotSparkActivated 
-                ? "DotSpark is active - floating dot is available for thought capture"
-                : "Activate DotSpark above to enable the floating dot"
-              }
+              Configure your dot capture settings
             </p>
           </div>
-          <div className="flex items-center gap-2">
-            <Circle 
-              className={`h-4 w-4 ${
-                isDotSparkActivated 
-                  ? 'text-green-600 fill-green-600' 
-                  : 'text-gray-400'
-              }`} 
-            />
-            <Badge 
-              variant={isDotSparkActivated ? "default" : "secondary"}
-              className={isDotSparkActivated 
-                ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200" 
-                : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400"
-              }
-            >
-              {isDotSparkActivated ? "Active" : "Inactive"}
-            </Badge>
-          </div>
         </div>
-
-        {/* Additional info when DotSpark is activated */}
-        {isDotSparkActivated && (
-          <div className="flex items-center justify-between p-3 bg-white/50 dark:bg-gray-800/50 rounded-lg">
-            <div className="flex items-center gap-2">
-              <Move className="h-4 w-4 text-green-600" />
-              <Label>Draggable positioning</Label>
-            </div>
-            <Badge variant="secondary" className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
-              Always enabled
-            </Badge>
-          </div>
-        )}
       </div>
 
       {/* Mode Selection - always visible */}
