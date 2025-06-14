@@ -120,31 +120,12 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
     }
   }, [user, simulateActivation, forceStatusRefresh]);
   
-  // Add a special effect to periodically check activation status
+  // Single check on mount - rely on event listeners for updates
   useEffect(() => {
-    // Function to check and update activation status
-    const checkActivationStatus = () => {
-      const activated = neuraStorage.isActivated();
-      console.log("Header checking neuraStorage activation:", activated);
-      setIsActivated(activated);
-    };
-    
-    // Initial check
-    checkActivationStatus();
-    
-    // Set up an interval to refresh status every 2 seconds
-    // This helps ensure multi-device/multi-tab consistency
-    const intervalId = setInterval(() => {
-      // Check neuraStorage for activation status
-      checkActivationStatus();
-      // Refresh WhatsApp status as well if user is logged in
-      if (user) {
-        forceStatusRefresh();
-      }
-    }, 2000);
-    
-    return () => clearInterval(intervalId);
-  }, [user, forceStatusRefresh]);
+    const activated = neuraStorage.isActivated();
+    console.log("Header initial neuraStorage check:", activated);
+    setIsActivated(activated);
+  }, []);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
