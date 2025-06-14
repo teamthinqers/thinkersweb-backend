@@ -103,24 +103,24 @@ const Dashboard: React.FC = () => {
   ]);
 
   const DotCard: React.FC<{ dot: Dot }> = ({ dot }) => (
-    <Card className="mb-4 hover:shadow-md transition-shadow">
+    <Card className="mb-4 hover:shadow-md transition-shadow border-2 border-amber-100 bg-gradient-to-br from-white to-amber-50/20">
       <CardHeader className="pb-2">
         <div className="flex justify-between items-start">
-          <Badge variant="outline" className="text-xs">
+          <Badge variant="outline" className="text-xs border-amber-300 text-amber-700 bg-amber-50">
             {dot.sourceType === 'voice' ? <Mic className="h-3 w-3 mr-1" /> : 
              dot.sourceType === 'text' ? <Type className="h-3 w-3 mr-1" /> : 
              <div className="flex gap-1"><Mic className="h-2 w-2" /><Type className="h-2 w-2" /></div>}
             {dot.sourceType}
           </Badge>
-          <Badge className="bg-purple-100 text-purple-800 border-purple-200">
+          <Badge className="bg-amber-100 text-amber-800 border-amber-200">
             {dot.pulse}
           </Badge>
         </div>
       </CardHeader>
       <CardContent>
-        <h3 className="font-medium text-sm mb-2 leading-relaxed">{dot.summary}</h3>
+        <h3 className="font-medium text-sm mb-2 leading-relaxed text-gray-800">{dot.summary}</h3>
         <p className="text-xs text-gray-600 leading-relaxed">{dot.anchor}</p>
-        <div className="mt-2 text-xs text-gray-400">
+        <div className="mt-2 text-xs text-amber-600">
           {dot.timestamp.toLocaleString()}
         </div>
       </CardContent>
@@ -128,13 +128,13 @@ const Dashboard: React.FC = () => {
   );
 
   const WheelCard: React.FC<{ wheel: Wheel }> = ({ wheel }) => (
-    <Card className="mb-4 hover:shadow-lg transition-shadow">
+    <Card className="mb-4 hover:shadow-lg transition-shadow border-2 border-amber-100 bg-gradient-to-br from-white to-amber-50/20">
       <CardHeader className="pb-2">
         <div className="flex justify-between items-start">
-          <CardTitle className="text-lg font-semibold" style={{ color: wheel.color }}>
+          <CardTitle className="text-lg font-semibold bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent">
             {wheel.name}
           </CardTitle>
-          <Badge variant="secondary" className="text-xs">
+          <Badge variant="secondary" className="text-xs bg-amber-100 text-amber-800 border-amber-200">
             {wheel.category}
           </Badge>
         </div>
@@ -142,18 +142,18 @@ const Dashboard: React.FC = () => {
       <CardContent>
         <div className="space-y-2">
           {wheel.dots.map(dot => (
-            <div key={dot.id} className="p-2 bg-gray-50 rounded-md">
-              <p className="text-sm font-medium mb-1">{dot.summary}</p>
+            <div key={dot.id} className="p-2 bg-gradient-to-r from-amber-50/50 to-orange-50/50 rounded-md border border-amber-200">
+              <p className="text-sm font-medium mb-1 text-gray-800">{dot.summary}</p>
               <div className="flex justify-between items-center">
-                <Badge className="bg-purple-100 text-purple-800 border-purple-200 text-xs">
+                <Badge className="bg-amber-100 text-amber-800 border-amber-200 text-xs">
                   {dot.pulse}
                 </Badge>
-                <span className="text-xs text-gray-500">{dot.sourceType}</span>
+                <span className="text-xs text-amber-600">{dot.sourceType}</span>
               </div>
             </div>
           ))}
         </div>
-        <div className="mt-3 text-xs text-gray-500">
+        <div className="mt-3 text-xs text-amber-600">
           Connected to: {wheel.connections.length} wheels
         </div>
       </CardContent>
@@ -161,11 +161,11 @@ const Dashboard: React.FC = () => {
   );
 
   const MindMapView: React.FC = () => (
-    <div className="relative bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl p-8 min-h-96 border">
-      <div className="text-center text-gray-600 mb-6">
-        <Brain className="w-12 h-12 mx-auto mb-2 text-blue-500" />
-        <h3 className="text-lg font-semibold">Neural Constellation</h3>
-        <p className="text-sm">Visual representation of your connected thoughts</p>
+    <div className="relative bg-gradient-to-br from-amber-50/50 to-orange-50/50 rounded-xl p-8 min-h-96 border-2 border-amber-200 shadow-lg">
+      <div className="text-center mb-6">
+        <Brain className="w-12 h-12 mx-auto mb-2 text-amber-500" />
+        <h3 className="text-lg font-semibold bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent">Neural Constellation</h3>
+        <p className="text-sm text-amber-600">Visual representation of your connected thoughts</p>
       </div>
       
       {/* Simulated mind map visualization */}

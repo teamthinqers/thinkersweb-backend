@@ -419,6 +419,13 @@ Changelog:
   * Added "charac" suffix to character count display for clarity (e.g., "11/220 charac")
   * Applied changes to StructuredFloatingDot component for both Layer 1 and Layer 2
   * Implemented unsaved changes warning dialog with amber warning icon and protective messaging
+- June 14, 2025. Dashboard redesign with enhanced branding and color integration:
+  * Renamed "Neural Dashboard" to "My DotSpark Neura" with Neura symbol (circular amber dot icon)
+  * Removed subtitle and added search bar with "Enter keywords to search for a Dot" placeholder
+  * Reorganized layout: search bar → Recent Dots (scrollable, 4 items) → Dot Wheels section
+  * Applied comprehensive amber/orange color theme throughout all components
+  * Enhanced cards, search bar, headings, and background with gradient amber/orange styling
+  * Updated mind map visualization with amber-themed Neural Constellation design
 ```
 
 ## User Preferences
