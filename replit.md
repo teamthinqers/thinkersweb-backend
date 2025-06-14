@@ -297,6 +297,11 @@ Changelog:
   * Fixed "Save a Dot" button to show voice/text choice dialog matching floating dot behavior
   * Updated "Open DotSpark App" button text from "Access full neural features" to "Access full App"
   * Aligned all button icons with consistent flex centering for perfect straight alignment
+- June 14, 2025. PWA floating dot integration cleanup:
+  * Removed duplicate floating dot from bottom of DotCapture screen
+  * Made "Save a Dot" button trigger actual GlobalFloatingDot functionality via custom event
+  * Button now serves as shortcut to floating dot experience instead of separate interface
+  * Enhanced GlobalFloatingDot component to listen for triggerFloatingDot custom events
 - June 14, 2025. Updated home page "Explore DotSpark Neura" button:
   * Changed from internal navigation (/neura) to external redirect to https://www.dotspark.in/dashboard
   * Button now opens dashboard in new tab for seamless access to full application features

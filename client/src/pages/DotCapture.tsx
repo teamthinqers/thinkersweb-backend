@@ -166,10 +166,10 @@ export default function DotCapture() {
                   {/* Save a Dot button */}
                   <Button
                     onClick={() => {
+                      // Trigger the floating dot click event
+                      const floatingDotEvent = new CustomEvent('triggerFloatingDot');
+                      window.dispatchEvent(floatingDotEvent);
                       setShowOptions(false);
-                      // Show choice between voice and text like floating dot
-                      const choice = window.confirm("Choose capture method:\nOK = Voice\nCancel = Text");
-                      setCaptureMode(choice ? 'voice' : 'text');
                     }}
                     className="w-full h-16 bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 hover:from-orange-600 hover:via-amber-600 hover:to-yellow-600 text-white rounded-2xl shadow-xl border-0 transform transition-all duration-300 hover:scale-105 hover:shadow-2xl group relative overflow-hidden"
                   >
@@ -330,27 +330,7 @@ export default function DotCapture() {
             </Card>
           )}
 
-          {/* Enhanced Blinking Floating Dot */}
-          <div className="fixed bottom-8 right-8 z-50">
-            <div 
-              className="relative cursor-pointer"
-              onClick={() => setShowOptions(true)}
-            >
-              {/* Multiple pulsing rings for enhanced visibility */}
-              <div className="absolute inset-0 w-16 h-16 rounded-full bg-amber-500/40 animate-ping"></div>
-              <div className="absolute inset-1 w-14 h-14 rounded-full bg-orange-500/50 animate-ping" style={{ animationDelay: '0.5s' }}></div>
-              <div className="absolute inset-2 w-12 h-12 rounded-full bg-yellow-500/60 animate-ping" style={{ animationDelay: '1s' }}></div>
-              
-              {/* Main dot with intense blinking */}
-              <div className="relative w-16 h-16 rounded-full bg-gradient-to-br from-amber-600 to-orange-700 flex items-center justify-center shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-110 animate-pulse">
-                <div className="w-6 h-6 rounded-full bg-white animate-pulse" style={{ animationDelay: '0.3s' }}></div>
-                
-                {/* Attention-grabbing blinking indicator */}
-                <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-yellow-400 animate-ping"></div>
-                <div className="absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full bg-white animate-pulse" style={{ animationDelay: '0.7s' }}></div>
-              </div>
-            </div>
-          </div>
+
 
           {/* Quick Tips */}
           <div className="text-center space-y-2">

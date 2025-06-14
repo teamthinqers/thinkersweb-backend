@@ -151,7 +151,21 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
         localStorage.setItem('has-seen-floating-dot', 'true');
       }
     }
-  }, []);
+
+    // Listen for custom event from "Save a Dot" button
+    const handleTriggerDot = () => {
+      if (!isDragging && !isExpanded) {
+        setIsExpanded(true);
+        setIsFirstActivation(false);
+      }
+    };
+
+    window.addEventListener('triggerFloatingDot', handleTriggerDot);
+
+    return () => {
+      window.removeEventListener('triggerFloatingDot', handleTriggerDot);
+    };
+  }, [isDragging, isExpanded]);
 
   // Check if we're in PWA mode
   const isPWA = window.matchMedia('(display-mode: standalone)').matches || 
