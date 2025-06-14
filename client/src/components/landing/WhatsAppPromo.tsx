@@ -34,11 +34,11 @@ async function openWhatsAppChat() {
     
     // After a short delay, try the web version as fallback
     setTimeout(() => {
-      window.open(webFallbackUrl, '_blank');
+      window.location.href = webFallbackUrl;
     }, 1000);
   } else {
     // For desktop, use the web version directly
-    window.open(webFallbackUrl, '_blank');
+    window.location.href = webFallbackUrl;
   }
 }
 

@@ -290,7 +290,7 @@ export function DotSparkWhatsAppLinking({
       // Use external direct link if provided
       if (externalDirectLink) {
         console.log("Using external direct link:", externalDirectLink);
-        window.open(externalDirectLink, '_blank');
+        window.location.href = externalDirectLink;
         return;
       }
       
@@ -335,22 +335,8 @@ export function DotSparkWhatsAppLinking({
           }, 5000);
         }, 1000);
       } else {
-        // For desktop, open in a new window/tab but ensure our page stays in the current tab
-        const whatsappWindow = window.open(webFallbackUrl, '_blank');
-        
-        // If we have a reference to the opened window, we can set up a check
-        // to see when it's closed and redirect back to activation page
-        if (whatsappWindow) {
-          const checkClosed = setInterval(() => {
-            if (whatsappWindow.closed) {
-              clearInterval(checkClosed);
-              window.location.href = "/activate-dotspark";
-            }
-          }, 1000);
-          
-          // Clear the interval after 2 minutes to avoid resource usage
-          setTimeout(() => clearInterval(checkClosed), 2 * 60 * 1000);
-        }
+        // For desktop, use direct navigation to avoid popup blocker
+        window.location.href = webFallbackUrl;
       }
       
       // Add logging for debugging
