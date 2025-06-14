@@ -56,11 +56,11 @@ export function ContactOptionsDialog({
       
       // After a short delay, try the web version as fallback
       setTimeout(() => {
-        window.open(`https://wa.me/${whatsAppNumber}?text=${encodedMessage}`, '_blank');
+        window.location.href = `https://wa.me/${whatsAppNumber}?text=${encodedMessage}`;
       }, 1000);
     } else {
       // For desktop/laptop, use WhatsApp Web - works if user has WhatsApp Web session or app installed
-      window.open(`https://wa.me/${whatsAppNumber}?text=${encodedMessage}`, '_blank');
+      window.location.href = `https://wa.me/${whatsAppNumber}?text=${encodedMessage}`;
     }
     
     onOpenChange(false);
