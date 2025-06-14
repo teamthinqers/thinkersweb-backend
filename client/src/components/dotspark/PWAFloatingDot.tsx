@@ -158,7 +158,7 @@ export function PWAFloatingDot({ isActive }: PWAFloatingDotProps) {
       {!isExpanded ? (
         /* Collapsed Dot Button */
         <div
-          className="w-14 h-14 bg-gradient-to-br from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 rounded-full shadow-lg border-2 border-white flex items-center justify-center transition-all duration-200 hover:scale-105"
+          className="w-14 h-14 bg-gradient-to-br from-amber-600 to-orange-700 hover:from-amber-700 hover:to-orange-800 rounded-full shadow-lg flex items-center justify-center transition-all duration-200 hover:scale-105 animate-pulse"
           onMouseDown={handleMouseDown}
           onTouchStart={handleTouchStart}
           onClick={handleClick}
@@ -166,68 +166,54 @@ export function PWAFloatingDot({ isActive }: PWAFloatingDotProps) {
           tabIndex={0}
           aria-label="Open DotSpark thought capture"
         >
-          <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center overflow-hidden shadow-sm border">
-            <img 
-              src="/attached_assets/dot_spark_logo-03_1749842817686.jpg" 
-              alt="DotSpark" 
-              className="w-full h-full object-cover"
-              draggable={false}
-              onError={(e) => {
-                const target = e.target as HTMLImageElement;
-                target.src = "/dotspark-brown-bg-icon.jpeg";
-                target.onerror = () => {
-                  target.src = "/dotspark-logo-icon.jpeg";
-                };
-              }}
-            />
-          </div>
+          <div className="w-3 h-3 rounded-full bg-white"></div>
         </div>
       ) : (
-        /* Expanded Interface */
-        <Card className="w-80 bg-white shadow-2xl border-0 rounded-2xl overflow-hidden">
-          <CardContent className="p-0">
-            {!captureMode ? (
-              /* Mode Selection */
-              <div className="p-6 space-y-6">
-                <div className="text-center space-y-2">
-                  <div className="flex justify-center mb-4">
-                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-amber-600 to-orange-700 flex items-center justify-center shadow-lg">
-                      <div className="w-6 h-6 rounded-full bg-white"></div>
+        /* Expanded Interface - Fixed Position in Screen Center */
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/20 backdrop-blur-sm">
+          <Card className="w-80 bg-white shadow-2xl border-0 rounded-2xl overflow-hidden">
+            <CardContent className="p-0">
+              {!captureMode ? (
+                /* Mode Selection */
+                <div className="p-6 space-y-6">
+                  <div className="text-center space-y-2">
+                    <div className="flex justify-center mb-4">
+                      <div className="w-16 h-16 rounded-full bg-gradient-to-br from-amber-600 to-orange-700 flex items-center justify-center shadow-lg">
+                        <div className="w-6 h-6 rounded-full bg-white"></div>
+                      </div>
                     </div>
+                    <h2 className="text-xl font-bold bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent">
+                      Save a Dot
+                    </h2>
+                    <p className="text-sm text-gray-600">How would you like to capture your Dot?</p>
                   </div>
-                  <h2 className="text-xl font-bold bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent">
-                    Save a Dot
-                  </h2>
-                  <p className="text-sm text-gray-600">How would you like to capture your Dot?</p>
-                </div>
 
-                <div className="space-y-4">
-                  <Button
-                    onClick={() => handleModeSelect('voice')}
-                    className="w-full h-16 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl shadow-lg text-lg font-semibold transition-all duration-200"
-                  >
-                    <Mic className="w-6 h-6 mr-3" />
-                    Voice
-                  </Button>
-                  <Button
-                    onClick={() => handleModeSelect('text')}
-                    className="w-full h-16 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl shadow-lg text-lg font-semibold transition-all duration-200"
-                  >
-                    <Type className="w-6 h-6 mr-3" />
-                    Text
-                  </Button>
-                </div>
-
-                <div className="pt-4 border-t">
+                  <div className="space-y-4">
+                    <Button
+                      onClick={() => handleModeSelect('voice')}
+                      className="w-full h-16 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl shadow-lg text-lg font-semibold transition-all duration-200"
+                    >
+                      <Mic className="w-6 h-6 mr-3" />
+                      Voice
+                    </Button>
+                    <Button
+                      onClick={() => handleModeSelect('text')}
+                      className="w-full h-16 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl shadow-lg text-lg font-semibold transition-all duration-200"
+                    >
+                      <Type className="w-6 h-6 mr-3" />
+                      Text
+                    </Button>
+                  </div>
+                  
+                  {/* Close Button */}
                   <Button
                     onClick={() => setIsExpanded(false)}
-                    variant="ghost"
-                    className="w-full text-gray-500 hover:text-gray-700"
+                    variant="outline"
+                    className="w-full mt-4"
                   >
                     Close
                   </Button>
                 </div>
-              </div>
             ) : (
               /* Capture Interface */
               <div className="p-6 space-y-6">
@@ -288,8 +274,9 @@ export function PWAFloatingDot({ isActive }: PWAFloatingDotProps) {
                 </Button>
               </div>
             )}
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </div>
       )}
     </div>
   );
