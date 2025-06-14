@@ -221,6 +221,12 @@ Changelog:
   * Enhanced text button with blue gradient background matching voice button quality
   * Fixed navigation button readability issues preventing white text on click
   * Improved button styling with consistent color schemes and hover states
+- June 14, 2025. Updated DotSpark PWA color theme and navigation:
+  * Changed Text button background from blue to amber/orange gradient matching logo theme
+  * Updated My Neura button to use amber/orange colors instead of blue
+  * Renamed "Open DotSpark App" to "Access Neura" in capture sections
+  * Updated all navigation buttons to direct users to dashboard (/) for streamlined experience
+  * Achieved unified branding with consistent amber/orange color scheme throughout interface
 ```
 
 ## User Preferences

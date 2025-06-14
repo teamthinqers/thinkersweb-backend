@@ -152,7 +152,7 @@ export default function DotCapture() {
                   
                   <Button
                     onClick={handleTextMode}
-                    className="w-full h-14 text-lg bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white"
+                    className="w-full h-14 text-lg bg-gradient-to-r from-amber-600 to-orange-700 hover:from-amber-700 hover:to-orange-800 text-white"
                   >
                     <Type className="w-6 h-6 mr-3" />
                     Text
@@ -173,16 +173,16 @@ export default function DotCapture() {
                   </Button>
                   <Button
                     onClick={() => {
-                      // Navigate to My Neura page when implemented
-                      window.location.href = '/my-neura';
+                      // Navigate to dashboard
+                      window.location.href = '/';
                     }}
                     variant="outline"
-                    className="w-full h-12 bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200 hover:from-blue-50 hover:to-indigo-50 hover:border-blue-400 text-blue-800 hover:text-blue-900 font-medium transition-all duration-200 active:bg-blue-100"
+                    className="w-full h-12 bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200 hover:from-amber-50 hover:to-orange-50 hover:border-amber-400 text-amber-800 hover:text-amber-900 font-medium transition-all duration-200 active:bg-amber-100"
                   >
-                    <Brain className="w-5 h-5 mr-3 text-blue-700" />
+                    <Brain className="w-5 h-5 mr-3 text-amber-700" />
                     <div className="text-left">
                       <div className="text-sm">My Neura</div>
-                      <div className="text-xs text-blue-600">View neural insights & settings</div>
+                      <div className="text-xs text-amber-600">View neural insights & settings</div>
                     </div>
                   </Button>
                 </div>
@@ -273,12 +273,15 @@ export default function DotCapture() {
                 </div>
                 
                 <Button
-                  onClick={handleOpenFullApp}
+                  onClick={() => {
+                    // Navigate to dashboard
+                    window.location.href = '/';
+                  }}
                   variant="ghost"
                   className="w-full text-sm text-gray-500 hover:text-gray-700"
                 >
                   <Brain className="w-4 h-4 mr-2" />
-                  Open DotSpark App
+                  Access Neura
                 </Button>
               </CardContent>
             </Card>
