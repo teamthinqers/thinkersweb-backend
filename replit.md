@@ -137,6 +137,10 @@ Changelog:
   * Converted to PNG format for optimal PWA compatibility
   * Updated manifest.json and favicon references to dotspark-pwa-final.png
   * Added cache-busting parameters to force browser refresh
+- June 14, 2025. Fixed dashboard navigation issues:
+  * Header logo and "DotSpark" text now navigate to My Neura page (/my-neura) instead of dashboard
+  * Hamburger menu "Home" link now correctly navigates to home page (/) instead of dashboard
+  * Integrated comprehensive PWA permission system to eliminate popup friction across WhatsApp features
 ```
 
 ## User Preferences

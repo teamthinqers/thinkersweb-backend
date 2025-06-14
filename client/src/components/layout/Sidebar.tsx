@@ -29,7 +29,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isMobile, onNewEntry
   if (!isOpen) return null;
 
   const navItems = [
-    { icon: Home, label: "Home", path: "/dashboard" },
+    { icon: Home, label: "Home", path: "/" },
     { icon: Sparkles, label: "My DotSpark", path: "/sectioned-dotspark-tuning", isSpecial: true, showActivationSpark: true },
     { icon: Brain, label: "My Neura", path: "/my-neura", showActivationDot: true },
   ];

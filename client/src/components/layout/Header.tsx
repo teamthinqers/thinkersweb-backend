@@ -214,7 +214,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
             {/* Logo on left that's clickable to My Neura */}
             <div 
               className="flex items-center gap-2 cursor-pointer active:opacity-80 transition-opacity"
-              onClick={() => setLocation("/dashboard")}
+              onClick={() => setLocation("/my-neura")}
             >
               <img src="/dotspark-logo-icon.jpeg" alt="DotSpark" className="h-8 w-8 object-contain rounded" />
               <span className="text-lg font-semibold text-amber-700 dark:text-amber-300">DotSpark</span>
@@ -244,7 +244,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
               <Button 
                 className="bg-gradient-to-r from-amber-700 to-primary hover:from-amber-800 hover:to-primary/90 text-white h-9 w-9 p-0 shadow-md"
                 size="sm"
-                onClick={() => setLocation("/dashboard")}
+                onClick={() => setLocation("/my-neura")}
               >
                 <div className="relative">
                   <Brain className="h-5 w-5" />
@@ -331,7 +331,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
               <Button 
                 className="mr-3 bg-gradient-to-r from-amber-700 to-primary hover:from-amber-800 hover:to-primary/90 text-white relative shadow-md"
                 size="sm"
-                onClick={() => setLocation("/dashboard")}
+                onClick={() => setLocation("/my-neura")}
               >
                 <span className="relative z-10 flex items-center">
                   <div className="relative mr-1.5">
