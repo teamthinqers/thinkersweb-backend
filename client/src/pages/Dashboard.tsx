@@ -142,30 +142,31 @@ const Dashboard: React.FC = () => {
   ]);
 
   const handleDotSubmit = () => {
-    // Validate character limits
+    // Validate character limits  
     if (newDot.summary.length > 220) {
-      alert("Please distill your thoughts. Sharply defined thoughts can spark better (max 220 charac)");
+      toast({
+        title: "Please distill your thoughts. Sharply defined thoughts can spark better (max 220 charac)",
+        variant: "destructive"
+      });
       return;
     }
     if (newDot.anchor.length > 300) {
-      alert("Anchor text must be 300 characters or less");
+      toast({
+        title: "Anchor text must be 300 characters or less",
+        variant: "destructive"
+      });
       return;
     }
     if (!newDot.pulse.trim() || newDot.pulse.split(' ').length > 1) {
-      alert("Pulse must be exactly one word describing the emotion");
+      toast({
+        title: "Pulse must be exactly one word describing the emotion",
+        variant: "destructive"
+      });
       return;
     }
 
-    // Here we would save to backend
-    console.log('Saving new dot:', newDot);
-    
-    // Reset form
-    setNewDot({
-      summary: '',
-      anchor: '',
-      pulse: '',
-      sourceType: 'text'
-    });
+    // Submit to backend
+    createDotMutation.mutate(newDot);
   };
 
   const DotCard: React.FC<{ dot: Dot }> = ({ dot }) => (
@@ -350,10 +351,11 @@ const Dashboard: React.FC = () => {
 
                 <Button 
                   onClick={handleDotSubmit}
-                  className="w-full"
-                  disabled={!newDot.summary || !newDot.anchor || !newDot.pulse}
+                  className="w-full bg-amber-600 hover:bg-amber-700 text-white"
+                  disabled={createDotMutation.isPending || !newDot.summary || !newDot.anchor || !newDot.pulse}
                 >
-                  Create Dot
+                  <Zap className="h-4 w-4 mr-2" />
+                  {createDotMutation.isPending ? 'Capturing...' : 'Create Dot'}
                 </Button>
               </CardContent>
             </Card>
@@ -361,9 +363,18 @@ const Dashboard: React.FC = () => {
             <div>
               <h3 className="text-lg font-semibold mb-4">Recent Dots</h3>
               <div className="space-y-4 max-h-96 overflow-y-auto">
-                {wheels.flatMap(wheel => wheel.dots).map(dot => (
-                  <DotCard key={dot.id} dot={dot} />
-                ))}
+                {isLoading ? (
+                  <div className="text-center py-8 text-gray-500">Loading dots...</div>
+                ) : dots.length === 0 ? (
+                  <div className="text-center py-8 text-gray-500">
+                    <p>No dots captured yet.</p>
+                    <p className="text-sm mt-1">Create your first dot to start building your neural map!</p>
+                  </div>
+                ) : (
+                  dots.map((dot: any) => (
+                    <DotCard key={dot.id} dot={dot} />
+                  ))
+                )}
               </div>
             </div>
           </div>

@@ -130,25 +130,40 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
 
   const handleSubmit = async () => {
     try {
-      if (captureMode === 'text' && textInput.trim()) {
-        toast({
-          title: "Dot Saved",
-          description: "Your thought has been captured successfully!",
-        });
-        setTextInput("");
-      } else if (captureMode === 'voice') {
-        toast({
-          title: "Voice Dot Saved",
-          description: "Your voice recording has been captured successfully!",
-        });
+      const thoughtText = textInput.trim() || "Voice captured thought";
+      
+      // Create three-layer dot structure
+      const dotData = {
+        summary: thoughtText.substring(0, 220), // Summary layer (max 220 chars)
+        anchor: thoughtText, // Anchor layer (full text for memory recall)
+        pulse: "captured", // Default pulse emotion
+        sourceType: captureMode || 'text'
+      };
+      
+      // Submit to real API endpoint
+      const response = await fetch('/api/dots', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dotData)
+      });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to create dot');
       }
       
+      toast({
+        title: "Dot Saved",
+        description: "Your thought has been captured as a three-layer dot!",
+      });
+      
+      setTextInput("");
       handleClose();
     } catch (error) {
       console.error('Failed to submit dot capture:', error);
       toast({
         title: "Error",
-        description: "Failed to save your dot. Please try again.",
+        description: error instanceof Error ? error.message : "Failed to save your dot. Please try again.",
         variant: "destructive",
       });
     }
