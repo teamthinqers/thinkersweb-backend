@@ -228,6 +228,7 @@ Changelog:
   * Updated all navigation buttons to direct users to dashboard (/) for streamlined experience
   * Achieved unified branding with consistent amber/orange color scheme throughout interface
   * Updated "Open DotSpark App" button to navigate to My Neura page for full neural features access
+  * Fixed "My Neura" and "Access Neura" buttons to properly navigate to My Neura page (/my-neura) instead of home page
 ```
 
 ## User Preferences
