@@ -18,8 +18,7 @@ import { useToast } from "@/hooks/use-toast";
 import { neuraStorage } from "@/lib/neuraStorage";
 
 export function DotSparkSettings() {
-  const [voiceEnabled, setVoiceEnabled] = useState(true);
-  const [textEnabled, setTextEnabled] = useState(true);
+  const [captureMode, setCaptureMode] = useState<'voice' | 'text' | 'hybrid'>('hybrid');
   const { toast } = useToast();
   
   // Check if DotSpark is activated - floating dot appears automatically when DotSpark is active
@@ -30,38 +29,38 @@ export function DotSparkSettings() {
     const savedSettings = localStorage.getItem('dotspark-settings');
     if (savedSettings) {
       const settings = JSON.parse(savedSettings);
-      setVoiceEnabled(settings.voiceEnabled ?? true);
-      setTextEnabled(settings.textEnabled ?? true);
+      setCaptureMode(settings.captureMode ?? 'hybrid');
     }
   }, []);
 
   // Save settings to localStorage
   const saveSettings = (newSettings: any) => {
     const settings = {
-      voiceEnabled,
-      textEnabled,
+      captureMode,
       ...newSettings
     };
     localStorage.setItem('dotspark-settings', JSON.stringify(settings));
   };
 
-  const handleVoiceToggle = (enabled: boolean) => {
-    setVoiceEnabled(enabled);
-    saveSettings({ voiceEnabled: enabled });
+  const handleModeChange = (mode: 'voice' | 'text' | 'hybrid') => {
+    setCaptureMode(mode);
+    saveSettings({ captureMode: mode });
+    
+    const modeLabels = {
+      voice: "Voice mode",
+      text: "Text mode", 
+      hybrid: "Hybrid mode"
+    };
+    
+    const modeDescriptions = {
+      voice: "Voice input only for thought capture",
+      text: "Text input only for thought capture",
+      hybrid: "Both voice and text input available"
+    };
     
     toast({
-      title: enabled ? "Voice capture enabled" : "Voice capture disabled",
-      description: enabled ? "You can now capture thoughts using voice input" : "Voice input has been disabled",
-    });
-  };
-
-  const handleTextToggle = (enabled: boolean) => {
-    setTextEnabled(enabled);
-    saveSettings({ textEnabled: enabled });
-    
-    toast({
-      title: enabled ? "Text capture enabled" : "Text capture disabled",
-      description: enabled ? "You can now capture thoughts using text input" : "Text input has been disabled",
+      title: `${modeLabels[mode]} selected`,
+      description: modeDescriptions[mode],
     });
   };
 
@@ -99,36 +98,78 @@ export function DotSparkSettings() {
           </div>
         </div>
 
-        {/* Capture method toggles - only show when DotSpark is activated */}
+        {/* Capture mode selection - only show when DotSpark is activated */}
         {isDotSparkActivated && (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="flex items-center justify-between p-3 bg-white/50 dark:bg-gray-800/50 rounded-lg">
-                <div className="flex items-center gap-2">
-                  <Type className="h-4 w-4 text-blue-600" />
-                  <Label htmlFor="text-capture">Text capture</Label>
-                </div>
-                <Switch
-                  id="text-capture"
-                  checked={textEnabled}
-                  onCheckedChange={handleTextToggle}
-                />
-              </div>
+            <div className="space-y-4">
+              <h4 className="text-sm font-medium text-amber-900 dark:text-amber-100">Capture mode</h4>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                {/* Voice Mode */}
+                <button
+                  onClick={() => handleModeChange('voice')}
+                  className={`p-4 rounded-lg border-2 transition-all ${
+                    captureMode === 'voice'
+                      ? 'border-purple-500 bg-purple-50 dark:bg-purple-950/50'
+                      : 'border-gray-200 dark:border-gray-700 hover:border-purple-300'
+                  }`}
+                >
+                  <div className="flex flex-col items-center gap-2">
+                    <Mic className={`h-6 w-6 ${captureMode === 'voice' ? 'text-purple-600' : 'text-gray-500'}`} />
+                    <span className={`text-sm font-medium ${captureMode === 'voice' ? 'text-purple-900 dark:text-purple-100' : 'text-gray-600 dark:text-gray-400'}`}>
+                      Voice mode
+                    </span>
+                    <span className="text-xs text-gray-500 dark:text-gray-400 text-center">
+                      Voice input only
+                    </span>
+                  </div>
+                </button>
 
-              <div className="flex items-center justify-between p-3 bg-white/50 dark:bg-gray-800/50 rounded-lg">
-                <div className="flex items-center gap-2">
-                  <Mic className="h-4 w-4 text-purple-600" />
-                  <Label htmlFor="voice-capture">Voice capture</Label>
-                </div>
-                <Switch
-                  id="voice-capture"
-                  checked={voiceEnabled}
-                  onCheckedChange={handleVoiceToggle}
-                />
+                {/* Text Mode */}
+                <button
+                  onClick={() => handleModeChange('text')}
+                  className={`p-4 rounded-lg border-2 transition-all ${
+                    captureMode === 'text'
+                      ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/50'
+                      : 'border-gray-200 dark:border-gray-700 hover:border-blue-300'
+                  }`}
+                >
+                  <div className="flex flex-col items-center gap-2">
+                    <Type className={`h-6 w-6 ${captureMode === 'text' ? 'text-blue-600' : 'text-gray-500'}`} />
+                    <span className={`text-sm font-medium ${captureMode === 'text' ? 'text-blue-900 dark:text-blue-100' : 'text-gray-600 dark:text-gray-400'}`}>
+                      Text mode
+                    </span>
+                    <span className="text-xs text-gray-500 dark:text-gray-400 text-center">
+                      Text input only
+                    </span>
+                  </div>
+                </button>
+
+                {/* Hybrid Mode */}
+                <button
+                  onClick={() => handleModeChange('hybrid')}
+                  className={`p-4 rounded-lg border-2 transition-all ${
+                    captureMode === 'hybrid'
+                      ? 'border-green-500 bg-green-50 dark:bg-green-950/50'
+                      : 'border-gray-200 dark:border-gray-700 hover:border-green-300'
+                  }`}
+                >
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="flex items-center gap-1">
+                      <Mic className={`h-5 w-5 ${captureMode === 'hybrid' ? 'text-green-600' : 'text-gray-500'}`} />
+                      <Type className={`h-5 w-5 ${captureMode === 'hybrid' ? 'text-green-600' : 'text-gray-500'}`} />
+                    </div>
+                    <span className={`text-sm font-medium ${captureMode === 'hybrid' ? 'text-green-900 dark:text-green-100' : 'text-gray-600 dark:text-gray-400'}`}>
+                      Hybrid mode
+                    </span>
+                    <span className="text-xs text-gray-500 dark:text-gray-400 text-center">
+                      Voice & text input
+                    </span>
+                  </div>
+                </button>
               </div>
             </div>
 
-            <div className="flex items-center justify-between p-3 bg-white/50 dark:bg-gray-800/50 rounded-lg mt-4">
+            <div className="flex items-center justify-between p-3 bg-white/50 dark:bg-gray-800/50 rounded-lg">
               <div className="flex items-center gap-2">
                 <Move className="h-4 w-4 text-green-600" />
                 <Label>Draggable positioning</Label>
