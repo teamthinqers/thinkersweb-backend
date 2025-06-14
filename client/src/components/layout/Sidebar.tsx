@@ -30,7 +30,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isMobile, onNewEntry
 
   const navItems = [
     { icon: Home, label: "Home", path: "/" },
-    { icon: Sparkles, label: "My DotSpark", path: "/sectioned-dotspark-tuning", isSpecial: true, showActivationSpark: true },
+    { icon: "dotspark-logo", label: "My DotSpark", path: "/sectioned-dotspark-tuning", isSpecial: true, showActivationSpark: true },
     { icon: Brain, label: "My Neura", path: "/my-neura", showActivationDot: true },
   ];
 
@@ -42,7 +42,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isMobile, onNewEntry
     <div className={sidebarClasses}>
       <div className="px-6 py-5 border-b">
         <h1 className="text-xl font-bold flex items-center">
-          <Sparkles className="mr-2 h-6 w-6 text-amber-600 dark:text-amber-400" />
+          <img src="/dotspark-logo-icon.jpeg" alt="DotSpark" className="mr-2 h-6 w-6 object-contain rounded" />
           <span className="text-amber-700 dark:text-amber-400 font-bold">
             DotSpark
           </span>
@@ -69,20 +69,30 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isMobile, onNewEntry
                   onClick={isMobile ? onClose : undefined}
                 >
                   <div className="relative mr-2">
-                    {React.createElement(item.icon, { 
-                      className: `${
-                        item.label === "Home" 
-                          ? location === item.path 
-                            ? "text-amber-800 dark:text-amber-200" 
-                            : "text-muted-foreground"
-                          : item.isSpecial 
-                            ? isActivated ? "text-amber-600 dark:text-amber-400 animate-pulse" : "text-amber-600 dark:text-amber-400"
-                            : location === item.path 
-                              ? "text-amber-800 dark:text-amber-200"
+                    {item.icon === "dotspark-logo" ? (
+                      <img 
+                        src="/dotspark-logo-icon.jpeg" 
+                        alt="DotSpark" 
+                        className={`h-5 w-5 object-contain rounded ${
+                          isActivated ? "animate-pulse" : ""
+                        }`}
+                      />
+                    ) : (
+                      React.createElement(item.icon, { 
+                        className: `${
+                          item.label === "Home" 
+                            ? location === item.path 
+                              ? "text-amber-800 dark:text-amber-200" 
                               : "text-muted-foreground"
-                      }`, 
-                      size: 20
-                    })}
+                            : item.isSpecial 
+                              ? isActivated ? "text-amber-600 dark:text-amber-400 animate-pulse" : "text-amber-600 dark:text-amber-400"
+                              : location === item.path 
+                                ? "text-amber-800 dark:text-amber-200"
+                                : "text-muted-foreground"
+                        }`, 
+                        size: 20
+                      })
+                    )}
                     {item.showActivationDot && isActivated && (
                       <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-green-500 rounded-full"></div>
                     )}
