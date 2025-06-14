@@ -34,7 +34,12 @@ export function useWhatsAppStatus() {
     return sessionStorage.getItem('show_activation_success') === 'true';
   });
   
-  // API call to get status from server
+  // Check if user has granted permission for WhatsApp features
+  const [hasPermission, setHasPermission] = useState<boolean>(() => {
+    return localStorage.getItem('whatsapp_permission_granted') === 'true';
+  });
+
+  // API call to get status from server - only when user has granted permission
   const { 
     data,
     isLoading,
@@ -43,15 +48,15 @@ export function useWhatsAppStatus() {
   } = useQuery<WhatsAppStatusResponse>({
     queryKey: ['/api/whatsapp/status'],
     queryFn: getQueryFn({ on401: 'returnNull' }),
-    retry: 2, // Add retries to improve reliability
-    // Only fetch if the user is authenticated
-    enabled: !!user,
-    // Refresh every 10 seconds to detect changes more quickly
-    refetchInterval: 10000,
-    // Always refetch on window focus
-    refetchOnWindowFocus: true,
-    // After 30 seconds of inactivity, refetch on window focus
-    staleTime: 30000,
+    retry: 1, // Reduce retries to minimize permission prompts
+    // Only fetch if user is authenticated AND has granted permission
+    enabled: !!user && hasPermission,
+    // Reduce frequency to avoid constant permission requests
+    refetchInterval: hasPermission ? 30000 : false, // 30 seconds if permitted, otherwise disabled
+    // Only refetch on window focus if user has granted permission
+    refetchOnWindowFocus: hasPermission,
+    // Longer stale time to reduce API calls
+    staleTime: 60000, // 1 minute
   });
   
   // Force a complete status refresh from the server - useful for synchronizing web/mobile views
@@ -538,6 +543,18 @@ export function useWhatsAppStatus() {
   // Calculate derived status from all sources (any source confirms = activated)
   const isDerivedActive = Object.values(combinedStatus).some(value => value === true);
   
+  // Function to grant WhatsApp permission and reduce popups
+  const grantWhatsAppPermission = useCallback(() => {
+    console.log("Granting WhatsApp permission to reduce popup frequency");
+    localStorage.setItem('whatsapp_permission_granted', 'true');
+    setHasPermission(true);
+    
+    // Also trigger a status check now that permission is granted
+    if (user) {
+      refetch();
+    }
+  }, [user, refetch]);
+
   return {
     // Primary indicator uses ANY source that confirms activation
     isWhatsAppConnected: isDerivedActive,
@@ -552,6 +569,9 @@ export function useWhatsAppStatus() {
     // Local status and other flags
     justActivated,
     showActivationSuccess,
+    // Permission state and control
+    hasPermission,
+    grantWhatsAppPermission,
     // Helper method to clear "just activated" flag manually
     clearJustActivated: () => {
       localStorage.removeItem('dotspark_just_activated');

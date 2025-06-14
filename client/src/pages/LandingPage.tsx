@@ -6,6 +6,7 @@ import {
   MessageCircle, MessageSquare, User, Menu, X, Check, CheckCircle, Download,
   Smartphone, Monitor, Share, Plus
 } from "lucide-react";
+import { usePWAPermissionPrompt } from "@/components/pwa/PWAPermissionPrompt";
 
 // Dynamic Word component for cycling through words with animation
 const DynamicWord = ({ words, interval = 2000 }: { words: string[], interval?: number }) => {
