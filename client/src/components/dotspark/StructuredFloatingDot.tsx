@@ -384,42 +384,106 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                     </Button>
                     <h3 className="font-medium">Text Input</h3>
                     
-                    {/* Progress Meter */}
-                    <div className="relative w-8 h-8">
-                      <svg className="w-8 h-8 transform -rotate-90" viewBox="0 0 32 32">
-                        <circle
-                          cx="16"
-                          cy="16"
-                          r="12"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          fill="none"
-                          className="text-gray-200"
-                        />
-                        <circle
-                          cx="16"
-                          cy="16"
-                          r="12"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          fill="none"
-                          strokeDasharray={`${2 * Math.PI * 12}`}
-                          strokeDashoffset={`${2 * Math.PI * 12 * (1 - (Object.values(structuredInput).filter(Boolean).length / 3))}`}
-                          className={`transition-all duration-500 ${
-                            Object.values(structuredInput).filter(Boolean).length === 3 
-                              ? 'text-green-500 animate-pulse' 
-                              : 'text-amber-500'
-                          }`}
-                          strokeLinecap="round"
-                        />
-                      </svg>
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <div className={`w-2 h-2 rounded-full ${
-                          Object.values(structuredInput).filter(Boolean).length === 3 
-                            ? 'bg-green-500 animate-pulse' 
-                            : 'bg-amber-500'
-                        }`}></div>
+                    {/* Gamified Progress Meter */}
+                    <div className="relative w-10 h-10 group">
+                      {/* Motivational tooltip */}
+                      <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none z-50">
+                        {Object.values(structuredInput).filter(Boolean).length === 0 && "Start your dot journey! 🚀"}
+                        {Object.values(structuredInput).filter(Boolean).length === 1 && "Great start! 2 more layers 💪"}
+                        {Object.values(structuredInput).filter(Boolean).length === 2 && "Almost there! Final layer 🔥"}
+                        {Object.values(structuredInput).filter(Boolean).length === 3 && "Perfect dot completed! ⭐"}
                       </div>
+                      
+                      {/* Outer glow ring with intensity levels */}
+                      <div className={`absolute inset-0 rounded-full transition-all duration-700 ${
+                        Object.values(structuredInput).filter(Boolean).length === 3 
+                          ? 'bg-gradient-to-r from-green-400 to-emerald-500 animate-pulse shadow-xl shadow-green-400/60' 
+                          : Object.values(structuredInput).filter(Boolean).length === 2
+                          ? 'bg-gradient-to-r from-orange-400 to-red-500 shadow-lg shadow-orange-400/50'
+                          : Object.values(structuredInput).filter(Boolean).length === 1
+                          ? 'bg-gradient-to-r from-amber-400 to-orange-500 shadow-md shadow-amber-400/40'
+                          : 'bg-gradient-to-r from-gray-300 to-gray-400 shadow-sm shadow-gray-300/20'
+                      }`} style={{
+                        filter: `blur(${
+                          Object.values(structuredInput).filter(Boolean).length === 3 ? '3px' : 
+                          Object.values(structuredInput).filter(Boolean).length === 2 ? '2px' : 
+                          Object.values(structuredInput).filter(Boolean).length === 1 ? '1.5px' : '1px'
+                        })`
+                      }}></div>
+                      
+                      {/* Main progress ring */}
+                      <svg className="w-10 h-10 transform -rotate-90 relative z-10" viewBox="0 0 40 40">
+                        {/* Background circle */}
+                        <circle
+                          cx="20"
+                          cy="20"
+                          r="16"
+                          stroke="currentColor"
+                          strokeWidth="3"
+                          fill="none"
+                          className="text-gray-200/50"
+                        />
+                        
+                        {/* Progress circle with gradient */}
+                        <circle
+                          cx="20"
+                          cy="20"
+                          r="16"
+                          stroke="url(#progressGradient)"
+                          strokeWidth="3"
+                          fill="none"
+                          strokeDasharray={`${2 * Math.PI * 16}`}
+                          strokeDashoffset={`${2 * Math.PI * 16 * (1 - (Object.values(structuredInput).filter(Boolean).length / 3))}`}
+                          className="transition-all duration-700 ease-out"
+                          strokeLinecap="round"
+                          style={{
+                            filter: Object.values(structuredInput).filter(Boolean).length === 3 ? 'drop-shadow(0 0 4px rgba(34, 197, 94, 0.6))' : 'none'
+                          }}
+                        />
+                        
+                        {/* Gradient definitions */}
+                        <defs>
+                          <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stopColor={Object.values(structuredInput).filter(Boolean).length === 3 ? "#10b981" : "#f59e0b"} />
+                            <stop offset="50%" stopColor={Object.values(structuredInput).filter(Boolean).length === 3 ? "#22c55e" : "#f97316"} />
+                            <stop offset="100%" stopColor={Object.values(structuredInput).filter(Boolean).length === 3 ? "#34d399" : "#ea580c"} />
+                          </linearGradient>
+                        </defs>
+                      </svg>
+                      
+                      {/* Center content */}
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        {Object.values(structuredInput).filter(Boolean).length === 3 ? (
+                          <div className="flex items-center justify-center">
+                            <div className="w-4 h-4 rounded-full bg-gradient-to-r from-green-400 to-emerald-500 animate-bounce shadow-lg"></div>
+                          </div>
+                        ) : (
+                          <div className="text-center">
+                            <div className={`text-xs font-bold transition-all duration-300 ${
+                              Object.values(structuredInput).filter(Boolean).length === 0 ? 'text-gray-400' :
+                              Object.values(structuredInput).filter(Boolean).length === 1 ? 'text-amber-600' :
+                              'text-orange-600'
+                            }`}>
+                              {Object.values(structuredInput).filter(Boolean).length}/3
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                      
+                      {/* Achievement celebration when complete */}
+                      {Object.values(structuredInput).filter(Boolean).length === 3 && (
+                        <>
+                          {/* Victory sparkles */}
+                          <div className="absolute -top-2 -right-2 w-3 h-3 bg-yellow-400 rounded-full animate-ping shadow-lg"></div>
+                          <div className="absolute -bottom-2 -left-2 w-2 h-2 bg-green-400 rounded-full animate-ping shadow-md" style={{animationDelay: '0.3s'}}></div>
+                          <div className="absolute top-0 -left-2 w-1.5 h-1.5 bg-emerald-400 rounded-full animate-ping" style={{animationDelay: '0.6s'}}></div>
+                          <div className="absolute -top-1 left-0 w-1 h-1 bg-blue-400 rounded-full animate-ping" style={{animationDelay: '0.9s'}}></div>
+                          <div className="absolute bottom-0 -right-1 w-1.5 h-1.5 bg-purple-400 rounded-full animate-ping" style={{animationDelay: '1.2s'}}></div>
+                          
+                          {/* Success burst effect */}
+                          <div className="absolute inset-0 rounded-full bg-gradient-to-r from-green-300 to-emerald-400 animate-ping opacity-20"></div>
+                        </>
+                      )}
                     </div>
                   </div>
                   
@@ -530,42 +594,106 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                     </Button>
                     <h3 className="font-medium">Voice Input</h3>
                     
-                    {/* Progress Meter */}
-                    <div className="relative w-8 h-8">
-                      <svg className="w-8 h-8 transform -rotate-90" viewBox="0 0 32 32">
-                        <circle
-                          cx="16"
-                          cy="16"
-                          r="12"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          fill="none"
-                          className="text-gray-200"
-                        />
-                        <circle
-                          cx="16"
-                          cy="16"
-                          r="12"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          fill="none"
-                          strokeDasharray={`${2 * Math.PI * 12}`}
-                          strokeDashoffset={`${2 * Math.PI * 12 * (1 - (Object.values(voiceSteps).filter(Boolean).length / 3))}`}
-                          className={`transition-all duration-500 ${
-                            Object.values(voiceSteps).filter(Boolean).length === 3 
-                              ? 'text-green-500 animate-pulse' 
-                              : 'text-amber-500'
-                          }`}
-                          strokeLinecap="round"
-                        />
-                      </svg>
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <div className={`w-2 h-2 rounded-full ${
-                          Object.values(voiceSteps).filter(Boolean).length === 3 
-                            ? 'bg-green-500 animate-pulse' 
-                            : 'bg-amber-500'
-                        }`}></div>
+                    {/* Gamified Progress Meter */}
+                    <div className="relative w-10 h-10 group">
+                      {/* Motivational tooltip */}
+                      <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none z-50">
+                        {Object.values(voiceSteps).filter(Boolean).length === 0 && "Start recording! 🎤"}
+                        {Object.values(voiceSteps).filter(Boolean).length === 1 && "Keep going! 2 more steps 🔊"}
+                        {Object.values(voiceSteps).filter(Boolean).length === 2 && "Final step! Almost done 🎯"}
+                        {Object.values(voiceSteps).filter(Boolean).length === 3 && "Voice dot mastered! 🏆"}
                       </div>
+                      
+                      {/* Outer glow ring with intensity levels */}
+                      <div className={`absolute inset-0 rounded-full transition-all duration-700 ${
+                        Object.values(voiceSteps).filter(Boolean).length === 3 
+                          ? 'bg-gradient-to-r from-green-400 to-emerald-500 animate-pulse shadow-xl shadow-green-400/60' 
+                          : Object.values(voiceSteps).filter(Boolean).length === 2
+                          ? 'bg-gradient-to-r from-orange-400 to-red-500 shadow-lg shadow-orange-400/50'
+                          : Object.values(voiceSteps).filter(Boolean).length === 1
+                          ? 'bg-gradient-to-r from-amber-400 to-orange-500 shadow-md shadow-amber-400/40'
+                          : 'bg-gradient-to-r from-gray-300 to-gray-400 shadow-sm shadow-gray-300/20'
+                      }`} style={{
+                        filter: `blur(${
+                          Object.values(voiceSteps).filter(Boolean).length === 3 ? '3px' : 
+                          Object.values(voiceSteps).filter(Boolean).length === 2 ? '2px' : 
+                          Object.values(voiceSteps).filter(Boolean).length === 1 ? '1.5px' : '1px'
+                        })`
+                      }}></div>
+                      
+                      {/* Main progress ring */}
+                      <svg className="w-10 h-10 transform -rotate-90 relative z-10" viewBox="0 0 40 40">
+                        {/* Background circle */}
+                        <circle
+                          cx="20"
+                          cy="20"
+                          r="16"
+                          stroke="currentColor"
+                          strokeWidth="3"
+                          fill="none"
+                          className="text-gray-200/50"
+                        />
+                        
+                        {/* Progress circle with gradient */}
+                        <circle
+                          cx="20"
+                          cy="20"
+                          r="16"
+                          stroke="url(#voiceProgressGradient)"
+                          strokeWidth="3"
+                          fill="none"
+                          strokeDasharray={`${2 * Math.PI * 16}`}
+                          strokeDashoffset={`${2 * Math.PI * 16 * (1 - (Object.values(voiceSteps).filter(Boolean).length / 3))}`}
+                          className="transition-all duration-700 ease-out"
+                          strokeLinecap="round"
+                          style={{
+                            filter: Object.values(voiceSteps).filter(Boolean).length === 3 ? 'drop-shadow(0 0 4px rgba(34, 197, 94, 0.6))' : 'none'
+                          }}
+                        />
+                        
+                        {/* Gradient definitions */}
+                        <defs>
+                          <linearGradient id="voiceProgressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stopColor={Object.values(voiceSteps).filter(Boolean).length === 3 ? "#10b981" : "#f59e0b"} />
+                            <stop offset="50%" stopColor={Object.values(voiceSteps).filter(Boolean).length === 3 ? "#22c55e" : "#f97316"} />
+                            <stop offset="100%" stopColor={Object.values(voiceSteps).filter(Boolean).length === 3 ? "#34d399" : "#ea580c"} />
+                          </linearGradient>
+                        </defs>
+                      </svg>
+                      
+                      {/* Center content */}
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        {Object.values(voiceSteps).filter(Boolean).length === 3 ? (
+                          <div className="flex items-center justify-center">
+                            <div className="w-4 h-4 rounded-full bg-gradient-to-r from-green-400 to-emerald-500 animate-bounce shadow-lg"></div>
+                          </div>
+                        ) : (
+                          <div className="text-center">
+                            <div className={`text-xs font-bold transition-all duration-300 ${
+                              Object.values(voiceSteps).filter(Boolean).length === 0 ? 'text-gray-400' :
+                              Object.values(voiceSteps).filter(Boolean).length === 1 ? 'text-amber-600' :
+                              'text-orange-600'
+                            }`}>
+                              {Object.values(voiceSteps).filter(Boolean).length}/3
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                      
+                      {/* Achievement celebration when complete */}
+                      {Object.values(voiceSteps).filter(Boolean).length === 3 && (
+                        <>
+                          {/* Victory sparkles */}
+                          <div className="absolute -top-2 -right-2 w-3 h-3 bg-yellow-400 rounded-full animate-ping shadow-lg"></div>
+                          <div className="absolute -bottom-2 -left-2 w-2 h-2 bg-green-400 rounded-full animate-ping shadow-md" style={{animationDelay: '0.3s'}}></div>
+                          <div className="absolute top-0 -left-2 w-1.5 h-1.5 bg-emerald-400 rounded-full animate-ping" style={{animationDelay: '0.6s'}}></div>
+                          <div className="absolute -top-1 left-0 w-1 h-1 bg-blue-400 rounded-full animate-ping" style={{animationDelay: '0.9s'}}></div>
+                          <div className="absolute bottom-0 -right-1 w-1.5 h-1.5 bg-purple-400 rounded-full animate-ping" style={{animationDelay: '1.2s'}}></div>
+                          
+                          {/* Success burst effect */}
+                          <div className="absolute inset-0 rounded-full bg-gradient-to-r from-green-300 to-emerald-400 animate-ping opacity-20"></div>
+                        </>
+                      )}
                     </div>
                   </div>
                   
