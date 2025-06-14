@@ -39,7 +39,7 @@ export function useWhatsAppStatus() {
     return localStorage.getItem('whatsapp_permission_granted') === 'true';
   });
 
-  // API call to get status from server - only when user has granted permission
+  // API call to get status from server - only when user is authenticated
   const { 
     data,
     isLoading,
@@ -48,26 +48,30 @@ export function useWhatsAppStatus() {
   } = useQuery<WhatsAppStatusResponse>({
     queryKey: ['/api/whatsapp/status'],
     queryFn: getQueryFn({ on401: 'returnNull' }),
-    retry: 1, // Reduce retries to minimize permission prompts
-    // Only fetch if user is authenticated AND has granted permission
-    enabled: !!user && hasPermission,
-    // Reduce frequency to avoid constant permission requests
-    refetchInterval: hasPermission ? 30000 : false, // 30 seconds if permitted, otherwise disabled
-    // Only refetch on window focus if user has granted permission
-    refetchOnWindowFocus: hasPermission,
+    retry: 0, // No retries for unauthenticated users
+    // Only fetch if user is authenticated
+    enabled: !!user,
+    // Disable automatic refetch intervals to prevent spam
+    refetchInterval: false,
+    // Only refetch on window focus if user is authenticated
+    refetchOnWindowFocus: !!user,
     // Longer stale time to reduce API calls
-    staleTime: 60000, // 1 minute
+    staleTime: 300000, // 5 minutes
   });
   
-  // Force a complete status refresh from the server - useful for synchronizing web/mobile views
-  const forceStatusRefresh = () => {
+  // Force a complete status refresh from the server - only if user is authenticated
+  const forceStatusRefresh = useCallback(() => {
+    if (!user) {
+      console.log("Skipping WhatsApp status refresh - user not authenticated");
+      return;
+    }
     console.log("Forcing WhatsApp status refresh");
     // Clear any cached data to ensure fresh load
     localStorage.removeItem('_tanstack_query_/api/whatsapp/status');
     
     // Force an immediate refetch 
     refetch();
-  };
+  }, [user, refetch]);
   
   // Listen for manual refresh events and add a check for status polling
   useEffect(() => {
@@ -83,18 +87,12 @@ export function useWhatsAppStatus() {
     // Check if we should poll for status (after returning from WhatsApp)
     const shouldCheckStatus = localStorage.getItem('check_whatsapp_status') === 'true';
     if (shouldCheckStatus && user) {
-      console.log("Starting WhatsApp status polling after redirect");
+      console.log("User returned from WhatsApp activation - checking status");
       
       // Clear the flag immediately to avoid duplicate polling
       localStorage.removeItem('check_whatsapp_status');
       
-      // Get the last activation message to help with debugging
-      const lastMessage = localStorage.getItem('last_activation_message');
-      if (lastMessage) {
-        console.log(`Last activation message: ${lastMessage}`);
-      }
-      
-      // Check immediately before setting up intervals
+      // Single check immediately
       forceStatusRefresh();
       
       // Emit a custom event that can be listened for by other components
@@ -102,110 +100,31 @@ export function useWhatsAppStatus() {
         detail: { timestamp: new Date() }
       }));
       
-      // Set up a polling interval for frequent checks - more aggressive for better responsiveness
-      const fastPollingInterval = setInterval(() => {
-        console.log("Fast polling WhatsApp status...");
+      // Limited polling - just 3 checks over 10 seconds instead of continuous
+      let checkCount = 0;
+      const limitedPolling = setInterval(() => {
+        checkCount++;
+        console.log(`Limited WhatsApp status check ${checkCount}/3`);
         
-        // Also check the localStorage (might be updated by other tabs)
-        const newStatus = localStorage.getItem('whatsapp_activated') === 'true';
-        if (newStatus && !activationStatus) {
-          console.log("Activation detected in localStorage!");
-          setActivationStatus(true);
-        }
-        
-        // Force refresh from server
         forceStatusRefresh();
         
-        // Check if server reports connected status
-        if (data?.isRegistered || data?.isConnected) {
-          console.log("SUCCESS! Server confirms WhatsApp connection:", data);
-          simulateActivation();
-          clearInterval(fastPollingInterval);
-          
-          // Always store the activation status in localStorage when confirmed by server
-          localStorage.setItem('whatsapp_activated', 'true');
-          
-          // Emit success event
-          window.dispatchEvent(new CustomEvent('whatsapp_activation_success', {
-            detail: { timestamp: new Date(), source: 'server-confirmation' }
-          }));
-          
-          // Also dispatch standard event for all components to detect
-          window.dispatchEvent(new CustomEvent('whatsapp-status-updated', { 
-            detail: { isActivated: true, source: 'server-confirmation' }
-          }));
+        // Stop after 3 checks or if activation detected
+        if (checkCount >= 3 || data?.isRegistered || data?.isConnected) {
+          clearInterval(limitedPolling);
+          console.log("Completed limited WhatsApp status polling");
         }
-      }, 1000); // Poll every 1 second initially
-      
-      // After 12 seconds, switch to slower polling
-      setTimeout(() => {
-        clearInterval(fastPollingInterval);
-        console.log("Switching to slower WhatsApp status polling");
-        
-        // Continue with less frequent polling
-        const slowPollingInterval = setInterval(() => {
-          console.log("Slow polling WhatsApp status...");
-          forceStatusRefresh();
-          
-          // Check if server reports connected status
-          if (data?.isRegistered || data?.isConnected) {
-            console.log("SUCCESS! Server confirms WhatsApp connection in slow polling:", data);
-            simulateActivation();
-            clearInterval(slowPollingInterval);
-            
-            // Always store the activation status in localStorage when confirmed by server
-            localStorage.setItem('whatsapp_activated', 'true');
-            
-            // Emit success event
-            window.dispatchEvent(new CustomEvent('whatsapp_activation_success', {
-              detail: { timestamp: new Date(), source: 'server-confirmation-slow' }
-            }));
-            
-            // Also dispatch standard event for all components to detect
-            window.dispatchEvent(new CustomEvent('whatsapp-status-updated', { 
-              detail: { isActivated: true, source: 'server-confirmation-slow' }
-            }));
-          }
-        }, 3000); // Poll every 3 seconds
-        
-        // Stop all polling after another 30 seconds (longer time for slow phones/connections)
-        setTimeout(() => {
-          clearInterval(slowPollingInterval);
-          console.log("Stopping WhatsApp status polling");
-          
-          // Final check before giving up
-          forceStatusRefresh();
-        }, 30000);
-      }, 12000);
+      }, 3000); // Check every 3 seconds, max 3 times
     }
     
     // Register event listener
     window.addEventListener('whatsapp-status-check', handleStatusCheck);
     
-    // When component mounts, ensure we get fresh data from the server
+    // When component mounts, get fresh data from the server only if user is authenticated
     if (user) {
-      console.log("User authenticated, forcing refresh of WhatsApp status from server");
+      console.log("User authenticated, fetching WhatsApp status from server");
       
-      // Force refresh from server to get the latest status
-      forceStatusRefresh();
-      
-      // Add a short delay before checking again, for cases where the backend might take time to process
-      setTimeout(() => {
-        console.log("Second check for WhatsApp status after initial load");
-        forceStatusRefresh();
-      }, 1500);
-      
-      // Set up a periodic check to maintain consistency
-      const periodicCheck = setInterval(() => {
-        console.log("Periodic WhatsApp status check");
-        forceStatusRefresh();
-      }, 30000); // every 30 seconds
-      
-      // Return cleanup function for both event listener and interval
-      return () => {
-        window.removeEventListener('whatsapp-status-check', handleStatusCheck);
-        clearInterval(periodicCheck);
-      };
+      // Single initial fetch only - rely on React Query for caching and refetching
+      refetch();
     }
     
     // Return event listener cleanup if no user
