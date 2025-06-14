@@ -31,23 +31,7 @@ interface Wheel {
 }
 
 const Dashboard: React.FC = () => {
-  const [activeView, setActiveView] = useState<'capture' | 'mindmap' | 'wheels'>('capture');
-  const [captureMode, setCaptureMode] = useState<'select' | 'text' | 'voice'>('select');
-  const [newDot, setNewDot] = useState({
-    summary: '',
-    anchor: '',
-    pulse: '',
-    sourceType: 'text' as 'voice' | 'text' | 'hybrid'
-  });
-  
-  // Voice recording states
-  const [isRecording, setIsRecording] = useState(false);
-  const [currentVoiceStep, setCurrentVoiceStep] = useState<1 | 2 | 3>(1);
-  const [voiceSteps, setVoiceSteps] = useState({
-    summary: '',
-    anchor: '',
-    pulse: ''
-  });
+  const [activeView, setActiveView] = useState<'mindmap' | 'wheels'>('mindmap');
 
   const { toast } = useToast();
   const queryClient = useQueryClient();

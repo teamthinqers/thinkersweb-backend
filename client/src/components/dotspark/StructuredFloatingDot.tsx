@@ -273,37 +273,57 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
             <CardContent className="p-0">
               {captureMode === 'select' && (
                 <div className="p-6 space-y-6">
-                  <div className="text-center">
+                  <div className="flex items-center justify-between mb-4">
+                    {isRunningAsStandalone() ? (
+                      <Button
+                        variant="ghost"
+                        onClick={() => window.location.href = '/dot'}
+                        className="h-8 w-8 p-0 rounded-full"
+                        title="Back to Dot Interface"
+                      >
+                        <ArrowLeft className="w-4 h-4" />
+                      </Button>
+                    ) : (
+                      <div className="w-8"></div>
+                    )}
+                    <h3 className="text-xl font-semibold text-gray-800">Save a Dot</h3>
+                    <Button
+                      variant="ghost"
+                      onClick={handleClose}
+                      className="h-8 w-8 p-0 rounded-full"
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
+                  </div>
+                  
+                  <div className="text-center mb-6">
                     <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-amber-500 to-orange-600 flex items-center justify-center">
                       <div className="w-4 h-4 bg-white rounded-full"></div>
                     </div>
-                    <h3 className="text-xl font-semibold text-gray-800 mb-2">Save a Dot</h3>
                     <p className="text-gray-600">How would you like to capture your Dot?</p>
                   </div>
                   
                   <div className="grid grid-cols-2 gap-4">
                     <Button
                       onClick={() => setCaptureMode('text')}
-                      className="h-20 flex flex-col items-center justify-center space-y-2"
-                      variant="outline"
+                      className="h-28 bg-gradient-to-br from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white rounded-xl flex flex-col items-center justify-center space-y-3 shadow-lg transform transition-all duration-200 hover:scale-105"
                     >
-                      <Type className="h-6 w-6" />
-                      <span className="font-medium">Text</span>
+                      <Type className="w-10 h-10" />
+                      <span className="text-xl font-semibold">Text</span>
                     </Button>
                     <Button
                       onClick={() => setCaptureMode('voice')}
-                      className="h-20 flex flex-col items-center justify-center space-y-2"
-                      variant="outline"
+                      className="h-28 bg-gradient-to-br from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl flex flex-col items-center justify-center space-y-3 shadow-lg transform transition-all duration-200 hover:scale-105"
                     >
-                      <Mic className="h-6 w-6" />
-                      <span className="font-medium">Voice</span>
+                      <Mic className="w-10 h-10" />
+                      <span className="text-xl font-semibold">Voice</span>
                     </Button>
                   </div>
 
                   <Button
                     variant="ghost"
                     onClick={handleClose}
-                    className="w-full text-gray-500 hover:text-gray-700"
+                    className="w-full text-gray-500 hover:text-gray-700 mt-4"
                   >
                     <X className="w-4 h-4 mr-2" />
                     Close
@@ -324,10 +344,10 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                     <h3 className="font-medium">Three Layer Text Input</h3>
                     <Button
                       variant="ghost"
-                      onClick={handleClose}
+                      onClick={isRunningAsStandalone() ? () => window.location.href = '/dot' : handleClose}
                       className="h-8 w-8 p-0 rounded-full"
                     >
-                      <X className="w-4 h-4" />
+                      {isRunningAsStandalone() ? <ArrowLeft className="w-4 h-4" /> : <X className="w-4 h-4" />}
                     </Button>
                   </div>
                   
@@ -403,10 +423,10 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                     <h3 className="font-medium">Voice Guided Prompts</h3>
                     <Button
                       variant="ghost"
-                      onClick={handleClose}
+                      onClick={isRunningAsStandalone() ? () => window.location.href = '/dot' : handleClose}
                       className="h-8 w-8 p-0 rounded-full"
                     >
-                      <X className="w-4 h-4" />
+                      {isRunningAsStandalone() ? <ArrowLeft className="w-4 h-4" /> : <X className="w-4 h-4" />}
                     </Button>
                   </div>
                   
