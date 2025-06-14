@@ -312,6 +312,13 @@ Changelog:
   * Removed duplicate navigation from "Save a Dot" button - now only triggers floating dot via custom event
   * Aligned all three button icons in perfect straight line using consistent w-10 h-10 containers
   * Added flex-shrink-0 to prevent icon container distortion and maintain alignment
+- June 14, 2025. Optimized Dot Settings button layout:
+  * Reduced button padding from p-6 to p-4 for more compact cards
+  * Decreased icon sizes from h-8/w-8 to h-6/w-6 and h-5/w-5 for hybrid mode
+  * Tightened spacing with gap-3 instead of gap-4 and grid gap-4 instead of gap-6
+  * Updated typography to text-base titles and text-xs descriptions for efficient layout
+  * Reduced hover scale to hover:scale-102 for subtle interactions
+  * Condensed description text while maintaining clarity and visual impact
 - June 14, 2025. Updated PWA interface copy:
   * Changed "Capture your Thoughts/Insights as Dots instantly" to "Capture your Thoughts/Insights as Dots Instantly!"
   * Updated "Your valuable thoughts are stored as connected dots to spark progressive insights" to "Your valuable thoughts are stored as connected dots to Spark Progressive Insights"
