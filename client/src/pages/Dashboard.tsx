@@ -5,8 +5,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Plus, Mic, Type, Eye, Brain, Network, Zap } from "lucide-react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useToast } from "@/hooks/use-toast";
 
 // Mock data structure for demonstration
 interface Dot {
@@ -38,7 +39,48 @@ const Dashboard: React.FC = () => {
     sourceType: 'text' as 'voice' | 'text' | 'hybrid'
   });
 
-  // Mock data - will be replaced with real API calls
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  // Fetch real dots from API
+  const { data: dots = [], isLoading } = useQuery({
+    queryKey: ['/api/dots'],
+    queryFn: async () => {
+      const response = await fetch('/api/dots');
+      if (!response.ok) throw new Error('Failed to fetch dots');
+      return response.json();
+    }
+  });
+
+  // Create dot mutation
+  const createDotMutation = useMutation({
+    mutationFn: async (dotData: any) => {
+      const response = await fetch('/api/dots', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dotData)
+      });
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to create dot');
+      }
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/dots'] });
+      toast({ title: "Dot created successfully!" });
+      setNewDot({ summary: '', anchor: '', pulse: '', sourceType: 'text' });
+    },
+    onError: (error: Error) => {
+      toast({ 
+        title: "Failed to create dot", 
+        description: error.message,
+        variant: "destructive" 
+      });
+    }
+  });
+
+  // Mock wheels data for visualization
   const [wheels] = useState<Wheel[]>([
     {
       id: '1',

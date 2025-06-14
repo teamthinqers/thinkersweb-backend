@@ -10,6 +10,7 @@ import {
   insertSharedEntrySchema, 
   sharedEntries, 
   entryTags, 
+  entries,
   users, 
   whatsappOtpVerifications,
   whatsappUsers,
@@ -266,6 +267,97 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Error saving CogniShield configuration:', error);
       res.status(500).json({ error: 'Failed to save CogniShield configuration' });
+    }
+  });
+
+  // Dots and Wheels API Endpoints
+  
+  // Simple dots endpoint for three-layer system
+  app.post(`${apiPrefix}/dots`, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const userId = req.user?.id || req.session?.userId || 1;
+      
+      // Validate three-layer structure: summary (220), anchor (300), pulse (1 word)
+      const { summary, anchor, pulse, sourceType = 'text' } = req.body;
+      
+      if (!summary || summary.length > 220) {
+        return res.status(400).json({ 
+          error: 'Please distill your thoughts. Sharply defined thoughts can spark better (max 220 charac)' 
+        });
+      }
+      
+      if (!anchor || anchor.length > 300) {
+        return res.status(400).json({ 
+          error: 'Anchor text must be 300 characters or less' 
+        });
+      }
+      
+      if (!pulse || pulse.trim().split(/\s+/).length !== 1) {
+        return res.status(400).json({ 
+          error: 'Pulse must be exactly one word describing the emotion' 
+        });
+      }
+
+      // For now, store as structured JSON in existing entries table
+      const entryData = {
+        userId,
+        title: summary.substring(0, 50) + (summary.length > 50 ? '...' : ''),
+        content: JSON.stringify({
+          summary,
+          anchor, 
+          pulse,
+          sourceType,
+          dotType: 'three-layer'
+        }),
+        visibility: 'private'
+      };
+      
+      const [newDot] = await db.insert(entries).values(entryData).returning();
+      res.status(201).json(newDot);
+    } catch (error) {
+      console.error('Error creating dot:', error);
+      res.status(500).json({ error: 'Failed to create dot' });
+    }
+  });
+
+  // Get dots for dashboard
+  app.get(`${apiPrefix}/dots`, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const userId = req.user?.id || req.session?.userId || 1;
+      
+      const userEntries = await db.query.entries.findMany({
+        where: eq(entries.userId, userId),
+        orderBy: desc(entries.createdAt),
+        limit: 50
+      });
+
+      // Filter and parse three-layer dots
+      const dots = userEntries
+        .filter(entry => {
+          try {
+            const parsed = JSON.parse(entry.content);
+            return parsed.dotType === 'three-layer';
+          } catch {
+            return false;
+          }
+        })
+        .map(entry => {
+          const parsed = JSON.parse(entry.content);
+          return {
+            id: entry.id,
+            summary: parsed.summary,
+            anchor: parsed.anchor,
+            pulse: parsed.pulse,
+            sourceType: parsed.sourceType || 'text',
+            timestamp: entry.createdAt,
+            wheelId: 'general' // Default wheel for now
+          };
+        });
+
+      res.json(dots);
+    } catch (error) {
+      console.error('Error fetching dots:', error);
+      res.status(500).json({ error: 'Failed to fetch dots' });
     }
   });
 
