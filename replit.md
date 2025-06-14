@@ -192,6 +192,12 @@ Changelog:
   * Simplified button labels to "Voice" and "Text" for clarity
   * Renamed access button to "Open DotSpark App"
   * Added "My Neura" button as placeholder for future navigation functionality
+- June 14, 2025. Refined DotSpark PWA dot screen interface design:
+  * Removed white circular background from logo for cleaner appearance
+  * Updated main question to "How would you like to capture your Dots?"
+  * Enhanced header description to "Capture your Thoughts/Insights as Dots instantly"
+  * Removed "Swipe up for more options" instruction for streamlined experience
+  * Added value proposition text: "Your valuable thoughts are stored as connected dots to spark progressive insights"
 ```
 
 ## User Preferences

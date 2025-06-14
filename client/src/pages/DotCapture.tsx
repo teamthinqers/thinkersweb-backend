@@ -115,7 +115,7 @@ export default function DotCapture() {
           
           {/* Dot Logo Header */}
           <div className="text-center space-y-4">
-            <div className="mx-auto w-24 h-24 bg-white rounded-full shadow-xl flex items-center justify-center border-2 border-amber-200">
+            <div className="mx-auto w-24 h-24 flex items-center justify-center">
               <img 
                 src="/dotspark-pwa-final.png" 
                 alt="DotSpark" 
@@ -128,7 +128,7 @@ export default function DotCapture() {
             </div>
             <div>
               <h1 className="text-3xl font-bold bg-gradient-to-r from-amber-700 to-orange-800 bg-clip-text text-transparent">DotSpark</h1>
-              <p className="text-gray-600">Capture your thoughts/insights as dots instantly</p>
+              <p className="text-gray-600">Capture your Thoughts/Insights as Dots instantly</p>
             </div>
           </div>
 
@@ -138,7 +138,7 @@ export default function DotCapture() {
             <Card className="bg-white/80 backdrop-blur">
               <CardContent className="p-6 space-y-4">
                 <p className="text-center text-gray-700 font-medium">
-                  How would you like to capture your thoughts?
+                  How would you like to capture your Dots?
                 </p>
                 
                 <div className="space-y-3">
@@ -256,10 +256,7 @@ export default function DotCapture() {
           {/* Quick Tips */}
           <div className="text-center space-y-2">
             <p className="text-sm text-gray-500">
-              💡 Your thoughts are automatically processed and organized
-            </p>
-            <p className="text-xs text-gray-400">
-              Swipe up for more options
+              Your valuable thoughts are stored as connected dots to spark progressive insights
             </p>
           </div>
         </div>
