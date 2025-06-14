@@ -64,6 +64,7 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
 
     const handleMouseUp = () => {
       setIsDragging(false);
+      localStorage.setItem('global-floating-dot-position', JSON.stringify(position));
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
     };
@@ -83,14 +84,14 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
 
     const handleTouchMove = (e: TouchEvent) => {
       const touch = e.touches[0];
-      const newX = Math.max(0, Math.min(window.innerWidth - 40, touch.clientX - startX));
-      const newY = Math.max(0, Math.min(window.innerHeight - 40, touch.clientY - startY));
+      const newX = Math.max(0, Math.min(window.innerWidth - 48, touch.clientX - startX));
+      const newY = Math.max(0, Math.min(window.innerHeight - 48, touch.clientY - startY));
       setPosition({ x: newX, y: newY });
-      localStorage.setItem('global-floating-dot-position', JSON.stringify({ x: newX, y: newY }));
     };
 
     const handleTouchEnd = () => {
       setIsDragging(false);
+      localStorage.setItem('global-floating-dot-position', JSON.stringify(position));
       document.removeEventListener('touchmove', handleTouchMove);
       document.removeEventListener('touchend', handleTouchEnd);
     };
