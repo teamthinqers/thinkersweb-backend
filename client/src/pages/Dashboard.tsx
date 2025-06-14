@@ -32,11 +32,21 @@ interface Wheel {
 
 const Dashboard: React.FC = () => {
   const [activeView, setActiveView] = useState<'capture' | 'mindmap' | 'wheels'>('capture');
+  const [captureMode, setCaptureMode] = useState<'select' | 'text' | 'voice'>('select');
   const [newDot, setNewDot] = useState({
     summary: '',
     anchor: '',
     pulse: '',
     sourceType: 'text' as 'voice' | 'text' | 'hybrid'
+  });
+  
+  // Voice recording states
+  const [isRecording, setIsRecording] = useState(false);
+  const [currentVoiceStep, setCurrentVoiceStep] = useState<1 | 2 | 3>(1);
+  const [voiceSteps, setVoiceSteps] = useState({
+    summary: '',
+    anchor: '',
+    pulse: ''
   });
 
   const { toast } = useToast();
@@ -169,6 +179,62 @@ const Dashboard: React.FC = () => {
     createDotMutation.mutate(newDot);
   };
 
+  const handleVoiceStep = (step: 1 | 2 | 3) => {
+    if (isRecording) {
+      // Stop recording
+      setIsRecording(false);
+      
+      // Simulate voice processing and populate the appropriate step
+      setTimeout(() => {
+        const mockTranscript = step === 1 ? "Simulated summary from voice input" :
+                             step === 2 ? "Simulated anchor context from voice input" :
+                             "excited";
+        
+        setVoiceSteps(prev => ({
+          ...prev,
+          [step === 1 ? 'summary' : step === 2 ? 'anchor' : 'pulse']: mockTranscript
+        }));
+        
+        if (step < 3) {
+          setCurrentVoiceStep((step + 1) as 1 | 2 | 3);
+        }
+      }, 2000);
+    } else {
+      // Start recording
+      setIsRecording(true);
+      setCurrentVoiceStep(step);
+    }
+  };
+
+  const handleVoiceSubmit = () => {
+    // Use voice transcriptions to create dot
+    const voiceDot = {
+      summary: voiceSteps.summary.substring(0, 220),
+      anchor: voiceSteps.anchor.substring(0, 300), 
+      pulse: voiceSteps.pulse.split(' ')[0],
+      sourceType: 'voice' as const
+    };
+    
+    createDotMutation.mutate(voiceDot);
+  };
+
+  const resetCapture = () => {
+    setCaptureMode('select');
+    setNewDot({
+      summary: '',
+      anchor: '',
+      pulse: '',
+      sourceType: 'text'
+    });
+    setVoiceSteps({
+      summary: '',
+      anchor: '',
+      pulse: ''
+    });
+    setCurrentVoiceStep(1);
+    setIsRecording(false);
+  };
+
   const DotCard: React.FC<{ dot: Dot }> = ({ dot }) => (
     <Card className="mb-4 hover:shadow-md transition-shadow">
       <CardHeader className="pb-2">
@@ -276,87 +342,196 @@ const Dashboard: React.FC = () => {
                   <Zap className="h-5 w-5 text-amber-500" />
                   Create New Dot
                 </CardTitle>
+                <p className="text-sm text-gray-600">Choose your capture method</p>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium mb-2">
-                    Dot Summary (220 chars max)
-                  </label>
-                  <Textarea
-                    value={newDot.summary}
-                    onChange={(e) => setNewDot({...newDot, summary: e.target.value})}
-                    placeholder="Distill your thought into a sharp, sparkable summary..."
-                    maxLength={220}
-                    className="min-h-[80px]"
-                  />
-                  <div className="text-xs text-gray-500 mt-1">
-                    {newDot.summary.length}/220 characters
+                {captureMode === 'select' && (
+                  <div className="grid grid-cols-2 gap-4">
+                    <Button
+                      onClick={() => setCaptureMode('text')}
+                      className="h-24 flex flex-col items-center justify-center space-y-2"
+                      variant="outline"
+                    >
+                      <Type className="h-8 w-8" />
+                      <span className="font-medium">Text Input</span>
+                      <span className="text-xs text-gray-500">Manual three-layer entry</span>
+                    </Button>
+                    <Button
+                      onClick={() => setCaptureMode('voice')}
+                      className="h-24 flex flex-col items-center justify-center space-y-2"
+                      variant="outline"
+                    >
+                      <Mic className="h-8 w-8" />
+                      <span className="font-medium">Voice Input</span>
+                      <span className="text-xs text-gray-500">Guided voice prompts</span>
+                    </Button>
                   </div>
-                </div>
+                )}
 
-                <div>
-                  <label className="block text-sm font-medium mb-2">
-                    Anchor Text (300 chars max)
-                  </label>
-                  <Textarea
-                    value={newDot.anchor}
-                    onChange={(e) => setNewDot({...newDot, anchor: e.target.value})}
-                    placeholder="Add context to help you remember this thought later..."
-                    maxLength={300}
-                    className="min-h-[100px]"
-                  />
-                  <div className="text-xs text-gray-500 mt-1">
-                    {newDot.anchor.length}/300 characters
+                {captureMode === 'text' && (
+                  <div className="space-y-6">
+                    <div className="flex items-center justify-between">
+                      <h4 className="font-medium">Text Input - Three Layer Structure</h4>
+                      <Button variant="ghost" size="sm" onClick={resetCapture}>
+                        ← Back
+                      </Button>
+                    </div>
+                    
+                    <div className="space-y-4">
+                      <div className="p-4 bg-amber-50 rounded-lg border border-amber-200">
+                        <label className="block text-sm font-medium mb-2 text-amber-700">
+                          Layer 1: Summary (220 chars max)
+                        </label>
+                        <p className="text-xs text-gray-600 mb-2">Sharp, distilled core of your thought</p>
+                        <Textarea
+                          value={newDot.summary}
+                          onChange={(e) => setNewDot({...newDot, summary: e.target.value})}
+                          placeholder="What's the essential insight?"
+                          maxLength={220}
+                          className="min-h-[80px] border-amber-300 focus:border-amber-500"
+                        />
+                        <div className="text-xs text-gray-500 mt-1">
+                          {newDot.summary.length}/220 characters
+                        </div>
+                      </div>
+
+                      <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                        <label className="block text-sm font-medium mb-2 text-blue-700">
+                          Layer 2: Anchor (300 chars max)
+                        </label>
+                        <p className="text-xs text-gray-600 mb-2">Context to help you recall this later</p>
+                        <Textarea
+                          value={newDot.anchor}
+                          onChange={(e) => setNewDot({...newDot, anchor: e.target.value})}
+                          placeholder="What context will help you remember this insight?"
+                          maxLength={300}
+                          className="min-h-[100px] border-blue-300 focus:border-blue-500"
+                        />
+                        <div className="text-xs text-gray-500 mt-1">
+                          {newDot.anchor.length}/300 characters
+                        </div>
+                      </div>
+
+                      <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+                        <label className="block text-sm font-medium mb-2 text-green-700">
+                          Layer 3: Pulse (One word)
+                        </label>
+                        <p className="text-xs text-gray-600 mb-2">Single emotion word</p>
+                        <Input
+                          value={newDot.pulse}
+                          onChange={(e) => setNewDot({...newDot, pulse: e.target.value})}
+                          placeholder="excited, curious, focused..."
+                          className="border-green-300 focus:border-green-500"
+                        />
+                      </div>
+
+                      <Button 
+                        onClick={handleDotSubmit}
+                        className="w-full bg-amber-600 hover:bg-amber-700 text-white"
+                        disabled={createDotMutation.isPending || !newDot.summary || !newDot.anchor || !newDot.pulse}
+                      >
+                        <Zap className="h-4 w-4 mr-2" />
+                        {createDotMutation.isPending ? 'Capturing...' : 'Create Dot'}
+                      </Button>
+                    </div>
                   </div>
-                </div>
+                )}
 
-                <div>
-                  <label className="block text-sm font-medium mb-2">
-                    Pulse (One emotion word)
-                  </label>
-                  <Input
-                    value={newDot.pulse}
-                    onChange={(e) => setNewDot({...newDot, pulse: e.target.value})}
-                    placeholder="excited, curious, concerned..."
-                    className="w-full"
-                  />
-                </div>
+                {captureMode === 'voice' && (
+                  <div className="space-y-6">
+                    <div className="flex items-center justify-between">
+                      <h4 className="font-medium">Voice Input - Guided Prompts</h4>
+                      <Button variant="ghost" size="sm" onClick={resetCapture}>
+                        ← Back
+                      </Button>
+                    </div>
+                    
+                    <div className="space-y-4">
+                      <div className="p-4 bg-amber-50 rounded-lg border border-amber-200">
+                        <div className="flex items-center justify-between mb-2">
+                          <h5 className="font-medium text-amber-700">Step 1: Summary (20-30 seconds)</h5>
+                          {voiceSteps.summary && <span className="text-xs text-green-600">✓ Completed</span>}
+                        </div>
+                        <p className="text-sm text-gray-700 mb-3">
+                          "Start with your core insight. What's the main thought?"
+                        </p>
+                        <Button
+                          variant={isRecording && currentVoiceStep === 1 ? 'destructive' : 'default'}
+                          onClick={() => handleVoiceStep(1)}
+                          className="w-full"
+                          disabled={createDotMutation.isPending}
+                        >
+                          <Mic className="h-4 w-4 mr-2" />
+                          {isRecording && currentVoiceStep === 1 ? 'Recording Summary...' : 'Record Summary'}
+                        </Button>
+                        {voiceSteps.summary && (
+                          <div className="mt-2 p-2 bg-white rounded text-sm">
+                            {voiceSteps.summary} ({voiceSteps.summary.length}/220 chars)
+                          </div>
+                        )}
+                      </div>
 
-                <div className="flex gap-2">
-                  <Button 
-                    variant={newDot.sourceType === 'voice' ? 'default' : 'outline'}
-                    size="sm"
-                    onClick={() => setNewDot({...newDot, sourceType: 'voice'})}
-                  >
-                    <Mic className="h-4 w-4 mr-1" />
-                    Voice
-                  </Button>
-                  <Button 
-                    variant={newDot.sourceType === 'text' ? 'default' : 'outline'}
-                    size="sm"
-                    onClick={() => setNewDot({...newDot, sourceType: 'text'})}
-                  >
-                    <Type className="h-4 w-4 mr-1" />
-                    Text
-                  </Button>
-                  <Button 
-                    variant={newDot.sourceType === 'hybrid' ? 'default' : 'outline'}
-                    size="sm"
-                    onClick={() => setNewDot({...newDot, sourceType: 'hybrid'})}
-                  >
-                    <Network className="h-4 w-4 mr-1" />
-                    Hybrid
-                  </Button>
-                </div>
+                      <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                        <div className="flex items-center justify-between mb-2">
+                          <h5 className="font-medium text-blue-700">Step 2: Anchor (30-40 seconds)</h5>
+                          {voiceSteps.anchor && <span className="text-xs text-green-600">✓ Completed</span>}
+                        </div>
+                        <p className="text-sm text-gray-700 mb-3">
+                          "Now provide context. What will help you remember this?"
+                        </p>
+                        <Button
+                          variant={isRecording && currentVoiceStep === 2 ? 'destructive' : 'default'}
+                          onClick={() => handleVoiceStep(2)}
+                          className="w-full"
+                          disabled={createDotMutation.isPending || !voiceSteps.summary}
+                        >
+                          <Mic className="h-4 w-4 mr-2" />
+                          {isRecording && currentVoiceStep === 2 ? 'Recording Anchor...' : 'Record Anchor'}
+                        </Button>
+                        {voiceSteps.anchor && (
+                          <div className="mt-2 p-2 bg-white rounded text-sm">
+                            {voiceSteps.anchor} ({voiceSteps.anchor.length}/300 chars)
+                          </div>
+                        )}
+                      </div>
 
-                <Button 
-                  onClick={handleDotSubmit}
-                  className="w-full bg-amber-600 hover:bg-amber-700 text-white"
-                  disabled={createDotMutation.isPending || !newDot.summary || !newDot.anchor || !newDot.pulse}
-                >
-                  <Zap className="h-4 w-4 mr-2" />
-                  {createDotMutation.isPending ? 'Capturing...' : 'Create Dot'}
-                </Button>
+                      <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+                        <div className="flex items-center justify-between mb-2">
+                          <h5 className="font-medium text-green-700">Step 3: Pulse (5 seconds)</h5>
+                          {voiceSteps.pulse && <span className="text-xs text-green-600">✓ Completed</span>}
+                        </div>
+                        <p className="text-sm text-gray-700 mb-3">
+                          "Finally, say one emotion word that captures how you feel about this."
+                        </p>
+                        <Button
+                          variant={isRecording && currentVoiceStep === 3 ? 'destructive' : 'default'}
+                          onClick={() => handleVoiceStep(3)}
+                          className="w-full"
+                          disabled={createDotMutation.isPending || !voiceSteps.anchor}
+                        >
+                          <Mic className="h-4 w-4 mr-2" />
+                          {isRecording && currentVoiceStep === 3 ? 'Recording Pulse...' : 'Record Pulse'}
+                        </Button>
+                        {voiceSteps.pulse && (
+                          <div className="mt-2 p-2 bg-white rounded text-sm">
+                            Pulse: "{voiceSteps.pulse}"
+                          </div>
+                        )}
+                      </div>
+
+                      {voiceSteps.summary && voiceSteps.anchor && voiceSteps.pulse && (
+                        <Button 
+                          onClick={handleVoiceSubmit}
+                          className="w-full bg-amber-600 hover:bg-amber-700 text-white mt-4"
+                          disabled={createDotMutation.isPending}
+                        >
+                          <Zap className="h-4 w-4 mr-2" />
+                          {createDotMutation.isPending ? 'Capturing...' : 'Create Voice Dot'}
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
 

@@ -22,7 +22,18 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
   const [captureMode, setCaptureMode] = useState<'voice' | 'text' | null>(null);
   const [userCaptureMode, setUserCaptureMode] = useState<'voice' | 'text' | 'hybrid'>('hybrid');
   const [isRecording, setIsRecording] = useState(false);
+  const [currentStep, setCurrentStep] = useState<1 | 2 | 3>(1);
   const [textInput, setTextInput] = useState("");
+  const [structuredInput, setStructuredInput] = useState({
+    summary: '',
+    anchor: '',
+    pulse: ''
+  });
+  const [voiceSteps, setVoiceSteps] = useState({
+    summary: '',
+    anchor: '',
+    pulse: ''
+  });
   const [isDragging, setIsDragging] = useState(false);
   const [isFirstActivation, setIsFirstActivation] = useState(false);
   const dotRef = useRef<HTMLDivElement>(null);
@@ -130,15 +141,25 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
 
   const handleSubmit = async () => {
     try {
-      const thoughtText = textInput.trim() || "Voice captured thought";
+      let dotData;
       
-      // Create three-layer dot structure
-      const dotData = {
-        summary: thoughtText.substring(0, 220), // Summary layer (max 220 chars)
-        anchor: thoughtText, // Anchor layer (full text for memory recall)
-        pulse: "captured", // Default pulse emotion
-        sourceType: captureMode || 'text'
-      };
+      if (captureMode === 'text') {
+        // Use structured input for text mode
+        dotData = {
+          summary: structuredInput.summary.substring(0, 220),
+          anchor: structuredInput.anchor.substring(0, 300),
+          pulse: structuredInput.pulse.split(' ')[0] || 'captured',
+          sourceType: 'text'
+        };
+      } else {
+        // Use voice steps for voice mode
+        dotData = {
+          summary: voiceSteps.summary.substring(0, 220),
+          anchor: voiceSteps.anchor.substring(0, 300),
+          pulse: voiceSteps.pulse.split(' ')[0] || 'captured',
+          sourceType: 'voice'
+        };
+      }
       
       // Submit to real API endpoint
       const response = await fetch('/api/dots', {
@@ -157,7 +178,11 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
         description: "Your thought has been captured as a three-layer dot!",
       });
       
+      // Reset all states
       setTextInput("");
+      setStructuredInput({ summary: '', anchor: '', pulse: '' });
+      setVoiceSteps({ summary: '', anchor: '', pulse: '' });
+      setCurrentStep(1);
       handleClose();
     } catch (error) {
       console.error('Failed to submit dot capture:', error);
@@ -166,6 +191,33 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
         description: error instanceof Error ? error.message : "Failed to save your dot. Please try again.",
         variant: "destructive",
       });
+    }
+  };
+
+  const handleVoiceStep = (step: 1 | 2 | 3) => {
+    if (isRecording) {
+      // Stop recording
+      setIsRecording(false);
+      
+      // Simulate voice processing
+      setTimeout(() => {
+        const mockTranscript = step === 1 ? "Simulated summary from voice input" :
+                             step === 2 ? "Simulated anchor context from voice input" :
+                             "excited";
+        
+        setVoiceSteps(prev => ({
+          ...prev,
+          [step === 1 ? 'summary' : step === 2 ? 'anchor' : 'pulse']: mockTranscript
+        }));
+        
+        if (step < 3) {
+          setCurrentStep((step + 1) as 1 | 2 | 3);
+        }
+      }, 2000);
+    } else {
+      // Start recording
+      setIsRecording(true);
+      setCurrentStep(step);
     }
   };
 
