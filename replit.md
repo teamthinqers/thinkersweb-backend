@@ -308,6 +308,10 @@ Changelog:
   * Added attention-grabbing yellow indicator dots with separate animation timing
   * Increased dot size from 10x10 to 12x12 pixels for better visibility
   * Enhanced hover effects with scale transformation for interactive feedback
+- June 14, 2025. Final PWA button refinements:
+  * Removed duplicate navigation from "Save a Dot" button - now only triggers floating dot via custom event
+  * Aligned all three button icons in perfect straight line using consistent w-10 h-10 containers
+  * Added flex-shrink-0 to prevent icon container distortion and maintain alignment
 - June 14, 2025. Updated home page "Explore DotSpark Neura" button:
   * Changed from internal navigation (/neura) to external redirect to https://www.dotspark.in/dashboard
   * Button now opens dashboard in new tab for seamless access to full application features
