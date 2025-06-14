@@ -20,12 +20,22 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
   const [position, setPosition] = useState<Position>({ x: 320, y: 180 });
   const [isExpanded, setIsExpanded] = useState(false);
   const [captureMode, setCaptureMode] = useState<'voice' | 'text' | null>(null);
+  const [userCaptureMode, setUserCaptureMode] = useState<'voice' | 'text' | 'hybrid'>('hybrid');
   const [isRecording, setIsRecording] = useState(false);
   const [textInput, setTextInput] = useState("");
   const [isDragging, setIsDragging] = useState(false);
   const [isFirstActivation, setIsFirstActivation] = useState(false);
   const dotRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+
+  // Load user's capture mode preference
+  useEffect(() => {
+    const savedSettings = localStorage.getItem('dotspark-settings');
+    if (savedSettings) {
+      const settings = JSON.parse(savedSettings);
+      setUserCaptureMode(settings.captureMode ?? 'hybrid');
+    }
+  }, []);
 
   const handleMouseDown = (e: React.MouseEvent) => {
     if (isExpanded) return;
@@ -83,6 +93,15 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
     if (!isDragging && !isExpanded) {
       setIsExpanded(true);
       setIsFirstActivation(false);
+      
+      // Auto-select mode based on user preference
+      if (userCaptureMode === 'voice') {
+        setCaptureMode('voice');
+        startRecording();
+      } else if (userCaptureMode === 'text') {
+        setCaptureMode('text');
+      }
+      // For hybrid mode, show selection screen (captureMode remains null)
     }
   };
 
@@ -158,13 +177,32 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
       if (!isDragging && !isExpanded) {
         setIsExpanded(true);
         setIsFirstActivation(false);
+        
+        // Auto-select mode based on user preference
+        if (userCaptureMode === 'voice') {
+          setCaptureMode('voice');
+          startRecording();
+        } else if (userCaptureMode === 'text') {
+          setCaptureMode('text');
+        }
+        // For hybrid mode, show selection screen
+      }
+    };
+
+    // Listen for settings changes
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'dotspark-settings' && e.newValue) {
+        const settings = JSON.parse(e.newValue);
+        setUserCaptureMode(settings.captureMode ?? 'hybrid');
       }
     };
 
     window.addEventListener('triggerFloatingDot', handleTriggerDot);
+    window.addEventListener('storage', handleStorageChange);
 
     return () => {
       window.removeEventListener('triggerFloatingDot', handleTriggerDot);
+      window.removeEventListener('storage', handleStorageChange);
     };
   }, [isDragging, isExpanded]);
 
@@ -228,22 +266,26 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
                     <p className="text-sm text-gray-600">How would you like to capture your Dot?</p>
                   </div>
 
-                  {/* Mode Selection Buttons */}
+                  {/* Mode Selection Buttons - Conditional based on user preference */}
                   <div className="space-y-4">
-                    <Button
-                      onClick={() => handleModeSelect('voice')}
-                      className="w-full h-16 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl shadow-lg text-lg font-semibold transition-all duration-200"
-                    >
-                      <Mic className="w-6 h-6 mr-3" />
-                      Voice
-                    </Button>
-                    <Button
-                      onClick={() => handleModeSelect('text')}
-                      className="w-full h-16 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl shadow-lg text-lg font-semibold transition-all duration-200"
-                    >
-                      <Type className="w-6 h-6 mr-3" />
-                      Text
-                    </Button>
+                    {(userCaptureMode === 'hybrid' || userCaptureMode === 'voice') && (
+                      <Button
+                        onClick={() => handleModeSelect('voice')}
+                        className="w-full h-16 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl shadow-lg text-lg font-semibold transition-all duration-200"
+                      >
+                        <Mic className="w-6 h-6 mr-3" />
+                        Voice
+                      </Button>
+                    )}
+                    {(userCaptureMode === 'hybrid' || userCaptureMode === 'text') && (
+                      <Button
+                        onClick={() => handleModeSelect('text')}
+                        className="w-full h-16 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl shadow-lg text-lg font-semibold transition-all duration-200"
+                      >
+                        <Type className="w-6 h-6 mr-3" />
+                        Text
+                      </Button>
+                    )}
                   </div>
 
                   {/* Close/Back buttons */}

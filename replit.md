@@ -321,6 +321,14 @@ Changelog:
   * PWA users see backspace arrow instead of X close icon in capture screens
   * Web browser users continue to see standard close/minimize buttons unchanged
   * Implemented automatic PWA standalone mode detection using isRunningAsStandalone() utility
+- June 14, 2025. Implemented user preference-based capture mode selection:
+  * Dot Settings defaults to Hybrid mode for all new users
+  * Floating dot interface respects user's chosen capture mode from Dot Settings
+  * Voice Only mode: clicking floating dot directly opens voice capture
+  * Text Only mode: clicking floating dot directly opens text input
+  * Hybrid Mode: clicking floating dot shows both voice and text options
+  * Added real-time settings synchronization via localStorage events
+  * Mode selection interface conditionally displays only available options based on user preference
 - June 14, 2025. Updated home page "Explore DotSpark Neura" button:
   * Changed from internal navigation (/neura) to external redirect to https://www.dotspark.in/dashboard
   * Button now opens dashboard in new tab for seamless access to full application features
