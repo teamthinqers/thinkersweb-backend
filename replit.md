@@ -225,6 +225,9 @@ Changelog:
   * "Open DotSpark App", "My Neura", and "Access Neura" buttons now redirect to https://www.dotspark.in/dashboard
   * All navigation buttons open external URL in new tab using window.open() with _blank target
   * PWA interface now seamlessly connects users to the full DotSpark application dashboard
+- June 14, 2025. Updated home page "Explore DotSpark Neura" button:
+  * Changed from internal navigation (/neura) to external redirect to https://www.dotspark.in/dashboard
+  * Button now opens dashboard in new tab for seamless access to full application features
 - June 14, 2025. Updated DotSpark PWA color theme and navigation:
   * Changed Text button background from blue to amber/orange gradient matching logo theme
   * Updated My Neura button to use amber/orange colors instead of blue
