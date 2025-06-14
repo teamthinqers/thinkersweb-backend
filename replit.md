@@ -289,7 +289,7 @@ Changelog:
   * Optimized for deployment (build slowdown caused by Lucide React icon transformations)
 - June 14, 2025. Enhanced PWA dot interface with additional functionality:
   * Fixed floating dot blinking animation by moving animate-pulse to outer div
-  * Added "Save your Dot" button with green gradient that opens capture interface
+  * Added "Save a Dot" button with orange-amber-yellow gradient matching theme colors
   * Changed My Neura button color to amber/orange theme to match brand consistency
   * Updated My Neura button navigation to /dashboard for proper routing
 - June 14, 2025. Updated home page "Explore DotSpark Neura" button:
