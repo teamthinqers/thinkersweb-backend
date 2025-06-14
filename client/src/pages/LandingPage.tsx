@@ -592,7 +592,7 @@ export default function LandingPage() {
                     <p className="mb-2 font-medium text-foreground">Get started in 3 easy steps:</p>
                     <ol className="list-decimal list-inside space-y-1 text-xs">
                       <li>Sign up for an account</li>
-                      <li>Activate your DotSpark</li>
+                      <li>Activate the Dot to capture your valuable thoughts</li>
                       <li>Download the Web App for better experience</li>
                     </ol>
                   </div>

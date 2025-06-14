@@ -159,6 +159,9 @@ Changelog:
   * Renamed section heading from "Dot capture status" to "Floating dot"
   * Created premium visual mode selection cards with gradients, animations, and checkmark indicators
   * Final rename from "DotSpark Settings" to "Dot Settings" for cleaner branding
+- June 14, 2025. Homepage call-to-action updates:
+  * Updated step 2 text from "Activate your DotSpark" to "Activate the Dot to capture your valuable thoughts"
+  * Improved messaging alignment with dot-focused branding and value proposition
 ```
 
 ## User Preferences
