@@ -638,7 +638,7 @@ export default function MyNeura() {
               Level 1
             </Badge>
           </div>
-          <CardDescription>Configure your DotSpark settings to capture your valuable thoughts</CardDescription>
+          <CardDescription>Configure your dot capture settings</CardDescription>
         </CardHeader>
         
         <CardContent className="pb-4 relative z-10">
