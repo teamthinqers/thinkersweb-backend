@@ -255,12 +255,13 @@ export function FloatingDot({ enabled, onToggle, className }: FloatingDotProps) 
 
   return (
     <>
-      {/* Floating Dot - Enhanced for PWA */}
+      {/* Floating Dot - PWA Optimized */}
       <div
         ref={dotRef}
         className={cn(
           "fixed z-[9999] transition-all duration-300 cursor-pointer select-none",
-          "will-change-transform touch-none", // Better mobile performance
+          "will-change-transform touch-none",
+          "user-select-none -webkit-user-select-none", // Prevent text selection on mobile
           isDragging ? "cursor-grabbing" : "cursor-grab",
           isExpanded ? "pointer-events-none" : "pointer-events-auto",
           className
@@ -269,15 +270,19 @@ export function FloatingDot({ enabled, onToggle, className }: FloatingDotProps) 
           left: position.x,
           top: position.y,
           transform: isExpanded ? 'scale(0)' : 'scale(1)',
-          WebkitTransform: isExpanded ? 'scale(0)' : 'scale(1)', // Safari compatibility
+          WebkitTransform: isExpanded ? 'scale(0)' : 'scale(1)',
           position: 'fixed',
-          zIndex: 9999
+          zIndex: 9999,
+          // PWA-specific optimizations
+          WebkitTouchCallout: 'none',
+          WebkitUserSelect: 'none',
+          touchAction: 'none'
         }}
         onMouseDown={handleMouseDown}
         onTouchStart={handleTouchStart}
         onClick={handleDotClick}
         role="button"
-        aria-label="DotSpark floating capture button"
+        aria-label="DotSpark floating capture button - Drag to reposition"
         tabIndex={0}
       >
         <div className={cn(
