@@ -162,6 +162,7 @@ Changelog:
 - June 14, 2025. Homepage call-to-action updates:
   * Updated step 2 text from "Activate your DotSpark" to "Activate the Dot to capture your valuable thoughts"
   * Updated step 2 button from "Activate DotSpark" to "Activate Dot"
+  * Updated step 2 description from "Configure your DotSpark to mirror your natural intelligence & thinking style" to "Configure the Dot settings to capture your valuable thoughts"
   * Improved messaging alignment with dot-focused branding and value proposition
 ```
 

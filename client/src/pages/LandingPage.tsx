@@ -664,7 +664,7 @@ export default function LandingPage() {
                 2
               </div>
               <h3 className="text-xl font-semibold mb-2">Activate DotSpark</h3>
-              <p className="text-muted-foreground text-sm">Configure your DotSpark to mirror your natural intelligence & thinking style.</p>
+              <p className="text-muted-foreground text-sm">Configure the Dot settings to capture your valuable thoughts.</p>
               <div className="mt-auto pt-4">
                 <Button 
                   className="w-full !bg-gradient-to-r !from-amber-500 !to-orange-600 hover:!from-orange-600 hover:!to-amber-500 text-white border-0 shadow-md hover:shadow-lg transition-all duration-300"
