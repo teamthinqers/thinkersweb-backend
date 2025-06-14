@@ -299,6 +299,16 @@ Changelog:
   * Implemented attention-grabbing blinking indicators with staggered animation timing
   * Enhanced visual feedback with gradient backgrounds, shadows, and hover scale effects
   * Maintained full draggable mobility across all screen areas with position memory
+- June 14, 2025. Enhanced floating dot and layer interface with stunning visual design:
+  * Implemented silky-smooth dragging with improved transition timing and boundary detection
+  * Updated interface titles: "Three Layer Text Input" → "Text Input" and "Voice Guided Prompts" → "Voice Input"
+  * Redesigned all layers as "Layer 1, 2, 3" with numbered gradient badges for visual hierarchy
+  * Renamed "Summary" to "Dot" in Layer 1 across both text and voice input modes
+  * Created stunning three-layer visual system with gradient backgrounds and visual cues:
+    - Layer 1 (Dot): Orange-amber gradient with smart character counter and context hints
+    - Layer 2 (Anchor): Blue-indigo gradient with memory anchor guidance
+    - Layer 3 (Pulse): Purple-pink gradient with centered emotion word input
+  * Enhanced UX with rounded corners, shadows, hover effects, and intuitive user guidance
 - June 14, 2025. Implemented comprehensive three-layer dot system architecture:
   * Created three-layer dot structure: Summary (220 chars max), Anchor (300 chars), Pulse (1 word emotion)
   * Built complete API endpoints for dots with validation and character limit enforcement
