@@ -221,6 +221,13 @@ Changelog:
   * Enhanced text button with blue gradient background matching voice button quality
   * Fixed navigation button readability issues preventing white text on click
   * Improved button styling with consistent color schemes and hover states
+- June 14, 2025. Fixed floating dot logo visibility and PWA interface consistency:
+  * Updated floating dot to use actual DotSpark logo from attached_assets for clear visibility
+  * Changed all "Capture Thought" text to "Save a Dot" throughout floating dot interface
+  * Updated question text from "How would you like to capture your thought" to "How would you like to capture your Dot?"
+  * Aligned Voice and Text button colors to match PWA interface with amber/orange gradients
+  * Enhanced cross-page floating dot availability with improved activation detection
+  * Applied consistent logo styling with white background and proper fallback mechanisms
 - June 14, 2025. Updated PWA navigation to external DotSpark URLs:
   * "Open DotSpark App" button redirects to https://www.dotspark.in/my-neura
   * "My Neura" and "Access Neura" buttons redirect to https://www.dotspark.in/dashboard
