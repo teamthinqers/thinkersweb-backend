@@ -228,6 +228,9 @@ Changelog:
   * Aligned Voice and Text button colors to match PWA interface with amber/orange gradients
   * Enhanced cross-page floating dot availability with improved activation detection
   * Applied consistent logo styling with white background and proper fallback mechanisms
+  * Fixed duplicate dots issue in mobile browser by separating desktop and PWA rendering
+  * Created dedicated PWAFloatingDot component for standalone PWA mode with cross-page availability
+  * Updated save button text from "Save Dot" to "Save a Dot" for consistency across all interfaces
 - June 14, 2025. Updated PWA navigation to external DotSpark URLs:
   * "Open DotSpark App" button redirects to https://www.dotspark.in/my-neura
   * "My Neura" and "Access Neura" buttons redirect to https://www.dotspark.in/dashboard
