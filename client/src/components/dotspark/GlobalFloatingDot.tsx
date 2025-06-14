@@ -436,7 +436,7 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
                   className="w-full h-12 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl text-lg font-semibold shadow-lg"
                   disabled={!textInput.trim()}
                 >
-                  Save Dot
+                  Save a Dot
                 </Button>
               </div>
             )}

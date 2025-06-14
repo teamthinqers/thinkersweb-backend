@@ -357,9 +357,13 @@ function App() {
         )}
         <Router />
         <Toaster />
-        {/* Global Floating Dot - Only for non-PWA desktop/mobile browsers */}
-        {!isRunningAsStandalone() && !window.matchMedia('(max-width: 768px)').matches && (
+        {/* Global Floating Dot for Desktop Browser Users */}
+        {!isRunningAsStandalone() && (
           <GlobalFloatingDot isActive={isDotSparkActive || neuraStorage.isActivated()} />
+        )}
+        {/* PWA Floating Dot for Standalone PWA Mode */}
+        {isRunningAsStandalone() && (
+          <PWAFloatingDot isActive={isDotSparkActive || neuraStorage.isActivated()} />
         )}
         {/* iOS PWA Install Prompt */}
         <IosPwaInstallPrompt />
