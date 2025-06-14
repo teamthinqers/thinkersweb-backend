@@ -117,16 +117,16 @@ export default function DotCapture() {
           
           {/* Dot Logo Header */}
           <div className="text-center space-y-4">
-            <div className="mx-auto w-24 h-24 rounded-full bg-white border-2 border-amber-200 flex items-center justify-center overflow-hidden shadow-lg">
+            <div className="mx-auto w-24 h-24 rounded-full flex items-center justify-center overflow-hidden shadow-lg">
               <img 
-                src="/attached_assets/dot_spark_logo-03_1749842817686.jpg" 
+                src="/dotspark-icon-only.jpeg" 
                 alt="DotSpark" 
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover rounded-full"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
-                  target.src = "/dotspark-brown-bg-icon.jpeg";
+                  target.src = "/dotspark-logo-icon.jpeg";
                   target.onerror = () => {
-                    target.src = "/dotspark-logo-icon.jpeg";
+                    target.src = "/dotspark-pwa-final.png";
                   };
                 }}
               />

@@ -236,6 +236,10 @@ Changelog:
   * Removed duplicate FloatingDot component from DotSparkSettings that caused double dots on Neural page
   * Changed logo above "Save a Dot" heading from white background full logo to circular dot icon only
   * Achieved consistent circular dot icon usage throughout all floating dot interfaces
+- June 14, 2025. Updated PWA DotSpark interface logo:
+  * Changed logo above "DotSpark" heading in PWA interface from full logo to icon-only version
+  * Now uses dotspark-icon-only.jpeg for cleaner, consistent branding
+  * Maintains circular dot icon theme throughout PWA capture interface
 - June 14, 2025. Updated PWA navigation to external DotSpark URLs:
   * "Open DotSpark App" button redirects to https://www.dotspark.in/my-neura
   * "My Neura" and "Access Neura" buttons redirect to https://www.dotspark.in/dashboard
