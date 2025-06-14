@@ -276,14 +276,15 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
       <div
         ref={dotRef}
         className={cn(
-          "absolute pointer-events-auto cursor-move transition-all duration-300",
+          "absolute pointer-events-auto cursor-move transition-all duration-150 ease-out",
           isExpanded ? "hidden" : "block",
           isDragging ? "scale-110 z-60" : "hover:scale-105"
         )}
         style={{ 
           left: `${position.x}px`, 
           top: `${position.y}px`,
-          transform: isDragging ? 'scale(1.1)' : undefined
+          transform: isDragging ? 'scale(1.1)' : undefined,
+          transition: isDragging ? 'none' : 'all 0.15s ease-out'
         }}
         onMouseDown={handleMouseDown}
         onTouchStart={handleTouchStart}
@@ -381,42 +382,52 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                     >
                       <ArrowLeft className="w-4 h-4" />
                     </Button>
-                    <h3 className="font-medium">Three Layer Text Input</h3>
+                    <h3 className="font-medium">Text Input</h3>
                     <div className="w-8"></div>
                   </div>
                   
                   <div className="space-y-3">
-                    <div className="p-3 bg-amber-50 rounded-lg border border-amber-200">
-                      <label className="block text-sm font-medium mb-2 text-amber-700">
-                        Layer 1: Summary (220 chars max)
-                      </label>
-                      <p className="text-xs text-gray-600 mb-2">Sharp, distilled core of your thought</p>
+                    <div className="p-4 bg-gradient-to-br from-orange-50 to-amber-50 rounded-xl border-2 border-orange-200 shadow-sm hover:shadow-md transition-all duration-300">
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="w-6 h-6 rounded-full bg-gradient-to-r from-orange-500 to-amber-500 flex items-center justify-center">
+                          <span className="text-white text-xs font-bold">1</span>
+                        </div>
+                        <label className="text-sm font-semibold text-orange-700">
+                          Layer 1: Dot (max 220 chars)
+                        </label>
+                      </div>
                       <Textarea
                         value={structuredInput.summary}
                         onChange={(e) => setStructuredInput(prev => ({...prev, summary: e.target.value}))}
-                        placeholder="What's the essential insight?"
+                        placeholder="Enter your thoughts here"
                         maxLength={220}
-                        className="min-h-16 text-sm border-amber-300 focus:border-amber-500"
+                        className="min-h-16 text-sm border-orange-300 focus:border-orange-500 focus:ring-orange-400 bg-white/80 backdrop-blur-sm"
                       />
-                      <div className="text-xs text-gray-500 mt-1">
-                        {structuredInput.summary.length}/220 characters
+                      <div className="text-xs text-orange-600 mt-2 flex justify-between items-center">
+                        <span>Sharp thoughts spark better insights</span>
+                        <span className="font-medium">{structuredInput.summary.length}/220</span>
                       </div>
                     </div>
 
-                    <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
-                      <label className="block text-sm font-medium mb-2 text-blue-700">
-                        Layer 2: Anchor (300 chars max)
-                      </label>
-                      <p className="text-xs text-gray-600 mb-2">Context to help you recall this later</p>
+                    <div className="p-4 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border-2 border-blue-200 shadow-sm hover:shadow-md transition-all duration-300">
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="w-6 h-6 rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 flex items-center justify-center">
+                          <span className="text-white text-xs font-bold">2</span>
+                        </div>
+                        <label className="text-sm font-semibold text-blue-700">
+                          Layer 2: Anchor (max 300 chars)
+                        </label>
+                      </div>
                       <Textarea
                         value={structuredInput.anchor}
                         onChange={(e) => setStructuredInput(prev => ({...prev, anchor: e.target.value}))}
-                        placeholder="What context will help you remember this insight?"
+                        placeholder="Context or memory anchor"
                         maxLength={300}
-                        className="min-h-20 text-sm border-blue-300 focus:border-blue-500"
+                        className="min-h-20 text-sm border-blue-300 focus:border-blue-500 focus:ring-blue-400 bg-white/80 backdrop-blur-sm"
                       />
-                      <div className="text-xs text-gray-500 mt-1">
-                        {structuredInput.anchor.length}/300 characters
+                      <div className="text-xs text-blue-600 mt-2 flex justify-between items-center">
+                        <span>Context that helps you remember later</span>
+                        <span className="font-medium">{structuredInput.anchor.length}/300</span>
                       </div>
                     </div>
 
@@ -454,7 +465,7 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                     >
                       <ArrowLeft className="w-4 h-4" />
                     </Button>
-                    <h3 className="font-medium">Voice Guided Prompts</h3>
+                    <h3 className="font-medium">Voice Input</h3>
                     <div className="w-8"></div>
                   </div>
                   
