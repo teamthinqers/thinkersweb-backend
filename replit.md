@@ -426,6 +426,12 @@ Changelog:
   * Applied comprehensive amber/orange color theme throughout all components
   * Enhanced cards, search bar, headings, and background with gradient amber/orange styling
   * Updated mind map visualization with amber-themed Neural Constellation design
+- June 14, 2025. Consolidated wheel visualization into single "Dot Wheels Map" component:
+  * Removed tabs interface and created unified DotWheelsMap component for stunning visual representation
+  * Combined best features of mind map and wheel views into one interactive neural constellation
+  * Added hover cards showing wheel details, dots preview, and connection information
+  * Enhanced visual design with gradient circles, animated connection lines, and floating statistics
+  * Implemented responsive wheel positioning with scale animations and interactive hover effects
 ```
 
 ## User Preferences

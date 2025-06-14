@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
 import { Input } from "@/components/ui/input";
 import { Mic, Type, Eye, Brain, Network, Zap, Search } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
@@ -28,7 +28,6 @@ interface Wheel {
 }
 
 const Dashboard: React.FC = () => {
-  const [activeView, setActiveView] = useState<'mindmap' | 'wheels'>('mindmap');
   const [searchTerm, setSearchTerm] = useState('');
 
   // Fetch real dots from API
@@ -160,46 +159,86 @@ const Dashboard: React.FC = () => {
     </Card>
   );
 
-  const MindMapView: React.FC = () => (
-    <div className="relative bg-gradient-to-br from-amber-50/50 to-orange-50/50 rounded-xl p-8 min-h-96 border-2 border-amber-200 shadow-lg">
+  const DotWheelsMap: React.FC<{ wheels: Wheel[] }> = ({ wheels }) => (
+    <div className="relative bg-gradient-to-br from-amber-50/50 to-orange-50/50 rounded-xl p-8 min-h-[500px] border-2 border-amber-200 shadow-lg">
       <div className="text-center mb-6">
         <Brain className="w-12 h-12 mx-auto mb-2 text-amber-500" />
         <h3 className="text-lg font-semibold bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent">Neural Constellation</h3>
-        <p className="text-sm text-amber-600">Visual representation of your connected thoughts</p>
+        <p className="text-sm text-amber-600">Interactive map of your thought wheels and their connections</p>
       </div>
       
-      {/* Simulated mind map visualization */}
-      <div className="relative">
+      {/* Enhanced visual wheel map */}
+      <div className="relative min-h-80">
         {wheels.map((wheel, index) => (
           <div
             key={wheel.id}
-            className="absolute w-24 h-24 rounded-full flex items-center justify-center text-white text-xs font-medium shadow-lg"
+            className="absolute group cursor-pointer transition-all duration-300 hover:scale-110"
             style={{ 
-              backgroundColor: wheel.color,
-              left: `${20 + index * 30}%`,
-              top: `${30 + (index % 2) * 40}%`
+              left: `${15 + index * 25}%`,
+              top: `${20 + (index % 3) * 30}%`
             }}
           >
-            <div className="text-center">
-              <div className="text-xs font-bold">{wheel.name.split(' ')[0]}</div>
-              <div className="text-xs opacity-75">{wheel.dots.length} dots</div>
+            {/* Wheel circle */}
+            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-amber-400 to-orange-600 flex items-center justify-center shadow-xl border-4 border-white group-hover:shadow-2xl">
+              <div className="text-center">
+                <div className="text-xs font-bold text-white">{wheel.name.split(' ')[0]}</div>
+                <div className="text-xs text-amber-100">{wheel.dots.length} dots</div>
+              </div>
+            </div>
+            
+            {/* Hover card */}
+            <div className="absolute top-24 left-1/2 transform -translate-x-1/2 bg-white rounded-lg shadow-lg p-3 min-w-48 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 border-2 border-amber-200">
+              <h4 className="font-semibold text-amber-800 mb-2">{wheel.name}</h4>
+              <p className="text-xs text-amber-600 mb-2">{wheel.category}</p>
+              <div className="space-y-1">
+                {wheel.dots.slice(0, 2).map(dot => (
+                  <div key={dot.id} className="text-xs p-1 bg-amber-50 rounded">
+                    <span className="font-medium">{dot.summary.substring(0, 30)}...</span>
+                    <span className="text-amber-600 ml-1">({dot.pulse})</span>
+                  </div>
+                ))}
+                {wheel.dots.length > 2 && (
+                  <div className="text-xs text-amber-500">+{wheel.dots.length - 2} more dots</div>
+                )}
+              </div>
             </div>
           </div>
         ))}
         
-        {/* Connection lines */}
+        {/* Enhanced connection lines */}
         <svg className="absolute inset-0 w-full h-full pointer-events-none">
           <defs>
             <marker id="arrowhead" markerWidth="10" markerHeight="7" 
              refX="9" refY="3.5" orient="auto">
-              <polygon points="0 0, 10 3.5, 0 7" fill="#6B7280" />
+              <polygon points="0 0, 10 3.5, 0 7" fill="#F59E0B" />
             </marker>
+            <linearGradient id="connectionGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#F59E0B" stopOpacity="0.6" />
+              <stop offset="100%" stopColor="#EA580C" stopOpacity="0.8" />
+            </linearGradient>
           </defs>
-          <line x1="30%" y1="40%" x2="50%" y2="45%" stroke="#6B7280" strokeWidth="2" 
-                strokeDasharray="5,5" markerEnd="url(#arrowhead)" />
-          <line x1="50%" y1="55%" x2="70%" y2="60%" stroke="#6B7280" strokeWidth="2" 
-                strokeDasharray="5,5" markerEnd="url(#arrowhead)" />
+          <line x1="25%" y1="35%" x2="40%" y2="40%" stroke="url(#connectionGradient)" strokeWidth="3" 
+                strokeDasharray="8,4" markerEnd="url(#arrowhead)" className="animate-pulse" />
+          <line x1="40%" y1="55%" x2="65%" y2="45%" stroke="url(#connectionGradient)" strokeWidth="3" 
+                strokeDasharray="8,4" markerEnd="url(#arrowhead)" className="animate-pulse" />
+          <line x1="65%" y1="65%" x2="40%" y2="80%" stroke="url(#connectionGradient)" strokeWidth="3" 
+                strokeDasharray="8,4" markerEnd="url(#arrowhead)" className="animate-pulse" />
         </svg>
+        
+        {/* Floating stats */}
+        <div className="absolute top-4 right-4 bg-white/90 backdrop-blur rounded-lg p-3 border-2 border-amber-200">
+          <div className="text-center">
+            <div className="text-lg font-bold text-amber-800">{wheels.length}</div>
+            <div className="text-xs text-amber-600">Active Wheels</div>
+          </div>
+        </div>
+        
+        <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur rounded-lg p-3 border-2 border-amber-200">
+          <div className="text-center">
+            <div className="text-lg font-bold text-amber-800">{wheels.reduce((sum, wheel) => sum + wheel.dots.length, 0)}</div>
+            <div className="text-xs text-amber-600">Total Dots</div>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -267,39 +306,16 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
 
-        {/* Dot Wheels Section */}
+        {/* Dot Wheels Map Section */}
         <div className="mb-8">
           <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
             <Network className="w-5 h-5 text-amber-500" />
             <span className="bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent">
-              Dot Wheels
+              Dot Wheels Map
             </span>
           </h2>
           
-          <Tabs value={activeView} onValueChange={(value) => setActiveView(value as 'mindmap' | 'wheels')}>
-            <TabsList className="grid w-full grid-cols-2 mb-6">
-              <TabsTrigger value="mindmap" className="flex items-center gap-2">
-                <Brain className="w-4 h-4" />
-                Mind Map
-              </TabsTrigger>
-              <TabsTrigger value="wheels" className="flex items-center gap-2">
-                <Network className="w-4 h-4" />
-                Wheels View
-              </TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="mindmap" className="space-y-6">
-              <MindMapView />
-            </TabsContent>
-
-            <TabsContent value="wheels" className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {wheels.map(wheel => (
-                  <WheelCard key={wheel.id} wheel={wheel} />
-                ))}
-              </div>
-            </TabsContent>
-          </Tabs>
+          <DotWheelsMap wheels={wheels} />
         </div>
       </div>
     </div>
