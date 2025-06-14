@@ -27,7 +27,10 @@ interface GlobalFloatingDotProps {
 }
 
 export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
-  const [position, setPosition] = useState<Position>({ x: 320, y: 180 });
+  const [position, setPosition] = useState<Position>(() => {
+    const saved = localStorage.getItem('floatingDotPosition');
+    return saved ? JSON.parse(saved) : { x: 320, y: 180 };
+  });
   const [isExpanded, setIsExpanded] = useState(false);
   const [captureMode, setCaptureMode] = useState<'voice' | 'text' | null>(null);
   const [userCaptureMode, setUserCaptureMode] = useState<'voice' | 'text' | 'hybrid'>('hybrid');

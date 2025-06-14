@@ -105,25 +105,32 @@ const Dashboard: React.FC = () => {
     }
   ]);
 
-  const DotCard: React.FC<{ dot: Dot }> = ({ dot }) => (
-    <Card className="mb-4 hover:shadow-md transition-shadow border-2 border-amber-100 bg-gradient-to-br from-white to-amber-50/20">
+  const DotCard: React.FC<{ dot: Dot; isPreview?: boolean; onClick?: () => void }> = ({ dot, isPreview = false, onClick }) => (
+    <Card className={`mb-4 hover:shadow-md transition-shadow border border-amber-200 bg-white/95 backdrop-blur cursor-pointer ${onClick ? 'hover:bg-amber-50/50' : ''}`} onClick={onClick}>
       <CardHeader className="pb-2">
         <div className="flex justify-between items-start">
-          <Badge variant="outline" className="text-xs border-amber-300 text-amber-700 bg-amber-50">
-            {dot.sourceType === 'voice' ? <Mic className="h-3 w-3 mr-1" /> : 
-             dot.sourceType === 'text' ? <Type className="h-3 w-3 mr-1" /> : 
-             <div className="flex gap-1"><Mic className="h-2 w-2" /><Type className="h-2 w-2" /></div>}
-            {dot.sourceType}
-          </Badge>
-          <Badge className="bg-amber-100 text-amber-800 border-amber-200">
+          <div className="flex items-center gap-2">
+            <Badge variant="outline" className="text-xs border-amber-300 text-amber-700 bg-amber-50/80">
+              {dot.sourceType === 'voice' ? <Mic className="h-3 w-3 mr-1" /> : 
+               dot.sourceType === 'text' ? <Type className="h-3 w-3 mr-1" /> : 
+               <div className="flex gap-1"><Mic className="h-2 w-2" /><Type className="h-2 w-2" /></div>}
+              {dot.sourceType}
+            </Badge>
+            {isPreview && (
+              <Badge className="bg-orange-100 text-orange-700 border-orange-200 text-xs">
+                Preview
+              </Badge>
+            )}
+          </div>
+          <Badge className="bg-gradient-to-r from-amber-100 to-orange-100 text-amber-800 border-amber-200">
             {dot.pulse}
           </Badge>
         </div>
       </CardHeader>
       <CardContent>
         <h3 className="font-medium text-sm mb-2 leading-relaxed text-gray-800">{dot.summary}</h3>
-        <p className="text-xs text-gray-600 leading-relaxed">{dot.anchor}</p>
-        <div className="mt-2 text-xs text-amber-600">
+        <p className="text-xs text-gray-600 leading-relaxed line-clamp-2">{dot.anchor}</p>
+        <div className="mt-2 text-xs text-amber-700">
           {dot.timestamp.toLocaleString()}
         </div>
       </CardContent>
@@ -326,7 +333,7 @@ const Dashboard: React.FC = () => {
               placeholder="Enter keywords to search for a Dot"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 h-12 text-base border-2 border-amber-200 bg-gradient-to-r from-amber-50/50 to-orange-50/50 focus:border-amber-500 focus:ring-amber-500/20 rounded-xl placeholder:text-amber-400"
+              className="pl-10 h-12 text-base border-2 border-amber-200 bg-white/90 backdrop-blur focus:border-amber-500 focus:ring-amber-500/20 rounded-xl placeholder:text-gray-500 text-gray-800 shadow-sm"
             />
           </div>
         </div>
@@ -339,7 +346,7 @@ const Dashboard: React.FC = () => {
               Recent Dots
             </span>
           </h2>
-          <div className="bg-gradient-to-br from-amber-50/30 to-orange-50/30 border-2 border-amber-200 rounded-xl p-4 max-h-96 overflow-y-auto shadow-lg">
+          <div className="bg-white/80 backdrop-blur border-2 border-amber-200 rounded-xl p-4 max-h-96 overflow-y-auto shadow-lg">
             <div className="space-y-4">
               {dots.length > 0 ? (
                 dots.slice(0, 4).map((dot: Dot) => (
