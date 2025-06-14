@@ -164,8 +164,8 @@ export function PWAFloatingDot({ isActive }: PWAFloatingDotProps) {
           onTouchStart={handleTouchStart}
           onClick={handleClick}
         >
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-600 to-orange-700 flex items-center justify-center animate-pulse shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110">
-            <div className="w-3 h-3 rounded-full bg-white animate-pulse"></div>
+          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-600 to-orange-700 flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 animate-pulse">
+            <div className="w-3 h-3 rounded-full bg-white"></div>
           </div>
         </div>
       ) : (

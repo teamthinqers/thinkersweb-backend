@@ -163,6 +163,31 @@ export default function DotCapture() {
                 
                 {/* Enhanced Navigation Buttons */}
                 <div className="space-y-4">
+                  {/* Save your Dot button */}
+                  <Button
+                    onClick={() => {
+                      setShowOptions(false);
+                      setCaptureMode('text');
+                    }}
+                    className="w-full h-16 bg-gradient-to-r from-green-500 via-emerald-500 to-green-600 hover:from-green-600 hover:via-emerald-600 hover:to-green-700 text-white rounded-2xl shadow-xl border-0 transform transition-all duration-300 hover:scale-105 hover:shadow-2xl group relative overflow-hidden"
+                  >
+                    {/* Button glow effect */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-green-400/20 to-emerald-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl"></div>
+                    
+                    <div className="relative z-10 flex items-center justify-center gap-3">
+                      <div className="p-2 bg-white/20 rounded-xl">
+                        <Send className="w-6 h-6" />
+                      </div>
+                      <div className="flex flex-col items-start">
+                        <span className="text-lg font-bold">Save your Dot</span>
+                        <span className="text-sm opacity-90">Capture thoughts instantly</span>
+                      </div>
+                    </div>
+                    
+                    {/* Animated pulse */}
+                    <div className="absolute top-2 right-3 w-1 h-1 bg-green-300 rounded-full animate-ping opacity-70"></div>
+                  </Button>
+
                   <Button
                     onClick={() => window.open("https://www.dotspark.in/my-neura", "_blank")}
                     className="w-full h-16 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-600 hover:via-orange-600 hover:to-amber-700 text-white rounded-2xl shadow-xl border-0 transform transition-all duration-300 hover:scale-105 hover:shadow-2xl group relative overflow-hidden"
@@ -185,11 +210,11 @@ export default function DotCapture() {
                   </Button>
                   
                   <Button
-                    onClick={() => window.open("https://www.dotspark.in/my-neura", "_blank")}
-                    className="w-full h-16 bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-600 hover:from-indigo-600 hover:via-purple-600 hover:to-indigo-700 text-white rounded-2xl shadow-xl border-0 transform transition-all duration-300 hover:scale-105 hover:shadow-2xl group relative overflow-hidden"
+                    onClick={() => window.open("https://www.dotspark.in/dashboard", "_blank")}
+                    className="w-full h-16 bg-gradient-to-r from-amber-600 via-orange-600 to-amber-700 hover:from-amber-700 hover:via-orange-700 hover:to-amber-800 text-white rounded-2xl shadow-xl border-0 transform transition-all duration-300 hover:scale-105 hover:shadow-2xl group relative overflow-hidden"
                   >
                     {/* Button glow effect */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 to-purple-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-orange-400/20 to-amber-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl"></div>
                     
                     <div className="relative z-10 flex items-center justify-center gap-3">
                       <div className="p-2 bg-white/20 rounded-xl">
@@ -202,7 +227,7 @@ export default function DotCapture() {
                     </div>
                     
                     {/* Animated neural pulse */}
-                    <div className="absolute top-2 right-3 w-1 h-1 bg-blue-300 rounded-full animate-ping opacity-70 delay-300"></div>
+                    <div className="absolute top-2 right-3 w-1 h-1 bg-orange-300 rounded-full animate-ping opacity-70 delay-300"></div>
                   </Button>
                 </div>
               </CardContent>
