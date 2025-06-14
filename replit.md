@@ -254,6 +254,10 @@ Changelog:
   * "My Neura" and "Access Neura" buttons redirect to https://www.dotspark.in/dashboard
   * All navigation buttons open external URL in new tab using window.open() with _blank target
   * PWA interface now seamlessly connects users to the appropriate DotSpark application pages
+- June 14, 2025. Updated home page "Activate DotSpark" step 2 icon:
+  * Replaced previous image with DotSpark logo icon (/dotspark-logo-icon.jpeg)
+  * Applied rounded-full styling for circular appearance matching DotSpark branding
+  * Maintains consistency with step 2 orange theme in the 3-step setup process
 - June 14, 2025. Updated home page "Explore DotSpark Neura" button:
   * Changed from internal navigation (/neura) to external redirect to https://www.dotspark.in/dashboard
   * Button now opens dashboard in new tab for seamless access to full application features

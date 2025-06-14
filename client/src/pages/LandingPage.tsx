@@ -658,7 +658,7 @@ export default function LandingPage() {
             <div className="bg-card rounded-lg p-6 relative group hover:shadow-lg transition-all duration-300 border border-orange-200/30 dark:border-orange-800/30 overflow-hidden h-full flex flex-col">
               <div className="absolute top-0 right-0 w-24 h-24 bg-orange-500/5 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:bg-orange-500/10 transition-colors duration-300"></div>
               <div className="flex items-center justify-center w-12 h-12 rounded-full bg-orange-500/10 text-orange-600 mb-4 relative z-10">
-                <img src="/dotspark-logo-white-bg.jpg" alt="DotSpark" className="h-6 w-6 rounded-sm" />
+                <img src="/dotspark-logo-icon.jpeg" alt="DotSpark" className="h-6 w-6 rounded-full" />
               </div>
               <div className="absolute top-6 right-6 flex items-center justify-center w-8 h-8 rounded-full bg-orange-500/80 text-white font-bold text-lg">
                 2
