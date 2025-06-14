@@ -302,6 +302,12 @@ Changelog:
   * Made "Save a Dot" button trigger actual GlobalFloatingDot functionality via custom event
   * Button now serves as shortcut to floating dot experience instead of separate interface
   * Enhanced GlobalFloatingDot component to listen for triggerFloatingDot custom events
+- June 14, 2025. Enhanced floating dot blinking animation:
+  * Added multiple pulsing rings with staggered timing (0s, 0.5s, 1s delays) for maximum visibility
+  * Applied intense blinking on main dot with animate-pulse on both outer circle and inner white dot
+  * Added attention-grabbing yellow indicator dots with separate animation timing
+  * Increased dot size from 10x10 to 12x12 pixels for better visibility
+  * Enhanced hover effects with scale transformation for interactive feedback
 - June 14, 2025. Updated home page "Explore DotSpark Neura" button:
   * Changed from internal navigation (/neura) to external redirect to https://www.dotspark.in/dashboard
   * Button now opens dashboard in new tab for seamless access to full application features

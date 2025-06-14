@@ -181,8 +181,7 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
           ref={dotRef}
           className={cn(
             "fixed z-[9999] transition-all duration-300 ease-in-out",
-            isDragging ? "cursor-grabbing" : "cursor-grab",
-            isFirstActivation ? "animate-pulse" : ""
+            isDragging ? "cursor-grabbing" : "cursor-grab"
           )}
           style={{
             left: position.x,
@@ -192,8 +191,20 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
           onTouchStart={handleTouchStart}
           onClick={handleClick}
         >
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-600 to-orange-700 flex items-center justify-center shadow-lg hover:shadow-xl transition-shadow">
-            <div className="w-3 h-3 rounded-full bg-white"></div>
+          <div className="relative">
+            {/* Multiple pulsing rings for enhanced visibility */}
+            <div className="absolute inset-0 w-12 h-12 rounded-full bg-amber-500/40 animate-ping"></div>
+            <div className="absolute inset-1 w-10 h-10 rounded-full bg-orange-500/50 animate-ping" style={{ animationDelay: '0.5s' }}></div>
+            <div className="absolute inset-2 w-8 h-8 rounded-full bg-yellow-500/60 animate-ping" style={{ animationDelay: '1s' }}></div>
+            
+            {/* Main dot with intense blinking */}
+            <div className="relative w-12 h-12 rounded-full bg-gradient-to-br from-amber-600 to-orange-700 flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 animate-pulse">
+              <div className="w-4 h-4 rounded-full bg-white animate-pulse" style={{ animationDelay: '0.3s' }}></div>
+              
+              {/* Attention-grabbing blinking indicator */}
+              <div className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-yellow-400 animate-ping"></div>
+              <div className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-white animate-pulse" style={{ animationDelay: '0.7s' }}></div>
+            </div>
           </div>
         </div>
       ) : (
