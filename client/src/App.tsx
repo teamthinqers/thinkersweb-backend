@@ -247,14 +247,13 @@ function App() {
     // Initial check
     const checkActivation = () => {
       const isActive = neuraStorage.isActivated();
-      console.log('DotSpark activation check:', isActive);
       setIsDotSparkActive(isActive);
     };
     
     checkActivation();
     
-    // Check periodically to ensure we catch activation changes
-    const interval = setInterval(checkActivation, 1000);
+    // Check periodically to ensure we catch activation changes (reduced frequency)
+    const interval = setInterval(checkActivation, 5000);
     
     // Listen for storage changes (when DotSpark is activated/deactivated)
     const handleStorageChange = (e: StorageEvent) => {

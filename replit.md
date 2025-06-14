@@ -240,6 +240,10 @@ Changelog:
   * Changed logo above "DotSpark" heading in PWA interface from full logo to icon-only version
   * Now uses dotspark-icon-only.jpeg for cleaner, consistent branding
   * Maintains circular dot icon theme throughout PWA capture interface
+- June 14, 2025. Optimized floating dot performance:
+  * Reduced activation polling frequency from 1 second to 5 seconds for better performance
+  * Removed excessive console logging from DotSpark activation checks
+  * Improved overall application performance and console cleanliness
 - June 14, 2025. Updated PWA navigation to external DotSpark URLs:
   * "Open DotSpark App" button redirects to https://www.dotspark.in/my-neura
   * "My Neura" and "Access Neura" buttons redirect to https://www.dotspark.in/dashboard
