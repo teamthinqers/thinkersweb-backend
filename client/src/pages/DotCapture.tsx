@@ -167,7 +167,9 @@ export default function DotCapture() {
                   <Button
                     onClick={() => {
                       setShowOptions(false);
-                      setCaptureMode('text');
+                      // Show choice between voice and text like floating dot
+                      const choice = window.confirm("Choose capture method:\nOK = Voice\nCancel = Text");
+                      setCaptureMode(choice ? 'voice' : 'text');
                     }}
                     className="w-full h-16 bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 hover:from-orange-600 hover:via-amber-600 hover:to-yellow-600 text-white rounded-2xl shadow-xl border-0 transform transition-all duration-300 hover:scale-105 hover:shadow-2xl group relative overflow-hidden"
                   >
@@ -175,7 +177,7 @@ export default function DotCapture() {
                     <div className="absolute inset-0 bg-gradient-to-r from-orange-400/20 to-yellow-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl"></div>
                     
                     <div className="relative z-10 flex items-center justify-center gap-3">
-                      <div className="p-2 bg-white/20 rounded-xl">
+                      <div className="p-2 bg-white/20 rounded-xl flex items-center justify-center">
                         <Send className="w-6 h-6" />
                       </div>
                       <div className="flex flex-col items-start">
@@ -196,12 +198,12 @@ export default function DotCapture() {
                     <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/20 to-orange-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl"></div>
                     
                     <div className="relative z-10 flex items-center justify-center gap-3">
-                      <div className="p-2 bg-white/20 rounded-xl">
+                      <div className="p-2 bg-white/20 rounded-xl flex items-center justify-center">
                         <Sparkles className="w-6 h-6" />
                       </div>
                       <div className="flex flex-col items-start">
                         <span className="text-lg font-bold">Open DotSpark App</span>
-                        <span className="text-sm opacity-90">Access full neural features</span>
+                        <span className="text-sm opacity-90">Access full App</span>
                       </div>
                     </div>
                     
@@ -217,7 +219,7 @@ export default function DotCapture() {
                     <div className="absolute inset-0 bg-gradient-to-r from-orange-400/20 to-amber-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl"></div>
                     
                     <div className="relative z-10 flex items-center justify-center gap-3">
-                      <div className="p-2 bg-white/20 rounded-xl">
+                      <div className="p-2 bg-white/20 rounded-xl flex items-center justify-center">
                         <Brain className="w-6 h-6" />
                       </div>
                       <div className="flex flex-col items-start">
