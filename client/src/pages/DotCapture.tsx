@@ -8,7 +8,7 @@ import {
   Type, 
   Send, 
   Globe,
-  Zap,
+  ArrowLeft,
   Brain
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
@@ -225,8 +225,7 @@ export default function DotCapture() {
                     className="flex-1 h-12"
                     disabled={!textInput.trim()}
                   >
-                    <Send className="w-4 h-4 mr-2" />
-                    Save Thought
+                    Save Dot
                   </Button>
                   <Button 
                     onClick={() => {
@@ -237,7 +236,7 @@ export default function DotCapture() {
                     variant="outline"
                     className="h-12 px-4"
                   >
-                    <Zap className="w-4 h-4" />
+                    <ArrowLeft className="w-4 h-4" />
                   </Button>
                 </div>
                 

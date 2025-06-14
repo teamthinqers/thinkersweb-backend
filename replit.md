@@ -198,6 +198,11 @@ Changelog:
   * Enhanced header description to "Capture your Thoughts/Insights as Dots instantly"
   * Removed "Swipe up for more options" instruction for streamlined experience
   * Added value proposition text: "Your valuable thoughts are stored as connected dots to spark progressive insights"
+- June 14, 2025. Enhanced DotSpark PWA capture interface usability:
+  * Removed spark symbol from voice and text screens, replaced with back arrow for navigation
+  * Updated button text from "Save Thought" to "Save Dot" for brand consistency  
+  * Added backspace functionality to both voice and text screens with arrow button
+  * Optimized neuraStorage polling to eliminate excessive console logging
 ```
 
 ## User Preferences
