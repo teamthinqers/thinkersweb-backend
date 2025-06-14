@@ -41,6 +41,8 @@ import AppLayout from "@/components/layout/AppLayout";
 import EntryDetail from "@/components/entries/EntryDetail";
 import ChatEntryForm from "@/components/chat/ChatEntryForm";
 import { AuthProvider, useAuth } from "@/hooks/use-auth";
+import { GlobalFloatingDot } from "@/components/dotspark/GlobalFloatingDot";
+import { neuraStorage } from "@/lib/neuraStorage";
 import { Loader2 } from "lucide-react";
 import MockDashboard from "@/components/dashboard/MockDashboard";
 import { PWAInstallButton } from "@/components/ui/pwa-install-button";
@@ -238,6 +240,38 @@ function Router() {
 
 function App() {
   const [showNetworkWarning, setShowNetworkWarning] = useState(false);
+  const [isDotSparkActive, setIsDotSparkActive] = useState(false);
+  
+  // Check DotSpark activation status and listen for changes
+  useEffect(() => {
+    // Initial check
+    const checkActivation = () => {
+      const isActive = neuraStorage.isActivated();
+      setIsDotSparkActive(isActive);
+    };
+    
+    checkActivation();
+    
+    // Listen for storage changes (when DotSpark is activated/deactivated)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'neuraActivated') {
+        checkActivation();
+      }
+    };
+    
+    // Listen for custom events from neuraStorage
+    const handleNeuraStateChange = (e: CustomEvent) => {
+      setIsDotSparkActive(e.detail.activated);
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('neura-state-changed', handleNeuraStateChange as EventListener);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('neura-state-changed', handleNeuraStateChange as EventListener);
+    };
+  }, []);
   
   // Check for WhatsApp redirect on initial load
   useEffect(() => {
@@ -316,6 +350,10 @@ function App() {
         )}
         <Router />
         <Toaster />
+        {/* Global Floating Dot for Desktop Browser Users */}
+        {isDotSparkActive && !isRunningAsStandalone() && (
+          <GlobalFloatingDot isActive={isDotSparkActive} />
+        )}
         {/* iOS PWA Install Prompt */}
         <IosPwaInstallPrompt />
         {/* PWA Install Floating Button (only visible when installable) */}

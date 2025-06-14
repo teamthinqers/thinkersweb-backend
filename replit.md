@@ -178,6 +178,13 @@ Changelog:
   * Added seamless transition option to full DotSpark experience when needed
   * Set PWA start_url to /dot so users immediately see capture interface upon installation
   * PWA installs as "DotSpark" with focused thought capture as entry point
+- June 14, 2025. Persistent floating dot for desktop browser users:
+  * Created GlobalFloatingDot component that persists across all website pages
+  * Automatically appears when DotSpark is activated for laptop/desktop browser users
+  * Maintains draggable position using localStorage for consistent placement
+  * Provides voice and text capture options directly from any page
+  * Excludes PWA standalone mode to avoid conflicts with dedicated PWA experience
+  * Uses actual DotSpark logo as the floating dot icon for brand consistency
 ```
 
 ## User Preferences
