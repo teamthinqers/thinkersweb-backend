@@ -78,7 +78,7 @@ export function ContactOptionsDialog({
         <DialogHeader>
           <DialogTitle className="text-xl">Choose Contact Method</DialogTitle>
           <DialogDescription>
-            How would you like to connect with DotSpark?
+            How would you like to chat with DotSpark?
           </DialogDescription>
         </DialogHeader>
         <div className="grid grid-cols-1 gap-4 py-4 sm:grid-cols-2">
