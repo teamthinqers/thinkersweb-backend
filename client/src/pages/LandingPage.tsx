@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { 
   ArrowRight, Brain, BookOpen, Users, Sparkles, BarChart2, 
   MessageCircle, MessageSquare, User, Menu, X, Check, CheckCircle, Download,
-  Smartphone, Monitor, Share, Plus
+  Smartphone, Monitor, Share, Plus, Home as HomeIcon
 } from "lucide-react";
 
 
@@ -413,7 +413,7 @@ export default function LandingPage() {
                   <div className="flex flex-col h-full">
                     <div className="mb-6 pb-2 border-b flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <img src="/dotspark-logo-white-bg.jpg" alt="DotSpark" className="h-6 w-auto rounded-sm" />
+                        <img src="/dotspark-logo-white-bg.jpg" alt="DotSpark" className="h-10 w-auto rounded-sm" />
                       </div>
                       <SheetClose asChild>
                         <Button variant="ghost" size="icon">
@@ -425,7 +425,7 @@ export default function LandingPage() {
                     <div className="flex flex-col gap-4">
                       <SheetClose asChild>
                         <Link href="/" className="py-2 hover:text-primary transition-colors flex items-center gap-2">
-                          <img src="/dotspark-logo-small.jpg" alt="DotSpark" className="h-4 w-4 rounded-sm" />
+                          <HomeIcon className="h-4 w-4 text-amber-600" />
                           <span>Home</span>
                         </Link>
                       </SheetClose>

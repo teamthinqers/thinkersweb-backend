@@ -276,6 +276,10 @@ Changelog:
   * Added clear instruction: "Tap the blinking dot to save your thoughts"
   * PWAFloatingDot component maintains spontaneous blinking animation
   * Simplified user experience eliminates choice paralysis
+- June 14, 2025. Enhanced landing page hamburger menu:
+  * Increased DotSpark logo size from h-6 to h-10 for better visibility
+  * Added home icon to Home menu item with amber color styling
+  * Fixed HomeIcon import from lucide-react to prevent component errors
 - June 14, 2025. Updated home page "Explore DotSpark Neura" button:
   * Changed from internal navigation (/neura) to external redirect to https://www.dotspark.in/dashboard
   * Button now opens dashboard in new tab for seamless access to full application features
