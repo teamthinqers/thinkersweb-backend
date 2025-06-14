@@ -670,7 +670,7 @@ export default function LandingPage() {
                   className="w-full !bg-gradient-to-r !from-amber-500 !to-orange-600 hover:!from-orange-600 hover:!to-amber-500 text-white border-0 shadow-md hover:shadow-lg transition-all duration-300"
                   onClick={() => setLocation("/sectioned-dotspark-tuning")}
                 >
-                  Activate DotSpark
+                  Activate Dot
                 </Button>
               </div>
             </div>

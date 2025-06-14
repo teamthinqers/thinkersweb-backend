@@ -161,6 +161,7 @@ Changelog:
   * Final rename from "DotSpark Settings" to "Dot Settings" for cleaner branding
 - June 14, 2025. Homepage call-to-action updates:
   * Updated step 2 text from "Activate your DotSpark" to "Activate the Dot to capture your valuable thoughts"
+  * Updated step 2 button from "Activate DotSpark" to "Activate Dot"
   * Improved messaging alignment with dot-focused branding and value proposition
 ```
 
