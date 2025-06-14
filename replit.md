@@ -308,6 +308,12 @@ Changelog:
   * Implemented voice recording simulation with guided prompts for each layer step
   * Connected all interfaces to real API endpoints with proper error handling and success feedback
   * System ready for deployment with full three-layer dot capture functionality
+- June 14, 2025. Enhanced dot capture interface based on user feedback:
+  * Improved floating dot button experience with theme-colored gradient buttons (amber for voice, blue for text)
+  * Restored PWA backspace navigation feature - shows back arrow for PWA users to return to /dot interface
+  * Removed dot input functionality from Dashboard, making it view-only for stored dots visualization
+  * Dashboard now focuses solely on Mind Map and Wheels views without capture interface
+  * Enhanced button styling with larger icons, better spacing, and hover animations for floating dot
 - June 14, 2025. Comprehensive PWA dot interface improvements:
   * Enhanced floating dot with multiple pulsing rings and intense blinking for maximum visibility
   * Fixed "Save a Dot" button to show voice/text choice dialog matching floating dot behavior
