@@ -52,35 +52,12 @@ export function WhatsAppContactButton({
     fetchWhatsAppContact();
   }, []);
 
-  const handleButtonClick = () => {
-    if (!whatsAppNumber) return;
+  const getWhatsAppLink = () => {
+    if (!whatsAppNumber) return '#';
     
-    // Always include the default message
     const defaultMessage = "Hey DotSpark, I've got a few things on my mind — need your thoughts";
     const encodedMessage = encodeURIComponent(defaultMessage);
-    
-    // For mobile devices, create a direct link to the app
-    if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-      // Try to use the direct app link first
-      const whatsappUrl = `whatsapp://send?phone=${whatsAppNumber}&text=${encodedMessage}`;
-      
-      // Create and click an actual anchor element for better mobile compatibility
-      const a = document.createElement('a');
-      a.href = whatsappUrl;
-      a.setAttribute('target', '_blank');
-      a.setAttribute('rel', 'noopener noreferrer');
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      
-      // After a short delay, try the web version as fallback
-      setTimeout(() => {
-        window.open(`https://wa.me/${whatsAppNumber}?text=${encodedMessage}`, '_blank');
-      }, 1000);
-    } else {
-      // For desktop, use the web version directly
-      window.open(`https://wa.me/${whatsAppNumber}?text=${encodedMessage}`, '_blank');
-    }
+    return `https://wa.me/${whatsAppNumber}?text=${encodedMessage}`;
   };
 
   const buttonClasses = `
@@ -91,20 +68,38 @@ export function WhatsAppContactButton({
     ${variant === 'ghost' ? 'bg-transparent text-[#25D366] hover:bg-[#25D366]/10 border-transparent' : ''}
   `;
 
+  if (loading || !whatsAppNumber) {
+    return (
+      <Button
+        variant="outline"
+        size={size}
+        disabled={true}
+        className={buttonClasses}
+      >
+        {loading ? (
+          <Loader2 className="h-4 w-4 animate-spin mr-2" />
+        ) : (
+          showIcon && <MessageSquare className="h-4 w-4 mr-2" />
+        )}
+        {label}
+      </Button>
+    );
+  }
+
   return (
-    <Button
-      variant="outline"
-      size={size}
-      onClick={handleButtonClick}
-      disabled={loading || !whatsAppNumber}
-      className={buttonClasses}
+    <a
+      href={getWhatsAppLink()}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={`inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${buttonClasses} ${
+        size === 'default' ? 'h-10 px-4 py-2' :
+        size === 'sm' ? 'h-9 rounded-md px-3' :
+        size === 'lg' ? 'h-11 rounded-md px-8' :
+        size === 'icon' ? 'h-10 w-10' : 'h-10 px-4 py-2'
+      }`}
     >
-      {loading ? (
-        <Loader2 className="h-4 w-4 animate-spin mr-2" />
-      ) : (
-        showIcon && <MessageSquare className="h-4 w-4 mr-2" />
-      )}
+      {showIcon && <MessageSquare className="h-4 w-4 mr-2" />}
       {label}
-    </Button>
+    </a>
   );
 }

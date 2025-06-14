@@ -222,23 +222,15 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
             
             <div className="flex items-center space-x-2">
               {/* Ask DotSpark button */}
-              <Button 
-                className="bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white h-9 w-9 p-0 shadow-md"
-                size="icon"
-                onClick={() => {
-                  const whatsAppNumber = '16067157733';
-                  const defaultMessage = encodeURIComponent("Hey DotSpark, I've got a few things on my mind — need your thoughts");
-                  const mobileAppLink = `whatsapp://send?phone=${whatsAppNumber}&text=${defaultMessage}`;
-                  window.location.href = mobileAppLink;
-                  setTimeout(() => {
-                    const webFallbackUrl = `https://wa.me/${whatsAppNumber}?text=${defaultMessage}`;
-                    window.location.href = webFallbackUrl;
-                  }, 500);
-                }}
+              <a 
+                href={`https://wa.me/16067157733?text=${encodeURIComponent("Hey DotSpark, I've got a few things on my mind — need your thoughts")}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white h-9 w-9 rounded-md shadow-md transition-colors"
                 title="Ask DotSpark"
               >
                 <MessageSquare className="h-4 w-4" />
-              </Button>
+              </a>
               
               {/* My Neura button - always visible */}
               <Button 
