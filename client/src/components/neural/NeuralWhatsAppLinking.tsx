@@ -5,6 +5,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useLocation } from "wouter";
 import { Loader2, Smartphone, MessageCircle, SendHorizonal, Check } from "lucide-react";
 import { useWhatsAppStatus } from "@/hooks/useWhatsAppStatus";
+import { pwaPermissionManager } from "@/lib/pwaPermissions";
 
 export function NeuralWhatsAppLinking() {
   const { toast } = useToast();

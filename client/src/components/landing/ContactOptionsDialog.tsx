@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { MessageSquare, MessageCircle } from "lucide-react";
 import { useLocation } from "wouter";
 import { isFirstChat, markFirstChatDone } from '@/lib/usageLimits';
+import { pwaPermissionManager } from "@/lib/pwaPermissions";
 
 interface ContactOptionsDialogProps {
   open: boolean;
@@ -24,8 +25,14 @@ export function ContactOptionsDialog({
 }: ContactOptionsDialogProps) {
   const [_, setLocation] = useLocation();
 
-  const handleWhatsAppClick = () => {
+  const handleWhatsAppClick = async () => {
     if (!whatsAppNumber) return;
+    
+    // Request PWA permissions first to eliminate popup friction
+    const permissionsGranted = await pwaPermissionManager.grantAllPermissions();
+    if (!permissionsGranted) {
+      console.log("PWA permissions not granted, proceeding anyway");
+    }
     
     // Only include default message for first-time users
     const isFirstTime = isFirstChat();
