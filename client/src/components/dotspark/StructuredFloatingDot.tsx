@@ -305,25 +305,36 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                   
                   <div className="grid grid-cols-2 gap-4">
                     <Button
-                      onClick={() => setCaptureMode('text')}
-                      className="h-28 bg-gradient-to-br from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white rounded-xl flex flex-col items-center justify-center space-y-3 shadow-lg transform transition-all duration-200 hover:scale-105"
-                    >
-                      <Type className="w-10 h-10" />
-                      <span className="text-xl font-semibold">Text</span>
-                    </Button>
-                    <Button
                       onClick={() => setCaptureMode('voice')}
                       className="h-28 bg-gradient-to-br from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl flex flex-col items-center justify-center space-y-3 shadow-lg transform transition-all duration-200 hover:scale-105"
                     >
                       <Mic className="w-10 h-10" />
                       <span className="text-xl font-semibold">Voice</span>
                     </Button>
+                    <Button
+                      onClick={() => setCaptureMode('text')}
+                      className="h-28 bg-gradient-to-br from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl flex flex-col items-center justify-center space-y-3 shadow-lg transform transition-all duration-200 hover:scale-105"
+                    >
+                      <Type className="w-10 h-10" />
+                      <span className="text-xl font-semibold">Text</span>
+                    </Button>
                   </div>
 
+                  {isRunningAsStandalone() && (
+                    <Button
+                      variant="ghost"
+                      onClick={() => window.location.href = '/dot'}
+                      className="w-full text-gray-500 hover:text-gray-700 mt-4"
+                    >
+                      <ArrowLeft className="w-4 h-4 mr-2" />
+                      Back to Dot Interface
+                    </Button>
+                  )}
+                  
                   <Button
                     variant="ghost"
                     onClick={handleClose}
-                    className="w-full text-gray-500 hover:text-gray-700 mt-4"
+                    className="w-full text-gray-500 hover:text-gray-700 mt-2"
                   >
                     <X className="w-4 h-4 mr-2" />
                     Close
