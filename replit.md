@@ -229,6 +229,12 @@ Changelog:
 - June 14, 2025. Updated home page "Explore DotSpark Neura" button:
   * Changed from internal navigation (/neura) to external redirect to https://www.dotspark.in/dashboard
   * Button now opens dashboard in new tab for seamless access to full application features
+- June 14, 2025. Enhanced floating dot positioning and visibility:
+  * Fixed missing logo by updating to use existing dotspark-logo-icon.jpeg with fallback
+  * Changed default position to appear near activation section (x: 320, y: 180) for better visibility
+  * Added special positioning logic for first-time activation to place dot near activation area
+  * Enhanced visual appearance with amber gradient background and improved shadows
+  * Added subtle pulse animation for newly activated dots that stops after first interaction
 - June 14, 2025. Updated DotSpark PWA color theme and navigation:
   * Changed Text button background from blue to amber/orange gradient matching logo theme
   * Updated My Neura button to use amber/orange colors instead of blue

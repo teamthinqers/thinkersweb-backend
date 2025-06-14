@@ -21,9 +21,16 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
   const [isRecording, setIsRecording] = useState(false);
   const [textInput, setTextInput] = useState('');
   const [position, setPosition] = useState<Position>(() => {
-    // Load position from localStorage or use default
+    // Load position from localStorage or use default near activation area
     const saved = localStorage.getItem('floating-dot-position');
-    return saved ? JSON.parse(saved) : { x: window.innerWidth - 80, y: 100 };
+    if (saved) {
+      return JSON.parse(saved);
+    }
+    
+    // Position near activation section by default
+    const defaultX = Math.min(window.innerWidth - 80, 300); // Left side near content
+    const defaultY = 200; // Near where activation sections typically appear
+    return { x: defaultX, y: defaultY };
   });
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState<Position>({ x: 0, y: 0 });
@@ -36,6 +43,22 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
   useEffect(() => {
     localStorage.setItem('floating-dot-position', JSON.stringify(position));
   }, [position]);
+
+  // Position dot near activation section when first activated
+  useEffect(() => {
+    if (isActive) {
+      const isFirstActivation = !localStorage.getItem('dotspark-dot-positioned');
+      if (isFirstActivation) {
+        // Position near activation area for first-time visibility
+        const newPosition = {
+          x: Math.min(window.innerWidth - 100, 320),
+          y: 180
+        };
+        setPosition(newPosition);
+        localStorage.setItem('dotspark-dot-positioned', 'true');
+      }
+    }
+  }, [isActive]);
 
   // Initialize speech recognition
   useEffect(() => {
@@ -259,19 +282,31 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
           onClick={handleDotClick}
           className={cn(
             "w-14 h-14 rounded-full shadow-lg cursor-pointer transition-all duration-200",
-            "bg-white border-2 border-amber-500 hover:border-amber-600",
+            "bg-gradient-to-br from-amber-50 to-orange-100 border-2 border-amber-500 hover:border-amber-600",
             "flex items-center justify-center hover:scale-110",
-            isDragging ? "scale-95" : ""
+            "shadow-amber-500/20 hover:shadow-amber-600/30",
+            isDragging ? "scale-95" : "",
+            // Add a subtle pulse animation for newly activated dots
+            !localStorage.getItem('dotspark-dot-interacted') ? "animate-pulse" : ""
           )}
           role="button"
           tabIndex={0}
           aria-label="Open DotSpark thought capture"
+          onMouseEnter={() => {
+            // Remove pulse animation after first interaction
+            localStorage.setItem('dotspark-dot-interacted', 'true');
+          }}
         >
           <img 
-            src="/dotspark-pwa-final.png" 
+            src="/dotspark-logo-icon.jpeg" 
             alt="DotSpark" 
-            className="w-10 h-10 rounded-full"
+            className="w-10 h-10 rounded-full object-cover"
             draggable={false}
+            onError={(e) => {
+              // Fallback to another logo if this one fails
+              const target = e.target as HTMLImageElement;
+              target.src = "/dotspark-brown-bg-icon.jpeg";
+            }}
           />
         </div>
       ) : (
