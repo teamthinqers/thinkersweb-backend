@@ -246,17 +246,27 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
                     </Button>
                   </div>
 
-                  {/* Close/Back button */}
+                  {/* Close/Back buttons */}
                   <div className="pt-4 border-t">
                     {isRunningAsStandalone() ? (
-                      <Button
-                        variant="ghost"
-                        onClick={() => window.location.href = '/dot'}
-                        className="w-full text-gray-500 hover:text-gray-700"
-                      >
-                        <ArrowLeft className="w-4 h-4 mr-2" />
-                        Back to Dot Interface
-                      </Button>
+                      <div className="space-y-2">
+                        <Button
+                          variant="ghost"
+                          onClick={() => window.location.href = '/dot'}
+                          className="w-full text-gray-500 hover:text-gray-700"
+                        >
+                          <ArrowLeft className="w-4 h-4 mr-2" />
+                          Back to Dot Interface
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          onClick={handleClose}
+                          className="w-full text-gray-500 hover:text-gray-700"
+                        >
+                          <X className="w-4 h-4 mr-2" />
+                          Close
+                        </Button>
+                      </div>
                     ) : (
                       <Button
                         variant="ghost"

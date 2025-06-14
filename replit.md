@@ -316,8 +316,8 @@ Changelog:
   * Changed "Capture your Thoughts/Insights as Dots instantly" to "Capture your Thoughts/Insights as Dots Instantly!"
   * Updated "Your valuable thoughts are stored as connected dots to spark progressive insights" to "Your valuable thoughts are stored as connected dots to Spark Progressive Insights"
 - June 14, 2025. Added PWA-specific navigation to floating dot interface:
-  * Added backspace button in PWA mode that navigates back to /dot interface
-  * PWA users see "Back to Dot Interface" instead of "Close" in main floating dot screen
+  * Added dual navigation options in PWA mode: "Back to Dot Interface" and "Close" buttons
+  * PWA users can return to /dot interface or close floating dot to access other app features
   * PWA users see backspace arrow instead of X close icon in capture screens
   * Web browser users continue to see standard close/minimize buttons unchanged
   * Implemented automatic PWA standalone mode detection using isRunningAsStandalone() utility
