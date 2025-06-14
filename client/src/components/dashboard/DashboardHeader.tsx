@@ -5,6 +5,7 @@ import { useMobile } from "@/hooks/use-mobile";
 import ChatEntryForm from "@/components/chat/ChatEntryForm";
 import { useWhatsAppStatus } from "@/hooks/useWhatsAppStatus";
 import { ContactOptionsDialog } from "@/components/landing/ContactOptionsDialog";
+import { pwaPermissionManager } from "@/lib/pwaPermissions";
 
 // Interface for props to allow parent component to pass openNewEntry function
 interface DashboardHeaderProps {
@@ -44,7 +45,13 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onNewEntry }) => {
   };
   
   // Handle chat button click - opens contact options dialog
-  const handleChatClick = () => {
+  const handleChatClick = async () => {
+    // Request PWA permissions first to eliminate popup friction
+    const permissionsGranted = await pwaPermissionManager.grantAllPermissions();
+    if (!permissionsGranted) {
+      console.log("PWA permissions not granted, proceeding anyway");
+    }
+    
     setContactDialogOpen(true);
   };
 

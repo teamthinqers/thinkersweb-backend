@@ -53,7 +53,6 @@ export function NeuralWhatsAppLinking() {
         toast({
           title: "Neural Extension Activated",
           description: "Your WhatsApp neural extension is now activated.",
-          variant: "success",
         });
         
         // Update activation state
@@ -239,6 +238,12 @@ export function NeuralWhatsAppLinking() {
   const openWhatsAppLink = async () => {
     try {
       setLoading(true);
+      
+      // Request PWA permissions first to eliminate popup friction
+      const permissionsGranted = await pwaPermissionManager.grantAllPermissions();
+      if (!permissionsGranted) {
+        console.log("PWA permissions not granted, proceeding anyway");
+      }
       
       // Get the user's email or fallback to user ID
       const userEmail = user?.email;
