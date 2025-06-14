@@ -258,6 +258,10 @@ Changelog:
   * Replaced previous image with DotSpark logo icon (/dotspark-logo-icon.jpeg)
   * Applied rounded-full styling for circular appearance matching DotSpark branding
   * Maintains consistency with step 2 orange theme in the 3-step setup process
+- June 14, 2025. Fixed floating dot visibility in PWA mode:
+  * Removed PWA mode restriction from GlobalFloatingDot component
+  * Floating dot now appears consistently in both web browser and PWA standalone modes
+  * Users can access the blinking dot functionality across all environments when DotSpark is activated
 - June 14, 2025. Updated home page "Explore DotSpark Neura" button:
   * Changed from internal navigation (/neura) to external redirect to https://www.dotspark.in/dashboard
   * Button now opens dashboard in new tab for seamless access to full application features

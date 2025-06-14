@@ -157,7 +157,7 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
   const isPWA = window.matchMedia('(display-mode: standalone)').matches || 
                (window.navigator as any).standalone === true;
 
-  if (!isActive || isPWA) return null;
+  if (!isActive) return null;
 
   return (
     <div>
