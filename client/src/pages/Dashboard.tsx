@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Mic, Type, Eye, Brain, Network, Zap, Search } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import DotFullView from "@/components/DotFullView";
 
 // Data structure for dots
 interface Dot {
@@ -29,6 +30,9 @@ interface Wheel {
 
 const Dashboard: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedWheel, setSelectedWheel] = useState<string | null>(null);
+  const [viewFullDot, setViewFullDot] = useState<Dot | null>(null);
+  const [searchResults, setSearchResults] = useState<Dot[]>([]);
 
   // Fetch real dots from API
   const { data: dots = [], isLoading } = useQuery({
@@ -159,89 +163,137 @@ const Dashboard: React.FC = () => {
     </Card>
   );
 
-  const DotWheelsMap: React.FC<{ wheels: Wheel[] }> = ({ wheels }) => (
-    <div className="relative bg-gradient-to-br from-amber-50/50 to-orange-50/50 rounded-xl p-8 min-h-[500px] border-2 border-amber-200 shadow-lg">
-      <div className="text-center mb-6">
-        <Brain className="w-12 h-12 mx-auto mb-2 text-amber-500" />
-        <h3 className="text-lg font-semibold bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent">Neural Constellation</h3>
-        <p className="text-sm text-amber-600">Interactive map of your thought wheels and their connections</p>
-      </div>
-      
-      {/* Enhanced visual wheel map */}
-      <div className="relative min-h-80">
-        {wheels.map((wheel, index) => (
-          <div
-            key={wheel.id}
-            className="absolute group cursor-pointer transition-all duration-300 hover:scale-110"
-            style={{ 
-              left: `${15 + index * 25}%`,
-              top: `${20 + (index % 3) * 30}%`
-            }}
-          >
-            {/* Wheel circle */}
-            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-amber-400 to-orange-600 flex items-center justify-center shadow-xl border-4 border-white group-hover:shadow-2xl">
-              <div className="text-center">
-                <div className="text-xs font-bold text-white">{wheel.name.split(' ')[0]}</div>
-                <div className="text-xs text-amber-100">{wheel.dots.length} dots</div>
-              </div>
+  const DotWheelsMap: React.FC<{ wheels: Wheel[] }> = ({ wheels }) => {
+    const [selectedWheel, setSelectedWheel] = useState<string | null>(null);
+    const [viewFullDot, setViewFullDot] = useState<Dot | null>(null);
+    
+    if (wheels.length === 0) {
+      // Show preview for empty state
+      return (
+        <div className="relative bg-gradient-to-br from-amber-50/50 to-orange-50/50 rounded-xl p-4 min-h-[500px] border-2 border-amber-200 shadow-lg overflow-hidden">
+          <div className="absolute top-4 left-4 z-10">
+            <span className="bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-sm font-medium">
+              Preview
+            </span>
+          </div>
+          
+          <div className="absolute top-4 right-4 flex gap-2 z-10">
+            <button className="bg-white/90 backdrop-blur rounded-lg px-3 py-2 border-2 border-amber-200 text-sm font-semibold text-amber-800">
+              Total Dots: 0
+            </button>
+            <button className="bg-white/90 backdrop-blur rounded-lg px-3 py-2 border-2 border-amber-200 text-sm font-semibold text-amber-800">
+              Total Wheels: 0
+            </button>
+          </div>
+          
+          <div className="flex items-center justify-center h-full">
+            <div className="text-center">
+              <Brain className="w-16 h-16 mx-auto mb-4 text-amber-500" />
+              <p className="text-lg font-semibold text-amber-800 mb-2">Start saving your Dots to get a similar map</p>
+              <p className="text-sm text-amber-600">Your thought wheels will appear here as interactive circles</p>
             </div>
-            
-            {/* Hover card */}
-            <div className="absolute top-24 left-1/2 transform -translate-x-1/2 bg-white rounded-lg shadow-lg p-3 min-w-48 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 border-2 border-amber-200">
-              <h4 className="font-semibold text-amber-800 mb-2">{wheel.name}</h4>
-              <p className="text-xs text-amber-600 mb-2">{wheel.category}</p>
-              <div className="space-y-1">
-                {wheel.dots.slice(0, 2).map(dot => (
-                  <div key={dot.id} className="text-xs p-1 bg-amber-50 rounded">
-                    <span className="font-medium">{dot.summary.substring(0, 30)}...</span>
-                    <span className="text-amber-600 ml-1">({dot.pulse})</span>
+          </div>
+        </div>
+      );
+    }
+    
+    return (
+      <div className="relative bg-gradient-to-br from-amber-50/50 to-orange-50/50 rounded-xl p-4 min-h-[500px] border-2 border-amber-200 shadow-lg overflow-hidden">
+        {/* Top right buttons */}
+        <div className="absolute top-4 right-4 flex gap-2 z-10">
+          <button className="bg-white/90 backdrop-blur rounded-lg px-3 py-2 border-2 border-amber-200 text-sm font-semibold text-amber-800 hover:bg-amber-50 transition-colors">
+            Total Dots: {wheels.reduce((sum, wheel) => sum + wheel.dots.length, 0)}
+          </button>
+          <button className="bg-white/90 backdrop-blur rounded-lg px-3 py-2 border-2 border-amber-200 text-sm font-semibold text-amber-800 hover:bg-amber-50 transition-colors">
+            Total Wheels: {wheels.length}
+          </button>
+        </div>
+        
+        {/* Scrollable wheel map */}
+        <div className="relative overflow-auto h-[450px] w-full" style={{ cursor: 'grab' }}>
+          <div className="relative w-[800px] h-[600px]">
+            {wheels.map((wheel, index) => (
+              <div
+                key={wheel.id}
+                className={`absolute group cursor-pointer transition-all duration-300 hover:scale-110 ${selectedWheel === wheel.id ? 'ring-4 ring-amber-400 ring-opacity-50 rounded-full' : ''}`}
+                style={{ 
+                  left: `${50 + (index % 4) * 180}px`,
+                  top: `${50 + Math.floor(index / 4) * 180}px`
+                }}
+                onClick={() => setSelectedWheel(selectedWheel === wheel.id ? null : wheel.id)}
+              >
+                {/* Wheel circle */}
+                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-amber-400 to-orange-600 flex items-center justify-center shadow-xl border-4 border-white group-hover:shadow-2xl">
+                  <div className="text-center">
+                    <div className="text-xs font-bold text-white">{wheel.name.split(' ')[0]}</div>
+                    <div className="text-xs text-amber-100">{wheel.dots.length} dots</div>
                   </div>
-                ))}
-                {wheel.dots.length > 2 && (
-                  <div className="text-xs text-amber-500">+{wheel.dots.length - 2} more dots</div>
+                </div>
+                
+                {/* Highlight box when selected */}
+                {selectedWheel === wheel.id && (
+                  <div className="absolute top-24 left-1/2 transform -translate-x-1/2 bg-white rounded-lg shadow-lg p-3 min-w-48 border-2 border-amber-200 z-20">
+                    <h4 className="font-semibold text-amber-800 mb-2">{wheel.name}</h4>
+                    <p className="text-xs text-amber-600 mb-2">{wheel.category}</p>
+                    <div className="space-y-1 mb-3">
+                      {wheel.dots.slice(0, 2).map(dot => (
+                        <div key={dot.id} className="text-xs p-1 bg-amber-50 rounded cursor-pointer hover:bg-amber-100" onClick={(e) => {
+                          e.stopPropagation();
+                          setViewFullDot(dot);
+                        }}>
+                          <span className="font-medium">{dot.summary.substring(0, 30)}...</span>
+                          <span className="text-amber-600 ml-1">({dot.pulse})</span>
+                        </div>
+                      ))}
+                      {wheel.dots.length > 2 && (
+                        <div className="text-xs text-amber-500">+{wheel.dots.length - 2} more dots</div>
+                      )}
+                    </div>
+                    <button 
+                      className="w-full text-xs bg-amber-500 text-white py-1 px-2 rounded hover:bg-amber-600 transition-colors"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (wheel.dots.length > 0) setViewFullDot(wheel.dots[0]);
+                      }}
+                    >
+                      Open dot full view
+                    </button>
+                  </div>
                 )}
               </div>
-            </div>
-          </div>
-        ))}
-        
-        {/* Enhanced connection lines */}
-        <svg className="absolute inset-0 w-full h-full pointer-events-none">
-          <defs>
-            <marker id="arrowhead" markerWidth="10" markerHeight="7" 
-             refX="9" refY="3.5" orient="auto">
-              <polygon points="0 0, 10 3.5, 0 7" fill="#F59E0B" />
-            </marker>
-            <linearGradient id="connectionGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#F59E0B" stopOpacity="0.6" />
-              <stop offset="100%" stopColor="#EA580C" stopOpacity="0.8" />
-            </linearGradient>
-          </defs>
-          <line x1="25%" y1="35%" x2="40%" y2="40%" stroke="url(#connectionGradient)" strokeWidth="3" 
-                strokeDasharray="8,4" markerEnd="url(#arrowhead)" className="animate-pulse" />
-          <line x1="40%" y1="55%" x2="65%" y2="45%" stroke="url(#connectionGradient)" strokeWidth="3" 
-                strokeDasharray="8,4" markerEnd="url(#arrowhead)" className="animate-pulse" />
-          <line x1="65%" y1="65%" x2="40%" y2="80%" stroke="url(#connectionGradient)" strokeWidth="3" 
-                strokeDasharray="8,4" markerEnd="url(#arrowhead)" className="animate-pulse" />
-        </svg>
-        
-        {/* Floating stats */}
-        <div className="absolute top-4 right-4 bg-white/90 backdrop-blur rounded-lg p-3 border-2 border-amber-200">
-          <div className="text-center">
-            <div className="text-lg font-bold text-amber-800">{wheels.length}</div>
-            <div className="text-xs text-amber-600">Active Wheels</div>
+            ))}
+            
+            {/* Connection lines */}
+            <svg className="absolute inset-0 w-full h-full pointer-events-none">
+              <defs>
+                <marker id="arrowhead" markerWidth="10" markerHeight="7" 
+                 refX="9" refY="3.5" orient="auto">
+                  <polygon points="0 0, 10 3.5, 0 7" fill="#F59E0B" />
+                </marker>
+                <linearGradient id="connectionGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#F59E0B" stopOpacity="0.6" />
+                  <stop offset="100%" stopColor="#EA580C" stopOpacity="0.8" />
+                </linearGradient>
+              </defs>
+              {wheels.length > 1 && (
+                <>
+                  <line x1="140" y1="90" x2="230" y2="90" stroke="url(#connectionGradient)" strokeWidth="2" 
+                        strokeDasharray="8,4" markerEnd="url(#arrowhead)" className="animate-pulse" />
+                  <line x1="320" y1="90" x2="410" y2="90" stroke="url(#connectionGradient)" strokeWidth="2" 
+                        strokeDasharray="8,4" markerEnd="url(#arrowhead)" className="animate-pulse" />
+                </>
+              )}
+            </svg>
           </div>
         </div>
         
-        <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur rounded-lg p-3 border-2 border-amber-200">
-          <div className="text-center">
-            <div className="text-lg font-bold text-amber-800">{wheels.reduce((sum, wheel) => sum + wheel.dots.length, 0)}</div>
-            <div className="text-xs text-amber-600">Total Dots</div>
-          </div>
-        </div>
+        {/* Full Dot View Modal */}
+        {viewFullDot && (
+          <DotFullView dot={viewFullDot} onClose={() => setViewFullDot(null)} />
+        )}
       </div>
-    </div>
-  );
+    );
+  };
 
   if (isLoading) {
     return (
@@ -260,9 +312,7 @@ const Dashboard: React.FC = () => {
         {/* Header */}
         <div className="mb-6">
           <h1 className="text-2xl font-bold mb-4 flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-amber-600 to-orange-700 flex items-center justify-center shadow-lg">
-              <div className="w-3 h-3 rounded-full bg-white"></div>
-            </div>
+            <Brain className="w-8 h-8 text-amber-600" />
             <span className="bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent">
               My DotSpark Neura
             </span>
