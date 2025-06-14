@@ -185,6 +185,13 @@ Changelog:
   * Provides voice and text capture options directly from any page
   * Excludes PWA standalone mode to avoid conflicts with dedicated PWA experience
   * Uses actual DotSpark logo as the floating dot icon for brand consistency
+- June 14, 2025. Enhanced DotSpark PWA dot screen user experience:
+  * Fixed logo display issues with fallback image handling
+  * Updated branding from "Your Dot" to "DotSpark" with brown gradient theme
+  * Enhanced description to "Capture your thoughts/insights as dots instantly"
+  * Simplified button labels to "Voice" and "Text" for clarity
+  * Renamed access button to "Open DotSpark App"
+  * Added "My Neura" button as placeholder for future navigation functionality
 ```
 
 ## User Preferences

@@ -115,16 +115,20 @@ export default function DotCapture() {
           
           {/* Dot Logo Header */}
           <div className="text-center space-y-4">
-            <div className="mx-auto w-24 h-24 bg-white rounded-full shadow-xl flex items-center justify-center">
+            <div className="mx-auto w-24 h-24 bg-white rounded-full shadow-xl flex items-center justify-center border-2 border-amber-200">
               <img 
                 src="/dotspark-pwa-final.png" 
-                alt="Dot" 
-                className="w-20 h-20 rounded-full"
+                alt="DotSpark" 
+                className="w-20 h-20 object-contain"
+                onError={(e) => {
+                  console.log('Image failed to load, trying fallback');
+                  e.currentTarget.src = '/dotspark-logo-icon.jpeg';
+                }}
               />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Your Dot</h1>
-              <p className="text-gray-600">Capture thoughts instantly</p>
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-amber-700 to-orange-800 bg-clip-text text-transparent">DotSpark</h1>
+              <p className="text-gray-600">Capture your thoughts/insights as dots instantly</p>
             </div>
           </div>
 
@@ -143,7 +147,7 @@ export default function DotCapture() {
                     className="w-full h-14 text-lg bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700"
                   >
                     <Mic className="w-6 h-6 mr-3" />
-                    Start Voice Capture
+                    Voice
                   </Button>
                   
                   <Button
@@ -152,18 +156,26 @@ export default function DotCapture() {
                     className="w-full h-14 text-lg border-2 hover:bg-amber-50"
                   >
                     <Type className="w-6 h-6 mr-3" />
-                    Type Your Thoughts
+                    Text
                   </Button>
                 </div>
                 
-                <div className="pt-4 border-t">
+                <div className="pt-4 border-t space-y-2">
                   <Button
                     onClick={handleOpenFullApp}
                     variant="ghost"
                     className="w-full text-gray-600 hover:text-gray-800"
                   >
                     <Globe className="w-4 h-4 mr-2" />
-                    Open Full DotSpark App
+                    Open DotSpark App
+                  </Button>
+                  <Button
+                    onClick={() => {}} // Placeholder for now
+                    variant="ghost"
+                    className="w-full text-gray-600 hover:text-gray-800"
+                  >
+                    <Brain className="w-4 h-4 mr-2" />
+                    My Neura
                   </Button>
                 </div>
               </CardContent>
@@ -235,7 +247,7 @@ export default function DotCapture() {
                   className="w-full text-sm text-gray-500 hover:text-gray-700"
                 >
                   <Brain className="w-4 h-4 mr-2" />
-                  Access neural insights & more
+                  Open DotSpark App
                 </Button>
               </CardContent>
             </Card>
