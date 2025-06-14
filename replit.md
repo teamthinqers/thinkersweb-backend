@@ -292,6 +292,13 @@ Changelog:
   * Added "Save a Dot" button with orange-amber-yellow gradient matching theme colors
   * Changed My Neura button color to amber/orange theme to match brand consistency
   * Updated My Neura button navigation to /dashboard for proper routing
+- June 14, 2025. Restored signature blinking dot experience with enhanced mobility:
+  * Removed backspace icons from top right corners of text and voice capture windows
+  * Enhanced floating dot with multiple pulsing rings (amber, orange, yellow) for maximum visibility
+  * Added comprehensive touch support for smooth mobile dragging functionality
+  * Implemented attention-grabbing blinking indicators with staggered animation timing
+  * Enhanced visual feedback with gradient backgrounds, shadows, and hover scale effects
+  * Maintained full draggable mobility across all screen areas with position memory
 - June 14, 2025. Implemented comprehensive three-layer dot system architecture:
   * Created three-layer dot structure: Summary (220 chars max), Anchor (300 chars), Pulse (1 word emotion)
   * Built complete API endpoints for dots with validation and character limit enforcement
