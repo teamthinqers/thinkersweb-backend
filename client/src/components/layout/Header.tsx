@@ -438,13 +438,13 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
               <Button 
                 variant="ghost" 
                 size="sm" 
-                className="w-full justify-start mb-2 text-gray-700 hover:text-gray-900 hover:bg-gray-50"
+                className="w-full justify-start mb-2 bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-md hover:bg-gradient-to-r hover:from-orange-600 hover:to-red-600 transition-all duration-300"
                 onClick={() => {
                   setShowMobileNav(false);
                   setLocation("/social");
                 }}
               >
-                <Brain className="h-5 w-5 mr-2 text-amber-600 animate-pulse" />
+                <Brain className="h-5 w-5 mr-2 animate-pulse" />
                 Social Neura
               </Button>
             </nav>

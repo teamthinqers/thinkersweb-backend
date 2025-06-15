@@ -689,6 +689,13 @@ Changelog:
   * Removed special amber coloring from "My DotSpark" menu item in browser sidebar
   * Menu item now uses consistent neutral styling matching other navigation items
   * Eliminated brown highlighting that made menu item appear incorrectly selected
+- June 15, 2025. Unified Social Neura color theme across all interfaces:
+  * Applied dashboard's orange-red gradient (from-orange-500 to-red-500) to all Social buttons
+  * Updated browser home page Social button with consistent orange-red gradient styling
+  * Updated PWA home page Social button with same gradient and shadow effects
+  * Updated PWA hamburger menu Social Neura button with orange-red gradient background
+  * Updated sidebar Social Neura icon to red color (text-red-600) for visual consistency
+  * Achieved complete color theme unity across browser, PWA, headers, sidebars, and mobile menus
 - June 15, 2025. Optimized AI conversation flow for minimal user effort:
   * Updated AI prompts to proactively organize user thoughts into three layers with minimal intervention
   * AI now immediately structures user input into Summary/Anchor/Pulse format for quick approval

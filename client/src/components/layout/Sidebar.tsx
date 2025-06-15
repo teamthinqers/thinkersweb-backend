@@ -84,7 +84,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isMobile, onNewEntry
                             : item.label === "My Neura"
                               ? "text-amber-600 dark:text-amber-400"
                               : item.label === "Social Neura"
-                                ? "text-orange-600 dark:text-orange-400 animate-pulse"
+                                ? "text-red-600 dark:text-red-400 animate-pulse"
                                 : "text-gray-500 dark:text-gray-400"
                         }`, 
                         size: 20

@@ -284,7 +284,7 @@ export default function LandingPage() {
               <Button 
                 size="sm"
                 onClick={() => setLocation("/social")}
-                className="relative"
+                className="relative bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-md hover:bg-gradient-to-r hover:from-orange-600 hover:to-red-600 transition-all duration-300"
               >
                 <div className="flex items-center gap-2">
                   <div className="relative">
@@ -320,6 +320,7 @@ export default function LandingPage() {
                 <Button
                   size="sm"
                   onClick={() => setLocation("/social")}
+                  className="bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-md hover:bg-gradient-to-r hover:from-orange-600 hover:to-red-600 transition-all duration-300"
                 >
                   <div className="flex items-center gap-1">
                     <div className="relative">
