@@ -28,7 +28,7 @@ interface GlobalFloatingDotProps {
 
 export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
   const [position, setPosition] = useState<Position>(() => {
-    const saved = localStorage.getItem('floatingDotPosition');
+    const saved = localStorage.getItem('global-floating-dot-position');
     return saved ? JSON.parse(saved) : { x: 320, y: 180 };
   });
   const [isExpanded, setIsExpanded] = useState(false);
@@ -62,21 +62,27 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
     }
   }, []);
 
+  // Save position whenever it changes
+  useEffect(() => {
+    localStorage.setItem('global-floating-dot-position', JSON.stringify(position));
+  }, [position]);
+
   const handleMouseDown = (e: React.MouseEvent) => {
     if (isExpanded) return;
     e.preventDefault();
+    e.stopPropagation();
     setIsDragging(true);
     
-    const startX = e.clientX - position.x;
-    const startY = e.clientY - position.y;
+    const rect = dotRef.current?.getBoundingClientRect();
+    const startX = e.clientX - (rect?.left || position.x);
+    const startY = e.clientY - (rect?.top || position.y);
 
     const handleMouseMove = (e: MouseEvent) => {
-      const newX = Math.max(0, Math.min(window.innerWidth - 48, e.clientX - startX));
-      const newY = Math.max(0, Math.min(window.innerHeight - 48, e.clientY - startY));
+      e.preventDefault();
+      const newX = Math.max(12, Math.min(window.innerWidth - 60, e.clientX - startX));
+      const newY = Math.max(12, Math.min(window.innerHeight - 60, e.clientY - startY));
       const newPosition = { x: newX, y: newY };
       setPosition(newPosition);
-      // Save position immediately during drag
-      localStorage.setItem('global-floating-dot-position', JSON.stringify(newPosition));
     };
 
     const handleMouseUp = () => {
@@ -92,20 +98,21 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
   const handleTouchStart = (e: React.TouchEvent) => {
     if (isExpanded) return;
     e.preventDefault();
+    e.stopPropagation();
     setIsDragging(true);
     
     const touch = e.touches[0];
-    const startX = touch.clientX - position.x;
-    const startY = touch.clientY - position.y;
+    const rect = dotRef.current?.getBoundingClientRect();
+    const startX = touch.clientX - (rect?.left || position.x);
+    const startY = touch.clientY - (rect?.top || position.y);
 
     const handleTouchMove = (e: TouchEvent) => {
+      e.preventDefault();
       const touch = e.touches[0];
-      const newX = Math.max(0, Math.min(window.innerWidth - 48, touch.clientX - startX));
-      const newY = Math.max(0, Math.min(window.innerHeight - 48, touch.clientY - startY));
+      const newX = Math.max(12, Math.min(window.innerWidth - 60, touch.clientX - startX));
+      const newY = Math.max(12, Math.min(window.innerHeight - 60, touch.clientY - startY));
       const newPosition = { x: newX, y: newY };
       setPosition(newPosition);
-      // Save position immediately during drag
-      localStorage.setItem('global-floating-dot-position', JSON.stringify(newPosition));
     };
 
     const handleTouchEnd = () => {
@@ -326,8 +333,10 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
         <div
           ref={dotRef}
           className={cn(
-            "fixed z-[9999] transition-all duration-150 ease-out",
-            isDragging ? "cursor-grabbing scale-110" : "cursor-grab hover:scale-105"
+            "fixed z-[9999] select-none touch-none",
+            isDragging 
+              ? "cursor-grabbing scale-110 shadow-2xl" 
+              : "cursor-grab hover:scale-105 transition-all duration-150 ease-out"
           )}
           style={{
             left: `${position.x}px`,
