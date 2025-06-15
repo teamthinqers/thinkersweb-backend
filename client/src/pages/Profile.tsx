@@ -5,6 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
+import { Calendar as CalendarComponent } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { 
   User, 
   Mail, 
@@ -16,10 +18,14 @@ import {
   Star,
   Trophy,
   Target,
-  X
+  X,
+  CalendarIcon,
+  ChevronLeft,
+  ChevronRight
 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
+import { format } from "date-fns";
 
 interface ProfileData {
   firstName: string;
@@ -48,6 +54,12 @@ const Profile: React.FC = () => {
   });
 
   const [isEditing, setIsEditing] = useState(false);
+  const [datePickerOpen, setDatePickerOpen] = useState(false);
+  const [calendarMonth, setCalendarMonth] = useState<Date>(() => {
+    // Default to a reasonable birth year (30 years ago)
+    const defaultYear = new Date().getFullYear() - 30;
+    return new Date(defaultYear, 0, 1);
+  });
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [saveTimeout, setSaveTimeout] = useState<NodeJS.Timeout | null>(null);
 
@@ -250,6 +262,39 @@ const Profile: React.FC = () => {
     setImagePreview(null);
   };
 
+  // Enhanced date picker functions
+  const handleDateSelect = (date: Date | undefined) => {
+    if (date) {
+      const formattedDate = format(date, 'yyyy-MM-dd');
+      handleFieldChange('dateOfBirth', formattedDate);
+      setDatePickerOpen(false);
+    }
+  };
+
+  const navigateYear = (direction: 'prev' | 'next') => {
+    const currentYear = calendarMonth.getFullYear();
+    const newYear = direction === 'prev' ? currentYear - 1 : currentYear + 1;
+    const newMonth = new Date(newYear, calendarMonth.getMonth(), 1);
+    setCalendarMonth(newMonth);
+  };
+
+  const navigateToYear = (year: number) => {
+    const newMonth = new Date(year, calendarMonth.getMonth(), 1);
+    setCalendarMonth(newMonth);
+  };
+
+  // Generate year options for quick selection (birth years typically range from 1930 to current year - 10)
+  const generateYearOptions = () => {
+    const currentYear = new Date().getFullYear();
+    const startYear = 1930;
+    const endYear = currentYear - 10; // Minimum age of 10
+    const years = [];
+    for (let year = endYear; year >= startYear; year--) {
+      years.push(year);
+    }
+    return years;
+  };
+
   const getCompletionLevel = (): { title: string; icon: React.ReactNode; color: string } => {
     if (completionPercentage >= 100) {
       return {
@@ -444,17 +489,73 @@ const Profile: React.FC = () => {
                   <span>Date of Birth</span>
                 </Label>
                 {isEditing ? (
-                  <div className="relative">
-                    <Input
-                      id="dateOfBirth"
-                      type="date"
-                      value={profileData.dateOfBirth}
-                      onChange={(e) => handleFieldChange('dateOfBirth', e.target.value)}
-                      className="cursor-pointer"
-                      max={new Date().toISOString().split('T')[0]}
-                    />
-                    <Calendar className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
-                  </div>
+                  <Popover open={datePickerOpen} onOpenChange={setDatePickerOpen}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className="w-full justify-start text-left font-normal"
+                        onClick={() => setDatePickerOpen(true)}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {profileData.dateOfBirth ? (
+                          format(new Date(profileData.dateOfBirth), 'MMMM dd, yyyy')
+                        ) : (
+                          <span className="text-gray-500">Select your date of birth</span>
+                        )}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <div className="flex flex-col">
+                        {/* Year Navigation Header */}
+                        <div className="flex items-center justify-between p-3 border-b">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => navigateYear('prev')}
+                            className="h-7 w-7 p-0"
+                          >
+                            <ChevronLeft className="h-4 w-4" />
+                          </Button>
+                          <div className="flex items-center space-x-2">
+                            <span className="text-sm font-semibold">
+                              {calendarMonth.getFullYear()}
+                            </span>
+                            <select
+                              value={calendarMonth.getFullYear()}
+                              onChange={(e) => navigateToYear(parseInt(e.target.value))}
+                              className="text-sm border rounded px-1 py-0"
+                            >
+                              {generateYearOptions().map((year) => (
+                                <option key={year} value={year}>
+                                  {year}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => navigateYear('next')}
+                            className="h-7 w-7 p-0"
+                          >
+                            <ChevronRight className="h-4 w-4" />
+                          </Button>
+                        </div>
+                        {/* Calendar Component */}
+                        <CalendarComponent
+                          mode="single"
+                          selected={profileData.dateOfBirth ? new Date(profileData.dateOfBirth) : undefined}
+                          onSelect={handleDateSelect}
+                          month={calendarMonth}
+                          onMonthChange={setCalendarMonth}
+                          disabled={(date) => 
+                            date > new Date() || date < new Date("1900-01-01")
+                          }
+                          initialFocus
+                        />
+                      </div>
+                    </PopoverContent>
+                  </Popover>
                 ) : (
                   <Input
                     value={profileData.dateOfBirth ? new Date(profileData.dateOfBirth).toLocaleDateString('en-US', { 

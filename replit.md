@@ -498,6 +498,13 @@ Changelog:
   * Configured Firebase setPersistence with browserLocalPersistence for automatic login restoration
   * Authentication now maintains sign-in state until user explicitly signs out, eliminating daily re-login requirements
   * Users stay authenticated across page refreshes, browser restarts, and device sessions
+- June 15, 2025. Enhanced Profile page date of birth calendar with comprehensive year navigation:
+  * Replaced basic HTML date input with advanced calendar component using Popover and Calendar UI
+  * Added year navigation buttons (previous/next) for easy birth year selection
+  * Implemented dropdown year selector with birth year range (1930 to current year - 10)
+  * Enhanced calendar with proper date formatting, validation, and user-friendly interface
+  * Added date-fns formatting for better date display and manipulation
+  * Calendar now provides intuitive year navigation essential for birth date selection
 ```
 
 ## User Preferences
