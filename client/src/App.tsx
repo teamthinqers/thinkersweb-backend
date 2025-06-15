@@ -42,7 +42,7 @@ import AppLayout from "@/components/layout/AppLayout";
 import EntryDetail from "@/components/entries/EntryDetail";
 import ChatEntryForm from "@/components/chat/ChatEntryForm";
 import { AuthProvider, useAuth } from "@/hooks/use-auth";
-import { GlobalFloatingDot } from "@/components/dotspark/GlobalFloatingDot";
+import { StructuredFloatingDot } from "@/components/dotspark/StructuredFloatingDot";
 import { neuraStorage } from "@/lib/neuraStorage";
 import { Loader2 } from "lucide-react";
 import MockDashboard from "@/components/dashboard/MockDashboard";
@@ -348,7 +348,7 @@ function App() {
         <Router />
         <Toaster />
         {/* Global Floating Dot for All Modes */}
-        <GlobalFloatingDot isActive={isDotSparkActive || neuraStorage.isActivated()} />
+        <StructuredFloatingDot isActive={isDotSparkActive || neuraStorage.isActivated()} />
         {/* iOS PWA Install Prompt */}
         <IosPwaInstallPrompt />
         {/* PWA Install Floating Button (only visible when installable) */}
