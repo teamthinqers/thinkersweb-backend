@@ -174,6 +174,16 @@ export default function LandingPage() {
     };
   }, [user, isNeuraActivated, isWhatsAppConnected, isPWAInstalled, isSetupCompleted]);
 
+  // Additional effect to handle PWA installation completion status update
+  useEffect(() => {
+    // When PWA installation status changes, check if all setup steps are complete
+    if (isPWAInstalled && isNeuraActivated && user && isWhatsAppConnected && !isSetupCompleted) {
+      console.log("PWA installed - marking setup as completed");
+      neuraStorage.markSetupCompleted();
+      setIsSetupCompleted(true);
+    }
+  }, [isPWAInstalled, isNeuraActivated, user, isWhatsAppConnected, isSetupCompleted]);
+
   // Add PWA installation event listeners
   useEffect(() => {
     const handleDisplayModeChange = () => {
@@ -181,6 +191,16 @@ export default function LandingPage() {
                          (window.navigator as any).standalone === true ||
                          document.referrer.includes('android-app://');
       setIsPWAInstalled(isInstalled);
+      
+      // If PWA was just installed, mark it in localStorage and check completion status
+      if (isInstalled) {
+        localStorage.setItem('pwa-installed', 'true');
+        
+        // Check if all setup steps are complete and mark setup as complete if needed
+        if (isNeuraActivated && user && isWhatsAppConnected) {
+          neuraStorage.markSetupCompleted();
+        }
+      }
     };
 
     // Listen for display mode changes
@@ -191,6 +211,11 @@ export default function LandingPage() {
     const handleAppInstalled = () => {
       setIsPWAInstalled(true);
       localStorage.setItem('pwa-installed', 'true');
+      
+      // Check if all setup steps are complete and mark setup as complete if needed
+      if (isNeuraActivated && user && isWhatsAppConnected) {
+        neuraStorage.markSetupCompleted();
+      }
     };
 
     window.addEventListener('appinstalled', handleAppInstalled);
