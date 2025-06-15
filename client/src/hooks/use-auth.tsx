@@ -15,22 +15,37 @@ type AuthContextType = {
   logout: () => Promise<void>;
 };
 
-// Clean Firebase auth hook
+// Enhanced Firebase auth hook with persistence
 export function useAuth(): AuthContextType {
-  const [user, setUser] = useState<UserInfo | null>(null);
+  const [user, setUser] = useState<UserInfo | null>(() => {
+    // Try to restore user from localStorage on initialization
+    try {
+      const storedUser = localStorage.getItem('dotspark_user');
+      return storedUser ? JSON.parse(storedUser) : null;
+    } catch {
+      return null;
+    }
+  });
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser: User | null) => {
       if (firebaseUser) {
-        setUser({
+        const userInfo = {
           uid: firebaseUser.uid,
           email: firebaseUser.email,
           displayName: firebaseUser.displayName,
           photoURL: firebaseUser.photoURL,
-        });
+        };
+        setUser(userInfo);
+        // Store user in localStorage for persistence
+        localStorage.setItem('dotspark_user', JSON.stringify(userInfo));
+        console.log("User signed in and stored:", userInfo.displayName);
       } else {
         setUser(null);
+        // Clear stored user on sign out
+        localStorage.removeItem('dotspark_user');
+        console.log("User signed out and cleared from storage");
       }
       setIsLoading(false);
     });
