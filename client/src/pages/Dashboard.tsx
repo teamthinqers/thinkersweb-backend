@@ -5,17 +5,23 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Mic, Type, Eye, Brain, Network, Zap, Search } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import DotFullView from "@/components/DotFullView";
+import { DotFullView } from "@/components/DotFullView";
+import { SearchResultsList } from "@/components/SearchResultsList";
 
 // Data structure for dots
 interface Dot {
-  id: string;
+  id: number;
   summary: string; // 220 chars max
   anchor: string; // 300 chars max  
   pulse: string; // 1 word emotion
-  wheelId: string;
-  timestamp: Date;
-  sourceType: 'voice' | 'text' | 'hybrid';
+  sourceType: 'voice' | 'text'; // Only voice or text, no hybrid
+  originalAudioBlob?: string;
+  transcriptionText?: string;
+  positionX?: number;
+  positionY?: number;
+  createdAt: string;
+  updatedAt: string;
+  wheelId?: number;
 }
 
 interface Wheel {

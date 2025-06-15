@@ -14,6 +14,10 @@ import {
   users, 
   whatsappOtpVerifications,
   whatsappUsers,
+  dots,
+  wheels,
+  dotConnections,
+  wheelConnections,
   type User 
 } from "@shared/schema";
 import { processEntryFromChat, generateChatResponse, type Message } from "./chat";
@@ -272,13 +276,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Dots and Wheels API Endpoints
   
-  // Simple dots endpoint for three-layer system
+  // Enhanced dots endpoint for three-layer system with voice support
   app.post(`${apiPrefix}/dots`, async (req: AuthenticatedRequest, res: Response) => {
     try {
       const userId = req.user?.id || req.session?.userId || 1;
       
       // Validate three-layer structure: summary (220), anchor (300), pulse (1 word)
-      const { summary, anchor, pulse, sourceType = 'text' } = req.body;
+      const { 
+        summary, 
+        anchor, 
+        pulse, 
+        sourceType = 'text',
+        originalAudioBlob,
+        transcriptionText 
+      } = req.body;
       
       if (!summary || summary.length > 220) {
         return res.status(400).json({ 
@@ -298,21 +309,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // For now, store as structured JSON in existing entries table
-      const entryData = {
+      // Generate random position for dot on map (0-800 range for both x and y)
+      const positionX = Math.floor(Math.random() * 800);
+      const positionY = Math.floor(Math.random() * 600);
+      
+      // Prepare dot data for database
+      const dotData = {
         userId,
-        title: summary.substring(0, 50) + (summary.length > 50 ? '...' : ''),
-        content: JSON.stringify({
-          summary,
-          anchor, 
-          pulse,
-          sourceType,
-          dotType: 'three-layer'
-        }),
-        visibility: 'private'
+        summary,
+        anchor, 
+        pulse,
+        sourceType: sourceType === 'voice' ? 'voice' : 'text', // Only voice or text, no hybrid
+        originalAudioBlob: sourceType === 'voice' ? originalAudioBlob : null,
+        transcriptionText: sourceType === 'voice' ? transcriptionText : null,
+        positionX,
+        positionY
       };
       
-      const [newDot] = await db.insert(entries).values(entryData).returning();
+      const [newDot] = await db.insert(dots).values(dotData).returning();
       res.status(201).json(newDot);
     } catch (error) {
       console.error('Error creating dot:', error);
@@ -320,44 +334,63 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get dots for dashboard
+  // Get dots for dashboard with enhanced features
   app.get(`${apiPrefix}/dots`, async (req: AuthenticatedRequest, res: Response) => {
     try {
       const userId = req.user?.id || req.session?.userId || 1;
       
-      const userEntries = await db.query.entries.findMany({
-        where: eq(entries.userId, userId),
-        orderBy: desc(entries.createdAt),
-        limit: 50
+      const userDots = await db.query.dots.findMany({
+        where: eq(dots.userId, userId),
+        orderBy: desc(dots.createdAt),
+        limit: 100
       });
 
-      // Filter and parse three-layer dots
-      const dots = userEntries
-        .filter(entry => {
-          try {
-            const parsed = JSON.parse(entry.content);
-            return parsed.dotType === 'three-layer';
-          } catch {
-            return false;
-          }
-        })
-        .map(entry => {
-          const parsed = JSON.parse(entry.content);
-          return {
-            id: entry.id,
-            summary: parsed.summary,
-            anchor: parsed.anchor,
-            pulse: parsed.pulse,
-            sourceType: parsed.sourceType || 'text',
-            timestamp: entry.createdAt,
-            wheelId: 'general' // Default wheel for now
-          };
-        });
+      // Return actual dots from dots table with random positioning
+      const formattedDots = userDots.map(dot => ({
+        id: dot.id,
+        summary: dot.summary,
+        anchor: dot.anchor,
+        pulse: dot.pulse,
+        sourceType: dot.sourceType,
+        originalAudioBlob: dot.originalAudioBlob,
+        transcriptionText: dot.transcriptionText,
+        positionX: dot.positionX,
+        positionY: dot.positionY,
+        createdAt: dot.createdAt,
+        updatedAt: dot.updatedAt,
+        wheelId: dot.wheelId || null
+      }));
 
-      res.json(dots);
+      res.json(formattedDots);
     } catch (error) {
       console.error('Error fetching dots:', error);
       res.status(500).json({ error: 'Failed to fetch dots' });
+    }
+  });
+
+  // Delete a dot
+  app.delete(`${apiPrefix}/dots/:id`, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const userId = req.user?.id || req.session?.userId || 1;
+      const dotId = parseInt(req.params.id);
+      
+      if (!dotId) {
+        return res.status(400).json({ error: 'Invalid dot ID' });
+      }
+      
+      // Verify ownership and delete
+      const deletedDot = await db.delete(dots)
+        .where(and(eq(dots.id, dotId), eq(dots.userId, userId)))
+        .returning();
+      
+      if (deletedDot.length === 0) {
+        return res.status(404).json({ error: 'Dot not found or unauthorized' });
+      }
+      
+      res.json({ message: 'Dot deleted successfully' });
+    } catch (error) {
+      console.error('Error deleting dot:', error);
+      res.status(500).json({ error: 'Failed to delete dot' });
     }
   });
 

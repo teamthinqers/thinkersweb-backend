@@ -367,8 +367,10 @@ export const insertDotSchema = createInsertSchema(dots, {
   sourceType: (schema) => schema.optional(),
   wheelId: (schema) => schema.optional(),
   originalAudioUrl: (schema) => schema.optional(),
-  transcriptionConfidence: (schema) => schema.optional(),
-  processingStatus: (schema) => schema.optional(),
+  originalAudioBlob: (schema) => schema.optional(),
+  transcriptionText: (schema) => schema.optional(),
+  positionX: (schema) => schema.optional(),
+  positionY: (schema) => schema.optional(),
 });
 
 export const insertWheelConnectionSchema = createInsertSchema(wheelConnections, {
