@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import { Input } from "@/components/ui/input";
-import { Mic, Type, Eye, Brain, Network, Zap, Search } from "lucide-react";
+import { Mic, Type, Eye, Brain, Network, Zap, Search, Clock, X } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import DotFullView from "@/components/DotFullView";
 
@@ -35,6 +35,7 @@ const Dashboard: React.FC = () => {
   const [searchResults, setSearchResults] = useState<Dot[]>([]);
   const [searchSuggestions, setSearchSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [showRecentDotsModal, setShowRecentDotsModal] = useState(false);
 
   // Fetch real dots from API
   const { data: dots = [], isLoading } = useQuery({
@@ -454,82 +455,59 @@ const Dashboard: React.FC = () => {
             )}
           </div>
           
-          <div className="bg-white/80 backdrop-blur border-2 border-amber-200 rounded-xl p-4 max-h-96 overflow-y-auto shadow-lg">
-            <div className="space-y-4">
-              {/* Search Results or No Results */}
-              {searchTerm.trim() !== '' && (
-                <div className="mb-4">
-                  {searchResults.length > 0 ? (
-                    <>
-                      <div className="flex items-center justify-between mb-3">
-                        <h3 className="text-sm font-semibold text-amber-800">
-                          Search Results ({searchResults.length})
-                        </h3>
-                        {searchResults.length > 5 && (
-                          <span className="text-xs text-amber-600 bg-amber-50 px-2 py-1 rounded">
-                            Showing first 5 results
-                          </span>
-                        )}
-                      </div>
-                      <div className="space-y-3">
-                        {searchResults.slice(0, 5).map((dot: Dot) => (
-                          <div key={dot.id} className="relative">
-                            <DotCard 
-                              dot={dot} 
-                              onClick={() => setViewFullDot(dot)}
-                            />
-                            {/* Search match indicators */}
-                            <div className="absolute top-2 right-2">
-                              <Badge className="bg-green-100 text-green-700 border-green-200 text-xs">
-                                Match
-                              </Badge>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </>
-                  ) : (
-                    <div className="text-center py-8 text-gray-500">
-                      <Search className="w-12 h-12 mx-auto mb-3 text-gray-300" />
-                      <p className="text-sm font-medium mb-1">No dots found matching "{searchTerm}"</p>
-                      <p className="text-xs text-gray-400">Try searching with different keywords or check your spelling</p>
-                    </div>
-                  )}
-                </div>
-              )}
-              
-              {/* Recent Dots or Examples */}
-              {searchTerm.trim() === '' && (
-                <>
-                  {dots.length > 0 ? (
-                    dots.slice(0, 4).map((dot: Dot) => (
-                      <DotCard 
-                        key={dot.id} 
-                        dot={dot} 
-                        onClick={() => setViewFullDot(dot)}
-                      />
-                    ))
-                  ) : (
-                    <>
-                      <div className="mb-3 text-center">
-                        <Badge className="bg-orange-100 text-orange-700 border-orange-200">
-                          Preview Examples
-                        </Badge>
-                      </div>
-                      {exampleDots.map((dot: Dot) => (
-                        <DotCard 
-                          key={dot.id} 
-                          dot={dot} 
-                          isPreview={true}
-                          onClick={() => setViewFullDot(dot)}
-                        />
-                      ))}
-                    </>
-                  )}
-                </>
-              )}
-            </div>
+          {/* Recent Dots Button */}
+          <div className="mb-6">
+            <button
+              onClick={() => setShowRecentDotsModal(true)}
+              className="flex items-center gap-2 px-4 py-2 text-sm text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-lg transition-colors"
+            >
+              <Clock className="w-4 h-4" />
+              Recent Dots
+            </button>
           </div>
+          
+          {/* Search Results Display */}
+          {searchTerm.trim() !== '' && (
+            <div className="bg-white/80 backdrop-blur border-2 border-amber-200 rounded-xl p-4 max-h-96 overflow-y-auto shadow-lg">
+              <div className="space-y-4">
+                {searchResults.length > 0 ? (
+                  <>
+                    <div className="flex items-center justify-between mb-3">
+                      <h3 className="text-sm font-semibold text-amber-800">
+                        Search Results ({searchResults.length})
+                      </h3>
+                      {searchResults.length > 5 && (
+                        <span className="text-xs text-amber-600 bg-amber-50 px-2 py-1 rounded">
+                          Showing first 5 results
+                        </span>
+                      )}
+                    </div>
+                    <div className="space-y-3">
+                      {searchResults.slice(0, 5).map((dot: Dot) => (
+                        <div key={dot.id} className="relative">
+                          <DotCard 
+                            dot={dot} 
+                            onClick={() => setViewFullDot(dot)}
+                          />
+                          <div className="absolute top-2 right-2">
+                            <Badge className="bg-green-100 text-green-700 border-green-200 text-xs">
+                              Match
+                            </Badge>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                ) : (
+                  <div className="text-center py-8 text-gray-500">
+                    <Search className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                    <p className="text-sm font-medium mb-1">No dots found matching "{searchTerm}"</p>
+                    <p className="text-xs text-gray-400">Try searching with different keywords or check your spelling</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Dot Wheels Map Section */}
@@ -545,6 +523,63 @@ const Dashboard: React.FC = () => {
         </div>
       </div>
       
+      {/* Recent Dots Modal */}
+      {showRecentDotsModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-xl shadow-2xl max-w-md w-full mx-4 max-h-[80vh] overflow-hidden">
+            <div className="p-4 border-b border-gray-200 flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-amber-800 flex items-center gap-2">
+                <Clock className="w-5 h-5" />
+                Recent Dots
+              </h3>
+              <button
+                onClick={() => setShowRecentDotsModal(false)}
+                className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+              >
+                <X className="w-5 h-5 text-gray-500" />
+              </button>
+            </div>
+            <div className="p-4 max-h-96 overflow-y-auto">
+              {dots.length > 0 ? (
+                <div className="space-y-3">
+                  {dots.slice(0, 4).map((dot: Dot) => (
+                    <div
+                      key={dot.id}
+                      onClick={() => {
+                        setViewFullDot(dot);
+                        setShowRecentDotsModal(false);
+                      }}
+                      className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-lg p-3 cursor-pointer hover:shadow-md transition-all hover:border-amber-300"
+                    >
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <p className="text-sm text-gray-800 line-clamp-2">{dot.summary}</p>
+                          <div className="flex items-center gap-2 mt-2">
+                            <span className="text-xs text-amber-600 bg-amber-100 px-2 py-1 rounded">
+                              {dot.pulse}
+                            </span>
+                            <span className="text-xs text-gray-500">
+                              {new Date(dot.timestamp).toLocaleDateString()}
+                            </span>
+                          </div>
+                        </div>
+                        <Eye className="w-4 h-4 text-gray-400 ml-2 flex-shrink-0" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8 text-gray-500">
+                  <Clock className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                  <p className="text-sm">No recent dots found</p>
+                  <p className="text-xs text-gray-400 mt-1">Start saving dots to see them here</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Full Dot View Modal */}
       {viewFullDot && (
         <DotFullView dot={viewFullDot} onClose={() => setViewFullDot(null)} />

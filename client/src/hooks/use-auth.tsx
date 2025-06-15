@@ -21,9 +21,9 @@ type AuthContextType = {
 // Create context
 export const AuthContext = createContext<AuthContextType | null>(null);
 
-// Simplified AuthProvider without React hooks dependencies
+// Simplified AuthProvider without complex Firebase integration
 export function AuthProvider({ children }: { children: ReactNode }) {
-  // Use basic state without complex Firebase integration for now
+  // Basic state management
   const [user, setUser] = useState<UserInfo | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
