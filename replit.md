@@ -645,7 +645,7 @@ Changelog:
   * Added recenter button for easy grid navigation reset to original position
   * Implemented immediate touch response for PWA dot clicks with debugging to resolve summary card display issues
   * Fixed summary box positioning to appear next to clicked dots instead of viewport center for better PWA visibility
-  * Relocated recenter button to top-left next to preview toggle for enhanced discoverability
+  * Relocated recenter button to top-left as standalone element, separated from preview toggle for enhanced discoverability
 ```
 
 ## User Preferences

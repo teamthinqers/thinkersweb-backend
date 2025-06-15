@@ -477,8 +477,8 @@ const Dashboard: React.FC = () => {
 
     return (
       <div className="relative bg-gradient-to-br from-amber-50/50 to-orange-50/50 rounded-xl p-4 min-h-[500px] border-2 border-amber-200 shadow-lg overflow-hidden">
-        {/* Top controls */}
-        <div className="absolute top-4 left-4 z-10 flex items-center gap-2">
+        {/* Preview toggle */}
+        <div className="absolute top-4 left-4 z-10">
           {(previewMode || displayDots.length > 0) && (
             <div className="flex items-center gap-2 bg-white/90 backdrop-blur rounded-lg px-2 py-1 border-2 border-amber-200">
               <label className="text-xs font-medium text-amber-800 hidden sm:block">Preview Mode</label>
@@ -497,18 +497,18 @@ const Dashboard: React.FC = () => {
               </button>
             </div>
           )}
-          
-          {/* Recenter Button */}
-          <button
-            onClick={() => setOffset({ x: 0, y: 0 })}
-            className="bg-amber-500 hover:bg-amber-600 text-white rounded-full p-2 shadow-lg transition-colors"
-            title="Recenter Grid"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-            </svg>
-          </button>
         </div>
+        
+        {/* Recenter Button - Standalone */}
+        <button
+          onClick={() => setOffset({ x: 0, y: 0 })}
+          className="absolute top-4 left-52 z-10 bg-amber-500 hover:bg-amber-600 text-white rounded-full p-2 shadow-lg transition-colors"
+          title="Recenter Grid"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+          </svg>
+        </button>
         
         <div className="absolute top-4 right-4 z-10 flex flex-col sm:flex-row gap-1 sm:gap-2">
           <button className="bg-white/90 backdrop-blur rounded-lg px-2 py-1 border-2 border-amber-200 text-xs font-semibold text-amber-800 hover:bg-amber-50 transition-colors whitespace-nowrap">
