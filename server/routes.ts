@@ -8,13 +8,15 @@ import {
   insertTagSchema, 
   insertConnectionSchema, 
   insertSharedEntrySchema, 
+  updateProfileSchema,
   sharedEntries, 
   entryTags, 
   entries,
   users, 
   whatsappOtpVerifications,
   whatsappUsers,
-  type User 
+  type User,
+  type UpdateProfile
 } from "@shared/schema";
 import { processEntryFromChat, generateChatResponse, type Message } from "./chat";
 import { connectionsService } from "./connections";
@@ -358,6 +360,91 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Error fetching dots:', error);
       res.status(500).json({ error: 'Failed to fetch dots' });
+    }
+  });
+
+  // Profile API Endpoints
+  
+  // Get user profile
+  app.get(`${apiPrefix}/profile`, isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const userId = req.user?.id || req.session?.userId;
+      
+      if (!userId) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+
+      const userProfile = await db.query.users.findFirst({
+        where: eq(users.id, userId),
+        columns: {
+          password: false // Exclude password from response
+        }
+      });
+
+      if (!userProfile) {
+        return res.status(404).json({ error: 'User profile not found' });
+      }
+
+      res.json(userProfile);
+    } catch (error) {
+      console.error('Error fetching user profile:', error);
+      res.status(500).json({ error: 'Failed to fetch profile' });
+    }
+  });
+
+  // Update user profile
+  app.put(`${apiPrefix}/profile`, isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const userId = req.user?.id || req.session?.userId;
+      
+      if (!userId) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+
+      // Validate request body against profile schema
+      const validatedData = updateProfileSchema.parse(req.body);
+      
+      // Update user profile in database
+      const [updatedProfile] = await db.update(users)
+        .set({
+          ...validatedData,
+          updatedAt: new Date()
+        })
+        .where(eq(users.id, userId))
+        .returning({
+          id: users.id,
+          username: users.username,
+          email: users.email,
+          firebaseUid: users.firebaseUid,
+          fullName: users.fullName,
+          bio: users.bio,
+          avatarUrl: users.avatarUrl,
+          firstName: users.firstName,
+          lastName: users.lastName,
+          mobileNumber: users.mobileNumber,
+          dateOfBirth: users.dateOfBirth,
+          yearsOfExperience: users.yearsOfExperience,
+          linkedInProfile: users.linkedInProfile,
+          profileImage: users.profileImage,
+          createdAt: users.createdAt,
+          updatedAt: users.updatedAt
+        });
+
+      if (!updatedProfile) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+
+      res.json(updatedProfile);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ 
+          error: 'Validation failed', 
+          details: error.errors 
+        });
+      }
+      
+      console.error('Error updating user profile:', error);
+      res.status(500).json({ error: 'Failed to update profile' });
     }
   });
 
