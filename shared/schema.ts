@@ -98,6 +98,7 @@ export const entriesRelations = relations(entries, ({ one, many }) => ({
     references: [categories.id],
   }),
   tags: many(entryTags),
+  voiceRecordings: many(voiceRecordings),
   relatedTo: many(entryRelations, { relationName: "originEntry" }),
   relatedFrom: many(entryRelations, { relationName: "relatedEntry" }),
   sharedWith: many(sharedEntries),
@@ -114,6 +115,35 @@ export const insertEntrySchema = createInsertSchema(entries, {
 
 export type InsertEntry = z.infer<typeof insertEntrySchema>;
 export type Entry = typeof entries.$inferSelect;
+
+// Voice recordings for dot layers
+export const voiceRecordings = pgTable("voice_recordings", {
+  id: serial("id").primaryKey(),
+  entryId: integer("entry_id").references(() => entries.id).notNull(),
+  layer: text("layer").notNull(), // 'summary', 'anchor', or 'pulse'
+  audioUrl: text("audio_url").notNull(), // URL to stored audio file
+  duration: integer("duration"), // Duration in seconds
+  transcript: text("transcript"), // Transcribed text
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const voiceRecordingsRelations = relations(voiceRecordings, ({ one }) => ({
+  entry: one(entries, {
+    fields: [voiceRecordings.entryId],
+    references: [entries.id],
+  }),
+}));
+
+export const insertVoiceRecordingSchema = createInsertSchema(voiceRecordings, {
+  entryId: (schema) => schema.positive("Entry ID must be positive"),
+  layer: (schema) => schema.refine(val => ['summary', 'anchor', 'pulse'].includes(val), "Layer must be summary, anchor, or pulse"),
+  audioUrl: (schema) => schema.url("Must be a valid URL"),
+  duration: (schema) => schema.optional(),
+  transcript: (schema) => schema.optional(),
+});
+
+export type InsertVoiceRecording = z.infer<typeof insertVoiceRecordingSchema>;
+export type VoiceRecording = typeof voiceRecordings.$inferSelect;
 
 // Junction table for entries and tags (many-to-many)
 export const entryTags = pgTable("entry_tags", {

@@ -13,6 +13,11 @@ interface Dot {
   wheelId: string;
   timestamp: Date;
   sourceType: 'voice' | 'text';
+  voiceData?: {
+    summaryVoiceUrl?: string;
+    anchorVoiceUrl?: string;
+    pulseVoiceUrl?: string;
+  } | null;
 }
 
 interface DotFullViewProps {
@@ -24,9 +29,35 @@ interface DotFullViewProps {
 const DotFullView: React.FC<DotFullViewProps> = ({ dot, onClose, onDelete }) => {
   const { toast } = useToast();
 
-  const handlePlayVoice = () => {
-    // Placeholder for voice playback functionality
-    console.log('Playing voice recording for dot:', dot.id);
+  const handlePlayVoice = (audioUrl: string, layer: string) => {
+    if (!audioUrl) {
+      toast({
+        title: "Audio not available",
+        description: `No voice recording found for ${layer} layer.`,
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      // Create audio element and play
+      const audio = new Audio(audioUrl);
+      audio.play().catch(error => {
+        console.error('Error playing audio:', error);
+        toast({
+          title: "Playback failed",
+          description: "Unable to play the voice recording. The audio file may be unavailable.",
+          variant: "destructive"
+        });
+      });
+    } catch (error) {
+      console.error('Error creating audio element:', error);
+      toast({
+        title: "Audio error",
+        description: "Failed to load the voice recording.",
+        variant: "destructive"
+      });
+    }
   };
 
   const handleDelete = async () => {

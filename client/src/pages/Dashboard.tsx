@@ -17,6 +17,11 @@ interface Dot {
   wheelId: string;
   timestamp: Date;
   sourceType: 'voice' | 'text';
+  voiceData?: {
+    summaryVoiceUrl?: string;
+    anchorVoiceUrl?: string;
+    pulseVoiceUrl?: string;
+  } | null;
 }
 
 interface Wheel {

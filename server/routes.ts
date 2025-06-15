@@ -297,7 +297,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // For now, store as structured JSON in existing entries table
+      // Store with voice URLs for voice dots
+      const { summaryVoiceUrl, anchorVoiceUrl, pulseVoiceUrl } = req.body;
+      
       const entryData = {
         userId,
         title: summary.substring(0, 50) + (summary.length > 50 ? '...' : ''),
@@ -306,7 +308,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
           anchor, 
           pulse,
           sourceType,
-          dotType: 'three-layer'
+          dotType: 'three-layer',
+          voiceData: sourceType === 'voice' ? {
+            summaryVoiceUrl: summaryVoiceUrl || null,
+            anchorVoiceUrl: anchorVoiceUrl || null,
+            pulseVoiceUrl: pulseVoiceUrl || null
+          } : null
         }),
         visibility: 'private'
       };
@@ -349,7 +356,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
             pulse: parsed.pulse,
             sourceType: parsed.sourceType || 'text',
             timestamp: entry.createdAt,
-            wheelId: 'general' // Default wheel for now
+            wheelId: 'general', // Default wheel for now
+            voiceData: parsed.voiceData || null
           };
         });
 
