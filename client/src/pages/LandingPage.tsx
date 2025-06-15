@@ -587,16 +587,18 @@ export default function LandingPage() {
                   <div className="absolute top-1/2 right-1 w-0.5 h-0.5 bg-orange-500/20 rounded-full animate-pulse" style={{animationDelay: '11s'}}></div>
                   <Button
                     size="lg"
-                    onClick={() => setContactDialogOpen(true)}
-                    className="w-full mb-3 relative overflow-hidden bg-gradient-to-r from-amber-600 to-orange-600 hover:from-orange-600 hover:to-amber-600 text-white border-0 shadow-lg shadow-orange-500/20 hover:shadow-orange-600/30 transition-all duration-300 transform hover:scale-105"
+                    asChild
+                    className="w-full mb-3 relative overflow-hidden bg-gradient-to-r from-orange-500 to-red-500 hover:from-red-500 hover:to-orange-500 text-white border-0 shadow-lg shadow-orange-500/20 hover:shadow-red-500/30 transition-all duration-300 transform hover:scale-105"
                   >
-                    <MessageCircle className="h-5 w-5 mr-2" />
-                    <span>Ask DotSpark</span>
+                    <Link href="/social" className="flex items-center justify-center">
+                      <Brain className="h-5 w-5 mr-2 animate-pulse" />
+                      <span>Social Neura</span>
+                    </Link>
                   </Button>
 
                   <div className="text-sm text-muted-foreground text-left relative z-10">
-                    <p className="mb-2 font-medium text-orange-700 dark:text-orange-500">Instant ChatGPT-like experience:</p>
-                    <p className="text-xs">Start using AI chat immediately - no account required and be assured your chats & thoughts are protected.</p>
+                    <p className="mb-2 font-medium text-orange-700 dark:text-orange-500">Connect with fellow ThinQers:</p>
+                    <p className="text-xs">Share insights, discover patterns, and build meaningful connections with other deep thinkers in our community.</p>
                   </div>
                 </div>
               </div>

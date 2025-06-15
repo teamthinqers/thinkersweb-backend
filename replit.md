@@ -700,6 +700,11 @@ Changelog:
   * Added "My DotSpark" menu item to profile dropdown with DotSpark logo icon
   * Menu item navigates to Neural page (/my-neura) when clicked
   * Positioned between Profile and Neural Dashboard options for logical flow
+- June 15, 2025. Updated home page call-to-action for non-signed users:
+  * Changed "Ask DotSpark" button to "Social Neura" with Brain icon and pulse animation
+  * Applied orange-red gradient color theme matching Social Neura branding
+  * Updated button to link to /social page for community features
+  * Added 2-line description: "Connect with fellow ThinQers: Share insights, discover patterns, and build meaningful connections"
 - June 15, 2025. Optimized AI conversation flow for minimal user effort:
   * Updated AI prompts to proactively organize user thoughts into three layers with minimal intervention
   * AI now immediately structures user input into Summary/Anchor/Pulse format for quick approval
