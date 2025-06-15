@@ -22,32 +22,31 @@ type AuthContextType = {
 // Create context
 export const AuthContext = createContext<AuthContextType | null>(null);
 
-// Check if we already have cached user data to reduce flicker
-const getCachedUser = (): UserInfo | null => {
-  const cached = localStorage.getItem('dotspark_user');
-  if (cached) {
-    try {
-      const userData = JSON.parse(cached);
-      console.log("Found cached user data", userData.displayName);
-      return {
-        uid: userData.uid,
-        email: userData.email,
-        displayName: userData.displayName,
-        photoURL: userData.photoURL
-      };
-    } catch (e) {
-      console.error("Error parsing cached user:", e);
-      return null;
-    }
-  }
-  return null;
-};
+
 
 // Enhanced auth provider with persistent login
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [, setLocation] = useLocation();
   // Initialize with cached data to reduce flicker on reload
-  const [user, setUser] = useState<UserInfo | null>(getCachedUser());
+  const [user, setUser] = useState<UserInfo | null>(() => {
+    const cached = localStorage.getItem('dotspark_user');
+    if (cached) {
+      try {
+        const userData = JSON.parse(cached);
+        console.log("Found cached user data", userData.displayName);
+        return {
+          uid: userData.uid,
+          email: userData.email,
+          displayName: userData.displayName,
+          photoURL: userData.photoURL
+        };
+      } catch (e) {
+        console.error("Error parsing cached user:", e);
+        return null;
+      }
+    }
+    return null;
+  });
   const [isLoading, setIsLoading] = useState(true);
 
   // Listen for Firebase auth changes
@@ -55,10 +54,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     console.log("Setting up Firebase auth state listener...");
     
     // Check for cached credentials immediately 
-    const cachedUser = getCachedUser();
-    if (cachedUser) {
-      console.log("Using cached user credentials while Firebase initializes");
-      setUser(cachedUser);
+    const cached = localStorage.getItem('dotspark_user');
+    if (cached) {
+      try {
+        const userData = JSON.parse(cached);
+        console.log("Using cached user credentials while Firebase initializes");
+        const cachedUser = {
+          uid: userData.uid,
+          email: userData.email,
+          displayName: userData.displayName,
+          photoURL: userData.photoURL
+        };
+        setUser(cachedUser);
+      } catch (e) {
+        console.error("Error parsing cached user during initialization:", e);
+      }
     }
     
     // Watch for Firebase auth state changes
@@ -98,10 +108,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           // If we think we should be logged in but Firebase says no, try to use cached credentials
           console.log("Firebase reports logged out but session marked active");
           
-          const cachedUser = getCachedUser();
-          if (cachedUser) {
-            console.log("Using cached credentials as fallback");
-            setUser(cachedUser);
+          const cached = localStorage.getItem('dotspark_user');
+          if (cached) {
+            try {
+              const userData = JSON.parse(cached);
+              const cachedUser = {
+                uid: userData.uid,
+                email: userData.email,
+                displayName: userData.displayName,
+                photoURL: userData.photoURL
+              };
+              console.log("Using cached credentials as fallback");
+              setUser(cachedUser);
+            } catch (e) {
+              console.error("Error parsing cached user as fallback:", e);
+              console.log("No valid cached credentials, confirming logout");
+              setUser(null);
+              localStorage.removeItem('dotspark_session_active');
+            }
           } else {
             // No valid cached credentials either
             console.log("No valid cached credentials, confirming logout");
@@ -124,10 +148,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setIsLoading(false);
         
         // On error, try to use cached credentials as fallback
-        const cachedUser = getCachedUser();
-        if (cachedUser) {
-          console.log("Using cached credentials after Firebase error");
-          setUser(cachedUser);
+        const cached = localStorage.getItem('dotspark_user');
+        if (cached) {
+          try {
+            const userData = JSON.parse(cached);
+            const cachedUser = {
+              uid: userData.uid,
+              email: userData.email,
+              displayName: userData.displayName,
+              photoURL: userData.photoURL
+            };
+            console.log("Using cached credentials after Firebase error");
+            setUser(cachedUser);
+          } catch (e) {
+            console.error("Error parsing cached user after Firebase error:", e);
+            setUser(null);
+          }
         } else {
           setUser(null);
         }
