@@ -28,7 +28,7 @@ export interface StructuredEntry {
 }
 
 /**
- * Process user input to create a structured entry
+ * Process user input to create a structured three-layer dot
  */
 export async function processEntryFromChat(
   userInput: string, 
@@ -39,16 +39,29 @@ export async function processEntryFromChat(
     if (!messages.some(m => m.role === "system")) {
       messages.unshift({
         role: "system",
-        content: `You are a helpful learning assistant. Your job is to structure the user's learning input into a proper entry.
-        Extract a title, content, and any relevant categories (from: professional, personal, health, finance) and tags.
-        Always respond with a valid JSON object with the following format:
+        content: `You are DotSpark AI, a specialized assistant for creating structured three-layer dots. Your job is to help users convert their thoughts into structured dots with three specific layers:
+
+        Layer 1 - Summary (max 220 characters): A concise, sharp summary of the core thought or insight
+        Layer 2 - Anchor (max 300 characters): Memory anchor or context that helps recall this thought later
+        Layer 3 - Pulse (1 word): Single emotion word describing how this thought makes you feel
+
+        Always respond with a valid JSON object in this exact format:
         {
-          "title": "Clear, concise title of the entry",
-          "content": "Expanded detailed content of what the user learned",
+          "summary": "Concise core insight (max 220 chars)",
+          "anchor": "Memory context or application (max 300 chars)", 
+          "pulse": "emotion_word",
           "category": "One of: professional, personal, health, finance",
           "tags": ["tag1", "tag2"]
         }
-        Do not include any explanations or extra text, just return the JSON.`
+
+        Guidelines:
+        - Summary should be distilled and impactful
+        - Anchor should help future recall or application
+        - Pulse should be one emotion word like: excited, curious, focused, happy, calm, inspired, confident, grateful, motivated
+        - Choose the most relevant category
+        - Add 2-3 relevant tags
+        
+        Do not include explanations, just return the JSON.`
       });
     }
 

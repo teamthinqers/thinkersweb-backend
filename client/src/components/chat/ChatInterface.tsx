@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Send, Loader2, Bot } from "lucide-react";
+import { Send, Loader2, Bot, Mic, MicOff } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,11 +30,14 @@ const generateId = () => Math.random().toString(36).substring(2, 9);
 const ChatInterface: React.FC = () => {
   const [input, setInput] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
+  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
+  const [audioChunks, setAudioChunks] = useState<Blob[]>([]);
   const [messages, setMessages] = useState<Message[]>([
     {
       id: generateId(),
       role: "assistant",
-      content: "Welcome to your learning repository! Tell me about something you've learned recently, and I'll help organize it.",
+      content: "Hi! I'm here to help you create structured dots. Tell me what you've learned or want to capture, and I'll guide you through creating a three-layer dot with Summary, Anchor, and Pulse components.",
       timestamp: new Date(),
     },
   ]);
@@ -49,6 +52,86 @@ const ChatInterface: React.FC = () => {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [messages]);
+
+  // Voice recording functions
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const recorder = new MediaRecorder(stream);
+      const chunks: Blob[] = [];
+
+      recorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          chunks.push(event.data);
+        }
+      };
+
+      recorder.onstop = async () => {
+        const audioBlob = new Blob(chunks, { type: 'audio/webm' });
+        await processVoiceInput(audioBlob);
+        stream.getTracks().forEach(track => track.stop());
+      };
+
+      setMediaRecorder(recorder);
+      setAudioChunks(chunks);
+      recorder.start();
+      setIsRecording(true);
+    } catch (error) {
+      console.error('Error starting recording:', error);
+      toast({
+        title: "Recording Error",
+        description: "Could not access microphone. Please check permissions.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorder && mediaRecorder.state === 'recording') {
+      mediaRecorder.stop();
+      setIsRecording(false);
+    }
+  };
+
+  const processVoiceInput = async (audioBlob: Blob) => {
+    try {
+      setIsProcessing(true);
+      
+      // Convert audio to base64
+      const reader = new FileReader();
+      const base64Audio = await new Promise<string>((resolve, reject) => {
+        reader.onload = () => {
+          const result = reader.result as string;
+          resolve(result.split(',')[1]); // Remove data:audio/webm;base64, prefix
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(audioBlob);
+      });
+      
+      // Send to transcription API
+      const transcriptionResponse = await apiRequest("POST", "/api/transcribe-voice", {
+        audio: base64Audio,
+        mimeType: audioBlob.type
+      });
+      
+      if (transcriptionResponse.text) {
+        setInput(transcriptionResponse.text);
+        toast({
+          title: "Voice transcribed",
+          description: "Your voice message has been converted to text",
+        });
+      }
+    } catch (error) {
+      console.error('Error processing voice input:', error);
+      toast({
+        title: "Transcription Error", 
+        description: "Could not transcribe your voice message",
+        variant: "destructive",
+      });
+    } finally {
+      setIsProcessing(false);
+    }
+  };
   
   // Handle sending a message
   const handleSendMessage = async () => {
@@ -66,14 +149,14 @@ const ChatInterface: React.FC = () => {
     setIsProcessing(true);
     
     try {
-      // Process the message to create an entry
+      // Process the message to create a structured dot
       const apiMessages = messages
         .filter(m => m.role === "user" || m.role === "assistant")
         .map(m => ({ role: m.role, content: m.content }));
         
       const processResponse = await apiRequest(
         "POST",
-        "/api/chat/process",
+        "/api/chat/create-dot",
         {
           message: input,
           messages: apiMessages,
