@@ -345,8 +345,15 @@ const Dashboard: React.FC = () => {
         const dotId1 = String(dot.id || index);
         const seedX1 = dotId1.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
         const seedY1 = dotId1.split('').reverse().reduce((a, b) => a + b.charCodeAt(0), 0);
-        const x1 = 60 + (seedX1 % 800) + (index * 47) % 200 + 24; // +24 for dot center
-        const y1 = 60 + (seedY1 % 600) + (index * 73) % 180 + 24;
+        
+        let x1, y1;
+        if (previewMode) {
+          x1 = 80 + (seedX1 % 700) + (index * 73) % 300 + 24; // +24 for dot center
+          y1 = 80 + (seedY1 % 500) + (index * 89) % 250 + 24;
+        } else {
+          x1 = 60 + (seedX1 % 800) + (index * 47) % 200 + 24; // +24 for dot center
+          y1 = 60 + (seedY1 % 600) + (index * 73) % 180 + 24;
+        }
         
         displayDots.slice(index + 1).forEach((otherDot, otherIndex) => {
           // Calculate other dot's position
@@ -354,8 +361,15 @@ const Dashboard: React.FC = () => {
           const dotId2 = String(otherDot.id || realOtherIndex);
           const seedX2 = dotId2.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
           const seedY2 = dotId2.split('').reverse().reduce((a, b) => a + b.charCodeAt(0), 0);
-          const x2 = 60 + (seedX2 % 800) + (realOtherIndex * 47) % 200 + 24;
-          const y2 = 60 + (seedY2 % 600) + (realOtherIndex * 73) % 180 + 24;
+          
+          let x2, y2;
+          if (previewMode) {
+            x2 = 80 + (seedX2 % 700) + (realOtherIndex * 73) % 300 + 24;
+            y2 = 80 + (seedY2 % 500) + (realOtherIndex * 89) % 250 + 24;
+          } else {
+            x2 = 60 + (seedX2 % 800) + (realOtherIndex * 47) % 200 + 24;
+            y2 = 60 + (seedY2 % 600) + (realOtherIndex * 73) % 180 + 24;
+          }
           
           // Create consistent connection logic based on dot IDs
           const connectionSeed = (seedX1 + seedY1 + seedX2 + seedY2) % 100;
@@ -436,8 +450,16 @@ const Dashboard: React.FC = () => {
               const dotId = String(dot.id || index); // Ensure string conversion
               const seedX = dotId.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
               const seedY = dotId.split('').reverse().reduce((a, b) => a + b.charCodeAt(0), 0);
-              const x = 60 + (seedX % 800) + (index * 47) % 200;
-              const y = 60 + (seedY % 600) + (index * 73) % 180;
+              
+              // Spread preview dots more widely across the grid
+              let x, y;
+              if (previewMode) {
+                x = 80 + (seedX % 700) + (index * 73) % 300;
+                y = 80 + (seedY % 500) + (index * 89) % 250;
+              } else {
+                x = 60 + (seedX % 800) + (index * 47) % 200;
+                y = 60 + (seedY % 600) + (index * 73) % 180;
+              }
               
               return (
                 <div key={dot.id} className="relative">
