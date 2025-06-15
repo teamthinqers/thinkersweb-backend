@@ -565,11 +565,11 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                             const data = await response.json();
                             const defaultMessage = encodeURIComponent("Hi DotSpark, I would need your assistance in saving a dot");
                             const whatsappUrl = `https://wa.me/${data.phoneNumber}?text=${defaultMessage}`;
-                            window.open(whatsappUrl, '_blank');
+                            window.location.href = whatsappUrl;
                           } catch (error) {
                             console.error('Failed to get WhatsApp contact:', error);
                             // Fallback to direct WhatsApp web
-                            window.open('https://web.whatsapp.com/', '_blank');
+                            window.location.href = 'https://web.whatsapp.com/';
                           }
                         }}
                         className="h-28 bg-gradient-to-br from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-xl flex flex-col items-center justify-center space-y-3 shadow-lg transform transition-all duration-200 hover:scale-105"

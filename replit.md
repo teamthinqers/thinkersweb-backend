@@ -641,6 +641,11 @@ Changelog:
 - June 15, 2025. Updated Expertise Layer status indicator:
   * Changed "Expertise Layer (Optional)" to "Expertise Layer (Coming Soon)"
   * Updated status messaging to indicate future availability rather than optional feature
+- June 15, 2025. Enhanced WhatsApp integration with dot-focused messaging:
+  * Updated WhatsApp welcome message from "Welcome back to DotSpark — your thinking companion"
+  * Changed to "Hi ThinQer, please share what's on your mind and I'll organize it into a three-layer dot (Summary, Anchor, Pulse) for you"
+  * Fixed PWA popup blocker issue by replacing window.open() with window.location.href for WhatsApp links
+  * Eliminated "this site is attempting to open a pop-up window" warnings in PWA mode
 - June 15, 2025. Optimized AI conversation flow for minimal user effort:
   * Updated AI prompts to proactively organize user thoughts into three layers with minimal intervention
   * AI now immediately structures user input into Summary/Anchor/Pulse format for quick approval
