@@ -638,6 +638,9 @@ Changelog:
   * Updated to "retain your natural cognitive identity while taking help of AI to save your Dot"
   * Applied consistent messaging across MyNeura and SectionedDotSparkTuningPage components
   * Aligned Cogni Shield purpose with primary dot creation functionality
+- June 15, 2025. Updated Expertise Layer status indicator:
+  * Changed "Expertise Layer (Optional)" to "Expertise Layer (Coming Soon)"
+  * Updated status messaging to indicate future availability rather than optional feature
 - June 15, 2025. Optimized AI conversation flow for minimal user effort:
   * Updated AI prompts to proactively organize user thoughts into three layers with minimal intervention
   * AI now immediately structures user input into Summary/Anchor/Pulse format for quick approval

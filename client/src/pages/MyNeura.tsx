@@ -711,7 +711,7 @@ export default function MyNeura() {
                 <div className="rounded-full bg-amber-900/40 p-4 backdrop-blur-sm mb-4 border border-amber-600/30">
                   <Target className="h-12 w-12 text-amber-100" />
                 </div>
-                <h3 className="text-xl font-bold text-amber-50">Expertise Layer (Optional)</h3>
+                <h3 className="text-xl font-bold text-amber-50">Expertise Layer (Coming Soon)</h3>
               </div>
             </div>
             <CardContent className="p-6 bg-gradient-to-b from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 flex flex-col justify-between min-h-[120px]">
