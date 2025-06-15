@@ -197,6 +197,7 @@ function Router() {
       <Route path="/pwa-debug" component={PwaDebugger} />
       <Route path="/install-guide" component={PwaInstallGuide} />
       <Route path="/testing" component={Testing} />
+      <Route path="/test-auth" component={TestGoogleAuth} />
       <Route path="/chat" component={ChatPage} />
       <Route component={NotFound} />
     </Switch>
