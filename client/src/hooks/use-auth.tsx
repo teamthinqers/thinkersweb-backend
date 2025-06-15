@@ -1,7 +1,6 @@
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import { auth, signInWithGoogle, signOut } from "@/lib/firebase";
 import { User as FirebaseUser, onAuthStateChanged, getAuth } from "firebase/auth";
-import { useLocation } from "wouter";
 
 // Enhanced user info type
 type UserInfo = {
@@ -45,7 +44,6 @@ const getCachedUser = (): UserInfo | null => {
 
 // Enhanced auth provider with persistent login
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [, setLocation] = useLocation();
   // Initialize with cached data to reduce flicker on reload
   const [user, setUser] = useState<UserInfo | null>(getCachedUser());
   const [isLoading, setIsLoading] = useState(true);
@@ -92,7 +90,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           
           // Redirect to dashboard if on auth page
           if (window.location.pathname === "/auth") {
-            setLocation("/");
+            window.location.href = "/";
           }
         } else if (localStorage.getItem('dotspark_session_active') === 'true') {
           // If we think we should be logged in but Firebase says no, try to use cached credentials
@@ -139,7 +137,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       console.log("Cleaning up Firebase auth state listener");
       unsubscribe();
     };
-  }, [setLocation]);
+  }, []);
 
   // Function to login with Google - ensures persistent login
   const loginWithGoogle = async () => {
@@ -173,7 +171,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(null);
       
       // After successful logout, redirect to home
-      setLocation("/");
+      window.location.href = "/";
     } catch (error) {
       console.error("Logout error:", error);
       // Even on error, try to clear user state
