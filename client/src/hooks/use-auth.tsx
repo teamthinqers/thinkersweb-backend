@@ -52,11 +52,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     console.log("Setting up Firebase auth state listener...");
     
-    // Check for cached credentials immediately 
-    const cachedUser = getCachedUser();
-    if (cachedUser) {
-      console.log("Using cached user credentials while Firebase initializes");
-      setUser(cachedUser);
+    // Check for cached credentials on mount
+    try {
+      const cachedUser = getCachedUser();
+      if (cachedUser) {
+        console.log("Using cached user credentials while Firebase initializes");
+        setUser(cachedUser);
+      }
+    } catch (error) {
+      console.log("No cached user found");
     }
     
     // Watch for Firebase auth state changes

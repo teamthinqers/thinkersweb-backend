@@ -58,7 +58,6 @@ const Dashboard: React.FC = () => {
       pulse: "curious",
       wheelId: 1,
       createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
       positionX: 0,
       positionY: 0,
       sourceType: 'text'
@@ -70,7 +69,6 @@ const Dashboard: React.FC = () => {
       pulse: "focused",
       wheelId: 1,
       createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
       positionX: 0,
       positionY: 0,
       sourceType: 'voice'
@@ -82,7 +80,6 @@ const Dashboard: React.FC = () => {
       pulse: "calm",
       wheelId: 2,
       createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
       positionX: 0,
       positionY: 0,
       sourceType: 'text'

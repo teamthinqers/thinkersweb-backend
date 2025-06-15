@@ -35,11 +35,8 @@ import { eq, inArray, and, lt, desc } from "drizzle-orm";
 import twilio from "twilio";
 import whatsappWebhookRouter from "./whatsapp-webhook";
 
-// Interface for authenticated requests
-interface AuthenticatedRequest extends Request {
-  user?: Express.User;
-  isAuthenticated(): this is AuthenticatedRequest;
-}
+// Use standard Express Request with user property
+import { Request as ExpressRequest } from 'express';
 
 export async function registerRoutes(app: Express): Promise<Server> {
   const apiPrefix = "/api";
@@ -315,10 +312,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Prepare dot data for database
       const dotData = {
-        userId,
         summary,
         anchor, 
         pulse,
+        userId,
         sourceType: sourceType === 'voice' ? 'voice' : 'text', // Only voice or text, no hybrid
         originalAudioBlob: sourceType === 'voice' ? originalAudioBlob : null,
         transcriptionText: sourceType === 'voice' ? transcriptionText : null,
