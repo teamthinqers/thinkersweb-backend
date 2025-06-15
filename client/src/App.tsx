@@ -38,6 +38,7 @@ import ChatPage from "@/pages/chat-page";
 import QuickCapture from "@/pages/QuickCapture";
 import DotInstall from "@/pages/DotInstall";
 import DotCapture from "@/pages/DotCapture";
+import TestGoogleAuth from "@/pages/TestGoogleAuth";
 import AppLayout from "@/components/layout/AppLayout";
 import EntryDetail from "@/components/entries/EntryDetail";
 import ChatEntryForm from "@/components/chat/ChatEntryForm";
@@ -51,40 +52,9 @@ import { IosPwaInstallPrompt } from "@/components/ui/ios-pwa-install-prompt";
 import { isRunningAsStandalone } from "@/lib/pwaUtils";
 
 
-// Simplified Protected route component
+// Simple Protected route component - disabled to fix routing loops
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  // Temporarily disabled auth to fix React hooks error
-  const user = null, isLoading = false;
-  const [, setLocation] = useLocation();
-
-  // Check if user is authenticated
-  useEffect(() => {
-    if (!isLoading && !user) {
-      setLocation("/auth");
-    }
-  }, [user, isLoading, setLocation]);
-
-  // Show loading state
-  if (isLoading) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen">
-        <Loader2 className="h-8 w-8 animate-spin text-primary mb-4" />
-        <p className="text-center text-muted-foreground">Loading...</p>
-      </div>
-    );
-  }
-
-  // If no user, show loading until redirected
-  if (!user) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen">
-        <Loader2 className="h-8 w-8 animate-spin text-primary mb-4" />
-        <p className="text-center text-muted-foreground">Redirecting...</p>
-      </div>
-    );
-  }
-  
-  // User is authenticated, show the protected content
+  // Authentication temporarily disabled to prevent infinite routing loops
   return <>{children}</>;
 }
 
