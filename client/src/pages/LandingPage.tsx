@@ -563,8 +563,9 @@ export default function LandingPage() {
             {user ? (
               <div className="flex flex-col gap-3 w-full md:w-2/3">
                 <Button size="lg" asChild className="w-full relative overflow-hidden group">
-                  <Link href="/sectioned-dotspark-tuning" className="flex items-center justify-center">
-                    <span className="relative z-10">Go to My DotSpark</span>
+                  <Link href="/dashboard" className="flex items-center justify-center">
+                    <Brain className="mr-2 h-5 w-5 relative z-10 animate-pulse" />
+                    <span className="relative z-10">Access my Neura</span>
                     <ArrowRight className="ml-2 h-5 w-5 relative z-10 group-hover:translate-x-1 transition-transform" />
                     <div className="absolute inset-0 bg-gradient-to-r from-primary to-primary/80 opacity-90 group-hover:opacity-100 transition-opacity"></div>
                   </Link>

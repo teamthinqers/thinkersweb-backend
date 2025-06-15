@@ -197,5 +197,59 @@ export const neuraStorage = {
     
     window.addEventListener('setup-completed', listener);
     return () => window.removeEventListener('setup-completed', listener);
+  },
+
+  /**
+   * Check if PWA is installed across platforms
+   */
+  isPWAInstalled(): boolean {
+    try {
+      // Check if app is running in standalone mode (PWA installed)
+      const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
+                          (window.navigator as any).standalone === true ||
+                          document.referrer.includes('android-app://');
+      
+      // Also check localStorage for installation status
+      const wasInstalled = localStorage.getItem(PWA_INSTALLED_KEY) === 'true';
+      
+      return isStandalone || wasInstalled;
+    } catch (error) {
+      console.error('Error checking PWA installation status:', error);
+      return false;
+    }
+  },
+
+  /**
+   * Mark PWA as installed
+   */
+  markPWAInstalled(): void {
+    try {
+      localStorage.setItem(PWA_INSTALLED_KEY, 'true');
+      
+      // Dispatch event for PWA installation
+      const event = new CustomEvent('pwa-installed', { 
+        detail: { installed: true }
+      });
+      window.dispatchEvent(event);
+      
+      console.log('PWA marked as installed, event dispatched');
+    } catch (error) {
+      console.error('Error marking PWA as installed:', error);
+    }
+  },
+
+  /**
+   * Add PWA installation listener
+   * @param callback Function to call when PWA installation state changes
+   * @returns Unsubscribe function
+   */
+  addPWAInstallationListener(callback: (installed: boolean) => void): () => void {
+    const listener = (event: Event) => {
+      const pwaEvent = event as CustomEvent;
+      callback(pwaEvent.detail.installed);
+    };
+    
+    window.addEventListener('pwa-installed', listener);
+    return () => window.removeEventListener('pwa-installed', listener);
   }
 };
