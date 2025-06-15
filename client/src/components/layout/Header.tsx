@@ -443,8 +443,14 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
               <Button 
                 variant="ghost" 
                 size="sm" 
-                className="w-full justify-start mb-2 text-amber-700 hover:text-amber-800 hover:bg-amber-50"
-                onClick={goToLandingPage}
+                className="w-full justify-start mb-2 text-amber-700 hover:text-amber-800 hover:bg-amber-50 select-none"
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setShowMobileNav(false);
+                  goToLandingPage();
+                }}
               >
                 <HomeIcon className="h-5 w-5 mr-2 text-amber-600" />
                 Home
@@ -453,8 +459,14 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
               <Button 
                 variant="ghost" 
                 size="sm" 
-                className="w-full justify-start mb-2 text-amber-700 hover:text-amber-800 hover:bg-amber-50"
-                onClick={goToMyNeura}
+                className="w-full justify-start mb-2 text-amber-700 hover:text-amber-800 hover:bg-amber-50 select-none"
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setShowMobileNav(false);
+                  goToMyNeura();
+                }}
               >
                 <Brain className="h-5 w-5 mr-2 text-amber-600" />
                 My DotSpark
@@ -462,9 +474,12 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
               
               {isActivated ? (
                 <Button 
-                  className="w-full justify-start mb-2 bg-gradient-to-r from-amber-700 to-primary hover:from-amber-800 hover:to-primary/90 text-white relative"
+                  className="w-full justify-start mb-2 bg-gradient-to-r from-amber-700 to-primary hover:from-amber-800 hover:to-primary/90 text-white relative select-none"
                   size="sm"
-                  onClick={() => {
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
                     setShowMobileNav(false);
                     setLocation("/my-neura");
                   }}
@@ -479,9 +494,12 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 </Button>
               ) : (
                 <Button 
-                  className="w-full justify-start mb-2 bg-gradient-to-r from-orange-700 to-amber-800 hover:from-orange-800 hover:to-amber-900 text-white relative"
+                  className="w-full justify-start mb-2 bg-gradient-to-r from-orange-700 to-amber-800 hover:from-orange-800 hover:to-amber-900 text-white relative select-none"
                   size="sm"
-                  onClick={() => {
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
                     setShowMobileNav(false);
                     setLocation("/activate-neura");
                   }}
@@ -494,8 +512,14 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
               <Button 
                 variant="ghost" 
                 size="sm" 
-                className="w-full justify-start mb-2 text-red-600"
-                onClick={handleLogout}
+                className="w-full justify-start mb-2 text-red-600 select-none"
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setShowMobileNav(false);
+                  handleLogout();
+                }}
               >
                 <LogOut className="h-5 w-5 mr-2" />
                 Sign out
