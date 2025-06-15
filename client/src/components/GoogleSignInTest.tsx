@@ -13,7 +13,7 @@ export function GoogleSignInTest() {
     try {
       // Direct Firebase import to avoid any cached issues
       const { initializeApp } = await import("firebase/app");
-      const { getAuth, GoogleAuthProvider, signInWithPopup } = await import("firebase/auth");
+
       
       const firebaseConfig = {
         apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -25,7 +25,7 @@ export function GoogleSignInTest() {
       
       const app = initializeApp(firebaseConfig);
       const auth = getAuth(app);
-      const provider = new GoogleAuthProvider();
+
       
       console.log("Attempting Google sign-in...");
       const result = await signInWithPopup(auth, provider);

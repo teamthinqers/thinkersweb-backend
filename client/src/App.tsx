@@ -49,7 +49,7 @@ import MockDashboard from "@/components/dashboard/MockDashboard";
 import { PWAInstallButton } from "@/components/ui/pwa-install-button";
 import { IosPwaInstallPrompt } from "@/components/ui/ios-pwa-install-prompt";
 import { isRunningAsStandalone } from "@/lib/pwaUtils";
-// Temporarily removed AuthProvider to fix React hooks error
+
 
 // Simplified Protected route component
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
