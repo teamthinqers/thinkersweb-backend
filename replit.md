@@ -603,6 +603,17 @@ Changelog:
   * Saved stable version with complete voice recording and playback functionality
   * Includes OpenAI Whisper transcription, UI consistency fixes, and updated sign-in page
   * Rollback available via: node scripts/restore-version.js working_v2
+- June 15, 2025. Enhanced Dot Settings with AI Mode and visual distinction system:
+  * Restructured capture modes from Natural Mode (voice/text/hybrid) to include AI Mode as fourth option
+  * Added AI Mode sub-options: Direct Chat and WhatsApp for AI-assisted dot creation
+  * Implemented purple color coding (#A855F7, #7C3AED) for AI-generated dots in grid visualization
+  * Added info icon with detailed explanation dialog differentiating Natural vs AI modes
+  * Natural mode dots remain orange/amber, AI mode dots display purple gradients
+  * Voice and text icons still indicate input method regardless of capture mode
+  * Created /api/chat/create-dot endpoint for AI-assisted three-layer dot creation
+  * Enhanced ChatInterface with voice input capability using OpenAI Whisper transcription
+  * Updated DotSpark AI system prompts to structure user input into three-layer dots (Summary/Anchor/Pulse)
+  * Backend now stores captureMode field ('natural' or 'ai') for proper visual categorization
 - June 15, 2025. Fixed green brain icon indication in web browser:
   * Enhanced activation status checking in both home page and dashboard headers
   * Added periodic checks every 5 seconds for real-time status updates

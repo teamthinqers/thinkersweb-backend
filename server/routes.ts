@@ -411,6 +411,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             anchor: parsed.anchor,
             pulse: parsed.pulse,
             sourceType: parsed.sourceType || 'text',
+            captureMode: parsed.captureMode || 'natural',
             timestamp: entry.createdAt,
             wheelId: 'general', // Default wheel for now
             voiceData: parsed.voiceData || null
@@ -421,6 +422,55 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Error fetching dots:', error);
       res.status(500).json({ error: 'Failed to fetch dots' });
+    }
+  });
+
+  // Create dot through AI chat conversation
+  app.post(`${apiPrefix}/chat/create-dot`, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const userId = req.user?.id || req.session?.userId || 1;
+      const { message, messages = [] } = req.body;
+
+      if (!message) {
+        return res.status(400).json({ error: 'Message is required' });
+      }
+
+      // Process the chat message to create a structured dot
+      const structuredDot = await processEntryFromChat(message, messages);
+
+      // Create the entry content with AI mode designation
+      const entryContent = {
+        dotType: 'three-layer',
+        summary: structuredDot.summary || structuredDot.title,
+        anchor: structuredDot.anchor || structuredDot.content,
+        pulse: structuredDot.pulse || 'inspired',
+        sourceType: 'text',
+        captureMode: 'ai'
+      };
+
+      // Insert into database
+      const [newEntry] = await db.insert(entries).values({
+        userId,
+        title: `AI Dot: ${entryContent.summary.substring(0, 50)}${entryContent.summary.length > 50 ? '...' : ''}`,
+        content: JSON.stringify(entryContent),
+        categoryId: structuredDot.categoryId || 1
+      }).returning();
+
+      res.status(201).json({ 
+        success: true, 
+        message: 'AI-assisted dot created successfully',
+        dotId: newEntry.id,
+        dot: {
+          summary: entryContent.summary,
+          anchor: entryContent.anchor,
+          pulse: entryContent.pulse,
+          sourceType: 'text',
+          captureMode: 'ai'
+        }
+      });
+    } catch (error) {
+      console.error('Error creating AI dot:', error);
+      res.status(500).json({ error: 'Failed to create AI-assisted dot' });
     }
   });
 

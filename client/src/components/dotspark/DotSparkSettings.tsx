@@ -101,12 +101,55 @@ export function DotSparkSettings() {
           <div className="p-2 bg-amber-100 dark:bg-amber-900/50 rounded-lg">
             <Settings className="h-5 w-5 text-amber-600 dark:text-amber-400" />
           </div>
-          <div>
+          <div className="flex-1">
             <h3 className="text-lg font-semibold text-amber-900 dark:text-amber-100">Dot Settings</h3>
             <p className="text-sm text-amber-700 dark:text-amber-300">
               Configure your dot capture settings
             </p>
           </div>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-amber-600 hover:text-amber-800 hover:bg-amber-100 dark:text-amber-400 dark:hover:text-amber-200 dark:hover:bg-amber-900/50"
+              >
+                <Info className="h-4 w-4" />
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-lg">
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-2 text-amber-900">
+                  <Info className="h-5 w-5 text-amber-600" />
+                  Capture Mode Guide
+                </DialogTitle>
+                <DialogDescription className="text-left space-y-4 pt-2">
+                  <div className="space-y-3">
+                    <div className="bg-green-50 p-3 rounded-lg border border-green-200">
+                      <h4 className="font-semibold text-green-800 mb-2">Natural Mode</h4>
+                      <p className="text-sm text-green-700">
+                        Capture your thoughts directly using voice, text, or both. You create dots by speaking or typing your insights exactly as they come to you. Perfect for quick, spontaneous thought capture.
+                      </p>
+                    </div>
+                    
+                    <div className="bg-purple-50 p-3 rounded-lg border border-purple-200">
+                      <h4 className="font-semibold text-purple-800 mb-2">AI Mode</h4>
+                      <p className="text-sm text-purple-700">
+                        Chat with DotSpark AI to help structure your thoughts into perfect three-layer dots. The AI guides you through creating Summary, Anchor, and Pulse components through conversation or WhatsApp messaging.
+                      </p>
+                    </div>
+                    
+                    <div className="bg-amber-50 p-3 rounded-lg border border-amber-200">
+                      <h4 className="font-semibold text-amber-800 mb-2">Visual Distinction</h4>
+                      <p className="text-sm text-amber-700">
+                        Natural mode dots appear in orange/amber colors, while AI mode dots appear in purple. Voice and text icons still show the input method used.
+                      </p>
+                    </div>
+                  </div>
+                </DialogDescription>
+              </DialogHeader>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
 
