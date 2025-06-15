@@ -28,15 +28,16 @@ interface Wheel {
 
 interface DotWheelsMapProps {
   wheels: Wheel[];
-  dots: Dot[];
+  dots?: Dot[];
+  isPreviewMode?: boolean;
   onDotClick: (dot: Dot) => void;
 }
 
-export function DotWheelsMap({ wheels, dots, onDotClick }: DotWheelsMapProps) {
+export function DotWheelsMap({ wheels, dots = [], isPreviewMode = false, onDotClick }: DotWheelsMapProps) {
   const [selectedDot, setSelectedDot] = useState<number | null>(null);
 
-  // Generate 18 example dots for preview if no dots exist
-  const exampleDots = dots.length === 0 ? [
+  // Generate 18 example dots for preview if no dots exist or in preview mode
+  const exampleDots = (dots.length === 0 || isPreviewMode) ? [
     // Wheel 1 - Professional Growth
     { id: 101, summary: "Leadership skills require emotional intelligence and clear communication", anchor: "Meeting with team lead about project roadmap", pulse: "focused", sourceType: 'text' as const, createdAt: '2024-06-14T10:30:00Z', wheelId: 1, positionX: 150, positionY: 200 },
     { id: 102, summary: "Data visualization tells stories that numbers alone cannot express", anchor: "Dashboard design workshop insights", pulse: "inspired", sourceType: 'voice' as const, createdAt: '2024-06-14T14:15:00Z', wheelId: 1, positionX: 280, positionY: 180 },
@@ -60,7 +61,7 @@ export function DotWheelsMap({ wheels, dots, onDotClick }: DotWheelsMapProps) {
     { id: 209, summary: "Curiosity drives continuous learning and personal evolution", anchor: "Discovery of new podcast on behavioral psychology", pulse: "intrigued", sourceType: 'voice' as const, createdAt: '2024-06-10T17:20:00Z', wheelId: 2, positionX: 700, positionY: 350 }
   ] : [];
 
-  const dotsToDisplay = dots.length > 0 ? dots : exampleDots;
+  const dotsToDisplay = isPreviewMode ? exampleDots : (dots && dots.length > 0 ? dots : exampleDots);
 
   // Generate random positions for dots across larger canvas
   const dotsWithPositions = dotsToDisplay.map(dot => ({

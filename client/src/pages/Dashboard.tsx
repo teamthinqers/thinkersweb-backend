@@ -39,10 +39,6 @@ const Dashboard: React.FC = () => {
   const [viewFullDot, setViewFullDot] = useState<Dot | null>(null);
   const [searchResults, setSearchResults] = useState<Dot[]>([]);
   const [isPreviewMode, setIsPreviewMode] = useState(true); // Toggle for preview mode
-  
-  // Determine if user has enough dots to show actual mode
-  const hasEnoughDots = dots.length >= 9;
-  const displayDots = isPreviewMode ? previewDots : dots;
 
   // Fetch real dots from API
   const { data: dots = [], isLoading } = useQuery({
@@ -116,6 +112,10 @@ const Dashboard: React.FC = () => {
   };
 
   const previewDots = generatePreviewDots();
+  
+  // Determine if user has enough dots to show actual mode
+  const hasEnoughDots = dots.length >= 9;
+  const displayDots = isPreviewMode ? previewDots : dots;
 
   // Search functionality
   React.useEffect(() => {
@@ -468,17 +468,75 @@ const Dashboard: React.FC = () => {
 
         {/* Dot Wheels Map Section */}
         <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-2 flex items-center gap-2">
-            <div className="w-5 h-5 rounded-full border-2 border-amber-500 flex items-center justify-center">
-              <div className="w-2 h-2 rounded-full bg-amber-500"></div>
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h2 className="text-xl font-semibold mb-2 flex items-center gap-2">
+                <div className="w-5 h-5 rounded-full border-2 border-amber-500 flex items-center justify-center">
+                  <div className="w-2 h-2 rounded-full bg-amber-500"></div>
+                </div>
+                <span className="bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent">
+                  Dot Wheels Map
+                </span>
+              </h2>
+              <p className="text-sm text-gray-600">Saving your dots for sparking insights</p>
             </div>
-            <span className="bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent">
-              Dot Wheels Map
-            </span>
-          </h2>
-          <p className="text-sm text-gray-600 mb-4">Saving your dots for sparking insights</p>
+            
+            {/* Toggle Controls */}
+            <div className="flex items-center gap-2">
+              {hasEnoughDots && (
+                <>
+                  <button
+                    className={`px-3 py-1.5 text-sm rounded-lg font-medium transition-all select-none ${
+                      isPreviewMode 
+                        ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md' 
+                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    }`}
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setIsPreviewMode(true);
+                    }}
+                  >
+                    Preview Mode
+                  </button>
+                  <button
+                    className={`px-3 py-1.5 text-sm rounded-lg font-medium transition-all select-none ${
+                      !isPreviewMode 
+                        ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md' 
+                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    }`}
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setIsPreviewMode(false);
+                    }}
+                  >
+                    Actual Mode
+                  </button>
+                </>
+              )}
+              {!hasEnoughDots && (
+                <div className="flex items-center gap-2">
+                  <Badge className="bg-blue-100 text-blue-700 border-blue-200">
+                    Preview Mode
+                  </Badge>
+                  <span className="text-xs text-gray-500">
+                    Save 9 dots to unlock Actual Mode
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
           
-          <DotWheelsMap wheels={wheels} />
+          {/* Use the imported DotWheelsMap component */}
+          <DotWheelsMap 
+            wheels={wheels} 
+            dots={displayDots}
+            isPreviewMode={isPreviewMode}
+            onDotClick={(dot: Dot) => setViewFullDot(dot)}
+          />
         </div>
       </div>
       
