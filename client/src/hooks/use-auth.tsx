@@ -1,8 +1,7 @@
-import React, { createContext, ReactNode, useContext, useEffect, useState } from "react";
+import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import { auth, signInWithGoogle, signOut } from "@/lib/firebase";
-import { User as FirebaseUser, onAuthStateChanged, getAuth } from "firebase/auth";
+import { User as FirebaseUser, onAuthStateChanged } from "firebase/auth";
 
-// Enhanced user info type
 type UserInfo = {
   uid: string;
   email: string | null;
@@ -10,7 +9,6 @@ type UserInfo = {
   photoURL: string | null;
 };
 
-// Context type with additional helpers
 type AuthContextType = {
   user: UserInfo | null;
   isLoading: boolean;
@@ -18,14 +16,12 @@ type AuthContextType = {
   logout: () => Promise<void>;
 };
 
-// Create context
 export const AuthContext = createContext<AuthContextType | null>(null);
 
-// Check if we already have cached user data to reduce flicker
 const getCachedUser = (): UserInfo | null => {
-  const cached = localStorage.getItem('dotspark_user');
-  if (cached) {
-    try {
+  try {
+    const cached = localStorage.getItem('dotspark_user');
+    if (cached) {
       const userData = JSON.parse(cached);
       console.log("Found cached user data", userData.displayName);
       return {
@@ -34,19 +30,16 @@ const getCachedUser = (): UserInfo | null => {
         displayName: userData.displayName,
         photoURL: userData.photoURL
       };
-    } catch (e) {
-      console.error("Error parsing cached user:", e);
-      return null;
     }
+  } catch (e) {
+    console.error("Error parsing cached user:", e);
   }
   return null;
 };
 
-// Enhanced auth provider with persistent login
-export function AuthProvider({ children }: { children: ReactNode }): JSX.Element {
-  // Initialize with cached data to reduce flicker on reload
-  const [user, setUser] = useState<UserInfo | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const [user, setUser] = useState<UserInfo | null>(() => getCachedUser());
+  const [isLoading, setIsLoading] = useState(true);
 
   // Listen for Firebase auth changes
   useEffect(() => {

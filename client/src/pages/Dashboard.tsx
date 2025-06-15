@@ -38,6 +38,7 @@ const Dashboard: React.FC = () => {
   const [selectedWheel, setSelectedWheel] = useState<string | null>(null);
   const [viewFullDot, setViewFullDot] = useState<Dot | null>(null);
   const [searchResults, setSearchResults] = useState<Dot[]>([]);
+  const [isPreviewMode, setIsPreviewMode] = useState(true); // Toggle for preview mode
 
   // Fetch real dots from API
   const { data: dots = [], isLoading } = useQuery({
@@ -49,42 +50,68 @@ const Dashboard: React.FC = () => {
     }
   });
 
-  // Example data for preview mode when no dots exist
-  const exampleDots: Dot[] = [
-    {
-      id: 1001,
-      summary: "Learned about microservices architecture patterns and their trade-offs in distributed systems",
-      anchor: "Discussed with senior architect about breaking down monolith, focusing on domain boundaries and data consistency challenges",
-      pulse: "curious",
-      wheelId: 1,
-      createdAt: new Date().toISOString(),
-      positionX: 0,
-      positionY: 0,
-      sourceType: 'text'
-    },
-    {
-      id: 1002, 
-      summary: "Completed advanced React patterns workshop covering render props, higher-order components",
-      anchor: "Workshop by Kent C. Dodds, practiced compound components pattern with real examples from UI libraries",
-      pulse: "focused",
-      wheelId: 1,
-      createdAt: new Date().toISOString(),
-      positionX: 0,
-      positionY: 0,
-      sourceType: 'voice'
-    },
-    {
-      id: 1003,
-      summary: "Started morning meditation routine, noticed improved focus and reduced anxiety levels",
-      anchor: "Using Headspace app, 10-minute sessions before work, tracking mood changes and productivity correlations",
-      pulse: "calm",
-      wheelId: 2,
-      createdAt: new Date().toISOString(),
-      positionX: 0,
-      positionY: 0,
-      sourceType: 'text'
-    }
-  ];
+  // Preview mode: 18 dots across 2 wheels (9 each) for demo
+  const generatePreviewDots = (): Dot[] => {
+    const wheel1Dots = [
+      { summary: "Learned microservices architecture patterns in distributed systems", anchor: "Senior architect discussion on monolith breakdown and domain boundaries", pulse: "curious" },
+      { summary: "Completed React patterns workshop with render props", anchor: "Kent C. Dodds workshop on compound components and real UI examples", pulse: "focused" },
+      { summary: "Implemented GraphQL federation for cross-team APIs", anchor: "Used Apollo Federation to unify multiple service schemas", pulse: "excited" },
+      { summary: "Mastered Docker containerization for development workflow", anchor: "Set up multi-stage builds and optimized image sizes for production", pulse: "confident" },
+      { summary: "Deep dive into TypeScript advanced patterns", anchor: "Conditional types, mapped types, and template literal types", pulse: "motivated" },
+      { summary: "Optimized database queries reducing load time by 60%", anchor: "Added proper indexing and query optimization techniques", pulse: "grateful" },
+      { summary: "Led team retrospective on Agile practices", anchor: "Facilitated discussion on sprint improvements and team dynamics", pulse: "inspired" },
+      { summary: "Studied system design for high-scale applications", anchor: "Load balancing, caching strategies, and distributed consensus", pulse: "curious" },
+      { summary: "Built CI/CD pipeline with automated testing", anchor: "GitHub Actions workflow with comprehensive test coverage", pulse: "happy" }
+    ];
+
+    const wheel2Dots = [
+      { summary: "Started daily meditation practice for mental clarity", anchor: "Using Headspace app, 10-minute morning sessions tracking mood", pulse: "calm" },
+      { summary: "Completed nutrition course on balanced eating habits", anchor: "Learned about macronutrients and meal planning strategies", pulse: "motivated" },
+      { summary: "Finished reading 'Atomic Habits' by James Clear", anchor: "Applied habit stacking technique to build consistent routines", pulse: "inspired" },
+      { summary: "Joined local hiking group for weekend adventures", anchor: "Met new people while exploring nature trails and staying active", pulse: "excited" },
+      { summary: "Learned guitar basics with online tutorial series", anchor: "Practiced chord progressions and simple songs for 30 minutes daily", pulse: "happy" },
+      { summary: "Started investing in index funds for retirement", anchor: "Researched low-cost portfolio allocation and dollar-cost averaging", pulse: "confident" },
+      { summary: "Volunteered at local food bank helping community", anchor: "Organized food distribution and met families in need", pulse: "grateful" },
+      { summary: "Completed first aid certification training course", anchor: "CPR, AED usage, and emergency response procedures learned", pulse: "focused" },
+      { summary: "Organized family reunion bringing everyone together", anchor: "Coordinated travel, accommodations, and activities for 20+ relatives", pulse: "grateful" }
+    ];
+
+    const allDots: Dot[] = [];
+    
+    // Add wheel 1 dots (Professional)
+    wheel1Dots.forEach((dot, index) => {
+      allDots.push({
+        id: 2000 + index,
+        summary: dot.summary,
+        anchor: dot.anchor,
+        pulse: dot.pulse,
+        wheelId: 1,
+        sourceType: index % 2 === 0 ? 'text' : 'voice',
+        positionX: Math.floor(Math.random() * 300) + 50,
+        positionY: Math.floor(Math.random() * 250) + 50,
+        createdAt: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString()
+      });
+    });
+
+    // Add wheel 2 dots (Personal)
+    wheel2Dots.forEach((dot, index) => {
+      allDots.push({
+        id: 3000 + index,
+        summary: dot.summary,
+        anchor: dot.anchor,
+        pulse: dot.pulse,
+        wheelId: 2,
+        sourceType: index % 2 === 0 ? 'text' : 'voice',
+        positionX: Math.floor(Math.random() * 300) + 400,
+        positionY: Math.floor(Math.random() * 250) + 50,
+        createdAt: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString()
+      });
+    });
+
+    return allDots;
+  };
+
+  const previewDots = generatePreviewDots();
 
   // Search functionality
   React.useEffect(() => {
