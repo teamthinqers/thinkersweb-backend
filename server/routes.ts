@@ -38,7 +38,7 @@ import whatsappWebhookRouter from "./whatsapp-webhook";
 // Interface for authenticated requests
 interface AuthenticatedRequest extends Request {
   user?: Express.User;
-  isAuthenticated(): boolean;
+  isAuthenticated(): this is AuthenticatedRequest;
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {

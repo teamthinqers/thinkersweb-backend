@@ -232,7 +232,7 @@ export function DotWheelsMap({ wheels, dots, onDotClick }: DotWheelsMapProps) {
                     <span className="text-xs text-gray-500">
                       {new Date(dot.createdAt).toLocaleDateString()}
                     </span>
-                    {dot.sourceType === 'voice' && dot.originalAudioBlob && (
+                    {dot.sourceType === 'voice' && (
                       <Volume2 className="w-3 h-3 text-amber-600" />
                     )}
                   </div>

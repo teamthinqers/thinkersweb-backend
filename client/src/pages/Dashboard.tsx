@@ -20,7 +20,6 @@ interface Dot {
   positionX?: number;
   positionY?: number;
   createdAt: string;
-  updatedAt: string;
   wheelId?: number;
 }
 
