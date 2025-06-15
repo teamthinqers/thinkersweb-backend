@@ -72,7 +72,7 @@ import {
   SheetClose 
 } from "@/components/ui/sheet";
 // Temporarily removed useAuth import to fix React hooks dispatcher error
-import { useWhatsAppStatus } from "@/hooks/useWhatsAppStatus";
+// WhatsApp status temporarily disabled
 import { neuraStorage } from "@/lib/neuraStorage";
 import {
   DropdownMenu,
@@ -97,11 +97,10 @@ export default function LandingPage() {
   const [contactDialogOpen, setContactDialogOpen] = useState(false);
   const [installDialogOpen, setInstallDialogOpen] = useState(false);
   const [whatsAppNumber, setWhatsAppNumber] = useState<string | null>(null);
-  const { 
-    isWhatsAppConnected, 
-    simulateActivation, 
-    forceStatusRefresh 
-  } = useWhatsAppStatus();
+  // WhatsApp authentication temporarily disabled
+  const isWhatsAppConnected = false;
+  const simulateActivation = () => {};
+  const forceStatusRefresh = () => {};
   
 
   
@@ -161,7 +160,7 @@ export default function LandingPage() {
     window.addEventListener('storage', storageHandler);
     
     // Check if all steps are complete on mount/update and mark setup complete if needed
-    if (isNeuraActivated && user && isWhatsAppConnected && isPWAInstalled && !isSetupCompleted) {
+    if (isNeuraActivated && isPWAInstalled && !isSetupCompleted) {
       neuraStorage.markSetupCompleted();
     }
     
@@ -352,57 +351,12 @@ export default function LandingPage() {
               </div>
             </div>
             
-            {/* User profile or sign in button */}
-            {user ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm" className="rounded-full ml-1 p-0">
-                    <Avatar className="h-7 w-7 md:h-8 md:w-8 border border-white shadow">
-                      {user.photoURL ? (
-                        <AvatarImage src={user.photoURL} alt={user.displayName || 'User'} />
-                      ) : (
-                        <AvatarFallback className="bg-primary text-white text-xs md:text-sm">
-                          {user.displayName ? user.displayName.charAt(0).toUpperCase() : 'U'}
-                        </AvatarFallback>
-                      )}
-                    </Avatar>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56">
-                  <div className="p-2 text-sm">
-                    <p className="font-medium">{user.displayName || 'User'}</p>
-                    <p className="text-xs text-muted-foreground truncate">{user.email}</p>
-                  </div>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem asChild>
-                    <Link href="/profile" className="cursor-pointer w-full">
-                      <User className="mr-2 h-4 w-4" />
-                      Profile
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link href="/dashboard" className="cursor-pointer w-full">
-                      <Brain className="mr-2 h-4 w-4" />
-                      Neural Dashboard
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={handleLogout} className="text-red-600">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="mr-2 h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                      <polyline points="16 17 21 12 16 7"></polyline>
-                      <line x1="21" y1="12" x2="9" y2="12"></line>
-                    </svg>
-                    <span>Sign out</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ) : (
-              <Button asChild size="sm" className="ml-1 h-8 md:h-10 text-xs md:text-sm px-2 md:px-4">
-                <Link href="/auth">
-                  Sign In
-                </Link>
-              </Button>
-            )}
+            {/* Dashboard button - auth temporarily disabled */}
+            <Button asChild size="sm" className="ml-1 h-8 md:h-10 text-xs md:text-sm px-2 md:px-4">
+              <Link href="/dashboard">
+                Dashboard
+              </Link>
+            </Button>
             
             {/* Mobile menu button - always visible */}
             <div className="md:hidden ml-1">
