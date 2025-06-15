@@ -121,7 +121,7 @@ function AppWithLayout() {
   const renderContent = () => {
     switch (location) {
       case '/dashboard':
-        return <Dashboard onEntryClick={openEntryDetail} onNewEntry={openNewEntryForm} />;
+        return <Dashboard />;
       case '/entries':
         return <AllEntries onEntryClick={openEntryDetail} />;
       case '/insights':
@@ -135,7 +135,7 @@ function AppWithLayout() {
       case '/profile':
         return <Profile />;
       default:
-        return <Dashboard onEntryClick={openEntryDetail} onNewEntry={openNewEntryForm} />;
+        return <Dashboard />;
     }
   };
 
@@ -164,16 +164,15 @@ function AppWithLayout() {
 
 function Router() {
   const [location] = useLocation();
+  const { user } = useAuth();
   
   return (
     <Switch>
       <Route path="/" component={LandingPage} />
       <Route path="/auth" component={AuthPage} />
       
-      {/* Dashboard route - shows mock dashboard if user is not authenticated */}
-      <Route path="/dashboard">
-        {user ? <AppWithLayout /> : <MockDashboard />}
-      </Route>
+      {/* Dashboard route - protected route */}
+      <Route path="/dashboard" component={() => <AppWithLayout />} />
       
       {/* Other protected routes */}
       <Route path="/entries" component={() => <AppWithLayout />} />
