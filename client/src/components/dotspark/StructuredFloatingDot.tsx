@@ -70,7 +70,7 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
     const savedSettings = localStorage.getItem('dotspark-settings');
     if (savedSettings) {
       const settings = JSON.parse(savedSettings);
-      setUserCaptureMode(settings.captureMode ?? 'hybrid');
+      setUserCaptureMode(settings.captureMode ?? 'natural');
     }
   }, []);
 
@@ -181,13 +181,11 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
       setIsExpanded(true);
       setIsFirstActivation(false);
       
-      // Auto-select mode based on user preference
-      if (userCaptureMode === 'voice') {
-        setCaptureMode('voice');
-      } else if (userCaptureMode === 'text') {
-        setCaptureMode('text');
+      // Show options based on user's capture mode preference
+      if (userCaptureMode === 'ai') {
+        setCaptureMode('select'); // Show AI mode options (Direct Chat & WhatsApp)
       } else {
-        setCaptureMode('select'); // Show selection for hybrid mode
+        setCaptureMode('select'); // Show Natural mode options (Voice & Text)
       }
     }
   };
