@@ -345,24 +345,27 @@ const Dashboard: React.FC = () => {
 
     // Touch event handlers for PWA/mobile support
     const handleTouchStart = (e: React.TouchEvent) => {
+      e.preventDefault();
       const touch = e.touches[0];
       setDragStart({ x: touch.clientX - offset.x, y: touch.clientY - offset.y });
     };
 
     const handleTouchMove = (e: React.TouchEvent) => {
       if (dragStart && e.touches[0]) {
-        e.preventDefault(); // Only prevent default when actually dragging
+        e.preventDefault();
         const touch = e.touches[0];
         const newOffset = {
           x: touch.clientX - dragStart.x,
           y: touch.clientY - dragStart.y
         };
         
-        // Add boundary constraints for better mobile experience
-        const maxX = 100;
-        const minX = -(1200 - 300);
+        // More generous boundary constraints for PWA
+        const containerWidth = 350; // Approximate PWA container width
+        const containerHeight = 450;
+        const maxX = 50;
+        const minX = -(1200 - containerWidth + 50);
         const maxY = 50;
-        const minY = -(800 - 400);
+        const minY = -(800 - containerHeight + 50);
         
         setOffset({
           x: Math.max(minX, Math.min(maxX, newOffset.x)),
@@ -371,7 +374,8 @@ const Dashboard: React.FC = () => {
       }
     };
 
-    const handleTouchEnd = () => {
+    const handleTouchEnd = (e: React.TouchEvent) => {
+      e.preventDefault();
       setDragStart(null);
     };
 
@@ -493,18 +497,26 @@ const Dashboard: React.FC = () => {
         
         {/* Interactive draggable grid */}
         <div 
-          className="relative overflow-auto h-[450px] w-full"
+          className="relative overflow-hidden h-[450px] w-full cursor-grab active:cursor-grabbing"
+          onMouseDown={handleMouseDown}
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseUp}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
           style={{ 
             WebkitOverflowScrolling: 'touch',
-            scrollBehavior: 'smooth',
-            overscrollBehavior: 'contain'
+            touchAction: 'pan-x pan-y',
+            userSelect: 'none'
           }}
         >
           <div 
-            className="relative"
+            className="relative transition-transform duration-100 ease-out"
             style={{ 
               width: '1200px', 
-              height: '800px'
+              height: '800px',
+              transform: `translate(${offset.x}px, ${offset.y}px)`
             }}
           >
             {/* Individual Dots Random Grid */}
