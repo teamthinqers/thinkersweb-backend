@@ -162,7 +162,11 @@ export default function LandingPage() {
     window.addEventListener('storage', storageHandler);
     
     // Check if all steps are complete on mount/update and mark setup complete if needed
-    if (isNeuraActivated && user && isWhatsAppConnected && isPWAInstalled && !isSetupCompleted) {
+    // Check if PWA was ever installed (localStorage check for cross-platform)
+    const wasPWAInstalled = localStorage.getItem('pwa-installed') === 'true';
+    const hasCompletedPWAStep = isPWAInstalled || wasPWAInstalled;
+    
+    if (isNeuraActivated && user && isWhatsAppConnected && hasCompletedPWAStep && !isSetupCompleted) {
       neuraStorage.markSetupCompleted();
     }
     
@@ -177,8 +181,12 @@ export default function LandingPage() {
   // Additional effect to handle PWA installation completion status update
   useEffect(() => {
     // When PWA installation status changes, check if all setup steps are complete
-    if (isPWAInstalled && isNeuraActivated && user && isWhatsAppConnected && !isSetupCompleted) {
-      console.log("PWA installed - marking setup as completed");
+    // Check if PWA was ever installed (localStorage check for cross-platform)
+    const wasPWAInstalled = localStorage.getItem('pwa-installed') === 'true';
+    const hasCompletedPWAStep = isPWAInstalled || wasPWAInstalled;
+    
+    if (isNeuraActivated && user && isWhatsAppConnected && hasCompletedPWAStep && !isSetupCompleted) {
+      console.log("Setup requirements met - marking setup as completed");
       neuraStorage.markSetupCompleted();
       setIsSetupCompleted(true);
     }
