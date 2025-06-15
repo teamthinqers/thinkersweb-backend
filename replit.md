@@ -587,6 +587,12 @@ Changelog:
 - June 15, 2025. Fixed home page "My DotSpark" button icon:
   * Replaced Sparkles icon with correct DotSpark logo icon in desktop header navigation
   * Button now displays proper branding with dotspark-logo-icon.jpeg
+- June 15, 2025. Updated sign-in page content:
+  * Replaced entire right side content with exact hero section from home page
+  * Added "For the OG ThinQers" headline with amber gradient styling
+  * Included exact 3-step process: Sign In/Register, Activate the Dot, Install Web App
+  * Applied consistent amber/orange color theming and branding throughout
+  * Maintained same layout structure with compact card design for 3 steps
 ```
 
 ## User Preferences

@@ -341,45 +341,67 @@ export default function AuthPage() {
       </div>
 
       {/* Right side with branding/marketing */}
-      <div className="hidden lg:flex flex-1 bg-gradient-to-br from-primary/10 via-background to-secondary/10 p-10">
+      <div className="hidden lg:flex flex-1 bg-gradient-to-br from-amber-50/30 to-orange-50/20 dark:from-amber-950/20 dark:to-orange-950/10 p-10">
         <div className="w-full max-w-2xl mx-auto flex flex-col justify-center">
           <div className="space-y-8">
-            <div>
-              <h1 className="text-4xl font-bold tracking-tight mb-2">
-                Connect the Dots, <span className="text-gradient">Spark</span> Your Potential
-              </h1>
-              <p className="text-xl text-muted-foreground">
-                Like a neural chip for your mind, DotSpark connects your learnings across every domain, unleashing limitless growth through insights you never knew you had.
+            {/* Hero Section Content */}
+            <div className="text-center">
+              <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-2 text-sm text-primary mb-4">
+                <img src="/dotspark-logo-icon.jpeg" alt="DotSpark" className="h-6 w-6 rounded" />
+                <span>Introducing DotSpark</span>
+              </div>
+              
+              <div className="text-2xl md:text-3xl font-bold tracking-tight mb-4">
+                <span className="font-sans tracking-normal text-center bg-clip-text text-transparent bg-gradient-to-r from-amber-700 via-amber-600 to-amber-500 dark:from-amber-400 dark:via-amber-300 dark:to-amber-200">
+                  For the OG Thin<span className="relative inline-block px-2 py-1 bg-gradient-to-br from-amber-600 to-amber-700 dark:from-amber-500 dark:to-amber-600 text-white font-bold rounded-lg shadow-lg border-2 border-amber-500/20">Q</span>ers
+                </span>
+              </div>
+              
+              <p className="text-lg text-muted-foreground mb-6">
+                Built on inspirations from <span className="font-semibold text-amber-700 dark:text-amber-400">ancient Indian wisdom</span>, 
+                to preserve and sharpen your <span className="font-semibold text-amber-700 dark:text-amber-400">Natural Intelligence</span> in an AI Driven World.
               </p>
             </div>
 
-            <div className="bg-card/50 border rounded-xl p-6 space-y-6">
-              <h3 className="text-xl font-semibold flex items-center">
-                <div className="w-8 h-8 rounded-full bg-primary/20 text-primary flex items-center justify-center mr-3">1</div>
-                Create Your Account
-              </h3>
-              <p className="text-muted-foreground ml-11">
-                Sign up to access your personal neural chip and start capturing your learning dots.
-              </p>
+            {/* 3-Step Process */}
+            <div className="space-y-6">
+              <h2 className="text-xl font-bold text-center">
+                Setup <span className="bg-clip-text text-transparent bg-gradient-to-r from-amber-600 to-orange-600">DotSpark</span> in 3 Simple Steps
+              </h2>
+              
+              <div className="space-y-4">
+                {/* Step 1: Sign In */}
+                <div className="bg-card/50 border border-amber-200/30 dark:border-amber-800/30 rounded-lg p-4">
+                  <div className="flex items-center mb-2">
+                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-amber-500/80 text-white font-bold text-sm mr-3">1</div>
+                    <h3 className="text-lg font-semibold">Sign In or Register</h3>
+                  </div>
+                  <p className="text-muted-foreground text-sm ml-11">
+                    Create your account to personalize your DotSpark experience.
+                  </p>
+                </div>
 
-              <div className="border-t border-border/50 pt-6">
-                <h3 className="text-xl font-semibold flex items-center">
-                  <div className="w-8 h-8 rounded-full bg-primary/20 text-primary flex items-center justify-center mr-3">2</div>
-                  DotSpark WhatsApp Chatbot
-                </h3>
-                <p className="text-muted-foreground ml-11">
-                  Chat with our WhatsApp bot to record learning moments on the go, ensuring no valuable insight is ever lost.
-                </p>
-              </div>
+                {/* Step 2: Activate DotSpark */}
+                <div className="bg-card/50 border border-orange-200/30 dark:border-orange-800/30 rounded-lg p-4">
+                  <div className="flex items-center mb-2">
+                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-orange-500/80 text-white font-bold text-sm mr-3">2</div>
+                    <h3 className="text-lg font-semibold">Activate the Dot</h3>
+                  </div>
+                  <p className="text-muted-foreground text-sm ml-11">
+                    Configure the Dot settings to capture your valuable thoughts.
+                  </p>
+                </div>
 
-              <div className="border-t border-border/50 pt-6">
-                <h3 className="text-xl font-semibold flex items-center">
-                  <div className="w-8 h-8 rounded-full bg-primary/20 text-primary flex items-center justify-center mr-3">3</div>
-                  Experience the Spark
-                </h3>
-                <p className="text-muted-foreground ml-11">
-                  Watch as your neural chip connects seemingly unrelated dots into powerful insights that transform your learning journey.
-                </p>
+                {/* Step 3: Install Web App */}
+                <div className="bg-card/50 border border-orange-200/30 dark:border-orange-800/30 rounded-lg p-4">
+                  <div className="flex items-center mb-2">
+                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-orange-500/80 text-white font-bold text-sm mr-3">3</div>
+                    <h3 className="text-lg font-semibold">Install Web App</h3>
+                  </div>
+                  <p className="text-muted-foreground text-sm ml-11">
+                    Download the Web App on your mobile for a better experience.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
