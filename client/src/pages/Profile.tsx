@@ -69,21 +69,55 @@ const Profile: React.FC = () => {
 
   const completionPercentage = calculateCompletionPercentage();
 
-  // Load profile data from localStorage on component mount
-  useEffect(() => {
-    const savedProfile = localStorage.getItem('userProfile');
-    if (savedProfile) {
-      try {
-        const parsed = JSON.parse(savedProfile);
+  // Enhanced cross-platform data synchronization
+  const loadProfileData = () => {
+    try {
+      // Try multiple storage keys for cross-platform compatibility
+      const storageKeys = ['userProfile', 'dotspark_userProfile', 'dotSpark_profile'];
+      let savedProfile = null;
+      
+      for (const key of storageKeys) {
+        const data = localStorage.getItem(key);
+        if (data) {
+          savedProfile = JSON.parse(data);
+          break;
+        }
+      }
+      
+      if (savedProfile) {
         setProfileData(prev => ({
           ...prev,
-          ...parsed,
-          email: user?.email || parsed.email // Always use latest email from auth
+          ...savedProfile,
+          email: user?.email || savedProfile.email // Always use latest email from auth
         }));
-      } catch (error) {
-        console.error('Failed to parse saved profile:', error);
       }
+    } catch (error) {
+      console.error('Failed to load profile data:', error);
     }
+  };
+
+  const saveProfileData = (data: ProfileData) => {
+    try {
+      const profileToSave = JSON.stringify(data);
+      // Save to multiple keys for cross-platform compatibility
+      localStorage.setItem('userProfile', profileToSave);
+      localStorage.setItem('dotspark_userProfile', profileToSave);
+      localStorage.setItem('dotSpark_profile', profileToSave);
+      
+      // Trigger storage event for cross-tab synchronization
+      window.dispatchEvent(new StorageEvent('storage', {
+        key: 'userProfile',
+        newValue: profileToSave,
+        storageArea: localStorage
+      }));
+    } catch (error) {
+      console.error('Failed to save profile data:', error);
+    }
+  };
+
+  // Load profile data on component mount
+  useEffect(() => {
+    loadProfileData();
     
     // Auto-populate from user auth data
     if (user) {
@@ -96,6 +130,36 @@ const Profile: React.FC = () => {
       }));
     }
   }, [user]);
+
+  // Listen for storage changes across tabs/PWA
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'userProfile' && e.newValue) {
+        try {
+          const updatedProfile = JSON.parse(e.newValue);
+          setProfileData(prev => ({
+            ...prev,
+            ...updatedProfile,
+            email: user?.email || updatedProfile.email
+          }));
+        } catch (error) {
+          console.error('Failed to sync profile data:', error);
+        }
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, [user]);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (saveTimeout) {
+        clearTimeout(saveTimeout);
+      }
+    };
+  }, [saveTimeout]);
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -124,7 +188,10 @@ const Profile: React.FC = () => {
       reader.onload = (e) => {
         const result = e.target?.result as string;
         setImagePreview(result);
-        setProfileData(prev => ({ ...prev, profileImage: result }));
+        const updatedData = { ...profileData, profileImage: result };
+        setProfileData(updatedData);
+        // Auto-save image for immediate cross-platform sync
+        saveProfileData(updatedData);
       };
       reader.readAsDataURL(file);
     }
@@ -132,36 +199,53 @@ const Profile: React.FC = () => {
 
   const removeImage = () => {
     setImagePreview(null);
-    setProfileData(prev => ({ ...prev, profileImage: '' }));
+    const updatedData = { ...profileData, profileImage: '' };
+    setProfileData(updatedData);
+    // Auto-save removal for immediate cross-platform sync
+    saveProfileData(updatedData);
+  };
+
+  // Auto-save function with debouncing
+  const [saveTimeout, setSaveTimeout] = useState<NodeJS.Timeout | null>(null);
+  
+  const autoSaveProfile = (data: ProfileData) => {
+    if (saveTimeout) {
+      clearTimeout(saveTimeout);
+    }
+    
+    const timeout = setTimeout(() => {
+      saveProfileData(data);
+    }, 1500); // Auto-save after 1.5 seconds of inactivity
+    
+    setSaveTimeout(timeout);
+  };
+
+  // Enhanced field change handler with auto-save
+  const handleFieldChange = (field: keyof ProfileData, value: string) => {
+    const updatedData = { ...profileData, [field]: value };
+    setProfileData(updatedData);
+    
+    // Auto-save if in editing mode
+    if (isEditing) {
+      autoSaveProfile(updatedData);
+    }
   };
 
   const handleSave = () => {
-    // Save to localStorage
-    localStorage.setItem('userProfile', JSON.stringify(profileData));
+    // Use enhanced save function for cross-platform sync
+    saveProfileData(profileData);
     
     setIsEditing(false);
     setImagePreview(null);
     toast({
       title: "Profile Updated",
-      description: `Profile completion: ${completionPercentage}%`,
+      description: `Profile completion: ${completionPercentage}% - Synced across all devices`,
     });
   };
 
   const handleCancel = () => {
-    // Reload from localStorage
-    const savedProfile = localStorage.getItem('userProfile');
-    if (savedProfile) {
-      try {
-        const parsed = JSON.parse(savedProfile);
-        setProfileData(prev => ({
-          ...prev,
-          ...parsed,
-          email: user?.email || parsed.email
-        }));
-      } catch (error) {
-        console.error('Failed to reload profile:', error);
-      }
-    }
+    // Reload using enhanced load function
+    loadProfileData();
     setIsEditing(false);
     setImagePreview(null);
   };
@@ -287,8 +371,8 @@ const Profile: React.FC = () => {
             {/* Form Fields */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* First Name */}
-              <div>
-                <Label htmlFor="firstName" className="flex items-center space-x-1">
+              <div className="space-y-2">
+                <Label htmlFor="firstName" className="flex items-center space-x-2 text-sm font-medium text-gray-700">
                   <User className="h-4 w-4" />
                   <span>First Name</span>
                 </Label>
@@ -304,8 +388,8 @@ const Profile: React.FC = () => {
               </div>
 
               {/* Last Name */}
-              <div>
-                <Label htmlFor="lastName" className="flex items-center space-x-1">
+              <div className="space-y-2">
+                <Label htmlFor="lastName" className="flex items-center space-x-2 text-sm font-medium text-gray-700">
                   <User className="h-4 w-4" />
                   <span>Last Name</span>
                 </Label>
@@ -321,8 +405,8 @@ const Profile: React.FC = () => {
               </div>
 
               {/* Email */}
-              <div>
-                <Label htmlFor="email" className="flex items-center space-x-1">
+              <div className="space-y-2">
+                <Label htmlFor="email" className="flex items-center space-x-2 text-sm font-medium text-gray-700">
                   <Mail className="h-4 w-4" />
                   <span>Email</span>
                 </Label>
@@ -333,12 +417,12 @@ const Profile: React.FC = () => {
                   disabled={true}
                   className="bg-gray-50"
                 />
-                <p className="text-xs text-gray-500 mt-1">Email is automatically synced from your account</p>
+                <p className="text-xs text-gray-500">Email is automatically synced from your account</p>
               </div>
 
               {/* Mobile Number */}
-              <div>
-                <Label htmlFor="mobileNumber" className="flex items-center space-x-1">
+              <div className="space-y-2">
+                <Label htmlFor="mobileNumber" className="flex items-center space-x-2 text-sm font-medium text-gray-700">
                   <Phone className="h-4 w-4" />
                   <span>Mobile Number</span>
                 </Label>
@@ -354,24 +438,40 @@ const Profile: React.FC = () => {
               </div>
 
               {/* Date of Birth */}
-              <div>
-                <Label htmlFor="dateOfBirth" className="flex items-center space-x-1">
+              <div className="space-y-2">
+                <Label htmlFor="dateOfBirth" className="flex items-center space-x-2 text-sm font-medium text-gray-700">
                   <Calendar className="h-4 w-4" />
                   <span>Date of Birth</span>
                 </Label>
-                <Input
-                  id="dateOfBirth"
-                  type="date"
-                  value={profileData.dateOfBirth}
-                  onChange={(e) => setProfileData(prev => ({ ...prev, dateOfBirth: e.target.value }))}
-                  disabled={!isEditing}
-                  className={!isEditing ? "bg-gray-50" : ""}
-                />
+                {isEditing ? (
+                  <div className="relative">
+                    <Input
+                      id="dateOfBirth"
+                      type="date"
+                      value={profileData.dateOfBirth}
+                      onChange={(e) => setProfileData(prev => ({ ...prev, dateOfBirth: e.target.value }))}
+                      className="cursor-pointer"
+                      max={new Date().toISOString().split('T')[0]}
+                    />
+                    <Calendar className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
+                  </div>
+                ) : (
+                  <Input
+                    value={profileData.dateOfBirth ? new Date(profileData.dateOfBirth).toLocaleDateString('en-US', { 
+                      year: 'numeric', 
+                      month: 'long', 
+                      day: 'numeric' 
+                    }) : ''}
+                    disabled={true}
+                    className="bg-gray-50"
+                    placeholder="Select your date of birth"
+                  />
+                )}
               </div>
 
               {/* Years of Experience */}
-              <div>
-                <Label htmlFor="yearsOfExperience" className="flex items-center space-x-1">
+              <div className="space-y-2">
+                <Label htmlFor="yearsOfExperience" className="flex items-center space-x-2 text-sm font-medium text-gray-700">
                   <Briefcase className="h-4 w-4" />
                   <span>Years of Experience</span>
                 </Label>
@@ -389,8 +489,8 @@ const Profile: React.FC = () => {
               </div>
 
               {/* LinkedIn Profile */}
-              <div>
-                <Label htmlFor="linkedInProfile" className="flex items-center space-x-1">
+              <div className="space-y-2">
+                <Label htmlFor="linkedInProfile" className="flex items-center space-x-2 text-sm font-medium text-gray-700">
                   <ExternalLink className="h-4 w-4" />
                   <span>LinkedIn Profile</span>
                 </Label>
@@ -408,7 +508,7 @@ const Profile: React.FC = () => {
                     href={profileData.linkedInProfile}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center space-x-1 text-sm text-blue-600 hover:text-blue-800 mt-1"
+                    className="inline-flex items-center space-x-1 text-sm text-blue-600 hover:text-blue-800"
                   >
                     <span>View Profile</span>
                     <ExternalLink className="h-3 w-3" />
