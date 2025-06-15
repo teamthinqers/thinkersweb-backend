@@ -53,31 +53,43 @@ const Dashboard: React.FC = () => {
   // Example data for preview mode when no dots exist
   const exampleDots: Dot[] = [
     {
-      id: "example-1",
+      id: 1001,
       summary: "Learned about microservices architecture patterns and their trade-offs in distributed systems",
       anchor: "Discussed with senior architect about breaking down monolith, focusing on domain boundaries and data consistency challenges",
       pulse: "curious",
-      wheelId: "example-wheel-1",
-      timestamp: new Date(),
+      wheelId: 1,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      userId: 1,
+      positionX: 0,
+      positionY: 0,
       sourceType: 'text'
     },
     {
-      id: "example-2", 
+      id: 1002, 
       summary: "Completed advanced React patterns workshop covering render props, higher-order components",
       anchor: "Workshop by Kent C. Dodds, practiced compound components pattern with real examples from UI libraries",
       pulse: "focused",
-      wheelId: "example-wheel-1",
-      timestamp: new Date(),
+      wheelId: 1,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      userId: 1,
+      positionX: 0,
+      positionY: 0,
       sourceType: 'voice'
     },
     {
-      id: "example-3",
+      id: 1003,
       summary: "Started morning meditation routine, noticed improved focus and reduced anxiety levels",
       anchor: "Using Headspace app, 10-minute sessions before work, tracking mood changes and productivity correlations",
       pulse: "calm",
-      wheelId: "example-wheel-2", 
-      timestamp: new Date(),
-      sourceType: 'hybrid'
+      wheelId: 2,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      userId: 1,
+      positionX: 0,
+      positionY: 0,
+      sourceType: 'text'
     }
   ];
 
@@ -98,61 +110,37 @@ const Dashboard: React.FC = () => {
   // Mock wheels data for visualization
   const [wheels] = useState<Wheel[]>([
     {
-      id: '1',
+      id: "1",
       name: 'Innovation Ideas',
       category: 'Technology',
       color: '#3B82F6',
-      dots: [
-        {
-          id: '1',
-          summary: 'AI-powered plant care system that learns from user behavior and environmental data',
-          anchor: 'Inspired by struggling to keep houseplants alive. Combines IoT sensors with machine learning for personalized care recommendations.',
-          pulse: 'excited',
-          wheelId: '1',
-          timestamp: new Date(),
-          sourceType: 'text'
-        }
-      ],
-      connections: ['2'],
-      position: { x: 100, y: 100 }
+      userId: 1,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      positionX: 100,
+      positionY: 100
     },
     {
-      id: '2', 
+      id: "2", 
       name: 'Business Strategies',
       category: 'Professional',
       color: '#10B981',
-      dots: [
-        {
-          id: '2',
-          summary: 'Focus on micro-SaaS products targeting specific professional niches instead of broad markets',
-          anchor: 'Research shows specialized tools have higher retention rates and customer lifetime value than generic solutions.',
-          pulse: 'confident',
-          wheelId: '2',
-          timestamp: new Date(),
-          sourceType: 'voice'
-        }
-      ],
-      connections: ['1', '3'],
-      position: { x: 300, y: 150 }
+      userId: 1,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      positionX: 300,
+      positionY: 150
     },
     {
-      id: '3',
+      id: "3",
       name: 'Learning Insights', 
       category: 'Personal Growth',
       color: '#F59E0B',
-      dots: [
-        {
-          id: '3',
-          summary: 'Active recall through teaching others is the most effective way to solidify new knowledge',
-          anchor: 'Feynman technique in practice - explaining complex concepts in simple terms reveals knowledge gaps and strengthens understanding.',
-          pulse: 'enlightened',
-          wheelId: '3',
-          timestamp: new Date(),
-          sourceType: 'hybrid'
-        }
-      ],
-      connections: ['2'],
-      position: { x: 200, y: 280 }
+      userId: 1,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      positionX: 200,
+      positionY: 250
     }
   ]);
 
