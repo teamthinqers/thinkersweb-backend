@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { getQueryFn } from '@/lib/queryClient';
-import { useAuth } from '@/hooks/use-auth';
+// Removed auth dependency to fix React hook error
 import { useEffect, useState, useCallback } from 'react';
 import { useToast } from '@/hooks/use-toast';
 
