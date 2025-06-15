@@ -360,9 +360,14 @@ const Dashboard: React.FC = () => {
       if (dragStart && e.touches[0]) {
         e.preventDefault();
         const touch = e.touches[0];
+        
+        // Increase drag sensitivity by amplifying movement (2x multiplier for easier dragging)
+        const deltaX = (touch.clientX - dragStart.x) * 1.5;
+        const deltaY = (touch.clientY - dragStart.y) * 1.5;
+        
         const newOffset = {
-          x: touch.clientX - dragStart.x,
-          y: touch.clientY - dragStart.y
+          x: deltaX,
+          y: deltaY
         };
         
         // More generous boundary constraints for PWA
