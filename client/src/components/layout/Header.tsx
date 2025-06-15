@@ -320,7 +320,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 </div>
               </Button>
               
-              {/* Social Neura button with animated brain icon */}
+              {/* Social button with proper social styling */}
               <Button
                 variant="ghost"
                 size="sm"
@@ -334,7 +334,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                       <Brain className="h-5 w-5" />
                     </div>
                   </div>
-                  <span className="text-sm font-medium hidden sm:inline">Social Neura</span>
+                  <span className="text-sm font-medium">Social</span>
                 </div>
               </Button>
               
