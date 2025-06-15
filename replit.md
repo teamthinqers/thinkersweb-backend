@@ -633,6 +633,11 @@ Changelog:
   * Changed chat interface title to "DotSpark AI - Save Dots"
   * Updated input placeholder to "Share your thoughts to save as a dot..."
   * Both AI mode options now consistently guide users toward dot creation
+- June 15, 2025. Updated Cogni Shield description for dot-focused messaging:
+  * Changed description from "retain natural cognitive identity and stay unbiased while interacting with AI"
+  * Updated to "retain your natural cognitive identity while taking help of AI to save your Dot"
+  * Applied consistent messaging across MyNeura and SectionedDotSparkTuningPage components
+  * Aligned Cogni Shield purpose with primary dot creation functionality
 - June 15, 2025. Optimized AI conversation flow for minimal user effort:
   * Updated AI prompts to proactively organize user thoughts into three layers with minimal intervention
   * AI now immediately structures user input into Summary/Anchor/Pulse format for quick approval
