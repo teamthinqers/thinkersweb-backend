@@ -28,7 +28,10 @@ interface StructuredFloatingDotProps {
 }
 
 export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) {
-  const [position, setPosition] = useState<Position>({ x: 320, y: 180 });
+  const [position, setPosition] = useState<Position>(() => {
+    const saved = localStorage.getItem('structured-floating-dot-position');
+    return saved ? JSON.parse(saved) : { x: 320, y: 180 };
+  });
   const [isExpanded, setIsExpanded] = useState(false);
   const [captureMode, setCaptureMode] = useState<'select' | 'text' | 'voice'>('select');
   const [userCaptureMode, setUserCaptureMode] = useState<'voice' | 'text' | 'hybrid'>('hybrid');
@@ -64,23 +67,35 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
     }
   }, []);
 
+  // Save position whenever it changes
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      localStorage.setItem('structured-floating-dot-position', JSON.stringify(position));
+    }, 100);
+    
+    return () => clearTimeout(timeoutId);
+  }, [position]);
+
   const handleMouseDown = (e: React.MouseEvent) => {
     if (isExpanded) return;
     e.preventDefault();
+    e.stopPropagation();
     setIsDragging(true);
     
-    const startX = e.clientX - position.x;
-    const startY = e.clientY - position.y;
+    const rect = dotRef.current?.getBoundingClientRect();
+    const startX = e.clientX - (rect?.left || position.x);
+    const startY = e.clientY - (rect?.top || position.y);
 
     const handleMouseMove = (e: MouseEvent) => {
-      const newX = Math.max(0, Math.min(window.innerWidth - 48, e.clientX - startX));
-      const newY = Math.max(0, Math.min(window.innerHeight - 48, e.clientY - startY));
-      setPosition({ x: newX, y: newY });
+      e.preventDefault();
+      const newX = Math.max(12, Math.min(window.innerWidth - 60, e.clientX - startX));
+      const newY = Math.max(12, Math.min(window.innerHeight - 60, e.clientY - startY));
+      const newPosition = { x: newX, y: newY };
+      setPosition(newPosition);
     };
 
     const handleMouseUp = () => {
       setIsDragging(false);
-      localStorage.setItem('global-floating-dot-position', JSON.stringify(position));
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
     };
@@ -92,22 +107,25 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
   const handleTouchStart = (e: React.TouchEvent) => {
     if (isExpanded) return;
     e.preventDefault();
+    e.stopPropagation();
     setIsDragging(true);
     
     const touch = e.touches[0];
-    const startX = touch.clientX - position.x;
-    const startY = touch.clientY - position.y;
+    const rect = dotRef.current?.getBoundingClientRect();
+    const startX = touch.clientX - (rect?.left || position.x);
+    const startY = touch.clientY - (rect?.top || position.y);
 
     const handleTouchMove = (e: TouchEvent) => {
+      e.preventDefault();
       const touch = e.touches[0];
-      const newX = Math.max(0, Math.min(window.innerWidth - 48, touch.clientX - startX));
-      const newY = Math.max(0, Math.min(window.innerHeight - 48, touch.clientY - startY));
-      setPosition({ x: newX, y: newY });
+      const newX = Math.max(12, Math.min(window.innerWidth - 60, touch.clientX - startX));
+      const newY = Math.max(12, Math.min(window.innerHeight - 60, touch.clientY - startY));
+      const newPosition = { x: newX, y: newY };
+      setPosition(newPosition);
     };
 
     const handleTouchEnd = () => {
       setIsDragging(false);
-      localStorage.setItem('global-floating-dot-position', JSON.stringify(position));
       document.removeEventListener('touchmove', handleTouchMove);
       document.removeEventListener('touchend', handleTouchEnd);
     };
@@ -306,19 +324,26 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
       <div
         ref={dotRef}
         className={cn(
-          "absolute pointer-events-auto cursor-move transition-all duration-150 ease-out",
+          "absolute pointer-events-auto transition-all duration-150 ease-out",
+          "will-change-transform touch-none user-select-none -webkit-user-select-none",
           isExpanded ? "hidden" : "block",
-          isDragging ? "scale-110 z-60" : "hover:scale-105"
+          isDragging ? "cursor-grabbing scale-110 z-60" : "cursor-grab hover:scale-105"
         )}
         style={{ 
           left: `${position.x}px`, 
           top: `${position.y}px`,
           transform: isDragging ? 'scale(1.1)' : undefined,
-          transition: isDragging ? 'none' : 'all 0.15s ease-out'
+          transition: isDragging ? 'none' : 'all 0.15s ease-out',
+          WebkitTouchCallout: 'none',
+          WebkitUserSelect: 'none',
+          touchAction: 'none'
         }}
         onMouseDown={handleMouseDown}
         onTouchStart={handleTouchStart}
         onClick={handleClick}
+        role="button"
+        aria-label="DotSpark floating capture button - Drag to reposition"
+        tabIndex={0}
       >
         <div className="relative">
           {/* Multiple pulsing rings for enhanced visibility */}

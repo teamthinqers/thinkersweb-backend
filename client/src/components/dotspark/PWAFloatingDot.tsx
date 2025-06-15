@@ -141,9 +141,13 @@ export function PWAFloatingDot({ isActive }: PWAFloatingDotProps) {
     }
   };
 
-  // Save position whenever it changes
+  // Save position whenever it changes, but avoid saving on initial load
   useEffect(() => {
-    localStorage.setItem('pwa-floating-dot-position', JSON.stringify(position));
+    const timeoutId = setTimeout(() => {
+      localStorage.setItem('pwa-floating-dot-position', JSON.stringify(position));
+    }, 100);
+    
+    return () => clearTimeout(timeoutId);
   }, [position]);
 
   if (!isActive) return null;
