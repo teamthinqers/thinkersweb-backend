@@ -9,12 +9,11 @@ import {
   Menu, 
   LayoutDashboard,
   Brain, 
-  Sparkles,
-  Check
+  User,
+  MessageSquare
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
-import { apiRequest } from "@/lib/queryClient";
 import { useAuth } from "@/hooks/use-auth";
 import { Link, useLocation } from "wouter";
 import { signOut } from "@/lib/authService";
@@ -30,6 +29,7 @@ import {
 } from "@/components/ui/button";
 import { useMobile } from "@/hooks/use-mobile";
 import { useWhatsAppStatus } from "@/hooks/useWhatsAppStatus";
+import { neuraStorage } from "@/lib/neuraStorage";
 
 interface HeaderProps {
   onSearch: (query: string) => void;
@@ -42,9 +42,16 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
   const [searchQuery, setSearchQuery] = useState("");
   const { toast } = useToast();
   const { user, logout } = useAuth();
-  const [, setLocation] = useLocation();
+  const [location, setLocation] = useLocation();
   const isMobile = useMobile();
   const [showMobileNav, setShowMobileNav] = useState(false);
+  
+  // State for Neura activation using neuraStorage - forced check on every render
+  const [isActivated, setIsActivated] = useState(() => {
+    const status = neuraStorage.isActivated();
+    console.log("Header initial state:", status);
+    return status;
+  });
   
   // Get WhatsApp status with our enhanced hook
   const { 
@@ -53,18 +60,43 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
     forceStatusRefresh 
   } = useWhatsAppStatus();
   
-  // Check localStorage for activation status every render to ensure consistency
-  const isActiveInLocalStorage = localStorage.getItem('whatsapp_activated') === 'true';
+  // Update activation status when component mounts
+  useEffect(() => {
+    setIsActivated(neuraStorage.isActivated());
+  }, []);
   
-  // Combined activation status check (either API confirms it or we have localStorage flag)
-  const isActivated = isWhatsAppConnected || isActiveInLocalStorage;
-  
-  // Debug status
-  console.log("WhatsApp status - Header:", { 
-    isWhatsAppConnected, 
-    isActiveInLocalStorage, 
-    isActivated 
-  });
+  // Listen for Neura activation events
+  useEffect(() => {
+    // Function to handle activation state changes
+    const handleActivation = (activated: boolean) => {
+      console.log("Header received activation event:", activated);
+      setIsActivated(activated);
+    };
+    
+    // Initial check on mount
+    const initialStatus = neuraStorage.isActivated();
+    console.log("Header initial activation check:", initialStatus);
+    setIsActivated(initialStatus);
+    
+    // Set up event listener using neuraStorage utility
+    const unsubscribe = neuraStorage.addActivationListener(handleActivation);
+    
+    // Add event listener for storage changes (in case activation happens in another tab)
+    const storageHandler = () => {
+      const status = neuraStorage.isActivated();
+      console.log("Storage event detected, activation status:", status);
+      setIsActivated(status);
+    };
+    
+    window.addEventListener('storage', storageHandler);
+    
+    // Clean up
+    return () => {
+      window.removeEventListener('storage', storageHandler);
+      // Call the unsubscribe function
+      unsubscribe();
+    };
+  }, []);
   
   // When component mounts, refresh WhatsApp status
   useEffect(() => {
@@ -73,9 +105,9 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
     if (user) {
       console.log("Header mounted, refreshing WhatsApp status");
       
-      // Check if we're activated in localStorage
-      if (isActiveInLocalStorage) {
-        // If we have a local flag, simulate activation first for immediate UI update
+      // If we're activated in neuraStorage, simulate activation first
+      if (neuraStorage.isActivated()) {
+        // Simulate activation for immediate UI update
         simulateActivation();
       }
       
@@ -84,20 +116,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
         forceStatusRefresh();
       }, 500);
     }
-  }, [user, isActiveInLocalStorage, simulateActivation, forceStatusRefresh]);
-  
-  // Add a special effect to periodically check activation status
-  useEffect(() => {
-    // Set up an interval to refresh status every 5 seconds
-    // This helps ensure multi-device/multi-tab consistency
-    if (user) {
-      const intervalId = setInterval(() => {
-        forceStatusRefresh();
-      }, 5000);
-      
-      return () => clearInterval(intervalId);
-    }
-  }, [user, forceStatusRefresh]);
+  }, [user, simulateActivation, forceStatusRefresh]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -151,95 +170,102 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
   };
 
   // Direct navigation with Link component
-  const goToDashboard = () => {
+  const goToMyNeura = () => {
     if (isMobile) {
       setShowMobileNav(false);
     }
-    // Direct navigation
+    // Direct navigation to dashboard (My Neura)
     setLocation("/dashboard");
   };
 
   return (
     <>
-      <header className="bg-white border-b border-gray-200 px-2 py-3 flex items-center justify-between">
+      <header className="bg-gradient-to-r from-amber-50 to-orange-50 border-b border-amber-200 px-2 py-3 flex items-center justify-between shadow-sm">
         {isMobile ? (
           <>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-gray-600 hover:text-primary h-11 w-11 mr-1"
-              onClick={onMenuClick || (() => setShowMobileNav(!showMobileNav))}
+            {/* Logo on left that's clickable to My Neura */}
+            <div 
+              className="flex items-center gap-2 cursor-pointer active:opacity-80 transition-opacity"
+              onClick={() => setLocation("/my-neura")}
             >
-              <Menu className="h-7 w-7" />
-            </Button>
-            
-            <div className="flex items-center">
-              <Button 
-                variant="ghost"
-                size="icon"
-                className="text-gray-600 hover:text-primary mr-1 h-9 w-9"
-                onClick={goToLandingPage}
-              >
-                <HomeIcon className="h-5 w-5" />
-              </Button>
-              
-              {isActivated ? (
-                <Button 
-                  className="mr-1 bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white h-9 px-2 relative"
-                  size="sm"
-                  onClick={() => setLocation("/activate-neural")}
-                >
-                  {/* Icon with sparkle */}
-                  <div className="flex items-center relative z-10">
-                    <Check className="h-4 w-4" />
-                    <Sparkles className="h-3 w-3 ml-0.5" />
-                  </div>
-                </Button>
-              ) : (
-                <Button 
-                  className="mr-1 bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white h-9 px-2 relative"
-                  size="sm"
-                  onClick={() => setLocation("/activate-neural")}
-                >
-                  <div className="flex items-center relative z-10">
-                    <Brain className="h-4 w-4" />
-                    <Sparkles className="h-3 w-3 ml-0.5 opacity-50" />
-                  </div>
-                </Button>
-              )}
+              <img src="/dotspark-logo-icon.jpeg" alt="DotSpark" className="h-8 w-8 object-contain rounded" />
+              <span className="text-lg font-semibold text-amber-700 dark:text-amber-300">DotSpark</span>
             </div>
             
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="rounded-full">
-                  <Avatar className="h-8 w-8 border-2 border-white shadow">
-                    {user?.photoURL ? (
-                      <AvatarImage src={user.photoURL} alt={user.displayName || 'User'} />
-                    ) : (
-                      <AvatarFallback className="bg-primary text-white">
-                        {user?.displayName ? user.displayName.charAt(0).toUpperCase() : 'U'}
-                      </AvatarFallback>
-                    )}
-                  </Avatar>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                <div className="p-2 text-sm">
-                  <p className="font-medium">{user?.displayName || 'User'}</p>
-                  <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
+            <div className="flex items-center space-x-2">
+              {/* Ask DotSpark button */}
+              <a 
+                href={`https://wa.me/16067157733?text=${encodeURIComponent("Hey DotSpark, I've got a few things on my mind — need your thoughts")}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white h-9 w-9 rounded-md shadow-md transition-colors"
+                title="Ask DotSpark"
+              >
+                <MessageSquare className="h-4 w-4" />
+              </a>
+              
+              {/* My Neura button - always visible */}
+              <Button 
+                className="bg-gradient-to-r from-amber-700 to-primary hover:from-amber-800 hover:to-primary/90 text-white h-9 w-9 p-0 shadow-md"
+                size="sm"
+                onClick={() => setLocation("/my-neura")}
+              >
+                <div className="relative">
+                  <Brain className="h-5 w-5" />
+                  {isActivated && <div className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>}
                 </div>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                  <Link href="/settings" className="cursor-pointer w-full">
-                    Settings
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleLogout} className="text-red-600">
-                  <LogOut className="mr-2 h-4 w-4" />
-                  <span>Sign out</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+              </Button>
+              
+              {/* Profile button - Mobile */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="rounded-full p-0 h-9 w-9">
+                    <Avatar className="h-8 w-8 border-2 border-white shadow">
+                      {user?.photoURL ? (
+                        <AvatarImage src={user.photoURL} alt={user.displayName || 'User'} />
+                      ) : (
+                        <AvatarFallback className="bg-primary text-white">
+                          {user?.displayName ? user.displayName.charAt(0).toUpperCase() : 'U'}
+                        </AvatarFallback>
+                      )}
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <div className="p-2 text-sm">
+                    <p className="font-medium">{user?.displayName || 'User'}</p>
+                    <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
+                  </div>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link href="/profile" className="cursor-pointer w-full">
+                      <User className="mr-2 h-4 w-4" />
+                      Profile
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/dashboard" className="cursor-pointer w-full">
+                      <LayoutDashboard className="mr-2 h-4 w-4" />
+                      Neural Dashboard
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleLogout} className="text-red-600">
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Sign out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              
+              {/* Menu button (hamburger) on far right */}
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-gray-600 hover:text-primary h-10 w-10"
+                onClick={onMenuClick || (() => setShowMobileNav(!showMobileNav))}
+              >
+                <Menu className="h-6 w-6" />
+              </Button>
+            </div>
           </>
         ) : (
           <>
@@ -271,42 +297,21 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
             </div>
 
             <div className="ml-4 flex items-center">
+              
+              {/* My Neura button - always visible */}
               <Button 
-                variant="ghost" 
-                size="sm" 
-                className="mr-2"
-                onClick={goToDashboard}
+                className="mr-3 bg-gradient-to-r from-amber-700 to-primary hover:from-amber-800 hover:to-primary/90 text-white relative shadow-md"
+                size="sm"
+                onClick={() => setLocation("/my-neura")}
               >
-                <LayoutDashboard className="h-4 w-4 mr-1" />
-                Dashboard
+                <span className="relative z-10 flex items-center">
+                  <div className="relative mr-1.5">
+                    <Brain className="h-4 w-4" />
+                    {isActivated && <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>}
+                  </div>
+                  <span>My Neura</span>
+                </span>
               </Button>
-              
-              {isActivated ? (
-                <Button 
-                  className="mr-2 bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white relative"
-                  size="sm"
-                  onClick={() => setLocation("/activate-neural")}
-                >
-                  <span className="relative z-10 flex items-center">
-                    <Check className="h-4 w-4 mr-1" />
-                    <span>Activated</span>
-                    <Sparkles className="h-3 w-3 ml-1" />
-                  </span>
-                </Button>
-              ) : (
-                <Button 
-                  className="mr-2 bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white relative"
-                  size="sm"
-                  onClick={() => setLocation("/activate-neural")}
-                >
-                  <span className="relative z-10 flex items-center">
-                    <Brain className="h-4 w-4 mr-1" />
-                    <span>Activate Neural</span>
-                    <Sparkles className="h-3 w-3 ml-1" />
-                  </span>
-                </Button>
-              )}
-              
               
               <button 
                 className="p-2 rounded-full text-gray-400 hover:text-gray-500 hover:bg-gray-100 mr-2"
@@ -315,6 +320,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 <BellIcon className="h-5 w-5" />
               </button>
               
+              {/* Profile button - Desktop */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <div className="flex items-center cursor-pointer">
@@ -337,8 +343,15 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                   </div>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
-                    <Link href="/settings" className="cursor-pointer w-full">
-                      Settings
+                    <Link href="/profile" className="cursor-pointer w-full">
+                      <User className="mr-2 h-4 w-4" />
+                      Profile
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/dashboard" className="cursor-pointer w-full">
+                      <LayoutDashboard className="mr-2 h-4 w-4" />
+                      Neural Dashboard
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={handleLogout} className="text-red-600">
@@ -356,7 +369,15 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
       {isMobile && showMobileNav && !onMenuClick && (
         <div className="fixed inset-0 z-50 bg-white">
           <div className="flex justify-between items-center p-4 border-b">
-            <h2 className="text-lg font-bold text-primary">DotSpark</h2>
+            <div 
+              onClick={() => {
+                setShowMobileNav(false);
+                setLocation("/my-neura");
+              }} 
+              className="cursor-pointer flex items-center active:opacity-80 transition-opacity"
+            >
+              <img src="/dotspark-logo-white-bg.jpg?v=5" alt="DotSpark" className="h-10 w-auto rounded-sm" />
+            </div>
             <Button 
               variant="ghost" 
               size="icon"
@@ -385,61 +406,21 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
               <Button 
                 variant="ghost" 
                 size="sm" 
-                className="w-full justify-start mb-2"
+                className="w-full justify-start mb-2 text-amber-700 hover:text-amber-800 hover:bg-amber-50"
                 onClick={goToLandingPage}
               >
-                <HomeIcon className="h-5 w-5 mr-2" />
+                <HomeIcon className="h-5 w-5 mr-2 text-amber-600" />
                 Home
               </Button>
               
               <Button 
                 variant="ghost" 
                 size="sm" 
-                className="w-full justify-start mb-2"
-                onClick={goToDashboard}
+                className="w-full justify-start mb-2 text-amber-700 hover:text-amber-800 hover:bg-amber-50"
+                onClick={goToMyNeura}
               >
-                <LayoutDashboard className="h-5 w-5 mr-2" />
-                Dashboard
-              </Button>
-              
-              {isActivated ? (
-                <Button 
-                  className="w-full justify-start mb-2 bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white relative"
-                  size="sm"
-                  onClick={() => {
-                    setShowMobileNav(false);
-                    setLocation("/activate-neural");
-                  }}
-                >
-                  <span className="relative z-10 flex items-center">
-                    <Check className="h-4 w-4 mr-2" />
-                    <span>Activated</span>
-                    <Sparkles className="h-3 w-3 ml-1" />
-                  </span>
-                </Button>
-              ) : (
-                <Button 
-                  className="w-full justify-start mb-2 bg-gradient-to-r from-indigo-600 to-primary hover:from-indigo-700 hover:to-primary/90 text-white relative"
-                  size="sm"
-                  onClick={() => {
-                    setShowMobileNav(false);
-                    setLocation("/activate-neural");
-                  }}
-                >
-                  <Brain className="h-5 w-5 mr-2" />
-                  <span>Activate Neural Extension</span>
-                  <Sparkles className="h-3 w-3 absolute top-2 right-2" />
-                </Button>
-              )}
-              
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className="w-full justify-start mb-2 text-red-600"
-                onClick={handleLogout}
-              >
-                <LogOut className="h-5 w-5 mr-2" />
-                Sign out
+                <Brain className="h-5 w-5 mr-2 text-amber-600" />
+                My DotSpark
               </Button>
             </nav>
           </div>
