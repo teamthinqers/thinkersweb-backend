@@ -530,13 +530,21 @@ export default function LandingPage() {
             
             {/* Action buttons with explanation boxes - Centered */}
             {user ? (
-              <Button size="lg" asChild className="w-full md:w-2/3 relative overflow-hidden group mt-1">
-                <Link href="/sectioned-dotspark-tuning" className="flex items-center justify-center">
-                  <span className="relative z-10">Go to My DotSpark</span>
-                  <ArrowRight className="ml-2 h-5 w-5 relative z-10 group-hover:translate-x-1 transition-transform" />
-                  <div className="absolute inset-0 bg-gradient-to-r from-primary to-primary/80 opacity-90 group-hover:opacity-100 transition-opacity"></div>
-                </Link>
-              </Button>
+              <div className="flex flex-col gap-3 w-full md:w-2/3">
+                <Button size="lg" asChild className="w-full relative overflow-hidden group">
+                  <Link href="/sectioned-dotspark-tuning" className="flex items-center justify-center">
+                    <span className="relative z-10">Go to My DotSpark</span>
+                    <ArrowRight className="ml-2 h-5 w-5 relative z-10 group-hover:translate-x-1 transition-transform" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-primary to-primary/80 opacity-90 group-hover:opacity-100 transition-opacity"></div>
+                  </Link>
+                </Button>
+                <Button size="lg" asChild className="w-full relative overflow-hidden bg-gradient-to-r from-orange-500 to-red-500 hover:from-red-500 hover:to-orange-500 text-white border-0 shadow-lg shadow-orange-500/20 hover:shadow-red-500/30 transition-all duration-300 transform hover:scale-105">
+                  <Link href="/social" className="flex items-center justify-center">
+                    <Brain className="mr-2 h-5 w-5 animate-pulse" />
+                    <span>Access DotSpark Social</span>
+                  </Link>
+                </Button>
+              </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full mt-1">
                 {/* Button 1: Activate or View DotSpark */}

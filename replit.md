@@ -705,6 +705,11 @@ Changelog:
   * Applied orange-red gradient color theme matching Social Neura branding
   * Updated button to link to /social page for community features
   * Added 2-line description: "Connect with fellow ThinQers: Share insights, discover patterns, and build meaningful connections"
+- June 15, 2025. Added Social Neura access for signed-in users on home page:
+  * Added "Access DotSpark Social" button below "Go to MyDotSpark" for authenticated users
+  * Applied orange-red gradient styling with Brain icon and pulse animation
+  * Button navigates to /social page for community features
+  * Organized signed-in user buttons in vertical flex layout with proper spacing
 - June 15, 2025. Optimized AI conversation flow for minimal user effort:
   * Updated AI prompts to proactively organize user thoughts into three layers with minimal intervention
   * AI now immediately structures user input into Summary/Anchor/Pulse format for quick approval
