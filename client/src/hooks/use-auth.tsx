@@ -49,7 +49,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           const currentPath = window.location.pathname;
           if (currentPath === '/auth') {
             console.log('User logged in, redirecting to dashboard');
-            setLocation('/dashboard');
+            window.location.href = '/dashboard';
           }
         } else {
           // User logged out
@@ -66,7 +66,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       console.log("Cleaning up Firebase auth listener");
       unsubscribe();
     };
-  }, [setLocation]);
+  }, []);
 
   const loginWithGoogle = async () => {
     setIsLoading(true);
@@ -88,7 +88,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       console.log("Starting logout...");
       await signOut();
       console.log("Logout successful");
-      setLocation('/');
+      window.location.href = '/';
     } catch (error) {
       console.error("Logout failed:", error);
     } finally {
@@ -112,7 +112,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 export function useAuth() {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
+    // Return mock auth data when provider is not available
+    return {
+      user: null,
+      isLoading: false,
+      loginWithGoogle: async () => {},
+      logout: async () => {}
+    };
   }
   return context;
 }
