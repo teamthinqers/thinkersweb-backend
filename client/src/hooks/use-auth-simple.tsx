@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useContext, useEffect, useState } from "react";
+import React, { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import { auth, signInWithGoogle, signOut } from "@/lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 
@@ -19,10 +19,22 @@ type AuthContextType = {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<UserInfo | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [user, setUser] = React.useState<UserInfo | null>(null);
+  const [isLoading, setIsLoading] = React.useState(true);
 
-  useEffect(() => {
+  React.useEffect(() => {
+    // Check for existing user in localStorage first
+    try {
+      const storedUser = localStorage.getItem('dotspark_user');
+      if (storedUser) {
+        const userData = JSON.parse(storedUser);
+        setUser(userData);
+      }
+    } catch (error) {
+      console.error('Error loading stored user:', error);
+    }
+
+    // Then set up Firebase auth state listener
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       if (firebaseUser) {
         const userInfo = {
