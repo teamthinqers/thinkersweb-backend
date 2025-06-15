@@ -16,7 +16,10 @@ interface PWAFloatingDotProps {
 }
 
 export function PWAFloatingDot({ isActive }: PWAFloatingDotProps) {
-  const [position, setPosition] = useState<Position>({ x: 320, y: 180 });
+  const [position, setPosition] = useState<Position>(() => {
+    const saved = localStorage.getItem('pwa-floating-dot-position');
+    return saved ? JSON.parse(saved) : { x: 320, y: 180 };
+  });
   const [isExpanded, setIsExpanded] = useState(false);
   const [captureMode, setCaptureMode] = useState<'voice' | 'text' | null>(null);
   const [isRecording, setIsRecording] = useState(false);
@@ -28,16 +31,19 @@ export function PWAFloatingDot({ isActive }: PWAFloatingDotProps) {
   const handleMouseDown = (e: React.MouseEvent) => {
     if (isExpanded) return;
     e.preventDefault();
+    e.stopPropagation();
     setIsDragging(true);
     
-    const startX = e.clientX - position.x;
-    const startY = e.clientY - position.y;
+    const rect = dotRef.current?.getBoundingClientRect();
+    const startX = e.clientX - (rect?.left || position.x);
+    const startY = e.clientY - (rect?.top || position.y);
 
     const handleMouseMove = (e: MouseEvent) => {
-      const newX = Math.max(0, Math.min(window.innerWidth - 40, e.clientX - startX));
-      const newY = Math.max(0, Math.min(window.innerHeight - 40, e.clientY - startY));
-      setPosition({ x: newX, y: newY });
-      localStorage.setItem('pwa-floating-dot-position', JSON.stringify({ x: newX, y: newY }));
+      e.preventDefault();
+      const newX = Math.max(12, Math.min(window.innerWidth - 60, e.clientX - startX));
+      const newY = Math.max(12, Math.min(window.innerHeight - 60, e.clientY - startY));
+      const newPosition = { x: newX, y: newY };
+      setPosition(newPosition);
     };
 
     const handleMouseUp = () => {
@@ -53,18 +59,21 @@ export function PWAFloatingDot({ isActive }: PWAFloatingDotProps) {
   const handleTouchStart = (e: React.TouchEvent) => {
     if (isExpanded) return;
     e.preventDefault();
+    e.stopPropagation();
     setIsDragging(true);
     
     const touch = e.touches[0];
-    const startX = touch.clientX - position.x;
-    const startY = touch.clientY - position.y;
+    const rect = dotRef.current?.getBoundingClientRect();
+    const startX = touch.clientX - (rect?.left || position.x);
+    const startY = touch.clientY - (rect?.top || position.y);
 
     const handleTouchMove = (e: TouchEvent) => {
+      e.preventDefault();
       const touch = e.touches[0];
-      const newX = Math.max(0, Math.min(window.innerWidth - 40, touch.clientX - startX));
-      const newY = Math.max(0, Math.min(window.innerHeight - 40, touch.clientY - startY));
-      setPosition({ x: newX, y: newY });
-      localStorage.setItem('pwa-floating-dot-position', JSON.stringify({ x: newX, y: newY }));
+      const newX = Math.max(12, Math.min(window.innerWidth - 60, touch.clientX - startX));
+      const newY = Math.max(12, Math.min(window.innerHeight - 60, touch.clientY - startY));
+      const newPosition = { x: newX, y: newY };
+      setPosition(newPosition);
     };
 
     const handleTouchEnd = () => {
@@ -132,17 +141,10 @@ export function PWAFloatingDot({ isActive }: PWAFloatingDotProps) {
     }
   };
 
+  // Save position whenever it changes
   useEffect(() => {
-    const savedPosition = localStorage.getItem('pwa-floating-dot-position');
-    if (savedPosition) {
-      try {
-        const parsed = JSON.parse(savedPosition);
-        setPosition(parsed);
-      } catch (error) {
-        console.error('Failed to parse saved position:', error);
-      }
-    }
-  }, []);
+    localStorage.setItem('pwa-floating-dot-position', JSON.stringify(position));
+  }, [position]);
 
   if (!isActive) return null;
 
@@ -153,19 +155,55 @@ export function PWAFloatingDot({ isActive }: PWAFloatingDotProps) {
         <div
           ref={dotRef}
           className={cn(
-            "fixed z-[9999] transition-all duration-300 ease-in-out",
-            isDragging ? "cursor-grabbing" : "cursor-grab"
+            "fixed z-[9999] select-none touch-none",
+            isDragging 
+              ? "cursor-grabbing scale-110 shadow-2xl" 
+              : "cursor-grab hover:scale-105 transition-all duration-150 ease-out"
           )}
           style={{
-            left: position.x,
-            top: position.y
+            left: `${position.x}px`,
+            top: `${position.y}px`,
+            transition: isDragging ? 'none' : 'all 0.15s ease-out'
           }}
           onMouseDown={handleMouseDown}
           onTouchStart={handleTouchStart}
           onClick={handleClick}
         >
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-600 to-orange-700 flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 animate-pulse">
-            <div className="w-3 h-3 rounded-full bg-white"></div>
+          <div className="relative">
+            {/* Multiple pulsing rings for enhanced visibility - only when not dragging */}
+            {!isDragging && (
+              <>
+                <div className="absolute inset-0 w-12 h-12 rounded-full bg-amber-500/40 animate-ping"></div>
+                <div className="absolute inset-1 w-10 h-10 rounded-full bg-orange-500/50 animate-ping" style={{ animationDelay: '0.5s' }}></div>
+                <div className="absolute inset-2 w-8 h-8 rounded-full bg-yellow-500/60 animate-ping" style={{ animationDelay: '1s' }}></div>
+              </>
+            )}
+            
+            {/* Main dot with enhanced dragging feedback */}
+            <div className={cn(
+              "relative w-12 h-12 rounded-full bg-gradient-to-br from-amber-600 to-orange-700 flex items-center justify-center transition-all duration-300",
+              isDragging 
+                ? "shadow-2xl ring-4 ring-amber-300/50 scale-110" 
+                : "shadow-lg hover:shadow-xl hover:scale-110 animate-pulse"
+            )}>
+              <div className={cn(
+                "w-4 h-4 rounded-full bg-white transition-all duration-300",
+                isDragging ? "scale-125" : "animate-pulse"
+              )} style={{ animationDelay: isDragging ? '0s' : '0.3s' }}></div>
+              
+              {/* Attention-grabbing blinking indicator - hidden when dragging */}
+              {!isDragging && (
+                <>
+                  <div className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-yellow-400 animate-ping"></div>
+                  <div className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-white animate-pulse" style={{ animationDelay: '0.7s' }}></div>
+                </>
+              )}
+              
+              {/* Dragging state indicator */}
+              {isDragging && (
+                <div className="absolute inset-0 w-12 h-12 rounded-full border-2 border-dashed border-amber-300 animate-spin"></div>
+              )}
+            </div>
           </div>
         </div>
       ) : (

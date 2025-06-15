@@ -465,6 +465,8 @@ Changelog:
   * Position now persists automatically in localStorage whenever moved
   * Improved touch support for mobile devices with preventDefault for smoother dragging
   * Visual elements scale up during drag and return to normal when released for clear feedback
+  * Applied identical enhancements to PWA floating dot component for consistent experience across all modes
+  * PWA users now enjoy same smooth dragging, visual feedback, and position persistence as web browser users
 ```
 
 ## User Preferences
