@@ -58,7 +58,7 @@ const DotFullView: React.FC<DotFullViewProps> = ({ dot, onClose, onDelete }) => 
   return (
     <Dialog open={true} onOpenChange={onClose}>
       <DialogContent 
-        className="max-w-3xl h-[90vh] flex flex-col"
+        className="max-w-3xl h-[90vh] flex flex-col [&>button]:hidden"
         aria-describedby="dot-full-view-description"
       >
         <DialogHeader className="flex-shrink-0">

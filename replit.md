@@ -545,6 +545,7 @@ Changelog:
   * Improved layout with flex container and proper content overflow handling
   * Added accessibility features with aria-describedby and screen reader descriptions
   * Dashboard refetches data automatically after dot deletion
+  * Fixed duplicate close icon issue by hiding default DialogContent close button
 ```
 
 ## User Preferences
