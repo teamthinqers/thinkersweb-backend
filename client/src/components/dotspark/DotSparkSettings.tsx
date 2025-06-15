@@ -76,11 +76,8 @@ export function DotSparkSettings() {
           </div>
           <div className="flex-1">
             <h3 className="text-2xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
-              Dot Settings
-            </h3>
-            <p className="text-amber-700/80 dark:text-amber-300/80 font-medium">
               Choose your perfect capture experience
-            </p>
+            </h3>
           </div>
           <Dialog>
             <DialogTrigger asChild>

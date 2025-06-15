@@ -653,6 +653,7 @@ Changelog:
   * Enhanced hover effects with scale-105 animation and improved gradient backgrounds
   * Mode switching now reflects immediately across all floating dot components and interfaces
   * Removed duplicate "Configure your dot capture settings" heading from Dot Settings section
+  * Cleaned up DotSparkSettings header by removing duplicate "Dot Settings" text, keeping only "Choose your perfect capture experience"
 - June 15, 2025. Optimized AI conversation flow for minimal user effort:
   * Updated AI prompts to proactively organize user thoughts into three layers with minimal intervention
   * AI now immediately structures user input into Summary/Anchor/Pulse format for quick approval
