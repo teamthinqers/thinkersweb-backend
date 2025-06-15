@@ -37,7 +37,7 @@ function Router() {
     <Switch>
       <Route path="/" component={LandingPage} />
       <Route path="/dashboard">
-        <AppLayout>
+        <AppLayout onNewEntry={() => {}}>
           <Dashboard />
         </AppLayout>
       </Route>
