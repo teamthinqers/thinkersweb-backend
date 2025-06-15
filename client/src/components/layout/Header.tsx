@@ -203,21 +203,6 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
             </div>
             
             <div className="flex items-center space-x-2">
-              {/* Social icon only for PWA */}
-              <Button
-                variant="ghost"
-                size="icon"
-                className="text-gray-600 hover:text-amber-600 hover:bg-amber-50 transition-all duration-300 h-9 w-9"
-                onClick={() => setLocation("/social")}
-              >
-                <div className="relative">
-                  <Brain className="h-4 w-4 animate-pulse hover:animate-bounce transition-all duration-300" />
-                  <div className="absolute inset-0 animate-ping opacity-30">
-                    <Brain className="h-4 w-4" />
-                  </div>
-                </div>
-              </Button>
-              
               {/* Neura status indicator - just brain icon with green indicator */}
               <div className="bg-gradient-to-r from-amber-700 to-primary text-white h-9 w-9 p-0 shadow-md rounded-md flex items-center justify-center">
                 <div className="relative">
@@ -225,6 +210,24 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                   {isActivated && <div className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></div>}
                 </div>
               </div>
+              
+              {/* Social button with brain icon and text for PWA */}
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-gray-600 hover:text-amber-600 hover:bg-amber-50 transition-all duration-300 ml-2"
+                onClick={() => setLocation("/social")}
+              >
+                <div className="flex items-center gap-1">
+                  <div className="relative">
+                    <Brain className="h-4 w-4 animate-pulse hover:animate-bounce transition-all duration-300" />
+                    <div className="absolute inset-0 animate-ping opacity-30">
+                      <Brain className="h-4 w-4" />
+                    </div>
+                  </div>
+                  <span className="text-xs">Social</span>
+                </div>
+              </Button>
               
               {/* Profile button - Mobile */}
               <DropdownMenu>
@@ -295,13 +298,21 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
 
             <div className="ml-4 flex items-center">
               
-              {/* Neura status indicator - just brain icon with green indicator */}
-              <div className="mr-3 bg-gradient-to-r from-amber-700 to-primary text-white relative shadow-md p-2 rounded-md">
-                <div className="relative">
-                  <Brain className={`h-5 w-5 ${isActivated ? 'text-green-300' : 'text-white'}`} />
-                  {isActivated && <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>}
+              {/* My Neura with brain icon and green indicator */}
+              <Button
+                variant="ghost"
+                size="sm"
+                className="mr-3 bg-gradient-to-r from-amber-700 to-primary text-white shadow-md hover:bg-gradient-to-r hover:from-amber-800 hover:to-primary"
+                onClick={() => setLocation("/dashboard")}
+              >
+                <div className="flex items-center gap-2">
+                  <div className="relative">
+                    <Brain className={`h-5 w-5 ${isActivated ? 'text-green-300' : 'text-white'}`} />
+                    {isActivated && <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>}
+                  </div>
+                  <span className="text-sm font-medium">My Neura</span>
                 </div>
-              </div>
+              </Button>
               
               {/* Social button with animated brain icon */}
               <Button

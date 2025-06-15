@@ -263,82 +263,42 @@ export default function LandingPage() {
               <Link href="/" className="text-sm font-medium text-slate-700 hover:text-amber-700 dark:text-slate-300 dark:hover:text-amber-300 transition-colors px-2 py-1 rounded">
                 Home
               </Link>
+              {/* Blinking Neura button */}
               <Button 
                 size="sm"
                 onClick={() => setLocation("/dashboard")}
+                className="relative"
               >
                 <div className="flex items-center gap-2">
                   <div className="relative">
-                    <Brain className="h-4 w-4" />
+                    <Brain className="h-4 w-4 animate-pulse" />
+                    <div className="absolute inset-0 animate-ping opacity-30">
+                      <Brain className="h-4 w-4" />
+                    </div>
                     {isNeuraActivated && <div className="absolute -top-1 -right-1 h-2 w-2 bg-green-500 rounded-full animate-pulse"></div>}
                   </div>
                   <span className="text-sm">Neura</span>
                 </div>
               </Button>
+              {/* Social button with blinking brain icon */}
               <Button 
                 size="sm"
-                onClick={() => setLocation("/sectioned-dotspark-tuning")}
+                onClick={() => setLocation("/social")}
+                className="relative"
               >
                 <div className="flex items-center gap-2">
-                  <img src="/dotspark-logo-icon.jpeg" alt="DotSpark" className="h-4 w-4 object-contain rounded" />
-                  <span className="text-sm">DotSpark</span>
+                  <div className="relative">
+                    <Brain className="h-4 w-4 animate-pulse" />
+                    <div className="absolute inset-0 animate-ping opacity-30">
+                      <Brain className="h-4 w-4" />
+                    </div>
+                  </div>
+                  <span className="text-sm">Social</span>
                 </div>
               </Button>
             </div>
-            
-            {/* Contact options button (WhatsApp/Direct Chat), always visible on desktop regardless of login status */}
-            <div className="hidden md:block">
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => {
-                  // Fetch WhatsApp number first
-                  fetch('/api/whatsapp/contact')
-                    .then(res => res.json())
-                    .then(data => {
-                      setWhatsAppNumber(data.phoneNumber);
-                      setContactDialogOpen(true);
-                    })
-                    .catch(err => {
-                      console.error("Error fetching WhatsApp contact:", err);
-                      // Fallback to hardcoded number if API fails
-                      setWhatsAppNumber('16067157733');
-                      setContactDialogOpen(true);
-                    });
-                }}
-                className="bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white border-0"
-                title="Ask DotSpark"
-              >
-                <MessageSquare className="h-4 w-4" />
-              </Button>
-            </div>
             <div className="flex items-center space-x-3">
-              <div className="block md:hidden">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => {
-                    // Fetch WhatsApp number first
-                    fetch('/api/whatsapp/contact')
-                      .then(res => res.json())
-                      .then(data => {
-                        setWhatsAppNumber(data.phoneNumber);
-                        setContactDialogOpen(true);
-                      })
-                      .catch(err => {
-                        console.error("Error fetching WhatsApp contact:", err);
-                        // Fallback to hardcoded number if API fails
-                        setWhatsAppNumber('16067157733');
-                        setContactDialogOpen(true);
-                      });
-                  }}
-                  className="bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white border-0 h-8 w-8"
-                  title="Ask DotSpark"
-                >
-                  <MessageSquare className="h-4 w-4" />
-                </Button>
-              </div>
-              
+              {/* PWA navigation with blinking brain icon and Social text */}
               <div className="flex sm:hidden gap-1">
                 <Button
                   size="sm"
@@ -346,12 +306,29 @@ export default function LandingPage() {
                 >
                   <div className="flex items-center gap-1">
                     <div className="relative">
-                      <Brain className="h-3 w-3" />
+                      <Brain className="h-3 w-3 animate-pulse" />
+                      <div className="absolute inset-0 animate-ping opacity-30">
+                        <Brain className="h-3 w-3" />
+                      </div>
                       {isNeuraActivated && (
                         <div className="absolute -top-0.5 -right-0.5 h-1 w-1 bg-green-500 rounded-full animate-pulse"></div>
                       )}
                     </div>
                     <span className="text-xs">Neura</span>
+                  </div>
+                </Button>
+                <Button
+                  size="sm"
+                  onClick={() => setLocation("/social")}
+                >
+                  <div className="flex items-center gap-1">
+                    <div className="relative">
+                      <Brain className="h-3 w-3 animate-pulse" />
+                      <div className="absolute inset-0 animate-ping opacity-30">
+                        <Brain className="h-3 w-3" />
+                      </div>
+                    </div>
+                    <span className="text-xs">Social</span>
                   </div>
                 </Button>
               </div>

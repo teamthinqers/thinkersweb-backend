@@ -662,6 +662,15 @@ Changelog:
   * Created comprehensive Social page (/social) with placeholder content for future social features
   * Updated routing in App.tsx to support Social Neura navigation across all devices
   * Applied consistent amber/orange theming and animate-pulse + animate-ping effects for visual appeal
+- June 15, 2025. Comprehensive header navigation restructuring across home page and dashboard:
+  * Removed Ask DotSpark button from home page header in both browser and PWA to eliminate redundancy
+  * Removed MyDotSpark button from browser home page header for streamlined navigation
+  * Added blinking Neura and Social buttons with animated brain icons to home page browser header
+  * Added blinking brain icon with "Social" text to PWA home page header alongside Neura button
+  * Enhanced browser dashboard header: "My Neura" text added to green indicated brain icon, Social button with blinking brain icon positioned next to it
+  * Enhanced PWA dashboard header: Social button with brain icon and "Social" text positioned next to current green indicated brain icon
+  * Applied consistent animate-pulse and animate-ping effects to all brain icons for unified visual experience
+  * Maintained proper navigation functionality and amber/orange color theming throughout all headers
 - June 15, 2025. Optimized AI conversation flow for minimal user effort:
   * Updated AI prompts to proactively organize user thoughts into three layers with minimal intervention
   * AI now immediately structures user input into Summary/Anchor/Pulse format for quick approval
