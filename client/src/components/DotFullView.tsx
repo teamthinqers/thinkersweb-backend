@@ -141,12 +141,15 @@ const DotFullView: React.FC<DotFullViewProps> = ({ dot, onClose, onDelete }) => 
               </span>
               <h3 className="font-semibold text-amber-800">Dot Summary</h3>
               <span className="text-xs text-amber-600">({dot.summary.length}/220 chars)</span>
-              {dot.sourceType === 'voice' && (
+              {dot.sourceType === 'voice' && dot.voiceData?.summaryVoiceUrl && (
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={handlePlayVoice}
-                  className="ml-auto text-amber-600 hover:text-amber-800"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handlePlayVoice(dot.voiceData!.summaryVoiceUrl!, 'summary');
+                  }}
+                  className="ml-auto text-amber-600 hover:text-amber-800 hover:bg-amber-100 transition-colors"
                 >
                   <Volume2 className="h-4 w-4" />
                 </Button>
@@ -163,12 +166,15 @@ const DotFullView: React.FC<DotFullViewProps> = ({ dot, onClose, onDelete }) => 
               </span>
               <h3 className="font-semibold text-blue-800">Memory Anchor</h3>
               <span className="text-xs text-blue-600">({dot.anchor.length}/300 chars)</span>
-              {dot.sourceType === 'voice' && (
+              {dot.sourceType === 'voice' && dot.voiceData?.anchorVoiceUrl && (
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={handlePlayVoice}
-                  className="ml-auto text-blue-600 hover:text-blue-800"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handlePlayVoice(dot.voiceData!.anchorVoiceUrl!, 'anchor');
+                  }}
+                  className="ml-auto text-blue-600 hover:text-blue-800 hover:bg-blue-100 transition-colors"
                 >
                   <Volume2 className="h-4 w-4" />
                 </Button>
@@ -184,12 +190,15 @@ const DotFullView: React.FC<DotFullViewProps> = ({ dot, onClose, onDelete }) => 
                 3
               </span>
               <h3 className="font-semibold text-purple-800">Pulse (Emotion)</h3>
-              {dot.sourceType === 'voice' && (
+              {dot.sourceType === 'voice' && dot.voiceData?.pulseVoiceUrl && (
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={handlePlayVoice}
-                  className="ml-auto text-purple-600 hover:text-purple-800"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handlePlayVoice(dot.voiceData!.pulseVoiceUrl!, 'pulse');
+                  }}
+                  className="ml-auto text-purple-600 hover:text-purple-800 hover:bg-purple-100 transition-colors"
                 >
                   <Volume2 className="h-4 w-4" />
                 </Button>

@@ -546,6 +546,14 @@ Changelog:
   * Added accessibility features with aria-describedby and screen reader descriptions
   * Dashboard refetches data automatically after dot deletion
   * Fixed duplicate close icon issue by hiding default DialogContent close button
+- June 15, 2025. Implemented comprehensive voice playback functionality for dots:
+  * Enhanced backend to store voice URLs for each dot layer (summary, anchor, pulse)
+  * Updated dot creation API to accept voice recordings for voice dots
+  * Added volume icons to each layer in DotFullView for voice dots
+  * Implemented HTML5 audio playback with proper error handling
+  * Color-coded volume icons matching each layer's theme (amber, blue, purple)
+  * Voice icons only appear when voice data is available for specific layers
+  * Added toast notifications for audio playback errors and missing recordings
 ```
 
 ## User Preferences
