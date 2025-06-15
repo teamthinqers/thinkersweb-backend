@@ -28,7 +28,7 @@ interface GlobalFloatingDotProps {
 
 export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
   const [position, setPosition] = useState<Position>(() => {
-    const saved = localStorage.getItem('global-floating-dot-position');
+    const saved = localStorage.getItem('floatingDotPosition');
     return saved ? JSON.parse(saved) : { x: 320, y: 180 };
   });
   const [isExpanded, setIsExpanded] = useState(false);
@@ -70,24 +70,17 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
     const startX = e.clientX - position.x;
     const startY = e.clientY - position.y;
 
-    let currentPosition = position;
-
     const handleMouseMove = (e: MouseEvent) => {
       const newX = Math.max(0, Math.min(window.innerWidth - 48, e.clientX - startX));
       const newY = Math.max(0, Math.min(window.innerHeight - 48, e.clientY - startY));
       const newPosition = { x: newX, y: newY };
-      currentPosition = newPosition;
       setPosition(newPosition);
       // Save position immediately during drag
       localStorage.setItem('global-floating-dot-position', JSON.stringify(newPosition));
-      console.log('Saving position during drag:', newPosition);
     };
 
     const handleMouseUp = () => {
       setIsDragging(false);
-      // Save final position when drag completes
-      localStorage.setItem('global-floating-dot-position', JSON.stringify(currentPosition));
-      console.log('Saved final floating dot position:', currentPosition);
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
     };
@@ -105,25 +98,18 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
     const startX = touch.clientX - position.x;
     const startY = touch.clientY - position.y;
 
-    let currentPosition = position;
-
     const handleTouchMove = (e: TouchEvent) => {
       const touch = e.touches[0];
       const newX = Math.max(0, Math.min(window.innerWidth - 48, touch.clientX - startX));
       const newY = Math.max(0, Math.min(window.innerHeight - 48, touch.clientY - startY));
       const newPosition = { x: newX, y: newY };
-      currentPosition = newPosition;
       setPosition(newPosition);
       // Save position immediately during drag
       localStorage.setItem('global-floating-dot-position', JSON.stringify(newPosition));
-      console.log('Saving position during touch drag:', newPosition);
     };
 
     const handleTouchEnd = () => {
       setIsDragging(false);
-      // Save final position when touch drag completes
-      localStorage.setItem('global-floating-dot-position', JSON.stringify(currentPosition));
-      console.log('Saved final floating dot position (touch):', currentPosition);
       document.removeEventListener('touchmove', handleTouchMove);
       document.removeEventListener('touchend', handleTouchEnd);
     };
@@ -280,14 +266,9 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
     if (savedPosition) {
       try {
         const parsed = JSON.parse(savedPosition);
-        console.log('Loading saved floating dot position:', parsed);
         setPosition(parsed);
       } catch (error) {
         console.error('Failed to parse saved position:', error);
-        // Use default position if parsing fails
-        const defaultPos = { x: 320, y: 180 };
-        setPosition(defaultPos);
-        localStorage.setItem('global-floating-dot-position', JSON.stringify(defaultPos));
       }
     } else {
       // Check if this is first activation
@@ -296,10 +277,6 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
         setIsFirstActivation(true);
         localStorage.setItem('has-seen-floating-dot', 'true');
       }
-      // Set and save default position
-      const defaultPos = { x: 320, y: 180 };
-      setPosition(defaultPos);
-      localStorage.setItem('global-floating-dot-position', JSON.stringify(defaultPos));
     }
 
     // Listen for custom event from "Save a Dot" button

@@ -446,14 +446,6 @@ Changelog:
   * Updated all text displays to show summary in text format regardless of source type (voice/text/hybrid)
   * Added click-to-open functionality throughout Recent Dots and search results for full dot viewing
   * Empty Dot Wheels Map now shows preview state with "Start saving your Dots to get a similar map" message
-- June 15, 2025. Enhanced floating dot position persistence system:
-  * Fixed localStorage key consistency across all floating dot components
-  * Added comprehensive position saving during both mouse and touch drag operations
-  * Implemented final position saving when drag operations complete
-  * Added console logging for debugging position save/load operations
-  * Enhanced error handling for position parsing with fallback to default position
-  * Users can now place floating dot anywhere on screen and it reliably stays in that position
-  * Position persists across page reloads and browser sessions
 ```
 
 ## User Preferences

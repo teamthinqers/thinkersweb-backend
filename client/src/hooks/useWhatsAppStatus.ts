@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { getQueryFn } from '@/lib/queryClient';
-// Removed auth dependency to fix React hook error
+import { useAuth } from '@/hooks/use-auth';
 import { useEffect, useState, useCallback } from 'react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -18,8 +18,7 @@ export interface WhatsAppStatusResponse {
  * Uses both API call and localStorage for more reliability
  */
 export function useWhatsAppStatus() {
-  // Mock user for authentication-free operation
-  const user = null;
+  const { user } = useAuth();
   const [activationStatus, setActivationStatus] = useState<boolean>(() => {
     // Initialize from localStorage if available (more reliable than API state)
     return localStorage.getItem('whatsapp_activated') === 'true';
