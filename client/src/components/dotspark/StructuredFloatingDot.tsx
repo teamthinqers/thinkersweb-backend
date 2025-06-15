@@ -563,7 +563,7 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                           try {
                             const response = await fetch('/api/whatsapp/contact');
                             const data = await response.json();
-                            const defaultMessage = encodeURIComponent("Hey DotSpark, I've got a few things on my mind — need your thoughts");
+                            const defaultMessage = encodeURIComponent("Hi DotSpark, I would need your assistance in saving a dot");
                             const whatsappUrl = `https://wa.me/${data.phoneNumber}?text=${defaultMessage}`;
                             window.open(whatsappUrl, '_blank');
                           } catch (error) {

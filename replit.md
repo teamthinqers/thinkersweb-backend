@@ -626,6 +626,13 @@ Changelog:
   * WhatsApp button now fetches real contact number and opens with pre-filled message
   * Eliminated floating dot getting stuck issues when users click AI mode options
   * Enhanced error handling with fallback to WhatsApp web if contact API fails
+- June 15, 2025. Enhanced AI Mode with dot-focused default prompts:
+  * Updated Direct Chat welcome message to focus on structured dot creation
+  * Set default input text: "Hi DotSpark, I would need your assistance in saving a dot"
+  * Updated WhatsApp pre-filled message to same dot-focused text
+  * Changed chat interface title to "DotSpark AI - Save Dots"
+  * Updated input placeholder to "Share your thoughts to save as a dot..."
+  * Both AI mode options now consistently guide users toward dot creation
 - June 15, 2025. Optimized AI conversation flow for minimal user effort:
   * Updated AI prompts to proactively organize user thoughts into three layers with minimal intervention
   * AI now immediately structures user input into Summary/Anchor/Pulse format for quick approval

@@ -23,7 +23,7 @@ export default function ChatPage() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      content: 'Hey! I\'m DotSpark Chat. Please let me know how I can help you?',
+      content: 'Hey! I\'m DotSpark AI. I\'m here to help you capture your thoughts as structured dots. Share what\'s on your mind and I\'ll organize it into a three-layer dot (Summary, Anchor, Pulse) for you.',
       isUser: false,
       timestamp: new Date(),
     },
@@ -39,7 +39,7 @@ export default function ChatPage() {
   
   // Set default message only for first-time users
   const [inputValue, setInputValue] = useState(
-    isFirstTime ? "Hey DotSpark, I've got a few things on my mind - need your assistance" : ""
+    isFirstTime ? "Hi DotSpark, I would need your assistance in saving a dot" : ""
   );
   
   // Check if user has exceeded their limit
@@ -212,7 +212,7 @@ export default function ChatPage() {
               <ArrowLeft className="h-4 w-4" />
               <span className="sr-only">Back</span>
             </Button>
-            <CardTitle className="text-xl">DotSpark Chat</CardTitle>
+            <CardTitle className="text-xl">DotSpark AI - Save Dots</CardTitle>
           </div>
           <Button
             variant="ghost"
@@ -270,7 +270,7 @@ export default function ChatPage() {
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Type your message..."
+              placeholder="Share your thoughts to save as a dot..."
               disabled={isLoading || limitExceeded}
               className="flex-1"
             />
