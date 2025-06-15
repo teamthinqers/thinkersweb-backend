@@ -548,14 +548,30 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                   ) : (
                     <div className="grid grid-cols-2 gap-4">
                       <Button
-                        onClick={() => setCaptureMode('direct-chat')}
+                        onClick={() => {
+                          setIsExpanded(false);
+                          window.location.href = '/chat';
+                        }}
                         className="h-28 bg-gradient-to-br from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700 text-white rounded-xl flex flex-col items-center justify-center space-y-3 shadow-lg transform transition-all duration-200 hover:scale-105"
                       >
                         <BrainCircuit className="w-10 h-10" />
                         <span className="text-xl font-semibold">Direct Chat</span>
                       </Button>
                       <Button
-                        onClick={() => setCaptureMode('whatsapp')}
+                        onClick={async () => {
+                          setIsExpanded(false);
+                          try {
+                            const response = await fetch('/api/whatsapp/contact');
+                            const data = await response.json();
+                            const defaultMessage = encodeURIComponent("Hey DotSpark, I've got a few things on my mind — need your thoughts");
+                            const whatsappUrl = `https://wa.me/${data.phoneNumber}?text=${defaultMessage}`;
+                            window.open(whatsappUrl, '_blank');
+                          } catch (error) {
+                            console.error('Failed to get WhatsApp contact:', error);
+                            // Fallback to direct WhatsApp web
+                            window.open('https://web.whatsapp.com/', '_blank');
+                          }
+                        }}
                         className="h-28 bg-gradient-to-br from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-xl flex flex-col items-center justify-center space-y-3 shadow-lg transform transition-all duration-200 hover:scale-105"
                       >
                         <svg className="w-10 h-10" viewBox="0 0 24 24" fill="currentColor">

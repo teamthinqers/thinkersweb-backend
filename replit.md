@@ -620,6 +620,12 @@ Changelog:
   * Enhanced floating dot to show mode-specific options: Natural (Voice/Text), AI (Direct Chat/WhatsApp)
   * Added Natural/AI mode tags in floating dot headers for clear user context
   * Optimized visual hierarchy with compact spacing while maintaining stunning animations and effects
+- June 15, 2025. Fixed AI Mode button navigation functionality:
+  * Connected Direct Chat button to existing chat interface at /chat route
+  * Integrated WhatsApp button with existing WhatsApp contact API system
+  * WhatsApp button now fetches real contact number and opens with pre-filled message
+  * Eliminated floating dot getting stuck issues when users click AI mode options
+  * Enhanced error handling with fallback to WhatsApp web if contact API fails
 - June 15, 2025. Optimized AI conversation flow for minimal user effort:
   * Updated AI prompts to proactively organize user thoughts into three layers with minimal intervention
   * AI now immediately structures user input into Summary/Anchor/Pulse format for quick approval
