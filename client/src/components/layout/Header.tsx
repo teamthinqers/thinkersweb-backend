@@ -314,20 +314,22 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 </div>
               </Button>
               
-              {/* Social button with animated brain icon */}
+              {/* Social Neura button with animated brain icon */}
               <Button
                 variant="ghost"
                 size="sm"
-                className="mr-2 text-gray-600 hover:text-amber-600 hover:bg-amber-50 transition-all duration-300"
+                className="mr-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-md hover:bg-gradient-to-r hover:from-purple-700 hover:to-indigo-700 transition-all duration-300"
                 onClick={() => setLocation("/social")}
               >
-                <div className="relative">
-                  <Brain className="h-5 w-5 animate-pulse hover:animate-bounce transition-all duration-300" />
-                  <div className="absolute inset-0 animate-ping opacity-30">
-                    <Brain className="h-5 w-5" />
+                <div className="flex items-center gap-2">
+                  <div className="relative">
+                    <Brain className="h-5 w-5 animate-pulse hover:animate-bounce transition-all duration-300" />
+                    <div className="absolute inset-0 animate-ping opacity-30">
+                      <Brain className="h-5 w-5" />
+                    </div>
                   </div>
+                  <span className="text-sm font-medium hidden sm:inline">Social Neura</span>
                 </div>
-                <span className="ml-2 hidden sm:inline">Social Neura</span>
               </Button>
               
               {/* Profile button - Desktop */}
