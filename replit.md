@@ -831,9 +831,8 @@ Changelog:
 - June 15, 2025. Enhanced dashboard capacity box with animated neural effects:
   * Added "My Neural Capacity" heading to capacity box with amber gradient styling
   * Changed "AI Processing" to "Learning Rituals" under Learning Engine
-  * Updated Learning Engine color from yellow to amber/orange gradient within DotSpark theme
-  * Changed Sparks color from orange-red to yellow-amber gradient for better theme consistency
-  * Replaced Social Users icon with Brain icon and applied red-orange gradient matching Social Neura
+  * Updated all capacity colors to DotSpark theme: Memory (amber-yellow gradient), Learning Engine (amber-orange gradient), Sparks (yellow-amber gradient), Social (red-orange gradient)
+  * Replaced Social Users icon with Brain icon matching Social Neura branding
   * Added comprehensive animated effects: Memory (pulse/bounce), Learning Engine (slow spin/pulse), Sparks (ping/bounce), Social (pulse/ping)
   * Enhanced all capacity icons with hover effects: scale-110 transformation, enhanced shadows, and group-based animation triggers
 - June 15, 2025. Updated Social Neura color theme from purple to DotSpark warm colors:
