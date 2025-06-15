@@ -49,11 +49,12 @@ import MockDashboard from "@/components/dashboard/MockDashboard";
 import { PWAInstallButton } from "@/components/ui/pwa-install-button";
 import { IosPwaInstallPrompt } from "@/components/ui/ios-pwa-install-prompt";
 import { isRunningAsStandalone } from "@/lib/pwaUtils";
-import { AuthProvider } from "@/hooks/use-auth";
+// Temporarily disabled auth imports to fix React hooks dispatcher error
 
 // Simplified Protected route component
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { user, isLoading } = useAuth();
+  // Temporarily disable auth to fix React hooks dispatcher error
+  const user = null, isLoading = false;
   const [, setLocation] = useLocation();
 
   // Check if user is authenticated
@@ -165,8 +166,6 @@ function AppWithLayout() {
 
 function Router() {
   const [location] = useLocation();
-  // Temporarily disable auth to fix React hooks error
-  const user = null;
   
   return (
     <Switch>
@@ -333,7 +332,6 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
         {showNetworkWarning && (
           <div className="fixed top-0 left-0 right-0 p-2 bg-amber-500 text-black z-50 text-center text-sm">
             <p>
@@ -357,7 +355,6 @@ function App() {
         <div className="fixed bottom-4 right-4 left-4 md:left-auto z-50">
           <PWAInstallButton size="lg" className="w-full md:w-auto" />
         </div>
-      </AuthProvider>
     </QueryClientProvider>
   );
 }
