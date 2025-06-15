@@ -204,7 +204,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 <MessageSquare className="h-4 w-4" />
               </a>
               
-              {/* My Neura status indicator - shows green when active */}
+              {/* Neura status indicator - just brain icon with green indicator */}
               <div className="bg-gradient-to-r from-amber-700 to-primary text-white h-9 w-9 p-0 shadow-md rounded-md flex items-center justify-center">
                 <div className="relative">
                   <Brain className={`h-5 w-5 ${isActivated ? 'text-green-300' : 'text-white'}`} />
@@ -281,15 +281,12 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
 
             <div className="ml-4 flex items-center">
               
-              {/* My Neura status indicator - shows green when active */}
-              <div className="mr-3 bg-gradient-to-r from-amber-700 to-primary text-white relative shadow-md px-3 py-2 rounded-md">
-                <span className="relative z-10 flex items-center">
-                  <div className="relative mr-1.5">
-                    <Brain className={`h-4 w-4 ${isActivated ? 'text-green-300' : 'text-white'}`} />
-                    {isActivated && <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>}
-                  </div>
-                  <span className={isActivated ? 'text-green-100' : 'text-white'}>My Neura</span>
-                </span>
+              {/* Neura status indicator - just brain icon with green indicator */}
+              <div className="mr-3 bg-gradient-to-r from-amber-700 to-primary text-white relative shadow-md p-2 rounded-md">
+                <div className="relative">
+                  <Brain className={`h-5 w-5 ${isActivated ? 'text-green-300' : 'text-white'}`} />
+                  {isActivated && <div className="absolute -top-1 -right-1 w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>}
+                </div>
               </div>
               
               <button 
@@ -385,7 +382,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
               <Button 
                 variant="ghost" 
                 size="sm" 
-                className="w-full justify-start mb-2 text-amber-700 hover:text-amber-800 hover:bg-amber-50"
+                className="w-full justify-start mb-2 text-gray-700 hover:text-gray-900 hover:bg-gray-50"
                 onClick={goToLandingPage}
               >
                 <HomeIcon className="h-5 w-5 mr-2 text-amber-600" />
@@ -395,7 +392,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
               <Button 
                 variant="ghost" 
                 size="sm" 
-                className="w-full justify-start mb-2 text-amber-700 hover:text-amber-800 hover:bg-amber-50"
+                className="w-full justify-start mb-2 text-gray-700 hover:text-gray-900 hover:bg-gray-50"
                 onClick={goToMyNeura}
               >
                 <Brain className="h-5 w-5 mr-2 text-amber-600" />

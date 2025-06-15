@@ -573,6 +573,12 @@ Changelog:
   * Fixed "My DotSpark" menu item brown coloring that gave wrong highlight indication
   * All menu items now have consistent neutral styling with proper hover states
   * Clean header design with single close button functionality
+- June 15, 2025. Updated header and menu styling for consistent neutral appearance:
+  * Browser dashboard header now shows brain icon only (removed "My Neura" text)
+  * PWA dashboard header brain icon displays green indicator when active
+  * Fixed browser sidebar menu text coloring from amber to neutral gray
+  * Fixed PWA hamburger menu to prevent "My DotSpark" appearing highlighted
+  * All menu items now use consistent neutral styling with amber icons for visual clarity
 ```
 
 ## User Preferences
