@@ -49,6 +49,7 @@ const Profile: React.FC = () => {
 
   const [isEditing, setIsEditing] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [saveTimeout, setSaveTimeout] = useState<NodeJS.Timeout | null>(null);
 
   // Calculate profile completion percentage
   const calculateCompletionPercentage = (): number => {
@@ -206,7 +207,6 @@ const Profile: React.FC = () => {
   };
 
   // Auto-save function with debouncing
-  const [saveTimeout, setSaveTimeout] = useState<NodeJS.Timeout | null>(null);
   
   const autoSaveProfile = (data: ProfileData) => {
     if (saveTimeout) {
@@ -381,7 +381,7 @@ const Profile: React.FC = () => {
                   type="text"
                   placeholder="Enter your first name"
                   value={profileData.firstName}
-                  onChange={(e) => setProfileData(prev => ({ ...prev, firstName: e.target.value }))}
+                  onChange={(e) => handleFieldChange('firstName', e.target.value)}
                   disabled={!isEditing}
                   className={!isEditing ? "bg-gray-50" : ""}
                 />
@@ -398,7 +398,7 @@ const Profile: React.FC = () => {
                   type="text"
                   placeholder="Enter your last name"
                   value={profileData.lastName}
-                  onChange={(e) => setProfileData(prev => ({ ...prev, lastName: e.target.value }))}
+                  onChange={(e) => handleFieldChange('lastName', e.target.value)}
                   disabled={!isEditing}
                   className={!isEditing ? "bg-gray-50" : ""}
                 />
@@ -431,7 +431,7 @@ const Profile: React.FC = () => {
                   type="tel"
                   placeholder="+1 (555) 123-4567"
                   value={profileData.mobileNumber}
-                  onChange={(e) => setProfileData(prev => ({ ...prev, mobileNumber: e.target.value }))}
+                  onChange={(e) => handleFieldChange('mobileNumber', e.target.value)}
                   disabled={!isEditing}
                   className={!isEditing ? "bg-gray-50" : ""}
                 />
@@ -449,7 +449,7 @@ const Profile: React.FC = () => {
                       id="dateOfBirth"
                       type="date"
                       value={profileData.dateOfBirth}
-                      onChange={(e) => setProfileData(prev => ({ ...prev, dateOfBirth: e.target.value }))}
+                      onChange={(e) => handleFieldChange('dateOfBirth', e.target.value)}
                       className="cursor-pointer"
                       max={new Date().toISOString().split('T')[0]}
                     />
@@ -482,7 +482,7 @@ const Profile: React.FC = () => {
                   max="50"
                   placeholder="e.g., 5"
                   value={profileData.yearsOfExperience}
-                  onChange={(e) => setProfileData(prev => ({ ...prev, yearsOfExperience: e.target.value }))}
+                  onChange={(e) => handleFieldChange('yearsOfExperience', e.target.value)}
                   disabled={!isEditing}
                   className={!isEditing ? "bg-gray-50" : ""}
                 />
@@ -499,7 +499,7 @@ const Profile: React.FC = () => {
                   type="url"
                   placeholder="https://linkedin.com/in/yourprofile"
                   value={profileData.linkedInProfile}
-                  onChange={(e) => setProfileData(prev => ({ ...prev, linkedInProfile: e.target.value }))}
+                  onChange={(e) => handleFieldChange('linkedInProfile', e.target.value)}
                   disabled={!isEditing}
                   className={!isEditing ? "bg-gray-50" : ""}
                 />
