@@ -277,10 +277,12 @@ export const dots = pgTable("dots", {
   summary: text("summary").notNull(), // Layer 1: 220 chars max
   anchor: text("anchor").notNull(), // Layer 2: 300 chars max
   pulse: text("pulse").notNull(), // Layer 3: 1 word emotion
-  sourceType: text("source_type").notNull().default("text"), // voice, text, hybrid
+  sourceType: text("source_type").notNull().default("text"), // voice or text only
   originalAudioUrl: text("original_audio_url"), // For voice dots
-  transcriptionConfidence: integer("transcription_confidence"), // 0-100
-  processingStatus: text("processing_status").notNull().default("processed"), // raw, transcribed, processed, enhanced
+  originalAudioBlob: text("original_audio_blob"), // Base64 encoded audio for voice dots
+  transcriptionText: text("transcription_text"), // Actual transcribed text for voice dots
+  positionX: integer("position_x"), // Random X position on map
+  positionY: integer("position_y"), // Random Y position on map
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
