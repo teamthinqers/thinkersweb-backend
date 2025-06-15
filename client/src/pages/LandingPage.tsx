@@ -1230,24 +1230,29 @@ export default function LandingPage() {
               Explore the edge of untapped human intelligence and keep your thinking truly yours.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center mobile-stack">
-              <Button size="lg" variant="default" className="bg-white text-primary font-bold shadow-lg btn-bounce group relative overflow-hidden border-2 border-white hover:bg-white/90 w-full sm:w-auto" asChild>
-                <Link href="/auth" className="px-4 md:px-8 flex items-center justify-center">
-                  <span className="relative z-10">Get Started Now</span>
-                  <ArrowRight className="ml-2 h-5 w-5 relative z-10 group-hover:translate-x-1 transition-transform" />
-                  <span className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity"></span>
-                </Link>
-              </Button>
-              <Button 
-                size="lg" 
-                variant="default" 
-                className="bg-white text-primary font-bold shadow-lg btn-bounce group relative overflow-hidden border-2 border-white hover:bg-white/90 w-full sm:w-auto"
-                onClick={() => window.open("https://www.dotspark.in/dashboard", "_blank")}
-              >
-                <span className="px-4 md:px-8 flex items-center justify-center">
-                  <span className="relative z-10">Explore DotSpark Neura</span>
-                  <span className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity"></span>
-                </span>
-              </Button>
+              {!user ? (
+                /* Show "Get Started Now" button for non-signed users */
+                <Button size="lg" variant="default" className="bg-white text-primary font-bold shadow-lg btn-bounce group relative overflow-hidden border-2 border-white hover:bg-white/90 w-full sm:w-auto" asChild>
+                  <Link href="/auth" className="px-4 md:px-8 flex items-center justify-center">
+                    <span className="relative z-10">Get Started Now</span>
+                    <ArrowRight className="ml-2 h-5 w-5 relative z-10 group-hover:translate-x-1 transition-transform" />
+                    <span className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity"></span>
+                  </Link>
+                </Button>
+              ) : (
+                /* Show "Explore DotSpark Neura" button for signed-in users */
+                <Button 
+                  size="lg" 
+                  variant="default" 
+                  className="bg-white text-primary font-bold shadow-lg btn-bounce group relative overflow-hidden border-2 border-white hover:bg-white/90 w-full sm:w-auto"
+                  onClick={() => window.open("https://www.dotspark.in/dashboard", "_blank")}
+                >
+                  <span className="px-4 md:px-8 flex items-center justify-center">
+                    <span className="relative z-10">Explore DotSpark Neura</span>
+                    <span className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity"></span>
+                  </span>
+                </Button>
+              )}
             </div>
           </div>
         </div>

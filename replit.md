@@ -722,6 +722,10 @@ Changelog:
   * Added visual confirmation showing all three completed steps with checkmarks
   * Included "Start Your DotSpark Journey" button directing to My Neura page
   * Improved user experience by eliminating redundant step information for completed users
+- June 15, 2025. Updated home page bottom CTA section for authentication-aware navigation:
+  * Non-signed users see only "Get Started Now" button linking to /auth page for sign in/sign up
+  * Signed-in users see only "Explore DotSpark Neura" button opening dashboard in new tab
+  * Eliminated redundant buttons and streamlined user flow based on authentication status
 - June 15, 2025. Optimized AI conversation flow for minimal user effort:
   * Updated AI prompts to proactively organize user thoughts into three layers with minimal intervention
   * AI now immediately structures user input into Summary/Anchor/Pulse format for quick approval
