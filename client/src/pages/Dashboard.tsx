@@ -448,7 +448,7 @@ const Dashboard: React.FC = () => {
                       left: `${x}px`,
                       top: `${y}px`,
                       background: `linear-gradient(135deg, ${
-                        dot.sourceType === 'voice' ? '#F59E0B, #EA580C' : '#3B82F6, #1E40AF'
+                        dot.sourceType === 'voice' ? '#F59E0B, #EA580C' : '#D97706, #92400E'
                       })`
                     }}
                     onClick={(e) => {
@@ -502,7 +502,7 @@ const Dashboard: React.FC = () => {
                       <div className="space-y-2">
                         <div className="flex items-center justify-between">
                           <Badge className={`text-xs ${
-                            dot.sourceType === 'voice' ? 'bg-amber-100 text-amber-800' : 'bg-blue-100 text-blue-800'
+                            dot.sourceType === 'voice' ? 'bg-amber-100 text-amber-800' : 'bg-orange-100 text-orange-800'
                           }`}>
                             {dot.sourceType}
                           </Badge>

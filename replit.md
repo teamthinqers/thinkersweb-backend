@@ -624,6 +624,9 @@ Changelog:
   * Text dots display blue gradient with type icons
   * Added emotion indicators and source type badges on all dots
   * Implemented consistent seed-based random positioning for stable dot placement
+  * Fixed TypeError with dot ID string conversion for stable positioning
+  * Updated color theme to use amber/orange spectrum instead of blue for text dots
+  * Enhanced visual consistency with DotSpark branding while maintaining clear type indicators
 ```
 
 ## User Preferences
