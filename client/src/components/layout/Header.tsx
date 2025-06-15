@@ -361,6 +361,12 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
+                    <Link href="/my-neura" className="cursor-pointer w-full">
+                      <img src="/dotspark-logo-icon.jpeg" alt="DotSpark" className="mr-2 h-4 w-4 object-contain rounded" />
+                      My DotSpark
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
                     <Link href="/dashboard" className="cursor-pointer w-full">
                       <LayoutDashboard className="mr-2 h-4 w-4" />
                       Neural Dashboard

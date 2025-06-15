@@ -696,6 +696,10 @@ Changelog:
   * Updated PWA hamburger menu Social Neura button with orange-red gradient background
   * Updated sidebar Social Neura icon to red color (text-red-600) for visual consistency
   * Achieved complete color theme unity across browser, PWA, headers, sidebars, and mobile menus
+- June 15, 2025. Added "My DotSpark" to profile dropdown menu:
+  * Added "My DotSpark" menu item to profile dropdown with DotSpark logo icon
+  * Menu item navigates to Neural page (/my-neura) when clicked
+  * Positioned between Profile and Neural Dashboard options for logical flow
 - June 15, 2025. Optimized AI conversation flow for minimal user effort:
   * Updated AI prompts to proactively organize user thoughts into three layers with minimal intervention
   * AI now immediately structures user input into Summary/Anchor/Pulse format for quick approval
