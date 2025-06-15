@@ -525,6 +525,14 @@ Changelog:
   * Improved visual distinction between filled data and placeholders in profile fields
   * Date of birth and mobile number fields show green styling when properly filled
   * Added validation feedback for complete mobile numbers (+91 format display)
+- June 15, 2025. Restructured dashboard layout with improved search and Recent Dots functionality:
+  * Moved dot search bar to top of dashboard for primary access
+  * Converted Recent Dots into clickable button that opens modal window
+  * Recent Dots modal shows 4 most recent dots with summary cards
+  * Clicking dots in modal opens full view mode
+  * Search results now display in dedicated section only when searching
+  * Improved search experience with "no results found" messaging and suggestions
+  * Dashboard layout now follows: Header → Search → Recent Dots Button → Search Results (when searching) → Dot Wheels Map
 ```
 
 ## User Preferences

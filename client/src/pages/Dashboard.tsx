@@ -374,7 +374,7 @@ const Dashboard: React.FC = () => {
         </div>
 
         {/* Search Bar - moved to top */}
-        <div className="mb-6">
+        <div className="mb-4">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-amber-500" />
             <Input
@@ -385,6 +385,22 @@ const Dashboard: React.FC = () => {
               className="pl-10 h-12 text-base border-2 border-amber-200 bg-white/90 backdrop-blur focus:border-amber-500 focus:ring-amber-500/20 rounded-xl placeholder:text-gray-500 text-gray-800 shadow-sm"
             />
           </div>
+        </div>
+
+        {/* Recent Dots Button - directly below search */}
+        <div className="mb-6">
+          <Button
+            onClick={() => setRecentDotsOpen(true)}
+            className="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white px-6 py-3 rounded-xl shadow-lg flex items-center gap-2 font-medium"
+          >
+            <Clock className="w-5 h-5" />
+            Recent Dots
+            {dots.length > 0 && (
+              <Badge className="bg-white/20 text-white border-0 ml-1">
+                {Math.min(dots.length, 4)}
+              </Badge>
+            )}
+          </Button>
         </div>
 
         {/* Search Results Section - only show when searching */}
@@ -417,22 +433,6 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
         )}
-
-        {/* Recent Dots Button */}
-        <div className="mb-6">
-          <Button
-            onClick={() => setRecentDotsOpen(true)}
-            className="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white px-6 py-3 rounded-xl shadow-lg flex items-center gap-2 font-medium"
-          >
-            <Clock className="w-5 h-5" />
-            Recent Dots
-            {dots.length > 0 && (
-              <Badge className="bg-white/20 text-white border-0 ml-1">
-                {Math.min(dots.length, 4)}
-              </Badge>
-            )}
-          </Button>
-        </div>
 
         {/* Dot Wheels Map Section */}
         <div className="mb-8">
