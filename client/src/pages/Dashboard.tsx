@@ -342,16 +342,18 @@ const Dashboard: React.FC = () => {
       
       displayDots.forEach((dot, index) => {
         // Calculate this dot's position
-        const seedX1 = dot.id.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
-        const seedY1 = dot.id.split('').reverse().reduce((a, b) => a + b.charCodeAt(0), 0);
+        const dotId1 = String(dot.id || index);
+        const seedX1 = dotId1.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
+        const seedY1 = dotId1.split('').reverse().reduce((a, b) => a + b.charCodeAt(0), 0);
         const x1 = 60 + (seedX1 % 800) + (index * 47) % 200 + 24; // +24 for dot center
         const y1 = 60 + (seedY1 % 600) + (index * 73) % 180 + 24;
         
         displayDots.slice(index + 1).forEach((otherDot, otherIndex) => {
           // Calculate other dot's position
           const realOtherIndex = index + 1 + otherIndex;
-          const seedX2 = otherDot.id.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
-          const seedY2 = otherDot.id.split('').reverse().reduce((a, b) => a + b.charCodeAt(0), 0);
+          const dotId2 = String(otherDot.id || realOtherIndex);
+          const seedX2 = dotId2.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
+          const seedY2 = dotId2.split('').reverse().reduce((a, b) => a + b.charCodeAt(0), 0);
           const x2 = 60 + (seedX2 % 800) + (realOtherIndex * 47) % 200 + 24;
           const y2 = 60 + (seedY2 % 600) + (realOtherIndex * 73) % 180 + 24;
           
@@ -431,8 +433,9 @@ const Dashboard: React.FC = () => {
             {/* Individual Dots Random Grid */}
             {displayDots.map((dot, index) => {
               // Generate consistent random positions based on dot ID for stability
-              const seedX = dot.id.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
-              const seedY = dot.id.split('').reverse().reduce((a, b) => a + b.charCodeAt(0), 0);
+              const dotId = String(dot.id || index); // Ensure string conversion
+              const seedX = dotId.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
+              const seedY = dotId.split('').reverse().reduce((a, b) => a + b.charCodeAt(0), 0);
               const x = 60 + (seedX % 800) + (index * 47) % 200;
               const y = 60 + (seedY % 600) + (index * 73) % 180;
               
