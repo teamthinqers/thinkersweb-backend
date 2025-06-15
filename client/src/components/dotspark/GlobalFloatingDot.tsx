@@ -71,16 +71,24 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
     if (isExpanded) return;
     e.preventDefault();
     e.stopPropagation();
-    setIsDragging(true);
     
     const rect = dotRef.current?.getBoundingClientRect();
-    const startX = e.clientX - (rect?.left || position.x);
-    const startY = e.clientY - (rect?.top || position.y);
+    if (!rect) return;
+    
+    const offsetX = e.clientX - rect.left;
+    const offsetY = e.clientY - rect.top;
+    
+    let hasMoved = false;
+    setIsDragging(true);
 
     const handleMouseMove = (e: MouseEvent) => {
       e.preventDefault();
-      const newX = Math.max(12, Math.min(window.innerWidth - 60, e.clientX - startX));
-      const newY = Math.max(12, Math.min(window.innerHeight - 60, e.clientY - startY));
+      hasMoved = true;
+      
+      // Calculate new position with viewport boundaries
+      const newX = Math.max(0, Math.min(window.innerWidth - rect.width, e.clientX - offsetX));
+      const newY = Math.max(0, Math.min(window.innerHeight - rect.height, e.clientY - offsetY));
+      
       const newPosition = { x: newX, y: newY };
       setPosition(newPosition);
     };
@@ -89,6 +97,11 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
       setIsDragging(false);
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
+      
+      // Only trigger click if not dragged
+      if (!hasMoved) {
+        setTimeout(() => handleClick(), 50);
+      }
     };
 
     document.addEventListener('mousemove', handleMouseMove);
@@ -99,29 +112,45 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
     if (isExpanded) return;
     e.preventDefault();
     e.stopPropagation();
-    setIsDragging(true);
     
     const touch = e.touches[0];
     const rect = dotRef.current?.getBoundingClientRect();
-    const startX = touch.clientX - (rect?.left || position.x);
-    const startY = touch.clientY - (rect?.top || position.y);
+    if (!rect) return;
+    
+    const offsetX = touch.clientX - rect.left;
+    const offsetY = touch.clientY - rect.top;
+    
+    let hasMoved = false;
+    setIsDragging(true);
 
     const handleTouchMove = (e: TouchEvent) => {
       e.preventDefault();
-      const touch = e.touches[0];
-      const newX = Math.max(12, Math.min(window.innerWidth - 60, touch.clientX - startX));
-      const newY = Math.max(12, Math.min(window.innerHeight - 60, touch.clientY - startY));
-      const newPosition = { x: newX, y: newY };
-      setPosition(newPosition);
+      hasMoved = true;
+      
+      if (e.touches.length > 0) {
+        const touch = e.touches[0];
+        
+        // Calculate new position with viewport boundaries
+        const newX = Math.max(0, Math.min(window.innerWidth - rect.width, touch.clientX - offsetX));
+        const newY = Math.max(0, Math.min(window.innerHeight - rect.height, touch.clientY - offsetY));
+        
+        const newPosition = { x: newX, y: newY };
+        setPosition(newPosition);
+      }
     };
 
     const handleTouchEnd = () => {
       setIsDragging(false);
-      document.removeEventListener('touchmove', handleTouchMove);
+      document.removeEventListener('touchmove', handleTouchMove, { passive: false });
       document.removeEventListener('touchend', handleTouchEnd);
+      
+      // Only trigger click if not dragged
+      if (!hasMoved) {
+        setTimeout(() => handleClick(), 50);
+      }
     };
 
-    document.addEventListener('touchmove', handleTouchMove);
+    document.addEventListener('touchmove', handleTouchMove as EventListener, { passive: false });
     document.addEventListener('touchend', handleTouchEnd);
   };
 
