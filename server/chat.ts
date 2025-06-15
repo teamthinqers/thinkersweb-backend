@@ -21,8 +21,9 @@ export interface Message {
 
 // Type for structured entry from chat input
 export interface StructuredEntry {
-  title: string;
-  content: string;
+  summary: string;
+  anchor: string;
+  pulse: string;
   categoryId?: number;
   tagNames?: string[];
 }
@@ -39,15 +40,38 @@ export async function processEntryFromChat(
     if (!messages.some(m => m.role === "system")) {
       messages.unshift({
         role: "system",
-        content: `You are DotSpark AI, a specialized assistant for creating structured three-layer dots. Your job is to help users convert their thoughts into structured dots with three specific layers:
+        content: `You are DotSpark AI, a helpful assistant that organizes user thoughts into structured three-layer dots with minimal effort from the user. Your goal is to make the process as easy as possible while preserving their authentic voice.
 
-        Layer 1 - Summary (max 220 characters): A concise, sharp summary of the core thought or insight
-        Layer 2 - Anchor (max 300 characters): Memory anchor or context that helps recall this thought later
-        Layer 3 - Pulse (1 word): Single emotion word describing how this thought makes you feel
+**Your Process:**
+1. Listen to the user's thought, experience, or insight
+2. Immediately organize it into three layers, asking only 1-2 clarifying questions if needed
+3. Present the structured dot for their quick approval or minor edits
+4. Save the dot once they confirm
 
-        Always respond with a valid JSON object in this exact format:
-        {
-          "summary": "Concise core insight (max 220 chars)",
+**Three-Layer Structure:**
+- Layer 1 - Summary (max 220 characters): Core insight distilled sharply
+- Layer 2 - Anchor (max 300 characters): Context or application that aids future recall  
+- Layer 3 - Pulse (1 word): Emotional response to this insight
+
+**Your Approach:**
+- Be proactive: "Let me organize this thought for you..."
+- Minimize back-and-forth: Structure their input immediately into three layers
+- Ask only essential clarifications: "Is this the main insight?" or "What emotion does this spark?"
+- Present completed dots: "Here's your structured dot - does this capture it well?"
+- Use their exact words when possible, just organized and refined
+
+**Response Pattern:**
+"I can help organize this into a dot for you:
+
+**Summary:** [Their core insight, refined to 220 chars]
+**Anchor:** [Context/application, refined to 300 chars]  
+**Pulse:** [One emotion word]
+
+Does this capture your thought well? I can save this as your dot or adjust anything."
+
+Only when they approve, respond with this JSON format:
+{
+  "summary": "Their refined core insight (max 220 chars)",
           "anchor": "Memory context or application (max 300 chars)", 
           "pulse": "emotion_word",
           "category": "One of: professional, personal, health, finance",
@@ -90,16 +114,17 @@ export async function processEntryFromChat(
     
     const structuredData = JSON.parse(responseContent);
     
-    // Map to our structured entry format
+    // Map to our structured entry format for three-layer dots
     const result: StructuredEntry = {
-      title: structuredData.title,
-      content: structuredData.content,
+      summary: structuredData.summary || "",
+      anchor: structuredData.anchor || "",
+      pulse: structuredData.pulse || "inspired",
       tagNames: structuredData.tags || [],
     };
     
     // Add category if present
     if (structuredData.category) {
-      // We'll map category names to IDs when we implement the API endpoint
+      // Map category names to IDs
       result.categoryId = getCategoryIdFromName(structuredData.category);
     }
     

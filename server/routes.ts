@@ -441,9 +441,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Create the entry content with AI mode designation
       const entryContent = {
         dotType: 'three-layer',
-        summary: structuredDot.summary || structuredDot.title,
-        anchor: structuredDot.anchor || structuredDot.content,
-        pulse: structuredDot.pulse || 'inspired',
+        summary: structuredDot.summary,
+        anchor: structuredDot.anchor,
+        pulse: structuredDot.pulse,
         sourceType: 'text',
         captureMode: 'ai'
       };

@@ -115,7 +115,8 @@ const Dashboard: React.FC = () => {
           pulse: 'excited',
           wheelId: '1',
           timestamp: new Date(),
-          sourceType: 'text'
+          sourceType: 'text',
+          captureMode: 'natural'
         }
       ],
       connections: ['2'],
@@ -134,7 +135,8 @@ const Dashboard: React.FC = () => {
           pulse: 'confident',
           wheelId: '2',
           timestamp: new Date(),
-          sourceType: 'voice'
+          sourceType: 'voice',
+          captureMode: 'natural'
         }
       ],
       connections: ['1', '3'],
