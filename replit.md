@@ -671,6 +671,8 @@ Changelog:
   * Enhanced PWA dashboard header: Social button with brain icon and "Social" text positioned next to current green indicated brain icon
   * Applied consistent animate-pulse and animate-ping effects to all brain icons for unified visual experience
   * Maintained proper navigation functionality and amber/orange color theming throughout all headers
+- June 15, 2025. Updated browser home page header navigation text:
+  * Renamed Neura button to "My Neura" in browser home page header for consistency with dashboard naming
 - June 15, 2025. Optimized AI conversation flow for minimal user effort:
   * Updated AI prompts to proactively organize user thoughts into three layers with minimal intervention
   * AI now immediately structures user input into Summary/Anchor/Pulse format for quick approval

@@ -277,7 +277,7 @@ export default function LandingPage() {
                     </div>
                     {isNeuraActivated && <div className="absolute -top-1 -right-1 h-2 w-2 bg-green-500 rounded-full animate-pulse"></div>}
                   </div>
-                  <span className="text-sm">Neura</span>
+                  <span className="text-sm">My Neura</span>
                 </div>
               </Button>
               {/* Social button with blinking brain icon */}
