@@ -601,16 +601,20 @@ const Profile: React.FC = () => {
                     </PopoverContent>
                   </Popover>
                 ) : (
-                  <Input
-                    value={profileData.dateOfBirth ? new Date(profileData.dateOfBirth).toLocaleDateString('en-US', { 
-                      year: 'numeric', 
-                      month: 'long', 
-                      day: 'numeric' 
-                    }) : ''}
-                    disabled={true}
-                    className="bg-gray-50"
-                    placeholder="Select your date of birth"
-                  />
+                  <div className="flex items-center space-x-2 p-2 bg-gray-50 border rounded-md">
+                    <CalendarIcon className="h-4 w-4 text-gray-400" />
+                    {profileData.dateOfBirth ? (
+                      <span className="text-green-700 font-medium">
+                        {new Date(profileData.dateOfBirth).toLocaleDateString('en-US', { 
+                          year: 'numeric', 
+                          month: 'long', 
+                          day: 'numeric' 
+                        })}
+                      </span>
+                    ) : (
+                      <span className="text-gray-400 italic">Date not set</span>
+                    )}
+                  </div>
                 )}
               </div>
 

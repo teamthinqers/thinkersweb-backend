@@ -517,6 +517,14 @@ Changelog:
   * Added comprehensive data synchronization between browser and PWA modes
   * Profile data now persists properly across different access methods (browser, PWA, tabs)
   * Implemented proper empty field handling while maintaining user privacy for sensitive data
+- June 15, 2025. Fixed UI issues based on user feedback:
+  * Removed test sign-in feature from home page landing section
+  * Removed search box from dashboard header to eliminate duplicate search functionality
+  * Enhanced mobile number field with +91 India country code as default prefix
+  * Mobile number field now only accepts 10-digit numbers with visual validation
+  * Improved visual distinction between filled data and placeholders in profile fields
+  * Date of birth and mobile number fields show green styling when properly filled
+  * Added validation feedback for complete mobile numbers (+91 format display)
 ```
 
 ## User Preferences
