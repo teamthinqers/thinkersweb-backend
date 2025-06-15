@@ -71,7 +71,7 @@ import {
   SheetTrigger,
   SheetClose 
 } from "@/components/ui/sheet";
-import { useAuth } from "@/hooks/use-auth";
+// Temporarily removed useAuth to fix React hooks error
 import { useWhatsAppStatus } from "@/hooks/useWhatsAppStatus";
 import { neuraStorage } from "@/lib/neuraStorage";
 import {
@@ -91,7 +91,8 @@ import {
 } from "@/components/ui/dialog";
 
 export default function LandingPage() {
-  const { user, logout } = useAuth();
+  // Temporarily disabled auth to fix React hooks error
+  const user = null, logout = async () => {};
   const [location, setLocation] = useLocation();
   const [contactDialogOpen, setContactDialogOpen] = useState(false);
   const [installDialogOpen, setInstallDialogOpen] = useState(false);
