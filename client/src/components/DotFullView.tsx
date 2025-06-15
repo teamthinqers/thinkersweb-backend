@@ -145,7 +145,7 @@ export function DotFullView({ dot, onClose }: DotFullViewProps) {
           </div>
         </DialogHeader>
 
-        <div className="space-y-6">
+        <div className="flex-1 overflow-y-auto space-y-4 pr-2">
           {/* Layer 1: Summary */}
           <Card>
             <CardHeader className="pb-3">
@@ -237,25 +237,7 @@ export function DotFullView({ dot, onClose }: DotFullViewProps) {
             </>
           )}
 
-          {/* Actions */}
-          <Separator />
-          <div className="flex justify-between items-center pt-2">
-            <Button
-              variant="outline"
-              onClick={onClose}
-            >
-              Close
-            </Button>
-            
-            <Button
-              variant="destructive"
-              onClick={() => setShowDeleteConfirm(true)}
-              className="flex items-center gap-2"
-            >
-              <Trash2 className="w-4 h-4" />
-              Delete Dot
-            </Button>
-          </div>
+
         </div>
 
         {/* Delete Confirmation Dialog */}

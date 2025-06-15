@@ -237,17 +237,11 @@ export function DotWheelsMap({ wheels, dots, onDotClick }: DotWheelsMapProps) {
                     )}
                   </div>
                   
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="w-full mt-2 text-xs"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onDotClick(dot);
-                    }}
-                  >
-                    Open in full view
-                  </Button>
+                  <div className="mt-2 text-center">
+                    <span className="text-xs text-gray-600 bg-gray-50 px-2 py-1 rounded">
+                      Open in full view mode
+                    </span>
+                  </div>
                 </CardContent>
               </Card>
             </div>

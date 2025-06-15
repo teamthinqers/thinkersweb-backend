@@ -401,8 +401,8 @@ const Dashboard: React.FC = () => {
         {/* Recent Dots Section - Horizontally Scrollable */}
         <div className="mb-8">
           <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-gradient-to-br from-amber-600 to-orange-700">
-              <div className="w-1.5 h-1.5 rounded-full bg-white mt-0.5 ml-0.5"></div>
+            <div className="w-5 h-5 rounded-full border-2 border-amber-500 flex items-center justify-center">
+              <div className="w-2 h-2 rounded-full bg-amber-500"></div>
             </div>
             <span className="bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent">
               Recent Dots
