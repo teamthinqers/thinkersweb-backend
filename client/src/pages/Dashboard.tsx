@@ -37,7 +37,7 @@ const Dashboard: React.FC = () => {
   const [recentDotsOpen, setRecentDotsOpen] = useState(false);
 
   // Fetch real dots from API
-  const { data: dots = [], isLoading } = useQuery({
+  const { data: dots = [], isLoading, refetch } = useQuery({
     queryKey: ['/api/dots'],
     queryFn: async () => {
       const response = await fetch('/api/dots');
@@ -449,7 +449,10 @@ const Dashboard: React.FC = () => {
       
       {/* Recent Dots Modal */}
       <Dialog open={recentDotsOpen} onOpenChange={setRecentDotsOpen}>
-        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+        <DialogContent 
+          className="max-w-2xl max-h-[80vh] overflow-y-auto"
+          aria-describedby="recent-dots-description"
+        >
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-xl">
               <Clock className="w-5 h-5 text-amber-600" />
@@ -458,6 +461,10 @@ const Dashboard: React.FC = () => {
               </span>
             </DialogTitle>
           </DialogHeader>
+          
+          <div id="recent-dots-description" className="sr-only">
+            View your most recently saved dots with summary previews
+          </div>
           
           <div className="space-y-4 mt-4">
             {dots.length > 0 ? (
@@ -500,9 +507,9 @@ const Dashboard: React.FC = () => {
         <DotFullView 
           dot={viewFullDot} 
           onClose={() => setViewFullDot(null)}
-          onDelete={() => {
+          onDelete={async () => {
             // Refetch dots after deletion
-            refetch();
+            await refetch();
             setViewFullDot(null);
           }}
         />

@@ -57,7 +57,10 @@ const DotFullView: React.FC<DotFullViewProps> = ({ dot, onClose, onDelete }) => 
 
   return (
     <Dialog open={true} onOpenChange={onClose}>
-      <DialogContent className="max-w-3xl h-[90vh] flex flex-col">
+      <DialogContent 
+        className="max-w-3xl h-[90vh] flex flex-col"
+        aria-describedby="dot-full-view-description"
+      >
         <DialogHeader className="flex-shrink-0">
           <div className="flex items-center justify-between">
             <DialogTitle className="flex items-center gap-2">
@@ -81,6 +84,10 @@ const DotFullView: React.FC<DotFullViewProps> = ({ dot, onClose, onDelete }) => 
             </div>
           </div>
         </DialogHeader>
+
+        <div id="dot-full-view-description" className="sr-only">
+          View complete details of your saved dot including summary, anchor, and pulse layers
+        </div>
 
         <div className="flex-1 overflow-y-auto space-y-4 pr-2">
           {/* Source Type and Timestamp */}

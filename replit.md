@@ -538,6 +538,13 @@ Changelog:
   * Actual dot sourceType is only 'text' or 'voice' based on input method used, never 'hybrid'
   * System correctly tags dots based on actual capture method regardless of user's preference setting
   * Updated example data and interfaces to reflect proper sourceType classification
+- June 15, 2025. Enhanced DotFullView component with improved UX and delete functionality:
+  * Fixed modal to fit screen (90vh height) without requiring scrolling
+  * Removed duplicate close icons, enhanced single close icon with proper styling
+  * Added delete functionality with red trash icon and server API integration
+  * Improved layout with flex container and proper content overflow handling
+  * Added accessibility features with aria-describedby and screen reader descriptions
+  * Dashboard refetches data automatically after dot deletion
 ```
 
 ## User Preferences
