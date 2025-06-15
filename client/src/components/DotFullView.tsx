@@ -11,7 +11,7 @@ interface Dot {
   pulse: string;
   wheelId: string;
   timestamp: Date;
-  sourceType: 'voice' | 'text' | 'hybrid';
+  sourceType: 'voice' | 'text';
 }
 
 interface DotFullViewProps {

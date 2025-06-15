@@ -16,7 +16,7 @@ interface Dot {
   pulse: string; // 1 word emotion
   wheelId: string;
   timestamp: Date;
-  sourceType: 'voice' | 'text' | 'hybrid';
+  sourceType: 'voice' | 'text';
 }
 
 interface Wheel {
@@ -73,7 +73,7 @@ const Dashboard: React.FC = () => {
       pulse: "calm",
       wheelId: "example-wheel-2", 
       timestamp: new Date(),
-      sourceType: 'hybrid'
+      sourceType: 'text'
     }
   ];
 
@@ -144,7 +144,7 @@ const Dashboard: React.FC = () => {
           pulse: 'enlightened',
           wheelId: '3',
           timestamp: new Date(),
-          sourceType: 'hybrid'
+          sourceType: 'voice'
         }
       ],
       connections: ['2'],

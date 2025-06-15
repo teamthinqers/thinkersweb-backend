@@ -533,6 +533,11 @@ Changelog:
   * Search results now display in dedicated section only when searching
   * Improved search experience with "no results found" messaging and suggestions
   * Dashboard layout now follows: Header → Search → Recent Dots Button → Search Results (when searching) → Dot Wheels Map
+- June 15, 2025. Corrected dot sourceType classification system:
+  * User capture mode preferences can be 'voice', 'text', or 'hybrid' (hybrid = both options available)
+  * Actual dot sourceType is only 'text' or 'voice' based on input method used, never 'hybrid'
+  * System correctly tags dots based on actual capture method regardless of user's preference setting
+  * Updated example data and interfaces to reflect proper sourceType classification
 ```
 
 ## User Preferences
