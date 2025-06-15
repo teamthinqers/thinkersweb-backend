@@ -60,7 +60,6 @@ const Dashboard: React.FC = () => {
       wheelId: 1,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-      userId: 1,
       positionX: 0,
       positionY: 0,
       sourceType: 'text'
@@ -73,7 +72,6 @@ const Dashboard: React.FC = () => {
       wheelId: 1,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-      userId: 1,
       positionX: 0,
       positionY: 0,
       sourceType: 'voice'
@@ -86,7 +84,6 @@ const Dashboard: React.FC = () => {
       wheelId: 2,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-      userId: 1,
       positionX: 0,
       positionY: 0,
       sourceType: 'text'
@@ -110,7 +107,7 @@ const Dashboard: React.FC = () => {
   // Mock wheels data for visualization
   const [wheels] = useState<Wheel[]>([
     {
-      id: "1",
+      id: 1,
       name: 'Innovation Ideas',
       category: 'Technology',
       color: '#3B82F6',
@@ -121,7 +118,7 @@ const Dashboard: React.FC = () => {
       positionY: 100
     },
     {
-      id: "2", 
+      id: 2, 
       name: 'Business Strategies',
       category: 'Professional',
       color: '#10B981',
@@ -132,7 +129,7 @@ const Dashboard: React.FC = () => {
       positionY: 150
     },
     {
-      id: "3",
+      id: 3,
       name: 'Learning Insights', 
       category: 'Personal Growth',
       color: '#F59E0B',
