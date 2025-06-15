@@ -1,15 +1,14 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useLocation } from 'wouter';
-import { useAuth } from '@/hooks/use-auth-minimal';
+import { useAuth } from '@/hooks/use-auth';
 import { useWhatsAppStatus } from '@/hooks/useWhatsAppStatus';
 import { useMobile } from '@/hooks/use-mobile';
 import { useToast } from '@/hooks/use-toast';
-import { apiRequest } from '@/lib/queryClient';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { AlertCircle, ArrowRight, Brain, Check, CheckCircle2, LogIn, LayoutDashboard, MessageCircle, Sparkles, MessageSquare, Zap, RefreshCw, Activity, Wrench } from 'lucide-react';
+import { AlertCircle, ArrowRight, Brain, Check, CheckCircle2, LogIn, LayoutDashboard, MessageCircle, Sparkles, MessageSquare, Zap } from 'lucide-react';
 import { NeuralWhatsAppLinking } from '@/components/neural/NeuralWhatsAppLinking';
 import Header from '@/components/layout/Header';
 
@@ -19,20 +18,11 @@ export default function ActivateNeuralExtension() {
   const { user, isLoading: isAuthLoading, loginWithGoogle } = useAuth();
   const { toast } = useToast();
   const { isWhatsAppConnected, phoneNumber, isLoading: isWhatsAppStatusLoading, 
-          showActivationSuccess, justActivated, isActiveInLocalStorage,
-          repairActivationStatus } = useWhatsAppStatus();
+          showActivationSuccess, justActivated } = useWhatsAppStatus();
   
   // All useState hooks must be in the same order each render
   const [isAnimating, setIsAnimating] = useState(true);
   const [activeTab, setActiveTab] = useState<string>('step1'); // Initialize to default, we'll update in useEffect
-  const [whatsAppDirectLink, setWhatsAppDirectLink] = useState('');
-  
-  // Additional state for tracking activation status with more details
-  const [activationStatus, setActivationStatus] = useState({
-    isConnected: isWhatsAppConnected || localStorage.getItem('dotspark_activated') === 'true',
-    isCheckingStatus: false,
-    lastChecked: Date.now()
-  });
   
   // All useRef hooks after state hooks
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -42,111 +32,23 @@ export default function ActivateNeuralExtension() {
   
   // Function to navigate back to the home page
   const goToHome = () => setLocation("/");
-  
-  // Get WhatsApp direct link with prefilled message
-  useEffect(() => {
-    fetch('/api/whatsapp/contact')
-      .then(res => res.json())
-      .then(data => {
-        if (data && data.directLink) {
-          setWhatsAppDirectLink(data.directLink);
-          console.log("Got WhatsApp direct link:", data.directLink);
-        }
-      })
-      .catch(err => console.error("Error fetching WhatsApp contact:", err));
-  }, []);
 
-  // Combined activation check - either source confirms activation
-  const isActivated = isWhatsAppConnected || isActiveInLocalStorage;
-  
-  // Progress based on activation status
-  const progress = user ? (isActivated ? 100 : 50) : 0;
-  
-  // Ensure activation status is synced across localStorage and server
-  useEffect(() => {
-    // Function to fix activation status when needed
-    const fixActivationStatus = async () => {
-      try {
-        // Get stored phone number if available
-        const storedPhone = localStorage.getItem('whatsapp_phone');
-        
-        console.log("🔄 Checking if activation fix is needed. Current status:", { 
-          isWhatsAppConnected, 
-          isActiveInLocalStorage,
-          storedPhone 
-        });
-        
-        // If localStorage says activated but server doesn't confirm, try to fix it
-        if (isActiveInLocalStorage && !isWhatsAppConnected) {
-          console.log("🔄 Activation status mismatch - attempting to fix");
-          
-          const fixRes = await fetch('/api/whatsapp/fix-activation', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ 
-              phoneNumber: storedPhone || undefined
-            }),
-          });
-          
-          if (fixRes.ok) {
-            const fixData = await fixRes.json();
-            console.log("🔄 Activation fixed successfully:", fixData);
-            
-            // Update activation status
-            setActivationStatus(prev => ({
-              ...prev,
-              isConnected: true,
-              isCheckingStatus: false
-            }));
-            
-            // Force UI to show 100% completion if needed
-            setActiveTab('step2');
-          } else {
-            console.error("Failed to fix activation:", await fixRes.text());
-          }
-        }
-        // If server confirms activation but localStorage doesn't have it, update localStorage
-        else if (isWhatsAppConnected && !isActiveInLocalStorage) {
-          console.log("Server confirms WhatsApp activation - setting localStorage flag");
-          localStorage.setItem('dotspark_activated', 'true');
-          
-          // Add stored phone number if we know it
-          if (phoneNumber) {
-            localStorage.setItem('whatsapp_phone', phoneNumber);
-          }
-        }
-      } catch (error) {
-        console.error("Error fixing activation status:", error);
-      }
-    };
-    
-    // Only run check when user is logged in
-    if (user) {
-      fixActivationStatus();
-    }
-  }, [isWhatsAppConnected, isActiveInLocalStorage, user, phoneNumber]);
+  // Calculate progress percentage - make sure it's 100% when activated in localStorage
+  const isActiveInLocalStorage = localStorage.getItem('whatsapp_activated') === 'true';
+  const progress = user ? (isWhatsAppConnected || isActiveInLocalStorage ? 100 : 50) : 0;
   
   // Effect 1: Force synchronization of activation status on page load
   useEffect(() => {
     // Check if there's a WhatsApp activation in localStorage and force the UI to update
-    if ((localStorage.getItem('whatsapp_activated') === 'true' || isWhatsAppConnected) && user) {
+    if (localStorage.getItem('whatsapp_activated') === 'true' && user) {
       // Set global and local activation flags
       localStorage.setItem('whatsapp_activated', 'true');
       sessionStorage.setItem('show_activation_success', 'true');
       
       // Force to step 2 since this is an activated user
       setActiveTab('step2');
-      
-      // Also set the activation status in local state for UI
-      setActivationStatus(prev => ({
-        ...prev,
-        isConnected: true,
-        isCheckingStatus: false
-      }));
     }
-  }, [user, isWhatsAppConnected]);
+  }, [user]);
   
   // Effect 2: Update tab when auth changes (primary tab control)
   useEffect(() => {
@@ -157,201 +59,16 @@ export default function ActivateNeuralExtension() {
     }
   }, [user]);
   
-  // Effect 3: Listen for WhatsApp status updates from any source
-  useEffect(() => {
-    const handleWhatsAppStatusUpdate = (event: Event) => {
-      // Cast to CustomEvent to access detail
-      const customEvent = event as CustomEvent<{isActivated: boolean, source: string}>;
-      console.log("Received WhatsApp status update event:", customEvent.detail);
-      
-      if (customEvent.detail.isActivated) {
-        // Update our local state
-        setActivationStatus(prev => ({
-          ...prev,
-          isConnected: true,
-          isCheckingStatus: false
-        }));
-        
-        // Show success notification if this isn't a duplicate
-        const hasSeenSuccess = sessionStorage.getItem('shown_whatsapp_success') === 'true';
-        if (!hasSeenSuccess) {
-          toast({
-            title: "DotSpark Activated!",
-            description: "Your WhatsApp is connected and your DotSpark is now active.",
-            duration: 5000,
-          });
-          sessionStorage.setItem('shown_whatsapp_success', 'true');
-        }
-      }
-    };
-    
-    // Register event listener for status updates
-    window.addEventListener('whatsapp-status-updated', handleWhatsAppStatusUpdate);
-    
-    // Clean up
-    return () => {
-      window.removeEventListener('whatsapp-status-updated', handleWhatsAppStatusUpdate);
-    };
-  }, [toast]);
-
-  // Effect 4: Check for activation success flag and handle status updates
+  // Effect 3: Check for activation success flag and handle status updates
   useEffect(() => {
     // Check for a specific flag to avoid duplicate notifications
     const hasBeenActivatedBefore = localStorage.getItem('neural_extension_seen') === 'true';
-    // Check if returning from WhatsApp
-    const returningFromWhatsApp = sessionStorage.getItem('returningFromWhatsApp') === 'true';
-    
-    // For users returning from WhatsApp, we want to force check their activation status
-    if (returningFromWhatsApp && user) {
-      console.log("User returned from WhatsApp, checking connection status");
-      sessionStorage.removeItem('returningFromWhatsApp');
-      
-      // Start tab at the second step
-      setActiveTab('step2');
-      
-      // Add a flag to trigger automatic polling
-      localStorage.setItem('check_whatsapp_status', 'true');
-      
-      // If they are already connected, show success
-      if (isWhatsAppConnected) {
-        toast({
-          title: "DotSpark Activated!",
-          description: "Your WhatsApp message was received and your DotSpark is now active.",
-          duration: 5000,
-        });
-        localStorage.setItem('dotspark_activated', 'true');
-      } else {
-        // If they're not connected yet, show a waiting message 
-        toast({
-          title: "Message Sent!",
-          description: "Waiting for WhatsApp activation confirmation...",
-          duration: 3000,
-        });
-        
-        // For UI responsiveness, we'll add an immediate state update
-        setActivationStatus(prev => ({
-          ...prev,
-          isCheckingStatus: true
-        }));
-        
-        // Store all timeout IDs for proper cleanup
-        const timeoutIds: number[] = [];
-        
-        // Define exact check times for better control
-        const checkTimes = [
-          { delay: 1000, label: 'Immediate check' },
-          { delay: 3000, label: 'Check #1' }, 
-          { delay: 6000, label: 'Check #2' },
-          { delay: 9000, label: 'Check #3' },
-          { delay: 12000, label: 'Check #4' },
-          { delay: 15000, label: 'Check #5' },
-          { delay: 20000, label: 'Slower check #1' },
-          { delay: 25000, label: 'Slower check #2' }
-        ];
-        
-        // Create a function that both makes API calls and checks localStorage
-        const checkActivation = (checkLabel: string): Promise<boolean> => {
-          console.log(`${checkLabel} for WhatsApp activation`);
-          
-          // First check if localStorage was updated by another component (including the hook)
-          const isActiveInStorage = localStorage.getItem('whatsapp_activated') === 'true';
-          if (isActiveInStorage) {
-            console.log(`${checkLabel}: Found activation in localStorage`);
-            handleActivationSuccess('localStorage');
-            return Promise.resolve(true);
-          }
-          
-          // If not in localStorage, make direct API request with credentials
-          return fetch('/api/whatsapp/status', { 
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include'
-          })
-            .then(res => res.json())
-            .then(data => {
-              console.log(`${checkLabel} API result:`, data);
-              
-              // Check if the API reports activation (either isRegistered or isConnected)
-              if (data.isRegistered || data.isConnected) {
-                handleActivationSuccess('api', data);
-                return true;
-              }
-              return false;
-            })
-            .catch(err => {
-              console.error(`${checkLabel} error:`, err);
-              return false;
-            });
-        };
-        
-        // Common handler for successful activation from any source
-        const handleActivationSuccess = (source: string, data?: any) => {
-          console.log(`Activation confirmed from ${source}`, data);
-          
-          // Clear all pending timeouts to stop further checks
-          timeoutIds.forEach(id => window.clearTimeout(id));
-          
-          // Update localStorage
-          localStorage.setItem('dotspark_activated', 'true');
-          if (data?.phoneNumber) {
-            localStorage.setItem('whatsapp_phone', data.phoneNumber);
-          }
-          
-          // Update UI state
-          setActivationStatus(prev => ({
-            ...prev,
-            isConnected: true,
-            isCheckingStatus: false
-          }));
-          
-          // Dispatch event for other components
-          window.dispatchEvent(new CustomEvent('whatsapp-status-updated', { 
-            detail: { isActivated: true, source }
-          }));
-          
-          // Only show toast once
-          if (!sessionStorage.getItem('activation_success_shown')) {
-            toast({
-              title: "DotSpark Activated!",
-              description: "Your WhatsApp message was received and your DotSpark is now active.",
-              duration: 5000,
-            });
-            sessionStorage.setItem('activation_success_shown', 'true');
-          }
-        };
-        
-        // Schedule each check at the appropriate time
-        checkTimes.forEach(({ delay, label }) => {
-          const timeoutId = window.setTimeout(() => {
-            checkActivation(label)
-              .then((success: boolean) => {
-                // If not successful and this is the last check, show reminder
-                if (!success && delay === checkTimes[checkTimes.length - 1].delay) {
-                  setActivationStatus(prev => ({ ...prev, isCheckingStatus: false }));
-                  toast({
-                    title: "Still Waiting...",
-                    description: "It may take a moment to receive your WhatsApp message. The page will update automatically when your neural extension is activated.",
-                    duration: 5000,
-                  });
-                }
-              });
-          }, delay);
-          
-          timeoutIds.push(timeoutId);
-        });
-        
-        // Return cleanup function that clears all scheduled checks
-        return () => {
-          timeoutIds.forEach(id => window.clearTimeout(id));
-        };
-      }
-    }
     
     // Only show toast if this is a new activation and we have an explicit success flag
-    else if (showActivationSuccess && user && !hasBeenActivatedBefore) {
+    if (showActivationSuccess && user && !hasBeenActivatedBefore) {
       // Success toast with longer duration - only for first-time activations
       toast({
-        title: "DotSpark Activated!",
+        title: "Neural Extension Activated!",
         description: "WhatsApp connection completed successfully.",
         duration: 5000,
       });
@@ -526,10 +243,10 @@ export default function ActivateNeuralExtension() {
               <div className="absolute inset-0 rounded-full border border-primary/20 animate-ping"></div>
             </div>
             <h1 className="text-2xl md:text-3xl font-bold tracking-tight mb-0.5">
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-primary to-blue-600">DotSpark</span>
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-primary to-blue-600">Neural Extension</span>
             </h1>
             <p className="text-sm text-muted-foreground">
-              Think Sharper, Stay You
+              Unlock your cognitive potential with DotSpark
             </p>
           </div>
           
@@ -592,7 +309,7 @@ export default function ActivateNeuralExtension() {
                 <CheckCircle2 className="h-5 w-5 text-green-600 dark:text-green-400" />
               </div>
               <div className="flex-1">
-                <h3 className="text-sm font-medium text-green-800 dark:text-green-300">DotSpark Successfully Activated!</h3>
+                <h3 className="text-sm font-medium text-green-800 dark:text-green-300">Neural Extension Successfully Activated!</h3>
               </div>
             </div>
           )}
@@ -709,10 +426,10 @@ export default function ActivateNeuralExtension() {
                       <Sparkles className="h-3 w-3 absolute top-2 right-2 text-green-400" />
                     </div>
                     <CardTitle className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-green-500 to-emerald-500">
-                      DotSpark Activated
+                      Neural Extension Activated
                     </CardTitle>
                     <CardDescription className="text-sm text-green-700 dark:text-green-400">
-                      Your DotSpark is fully operational
+                      Your cognitive extension is fully operational
                     </CardDescription>
                   </CardHeader>
                   
@@ -743,7 +460,7 @@ export default function ActivateNeuralExtension() {
                     <div className="flex flex-col sm:flex-row gap-3 justify-center mt-4">
                       <Button
                         className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white"
-                        onClick={() => window.open(whatsAppDirectLink || `https://wa.me/16067157733?text=${encodeURIComponent("Hey DotSpark, I've got a few things on my mind — need your thoughts")}`, '_blank')}
+                        onClick={() => window.open(`https://wa.me/16067157733`, '_blank')}
                         size="sm"
                       >
                         <MessageSquare className="h-4 w-4 mr-2" />
@@ -757,32 +474,6 @@ export default function ActivateNeuralExtension() {
                       >
                         <LayoutDashboard className="h-4 w-4 mr-2" />
                         Go to Dashboard
-                      </Button>
-                    </div>
-                    
-                    {/* Repair button - only shown on the activated state as a fallback */}
-                    <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-800">
-                      <div className="text-left mb-2">
-                        <h3 className="text-sm font-medium text-gray-600 dark:text-gray-300">Having connection issues?</h3>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">
-                          If your Neural Extension isn't working properly, you can repair the connection.
-                        </p>
-                      </div>
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={() => {
-                          repairActivationStatus();
-                          toast({
-                            title: "Repair initiated",
-                            description: "Attempting to reconnect your Neural Extension...",
-                            variant: "default"
-                          });
-                        }}
-                        className="w-full flex items-center justify-center gap-2 text-amber-600 dark:text-amber-400 border-amber-300 dark:border-amber-800 hover:bg-amber-50 dark:hover:bg-amber-950"
-                      >
-                        <RefreshCw className="h-3.5 w-3.5" />
-                        <span>Repair Connection</span>
                       </Button>
                     </div>
                   </CardContent>
@@ -815,266 +506,5 @@ export default function ActivateNeuralExtension() {
         </div>
       </div>
     </div>
-  );
-
-  // Add a test function at the very bottom of the component (not in the JSX/return)
-  const ActivationTestPanel = () => {
-    const { testActivationEvents } = useWhatsAppStatus();
-    
-    // Only show in development mode
-    if (import.meta.env.DEV !== true) return null;
-    
-    return (
-      <div className="fixed bottom-4 right-4 p-2 bg-black/50 text-white text-xs rounded-lg z-50">
-        <p className="mb-1">Activation Test Panel</p>
-        <button 
-          onClick={testActivationEvents}
-          className="px-2 py-1 bg-purple-600 text-white rounded text-xs"
-        >
-          Test Events
-        </button>
-      </div>
-    );
-  };
-  
-  // Store the main component so we can wrap it with the test panel
-  const MainComponent = (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50/80 via-violet-50/90 to-purple-50/80 dark:from-indigo-950/80 dark:via-violet-950/90 dark:to-purple-950/80 flex flex-col">
-      <Header onSearch={handleSearch} />
-      <div className="flex-1 container max-w-7xl mx-auto px-4 py-8">
-        <div className="max-w-5xl mx-auto relative">
-          {/* Canvas for neural network visualization in background */}
-          <canvas
-            ref={canvasRef}
-            className="absolute inset-0 w-full h-full pointer-events-none z-0"
-          />
-          
-          <Tabs value={activeTab} className="relative z-10">
-            <TabsList className="grid w-full grid-cols-3 mb-6">
-              <TabsTrigger value="step1" onClick={() => setActiveTab('step1')}>
-                <div className="flex items-center">
-                  <span className="flex items-center justify-center w-5 h-5 rounded-full bg-primary/10 text-primary mr-2 text-xs font-medium">1</span>
-                  <span>Learn</span>
-                </div>
-              </TabsTrigger>
-              <TabsTrigger value="step2" onClick={() => setActiveTab('step2')}>
-                <div className="flex items-center">
-                  <span className="flex items-center justify-center w-5 h-5 rounded-full bg-primary/10 text-primary mr-2 text-xs font-medium">2</span>
-                  <span>Connect</span>
-                </div>
-              </TabsTrigger>
-              <TabsTrigger value="completed" onClick={() => setActiveTab('completed')}>
-                <div className="flex items-center">
-                  <span className="flex items-center justify-center w-5 h-5 rounded-full bg-primary/10 text-primary mr-2 text-xs font-medium">
-                    <Check className="h-3 w-3" />
-                  </span>
-                  <span>Activated</span>
-                </div>
-              </TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="step1" className="relative z-10">
-              <Card className="border-2 border-indigo-100 dark:border-indigo-900/30 shadow-lg relative overflow-hidden bg-white/90 dark:bg-gray-950/90 backdrop-blur-sm">
-                <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/30 to-indigo-100/30 dark:from-indigo-950/30 dark:to-indigo-900/30 pointer-events-none z-0"></div>
-                
-                <CardHeader className="relative z-10">
-                  <CardTitle className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-indigo-700 to-primary bg-clip-text text-transparent dark:from-indigo-400 dark:to-primary-foreground">
-                    Neural Extension
-                  </CardTitle>
-                  <CardDescription className="text-sm">
-                    Your personal cognitive extension
-                  </CardDescription>
-                </CardHeader>
-                
-                <CardContent className="relative z-10">
-                  <div className="space-y-4">
-                    <div className="bg-gradient-to-br from-indigo-50/80 to-violet-50/80 dark:from-indigo-950/30 dark:to-violet-950/30 p-4 rounded-lg border border-indigo-100 dark:border-indigo-900/30">
-                      <h3 className="font-bold text-indigo-800 dark:text-indigo-300 text-sm mb-2">
-                        What is a Neural Extension?
-                      </h3>
-                      <p className="text-xs text-slate-700 dark:text-slate-300 mb-3">
-                        Your personal DotSpark Neural Extension functions as a cognitive enhancer that:
-                      </p>
-                      <ul className="text-xs space-y-2 text-slate-700 dark:text-slate-300">
-                        <li className="flex items-start">
-                          <Sparkles className="h-3.5 w-3.5 mr-2 text-indigo-600 dark:text-indigo-400 flex-shrink-0 mt-0.5" />
-                          <span>Creates personalized frameworks for clearer thinking on complex topics</span>
-                        </li>
-                        <li className="flex items-start">
-                          <Sparkles className="h-3.5 w-3.5 mr-2 text-indigo-600 dark:text-indigo-400 flex-shrink-0 mt-0.5" />
-                          <span>Continuously learns from sources in your domain</span>
-                        </li>
-                        <li className="flex items-start">
-                          <Sparkles className="h-3.5 w-3.5 mr-2 text-indigo-600 dark:text-indigo-400 flex-shrink-0 mt-0.5" />
-                          <span>Generates associations and connections between disparate information</span>
-                        </li>
-                        <li className="flex items-start">
-                          <Sparkles className="h-3.5 w-3.5 mr-2 text-indigo-600 dark:text-indigo-400 flex-shrink-0 mt-0.5" />
-                          <span>Adapts and improves through your interactions</span>
-                        </li>
-                      </ul>
-                    </div>
-                    
-                    <div className="flex justify-center">
-                      <Button 
-                        onClick={() => setActiveTab('step2')}
-                        className="px-8 py-6 h-auto text-base font-medium relative overflow-hidden group"
-                        size="lg"
-                      >
-                        <div className="absolute inset-0 flex items-center justify-center bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                        <span>Continue to Activation</span>
-                        <ArrowRight className="ml-2 h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-            
-            <TabsContent value="step2" className="relative z-10">
-              {!user && !isAuthLoading ? (
-                <Card className="border-2 border-indigo-100 dark:border-indigo-900/30 shadow-lg relative overflow-hidden bg-white/90 dark:bg-gray-950/90 backdrop-blur-sm">
-                  <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/30 to-indigo-100/30 dark:from-indigo-950/30 dark:to-indigo-900/30 pointer-events-none z-0"></div>
-                  
-                  <CardHeader className="relative z-10">
-                    <CardTitle className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-indigo-700 to-primary bg-clip-text text-transparent dark:from-indigo-400 dark:to-primary-foreground">
-                      Login Required
-                    </CardTitle>
-                    <CardDescription className="text-sm">
-                      Please login to activate your neural extension
-                    </CardDescription>
-                  </CardHeader>
-                  
-                  <CardContent className="relative z-10">
-                    <div className="text-center p-6">
-                      <AlertCircle className="h-10 w-10 text-amber-500 dark:text-amber-400 mx-auto mb-4" />
-                      <h3 className="text-lg font-bold mb-2 text-slate-800 dark:text-slate-200">
-                        Authentication Required
-                      </h3>
-                      <p className="text-sm text-slate-600 dark:text-slate-400 mb-6 max-w-md mx-auto">
-                        You need to be logged in to activate your neural extension. This allows us to connect your WhatsApp to your personal dashboard.
-                      </p>
-                      
-                      <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                        <Button
-                          onClick={loginWithGoogle}
-                          className="px-6 py-2 h-auto"
-                          size="lg"
-                          variant="default"
-                        >
-                          <LogIn className="mr-2 h-4 w-4" />
-                          <span>Login with Google</span>
-                        </Button>
-                        
-                        <Button
-                          onClick={goToHome}
-                          className="px-6 py-2 h-auto"
-                          size="lg"
-                          variant="outline"
-                        >
-                          <span>Back to Home</span>
-                        </Button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ) : (
-                <Card className="border-2 border-indigo-100 dark:border-indigo-900/30 shadow-lg relative overflow-hidden bg-white/90 dark:bg-gray-950/90 backdrop-blur-sm">
-                  <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/30 to-indigo-100/30 dark:from-indigo-950/30 dark:to-indigo-900/30 pointer-events-none z-0"></div>
-                  
-                  <CardHeader className="relative z-10">
-                    <CardTitle className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-indigo-700 to-primary bg-clip-text text-transparent dark:from-indigo-400 dark:to-primary-foreground">
-                      Activate Extension
-                    </CardTitle>
-                    <CardDescription className="text-sm">
-                      Complete your neural extension activation
-                    </CardDescription>
-                  </CardHeader>
-                  
-                  <CardContent className="relative z-10 pt-0">
-                    <NeuralWhatsAppLinking />
-                  </CardContent>
-                </Card>
-              )}
-            </TabsContent>
-            
-            <TabsContent value="completed" className="relative z-10">
-              <Card className="border-2 border-green-100 dark:border-green-900/30 shadow-lg relative overflow-hidden bg-white/90 dark:bg-gray-950/90 backdrop-blur-sm">
-                <div className="absolute inset-0 bg-gradient-to-br from-green-50/30 to-emerald-100/30 dark:from-green-950/30 dark:to-emerald-900/30 pointer-events-none z-0"></div>
-                
-                <CardHeader className="relative z-10">
-                  <CardTitle className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent dark:from-green-400 dark:to-emerald-300">
-                    Neural Extension Activated!
-                  </CardTitle>
-                  <CardDescription className="text-sm">
-                    Your cognitive extension is now connected
-                  </CardDescription>
-                </CardHeader>
-                
-                <CardContent className="relative z-10">
-                  <div className="text-center py-4">
-                    <div className="w-16 h-16 mx-auto bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mb-4 relative">
-                      <div className="absolute inset-0 rounded-full border-4 border-green-400/40 dark:border-green-500/40"></div>
-                      <CheckCircle2 className="h-8 w-8 text-green-600 dark:text-green-400" />
-                    </div>
-                    
-                    <h3 className="text-lg font-bold mb-2 text-slate-800 dark:text-slate-200">
-                      WhatsApp Successfully Connected
-                    </h3>
-                    <p className="text-sm text-slate-600 dark:text-slate-400 mb-6 max-w-md mx-auto">
-                      Your neural extension is now fully active! You can send thoughts, questions, and challenges directly through WhatsApp and they'll be saved to your dashboard.
-                    </p>
-                    
-                    <div className="bg-gradient-to-br from-green-50/80 to-emerald-50/80 dark:from-green-950/30 dark:to-emerald-950/30 p-4 rounded-lg border border-green-100 dark:border-green-900/30 text-left max-w-md mx-auto mb-6">
-                      <h4 className="font-bold text-green-800 dark:text-green-300 text-sm mb-2">
-                        What happens next?
-                      </h4>
-                      <ul className="text-xs space-y-2 text-slate-700 dark:text-slate-300">
-                        <li className="flex items-start">
-                          <MessageSquare className="h-3.5 w-3.5 mr-2 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
-                          <span>Send messages to your DotSpark number anytime</span>
-                        </li>
-                        <li className="flex items-start">
-                          <Brain className="h-3.5 w-3.5 mr-2 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
-                          <span>Your extension learns from every interaction</span>
-                        </li>
-                        <li className="flex items-start">
-                          <LayoutDashboard className="h-3.5 w-3.5 mr-2 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
-                          <span>Check your dashboard for insights and connections</span>
-                        </li>
-                        <li className="flex items-start">
-                          <Zap className="h-3.5 w-3.5 mr-2 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
-                          <span>Your personal thinking assistant is always ready</span>
-                        </li>
-                      </ul>
-                    </div>
-                    
-                    <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                      <Button
-                        onClick={() => window.location.href = "/dashboard"}
-                        className="px-6 py-2 h-auto"
-                        size="lg"
-                        variant="default"
-                      >
-                        <LayoutDashboard className="mr-2 h-4 w-4" />
-                        <span>Go to Dashboard</span>
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-          </Tabs>
-        </div>
-      </div>
-    </div>
-  );
-  
-  // Return the main component with test panel (only in development)
-  return (
-    <>
-      {MainComponent}
-      {import.meta.env.DEV && <ActivationTestPanel />}
-    </>
   );
 }
