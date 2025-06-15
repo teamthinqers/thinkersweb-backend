@@ -180,7 +180,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
 
   return (
     <>
-      <header className="bg-white border-b border-gray-200 px-2 py-3 flex items-center justify-between">
+      <header className="bg-gradient-to-r from-amber-50 to-orange-50 border-b border-amber-200 px-2 py-3 flex items-center justify-between shadow-sm">
         {isMobile ? (
           <>
             {/* Logo on left that's clickable to My Neura */}
