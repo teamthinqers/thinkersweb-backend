@@ -611,10 +611,12 @@ const Dashboard: React.FC = () => {
                   {/* Summary hover card */}
                   {hoveredDot?.id === dot.id && (
                     <div 
-                      className="absolute bg-white border-2 border-amber-200 rounded-lg p-3 shadow-xl z-30 w-72 cursor-pointer"
+                      className="absolute bg-white border-2 border-amber-200 rounded-lg p-3 shadow-xl z-30 w-64 cursor-pointer"
                       style={{
-                        left: `${x + 60}px`,
-                        top: `${y}px`
+                        // Smart positioning to keep card within grid boundaries for PWA
+                        left: `${Math.min(x + 60, 1200 - 280)}px`, // Ensure card doesn't go beyond right edge
+                        top: `${Math.max(20, Math.min(y, 800 - 200))}px`, // Keep within top/bottom bounds
+                        maxWidth: '280px'
                       }}
                       onClick={(e) => {
                         e.stopPropagation();
@@ -710,7 +712,15 @@ const Dashboard: React.FC = () => {
         
         {/* Full Dot View Modal */}
         {viewFullDot && (
-          <DotFullView dot={viewFullDot} onClose={() => setViewFullDot(null)} />
+          <DotFullView 
+            dot={viewFullDot} 
+            onClose={() => setViewFullDot(null)}
+            onDelete={(dotId) => {
+              // Refetch dots after deletion
+              refetch();
+              setViewFullDot(null);
+            }}
+          />
         )}
       </div>
     );
