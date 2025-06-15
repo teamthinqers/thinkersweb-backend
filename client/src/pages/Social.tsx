@@ -1,5 +1,5 @@
 import React from "react";
-import { Users, MessageCircle, Share2, Heart, TrendingUp, UserPlus, Globe, ArrowLeft } from "lucide-react";
+import { Users, MessageCircle, Share2, Heart, TrendingUp, UserPlus, Globe, ArrowLeft, Brain } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useLocation } from "wouter";
@@ -145,6 +145,28 @@ export default function Social() {
               <Button variant="outline" className="w-full" disabled>
                 <Heart className="mr-2 h-4 w-4" />
                 Coming Soon
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Social Neura */}
+          <Card className="hover:shadow-lg transition-shadow duration-300 border-purple-200/50 cursor-pointer"
+                onClick={() => setLocation("/social-neura")}>
+            <CardHeader>
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-lg">
+                  <Brain className="h-6 w-6 text-white animate-pulse" />
+                </div>
+                <CardTitle className="text-xl text-gray-800">Social Neura</CardTitle>
+              </div>
+              <CardDescription>
+                Neural intelligence for collaborative thinking and social insights
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button variant="outline" className="w-full bg-gradient-to-r from-purple-50 to-indigo-50 border-purple-200 hover:border-purple-300">
+                <Brain className="mr-2 h-4 w-4 text-purple-600" />
+                Explore Neural Features
               </Button>
             </CardContent>
           </Card>

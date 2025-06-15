@@ -40,6 +40,7 @@ import DotInstall from "@/pages/DotInstall";
 import DotCapture from "@/pages/DotCapture";
 import TestGoogleAuth from "@/pages/TestGoogleAuth";
 import Social from "@/pages/Social";
+import SocialNeura from "@/pages/SocialNeura";
 import AppLayout from "@/components/layout/AppLayout";
 import EntryDetail from "@/components/entries/EntryDetail";
 import ChatEntryForm from "@/components/chat/ChatEntryForm";
@@ -156,6 +157,7 @@ function Router() {
       <Route path="/settings" component={() => <AppWithLayout />} />
       <Route path="/profile" component={() => <AppWithLayout />} />
       <Route path="/social" component={Social} />
+      <Route path="/social-neura" component={SocialNeura} />
       <Route path="/whatsapp-admin" component={WhatsAppAdmin} />
       <Route path="/whatsapp-test" component={WhatsAppTest} />
       <Route path="/whatsapp-entries" component={WhatsAppEntries} />
