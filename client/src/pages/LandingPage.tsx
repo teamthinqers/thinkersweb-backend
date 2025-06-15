@@ -571,7 +571,7 @@ export default function LandingPage() {
                 </Button>
                 <Button size="lg" asChild className="w-full relative overflow-hidden bg-gradient-to-r from-orange-500 to-red-500 hover:from-red-500 hover:to-orange-500 text-white border-0 shadow-lg shadow-orange-500/20 hover:shadow-red-500/30 transition-all duration-300 transform hover:scale-105">
                   <Link href="/social" className="flex items-center justify-center">
-                    <Brain className="mr-2 h-5 w-5 animate-pulse" />
+                    <Users className="mr-2 h-5 w-5 animate-pulse" />
                     <span>Access DotSpark Social</span>
                   </Link>
                 </Button>
@@ -630,7 +630,7 @@ export default function LandingPage() {
                     className="w-full mb-3 relative overflow-hidden bg-gradient-to-r from-orange-500 to-red-500 hover:from-red-500 hover:to-orange-500 text-white border-0 shadow-lg shadow-orange-500/20 hover:shadow-red-500/30 transition-all duration-300 transform hover:scale-105"
                   >
                     <Link href="/social" className="flex items-center justify-center">
-                      <Brain className="h-5 w-5 mr-2 animate-pulse" />
+                      <Users className="h-5 w-5 mr-2 animate-pulse" />
                       <span>Social Neura</span>
                     </Link>
                   </Button>

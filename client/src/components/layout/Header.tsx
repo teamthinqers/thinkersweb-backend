@@ -264,7 +264,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link href="/social" className="cursor-pointer w-full">
-                      <Brain className="mr-2 h-4 w-4" />
+                      <Users className="mr-2 h-4 w-4" />
                       DotSpark Social
                     </Link>
                   </DropdownMenuItem>
@@ -380,7 +380,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link href="/social" className="cursor-pointer w-full">
-                      <Brain className="mr-2 h-4 w-4" />
+                      <Users className="mr-2 h-4 w-4" />
                       DotSpark Social
                     </Link>
                   </DropdownMenuItem>
