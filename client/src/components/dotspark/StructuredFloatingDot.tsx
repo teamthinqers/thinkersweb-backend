@@ -69,7 +69,6 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
 
   // Save position immediately when it changes
   useEffect(() => {
-    console.log('Position changed to:', position);
     localStorage.setItem('structured-floating-dot-position', JSON.stringify(position));
   }, [position]);
 

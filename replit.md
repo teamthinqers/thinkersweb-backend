@@ -244,6 +244,13 @@ Changelog:
   * Reduced activation polling frequency from 1 second to 5 seconds for better performance
   * Removed excessive console logging from DotSpark activation checks
   * Improved overall application performance and console cleanliness
+- June 15, 2025. Fixed floating dot position persistence issues:
+  * Resolved conflicting localStorage keys causing position reset after dragging
+  * Enhanced position saving mechanism with immediate persistence on drag completion
+  * Fixed useEffect interference that was overriding saved positions
+  * Floating dot now maintains exact position where user places it across page reloads
+  * Applied fixes to both mouse and touch interactions for consistent experience
+  * Improved position tracking with precise boundary calculations for full viewport coverage
 - June 14, 2025. Simplified floating dot design:
   * Replaced all logo images with pure CSS design: brown gradient circle with white center dot
   * Added blinking animation with animate-pulse for visual feedback
