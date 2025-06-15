@@ -305,7 +305,7 @@ export default function LandingPage() {
                   <span className="text-sm">My Neura</span>
                 </div>
               </Button>
-              {/* Social button with blinking brain icon */}
+              {/* Social button with blinking users icon */}
               <Button 
                 size="sm"
                 onClick={() => setLocation("/social")}
@@ -313,9 +313,9 @@ export default function LandingPage() {
               >
                 <div className="flex items-center gap-2">
                   <div className="relative">
-                    <Brain className="h-4 w-4 animate-pulse" />
+                    <Users className="h-4 w-4 animate-pulse" />
                     <div className="absolute inset-0 animate-ping opacity-30">
-                      <Brain className="h-4 w-4" />
+                      <Users className="h-4 w-4" />
                     </div>
                   </div>
                   <span className="text-sm">Social</span>
@@ -349,9 +349,9 @@ export default function LandingPage() {
                 >
                   <div className="flex items-center gap-1">
                     <div className="relative">
-                      <Brain className="h-3 w-3 animate-pulse" />
+                      <Users className="h-3 w-3 animate-pulse" />
                       <div className="absolute inset-0 animate-ping opacity-30">
-                        <Brain className="h-3 w-3" />
+                        <Users className="h-3 w-3" />
                       </div>
                     </div>
                     <span className="text-xs">Social</span>
