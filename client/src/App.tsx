@@ -45,7 +45,9 @@ import { StructuredFloatingDot } from "@/components/dotspark/StructuredFloatingD
 import { neuraStorage } from "@/lib/neuraStorage";
 import { Loader2 } from "lucide-react";
 import MockDashboard from "@/components/dashboard/MockDashboard";
-// PWA functionality temporarily disabled
+import { PWAInstallButton } from "@/components/ui/pwa-install-button";
+import { IosPwaInstallPrompt } from "@/components/ui/ios-pwa-install-prompt";
+import { isRunningAsStandalone } from "@/lib/pwaUtils";
 
 // Simplified Protected route component
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -118,7 +120,7 @@ function AppWithLayout() {
   const renderContent = () => {
     switch (location) {
       case '/dashboard':
-        return <Dashboard />;
+        return <Dashboard onEntryClick={openEntryDetail} onNewEntry={openNewEntryForm} />;
       case '/entries':
         return <AllEntries onEntryClick={openEntryDetail} />;
       case '/insights':
@@ -130,7 +132,7 @@ function AppWithLayout() {
       case '/settings':
         return <Settings />;
       default:
-        return <Dashboard />;
+        return <Dashboard onEntryClick={openEntryDetail} onNewEntry={openNewEntryForm} />;
     }
   };
 
@@ -158,11 +160,30 @@ function AppWithLayout() {
 }
 
 function Router() {
+  const { user, isLoading } = useAuth();
+  const [location] = useLocation();
+  
+  // Show a Loading component while auth state is being determined
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen">
+        <Loader2 className="h-8 w-8 animate-spin text-primary mb-4" />
+        <p className="text-center text-muted-foreground">Loading...</p>
+      </div>
+    );
+  }
+  
   return (
     <Switch>
       <Route path="/" component={LandingPage} />
       <Route path="/auth" component={AuthPage} />
-      <Route path="/dashboard" component={() => <AppWithLayout />} />
+      
+      {/* Dashboard route - shows mock dashboard if user is not authenticated */}
+      <Route path="/dashboard">
+        {user ? <AppWithLayout /> : <MockDashboard />}
+      </Route>
+      
+      {/* Other protected routes */}
       <Route path="/entries" component={() => <AppWithLayout />} />
       <Route path="/insights" component={() => <AppWithLayout />} />
       <Route path="/favorites" component={() => <AppWithLayout />} />
@@ -336,7 +357,12 @@ function App() {
         <Toaster />
         {/* Global Floating Dot for All Modes */}
         <StructuredFloatingDot isActive={isDotSparkActive || neuraStorage.isActivated()} />
-        {/* PWA components temporarily disabled */}
+        {/* iOS PWA Install Prompt */}
+        <IosPwaInstallPrompt />
+        {/* PWA Install Floating Button (only visible when installable) */}
+        <div className="fixed bottom-4 right-4 left-4 md:left-auto z-50">
+          <PWAInstallButton size="lg" className="w-full md:w-auto" />
+        </div>
       </AuthProvider>
     </QueryClientProvider>
   );

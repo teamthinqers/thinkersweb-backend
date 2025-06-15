@@ -11,6 +11,8 @@ import {
 } from "lucide-react";
 import { neuraStorage } from "@/lib/neuraStorage";
 
+
+
 interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
@@ -37,91 +39,86 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isMobile, onNewEntry
     : "w-64 flex-shrink-0 border-r h-full overflow-y-auto bg-card/50";
 
   return (
-    <>
-      {/* Mobile backdrop overlay */}
-      {isMobile && isOpen && (
-        <div 
-          className="fixed inset-0 bg-black bg-opacity-50 z-30 touch-manipulation"
-          onClick={onClose}
-          onTouchStart={(e) => {
-            e.preventDefault();
-            onClose();
-          }}
-        />
-      )}
-      
-      <div className={sidebarClasses}>
-        <div className="px-6 py-5 border-b">
-          <h1 className="text-xl font-bold flex items-center">
-            <img src="/dotspark-logo-icon.jpeg" alt="DotSpark" className="mr-2 h-6 w-6 object-contain rounded" />
-            <span className="text-amber-700 dark:text-amber-400 font-bold">
-              DotSpark
-            </span>
-          </h1>
-        </div>
-
-        <ScrollArea className="flex-1 h-[calc(100vh-9rem)]">
-          <nav className="mt-2 px-4">
-            <h2 className="text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-3 ml-2">Navigation</h2>
-            <ul className="space-y-1.5">
-              {navItems.map((item) => (
-                <li key={item.path}>
-                  <Link 
-                    href={item.path}
-                    className={`flex items-center px-3 py-2.5 rounded-md transition-colors ${
-                      location === item.path
-                        ? "bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-200 font-medium"
-                        : item.isSpecial
-                          ? "text-amber-700 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 hover:text-amber-800 dark:hover:text-amber-300 font-medium"
-                          : "text-muted-foreground hover:bg-amber-50 dark:hover:bg-amber-900/10 hover:text-amber-700 dark:hover:text-amber-400"
-                    }`}
-                    onClick={isMobile ? onClose : undefined}
-                  >
-                    <div className="relative mr-2">
-                      {item.icon === "dotspark-logo" ? (
-                        <img 
-                          src="/dotspark-logo-icon.jpeg" 
-                          alt="DotSpark" 
-                          className={`h-5 w-5 object-contain rounded ${
-                            isActivated ? "animate-pulse" : ""
-                          }`}
-                        />
-                      ) : (
-                        <item.icon 
-                          className={`h-5 w-5 ${
-                            item.showActivationDot && isActivated ? "text-amber-600" : ""
-                          }`}
-                        />
-                      )}
-                      
-                      {/* Activation indicators */}
-                      {item.showActivationSpark && isActivated && (
-                        <Sparkles className="absolute -top-1 -right-1 h-2.5 w-2.5 text-amber-500 animate-pulse" />
-                      )}
-                      {item.showActivationDot && isActivated && (
-                        <div className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
-                      )}
-                    </div>
-                    <span className="flex-1">{item.label}</span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-
-            <Separator className="my-6 opacity-50" />
-          </nav>
-          
-          <Separator className="my-6 opacity-50" />
-          <div className="px-4 pb-4 flex items-center justify-between">
-            <p className="text-xs text-muted-foreground">DotSpark v1.0</p>
-            <div className="flex items-center text-muted-foreground/70">
-              <span className="inline-block h-2 w-2 rounded-full bg-green-500 mr-1.5"></span>
-              <span className="text-xs">Connected</span>
-            </div>
-          </div>
-        </ScrollArea>
+    <div className={sidebarClasses}>
+      <div className="px-6 py-5 border-b">
+        <h1 className="text-xl font-bold flex items-center">
+          <img src="/dotspark-logo-icon.jpeg" alt="DotSpark" className="mr-2 h-6 w-6 object-contain rounded" />
+          <span className="text-amber-700 dark:text-amber-400 font-bold">
+            DotSpark
+          </span>
+        </h1>
       </div>
-    </>
+
+
+
+      <ScrollArea className="flex-1 h-[calc(100vh-9rem)]">
+        <nav className="mt-2 px-4">
+          <h2 className="text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-3 ml-2">Navigation</h2>
+          <ul className="space-y-1.5">
+            {navItems.map((item) => (
+              <li key={item.path}>
+                <Link 
+                  href={item.path}
+                  className={`flex items-center px-3 py-2.5 rounded-md transition-colors ${
+                    location === item.path
+                      ? "bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-200 font-medium"
+                      : item.isSpecial
+                        ? "text-amber-700 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 hover:text-amber-800 dark:hover:text-amber-300 font-medium"
+                        : "text-muted-foreground hover:bg-amber-50 dark:hover:bg-amber-900/10 hover:text-amber-700 dark:hover:text-amber-400"
+                  }`}
+                  onClick={isMobile ? onClose : undefined}
+                >
+                  <div className="relative mr-2">
+                    {item.icon === "dotspark-logo" ? (
+                      <img 
+                        src="/dotspark-logo-icon.jpeg" 
+                        alt="DotSpark" 
+                        className={`h-5 w-5 object-contain rounded ${
+                          isActivated ? "animate-pulse" : ""
+                        }`}
+                      />
+                    ) : (
+                      React.createElement(item.icon, { 
+                        className: `${
+                          item.label === "Home" 
+                            ? location === item.path 
+                              ? "text-amber-800 dark:text-amber-200" 
+                              : "text-muted-foreground"
+                            : item.isSpecial 
+                              ? isActivated ? "text-amber-600 dark:text-amber-400 animate-pulse" : "text-amber-600 dark:text-amber-400"
+                              : location === item.path 
+                                ? "text-amber-800 dark:text-amber-200"
+                                : "text-muted-foreground"
+                        }`, 
+                        size: 20
+                      })
+                    )}
+                    {item.showActivationDot && isActivated && (
+                      <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-green-500 rounded-full"></div>
+                    )}
+                  </div>
+                  {item.isSpecial ? (
+                    <span className="font-medium text-amber-700 dark:text-amber-400">{item.label}</span>
+                  ) : (
+                    <span className={`${location === item.path ? "text-amber-800 dark:text-amber-200" : "text-muted-foreground"}`}>{item.label}</span>
+                  )}
+                </Link>
+              </li>
+            ))}
+          </ul>
+
+
+        </nav>
+        <Separator className="my-6 opacity-50" />
+        <div className="px-4 pb-4 flex items-center justify-between">
+          <p className="text-xs text-muted-foreground">DotSpark v1.0</p>
+          <div className="flex items-center text-muted-foreground/70">
+            <span className="inline-block h-2 w-2 rounded-full bg-green-500 mr-1.5"></span>
+            <span className="text-xs">Connected</span>
+          </div>
+        </div>
+      </ScrollArea>
+    </div>
   );
 };
 

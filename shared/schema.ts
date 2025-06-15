@@ -277,12 +277,10 @@ export const dots = pgTable("dots", {
   summary: text("summary").notNull(), // Layer 1: 220 chars max
   anchor: text("anchor").notNull(), // Layer 2: 300 chars max
   pulse: text("pulse").notNull(), // Layer 3: 1 word emotion
-  sourceType: text("source_type", { enum: ["voice", "text"] }).notNull().default("text"), // voice or text only
+  sourceType: text("source_type").notNull().default("text"), // voice, text, hybrid
   originalAudioUrl: text("original_audio_url"), // For voice dots
-  originalAudioBlob: text("original_audio_blob"), // Base64 encoded audio for voice dots
-  transcriptionText: text("transcription_text"), // Actual transcribed text for voice dots
-  positionX: integer("position_x"), // Random X position on map
-  positionY: integer("position_y"), // Random Y position on map
+  transcriptionConfidence: integer("transcription_confidence"), // 0-100
+  processingStatus: text("processing_status").notNull().default("processed"), // raw, transcribed, processed, enhanced
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
@@ -367,10 +365,8 @@ export const insertDotSchema = createInsertSchema(dots, {
   sourceType: (schema) => schema.optional(),
   wheelId: (schema) => schema.optional(),
   originalAudioUrl: (schema) => schema.optional(),
-  originalAudioBlob: (schema) => schema.optional(),
-  transcriptionText: (schema) => schema.optional(),
-  positionX: (schema) => schema.optional(),
-  positionY: (schema) => schema.optional(),
+  transcriptionConfidence: (schema) => schema.optional(),
+  processingStatus: (schema) => schema.optional(),
 });
 
 export const insertWheelConnectionSchema = createInsertSchema(wheelConnections, {

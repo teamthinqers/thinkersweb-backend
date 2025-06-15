@@ -194,13 +194,8 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
           <>
             {/* Logo on left that's clickable to My Neura */}
             <div 
-              className="flex items-center gap-2 cursor-pointer active:opacity-80 transition-opacity select-none"
-              onMouseDown={(e) => e.preventDefault()}
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                setLocation("/my-neura");
-              }}
+              className="flex items-center gap-2 cursor-pointer active:opacity-80 transition-opacity"
+              onClick={() => setLocation("/my-neura")}
             >
               <img src="/dotspark-logo-icon.jpeg" alt="DotSpark" className="h-8 w-8 object-contain rounded" />
               <span className="text-lg font-semibold text-amber-700 dark:text-amber-300">DotSpark</span>
@@ -220,14 +215,9 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
               
               {/* My Neura button - always visible */}
               <Button 
-                className="bg-gradient-to-r from-amber-700 to-primary hover:from-amber-800 hover:to-primary/90 text-white h-9 w-9 p-0 shadow-md select-none"
+                className="bg-gradient-to-r from-amber-700 to-primary hover:from-amber-800 hover:to-primary/90 text-white h-9 w-9 p-0 shadow-md"
                 size="sm"
-                onMouseDown={(e) => e.preventDefault()}
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  setLocation("/my-neura");
-                }}
+                onClick={() => setLocation("/my-neura")}
               >
                 <div className="relative">
                   <Brain className="h-5 w-5" />
@@ -272,17 +262,8 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
               <Button
                 variant="ghost"
                 size="icon"
-                className="text-gray-600 hover:text-primary h-12 w-12 select-none touch-manipulation transition-colors"
-                style={{ WebkitTapHighlightColor: 'transparent' }}
-                onClick={(e) => {
-                  console.log('Hamburger menu clicked');
-                  
-                  if (onMenuClick) {
-                    onMenuClick();
-                  } else {
-                    setShowMobileNav(!showMobileNav);
-                  }
-                }}
+                className="text-gray-600 hover:text-primary h-10 w-10"
+                onClick={onMenuClick || (() => setShowMobileNav(!showMobileNav))}
               >
                 <Menu className="h-6 w-6" />
               </Button>
@@ -294,13 +275,8 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
               <Button
                 variant="ghost"
                 size="sm"
-                className="mr-4 text-gray-600 hover:text-primary select-none"
-                onMouseDown={(e) => e.preventDefault()}
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  goToLandingPage();
-                }}
+                className="mr-4 text-gray-600 hover:text-primary"
+                onClick={goToLandingPage}
               >
                 <HomeIcon className="h-5 w-5 mr-1" />
                 <span className="hidden sm:inline">Home</span>
@@ -326,14 +302,9 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
               
               {/* My Neura button - always visible */}
               <Button 
-                className="mr-3 bg-gradient-to-r from-amber-700 to-primary hover:from-amber-800 hover:to-primary/90 text-white relative shadow-md select-none"
+                className="mr-3 bg-gradient-to-r from-amber-700 to-primary hover:from-amber-800 hover:to-primary/90 text-white relative shadow-md"
                 size="sm"
-                onMouseDown={(e) => e.preventDefault()}
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  setLocation("/my-neura");
-                }}
+                onClick={() => setLocation("/my-neura")}
               >
                 <span className="relative z-10 flex items-center">
                   <div className="relative mr-1.5">
@@ -345,13 +316,8 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
               </Button>
               
               <button 
-                className="p-2 rounded-full text-gray-400 hover:text-gray-500 hover:bg-gray-100 mr-2 select-none"
-                onMouseDown={(e) => e.preventDefault()}
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  handleNotifications();
-                }}
+                className="p-2 rounded-full text-gray-400 hover:text-gray-500 hover:bg-gray-100 mr-2"
+                onClick={handleNotifications}
               >
                 <BellIcon className="h-5 w-5" />
               </button>
@@ -398,27 +364,18 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
         <div className="fixed inset-0 z-50 bg-white">
           <div className="flex justify-between items-center p-4 border-b">
             <div 
-              className="cursor-pointer flex items-center active:opacity-80 transition-opacity select-none"
-              onMouseDown={(e) => e.preventDefault()}
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
+              onClick={() => {
                 setShowMobileNav(false);
                 setLocation("/my-neura");
               }} 
+              className="cursor-pointer flex items-center active:opacity-80 transition-opacity"
             >
               <img src="/dotspark-logo-white-bg.jpg?v=5" alt="DotSpark" className="h-10 w-auto rounded-sm" />
             </div>
             <Button 
               variant="ghost" 
               size="icon"
-              className="select-none"
-              onMouseDown={(e) => e.preventDefault()}
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                setShowMobileNav(false);
-              }}
+              onClick={() => setShowMobileNav(false)}
             >
               &times;
             </Button>
@@ -443,14 +400,8 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
               <Button 
                 variant="ghost" 
                 size="sm" 
-                className="w-full justify-start mb-2 text-amber-700 hover:text-amber-800 hover:bg-amber-50 select-none"
-                onMouseDown={(e) => e.preventDefault()}
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  setShowMobileNav(false);
-                  goToLandingPage();
-                }}
+                className="w-full justify-start mb-2 text-amber-700 hover:text-amber-800 hover:bg-amber-50"
+                onClick={goToLandingPage}
               >
                 <HomeIcon className="h-5 w-5 mr-2 text-amber-600" />
                 Home
@@ -459,14 +410,8 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
               <Button 
                 variant="ghost" 
                 size="sm" 
-                className="w-full justify-start mb-2 text-amber-700 hover:text-amber-800 hover:bg-amber-50 select-none"
-                onMouseDown={(e) => e.preventDefault()}
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  setShowMobileNav(false);
-                  goToMyNeura();
-                }}
+                className="w-full justify-start mb-2 text-amber-700 hover:text-amber-800 hover:bg-amber-50"
+                onClick={goToMyNeura}
               >
                 <Brain className="h-5 w-5 mr-2 text-amber-600" />
                 My DotSpark
@@ -474,12 +419,9 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
               
               {isActivated ? (
                 <Button 
-                  className="w-full justify-start mb-2 bg-gradient-to-r from-amber-700 to-primary hover:from-amber-800 hover:to-primary/90 text-white relative select-none"
+                  className="w-full justify-start mb-2 bg-gradient-to-r from-amber-700 to-primary hover:from-amber-800 hover:to-primary/90 text-white relative"
                   size="sm"
-                  onMouseDown={(e) => e.preventDefault()}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
+                  onClick={() => {
                     setShowMobileNav(false);
                     setLocation("/my-neura");
                   }}
@@ -494,12 +436,9 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 </Button>
               ) : (
                 <Button 
-                  className="w-full justify-start mb-2 bg-gradient-to-r from-orange-700 to-amber-800 hover:from-orange-800 hover:to-amber-900 text-white relative select-none"
+                  className="w-full justify-start mb-2 bg-gradient-to-r from-orange-700 to-amber-800 hover:from-orange-800 hover:to-amber-900 text-white relative"
                   size="sm"
-                  onMouseDown={(e) => e.preventDefault()}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
+                  onClick={() => {
                     setShowMobileNav(false);
                     setLocation("/activate-neura");
                   }}
@@ -512,14 +451,8 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
               <Button 
                 variant="ghost" 
                 size="sm" 
-                className="w-full justify-start mb-2 text-red-600 select-none"
-                onMouseDown={(e) => e.preventDefault()}
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  setShowMobileNav(false);
-                  handleLogout();
-                }}
+                className="w-full justify-start mb-2 text-red-600"
+                onClick={handleLogout}
               >
                 <LogOut className="h-5 w-5 mr-2" />
                 Sign out

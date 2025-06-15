@@ -48,8 +48,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children, onNewEntry }) => {
   }, []);
 
   const toggleMobileSidebar = () => {
-    console.log('Hamburger menu clicked - toggling sidebar', { current: showMobileSidebar, new: !showMobileSidebar });
-    setShowMobileSidebar(prev => !prev);
+    setShowMobileSidebar(!showMobileSidebar);
   };
 
   const handleInstallClick = () => {

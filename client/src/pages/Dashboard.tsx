@@ -1,27 +1,21 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import { Input } from "@/components/ui/input";
 import { Mic, Type, Eye, Brain, Network, Zap, Search } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import { DotFullView } from "@/components/DotFullView";
-import { SearchResultsList } from "@/components/SearchResultsList";
-import DotWheelsMap from "@/components/DotWheelsMap";
+import DotFullView from "@/components/DotFullView";
 
 // Data structure for dots
 interface Dot {
-  id: number;
+  id: string;
   summary: string; // 220 chars max
   anchor: string; // 300 chars max  
   pulse: string; // 1 word emotion
-  sourceType: 'voice' | 'text'; // Only voice or text, no hybrid
-  originalAudioBlob?: string;
-  transcriptionText?: string;
-  positionX?: number;
-  positionY?: number;
-  createdAt: string;
-  wheelId?: number;
+  wheelId: string;
+  timestamp: Date;
+  sourceType: 'voice' | 'text' | 'hybrid';
 }
 
 interface Wheel {
@@ -39,7 +33,6 @@ const Dashboard: React.FC = () => {
   const [selectedWheel, setSelectedWheel] = useState<string | null>(null);
   const [viewFullDot, setViewFullDot] = useState<Dot | null>(null);
   const [searchResults, setSearchResults] = useState<Dot[]>([]);
-  const [isPreviewMode, setIsPreviewMode] = useState(true); // Toggle for preview mode
 
   // Fetch real dots from API
   const { data: dots = [], isLoading } = useQuery({
@@ -51,72 +44,36 @@ const Dashboard: React.FC = () => {
     }
   });
 
-  // Preview mode: 18 dots across 2 wheels (9 each) for demo
-  const generatePreviewDots = (): Dot[] => {
-    const wheel1Dots = [
-      { summary: "Learned microservices architecture patterns in distributed systems", anchor: "Senior architect discussion on monolith breakdown and domain boundaries", pulse: "curious" },
-      { summary: "Completed React patterns workshop with render props", anchor: "Kent C. Dodds workshop on compound components and real UI examples", pulse: "focused" },
-      { summary: "Implemented GraphQL federation for cross-team APIs", anchor: "Used Apollo Federation to unify multiple service schemas", pulse: "excited" },
-      { summary: "Mastered Docker containerization for development workflow", anchor: "Set up multi-stage builds and optimized image sizes for production", pulse: "confident" },
-      { summary: "Deep dive into TypeScript advanced patterns", anchor: "Conditional types, mapped types, and template literal types", pulse: "motivated" },
-      { summary: "Optimized database queries reducing load time by 60%", anchor: "Added proper indexing and query optimization techniques", pulse: "grateful" },
-      { summary: "Led team retrospective on Agile practices", anchor: "Facilitated discussion on sprint improvements and team dynamics", pulse: "inspired" },
-      { summary: "Studied system design for high-scale applications", anchor: "Load balancing, caching strategies, and distributed consensus", pulse: "curious" },
-      { summary: "Built CI/CD pipeline with automated testing", anchor: "GitHub Actions workflow with comprehensive test coverage", pulse: "happy" }
-    ];
-
-    const wheel2Dots = [
-      { summary: "Started daily meditation practice for mental clarity", anchor: "Using Headspace app, 10-minute morning sessions tracking mood", pulse: "calm" },
-      { summary: "Completed nutrition course on balanced eating habits", anchor: "Learned about macronutrients and meal planning strategies", pulse: "motivated" },
-      { summary: "Finished reading 'Atomic Habits' by James Clear", anchor: "Applied habit stacking technique to build consistent routines", pulse: "inspired" },
-      { summary: "Joined local hiking group for weekend adventures", anchor: "Met new people while exploring nature trails and staying active", pulse: "excited" },
-      { summary: "Learned guitar basics with online tutorial series", anchor: "Practiced chord progressions and simple songs for 30 minutes daily", pulse: "happy" },
-      { summary: "Started investing in index funds for retirement", anchor: "Researched low-cost portfolio allocation and dollar-cost averaging", pulse: "confident" },
-      { summary: "Volunteered at local food bank helping community", anchor: "Organized food distribution and met families in need", pulse: "grateful" },
-      { summary: "Completed first aid certification training course", anchor: "CPR, AED usage, and emergency response procedures learned", pulse: "focused" },
-      { summary: "Organized family reunion bringing everyone together", anchor: "Coordinated travel, accommodations, and activities for 20+ relatives", pulse: "grateful" }
-    ];
-
-    const allDots: Dot[] = [];
-    
-    // Add wheel 1 dots (Professional)
-    wheel1Dots.forEach((dot, index) => {
-      allDots.push({
-        id: 2000 + index,
-        summary: dot.summary,
-        anchor: dot.anchor,
-        pulse: dot.pulse,
-        wheelId: 1,
-        sourceType: index % 2 === 0 ? 'text' : 'voice',
-        positionX: Math.floor(Math.random() * 300) + 50,
-        positionY: Math.floor(Math.random() * 250) + 50,
-        createdAt: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString()
-      });
-    });
-
-    // Add wheel 2 dots (Personal)
-    wheel2Dots.forEach((dot, index) => {
-      allDots.push({
-        id: 3000 + index,
-        summary: dot.summary,
-        anchor: dot.anchor,
-        pulse: dot.pulse,
-        wheelId: 2,
-        sourceType: index % 2 === 0 ? 'text' : 'voice',
-        positionX: Math.floor(Math.random() * 300) + 400,
-        positionY: Math.floor(Math.random() * 250) + 50,
-        createdAt: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString()
-      });
-    });
-
-    return allDots;
-  };
-
-  const previewDots = generatePreviewDots();
-  
-  // Determine if user has enough dots to show actual mode
-  const hasEnoughDots = dots.length >= 9;
-  const displayDots = isPreviewMode ? previewDots : dots;
+  // Example data for preview mode when no dots exist
+  const exampleDots: Dot[] = [
+    {
+      id: "example-1",
+      summary: "Learned about microservices architecture patterns and their trade-offs in distributed systems",
+      anchor: "Discussed with senior architect about breaking down monolith, focusing on domain boundaries and data consistency challenges",
+      pulse: "curious",
+      wheelId: "example-wheel-1",
+      timestamp: new Date(),
+      sourceType: 'text'
+    },
+    {
+      id: "example-2", 
+      summary: "Completed advanced React patterns workshop covering render props, higher-order components",
+      anchor: "Workshop by Kent C. Dodds, practiced compound components pattern with real examples from UI libraries",
+      pulse: "focused",
+      wheelId: "example-wheel-1",
+      timestamp: new Date(),
+      sourceType: 'voice'
+    },
+    {
+      id: "example-3",
+      summary: "Started morning meditation routine, noticed improved focus and reduced anxiety levels",
+      anchor: "Using Headspace app, 10-minute sessions before work, tracking mood changes and productivity correlations",
+      pulse: "calm",
+      wheelId: "example-wheel-2", 
+      timestamp: new Date(),
+      sourceType: 'hybrid'
+    }
+  ];
 
   // Search functionality
   React.useEffect(() => {
@@ -135,44 +92,66 @@ const Dashboard: React.FC = () => {
   // Mock wheels data for visualization
   const [wheels] = useState<Wheel[]>([
     {
-      id: "1",
+      id: '1',
       name: 'Innovation Ideas',
       category: 'Technology',
       color: '#3B82F6',
-      dots: [],
-      connections: [],
+      dots: [
+        {
+          id: '1',
+          summary: 'AI-powered plant care system that learns from user behavior and environmental data',
+          anchor: 'Inspired by struggling to keep houseplants alive. Combines IoT sensors with machine learning for personalized care recommendations.',
+          pulse: 'excited',
+          wheelId: '1',
+          timestamp: new Date(),
+          sourceType: 'text'
+        }
+      ],
+      connections: ['2'],
       position: { x: 100, y: 100 }
     },
     {
-      id: "2", 
+      id: '2', 
       name: 'Business Strategies',
       category: 'Professional',
       color: '#10B981',
-      dots: [],
-      connections: [],
+      dots: [
+        {
+          id: '2',
+          summary: 'Focus on micro-SaaS products targeting specific professional niches instead of broad markets',
+          anchor: 'Research shows specialized tools have higher retention rates and customer lifetime value than generic solutions.',
+          pulse: 'confident',
+          wheelId: '2',
+          timestamp: new Date(),
+          sourceType: 'voice'
+        }
+      ],
+      connections: ['1', '3'],
       position: { x: 300, y: 150 }
     },
     {
-      id: "3",
+      id: '3',
       name: 'Learning Insights', 
       category: 'Personal Growth',
       color: '#F59E0B',
-      dots: [],
-      connections: [],
-      position: { x: 200, y: 250 }
+      dots: [
+        {
+          id: '3',
+          summary: 'Active recall through teaching others is the most effective way to solidify new knowledge',
+          anchor: 'Feynman technique in practice - explaining complex concepts in simple terms reveals knowledge gaps and strengthens understanding.',
+          pulse: 'enlightened',
+          wheelId: '3',
+          timestamp: new Date(),
+          sourceType: 'hybrid'
+        }
+      ],
+      connections: ['2'],
+      position: { x: 200, y: 280 }
     }
   ]);
 
   const DotCard: React.FC<{ dot: Dot; isPreview?: boolean; onClick?: () => void }> = ({ dot, isPreview = false, onClick }) => (
-    <Card 
-      className={`mb-4 hover:shadow-md transition-shadow border border-amber-200 bg-white/95 backdrop-blur cursor-pointer select-none ${onClick ? 'hover:bg-amber-50/50' : ''}`} 
-      onMouseDown={(e) => e.preventDefault()}
-      onClick={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        if (onClick) onClick();
-      }}
-    >
+    <Card className={`mb-4 hover:shadow-md transition-shadow border border-amber-200 bg-white/95 backdrop-blur cursor-pointer ${onClick ? 'hover:bg-amber-50/50' : ''}`} onClick={onClick}>
       <CardHeader className="pb-2">
         <div className="flex justify-between items-start">
           <div className="flex items-center gap-2">
@@ -197,7 +176,7 @@ const Dashboard: React.FC = () => {
         <h3 className="font-medium text-sm mb-2 leading-relaxed text-gray-800">{dot.summary}</h3>
         <p className="text-xs text-gray-600 leading-relaxed line-clamp-2">{dot.anchor}</p>
         <div className="mt-2 text-xs text-amber-700">
-          {new Date(dot.createdAt).toLocaleString()}
+          {dot.timestamp.toLocaleString()}
         </div>
       </CardContent>
     </Card>
@@ -236,7 +215,137 @@ const Dashboard: React.FC = () => {
     </Card>
   );
 
-
+  const DotWheelsMap: React.FC<{ wheels: Wheel[] }> = ({ wheels }) => {
+    const [selectedWheel, setSelectedWheel] = useState<string | null>(null);
+    const [viewFullDot, setViewFullDot] = useState<Dot | null>(null);
+    
+    if (wheels.length === 0) {
+      // Show preview for empty state
+      return (
+        <div className="relative bg-gradient-to-br from-amber-50/50 to-orange-50/50 rounded-xl p-4 min-h-[500px] border-2 border-amber-200 shadow-lg overflow-hidden">
+          <div className="absolute top-4 left-4 z-10">
+            <span className="bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-sm font-medium">
+              Preview
+            </span>
+          </div>
+          
+          <div className="absolute top-4 right-4 flex gap-2 z-10">
+            <button className="bg-white/90 backdrop-blur rounded-lg px-3 py-2 border-2 border-amber-200 text-sm font-semibold text-amber-800">
+              Total Dots: 0
+            </button>
+            <button className="bg-white/90 backdrop-blur rounded-lg px-3 py-2 border-2 border-amber-200 text-sm font-semibold text-amber-800">
+              Total Wheels: 0
+            </button>
+          </div>
+          
+          <div className="flex items-center justify-center h-full">
+            <div className="text-center">
+              <Brain className="w-16 h-16 mx-auto mb-4 text-amber-500" />
+              <p className="text-lg font-semibold text-amber-800 mb-2">Start saving your Dots to get a similar map</p>
+              <p className="text-sm text-amber-600">Your thought wheels will appear here as interactive circles</p>
+            </div>
+          </div>
+        </div>
+      );
+    }
+    
+    return (
+      <div className="relative bg-gradient-to-br from-amber-50/50 to-orange-50/50 rounded-xl p-4 min-h-[500px] border-2 border-amber-200 shadow-lg overflow-hidden">
+        {/* Top right buttons */}
+        <div className="absolute top-4 right-4 flex gap-2 z-10">
+          <button className="bg-white/90 backdrop-blur rounded-lg px-3 py-2 border-2 border-amber-200 text-sm font-semibold text-amber-800 hover:bg-amber-50 transition-colors">
+            Total Dots: {wheels.reduce((sum, wheel) => sum + wheel.dots.length, 0)}
+          </button>
+          <button className="bg-white/90 backdrop-blur rounded-lg px-3 py-2 border-2 border-amber-200 text-sm font-semibold text-amber-800 hover:bg-amber-50 transition-colors">
+            Total Wheels: {wheels.length}
+          </button>
+        </div>
+        
+        {/* Scrollable wheel map */}
+        <div className="relative overflow-auto h-[450px] w-full" style={{ cursor: 'grab' }}>
+          <div className="relative w-[800px] h-[600px]">
+            {wheels.map((wheel, index) => (
+              <div
+                key={wheel.id}
+                className={`absolute group cursor-pointer transition-all duration-300 hover:scale-110 ${selectedWheel === wheel.id ? 'ring-4 ring-amber-400 ring-opacity-50 rounded-full' : ''}`}
+                style={{ 
+                  left: `${50 + (index % 4) * 180}px`,
+                  top: `${50 + Math.floor(index / 4) * 180}px`
+                }}
+                onClick={() => setSelectedWheel(selectedWheel === wheel.id ? null : wheel.id)}
+              >
+                {/* Wheel circle */}
+                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-amber-400 to-orange-600 flex items-center justify-center shadow-xl border-4 border-white group-hover:shadow-2xl">
+                  <div className="text-center">
+                    <div className="text-xs font-bold text-white">{wheel.name.split(' ')[0]}</div>
+                    <div className="text-xs text-amber-100">{wheel.dots.length} dots</div>
+                  </div>
+                </div>
+                
+                {/* Highlight box when selected */}
+                {selectedWheel === wheel.id && (
+                  <div className="absolute top-24 left-1/2 transform -translate-x-1/2 bg-white rounded-lg shadow-lg p-3 min-w-48 border-2 border-amber-200 z-20">
+                    <h4 className="font-semibold text-amber-800 mb-2">{wheel.name}</h4>
+                    <p className="text-xs text-amber-600 mb-2">{wheel.category}</p>
+                    <div className="space-y-1 mb-3">
+                      {wheel.dots.slice(0, 2).map(dot => (
+                        <div key={dot.id} className="text-xs p-1 bg-amber-50 rounded cursor-pointer hover:bg-amber-100" onClick={(e) => {
+                          e.stopPropagation();
+                          setViewFullDot(dot);
+                        }}>
+                          <span className="font-medium">{dot.summary.substring(0, 30)}...</span>
+                          <span className="text-amber-600 ml-1">({dot.pulse})</span>
+                        </div>
+                      ))}
+                      {wheel.dots.length > 2 && (
+                        <div className="text-xs text-amber-500">+{wheel.dots.length - 2} more dots</div>
+                      )}
+                    </div>
+                    <button 
+                      className="w-full text-xs bg-amber-500 text-white py-1 px-2 rounded hover:bg-amber-600 transition-colors"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (wheel.dots.length > 0) setViewFullDot(wheel.dots[0]);
+                      }}
+                    >
+                      Open dot full view
+                    </button>
+                  </div>
+                )}
+              </div>
+            ))}
+            
+            {/* Connection lines */}
+            <svg className="absolute inset-0 w-full h-full pointer-events-none">
+              <defs>
+                <marker id="arrowhead" markerWidth="10" markerHeight="7" 
+                 refX="9" refY="3.5" orient="auto">
+                  <polygon points="0 0, 10 3.5, 0 7" fill="#F59E0B" />
+                </marker>
+                <linearGradient id="connectionGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#F59E0B" stopOpacity="0.6" />
+                  <stop offset="100%" stopColor="#EA580C" stopOpacity="0.8" />
+                </linearGradient>
+              </defs>
+              {wheels.length > 1 && (
+                <>
+                  <line x1="140" y1="90" x2="230" y2="90" stroke="url(#connectionGradient)" strokeWidth="2" 
+                        strokeDasharray="8,4" markerEnd="url(#arrowhead)" className="animate-pulse" />
+                  <line x1="320" y1="90" x2="410" y2="90" stroke="url(#connectionGradient)" strokeWidth="2" 
+                        strokeDasharray="8,4" markerEnd="url(#arrowhead)" className="animate-pulse" />
+                </>
+              )}
+            </svg>
+          </div>
+        </div>
+        
+        {/* Full Dot View Modal */}
+        {viewFullDot && (
+          <DotFullView dot={viewFullDot} onClose={() => setViewFullDot(null)} />
+        )}
+      </div>
+    );
+  };
 
   if (isLoading) {
     return (
@@ -251,153 +360,81 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50/30 to-orange-50/30">
-      <div className="container mx-auto px-4 py-6" style={{ touchAction: 'manipulation' }}>
+      <div className="container mx-auto px-4 py-6">
         {/* Header */}
         <div className="mb-6">
-          <div className="flex items-center justify-between mb-4">
-            <h1 className="text-2xl font-bold flex items-center gap-3">
-              <Brain className="w-8 h-8 text-amber-600" />
-              <span className="bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent">
-                My DotSpark Neura
-              </span>
-            </h1>
-            
-
-          </div>
+          <h1 className="text-2xl font-bold mb-4 flex items-center gap-3">
+            <Brain className="w-8 h-8 text-amber-600" />
+            <span className="bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent">
+              My DotSpark Neura
+            </span>
+          </h1>
           
-          {/* Search Bar with Dropdown */}
+          {/* Search Bar */}
           <div className="relative mb-6">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-amber-500 z-10" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-amber-500" />
             <Input
               type="text"
               placeholder="Enter keywords to search for a Dot"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10 h-12 text-base border-2 border-amber-200 bg-white/90 backdrop-blur focus:border-amber-500 focus:ring-amber-500/20 rounded-xl placeholder:text-gray-500 text-gray-800 shadow-sm"
-              autoComplete="off"
             />
-            
-            {/* Search Suggestions Dropdown - Enhanced for PWA */}
-            {searchTerm && searchTerm.length > 0 && (
-              <div className="absolute top-full left-0 right-0 mt-1 bg-white border-2 border-amber-200 rounded-xl shadow-xl z-50 max-h-80 overflow-y-auto">
-                {searchResults.length > 0 ? (
-                  <div className="p-2">
-                    <div className="text-xs text-gray-500 px-3 py-2 border-b border-gray-100">
-                      {searchResults.length} dot{searchResults.length === 1 ? '' : 's'} found
-                    </div>
-                    {searchResults.slice(0, 6).map((dot: Dot) => (
-                      <div
-                        key={dot.id}
-                        onClick={() => {
-                          setViewFullDot(dot);
-                          setSearchTerm(''); // Clear search on selection
-                        }}
-                        className="p-4 hover:bg-amber-50 active:bg-amber-100 rounded-lg cursor-pointer border-b border-gray-100 last:border-b-0 transition-all duration-200 touch-manipulation"
-                        role="button"
-                        tabIndex={0}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter' || e.key === ' ') {
-                            e.preventDefault();
-                            setViewFullDot(dot);
-                            setSearchTerm('');
-                          }
-                        }}
-                      >
-                        <div className="flex items-start gap-3">
-                          <div className="w-3 h-3 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 mt-1.5 flex-shrink-0 shadow-sm"></div>
-                          <div className="flex-1 min-w-0">
-                            <h4 className="font-semibold text-gray-900 text-base leading-tight mb-1">
-                              {dot.summary || 'Untitled Dot'}
-                            </h4>
-                            {dot.anchor && (
-                              <p className="text-sm text-gray-600 leading-relaxed mb-2 line-clamp-2">
-                                {dot.anchor}
-                              </p>
-                            )}
-                            <div className="flex items-center gap-2 flex-wrap">
-                              {dot.pulse && (
-                                <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800 shadow-sm">
-                                  💫 {dot.pulse}
-                                </span>
-                              )}
-                              <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
-                                {new Date(dot.createdAt).toLocaleDateString('en-US', { 
-                                  month: 'short', 
-                                  day: 'numeric',
-                                  year: new Date(dot.createdAt).getFullYear() !== new Date().getFullYear() ? 'numeric' : undefined
-                                })}
-                              </span>
-                            </div>
-                          </div>
-                          <div className="flex-shrink-0 ml-2">
-                            <div className="w-6 h-6 rounded-full bg-amber-100 flex items-center justify-center">
-                              <span className="text-xs text-amber-600">→</span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                    {searchResults.length > 6 && (
-                      <div className="p-3 text-center text-sm text-amber-600 border-t border-gray-100 bg-amber-50/50">
-                        <span className="font-medium">+{searchResults.length - 6} more results</span>
-                        <p className="text-xs text-gray-500 mt-1">Refine search to see more specific results</p>
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  <div className="p-6 text-center text-gray-500">
-                    <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-gray-100 flex items-center justify-center">
-                      <Search className="w-6 h-6 text-gray-400" />
-                    </div>
-                    <p className="font-medium text-gray-700 mb-1">No dots found</p>
-                    <p className="text-sm">Try searching for different keywords</p>
-                    <p className="text-xs text-gray-400 mt-2">Search by content, emotions, or topics</p>
-                  </div>
-                )}
-              </div>
-            )}
           </div>
         </div>
 
-
-
-        {/* Recent Dots Section - Horizontally Scrollable */}
+        {/* Recent Dots Section */}
         <div className="mb-8">
           <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-            <div className="w-5 h-5 rounded-full border-2 border-amber-500 flex items-center justify-center">
-              <div className="w-2 h-2 rounded-full bg-amber-500"></div>
-            </div>
+            <Zap className="w-5 h-5 text-amber-500" />
             <span className="bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent">
               Recent Dots
             </span>
           </h2>
-          <div className="bg-white/80 backdrop-blur border-2 border-amber-200 rounded-xl p-4 shadow-lg">
-            <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-amber-300 scrollbar-track-amber-100">
-              {dots.length > 0 ? (
-                dots.slice(0, 8).map((dot: Dot) => (
-                  <div key={dot.id} className="flex-shrink-0 w-72">
+          <div className="bg-white/80 backdrop-blur border-2 border-amber-200 rounded-xl p-4 max-h-96 overflow-y-auto shadow-lg">
+            <div className="space-y-4">
+              {/* Search Results */}
+              {searchResults.length > 0 && (
+                <div className="mb-4">
+                  <h3 className="text-sm font-semibold text-amber-800 mb-2">Search Results ({searchResults.length})</h3>
+                  {searchResults.slice(0, 3).map((dot: Dot) => (
                     <DotCard 
+                      key={dot.id} 
                       dot={dot} 
                       onClick={() => setViewFullDot(dot)}
                     />
-                  </div>
-                ))
-              ) : (
+                  ))}
+                </div>
+              )}
+              
+              {/* Recent Dots or Examples */}
+              {searchTerm.trim() === '' && (
                 <>
-                  <div className="flex-shrink-0 w-full text-center mb-3">
-                    <Badge className="bg-orange-100 text-orange-700 border-orange-200">
-                      Preview Examples
-                    </Badge>
-                  </div>
-                  {previewDots.slice(0, 3).map((dot: Dot) => (
-                    <div key={dot.id} className="flex-shrink-0 w-72">
+                  {dots.length > 0 ? (
+                    dots.slice(0, 4).map((dot: Dot) => (
                       <DotCard 
+                        key={dot.id} 
                         dot={dot} 
-                        isPreview={true}
                         onClick={() => setViewFullDot(dot)}
                       />
-                    </div>
-                  ))}
+                    ))
+                  ) : (
+                    <>
+                      <div className="mb-3 text-center">
+                        <Badge className="bg-orange-100 text-orange-700 border-orange-200">
+                          Preview Examples
+                        </Badge>
+                      </div>
+                      {exampleDots.map((dot: Dot) => (
+                        <DotCard 
+                          key={dot.id} 
+                          dot={dot} 
+                          isPreview={true}
+                          onClick={() => setViewFullDot(dot)}
+                        />
+                      ))}
+                    </>
+                  )}
                 </>
               )}
             </div>
@@ -406,75 +443,14 @@ const Dashboard: React.FC = () => {
 
         {/* Dot Wheels Map Section */}
         <div className="mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h2 className="text-xl font-semibold mb-2 flex items-center gap-2">
-                <div className="w-5 h-5 rounded-full border-2 border-amber-500 flex items-center justify-center">
-                  <div className="w-2 h-2 rounded-full bg-amber-500"></div>
-                </div>
-                <span className="bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent">
-                  Dot Wheels Map
-                </span>
-              </h2>
-              <p className="text-sm text-gray-600">Saving your dots for sparking insights</p>
-            </div>
-            
-            {/* Toggle Controls */}
-            <div className="flex items-center gap-2">
-              {hasEnoughDots && (
-                <>
-                  <button
-                    className={`px-3 py-1.5 text-sm rounded-lg font-medium transition-all select-none ${
-                      isPreviewMode 
-                        ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md' 
-                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                    }`}
-                    onMouseDown={(e) => e.preventDefault()}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      setIsPreviewMode(true);
-                    }}
-                  >
-                    Preview Mode
-                  </button>
-                  <button
-                    className={`px-3 py-1.5 text-sm rounded-lg font-medium transition-all select-none ${
-                      !isPreviewMode 
-                        ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md' 
-                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                    }`}
-                    onMouseDown={(e) => e.preventDefault()}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      setIsPreviewMode(false);
-                    }}
-                  >
-                    Actual Mode
-                  </button>
-                </>
-              )}
-              {!hasEnoughDots && (
-                <div className="flex items-center gap-2">
-                  <Badge className="bg-blue-100 text-blue-700 border-blue-200">
-                    Preview Mode
-                  </Badge>
-                  <span className="text-xs text-gray-500">
-                    Save 9 dots to unlock Actual Mode
-                  </span>
-                </div>
-              )}
-            </div>
-          </div>
+          <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+            <Network className="w-5 h-5 text-amber-500" />
+            <span className="bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent">
+              Dot Wheels Map
+            </span>
+          </h2>
           
-          {/* Use the imported DotWheelsMap component */}
-          <DotWheelsMap 
-            wheels={wheels} 
-            dots={displayDots}
-            isPreviewMode={isPreviewMode}
-            onDotClick={(dot: Dot) => setViewFullDot(dot)}
-          />
+          <DotWheelsMap wheels={wheels} />
         </div>
       </div>
       

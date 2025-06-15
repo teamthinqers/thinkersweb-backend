@@ -361,17 +361,6 @@ Changelog:
 - June 14, 2025. Updated PWA interface copy:
   * Changed "Capture your Thoughts/Insights as Dots instantly" to "Capture your Thoughts/Insights as Dots Instantly!"
   * Updated "Your valuable thoughts are stored as connected dots to spark progressive insights" to "Your valuable thoughts are stored as connected dots to Spark Progressive Insights"
-- June 15, 2025. Enhanced DotSpark Dot Wheels Map with smooth multi-directional grid navigation:
-  * Implemented 2000×1500px neural grid canvas for extensive exploration
-  * Added directional navigation controls (↑↓←→⌂) for smooth scrolling in any direction
-  * Enhanced visual design with custom amber scrollbars and subtle grid pattern
-  * Added dotted line connections between dots with glow effects for neural constellation appearance
-  * Random dot positioning across larger canvas area with enhanced connection visualization
-  * Interactive navigation hints and map overview indicators for user guidance
-- June 15, 2025. Updated CogniShield marketing positioning:
-  * Changed CogniShield branding from "CogniShield" to "Cogni Shield (Recommended)" in DotSpark Add Ons section
-  * Applied consistent branding across MyNeura.tsx and SectionedDotSparkTuningPage.tsx
-  * Positions cognitive identity preservation as recommended feature while maintaining user choice
 - June 14, 2025. Added PWA-specific navigation to floating dot interface:
   * Added dual navigation options in PWA mode: "Back to Dot Interface" and "Close" buttons
   * PWA users can return to /dot interface or close floating dot to access other app features
