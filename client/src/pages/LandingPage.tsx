@@ -6,6 +6,7 @@ import {
   MessageCircle, MessageSquare, User, Menu, X, Check, CheckCircle, Download,
   Smartphone, Monitor, Share, Plus, Home as HomeIcon
 } from "lucide-react";
+import { useAuth } from "@/hooks/use-auth";
 
 
 // Dynamic Word component for cycling through words with animation
@@ -91,8 +92,7 @@ import {
 } from "@/components/ui/dialog";
 
 export default function LandingPage() {
-  // Temporarily disabled auth to fix React hooks error
-  const user = null, logout = async () => {};
+  const { user, logout } = useAuth();
   const [location, setLocation] = useLocation();
   const [contactDialogOpen, setContactDialogOpen] = useState(false);
   const [installDialogOpen, setInstallDialogOpen] = useState(false);
