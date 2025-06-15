@@ -85,23 +85,31 @@ const Profile: React.FC = () => {
   // Enhanced cross-platform data synchronization
   const loadProfileData = () => {
     try {
-      // Try multiple storage keys for cross-platform compatibility
-      const storageKeys = ['userProfile', 'dotspark_userProfile', 'dotSpark_profile'];
+      // Try multiple storage keys for cross-platform compatibility (browser + PWA)
+      const storageKeys = ['userProfile', 'dotspark_userProfile', 'dotSpark_profile', 'profile_data'];
       let savedProfile = null;
       
       for (const key of storageKeys) {
         const data = localStorage.getItem(key);
         if (data) {
           savedProfile = JSON.parse(data);
+          console.log(`Profile data loaded from ${key}`);
           break;
         }
       }
       
-      if (savedProfile) {
+      if (savedProfile && Object.keys(savedProfile).length > 0) {
+        // Only populate fields that have actual user data, keep others empty with placeholders
         setProfileData(prev => ({
           ...prev,
-          ...savedProfile,
-          email: user?.email || savedProfile.email // Always use latest email from auth
+          firstName: savedProfile.firstName || '',
+          lastName: savedProfile.lastName || '',
+          email: user?.email || savedProfile.email || '',
+          mobileNumber: savedProfile.mobileNumber || '', // Keep empty until user fills
+          dateOfBirth: savedProfile.dateOfBirth || '', // Keep empty until user fills
+          yearsOfExperience: savedProfile.yearsOfExperience || '',
+          profileImage: savedProfile.profileImage || user?.photoURL || '',
+          linkedInProfile: savedProfile.linkedInProfile || ''
         }));
       }
     } catch (error) {
@@ -111,18 +119,34 @@ const Profile: React.FC = () => {
 
   const saveProfileData = (data: ProfileData) => {
     try {
-      const profileToSave = JSON.stringify(data);
-      // Save to multiple keys for cross-platform compatibility
-      localStorage.setItem('userProfile', profileToSave);
-      localStorage.setItem('dotspark_userProfile', profileToSave);
-      localStorage.setItem('dotSpark_profile', profileToSave);
+      // Only save actual user data, don't save empty fields
+      const profileToSave = {
+        firstName: data.firstName || '',
+        lastName: data.lastName || '',
+        email: data.email || '',
+        mobileNumber: data.mobileNumber || '',
+        dateOfBirth: data.dateOfBirth || '',
+        yearsOfExperience: data.yearsOfExperience || '',
+        profileImage: data.profileImage || '',
+        linkedInProfile: data.linkedInProfile || ''
+      };
+      
+      const profileDataString = JSON.stringify(profileToSave);
+      
+      // Save to multiple keys for cross-platform compatibility (browser + PWA)
+      localStorage.setItem('userProfile', profileDataString);
+      localStorage.setItem('dotspark_userProfile', profileDataString);
+      localStorage.setItem('dotSpark_profile', profileDataString);
+      localStorage.setItem('profile_data', profileDataString);
       
       // Trigger storage event for cross-tab synchronization
       window.dispatchEvent(new StorageEvent('storage', {
         key: 'userProfile',
-        newValue: profileToSave,
+        newValue: profileDataString,
         storageArea: localStorage
       }));
+      
+      console.log('Profile data saved across all storage keys for browser/PWA compatibility');
     } catch (error) {
       console.error('Failed to save profile data:', error);
     }
@@ -132,14 +156,15 @@ const Profile: React.FC = () => {
   useEffect(() => {
     loadProfileData();
     
-    // Auto-populate from user auth data
+    // Only auto-populate email and profile image from auth data
     if (user) {
       setProfileData(prev => ({
         ...prev,
         email: user.email || prev.email,
         profileImage: user.photoURL || prev.profileImage,
-        firstName: prev.firstName || (user.displayName?.split(' ')[0] || ''),
-        lastName: prev.lastName || (user.displayName?.split(' ').slice(1).join(' ') || '')
+        // Only auto-fill name fields if they're empty AND no saved data exists
+        firstName: prev.firstName || (localStorage.getItem('userProfile') ? '' : (user.displayName?.split(' ')[0] || '')),
+        lastName: prev.lastName || (localStorage.getItem('userProfile') ? '' : (user.displayName?.split(' ').slice(1).join(' ') || ''))
       }));
     }
   }, [user]);

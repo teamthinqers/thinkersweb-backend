@@ -509,6 +509,13 @@ Changelog:
   * Removed duplicate search box from dashboard header to eliminate redundancy
   * Dashboard now uses only the search functionality within the Recent Dots section
   * Streamlined dashboard interface maintains single search experience for better UX
+- June 15, 2025. Enhanced Profile page data handling with cross-platform compatibility:
+  * Updated mobile number and date of birth fields to remain empty until user input
+  * Fields now show only placeholder examples without auto-populating actual data
+  * Enhanced cross-platform data storage using multiple localStorage keys for browser/PWA compatibility
+  * Added comprehensive data synchronization between browser and PWA modes
+  * Profile data now persists properly across different access methods (browser, PWA, tabs)
+  * Implemented proper empty field handling while maintaining user privacy for sensitive data
 ```
 
 ## User Preferences
