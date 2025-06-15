@@ -72,7 +72,7 @@ import {
   SheetClose 
 } from "@/components/ui/sheet";
 // Authentication hook removed for landing page - not needed
-import { useWhatsAppStatus } from "@/hooks/useWhatsAppStatus";
+// WhatsApp status removed as requested
 import { neuraStorage } from "@/lib/neuraStorage";
 import {
   DropdownMenu,
@@ -98,11 +98,10 @@ export default function LandingPage() {
   const [contactDialogOpen, setContactDialogOpen] = useState(false);
   const [installDialogOpen, setInstallDialogOpen] = useState(false);
   const [whatsAppNumber, setWhatsAppNumber] = useState<string | null>(null);
-  const { 
-    isWhatsAppConnected, 
-    simulateActivation, 
-    forceStatusRefresh 
-  } = useWhatsAppStatus();
+  // WhatsApp status removed - no longer needed
+  const isWhatsAppConnected = false;
+  const simulateActivation = () => {};
+  const forceStatusRefresh = () => {};
   
 
   
@@ -224,11 +223,7 @@ export default function LandingPage() {
     }
   }, [isWhatsAppConnected, isActiveInLocalStorage]);
   
-  // When component mounts, refresh WhatsApp status
-  useEffect(() => {
-    // Force a status refresh when component mounts
-    forceStatusRefresh();
-  }, [forceStatusRefresh]);
+  // WhatsApp status refresh removed
   
   const handleLogout = async () => {
     try {
