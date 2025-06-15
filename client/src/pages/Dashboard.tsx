@@ -497,6 +497,17 @@ const Dashboard: React.FC = () => {
               </button>
             </div>
           )}
+          
+          {/* Recenter Button */}
+          <button
+            onClick={() => setOffset({ x: 0, y: 0 })}
+            className="bg-amber-500 hover:bg-amber-600 text-white rounded-full p-2 shadow-lg transition-colors"
+            title="Recenter Grid"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+            </svg>
+          </button>
         </div>
         
         <div className="absolute top-4 right-4 z-10 flex flex-col sm:flex-row gap-1 sm:gap-2">
@@ -508,16 +519,7 @@ const Dashboard: React.FC = () => {
           </button>
         </div>
 
-        {/* Recenter Button */}
-        <button
-          onClick={() => setOffset({ x: 0, y: 0 })}
-          className="absolute bottom-4 right-4 z-10 bg-amber-500 hover:bg-amber-600 text-white rounded-full p-3 shadow-lg transition-colors"
-          title="Recenter Grid"
-        >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-          </svg>
-        </button>
+
         
         {/* Interactive draggable grid */}
         <div 
@@ -640,14 +642,12 @@ const Dashboard: React.FC = () => {
                   {/* Summary hover card */}
                   {hoveredDot?.id === dot.id && (
                     <div 
-                      className="fixed bg-white border-2 border-amber-200 rounded-lg p-3 shadow-xl z-50 w-72 cursor-pointer"
+                      className="absolute bg-white border-2 border-amber-200 rounded-lg p-3 shadow-xl z-50 w-64 cursor-pointer"
                       style={{
-                        // Position relative to viewport for PWA visibility
-                        left: '50%',
-                        top: '50%',
-                        transform: 'translate(-50%, -50%)',
-                        maxWidth: '90vw',
-                        maxHeight: '80vh'
+                        // Position next to the dot with smart placement
+                        left: `${x + 60}px`,
+                        top: `${Math.max(0, y - 20)}px`,
+                        maxWidth: '280px'
                       }}
                       onClick={(e) => {
                         e.stopPropagation();
