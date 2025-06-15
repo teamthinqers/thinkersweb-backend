@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { auth, signInWithGoogle, signOut } from "@/lib/firebase";
+import { User as FirebaseUser, onAuthStateChanged } from "firebase/auth";
 
 type UserInfo = {
   uid: string;
@@ -14,31 +16,56 @@ type AuthContextType = {
   logout: () => Promise<void>;
 };
 
-// Simple auth hook without complex Firebase integration
+// Firebase auth hook with proper state management
 export function useAuth(): AuthContextType {
   const [user, setUser] = useState<UserInfo | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser: FirebaseUser | null) => {
+      if (firebaseUser) {
+        setUser({
+          uid: firebaseUser.uid,
+          email: firebaseUser.email,
+          displayName: firebaseUser.displayName,
+          photoURL: firebaseUser.photoURL,
+        });
+      } else {
+        setUser(null);
+      }
+      setIsLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   const loginWithGoogle = async () => {
-    setIsLoading(true);
-    // Mock login for now - user can implement real Firebase later
-    setTimeout(() => {
+    try {
+      setIsLoading(true);
+      const firebaseUser = await signInWithGoogle();
       setUser({
-        uid: "mock-user",
-        email: "user@example.com",
-        displayName: "Mock User",
-        photoURL: null
+        uid: firebaseUser.uid,
+        email: firebaseUser.email,
+        displayName: firebaseUser.displayName,
+        photoURL: firebaseUser.photoURL,
       });
+    } catch (error) {
+      console.error("Error signing in with Google:", error);
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
   const logout = async () => {
-    setIsLoading(true);
-    setTimeout(() => {
+    try {
+      setIsLoading(true);
+      await signOut();
       setUser(null);
+    } catch (error) {
+      console.error("Error signing out:", error);
+    } finally {
       setIsLoading(false);
-    }, 500);
+    }
   };
 
   return {
