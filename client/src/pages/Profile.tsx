@@ -496,15 +496,32 @@ const Profile: React.FC = () => {
                   <Phone className="h-4 w-4" />
                   <span>Mobile Number</span>
                 </Label>
-                <Input
-                  id="mobileNumber"
-                  type="tel"
-                  placeholder="+1 (555) 123-4567"
-                  value={profileData.mobileNumber}
-                  onChange={(e) => handleFieldChange('mobileNumber', e.target.value)}
-                  disabled={!isEditing}
-                  className={!isEditing ? "bg-gray-50" : ""}
-                />
+                <div className="flex">
+                  <div className="flex items-center px-3 py-2 bg-gray-100 border border-r-0 rounded-l-md text-sm text-gray-600">
+                    +91
+                  </div>
+                  <Input
+                    id="mobileNumber"
+                    type="tel"
+                    placeholder="Enter 10 digit mobile number"
+                    value={profileData.mobileNumber}
+                    onChange={(e) => {
+                      // Only allow 10 digit numbers
+                      const value = e.target.value.replace(/\D/g, '').slice(0, 10);
+                      handleFieldChange('mobileNumber', value);
+                    }}
+                    disabled={!isEditing}
+                    className={`rounded-l-none ${!isEditing ? "bg-gray-50" : ""} ${
+                      profileData.mobileNumber && profileData.mobileNumber.length === 10 
+                        ? "border-green-300 bg-green-50/50" 
+                        : ""
+                    }`}
+                    maxLength={10}
+                  />
+                </div>
+                {profileData.mobileNumber && profileData.mobileNumber.length === 10 && (
+                  <p className="text-xs text-green-600 font-medium">✓ Valid mobile number: +91 {profileData.mobileNumber}</p>
+                )}
               </div>
 
               {/* Date of Birth */}
@@ -523,9 +540,11 @@ const Profile: React.FC = () => {
                       >
                         <CalendarIcon className="mr-2 h-4 w-4" />
                         {profileData.dateOfBirth ? (
-                          format(new Date(profileData.dateOfBirth), 'MMMM dd, yyyy')
+                          <span className="text-green-700 font-medium">
+                            {format(new Date(profileData.dateOfBirth), 'MMMM dd, yyyy')}
+                          </span>
                         ) : (
-                          <span className="text-gray-500">Select your date of birth</span>
+                          <span className="text-gray-400 italic">Select your date of birth</span>
                         )}
                       </Button>
                     </PopoverTrigger>

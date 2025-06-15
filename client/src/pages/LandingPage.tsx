@@ -7,7 +7,7 @@ import {
   Smartphone, Monitor, Share, Plus, Home as HomeIcon
 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
-import { GoogleSignInTest } from "@/components/GoogleSignInTest";
+
 
 
 // Dynamic Word component for cycling through words with animation
@@ -899,10 +899,7 @@ export default function LandingPage() {
               </p>
             </div>
             
-            {/* Google Sign-In Test Component */}
-            <div className="mt-12">
-              <GoogleSignInTest />
-            </div>
+
           </div>
         </div>
       </section>
