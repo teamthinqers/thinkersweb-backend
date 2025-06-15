@@ -28,7 +28,7 @@ interface GlobalFloatingDotProps {
 
 export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
   const [position, setPosition] = useState<Position>(() => {
-    const saved = localStorage.getItem('floatingDotPosition');
+    const saved = localStorage.getItem('global-floating-dot-position');
     return saved ? JSON.parse(saved) : { x: 320, y: 180 };
   });
   const [isExpanded, setIsExpanded] = useState(false);
@@ -81,6 +81,10 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
 
     const handleMouseUp = () => {
       setIsDragging(false);
+      // Save final position when drag completes
+      const finalPosition = position;
+      localStorage.setItem('global-floating-dot-position', JSON.stringify(finalPosition));
+      console.log('Saved final floating dot position:', finalPosition);
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
     };
@@ -110,6 +114,10 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
 
     const handleTouchEnd = () => {
       setIsDragging(false);
+      // Save final position when touch drag completes
+      const finalPosition = position;
+      localStorage.setItem('global-floating-dot-position', JSON.stringify(finalPosition));
+      console.log('Saved final floating dot position (touch):', finalPosition);
       document.removeEventListener('touchmove', handleTouchMove);
       document.removeEventListener('touchend', handleTouchEnd);
     };
@@ -266,9 +274,14 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
     if (savedPosition) {
       try {
         const parsed = JSON.parse(savedPosition);
+        console.log('Loading saved floating dot position:', parsed);
         setPosition(parsed);
       } catch (error) {
         console.error('Failed to parse saved position:', error);
+        // Use default position if parsing fails
+        const defaultPos = { x: 320, y: 180 };
+        setPosition(defaultPos);
+        localStorage.setItem('global-floating-dot-position', JSON.stringify(defaultPos));
       }
     } else {
       // Check if this is first activation
@@ -277,6 +290,10 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
         setIsFirstActivation(true);
         localStorage.setItem('has-seen-floating-dot', 'true');
       }
+      // Set and save default position
+      const defaultPos = { x: 320, y: 180 };
+      setPosition(defaultPos);
+      localStorage.setItem('global-floating-dot-position', JSON.stringify(defaultPos));
     }
 
     // Listen for custom event from "Save a Dot" button
