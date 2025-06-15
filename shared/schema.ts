@@ -13,6 +13,13 @@ export const users = pgTable("users", {
   fullName: text("full_name"),
   bio: text("bio"),
   avatarUrl: text("avatar_url"),
+  firstName: text("first_name"),
+  lastName: text("last_name"),
+  mobileNumber: text("mobile_number"),
+  dateOfBirth: text("date_of_birth"), // YYYY-MM-DD format
+  yearsOfExperience: integer("years_of_experience"),
+  linkedInProfile: text("linkedin_profile"),
+  profileImage: text("profile_image"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
@@ -32,9 +39,36 @@ export const insertUserSchema = createInsertSchema(users, {
   fullName: (schema) => schema.optional(),
   bio: (schema) => schema.optional(),
   avatarUrl: (schema) => schema.optional(),
+  firstName: (schema) => schema.optional(),
+  lastName: (schema) => schema.optional(),
+  mobileNumber: (schema) => schema.optional(),
+  dateOfBirth: (schema) => schema.optional(),
+  yearsOfExperience: (schema) => schema.optional(),
+  linkedInProfile: (schema) => schema.union([schema.url("Must be a valid URL"), z.literal("")]).optional(),
+  profileImage: (schema) => schema.optional(),
+});
+
+// Profile update schema (excluding password and authentication fields)
+export const updateProfileSchema = createInsertSchema(users, {
+  firstName: (schema) => schema.min(1, "First name is required").optional(),
+  lastName: (schema) => schema.min(1, "Last name is required").optional(),
+  mobileNumber: (schema) => schema.optional(),
+  dateOfBirth: (schema) => schema.optional(),
+  yearsOfExperience: (schema) => schema.min(0, "Experience cannot be negative").max(70, "Experience cannot exceed 70 years").optional(),
+  linkedInProfile: (schema) => schema.url("Must be a valid URL").optional().or(schema.literal("")),
+  profileImage: (schema) => schema.optional(),
+}).omit({
+  id: true,
+  username: true,
+  email: true,
+  password: true,
+  firebaseUid: true,
+  createdAt: true,
+  updatedAt: true,
 });
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
+export type UpdateProfile = z.infer<typeof updateProfileSchema>;
 export type User = typeof users.$inferSelect;
 
 // Categories for learning entries
