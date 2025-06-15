@@ -35,6 +35,99 @@ async function testOpenAIConnection() {
 testOpenAIConnection();
 
 /**
+ * Transcribe audio to text using OpenAI Whisper
+ */
+export async function transcribeAudio(audioBuffer: Buffer, filename: string): Promise<string> {
+  try {
+    // Create a File-like object from the buffer
+    const audioFile = new File([audioBuffer], filename, { type: 'audio/wav' });
+    
+    const transcription = await openai.audio.transcriptions.create({
+      file: audioFile,
+      model: "whisper-1",
+      language: "en", // Can be made dynamic based on user preference
+    });
+
+    return transcription.text;
+  } catch (error) {
+    console.error('Error transcribing audio:', error);
+    throw new Error('Failed to transcribe audio');
+  }
+}
+
+/**
+ * Process voice input for dot creation with transcription
+ */
+export async function processVoiceInput(audioBuffer: Buffer, filename: string, layer: 'summary' | 'anchor' | 'pulse'): Promise<{
+  transcription: string;
+  processedText: string;
+}> {
+  try {
+    // First transcribe the audio
+    const transcription = await transcribeAudio(audioBuffer, filename);
+    
+    // Process the transcription based on the layer requirements
+    let processedText = transcription;
+    
+    if (layer === 'summary') {
+      // Ensure summary is concise and under 220 characters
+      if (transcription.length > 220) {
+        const response = await openai.chat.completions.create({
+          model: "gpt-4o",
+          messages: [{
+            role: "system", 
+            content: "Condense this text to under 220 characters while preserving the key insight. Be concise and sharp."
+          }, {
+            role: "user", 
+            content: transcription
+          }],
+          max_tokens: 100
+        });
+        processedText = response.choices[0]?.message?.content || transcription.substring(0, 220);
+      }
+    } else if (layer === 'anchor') {
+      // Ensure anchor is under 300 characters and contextual
+      if (transcription.length > 300) {
+        const response = await openai.chat.completions.create({
+          model: "gpt-4o",
+          messages: [{
+            role: "system", 
+            content: "Condense this memory anchor to under 300 characters while preserving context and key details."
+          }, {
+            role: "user", 
+            content: transcription
+          }],
+          max_tokens: 120
+        });
+        processedText = response.choices[0]?.message?.content || transcription.substring(0, 300);
+      }
+    } else if (layer === 'pulse') {
+      // Extract single emotion word from transcription
+      const response = await openai.chat.completions.create({
+        model: "gpt-4o",
+        messages: [{
+          role: "system", 
+          content: "Extract one single emotion word from this text. Return only the emotion word, nothing else."
+        }, {
+          role: "user", 
+          content: transcription
+        }],
+        max_tokens: 5
+      });
+      processedText = response.choices[0]?.message?.content?.trim().split(' ')[0] || 'captured';
+    }
+    
+    return {
+      transcription,
+      processedText: processedText.trim()
+    };
+  } catch (error) {
+    console.error('Error processing voice input:', error);
+    throw new Error('Failed to process voice input');
+  }
+}
+
+/**
  * Perform web search for real-time information
  */
 async function performWebSearch(query: string): Promise<string> {
