@@ -254,12 +254,37 @@ const Dashboard: React.FC = () => {
       <div className="container mx-auto px-4 py-6">
         {/* Header */}
         <div className="mb-6">
-          <h1 className="text-2xl font-bold mb-4 flex items-center gap-3">
-            <Brain className="w-8 h-8 text-amber-600" />
-            <span className="bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent">
-              My DotSpark Neura
-            </span>
-          </h1>
+          <div className="flex items-center justify-between mb-4">
+            <h1 className="text-2xl font-bold flex items-center gap-3">
+              <Brain className="w-8 h-8 text-amber-600" />
+              <span className="bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent">
+                My DotSpark Neura
+              </span>
+            </h1>
+            
+            {/* Toggle Button for Preview/Actual Mode */}
+            <div className="flex items-center gap-4">
+              <div className="text-right">
+                <div className="text-sm font-medium text-gray-800">
+                  {isPreviewMode ? 'Preview Mode' : 'Actual Mode'}
+                </div>
+                <div className="text-xs text-gray-600">
+                  {isPreviewMode ? '18 sample dots in 2 wheels' : hasEnoughDots ? `${dots.length} actual dots` : 'Not enough dots yet'}
+                </div>
+              </div>
+              <button
+                onClick={() => setIsPreviewMode(!isPreviewMode)}
+                className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 select-none ${
+                  isPreviewMode 
+                    ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md hover:shadow-lg' 
+                    : 'bg-white border-2 border-amber-500 text-amber-600 hover:bg-amber-50'
+                }`}
+                onMouseDown={(e) => e.preventDefault()}
+              >
+                Switch to {isPreviewMode ? (hasEnoughDots ? 'Actual' : 'Preview') : 'Preview'}
+              </button>
+            </div>
+          </div>
           
           {/* Search Bar */}
           <div className="relative mb-6">
