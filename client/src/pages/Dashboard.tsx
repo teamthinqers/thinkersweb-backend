@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -286,38 +286,101 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
           
-          {/* Search Bar */}
+          {/* Search Bar with Dropdown */}
           <div className="relative mb-6">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-amber-500" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-amber-500 z-10" />
             <Input
               type="text"
               placeholder="Enter keywords to search for a Dot"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 h-12 text-base border-2 border-amber-200 bg-white/90 backdrop-blur focus:border-amber-500 focus:ring-amber-500/20 rounded-xl placeholder:text-gray-500 text-gray-800 shadow-sm select-none"
-              onMouseDown={(e) => e.preventDefault()}
-              onFocus={(e) => {
-                e.preventDefault();
-                (e.target as HTMLInputElement).select();
-              }}
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                const input = e.currentTarget as HTMLInputElement;
-                input.focus();
-              }}
+              className="pl-10 h-12 text-base border-2 border-amber-200 bg-white/90 backdrop-blur focus:border-amber-500 focus:ring-amber-500/20 rounded-xl placeholder:text-gray-500 text-gray-800 shadow-sm"
+              autoComplete="off"
             />
+            
+            {/* Search Suggestions Dropdown - Enhanced for PWA */}
+            {searchTerm && searchTerm.length > 0 && (
+              <div className="absolute top-full left-0 right-0 mt-1 bg-white border-2 border-amber-200 rounded-xl shadow-xl z-50 max-h-80 overflow-y-auto">
+                {searchResults.length > 0 ? (
+                  <div className="p-2">
+                    <div className="text-xs text-gray-500 px-3 py-2 border-b border-gray-100">
+                      {searchResults.length} dot{searchResults.length === 1 ? '' : 's'} found
+                    </div>
+                    {searchResults.slice(0, 6).map((dot: Dot) => (
+                      <div
+                        key={dot.id}
+                        onClick={() => {
+                          setViewFullDot(dot);
+                          setSearchTerm(''); // Clear search on selection
+                        }}
+                        className="p-4 hover:bg-amber-50 active:bg-amber-100 rounded-lg cursor-pointer border-b border-gray-100 last:border-b-0 transition-all duration-200 touch-manipulation"
+                        role="button"
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            setViewFullDot(dot);
+                            setSearchTerm('');
+                          }
+                        }}
+                      >
+                        <div className="flex items-start gap-3">
+                          <div className="w-3 h-3 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 mt-1.5 flex-shrink-0 shadow-sm"></div>
+                          <div className="flex-1 min-w-0">
+                            <h4 className="font-semibold text-gray-900 text-base leading-tight mb-1">
+                              {dot.summary || 'Untitled Dot'}
+                            </h4>
+                            {dot.anchor && (
+                              <p className="text-sm text-gray-600 leading-relaxed mb-2 line-clamp-2">
+                                {dot.anchor}
+                              </p>
+                            )}
+                            <div className="flex items-center gap-2 flex-wrap">
+                              {dot.pulse && (
+                                <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800 shadow-sm">
+                                  💫 {dot.pulse}
+                                </span>
+                              )}
+                              <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+                                {new Date(dot.createdAt).toLocaleDateString('en-US', { 
+                                  month: 'short', 
+                                  day: 'numeric',
+                                  year: new Date(dot.createdAt).getFullYear() !== new Date().getFullYear() ? 'numeric' : undefined
+                                })}
+                              </span>
+                            </div>
+                          </div>
+                          <div className="flex-shrink-0 ml-2">
+                            <div className="w-6 h-6 rounded-full bg-amber-100 flex items-center justify-center">
+                              <span className="text-xs text-amber-600">→</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                    {searchResults.length > 6 && (
+                      <div className="p-3 text-center text-sm text-amber-600 border-t border-gray-100 bg-amber-50/50">
+                        <span className="font-medium">+{searchResults.length - 6} more results</span>
+                        <p className="text-xs text-gray-500 mt-1">Refine search to see more specific results</p>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="p-6 text-center text-gray-500">
+                    <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-gray-100 flex items-center justify-center">
+                      <Search className="w-6 h-6 text-gray-400" />
+                    </div>
+                    <p className="font-medium text-gray-700 mb-1">No dots found</p>
+                    <p className="text-sm">Try searching for different keywords</p>
+                    <p className="text-xs text-gray-400 mt-2">Search by content, emotions, or topics</p>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Search Results Window - Separate from Recent Dots */}
-        {searchTerm && searchResults.length > 0 && (
-          <SearchResultsList 
-            searchResults={searchResults}
-            onDotClick={(dot: Dot) => setViewFullDot(dot)}
-            searchTerm={searchTerm}
-          />
-        )}
+
 
         {/* Recent Dots Section - Horizontally Scrollable */}
         <div className="mb-8">
