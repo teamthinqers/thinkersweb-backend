@@ -33,8 +33,8 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
     return saved ? JSON.parse(saved) : { x: 320, y: 180 };
   });
   const [isExpanded, setIsExpanded] = useState(false);
-  const [captureMode, setCaptureMode] = useState<'select' | 'text' | 'voice'>('select');
-  const [userCaptureMode, setUserCaptureMode] = useState<'voice' | 'text' | 'hybrid'>('hybrid');
+  const [captureMode, setCaptureMode] = useState<'select' | 'text' | 'voice' | 'direct-chat' | 'whatsapp'>('select');
+  const [userCaptureMode, setUserCaptureMode] = useState<'natural' | 'ai'>('natural');
   
   // Voice recording states
   const [isRecording, setIsRecording] = useState(false);
