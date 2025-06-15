@@ -288,6 +288,17 @@ export default function LandingPage() {
               <Link href="/" className="text-sm font-medium text-slate-700 hover:text-amber-700 dark:text-slate-300 dark:hover:text-amber-300 transition-colors px-2 py-1 rounded">
                 Home
               </Link>
+              {/* My DotSpark button */}
+              <Button 
+                size="sm"
+                onClick={() => setLocation("/my-neura")}
+                className="relative"
+              >
+                <div className="flex items-center gap-2">
+                  <img src="/dotspark-logo-icon.jpeg" alt="DotSpark" className="h-4 w-4 object-contain rounded" />
+                  <span className="text-sm">My DotSpark</span>
+                </div>
+              </Button>
               {/* Blinking Neura button */}
               <Button 
                 size="sm"
@@ -389,6 +400,12 @@ export default function LandingPage() {
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
+                    <Link href="/my-neura" className="cursor-pointer w-full">
+                      <img src="/dotspark-logo-icon.jpeg" alt="DotSpark" className="mr-2 h-4 w-4 object-contain rounded" />
+                      My DotSpark
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
                     <Link href="/dashboard" className="cursor-pointer w-full">
                       <Brain className="mr-2 h-4 w-4" />
                       Neural Dashboard
@@ -443,8 +460,8 @@ export default function LandingPage() {
                       </SheetClose>
                       
                       <SheetClose asChild>
-                        <div onClick={() => setLocation("/sectioned-dotspark-tuning")} className="py-2 hover:text-primary transition-colors flex items-center gap-2 cursor-pointer">
-                          <img src="/dotspark-logo-small.jpg" alt="DotSpark" className="h-4 w-4 rounded-sm" />
+                        <div onClick={() => setLocation("/my-neura")} className="py-2 hover:text-primary transition-colors flex items-center gap-2 cursor-pointer">
+                          <img src="/dotspark-logo-icon.jpeg" alt="DotSpark" className="h-4 w-4 rounded-sm object-contain" />
                           <span>My DotSpark</span>
                         </div>
                       </SheetClose>
