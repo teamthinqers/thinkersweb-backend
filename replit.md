@@ -734,6 +734,14 @@ Changelog:
   * Updated mobile hamburger menu in Header to include "DotSpark Social" with orange-red gradient styling
   * Dashboard sidebar navigation maintained as "Social Neura" per user preference
   * Enhanced cross-platform navigation consistency for Social features
+- June 15, 2025. Implemented proper DotSpark Social and Social Neura separation:
+  * Created separate SocialNeura page (/social-neura) as neural component within broader social system
+  * Updated existing Social page as DotSpark Social with Users icon throughout navigation
+  * Added Social Neura card to DotSpark Social page with Brain icon and purple theme
+  * Distinguished DotSpark Social (Users icon, orange-red gradient) from Social Neura (Brain icon, purple theme)
+  * Updated all navigation icons: Headers, profile dropdowns, landing page buttons, mobile menus
+  * Social Neura maintains Brain icon in dashboard sidebar while DotSpark Social uses Users icon elsewhere
+  * Enhanced user understanding of broader social platform vs neural intelligence component
 - June 15, 2025. Optimized AI conversation flow for minimal user effort:
   * Updated AI prompts to proactively organize user thoughts into three layers with minimal intervention
   * AI now immediately structures user input into Summary/Anchor/Pulse format for quick approval

@@ -462,7 +462,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                   setLocation("/social");
                 }}
               >
-                <Brain className="h-5 w-5 mr-2 animate-pulse" />
+                <Users className="h-5 w-5 mr-2 animate-pulse" />
                 DotSpark Social
               </Button>
             </nav>
