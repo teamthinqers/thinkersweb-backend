@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'wouter';
-import { useAuth } from '@/hooks/use-auth';
+import { useAuth } from '@/hooks/use-auth-simple';
 import { useWhatsAppStatus } from '@/hooks/useWhatsAppStatus';
 import { useToast } from '@/hooks/use-toast';
 import { useDotSparkTuning } from '@/hooks/useDotSparkTuning';

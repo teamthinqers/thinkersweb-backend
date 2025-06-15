@@ -71,7 +71,7 @@ import {
   SheetTrigger,
   SheetClose 
 } from "@/components/ui/sheet";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuth } from "@/hooks/use-auth-simple";
 import { useWhatsAppStatus } from "@/hooks/useWhatsAppStatus";
 import { neuraStorage } from "@/lib/neuraStorage";
 import {
