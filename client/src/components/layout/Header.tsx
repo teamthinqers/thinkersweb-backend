@@ -211,18 +211,18 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 </div>
               </div>
               
-              {/* Social button with brain icon and text for PWA */}
+              {/* Social button with users icon for DotSpark Social */}
               <Button
                 variant="ghost"
                 size="sm"
-                className="text-gray-600 hover:text-amber-600 hover:bg-amber-50 transition-all duration-300 ml-2"
+                className="text-gray-600 hover:text-orange-600 hover:bg-orange-50 transition-all duration-300 ml-2"
                 onClick={() => setLocation("/social")}
               >
                 <div className="flex items-center gap-1">
                   <div className="relative">
-                    <Brain className="h-4 w-4 animate-pulse hover:animate-bounce transition-all duration-300" />
+                    <Users className="h-4 w-4 animate-pulse hover:animate-bounce transition-all duration-300" />
                     <div className="absolute inset-0 animate-ping opacity-30">
-                      <Brain className="h-4 w-4" />
+                      <Users className="h-4 w-4" />
                     </div>
                   </div>
                   <span className="text-xs">Social</span>
@@ -329,9 +329,9 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
               >
                 <div className="flex items-center gap-2">
                   <div className="relative">
-                    <Brain className="h-5 w-5 animate-pulse hover:animate-bounce transition-all duration-300" />
+                    <Users className="h-5 w-5 animate-pulse hover:animate-bounce transition-all duration-300" />
                     <div className="absolute inset-0 animate-ping opacity-30">
-                      <Brain className="h-5 w-5" />
+                      <Users className="h-5 w-5" />
                     </div>
                   </div>
                   <span className="text-sm font-medium">Social</span>
