@@ -155,7 +155,8 @@ const Dashboard: React.FC = () => {
           pulse: 'enlightened',
           wheelId: '3',
           timestamp: new Date(),
-          sourceType: 'voice'
+          sourceType: 'voice',
+          captureMode: 'ai'
         }
       ],
       connections: ['2'],
