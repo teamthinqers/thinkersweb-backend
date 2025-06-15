@@ -495,6 +495,10 @@ Changelog:
   * Wrapped main App component with AuthProvider to enable Google sign-in across the application
   * Updated ProtectedRoute and Router components to use restored authentication context
   * Google sign-in now working properly again while maintaining all profile section improvements
+- June 15, 2025. Cleaned up Dashboard interface for better user experience:
+  * Removed duplicate search box from Dashboard page header
+  * Search functionality now only available within Recent Dots section to eliminate confusion
+  * Streamlined header design with just "My DotSpark Neura" title and brain icon
 ```
 
 ## User Preferences

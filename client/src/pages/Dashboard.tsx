@@ -33,6 +33,8 @@ const Dashboard: React.FC = () => {
   const [selectedWheel, setSelectedWheel] = useState<string | null>(null);
   const [viewFullDot, setViewFullDot] = useState<Dot | null>(null);
   const [searchResults, setSearchResults] = useState<Dot[]>([]);
+  const [searchSuggestions, setSearchSuggestions] = useState<string[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
 
   // Fetch real dots from API
   const { data: dots = [], isLoading } = useQuery({
@@ -75,7 +77,7 @@ const Dashboard: React.FC = () => {
     }
   ];
 
-  // Search functionality
+  // Enhanced search functionality with suggestions
   React.useEffect(() => {
     if (searchTerm.trim()) {
       const filtered = dots.filter((dot: Dot) => 
@@ -84,8 +86,34 @@ const Dashboard: React.FC = () => {
         dot.pulse.toLowerCase().includes(searchTerm.toLowerCase())
       );
       setSearchResults(filtered);
+      
+      // Generate search suggestions based on matching keywords
+      if (searchTerm.length >= 2) {
+        const allDots = dots.length > 0 ? dots : exampleDots;
+        const suggestions = new Set<string>();
+        
+        allDots.forEach((dot: Dot) => {
+          // Extract keywords from summary and anchor
+          const words = [...dot.summary.split(' '), ...dot.anchor.split(' '), dot.pulse]
+            .filter(word => word.length >= 3)
+            .map(word => word.toLowerCase().replace(/[^a-zA-Z]/g, ''))
+            .filter(word => word.includes(searchTerm.toLowerCase()) && word !== searchTerm.toLowerCase());
+          
+          words.forEach(word => {
+            if (suggestions.size < 5) suggestions.add(word);
+          });
+        });
+        
+        setSearchSuggestions(Array.from(suggestions).slice(0, 5));
+        setShowSuggestions(true);
+      } else {
+        setSearchSuggestions([]);
+        setShowSuggestions(false);
+      }
     } else {
       setSearchResults([]);
+      setSearchSuggestions([]);
+      setShowSuggestions(false);
     }
   }, [searchTerm, dots]);
 
@@ -369,18 +397,6 @@ const Dashboard: React.FC = () => {
               My DotSpark Neura
             </span>
           </h1>
-          
-          {/* Search Bar */}
-          <div className="relative mb-6">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-amber-500" />
-            <Input
-              type="text"
-              placeholder="Enter keywords to search for a Dot"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 h-12 text-base border-2 border-amber-200 bg-white/90 backdrop-blur focus:border-amber-500 focus:ring-amber-500/20 rounded-xl placeholder:text-gray-500 text-gray-800 shadow-sm"
-            />
-          </div>
         </div>
 
         {/* Recent Dots Section */}
@@ -391,19 +407,94 @@ const Dashboard: React.FC = () => {
               Recent Dots
             </span>
           </h2>
+          
+          {/* Enhanced Search Bar */}
+          <div className="relative mb-4">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-amber-500" />
+            <Input
+              type="text"
+              placeholder="Search your dots by keywords, emotions, or topics..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              onFocus={() => setShowSuggestions(searchSuggestions.length > 0)}
+              onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+              className="pl-10 h-11 text-sm border-2 border-amber-200 bg-white/95 backdrop-blur focus:border-amber-500 focus:ring-amber-500/20 rounded-lg placeholder:text-gray-500 text-gray-800 shadow-sm"
+            />
+            {searchTerm.trim() && (
+              <button
+                onClick={() => {
+                  setSearchTerm('');
+                  setShowSuggestions(false);
+                }}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                ✕
+              </button>
+            )}
+            
+            {/* Search Suggestions Dropdown */}
+            {showSuggestions && searchSuggestions.length > 0 && (
+              <div className="absolute top-full left-0 right-0 bg-white border-2 border-amber-200 rounded-lg shadow-lg mt-1 z-10 max-h-40 overflow-y-auto">
+                <div className="p-2">
+                  <div className="text-xs text-amber-600 mb-2 font-medium">Suggested keywords:</div>
+                  {searchSuggestions.map((suggestion, index) => (
+                    <button
+                      key={index}
+                      onClick={() => {
+                        setSearchTerm(suggestion);
+                        setShowSuggestions(false);
+                      }}
+                      className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-amber-50 rounded transition-colors capitalize"
+                    >
+                      {suggestion}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+          
           <div className="bg-white/80 backdrop-blur border-2 border-amber-200 rounded-xl p-4 max-h-96 overflow-y-auto shadow-lg">
             <div className="space-y-4">
-              {/* Search Results */}
-              {searchResults.length > 0 && (
+              {/* Search Results or No Results */}
+              {searchTerm.trim() !== '' && (
                 <div className="mb-4">
-                  <h3 className="text-sm font-semibold text-amber-800 mb-2">Search Results ({searchResults.length})</h3>
-                  {searchResults.slice(0, 3).map((dot: Dot) => (
-                    <DotCard 
-                      key={dot.id} 
-                      dot={dot} 
-                      onClick={() => setViewFullDot(dot)}
-                    />
-                  ))}
+                  {searchResults.length > 0 ? (
+                    <>
+                      <div className="flex items-center justify-between mb-3">
+                        <h3 className="text-sm font-semibold text-amber-800">
+                          Search Results ({searchResults.length})
+                        </h3>
+                        {searchResults.length > 5 && (
+                          <span className="text-xs text-amber-600 bg-amber-50 px-2 py-1 rounded">
+                            Showing first 5 results
+                          </span>
+                        )}
+                      </div>
+                      <div className="space-y-3">
+                        {searchResults.slice(0, 5).map((dot: Dot) => (
+                          <div key={dot.id} className="relative">
+                            <DotCard 
+                              dot={dot} 
+                              onClick={() => setViewFullDot(dot)}
+                            />
+                            {/* Search match indicators */}
+                            <div className="absolute top-2 right-2">
+                              <Badge className="bg-green-100 text-green-700 border-green-200 text-xs">
+                                Match
+                              </Badge>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </>
+                  ) : (
+                    <div className="text-center py-8 text-gray-500">
+                      <Search className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                      <p className="text-sm font-medium mb-1">No dots found matching "{searchTerm}"</p>
+                      <p className="text-xs text-gray-400">Try searching with different keywords or check your spelling</p>
+                    </div>
+                  )}
                 </div>
               )}
               
