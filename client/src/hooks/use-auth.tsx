@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import { auth, signInWithGoogle, signOut } from "@/lib/firebase";
-import { User as FirebaseUser, onAuthStateChanged } from "firebase/auth";
+import { auth, signInWithGoogle, signOut, onAuthStateChanged, User } from "@/lib/auth-simple";
 
 type UserInfo = {
   uid: string;
@@ -16,13 +15,13 @@ type AuthContextType = {
   logout: () => Promise<void>;
 };
 
-// Firebase auth hook with proper state management
+// Clean Firebase auth hook
 export function useAuth(): AuthContextType {
   const [user, setUser] = useState<UserInfo | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (firebaseUser: FirebaseUser | null) => {
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser: User | null) => {
       if (firebaseUser) {
         setUser({
           uid: firebaseUser.uid,

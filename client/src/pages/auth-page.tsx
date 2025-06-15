@@ -18,7 +18,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { ArrowRight, Brain } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-// Temporarily removed useAuth to fix React hooks error
+import { useAuth } from "@/hooks/use-auth";
 
 // Define form schemas
 const loginSchema = z.object({
@@ -46,8 +46,8 @@ export default function AuthPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [, setLocation] = useLocation();
   const { toast } = useToast();
-  // Temporarily disabled auth to fix React hooks error
-  const user = null, loginWithGoogle = async () => {};
+  // Use clean authentication system
+  const { user, loginWithGoogle } = useAuth();
   
   // Get redirect path from URL if any
   const getRedirectPath = () => {
