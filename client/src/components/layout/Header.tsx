@@ -47,6 +47,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
   const [location, setLocation] = useLocation();
   const isMobile = useMobile();
   const [showMobileNav, setShowMobileNav] = useState(false);
+  const [isMenuProcessing, setIsMenuProcessing] = useState(false);
   
   // State for Neura activation using neuraStorage - forced check on every render
   const [isActivated, setIsActivated] = useState(() => {
@@ -272,26 +273,35 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
               <Button
                 variant="ghost"
                 size="icon"
-                className="text-gray-600 hover:text-primary h-12 w-12 select-none touch-manipulation active:scale-95 transition-transform"
+                className="text-gray-600 hover:text-primary h-12 w-12 select-none touch-manipulation transition-colors"
+                style={{ WebkitTapHighlightColor: 'transparent' }}
                 onMouseDown={(e) => e.preventDefault()}
                 onTouchStart={(e) => {
-                  e.currentTarget.style.transform = 'scale(0.95)';
+                  e.preventDefault();
+                  e.stopPropagation();
                 }}
                 onTouchEnd={(e) => {
-                  e.currentTarget.style.transform = 'scale(1)';
+                  e.preventDefault();
+                  e.stopPropagation();
                 }}
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  // Add haptic feedback for mobile
-                  if ('vibrate' in navigator) {
-                    navigator.vibrate(50);
-                  }
+                  
+                  // Prevent multiple rapid clicks
+                  if (isMenuProcessing) return;
+                  
+                  setIsMenuProcessing(true);
+                  console.log('Hamburger menu clicked');
+                  
                   if (onMenuClick) {
                     onMenuClick();
                   } else {
                     setShowMobileNav(!showMobileNav);
                   }
+                  
+                  // Reset processing state after a short delay
+                  setTimeout(() => setIsMenuProcessing(false), 300);
                 }}
               >
                 <Menu className="h-6 w-6" />
