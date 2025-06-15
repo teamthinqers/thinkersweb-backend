@@ -15,7 +15,8 @@ import {
   Phone,
   Star,
   Trophy,
-  Target
+  Target,
+  X
 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
@@ -47,6 +48,7 @@ const Profile: React.FC = () => {
   });
 
   const [isEditing, setIsEditing] = useState(false);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   // Calculate profile completion percentage
   const calculateCompletionPercentage = (): number => {
@@ -95,11 +97,50 @@ const Profile: React.FC = () => {
     }
   }, [user]);
 
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      // Check file type
+      if (!file.type.startsWith('image/')) {
+        toast({
+          title: "Invalid file type",
+          description: "Please select an image file.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Check file size (5MB limit)
+      if (file.size > 5 * 1024 * 1024) {
+        toast({
+          title: "File too large",
+          description: "Please select an image smaller than 5MB.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const result = e.target?.result as string;
+        setImagePreview(result);
+        setProfileData(prev => ({ ...prev, profileImage: result }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const removeImage = () => {
+    setImagePreview(null);
+    setProfileData(prev => ({ ...prev, profileImage: '' }));
+  };
+
   const handleSave = () => {
     // Save to localStorage
     localStorage.setItem('userProfile', JSON.stringify(profileData));
     
     setIsEditing(false);
+    setImagePreview(null);
     toast({
       title: "Profile Updated",
       description: `Profile completion: ${completionPercentage}%`,
@@ -122,6 +163,7 @@ const Profile: React.FC = () => {
       }
     }
     setIsEditing(false);
+    setImagePreview(null);
   };
 
   const getCompletionLevel = (): { title: string; icon: React.ReactNode; color: string } => {
@@ -206,8 +248,8 @@ const Profile: React.FC = () => {
             {/* Profile Image Section */}
             <div className="flex items-center space-x-4">
               <Avatar className="h-20 w-20">
-                {profileData.profileImage ? (
-                  <AvatarImage src={profileData.profileImage} alt="Profile" />
+                {(imagePreview || profileData.profileImage) ? (
+                  <AvatarImage src={imagePreview || profileData.profileImage} alt="Profile" />
                 ) : (
                   <AvatarFallback className="text-lg">
                     {profileData.firstName.charAt(0)}{profileData.lastName.charAt(0)}
@@ -216,17 +258,28 @@ const Profile: React.FC = () => {
               </Avatar>
               {isEditing && (
                 <div className="flex-1">
-                  <Label htmlFor="profileImage">Profile Image URL</Label>
+                  <Label htmlFor="profileImageUpload">Profile Picture</Label>
                   <div className="flex items-center space-x-2 mt-1">
                     <Input
-                      id="profileImage"
-                      type="url"
-                      placeholder="https://example.com/image.jpg"
-                      value={profileData.profileImage}
-                      onChange={(e) => setProfileData(prev => ({ ...prev, profileImage: e.target.value }))}
+                      id="profileImageUpload"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      className="file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-sm file:bg-primary file:text-white hover:file:bg-primary/90"
                     />
-                    <Camera className="h-4 w-4 text-gray-400" />
+                    {(imagePreview || profileData.profileImage) && (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={removeImage}
+                        className="px-2"
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    )}
                   </div>
+                  <p className="text-xs text-gray-500 mt-1">Upload an image (max 5MB)</p>
                 </div>
               )}
             </div>
