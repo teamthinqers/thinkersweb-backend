@@ -582,7 +582,15 @@ const Dashboard: React.FC = () => {
                       setHoveredDot(hoveredDot?.id === dot.id ? null : dot);
                     }}
                     onMouseDown={(e) => e.stopPropagation()}
-                    onTouchStart={(e) => e.stopPropagation()}
+                    onTouchStart={(e) => {
+                      e.stopPropagation();
+                      // Handle touch for mobile clicks
+                      setHoveredDot(hoveredDot?.id === dot.id ? null : dot);
+                    }}
+                    onTouchEnd={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                    }}
                     onMouseEnter={() => setHoveredDot(dot)}
                     onMouseLeave={() => {
                       // Only clear if not clicked

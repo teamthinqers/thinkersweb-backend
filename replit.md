@@ -638,6 +638,8 @@ Changelog:
   * Restored transform-based dragging with enhanced touch events and PWA-optimized boundaries for consistent cross-platform experience
   * Fixed PWA interaction model - dots and wheels are static while users can navigate/scroll around the grid to explore content
   * Enhanced PWA summary box positioning to stay within grid boundaries and fixed full dot view modal functionality for mobile screens
+  * Fixed PWA dot click functionality by adding proper touch event handling for mobile tap gestures
+  * Increased drag sensitivity by 1.5x multiplier for easier PWA grid navigation with minimal finger effort
 ```
 
 ## User Preferences
