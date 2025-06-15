@@ -1,14 +1,31 @@
 import React from "react";
-import { Users, MessageCircle, Share2, Heart, TrendingUp, UserPlus, Globe } from "lucide-react";
+import { Users, MessageCircle, Share2, Heart, TrendingUp, UserPlus, Globe, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { useLocation } from "wouter";
 
 export default function Social() {
+  const [, setLocation] = useLocation();
+
+  const handleBack = () => {
+    window.history.back();
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 dark:from-slate-900 dark:via-amber-950/20 dark:to-slate-900">
       <div className="container mx-auto px-4 py-8 max-w-6xl">
         {/* Header Section */}
-        <div className="text-center mb-12">
+        <div className="relative text-center mb-12">
+          {/* Backspace Button */}
+          <Button
+            onClick={handleBack}
+            variant="outline"
+            size="sm"
+            className="absolute left-0 top-0 flex items-center gap-2 border-amber-200 hover:bg-amber-50 hover:border-amber-300"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back
+          </Button>
           <div className="flex items-center justify-center gap-3 mb-4">
             <div className="relative">
               <Users className="h-12 w-12 text-amber-600 animate-pulse" />
