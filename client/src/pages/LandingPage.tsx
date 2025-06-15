@@ -170,7 +170,7 @@ export default function LandingPage() {
       unsubscribeActivation();
       unsubscribeSetup();
     };
-  }, [isNeuraActivated, isPWAInstalled, isSetupCompleted]);
+  }, [user, isNeuraActivated, isWhatsAppConnected, isPWAInstalled, isSetupCompleted]);
 
   // Add PWA installation event listeners
   useEffect(() => {
