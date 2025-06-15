@@ -52,11 +52,11 @@ export function DotWheelsMap({ wheels, dots, onDotClick }: DotWheelsMapProps) {
     );
   }
 
-  // Generate random positions for dots if not already set
+  // Generate random positions for dots across larger canvas
   const dotsWithPositions = dots.map(dot => ({
     ...dot,
-    positionX: dot.positionX || Math.floor(Math.random() * 700) + 50,
-    positionY: dot.positionY || Math.floor(Math.random() * 500) + 50
+    positionX: dot.positionX || Math.floor(Math.random() * 1800) + 100,
+    positionY: dot.positionY || Math.floor(Math.random() * 1300) + 100
   }));
 
   // Generate dotted line connections between dots
@@ -109,33 +109,80 @@ export function DotWheelsMap({ wheels, dots, onDotClick }: DotWheelsMapProps) {
         </div>
       </div>
       
-      {/* Scrollable map container */}
-      <div className="relative w-full h-96 overflow-auto bg-gradient-to-br from-gray-50 to-gray-100">
-        {/* SVG for connections */}
-        <svg 
-          className="absolute inset-0 w-full h-full pointer-events-none" 
-          style={{ minWidth: '800px', minHeight: '600px' }}
-        >
-          {connections.map((connection) => (
-            <line
-              key={connection.id}
-              x1={connection.from.x}
-              y1={connection.from.y}
-              x2={connection.to.x}
-              y2={connection.to.y}
-              stroke="#94a3b8"
-              strokeWidth="2"
-              strokeDasharray="5,5"
-              opacity="0.6"
-            />
-          ))}
-        </svg>
+      {/* Smooth scrollable map container with enhanced navigation */}
+      <div className="relative w-full h-96 overflow-auto bg-gradient-to-br from-gray-50 to-gray-100 scroll-smooth custom-scrollbar">
+        <style dangerouslySetInnerHTML={{
+          __html: `
+            .custom-scrollbar {
+              scroll-behavior: smooth;
+              scrollbar-width: thin;
+              scrollbar-color: rgba(251, 191, 36, 0.5) transparent;
+            }
+            .custom-scrollbar::-webkit-scrollbar {
+              width: 8px;
+              height: 8px;
+            }
+            .custom-scrollbar::-webkit-scrollbar-track {
+              background: rgba(0, 0, 0, 0.1);
+              border-radius: 4px;
+            }
+            .custom-scrollbar::-webkit-scrollbar-thumb {
+              background: rgba(251, 191, 36, 0.6);
+              border-radius: 4px;
+            }
+            .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+              background: rgba(251, 191, 36, 0.8);
+            }
+          `
+        }} />
         
-        {/* Dots positioned randomly */}
+        {/* Enhanced grid canvas with larger area for smooth navigation */}
         <div 
-          className="relative pointer-events-auto" 
-          style={{ minWidth: '800px', minHeight: '600px' }}
+          className="relative"
+          style={{ 
+            width: '2000px', 
+            height: '1500px',
+            backgroundImage: `
+              radial-gradient(circle at 20px 20px, rgba(251, 191, 36, 0.1) 2px, transparent 2px),
+              linear-gradient(90deg, rgba(251, 191, 36, 0.05) 1px, transparent 1px),
+              linear-gradient(rgba(251, 191, 36, 0.05) 1px, transparent 1px)
+            `,
+            backgroundSize: '40px 40px, 40px 40px, 40px 40px'
+          }}
         >
+          {/* SVG for connections */}
+          <svg 
+            className="absolute inset-0 w-full h-full pointer-events-none" 
+            width="2000"
+            height="1500"
+          >
+            {connections.map((connection) => (
+              <g key={connection.id}>
+                {/* Main dotted line */}
+                <line
+                  x1={connection.from.x}
+                  y1={connection.from.y}
+                  x2={connection.to.x}
+                  y2={connection.to.y}
+                  stroke="#94a3b8"
+                  strokeWidth="2"
+                  strokeDasharray="8,4"
+                  opacity="0.6"
+                />
+                {/* Subtle glow effect */}
+                <line
+                  x1={connection.from.x}
+                  y1={connection.from.y}
+                  x2={connection.to.x}
+                  y2={connection.to.y}
+                  stroke="rgba(251, 191, 36, 0.3)"
+                  strokeWidth="4"
+                  strokeDasharray="8,4"
+                  opacity="0.3"
+                />
+              </g>
+            ))}
+          </svg>
           {dotsWithPositions.map((dot) => (
             <div
               key={dot.id}
@@ -197,9 +244,105 @@ export function DotWheelsMap({ wheels, dots, onDotClick }: DotWheelsMapProps) {
           ))}
         </div>
         
-        {/* Draggable hint */}
-        <div className="absolute bottom-4 right-4 text-xs text-gray-500 bg-white/80 px-2 py-1 rounded">
-          Drag to explore • Click dots to view
+        {/* Enhanced Navigation Controls */}
+        <div className="absolute top-4 right-4 flex flex-col gap-2 z-10">
+          <div className="bg-white/90 backdrop-blur-sm rounded-lg p-2 shadow-lg">
+            <div className="grid grid-cols-3 gap-1">
+              {/* Directional navigation buttons */}
+              <div></div>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="h-8 w-8 p-0"
+                onClick={() => {
+                  const container = document.querySelector('.custom-scrollbar');
+                  if (container) {
+                    container.scrollBy({ top: -200, behavior: 'smooth' });
+                  }
+                }}
+              >
+                ↑
+              </Button>
+              <div></div>
+              
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="h-8 w-8 p-0"
+                onClick={() => {
+                  const container = document.querySelector('.custom-scrollbar');
+                  if (container) {
+                    container.scrollBy({ left: -200, behavior: 'smooth' });
+                  }
+                }}
+              >
+                ←
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="h-8 w-8 p-0 bg-amber-100"
+                onClick={() => {
+                  const container = document.querySelector('.custom-scrollbar');
+                  if (container) {
+                    container.scrollTo({ 
+                      left: 1000, 
+                      top: 750, 
+                      behavior: 'smooth' 
+                    });
+                  }
+                }}
+              >
+                ⌂
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="h-8 w-8 p-0"
+                onClick={() => {
+                  const container = document.querySelector('.custom-scrollbar');
+                  if (container) {
+                    container.scrollBy({ left: 200, behavior: 'smooth' });
+                  }
+                }}
+              >
+                →
+              </Button>
+              
+              <div></div>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="h-8 w-8 p-0"
+                onClick={() => {
+                  const container = document.querySelector('.custom-scrollbar');
+                  if (container) {
+                    container.scrollBy({ top: 200, behavior: 'smooth' });
+                  }
+                }}
+              >
+                ↓
+              </Button>
+              <div></div>
+            </div>
+          </div>
+        </div>
+
+        {/* Interactive navigation hints */}
+        <div className="absolute bottom-4 left-4 text-xs text-gray-600 bg-white/90 backdrop-blur-sm px-3 py-2 rounded-lg shadow-sm">
+          <div className="flex items-center gap-4">
+            <span>🖱️ Scroll to explore</span>
+            <span>🎯 Click dots to view</span>
+            <span>⌂ Use nav controls</span>
+          </div>
+        </div>
+        
+        {/* Map overview indicator */}
+        <div className="absolute bottom-4 right-4 text-xs text-gray-500 bg-white/90 backdrop-blur-sm px-2 py-1 rounded">
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 bg-amber-500 rounded-full"></div>
+            <span>Neural Grid: 2000×1500px</span>
+          </div>
         </div>
       </div>
     </div>
