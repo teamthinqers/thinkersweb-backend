@@ -419,11 +419,6 @@ export default function LandingPage() {
                       <div className="flex items-center gap-2">
                         <img src="/dotspark-logo-white-bg.jpg" alt="DotSpark" className="h-10 w-auto rounded-sm" />
                       </div>
-                      <SheetClose asChild>
-                        <Button variant="ghost" size="icon">
-                          <X className="h-5 w-5" />
-                        </Button>
-                      </SheetClose>
                     </div>
                     
                     <div className="flex flex-col gap-4">
@@ -437,7 +432,7 @@ export default function LandingPage() {
                       <SheetClose asChild>
                         <div onClick={() => setLocation("/sectioned-dotspark-tuning")} className="py-2 hover:text-primary transition-colors flex items-center gap-2 cursor-pointer">
                           <img src="/dotspark-logo-small.jpg" alt="DotSpark" className="h-4 w-4 rounded-sm" />
-                          <span className="font-medium bg-gradient-to-r from-amber-700 to-orange-800 bg-clip-text text-transparent">My DotSpark</span>
+                          <span>My DotSpark</span>
                         </div>
                       </SheetClose>
                       

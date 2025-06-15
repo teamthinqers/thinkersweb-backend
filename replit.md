@@ -568,6 +568,11 @@ Changelog:
   * Brain icon in PWA header displays green color and pulse animation when active
   * Removed navigation functionality from both buttons as dashboard is now the Neural page
   * Green indicators show users their Neura is active without redirecting them away from current page
+- June 15, 2025. Fixed PWA hamburger menu issues:
+  * Removed duplicate close symbol in top right corner of hamburger menu
+  * Fixed "My DotSpark" menu item brown coloring that gave wrong highlight indication
+  * All menu items now have consistent neutral styling with proper hover states
+  * Clean header design with single close button functionality
 ```
 
 ## User Preferences
