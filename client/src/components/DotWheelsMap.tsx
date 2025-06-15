@@ -353,3 +353,5 @@ export function DotWheelsMap({ wheels, dots = [], isPreviewMode = false, onDotCl
     </div>
   );
 }
+
+export default DotWheelsMap;
