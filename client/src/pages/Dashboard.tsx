@@ -505,6 +505,17 @@ const Dashboard: React.FC = () => {
             Wheels: {totalWheels}
           </button>
         </div>
+
+        {/* Recenter Button */}
+        <button
+          onClick={() => setOffset({ x: 0, y: 0 })}
+          className="absolute bottom-4 right-4 z-10 bg-amber-500 hover:bg-amber-600 text-white rounded-full p-3 shadow-lg transition-colors"
+          title="Recenter Grid"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+          </svg>
+        </button>
         
         {/* Interactive draggable grid */}
         <div 
@@ -624,14 +635,21 @@ const Dashboard: React.FC = () => {
                   {/* Summary hover card */}
                   {hoveredDot?.id === dot.id && (
                     <div 
-                      className="absolute bg-white border-2 border-amber-200 rounded-lg p-3 shadow-xl z-30 w-64 cursor-pointer"
+                      className="fixed bg-white border-2 border-amber-200 rounded-lg p-3 shadow-xl z-50 w-72 cursor-pointer"
                       style={{
-                        // Smart positioning to keep card within grid boundaries for PWA
-                        left: `${Math.min(x + 60, 1200 - 280)}px`, // Ensure card doesn't go beyond right edge
-                        top: `${Math.max(20, Math.min(y, 800 - 200))}px`, // Keep within top/bottom bounds
-                        maxWidth: '280px'
+                        // Position relative to viewport for PWA visibility
+                        left: '50%',
+                        top: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        maxWidth: '90vw',
+                        maxHeight: '80vh'
                       }}
                       onClick={(e) => {
+                        e.stopPropagation();
+                        setViewFullDot(dot);
+                        setHoveredDot(null);
+                      }}
+                      onTouchStart={(e) => {
                         e.stopPropagation();
                         setViewFullDot(dot);
                         setHoveredDot(null);

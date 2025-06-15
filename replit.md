@@ -640,6 +640,9 @@ Changelog:
   * Enhanced PWA summary box positioning to stay within grid boundaries and fixed full dot view modal functionality for mobile screens
   * Fixed PWA dot click functionality by adding proper touch event handling for mobile tap gestures
   * Increased drag sensitivity by 1.5x multiplier for easier PWA grid navigation with minimal finger effort
+  * Fixed PWA summary box positioning with fixed viewport centering for consistent visibility
+  * Enhanced summary card touch handling to properly open full dot view modal in PWA mode
+  * Added recenter button for easy grid navigation reset to original position
 ```
 
 ## User Preferences
