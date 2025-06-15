@@ -685,6 +685,10 @@ Changelog:
   * Changed Social Neura button from purple to orange-red gradient for better brand alignment
   * Updated sidebar Social Neura icon to orange color theme for consistency
   * Maintained visual distinction from My Neura button while staying within DotSpark warm color palette
+- June 15, 2025. Fixed "My DotSpark" menu item highlighting in navigation:
+  * Removed special amber coloring from "My DotSpark" menu item in browser sidebar
+  * Menu item now uses consistent neutral styling matching other navigation items
+  * Eliminated brown highlighting that made menu item appear incorrectly selected
 - June 15, 2025. Optimized AI conversation flow for minimal user effort:
   * Updated AI prompts to proactively organize user thoughts into three layers with minimal intervention
   * AI now immediately structures user input into Summary/Anchor/Pulse format for quick approval

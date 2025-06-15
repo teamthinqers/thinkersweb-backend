@@ -94,11 +94,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isMobile, onNewEntry
                       <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-green-500 rounded-full"></div>
                     )}
                   </div>
-                  {item.isSpecial ? (
-                    <span className="font-medium text-amber-700 dark:text-amber-400">{item.label}</span>
-                  ) : (
-                    <span className={`${location === item.path ? "text-amber-800 dark:text-amber-200" : "text-muted-foreground"}`}>{item.label}</span>
-                  )}
+                  <span className={`${location === item.path ? "text-amber-800 dark:text-amber-200" : "text-muted-foreground"}`}>{item.label}</span>
                 </Link>
               </li>
             ))}
