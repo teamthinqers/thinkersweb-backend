@@ -48,7 +48,13 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children, onNewEntry }) => {
   }, []);
 
   const toggleMobileSidebar = () => {
-    setShowMobileSidebar(!showMobileSidebar);
+    console.log('Hamburger menu clicked - toggling sidebar', { current: showMobileSidebar, new: !showMobileSidebar });
+    setShowMobileSidebar(prev => !prev);
+    
+    // Add haptic feedback for mobile devices
+    if ('vibrate' in navigator) {
+      navigator.vibrate(50);
+    }
   };
 
   const handleInstallClick = () => {

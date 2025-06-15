@@ -272,11 +272,21 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
               <Button
                 variant="ghost"
                 size="icon"
-                className="text-gray-600 hover:text-primary h-10 w-10 select-none"
+                className="text-gray-600 hover:text-primary h-12 w-12 select-none touch-manipulation active:scale-95 transition-transform"
                 onMouseDown={(e) => e.preventDefault()}
+                onTouchStart={(e) => {
+                  e.currentTarget.style.transform = 'scale(0.95)';
+                }}
+                onTouchEnd={(e) => {
+                  e.currentTarget.style.transform = 'scale(1)';
+                }}
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
+                  // Add haptic feedback for mobile
+                  if ('vibrate' in navigator) {
+                    navigator.vibrate(50);
+                  }
                   if (onMenuClick) {
                     onMenuClick();
                   } else {

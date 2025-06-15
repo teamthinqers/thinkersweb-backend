@@ -39,7 +39,20 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isMobile, onNewEntry
     : "w-64 flex-shrink-0 border-r h-full overflow-y-auto bg-card/50";
 
   return (
-    <div className={sidebarClasses}>
+    <>
+      {/* Mobile backdrop overlay */}
+      {isMobile && isOpen && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-30 touch-manipulation"
+          onClick={onClose}
+          onTouchStart={(e) => {
+            e.preventDefault();
+            onClose();
+          }}
+        />
+      )}
+      
+      <div className={sidebarClasses}>
       <div className="px-6 py-5 border-b">
         <h1 className="text-xl font-bold flex items-center">
           <img src="/dotspark-logo-icon.jpeg" alt="DotSpark" className="mr-2 h-6 w-6 object-contain rounded" />
@@ -118,7 +131,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isMobile, onNewEntry
           </div>
         </div>
       </ScrollArea>
-    </div>
+      </div>
+    </>
   );
 };
 

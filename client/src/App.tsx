@@ -158,30 +158,11 @@ function AppWithLayout() {
 }
 
 function Router() {
-  const { user, isLoading } = useAuth();
-  const [location] = useLocation();
-  
-  // Show a Loading component while auth state is being determined
-  if (isLoading) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen">
-        <Loader2 className="h-8 w-8 animate-spin text-primary mb-4" />
-        <p className="text-center text-muted-foreground">Loading...</p>
-      </div>
-    );
-  }
-  
   return (
     <Switch>
       <Route path="/" component={LandingPage} />
       <Route path="/auth" component={AuthPage} />
-      
-      {/* Dashboard route - shows mock dashboard if user is not authenticated */}
-      <Route path="/dashboard">
-        {user ? <AppWithLayout /> : <MockDashboard />}
-      </Route>
-      
-      {/* Other protected routes */}
+      <Route path="/dashboard" component={() => <AppWithLayout />} />
       <Route path="/entries" component={() => <AppWithLayout />} />
       <Route path="/insights" component={() => <AppWithLayout />} />
       <Route path="/favorites" component={() => <AppWithLayout />} />
