@@ -5,6 +5,7 @@ import { queryClient } from "./lib/queryClient";
 import { Toaster } from "@/components/ui/toaster";
 import Dashboard from "@/pages/Dashboard";
 import LandingPage from "@/pages/LandingPage";
+import AppLayout from "@/components/layout/AppLayout";
 
 // Minimal auth context
 const AuthContext = React.createContext({
@@ -35,7 +36,11 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={LandingPage} />
-      <Route path="/dashboard" component={Dashboard} />
+      <Route path="/dashboard">
+        <AppLayout>
+          <Dashboard />
+        </AppLayout>
+      </Route>
       <Route>
         <div className="min-h-screen flex items-center justify-center">
           <h1 className="text-2xl">Page not found</h1>
