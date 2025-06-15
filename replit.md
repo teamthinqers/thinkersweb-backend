@@ -747,6 +747,14 @@ Changelog:
   * Added DotSpark Social button below My Neura with Users icon and orange-red gradient
   * PWA interface now provides complete navigation: Save a Dot, Open App (Home), My Neura (Dashboard), DotSpark Social
   * All buttons maintain consistent styling with animated pulse effects and proper external navigation
+- June 15, 2025. Fixed social icon consistency and navigation throughout application:
+  * Home page Social buttons now use Users icon (DotSpark Social) instead of Brain icon
+  * Dashboard header Social buttons use Brain icon and redirect to /social-neura (Social Neura)
+  * Dashboard sidebar Social Neura navigation redirects to /social-neura page
+  * LandingPage profile dropdown DotSpark Social uses Users icon instead of Brain icon
+  * Created dedicated Social Neura page (/social-neura) with purple theme and neural features
+  * Proper separation: DotSpark Social (Users icon, orange-red) vs Social Neura (Brain icon, purple)
+  * All navigation now correctly distinguishes between broader social platform and neural component
 - June 15, 2025. Optimized AI conversation flow for minimal user effort:
   * Updated AI prompts to proactively organize user thoughts into three layers with minimal intervention
   * AI now immediately structures user input into Summary/Anchor/Pulse format for quick approval

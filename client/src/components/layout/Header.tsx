@@ -211,18 +211,18 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 </div>
               </div>
               
-              {/* Social button with users icon for DotSpark Social */}
+              {/* Social Neura button with brain icon */}
               <Button
                 variant="ghost"
                 size="sm"
-                className="text-gray-600 hover:text-orange-600 hover:bg-orange-50 transition-all duration-300 ml-2"
-                onClick={() => setLocation("/social")}
+                className="text-gray-600 hover:text-purple-600 hover:bg-purple-50 transition-all duration-300 ml-2"
+                onClick={() => setLocation("/social-neura")}
               >
                 <div className="flex items-center gap-1">
                   <div className="relative">
-                    <Users className="h-4 w-4 animate-pulse hover:animate-bounce transition-all duration-300" />
+                    <Brain className="h-4 w-4 animate-pulse hover:animate-bounce transition-all duration-300" />
                     <div className="absolute inset-0 animate-ping opacity-30">
-                      <Users className="h-4 w-4" />
+                      <Brain className="h-4 w-4" />
                     </div>
                   </div>
                   <span className="text-xs">Social</span>
@@ -320,18 +320,18 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 </div>
               </Button>
               
-              {/* Social button with proper social styling */}
+              {/* Social Neura button with brain icon */}
               <Button
                 variant="ghost"
                 size="sm"
-                className="mr-2 bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-md hover:bg-gradient-to-r hover:from-orange-600 hover:to-red-600 transition-all duration-300"
-                onClick={() => setLocation("/social")}
+                className="mr-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-md hover:bg-gradient-to-r hover:from-purple-700 hover:to-indigo-700 transition-all duration-300"
+                onClick={() => setLocation("/social-neura")}
               >
                 <div className="flex items-center gap-2">
                   <div className="relative">
-                    <Users className="h-5 w-5 animate-pulse hover:animate-bounce transition-all duration-300" />
+                    <Brain className="h-5 w-5 animate-pulse hover:animate-bounce transition-all duration-300" />
                     <div className="absolute inset-0 animate-ping opacity-30">
-                      <Users className="h-5 w-5" />
+                      <Brain className="h-5 w-5" />
                     </div>
                   </div>
                   <span className="text-sm font-medium">Social</span>
