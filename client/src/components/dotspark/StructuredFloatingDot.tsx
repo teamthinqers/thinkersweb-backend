@@ -67,13 +67,10 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
     }
   }, []);
 
-  // Save position whenever it changes
+  // Save position immediately when it changes
   useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      localStorage.setItem('structured-floating-dot-position', JSON.stringify(position));
-    }, 100);
-    
-    return () => clearTimeout(timeoutId);
+    console.log('Position changed to:', position);
+    localStorage.setItem('structured-floating-dot-position', JSON.stringify(position));
   }, [position]);
 
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -106,6 +103,11 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
       setIsDragging(false);
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
+      
+      // Force save position immediately after drag
+      if (hasMoved) {
+        localStorage.setItem('structured-floating-dot-position', JSON.stringify(position));
+      }
       
       // Only trigger click if not dragged
       if (!hasMoved) {
@@ -152,6 +154,11 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
       setIsDragging(false);
       document.removeEventListener('touchmove', handleTouchMove);
       document.removeEventListener('touchend', handleTouchEnd);
+      
+      // Force save position immediately after drag
+      if (hasMoved) {
+        localStorage.setItem('structured-floating-dot-position', JSON.stringify(position));
+      }
       
       // Only trigger click if not dragged
       if (!hasMoved) {
@@ -299,20 +306,11 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
   };
 
   useEffect(() => {
-    const savedPosition = localStorage.getItem('global-floating-dot-position');
-    if (savedPosition) {
-      try {
-        const parsed = JSON.parse(savedPosition);
-        setPosition(parsed);
-      } catch (error) {
-        console.error('Failed to parse saved position:', error);
-      }
-    } else {
-      const hasSeenDot = localStorage.getItem('has-seen-floating-dot');
-      if (!hasSeenDot) {
-        setIsFirstActivation(true);
-        localStorage.setItem('has-seen-floating-dot', 'true');
-      }
+    // Only set first activation flag, don't override position as it's already loaded in useState
+    const hasSeenDot = localStorage.getItem('has-seen-floating-dot');
+    if (!hasSeenDot) {
+      setIsFirstActivation(true);
+      localStorage.setItem('has-seen-floating-dot', 'true');
     }
 
     // Listen for custom event from "Save a Dot" button
