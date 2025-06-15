@@ -841,6 +841,11 @@ Changelog:
   * Updated Social.tsx Social Neura card with red-orange gradient icons and borders
   * Updated SocialNeura.tsx page background from purple to red-orange gradient theme
   * Achieved unified warm color palette consistent with DotSpark branding throughout Social Neura components
+- June 15, 2025. Enhanced browser header navigation with My DotSpark integration:
+  * Added "My DotSpark" button next to Home button in browser header with DotSpark logo icon
+  * Added "My DotSpark" menu item to profile dropdown menu with DotSpark logo icon
+  * Both "My DotSpark" buttons navigate to Neural Page (/my-neura) for consistent user experience
+  * Enhanced navigation accessibility with multiple entry points to main DotSpark neural features
 ```
 
 ## User Preferences
