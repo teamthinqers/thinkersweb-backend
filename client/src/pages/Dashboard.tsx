@@ -232,21 +232,24 @@ const Dashboard: React.FC = () => {
 
     // Generate preview data when preview mode is enabled
     const generatePreviewData = () => {
-      const categories = ['Innovation', 'Learning', 'Health', 'Finance'];
+      const categories = ['Innovation', 'Learning'];
       const emotions = ['excited', 'curious', 'focused', 'happy', 'calm', 'inspired', 'confident', 'grateful', 'motivated'];
       
       const previewDots: Dot[] = [];
       const previewWheels: Wheel[] = [];
 
-      categories.slice(0, 2).forEach((category, categoryIndex) => {
+      categories.forEach((category, categoryIndex) => {
         const wheel: Wheel = {
           id: `preview-wheel-${categoryIndex}`,
           name: `${category} Insights`,
           category,
-          color: categoryIndex === 0 ? '#3B82F6' : '#10B981',
+          color: categoryIndex === 0 ? '#F59E0B' : '#D97706',
           dots: [],
           connections: categoryIndex === 0 ? ['preview-wheel-1'] : ['preview-wheel-0'],
-          position: { x: 150 + categoryIndex * 300, y: 150 + categoryIndex * 100 }
+          position: { 
+            x: 200 + categoryIndex * 350, 
+            y: 200 + categoryIndex * 50 
+          }
         };
 
         for (let i = 0; i < 9; i++) {
@@ -272,7 +275,10 @@ const Dashboard: React.FC = () => {
     const displayWheels = previewMode ? previewWheels : wheels;
     const displayDots = previewMode ? previewDots : actualDots;
     const totalDots = displayDots.length;
-    const totalWheels = displayWheels.length;
+    
+    // Count actual formed wheels - only wheels with 9+ dots of same category
+    const actualFormedWheels = previewMode ? previewWheels.length : 0; // Real users haven't formed complete wheels yet
+    const totalWheels = actualFormedWheels;
 
     if (!previewMode && wheels.length === 0 && actualDots.length === 0) {
       // Show empty state with preview toggle
@@ -348,8 +354,20 @@ const Dashboard: React.FC = () => {
         
         let x1, y1;
         if (previewMode) {
-          x1 = 80 + (seedX1 % 700) + (index * 73) % 300 + 24; // +24 for dot center
-          y1 = 80 + (seedY1 % 500) + (index * 89) % 250 + 24;
+          // Calculate wheel-based position for preview mode
+          const wheelIndex1 = Math.floor(index / 9);
+          const dotInWheelIndex1 = index % 9;
+          const wheel1 = displayWheels[wheelIndex1];
+          
+          if (wheel1) {
+            const radius = 60;
+            const angle = (dotInWheelIndex1 * 2 * Math.PI) / 9;
+            x1 = wheel1.position.x + Math.cos(angle) * radius + 24;
+            y1 = wheel1.position.y + Math.sin(angle) * radius + 24;
+          } else {
+            x1 = 80 + (seedX1 % 700) + (index * 73) % 300 + 24;
+            y1 = 80 + (seedY1 % 500) + (index * 89) % 250 + 24;
+          }
         } else {
           x1 = 60 + (seedX1 % 800) + (index * 47) % 200 + 24; // +24 for dot center
           y1 = 60 + (seedY1 % 600) + (index * 73) % 180 + 24;
@@ -364,8 +382,20 @@ const Dashboard: React.FC = () => {
           
           let x2, y2;
           if (previewMode) {
-            x2 = 80 + (seedX2 % 700) + (realOtherIndex * 73) % 300 + 24;
-            y2 = 80 + (seedY2 % 500) + (realOtherIndex * 89) % 250 + 24;
+            // Calculate wheel-based position for preview mode
+            const wheelIndex2 = Math.floor(realOtherIndex / 9);
+            const dotInWheelIndex2 = realOtherIndex % 9;
+            const wheel2 = displayWheels[wheelIndex2];
+            
+            if (wheel2) {
+              const radius = 60;
+              const angle = (dotInWheelIndex2 * 2 * Math.PI) / 9;
+              x2 = wheel2.position.x + Math.cos(angle) * radius + 24;
+              y2 = wheel2.position.y + Math.sin(angle) * radius + 24;
+            } else {
+              x2 = 80 + (seedX2 % 700) + (realOtherIndex * 73) % 300 + 24;
+              y2 = 80 + (seedY2 % 500) + (realOtherIndex * 89) % 250 + 24;
+            }
           } else {
             x2 = 60 + (seedX2 % 800) + (realOtherIndex * 47) % 200 + 24;
             y2 = 60 + (seedY2 % 600) + (realOtherIndex * 73) % 180 + 24;
@@ -451,11 +481,27 @@ const Dashboard: React.FC = () => {
               const seedX = dotId.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
               const seedY = dotId.split('').reverse().reduce((a, b) => a + b.charCodeAt(0), 0);
               
-              // Spread preview dots more widely across the grid
+              // Position dots inside wheels for preview mode
               let x, y;
               if (previewMode) {
-                x = 80 + (seedX % 700) + (index * 73) % 300;
-                y = 80 + (seedY % 500) + (index * 89) % 250;
+                // Find which wheel this dot belongs to
+                const wheelIndex = Math.floor(index / 9);
+                const dotInWheelIndex = index % 9;
+                const wheel = displayWheels[wheelIndex];
+                
+                if (wheel) {
+                  // Position dots in a circle inside the wheel
+                  const wheelCenterX = wheel.position.x;
+                  const wheelCenterY = wheel.position.y;
+                  const radius = 60; // Radius for dot positioning inside wheel
+                  const angle = (dotInWheelIndex * 2 * Math.PI) / 9; // 9 dots in circle
+                  
+                  x = wheelCenterX + Math.cos(angle) * radius;
+                  y = wheelCenterY + Math.sin(angle) * radius;
+                } else {
+                  x = 80 + (seedX % 700) + (index * 73) % 300;
+                  y = 80 + (seedY % 500) + (index * 89) % 250;
+                }
               } else {
                 x = 60 + (seedX % 800) + (index * 47) % 200;
                 y = 60 + (seedY % 600) + (index * 73) % 180;
@@ -545,6 +591,42 @@ const Dashboard: React.FC = () => {
                 </div>
               );
             })}
+            
+            {/* Wheel Boundaries for Preview Mode */}
+            {previewMode && displayWheels.map((wheel, wheelIndex) => (
+              <div
+                key={wheel.id}
+                className="absolute pointer-events-none"
+                style={{
+                  left: `${wheel.position.x - 90}px`,
+                  top: `${wheel.position.y - 90}px`,
+                  width: '180px',
+                  height: '180px'
+                }}
+              >
+                {/* Dotted circle boundary */}
+                <div 
+                  className="w-full h-full rounded-full border-4 border-dashed opacity-60"
+                  style={{ 
+                    borderColor: wheel.color,
+                    background: `linear-gradient(135deg, ${wheel.color}10, ${wheel.color}05)`
+                  }}
+                />
+                
+                {/* Wheel label */}
+                <div 
+                  className="absolute top-[-40px] left-1/2 transform -translate-x-1/2 text-center"
+                >
+                  <div 
+                    className="text-sm font-bold px-3 py-1 rounded-full text-white shadow-lg"
+                    style={{ backgroundColor: wheel.color }}
+                  >
+                    {wheel.name}
+                  </div>
+                  <div className="text-xs text-gray-600 mt-1">9 dots</div>
+                </div>
+              </div>
+            ))}
             
             {/* Stunning Connection Lines Between Dots */}
             <svg className="absolute inset-0 w-full h-full pointer-events-none">
