@@ -41,7 +41,7 @@ import DotCapture from "@/pages/DotCapture";
 import AppLayout from "@/components/layout/AppLayout";
 import EntryDetail from "@/components/entries/EntryDetail";
 import ChatEntryForm from "@/components/chat/ChatEntryForm";
-import { AuthProvider, useAuth } from "@/hooks/use-auth-simple";
+import { AuthProvider, useAuth } from "@/hooks/use-auth";
 import { StructuredFloatingDot } from "@/components/dotspark/StructuredFloatingDot";
 import { neuraStorage } from "@/lib/neuraStorage";
 import { Loader2 } from "lucide-react";
