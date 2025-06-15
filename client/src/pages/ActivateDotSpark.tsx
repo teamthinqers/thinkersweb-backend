@@ -175,7 +175,7 @@ export default function ActivateDotSpark() {
     
     // Update pending changes for specialties
     const specialties = {
-      ...pendingChanges?.specialties || tuning?.specialties || {},
+      ...(pendingChanges?.specialties || tuning?.specialties || {}),
       [domainId]: level
     };
     
