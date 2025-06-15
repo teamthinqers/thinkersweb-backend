@@ -285,7 +285,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
               <div className="mr-3 bg-gradient-to-r from-amber-700 to-primary text-white relative shadow-md p-2 rounded-md">
                 <div className="relative">
                   <Brain className={`h-5 w-5 ${isActivated ? 'text-green-300' : 'text-white'}`} />
-                  {isActivated && <div className="absolute -top-1 -right-1 w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>}
+                  {isActivated && <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>}
                 </div>
               </div>
               

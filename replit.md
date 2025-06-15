@@ -579,6 +579,11 @@ Changelog:
   * Fixed browser sidebar menu text coloring from amber to neutral gray
   * Fixed PWA hamburger menu to prevent "My DotSpark" appearing highlighted
   * All menu items now use consistent neutral styling with amber icons for visual clarity
+- June 15, 2025. Final header and menu styling corrections:
+  * Fixed browser dashboard brain icon to show green indicator like PWA when active
+  * Updated sidebar menu items to use neutral gray text instead of amber highlighting
+  * Fixed PWA hamburger menu coloring to prevent "My DotSpark" appearing selected
+  * All navigation menus now use consistent neutral styling with amber icons for brand identity
 ```
 
 ## User Preferences

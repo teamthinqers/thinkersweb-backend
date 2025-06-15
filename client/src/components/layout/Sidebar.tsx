@@ -61,10 +61,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isMobile, onNewEntry
                   href={item.path}
                   className={`flex items-center px-3 py-2.5 rounded-md transition-colors ${
                     location === item.path
-                      ? "bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-200 font-medium"
-                      : item.isSpecial
-                        ? "text-amber-700 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 hover:text-amber-800 dark:hover:text-amber-300 font-medium"
-                        : "text-muted-foreground hover:bg-amber-50 dark:hover:bg-amber-900/10 hover:text-amber-700 dark:hover:text-amber-400"
+                      ? "bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 font-medium"
+                      : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:text-gray-900 dark:hover:text-gray-100"
                   }`}
                   onClick={isMobile ? onClose : undefined}
                 >
@@ -81,14 +79,10 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isMobile, onNewEntry
                       React.createElement(item.icon, { 
                         className: `${
                           item.label === "Home" 
-                            ? location === item.path 
-                              ? "text-amber-800 dark:text-amber-200" 
-                              : "text-muted-foreground"
-                            : item.isSpecial 
-                              ? isActivated ? "text-amber-600 dark:text-amber-400 animate-pulse" : "text-amber-600 dark:text-amber-400"
-                              : location === item.path 
-                                ? "text-amber-800 dark:text-amber-200"
-                                : "text-muted-foreground"
+                            ? "text-amber-600 dark:text-amber-400"
+                            : item.label === "My Neura"
+                              ? "text-amber-600 dark:text-amber-400"
+                              : "text-gray-500 dark:text-gray-400"
                         }`, 
                         size: 20
                       })
