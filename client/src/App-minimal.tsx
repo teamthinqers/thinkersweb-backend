@@ -5,6 +5,7 @@ import { queryClient } from "./lib/queryClient";
 import { Toaster } from "@/components/ui/toaster";
 import Dashboard from "@/pages/Dashboard";
 import LandingPage from "@/pages/LandingPage";
+import DotCapture from "@/pages/DotCapture";
 import AppLayout from "@/components/layout/AppLayout";
 
 // Minimal auth context
@@ -36,6 +37,7 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={LandingPage} />
+      <Route path="/dot" component={DotCapture} />
       <Route path="/dashboard">
         <AppLayout onNewEntry={() => {}}>
           <Dashboard />
