@@ -204,17 +204,13 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 <MessageSquare className="h-4 w-4" />
               </a>
               
-              {/* My Neura button - always visible */}
-              <Button 
-                className="bg-gradient-to-r from-amber-700 to-primary hover:from-amber-800 hover:to-primary/90 text-white h-9 w-9 p-0 shadow-md"
-                size="sm"
-                onClick={() => setLocation("/my-neura")}
-              >
+              {/* My Neura status indicator - shows green when active */}
+              <div className="bg-gradient-to-r from-amber-700 to-primary text-white h-9 w-9 p-0 shadow-md rounded-md flex items-center justify-center">
                 <div className="relative">
-                  <Brain className="h-5 w-5" />
-                  {isActivated && <div className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>}
+                  <Brain className={`h-5 w-5 ${isActivated ? 'text-green-300' : 'text-white'}`} />
+                  {isActivated && <div className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></div>}
                 </div>
-              </Button>
+              </div>
               
               {/* Profile button - Mobile */}
               <DropdownMenu>
@@ -285,20 +281,16 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
 
             <div className="ml-4 flex items-center">
               
-              {/* My Neura button - always visible */}
-              <Button 
-                className="mr-3 bg-gradient-to-r from-amber-700 to-primary hover:from-amber-800 hover:to-primary/90 text-white relative shadow-md"
-                size="sm"
-                onClick={() => setLocation("/my-neura")}
-              >
+              {/* My Neura status indicator - shows green when active */}
+              <div className="mr-3 bg-gradient-to-r from-amber-700 to-primary text-white relative shadow-md px-3 py-2 rounded-md">
                 <span className="relative z-10 flex items-center">
                   <div className="relative mr-1.5">
-                    <Brain className="h-4 w-4" />
-                    {isActivated && <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>}
+                    <Brain className={`h-4 w-4 ${isActivated ? 'text-green-300' : 'text-white'}`} />
+                    {isActivated && <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>}
                   </div>
-                  <span>My Neura</span>
+                  <span className={isActivated ? 'text-green-100' : 'text-white'}>My Neura</span>
                 </span>
-              </Button>
+              </div>
               
               <button 
                 className="p-2 rounded-full text-gray-400 hover:text-gray-500 hover:bg-gray-100 mr-2"

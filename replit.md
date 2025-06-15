@@ -563,6 +563,11 @@ Changelog:
   * Users see transcribed text for readability while retaining voice playback functionality
   * Audio recordings stored as base64 data URLs for voice icon playback in dot view
   * Enhanced user experience with real speech-to-text conversion and dual text/audio access
+- June 15, 2025. Updated header Neura buttons to show status indicators instead of navigation:
+  * "My Neura" button in desktop header now shows green status indicator when Neura is active
+  * Brain icon in PWA header displays green color and pulse animation when active
+  * Removed navigation functionality from both buttons as dashboard is now the Neural page
+  * Green indicators show users their Neura is active without redirecting them away from current page
 ```
 
 ## User Preferences
