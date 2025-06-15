@@ -39,6 +39,10 @@ const Dashboard: React.FC = () => {
   const [viewFullDot, setViewFullDot] = useState<Dot | null>(null);
   const [searchResults, setSearchResults] = useState<Dot[]>([]);
   const [isPreviewMode, setIsPreviewMode] = useState(true); // Toggle for preview mode
+  
+  // Determine if user has enough dots to show actual mode
+  const hasEnoughDots = dots.length >= 9;
+  const displayDots = isPreviewMode ? previewDots : dots;
 
   // Fetch real dots from API
   const { data: dots = [], isLoading } = useQuery({
@@ -159,7 +163,15 @@ const Dashboard: React.FC = () => {
   ]);
 
   const DotCard: React.FC<{ dot: Dot; isPreview?: boolean; onClick?: () => void }> = ({ dot, isPreview = false, onClick }) => (
-    <Card className={`mb-4 hover:shadow-md transition-shadow border border-amber-200 bg-white/95 backdrop-blur cursor-pointer ${onClick ? 'hover:bg-amber-50/50' : ''}`} onClick={onClick}>
+    <Card 
+      className={`mb-4 hover:shadow-md transition-shadow border border-amber-200 bg-white/95 backdrop-blur cursor-pointer select-none ${onClick ? 'hover:bg-amber-50/50' : ''}`} 
+      onMouseDown={(e) => e.preventDefault()}
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (onClick) onClick();
+      }}
+    >
       <CardHeader className="pb-2">
         <div className="flex justify-between items-start">
           <div className="flex items-center gap-2">
@@ -386,7 +398,18 @@ const Dashboard: React.FC = () => {
               placeholder="Enter keywords to search for a Dot"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 h-12 text-base border-2 border-amber-200 bg-white/90 backdrop-blur focus:border-amber-500 focus:ring-amber-500/20 rounded-xl placeholder:text-gray-500 text-gray-800 shadow-sm"
+              className="pl-10 h-12 text-base border-2 border-amber-200 bg-white/90 backdrop-blur focus:border-amber-500 focus:ring-amber-500/20 rounded-xl placeholder:text-gray-500 text-gray-800 shadow-sm select-none"
+              onMouseDown={(e) => e.preventDefault()}
+              onFocus={(e) => {
+                e.preventDefault();
+                (e.target as HTMLInputElement).select();
+              }}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const input = e.currentTarget as HTMLInputElement;
+                input.focus();
+              }}
             />
           </div>
         </div>
@@ -428,7 +451,7 @@ const Dashboard: React.FC = () => {
                       Preview Examples
                     </Badge>
                   </div>
-                  {exampleDots.map((dot: Dot) => (
+                  {previewDots.slice(0, 3).map((dot: Dot) => (
                     <div key={dot.id} className="flex-shrink-0 w-72">
                       <DotCard 
                         dot={dot} 
