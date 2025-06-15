@@ -49,11 +49,41 @@ import MockDashboard from "@/components/dashboard/MockDashboard";
 import { PWAInstallButton } from "@/components/ui/pwa-install-button";
 import { IosPwaInstallPrompt } from "@/components/ui/ios-pwa-install-prompt";
 import { isRunningAsStandalone } from "@/lib/pwaUtils";
-// Temporarily disabled auth imports to fix React hooks dispatcher error
+import { AuthProvider, useAuth } from "@/hooks/use-auth";
 
-// Temporarily bypass authentication system
+// Simplified Protected route component
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  // Show protected content without authentication check
+  const { user, isLoading } = useAuth();
+  const [, setLocation] = useLocation();
+
+  // Check if user is authenticated
+  useEffect(() => {
+    if (!isLoading && !user) {
+      setLocation("/auth");
+    }
+  }, [user, isLoading, setLocation]);
+
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen">
+        <Loader2 className="h-8 w-8 animate-spin text-primary mb-4" />
+        <p className="text-center text-muted-foreground">Loading...</p>
+      </div>
+    );
+  }
+
+  // If no user, show loading until redirected
+  if (!user) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen">
+        <Loader2 className="h-8 w-8 animate-spin text-primary mb-4" />
+        <p className="text-center text-muted-foreground">Redirecting...</p>
+      </div>
+    );
+  }
+  
+  // User is authenticated, show the protected content
   return <>{children}</>;
 }
 
@@ -135,6 +165,7 @@ function AppWithLayout() {
 
 function Router() {
   const [location] = useLocation();
+  const { user } = useAuth();
   
   return (
     <Switch>
@@ -301,6 +332,7 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <AuthProvider>
         {showNetworkWarning && (
           <div className="fixed top-0 left-0 right-0 p-2 bg-amber-500 text-black z-50 text-center text-sm">
             <p>
@@ -324,6 +356,7 @@ function App() {
         <div className="fixed bottom-4 right-4 left-4 md:left-auto z-50">
           <PWAInstallButton size="lg" className="w-full md:w-auto" />
         </div>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }
