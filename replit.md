@@ -603,6 +603,11 @@ Changelog:
   * Saved stable version with complete voice recording and playback functionality
   * Includes OpenAI Whisper transcription, UI consistency fixes, and updated sign-in page
   * Rollback available via: node scripts/restore-version.js working_v2
+- June 15, 2025. Fixed green brain icon indication in web browser:
+  * Enhanced activation status checking in both home page and dashboard headers
+  * Added periodic checks every 5 seconds for real-time status updates
+  * Improved event listeners and cleanup for better synchronization
+  * Added console logging for debugging activation state changes
 ```
 
 ## User Preferences

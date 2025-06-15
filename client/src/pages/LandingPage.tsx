@@ -205,14 +205,18 @@ export default function LandingPage() {
   const isActiveInLocalStorage = localStorage.getItem('whatsapp_activated') === 'true';
   const isWhatsAppActivated = isWhatsAppConnected || isActiveInLocalStorage;
   
-  // Check for activation status every 2 seconds to ensure consistency
+  // Check for activation status every 5 seconds to ensure consistency
   useEffect(() => {
     const checkActivationStatus = () => {
       const status = neuraStorage.isActivated();
+      console.log("LandingPage activation check:", status);
       setIsNeuraActivated(status);
     };
     
-    const intervalId = setInterval(checkActivationStatus, 2000);
+    // Initial check
+    checkActivationStatus();
+    
+    const intervalId = setInterval(checkActivationStatus, 5000);
     return () => clearInterval(intervalId);
   }, []);
   

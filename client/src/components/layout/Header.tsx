@@ -65,7 +65,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
     setIsActivated(neuraStorage.isActivated());
   }, []);
   
-  // Listen for Neura activation events
+  // Listen for Neura activation events and periodic checks
   useEffect(() => {
     // Function to handle activation state changes
     const handleActivation = (activated: boolean) => {
@@ -88,11 +88,20 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
       setIsActivated(status);
     };
     
+    // Periodic check for activation status (every 5 seconds)
+    const checkActivationStatus = () => {
+      const status = neuraStorage.isActivated();
+      setIsActivated(status);
+    };
+    
+    const intervalId = setInterval(checkActivationStatus, 5000);
+    
     window.addEventListener('storage', storageHandler);
     
     // Clean up
     return () => {
       window.removeEventListener('storage', storageHandler);
+      clearInterval(intervalId);
       // Call the unsubscribe function
       unsubscribe();
     };
