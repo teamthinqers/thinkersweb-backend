@@ -9,13 +9,11 @@ import {
   Menu, 
   LayoutDashboard,
   Brain, 
-  Sparkles,
-  Check,
+  User,
   MessageSquare
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
-import { apiRequest } from "@/lib/queryClient";
 import { useAuth } from "@/hooks/use-auth";
 import { Link, useLocation } from "wouter";
 import { signOut } from "@/lib/authService";
@@ -119,13 +117,6 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
       }, 500);
     }
   }, [user, simulateActivation, forceStatusRefresh]);
-  
-  // Single check on mount - rely on event listeners for updates
-  useEffect(() => {
-    const activated = neuraStorage.isActivated();
-    console.log("Header initial neuraStorage check:", activated);
-    setIsActivated(activated);
-  }, []);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -225,7 +216,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 </div>
               </Button>
               
-              {/* Profile button */}
+              {/* Profile button - Mobile */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="icon" className="rounded-full p-0 h-9 w-9">
@@ -247,8 +238,15 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                   </div>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
-                    <Link href="/settings" className="cursor-pointer w-full">
-                      Settings
+                    <Link href="/profile" className="cursor-pointer w-full">
+                      <User className="mr-2 h-4 w-4" />
+                      Profile
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/dashboard" className="cursor-pointer w-full">
+                      <LayoutDashboard className="mr-2 h-4 w-4" />
+                      Neural Dashboard
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={handleLogout} className="text-red-600">
@@ -322,6 +320,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 <BellIcon className="h-5 w-5" />
               </button>
               
+              {/* Profile button - Desktop */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <div className="flex items-center cursor-pointer">
@@ -344,8 +343,15 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                   </div>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
-                    <Link href="/settings" className="cursor-pointer w-full">
-                      Settings
+                    <Link href="/profile" className="cursor-pointer w-full">
+                      <User className="mr-2 h-4 w-4" />
+                      Profile
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/dashboard" className="cursor-pointer w-full">
+                      <LayoutDashboard className="mr-2 h-4 w-4" />
+                      Neural Dashboard
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={handleLogout} className="text-red-600">
@@ -415,47 +421,6 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
               >
                 <Brain className="h-5 w-5 mr-2 text-amber-600" />
                 My DotSpark
-              </Button>
-              
-              {isActivated ? (
-                <Button 
-                  className="w-full justify-start mb-2 bg-gradient-to-r from-amber-700 to-primary hover:from-amber-800 hover:to-primary/90 text-white relative"
-                  size="sm"
-                  onClick={() => {
-                    setShowMobileNav(false);
-                    setLocation("/my-neura");
-                  }}
-                >
-                  <span className="relative z-10 flex items-center">
-                    <div className="relative mr-2">
-                      <Brain className="h-4 w-4" />
-                      <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-green-500 rounded-full"></div>
-                    </div>
-                    <span>My Neura</span>
-                  </span>
-                </Button>
-              ) : (
-                <Button 
-                  className="w-full justify-start mb-2 bg-gradient-to-r from-orange-700 to-amber-800 hover:from-orange-800 hover:to-amber-900 text-white relative"
-                  size="sm"
-                  onClick={() => {
-                    setShowMobileNav(false);
-                    setLocation("/activate-neura");
-                  }}
-                >
-                  <Brain className="h-5 w-5 mr-2" />
-                  <span>Activate Neura</span>
-                </Button>
-              )}
-              
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className="w-full justify-start mb-2 text-red-600"
-                onClick={handleLogout}
-              >
-                <LogOut className="h-5 w-5 mr-2" />
-                Sign out
               </Button>
             </nav>
           </div>

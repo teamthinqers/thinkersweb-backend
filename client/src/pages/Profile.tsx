@@ -12,10 +12,10 @@ import {
   Briefcase, 
   Camera, 
   ExternalLink,
+  Phone,
   Star,
   Trophy,
-  Target,
-  Phone
+  Target
 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
@@ -181,7 +181,7 @@ const Profile: React.FC = () => {
             <p className="text-sm text-gray-600">
               {completionPercentage === 100 
                 ? "🎉 Your profile is complete! You're ready to maximize your DotSpark experience."
-                : `Complete ${7 - Math.floor((completionPercentage / 100) * 7)} more fields to unlock the full potential of your neural dashboard.`
+                : `Complete ${8 - Math.floor((completionPercentage / 100) * 8)} more fields to unlock the full potential of your neural dashboard.`
               }
             </p>
           </CardContent>
@@ -281,6 +281,23 @@ const Profile: React.FC = () => {
                   className="bg-gray-50"
                 />
                 <p className="text-xs text-gray-500 mt-1">Email is automatically synced from your account</p>
+              </div>
+
+              {/* Mobile Number */}
+              <div>
+                <Label htmlFor="mobileNumber" className="flex items-center space-x-1">
+                  <Phone className="h-4 w-4" />
+                  <span>Mobile Number</span>
+                </Label>
+                <Input
+                  id="mobileNumber"
+                  type="tel"
+                  placeholder="+1 (555) 123-4567"
+                  value={profileData.mobileNumber}
+                  onChange={(e) => setProfileData(prev => ({ ...prev, mobileNumber: e.target.value }))}
+                  disabled={!isEditing}
+                  className={!isEditing ? "bg-gray-50" : ""}
+                />
               </div>
 
               {/* Date of Birth */}

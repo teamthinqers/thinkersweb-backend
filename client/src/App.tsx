@@ -13,6 +13,7 @@ import LandingPage from "@/pages/LandingPage";
 import LogoPage from "@/pages/LogoPage";
 import AuthPage from "@/pages/auth-page";
 import Settings from "@/pages/Settings";
+import Profile from "@/pages/Profile";
 import WhatsAppAdmin from "@/pages/WhatsAppAdmin";
 import WhatsAppTest from "@/pages/WhatsAppTest";
 import WhatsAppEntries from "@/pages/WhatsAppEntries";
@@ -131,6 +132,8 @@ function AppWithLayout() {
         return <Network />;
       case '/settings':
         return <Settings />;
+      case '/profile':
+        return <Profile />;
       default:
         return <Dashboard onEntryClick={openEntryDetail} onNewEntry={openNewEntryForm} />;
     }
@@ -178,6 +181,7 @@ function Router() {
       <Route path="/favorites" component={() => <AppWithLayout />} />
       <Route path="/network" component={() => <AppWithLayout />} />
       <Route path="/settings" component={() => <AppWithLayout />} />
+      <Route path="/profile" component={() => <AppWithLayout />} />
       <Route path="/whatsapp-admin" component={WhatsAppAdmin} />
       <Route path="/whatsapp-test" component={WhatsAppTest} />
       <Route path="/whatsapp-entries" component={WhatsAppEntries} />
