@@ -614,6 +614,12 @@ Changelog:
   * Enhanced ChatInterface with voice input capability using OpenAI Whisper transcription
   * Updated DotSpark AI system prompts to structure user input into three-layer dots (Summary/Anchor/Pulse)
   * Backend now stores captureMode field ('natural' or 'ai') for proper visual categorization
+- June 15, 2025. Streamlined Dot Settings with stunning two-mode interface:
+  * Simplified to show only Natural Mode and AI Mode selection buttons with premium design
+  * Reduced button sizes for better proportions: padding p-6, rounded-2xl, smaller icons and text
+  * Enhanced floating dot to show mode-specific options: Natural (Voice/Text), AI (Direct Chat/WhatsApp)
+  * Added Natural/AI mode tags in floating dot headers for clear user context
+  * Optimized visual hierarchy with compact spacing while maintaining stunning animations and effects
 - June 15, 2025. Optimized AI conversation flow for minimal user effort:
   * Updated AI prompts to proactively organize user thoughts into three layers with minimal intervention
   * AI now immediately structures user input into Summary/Anchor/Pulse format for quick approval

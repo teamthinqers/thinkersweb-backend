@@ -221,10 +221,10 @@ export function DotSparkSettings() {
           {/* AI Mode - Stunning Design */}
           <div
             onClick={() => handleModeChange('ai')}
-            className={`group relative cursor-pointer rounded-3xl p-8 transition-all duration-500 transform hover:scale-105 hover:-rotate-1 ${
+            className={`group relative cursor-pointer rounded-2xl p-6 transition-all duration-500 transform hover:scale-102 hover:-rotate-1 ${
               captureMode === 'ai'
-                ? 'bg-gradient-to-br from-purple-500 via-violet-600 to-indigo-600 text-white shadow-2xl shadow-purple-500/40 ring-4 ring-purple-300/50'
-                : 'bg-white dark:bg-gray-800 border-3 border-gray-200 dark:border-gray-700 hover:border-purple-300 dark:hover:border-purple-600 hover:shadow-xl hover:shadow-purple-500/20'
+                ? 'bg-gradient-to-br from-purple-500 via-violet-600 to-indigo-600 text-white shadow-xl shadow-purple-500/30 ring-2 ring-purple-300/50'
+                : 'bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 hover:border-purple-300 dark:hover:border-purple-600 hover:shadow-lg hover:shadow-purple-500/15'
             }`}
           >
             {/* Animated background particles */}
@@ -234,28 +234,28 @@ export function DotSparkSettings() {
               <div className={`absolute bottom-8 right-6 w-1.5 h-1.5 rounded-full ${captureMode === 'ai' ? 'bg-white/20' : 'bg-purple-200'} animate-pulse delay-700`}></div>
             </div>
             
-            <div className="relative flex flex-col items-center gap-6">
-              <div className={`p-4 rounded-2xl transition-all duration-300 ${
+            <div className="relative flex flex-col items-center gap-4">
+              <div className={`p-3 rounded-xl transition-all duration-300 ${
                 captureMode === 'ai' 
                   ? 'bg-white/20 backdrop-blur-sm shadow-lg' 
                   : 'bg-gradient-to-br from-purple-100 to-violet-100 dark:from-purple-900/30 dark:to-violet-900/30'
               }`}>
-                <BrainCircuit className={`h-10 w-10 transition-colors duration-300 ${
+                <BrainCircuit className={`h-8 w-8 transition-colors duration-300 ${
                   captureMode === 'ai' 
                     ? 'text-white drop-shadow-sm' 
                     : 'text-purple-600 dark:text-purple-400'
                 }`} />
               </div>
               
-              <div className="text-center space-y-3">
-                <h5 className={`text-2xl font-bold transition-colors duration-300 ${
+              <div className="text-center space-y-2">
+                <h5 className={`text-xl font-bold transition-colors duration-300 ${
                   captureMode === 'ai' 
                     ? 'text-white drop-shadow-sm' 
                     : 'text-gray-900 dark:text-gray-100'
                 }`}>
                   AI Mode
                 </h5>
-                <p className={`text-base leading-relaxed transition-colors duration-300 ${
+                <p className={`text-sm leading-relaxed transition-colors duration-300 ${
                   captureMode === 'ai' 
                     ? 'text-white/90 drop-shadow-sm' 
                     : 'text-gray-600 dark:text-gray-400'
