@@ -65,8 +65,8 @@ export function DotWheelsMap({ wheels, dots, onDotClick }: DotWheelsMapProps) {
   // Generate random positions for dots across larger canvas
   const dotsWithPositions = dotsToDisplay.map(dot => ({
     ...dot,
-    positionX: dot.positionX || Math.floor(Math.random() * 1800) + 100,
-    positionY: dot.positionY || Math.floor(Math.random() * 1300) + 100
+    positionX: dot.positionX ?? Math.floor(Math.random() * 1800) + 100,
+    positionY: dot.positionY ?? Math.floor(Math.random() * 1300) + 100
   }));
 
   // Generate dotted line connections between dots

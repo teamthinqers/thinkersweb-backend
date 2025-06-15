@@ -107,37 +107,31 @@ const Dashboard: React.FC = () => {
   // Mock wheels data for visualization
   const [wheels] = useState<Wheel[]>([
     {
-      id: 1,
+      id: "1",
       name: 'Innovation Ideas',
       category: 'Technology',
       color: '#3B82F6',
-      userId: 1,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      positionX: 100,
-      positionY: 100
+      dots: [],
+      connections: [],
+      position: { x: 100, y: 100 }
     },
     {
-      id: 2, 
+      id: "2", 
       name: 'Business Strategies',
       category: 'Professional',
       color: '#10B981',
-      userId: 1,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      positionX: 300,
-      positionY: 150
+      dots: [],
+      connections: [],
+      position: { x: 300, y: 150 }
     },
     {
-      id: 3,
+      id: "3",
       name: 'Learning Insights', 
       category: 'Personal Growth',
       color: '#F59E0B',
-      userId: 1,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      positionX: 200,
-      positionY: 250
+      dots: [],
+      connections: [],
+      position: { x: 200, y: 250 }
     }
   ]);
 
@@ -167,7 +161,7 @@ const Dashboard: React.FC = () => {
         <h3 className="font-medium text-sm mb-2 leading-relaxed text-gray-800">{dot.summary}</h3>
         <p className="text-xs text-gray-600 leading-relaxed line-clamp-2">{dot.anchor}</p>
         <div className="mt-2 text-xs text-amber-700">
-          {dot.timestamp.toLocaleString()}
+          {new Date(dot.createdAt).toLocaleString()}
         </div>
       </CardContent>
     </Card>
@@ -378,7 +372,7 @@ const Dashboard: React.FC = () => {
         {searchTerm && searchResults.length > 0 && (
           <SearchResultsList 
             searchResults={searchResults}
-            onDotClick={setViewFullDot}
+            onDotClick={(dot: Dot) => setViewFullDot(dot)}
             searchTerm={searchTerm}
           />
         )}
@@ -438,7 +432,7 @@ const Dashboard: React.FC = () => {
           </h2>
           <p className="text-sm text-gray-600 mb-4">Saving your dots for sparking insights</p>
           
-          <DotWheelsMap wheels={wheels} dots={dots} onDotClick={setViewFullDot} />
+          <DotWheelsMap wheels={wheels} />
         </div>
       </div>
       
