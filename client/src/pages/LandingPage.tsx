@@ -134,7 +134,7 @@ export default function LandingPage() {
       setIsNeuraActivated(activated);
       
       // Check if all setup steps are complete and mark setup as complete if needed
-      if (activated && user && isWhatsAppConnected && isPWAInstalled) {
+      if (activated && isWhatsAppConnected && isPWAInstalled) {
         neuraStorage.markSetupCompleted();
       }
     };
