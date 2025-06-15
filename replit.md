@@ -599,6 +599,10 @@ Changelog:
   * Audio playback uses HTML5 Audio API with proper error handling
   * Voice icons only display when voice data is available for specific layers
   * Users can click volume icons to play actual recorded voice for each layer
+- June 15, 2025. Created backup version working_v2:
+  * Saved stable version with complete voice recording and playback functionality
+  * Includes OpenAI Whisper transcription, UI consistency fixes, and updated sign-in page
+  * Rollback available via: node scripts/restore-version.js working_v2
 ```
 
 ## User Preferences
