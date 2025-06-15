@@ -4,6 +4,7 @@ const NEURA_NAME_KEY = 'neuraName';
 const NEURA_EVENT = 'neura-state-changed';
 const SETUP_COMPLETED_KEY = 'setupCompleted';
 const INVITE_VALIDATED_KEY = 'inviteValidated';
+const PWA_INSTALLED_KEY = 'pwa-installed';
 
 // Custom event for Neura state changes
 export interface NeuraStateEvent extends CustomEvent {
