@@ -11,7 +11,8 @@ import {
   Globe,
   ArrowLeft,
   Brain,
-  Sparkles
+  Sparkles,
+  Users
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
@@ -190,7 +191,7 @@ export default function DotCapture() {
                   </Button>
 
                   <Button
-                    onClick={() => window.open("https://www.dotspark.in/my-neura", "_blank")}
+                    onClick={() => window.open("https://www.dotspark.in/", "_blank")}
                     className="w-full h-16 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-600 hover:via-orange-600 hover:to-amber-700 text-white rounded-2xl shadow-xl border-0 transform transition-all duration-300 hover:scale-105 hover:shadow-2xl group relative overflow-hidden"
                   >
                     {/* Button glow effect */}
@@ -229,6 +230,27 @@ export default function DotCapture() {
                     
                     {/* Animated neural pulse */}
                     <div className="absolute top-2 right-3 w-1 h-1 bg-orange-300 rounded-full animate-ping opacity-70 delay-300"></div>
+                  </Button>
+
+                  <Button
+                    onClick={() => window.open("https://www.dotspark.in/social", "_blank")}
+                    className="w-full h-16 bg-gradient-to-r from-orange-500 via-red-500 to-orange-600 hover:from-orange-600 hover:via-red-600 hover:to-orange-700 text-white rounded-2xl shadow-xl border-0 transform transition-all duration-300 hover:scale-105 hover:shadow-2xl group relative overflow-hidden"
+                  >
+                    {/* Button glow effect */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-red-400/20 to-orange-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl"></div>
+                    
+                    <div className="relative z-10 flex items-center gap-3">
+                      <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <Users className="w-6 h-6" />
+                      </div>
+                      <div className="flex flex-col items-start">
+                        <span className="text-lg font-bold">DotSpark Social</span>
+                        <span className="text-sm opacity-90">Connect with ThinQers</span>
+                      </div>
+                    </div>
+                    
+                    {/* Animated social pulse */}
+                    <div className="absolute top-2 right-3 w-1 h-1 bg-red-300 rounded-full animate-ping opacity-70 delay-400"></div>
                   </Button>
                 </div>
               </CardContent>
