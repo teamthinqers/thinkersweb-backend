@@ -181,7 +181,7 @@ const Profile: React.FC = () => {
             <p className="text-sm text-gray-600">
               {completionPercentage === 100 
                 ? "🎉 Your profile is complete! You're ready to maximize your DotSpark experience."
-                : `Complete ${8 - Math.floor((completionPercentage / 100) * 8)} more fields to unlock the full potential of your neural dashboard.`
+                : "Fill out your profile to get the most out of your DotSpark experience."
               }
             </p>
           </CardContent>
