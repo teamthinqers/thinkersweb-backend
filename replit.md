@@ -726,6 +726,14 @@ Changelog:
   * Non-signed users see only "Get Started Now" button linking to /auth page for sign in/sign up
   * Signed-in users see only "Explore DotSpark Neura" button opening dashboard in new tab
   * Eliminated redundant buttons and streamlined user flow based on authentication status
+- June 15, 2025. Comprehensive UI improvements and Social Neura integration:
+  * Fixed PWA completion window color theme from green to amber/orange gradient matching DotSpark branding
+  * Added backspace button to Social page with proper navigation functionality using window.history.back()
+  * Added "DotSpark Social" to profile dropdown menus in both browser and PWA Header components
+  * Added "DotSpark Social" to LandingPage profile dropdown menu with Brain icon
+  * Updated mobile hamburger menu in Header to include "DotSpark Social" with orange-red gradient styling
+  * Dashboard sidebar navigation maintained as "Social Neura" per user preference
+  * Enhanced cross-platform navigation consistency for Social features
 - June 15, 2025. Optimized AI conversation flow for minimal user effort:
   * Updated AI prompts to proactively organize user thoughts into three layers with minimal intervention
   * AI now immediately structures user input into Summary/Anchor/Pulse format for quick approval
