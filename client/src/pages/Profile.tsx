@@ -233,15 +233,17 @@ const Profile: React.FC = () => {
   };
 
   const handleSave = () => {
-    // Save to localStorage
-    localStorage.setItem('userProfile', JSON.stringify(profileData));
-    
-    setIsEditing(false);
-    setImagePreview(null);
-    toast({
-      title: "Profile Updated",
-      description: `Profile completion: ${completionPercentage}%`,
-    });
+    // Save to backend with mutation
+    updateProfileMutation.mutate(profileData);
+  };
+
+  const handleDateSelect = (date: Date | undefined) => {
+    if (date) {
+      const isoDate = date.toISOString().split('T')[0]; // Format as YYYY-MM-DD
+      setSelectedDate(date);
+      setProfileData(prev => ({ ...prev, dateOfBirth: isoDate }));
+    }
+    setIsDatePickerOpen(false);
   };
 
   const handleCancel = () => {
