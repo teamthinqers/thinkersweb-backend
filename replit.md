@@ -505,10 +505,11 @@ Changelog:
   * Enhanced calendar with proper date formatting, validation, and user-friendly interface
   * Added date-fns formatting for better date display and manipulation
   * Calendar now provides intuitive year navigation essential for birth date selection
-- June 15, 2025. Cleaned up dashboard header search functionality:
-  * Removed duplicate search box from dashboard header to eliminate redundancy
-  * Dashboard now uses only the search functionality within the Recent Dots section
-  * Streamlined dashboard interface maintains single search experience for better UX
+- June 15, 2025. Restored proper dashboard search functionality:
+  * Restored search bar inside Recent Dots section for dot searching functionality
+  * Search bar properly positioned within Recent Dots section with amber styling
+  * Dashboard maintains focused search experience for finding specific dots
+  * Search functionality works correctly with real-time filtering of dot content
 - June 15, 2025. Enhanced Profile page data handling with cross-platform compatibility:
   * Updated mobile number and date of birth fields to remain empty until user input
   * Fields now show only placeholder examples without auto-populating actual data
