@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useContext, useState } from "react";
+import React, { createContext, ReactNode, useContext, useState } from "react";
 
 // Minimal user info type
 type UserInfo = {
@@ -16,8 +16,13 @@ type AuthContextType = {
   logout: () => Promise<void>;
 };
 
-// Create context
-export const AuthContext = createContext<AuthContextType | null>(null);
+// Create context with default value
+const AuthContext = createContext<AuthContextType>({
+  user: null,
+  isLoading: false,
+  loginWithGoogle: async () => {},
+  logout: async () => {},
+});
 
 // Minimal auth provider - no Firebase dependencies
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -51,24 +56,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const contextValue: AuthContextType = {
+    user,
+    isLoading,
+    loginWithGoogle,
+    logout,
+  };
+
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        isLoading,
-        loginWithGoogle,
-        logout,
-      }}
-    >
+    <AuthContext.Provider value={contextValue}>
       {children}
     </AuthContext.Provider>
   );
 }
 
-export function useAuth() {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
-  return context;
+export function useAuth(): AuthContextType {
+  return useContext(AuthContext);
 }
