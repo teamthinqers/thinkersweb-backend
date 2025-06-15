@@ -23,7 +23,7 @@ import {
   Edit,
   Loader2
 } from "lucide-react";
-import { useAuth } from "@/hooks/use-auth-simple";
+import { useAuth } from "@/hooks/use-auth-minimal";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { format, parseISO, isValid } from "date-fns";
