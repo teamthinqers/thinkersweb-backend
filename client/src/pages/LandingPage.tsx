@@ -71,7 +71,7 @@ import {
   SheetTrigger,
   SheetClose 
 } from "@/components/ui/sheet";
-import { useAuth } from "@/hooks/use-auth-simple";
+// Authentication hook removed for landing page - not needed
 import { useWhatsAppStatus } from "@/hooks/useWhatsAppStatus";
 import { neuraStorage } from "@/lib/neuraStorage";
 import {
@@ -91,16 +91,9 @@ import {
 } from "@/components/ui/dialog";
 
 export default function LandingPage() {
-  // Optional auth hook - safely handle if not in context
-  let user = null;
-  let logout = () => {};
-  try {
-    const auth = useAuth();
-    user = auth.user;
-    logout = auth.logout;
-  } catch (error) {
-    // Not in auth context, continue without user
-  }
+  // Landing page doesn't need authentication
+  const user = null;
+  const logout = () => {};
   const [location, setLocation] = useLocation();
   const [contactDialogOpen, setContactDialogOpen] = useState(false);
   const [installDialogOpen, setInstallDialogOpen] = useState(false);
@@ -366,20 +359,17 @@ export default function LandingPage() {
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="sm" className="rounded-full ml-1 p-0">
                     <Avatar className="h-7 w-7 md:h-8 md:w-8 border border-white shadow">
-                      {user.photoURL ? (
-                        <AvatarImage src={user.photoURL} alt={user.displayName || 'User'} />
-                      ) : (
-                        <AvatarFallback className="bg-primary text-white text-xs md:text-sm">
-                          {user.displayName ? user.displayName.charAt(0).toUpperCase() : 'U'}
-                        </AvatarFallback>
-                      )}
+                      <AvatarImage src="/dotspark-logo-icon.jpeg" alt="DotSpark" />
+                      <AvatarFallback className="bg-primary text-white text-xs md:text-sm">
+                        D
+                      </AvatarFallback>
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
                   <div className="p-2 text-sm">
-                    <p className="font-medium">{user.displayName || 'User'}</p>
-                    <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+                    <p className="font-medium">DotSpark User</p>
+                    <p className="text-xs text-muted-foreground truncate">Welcome to DotSpark</p>
                   </div>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
