@@ -45,10 +45,7 @@ import { StructuredFloatingDot } from "@/components/dotspark/StructuredFloatingD
 import { neuraStorage } from "@/lib/neuraStorage";
 import { Loader2 } from "lucide-react";
 import MockDashboard from "@/components/dashboard/MockDashboard";
-// PWA components temporarily disabled
-// import { PWAInstallButton } from "@/components/ui/pwa-install-button";
-// import { IosPwaInstallPrompt } from "@/components/ui/ios-pwa-install-prompt";
-import { isRunningAsStandalone } from "@/lib/pwaUtils";
+// PWA functionality temporarily disabled
 
 // Simplified Protected route component
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
