@@ -36,7 +36,7 @@ import twilio from "twilio";
 import whatsappWebhookRouter from "./whatsapp-webhook";
 
 // Use standard Express Request with user property
-import { Request as ExpressRequest } from 'express';
+type AuthenticatedRequest = Request;
 
 export async function registerRoutes(app: Express): Promise<Server> {
   const apiPrefix = "/api";
@@ -310,20 +310,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const positionX = Math.floor(Math.random() * 800);
       const positionY = Math.floor(Math.random() * 600);
       
-      // Prepare dot data for database
+      // Prepare dot data for database with proper typing
       const dotData = {
-        summary,
-        anchor, 
-        pulse,
-        userId,
-        sourceType: sourceType === 'voice' ? 'voice' : 'text', // Only voice or text, no hybrid
-        originalAudioBlob: sourceType === 'voice' ? originalAudioBlob : null,
-        transcriptionText: sourceType === 'voice' ? transcriptionText : null,
-        positionX,
-        positionY
+        userId: Number(userId),
+        summary: String(summary),
+        anchor: String(anchor), 
+        pulse: String(pulse),
+        sourceType: sourceType === 'voice' ? 'voice' as const : 'text' as const,
+        originalAudioBlob: sourceType === 'voice' ? String(originalAudioBlob || '') : null,
+        transcriptionText: sourceType === 'voice' ? String(transcriptionText || '') : null,
+        positionX: Number(positionX),
+        positionY: Number(positionY)
       };
       
-      const [newDot] = await db.insert(dots).values(dotData).returning();
+      const [newDot] = await db.insert(dots).values([dotData]).returning();
       res.status(201).json(newDot);
     } catch (error) {
       console.error('Error creating dot:', error);
