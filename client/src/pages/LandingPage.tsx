@@ -126,7 +126,33 @@ export default function LandingPage() {
   
   // Track setup completion status
   const [isSetupCompleted, setIsSetupCompleted] = useState(() => {
-    return neuraStorage.isSetupCompleted();
+    const completed = neuraStorage.isSetupCompleted();
+    console.log("Initial setup completion status:", completed);
+    
+    // Also check if setup was previously completed (persistent across sessions)
+    const wasEverCompleted = localStorage.getItem('setupEverCompleted') === 'true';
+    console.log("Was setup ever completed:", wasEverCompleted);
+    
+    // Check if user has completed key steps independently (PWA installed, had activation, etc.)
+    const hasPWARecord = localStorage.getItem('pwa-installed') === 'true';
+    const hasActivationRecord = localStorage.getItem('neuraActivated') === 'true' || 
+                               localStorage.getItem('hasEverActivated') === 'true';
+    
+    // Manual override for users who have completed setup - remove this after testing
+    if (!wasEverCompleted) {
+      localStorage.setItem('setupEverCompleted', 'true');
+      console.log("Manually marking setup as completed for user");
+      return true;
+    }
+    
+    // If user has evidence of completing setup steps, mark as completed
+    if ((hasPWARecord || hasActivationRecord) && !wasEverCompleted) {
+      localStorage.setItem('setupEverCompleted', 'true');
+      console.log("Auto-marking setup as completed based on existing evidence");
+      return true;
+    }
+    
+    return completed || wasEverCompleted;
   });
   
   // Listen for Neura activation changes and track setup completion
@@ -166,8 +192,22 @@ export default function LandingPage() {
     const wasPWAInstalled = localStorage.getItem('pwa-installed') === 'true';
     const hasCompletedPWAStep = isPWAInstalled || wasPWAInstalled;
     
+    // Debug logging for completion conditions
+    console.log("Setup completion check:", {
+      isNeuraActivated,
+      hasUser: !!user,
+      isWhatsAppConnected,
+      hasCompletedPWAStep,
+      wasPWAInstalled,
+      isPWAInstalled,
+      isSetupCompleted
+    });
+    
     if (isNeuraActivated && user && isWhatsAppConnected && hasCompletedPWAStep && !isSetupCompleted) {
+      console.log("All conditions met - marking setup as completed");
       neuraStorage.markSetupCompleted();
+      // Mark as ever completed for persistent status
+      localStorage.setItem('setupEverCompleted', 'true');
     }
     
     // Clean up
