@@ -123,12 +123,13 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
     let hasMoved = false;
     setIsDragging(true);
 
-    const handleTouchMove = (e: TouchEvent) => {
+    const handleTouchMove = (e: Event) => {
       e.preventDefault();
       hasMoved = true;
       
-      if (e.touches.length > 0) {
-        const touch = e.touches[0];
+      const touchEvent = e as TouchEvent;
+      if (touchEvent.touches && touchEvent.touches.length > 0) {
+        const touch = touchEvent.touches[0];
         
         // Calculate new position with viewport boundaries
         const newX = Math.max(0, Math.min(window.innerWidth - rect.width, touch.clientX - offsetX));
@@ -141,7 +142,7 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
 
     const handleTouchEnd = () => {
       setIsDragging(false);
-      document.removeEventListener('touchmove', handleTouchMove, { passive: false });
+      document.removeEventListener('touchmove', handleTouchMove);
       document.removeEventListener('touchend', handleTouchEnd);
       
       // Only trigger click if not dragged
@@ -150,7 +151,7 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
       }
     };
 
-    document.addEventListener('touchmove', handleTouchMove as EventListener, { passive: false });
+    document.addEventListener('touchmove', handleTouchMove);
     document.addEventListener('touchend', handleTouchEnd);
   };
 
