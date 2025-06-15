@@ -71,7 +71,7 @@ import {
   SheetTrigger,
   SheetClose 
 } from "@/components/ui/sheet";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuth } from "@/hooks/use-auth-simple";
 import { useWhatsAppStatus } from "@/hooks/useWhatsAppStatus";
 import { neuraStorage } from "@/lib/neuraStorage";
 import {
@@ -91,7 +91,16 @@ import {
 } from "@/components/ui/dialog";
 
 export default function LandingPage() {
-  const { user, logout } = useAuth();
+  // Optional auth hook - safely handle if not in context
+  let user = null;
+  let logout = () => {};
+  try {
+    const auth = useAuth();
+    user = auth.user;
+    logout = auth.logout;
+  } catch (error) {
+    // Not in auth context, continue without user
+  }
   const [location, setLocation] = useLocation();
   const [contactDialogOpen, setContactDialogOpen] = useState(false);
   const [installDialogOpen, setInstallDialogOpen] = useState(false);

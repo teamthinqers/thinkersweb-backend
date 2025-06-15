@@ -547,11 +547,26 @@ const Profile: React.FC = () => {
 
             {/* Action Buttons */}
             {isEditing && (
-              <div className="flex space-x-3 pt-4 border-t">
-                <Button onClick={handleSave} className="bg-amber-600 hover:bg-amber-700">
-                  Save Changes
+              <div className="flex space-x-3 pt-6 border-t">
+                <Button 
+                  onClick={handleSave} 
+                  disabled={updateProfileMutation.isPending}
+                  className="bg-amber-600 hover:bg-amber-700 flex items-center space-x-2"
+                >
+                  {updateProfileMutation.isPending ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      <span>Saving...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Save className="h-4 w-4" />
+                      <span>Save Changes</span>
+                    </>
+                  )}
                 </Button>
                 <Button onClick={handleCancel} variant="outline">
+                  <X className="h-4 w-4 mr-2" />
                   Cancel
                 </Button>
               </div>
