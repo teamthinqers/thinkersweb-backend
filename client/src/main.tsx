@@ -1,5 +1,5 @@
 import { createRoot } from "react-dom/client";
-import App from "./App";
+import App from "./App-minimal";
 import "./index.css";
 import { queryClient } from "./lib/queryClient";
 import { initViteConnectionGuard } from "./lib/viteConnectionGuard";
