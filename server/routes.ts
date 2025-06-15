@@ -34,7 +34,6 @@ import whatsappWebhookRouter from "./whatsapp-webhook";
 // Interface for authenticated requests
 interface AuthenticatedRequest extends Request {
   user?: Express.User;
-  isAuthenticated(): boolean;
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -358,6 +357,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Error fetching dots:', error);
       res.status(500).json({ error: 'Failed to fetch dots' });
+    }
+  });
+
+  // Delete a specific dot
+  app.delete(`${apiPrefix}/dots/:id`, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const userId = req.user?.id || req.session?.userId || 1;
+      const dotId = parseInt(req.params.id);
+
+      if (!dotId) {
+        return res.status(400).json({ error: 'Invalid dot ID' });
+      }
+
+      // First verify the dot belongs to the user
+      const existingEntry = await db.query.entries.findFirst({
+        where: and(eq(entries.id, dotId), eq(entries.userId, userId))
+      });
+
+      if (!existingEntry) {
+        return res.status(404).json({ error: 'Dot not found or access denied' });
+      }
+
+      // Delete the dot
+      await db.delete(entries).where(
+        and(eq(entries.id, dotId), eq(entries.userId, userId))
+      );
+
+      res.json({ success: true, message: 'Dot deleted successfully' });
+    } catch (error) {
+      console.error('Error deleting dot:', error);
+      res.status(500).json({ error: 'Failed to delete dot' });
     }
   });
 

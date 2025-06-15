@@ -2,7 +2,8 @@ import React from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Mic, Type, X, Volume2 } from "lucide-react";
+import { Mic, Type, X, Volume2, Trash2 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 interface Dot {
   id: string;
@@ -17,18 +18,47 @@ interface Dot {
 interface DotFullViewProps {
   dot: Dot;
   onClose: () => void;
+  onDelete?: (dotId: string) => void;
 }
 
-const DotFullView: React.FC<DotFullViewProps> = ({ dot, onClose }) => {
+const DotFullView: React.FC<DotFullViewProps> = ({ dot, onClose, onDelete }) => {
+  const { toast } = useToast();
+
   const handlePlayVoice = () => {
     // Placeholder for voice playback functionality
     console.log('Playing voice recording for dot:', dot.id);
   };
 
+  const handleDelete = async () => {
+    try {
+      const response = await fetch(`/api/dots/${dot.id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete dot');
+      }
+
+      toast({
+        title: "Dot Deleted",
+        description: "Your dot has been successfully deleted.",
+      });
+
+      onDelete?.(dot.id);
+      onClose();
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to delete dot. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <Dialog open={true} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-        <DialogHeader>
+      <DialogContent className="max-w-3xl h-[90vh] flex flex-col">
+        <DialogHeader className="flex-shrink-0">
           <div className="flex items-center justify-between">
             <DialogTitle className="flex items-center gap-2">
               <div className="w-4 h-4 rounded-full bg-gradient-to-br from-amber-600 to-orange-700">
@@ -36,19 +66,28 @@ const DotFullView: React.FC<DotFullViewProps> = ({ dot, onClose }) => {
               </div>
               Dot Full View
             </DialogTitle>
-            <Button variant="ghost" size="sm" onClick={onClose}>
-              <X className="h-4 w-4" />
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={handleDelete}
+                className="text-red-500 hover:text-red-700 hover:bg-red-50"
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+              <Button variant="ghost" size="sm" onClick={onClose} className="text-gray-500 hover:text-gray-700">
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
         </DialogHeader>
 
-        <div className="space-y-6">
+        <div className="flex-1 overflow-y-auto space-y-4 pr-2">
           {/* Source Type and Timestamp */}
           <div className="flex items-center justify-between">
             <Badge variant="outline" className="border-amber-300 text-amber-700 bg-amber-50">
               {dot.sourceType === 'voice' ? <Mic className="h-3 w-3 mr-1" /> : 
-               dot.sourceType === 'text' ? <Type className="h-3 w-3 mr-1" /> : 
-               <div className="flex gap-1"><Mic className="h-2 w-2" /><Type className="h-2 w-2" /></div>}
+               <Type className="h-3 w-3 mr-1" />}
               {dot.sourceType}
             </Badge>
             <span className="text-sm text-gray-500">
