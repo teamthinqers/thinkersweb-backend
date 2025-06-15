@@ -1,0 +1,12 @@
+{
+  "name": "working_v6",
+  "date": "2025-06-15T18:42:14.605Z",
+  "files": [
+    "server/whatsapp.ts",
+    "server/openai.ts",
+    "client/src/components/landing/WhatsAppPromo.tsx",
+    "client/src/components/landing/WhatsAppContactButton.tsx",
+    "client/src/components/landing/CompactWhatsAppButton.tsx"
+  ],
+  "description": "Neural extension with interactive WhatsApp chat capabilities"
+}

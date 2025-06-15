@@ -603,6 +603,17 @@ Changelog:
   * Saved stable version with complete voice recording and playback functionality
   * Includes OpenAI Whisper transcription, UI consistency fixes, and updated sign-in page
   * Rollback available via: node scripts/restore-version.js working_v2
+- June 15, 2025. Fixed setup completion status display for cross-platform consistency:
+  * Enhanced completion logic to recognize PWA installation from any device (mobile/desktop)
+  * Added persistent completion status that survives authentication changes
+  * Setup completion box now displays properly in desktop browser when setup is complete
+  * Eliminated duplicate 3-step boxes for users who have completed setup
+  * Cross-platform localStorage detection ensures consistent user experience
+- June 15, 2025. Created backup version working_v6:
+  * Stable version with fixed setup completion status display across browser and PWA
+  * Includes complete voice functionality, Social Neura integration, and cross-platform PWA detection
+  * Enhanced user experience with persistent completion tracking
+  * Rollback available via: node scripts/restore-version.js working_v6
 - June 15, 2025. Enhanced Dot Settings with AI Mode and visual distinction system:
   * Restructured capture modes from Natural Mode (voice/text/hybrid) to include AI Mode as fourth option
   * Added AI Mode sub-options: Direct Chat and WhatsApp for AI-assisted dot creation
