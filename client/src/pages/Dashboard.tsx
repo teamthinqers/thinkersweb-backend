@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
 import { Input } from "@/components/ui/input";
-import { Mic, Type, Eye, Brain, Network, Zap, Search } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Mic, Type, Eye, Brain, Network, Zap, Search, Clock } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import DotFullView from "@/components/DotFullView";
 
@@ -33,6 +34,7 @@ const Dashboard: React.FC = () => {
   const [selectedWheel, setSelectedWheel] = useState<string | null>(null);
   const [viewFullDot, setViewFullDot] = useState<Dot | null>(null);
   const [searchResults, setSearchResults] = useState<Dot[]>([]);
+  const [recentDotsOpen, setRecentDotsOpen] = useState(false);
 
   // Fetch real dots from API
   const { data: dots = [], isLoading } = useQuery({
@@ -371,17 +373,9 @@ const Dashboard: React.FC = () => {
           </h1>
         </div>
 
-        {/* Recent Dots Section */}
-        <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-            <Zap className="w-5 h-5 text-amber-500" />
-            <span className="bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent">
-              Recent Dots
-            </span>
-          </h2>
-          
-          {/* Search Bar inside Recent Dots section */}
-          <div className="relative mb-4">
+        {/* Search Bar - moved to top */}
+        <div className="mb-6">
+          <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-amber-500" />
             <Input
               type="text"
@@ -391,55 +385,53 @@ const Dashboard: React.FC = () => {
               className="pl-10 h-12 text-base border-2 border-amber-200 bg-white/90 backdrop-blur focus:border-amber-500 focus:ring-amber-500/20 rounded-xl placeholder:text-gray-500 text-gray-800 shadow-sm"
             />
           </div>
-          
-          <div className="bg-white/80 backdrop-blur border-2 border-amber-200 rounded-xl p-4 max-h-96 overflow-y-auto shadow-lg">
-            <div className="space-y-4">
-              {/* Search Results */}
-              {searchResults.length > 0 && (
-                <div className="mb-4">
-                  <h3 className="text-sm font-semibold text-amber-800 mb-2">Search Results ({searchResults.length})</h3>
-                  {searchResults.slice(0, 3).map((dot: Dot) => (
+        </div>
+
+        {/* Search Results Section - only show when searching */}
+        {searchTerm.trim() && (
+          <div className="mb-8">
+            <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+              <Search className="w-5 h-5 text-amber-500" />
+              <span className="bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent">
+                Search Results ({searchResults.length})
+              </span>
+            </h2>
+            <div className="bg-white/80 backdrop-blur border-2 border-amber-200 rounded-xl p-4 max-h-96 overflow-y-auto shadow-lg">
+              <div className="space-y-4">
+                {searchResults.length > 0 ? (
+                  searchResults.map((dot: Dot) => (
                     <DotCard 
                       key={dot.id} 
                       dot={dot} 
                       onClick={() => setViewFullDot(dot)}
                     />
-                  ))}
-                </div>
-              )}
-              
-              {/* Recent Dots or Examples */}
-              {searchTerm.trim() === '' && (
-                <>
-                  {dots.length > 0 ? (
-                    dots.slice(0, 4).map((dot: Dot) => (
-                      <DotCard 
-                        key={dot.id} 
-                        dot={dot} 
-                        onClick={() => setViewFullDot(dot)}
-                      />
-                    ))
-                  ) : (
-                    <>
-                      <div className="mb-3 text-center">
-                        <Badge className="bg-orange-100 text-orange-700 border-orange-200">
-                          Preview Examples
-                        </Badge>
-                      </div>
-                      {exampleDots.map((dot: Dot) => (
-                        <DotCard 
-                          key={dot.id} 
-                          dot={dot} 
-                          isPreview={true}
-                          onClick={() => setViewFullDot(dot)}
-                        />
-                      ))}
-                    </>
-                  )}
-                </>
-              )}
+                  ))
+                ) : (
+                  <div className="text-center py-6 text-amber-600">
+                    <Search className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                    <p>No dots found matching "{searchTerm}"</p>
+                    <p className="text-sm text-amber-500">Try different keywords or check your spelling</p>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
+        )}
+
+        {/* Recent Dots Button */}
+        <div className="mb-6">
+          <Button
+            onClick={() => setRecentDotsOpen(true)}
+            className="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white px-6 py-3 rounded-xl shadow-lg flex items-center gap-2 font-medium"
+          >
+            <Clock className="w-5 h-5" />
+            Recent Dots
+            {dots.length > 0 && (
+              <Badge className="bg-white/20 text-white border-0 ml-1">
+                {Math.min(dots.length, 4)}
+              </Badge>
+            )}
+          </Button>
         </div>
 
         {/* Dot Wheels Map Section */}
@@ -455,6 +447,54 @@ const Dashboard: React.FC = () => {
         </div>
       </div>
       
+      {/* Recent Dots Modal */}
+      <Dialog open={recentDotsOpen} onOpenChange={setRecentDotsOpen}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-xl">
+              <Clock className="w-5 h-5 text-amber-600" />
+              <span className="bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent">
+                Recent Dots
+              </span>
+            </DialogTitle>
+          </DialogHeader>
+          
+          <div className="space-y-4 mt-4">
+            {dots.length > 0 ? (
+              dots.slice(0, 4).map((dot: Dot) => (
+                <DotCard 
+                  key={dot.id} 
+                  dot={dot} 
+                  onClick={() => {
+                    setViewFullDot(dot);
+                    setRecentDotsOpen(false);
+                  }}
+                />
+              ))
+            ) : (
+              <>
+                <div className="text-center py-4 mb-4">
+                  <Badge className="bg-orange-100 text-orange-700 border-orange-200">
+                    Preview Examples
+                  </Badge>
+                </div>
+                {exampleDots.slice(0, 4).map((dot: Dot) => (
+                  <DotCard 
+                    key={dot.id} 
+                    dot={dot} 
+                    isPreview={true}
+                    onClick={() => {
+                      setViewFullDot(dot);
+                      setRecentDotsOpen(false);
+                    }}
+                  />
+                ))}
+              </>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+
       {/* Full Dot View Modal */}
       {viewFullDot && (
         <DotFullView dot={viewFullDot} onClose={() => setViewFullDot(null)} />
