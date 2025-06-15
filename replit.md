@@ -631,6 +631,8 @@ Changelog:
   * Added dotted circle wheel boundaries with amber/orange theme colors
   * Positioned dots in circular arrangement inside wheel boundaries
   * Fixed wheel counting logic to show 0 wheels in actual mode until 9 dots per category are reached
+  * Fixed PWA layout overlapping issues with responsive design for mobile screens
+  * Implemented vertical button stacking and compact text for better PWA compatibility
 ```
 
 ## User Preferences

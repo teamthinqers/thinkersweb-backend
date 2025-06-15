@@ -429,19 +429,20 @@ const Dashboard: React.FC = () => {
     return (
       <div className="relative bg-gradient-to-br from-amber-50/50 to-orange-50/50 rounded-xl p-4 min-h-[500px] border-2 border-amber-200 shadow-lg overflow-hidden">
         {/* Top controls */}
-        <div className="absolute top-4 left-4 z-10 flex items-center gap-3">
+        <div className="absolute top-4 left-4 z-10 flex items-center gap-2">
           {(previewMode || displayDots.length > 0) && (
-            <div className="flex items-center gap-2 bg-white/90 backdrop-blur rounded-lg px-3 py-2 border-2 border-amber-200">
-              <label className="text-sm font-medium text-amber-800">Preview Mode</label>
+            <div className="flex items-center gap-2 bg-white/90 backdrop-blur rounded-lg px-2 py-1 border-2 border-amber-200">
+              <label className="text-xs font-medium text-amber-800 hidden sm:block">Preview Mode</label>
+              <label className="text-xs font-medium text-amber-800 sm:hidden">Preview</label>
               <button
                 onClick={() => setPreviewMode(!previewMode)}
-                className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
+                className={`relative inline-flex h-4 w-7 items-center rounded-full transition-colors ${
                   previewMode ? 'bg-amber-500' : 'bg-gray-300'
                 }`}
               >
                 <span
-                  className={`inline-block h-3 w-3 transform rounded-full bg-white transition-transform ${
-                    previewMode ? 'translate-x-5' : 'translate-x-1'
+                  className={`inline-block h-2 w-2 transform rounded-full bg-white transition-transform ${
+                    previewMode ? 'translate-x-4' : 'translate-x-1'
                   }`}
                 />
               </button>
@@ -449,12 +450,12 @@ const Dashboard: React.FC = () => {
           )}
         </div>
         
-        <div className="absolute top-4 right-4 flex gap-2 z-10">
-          <button className="bg-white/90 backdrop-blur rounded-lg px-3 py-2 border-2 border-amber-200 text-sm font-semibold text-amber-800 hover:bg-amber-50 transition-colors">
-            Total Dots: {totalDots}
+        <div className="absolute top-4 right-4 z-10 flex flex-col sm:flex-row gap-1 sm:gap-2">
+          <button className="bg-white/90 backdrop-blur rounded-lg px-2 py-1 border-2 border-amber-200 text-xs font-semibold text-amber-800 hover:bg-amber-50 transition-colors whitespace-nowrap">
+            Dots: {totalDots}
           </button>
-          <button className="bg-white/90 backdrop-blur rounded-lg px-3 py-2 border-2 border-amber-200 text-sm font-semibold text-amber-800 hover:bg-amber-50 transition-colors">
-            Total Wheels: {totalWheels}
+          <button className="bg-white/90 backdrop-blur rounded-lg px-2 py-1 border-2 border-amber-200 text-xs font-semibold text-amber-800 hover:bg-amber-50 transition-colors whitespace-nowrap">
+            Wheels: {totalWheels}
           </button>
         </div>
         
