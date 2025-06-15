@@ -828,6 +828,20 @@ Changelog:
   * Implemented cross-platform installation status synchronization
   * Added PWA installation event listeners for real-time status updates
   * Enhanced detection for standalone mode, iOS Safari, and Android installations
+- June 15, 2025. Enhanced dashboard capacity box with animated neural effects:
+  * Added "My Neural Capacity" heading to capacity box with amber gradient styling
+  * Changed "AI Processing" to "Learning Rituals" under Learning Engine
+  * Updated Learning Engine color from yellow to amber/orange gradient within DotSpark theme
+  * Changed Sparks color from orange-red to yellow-amber gradient for better theme consistency
+  * Replaced Social Users icon with Brain icon and applied red-orange gradient matching Social Neura
+  * Added comprehensive animated effects: Memory (pulse/bounce), Learning Engine (slow spin/pulse), Sparks (ping/bounce), Social (pulse/ping)
+  * Enhanced all capacity icons with hover effects: scale-110 transformation, enhanced shadows, and group-based animation triggers
+- June 15, 2025. Updated Social Neura color theme from purple to DotSpark warm colors:
+  * Changed Social Neura from purple gradients to red-orange gradients across all components
+  * Updated Header.tsx Social Neura button to red-orange gradient
+  * Updated Social.tsx Social Neura card with red-orange gradient icons and borders
+  * Updated SocialNeura.tsx page background from purple to red-orange gradient theme
+  * Achieved unified warm color palette consistent with DotSpark branding throughout Social Neura components
 ```
 
 ## User Preferences

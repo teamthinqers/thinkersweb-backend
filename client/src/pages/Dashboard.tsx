@@ -800,48 +800,51 @@ const Dashboard: React.FC = () => {
           {/* Capacity Box */}
           <Card className="bg-gradient-to-br from-white to-amber-50/30 border-2 border-amber-200 shadow-lg">
             <CardContent className="p-6">
+              <h2 className="text-xl font-semibold mb-6 text-center bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent">
+                My Neural Capacity
+              </h2>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {/* Memory */}
                 <div className="flex flex-col items-center text-center space-y-2">
-                  <div className="p-3 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 shadow-lg">
-                    <Database className="w-6 h-6 text-white" />
+                  <div className="p-3 rounded-full bg-gradient-to-br from-amber-600 to-yellow-600 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 group">
+                    <Database className="w-6 h-6 text-white animate-pulse group-hover:animate-bounce" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-blue-700 text-sm">Memory</h3>
-                    <p className="text-blue-600 text-xs">Storage & Recall</p>
+                    <h3 className="font-semibold text-amber-700 text-sm">Memory</h3>
+                    <p className="text-amber-600 text-xs">Storage & Recall</p>
                   </div>
                 </div>
 
                 {/* Learning Engine */}
                 <div className="flex flex-col items-center text-center space-y-2">
-                  <div className="p-3 rounded-full bg-gradient-to-br from-yellow-500 to-yellow-600 shadow-lg">
-                    <Cpu className="w-6 h-6 text-white" />
+                  <div className="p-3 rounded-full bg-gradient-to-br from-amber-500 to-orange-600 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 group">
+                    <Cpu className="w-6 h-6 text-white animate-spin group-hover:animate-pulse" style={{ animationDuration: '3s' }} />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-yellow-700 text-sm">Learning Engine</h3>
-                    <p className="text-yellow-600 text-xs">AI Processing</p>
+                    <h3 className="font-semibold text-amber-700 text-sm">Learning Engine</h3>
+                    <p className="text-amber-600 text-xs">Learning Rituals</p>
                   </div>
                 </div>
 
                 {/* Sparks */}
                 <div className="flex flex-col items-center text-center space-y-2">
-                  <div className="p-3 rounded-full bg-gradient-to-br from-orange-500 to-red-500 shadow-lg">
-                    <Sparkles className="w-6 h-6 text-white" />
+                  <div className="p-3 rounded-full bg-gradient-to-br from-yellow-500 to-amber-600 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 group">
+                    <Sparkles className="w-6 h-6 text-white animate-ping group-hover:animate-bounce" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-orange-700 text-sm">Sparks</h3>
-                    <p className="text-orange-600 text-xs">Insights & Ideas</p>
+                    <h3 className="font-semibold text-yellow-700 text-sm">Sparks</h3>
+                    <p className="text-yellow-600 text-xs">Insights & Ideas</p>
                   </div>
                 </div>
 
                 {/* Social */}
                 <div className="flex flex-col items-center text-center space-y-2">
-                  <div className="p-3 rounded-full bg-gradient-to-br from-teal-500 to-emerald-600 shadow-lg">
-                    <Users className="w-6 h-6 text-white" />
+                  <div className="p-3 rounded-full bg-gradient-to-br from-red-500 to-orange-600 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 group">
+                    <Brain className="w-6 h-6 text-white animate-pulse group-hover:animate-ping" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-teal-700 text-sm">Social</h3>
-                    <p className="text-teal-600 text-xs">Connections</p>
+                    <h3 className="font-semibold text-red-700 text-sm">Social</h3>
+                    <p className="text-red-600 text-xs">Connections</p>
                   </div>
                 </div>
               </div>
