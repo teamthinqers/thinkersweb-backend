@@ -456,6 +456,15 @@ Changelog:
   * Added live image preview and remove functionality for uploaded profile pictures
   * Updated completion message to generic encouragement without specific field counts
   * Profile data persists in localStorage with edit/save functionality
+- June 15, 2025. Enhanced floating dot dragging experience for improved usability:
+  * Made floating dot fully draggable with smooth position tracking across entire screen
+  * Added visual feedback during dragging: enhanced shadow, ring effects, and scale animations
+  * Implemented smart boundary detection preventing dot from going off-screen
+  * Added drag state indicators: pulsing rings disabled during drag, dashed border animation when dragging
+  * Enhanced cursor states: grab cursor when hovering, grabbing cursor when dragging
+  * Position now persists automatically in localStorage whenever moved
+  * Improved touch support for mobile devices with preventDefault for smoother dragging
+  * Visual elements scale up during drag and return to normal when released for clear feedback
 ```
 
 ## User Preferences

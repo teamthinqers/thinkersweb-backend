@@ -348,18 +348,39 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
           onClick={handleClick}
         >
           <div className="relative">
-            {/* Multiple pulsing rings for enhanced visibility */}
-            <div className="absolute inset-0 w-12 h-12 rounded-full bg-amber-500/40 animate-ping"></div>
-            <div className="absolute inset-1 w-10 h-10 rounded-full bg-orange-500/50 animate-ping" style={{ animationDelay: '0.5s' }}></div>
-            <div className="absolute inset-2 w-8 h-8 rounded-full bg-yellow-500/60 animate-ping" style={{ animationDelay: '1s' }}></div>
+            {/* Multiple pulsing rings for enhanced visibility - only when not dragging */}
+            {!isDragging && (
+              <>
+                <div className="absolute inset-0 w-12 h-12 rounded-full bg-amber-500/40 animate-ping"></div>
+                <div className="absolute inset-1 w-10 h-10 rounded-full bg-orange-500/50 animate-ping" style={{ animationDelay: '0.5s' }}></div>
+                <div className="absolute inset-2 w-8 h-8 rounded-full bg-yellow-500/60 animate-ping" style={{ animationDelay: '1s' }}></div>
+              </>
+            )}
             
-            {/* Main dot with intense blinking */}
-            <div className="relative w-12 h-12 rounded-full bg-gradient-to-br from-amber-600 to-orange-700 flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 animate-pulse">
-              <div className="w-4 h-4 rounded-full bg-white animate-pulse" style={{ animationDelay: '0.3s' }}></div>
+            {/* Main dot with enhanced dragging feedback */}
+            <div className={cn(
+              "relative w-12 h-12 rounded-full bg-gradient-to-br from-amber-600 to-orange-700 flex items-center justify-center transition-all duration-300",
+              isDragging 
+                ? "shadow-2xl ring-4 ring-amber-300/50 scale-110" 
+                : "shadow-lg hover:shadow-xl hover:scale-110 animate-pulse"
+            )}>
+              <div className={cn(
+                "w-4 h-4 rounded-full bg-white transition-all duration-300",
+                isDragging ? "scale-125" : "animate-pulse"
+              )} style={{ animationDelay: isDragging ? '0s' : '0.3s' }}></div>
               
-              {/* Attention-grabbing blinking indicator */}
-              <div className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-yellow-400 animate-ping"></div>
-              <div className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-white animate-pulse" style={{ animationDelay: '0.7s' }}></div>
+              {/* Attention-grabbing blinking indicator - hidden when dragging */}
+              {!isDragging && (
+                <>
+                  <div className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-yellow-400 animate-ping"></div>
+                  <div className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-white animate-pulse" style={{ animationDelay: '0.7s' }}></div>
+                </>
+              )}
+              
+              {/* Dragging state indicator */}
+              {isDragging && (
+                <div className="absolute inset-0 w-12 h-12 rounded-full border-2 border-dashed border-amber-300 animate-spin"></div>
+              )}
             </div>
           </div>
         </div>
