@@ -345,6 +345,12 @@ const Dashboard: React.FC = () => {
 
     // Touch event handlers for PWA/mobile support
     const handleTouchStart = (e: React.TouchEvent) => {
+      // Only start drag if not touching a dot
+      const target = e.target as HTMLElement;
+      if (target.closest('.dot-element')) {
+        return;
+      }
+      
       e.preventDefault();
       const touch = e.touches[0];
       setDragStart({ x: touch.clientX - offset.x, y: touch.clientY - offset.y });
@@ -556,18 +562,22 @@ const Dashboard: React.FC = () => {
                 <div key={dot.id} className="relative">
                   {/* Dot */}
                   <div
-                    className="absolute w-12 h-12 rounded-full cursor-pointer transition-all duration-300 hover:scale-125 hover:shadow-lg group"
+                    className="absolute w-12 h-12 rounded-full cursor-pointer transition-all duration-300 hover:scale-125 hover:shadow-lg group dot-element"
                     style={{
                       left: `${x}px`,
                       top: `${y}px`,
                       background: `linear-gradient(135deg, ${
                         dot.sourceType === 'voice' ? '#F59E0B, #EA580C' : '#D97706, #92400E'
-                      })`
+                      })`,
+                      pointerEvents: 'auto'
                     }}
                     onClick={(e) => {
                       e.stopPropagation();
+                      e.preventDefault();
                       setHoveredDot(hoveredDot?.id === dot.id ? null : dot);
                     }}
+                    onMouseDown={(e) => e.stopPropagation()}
+                    onTouchStart={(e) => e.stopPropagation()}
                     onMouseEnter={() => setHoveredDot(dot)}
                     onMouseLeave={() => {
                       // Only clear if not clicked

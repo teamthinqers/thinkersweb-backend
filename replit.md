@@ -636,6 +636,7 @@ Changelog:
   * Enhanced PWA grid scrolling with comprehensive touch event handling and proper mobile interaction support
   * Replaced custom drag handling with native overflow scrolling for optimal PWA performance and iOS momentum scrolling
   * Restored transform-based dragging with enhanced touch events and PWA-optimized boundaries for consistent cross-platform experience
+  * Fixed PWA interaction model - dots and wheels are static while users can navigate/scroll around the grid to explore content
 ```
 
 ## User Preferences
