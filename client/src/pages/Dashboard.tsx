@@ -345,24 +345,33 @@ const Dashboard: React.FC = () => {
 
     // Touch event handlers for PWA/mobile support
     const handleTouchStart = (e: React.TouchEvent) => {
-      e.preventDefault();
       const touch = e.touches[0];
       setDragStart({ x: touch.clientX - offset.x, y: touch.clientY - offset.y });
     };
 
     const handleTouchMove = (e: React.TouchEvent) => {
-      e.preventDefault();
       if (dragStart && e.touches[0]) {
+        e.preventDefault(); // Only prevent default when actually dragging
         const touch = e.touches[0];
-        setOffset({
+        const newOffset = {
           x: touch.clientX - dragStart.x,
           y: touch.clientY - dragStart.y
+        };
+        
+        // Add boundary constraints for better mobile experience
+        const maxX = 100;
+        const minX = -(1200 - 300);
+        const maxY = 50;
+        const minY = -(800 - 400);
+        
+        setOffset({
+          x: Math.max(minX, Math.min(maxX, newOffset.x)),
+          y: Math.max(minY, Math.min(maxY, newOffset.y))
         });
       }
     };
 
-    const handleTouchEnd = (e: React.TouchEvent) => {
-      e.preventDefault();
+    const handleTouchEnd = () => {
       setDragStart(null);
     };
 
@@ -484,21 +493,18 @@ const Dashboard: React.FC = () => {
         
         {/* Interactive draggable grid */}
         <div 
-          className="relative overflow-hidden h-[450px] w-full cursor-grab active:cursor-grabbing touch-none"
-          onMouseDown={handleMouseDown}
-          onMouseMove={handleMouseMove}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={handleMouseUp}
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
+          className="relative overflow-auto h-[450px] w-full"
+          style={{ 
+            WebkitOverflowScrolling: 'touch',
+            scrollBehavior: 'smooth',
+            overscrollBehavior: 'contain'
+          }}
         >
           <div 
-            className="relative transition-transform duration-200 ease-out"
+            className="relative"
             style={{ 
               width: '1200px', 
-              height: '800px',
-              transform: `translate(${offset.x}px, ${offset.y}px)`
+              height: '800px'
             }}
           >
             {/* Individual Dots Random Grid */}

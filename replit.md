@@ -634,6 +634,7 @@ Changelog:
   * Fixed PWA layout overlapping issues with responsive design for mobile screens
   * Implemented vertical button stacking and compact text for better PWA compatibility
   * Enhanced PWA grid scrolling with comprehensive touch event handling and proper mobile interaction support
+  * Replaced custom drag handling with native overflow scrolling for optimal PWA performance and iOS momentum scrolling
 ```
 
 ## User Preferences
