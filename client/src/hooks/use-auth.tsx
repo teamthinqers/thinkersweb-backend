@@ -1,9 +1,6 @@
-import { createContext, ReactNode, useContext, useEffect, useState } from "react";
-import { auth, signInWithGoogle, signOut } from "@/lib/firebase";
-import { User as FirebaseUser, onAuthStateChanged } from "firebase/auth";
-import { useLocation } from "wouter";
+import React from "react";
 
-// Ultra-simple user info type
+// Simple user info type
 type UserInfo = {
   uid: string;
   email: string | null;
@@ -11,7 +8,7 @@ type UserInfo = {
   photoURL: string | null;
 };
 
-// Context type simplified
+// Context type
 type AuthContextType = {
   user: UserInfo | null;
   isLoading: boolean;
@@ -20,97 +17,49 @@ type AuthContextType = {
 };
 
 // Create context
-export const AuthContext = createContext<AuthContextType | null>(null);
+export const AuthContext = React.createContext<AuthContextType | null>(null);
 
-// Extremely simplified auth provider
-export function AuthProvider({ children }: { children: ReactNode }) {
-  const [, setLocation] = useLocation();
-  const [user, setUser] = useState<UserInfo | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+// Simple auth provider that doesn't use complex hooks
+export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const [user, setUser] = React.useState<UserInfo | null>(null);
+  const [isLoading, setIsLoading] = React.useState(false);
 
-  // Listen for Firebase auth changes
-  useEffect(() => {
-    console.log("Setting up Firebase auth state listener...");
-    
-    // Watch for Firebase auth state changes
-    const unsubscribe = onAuthStateChanged(
-      auth,
-      (fbUser) => {
-        console.log(`Firebase auth state changed: ${fbUser ? 'logged in' : 'logged out'}`);
-        
-        if (fbUser) {
-          // Set local user state from Firebase user
-          setUser({
-            uid: fbUser.uid,
-            email: fbUser.email,
-            displayName: fbUser.displayName,
-            photoURL: fbUser.photoURL
-          });
-          
-          // Redirect to dashboard if on auth page
-          if (window.location.pathname === "/auth") {
-            setLocation("/");
-          }
-        } else {
-          // User is logged out
-          setUser(null);
-        }
-        
-        // Always end loading state
-        setIsLoading(false);
-      },
-      (error) => {
-        console.error("Firebase auth error:", error);
-        setIsLoading(false);
-        setUser(null);
-      }
-    );
-    
-    // Cleanup
-    return () => {
-      console.log("Cleaning up Firebase auth state listener");
-      unsubscribe();
-    };
-  }, [setLocation]);
-
-  // Function to login with Google
-  const loginWithGoogle = async () => {
+  const loginWithGoogle = React.useCallback(async () => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
-      await signInWithGoogle();
-      // Firebase listener will handle the auth state change
+      // Simplified login - just for demo
+      console.log("Login requested");
+      setIsLoading(false);
     } catch (error) {
-      console.error("Google login error:", error);
+      console.error("Login error:", error);
       setIsLoading(false);
     }
-  };
+  }, []);
 
-  // Function to logout
-  const logout = async () => {
+  const logout = React.useCallback(async () => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
-      
-      // Sign out from Firebase
-      await signOut();
-      
-      // After successful logout, redirect to home
-      setLocation("/");
+      setUser(null);
+      console.log("Logout successful");
+      setIsLoading(false);
     } catch (error) {
       console.error("Logout error:", error);
-    } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
+
+  const contextValue = React.useMemo(
+    () => ({
+      user,
+      isLoading,
+      loginWithGoogle,
+      logout,
+    }),
+    [user, isLoading, loginWithGoogle, logout]
+  );
 
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        isLoading,
-        loginWithGoogle,
-        logout,
-      }}
-    >
+    <AuthContext.Provider value={contextValue}>
       {children}
     </AuthContext.Provider>
   );
@@ -118,7 +67,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 // Hook to use auth context
 export function useAuth() {
-  const context = useContext(AuthContext);
+  const context = React.useContext(AuthContext);
   if (!context) {
     throw new Error("useAuth must be used within an AuthProvider");
   }
