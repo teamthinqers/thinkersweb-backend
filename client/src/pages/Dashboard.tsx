@@ -3,8 +3,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Mic, Type, Eye, Brain, Network, Zap, Search, Clock } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Mic, Type, Eye, Brain, Network, Zap, Search, Clock, Info } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import DotFullView from "@/components/DotFullView";
 
@@ -446,6 +446,28 @@ const Dashboard: React.FC = () => {
             <span className="bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent">
               Dot Wheels Map
             </span>
+            <Dialog>
+              <DialogTrigger asChild>
+                <button className="ml-2 p-1 rounded-full hover:bg-amber-100 transition-colors">
+                  <Info className="w-4 h-4 text-amber-600" />
+                </button>
+              </DialogTrigger>
+              <DialogContent className="max-w-md">
+                <DialogHeader>
+                  <DialogTitle className="flex items-center gap-2">
+                    <Info className="w-5 h-5 text-amber-600" />
+                    About Dot Wheels Map
+                  </DialogTitle>
+                </DialogHeader>
+                <div className="space-y-3 text-sm text-gray-700">
+                  <p>You can see the dots you saved in this grid.</p>
+                  <div>
+                    <p className="font-semibold text-amber-700 mb-1">What are Wheels?</p>
+                    <p>9 dots of same category form a Dot Wheel which is nothing but a bigger dot. Keep adding your dots and let DotSpark fix it into relevant Wheels.</p>
+                  </div>
+                </div>
+              </DialogContent>
+            </Dialog>
           </h2>
           
           <DotWheelsMap wheels={wheels} />

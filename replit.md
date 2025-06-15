@@ -608,6 +608,11 @@ Changelog:
   * Added periodic checks every 5 seconds for real-time status updates
   * Improved event listeners and cleanup for better synchronization
   * Added console logging for debugging activation state changes
+- June 15, 2025. Enhanced Dot Wheels Map with info functionality:
+  * Added info icon next to "Dot Wheels Map" heading
+  * Click opens modal explaining dots grid and wheel formation concept
+  * Explains that 9 dots of same category form a Dot Wheel (bigger dot)
+  * Clear guidance that DotSpark automatically organizes dots into relevant Wheels
 ```
 
 ## User Preferences
