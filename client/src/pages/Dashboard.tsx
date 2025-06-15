@@ -348,9 +348,11 @@ const Dashboard: React.FC = () => {
       // Only start drag if not touching a dot
       const target = e.target as HTMLElement;
       if (target.closest('.dot-element')) {
+        console.log('Touch started on dot, preventing grid drag');
         return;
       }
       
+      console.log('Touch started on grid');
       e.preventDefault();
       const touch = e.touches[0];
       setDragStart({ x: touch.clientX - offset.x, y: touch.clientY - offset.y });
@@ -590,12 +592,15 @@ const Dashboard: React.FC = () => {
                     onClick={(e) => {
                       e.stopPropagation();
                       e.preventDefault();
+                      console.log('Dot clicked:', dot.id);
                       setHoveredDot(hoveredDot?.id === dot.id ? null : dot);
                     }}
                     onMouseDown={(e) => e.stopPropagation()}
                     onTouchStart={(e) => {
                       e.stopPropagation();
-                      // Handle touch for mobile clicks
+                      e.preventDefault();
+                      console.log('Dot touched:', dot.id);
+                      // Immediate response for PWA
                       setHoveredDot(hoveredDot?.id === dot.id ? null : dot);
                     }}
                     onTouchEnd={(e) => {
