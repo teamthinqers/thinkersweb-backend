@@ -70,21 +70,24 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
     const startX = e.clientX - position.x;
     const startY = e.clientY - position.y;
 
+    let currentPosition = position;
+
     const handleMouseMove = (e: MouseEvent) => {
       const newX = Math.max(0, Math.min(window.innerWidth - 48, e.clientX - startX));
       const newY = Math.max(0, Math.min(window.innerHeight - 48, e.clientY - startY));
       const newPosition = { x: newX, y: newY };
+      currentPosition = newPosition;
       setPosition(newPosition);
       // Save position immediately during drag
       localStorage.setItem('global-floating-dot-position', JSON.stringify(newPosition));
+      console.log('Saving position during drag:', newPosition);
     };
 
     const handleMouseUp = () => {
       setIsDragging(false);
       // Save final position when drag completes
-      const finalPosition = position;
-      localStorage.setItem('global-floating-dot-position', JSON.stringify(finalPosition));
-      console.log('Saved final floating dot position:', finalPosition);
+      localStorage.setItem('global-floating-dot-position', JSON.stringify(currentPosition));
+      console.log('Saved final floating dot position:', currentPosition);
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
     };
@@ -102,22 +105,25 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
     const startX = touch.clientX - position.x;
     const startY = touch.clientY - position.y;
 
+    let currentPosition = position;
+
     const handleTouchMove = (e: TouchEvent) => {
       const touch = e.touches[0];
       const newX = Math.max(0, Math.min(window.innerWidth - 48, touch.clientX - startX));
       const newY = Math.max(0, Math.min(window.innerHeight - 48, touch.clientY - startY));
       const newPosition = { x: newX, y: newY };
+      currentPosition = newPosition;
       setPosition(newPosition);
       // Save position immediately during drag
       localStorage.setItem('global-floating-dot-position', JSON.stringify(newPosition));
+      console.log('Saving position during touch drag:', newPosition);
     };
 
     const handleTouchEnd = () => {
       setIsDragging(false);
       // Save final position when touch drag completes
-      const finalPosition = position;
-      localStorage.setItem('global-floating-dot-position', JSON.stringify(finalPosition));
-      console.log('Saved final floating dot position (touch):', finalPosition);
+      localStorage.setItem('global-floating-dot-position', JSON.stringify(currentPosition));
+      console.log('Saved final floating dot position (touch):', currentPosition);
       document.removeEventListener('touchmove', handleTouchMove);
       document.removeEventListener('touchend', handleTouchEnd);
     };
