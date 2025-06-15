@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Input } from "@/components/ui/input";
 import { 
-  SearchIcon, 
   BellIcon, 
   HomeIcon, 
   LogOut, 
@@ -32,14 +30,12 @@ import { useWhatsAppStatus } from "@/hooks/useWhatsAppStatus";
 import { neuraStorage } from "@/lib/neuraStorage";
 
 interface HeaderProps {
-  onSearch: (query: string) => void;
   onMenuClick?: () => void;
   showMenuButton?: boolean;
 }
 
-const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }) => {
+const Header: React.FC<HeaderProps> = ({ onMenuClick, showMenuButton }) => {
   // State and hooks
-  const [searchQuery, setSearchQuery] = useState("");
   const { toast } = useToast();
   const { user, logout } = useAuth();
   const [location, setLocation] = useLocation();
@@ -117,13 +113,6 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
       }, 500);
     }
   }, [user, simulateActivation, forceStatusRefresh]);
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      onSearch(searchQuery.trim());
-    }
-  };
 
   const handleNotifications = () => {
     toast({
@@ -279,21 +268,6 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 <HomeIcon className="h-5 w-5 mr-1" />
                 <span className="hidden sm:inline">Home</span>
               </Button>
-              
-              <div className="relative w-full max-w-xl">
-                <form onSubmit={handleSearch}>
-                  <Input
-                    type="text"
-                    placeholder="Search your learnings..."
-                    className="pl-10 pr-4 py-2 w-full"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                  />
-                  <div className="absolute left-3 top-2.5 text-gray-400">
-                    <SearchIcon className="h-5 w-5" />
-                  </div>
-                </form>
-              </div>
             </div>
 
             <div className="ml-4 flex items-center">
@@ -387,20 +361,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
             </Button>
           </div>
           <div className="p-4">
-            <div className="mb-6">
-              <form onSubmit={handleSearch} className="relative">
-                <Input
-                  type="text"
-                  placeholder="Search your learnings..."
-                  className="pl-10 pr-4 py-2 w-full"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-                <div className="absolute left-3 top-2.5 text-gray-400">
-                  <SearchIcon className="h-5 w-5" />
-                </div>
-              </form>
-            </div>
+
             
             <nav className="space-y-1">
               <Button 

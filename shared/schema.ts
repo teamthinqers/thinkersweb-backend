@@ -44,7 +44,7 @@ export const insertUserSchema = createInsertSchema(users, {
   mobileNumber: (schema) => schema.optional(),
   dateOfBirth: (schema) => schema.optional(),
   yearsOfExperience: (schema) => schema.optional(),
-  linkedInProfile: (schema) => schema.union([schema.url("Must be a valid URL"), z.literal("")]).optional(),
+  linkedInProfile: (schema) => schema.optional(),
   profileImage: (schema) => schema.optional(),
 });
 
@@ -55,7 +55,7 @@ export const updateProfileSchema = createInsertSchema(users, {
   mobileNumber: (schema) => schema.optional(),
   dateOfBirth: (schema) => schema.optional(),
   yearsOfExperience: (schema) => schema.min(0, "Experience cannot be negative").max(70, "Experience cannot exceed 70 years").optional(),
-  linkedInProfile: (schema) => schema.url("Must be a valid URL").optional().or(schema.literal("")),
+  linkedInProfile: (schema) => schema.optional(),
   profileImage: (schema) => schema.optional(),
 }).omit({
   id: true,
