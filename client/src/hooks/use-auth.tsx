@@ -1,8 +1,4 @@
-import { createContext, ReactNode, useContext, useEffect, useState } from "react";
-import { auth, signInWithGoogle, signOut } from "@/lib/firebase";
-import { User as FirebaseUser, onAuthStateChanged } from "firebase/auth";
-
-// Ultra-simple user info type
+// Simplified auth hook without React context to fix hooks error
 type UserInfo = {
   uid: string;
   email: string | null;
@@ -10,7 +6,6 @@ type UserInfo = {
   photoURL: string | null;
 };
 
-// Context type simplified
 type AuthContextType = {
   user: UserInfo | null;
   isLoading: boolean;
@@ -18,13 +13,8 @@ type AuthContextType = {
   logout: () => Promise<void>;
 };
 
-// Create context
-export const AuthContext = createContext<AuthContextType | null>(null);
-
-// AuthProvider temporarily removed to fix React hooks error
-
-// Hook to use auth context - temporarily returns mock data
-export function useAuth() {
+// Simplified useAuth hook returns mock data without context
+export function useAuth(): AuthContextType {
   return {
     user: null,
     isLoading: false,
