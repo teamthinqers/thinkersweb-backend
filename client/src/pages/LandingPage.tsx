@@ -649,70 +649,126 @@ export default function LandingPage() {
             </h2>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8 max-w-5xl mx-auto" style={{ display: "grid", gridTemplateRows: "1fr" }}>
-            {/* Step 1: Sign In */}
-            <div className="bg-card rounded-lg p-6 relative group hover:shadow-lg transition-all duration-300 border border-amber-200/30 dark:border-amber-800/30 overflow-hidden h-full flex flex-col">
-              <div className="absolute top-0 right-0 w-24 h-24 bg-amber-500/5 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:bg-amber-500/10 transition-colors duration-300"></div>
-              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-amber-500/10 text-amber-600 mb-4 relative z-10">
-                <User className="h-6 w-6" />
+          {/* Show step boxes only if setup is not completed */}
+          {!isSetupCompleted ? (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8 max-w-5xl mx-auto" style={{ display: "grid", gridTemplateRows: "1fr" }}>
+              {/* Step 1: Sign In */}
+              <div className="bg-card rounded-lg p-6 relative group hover:shadow-lg transition-all duration-300 border border-amber-200/30 dark:border-amber-800/30 overflow-hidden h-full flex flex-col">
+                <div className="absolute top-0 right-0 w-24 h-24 bg-amber-500/5 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:bg-amber-500/10 transition-colors duration-300"></div>
+                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-amber-500/10 text-amber-600 mb-4 relative z-10">
+                  <User className="h-6 w-6" />
+                </div>
+                <div className="absolute top-6 right-6 flex items-center justify-center w-8 h-8 rounded-full bg-amber-500/80 text-white font-bold text-lg">
+                  1
+                </div>
+                <h3 className="text-xl font-semibold mb-2">Sign In or Register</h3>
+                <p className="text-muted-foreground text-sm">Create your account to personalize your DotSpark experience.</p>
+                <div className="mt-auto pt-4">
+                  <Button asChild className="w-full !bg-gradient-to-r !from-amber-500 !to-orange-600 hover:!from-orange-600 hover:!to-amber-500 text-white border-0 shadow-md hover:shadow-lg transition-all duration-300">
+                    <Link href="/auth">
+                      Get Started
+                    </Link>
+                  </Button>
+                </div>
               </div>
-              <div className="absolute top-6 right-6 flex items-center justify-center w-8 h-8 rounded-full bg-amber-500/80 text-white font-bold text-lg">
-                1
+              
+              {/* Step 2: Activate DotSpark */}
+              <div className="bg-card rounded-lg p-6 relative group hover:shadow-lg transition-all duration-300 border border-orange-200/30 dark:border-orange-800/30 overflow-hidden h-full flex flex-col">
+                <div className="absolute top-0 right-0 w-24 h-24 bg-orange-500/5 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:bg-orange-500/10 transition-colors duration-300"></div>
+                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-orange-500/10 text-orange-600 mb-4 relative z-10">
+                  <img src="/dotspark-logo-icon.jpeg" alt="DotSpark" className="h-6 w-6 rounded-full" />
+                </div>
+                <div className="absolute top-6 right-6 flex items-center justify-center w-8 h-8 rounded-full bg-orange-500/80 text-white font-bold text-lg">
+                  2
+                </div>
+                <h3 className="text-xl font-semibold mb-2">Activate DotSpark</h3>
+                <p className="text-muted-foreground text-sm">Configure the Dot settings to capture your valuable thoughts.</p>
+                <div className="mt-auto pt-4">
+                  <Button 
+                    className="w-full !bg-gradient-to-r !from-amber-500 !to-orange-600 hover:!from-orange-600 hover:!to-amber-500 text-white border-0 shadow-md hover:shadow-lg transition-all duration-300"
+                    onClick={() => setLocation("/sectioned-dotspark-tuning")}
+                  >
+                    Activate Dot
+                  </Button>
+                </div>
               </div>
-              <h3 className="text-xl font-semibold mb-2">Sign In or Register</h3>
-              <p className="text-muted-foreground text-sm">Create your account to personalize your DotSpark experience.</p>
-              <div className="mt-auto pt-4">
-                <Button asChild className="w-full !bg-gradient-to-r !from-amber-500 !to-orange-600 hover:!from-orange-600 hover:!to-amber-500 text-white border-0 shadow-md hover:shadow-lg transition-all duration-300">
-                  <Link href="/auth">
-                    Get Started
+              
+              {/* Step 3: Install Web App */}
+              <div className="bg-card rounded-lg p-6 relative group hover:shadow-lg transition-all duration-300 border border-orange-200/30 dark:border-orange-800/30 overflow-hidden h-full flex flex-col">
+                <div className="absolute top-0 right-0 w-24 h-24 bg-orange-500/5 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:bg-orange-500/10 transition-colors duration-300"></div>
+                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-orange-500/10 text-orange-600 mb-4 relative z-10">
+                  <Download className="h-6 w-6" />
+                </div>
+                <div className="absolute top-6 right-6 flex items-center justify-center w-8 h-8 rounded-full bg-orange-500/80 text-white font-bold text-lg">
+                  3
+                </div>
+                <h3 className="text-xl font-semibold mb-2">Install Web App</h3>
+                <p className="text-muted-foreground text-sm">Download the Web App on your mobile for a better experience.</p>
+                <div className="mt-auto pt-4">
+                  <Button 
+                    onClick={() => setInstallDialogOpen(true)}
+                    className="w-full !bg-gradient-to-r !from-amber-500 !to-orange-600 hover:!from-orange-600 hover:!to-amber-500 text-white border-0 shadow-md hover:shadow-lg transition-all duration-300"
+                  >
+                    <Download className="h-5 w-5 mr-2" />
+                    <span>Install App</span>
+                  </Button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            /* Completion status card for completed users */
+            <div className="mt-8 max-w-2xl mx-auto">
+              <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 border border-green-200 dark:border-green-800 rounded-xl p-8 text-center shadow-lg relative overflow-hidden">
+                {/* Celebration effects */}
+                <div className="absolute top-4 left-4 text-yellow-400/30 text-lg animate-pulse" style={{animationDelay: '0s'}}>✨</div>
+                <div className="absolute top-6 right-6 text-yellow-500/30 text-lg animate-pulse" style={{animationDelay: '0.5s'}}>✨</div>
+                <div className="absolute bottom-4 left-6 text-yellow-400/30 text-lg animate-pulse" style={{animationDelay: '1s'}}>✨</div>
+                <div className="absolute bottom-6 right-4 text-yellow-500/30 text-lg animate-pulse" style={{animationDelay: '1.5s'}}>✨</div>
+                
+                <div className="flex items-center justify-center mb-4">
+                  <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full flex items-center justify-center shadow-lg">
+                    <CheckCircle className="h-8 w-8 text-white" />
+                  </div>
+                </div>
+                
+                <h3 className="text-2xl font-bold text-green-700 dark:text-green-400 mb-2">
+                  🎉 Setup Complete!
+                </h3>
+                
+                <p className="text-green-600 dark:text-green-300 mb-6">
+                  Congratulations! You've successfully completed all setup steps. Your DotSpark journey begins now.
+                </p>
+                
+                <div className="grid grid-cols-3 gap-4 mb-6">
+                  <div className="flex flex-col items-center">
+                    <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center mb-2">
+                      <User className="h-4 w-4 text-white" />
+                    </div>
+                    <span className="text-xs text-green-600 dark:text-green-400 font-medium">Signed In</span>
+                  </div>
+                  <div className="flex flex-col items-center">
+                    <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center mb-2">
+                      <img src="/dotspark-logo-icon.jpeg" alt="DotSpark" className="h-4 w-4 rounded" />
+                    </div>
+                    <span className="text-xs text-green-600 dark:text-green-400 font-medium">DotSpark Active</span>
+                  </div>
+                  <div className="flex flex-col items-center">
+                    <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center mb-2">
+                      <Download className="h-4 w-4 text-white" />
+                    </div>
+                    <span className="text-xs text-green-600 dark:text-green-400 font-medium">App Installed</span>
+                  </div>
+                </div>
+                
+                <Button asChild className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white border-0 shadow-md hover:shadow-lg transition-all duration-300">
+                  <Link href="/my-neura">
+                    <Sparkles className="h-4 w-4 mr-2" />
+                    Start Your DotSpark Journey
                   </Link>
                 </Button>
               </div>
             </div>
-            
-            {/* Step 2: Activate DotSpark */}
-            <div className="bg-card rounded-lg p-6 relative group hover:shadow-lg transition-all duration-300 border border-orange-200/30 dark:border-orange-800/30 overflow-hidden h-full flex flex-col">
-              <div className="absolute top-0 right-0 w-24 h-24 bg-orange-500/5 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:bg-orange-500/10 transition-colors duration-300"></div>
-              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-orange-500/10 text-orange-600 mb-4 relative z-10">
-                <img src="/dotspark-logo-icon.jpeg" alt="DotSpark" className="h-6 w-6 rounded-full" />
-              </div>
-              <div className="absolute top-6 right-6 flex items-center justify-center w-8 h-8 rounded-full bg-orange-500/80 text-white font-bold text-lg">
-                2
-              </div>
-              <h3 className="text-xl font-semibold mb-2">Activate DotSpark</h3>
-              <p className="text-muted-foreground text-sm">Configure the Dot settings to capture your valuable thoughts.</p>
-              <div className="mt-auto pt-4">
-                <Button 
-                  className="w-full !bg-gradient-to-r !from-amber-500 !to-orange-600 hover:!from-orange-600 hover:!to-amber-500 text-white border-0 shadow-md hover:shadow-lg transition-all duration-300"
-                  onClick={() => setLocation("/sectioned-dotspark-tuning")}
-                >
-                  Activate Dot
-                </Button>
-              </div>
-            </div>
-            
-            {/* Step 3: Install Web App */}
-            <div className="bg-card rounded-lg p-6 relative group hover:shadow-lg transition-all duration-300 border border-orange-200/30 dark:border-orange-800/30 overflow-hidden h-full flex flex-col">
-              <div className="absolute top-0 right-0 w-24 h-24 bg-orange-500/5 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:bg-orange-500/10 transition-colors duration-300"></div>
-              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-orange-500/10 text-orange-600 mb-4 relative z-10">
-                <Download className="h-6 w-6" />
-              </div>
-              <div className="absolute top-6 right-6 flex items-center justify-center w-8 h-8 rounded-full bg-orange-500/80 text-white font-bold text-lg">
-                3
-              </div>
-              <h3 className="text-xl font-semibold mb-2">Install Web App</h3>
-              <p className="text-muted-foreground text-sm">Download the Web App on your mobile for a better experience.</p>
-              <div className="mt-auto pt-4">
-                <Button 
-                  onClick={() => setInstallDialogOpen(true)}
-                  className="w-full !bg-gradient-to-r !from-amber-500 !to-orange-600 hover:!from-orange-600 hover:!to-amber-500 text-white border-0 shadow-md hover:shadow-lg transition-all duration-300"
-                >
-                  <Download className="h-5 w-5 mr-2" />
-                  <span>Install App</span>
-                </Button>
-              </div>
-            </div>
-          </div>
+          )}
           
           {/* Enhanced gamified progress tracker */}
           <div className="max-w-2xl mx-auto mt-16 relative">
