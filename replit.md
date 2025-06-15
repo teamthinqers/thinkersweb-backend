@@ -593,6 +593,12 @@ Changelog:
   * Included exact 3-step process: Sign In/Register, Activate the Dot, Install Web App
   * Applied consistent amber/orange color theming and branding throughout
   * Maintained same layout structure with compact card design for 3 steps
+- June 15, 2025. Voice playback functionality confirmed working:
+  * Volume icons appear next to each layer (Summary, Anchor, Pulse) for voice dots
+  * Color-coded volume icons match layer themes (amber, blue, purple)
+  * Audio playback uses HTML5 Audio API with proper error handling
+  * Voice icons only display when voice data is available for specific layers
+  * Users can click volume icons to play actual recorded voice for each layer
 ```
 
 ## User Preferences
