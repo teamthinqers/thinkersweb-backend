@@ -23,7 +23,7 @@ import {
   Edit,
   Loader2
 } from "lucide-react";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuth } from "@/hooks/use-auth-simple";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { format, parseISO, isValid } from "date-fns";
@@ -452,20 +452,49 @@ const Profile: React.FC = () => {
                 />
               </div>
 
-              {/* Date of Birth */}
-              <div>
-                <Label htmlFor="dateOfBirth" className="flex items-center space-x-1">
-                  <Calendar className="h-4 w-4" />
+              {/* Date of Birth - Enhanced Date Picker */}
+              <div className="space-y-3">
+                <Label htmlFor="dateOfBirth" className="flex items-center space-x-2 text-sm font-medium">
+                  <CalendarIcon className="h-4 w-4 text-gray-600" />
                   <span>Date of Birth</span>
                 </Label>
-                <Input
-                  id="dateOfBirth"
-                  type="date"
-                  value={profileData.dateOfBirth}
-                  onChange={(e) => setProfileData(prev => ({ ...prev, dateOfBirth: e.target.value }))}
-                  disabled={!isEditing}
-                  className={!isEditing ? "bg-gray-50" : ""}
-                />
+                {isEditing ? (
+                  <Popover open={isDatePickerOpen} onOpenChange={setIsDatePickerOpen}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "w-full justify-start text-left font-normal",
+                          !selectedDate && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {selectedDate ? format(selectedDate, "PPP") : "Select your date of birth"}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={selectedDate}
+                        onSelect={handleDateSelect}
+                        disabled={(date) =>
+                          date > new Date() || date < new Date("1900-01-01")
+                        }
+                        initialFocus
+                        captionLayout="dropdown-buttons"
+                        fromYear={1950}
+                        toYear={new Date().getFullYear()}
+                      />
+                    </PopoverContent>
+                  </Popover>
+                ) : (
+                  <div className="flex items-center space-x-2 p-3 bg-gray-50 rounded-md border">
+                    <CalendarIcon className="h-4 w-4 text-gray-400" />
+                    <span className="text-gray-600">
+                      {selectedDate ? format(selectedDate, "PPP") : "Not specified"}
+                    </span>
+                  </div>
+                )}
               </div>
 
               {/* Years of Experience */}
