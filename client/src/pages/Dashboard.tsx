@@ -389,58 +389,52 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
 
-        {/* Recent Dots Section */}
+        {/* Search Results Window - Separate from Recent Dots */}
+        {searchTerm && searchResults.length > 0 && (
+          <SearchResultsList 
+            searchResults={searchResults}
+            onDotClick={setViewFullDot}
+            searchTerm={searchTerm}
+          />
+        )}
+
+        {/* Recent Dots Section - Horizontally Scrollable */}
         <div className="mb-8">
           <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-            <Zap className="w-5 h-5 text-amber-500" />
+            <div className="w-3 h-3 rounded-full bg-gradient-to-br from-amber-600 to-orange-700">
+              <div className="w-1.5 h-1.5 rounded-full bg-white mt-0.5 ml-0.5"></div>
+            </div>
             <span className="bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent">
               Recent Dots
             </span>
           </h2>
-          <div className="bg-white/80 backdrop-blur border-2 border-amber-200 rounded-xl p-4 max-h-96 overflow-y-auto shadow-lg">
-            <div className="space-y-4">
-              {/* Search Results */}
-              {searchResults.length > 0 && (
-                <div className="mb-4">
-                  <h3 className="text-sm font-semibold text-amber-800 mb-2">Search Results ({searchResults.length})</h3>
-                  {searchResults.slice(0, 3).map((dot: Dot) => (
+          <div className="bg-white/80 backdrop-blur border-2 border-amber-200 rounded-xl p-4 shadow-lg">
+            <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-amber-300 scrollbar-track-amber-100">
+              {dots.length > 0 ? (
+                dots.slice(0, 8).map((dot: Dot) => (
+                  <div key={dot.id} className="flex-shrink-0 w-72">
                     <DotCard 
-                      key={dot.id} 
                       dot={dot} 
                       onClick={() => setViewFullDot(dot)}
                     />
-                  ))}
-                </div>
-              )}
-              
-              {/* Recent Dots or Examples */}
-              {searchTerm.trim() === '' && (
+                  </div>
+                ))
+              ) : (
                 <>
-                  {dots.length > 0 ? (
-                    dots.slice(0, 4).map((dot: Dot) => (
+                  <div className="flex-shrink-0 w-full text-center mb-3">
+                    <Badge className="bg-orange-100 text-orange-700 border-orange-200">
+                      Preview Examples
+                    </Badge>
+                  </div>
+                  {exampleDots.map((dot: Dot) => (
+                    <div key={dot.id} className="flex-shrink-0 w-72">
                       <DotCard 
-                        key={dot.id} 
                         dot={dot} 
+                        isPreview={true}
                         onClick={() => setViewFullDot(dot)}
                       />
-                    ))
-                  ) : (
-                    <>
-                      <div className="mb-3 text-center">
-                        <Badge className="bg-orange-100 text-orange-700 border-orange-200">
-                          Preview Examples
-                        </Badge>
-                      </div>
-                      {exampleDots.map((dot: Dot) => (
-                        <DotCard 
-                          key={dot.id} 
-                          dot={dot} 
-                          isPreview={true}
-                          onClick={() => setViewFullDot(dot)}
-                        />
-                      ))}
-                    </>
-                  )}
+                    </div>
+                  ))}
                 </>
               )}
             </div>
@@ -449,14 +443,17 @@ const Dashboard: React.FC = () => {
 
         {/* Dot Wheels Map Section */}
         <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-            <Network className="w-5 h-5 text-amber-500" />
+          <h2 className="text-xl font-semibold mb-2 flex items-center gap-2">
+            <div className="w-5 h-5 rounded-full border-2 border-amber-500 flex items-center justify-center">
+              <div className="w-2 h-2 rounded-full bg-amber-500"></div>
+            </div>
             <span className="bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent">
               Dot Wheels Map
             </span>
           </h2>
+          <p className="text-sm text-gray-600 mb-4">Saving your dots for sparking insights</p>
           
-          <DotWheelsMap wheels={wheels} />
+          <DotWheelsMap wheels={wheels} dots={dots} onDotClick={setViewFullDot} />
         </div>
       </div>
       
