@@ -10,7 +10,8 @@ import {
   LayoutDashboard,
   Brain, 
   User,
-  MessageSquare
+  MessageSquare,
+  Users
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
@@ -202,16 +203,20 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
             </div>
             
             <div className="flex items-center space-x-2">
-              {/* Ask DotSpark button */}
-              <a 
-                href={`https://wa.me/16067157733?text=${encodeURIComponent("Hey DotSpark, I've got a few things on my mind — need your thoughts")}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white h-9 w-9 rounded-md shadow-md transition-colors"
-                title="Ask DotSpark"
+              {/* Social icon only for PWA */}
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-gray-600 hover:text-amber-600 hover:bg-amber-50 transition-all duration-300 h-9 w-9"
+                onClick={() => setLocation("/social")}
               >
-                <MessageSquare className="h-4 w-4" />
-              </a>
+                <div className="relative">
+                  <Brain className="h-4 w-4 animate-pulse hover:animate-bounce transition-all duration-300" />
+                  <div className="absolute inset-0 animate-ping opacity-30">
+                    <Brain className="h-4 w-4" />
+                  </div>
+                </div>
+              </Button>
               
               {/* Neura status indicator - just brain icon with green indicator */}
               <div className="bg-gradient-to-r from-amber-700 to-primary text-white h-9 w-9 p-0 shadow-md rounded-md flex items-center justify-center">
@@ -298,12 +303,21 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 </div>
               </div>
               
-              <button 
-                className="p-2 rounded-full text-gray-400 hover:text-gray-500 hover:bg-gray-100 mr-2"
-                onClick={handleNotifications}
+              {/* Social button with animated brain icon */}
+              <Button
+                variant="ghost"
+                size="sm"
+                className="mr-2 text-gray-600 hover:text-amber-600 hover:bg-amber-50 transition-all duration-300"
+                onClick={() => setLocation("/social")}
               >
-                <BellIcon className="h-5 w-5" />
-              </button>
+                <div className="relative">
+                  <Brain className="h-5 w-5 animate-pulse hover:animate-bounce transition-all duration-300" />
+                  <div className="absolute inset-0 animate-ping opacity-30">
+                    <Brain className="h-5 w-5" />
+                  </div>
+                </div>
+                <span className="ml-2 hidden sm:inline">Social Neura</span>
+              </Button>
               
               {/* Profile button - Desktop */}
               <DropdownMenu>
@@ -406,6 +420,19 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
               >
                 <Brain className="h-5 w-5 mr-2 text-amber-600" />
                 My DotSpark
+              </Button>
+              
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="w-full justify-start mb-2 text-gray-700 hover:text-gray-900 hover:bg-gray-50"
+                onClick={() => {
+                  setShowMobileNav(false);
+                  setLocation("/social");
+                }}
+              >
+                <Brain className="h-5 w-5 mr-2 text-amber-600 animate-pulse" />
+                Social
               </Button>
             </nav>
           </div>
