@@ -41,7 +41,7 @@ import DotCapture from "@/pages/DotCapture";
 import AppLayout from "@/components/layout/AppLayout";
 import EntryDetail from "@/components/entries/EntryDetail";
 import ChatEntryForm from "@/components/chat/ChatEntryForm";
-// Temporarily removing auth to fix React hooks error
+import { AuthProvider } from "@/hooks/use-auth";
 import { StructuredFloatingDot } from "@/components/dotspark/StructuredFloatingDot";
 import { neuraStorage } from "@/lib/neuraStorage";
 import { Loader2 } from "lucide-react";
@@ -52,7 +52,8 @@ import { isRunningAsStandalone } from "@/lib/pwaUtils";
 
 // Simplified Protected route component
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { user, isLoading } = useAuth();
+  // Temporarily disabled auth to fix React hooks error
+  const user = null, isLoading = false;
   const [, setLocation] = useLocation();
 
   // Check if user is authenticated
@@ -164,7 +165,8 @@ function AppWithLayout() {
 
 function Router() {
   const [location] = useLocation();
-  const { user } = useAuth();
+  // Temporarily disabled auth to fix React hooks error
+  const user = null;
   
   return (
     <Switch>
@@ -331,7 +333,7 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-
+      <AuthProvider>
         {showNetworkWarning && (
           <div className="fixed top-0 left-0 right-0 p-2 bg-amber-500 text-black z-50 text-center text-sm">
             <p>
@@ -355,6 +357,7 @@ function App() {
         <div className="fixed bottom-4 right-4 left-4 md:left-auto z-50">
           <PWAInstallButton size="lg" className="w-full md:w-auto" />
         </div>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }
