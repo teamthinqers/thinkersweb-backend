@@ -505,6 +505,10 @@ Changelog:
   * Enhanced calendar with proper date formatting, validation, and user-friendly interface
   * Added date-fns formatting for better date display and manipulation
   * Calendar now provides intuitive year navigation essential for birth date selection
+- June 15, 2025. Cleaned up dashboard header search functionality:
+  * Removed duplicate search box from dashboard header to eliminate redundancy
+  * Dashboard now uses only the search functionality within the Recent Dots section
+  * Streamlined dashboard interface maintains single search experience for better UX
 ```
 
 ## User Preferences

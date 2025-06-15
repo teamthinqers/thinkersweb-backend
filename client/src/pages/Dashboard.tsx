@@ -369,18 +369,6 @@ const Dashboard: React.FC = () => {
               My DotSpark Neura
             </span>
           </h1>
-          
-          {/* Search Bar */}
-          <div className="relative mb-6">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-amber-500" />
-            <Input
-              type="text"
-              placeholder="Enter keywords to search for a Dot"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 h-12 text-base border-2 border-amber-200 bg-white/90 backdrop-blur focus:border-amber-500 focus:ring-amber-500/20 rounded-xl placeholder:text-gray-500 text-gray-800 shadow-sm"
-            />
-          </div>
         </div>
 
         {/* Recent Dots Section */}
