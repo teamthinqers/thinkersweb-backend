@@ -343,6 +343,29 @@ const Dashboard: React.FC = () => {
       setDragStart(null);
     };
 
+    // Touch event handlers for PWA/mobile support
+    const handleTouchStart = (e: React.TouchEvent) => {
+      e.preventDefault();
+      const touch = e.touches[0];
+      setDragStart({ x: touch.clientX - offset.x, y: touch.clientY - offset.y });
+    };
+
+    const handleTouchMove = (e: React.TouchEvent) => {
+      e.preventDefault();
+      if (dragStart && e.touches[0]) {
+        const touch = e.touches[0];
+        setOffset({
+          x: touch.clientX - dragStart.x,
+          y: touch.clientY - dragStart.y
+        });
+      }
+    };
+
+    const handleTouchEnd = (e: React.TouchEvent) => {
+      e.preventDefault();
+      setDragStart(null);
+    };
+
     const renderDotConnections = () => {
       const connections: JSX.Element[] = [];
       
@@ -461,11 +484,14 @@ const Dashboard: React.FC = () => {
         
         {/* Interactive draggable grid */}
         <div 
-          className="relative overflow-hidden h-[450px] w-full cursor-grab active:cursor-grabbing"
+          className="relative overflow-hidden h-[450px] w-full cursor-grab active:cursor-grabbing touch-none"
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
         >
           <div 
             className="relative transition-transform duration-200 ease-out"
