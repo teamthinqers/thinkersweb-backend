@@ -118,7 +118,7 @@ function AppWithLayout() {
   const renderContent = () => {
     switch (location) {
       case '/dashboard':
-        return <Dashboard onEntryClick={openEntryDetail} onNewEntry={openNewEntryForm} />;
+        return <Dashboard />;
       case '/entries':
         return <AllEntries onEntryClick={openEntryDetail} />;
       case '/insights':
@@ -130,7 +130,7 @@ function AppWithLayout() {
       case '/settings':
         return <Settings />;
       default:
-        return <Dashboard onEntryClick={openEntryDetail} onNewEntry={openNewEntryForm} />;
+        return <Dashboard />;
     }
   };
 
