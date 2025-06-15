@@ -262,6 +262,12 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                       Neural Dashboard
                     </Link>
                   </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/social" className="cursor-pointer w-full">
+                      <Brain className="mr-2 h-4 w-4" />
+                      DotSpark Social
+                    </Link>
+                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={handleLogout} className="text-red-600">
                     <LogOut className="mr-2 h-4 w-4" />
                     <span>Sign out</span>
@@ -372,6 +378,12 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                       Neural Dashboard
                     </Link>
                   </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/social" className="cursor-pointer w-full">
+                      <Brain className="mr-2 h-4 w-4" />
+                      DotSpark Social
+                    </Link>
+                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={handleLogout} className="text-red-600">
                     <LogOut className="mr-2 h-4 w-4" />
                     <span>Sign out</span>
@@ -451,7 +463,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 }}
               >
                 <Brain className="h-5 w-5 mr-2 animate-pulse" />
-                Social Neura
+                DotSpark Social
               </Button>
             </nav>
           </div>
