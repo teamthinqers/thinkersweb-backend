@@ -45,7 +45,7 @@ const getCachedUser = (): UserInfo | null => {
 // Enhanced auth provider with persistent login
 export function AuthProvider({ children }: { children: ReactNode }) {
   // Initialize with cached data to reduce flicker on reload
-  const [user, setUser] = useState<UserInfo | null>(getCachedUser());
+  const [user, setUser] = useState<UserInfo | null>(() => getCachedUser());
   const [isLoading, setIsLoading] = useState(true);
 
   // Listen for Firebase auth changes
