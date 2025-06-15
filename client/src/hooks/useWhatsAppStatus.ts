@@ -18,7 +18,8 @@ export interface WhatsAppStatusResponse {
  * Uses both API call and localStorage for more reliability
  */
 export function useWhatsAppStatus() {
-  const { user } = useAuth();
+  // Mock user for authentication-free operation
+  const user = null;
   const [activationStatus, setActivationStatus] = useState<boolean>(() => {
     // Initialize from localStorage if available (more reliable than API state)
     return localStorage.getItem('whatsapp_activated') === 'true';
