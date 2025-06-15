@@ -654,6 +654,14 @@ Changelog:
   * Mode switching now reflects immediately across all floating dot components and interfaces
   * Removed duplicate "Configure your dot capture settings" heading from Dot Settings section
   * Cleaned up DotSparkSettings header by removing duplicate "Dot Settings" text, keeping only "Choose your perfect capture experience"
+- June 15, 2025. Enhanced header navigation with Social Neura integration:
+  * Removed ask icon (MessageSquare) from both browser and PWA headers to eliminate redundancy
+  * Added Social Neura button with stunning animated brain icon next to Neura button in browser header
+  * PWA header shows Social Neura icon only due to space constraints with same animated brain effects
+  * Added Social Neura to mobile hamburger navigation menu with animated brain icon
+  * Created comprehensive Social page (/social) with placeholder content for future social features
+  * Updated routing in App.tsx to support Social Neura navigation across all devices
+  * Applied consistent amber/orange theming and animate-pulse + animate-ping effects for visual appeal
 - June 15, 2025. Optimized AI conversation flow for minimal user effort:
   * Updated AI prompts to proactively organize user thoughts into three layers with minimal intervention
   * AI now immediately structures user input into Summary/Anchor/Pulse format for quick approval

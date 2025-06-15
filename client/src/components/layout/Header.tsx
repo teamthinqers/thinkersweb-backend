@@ -432,7 +432,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 }}
               >
                 <Brain className="h-5 w-5 mr-2 text-amber-600 animate-pulse" />
-                Social
+                Social Neura
               </Button>
             </nav>
           </div>
