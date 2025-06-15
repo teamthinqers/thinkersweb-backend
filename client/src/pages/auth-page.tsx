@@ -18,7 +18,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { ArrowRight, Brain } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { useAuth } from "@/hooks/use-auth-simple";
+import { useAuth } from "@/hooks/use-auth-minimal";
 
 // Define form schemas
 const loginSchema = z.object({
