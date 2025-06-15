@@ -584,6 +584,9 @@ Changelog:
   * Updated sidebar menu items to use neutral gray text instead of amber highlighting
   * Fixed PWA hamburger menu coloring to prevent "My DotSpark" appearing selected
   * All navigation menus now use consistent neutral styling with amber icons for brand identity
+- June 15, 2025. Fixed home page "My DotSpark" button icon:
+  * Replaced Sparkles icon with correct DotSpark logo icon in desktop header navigation
+  * Button now displays proper branding with dotspark-logo-icon.jpeg
 ```
 
 ## User Preferences

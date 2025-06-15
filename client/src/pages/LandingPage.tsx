@@ -276,7 +276,7 @@ export default function LandingPage() {
                 onClick={() => setLocation("/sectioned-dotspark-tuning")}
               >
                 <div className="flex items-center gap-2">
-                  <Sparkles className="h-4 w-4" />
+                  <img src="/dotspark-logo-icon.jpeg" alt="DotSpark" className="h-4 w-4 object-contain rounded" />
                   <span className="text-sm">DotSpark</span>
                 </div>
               </Button>
