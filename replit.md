@@ -554,6 +554,15 @@ Changelog:
   * Color-coded volume icons matching each layer's theme (amber, blue, purple)
   * Voice icons only appear when voice data is available for specific layers
   * Added toast notifications for audio playback errors and missing recordings
+- June 15, 2025. Implemented real voice-to-text conversion using OpenAI Whisper API:
+  * Replaced mock voice transcription with actual OpenAI Whisper integration
+  * Added real audio recording using browser MediaRecorder API with microphone access
+  * Created /api/transcribe-voice endpoint for processing voice recordings
+  * Voice dots now display actual converted text instead of placeholder "simulated summary"
+  * Implemented layer-specific text processing (Summary: 220 chars, Anchor: 300 chars, Pulse: single emotion)
+  * Users see transcribed text for readability while retaining voice playback functionality
+  * Audio recordings stored as base64 data URLs for voice icon playback in dot view
+  * Enhanced user experience with real speech-to-text conversion and dual text/audio access
 ```
 
 ## User Preferences

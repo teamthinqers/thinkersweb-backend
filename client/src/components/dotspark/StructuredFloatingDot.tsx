@@ -44,6 +44,13 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
     anchor: '',
     pulse: ''
   });
+  const [audioRecordings, setAudioRecordings] = useState<{
+    summary?: string;
+    anchor?: string;
+    pulse?: string;
+  }>({});
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
   
   // Text input states
   const [structuredInput, setStructuredInput] = useState({
@@ -213,28 +220,103 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
     setShowExitWarning(false);
   };
 
-  const handleVoiceStep = (step: 1 | 2 | 3) => {
-    if (isRecording) {
-      setIsRecording(false);
-      
-      // Simulate voice processing
-      setTimeout(() => {
-        const mockTranscript = step === 1 ? "voice input" :
-                             step === 2 ? "voice input" :
-                             "excited";
-        
-        setVoiceSteps(prev => ({
-          ...prev,
-          [step === 1 ? 'summary' : step === 2 ? 'anchor' : 'pulse']: mockTranscript
-        }));
-        
-        if (step < 3) {
-          setCurrentStep((step + 1) as 1 | 2 | 3);
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+      audioChunksRef.current = [];
+
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          audioChunksRef.current.push(event.data);
         }
-      }, 2000);
-    } else {
+      };
+
+      mediaRecorder.onstop = async () => {
+        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/wav' });
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const base64Audio = (reader.result as string).split(',')[1];
+          processVoiceRecording(base64Audio);
+        };
+        reader.readAsDataURL(audioBlob);
+        
+        // Stop all tracks to release microphone
+        stream.getTracks().forEach(track => track.stop());
+      };
+
+      mediaRecorder.start();
       setIsRecording(true);
-      setCurrentStep(step);
+    } catch (error) {
+      console.error('Error starting recording:', error);
+      toast({
+        title: "Microphone Error",
+        description: "Please allow microphone access to record voice dots.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorderRef.current && isRecording) {
+      mediaRecorderRef.current.stop();
+      setIsRecording(false);
+    }
+  };
+
+  const processVoiceRecording = async (base64Audio: string) => {
+    try {
+      const layerKey = currentStep === 1 ? 'summary' : currentStep === 2 ? 'anchor' : 'pulse';
+      
+      // Store the audio recording
+      setAudioRecordings(prev => ({
+        ...prev,
+        [layerKey]: base64Audio
+      }));
+      
+      // Send to backend for OpenAI transcription
+      const response = await fetch('/api/transcribe-voice', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          audio: base64Audio,
+          layer: layerKey
+        })
+      });
+      
+      if (!response.ok) {
+        throw new Error('Transcription failed');
+      }
+      
+      const { transcription } = await response.json();
+      
+      // Update voice steps with transcribed text
+      setVoiceSteps(prev => ({
+        ...prev,
+        [layerKey]: transcription
+      }));
+      
+      // Move to next step if not at the end
+      if (currentStep < 3) {
+        setCurrentStep((currentStep + 1) as 1 | 2 | 3);
+      }
+    } catch (error) {
+      console.error('Voice processing error:', error);
+      toast({
+        title: "Processing Error",
+        description: "Failed to process voice recording. Please try again.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleVoiceStep = (step: 1 | 2 | 3) => {
+    setCurrentStep(step);
+    if (isRecording) {
+      stopRecording();
+    } else {
+      startRecording();
     }
   };
 
@@ -272,7 +354,10 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
           summary: voiceSteps.summary.substring(0, 220),
           anchor: voiceSteps.anchor.substring(0, 300),
           pulse: voiceSteps.pulse.split(' ')[0],
-          sourceType: 'voice'
+          sourceType: 'voice',
+          summaryVoiceUrl: audioRecordings.summary ? `data:audio/wav;base64,${audioRecordings.summary}` : null,
+          anchorVoiceUrl: audioRecordings.anchor ? `data:audio/wav;base64,${audioRecordings.anchor}` : null,
+          pulseVoiceUrl: audioRecordings.pulse ? `data:audio/wav;base64,${audioRecordings.pulse}` : null
         };
       }
       

@@ -269,6 +269,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Voice transcription endpoint
+  app.post(`${apiPrefix}/transcribe-voice`, async (req: Request, res: Response) => {
+    try {
+      const { audio, layer } = req.body;
+      
+      if (!audio || !layer) {
+        return res.status(400).json({ error: 'Audio data and layer are required' });
+      }
+      
+      // Convert base64 to buffer
+      const audioBuffer = Buffer.from(audio, 'base64');
+      
+      // Import the OpenAI transcription function
+      const { processVoiceInput } = await import('./openai.js');
+      
+      // Process the voice input
+      const result = await processVoiceInput(audioBuffer, `${layer}.wav`, layer as 'summary' | 'anchor' | 'pulse');
+      
+      res.json({ 
+        transcription: result.processedText,
+        originalTranscription: result.transcription 
+      });
+    } catch (error) {
+      console.error('Voice transcription error:', error);
+      res.status(500).json({ error: 'Failed to transcribe voice' });
+    }
+  });
+
   // Dots and Wheels API Endpoints
   
   // Simple dots endpoint for three-layer system
@@ -276,9 +304,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = req.user?.id || req.session?.userId || 1;
       
-      // Validate three-layer structure: summary (220), anchor (300), pulse (1 word)
-      const { summary, anchor, pulse, sourceType = 'text' } = req.body;
+      let { summary, anchor, pulse, sourceType = 'text' } = req.body;
+      const { summaryVoiceUrl, anchorVoiceUrl, pulseVoiceUrl, summaryAudio, anchorAudio, pulseAudio } = req.body;
       
+      // If this is a voice dot with audio data, transcribe it using OpenAI
+      if (sourceType === 'voice') {
+        try {
+          // Import the OpenAI transcription function
+          const { processVoiceInput } = await import('./openai.js');
+          
+          // Process each layer if audio data is provided
+          if (summaryAudio && !summary) {
+            const audioBuffer = Buffer.from(summaryAudio, 'base64');
+            const result = await processVoiceInput(audioBuffer, 'summary.wav', 'summary');
+            summary = result.processedText;
+          }
+          
+          if (anchorAudio && !anchor) {
+            const audioBuffer = Buffer.from(anchorAudio, 'base64');
+            const result = await processVoiceInput(audioBuffer, 'anchor.wav', 'anchor');
+            anchor = result.processedText;
+          }
+          
+          if (pulseAudio && !pulse) {
+            const audioBuffer = Buffer.from(pulseAudio, 'base64');
+            const result = await processVoiceInput(audioBuffer, 'pulse.wav', 'pulse');
+            pulse = result.processedText;
+          }
+        } catch (transcriptionError) {
+          console.error('Voice transcription error:', transcriptionError);
+          // Continue with provided text if transcription fails
+        }
+      }
+      
+      // Validate three-layer structure after transcription
       if (!summary || summary.length > 220) {
         return res.status(400).json({ 
           error: 'Please distill your thoughts. Sharply defined thoughts can spark better (max 220 charac)' 
@@ -296,9 +355,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
           error: 'Pulse must be exactly one word describing the emotion' 
         });
       }
-
-      // Store with voice URLs for voice dots
-      const { summaryVoiceUrl, anchorVoiceUrl, pulseVoiceUrl } = req.body;
       
       const entryData = {
         userId,
