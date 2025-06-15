@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Mic, Type, Eye, Brain, Network, Zap, Search, Clock, Info } from "lucide-react";
+import { Mic, Type, Eye, Brain, Network, Zap, Search, Clock, Info, Database, Cpu, Sparkles, Users } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import DotFullView from "@/components/DotFullView";
 
@@ -796,6 +796,57 @@ const Dashboard: React.FC = () => {
               My DotSpark Neura
             </span>
           </h1>
+
+          {/* Capacity Box */}
+          <Card className="bg-gradient-to-br from-white to-amber-50/30 border-2 border-amber-200 shadow-lg">
+            <CardContent className="p-6">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {/* Memory */}
+                <div className="flex flex-col items-center text-center space-y-2">
+                  <div className="p-3 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 shadow-lg">
+                    <Database className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-blue-700 text-sm">Memory</h3>
+                    <p className="text-blue-600 text-xs">Storage & Recall</p>
+                  </div>
+                </div>
+
+                {/* Learning Engine */}
+                <div className="flex flex-col items-center text-center space-y-2">
+                  <div className="p-3 rounded-full bg-gradient-to-br from-yellow-500 to-yellow-600 shadow-lg">
+                    <Cpu className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-yellow-700 text-sm">Learning Engine</h3>
+                    <p className="text-yellow-600 text-xs">AI Processing</p>
+                  </div>
+                </div>
+
+                {/* Sparks */}
+                <div className="flex flex-col items-center text-center space-y-2">
+                  <div className="p-3 rounded-full bg-gradient-to-br from-orange-500 to-red-500 shadow-lg">
+                    <Sparkles className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-orange-700 text-sm">Sparks</h3>
+                    <p className="text-orange-600 text-xs">Insights & Ideas</p>
+                  </div>
+                </div>
+
+                {/* Social */}
+                <div className="flex flex-col items-center text-center space-y-2">
+                  <div className="p-3 rounded-full bg-gradient-to-br from-teal-500 to-emerald-600 shadow-lg">
+                    <Users className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-teal-700 text-sm">Social</h3>
+                    <p className="text-teal-600 text-xs">Connections</p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Search Bar - moved to top */}

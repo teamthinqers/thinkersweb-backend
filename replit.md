@@ -755,6 +755,14 @@ Changelog:
   * Created dedicated Social Neura page (/social-neura) with purple theme and neural features
   * Proper separation: DotSpark Social (Users icon, orange-red) vs Social Neura (Brain icon, purple)
   * All navigation now correctly distinguishes between broader social platform and neural component
+- June 15, 2025. Added capacity metrics box to dashboard:
+  * Introduced capacity box below "My DotSpark Neura" heading with 4 core parameters
+  * Memory: Blue gradient with Database icon for storage and recall capabilities
+  * Learning Engine: Yellow gradient with Cpu icon for AI processing functions
+  * Sparks: Orange-red gradient with Sparkles icon for insights and idea generation
+  * Social: Teal-emerald gradient with Users icon for social connections (differentiated from purple theme)
+  * Responsive grid layout (2 columns mobile, 4 columns desktop) with clean visual hierarchy
+  * Logic and algorithms for capacity calculations will be implemented later
 - June 15, 2025. Optimized AI conversation flow for minimal user effort:
   * Updated AI prompts to proactively organize user thoughts into three layers with minimal intervention
   * AI now immediately structures user input into Summary/Anchor/Pulse format for quick approval
