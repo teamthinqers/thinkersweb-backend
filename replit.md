@@ -613,6 +613,17 @@ Changelog:
   * Click opens modal explaining dots grid and wheel formation concept
   * Explains that 9 dots of same category form a Dot Wheel (bigger dot)
   * Clear guidance that DotSpark automatically organizes dots into relevant Wheels
+- June 15, 2025. Comprehensive Dot Wheels Map redesign with stunning interactive features:
+  * Updated status buttons to show actual dot and wheel counts from user data
+  * Replaced linear wheel layout with randomly positioned individual dots grid
+  * Implemented beautiful dotted connection lines between dots with gradient colors and glow effects
+  * Added fully draggable/scrollable grid experience for browser and PWA (1200x800px canvas)
+  * Created preview toggle showing 18 sample dots in 2 wheels for demonstration
+  * Enhanced dot interaction: click shows summary card first, then full view on card click
+  * Voice dots display amber gradient with pulse animations and mic icons
+  * Text dots display blue gradient with type icons
+  * Added emotion indicators and source type badges on all dots
+  * Implemented consistent seed-based random positioning for stable dot placement
 ```
 
 ## User Preferences
