@@ -677,6 +677,10 @@ Changelog:
   * Transformed Social button into proper styled button with purple-to-indigo gradient background
   * Added consistent spacing, typography, and shadow effects to match My Neura button styling
   * Maintained animated brain icon with pulse and ping effects for visual consistency
+- June 15, 2025. Enhanced browser side navigation with Social Neura integration:
+  * Added Social Neura menu item to browser sidebar navigation with animated brain icon
+  * Applied purple color theme with animate-pulse effect for visual consistency
+  * Integrated proper routing to /social page for seamless navigation experience
 - June 15, 2025. Optimized AI conversation flow for minimal user effort:
   * Updated AI prompts to proactively organize user thoughts into three layers with minimal intervention
   * AI now immediately structures user input into Summary/Anchor/Pulse format for quick approval
