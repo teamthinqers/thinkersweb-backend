@@ -646,6 +646,12 @@ Changelog:
   * Changed to "Hi ThinQer, please share what's on your mind and I'll organize it into a three-layer dot (Summary, Anchor, Pulse) for you"
   * Fixed PWA popup blocker issue by replacing window.open() with window.location.href for WhatsApp links
   * Eliminated "this site is attempting to open a pop-up window" warnings in PWA mode
+- June 15, 2025. Enhanced AI/Natural mode tags with instant switching functionality:
+  * Made mode tags larger and clickable with enhanced styling (px-4 py-2 text-sm font-semibold)
+  * Added rotation symbol (↻) to indicate clickable mode switching capability
+  * Implemented real-time localStorage event listeners for instant mode changes without page refresh
+  * Enhanced hover effects with scale-105 animation and improved gradient backgrounds
+  * Mode switching now reflects immediately across all floating dot components and interfaces
 - June 15, 2025. Optimized AI conversation flow for minimal user effort:
   * Updated AI prompts to proactively organize user thoughts into three layers with minimal intervention
   * AI now immediately structures user input into Summary/Anchor/Pulse format for quick approval

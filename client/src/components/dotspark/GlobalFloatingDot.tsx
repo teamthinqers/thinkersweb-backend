@@ -53,13 +53,47 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
   const dotRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
-  // Load user's capture mode preference
+  // Load user's capture mode preference and listen for real-time changes
   useEffect(() => {
-    const savedSettings = localStorage.getItem('dotspark-settings');
-    if (savedSettings) {
-      const settings = JSON.parse(savedSettings);
-      setUserCaptureMode(settings.captureMode ?? 'hybrid');
-    }
+    const loadCaptureMode = () => {
+      const directMode = localStorage.getItem('dotCaptureMode');
+      if (directMode) {
+        setUserCaptureMode(directMode as 'natural' | 'ai' | 'hybrid');
+        return;
+      }
+      
+      const savedSettings = localStorage.getItem('dotspark-settings');
+      if (savedSettings) {
+        const settings = JSON.parse(savedSettings);
+        setUserCaptureMode(settings.captureMode ?? 'hybrid');
+      }
+    };
+
+    // Initial load
+    loadCaptureMode();
+
+    // Listen for storage changes to sync across components and tabs
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'dotCaptureMode' || e.key === 'dotspark-settings') {
+        loadCaptureMode();
+      }
+    };
+
+    // Listen for custom storage events (same-page updates)
+    const handleCustomStorageChange = (e: Event) => {
+      const storageEvent = e as StorageEvent;
+      if (storageEvent.key === 'dotCaptureMode') {
+        setUserCaptureMode(storageEvent.newValue as 'natural' | 'ai' | 'hybrid');
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('storage', handleCustomStorageChange);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('storage', handleCustomStorageChange);
+    };
   }, []);
 
   // Save position whenever it changes

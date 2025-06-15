@@ -65,13 +65,47 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
   const dotRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
-  // Load user's capture mode preference
+  // Load user's capture mode preference and listen for real-time changes
   useEffect(() => {
-    const savedSettings = localStorage.getItem('dotspark-settings');
-    if (savedSettings) {
-      const settings = JSON.parse(savedSettings);
-      setUserCaptureMode(settings.captureMode ?? 'natural');
-    }
+    const loadCaptureMode = () => {
+      const directMode = localStorage.getItem('dotCaptureMode');
+      if (directMode) {
+        setUserCaptureMode(directMode as 'natural' | 'ai');
+        return;
+      }
+      
+      const savedSettings = localStorage.getItem('dotspark-settings');
+      if (savedSettings) {
+        const settings = JSON.parse(savedSettings);
+        setUserCaptureMode(settings.captureMode ?? 'natural');
+      }
+    };
+
+    // Initial load
+    loadCaptureMode();
+
+    // Listen for storage changes to sync across components and tabs
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'dotCaptureMode' || e.key === 'dotspark-settings') {
+        loadCaptureMode();
+      }
+    };
+
+    // Listen for custom storage events (same-page updates)
+    const handleCustomStorageChange = (e: Event) => {
+      const storageEvent = e as StorageEvent;
+      if (storageEvent.key === 'dotCaptureMode') {
+        setUserCaptureMode(storageEvent.newValue as 'natural' | 'ai');
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('storage', handleCustomStorageChange);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('storage', handleCustomStorageChange);
+    };
   }, []);
 
   // Save position immediately when it changes
@@ -502,13 +536,35 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-2">
                       {userCaptureMode === 'natural' ? (
-                        <span className="px-2 py-1 text-xs font-medium bg-gradient-to-r from-orange-100 to-amber-100 text-orange-700 rounded-full border border-orange-200">
-                          Natural
-                        </span>
+                        <button
+                          onClick={() => {
+                            setUserCaptureMode('ai');
+                            localStorage.setItem('dotCaptureMode', 'ai');
+                            // Trigger storage event for cross-component sync
+                            window.dispatchEvent(new StorageEvent('storage', {
+                              key: 'dotCaptureMode',
+                              newValue: 'ai'
+                            }));
+                          }}
+                          className="px-4 py-2 text-sm font-semibold bg-gradient-to-r from-orange-100 to-amber-100 text-orange-700 rounded-full border border-orange-200 hover:from-orange-200 hover:to-amber-200 hover:shadow-md transition-all duration-200 cursor-pointer transform hover:scale-105"
+                        >
+                          Natural Mode ↻
+                        </button>
                       ) : (
-                        <span className="px-2 py-1 text-xs font-medium bg-gradient-to-r from-purple-100 to-violet-100 text-purple-700 rounded-full border border-purple-200">
-                          AI
-                        </span>
+                        <button
+                          onClick={() => {
+                            setUserCaptureMode('natural');
+                            localStorage.setItem('dotCaptureMode', 'natural');
+                            // Trigger storage event for cross-component sync
+                            window.dispatchEvent(new StorageEvent('storage', {
+                              key: 'dotCaptureMode',
+                              newValue: 'natural'
+                            }));
+                          }}
+                          className="px-4 py-2 text-sm font-semibold bg-gradient-to-r from-purple-100 to-violet-100 text-purple-700 rounded-full border border-purple-200 hover:from-purple-200 hover:to-violet-200 hover:shadow-md transition-all duration-200 cursor-pointer transform hover:scale-105"
+                        >
+                          AI Mode ↻
+                        </button>
                       )}
                     </div>
                     <h3 className="text-xl font-semibold text-gray-800">Save a Dot</h3>
@@ -617,13 +673,33 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                     <div className="flex items-center gap-2">
                       <h3 className="font-medium">Text Input</h3>
                       {userCaptureMode === 'natural' ? (
-                        <span className="px-2 py-1 text-xs font-medium bg-gradient-to-r from-orange-100 to-amber-100 text-orange-700 rounded-full border border-orange-200">
-                          Natural
-                        </span>
+                        <button
+                          onClick={() => {
+                            setUserCaptureMode('ai');
+                            localStorage.setItem('dotCaptureMode', 'ai');
+                            window.dispatchEvent(new StorageEvent('storage', {
+                              key: 'dotCaptureMode',
+                              newValue: 'ai'
+                            }));
+                          }}
+                          className="px-4 py-2 text-sm font-semibold bg-gradient-to-r from-orange-100 to-amber-100 text-orange-700 rounded-full border border-orange-200 hover:from-orange-200 hover:to-amber-200 hover:shadow-md transition-all duration-200 cursor-pointer transform hover:scale-105"
+                        >
+                          Natural Mode ↻
+                        </button>
                       ) : (
-                        <span className="px-2 py-1 text-xs font-medium bg-gradient-to-r from-purple-100 to-violet-100 text-purple-700 rounded-full border border-purple-200">
-                          AI
-                        </span>
+                        <button
+                          onClick={() => {
+                            setUserCaptureMode('natural');
+                            localStorage.setItem('dotCaptureMode', 'natural');
+                            window.dispatchEvent(new StorageEvent('storage', {
+                              key: 'dotCaptureMode',
+                              newValue: 'natural'
+                            }));
+                          }}
+                          className="px-4 py-2 text-sm font-semibold bg-gradient-to-r from-purple-100 to-violet-100 text-purple-700 rounded-full border border-purple-200 hover:from-purple-200 hover:to-violet-200 hover:shadow-md transition-all duration-200 cursor-pointer transform hover:scale-105"
+                        >
+                          AI Mode ↻
+                        </button>
                       )}
                     </div>
                     
