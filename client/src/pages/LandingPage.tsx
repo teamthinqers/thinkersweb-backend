@@ -477,6 +477,13 @@ export default function LandingPage() {
                           <span>My Neura</span>
                         </div>
                       </SheetClose>
+                      
+                      <SheetClose asChild>
+                        <div onClick={() => setLocation("/social")} className="py-2 hover:text-primary transition-colors flex items-center gap-2 cursor-pointer">
+                          <Users className="h-4 w-4 text-orange-600" />
+                          <span>DotSpark Social</span>
+                        </div>
+                      </SheetClose>
                     </div>
                     
                     <div className="mt-6">
