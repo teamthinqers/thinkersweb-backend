@@ -846,6 +846,7 @@ Changelog:
   * Added "My DotSpark" menu item to profile dropdown menus in both browser Header and LandingPage components
   * Added "My DotSpark" to mobile hamburger menu with corrected navigation to Neural Page
   * Added "DotSpark Social" to PWA home page hamburger menu with Users icon and orange-red styling
+  * Updated PWA dashboard Social button to match browser styling with orange-red gradient and Social Neura branding
   * All "My DotSpark" buttons and menu items navigate to Neural Page (/my-neura) for consistent user experience
   * Enhanced navigation accessibility with multiple entry points across browser, PWA, profile menus, and mobile navigation
 ```
