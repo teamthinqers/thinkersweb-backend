@@ -5,10 +5,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { 
   User, 
   Mail, 
-  Calendar, 
+  Calendar as CalendarIcon, 
   Briefcase, 
   Camera, 
   ExternalLink,
@@ -16,10 +18,16 @@ import {
   Star,
   Trophy,
   Target,
-  X
+  X,
+  Save,
+  Edit,
+  Loader2
 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { format, parseISO, isValid } from "date-fns";
+import { cn } from "@/lib/utils";
 
 interface ProfileData {
   firstName: string;
@@ -32,9 +40,13 @@ interface ProfileData {
   linkedInProfile: string;
 }
 
+// Storage key for cross-platform synchronization
+const PROFILE_STORAGE_KEY = 'dotSpark_userProfile';
+
 const Profile: React.FC = () => {
   const { user } = useAuth();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   
   const [profileData, setProfileData] = useState<ProfileData>({
     firstName: '',
@@ -49,6 +61,51 @@ const Profile: React.FC = () => {
 
   const [isEditing, setIsEditing] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
+
+  // Fetch profile data from backend
+  const { data: backendProfile, isLoading: isLoadingProfile } = useQuery({
+    queryKey: ['/api/profile'],
+    enabled: !!user,
+  });
+
+  // Update profile mutation for backend saving
+  const updateProfileMutation = useMutation({
+    mutationFn: async (data: Partial<ProfileData>) => {
+      const response = await fetch('/api/profile', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Failed to update profile');
+      }
+      
+      return response.json();
+    },
+    onSuccess: (updatedProfile) => {
+      queryClient.setQueryData(['/api/profile'], updatedProfile);
+      localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(updatedProfile));
+      setIsEditing(false);
+      setImagePreview(null);
+      toast({
+        title: "Profile Updated Successfully",
+        description: `Your profile has been saved across all devices. Completion: ${calculateCompletionPercentage()}%`,
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Update Failed",
+        description: error?.message || "Failed to update profile. Please try again.",
+        variant: "destructive",
+      });
+    }
+  });
 
   // Calculate profile completion percentage
   const calculateCompletionPercentage = (): number => {
@@ -69,33 +126,73 @@ const Profile: React.FC = () => {
 
   const completionPercentage = calculateCompletionPercentage();
 
-  // Load profile data from localStorage on component mount
+  // Cross-platform data synchronization
   useEffect(() => {
-    const savedProfile = localStorage.getItem('userProfile');
+    // Load from localStorage for immediate display
+    const savedProfile = localStorage.getItem(PROFILE_STORAGE_KEY);
     if (savedProfile) {
       try {
         const parsed = JSON.parse(savedProfile);
         setProfileData(prev => ({
           ...prev,
           ...parsed,
-          email: user?.email || parsed.email // Always use latest email from auth
+          email: user?.email || parsed.email
         }));
+        
+        // Set date picker if date exists
+        if (parsed.dateOfBirth) {
+          const date = parseISO(parsed.dateOfBirth);
+          if (isValid(date)) {
+            setSelectedDate(date);
+          }
+        }
       } catch (error) {
         console.error('Failed to parse saved profile:', error);
       }
     }
-    
-    // Auto-populate from user auth data
-    if (user) {
+  }, [user]);
+
+  // Sync with backend data when loaded
+  useEffect(() => {
+    if (backendProfile && typeof backendProfile === 'object') {
+      const profile = backendProfile as any;
+      const updatedData = {
+        ...profile,
+        email: user?.email || profile.email,
+        profileImage: profile.profileImage || user?.photoURL || '',
+        firstName: profile.firstName || (user?.displayName?.split(' ')[0] || ''),
+        lastName: profile.lastName || (user?.displayName?.split(' ').slice(1).join(' ') || '')
+      };
+      
+      setProfileData(updatedData);
+      localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(updatedData));
+      
+      // Set date picker if date exists
+      if (updatedData.dateOfBirth) {
+        const date = parseISO(updatedData.dateOfBirth);
+        if (isValid(date)) {
+          setSelectedDate(date);
+        }
+      }
+    }
+  }, [backendProfile, user]);
+
+  // Auto-populate from user auth data if no backend data
+  useEffect(() => {
+    if (user && !backendProfile && !isLoadingProfile) {
+      const authData = {
+        email: user.email || '',
+        profileImage: user.photoURL || '',
+        firstName: user.displayName?.split(' ')[0] || '',
+        lastName: user.displayName?.split(' ').slice(1).join(' ') || ''
+      };
+      
       setProfileData(prev => ({
         ...prev,
-        email: user.email || prev.email,
-        profileImage: user.photoURL || prev.profileImage,
-        firstName: prev.firstName || (user.displayName?.split(' ')[0] || ''),
-        lastName: prev.lastName || (user.displayName?.split(' ').slice(1).join(' ') || '')
+        ...authData
       }));
     }
-  }, [user]);
+  }, [user, backendProfile, isLoadingProfile]);
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];

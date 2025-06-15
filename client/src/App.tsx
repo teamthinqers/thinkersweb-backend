@@ -13,7 +13,7 @@ import LandingPage from "@/pages/LandingPage";
 import LogoPage from "@/pages/LogoPage";
 import AuthPage from "@/pages/auth-page";
 import Settings from "@/pages/Settings";
-import ProfileEnhanced from "@/pages/ProfileEnhanced";
+import Profile from "@/pages/Profile";
 import WhatsAppAdmin from "@/pages/WhatsAppAdmin";
 import WhatsAppTest from "@/pages/WhatsAppTest";
 import WhatsAppEntries from "@/pages/WhatsAppEntries";
@@ -133,7 +133,7 @@ function AppWithLayout() {
       case '/settings':
         return <Settings />;
       case '/profile':
-        return <ProfileEnhanced />;
+        return <Profile />;
       default:
         return <Dashboard />;
     }

@@ -106,12 +106,13 @@ const ProfileEnhanced: React.FC = () => {
   // Sync with backend data when loaded
   useEffect(() => {
     if (profileData && typeof profileData === 'object') {
-      const updatedData = {
-        ...profileData,
-        email: user?.email || (profileData as any).email,
-        profileImage: (profileData as any).profileImage || user?.photoURL || '',
-        firstName: (profileData as any).firstName || (user?.displayName?.split(' ')[0] || ''),
-        lastName: (profileData as any).lastName || (user?.displayName?.split(' ').slice(1).join(' ') || '')
+      const profile = profileData as ProfileData;
+      const updatedData: ProfileData = {
+        ...profile,
+        email: user?.email || profile.email,
+        profileImage: profile.profileImage || user?.photoURL || '',
+        firstName: profile.firstName || (user?.displayName?.split(' ')[0] || ''),
+        lastName: profile.lastName || (user?.displayName?.split(' ').slice(1).join(' ') || '')
       };
       
       setFormData(updatedData);
