@@ -499,10 +499,10 @@ const Dashboard: React.FC = () => {
           )}
         </div>
         
-        {/* Recenter Button - Standalone */}
+        {/* Recenter Button - Centered */}
         <button
           onClick={() => setOffset({ x: 0, y: 0 })}
-          className="absolute top-4 left-52 z-10 bg-amber-500 hover:bg-amber-600 text-white rounded-full p-2 shadow-lg transition-colors"
+          className="absolute top-4 left-1/2 transform -translate-x-1/2 z-10 bg-amber-500 hover:bg-amber-600 text-white rounded-full p-2 shadow-lg transition-colors"
           title="Recenter Grid"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
