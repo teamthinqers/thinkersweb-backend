@@ -318,7 +318,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
               <Button
                 variant="ghost"
                 size="sm"
-                className="mr-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-md hover:bg-gradient-to-r hover:from-purple-700 hover:to-indigo-700 transition-all duration-300"
+                className="mr-2 bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-md hover:bg-gradient-to-r hover:from-orange-600 hover:to-red-600 transition-all duration-300"
                 onClick={() => setLocation("/social")}
               >
                 <div className="flex items-center gap-2">
