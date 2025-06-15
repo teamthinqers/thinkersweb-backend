@@ -633,7 +633,7 @@ export default function MyNeura() {
               <span className="font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">Dot Settings</span>
             </CardTitle>
           </div>
-          <CardDescription>Configure your dot capture settings</CardDescription>
+
         </CardHeader>
         
         <CardContent className="pb-4 relative z-10">
