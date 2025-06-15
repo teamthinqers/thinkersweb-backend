@@ -17,6 +17,7 @@ interface Dot {
   wheelId: string;
   timestamp: Date;
   sourceType: 'voice' | 'text';
+  captureMode: 'natural' | 'ai'; // Natural mode vs AI mode
   voiceData?: {
     summaryVoiceUrl?: string;
     anchorVoiceUrl?: string;
@@ -60,7 +61,8 @@ const Dashboard: React.FC = () => {
       pulse: "curious",
       wheelId: "example-wheel-1",
       timestamp: new Date(),
-      sourceType: 'text'
+      sourceType: 'text',
+      captureMode: 'natural'
     },
     {
       id: "example-2", 
@@ -69,7 +71,8 @@ const Dashboard: React.FC = () => {
       pulse: "focused",
       wheelId: "example-wheel-1",
       timestamp: new Date(),
-      sourceType: 'voice'
+      sourceType: 'voice',
+      captureMode: 'natural'
     },
     {
       id: "example-3",
@@ -78,7 +81,8 @@ const Dashboard: React.FC = () => {
       pulse: "calm",
       wheelId: "example-wheel-2", 
       timestamp: new Date(),
-      sourceType: 'text'
+      sourceType: 'text',
+      captureMode: 'ai'
     }
   ];
 
@@ -260,7 +264,8 @@ const Dashboard: React.FC = () => {
             pulse: emotions[Math.floor(Math.random() * emotions.length)],
             wheelId: wheel.id,
             timestamp: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
-            sourceType: Math.random() > 0.5 ? 'voice' : 'text'
+            sourceType: Math.random() > 0.5 ? 'voice' : 'text',
+            captureMode: Math.random() > 0.7 ? 'ai' : 'natural' // 30% AI mode, 70% natural mode
           };
           previewDots.push(dot);
           wheel.dots.push(dot);
@@ -587,7 +592,11 @@ const Dashboard: React.FC = () => {
                       left: `${x}px`,
                       top: `${y}px`,
                       background: `linear-gradient(135deg, ${
-                        dot.sourceType === 'voice' ? '#F59E0B, #EA580C' : '#D97706, #92400E'
+                        dot.captureMode === 'ai' 
+                          ? '#A855F7, #7C3AED' // Purple gradient for AI mode
+                          : dot.sourceType === 'voice' 
+                            ? '#F59E0B, #EA580C' // Amber gradient for voice
+                            : '#D97706, #92400E' // Orange gradient for text
                       })`,
                       pointerEvents: 'auto'
                     }}

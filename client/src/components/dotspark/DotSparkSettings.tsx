@@ -11,8 +11,17 @@ import {
   Type, 
   Move, 
   Zap,
-  BrainCircuit
+  BrainCircuit,
+  Info
 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 import { useToast } from "@/hooks/use-toast";
 import { neuraStorage } from "@/lib/neuraStorage";
