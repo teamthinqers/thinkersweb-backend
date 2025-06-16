@@ -1226,22 +1226,33 @@ export default function LandingPage() {
                   <p className="text-xs text-muted-foreground">Chrome, Samsung Internet, Edge</p>
                 </div>
               </div>
-              <ol className="text-sm space-y-2 ml-2">
+              <ol className="text-sm space-y-3 ml-2">
                 <li className="flex items-start gap-2">
                   <span className="flex-shrink-0 w-5 h-5 bg-green-100 dark:bg-green-900/30 text-green-600 text-xs rounded-full flex items-center justify-center font-medium">1</span>
                   <span>Open <a href="https://www.dotspark.in" target="_blank" rel="noopener noreferrer" className="font-semibold underline hover:text-green-700">https://www.dotspark.in</a> in your mobile browser</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="flex-shrink-0 w-5 h-5 bg-green-100 dark:bg-green-900/30 text-green-600 text-xs rounded-full flex items-center justify-center font-medium">2</span>
-                  <span>Tap the menu button (⋮) in your browser</span>
+                  <div className="flex-1">
+                    <div className="mb-2">Look for the <strong>three dots menu</strong> in your browser corner:</div>
+                    <div className="flex items-center gap-2 mb-2 p-2 bg-gray-50 dark:bg-gray-900/50 rounded border">
+                      <div className="flex flex-col items-center gap-1">
+                        <div className="w-1 h-1 bg-gray-600 rounded-full"></div>
+                        <div className="w-1 h-1 bg-gray-600 rounded-full"></div>
+                        <div className="w-1 h-1 bg-gray-600 rounded-full"></div>
+                      </div>
+                      <span className="text-xs text-muted-foreground">← This is the three dots menu (⋮)</span>
+                    </div>
+                    <div className="text-xs text-muted-foreground">Usually located in the top-right corner or bottom toolbar of your browser</div>
+                  </div>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="flex-shrink-0 w-5 h-5 bg-green-100 dark:bg-green-900/30 text-green-600 text-xs rounded-full flex items-center justify-center font-medium">3</span>
-                  <span>Select "Install app" or "Add to Home screen"</span>
+                  <span>Select "Install app", "Add to Home screen", or "Install DotSpark"</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="flex-shrink-0 w-5 h-5 bg-green-100 dark:bg-green-900/30 text-green-600 text-xs rounded-full flex items-center justify-center font-medium">4</span>
-                  <span>Confirm installation when prompted</span>
+                  <span>Confirm installation when prompted and the app will be added to your home screen</span>
                 </li>
               </ol>
             </div>
