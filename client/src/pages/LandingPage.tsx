@@ -1260,30 +1260,36 @@ export default function LandingPage() {
             {/* iOS Instructions */}
             <div className="border rounded-lg p-4 hover:bg-muted/50 transition-colors">
               <div className="flex items-center gap-3 mb-3">
-                <div className="flex-shrink-0 w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
-                  <Smartphone className="h-5 w-5 text-blue-600" />
+                <div className="flex-shrink-0 w-10 h-10 bg-amber-100 dark:bg-amber-900/30 rounded-lg flex items-center justify-center">
+                  <Smartphone className="h-5 w-5 text-amber-600" />
                 </div>
                 <div>
                   <h4 className="font-semibold text-sm">iPhone & iPad</h4>
                   <p className="text-xs text-muted-foreground">Safari browser</p>
                 </div>
               </div>
-              <ol className="text-sm space-y-2 ml-2">
+              <ol className="text-sm space-y-3 ml-2">
                 <li className="flex items-start gap-2">
-                  <span className="flex-shrink-0 w-5 h-5 bg-blue-100 dark:bg-blue-900/30 text-blue-600 text-xs rounded-full flex items-center justify-center font-medium">1</span>
-                  <span>Open <a href="https://www.dotspark.in" target="_blank" rel="noopener noreferrer" className="font-semibold underline hover:text-blue-700">https://www.dotspark.in</a> in Safari browser</span>
+                  <span className="flex-shrink-0 w-5 h-5 bg-amber-100 dark:bg-amber-900/30 text-amber-600 text-xs rounded-full flex items-center justify-center font-medium">1</span>
+                  <span>Open <a href="https://www.dotspark.in" target="_blank" rel="noopener noreferrer" className="font-semibold underline hover:text-amber-700">https://www.dotspark.in</a> in Safari browser</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="flex-shrink-0 w-5 h-5 bg-blue-100 dark:bg-blue-900/30 text-blue-600 text-xs rounded-full flex items-center justify-center font-medium">2</span>
-                  <span>Tap the Share button <Share className="inline h-3 w-3" /> at the bottom</span>
+                  <span className="flex-shrink-0 w-5 h-5 bg-amber-100 dark:bg-amber-900/30 text-amber-600 text-xs rounded-full flex items-center justify-center font-medium">2</span>
+                  <div className="flex-1">
+                    <div className="mb-2">Tap the <strong>Share button</strong> at the bottom of Safari:</div>
+                    <div className="flex items-center gap-2 mb-2 p-2 bg-gray-50 dark:bg-gray-900/50 rounded border">
+                      <Share className="h-4 w-4 text-amber-600" />
+                      <span className="text-xs text-muted-foreground">← This is the Share button (usually at the bottom toolbar)</span>
+                    </div>
+                  </div>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="flex-shrink-0 w-5 h-5 bg-blue-100 dark:bg-blue-900/30 text-blue-600 text-xs rounded-full flex items-center justify-center font-medium">3</span>
-                  <span>Scroll down and tap "Add to Home Screen"</span>
+                  <span className="flex-shrink-0 w-5 h-5 bg-amber-100 dark:bg-amber-900/30 text-amber-600 text-xs rounded-full flex items-center justify-center font-medium">3</span>
+                  <span>Scroll down in the share menu and tap "Add to Home Screen"</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="flex-shrink-0 w-5 h-5 bg-blue-100 dark:bg-blue-900/30 text-blue-600 text-xs rounded-full flex items-center justify-center font-medium">4</span>
-                  <span>Tap "Add" in the top right corner</span>
+                  <span className="flex-shrink-0 w-5 h-5 bg-amber-100 dark:bg-amber-900/30 text-amber-600 text-xs rounded-full flex items-center justify-center font-medium">4</span>
+                  <span>Tap "Add" in the top right corner to complete installation</span>
                 </li>
               </ol>
             </div>

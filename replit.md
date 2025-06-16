@@ -628,6 +628,12 @@ Changelog:
   * All Android notifications now include: "Look for the three dots menu (⋮) in your mobile browser corner"
   * All iOS notifications now specify: "In Safari, tap the Share button and select 'Add to Home Screen'"
   * Comprehensive cross-platform installation guidance across all PWA notification components
+- June 16, 2025. Fixed iOS installation guide display and theming issues:
+  * Updated iOS installation guide to use DotSpark amber/orange color theme instead of blue
+  * Fixed image loading issues by replacing with reliable Lucide React Share icon
+  * Added visual Share button representation with clear location guidance
+  * Enhanced step descriptions with detailed Safari-specific instructions
+  * Applied consistent amber color scheme throughout iOS installation section
 - June 15, 2025. Enhanced Dot Settings with AI Mode and visual distinction system:
   * Restructured capture modes from Natural Mode (voice/text/hybrid) to include AI Mode as fourth option
   * Added AI Mode sub-options: Direct Chat and WhatsApp for AI-assisted dot creation
