@@ -621,6 +621,13 @@ Changelog:
   * Included location guidance: "Usually located in the top-right corner or bottom toolbar"
   * Updated menu option names to include multiple variations users might encounter
   * Improved overall user experience for Android PWA installation process
+- June 16, 2025. Updated all PWA installation notifications with enhanced instructions:
+  * PWA Install Button: Updated Android instructions to mention three dots menu (⋮) with location guidance
+  * PWA Install Button: Updated iOS instructions to specifically mention Safari browser
+  * PWA Debugger: Enhanced toast notifications with device-specific installation guidance
+  * All Android notifications now include: "Look for the three dots menu (⋮) in your mobile browser corner"
+  * All iOS notifications now specify: "In Safari, tap the Share button and select 'Add to Home Screen'"
+  * Comprehensive cross-platform installation guidance across all PWA notification components
 - June 15, 2025. Enhanced Dot Settings with AI Mode and visual distinction system:
   * Restructured capture modes from Natural Mode (voice/text/hybrid) to include AI Mode as fourth option
   * Added AI Mode sub-options: Direct Chat and WhatsApp for AI-assisted dot creation
