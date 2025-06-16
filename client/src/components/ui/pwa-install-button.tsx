@@ -92,8 +92,8 @@ export function PWAInstallButton({
             <h4 className="text-sm font-medium text-white">Install DotSpark Neura</h4>
             <p className="text-xs text-white/80">
               {isIOS 
-                ? "Tap the share button and select 'Add to Home Screen'" 
-                : "Tap the menu button and select 'Install App'"}
+                ? "In Safari, tap the share button and select 'Add to Home Screen'" 
+                : "Tap the three dots menu (⋮) and select 'Install App'"}
             </p>
           </div>
           <Button
@@ -104,12 +104,12 @@ export function PWAInstallButton({
               if (isIOS) {
                 toast({
                   title: "iOS Installation Guide",
-                  description: "Tap the Share button at the bottom of your screen, then select 'Add to Home Screen'",
+                  description: "In Safari, tap the Share button at the bottom of your screen, then select 'Add to Home Screen'",
                 });
               } else if (isAndroid) {
                 toast({
                   title: "Android Installation Guide",
-                  description: "Tap the three dots menu, then select 'Install App' or 'Add to Home Screen'",
+                  description: "Look for the three dots menu (⋮) in your mobile browser corner (usually top-right or bottom toolbar), then select 'Install App', 'Add to Home Screen', or 'Install DotSpark'",
                 });
               } else {
                 toast({

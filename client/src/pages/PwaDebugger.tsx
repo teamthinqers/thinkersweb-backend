@@ -77,9 +77,20 @@ export default function PwaDebugger() {
 
   const promptInstall = async () => {
     if (!installPromptEvent) {
+      // Detect device type for specific instructions
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+      const isAndroid = /Android/.test(navigator.userAgent);
+      
+      let description = "The app is not installable at this moment";
+      if (isAndroid) {
+        description = "Try manually: Look for the three dots menu (⋮) in your mobile browser corner, then select 'Install App' or 'Add to Home Screen'";
+      } else if (isIOS) {
+        description = "Try manually: In Safari, tap the Share button and select 'Add to Home Screen'";
+      }
+      
       toast({
         title: "Cannot install",
-        description: "The app is not installable at this moment",
+        description: description,
         variant: "destructive",
       });
       return;
@@ -97,9 +108,20 @@ export default function PwaDebugger() {
         description: "DotSpark Neura is being installed",
       });
     } else {
+      // Detect device type for specific instructions
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+      const isAndroid = /Android/.test(navigator.userAgent);
+      
+      let description = "You can install the app later from the PWA Debug page";
+      if (isAndroid) {
+        description = "You can install later: Look for the three dots menu (⋮) in your mobile browser corner, then select 'Install App' or 'Add to Home Screen'";
+      } else if (isIOS) {
+        description = "You can install later: In Safari, tap the Share button and select 'Add to Home Screen'";
+      }
+      
       toast({
         title: "Installation declined",
-        description: "You can install the app later from the PWA Debug page",
+        description: description,
       });
     }
     

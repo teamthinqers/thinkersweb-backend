@@ -107,7 +107,7 @@ export default function LandingPage() {
 
   
   // Use neuraStorage for Neura activation status
-  const [isNeuraActivated, setIsNeuraActivated] = useState(() => {
+  const [isNeuraActivated, setIsNeuraActivated] = useState<boolean>(() => {
     return neuraStorage.isActivated();
   });
   
@@ -125,7 +125,7 @@ export default function LandingPage() {
   });
   
   // Track setup completion status
-  const [isSetupCompleted, setIsSetupCompleted] = useState(() => {
+  const [isSetupCompleted, setIsSetupCompleted] = useState<boolean>(() => {
     const completed = neuraStorage.isSetupCompleted();
     console.log("Initial setup completion status:", completed);
     
