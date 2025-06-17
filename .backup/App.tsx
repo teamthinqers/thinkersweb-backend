@@ -15,7 +15,7 @@ import AppLayout from "@/components/layout/AppLayout";
 import { useEffect, useState } from "react";
 import EntryDetail from "@/components/entries/EntryDetail";
 import ChatEntryForm from "@/components/chat/ChatEntryForm";
-import { AuthProvider, useAuth } from "@/hooks/use-auth";
+import { useAuth } from "@/hooks/use-auth";
 import { Loader2 } from "lucide-react";
 
 // Simplified Protected route component
@@ -139,10 +139,8 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
         <Router />
         <Toaster />
-      </AuthProvider>
     </QueryClientProvider>
   );
 }

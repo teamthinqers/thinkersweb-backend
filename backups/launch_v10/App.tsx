@@ -29,7 +29,7 @@ import Testing from "@/pages/Testing";
 import AppLayout from "@/components/layout/AppLayout";
 import EntryDetail from "@/components/entries/EntryDetail";
 import ChatEntryForm from "@/components/chat/ChatEntryForm";
-import { AuthProvider, useAuth } from "@/hooks/use-auth";
+import { useAuth } from "@/hooks/use-auth";
 import { Loader2 } from "lucide-react";
 import MockDashboard from "@/components/dashboard/MockDashboard";
 // PWA functionality has been removed
@@ -270,7 +270,6 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
         {showNetworkWarning && (
           <div className="fixed top-0 left-0 right-0 p-2 bg-amber-500 text-black z-50 text-center text-sm">
             <p>
@@ -287,7 +286,6 @@ function App() {
         <Router />
         <Toaster />
         <InstallPrompt />
-      </AuthProvider>
     </QueryClientProvider>
   );
 }
