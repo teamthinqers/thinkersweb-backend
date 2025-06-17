@@ -1,4 +1,4 @@
-import { initializeApp } from "firebase/app";
+import { initializeApp, getApps, getApp } from "firebase/app";
 import { 
   getAuth, 
   GoogleAuthProvider,
@@ -16,18 +16,51 @@ console.log("Firebase environment variables available:", {
   appId: !!import.meta.env.VITE_FIREBASE_APP_ID
 });
 
-// Firebase configuration using environment variables
-const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: `${import.meta.env.VITE_FIREBASE_PROJECT_ID}.firebaseapp.com`,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  // Use direct domain for Replit
-  storageBucket: `${import.meta.env.VITE_FIREBASE_PROJECT_ID}.appspot.com`,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+// Validate Firebase configuration
+const validateFirebaseConfig = () => {
+  const requiredVars = {
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+    appId: import.meta.env.VITE_FIREBASE_APP_ID
+  };
+
+  for (const [key, value] of Object.entries(requiredVars)) {
+    if (!value) {
+      throw new Error(`Firebase configuration error: Missing ${key}`);
+    }
+  }
+  
+  return requiredVars;
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+// Validate and get Firebase configuration
+const validatedConfig = validateFirebaseConfig();
+
+// Firebase configuration using environment variables
+const firebaseConfig = {
+  apiKey: validatedConfig.apiKey,
+  authDomain: `${validatedConfig.projectId}.firebaseapp.com`,
+  projectId: validatedConfig.projectId,
+  storageBucket: `${validatedConfig.projectId}.appspot.com`,
+  messagingSenderId: "123456789", // Default for web apps
+  appId: validatedConfig.appId,
+};
+
+// Initialize Firebase with proper duplicate app handling
+let app;
+try {
+  app = initializeApp(firebaseConfig);
+  console.log("Firebase app initialized successfully");
+} catch (error: any) {
+  if (error.code === 'app/duplicate-app') {
+    app = getApp();
+    console.log("Using existing Firebase app");
+  } else {
+    console.error("Firebase initialization error:", error);
+    throw new Error("Failed to initialize Firebase. Please check configuration.");
+  }
+}
+
 export const auth = getAuth(app);
 
 // Set maximum persistence - this ensures users stay logged in until they explicitly logout
@@ -44,16 +77,28 @@ setPersistence(auth, browserLocalPersistence)
   })
   .catch(err => console.error("Firebase auth persistence failed:", err));
 
-// Configure Google provider
+// Configure Google provider with enhanced settings
 const googleProvider = new GoogleAuthProvider();
 googleProvider.setCustomParameters({
-  prompt: 'select_account'
+  prompt: 'select_account',
+  // Add additional parameters to prevent state issues
+  access_type: 'offline',
+  include_granted_scopes: 'true'
 });
+
+// Add scopes for better authentication
+googleProvider.addScope('email');
+googleProvider.addScope('profile');
 
 // Enhanced sign in with Google for persistent logins
 export const signInWithGoogle = async (): Promise<User> => {
   try {
     console.log("Starting Google sign-in process...");
+    
+    // Check auth state before proceeding
+    if (!auth) {
+      throw new Error("Firebase auth not initialized properly");
+    }
     
     if (auth.currentUser) {
       console.log("User already signed in:", auth.currentUser.displayName);
@@ -65,7 +110,24 @@ export const signInWithGoogle = async (): Promise<User> => {
       return auth.currentUser;
     }
     
+    // Clear any existing auth state that might cause issues
+    try {
+      await auth.signOut();
+    } catch (e) {
+      // Ignore errors during cleanup
+      console.log("Cleaned up any existing auth state");
+    }
+    
+    // Add delay to ensure auth is ready
+    await new Promise(resolve => setTimeout(resolve, 100));
+    
+    console.log("Attempting Google sign-in popup...");
     const result = await signInWithPopup(auth, googleProvider);
+    
+    if (!result.user) {
+      throw new Error("No user data returned from Google sign-in");
+    }
+    
     console.log("Google sign in successful:", result.user.displayName);
     
     // Store enhanced user info in localStorage as backup with longer expiration
@@ -89,14 +151,39 @@ export const signInWithGoogle = async (): Promise<User> => {
     
     return result.user;
   } catch (error: any) {
-    console.error("Error signing in with Google:", error.code, error.message);
+    console.error("Error signing in with Google:", error);
     
+    // Enhanced error handling for common Firebase auth issues
     if (error.code === "auth/popup-closed-by-user") {
       throw new Error("Sign-in cancelled. Please try again when ready.");
     } else if (error.code === "auth/popup-blocked") {
-      throw new Error("Sign-in popup was blocked. Please allow popups for this site.");
+      throw new Error("Sign-in popup was blocked. Please allow popups for this site and try again.");
+    } else if (error.code === "auth/cancelled-popup-request") {
+      throw new Error("Another sign-in popup is already open. Please complete that first.");
+    } else if (error.code === "auth/operation-not-allowed") {
+      throw new Error("Google sign-in is not enabled. Please contact support.");
+    } else if (error.code === "auth/invalid-api-key") {
+      throw new Error("Authentication configuration error. Please contact support.");
+    } else if (error.code === "auth/network-request-failed") {
+      throw new Error("Network error. Please check your internet connection and try again.");
+    } else if (error.message?.includes("missing initial state") || error.message?.includes("state")) {
+      // Clear any corrupted auth state and suggest retry
+      try {
+        localStorage.removeItem('dotspark_user');
+        localStorage.removeItem('dotspark_session_active');
+        sessionStorage.clear();
+      } catch (e) {
+        // Ignore storage errors
+      }
+      throw new Error("Authentication state error. Please refresh the page and try again.");
     } else {
-      throw error;
+      // Log the full error for debugging
+      console.error("Full sign-in error details:", {
+        code: error.code,
+        message: error.message,
+        stack: error.stack
+      });
+      throw new Error(`Sign-in failed: ${error.message || "Unknown error"}. Please try again.`);
     }
   }
 };
