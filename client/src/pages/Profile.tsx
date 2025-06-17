@@ -23,7 +23,7 @@ import {
   ChevronLeft,
   ChevronRight
 } from "lucide-react";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuth } from "@/hooks/use-auth-minimal";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 
