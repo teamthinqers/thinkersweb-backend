@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { auth, signInWithGoogle, signOut, onAuthStateChanged, User } from "@/lib/auth-simple";
+import { auth, signInWithGoogle, signOut } from "@/lib/auth-simple";
+import { onAuthStateChanged, User } from "firebase/auth";
 
 type UserInfo = {
   uid: string;
@@ -15,10 +16,9 @@ type AuthContextType = {
   logout: () => Promise<void>;
 };
 
-// Enhanced Firebase auth hook with persistence
+// Simple Firebase auth hook with localStorage persistence
 export function useAuth(): AuthContextType {
   const [user, setUser] = useState<UserInfo | null>(() => {
-    // Try to restore user from localStorage on initialization
     try {
       const storedUser = localStorage.getItem('dotspark_user');
       return storedUser ? JSON.parse(storedUser) : null;
@@ -38,14 +38,10 @@ export function useAuth(): AuthContextType {
           photoURL: firebaseUser.photoURL,
         };
         setUser(userInfo);
-        // Store user in localStorage for persistence
         localStorage.setItem('dotspark_user', JSON.stringify(userInfo));
-        console.log("User signed in and stored:", userInfo.displayName);
       } else {
         setUser(null);
-        // Clear stored user on sign out
         localStorage.removeItem('dotspark_user');
-        console.log("User signed out and cleared from storage");
       }
       setIsLoading(false);
     });
@@ -56,15 +52,9 @@ export function useAuth(): AuthContextType {
   const loginWithGoogle = async () => {
     try {
       setIsLoading(true);
-      const firebaseUser = await signInWithGoogle();
-      setUser({
-        uid: firebaseUser.uid,
-        email: firebaseUser.email,
-        displayName: firebaseUser.displayName,
-        photoURL: firebaseUser.photoURL,
-      });
+      await signInWithGoogle();
     } catch (error) {
-      console.error("Error signing in with Google:", error);
+      console.error("Google sign-in error:", error);
     } finally {
       setIsLoading(false);
     }
@@ -76,7 +66,7 @@ export function useAuth(): AuthContextType {
       await signOut();
       setUser(null);
     } catch (error) {
-      console.error("Error signing out:", error);
+      console.error("Sign-out error:", error);
     } finally {
       setIsLoading(false);
     }
