@@ -157,42 +157,6 @@ export const signInWithGoogle = withAuthRecovery(
     retryDelay: 1000
   }
 );
-    console.error("Error signing in with Google:", error);
-    
-    // Enhanced error handling for common Firebase auth issues
-    if (error.code === "auth/popup-closed-by-user") {
-      throw new Error("Sign-in cancelled. Please try again when ready.");
-    } else if (error.code === "auth/popup-blocked") {
-      throw new Error("Sign-in popup was blocked. Please allow popups for this site and try again.");
-    } else if (error.code === "auth/cancelled-popup-request") {
-      throw new Error("Another sign-in popup is already open. Please complete that first.");
-    } else if (error.code === "auth/operation-not-allowed") {
-      throw new Error("Google sign-in is not enabled. Please contact support.");
-    } else if (error.code === "auth/invalid-api-key") {
-      throw new Error("Authentication configuration error. Please contact support.");
-    } else if (error.code === "auth/network-request-failed") {
-      throw new Error("Network error. Please check your internet connection and try again.");
-    } else if (error.message?.includes("missing initial state") || error.message?.includes("state")) {
-      // Clear any corrupted auth state and suggest retry
-      try {
-        localStorage.removeItem('dotspark_user');
-        localStorage.removeItem('dotspark_session_active');
-        sessionStorage.clear();
-      } catch (e) {
-        // Ignore storage errors
-      }
-      throw new Error("Authentication state error. Please refresh the page and try again.");
-    } else {
-      // Log the full error for debugging
-      console.error("Full sign-in error details:", {
-        code: error.code,
-        message: error.message,
-        stack: error.stack
-      });
-      throw new Error(`Sign-in failed: ${error.message || "Unknown error"}. Please try again.`);
-    }
-  }
-};
 
 // Enhanced sign out - only called when user explicitly chooses to logout
 export const signOut = async (): Promise<void> => {
