@@ -8,6 +8,7 @@ import {
   setPersistence, 
   browserLocalPersistence 
 } from "firebase/auth";
+import { prepareAuthEnvironment, withAuthRecovery, handleMissingInitialStateError } from "./auth-recovery";
 
 // Log environment variables to help debug (without showing actual values)
 console.log("Firebase environment variables available:", {
@@ -90,52 +91,51 @@ googleProvider.setCustomParameters({
 googleProvider.addScope('email');
 googleProvider.addScope('profile');
 
-// Enhanced sign in with Google for persistent logins
-export const signInWithGoogle = async (): Promise<User> => {
-  try {
-    console.log("Starting Google sign-in process...");
+// Create a recovery-enhanced sign-in function
+const _signInWithGoogleBase = async (): Promise<User> => {
+  console.log("Starting Google sign-in process...");
+  
+  // Check auth state before proceeding
+  if (!auth) {
+    throw new Error("Firebase auth not initialized properly");
+  }
+  
+  if (auth.currentUser) {
+    console.log("User already signed in:", auth.currentUser.displayName);
     
-    // Check auth state before proceeding
-    if (!auth) {
-      throw new Error("Firebase auth not initialized properly");
-    }
+    // Force token refresh to ensure maximum longevity even for existing sessions
+    await auth.currentUser.getIdToken(true);
+    console.log("Refreshed token for existing user session");
     
-    if (auth.currentUser) {
-      console.log("User already signed in:", auth.currentUser.displayName);
-      
-      // Force token refresh to ensure maximum longevity even for existing sessions
-      await auth.currentUser.getIdToken(true);
-      console.log("Refreshed token for existing user session");
-      
-      return auth.currentUser;
-    }
+    return auth.currentUser;
+  }
+  
+  // Prepare environment to prevent "missing initial state" error
+  await prepareAuthEnvironment();
+  
+  console.log("Attempting Google sign-in popup...");
+  const result = await signInWithPopup(auth, googleProvider);
+  
+  if (!result.user) {
+    throw new Error("No user data returned from Google sign-in");
+  }
+  
+  return result.user;
+};
+
+// Enhanced sign in with Google using recovery system
+export const signInWithGoogle = withAuthRecovery(
+  async (): Promise<User> => {
+    const user = await _signInWithGoogleBase();
     
-    // Clear any existing auth state that might cause issues
-    try {
-      await auth.signOut();
-    } catch (e) {
-      // Ignore errors during cleanup
-      console.log("Cleaned up any existing auth state");
-    }
-    
-    // Add delay to ensure auth is ready
-    await new Promise(resolve => setTimeout(resolve, 100));
-    
-    console.log("Attempting Google sign-in popup...");
-    const result = await signInWithPopup(auth, googleProvider);
-    
-    if (!result.user) {
-      throw new Error("No user data returned from Google sign-in");
-    }
-    
-    console.log("Google sign in successful:", result.user.displayName);
+    console.log("Google sign in successful:", user.displayName);
     
     // Store enhanced user info in localStorage as backup with longer expiration
     const userData = {
-      uid: result.user.uid,
-      email: result.user.email,
-      displayName: result.user.displayName,
-      photoURL: result.user.photoURL,
+      uid: user.uid,
+      email: user.email,
+      displayName: user.displayName,
+      photoURL: user.photoURL,
       lastLogin: new Date().toISOString(),
       // Add explicit fields for persistence
       persistUntil: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(), // 90 days
@@ -146,11 +146,17 @@ export const signInWithGoogle = async (): Promise<User> => {
     localStorage.setItem('dotspark_session_active', 'true');
     
     // Force an explicit token refresh to maximize token lifetime
-    await result.user.getIdToken(true);
+    await user.getIdToken(true);
     console.log("Initial token refresh completed for new login");
     
-    return result.user;
-  } catch (error: any) {
+    return user;
+  },
+  {
+    clearStorage: true,
+    retryAttempts: 2,
+    retryDelay: 1000
+  }
+);
     console.error("Error signing in with Google:", error);
     
     // Enhanced error handling for common Firebase auth issues
