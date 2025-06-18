@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { 
   getAuth, 
-  GoogleAuthProvider,
+  GoogleAuthProvider, 
   signInWithPopup, 
   signOut as firebaseSignOut, 
   User, 
@@ -30,18 +30,9 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 
-// Set maximum persistence - this ensures users stay logged in until they explicitly logout
-// The browserLocalPersistence option keeps the user logged in even after closing the browser
+// Set maximum persistence
 setPersistence(auth, browserLocalPersistence)
-  .then(() => {
-    console.log("Firebase auth persistence set to LOCAL successfully");
-    // Force refresh token to ensure maximum longevity
-    if (auth.currentUser) {
-      auth.currentUser.getIdToken(true)
-        .then(() => console.log("Firebase token refreshed on init"))
-        .catch(err => console.error("Firebase token refresh error:", err));
-    }
-  })
+  .then(() => console.log("Firebase auth persistence set to LOCAL successfully"))
   .catch(err => console.error("Firebase auth persistence failed:", err));
 
 // Configure Google provider
@@ -50,42 +41,27 @@ googleProvider.setCustomParameters({
   prompt: 'select_account'
 });
 
-// Enhanced sign in with Google for persistent logins
+// Simple sign in with Google
 export const signInWithGoogle = async (): Promise<User> => {
   try {
     console.log("Starting Google sign-in process...");
     
     if (auth.currentUser) {
       console.log("User already signed in:", auth.currentUser.displayName);
-      
-      // Force token refresh to ensure maximum longevity even for existing sessions
-      await auth.currentUser.getIdToken(true);
-      console.log("Refreshed token for existing user session");
-      
       return auth.currentUser;
     }
     
     const result = await signInWithPopup(auth, googleProvider);
     console.log("Google sign in successful:", result.user.displayName);
     
-    // Store enhanced user info in localStorage as backup with longer expiration
-    const userData = {
+    // Store user info in localStorage as backup
+    localStorage.setItem('dotspark_user', JSON.stringify({
       uid: result.user.uid,
       email: result.user.email,
       displayName: result.user.displayName,
       photoURL: result.user.photoURL,
-      lastLogin: new Date().toISOString(),
-      // Add explicit fields for persistence
-      persistUntil: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(), // 90 days
-      rememberMe: true // Always remember by default
-    };
-    
-    localStorage.setItem('dotspark_user', JSON.stringify(userData));
-    localStorage.setItem('dotspark_session_active', 'true');
-    
-    // Force an explicit token refresh to maximize token lifetime
-    await result.user.getIdToken(true);
-    console.log("Initial token refresh completed for new login");
+      lastLogin: new Date().toISOString()
+    }));
     
     return result.user;
   } catch (error: any) {
@@ -101,37 +77,17 @@ export const signInWithGoogle = async (): Promise<User> => {
   }
 };
 
-// Enhanced sign out - only called when user explicitly chooses to logout
+// Simple sign out
 export const signOut = async (): Promise<void> => {
   try {
-    console.log("User initiated sign out - explicitly logging out");
-    
-    // Clear all auth-related backups
+    // Clear backup
     localStorage.removeItem('dotspark_user');
-    localStorage.removeItem('dotspark_user_data');
-    localStorage.removeItem('dotspark_session_active');
-    localStorage.removeItem('auth_timestamp');
-    
-    // Clear any cached auth data
-    sessionStorage.removeItem('dotspark_temp_auth');
     
     // Sign out of Firebase
     await firebaseSignOut(auth);
-    console.log("Sign out successful - user explicitly logged out");
+    console.log("Sign out successful");
   } catch (error: any) {
     console.error("Error signing out:", error.code, error.message);
-    
-    // Even if there's an error, try to clear localStorage
-    try {
-      localStorage.removeItem('dotspark_user');
-      localStorage.removeItem('dotspark_user_data');
-      localStorage.removeItem('dotspark_session_active');
-      localStorage.removeItem('auth_timestamp');
-      sessionStorage.removeItem('dotspark_temp_auth');
-    } catch (e) {
-      console.error("Error clearing storage during sign out:", e);
-    }
-    
     throw error;
   }
 };

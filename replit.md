@@ -634,13 +634,6 @@ Changelog:
   * Added visual Share button representation with clear location guidance
   * Enhanced step descriptions with detailed Safari-specific instructions
   * Applied consistent amber color scheme throughout iOS installation section
-- June 16, 2025. Enhanced Firebase authentication error handling:
-  * Fixed "missing initial state" authentication error with comprehensive error handling
-  * Added Firebase configuration validation and duplicate app prevention
-  * Enhanced Google provider configuration with proper scopes and parameters
-  * Implemented storage cleanup for corrupted authentication data
-  * Added detailed error messages for common Firebase authentication issues
-  * Improved authentication flow with proper state management and retry logic
 - June 15, 2025. Enhanced Dot Settings with AI Mode and visual distinction system:
   * Restructured capture modes from Natural Mode (voice/text/hybrid) to include AI Mode as fourth option
   * Added AI Mode sub-options: Direct Chat and WhatsApp for AI-assisted dot creation

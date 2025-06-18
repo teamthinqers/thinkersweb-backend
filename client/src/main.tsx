@@ -1,5 +1,5 @@
 import { createRoot } from "react-dom/client";
-import App from "./App-debug";
+import App from "./App";
 import "./index.css";
 import { queryClient } from "./lib/queryClient";
 import { initViteConnectionGuard } from "./lib/viteConnectionGuard";
@@ -158,18 +158,75 @@ try {
   console.error("Failed to initialize connection guard:", err);
 }
 
-// Simplified App wrapper to fix React hooks error
+// App initialization wrapper component with reset functionality and PWA
 function AppWithReset() {
+  useEffect(() => {
+    // Initialize Progressive Web App functionality
+    initPWA();
+    
+    // Add debug reset button in development
+    if (import.meta.env.MODE === 'development') {
+      addResetButton();
+    }
+    
+    // Setup PWA install prompt
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      // Store the event so it can be triggered later
+      (window as any).deferredPrompt = e;
+      console.log('App can be installed! Install prompt available.');
+    });
+    
+    // Handle app installed event
+    window.addEventListener('appinstalled', () => {
+      console.log('App was installed successfully!');
+      // Clear the prompt
+      (window as any).deferredPrompt = null;
+    });
+    
+    // Handle online/offline status with PWA support
+    window.addEventListener('online', () => {
+      console.log('App is back online');
+      // Try to reload cached resources if we're now online
+      if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+        navigator.serviceWorker.controller.postMessage({
+          type: 'ONLINE',
+          timestamp: new Date().getTime()
+        });
+      }
+    });
+    
+    window.addEventListener('offline', () => {
+      console.log('App is now offline');
+    });
+    
+    // Check if we need to reset app state (user added ?reset=true to URL)
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('reset') === 'true') {
+      // Remove the reset param to avoid infinite resets
+      const newUrl = new URL(window.location.href);
+      newUrl.searchParams.delete('reset');
+      window.history.replaceState({}, '', newUrl);
+      
+      // Execute app reset
+      resetApplicationState(window.location.pathname);
+      return;
+    }
+    
+    // Return cleanup function
+    return () => {
+      window.removeEventListener('beforeinstallprompt', () => {});
+      window.removeEventListener('appinstalled', () => {});
+      window.removeEventListener('online', () => {});
+      window.removeEventListener('offline', () => {});
+    };
+  }, []);
+  
   return <App />;
 }
 
 // Create the application root element
-const rootElement = document.getElementById("root");
-if (!rootElement) {
-  throw new Error("Root element not found");
-}
-
-createRoot(rootElement).render(
+createRoot(document.getElementById("root")!).render(
   <ErrorBoundary>
     <AppWithReset />
   </ErrorBoundary>
