@@ -623,21 +623,21 @@ const Dashboard: React.FC = () => {
           )}
         </div>
         
-        {/* Zoom and Navigation Controls - Centered */}
-        <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-10 flex items-center gap-2 bg-white/90 backdrop-blur rounded-lg p-2 border-2 border-amber-200 shadow-lg">
+        {/* Zoom and Navigation Controls - Positioned to avoid overlap */}
+        <div className="absolute top-16 sm:top-4 left-1/2 transform -translate-x-1/2 z-10 flex items-center gap-1 sm:gap-2 bg-white/90 backdrop-blur rounded-lg p-1 sm:p-2 border-2 border-amber-200 shadow-lg">
           {/* Zoom Out */}
           <button
             onClick={() => setZoom(Math.max(0.5, zoom - 0.1))}
             className="bg-amber-500 hover:bg-amber-600 text-white rounded p-1 transition-colors"
             title="Zoom Out"
           >
-            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-2 h-2 sm:w-3 sm:h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
             </svg>
           </button>
           
           {/* Zoom Level Display */}
-          <span className="text-xs font-semibold text-amber-800 min-w-[45px] text-center">
+          <span className="text-xs font-semibold text-amber-800 min-w-[35px] sm:min-w-[45px] text-center">
             {Math.round(zoom * 100)}%
           </span>
           
@@ -647,7 +647,7 @@ const Dashboard: React.FC = () => {
             className="bg-amber-500 hover:bg-amber-600 text-white rounded p-1 transition-colors"
             title="Zoom In"
           >
-            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-2 h-2 sm:w-3 sm:h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
             </svg>
           </button>
@@ -658,10 +658,10 @@ const Dashboard: React.FC = () => {
               setOffset({ x: 0, y: 0 });
               setZoom(1);
             }}
-            className="bg-amber-500 hover:bg-amber-600 text-white rounded p-1 transition-colors ml-2"
+            className="bg-amber-500 hover:bg-amber-600 text-white rounded p-1 transition-colors ml-1 sm:ml-2"
             title="Reset View"
           >
-            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-2 h-2 sm:w-3 sm:h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
             </svg>
           </button>

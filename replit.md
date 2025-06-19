@@ -915,6 +915,8 @@ Changelog:
   * Implemented mouse wheel zoom for browser and zoom level display (50%-200%)
   * Added tighter boundary constraints to prevent navigation beyond grid limits
   * Enhanced Dot Wheels Map with comprehensive zoom and navigation control panel
+  * Fixed PWA button overlap by repositioning zoom controls below preview toggle on mobile
+  * Optimized zoom control sizing for mobile with smaller icons and compact spacing
 - June 15, 2025. Enhanced PWA installation detection in neuraStorage utility:
   * Added comprehensive PWA installation checking across platforms
   * Implemented cross-platform installation status synchronization
