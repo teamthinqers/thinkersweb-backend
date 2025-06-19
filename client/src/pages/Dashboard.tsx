@@ -266,6 +266,7 @@ const Dashboard: React.FC = () => {
     const [previewMode, setPreviewMode] = useState(false);
     const [dragStart, setDragStart] = useState<{ x: number; y: number } | null>(null);
     const [offset, setOffset] = useState({ x: 0, y: 0 });
+    const [zoom, setZoom] = useState(1);
 
     // Generate preview data when preview mode is enabled
     const generatePreviewData = () => {
@@ -469,19 +470,22 @@ const Dashboard: React.FC = () => {
         e.preventDefault();
         const touch = e.touches[0];
         
-        // Enhanced drag sensitivity with 2.5x multiplier for much easier PWA dragging
+        // Reduced drag sensitivity with 1.2x multiplier for better PWA control
         const newOffset = {
-          x: (touch.clientX - dragStart.x) * 2.5,
-          y: (touch.clientY - dragStart.y) * 2.5
+          x: (touch.clientX - dragStart.x) * 1.2,
+          y: (touch.clientY - dragStart.y) * 1.2
         };
         
-        // Much more generous boundary constraints for PWA - allow more movement
+        // Tighter boundary constraints to prevent getting lost
         const containerWidth = window.innerWidth;
         const containerHeight = 450;
-        const maxX = containerWidth * 0.3; // Allow 30% overflow on right
-        const minX = -(1200 - containerWidth + containerWidth * 0.3); // Allow 30% overflow on left
-        const maxY = containerHeight * 0.2; // Allow 20% overflow on top
-        const minY = -(800 - containerHeight + containerHeight * 0.2); // Allow 20% overflow on bottom
+        const gridWidth = 1200 * zoom;
+        const gridHeight = 800 * zoom;
+        
+        const maxX = Math.min(containerWidth * 0.1, 50); // Allow small overflow on right
+        const minX = Math.max(-(gridWidth - containerWidth + 50), -gridWidth * 0.8); // Prevent going too far left
+        const maxY = Math.min(containerHeight * 0.1, 30); // Allow small overflow on top
+        const minY = Math.max(-(gridHeight - containerHeight + 30), -gridHeight * 0.8); // Prevent going too far down
         
         setOffset({
           x: Math.max(minX, Math.min(maxX, newOffset.x)),
@@ -493,6 +497,13 @@ const Dashboard: React.FC = () => {
     const handleTouchEnd = (e: React.TouchEvent) => {
       e.preventDefault();
       setDragStart(null);
+    };
+
+    // Mouse wheel zoom for browser
+    const handleWheel = (e: React.WheelEvent) => {
+      e.preventDefault();
+      const zoomChange = e.deltaY > 0 ? -0.1 : 0.1;
+      setZoom(Math.max(0.5, Math.min(2, zoom + zoomChange)));
     };
 
     const renderDotConnections = () => {
@@ -612,16 +623,49 @@ const Dashboard: React.FC = () => {
           )}
         </div>
         
-        {/* Recenter Button - Centered */}
-        <button
-          onClick={() => setOffset({ x: 0, y: 0 })}
-          className="absolute top-4 left-1/2 transform -translate-x-1/2 z-10 bg-amber-500 hover:bg-amber-600 text-white rounded-full p-2 shadow-lg transition-colors"
-          title="Recenter Grid"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-          </svg>
-        </button>
+        {/* Zoom and Navigation Controls - Centered */}
+        <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-10 flex items-center gap-2 bg-white/90 backdrop-blur rounded-lg p-2 border-2 border-amber-200 shadow-lg">
+          {/* Zoom Out */}
+          <button
+            onClick={() => setZoom(Math.max(0.5, zoom - 0.1))}
+            className="bg-amber-500 hover:bg-amber-600 text-white rounded p-1 transition-colors"
+            title="Zoom Out"
+          >
+            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+            </svg>
+          </button>
+          
+          {/* Zoom Level Display */}
+          <span className="text-xs font-semibold text-amber-800 min-w-[45px] text-center">
+            {Math.round(zoom * 100)}%
+          </span>
+          
+          {/* Zoom In */}
+          <button
+            onClick={() => setZoom(Math.min(2, zoom + 0.1))}
+            className="bg-amber-500 hover:bg-amber-600 text-white rounded p-1 transition-colors"
+            title="Zoom In"
+          >
+            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+          </button>
+          
+          {/* Reset View */}
+          <button
+            onClick={() => {
+              setOffset({ x: 0, y: 0 });
+              setZoom(1);
+            }}
+            className="bg-amber-500 hover:bg-amber-600 text-white rounded p-1 transition-colors ml-2"
+            title="Reset View"
+          >
+            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+            </svg>
+          </button>
+        </div>
         
         <div className="absolute top-4 right-4 z-10 flex flex-col sm:flex-row gap-1 sm:gap-2">
           <button className="bg-white/90 backdrop-blur rounded-lg px-2 py-1 border-2 border-amber-200 text-xs font-semibold text-amber-800 hover:bg-amber-50 transition-colors whitespace-nowrap">
@@ -641,6 +685,7 @@ const Dashboard: React.FC = () => {
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
+          onWheel={handleWheel}
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
