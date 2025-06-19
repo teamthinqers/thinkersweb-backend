@@ -631,15 +631,17 @@ const Dashboard: React.FC = () => {
                       e.stopPropagation();
                       e.preventDefault();
                       console.log('Dot clicked:', dot.id);
-                      setHoveredDot(hoveredDot?.id === dot.id ? null : dot);
+                      setViewFlashCard(dot);
+                      setHoveredDot(null);
                     }}
                     onMouseDown={(e) => e.stopPropagation()}
                     onTouchStart={(e) => {
                       e.stopPropagation();
                       e.preventDefault();
                       console.log('Dot touched:', dot.id);
-                      // Immediate response for PWA
-                      setHoveredDot(hoveredDot?.id === dot.id ? null : dot);
+                      // Immediate response for PWA - show flash card
+                      setViewFlashCard(dot);
+                      setHoveredDot(null);
                     }}
                     onTouchEnd={(e) => {
                       e.stopPropagation();
@@ -707,12 +709,14 @@ const Dashboard: React.FC = () => {
                             {dot.pulse}
                           </Badge>
                         </div>
-                        <h4 className="font-semibold text-gray-800 text-sm">Summary</h4>
+                        <h4 className="font-bold text-lg text-amber-800 border-b border-amber-200 pb-2 mb-3">
+                          {dot.oneWordSummary}
+                        </h4>
                         <p className="text-xs text-gray-600 line-clamp-3">
                           {dot.summary}
                         </p>
                         <div className="text-xs text-amber-600 mt-2 font-medium">
-                          Click to view full dot
+                          Click for flash card view
                         </div>
                       </div>
                     </div>
@@ -922,7 +926,7 @@ const Dashboard: React.FC = () => {
                     <DotCard 
                       key={dot.id} 
                       dot={dot} 
-                      onClick={() => setViewFullDot(dot)}
+                      onClick={() => setViewFlashCard(dot)}
                     />
                   ))
                 ) : (
@@ -998,7 +1002,7 @@ const Dashboard: React.FC = () => {
                   key={dot.id} 
                   dot={dot} 
                   onClick={() => {
-                    setViewFullDot(dot);
+                    setViewFlashCard(dot);
                     setRecentDotsOpen(false);
                   }}
                 />

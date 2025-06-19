@@ -854,6 +854,16 @@ Changelog:
   * Changed "Go to my dotspark" button to "Access my Neura" with Brain icon
   * Button now navigates to dashboard page (/dashboard) for completed users
   * Added animate-pulse effect to brain icon for visual consistency with neural branding
+- June 19, 2025. Implemented one-word summary and flash card format system:
+  * Added oneWordSummary field to dots database schema for auto-generated flash card headings
+  * Created OpenAI-powered generateOneWordSummary function to extract essence from dot content
+  * Updated dots API endpoints to generate and return one-word summaries for all new dots
+  * Built comprehensive DotFlashCard component with amber/orange gradient styling and structured layout
+  * Implemented two-click interaction system: first click shows flash card, second click shows full view
+  * Updated all dot interactions (Recent Dots, search results, grid clicks) to use flash card format
+  * Enhanced dots grid preview mode with flash card headings instead of full summary text
+  * Applied flash card format consistently across dashboard, preview mode, and mobile interfaces
+  * System now provides quick visual scanning with one-word summaries while preserving full content access
 - June 15, 2025. Enhanced PWA installation detection in neuraStorage utility:
   * Added comprehensive PWA installation checking across platforms
   * Implemented cross-platform installation status synchronization
