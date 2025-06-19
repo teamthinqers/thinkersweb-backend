@@ -786,38 +786,50 @@ const Dashboard: React.FC = () => {
           {isFullscreen && (
             <>
               {/* Fullscreen Title Button */}
-              <div className="absolute top-4 left-4 z-60">
+              <div className="absolute top-4 left-4 z-60" style={{ pointerEvents: 'auto' }}>
                 <button
-                  onClick={toggleFullscreen}
-                  className="text-xl font-bold text-amber-800 bg-white/90 backdrop-blur rounded-lg px-4 py-2 border-2 border-amber-200 hover:bg-amber-50 transition-colors shadow-lg"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleFullscreen();
+                  }}
+                  className="text-xl font-bold text-amber-800 bg-white/90 backdrop-blur rounded-lg px-4 py-2 border-2 border-amber-200 hover:bg-amber-50 transition-colors shadow-lg cursor-pointer"
                   title="Exit Fullscreen"
+                  style={{ pointerEvents: 'auto' }}
                 >
                   Dot Wheels Map - Fullscreen
                 </button>
               </div>
               
               {/* Fullscreen Toggle Button */}
-              <div className="absolute top-4 right-4 z-60">
+              <div className="absolute top-4 right-4 z-60" style={{ pointerEvents: 'auto' }}>
                 <button
-                  onClick={toggleFullscreen}
-                  className="bg-red-500 hover:bg-red-600 text-white rounded-lg p-3 transition-colors shadow-lg"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleFullscreen();
+                  }}
+                  className="bg-red-500 hover:bg-red-600 text-white rounded-lg p-3 transition-colors shadow-lg cursor-pointer"
                   title="Exit Fullscreen (ESC)"
+                  style={{ pointerEvents: 'auto' }}
                 >
                   <Minimize className="w-5 h-5" />
                 </button>
               </div>
 
               {/* Fullscreen Preview Toggle - Left side */}
-              <div className="absolute top-20 left-4 z-60">
+              <div className="absolute top-20 left-4 z-60" style={{ pointerEvents: 'auto' }}>
                 <div className="bg-white/90 backdrop-blur rounded-lg p-2 border-2 border-amber-200 shadow-lg">
                   <div className="flex items-center gap-2">
                     <label className="text-xs font-medium text-amber-800 hidden sm:block">Preview Mode</label>
                     <label className="text-xs font-medium text-amber-800 sm:hidden">Preview</label>
                     <button
-                      onClick={() => setPreviewMode(!previewMode)}
-                      className={`relative inline-flex h-4 w-7 items-center rounded-full transition-colors ${
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setPreviewMode(!previewMode);
+                      }}
+                      className={`relative inline-flex h-4 w-7 items-center rounded-full transition-colors cursor-pointer ${
                         previewMode ? 'bg-amber-500' : 'bg-gray-300'
                       }`}
+                      style={{ pointerEvents: 'auto' }}
                     >
                       <span
                         className={`inline-block h-2 w-2 transform rounded-full bg-white transition-transform ${
@@ -830,26 +842,36 @@ const Dashboard: React.FC = () => {
               </div>
 
               {/* Fullscreen Stats - Right side */}
-              <div className="absolute top-20 right-4 z-60 flex flex-col gap-1">
-                <button className="bg-white/90 backdrop-blur rounded-lg px-3 py-2 border-2 border-amber-200 text-sm font-semibold text-amber-800 hover:bg-amber-50 transition-colors whitespace-nowrap shadow-lg">
+              <div className="absolute top-20 right-4 z-60 flex flex-col gap-1" style={{ pointerEvents: 'auto' }}>
+                <button 
+                  className="bg-white/90 backdrop-blur rounded-lg px-3 py-2 border-2 border-amber-200 text-sm font-semibold text-amber-800 hover:bg-amber-50 transition-colors whitespace-nowrap shadow-lg cursor-pointer"
+                  style={{ pointerEvents: 'auto' }}
+                >
                   Dots: {totalDots}
                 </button>
-                <button className="bg-white/90 backdrop-blur rounded-lg px-3 py-2 border-2 border-amber-200 text-sm font-semibold text-amber-800 hover:bg-amber-50 transition-colors whitespace-nowrap shadow-lg">
+                <button 
+                  className="bg-white/90 backdrop-blur rounded-lg px-3 py-2 border-2 border-amber-200 text-sm font-semibold text-amber-800 hover:bg-amber-50 transition-colors whitespace-nowrap shadow-lg cursor-pointer"
+                  style={{ pointerEvents: 'auto' }}
+                >
                   Wheels: {totalWheels}
                 </button>
               </div>
 
               {/* Fullscreen Navigation Controls - Top Center */}
-              <div className="absolute top-20 left-1/2 transform -translate-x-1/2 z-60">
+              <div className="absolute top-20 left-1/2 transform -translate-x-1/2 z-60" style={{ pointerEvents: 'auto' }}>
                 <div className={`bg-white/90 backdrop-blur rounded-lg border-2 border-amber-200 shadow-lg ${
                   isPWA ? 'p-2' : 'p-2'
                 }`}>
                   <button
-                    onClick={resetView}
-                    className={`bg-amber-500 hover:bg-amber-600 text-white transition-colors ${
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      resetView();
+                    }}
+                    className={`bg-amber-500 hover:bg-amber-600 text-white transition-colors cursor-pointer ${
                       isPWA ? 'rounded-lg p-2 w-10 h-10' : 'rounded-lg p-2 w-10 h-10'
                     }`}
                     title={isPWA ? "Reset Scroll Position" : "Reset Drag Position"}
+                    style={{ pointerEvents: 'auto' }}
                   >
                     <svg className={`fill="none" stroke="white" viewBox="0 0 24 24" ${
                       isPWA ? 'w-6 h-6' : 'w-6 h-6'
