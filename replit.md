@@ -912,6 +912,12 @@ Changelog:
   * Enhanced button with touchAction: 'manipulation' for reliable mobile taps
   * Maintained high z-index (100) to ensure button stays clickable above other elements
   * PWA users now have reliable single-tap minimize functionality
+- June 19, 2025. Implemented PWA-specific flash card interaction flow:
+  * PWA dot clicks now show flash card first instead of full dot view
+  * Flash card requires additional click to open full dot view
+  * Browser mode maintains direct full dot view access
+  * Added flash card modal to DotWheelsMap component with proper state management
+  * Enhanced PWA user experience with two-step dot viewing process
 - June 19, 2025. Enhanced Spark section alignment and PWA drag/zoom controls:
   * Centered Spark button with content box using horizontal alignment for better visual balance
   * Made content box more rectangular with fixed width and matching border radius
