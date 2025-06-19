@@ -633,7 +633,7 @@ const Dashboard: React.FC = () => {
         isFullscreen 
           ? 'fixed inset-0 z-50 p-8' 
           : 'rounded-xl p-4 min-h-[500px] border-2 border-amber-200 shadow-lg'
-      } overflow-hidden`}>>
+      } overflow-hidden`}>
         {/* Preview toggle and Recent Filter Indicator */}
         <div className="absolute top-4 left-4 z-10 flex flex-col gap-2">
           {(previewMode || displayDots.length > 0) && (
@@ -1030,49 +1030,49 @@ const Dashboard: React.FC = () => {
                 style={{ transform: 'scale(1)' }}
               >
                 <div className="bg-white border-2 border-amber-300 rounded-xl p-4 shadow-2xl max-w-xs min-w-[280px] relative">
-                {/* Close button */}
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setSelectedDot(null);
-                  }}
-                  className="absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 transition-colors"
-                >
-                  ✕
-                </button>
-                
-                {/* Flash card content */}
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-amber-500"></div>
-                    <h3 className="font-bold text-lg text-gray-800">{selectedDot.oneWordSummary}</h3>
-                  </div>
+                  {/* Close button */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedDot(null);
+                    }}
+                    className="absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 transition-colors"
+                  >
+                    ✕
+                  </button>
                   
-                  <p className="text-gray-700 text-sm leading-relaxed">
-                    {selectedDot.summary}
-                  </p>
-                  
-                  <div className="flex items-center justify-between pt-2 border-t border-gray-200">
-                    <span className="text-xs text-gray-500 flex items-center gap-1">
-                      {selectedDot.sourceType === 'voice' ? (
-                        <><Mic className="w-3 h-3" /> Voice</>
-                      ) : (
-                        <><Type className="w-3 h-3" /> Text</>
-                      )}
-                    </span>
+                  {/* Flash card content */}
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full bg-amber-500"></div>
+                      <h3 className="font-bold text-lg text-gray-800">{selectedDot.oneWordSummary}</h3>
+                    </div>
                     
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setViewFullDot(selectedDot);
-                        setSelectedDot(null);
-                      }}
-                      className="bg-amber-500 hover:bg-amber-600 text-white px-3 py-1 rounded-lg text-sm font-medium transition-colors"
-                    >
-                      View Full
-                    </button>
+                    <p className="text-gray-700 text-sm leading-relaxed">
+                      {selectedDot.summary}
+                    </p>
+                    
+                    <div className="flex items-center justify-between pt-2 border-t border-gray-200">
+                      <span className="text-xs text-gray-500 flex items-center gap-1">
+                        {selectedDot.sourceType === 'voice' ? (
+                          <><Mic className="w-3 h-3" /> Voice</>
+                        ) : (
+                          <><Type className="w-3 h-3" /> Text</>
+                        )}
+                      </span>
+                      
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setViewFullDot(selectedDot);
+                          setSelectedDot(null);
+                        }}
+                        className="bg-amber-500 hover:bg-amber-600 text-white px-3 py-1 rounded-lg text-sm font-medium transition-colors"
+                      >
+                        View Full
+                      </button>
+                    </div>
                   </div>
-                </div>
                 </div>
               </div>
             </div>
