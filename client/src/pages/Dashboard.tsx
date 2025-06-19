@@ -43,7 +43,8 @@ const Dashboard: React.FC = () => {
   const [viewFullDot, setViewFullDot] = useState<Dot | null>(null);
   const [viewFlashCard, setViewFlashCard] = useState<Dot | null>(null);
   const [searchResults, setSearchResults] = useState<Dot[]>([]);
-  const [recentDotsOpen, setRecentDotsOpen] = useState(false);
+  const [showRecentFilter, setShowRecentFilter] = useState(false);
+  const [recentDotsCount, setRecentDotsCount] = useState(4);
 
   // Fetch real dots from API
   const { data: dots = [], isLoading, refetch } = useQuery({
@@ -950,21 +951,7 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
 
-        {/* Recent Dots Button - directly below search */}
-        <div className="mb-6">
-          <Button
-            onClick={() => setRecentDotsOpen(true)}
-            className="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white px-6 py-3 rounded-xl shadow-lg flex items-center gap-2 font-medium"
-          >
-            <Clock className="w-5 h-5" />
-            Recent Dots
-            {dots.length > 0 && (
-              <Badge className="bg-white/20 text-white border-0 ml-1">
-                {Math.min(dots.length, 4)}
-              </Badge>
-            )}
-          </Button>
-        </div>
+
 
         {/* Search Results Section - only show when searching */}
         {searchTerm.trim() && (
@@ -999,34 +986,77 @@ const Dashboard: React.FC = () => {
 
         {/* Dot Wheels Map Section */}
         <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-            <Network className="w-5 h-5 text-amber-500" />
-            <span className="bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent">
-              Dot Wheels Map
-            </span>
-            <Dialog>
-              <DialogTrigger asChild>
-                <button className="ml-2 p-1 rounded-full hover:bg-amber-100 transition-colors">
-                  <Info className="w-4 h-4 text-amber-600" />
-                </button>
-              </DialogTrigger>
-              <DialogContent className="max-w-md">
-                <DialogHeader>
-                  <DialogTitle className="flex items-center gap-2">
-                    <Info className="w-5 h-5 text-amber-600" />
-                    About Dot Wheels Map
-                  </DialogTitle>
-                </DialogHeader>
-                <div className="space-y-3 text-sm text-gray-700">
-                  <p>You can see the dots you saved in this grid.</p>
-                  <div>
-                    <p className="font-semibold text-amber-700 mb-1">What are Wheels?</p>
-                    <p>Dots of the same category form a Dot Wheel which is nothing but a bigger dot. Keep adding your dots and let DotSpark fix it into relevant Wheels.</p>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-semibold flex items-center gap-2">
+              <Network className="w-5 h-5 text-amber-500" />
+              <span className="bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent">
+                Dot Wheels Map
+              </span>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <button className="ml-2 p-1 rounded-full hover:bg-amber-100 transition-colors">
+                    <Info className="w-4 h-4 text-amber-600" />
+                  </button>
+                </DialogTrigger>
+                <DialogContent className="max-w-md">
+                  <DialogHeader>
+                    <DialogTitle className="flex items-center gap-2">
+                      <Info className="w-5 h-5 text-amber-600" />
+                      About Dot Wheels Map
+                    </DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-3 text-sm text-gray-700">
+                    <p>You can see the dots you saved in this grid.</p>
+                    <div>
+                      <p className="font-semibold text-amber-700 mb-1">What are Wheels?</p>
+                      <p>Dots of the same category form a Dot Wheel which is nothing but a bigger dot. Keep adding your dots and let DotSpark fix it into relevant Wheels.</p>
+                    </div>
                   </div>
+                </DialogContent>
+              </Dialog>
+            </h2>
+            
+            {/* Recent Dots Filter */}
+            <div className="flex items-center gap-2">
+              <Button
+                variant={showRecentFilter ? "default" : "outline"}
+                size="sm"
+                onClick={() => setShowRecentFilter(!showRecentFilter)}
+                className={`flex items-center gap-2 ${
+                  showRecentFilter 
+                    ? 'bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white' 
+                    : 'border-amber-300 text-amber-700 hover:bg-amber-50'
+                }`}
+              >
+                <Clock className="w-4 h-4" />
+                Recent Dots
+                {dots.length > 0 && (
+                  <Badge className={`border-0 ml-1 ${
+                    showRecentFilter 
+                      ? 'bg-white/20 text-white' 
+                      : 'bg-amber-100 text-amber-700'
+                  }`}>
+                    {Math.min(dots.length, recentDotsCount)}
+                  </Badge>
+                )}
+              </Button>
+              
+              {showRecentFilter && (
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-gray-600">Show:</span>
+                  <input
+                    type="number"
+                    min="1"
+                    max="20"
+                    value={recentDotsCount}
+                    onChange={(e) => setRecentDotsCount(Math.max(1, parseInt(e.target.value) || 4))}
+                    className="w-16 px-2 py-1 text-sm border border-amber-300 rounded focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                  />
+                  <span className="text-sm text-gray-600">dots</span>
                 </div>
-              </DialogContent>
-            </Dialog>
-          </h2>
+              )}
+            </div>
+          </div>
           
           <DotWheelsMap wheels={wheels} actualDots={dots} />
         </div>
