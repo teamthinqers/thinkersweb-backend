@@ -966,6 +966,37 @@ const Dashboard: React.FC = () => {
 
 
 
+        {/* Spark Section */}
+        <div className="mb-6">
+          <div className="flex flex-col items-center">
+            {/* Spark Button */}
+            <button className="group relative overflow-hidden bg-gradient-to-r from-yellow-400 via-amber-500 to-orange-500 hover:from-yellow-500 hover:via-amber-600 hover:to-orange-600 text-white px-8 py-4 rounded-2xl shadow-xl hover:shadow-2xl transform transition-all duration-300 hover:scale-105 active:scale-95">
+              <div className="flex items-center gap-3">
+                <div className="relative">
+                  <Sparkles className="w-6 h-6 animate-pulse" />
+                  <div className="absolute inset-0 animate-ping">
+                    <Sparkles className="w-6 h-6 opacity-30" />
+                  </div>
+                </div>
+                <span className="text-lg font-bold tracking-wide">SPARK</span>
+              </div>
+              
+              {/* Animated background effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 transform -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+            </button>
+            
+            {/* Content Box */}
+            <div className="mt-4 bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-200 rounded-xl p-6 max-w-md text-center shadow-lg">
+              <p className="text-gray-800 font-medium leading-relaxed">
+                This isn't magic. It's you, thinking sharper.
+              </p>
+              <p className="text-amber-700 font-semibold mt-2">
+                Let's connect the dots.
+              </p>
+            </div>
+          </div>
+        </div>
+
         {/* Search Results Section - only show when searching */}
         {searchTerm.trim() && (
           <div className="mb-8">
@@ -1014,49 +1045,48 @@ const Dashboard: React.FC = () => {
         {/* Dot Wheels Map Section */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-semibold flex items-center gap-2">
-              <Network className="w-5 h-5 text-amber-500" />
-              <span className="bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent">
-                Dot Wheels Map
-              </span>
-              <Dialog>
-                <DialogTrigger asChild>
-                  <button className="ml-2 p-1 rounded-full hover:bg-amber-100 transition-colors">
-                    <Info className="w-4 h-4 text-amber-600" />
-                  </button>
-                </DialogTrigger>
-                <DialogContent className="max-w-md">
-                  <DialogHeader>
-                    <DialogTitle className="flex items-center gap-2">
-                      <Info className="w-5 h-5 text-amber-600" />
-                      About Dot Wheels Map
-                    </DialogTitle>
-                  </DialogHeader>
-                  <div className="space-y-3 text-sm text-gray-700">
-                    <p>You can see the dots you saved in this grid.</p>
-                    <div>
-                      <p className="font-semibold text-amber-700 mb-1">What are Wheels?</p>
-                      <p>Dots of the same category form a Dot Wheel which is nothing but a bigger dot. Keep adding your dots and let DotSpark fix it into relevant Wheels.</p>
+            <div className="flex items-center gap-4">
+              <h2 className="text-xl font-semibold flex items-center gap-2">
+                <Network className="w-5 h-5 text-amber-500" />
+                <span className="bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent">
+                  Dot Wheels Map
+                </span>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <button className="ml-2 p-1 rounded-full hover:bg-amber-100 transition-colors">
+                      <Info className="w-4 h-4 text-amber-600" />
+                    </button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-md">
+                    <DialogHeader>
+                      <DialogTitle className="flex items-center gap-2">
+                        <Info className="w-5 h-5 text-amber-600" />
+                        About Dot Wheels Map
+                      </DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-3 text-sm text-gray-700">
+                      <p>You can see the dots you saved in this grid.</p>
+                      <div>
+                        <p className="font-semibold text-amber-700 mb-1">What are Wheels?</p>
+                        <p>Dots of the same category form a Dot Wheel which is nothing but a bigger dot. Keep adding your dots and let DotSpark fix it into relevant Wheels.</p>
+                      </div>
                     </div>
-                  </div>
-                </DialogContent>
-              </Dialog>
-            </h2>
-            
-            {/* Recent Dots Filter */}
-            <div className="flex items-center gap-2">
-              <Button
-                variant={showRecentFilter ? "default" : "outline"}
-                size="sm"
+                  </DialogContent>
+                </Dialog>
+              </h2>
+              
+              {/* Recent Dots Filter */}
+              <div className="flex items-center gap-2">
+                <Button
                 onClick={() => setShowRecentFilter(!showRecentFilter)}
-                className={`flex items-center gap-2 ${
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
                   showRecentFilter 
-                    ? 'bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white' 
-                    : 'border-amber-300 text-amber-700 hover:bg-amber-50'
+                    ? 'bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-lg hover:shadow-xl transform hover:scale-105' 
+                    : 'bg-white border-2 border-amber-300 text-amber-700 hover:bg-amber-50 hover:border-amber-400 shadow-sm hover:shadow-md'
                 }`}
               >
                 <Clock className="w-4 h-4" />
-                Recent Dots
+                <span className="font-semibold">Recent Dots</span>
                 {dots.length > 0 && (
                   <Badge className={`border-0 ml-1 ${
                     showRecentFilter 
@@ -1082,6 +1112,38 @@ const Dashboard: React.FC = () => {
                   <span className="text-sm text-gray-600">dots</span>
                 </div>
               )}
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowPreview(!showPreview)}
+                  className={`px-3 py-1 text-xs ${
+                    showPreview 
+                      ? 'bg-amber-100 border-amber-300 text-amber-700' 
+                      : 'border-gray-300 text-gray-600 hover:bg-gray-50'
+                  }`}
+                >
+                  {showPreview ? 'Hide Preview' : 'Preview'}
+                </Button>
+                
+                <div className="bg-white border border-amber-200 rounded-lg px-3 py-1">
+                  <span className="text-xs text-gray-600 mr-2">Dots:</span>
+                  <span className="text-xs font-semibold text-amber-700">
+                    {actualDotsToShow.length}
+                  </span>
+                </div>
+                
+                <div className="bg-white border border-amber-200 rounded-lg px-3 py-1">
+                  <span className="text-xs text-gray-600 mr-2">Wheels:</span>
+                  <span className="text-xs font-semibold text-amber-700">
+                    {wheels.length}
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
           
