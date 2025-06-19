@@ -710,26 +710,20 @@ const Dashboard: React.FC = () => {
           </button>
         </div>
 
-        {/* Navigation Controls - Positioned to avoid overlap */}
-        <div className={`absolute z-10 bg-white/90 backdrop-blur rounded-lg border-2 border-amber-200 shadow-lg ${
+        {/* Navigation Icon - Clean arrow without button styling */}
+        <div className={`absolute z-10 ${
           isPWA 
-            ? 'top-20 left-1/2 transform -translate-x-1/2 p-2' // PWA: Lower and centered to avoid zoom overlap
-            : 'top-16 sm:top-4 left-1/2 transform -translate-x-1/2 p-1 sm:p-2' // Browser: Original position
+            ? 'top-20 left-1/2 transform -translate-x-1/2' // PWA: Lower and centered to avoid zoom overlap
+            : 'top-16 sm:top-4 left-1/2 transform -translate-x-1/2' // Browser: Original position
         }`}>
-          {/* Reset View */}
-          <button
+          {/* Reset View Arrow Icon */}
+          <div
             onClick={resetView}
-            className={`bg-amber-500 hover:bg-amber-600 text-white transition-colors ${
-              isPWA ? 'rounded-lg p-2 w-10 h-10' : 'rounded p-1' // PWA: Square shape, larger
-            }`}
+            className="cursor-pointer hover:scale-110 transition-transform"
             title={isPWA ? "Reset Scroll Position" : "Reset Drag Position"}
           >
-            <svg className={`fill="none" stroke="white" viewBox="0 0 24 24" ${
-              isPWA ? 'w-6 h-6' : 'w-6 h-6'
-            }`}>
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-            </svg>
-          </button>
+            <RotateCcw className="w-6 h-6 text-amber-600 hover:text-amber-700 drop-shadow-lg" />
+          </div>
         </div>
         
         {/* Stats Buttons */}
