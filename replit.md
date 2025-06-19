@@ -925,9 +925,9 @@ Changelog:
   * Emotion information remains available in hover cards and full dot view
   * Simplified grid appearance reduces visual clutter for better user experience
 - June 19, 2025. Updated search placeholder text:
-  * Changed from "Enter keywords to search for your dots or sparks" to "Search for your Dots or Sparks"
-  * Shorter, cleaner placeholder text for better mobile experience
-  * Applied to both PWA and browser modes
+  * Changed from "Enter keywords to search for your dots or sparks" to "Search for your dot or spark"
+  * Cleaner, more natural language for better user experience
+  * Applied consistently across both PWA and browser modes
 - June 19, 2025. Enhanced Spark section alignment and PWA drag/zoom controls:
   * Centered Spark button with content box using horizontal alignment for better visual balance
   * Made content box more rectangular with fixed width and matching border radius
