@@ -633,7 +633,7 @@ const Dashboard: React.FC = () => {
         isFullscreen 
           ? 'fixed inset-0 z-50 p-8' 
           : 'rounded-xl p-4 min-h-[500px] border-2 border-amber-200 shadow-lg'
-      } overflow-hidden`}>
+      } overflow-hidden`}>>
         {/* Preview toggle and Recent Filter Indicator */}
         <div className="absolute top-4 left-4 z-10 flex flex-col gap-2">
           {(previewMode || displayDots.length > 0) && (
@@ -852,10 +852,9 @@ const Dashboard: React.FC = () => {
                       e.stopPropagation();
                       e.preventDefault();
                       console.log('Dot clicked:', dot.id);
-                      // For PWA mode, show inline flash card first
+                      // For PWA mode, show centered flash card overlay
                       if (isPWA) {
                         setSelectedDot(dot);
-                        setSelectedDotPosition({ x: x, y: y });
                       } else {
                         setViewFullDot(dot);
                       }
@@ -866,10 +865,9 @@ const Dashboard: React.FC = () => {
                       e.stopPropagation();
                       e.preventDefault();
                       console.log('Dot touched:', dot.id);
-                      // For PWA mode, show inline flash card first
+                      // For PWA mode, show centered flash card overlay
                       if (isPWA) {
                         setSelectedDot(dot);
-                        setSelectedDotPosition({ x: x, y: y });
                       } else {
                         setViewFullDot(dot);
                       }
@@ -1014,32 +1012,29 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
         
-        {/* Inline Flash Card Overlay for PWA */}
-        {selectedDot && selectedDotPosition && isPWA && (
+        {/* Centered Flash Card Overlay for PWA */}
+        {selectedDot && isPWA && (
           <>
             {/* Backdrop to close flash card when clicking outside */}
             <div 
-              className="fixed inset-0 z-40 bg-black/20"
+              className="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm"
               onClick={() => {
                 setSelectedDot(null);
-                setSelectedDotPosition(null);
               }}
             />
             <div 
-              className="absolute z-50 pointer-events-auto"
-              style={{
-                left: `${selectedDotPosition.x + offset.x + 40}px`,
-                top: `${selectedDotPosition.y + offset.y - 50}px`,
-                transform: 'translateZ(0)'
-              }}
+              className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none"
             >
-              <div className="bg-white border-2 border-amber-300 rounded-xl p-4 shadow-2xl max-w-xs min-w-[280px]">
+              <div 
+                className="pointer-events-auto transform transition-all duration-200 ease-out"
+                style={{ transform: 'scale(1)' }}
+              >
+                <div className="bg-white border-2 border-amber-300 rounded-xl p-4 shadow-2xl max-w-xs min-w-[280px] relative">
                 {/* Close button */}
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
                     setSelectedDot(null);
-                    setSelectedDotPosition(null);
                   }}
                   className="absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 transition-colors"
                 >
@@ -1071,13 +1066,13 @@ const Dashboard: React.FC = () => {
                         e.stopPropagation();
                         setViewFullDot(selectedDot);
                         setSelectedDot(null);
-                        setSelectedDotPosition(null);
                       }}
                       className="bg-amber-500 hover:bg-amber-600 text-white px-3 py-1 rounded-lg text-sm font-medium transition-colors"
                     >
                       View Full
                     </button>
                   </div>
+                </div>
                 </div>
               </div>
             </div>
