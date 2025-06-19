@@ -894,6 +894,12 @@ Changelog:
   * Removed duplicate preview/dots/wheels boxes for cleaner interface design
   * Recent Dots button now shows gradient from amber-50 to orange-50 when inactive, maintaining visual consistency
   * Eliminated redundant UI elements while preserving all functionality
+- June 19, 2025. UI improvements and PWA optimizations:
+  * Fixed Recent Dots button to use proper button element with consistent styling
+  * Improved PWA number input experience by replacing input field with dropdown select for better mobile usability
+  * Enhanced PWA drag sensitivity in Dot Wheels Map with 2.5x multiplier and generous boundary constraints
+  * Made Spark button and explanation box horizontally aligned to save screen space
+  * Responsive layout: horizontal on desktop/tablet, vertical on mobile for optimal user experience
 - June 15, 2025. Enhanced PWA installation detection in neuraStorage utility:
   * Added comprehensive PWA installation checking across platforms
   * Implemented cross-platform installation status synchronization

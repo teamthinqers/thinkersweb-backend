@@ -966,9 +966,9 @@ const Dashboard: React.FC = () => {
 
         {/* Spark Section */}
         <div className="mb-6">
-          <div className="flex flex-col items-center">
+          <div className="flex flex-col md:flex-row items-center md:items-start gap-4 md:gap-6 justify-center">
             {/* Spark Button */}
-            <button className="group relative overflow-hidden bg-gradient-to-r from-yellow-400 via-amber-500 to-orange-500 hover:from-yellow-500 hover:via-amber-600 hover:to-orange-600 text-white px-8 py-4 rounded-2xl shadow-xl hover:shadow-2xl transform transition-all duration-300 hover:scale-105 active:scale-95">
+            <button className="group relative overflow-hidden bg-gradient-to-r from-yellow-400 via-amber-500 to-orange-500 hover:from-yellow-500 hover:via-amber-600 hover:to-orange-600 text-white px-8 py-4 rounded-2xl shadow-xl hover:shadow-2xl transform transition-all duration-300 hover:scale-105 active:scale-95 flex-shrink-0">
               <div className="flex items-center gap-3">
                 <div className="relative">
                   <Sparkles className="w-6 h-6 animate-pulse" />
@@ -984,7 +984,7 @@ const Dashboard: React.FC = () => {
             </button>
             
             {/* Content Box */}
-            <div className="mt-4 bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-200 rounded-xl p-6 max-w-md text-center shadow-lg">
+            <div className="bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-200 rounded-xl p-6 max-w-md text-center md:text-left shadow-lg flex-1 md:max-w-sm">
               <p className="text-gray-800 font-medium leading-relaxed">
                 This isn't magic. It's you, thinking sharper.
               </p>
