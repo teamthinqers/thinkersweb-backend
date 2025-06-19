@@ -647,7 +647,9 @@ const Dashboard: React.FC = () => {
         </div>
         
         {/* Zoom Controls */}
-        <div className="absolute top-16 sm:top-4 left-4 z-10 flex items-center gap-1 sm:gap-2 bg-white/90 backdrop-blur rounded-lg p-1 sm:p-2 border-2 border-amber-200 shadow-lg">
+        <div className={`absolute z-10 flex items-center gap-1 sm:gap-2 bg-white/90 backdrop-blur rounded-lg p-1 sm:p-2 border-2 border-amber-200 shadow-lg ${
+          isPWA ? 'top-16 sm:top-4 left-4' : 'bottom-4 left-4'
+        }`}>
           {/* Zoom Out */}
           <button
             onClick={() => setZoom(Math.max(0.5, zoom - 0.1))}
