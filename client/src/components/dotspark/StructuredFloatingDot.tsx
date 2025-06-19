@@ -753,27 +753,27 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                           strokeWidth="3"
                           fill="none"
                           strokeDasharray={`${2 * Math.PI * 16}`}
-                          strokeDashoffset={`${2 * Math.PI * 16 * (1 - (Object.values(structuredInput).filter(Boolean).length / 3))}`}
+                          strokeDashoffset={`${2 * Math.PI * 16 * (1 - (Object.values(structuredInput).filter(Boolean).length / 4))}`}
                           className="transition-all duration-700 ease-out"
                           strokeLinecap="round"
                           style={{
-                            filter: Object.values(structuredInput).filter(Boolean).length === 3 ? 'drop-shadow(0 0 4px rgba(34, 197, 94, 0.6))' : 'none'
+                            filter: Object.values(structuredInput).filter(Boolean).length === 4 ? 'drop-shadow(0 0 4px rgba(34, 197, 94, 0.6))' : 'none'
                           }}
                         />
                         
                         {/* Gradient definitions */}
                         <defs>
                           <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stopColor={Object.values(structuredInput).filter(Boolean).length === 3 ? "#10b981" : "#f59e0b"} />
-                            <stop offset="50%" stopColor={Object.values(structuredInput).filter(Boolean).length === 3 ? "#22c55e" : "#f97316"} />
-                            <stop offset="100%" stopColor={Object.values(structuredInput).filter(Boolean).length === 3 ? "#34d399" : "#ea580c"} />
+                            <stop offset="0%" stopColor={Object.values(structuredInput).filter(Boolean).length === 4 ? "#10b981" : "#f59e0b"} />
+                            <stop offset="50%" stopColor={Object.values(structuredInput).filter(Boolean).length === 4 ? "#22c55e" : "#f97316"} />
+                            <stop offset="100%" stopColor={Object.values(structuredInput).filter(Boolean).length === 4 ? "#34d399" : "#ea580c"} />
                           </linearGradient>
                         </defs>
                       </svg>
                       
                       {/* Center content */}
                       <div className="absolute inset-0 flex items-center justify-center">
-                        {Object.values(structuredInput).filter(Boolean).length === 3 ? (
+                        {Object.values(structuredInput).filter(Boolean).length === 4 ? (
                           <div className="flex items-center justify-center">
                             <div className="w-4 h-4 rounded-full bg-gradient-to-r from-green-400 to-emerald-500 animate-bounce shadow-lg"></div>
                           </div>
@@ -782,16 +782,17 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                             <div className={`text-xs font-bold transition-all duration-300 ${
                               Object.values(structuredInput).filter(Boolean).length === 0 ? 'text-gray-400' :
                               Object.values(structuredInput).filter(Boolean).length === 1 ? 'text-amber-600' :
-                              'text-orange-600'
+                              Object.values(structuredInput).filter(Boolean).length < 4 ? 'text-orange-600' :
+                              'text-green-600'
                             }`}>
-                              {Object.values(structuredInput).filter(Boolean).length}/3
+                              {Object.values(structuredInput).filter(Boolean).length}/4
                             </div>
                           </div>
                         )}
                       </div>
                       
                       {/* Achievement celebration when complete */}
-                      {Object.values(structuredInput).filter(Boolean).length === 3 && (
+                      {Object.values(structuredInput).filter(Boolean).length === 4 && (
                         <>
                           {/* Victory sparkles */}
                           <div className="absolute -top-2 -right-2 w-3 h-3 bg-yellow-400 rounded-full animate-ping shadow-lg"></div>
@@ -808,13 +809,36 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                   </div>
                   
                   <div className="space-y-3">
+                    {/* Heading Input */}
+                    <div className="p-4 bg-gradient-to-br from-yellow-50 to-amber-50 rounded-xl border-2 border-yellow-200 shadow-sm hover:shadow-md transition-all duration-300">
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="w-6 h-6 rounded-full bg-gradient-to-r from-yellow-600 to-amber-600 flex items-center justify-center">
+                          <span className="text-white text-xs font-bold">H</span>
+                        </div>
+                        <label className="text-sm font-semibold text-yellow-700">
+                          Heading (max 30 chars)
+                        </label>
+                      </div>
+                      <Input
+                        value={structuredInput.heading}
+                        onChange={(e) => setStructuredInput(prev => ({...prev, heading: e.target.value}))}
+                        placeholder="Enter a short heading for your dot"
+                        maxLength={30}
+                        className="text-sm border-yellow-300 focus:border-yellow-500 focus:ring-yellow-400 bg-white/80 backdrop-blur-sm font-medium"
+                      />
+                      <div className="text-xs text-yellow-600 mt-2 flex justify-between items-center">
+                        <span>Short keyword or phrase to identify this dot</span>
+                        <span className="font-medium">{structuredInput.heading.length}/30</span>
+                      </div>
+                    </div>
+
                     <div className="p-4 bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl border-2 border-amber-200 shadow-sm hover:shadow-md transition-all duration-300">
                       <div className="flex items-center gap-2 mb-3">
                         <div className="w-6 h-6 rounded-full bg-gradient-to-r from-amber-600 to-orange-600 flex items-center justify-center">
                           <span className="text-white text-xs font-bold">1</span>
                         </div>
                         <label className="text-sm font-semibold text-amber-700">
-                          Layer 1: Dot (max 220 chars)
+                          Layer 1: Summary (max 220 chars)
                         </label>
                       </div>
                       <Textarea
@@ -894,7 +918,7 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                     <Button 
                       onClick={handleSubmit}
                       className="w-full h-12 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl text-lg font-semibold shadow-lg"
-                      disabled={!structuredInput.summary || !structuredInput.anchor || !structuredInput.pulse}
+                      disabled={!structuredInput.heading || !structuredInput.summary || !structuredInput.anchor || !structuredInput.pulse}
                     >
                       Save a Dot
                     </Button>
