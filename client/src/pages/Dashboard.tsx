@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -266,6 +266,23 @@ const Dashboard: React.FC = () => {
     const [previewMode, setPreviewMode] = useState(false);
     const [zoom, setZoom] = useState(1);
     const gridContainerRef = useRef<HTMLDivElement>(null);
+    const [dragStart, setDragStart] = useState<{ x: number; y: number } | null>(null);
+    const [offset, setOffset] = useState({ x: 0, y: 0 });
+    const [isPWA, setIsPWA] = useState(false);
+
+    // Detect PWA mode
+    useEffect(() => {
+      const checkPWA = () => {
+        setIsPWA(window.matchMedia('(display-mode: standalone)').matches || 
+                 (window.navigator as any).standalone === true);
+      };
+      checkPWA();
+      
+      const mediaQuery = window.matchMedia('(display-mode: standalone)');
+      mediaQuery.addListener(checkPWA);
+      
+      return () => mediaQuery.removeListener(checkPWA);
+    }, []);
 
     // Generate preview data when preview mode is enabled
     const generatePreviewData = () => {
@@ -432,12 +449,62 @@ const Dashboard: React.FC = () => {
       );
     }
     
-    // Reset view function for scroll-based navigation
+    // Reset view function for both drag and scroll navigation
     const resetView = () => {
-      if (gridContainerRef.current) {
+      if (isPWA && gridContainerRef.current) {
         gridContainerRef.current.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+      } else {
+        setOffset({ x: 0, y: 0 });
       }
       setZoom(1);
+    };
+
+    // Browser drag handlers
+    const handleMouseDown = (e: React.MouseEvent) => {
+      if (isPWA) return; // Only for browser
+      setDragStart({ x: e.clientX - offset.x, y: e.clientY - offset.y });
+    };
+
+    const handleMouseMove = (e: React.MouseEvent) => {
+      if (isPWA || !dragStart) return;
+      setOffset({
+        x: e.clientX - dragStart.x,
+        y: e.clientY - dragStart.y
+      });
+    };
+
+    const handleMouseUp = () => {
+      if (isPWA) return;
+      setDragStart(null);
+    };
+
+    const handleTouchStart = (e: React.TouchEvent) => {
+      if (isPWA) return; // Only for browser
+      const target = e.target as HTMLElement;
+      if (target.closest('.dot-element')) return;
+      
+      e.preventDefault();
+      const touch = e.touches[0];
+      setDragStart({ x: touch.clientX - offset.x, y: touch.clientY - offset.y });
+    };
+
+    const handleTouchMove = (e: React.TouchEvent) => {
+      if (isPWA || !dragStart || !e.touches[0]) return;
+      e.preventDefault();
+      const touch = e.touches[0];
+      
+      const newOffset = {
+        x: touch.clientX - dragStart.x,
+        y: touch.clientY - dragStart.y
+      };
+      
+      setOffset(newOffset);
+    };
+
+    const handleTouchEnd = (e: React.TouchEvent) => {
+      if (isPWA) return;
+      e.preventDefault();
+      setDragStart(null);
     };
 
     // Mouse wheel zoom for browser
@@ -564,8 +631,8 @@ const Dashboard: React.FC = () => {
           )}
         </div>
         
-        {/* Zoom and Navigation Controls - Positioned to avoid overlap */}
-        <div className="absolute top-16 sm:top-4 left-1/2 transform -translate-x-1/2 z-10 flex items-center gap-1 sm:gap-2 bg-white/90 backdrop-blur rounded-lg p-1 sm:p-2 border-2 border-amber-200 shadow-lg">
+        {/* Zoom Controls */}
+        <div className="absolute top-16 sm:top-4 left-4 z-10 flex items-center gap-1 sm:gap-2 bg-white/90 backdrop-blur rounded-lg p-1 sm:p-2 border-2 border-amber-200 shadow-lg">
           {/* Zoom Out */}
           <button
             onClick={() => setZoom(Math.max(0.5, zoom - 0.1))}
@@ -592,12 +659,17 @@ const Dashboard: React.FC = () => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
             </svg>
           </button>
-          
+        </div>
+
+        {/* Navigation Controls - Separate for both PWA and Browser */}
+        <div className={`absolute top-16 sm:top-4 z-10 bg-white/90 backdrop-blur rounded-lg p-1 sm:p-2 border-2 border-amber-200 shadow-lg ${
+          isPWA ? 'right-4' : 'left-1/2 transform -translate-x-1/2'
+        }`}>
           {/* Reset View */}
           <button
             onClick={resetView}
-            className="bg-amber-500 hover:bg-amber-600 text-white rounded p-1 transition-colors ml-1 sm:ml-2"
-            title="Reset View"
+            className="bg-amber-500 hover:bg-amber-600 text-white rounded p-1 transition-colors"
+            title={isPWA ? "Reset Scroll Position" : "Reset Drag Position"}
           >
             <svg className="w-2 h-2 sm:w-3 sm:h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
@@ -616,23 +688,33 @@ const Dashboard: React.FC = () => {
 
 
         
-        {/* Interactive scrollable grid */}
+        {/* Interactive grid - PWA uses scrolling, Browser uses dragging */}
         <div 
           ref={gridContainerRef}
-          className="relative overflow-auto h-[450px] w-full"
+          className={`relative h-[450px] w-full ${isPWA ? 'overflow-auto cursor-default' : 'overflow-hidden cursor-grab active:cursor-grabbing'}`}
           onWheel={handleWheel}
+          onMouseDown={handleMouseDown}
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseUp}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
           style={{ 
-            WebkitOverflowScrolling: 'touch',
-            scrollBehavior: 'smooth'
+            WebkitOverflowScrolling: isPWA ? 'touch' : 'auto',
+            scrollBehavior: isPWA ? 'smooth' : 'auto',
+            touchAction: isPWA ? 'auto' : 'none',
+            userSelect: 'none'
           }}
         >
           <div 
-            className="relative"
+            className="relative transition-transform duration-100 ease-out"
             style={{ 
               width: `${1200 * zoom}px`, 
               height: `${800 * zoom}px`,
-              minWidth: '100%',
-              minHeight: '100%'
+              minWidth: isPWA ? '100%' : 'auto',
+              minHeight: isPWA ? '100%' : 'auto',
+              transform: isPWA ? 'none' : `translate(${offset.x}px, ${offset.y}px) scale(${zoom})`
             }}
           >
             {/* Individual Dots Random Grid */}
