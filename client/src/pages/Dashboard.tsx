@@ -776,11 +776,11 @@ const Dashboard: React.FC = () => {
             userSelect: 'none'
           }}
         >
-          {/* Simple fullscreen exit button */}
+          {/* Simple fullscreen exit button - moved to bottom right */}
           {isFullscreen && (
             <button
               onClick={toggleFullscreen}
-              className="absolute top-4 right-4 z-60 bg-red-500 hover:bg-red-600 text-white rounded-lg p-3 transition-colors shadow-lg"
+              className="absolute bottom-4 right-4 z-60 bg-red-500 hover:bg-red-600 text-white rounded-lg p-3 transition-colors shadow-lg"
               title="Exit Fullscreen (ESC)"
             >
               <Minimize className="w-6 h-6" />
