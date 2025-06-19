@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Mic, Type, Eye, Brain, Network, Zap, Search, Clock, Info, Database, Cpu, Sparkles, Users, Maximize, Minimize, RotateCcw } from "lucide-react";
+import { Mic, Type, Eye, Brain, Network, Zap, Search, Clock, Info, Database, Cpu, Sparkles, Users, Maximize, Minimize, RotateCcw, X } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import DotFullView from "@/components/DotFullView";
 import DotFlashCard from "@/components/DotFlashCard";
@@ -265,7 +265,8 @@ const Dashboard: React.FC = () => {
 }> = ({ wheels, actualDots, showingRecentFilter = false, recentCount = 4, isFullscreen = false, onFullscreenChange }) => {
     const [selectedWheel, setSelectedWheel] = useState<string | null>(null);
     const [viewFullDot, setViewFullDot] = useState<Dot | null>(null);
-    const [viewFlashCard, setViewFlashCard] = useState<Dot | null>(null);
+    const [selectedDot, setSelectedDot] = useState<Dot | null>(null);
+    const [selectedDotPosition, setSelectedDotPosition] = useState<{ x: number; y: number } | null>(null);
     const [hoveredDot, setHoveredDot] = useState<Dot | null>(null);
     const [previewMode, setPreviewMode] = useState(false);
     const [zoom, setZoom] = useState(1);
@@ -851,9 +852,10 @@ const Dashboard: React.FC = () => {
                       e.stopPropagation();
                       e.preventDefault();
                       console.log('Dot clicked:', dot.id);
-                      // For PWA mode, show flash card first
+                      // For PWA mode, show inline flash card first
                       if (isPWA) {
-                        setViewFlashCard(dot);
+                        setSelectedDot(dot);
+                        setSelectedDotPosition({ x: x, y: y });
                       } else {
                         setViewFullDot(dot);
                       }
@@ -864,9 +866,10 @@ const Dashboard: React.FC = () => {
                       e.stopPropagation();
                       e.preventDefault();
                       console.log('Dot touched:', dot.id);
-                      // For PWA mode, show flash card first
+                      // For PWA mode, show inline flash card first
                       if (isPWA) {
-                        setViewFlashCard(dot);
+                        setSelectedDot(dot);
+                        setSelectedDotPosition({ x: x, y: y });
                       } else {
                         setViewFullDot(dot);
                       }
@@ -1014,16 +1017,64 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
         
-        {/* Flash Card Modal */}
-        {viewFlashCard && (
-          <DotFlashCard 
-            dot={viewFlashCard} 
-            onClose={() => setViewFlashCard(null)}
-            onViewFull={() => {
-              setViewFullDot(viewFlashCard);
-              setViewFlashCard(null);
+        {/* Inline Flash Card Overlay for PWA */}
+        {selectedDot && selectedDotPosition && isPWA && (
+          <div 
+            className="absolute z-50 pointer-events-auto"
+            style={{
+              left: `${selectedDotPosition.x + 40}px`,
+              top: `${selectedDotPosition.y - 50}px`,
+              transform: 'translateZ(0)'
             }}
-          />
+          >
+            <div className="bg-white border-2 border-amber-300 rounded-xl p-4 shadow-2xl max-w-xs min-w-[280px]">
+              {/* Close button */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedDot(null);
+                  setSelectedDotPosition(null);
+                }}
+                className="absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+              
+              {/* Flash card content */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-amber-500"></div>
+                  <h3 className="font-bold text-lg text-gray-800">{selectedDot.oneWordSummary}</h3>
+                </div>
+                
+                <p className="text-gray-700 text-sm leading-relaxed">
+                  {selectedDot.summary}
+                </p>
+                
+                <div className="flex items-center justify-between pt-2 border-t border-gray-200">
+                  <span className="text-xs text-gray-500 flex items-center gap-1">
+                    {selectedDot.sourceType === 'voice' ? (
+                      <><Mic className="w-3 h-3" /> Voice</>
+                    ) : (
+                      <><Type className="w-3 h-3" /> Text</>
+                    )}
+                  </span>
+                  
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setViewFullDot(selectedDot);
+                      setSelectedDot(null);
+                      setSelectedDotPosition(null);
+                    }}
+                    className="bg-amber-500 hover:bg-amber-600 text-white px-3 py-1 rounded-lg text-sm font-medium transition-colors"
+                  >
+                    View Full
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         )}
 
         {/* Full Dot View Modal */}
