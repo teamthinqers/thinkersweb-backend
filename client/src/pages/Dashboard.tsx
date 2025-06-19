@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -264,9 +264,8 @@ const Dashboard: React.FC = () => {
     const [viewFullDot, setViewFullDot] = useState<Dot | null>(null);
     const [hoveredDot, setHoveredDot] = useState<Dot | null>(null);
     const [previewMode, setPreviewMode] = useState(false);
-    const [dragStart, setDragStart] = useState<{ x: number; y: number } | null>(null);
-    const [offset, setOffset] = useState({ x: 0, y: 0 });
     const [zoom, setZoom] = useState(1);
+    const gridContainerRef = useRef<HTMLDivElement>(null);
 
     // Generate preview data when preview mode is enabled
     const generatePreviewData = () => {
@@ -433,70 +432,12 @@ const Dashboard: React.FC = () => {
       );
     }
     
-    const handleMouseDown = (e: React.MouseEvent) => {
-      setDragStart({ x: e.clientX - offset.x, y: e.clientY - offset.y });
-    };
-
-    const handleMouseMove = (e: React.MouseEvent) => {
-      if (dragStart) {
-        setOffset({
-          x: e.clientX - dragStart.x,
-          y: e.clientY - dragStart.y
-        });
+    // Reset view function for scroll-based navigation
+    const resetView = () => {
+      if (gridContainerRef.current) {
+        gridContainerRef.current.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
       }
-    };
-
-    const handleMouseUp = () => {
-      setDragStart(null);
-    };
-
-    // Touch event handlers for PWA/mobile support
-    const handleTouchStart = (e: React.TouchEvent) => {
-      // Only start drag if not touching a dot
-      const target = e.target as HTMLElement;
-      if (target.closest('.dot-element')) {
-        console.log('Touch started on dot, preventing grid drag');
-        return;
-      }
-      
-      console.log('Touch started on grid');
-      e.preventDefault();
-      const touch = e.touches[0];
-      setDragStart({ x: touch.clientX - offset.x, y: touch.clientY - offset.y });
-    };
-
-    const handleTouchMove = (e: React.TouchEvent) => {
-      if (dragStart && e.touches[0]) {
-        e.preventDefault();
-        const touch = e.touches[0];
-        
-        // Reduced drag sensitivity with 1.2x multiplier for better PWA control
-        const newOffset = {
-          x: (touch.clientX - dragStart.x) * 1.2,
-          y: (touch.clientY - dragStart.y) * 1.2
-        };
-        
-        // Tighter boundary constraints to prevent getting lost
-        const containerWidth = window.innerWidth;
-        const containerHeight = 450;
-        const gridWidth = 1200 * zoom;
-        const gridHeight = 800 * zoom;
-        
-        const maxX = Math.min(containerWidth * 0.1, 50); // Allow small overflow on right
-        const minX = Math.max(-(gridWidth - containerWidth + 50), -gridWidth * 0.8); // Prevent going too far left
-        const maxY = Math.min(containerHeight * 0.1, 30); // Allow small overflow on top
-        const minY = Math.max(-(gridHeight - containerHeight + 30), -gridHeight * 0.8); // Prevent going too far down
-        
-        setOffset({
-          x: Math.max(minX, Math.min(maxX, newOffset.x)),
-          y: Math.max(minY, Math.min(maxY, newOffset.y))
-        });
-      }
-    };
-
-    const handleTouchEnd = (e: React.TouchEvent) => {
-      e.preventDefault();
-      setDragStart(null);
+      setZoom(1);
     };
 
     // Mouse wheel zoom for browser
@@ -678,29 +619,23 @@ const Dashboard: React.FC = () => {
 
 
         
-        {/* Interactive draggable grid */}
+        {/* Interactive scrollable grid */}
         <div 
-          className="relative overflow-hidden h-[450px] w-full cursor-grab active:cursor-grabbing"
-          onMouseDown={handleMouseDown}
-          onMouseMove={handleMouseMove}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={handleMouseUp}
+          ref={gridContainerRef}
+          className="relative overflow-auto h-[450px] w-full"
           onWheel={handleWheel}
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
           style={{ 
             WebkitOverflowScrolling: 'touch',
-            touchAction: 'pan-x pan-y',
-            userSelect: 'none'
+            scrollBehavior: 'smooth'
           }}
         >
           <div 
-            className="relative transition-transform duration-100 ease-out"
+            className="relative"
             style={{ 
-              width: '1200px', 
-              height: '800px',
-              transform: `translate(${offset.x}px, ${offset.y}px) scale(${zoom})`
+              width: `${1200 * zoom}px`, 
+              height: `${800 * zoom}px`,
+              minWidth: '100%',
+              minHeight: '100%'
             }}
           >
             {/* Individual Dots Random Grid */}
