@@ -46,6 +46,7 @@ const Dashboard: React.FC = () => {
   const [showRecentFilter, setShowRecentFilter] = useState(false);
   const [recentDotsCount, setRecentDotsCount] = useState(4);
   const [showPreview, setShowPreview] = useState(false);
+  const [isMapFullscreen, setIsMapFullscreen] = useState(false);
 
   // Fetch real dots from API
   const { data: dots = [], isLoading, refetch } = useQuery({
@@ -258,8 +259,10 @@ const Dashboard: React.FC = () => {
   wheels: Wheel[], 
   actualDots: Dot[], 
   showingRecentFilter?: boolean, 
-  recentCount?: number 
-}> = ({ wheels, actualDots, showingRecentFilter = false, recentCount = 4 }) => {
+  recentCount?: number,
+  isFullscreen?: boolean,
+  onFullscreenChange?: (isFullscreen: boolean) => void
+}> = ({ wheels, actualDots, showingRecentFilter = false, recentCount = 4, isFullscreen = false, onFullscreenChange }) => {
     const [selectedWheel, setSelectedWheel] = useState<string | null>(null);
     const [viewFullDot, setViewFullDot] = useState<Dot | null>(null);
     const [hoveredDot, setHoveredDot] = useState<Dot | null>(null);
@@ -269,7 +272,6 @@ const Dashboard: React.FC = () => {
     const [dragStart, setDragStart] = useState<{ x: number; y: number } | null>(null);
     const [offset, setOffset] = useState({ x: 0, y: 0 });
     const [isPWA, setIsPWA] = useState(false);
-    const [isFullscreen, setIsFullscreen] = useState(false);
 
     // Detect PWA mode
     useEffect(() => {
@@ -1266,6 +1268,8 @@ const Dashboard: React.FC = () => {
             actualDots={showRecentFilter ? dots.slice(0, recentDotsCount) : dots} 
             showingRecentFilter={showRecentFilter}
             recentCount={recentDotsCount}
+            isFullscreen={isMapFullscreen}
+            onFullscreenChange={setIsMapFullscreen}
           />
         </div>
       </div>
