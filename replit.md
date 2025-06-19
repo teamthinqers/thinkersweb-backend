@@ -906,6 +906,12 @@ Changelog:
   * Optimized PWA mobile layout with reduced font sizes and responsive spacing
   * Fixed Recent Dots filter to stack vertically on mobile preventing horizontal overflow
   * Enhanced mobile typography with responsive text sizes throughout interface
+- June 19, 2025. Fixed PWA minimize button functionality and enhanced touch handling:
+  * Resolved minimize button click issues in PWA mode with proper event handling
+  * Added preventDefault() and stopPropagation() to prevent touch gesture conflicts
+  * Enhanced button with touchAction: 'manipulation' for reliable mobile taps
+  * Maintained high z-index (100) to ensure button stays clickable above other elements
+  * PWA users now have reliable single-tap minimize functionality
 - June 19, 2025. Enhanced Spark section alignment and PWA drag/zoom controls:
   * Centered Spark button with content box using horizontal alignment for better visual balance
   * Made content box more rectangular with fixed width and matching border radius

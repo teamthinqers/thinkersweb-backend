@@ -263,11 +263,6 @@ const Dashboard: React.FC = () => {
   isFullscreen?: boolean,
   onFullscreenChange?: (isFullscreen: boolean) => void
 }> = ({ wheels, actualDots, showingRecentFilter = false, recentCount = 4, isFullscreen = false, onFullscreenChange }) => {
-    
-    // Debug logging for props
-    useEffect(() => {
-      console.log('DotWheelsMap props:', { isFullscreen, hasCallback: !!onFullscreenChange });
-    }, [isFullscreen, onFullscreenChange]);
     const [selectedWheel, setSelectedWheel] = useState<string | null>(null);
     const [viewFullDot, setViewFullDot] = useState<Dot | null>(null);
     const [hoveredDot, setHoveredDot] = useState<Dot | null>(null);
@@ -530,7 +525,6 @@ const Dashboard: React.FC = () => {
 
     // Fullscreen handler
     const toggleFullscreen = () => {
-      console.log('toggleFullscreen called, current state:', isFullscreen, 'onFullscreenChange:', !!onFullscreenChange);
       if (onFullscreenChange) {
         onFullscreenChange(!isFullscreen);
         if (!isFullscreen) {
@@ -538,8 +532,6 @@ const Dashboard: React.FC = () => {
           setZoom(1);
           setOffset({ x: 0, y: 0 });
         }
-      } else {
-        console.error('onFullscreenChange callback not available');
       }
     };
 
@@ -784,7 +776,6 @@ const Dashboard: React.FC = () => {
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                console.log('Minimize button clicked, fullscreen:', isFullscreen);
                 toggleFullscreen();
               }}
               className="fixed bottom-6 right-6 z-[100] bg-red-500 hover:bg-red-600 text-white rounded-full p-4 transition-colors shadow-2xl border-2 border-red-400"
