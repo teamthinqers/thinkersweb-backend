@@ -670,18 +670,18 @@ const Dashboard: React.FC = () => {
         
         {/* Zoom Controls */}
         <div className={`absolute z-10 flex items-center gap-2 bg-white/90 backdrop-blur rounded-lg p-2 border-2 border-amber-200 shadow-lg ${
-          isPWA ? 'top-16 sm:top-4 left-4' : 'bottom-4 left-4'
+          isPWA ? 'top-4 left-4' : 'bottom-4 left-4'
         }`}>
           {/* Zoom Out */}
           <button
             onClick={() => setZoom(Math.max(0.5, zoom - 0.1))}
             className={`bg-amber-500 hover:bg-amber-600 text-white rounded transition-colors ${
-              isPWA ? 'p-3 touch-manipulation' : 'p-2'
+              isPWA ? 'p-2 touch-manipulation' : 'p-2'
             }`}
             title="Zoom Out"
           >
             <svg className={`fill="none" stroke="currentColor" viewBox="0 0 24 24" ${
-              isPWA ? 'w-5 h-5' : 'w-3 h-3'
+              isPWA ? 'w-4 h-4' : 'w-3 h-3'
             }`}>
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
             </svg>
@@ -689,7 +689,7 @@ const Dashboard: React.FC = () => {
           
           {/* Zoom Level Display */}
           <span className={`font-semibold text-amber-800 text-center ${
-            isPWA ? 'text-sm min-w-[50px]' : 'text-xs min-w-[45px]'
+            isPWA ? 'text-xs min-w-[45px]' : 'text-xs min-w-[45px]'
           }`}>
             {Math.round(zoom * 100)}%
           </span>
@@ -698,27 +698,35 @@ const Dashboard: React.FC = () => {
           <button
             onClick={() => setZoom(Math.min(2, zoom + 0.1))}
             className={`bg-amber-500 hover:bg-amber-600 text-white rounded transition-colors ${
-              isPWA ? 'p-3 touch-manipulation' : 'p-2'
+              isPWA ? 'p-2 touch-manipulation' : 'p-2'
             }`}
             title="Zoom In"
           >
             <svg className={`fill="none" stroke="currentColor" viewBox="0 0 24 24" ${
-              isPWA ? 'w-5 h-5' : 'w-3 h-3'
+              isPWA ? 'w-4 h-4' : 'w-3 h-3'
             }`}>
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
             </svg>
           </button>
         </div>
 
-        {/* Navigation Controls - Centered for both PWA and Browser */}
-        <div className="absolute top-16 sm:top-4 left-1/2 transform -translate-x-1/2 z-10 bg-white/90 backdrop-blur rounded-lg p-1 sm:p-2 border-2 border-amber-200 shadow-lg">
+        {/* Navigation Controls - Positioned to avoid overlap */}
+        <div className={`absolute z-10 bg-white/90 backdrop-blur rounded-lg border-2 border-amber-200 shadow-lg ${
+          isPWA 
+            ? 'top-20 left-1/2 transform -translate-x-1/2 p-2' // PWA: Lower and centered to avoid zoom overlap
+            : 'top-16 sm:top-4 left-1/2 transform -translate-x-1/2 p-1 sm:p-2' // Browser: Original position
+        }`}>
           {/* Reset View */}
           <button
             onClick={resetView}
-            className="bg-amber-500 hover:bg-amber-600 text-white rounded p-1 transition-colors"
+            className={`bg-amber-500 hover:bg-amber-600 text-white transition-colors ${
+              isPWA ? 'rounded-lg p-2 w-10 h-10' : 'rounded p-1' // PWA: Square shape, larger
+            }`}
             title={isPWA ? "Reset Scroll Position" : "Reset Drag Position"}
           >
-            <svg className="w-2 h-2 sm:w-3 sm:h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className={`fill="none" stroke="currentColor" viewBox="0 0 24 24" ${
+              isPWA ? 'w-6 h-6' : 'w-2 h-2 sm:w-3 sm:h-3'
+            }`}>
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
             </svg>
           </button>
@@ -734,26 +742,20 @@ const Dashboard: React.FC = () => {
           </button>
         </div>
 
-        {/* Fullscreen Toggle - Positioned to avoid overlap */}
-        <div className={`absolute z-10 ${
-          isPWA 
-            ? 'bottom-4 right-4' // PWA: Bottom right to avoid navigation controls at top
-            : 'top-4 right-20' // Browser: Top right but offset to avoid stats buttons
-        }`}>
-          <button 
-            onClick={toggleFullscreen}
-            className={`bg-amber-500 hover:bg-amber-600 text-white rounded-lg transition-colors shadow-lg ${
-              isPWA ? 'p-3 touch-manipulation' : 'p-2'
-            }`}
-            title={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
-          >
-            {isFullscreen ? (
-              <Minimize className={isPWA ? "w-5 h-5" : "w-3 h-3"} />
-            ) : (
+        {/* Fullscreen Toggle - Bottom right for both modes when not fullscreen */}
+        {!isFullscreen && (
+          <div className="absolute bottom-4 right-4 z-10">
+            <button 
+              onClick={toggleFullscreen}
+              className={`bg-amber-500 hover:bg-amber-600 text-white rounded-lg transition-colors shadow-lg ${
+                isPWA ? 'p-3 touch-manipulation' : 'p-2'
+              }`}
+              title="Enter Fullscreen"
+            >
               <Maximize className={isPWA ? "w-5 h-5" : "w-3 h-3"} />
-            )}
-          </button>
-        </div>
+            </button>
+          </div>
+        )}
 
 
         
@@ -780,26 +782,110 @@ const Dashboard: React.FC = () => {
             userSelect: 'none'
           }}
         >
-          {/* Fullscreen Exit Button - Only visible in fullscreen mode */}
+          {/* Fullscreen Header - Only visible in fullscreen mode */}
           {isFullscreen && (
-            <div className="absolute top-4 right-4 z-60">
-              <button
-                onClick={toggleFullscreen}
-                className="bg-red-500 hover:bg-red-600 text-white rounded-lg p-3 transition-colors shadow-lg"
-                title="Exit Fullscreen"
-              >
-                <Minimize className="w-5 h-5" />
-              </button>
-            </div>
-          )}
-          
-          {/* Fullscreen Title - Only visible in fullscreen mode */}
-          {isFullscreen && (
-            <div className="absolute top-4 left-4 z-60">
-              <h2 className="text-xl font-bold text-amber-800 bg-white/90 backdrop-blur rounded-lg px-4 py-2 border-2 border-amber-200">
-                Dot Wheels Map - Fullscreen
-              </h2>
-            </div>
+            <>
+              {/* Fullscreen Title */}
+              <div className="absolute top-4 left-4 z-60">
+                <h2 className="text-xl font-bold text-amber-800 bg-white/90 backdrop-blur rounded-lg px-4 py-2 border-2 border-amber-200">
+                  Dot Wheels Map - Fullscreen
+                </h2>
+              </div>
+              
+              {/* Fullscreen Exit Button */}
+              <div className="absolute top-4 right-4 z-60">
+                <button
+                  onClick={toggleFullscreen}
+                  className="bg-red-500 hover:bg-red-600 text-white rounded-lg p-3 transition-colors shadow-lg"
+                  title="Exit Fullscreen (ESC)"
+                >
+                  <Minimize className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Fullscreen Controls - All controls visible in fullscreen */}
+              <div className="absolute top-20 left-4 z-60 flex flex-col gap-4">
+                {/* Preview Toggle in Fullscreen */}
+                <div className="bg-white/90 backdrop-blur rounded-lg p-2 border-2 border-amber-200 shadow-lg">
+                  <button
+                    onClick={() => setPreviewMode(!previewMode)}
+                    className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
+                      previewMode 
+                        ? 'bg-amber-500 text-white' 
+                        : 'bg-white text-amber-600 border border-amber-300'
+                    }`}
+                  >
+                    {previewMode ? 'Exit Preview' : 'Preview Mode'}
+                  </button>
+                </div>
+
+                {/* Stats in Fullscreen */}
+                <div className="bg-white/90 backdrop-blur rounded-lg p-2 border-2 border-amber-200 shadow-lg flex gap-2">
+                  <button className="bg-amber-100 text-amber-800 px-3 py-1 rounded text-sm font-semibold">
+                    Dots: {totalDots}
+                  </button>
+                  <button className="bg-orange-100 text-orange-800 px-3 py-1 rounded text-sm font-semibold">
+                    Wheels: {totalWheels}
+                  </button>
+                </div>
+              </div>
+
+              {/* Fullscreen Navigation Controls */}
+              <div className="absolute top-20 right-4 z-60">
+                <div className="bg-white/90 backdrop-blur rounded-lg p-2 border-2 border-amber-200 shadow-lg">
+                  <button
+                    onClick={resetView}
+                    className={`bg-amber-500 hover:bg-amber-600 text-white transition-colors ${
+                      isPWA ? 'rounded-lg p-2 w-10 h-10' : 'rounded p-2'
+                    }`}
+                    title={isPWA ? "Reset Scroll Position" : "Reset Drag Position"}
+                  >
+                    <svg className={`fill="none" stroke="currentColor" viewBox="0 0 24 24" ${
+                      isPWA ? 'w-6 h-6' : 'w-4 h-4'
+                    }`}>
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              {/* Fullscreen Zoom Controls */}
+              <div className="absolute bottom-4 left-4 z-60">
+                <div className="flex items-center gap-2 bg-white/90 backdrop-blur rounded-lg p-2 border-2 border-amber-200 shadow-lg">
+                  <button
+                    onClick={() => setZoom(Math.max(0.5, zoom - 0.1))}
+                    className={`bg-amber-500 hover:bg-amber-600 text-white rounded transition-colors ${
+                      isPWA ? 'p-2 touch-manipulation' : 'p-2'
+                    }`}
+                    title="Zoom Out"
+                  >
+                    <svg className={`fill="none" stroke="currentColor" viewBox="0 0 24 24" ${
+                      isPWA ? 'w-4 h-4' : 'w-3 h-3'
+                    }`}>
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+                    </svg>
+                  </button>
+                  
+                  <span className="font-semibold text-amber-800 text-xs min-w-[45px] text-center">
+                    {Math.round(zoom * 100)}%
+                  </span>
+                  
+                  <button
+                    onClick={() => setZoom(Math.min(2, zoom + 0.1))}
+                    className={`bg-amber-500 hover:bg-amber-600 text-white rounded transition-colors ${
+                      isPWA ? 'p-2 touch-manipulation' : 'p-2'
+                    }`}
+                    title="Zoom In"
+                  >
+                    <svg className={`fill="none" stroke="currentColor" viewBox="0 0 24 24" ${
+                      isPWA ? 'w-4 h-4' : 'w-3 h-3'
+                    }`}>
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </>
           )}
           <div 
             className="relative transition-transform duration-100 ease-out"
