@@ -1,7 +1,0 @@
-Launch Version 2 - Persistent login and WhatsApp activation status
-Date: Sun 11 May 2025 10:58:13 AM UTC
-Features:
-- Enhanced persistence of user login until explicit logout
-- Improved WhatsApp activation status persistence between sessions
-- Session recovery with 365-day login duration
-- Fixed activation status inconsistency between mobile and web views
