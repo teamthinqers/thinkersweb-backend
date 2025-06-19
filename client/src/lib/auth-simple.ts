@@ -23,6 +23,9 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();
+googleProvider.setCustomParameters({
+  prompt: 'select_account'
+});
 
 // Set up persistent authentication
 setPersistence(auth, browserLocalPersistence).then(() => {
@@ -35,13 +38,32 @@ setPersistence(auth, browserLocalPersistence).then(() => {
 export const signInWithGoogle = async (): Promise<User> => {
   try {
     console.log("Starting Google sign-in...");
+    console.log("Firebase config check:", {
+      hasApiKey: !!import.meta.env.VITE_FIREBASE_API_KEY,
+      hasProjectId: !!import.meta.env.VITE_FIREBASE_PROJECT_ID,
+      hasAppId: !!import.meta.env.VITE_FIREBASE_APP_ID,
+      authDomain: `${import.meta.env.VITE_FIREBASE_PROJECT_ID}.firebaseapp.com`
+    });
+    
     const result = await signInWithPopup(auth, googleProvider);
     console.log("Google sign-in successful:", result.user.displayName);
     return result.user;
   } catch (error: any) {
-    console.error("Google sign-in error:", error);
+    console.error("Google sign-in error details:", {
+      code: error.code,
+      message: error.message,
+      customData: error.customData,
+      credential: error.credential
+    });
+    
     if (error.code === "auth/popup-closed-by-user") {
       throw new Error("Sign-in cancelled by user");
+    } else if (error.code === "auth/unauthorized-domain") {
+      throw new Error("This domain is not authorized for Google sign-in. Please contact support.");
+    } else if (error.code === "auth/operation-not-allowed") {
+      throw new Error("Google sign-in is not enabled. Please contact support.");
+    } else if (error.code === "auth/popup-blocked") {
+      throw new Error("Sign-in popup was blocked. Please allow popups and try again.");
     }
     throw error;
   }

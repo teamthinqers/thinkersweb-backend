@@ -171,10 +171,12 @@ export default function AuthPage() {
       
       console.log("Starting Google Sign In process from auth page");
       
-      // Execute login and don't wait - just go directly to destination
-      loginWithGoogle();
+      // Wait for login to complete before navigation
+      await loginWithGoogle();
       
-      // Don't wait for login to complete, just navigate to the redirect path
+      console.log("Google login completed successfully");
+      
+      // Navigate to the redirect path after successful login
       const redirectPath = getRedirectPath();
       setLocation(redirectPath);
       
@@ -182,9 +184,11 @@ export default function AuthPage() {
       console.error("Google sign in error:", error);
       setIsLoading(false);
       
+      const errorMessage = error instanceof Error ? error.message : "Could not sign in with Google. Please try again.";
+      
       toast({
         title: "Sign in failed",
-        description: "Could not sign in with Google. Please try again.",
+        description: errorMessage,
         variant: "destructive",
       });
     }
