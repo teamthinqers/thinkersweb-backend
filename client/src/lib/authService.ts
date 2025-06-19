@@ -3,7 +3,7 @@
  * A lightweight authentication service with reliable persistence
  */
 
-import { auth, signInWithGoogle as firebaseSignInWithGoogle, signOut as firebaseSignOut } from "./firebase";
+import { auth, signInWithGoogle as firebaseSignInWithGoogle, signOut as firebaseSignOut } from "./auth-simple";
 import { User as FirebaseUser } from "firebase/auth";
 import { apiRequest, queryClient } from "./queryClient";
 import { User as DbUser } from "@shared/schema";
