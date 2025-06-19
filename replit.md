@@ -919,6 +919,11 @@ Changelog:
   * Click outside or close button dismisses flash card, "View Full" opens complete dot view
   * Browser mode maintains direct full dot view access for desktop efficiency
   * Enhanced PWA mobile experience with contextual in-grid flash card overlay
+- June 19, 2025. Cleaned up dot visual design:
+  * Removed alphabet emotion indicators (first letter tags) from dot corners
+  * Dots now display cleanly with only voice/text icons and pulse animations
+  * Emotion information remains available in hover cards and full dot view
+  * Simplified grid appearance reduces visual clutter for better user experience
 - June 19, 2025. Enhanced Spark section alignment and PWA drag/zoom controls:
   * Centered Spark button with content box using horizontal alignment for better visual balance
   * Made content box more rectangular with fixed width and matching border radius

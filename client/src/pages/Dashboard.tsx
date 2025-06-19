@@ -902,11 +902,7 @@ const Dashboard: React.FC = () => {
                         )}
                       </div>
                     </div>
-                    
-                    {/* Emotion indicator */}
-                    <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-white border-2 border-gray-200 flex items-center justify-center text-xs">
-                      {dot.pulse.charAt(0).toUpperCase()}
-                    </div>
+
                   </div>
                   
                   {/* Summary hover card */}
