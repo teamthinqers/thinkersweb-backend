@@ -7,10 +7,12 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Mic, Type, Eye, Brain, Network, Zap, Search, Clock, Info, Database, Cpu, Sparkles, Users } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import DotFullView from "@/components/DotFullView";
+import DotFlashCard from "@/components/DotFlashCard";
 
 // Data structure for dots
 interface Dot {
   id: string;
+  oneWordSummary: string; // Auto-generated one-word summary for flash card heading
   summary: string; // 220 chars max
   anchor: string; // 300 chars max  
   pulse: string; // 1 word emotion
@@ -56,6 +58,7 @@ const Dashboard: React.FC = () => {
   const exampleDots: Dot[] = [
     {
       id: "example-1",
+      oneWordSummary: "Microservices",
       summary: "Learned about microservices architecture patterns and their trade-offs in distributed systems",
       anchor: "Discussed with senior architect about breaking down monolith, focusing on domain boundaries and data consistency challenges",
       pulse: "curious",
@@ -66,6 +69,7 @@ const Dashboard: React.FC = () => {
     },
     {
       id: "example-2", 
+      oneWordSummary: "Patterns",
       summary: "Completed advanced React patterns workshop covering render props, higher-order components",
       anchor: "Workshop by Kent C. Dodds, practiced compound components pattern with real examples from UI libraries",
       pulse: "focused",
@@ -76,6 +80,7 @@ const Dashboard: React.FC = () => {
     },
     {
       id: "example-3",
+      oneWordSummary: "Meditation",
       summary: "Started morning meditation routine, noticed improved focus and reduced anxiety levels",
       anchor: "Using Headspace app, 10-minute sessions before work, tracking mood changes and productivity correlations",
       pulse: "calm",
@@ -187,7 +192,10 @@ const Dashboard: React.FC = () => {
         </div>
       </CardHeader>
       <CardContent>
-        <h3 className="font-medium text-sm mb-2 leading-relaxed text-gray-800">{dot.summary}</h3>
+        <h3 className="font-bold text-lg mb-3 text-amber-800 border-b border-amber-200 pb-2">
+          {dot.oneWordSummary || 'Insight'}
+        </h3>
+        <p className="text-sm text-gray-700 leading-relaxed mb-2">{dot.summary}</p>
         <p className="text-xs text-gray-600 leading-relaxed line-clamp-2">{dot.anchor}</p>
         <div className="mt-2 text-xs text-amber-700">
           {dot.timestamp.toLocaleString()}

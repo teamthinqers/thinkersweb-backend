@@ -417,6 +417,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const parsed = JSON.parse(entry.content);
           return {
             id: entry.id,
+            oneWordSummary: parsed.oneWordSummary || 'Insight',
             summary: parsed.summary,
             anchor: parsed.anchor,
             pulse: parsed.pulse,
