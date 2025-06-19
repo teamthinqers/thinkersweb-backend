@@ -800,20 +800,7 @@ const Dashboard: React.FC = () => {
                 </button>
               </div>
               
-              {/* Fullscreen Toggle Button */}
-              <div className="absolute top-4 right-4 z-60" style={{ pointerEvents: 'auto' }}>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toggleFullscreen();
-                  }}
-                  className="bg-red-500 hover:bg-red-600 text-white rounded-lg p-3 transition-colors shadow-lg cursor-pointer"
-                  title="Exit Fullscreen (ESC)"
-                  style={{ pointerEvents: 'auto' }}
-                >
-                  <Minimize className="w-5 h-5" />
-                </button>
-              </div>
+
 
               {/* Fullscreen Preview Toggle - Left side */}
               <div className="absolute top-20 left-4 z-60" style={{ pointerEvents: 'auto' }}>
