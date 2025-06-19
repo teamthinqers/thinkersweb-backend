@@ -692,6 +692,7 @@ const Dashboard: React.FC = () => {
           </button>
         </div>
         
+        {/* Stats Buttons */}
         <div className="absolute top-4 right-4 z-10 flex flex-col sm:flex-row gap-1 sm:gap-2">
           <button className="bg-white/90 backdrop-blur rounded-lg px-2 py-1 border-2 border-amber-200 text-xs font-semibold text-amber-800 hover:bg-amber-50 transition-colors whitespace-nowrap">
             Dots: {totalDots}
@@ -699,7 +700,14 @@ const Dashboard: React.FC = () => {
           <button className="bg-white/90 backdrop-blur rounded-lg px-2 py-1 border-2 border-amber-200 text-xs font-semibold text-amber-800 hover:bg-amber-50 transition-colors whitespace-nowrap">
             Wheels: {totalWheels}
           </button>
-          {/* Fullscreen Toggle */}
+        </div>
+
+        {/* Fullscreen Toggle - Positioned to avoid overlap */}
+        <div className={`absolute z-10 ${
+          isPWA 
+            ? 'bottom-4 right-4' // PWA: Bottom right to avoid navigation controls at top
+            : 'top-4 right-20' // Browser: Top right but offset to avoid stats buttons
+        }`}>
           <button 
             onClick={toggleFullscreen}
             className="bg-amber-500 hover:bg-amber-600 text-white rounded-lg p-2 transition-colors shadow-lg"
@@ -718,7 +726,11 @@ const Dashboard: React.FC = () => {
         {/* Interactive grid - PWA uses scrolling, Browser uses dragging */}
         <div 
           ref={gridContainerRef}
-          className={`relative h-[450px] w-full ${isPWA ? 'overflow-auto cursor-default' : 'overflow-hidden cursor-grab active:cursor-grabbing'}`}
+          className={`relative ${
+            isFullscreen 
+              ? 'fixed inset-0 h-screen w-screen z-50 bg-white' 
+              : 'h-[450px] w-full'
+          } ${isPWA ? 'overflow-auto cursor-default' : 'overflow-hidden cursor-grab active:cursor-grabbing'}`}
           onWheel={handleWheel}
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
