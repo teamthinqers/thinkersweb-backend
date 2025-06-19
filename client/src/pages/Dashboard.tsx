@@ -178,8 +178,8 @@ const Dashboard: React.FC = () => {
       if (onClick) {
         onClick();
       } else {
-        // First click shows flash card
-        setViewFlashCard(dot);
+        // Card already shows flash card format, go directly to full view
+        setViewFullDot(dot);
       }
     };
 
@@ -631,7 +631,7 @@ const Dashboard: React.FC = () => {
                       e.stopPropagation();
                       e.preventDefault();
                       console.log('Dot clicked:', dot.id);
-                      setViewFlashCard(dot);
+                      setViewFullDot(dot);
                       setHoveredDot(null);
                     }}
                     onMouseDown={(e) => e.stopPropagation()}
@@ -639,8 +639,8 @@ const Dashboard: React.FC = () => {
                       e.stopPropagation();
                       e.preventDefault();
                       console.log('Dot touched:', dot.id);
-                      // Immediate response for PWA - show flash card
-                      setViewFlashCard(dot);
+                      // Immediate response for PWA - show full view
+                      setViewFullDot(dot);
                       setHoveredDot(null);
                     }}
                     onTouchEnd={(e) => {
@@ -716,7 +716,7 @@ const Dashboard: React.FC = () => {
                           {dot.summary}
                         </p>
                         <div className="text-xs text-amber-600 mt-2 font-medium">
-                          Click for flash card view
+                          Click for full view
                         </div>
                       </div>
                     </div>
@@ -926,7 +926,7 @@ const Dashboard: React.FC = () => {
                     <DotCard 
                       key={dot.id} 
                       dot={dot} 
-                      onClick={() => setViewFlashCard(dot)}
+                      onClick={() => setViewFullDot(dot)}
                     />
                   ))
                 ) : (
@@ -1002,7 +1002,7 @@ const Dashboard: React.FC = () => {
                   key={dot.id} 
                   dot={dot} 
                   onClick={() => {
-                    setViewFlashCard(dot);
+                    setViewFullDot(dot);
                     setRecentDotsOpen(false);
                   }}
                 />

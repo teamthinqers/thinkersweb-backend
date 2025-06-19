@@ -858,12 +858,11 @@ Changelog:
   * Added oneWordSummary field to dots database schema for auto-generated flash card headings
   * Created OpenAI-powered generateOneWordSummary function to extract essence from dot content
   * Updated dots API endpoints to generate and return one-word summaries for all new dots
-  * Built comprehensive DotFlashCard component with amber/orange gradient styling and structured layout
-  * Implemented two-click interaction system: first click shows flash card, second click shows full view
-  * Updated all dot interactions (Recent Dots, search results, grid clicks) to use flash card format
-  * Enhanced dots grid preview mode with flash card headings instead of full summary text
-  * Applied flash card format consistently across dashboard, preview mode, and mobile interfaces
-  * System now provides quick visual scanning with one-word summaries while preserving full content access
+  * Integrated flash card format directly into dots grid with one-word summaries as prominent headings
+  * Dots grid cards ARE the flash card view - clicking opens full view directly
+  * Updated all dot interactions to show "Click for full view" since cards already display flash card format
+  * Enhanced visual hierarchy with one-word summaries for quick scanning across dashboard and preview modes
+  * System provides immediate flash card visualization in grid format with single-click access to full details
 - June 15, 2025. Enhanced PWA installation detection in neuraStorage utility:
   * Added comprehensive PWA installation checking across platforms
   * Implemented cross-platform installation status synchronization
