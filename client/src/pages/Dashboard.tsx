@@ -290,8 +290,8 @@ const Dashboard: React.FC = () => {
     // Add keyboard escape to exit fullscreen
     useEffect(() => {
       const handleKeyDown = (e: KeyboardEvent) => {
-        if (e.key === 'Escape' && isFullscreen) {
-          setIsFullscreen(false);
+        if (e.key === 'Escape' && isFullscreen && onFullscreenChange) {
+          onFullscreenChange(false);
         }
       };
 
@@ -533,14 +533,16 @@ const Dashboard: React.FC = () => {
 
     // Fullscreen handler
     const toggleFullscreen = () => {
-      setIsFullscreen(!isFullscreen);
-      if (!isFullscreen) {
-        // Reset zoom and position when entering fullscreen
-        setZoom(1);
-        if (isPWA && gridContainerRef.current) {
-          gridContainerRef.current.scrollTo({ top: 0, left: 0 });
-        } else {
-          setOffset({ x: 0, y: 0 });
+      if (onFullscreenChange) {
+        onFullscreenChange(!isFullscreen);
+        if (!isFullscreen) {
+          // Reset zoom and position when entering fullscreen
+          setZoom(1);
+          if (isPWA && gridContainerRef.current) {
+            gridContainerRef.current.scrollTo({ top: 0, left: 0 });
+          } else {
+            setOffset({ x: 0, y: 0 });
+          }
         }
       }
     };
@@ -676,7 +678,7 @@ const Dashboard: React.FC = () => {
         
         {/* Zoom Controls */}
         <div className={`absolute z-10 flex items-center gap-2 bg-white/90 backdrop-blur rounded-lg p-2 border-2 border-amber-200 shadow-lg ${
-          isPWA ? 'top-4 left-4' : 'bottom-4 left-4'
+          isPWA ? 'bottom-4 left-4' : 'bottom-4 left-4'
         }`}>
           {/* Zoom Out */}
           <button
@@ -719,7 +721,7 @@ const Dashboard: React.FC = () => {
         {/* Navigation Icon - Clean arrow without button styling */}
         <div className={`absolute z-10 ${
           isPWA 
-            ? 'top-20 left-1/2 transform -translate-x-1/2' // PWA: Lower and centered to avoid zoom overlap
+            ? 'top-4 left-1/2 transform -translate-x-1/2' // PWA: Top center
             : 'top-16 sm:top-4 left-1/2 transform -translate-x-1/2' // Browser: Original position
         }`}>
           {/* Reset View Arrow Icon */}
