@@ -905,14 +905,15 @@ const Dashboard: React.FC = () => {
 
                   </div>
                   
-                  {/* Summary hover card - positioned relative to dot */}
+                  {/* Summary hover card - different positioning for PWA vs Browser */}
                   {hoveredDot?.id === dot.id && (
                     <div 
                       className="absolute bg-white border-2 border-amber-200 rounded-lg p-3 shadow-xl z-50 w-64 cursor-pointer"
                       style={{
-                        // Position relative to the dot, accounting for grid transform
-                        left: '60px', // Fixed offset from dot
-                        top: '-20px', // Fixed offset from dot
+                        // PWA: Position relative to dot to scroll with grid
+                        // Browser: Position in grid coordinates for mouse hover
+                        left: isPWA ? '60px' : `${x + 60}px`,
+                        top: isPWA ? '-20px' : `${Math.max(0, y - 20)}px`,
                         maxWidth: '280px'
                       }}
                       onClick={(e) => {

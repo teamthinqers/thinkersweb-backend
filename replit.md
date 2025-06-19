@@ -929,9 +929,9 @@ Changelog:
   * Cleaner, more natural language for better user experience
   * Applied consistently across both PWA and browser modes
 - June 19, 2025. Fixed flash card positioning in grid:
-  * Updated flash card overlay to use relative positioning from dot instead of fixed viewport coordinates
-  * Flash cards now scroll with dots in the grid instead of getting lost outside boundaries
-  * Enhanced PWA mobile experience with contextual flash card placement that follows grid navigation
+  * Restored browser behavior: flash card appears on mouse hover with original grid coordinates
+  * PWA-specific fix: flash card uses relative positioning to scroll with dots in grid
+  * Browser maintains perfect mouse hover behavior while PWA prevents flash cards getting lost outside boundaries
 - June 19, 2025. Enhanced Spark section alignment and PWA drag/zoom controls:
   * Centered Spark button with content box using horizontal alignment for better visual balance
   * Made content box more rectangular with fixed width and matching border radius
