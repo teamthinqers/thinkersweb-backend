@@ -764,9 +764,9 @@ const Dashboard: React.FC = () => {
           ref={gridContainerRef}
           className={`relative ${
             isFullscreen 
-              ? 'fixed inset-0 h-screen w-screen z-50 bg-white p-4' 
+              ? 'fixed inset-0 h-screen w-screen z-50 bg-white' 
               : 'h-[450px] w-full'
-          } ${isPWA ? 'overflow-auto cursor-default' : 'overflow-hidden cursor-grab active:cursor-grabbing'}`}
+          } ${isPWA && isFullscreen ? 'overflow-hidden' : isPWA ? 'overflow-auto cursor-default' : 'overflow-hidden cursor-grab active:cursor-grabbing'}`}
           onWheel={handleWheel}
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
@@ -778,7 +778,7 @@ const Dashboard: React.FC = () => {
           style={{ 
             WebkitOverflowScrolling: isPWA ? 'touch' : 'auto',
             scrollBehavior: isPWA ? 'smooth' : 'auto',
-            touchAction: isPWA ? 'auto' : 'none',
+            touchAction: isPWA && isFullscreen ? 'none' : isPWA ? 'auto' : 'none',
             userSelect: 'none'
           }}
         >
@@ -828,16 +828,18 @@ const Dashboard: React.FC = () => {
                 </div>
               </div>
 
-              {/* Fullscreen Stats - Right side */}
-              <div className="absolute top-20 right-4 z-60 flex flex-col gap-1" style={{ pointerEvents: 'auto' }}>
+              {/* Fullscreen Stats - Right side, positioned higher to avoid overlap */}
+              <div className="absolute top-16 right-4 z-60 flex flex-col gap-1" style={{ pointerEvents: 'auto' }}>
                 <button 
-                  className="bg-white/90 backdrop-blur rounded-lg px-3 py-2 border-2 border-amber-200 text-sm font-semibold text-amber-800 hover:bg-amber-50 transition-colors whitespace-nowrap shadow-lg cursor-pointer"
+                  onClick={(e) => e.stopPropagation()}
+                  className="bg-white/90 backdrop-blur rounded-lg px-2 py-1 border-2 border-amber-200 text-xs font-semibold text-amber-800 hover:bg-amber-50 transition-colors whitespace-nowrap shadow-lg cursor-pointer"
                   style={{ pointerEvents: 'auto' }}
                 >
                   Dots: {totalDots}
                 </button>
                 <button 
-                  className="bg-white/90 backdrop-blur rounded-lg px-3 py-2 border-2 border-amber-200 text-sm font-semibold text-amber-800 hover:bg-amber-50 transition-colors whitespace-nowrap shadow-lg cursor-pointer"
+                  onClick={(e) => e.stopPropagation()}
+                  className="bg-white/90 backdrop-blur rounded-lg px-2 py-1 border-2 border-amber-200 text-xs font-semibold text-amber-800 hover:bg-amber-50 transition-colors whitespace-nowrap shadow-lg cursor-pointer"
                   style={{ pointerEvents: 'auto' }}
                 >
                   Wheels: {totalWheels}
