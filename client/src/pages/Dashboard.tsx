@@ -966,7 +966,7 @@ const Dashboard: React.FC = () => {
 
         {/* Spark Section */}
         <div className="mb-6">
-          <div className="flex flex-col md:flex-row items-center md:items-start gap-4 md:gap-6 justify-center">
+          <div className="flex flex-col md:flex-row items-start gap-4 md:gap-6">
             {/* Spark Button */}
             <button className="group relative overflow-hidden bg-gradient-to-r from-yellow-400 via-amber-500 to-orange-500 hover:from-yellow-500 hover:via-amber-600 hover:to-orange-600 text-white px-8 py-4 rounded-2xl shadow-xl hover:shadow-2xl transform transition-all duration-300 hover:scale-105 active:scale-95 flex-shrink-0">
               <div className="flex items-center gap-3">
@@ -984,7 +984,7 @@ const Dashboard: React.FC = () => {
             </button>
             
             {/* Content Box */}
-            <div className="bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-200 rounded-xl p-6 max-w-md text-center md:text-left shadow-lg flex-1 md:max-w-sm">
+            <div className="bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-200 rounded-xl p-6 max-w-md text-left shadow-lg flex-1 md:max-w-sm">
               <p className="text-gray-800 font-medium leading-relaxed">
                 This isn't magic. It's you, thinking sharper.
               </p>
@@ -1044,8 +1044,8 @@ const Dashboard: React.FC = () => {
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-4">
-              <h2 className="text-xl font-semibold flex items-center gap-2">
-                <Network className="w-5 h-5 text-amber-500" />
+              <h2 className="text-lg sm:text-xl font-semibold flex items-center gap-2">
+                <Network className="w-4 h-4 sm:w-5 sm:h-5 text-amber-500" />
                 <span className="bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent">
                   Dot Wheels Map
                 </span>
@@ -1074,19 +1074,19 @@ const Dashboard: React.FC = () => {
               </h2>
               
               {/* Recent Dots Filter */}
-              <div className="flex items-center gap-2">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
                 <button
                   onClick={() => setShowRecentFilter(!showRecentFilter)}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+                  className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg font-medium transition-all duration-200 text-sm sm:text-base ${
                     showRecentFilter 
-                      ? 'bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-lg hover:shadow-xl transform hover:scale-105' 
-                      : 'bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-300 text-amber-700 hover:bg-gradient-to-r hover:from-amber-100 hover:to-orange-100 hover:border-amber-400 shadow-sm hover:shadow-md'
+                      ? 'bg-amber-500 hover:bg-amber-600 text-white shadow-lg hover:shadow-xl transform hover:scale-105' 
+                      : 'bg-amber-100 border-2 border-amber-300 text-amber-700 hover:bg-amber-200 hover:border-amber-400 shadow-sm hover:shadow-md'
                   }`}
                 >
-                  <Clock className="w-4 h-4" />
-                  <span className="font-semibold">Recent Dots</span>
+                  <Clock className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <span className="font-semibold whitespace-nowrap">Recent Dots</span>
                   {dots.length > 0 && (
-                    <Badge className={`border-0 ml-1 ${
+                    <Badge className={`border-0 ml-1 text-xs ${
                       showRecentFilter 
                         ? 'bg-white/20 text-white' 
                         : 'bg-amber-100 text-amber-700'
@@ -1097,18 +1097,18 @@ const Dashboard: React.FC = () => {
                 </button>
                 
                 {showRecentFilter && (
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-sm text-gray-600 whitespace-nowrap">Show:</span>
+                  <div className="flex items-center gap-2 text-xs sm:text-sm">
+                    <span className="text-gray-600 whitespace-nowrap">Show:</span>
                     <select
                       value={recentDotsCount}
                       onChange={(e) => setRecentDotsCount(parseInt(e.target.value))}
-                      className="px-3 py-2 text-sm border border-amber-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white min-w-[80px]"
+                      className="px-2 py-1 text-xs sm:text-sm border border-amber-300 rounded focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white min-w-[60px] sm:min-w-[80px]"
                     >
                       {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 20].map(num => (
                         <option key={num} value={num}>{num}</option>
                       ))}
                     </select>
-                    <span className="text-sm text-gray-600 whitespace-nowrap">dots</span>
+                    <span className="text-gray-600 whitespace-nowrap">dots</span>
                   </div>
                 )}
               </div>
