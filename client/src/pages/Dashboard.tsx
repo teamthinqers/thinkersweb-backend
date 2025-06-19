@@ -41,6 +41,7 @@ const Dashboard: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedWheel, setSelectedWheel] = useState<string | null>(null);
   const [viewFullDot, setViewFullDot] = useState<Dot | null>(null);
+  const [viewFlashCard, setViewFlashCard] = useState<Dot | null>(null);
   const [searchResults, setSearchResults] = useState<Dot[]>([]);
   const [recentDotsOpen, setRecentDotsOpen] = useState(false);
 
@@ -115,6 +116,7 @@ const Dashboard: React.FC = () => {
       dots: [
         {
           id: '1',
+          oneWordSummary: 'PlantCare',
           summary: 'AI-powered plant care system that learns from user behavior and environmental data',
           anchor: 'Inspired by struggling to keep houseplants alive. Combines IoT sensors with machine learning for personalized care recommendations.',
           pulse: 'excited',
@@ -135,6 +137,7 @@ const Dashboard: React.FC = () => {
       dots: [
         {
           id: '2',
+          oneWordSummary: 'MicroSaaS',
           summary: 'Focus on micro-SaaS products targeting specific professional niches instead of broad markets',
           anchor: 'Research shows specialized tools have higher retention rates and customer lifetime value than generic solutions.',
           pulse: 'confident',
@@ -155,6 +158,7 @@ const Dashboard: React.FC = () => {
       dots: [
         {
           id: '3',
+          oneWordSummary: 'Teaching',
           summary: 'Active recall through teaching others is the most effective way to solidify new knowledge',
           anchor: 'Feynman technique in practice - explaining complex concepts in simple terms reveals knowledge gaps and strengthens understanding.',
           pulse: 'enlightened',
@@ -169,40 +173,51 @@ const Dashboard: React.FC = () => {
     }
   ]);
 
-  const DotCard: React.FC<{ dot: Dot; isPreview?: boolean; onClick?: () => void }> = ({ dot, isPreview = false, onClick }) => (
-    <Card className={`mb-4 hover:shadow-md transition-shadow border border-amber-200 bg-white/95 backdrop-blur cursor-pointer ${onClick ? 'hover:bg-amber-50/50' : ''}`} onClick={onClick}>
-      <CardHeader className="pb-2">
-        <div className="flex justify-between items-start">
-          <div className="flex items-center gap-2">
-            <Badge variant="outline" className="text-xs border-amber-300 text-amber-700 bg-amber-50/80">
-              {dot.sourceType === 'voice' ? <Mic className="h-3 w-3 mr-1" /> : 
-               dot.sourceType === 'text' ? <Type className="h-3 w-3 mr-1" /> : 
-               <div className="flex gap-1"><Mic className="h-2 w-2" /><Type className="h-2 w-2" /></div>}
-              {dot.sourceType}
-            </Badge>
-            {isPreview && (
-              <Badge className="bg-orange-100 text-orange-700 border-orange-200 text-xs">
-                Preview
+  const DotCard: React.FC<{ dot: Dot; isPreview?: boolean; onClick?: () => void }> = ({ dot, isPreview = false, onClick }) => {
+    const handleDotClick = () => {
+      if (onClick) {
+        onClick();
+      } else {
+        // First click shows flash card
+        setViewFlashCard(dot);
+      }
+    };
+
+    return (
+      <Card className={`mb-4 hover:shadow-md transition-shadow border border-amber-200 bg-white/95 backdrop-blur cursor-pointer hover:bg-amber-50/50`} onClick={handleDotClick}>
+        <CardHeader className="pb-2">
+          <div className="flex justify-between items-start">
+            <div className="flex items-center gap-2">
+              <Badge variant="outline" className="text-xs border-amber-300 text-amber-700 bg-amber-50/80">
+                {dot.sourceType === 'voice' ? <Mic className="h-3 w-3 mr-1" /> : 
+                 dot.sourceType === 'text' ? <Type className="h-3 w-3 mr-1" /> : 
+                 <div className="flex gap-1"><Mic className="h-2 w-2" /><Type className="h-2 w-2" /></div>}
+                {dot.sourceType}
               </Badge>
-            )}
+              {isPreview && (
+                <Badge className="bg-orange-100 text-orange-700 border-orange-200 text-xs">
+                  Preview
+                </Badge>
+              )}
+            </div>
+            <Badge className="bg-gradient-to-r from-amber-100 to-orange-100 text-amber-800 border-amber-200">
+              {dot.pulse}
+            </Badge>
           </div>
-          <Badge className="bg-gradient-to-r from-amber-100 to-orange-100 text-amber-800 border-amber-200">
-            {dot.pulse}
-          </Badge>
-        </div>
-      </CardHeader>
-      <CardContent>
-        <h3 className="font-bold text-lg mb-3 text-amber-800 border-b border-amber-200 pb-2">
-          {dot.oneWordSummary || 'Insight'}
-        </h3>
-        <p className="text-sm text-gray-700 leading-relaxed mb-2">{dot.summary}</p>
-        <p className="text-xs text-gray-600 leading-relaxed line-clamp-2">{dot.anchor}</p>
-        <div className="mt-2 text-xs text-amber-700">
-          {dot.timestamp.toLocaleString()}
-        </div>
-      </CardContent>
-    </Card>
-  );
+        </CardHeader>
+        <CardContent>
+          <h3 className="font-bold text-lg mb-3 text-amber-800 border-b border-amber-200 pb-2">
+            {dot.oneWordSummary}
+          </h3>
+          <p className="text-sm text-gray-700 leading-relaxed mb-2">{dot.summary}</p>
+          <p className="text-xs text-gray-600 leading-relaxed line-clamp-2">{dot.anchor}</p>
+          <div className="mt-2 text-xs text-amber-700">
+            {dot.timestamp.toLocaleString()}
+          </div>
+        </CardContent>
+      </Card>
+    );
+  };
 
   const WheelCard: React.FC<{ wheel: Wheel }> = ({ wheel }) => (
     <Card className="mb-4 hover:shadow-lg transition-shadow border-2 border-amber-100 bg-gradient-to-br from-white to-amber-50/20">
@@ -270,6 +285,7 @@ const Dashboard: React.FC = () => {
         for (let i = 0; i < 9; i++) {
           const dot: Dot = {
             id: `preview-dot-${categoryIndex}-${i}`,
+            oneWordSummary: `${category}${i + 1}`,
             summary: `Sample ${category.toLowerCase()} insight ${i + 1} for demonstration purposes`,
             anchor: `This is a sample anchor text for ${category.toLowerCase()} dot ${i + 1}`,
             pulse: emotions[Math.floor(Math.random() * emotions.length)],
@@ -1010,6 +1026,18 @@ const Dashboard: React.FC = () => {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Flash Card Modal */}
+      {viewFlashCard && (
+        <DotFlashCard 
+          dot={viewFlashCard} 
+          onClose={() => setViewFlashCard(null)}
+          onViewFull={() => {
+            setViewFullDot(viewFlashCard);
+            setViewFlashCard(null);
+          }}
+        />
+      )}
 
       {/* Full Dot View Modal */}
       {viewFullDot && (
