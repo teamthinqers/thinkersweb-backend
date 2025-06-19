@@ -368,7 +368,17 @@ const Dashboard: React.FC = () => {
 
     const { previewDots, previewWheels } = generatePreviewData();
     const displayWheels = previewMode ? previewWheels : wheels;
-    const displayDots = previewMode ? previewDots : actualDots;
+    
+    // Filter dots based on recent filter setting
+    let filteredDots = actualDots;
+    if (showingRecentFilter && !previewMode) {
+      // Sort by timestamp (most recent first) and take the specified number
+      filteredDots = [...actualDots]
+        .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+        .slice(0, recentCount);
+    }
+    
+    const displayDots = previewMode ? previewDots : filteredDots;
     const totalDots = displayDots.length;
     
     // Count actual formed wheels - only wheels with 9+ dots of same category
