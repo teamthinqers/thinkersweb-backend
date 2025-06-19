@@ -473,24 +473,19 @@ const Dashboard: React.FC = () => {
       );
     }
     
-    // Reset view function for both drag and scroll navigation
+    // Reset view function for unified transform-based navigation
     const resetView = () => {
-      if (isPWA && gridContainerRef.current) {
-        gridContainerRef.current.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-      } else {
-        setOffset({ x: 0, y: 0 });
-      }
+      setOffset({ x: 0, y: 0 });
       setZoom(1);
     };
 
-    // Browser drag handlers
+    // Unified drag handlers for both browser and PWA
     const handleMouseDown = (e: React.MouseEvent) => {
-      if (isPWA) return; // Only for browser
       setDragStart({ x: e.clientX - offset.x, y: e.clientY - offset.y });
     };
 
     const handleMouseMove = (e: React.MouseEvent) => {
-      if (isPWA || !dragStart) return;
+      if (!dragStart) return;
       setOffset({
         x: e.clientX - dragStart.x,
         y: e.clientY - dragStart.y
@@ -498,12 +493,10 @@ const Dashboard: React.FC = () => {
     };
 
     const handleMouseUp = () => {
-      if (isPWA) return;
       setDragStart(null);
     };
 
     const handleTouchStart = (e: React.TouchEvent) => {
-      if (isPWA) return; // Only for browser
       const target = e.target as HTMLElement;
       if (target.closest('.dot-element')) return;
       
@@ -513,7 +506,7 @@ const Dashboard: React.FC = () => {
     };
 
     const handleTouchMove = (e: React.TouchEvent) => {
-      if (isPWA || !dragStart || !e.touches[0]) return;
+      if (!dragStart || !e.touches[0]) return;
       e.preventDefault();
       const touch = e.touches[0];
       
@@ -526,7 +519,6 @@ const Dashboard: React.FC = () => {
     };
 
     const handleTouchEnd = (e: React.TouchEvent) => {
-      if (isPWA) return;
       e.preventDefault();
       setDragStart(null);
     };
@@ -768,7 +760,7 @@ const Dashboard: React.FC = () => {
             isFullscreen 
               ? 'h-screen w-screen' 
               : 'h-[450px] w-full'
-          } ${isPWA ? 'overflow-auto cursor-default' : 'overflow-hidden cursor-grab active:cursor-grabbing'}`}
+          } overflow-hidden ${isPWA ? 'cursor-grab active:cursor-grabbing' : 'cursor-grab active:cursor-grabbing'}`}
           onWheel={handleWheel}
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
@@ -778,9 +770,7 @@ const Dashboard: React.FC = () => {
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
           style={{ 
-            WebkitOverflowScrolling: isPWA ? 'touch' : 'auto',
-            scrollBehavior: isPWA ? 'smooth' : 'auto',
-            touchAction: isPWA ? 'auto' : 'none',
+            touchAction: 'none',
             userSelect: 'none'
           }}
         >
@@ -798,11 +788,11 @@ const Dashboard: React.FC = () => {
           <div 
             className="relative transition-transform duration-100 ease-out"
             style={{ 
-              width: isPWA ? '100%' : `${1200 * zoom}px`, 
-              height: isPWA ? '100%' : `${800 * zoom}px`,
-              minWidth: isPWA ? '100%' : 'auto',
-              minHeight: isPWA ? '100%' : 'auto',
-              transform: isPWA ? `scale(${zoom})` : `translate(${offset.x}px, ${offset.y}px) scale(${zoom})`,
+              width: isPWA ? '1200px' : `${1200 * zoom}px`, 
+              height: isPWA ? '800px' : `${800 * zoom}px`,
+              minWidth: isPWA ? '1200px' : 'auto',
+              minHeight: isPWA ? '800px' : 'auto',
+              transform: `translate(${offset.x}px, ${offset.y}px) scale(${zoom})`,
               transformOrigin: 'center center'
             }}
           >
