@@ -785,11 +785,15 @@ const Dashboard: React.FC = () => {
           {/* Fullscreen Header - Only visible in fullscreen mode */}
           {isFullscreen && (
             <>
-              {/* Fullscreen Title */}
+              {/* Fullscreen Title Button */}
               <div className="absolute top-4 left-4 z-60">
-                <h2 className="text-xl font-bold text-amber-800 bg-white/90 backdrop-blur rounded-lg px-4 py-2 border-2 border-amber-200">
+                <button
+                  onClick={toggleFullscreen}
+                  className="text-xl font-bold text-amber-800 bg-white/90 backdrop-blur rounded-lg px-4 py-2 border-2 border-amber-200 hover:bg-amber-50 transition-colors shadow-lg"
+                  title="Exit Fullscreen"
+                >
                   Dot Wheels Map - Fullscreen
-                </h2>
+                </button>
               </div>
               
               {/* Fullscreen Toggle Button */}
