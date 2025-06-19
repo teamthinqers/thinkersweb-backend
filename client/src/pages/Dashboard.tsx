@@ -803,40 +803,47 @@ const Dashboard: React.FC = () => {
                 </button>
               </div>
 
-              {/* Fullscreen Controls - All controls visible in fullscreen */}
-              <div className="absolute top-20 left-4 z-60 flex flex-col gap-4">
-                {/* Preview Toggle in Fullscreen */}
+              {/* Fullscreen Preview Toggle - Left side */}
+              <div className="absolute top-20 left-4 z-60">
                 <div className="bg-white/90 backdrop-blur rounded-lg p-2 border-2 border-amber-200 shadow-lg">
-                  <button
-                    onClick={() => setPreviewMode(!previewMode)}
-                    className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
-                      previewMode 
-                        ? 'bg-amber-500 text-white' 
-                        : 'bg-amber-100 text-amber-600 border border-amber-300'
-                    }`}
-                  >
-                    {previewMode ? 'Exit Preview' : 'Preview Mode'}
-                  </button>
-                </div>
-
-                {/* Stats in Fullscreen */}
-                <div className="bg-white/90 backdrop-blur rounded-lg p-2 border-2 border-amber-200 shadow-lg flex gap-2">
-                  <button className="bg-amber-100 text-amber-800 px-3 py-1 rounded text-sm font-semibold">
-                    Dots: {totalDots}
-                  </button>
-                  <button className="bg-orange-100 text-orange-800 px-3 py-1 rounded text-sm font-semibold">
-                    Wheels: {totalWheels}
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <label className="text-xs font-medium text-amber-800 hidden sm:block">Preview Mode</label>
+                    <label className="text-xs font-medium text-amber-800 sm:hidden">Preview</label>
+                    <button
+                      onClick={() => setPreviewMode(!previewMode)}
+                      className={`relative inline-flex h-4 w-7 items-center rounded-full transition-colors ${
+                        previewMode ? 'bg-amber-500' : 'bg-gray-300'
+                      }`}
+                    >
+                      <span
+                        className={`inline-block h-2 w-2 transform rounded-full bg-white transition-transform ${
+                          previewMode ? 'translate-x-4' : 'translate-x-1'
+                        }`}
+                      />
+                    </button>
+                  </div>
                 </div>
               </div>
 
-              {/* Fullscreen Navigation Controls */}
-              <div className="absolute top-20 right-4 z-60">
-                <div className="bg-white/90 backdrop-blur rounded-lg p-2 border-2 border-amber-200 shadow-lg">
+              {/* Fullscreen Stats - Right side */}
+              <div className="absolute top-20 right-4 z-60 flex flex-col sm:flex-row gap-1 sm:gap-2">
+                <div className="bg-white/90 backdrop-blur rounded-lg px-2 py-1 border-2 border-amber-200 text-xs font-semibold text-amber-800 hover:bg-amber-50 transition-colors whitespace-nowrap">
+                  Dots: {totalDots}
+                </div>
+                <div className="bg-white/90 backdrop-blur rounded-lg px-2 py-1 border-2 border-amber-200 text-xs font-semibold text-amber-800 hover:bg-amber-50 transition-colors whitespace-nowrap">
+                  Wheels: {totalWheels}
+                </div>
+              </div>
+
+              {/* Fullscreen Navigation Controls - Center */}
+              <div className="absolute top-32 left-1/2 transform -translate-x-1/2 z-60">
+                <div className={`bg-white/90 backdrop-blur rounded-lg border-2 border-amber-200 shadow-lg ${
+                  isPWA ? 'p-2' : 'p-1 sm:p-2'
+                }`}>
                   <button
                     onClick={resetView}
                     className={`bg-amber-500 hover:bg-amber-600 text-white transition-colors ${
-                      isPWA ? 'rounded-lg p-2 w-10 h-10' : 'rounded p-2'
+                      isPWA ? 'rounded-lg p-2 w-10 h-10' : 'rounded p-1'
                     }`}
                     title={isPWA ? "Reset Scroll Position" : "Reset Drag Position"}
                   >
