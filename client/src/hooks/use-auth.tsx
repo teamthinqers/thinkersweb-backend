@@ -89,3 +89,8 @@ export function useAuth(): AuthContextType {
     logout
   };
 }
+
+// Export AuthProvider for backward compatibility (even though we're not using a provider pattern)
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+  return <>{children}</>;
+};

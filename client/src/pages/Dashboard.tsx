@@ -1153,7 +1153,6 @@ const Dashboard: React.FC = () => {
             actualDots={showRecentFilter ? dots.slice(0, recentDotsCount) : dots} 
             showingRecentFilter={showRecentFilter}
             recentCount={recentDotsCount}
-            showPreview={showPreview}
           />
         </div>
       </div>
