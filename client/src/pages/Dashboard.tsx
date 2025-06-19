@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Mic, Type, Eye, Brain, Network, Zap, Search, Clock, Info, Database, Cpu, Sparkles, Users, Maximize, Minimize } from "lucide-react";
+import { Mic, Type, Eye, Brain, Network, Zap, Search, Clock, Info, Database, Cpu, Sparkles, Users, Maximize, Minimize, RotateCcw } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import DotFullView from "@/components/DotFullView";
 import DotFlashCard from "@/components/DotFlashCard";
@@ -802,12 +802,12 @@ const Dashboard: React.FC = () => {
               
 
 
-              {/* Fullscreen Preview Toggle - Left side */}
-              <div className="absolute top-20 left-4 z-60" style={{ pointerEvents: 'auto' }}>
-                <div className="bg-white/90 backdrop-blur rounded-lg p-2 border-2 border-amber-200 shadow-lg">
+              {/* Fullscreen Preview Toggle - Positioned higher to avoid overlap */}
+              <div className="absolute top-16 left-4 z-60" style={{ pointerEvents: 'auto' }}>
+                <div className="bg-white/90 backdrop-blur rounded-lg p-1 border-2 border-amber-200 shadow-lg">
                   <div className="flex items-center gap-2">
-                    <label className="text-xs font-medium text-amber-800 hidden sm:block">Preview Mode</label>
-                    <label className="text-xs font-medium text-amber-800 sm:hidden">Preview</label>
+                    <label className="text-xs font-medium text-amber-800 hidden sm:block">Preview</label>
+                    <label className="text-xs font-medium text-amber-800 sm:hidden">Prev</label>
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
@@ -844,62 +844,52 @@ const Dashboard: React.FC = () => {
                 </button>
               </div>
 
-              {/* Fullscreen Navigation Controls - Top Center */}
-              <div className="absolute top-20 left-1/2 transform -translate-x-1/2 z-60" style={{ pointerEvents: 'auto' }}>
-                <div className={`bg-white/90 backdrop-blur rounded-lg border-2 border-amber-200 shadow-lg ${
-                  isPWA ? 'p-2' : 'p-2'
-                }`}>
+              {/* Fullscreen Navigation Controls - Same line as title */}
+              <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-60" style={{ pointerEvents: 'auto' }}>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    resetView();
+                  }}
+                  className="bg-amber-500 hover:bg-amber-600 text-white rounded-lg p-2 transition-colors cursor-pointer shadow-lg"
+                  title={isPWA ? "Reset Scroll Position" : "Reset Drag Position"}
+                  style={{ pointerEvents: 'auto' }}
+                >
+                  <RotateCcw className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Fullscreen Zoom Controls - Smaller to avoid overlap */}
+              <div className="absolute bottom-4 left-4 z-60" style={{ pointerEvents: 'auto' }}>
+                <div className="flex items-center gap-1 bg-white/90 backdrop-blur rounded-lg p-1 border-2 border-amber-200 shadow-lg">
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      resetView();
+                      setZoom(Math.max(0.5, zoom - 0.1));
                     }}
-                    className={`bg-amber-500 hover:bg-amber-600 text-white transition-colors cursor-pointer ${
-                      isPWA ? 'rounded-lg p-2 w-10 h-10' : 'rounded-lg p-2 w-10 h-10'
-                    }`}
-                    title={isPWA ? "Reset Scroll Position" : "Reset Drag Position"}
+                    className="bg-amber-500 hover:bg-amber-600 text-white rounded p-1 transition-colors cursor-pointer"
+                    title="Zoom Out"
                     style={{ pointerEvents: 'auto' }}
                   >
-                    <svg className={`fill="none" stroke="white" viewBox="0 0 24 24" ${
-                      isPWA ? 'w-6 h-6' : 'w-6 h-6'
-                    }`}>
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-
-              {/* Fullscreen Zoom Controls */}
-              <div className="absolute bottom-4 left-4 z-60">
-                <div className="flex items-center gap-2 bg-white/90 backdrop-blur rounded-lg p-2 border-2 border-amber-200 shadow-lg">
-                  <button
-                    onClick={() => setZoom(Math.max(0.5, zoom - 0.1))}
-                    className={`bg-amber-500 hover:bg-amber-600 text-white rounded transition-colors ${
-                      isPWA ? 'p-2 touch-manipulation' : 'p-2'
-                    }`}
-                    title="Zoom Out"
-                  >
-                    <svg className={`fill="none" stroke="currentColor" viewBox="0 0 24 24" ${
-                      isPWA ? 'w-4 h-4' : 'w-3 h-3'
-                    }`}>
+                    <svg className="w-3 h-3 fill-none stroke-currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
                     </svg>
                   </button>
                   
-                  <span className="font-semibold text-amber-800 text-xs min-w-[45px] text-center">
+                  <span className="font-semibold text-amber-800 text-xs min-w-[35px] text-center">
                     {Math.round(zoom * 100)}%
                   </span>
                   
                   <button
-                    onClick={() => setZoom(Math.min(2, zoom + 0.1))}
-                    className={`bg-amber-500 hover:bg-amber-600 text-white rounded transition-colors ${
-                      isPWA ? 'p-2 touch-manipulation' : 'p-2'
-                    }`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setZoom(Math.min(2, zoom + 0.1));
+                    }}
+                    className="bg-amber-500 hover:bg-amber-600 text-white rounded p-1 transition-colors cursor-pointer"
                     title="Zoom In"
+                    style={{ pointerEvents: 'auto' }}
                   >
-                    <svg className={`fill="none" stroke="currentColor" viewBox="0 0 24 24" ${
-                      isPWA ? 'w-4 h-4' : 'w-3 h-3'
-                    }`}>
+                    <svg className="w-3 h-3 fill-none stroke-currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                     </svg>
                   </button>
@@ -910,11 +900,12 @@ const Dashboard: React.FC = () => {
           <div 
             className="relative transition-transform duration-100 ease-out"
             style={{ 
-              width: `${1200 * zoom}px`, 
-              height: `${800 * zoom}px`,
+              width: isPWA ? '100%' : `${1200 * zoom}px`, 
+              height: isPWA ? '100%' : `${800 * zoom}px`,
               minWidth: isPWA ? '100%' : 'auto',
               minHeight: isPWA ? '100%' : 'auto',
-              transform: isPWA ? 'none' : `translate(${offset.x}px, ${offset.y}px) scale(${zoom})`
+              transform: isPWA ? `scale(${zoom})` : `translate(${offset.x}px, ${offset.y}px) scale(${zoom})`,
+              transformOrigin: 'center center'
             }}
           >
             {/* Individual Dots Random Grid */}
