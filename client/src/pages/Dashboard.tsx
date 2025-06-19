@@ -700,7 +700,7 @@ const Dashboard: React.FC = () => {
             style={{ 
               width: '1200px', 
               height: '800px',
-              transform: `translate(${offset.x}px, ${offset.y}px)`
+              transform: `translate(${offset.x}px, ${offset.y}px) scale(${zoom})`
             }}
           >
             {/* Individual Dots Random Grid */}

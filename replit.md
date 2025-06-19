@@ -906,6 +906,15 @@ Changelog:
   * Optimized PWA mobile layout with reduced font sizes and responsive spacing
   * Fixed Recent Dots filter to stack vertically on mobile preventing horizontal overflow
   * Enhanced mobile typography with responsive text sizes throughout interface
+- June 19, 2025. Enhanced Spark section alignment and PWA drag/zoom controls:
+  * Centered Spark button with content box using horizontal alignment for better visual balance
+  * Made content box more rectangular with fixed width and matching border radius
+  * Changed Recent Dots button to solid orange background for consistent button feel
+  * Reduced PWA drag sensitivity from 2.5x to 1.2x multiplier to prevent users getting lost
+  * Added zoom controls with zoom in/out buttons and reset view functionality
+  * Implemented mouse wheel zoom for browser and zoom level display (50%-200%)
+  * Added tighter boundary constraints to prevent navigation beyond grid limits
+  * Enhanced Dot Wheels Map with comprehensive zoom and navigation control panel
 - June 15, 2025. Enhanced PWA installation detection in neuraStorage utility:
   * Added comprehensive PWA installation checking across platforms
   * Implemented cross-platform installation status synchronization
