@@ -724,8 +724,8 @@ const Dashboard: React.FC = () => {
             }`}
             title={isPWA ? "Reset Scroll Position" : "Reset Drag Position"}
           >
-            <svg className={`fill="none" stroke="currentColor" viewBox="0 0 24 24" ${
-              isPWA ? 'w-6 h-6' : 'w-2 h-2 sm:w-3 sm:h-3'
+            <svg className={`fill="none" stroke="white" viewBox="0 0 24 24" ${
+              isPWA ? 'w-6 h-6' : 'w-4 h-4'
             }`}>
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
             </svg>
@@ -792,7 +792,7 @@ const Dashboard: React.FC = () => {
                 </h2>
               </div>
               
-              {/* Fullscreen Exit Button */}
+              {/* Fullscreen Toggle Button */}
               <div className="absolute top-4 right-4 z-60">
                 <button
                   onClick={toggleFullscreen}
@@ -812,7 +812,7 @@ const Dashboard: React.FC = () => {
                     className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
                       previewMode 
                         ? 'bg-amber-500 text-white' 
-                        : 'bg-white text-amber-600 border border-amber-300'
+                        : 'bg-amber-100 text-amber-600 border border-amber-300'
                     }`}
                   >
                     {previewMode ? 'Exit Preview' : 'Preview Mode'}
@@ -840,7 +840,7 @@ const Dashboard: React.FC = () => {
                     }`}
                     title={isPWA ? "Reset Scroll Position" : "Reset Drag Position"}
                   >
-                    <svg className={`fill="none" stroke="currentColor" viewBox="0 0 24 24" ${
+                    <svg className={`fill="none" stroke="white" viewBox="0 0 24 24" ${
                       isPWA ? 'w-6 h-6' : 'w-4 h-4'
                     }`}>
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
