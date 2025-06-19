@@ -928,6 +928,10 @@ Changelog:
   * Changed from "Enter keywords to search for your dots or sparks" to "Search for your dot or spark"
   * Cleaner, more natural language for better user experience
   * Applied consistently across both PWA and browser modes
+- June 19, 2025. Fixed flash card positioning in grid:
+  * Updated flash card overlay to use relative positioning from dot instead of fixed viewport coordinates
+  * Flash cards now scroll with dots in the grid instead of getting lost outside boundaries
+  * Enhanced PWA mobile experience with contextual flash card placement that follows grid navigation
 - June 19, 2025. Enhanced Spark section alignment and PWA drag/zoom controls:
   * Centered Spark button with content box using horizontal alignment for better visual balance
   * Made content box more rectangular with fixed width and matching border radius

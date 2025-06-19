@@ -905,14 +905,14 @@ const Dashboard: React.FC = () => {
 
                   </div>
                   
-                  {/* Summary hover card */}
+                  {/* Summary hover card - positioned relative to dot */}
                   {hoveredDot?.id === dot.id && (
                     <div 
                       className="absolute bg-white border-2 border-amber-200 rounded-lg p-3 shadow-xl z-50 w-64 cursor-pointer"
                       style={{
-                        // Position next to the dot with smart placement
-                        left: `${x + 60}px`,
-                        top: `${Math.max(0, y - 20)}px`,
+                        // Position relative to the dot, accounting for grid transform
+                        left: '60px', // Fixed offset from dot
+                        top: '-20px', // Fixed offset from dot
                         maxWidth: '280px'
                       }}
                       onClick={(e) => {
