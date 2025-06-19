@@ -263,6 +263,11 @@ const Dashboard: React.FC = () => {
   isFullscreen?: boolean,
   onFullscreenChange?: (isFullscreen: boolean) => void
 }> = ({ wheels, actualDots, showingRecentFilter = false, recentCount = 4, isFullscreen = false, onFullscreenChange }) => {
+    
+    // Debug logging for props
+    useEffect(() => {
+      console.log('DotWheelsMap props:', { isFullscreen, hasCallback: !!onFullscreenChange });
+    }, [isFullscreen, onFullscreenChange]);
     const [selectedWheel, setSelectedWheel] = useState<string | null>(null);
     const [viewFullDot, setViewFullDot] = useState<Dot | null>(null);
     const [hoveredDot, setHoveredDot] = useState<Dot | null>(null);
@@ -525,17 +530,16 @@ const Dashboard: React.FC = () => {
 
     // Fullscreen handler
     const toggleFullscreen = () => {
+      console.log('toggleFullscreen called, current state:', isFullscreen, 'onFullscreenChange:', !!onFullscreenChange);
       if (onFullscreenChange) {
         onFullscreenChange(!isFullscreen);
         if (!isFullscreen) {
           // Reset zoom and position when entering fullscreen
           setZoom(1);
-          if (isPWA && gridContainerRef.current) {
-            gridContainerRef.current.scrollTo({ top: 0, left: 0 });
-          } else {
-            setOffset({ x: 0, y: 0 });
-          }
+          setOffset({ x: 0, y: 0 });
         }
+      } else {
+        console.error('onFullscreenChange callback not available');
       }
     };
 
@@ -777,10 +781,15 @@ const Dashboard: React.FC = () => {
           {/* Fullscreen exit button - bottom right */}
           {isFullscreen && (
             <button
-              onClick={toggleFullscreen}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Minimize button clicked, fullscreen:', isFullscreen);
+                toggleFullscreen();
+              }}
               className="fixed bottom-6 right-6 z-[100] bg-red-500 hover:bg-red-600 text-white rounded-full p-4 transition-colors shadow-2xl border-2 border-red-400"
               title="Exit Fullscreen (ESC)"
-              style={{ pointerEvents: 'auto' }}
+              style={{ pointerEvents: 'auto', touchAction: 'manipulation' }}
             >
               <Minimize className="w-4 h-4" />
             </button>
