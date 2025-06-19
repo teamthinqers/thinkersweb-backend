@@ -265,6 +265,7 @@ const Dashboard: React.FC = () => {
 }> = ({ wheels, actualDots, showingRecentFilter = false, recentCount = 4, isFullscreen = false, onFullscreenChange }) => {
     const [selectedWheel, setSelectedWheel] = useState<string | null>(null);
     const [viewFullDot, setViewFullDot] = useState<Dot | null>(null);
+    const [viewFlashCard, setViewFlashCard] = useState<Dot | null>(null);
     const [hoveredDot, setHoveredDot] = useState<Dot | null>(null);
     const [previewMode, setPreviewMode] = useState(false);
     const [zoom, setZoom] = useState(1);
@@ -850,7 +851,12 @@ const Dashboard: React.FC = () => {
                       e.stopPropagation();
                       e.preventDefault();
                       console.log('Dot clicked:', dot.id);
-                      setViewFullDot(dot);
+                      // For PWA mode, show flash card first
+                      if (isPWA) {
+                        setViewFlashCard(dot);
+                      } else {
+                        setViewFullDot(dot);
+                      }
                       setHoveredDot(null);
                     }}
                     onMouseDown={(e) => e.stopPropagation()}
@@ -858,8 +864,12 @@ const Dashboard: React.FC = () => {
                       e.stopPropagation();
                       e.preventDefault();
                       console.log('Dot touched:', dot.id);
-                      // Immediate response for PWA - show full view
-                      setViewFullDot(dot);
+                      // For PWA mode, show flash card first
+                      if (isPWA) {
+                        setViewFlashCard(dot);
+                      } else {
+                        setViewFullDot(dot);
+                      }
                       setHoveredDot(null);
                     }}
                     onTouchEnd={(e) => {
@@ -1004,6 +1014,18 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
         
+        {/* Flash Card Modal */}
+        {viewFlashCard && (
+          <DotFlashCard 
+            dot={viewFlashCard} 
+            onClose={() => setViewFlashCard(null)}
+            onViewFull={() => {
+              setViewFullDot(viewFlashCard);
+              setViewFlashCard(null);
+            }}
+          />
+        )}
+
         {/* Full Dot View Modal */}
         {viewFullDot && (
           <DotFullView 
