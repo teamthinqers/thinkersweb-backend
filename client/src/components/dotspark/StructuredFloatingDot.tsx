@@ -38,13 +38,15 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
   
   // Voice recording states
   const [isRecording, setIsRecording] = useState(false);
-  const [currentStep, setCurrentStep] = useState<1 | 2 | 3>(1);
+  const [currentStep, setCurrentStep] = useState<1 | 2 | 3 | 4>(1);
   const [voiceSteps, setVoiceSteps] = useState({
+    heading: '',
     summary: '',
     anchor: '',
     pulse: ''
   });
   const [audioRecordings, setAudioRecordings] = useState<{
+    heading?: string;
     summary?: string;
     anchor?: string;
     pulse?: string;
@@ -54,6 +56,7 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
   
   // Text input states
   const [structuredInput, setStructuredInput] = useState({
+    heading: '',
     summary: '',
     anchor: '',
     pulse: ''
@@ -227,9 +230,9 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
   // Check if there are unsaved changes
   const hasUnsavedChanges = () => {
     if (captureMode === 'text') {
-      return structuredInput.summary.trim() || structuredInput.anchor.trim() || structuredInput.pulse.trim();
+      return structuredInput.heading.trim() || structuredInput.summary.trim() || structuredInput.anchor.trim() || structuredInput.pulse.trim();
     } else if (captureMode === 'voice') {
-      return voiceSteps.summary.trim() || voiceSteps.anchor.trim() || voiceSteps.pulse.trim();
+      return voiceSteps.heading.trim() || voiceSteps.summary.trim() || voiceSteps.anchor.trim() || voiceSteps.pulse.trim();
     }
     return false;
   };
@@ -245,8 +248,8 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
   const confirmClose = () => {
     setIsExpanded(false);
     setCaptureMode('select');
-    setStructuredInput({ summary: '', anchor: '', pulse: '' });
-    setVoiceSteps({ summary: '', anchor: '', pulse: '' });
+    setStructuredInput({ heading: '', summary: '', anchor: '', pulse: '' });
+    setVoiceSteps({ heading: '', summary: '', anchor: '', pulse: '' });
     setCurrentStep(1);
     setIsRecording(false);
     setShowExitWarning(false);
@@ -435,11 +438,9 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
         setIsExpanded(true);
         setIsFirstActivation(false);
         
-        if (userCaptureMode === 'voice') {
-          setCaptureMode('voice');
-        } else if (userCaptureMode === 'text') {
-          setCaptureMode('text');
-        }
+        // For natural mode, show voice/text selection
+        // For AI mode, show direct chat/whatsapp selection
+        setCaptureMode('select');
       }
     };
 
