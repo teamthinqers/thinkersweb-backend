@@ -635,7 +635,11 @@ const Dashboard: React.FC = () => {
     };
 
     return (
-      <div className="relative bg-gradient-to-br from-amber-50/50 to-orange-50/50 rounded-xl p-4 min-h-[500px] border-2 border-amber-200 shadow-lg overflow-hidden">
+      <div className={`relative bg-gradient-to-br from-amber-50/50 to-orange-50/50 ${
+        isFullscreen 
+          ? 'fixed inset-0 z-50 p-8' 
+          : 'rounded-xl p-4 min-h-[500px] border-2 border-amber-200 shadow-lg'
+      } overflow-hidden`}>
         {/* Preview toggle and Recent Filter Indicator */}
         <div className="absolute top-4 left-4 z-10 flex flex-col gap-2">
           {(previewMode || displayDots.length > 0) && (
@@ -753,12 +757,12 @@ const Dashboard: React.FC = () => {
 
 
         
-        {/* Interactive grid - Simple fullscreen extension */}
+        {/* Interactive grid */}
         <div 
           ref={gridContainerRef}
           className={`relative ${
             isFullscreen 
-              ? 'fixed inset-0 h-screen w-screen z-50 bg-gradient-to-br from-amber-50/50 to-orange-50/50 p-8' 
+              ? 'h-screen w-screen' 
               : 'h-[450px] w-full'
           } ${isPWA ? 'overflow-auto cursor-default' : 'overflow-hidden cursor-grab active:cursor-grabbing'}`}
           onWheel={handleWheel}
@@ -776,7 +780,7 @@ const Dashboard: React.FC = () => {
             userSelect: 'none'
           }}
         >
-          {/* Simple fullscreen exit button - moved to bottom right */}
+          {/* Fullscreen exit button - bottom right */}
           {isFullscreen && (
             <button
               onClick={toggleFullscreen}
