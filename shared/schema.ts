@@ -304,6 +304,7 @@ export const dots = pgTable("dots", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").references(() => users.id).notNull(),
   wheelId: integer("wheel_id").references(() => wheels.id),
+  oneWordSummary: text("one_word_summary"), // Auto-generated one-word summary for flash card heading
   summary: text("summary").notNull(), // Layer 1: 220 chars max
   anchor: text("anchor").notNull(), // Layer 2: 300 chars max
   pulse: text("pulse").notNull(), // Layer 3: 1 word emotion
