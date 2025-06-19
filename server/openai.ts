@@ -35,6 +35,39 @@ async function testOpenAIConnection() {
 testOpenAIConnection();
 
 /**
+ * Generate a one-word summary for a dot
+ */
+export async function generateOneWordSummary(summary: string, anchor: string): Promise<string> {
+  try {
+    const response = await openai.chat.completions.create({
+      model: "gpt-4o",
+      messages: [
+        {
+          role: "system",
+          content: "You are an expert at creating concise one-word summaries. Analyze the given content and return exactly ONE word that best captures the core essence or topic. The word should be a noun, concept, or key theme that represents the main idea."
+        },
+        {
+          role: "user",
+          content: `Create a one-word summary for this content:
+Summary: ${summary}
+Context: ${anchor}
+
+Respond with only ONE word that captures the essence.`
+        }
+      ],
+      max_tokens: 5,
+      temperature: 0.3
+    });
+
+    const oneWord = response.choices[0]?.message?.content?.trim() || "Insight";
+    return oneWord.split(/\s+/)[0]; // Ensure only one word
+  } catch (error) {
+    console.error("Error generating one-word summary:", error);
+    return "Insight"; // Fallback
+  }
+}
+
+/**
  * Transcribe audio to text using OpenAI Whisper
  */
 export async function transcribeAudio(audioBuffer: Buffer, filename: string): Promise<string> {

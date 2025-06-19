@@ -356,10 +356,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
       
+      // Generate one-word summary using OpenAI
+      let oneWordSummary = 'Insight'; // Default fallback
+      try {
+        const { generateOneWordSummary } = await import('./openai.js');
+        oneWordSummary = await generateOneWordSummary(summary, anchor);
+      } catch (error) {
+        console.error('Error generating one-word summary:', error);
+      }
+      
       const entryData = {
         userId,
         title: summary.substring(0, 50) + (summary.length > 50 ? '...' : ''),
         content: JSON.stringify({
+          oneWordSummary,
           summary,
           anchor, 
           pulse,
