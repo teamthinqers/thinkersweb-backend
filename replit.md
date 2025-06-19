@@ -865,6 +865,16 @@ Changelog:
   * Updated all dot interactions to show "Click for full view" since cards already display flash card format
   * Enhanced visual hierarchy with meaningful keywords for quick scanning and topic identification
   * System provides immediate flash card visualization with real content-based keywords for better dot recognition
+- June 19, 2025. Fixed dot saving exit warning and enhanced preview mode:
+  * Fixed exit warning to only show when there are unsaved changes, not after successful saves
+  * Added "Saved" button state with green checkmark after successful dot creation
+  * Added close button below saved button for easy exit after saving
+  * Updated voice interface to include heading field as first layer (4 layers total)
+  * Fixed progress meter logic to handle 4 steps instead of 3 for voice capture
+  * Enhanced preview mode with realistic wheel names: "Innovation" and "Learning"
+  * Added authentic dot headings for Innovation wheel: AI Ethics, Blockchain, Quantum, Sustainability, Automation, Biotech, AR/VR, IoT, Robotics
+  * Added practical dot headings for Learning wheel: TypeScript, Leadership, Psychology, Design, Finance, Negotiation, Systems, Mindfulness, Strategy
+  * Replaced generic numbered headings with meaningful topic-based content for better demonstration
 - June 15, 2025. Enhanced PWA installation detection in neuraStorage utility:
   * Added comprehensive PWA installation checking across platforms
   * Implemented cross-platform installation status synchronization

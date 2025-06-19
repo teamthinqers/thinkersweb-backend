@@ -262,43 +262,100 @@ const Dashboard: React.FC = () => {
 
     // Generate preview data when preview mode is enabled
     const generatePreviewData = () => {
-      const categories = ['Innovation', 'Learning'];
       const emotions = ['excited', 'curious', 'focused', 'happy', 'calm', 'inspired', 'confident', 'grateful', 'motivated'];
       
       const previewDots: Dot[] = [];
       const previewWheels: Wheel[] = [];
 
-      categories.forEach((category, categoryIndex) => {
-        const wheel: Wheel = {
-          id: `preview-wheel-${categoryIndex}`,
-          name: `${category} Insights`,
-          category,
-          color: categoryIndex === 0 ? '#F59E0B' : '#D97706',
-          dots: [],
-          connections: categoryIndex === 0 ? ['preview-wheel-1'] : ['preview-wheel-0'],
-          position: { 
-            x: 200 + categoryIndex * 350, 
-            y: 200 + categoryIndex * 50 
-          }
-        };
+      // Innovation wheel
+      const innovationWheel: Wheel = {
+        id: 'preview-wheel-0',
+        name: 'Innovation',
+        category: 'Innovation',
+        color: '#F59E0B',
+        dots: [],
+        connections: ['preview-wheel-1'],
+        position: { x: 200, y: 200 }
+      };
 
-        for (let i = 0; i < 9; i++) {
-          const dot: Dot = {
-            id: `preview-dot-${categoryIndex}-${i}`,
-            oneWordSummary: `${category}${i + 1}`,
-            summary: `Sample ${category.toLowerCase()} insight ${i + 1} for demonstration purposes`,
-            anchor: `This is a sample anchor text for ${category.toLowerCase()} dot ${i + 1}`,
-            pulse: emotions[Math.floor(Math.random() * emotions.length)],
-            wheelId: wheel.id,
-            timestamp: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
-            sourceType: Math.random() > 0.5 ? 'voice' : 'text',
-            captureMode: Math.random() > 0.7 ? 'ai' : 'natural' // 30% AI mode, 70% natural mode
-          };
-          previewDots.push(dot);
-          wheel.dots.push(dot);
-        }
-        previewWheels.push(wheel);
-      });
+      const innovationHeadings = [
+        'AI Ethics', 'Blockchain', 'Quantum', 'Sustainability', 'Automation',
+        'Biotech', 'AR/VR', 'IoT', 'Robotics'
+      ];
+
+      const innovationSummaries = [
+        'Exploring ethical frameworks for AI decision-making in healthcare applications',
+        'Decentralized identity solutions using blockchain for privacy protection',
+        'Quantum computing breakthrough in cryptography and security protocols',
+        'Sustainable technology design principles for reducing carbon footprint',
+        'Process automation using low-code platforms for small businesses',
+        'CRISPR gene editing applications in personalized medicine',
+        'Immersive AR experiences for remote collaboration and training',
+        'Smart city IoT infrastructure for traffic optimization',
+        'Autonomous robotics in warehouse logistics and inventory management'
+      ];
+
+      for (let i = 0; i < 9; i++) {
+        const dot: Dot = {
+          id: `preview-dot-0-${i}`,
+          oneWordSummary: innovationHeadings[i],
+          summary: innovationSummaries[i],
+          anchor: `Research context and implementation strategy for ${innovationHeadings[i].toLowerCase()} initiative`,
+          pulse: emotions[Math.floor(Math.random() * emotions.length)],
+          wheelId: innovationWheel.id,
+          timestamp: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
+          sourceType: Math.random() > 0.5 ? 'voice' : 'text',
+          captureMode: Math.random() > 0.7 ? 'ai' : 'natural'
+        };
+        previewDots.push(dot);
+        innovationWheel.dots.push(dot);
+      }
+      previewWheels.push(innovationWheel);
+
+      // Learning wheel
+      const learningWheel: Wheel = {
+        id: 'preview-wheel-1',
+        name: 'Learning',
+        category: 'Learning',
+        color: '#D97706',
+        dots: [],
+        connections: ['preview-wheel-0'],
+        position: { x: 550, y: 250 }
+      };
+
+      const learningHeadings = [
+        'TypeScript', 'Leadership', 'Psychology', 'Design', 'Finance',
+        'Negotiation', 'Systems', 'Mindfulness', 'Strategy'
+      ];
+
+      const learningSummaries = [
+        'Advanced TypeScript patterns for building scalable frontend applications',
+        'Transformational leadership principles and team motivation techniques',
+        'Cognitive biases in decision-making and behavioral economics insights',
+        'Design thinking methodology for user-centered product development',
+        'Personal finance strategies and investment portfolio diversification',
+        'Negotiation tactics for win-win outcomes in business partnerships',
+        'Systems thinking approach to complex problem-solving frameworks',
+        'Mindfulness meditation practices for stress reduction and focus',
+        'Strategic planning frameworks for competitive advantage analysis'
+      ];
+
+      for (let i = 0; i < 9; i++) {
+        const dot: Dot = {
+          id: `preview-dot-1-${i}`,
+          oneWordSummary: learningHeadings[i],
+          summary: learningSummaries[i],
+          anchor: `Learning context and practical application notes for ${learningHeadings[i].toLowerCase()} mastery`,
+          pulse: emotions[Math.floor(Math.random() * emotions.length)],
+          wheelId: learningWheel.id,
+          timestamp: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
+          sourceType: Math.random() > 0.5 ? 'voice' : 'text',
+          captureMode: Math.random() > 0.7 ? 'ai' : 'natural'
+        };
+        previewDots.push(dot);
+        learningWheel.dots.push(dot);
+      }
+      previewWheels.push(learningWheel);
 
       return { previewDots, previewWheels };
     };
