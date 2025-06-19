@@ -876,6 +876,13 @@ Changelog:
   * Added practical dot headings for Learning wheel: TypeScript, Leadership, Psychology, Design, Finance, Negotiation, Systems, Mindfulness, Strategy
   * Replaced generic numbered headings with meaningful topic-based content for better demonstration
   * Removed "9 dots" requirement tags from wheel labels and info dialog for cleaner interface
+- June 19, 2025. Integrated Recent Dots filter with dashboard search functionality:
+  * Removed separate "Recent Dots" button and integrated as filter near Dot Wheels Map heading
+  * Added customizable number input (default 4) for users to specify how many recent dots to view
+  * Moved search bar above Dot Wheels Map heading with updated placeholder: "Enter keywords to search for your dots or sparks"
+  * Added visual indicator in Dot Wheels Map when recent filter is active showing "Showing X Recent Dots"
+  * Enhanced Recent Dots filter with toggle button and number input for customizable display count (1-20 dots)
+  * Recent filter integrates seamlessly with existing Dot Wheels Map visualization and preview mode
 - June 15, 2025. Enhanced PWA installation detection in neuraStorage utility:
   * Added comprehensive PWA installation checking across platforms
   * Implemented cross-platform installation status synchronization

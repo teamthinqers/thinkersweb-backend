@@ -253,7 +253,12 @@ const Dashboard: React.FC = () => {
     </Card>
   );
 
-  const DotWheelsMap: React.FC<{ wheels: Wheel[], actualDots: Dot[] }> = ({ wheels, actualDots }) => {
+  const DotWheelsMap: React.FC<{ 
+  wheels: Wheel[], 
+  actualDots: Dot[], 
+  showingRecentFilter?: boolean, 
+  recentCount?: number 
+}> = ({ wheels, actualDots, showingRecentFilter = false, recentCount = 4 }) => {
     const [selectedWheel, setSelectedWheel] = useState<string | null>(null);
     const [viewFullDot, setViewFullDot] = useState<Dot | null>(null);
     const [hoveredDot, setHoveredDot] = useState<Dot | null>(null);
@@ -567,8 +572,8 @@ const Dashboard: React.FC = () => {
 
     return (
       <div className="relative bg-gradient-to-br from-amber-50/50 to-orange-50/50 rounded-xl p-4 min-h-[500px] border-2 border-amber-200 shadow-lg overflow-hidden">
-        {/* Preview toggle */}
-        <div className="absolute top-4 left-4 z-10">
+        {/* Preview toggle and Recent Filter Indicator */}
+        <div className="absolute top-4 left-4 z-10 flex flex-col gap-2">
           {(previewMode || displayDots.length > 0) && (
             <div className="flex items-center gap-2 bg-white/90 backdrop-blur rounded-lg px-2 py-1 border-2 border-amber-200">
               <label className="text-xs font-medium text-amber-800 hidden sm:block">Preview Mode</label>
@@ -585,6 +590,16 @@ const Dashboard: React.FC = () => {
                   }`}
                 />
               </button>
+            </div>
+          )}
+          
+          {/* Recent Filter Indicator */}
+          {showingRecentFilter && !previewMode && (
+            <div className="bg-gradient-to-r from-amber-600 to-orange-600 text-white rounded-lg px-3 py-2 border-2 border-amber-400 shadow-lg">
+              <div className="flex items-center gap-2">
+                <Clock className="w-3 h-3" />
+                <span className="text-xs font-medium">Showing {recentCount} Recent Dots</span>
+              </div>
             </div>
           )}
         </div>
@@ -937,19 +952,7 @@ const Dashboard: React.FC = () => {
           </Card>
         </div>
 
-        {/* Search Bar - moved to top */}
-        <div className="mb-4">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-amber-500" />
-            <Input
-              type="text"
-              placeholder="Enter keywords to search for a Dot"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 h-12 text-base border-2 border-amber-200 bg-white/90 backdrop-blur focus:border-amber-500 focus:ring-amber-500/20 rounded-xl placeholder:text-gray-500 text-gray-800 shadow-sm"
-            />
-          </div>
-        </div>
+
 
 
 
@@ -983,6 +986,20 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
         )}
+
+        {/* Search Bar */}
+        <div className="mb-4">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-amber-500" />
+            <Input
+              type="text"
+              placeholder="Enter keywords to search for your dots or sparks"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10 h-12 text-base border-2 border-amber-200 bg-white/90 backdrop-blur focus:border-amber-500 focus:ring-amber-500/20 rounded-xl placeholder:text-gray-500 text-gray-800 shadow-sm"
+            />
+          </div>
+        </div>
 
         {/* Dot Wheels Map Section */}
         <div className="mb-8">
@@ -1058,64 +1075,16 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
           
-          <DotWheelsMap wheels={wheels} actualDots={dots} />
+          <DotWheelsMap 
+            wheels={wheels} 
+            actualDots={showRecentFilter ? dots.slice(0, recentDotsCount) : dots} 
+            showingRecentFilter={showRecentFilter}
+            recentCount={recentDotsCount}
+          />
         </div>
       </div>
       
-      {/* Recent Dots Modal */}
-      <Dialog open={recentDotsOpen} onOpenChange={setRecentDotsOpen}>
-        <DialogContent 
-          className="max-w-2xl max-h-[80vh] overflow-y-auto"
-          aria-describedby="recent-dots-description"
-        >
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-xl">
-              <Clock className="w-5 h-5 text-amber-600" />
-              <span className="bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent">
-                Recent Dots
-              </span>
-            </DialogTitle>
-          </DialogHeader>
-          
-          <div id="recent-dots-description" className="sr-only">
-            View your most recently saved dots with summary previews
-          </div>
-          
-          <div className="space-y-4 mt-4">
-            {dots.length > 0 ? (
-              dots.slice(0, 4).map((dot: Dot) => (
-                <DotCard 
-                  key={dot.id} 
-                  dot={dot} 
-                  onClick={() => {
-                    setViewFullDot(dot);
-                    setRecentDotsOpen(false);
-                  }}
-                />
-              ))
-            ) : (
-              <>
-                <div className="text-center py-4 mb-4">
-                  <Badge className="bg-orange-100 text-orange-700 border-orange-200">
-                    Preview Examples
-                  </Badge>
-                </div>
-                {exampleDots.slice(0, 4).map((dot: Dot) => (
-                  <DotCard 
-                    key={dot.id} 
-                    dot={dot} 
-                    isPreview={true}
-                    onClick={() => {
-                      setViewFullDot(dot);
-                      setRecentDotsOpen(false);
-                    }}
-                  />
-                ))}
-              </>
-            )}
-          </div>
-        </DialogContent>
-      </Dialog>
+
 
       {/* Flash Card Modal */}
       {viewFlashCard && (
