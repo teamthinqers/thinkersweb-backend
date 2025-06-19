@@ -595,10 +595,7 @@ const Dashboard: React.FC = () => {
           
           {/* Reset View */}
           <button
-            onClick={() => {
-              setOffset({ x: 0, y: 0 });
-              setZoom(1);
-            }}
+            onClick={resetView}
             className="bg-amber-500 hover:bg-amber-600 text-white rounded p-1 transition-colors ml-1 sm:ml-2"
             title="Reset View"
           >
