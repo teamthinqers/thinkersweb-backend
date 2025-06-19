@@ -889,6 +889,11 @@ Changelog:
   * Added content box with motivational messaging: "This isn't magic. It's you, thinking sharper. Let's connect the dots."
   * Implemented hover effects, scale animations, and animated background sweep for premium visual experience
   * Positioned section between capacity meter and search functionality for optimal user flow
+- June 19, 2025. Enhanced Recent Dots button styling and cleaned up interface:
+  * Updated Recent Dots button with theme-appropriate amber/orange gradient background colors
+  * Removed duplicate preview/dots/wheels boxes for cleaner interface design
+  * Recent Dots button now shows gradient from amber-50 to orange-50 when inactive, maintaining visual consistency
+  * Eliminated redundant UI elements while preserving all functionality
 - June 15, 2025. Enhanced PWA installation detection in neuraStorage utility:
   * Added comprehensive PWA installation checking across platforms
   * Implemented cross-platform installation status synchronization

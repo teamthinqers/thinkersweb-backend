@@ -1083,7 +1083,7 @@ const Dashboard: React.FC = () => {
                   className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
                     showRecentFilter 
                       ? 'bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-lg hover:shadow-xl transform hover:scale-105' 
-                      : 'bg-white border-2 border-amber-300 text-amber-700 hover:bg-amber-50 hover:border-amber-400 shadow-sm hover:shadow-md'
+                      : 'bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-300 text-amber-700 hover:bg-gradient-to-r hover:from-amber-100 hover:to-orange-100 hover:border-amber-400 shadow-sm hover:shadow-md'
                   }`}
                 >
                   <Clock className="w-4 h-4" />
@@ -1116,36 +1116,7 @@ const Dashboard: React.FC = () => {
               </div>
             </div>
             
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setShowPreview(!showPreview)}
-                  className={`px-3 py-1 text-xs ${
-                    showPreview 
-                      ? 'bg-amber-100 border-amber-300 text-amber-700' 
-                      : 'border-gray-300 text-gray-600 hover:bg-gray-50'
-                  }`}
-                >
-                  {showPreview ? 'Hide Preview' : 'Preview'}
-                </Button>
-                
-                <div className="bg-white border border-amber-200 rounded-lg px-3 py-1">
-                  <span className="text-xs text-gray-600 mr-2">Dots:</span>
-                  <span className="text-xs font-semibold text-amber-700">
-                    {dots.length}
-                  </span>
-                </div>
-                
-                <div className="bg-white border border-amber-200 rounded-lg px-3 py-1">
-                  <span className="text-xs text-gray-600 mr-2">Wheels:</span>
-                  <span className="text-xs font-semibold text-amber-700">
-                    {wheels.length}
-                  </span>
-                </div>
-              </div>
-            </div>
+
           </div>
           
           <DotWheelsMap 
