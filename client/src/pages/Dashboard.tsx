@@ -469,22 +469,19 @@ const Dashboard: React.FC = () => {
         e.preventDefault();
         const touch = e.touches[0];
         
-        // Increase drag sensitivity by amplifying movement (2x multiplier for easier dragging)
-        const deltaX = (touch.clientX - dragStart.x) * 1.5;
-        const deltaY = (touch.clientY - dragStart.y) * 1.5;
-        
+        // Enhanced drag sensitivity with 2.5x multiplier for much easier PWA dragging
         const newOffset = {
-          x: deltaX,
-          y: deltaY
+          x: (touch.clientX - dragStart.x) * 2.5,
+          y: (touch.clientY - dragStart.y) * 2.5
         };
         
-        // More generous boundary constraints for PWA
-        const containerWidth = 350; // Approximate PWA container width
+        // Much more generous boundary constraints for PWA - allow more movement
+        const containerWidth = window.innerWidth;
         const containerHeight = 450;
-        const maxX = 50;
-        const minX = -(1200 - containerWidth + 50);
-        const maxY = 50;
-        const minY = -(800 - containerHeight + 50);
+        const maxX = containerWidth * 0.3; // Allow 30% overflow on right
+        const minX = -(1200 - containerWidth + containerWidth * 0.3); // Allow 30% overflow on left
+        const maxY = containerHeight * 0.2; // Allow 20% overflow on top
+        const minY = -(800 - containerHeight + containerHeight * 0.2); // Allow 20% overflow on bottom
         
         setOffset({
           x: Math.max(minX, Math.min(maxX, newOffset.x)),
@@ -1078,7 +1075,7 @@ const Dashboard: React.FC = () => {
               
               {/* Recent Dots Filter */}
               <div className="flex items-center gap-2">
-                <Button
+                <button
                   onClick={() => setShowRecentFilter(!showRecentFilter)}
                   className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
                     showRecentFilter 
@@ -1097,20 +1094,21 @@ const Dashboard: React.FC = () => {
                       {Math.min(dots.length, recentDotsCount)}
                     </Badge>
                   )}
-                </Button>
+                </button>
                 
                 {showRecentFilter && (
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm text-gray-600">Show:</span>
-                    <input
-                      type="number"
-                      min="1"
-                      max="20"
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="text-sm text-gray-600 whitespace-nowrap">Show:</span>
+                    <select
                       value={recentDotsCount}
-                      onChange={(e) => setRecentDotsCount(Math.max(1, parseInt(e.target.value) || 4))}
-                      className="w-16 px-2 py-1 text-sm border border-amber-300 rounded focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
-                    />
-                    <span className="text-sm text-gray-600">dots</span>
+                      onChange={(e) => setRecentDotsCount(parseInt(e.target.value))}
+                      className="px-3 py-2 text-sm border border-amber-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white min-w-[80px]"
+                    >
+                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 20].map(num => (
+                        <option key={num} value={num}>{num}</option>
+                      ))}
+                    </select>
+                    <span className="text-sm text-gray-600 whitespace-nowrap">dots</span>
                   </div>
                 )}
               </div>
