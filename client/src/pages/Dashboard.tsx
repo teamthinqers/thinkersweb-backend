@@ -45,6 +45,7 @@ const Dashboard: React.FC = () => {
   const [searchResults, setSearchResults] = useState<Dot[]>([]);
   const [showRecentFilter, setShowRecentFilter] = useState(false);
   const [recentDotsCount, setRecentDotsCount] = useState(4);
+  const [showPreview, setShowPreview] = useState(false);
 
   // Fetch real dots from API
   const { data: dots = [], isLoading, refetch } = useQuery({
@@ -1078,40 +1079,40 @@ const Dashboard: React.FC = () => {
               {/* Recent Dots Filter */}
               <div className="flex items-center gap-2">
                 <Button
-                onClick={() => setShowRecentFilter(!showRecentFilter)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
-                  showRecentFilter 
-                    ? 'bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-lg hover:shadow-xl transform hover:scale-105' 
-                    : 'bg-white border-2 border-amber-300 text-amber-700 hover:bg-amber-50 hover:border-amber-400 shadow-sm hover:shadow-md'
-                }`}
-              >
-                <Clock className="w-4 h-4" />
-                <span className="font-semibold">Recent Dots</span>
-                {dots.length > 0 && (
-                  <Badge className={`border-0 ml-1 ${
+                  onClick={() => setShowRecentFilter(!showRecentFilter)}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
                     showRecentFilter 
-                      ? 'bg-white/20 text-white' 
-                      : 'bg-amber-100 text-amber-700'
-                  }`}>
-                    {Math.min(dots.length, recentDotsCount)}
-                  </Badge>
+                      ? 'bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-lg hover:shadow-xl transform hover:scale-105' 
+                      : 'bg-white border-2 border-amber-300 text-amber-700 hover:bg-amber-50 hover:border-amber-400 shadow-sm hover:shadow-md'
+                  }`}
+                >
+                  <Clock className="w-4 h-4" />
+                  <span className="font-semibold">Recent Dots</span>
+                  {dots.length > 0 && (
+                    <Badge className={`border-0 ml-1 ${
+                      showRecentFilter 
+                        ? 'bg-white/20 text-white' 
+                        : 'bg-amber-100 text-amber-700'
+                    }`}>
+                      {Math.min(dots.length, recentDotsCount)}
+                    </Badge>
+                  )}
+                </Button>
+                
+                {showRecentFilter && (
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-gray-600">Show:</span>
+                    <input
+                      type="number"
+                      min="1"
+                      max="20"
+                      value={recentDotsCount}
+                      onChange={(e) => setRecentDotsCount(Math.max(1, parseInt(e.target.value) || 4))}
+                      className="w-16 px-2 py-1 text-sm border border-amber-300 rounded focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                    />
+                    <span className="text-sm text-gray-600">dots</span>
+                  </div>
                 )}
-              </Button>
-              
-              {showRecentFilter && (
-                <div className="flex items-center gap-2">
-                  <span className="text-sm text-gray-600">Show:</span>
-                  <input
-                    type="number"
-                    min="1"
-                    max="20"
-                    value={recentDotsCount}
-                    onChange={(e) => setRecentDotsCount(Math.max(1, parseInt(e.target.value) || 4))}
-                    className="w-16 px-2 py-1 text-sm border border-amber-300 rounded focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
-                  />
-                  <span className="text-sm text-gray-600">dots</span>
-                </div>
-              )}
               </div>
             </div>
             
@@ -1133,7 +1134,7 @@ const Dashboard: React.FC = () => {
                 <div className="bg-white border border-amber-200 rounded-lg px-3 py-1">
                   <span className="text-xs text-gray-600 mr-2">Dots:</span>
                   <span className="text-xs font-semibold text-amber-700">
-                    {actualDotsToShow.length}
+                    {dots.length}
                   </span>
                 </div>
                 
@@ -1152,6 +1153,7 @@ const Dashboard: React.FC = () => {
             actualDots={showRecentFilter ? dots.slice(0, recentDotsCount) : dots} 
             showingRecentFilter={showRecentFilter}
             recentCount={recentDotsCount}
+            showPreview={showPreview}
           />
         </div>
       </div>
