@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Mic, Type, Eye, Brain, Network, Zap, Search, Clock, Info, Database, Cpu, Sparkles, Users } from "lucide-react";
+import { Mic, Type, Eye, Brain, Network, Zap, Search, Clock, Info, Database, Cpu, Sparkles, Users, Maximize, Minimize } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import DotFullView from "@/components/DotFullView";
 import DotFlashCard from "@/components/DotFlashCard";
@@ -269,6 +269,7 @@ const Dashboard: React.FC = () => {
     const [dragStart, setDragStart] = useState<{ x: number; y: number } | null>(null);
     const [offset, setOffset] = useState({ x: 0, y: 0 });
     const [isPWA, setIsPWA] = useState(false);
+    const [isFullscreen, setIsFullscreen] = useState(false);
 
     // Detect PWA mode
     useEffect(() => {
@@ -507,6 +508,20 @@ const Dashboard: React.FC = () => {
       setDragStart(null);
     };
 
+    // Fullscreen handler
+    const toggleFullscreen = () => {
+      setIsFullscreen(!isFullscreen);
+      if (!isFullscreen) {
+        // Reset zoom and position when entering fullscreen
+        setZoom(1);
+        if (isPWA && gridContainerRef.current) {
+          gridContainerRef.current.scrollTo({ top: 0, left: 0 });
+        } else {
+          setOffset({ x: 0, y: 0 });
+        }
+      }
+    };
+
     // Mouse wheel zoom for browser
     const handleWheel = (e: React.WheelEvent) => {
       e.preventDefault();
@@ -683,6 +698,18 @@ const Dashboard: React.FC = () => {
           </button>
           <button className="bg-white/90 backdrop-blur rounded-lg px-2 py-1 border-2 border-amber-200 text-xs font-semibold text-amber-800 hover:bg-amber-50 transition-colors whitespace-nowrap">
             Wheels: {totalWheels}
+          </button>
+          {/* Fullscreen Toggle */}
+          <button 
+            onClick={toggleFullscreen}
+            className="bg-amber-500 hover:bg-amber-600 text-white rounded-lg p-2 transition-colors shadow-lg"
+            title={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
+          >
+            {isFullscreen ? (
+              <Minimize className="w-3 h-3" />
+            ) : (
+              <Maximize className="w-3 h-3" />
+            )}
           </button>
         </div>
 
