@@ -351,7 +351,7 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
     }
   };
 
-  const handleVoiceStep = (step: 1 | 2 | 3) => {
+  const handleVoiceStep = (step: 1 | 2 | 3 | 4) => {
     setCurrentStep(step);
     if (isRecording) {
       stopRecording();
@@ -1024,19 +1024,19 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                           strokeWidth="3"
                           fill="none"
                           strokeDasharray={`${2 * Math.PI * 16}`}
-                          strokeDashoffset={`${2 * Math.PI * 16 * (1 - (Object.values(voiceSteps).filter(Boolean).length / 3))}`}
+                          strokeDashoffset={`${2 * Math.PI * 16 * (1 - (Object.values(voiceSteps).filter(Boolean).length / 4))}`}
                           className="transition-all duration-700 ease-out"
                           strokeLinecap="round"
                           style={{
-                            filter: Object.values(voiceSteps).filter(Boolean).length === 3 ? 'drop-shadow(0 0 4px rgba(34, 197, 94, 0.6))' : 'none'
+                            filter: Object.values(voiceSteps).filter(Boolean).length === 4 ? 'drop-shadow(0 0 4px rgba(34, 197, 94, 0.6))' : 'none'
                           }}
                         />
                         
                         {/* Gradient definitions */}
                         <defs>
                           <linearGradient id="voiceProgressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stopColor={Object.values(voiceSteps).filter(Boolean).length === 3 ? "#10b981" : "#f59e0b"} />
-                            <stop offset="50%" stopColor={Object.values(voiceSteps).filter(Boolean).length === 3 ? "#22c55e" : "#f97316"} />
+                            <stop offset="0%" stopColor={Object.values(voiceSteps).filter(Boolean).length === 4 ? "#10b981" : "#f59e0b"} />
+                            <stop offset="50%" stopColor={Object.values(voiceSteps).filter(Boolean).length === 4 ? "#22c55e" : "#f97316"} />
                             <stop offset="100%" stopColor={Object.values(voiceSteps).filter(Boolean).length === 4 ? "#34d399" : "#ea580c"} />
                           </linearGradient>
                         </defs>
@@ -1044,7 +1044,7 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                       
                       {/* Center content */}
                       <div className="absolute inset-0 flex items-center justify-center">
-                        {Object.values(voiceSteps).filter(Boolean).length === 3 ? (
+                        {Object.values(voiceSteps).filter(Boolean).length === 4 ? (
                           <div className="flex items-center justify-center">
                             <div className="w-4 h-4 rounded-full bg-gradient-to-r from-green-400 to-emerald-500 animate-bounce shadow-lg"></div>
                           </div>
@@ -1055,14 +1055,14 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                               Object.values(voiceSteps).filter(Boolean).length === 1 ? 'text-amber-600' :
                               'text-orange-600'
                             }`}>
-                              {Object.values(voiceSteps).filter(Boolean).length}/3
+                              {Object.values(voiceSteps).filter(Boolean).length}/4
                             </div>
                           </div>
                         )}
                       </div>
                       
                       {/* Achievement celebration when complete */}
-                      {Object.values(voiceSteps).filter(Boolean).length === 3 && (
+                      {Object.values(voiceSteps).filter(Boolean).length === 4 && (
                         <>
                           {/* Victory sparkles */}
                           <div className="absolute -top-2 -right-2 w-3 h-3 bg-yellow-400 rounded-full animate-ping shadow-lg"></div>
