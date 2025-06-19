@@ -813,7 +813,6 @@ const Dashboard: React.FC = () => {
                   >
                     {wheel.name}
                   </div>
-                  <div className="text-xs text-gray-600 mt-1">9 dots</div>
                 </div>
               </div>
             ))}
@@ -1022,7 +1021,7 @@ const Dashboard: React.FC = () => {
                   <p>You can see the dots you saved in this grid.</p>
                   <div>
                     <p className="font-semibold text-amber-700 mb-1">What are Wheels?</p>
-                    <p>9 dots of same category form a Dot Wheel which is nothing but a bigger dot. Keep adding your dots and let DotSpark fix it into relevant Wheels.</p>
+                    <p>Dots of the same category form a Dot Wheel which is nothing but a bigger dot. Keep adding your dots and let DotSpark fix it into relevant Wheels.</p>
                   </div>
                 </div>
               </DialogContent>

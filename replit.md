@@ -875,6 +875,7 @@ Changelog:
   * Added authentic dot headings for Innovation wheel: AI Ethics, Blockchain, Quantum, Sustainability, Automation, Biotech, AR/VR, IoT, Robotics
   * Added practical dot headings for Learning wheel: TypeScript, Leadership, Psychology, Design, Finance, Negotiation, Systems, Mindfulness, Strategy
   * Replaced generic numbered headings with meaningful topic-based content for better demonstration
+  * Removed "9 dots" requirement tags from wheel labels and info dialog for cleaner interface
 - June 15, 2025. Enhanced PWA installation detection in neuraStorage utility:
   * Added comprehensive PWA installation checking across platforms
   * Implemented cross-platform installation status synchronization
