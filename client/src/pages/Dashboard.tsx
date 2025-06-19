@@ -759,14 +759,14 @@ const Dashboard: React.FC = () => {
 
 
         
-        {/* Interactive grid - PWA uses scrolling, Browser uses dragging */}
+        {/* Interactive grid - Simple fullscreen extension */}
         <div 
           ref={gridContainerRef}
           className={`relative ${
             isFullscreen 
-              ? 'fixed inset-0 h-screen w-screen z-50 bg-white' 
+              ? 'fixed inset-0 h-screen w-screen z-50 bg-gradient-to-br from-amber-50/50 to-orange-50/50 p-8' 
               : 'h-[450px] w-full'
-          } ${isPWA && isFullscreen ? 'overflow-hidden' : isPWA ? 'overflow-auto cursor-default' : 'overflow-hidden cursor-grab active:cursor-grabbing'}`}
+          } ${isPWA ? 'overflow-auto cursor-default' : 'overflow-hidden cursor-grab active:cursor-grabbing'}`}
           onWheel={handleWheel}
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
@@ -778,126 +778,19 @@ const Dashboard: React.FC = () => {
           style={{ 
             WebkitOverflowScrolling: isPWA ? 'touch' : 'auto',
             scrollBehavior: isPWA ? 'smooth' : 'auto',
-            touchAction: isPWA && isFullscreen ? 'none' : isPWA ? 'auto' : 'none',
+            touchAction: isPWA ? 'auto' : 'none',
             userSelect: 'none'
           }}
         >
-          {/* Fullscreen Header - Only visible in fullscreen mode */}
+          {/* Simple fullscreen exit button */}
           {isFullscreen && (
-            <>
-              {/* Fullscreen Title Button */}
-              <div className="absolute top-4 left-4 z-60" style={{ pointerEvents: 'auto' }}>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toggleFullscreen();
-                  }}
-                  className="text-xl font-bold text-amber-800 bg-white/90 backdrop-blur rounded-lg px-4 py-2 border-2 border-amber-200 hover:bg-amber-50 transition-colors shadow-lg cursor-pointer"
-                  title="Exit Fullscreen"
-                  style={{ pointerEvents: 'auto' }}
-                >
-                  Dot Wheels Map - Fullscreen
-                </button>
-              </div>
-              
-
-
-              {/* Fullscreen Preview Toggle - Positioned higher to avoid overlap */}
-              <div className="absolute top-16 left-4 z-60" style={{ pointerEvents: 'auto' }}>
-                <div className="bg-white/90 backdrop-blur rounded-lg p-1 border-2 border-amber-200 shadow-lg">
-                  <div className="flex items-center gap-2">
-                    <label className="text-xs font-medium text-amber-800 hidden sm:block">Preview</label>
-                    <label className="text-xs font-medium text-amber-800 sm:hidden">Prev</label>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setPreviewMode(!previewMode);
-                      }}
-                      className={`relative inline-flex h-4 w-7 items-center rounded-full transition-colors cursor-pointer ${
-                        previewMode ? 'bg-amber-500' : 'bg-gray-300'
-                      }`}
-                      style={{ pointerEvents: 'auto' }}
-                    >
-                      <span
-                        className={`inline-block h-2 w-2 transform rounded-full bg-white transition-transform ${
-                          previewMode ? 'translate-x-4' : 'translate-x-1'
-                        }`}
-                      />
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              {/* Fullscreen Stats - Right side, positioned higher to avoid overlap */}
-              <div className="absolute top-16 right-4 z-60 flex flex-col gap-1" style={{ pointerEvents: 'auto' }}>
-                <button 
-                  onClick={(e) => e.stopPropagation()}
-                  className="bg-white/90 backdrop-blur rounded-lg px-2 py-1 border-2 border-amber-200 text-xs font-semibold text-amber-800 hover:bg-amber-50 transition-colors whitespace-nowrap shadow-lg cursor-pointer"
-                  style={{ pointerEvents: 'auto' }}
-                >
-                  Dots: {totalDots}
-                </button>
-                <button 
-                  onClick={(e) => e.stopPropagation()}
-                  className="bg-white/90 backdrop-blur rounded-lg px-2 py-1 border-2 border-amber-200 text-xs font-semibold text-amber-800 hover:bg-amber-50 transition-colors whitespace-nowrap shadow-lg cursor-pointer"
-                  style={{ pointerEvents: 'auto' }}
-                >
-                  Wheels: {totalWheels}
-                </button>
-              </div>
-
-              {/* Fullscreen Navigation Controls - Same line as title */}
-              <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-60" style={{ pointerEvents: 'auto' }}>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    resetView();
-                  }}
-                  className="bg-amber-500 hover:bg-amber-600 text-white rounded-lg p-2 transition-colors cursor-pointer shadow-lg"
-                  title={isPWA ? "Reset Scroll Position" : "Reset Drag Position"}
-                  style={{ pointerEvents: 'auto' }}
-                >
-                  <RotateCcw className="w-5 h-5" />
-                </button>
-              </div>
-
-              {/* Fullscreen Zoom Controls - Smaller to avoid overlap */}
-              <div className="absolute bottom-4 left-4 z-60" style={{ pointerEvents: 'auto' }}>
-                <div className="flex items-center gap-1 bg-white/90 backdrop-blur rounded-lg p-1 border-2 border-amber-200 shadow-lg">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setZoom(Math.max(0.5, zoom - 0.1));
-                    }}
-                    className="bg-amber-500 hover:bg-amber-600 text-white rounded p-1 transition-colors cursor-pointer"
-                    title="Zoom Out"
-                    style={{ pointerEvents: 'auto' }}
-                  >
-                    <svg className="w-3 h-3 fill-none stroke-currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
-                    </svg>
-                  </button>
-                  
-                  <span className="font-semibold text-amber-800 text-xs min-w-[35px] text-center">
-                    {Math.round(zoom * 100)}%
-                  </span>
-                  
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setZoom(Math.min(2, zoom + 0.1));
-                    }}
-                    className="bg-amber-500 hover:bg-amber-600 text-white rounded p-1 transition-colors cursor-pointer"
-                    title="Zoom In"
-                    style={{ pointerEvents: 'auto' }}
-                  >
-                    <svg className="w-3 h-3 fill-none stroke-currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-            </>
+            <button
+              onClick={toggleFullscreen}
+              className="absolute top-4 right-4 z-60 bg-red-500 hover:bg-red-600 text-white rounded-lg p-3 transition-colors shadow-lg"
+              title="Exit Fullscreen (ESC)"
+            >
+              <Minimize className="w-6 h-6" />
+            </button>
           )}
           <div 
             className="relative transition-transform duration-100 ease-out"
