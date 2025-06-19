@@ -65,6 +65,7 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
   const [isDragging, setIsDragging] = useState(false);
   const [isFirstActivation, setIsFirstActivation] = useState(false);
   const [showExitWarning, setShowExitWarning] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
   const dotRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
@@ -229,6 +230,9 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
 
   // Check if there are unsaved changes
   const hasUnsavedChanges = () => {
+    // If already saved, no unsaved changes
+    if (isSaved) return false;
+    
     if (captureMode === 'text') {
       return structuredInput.heading.trim() || structuredInput.summary.trim() || structuredInput.anchor.trim() || structuredInput.pulse.trim();
     } else if (captureMode === 'voice') {
@@ -253,6 +257,7 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
     setCurrentStep(1);
     setIsRecording(false);
     setShowExitWarning(false);
+    setIsSaved(false);
   };
 
   const startRecording = async () => {
@@ -361,15 +366,16 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
       
       if (captureMode === 'text') {
         // Validate text inputs
-        if (!structuredInput.summary || !structuredInput.anchor || !structuredInput.pulse) {
+        if (!structuredInput.heading || !structuredInput.summary || !structuredInput.anchor || !structuredInput.pulse) {
           toast({
-            title: "Please complete all three layers",
+            title: "Please complete all fields including heading",
             variant: "destructive"
           });
           return;
         }
         
         dotData = {
+          oneWordSummary: structuredInput.heading.substring(0, 30),
           summary: structuredInput.summary.substring(0, 220),
           anchor: structuredInput.anchor.substring(0, 300),
           pulse: structuredInput.pulse.split(' ')[0],
@@ -377,15 +383,16 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
         };
       } else {
         // Validate voice inputs
-        if (!voiceSteps.summary || !voiceSteps.anchor || !voiceSteps.pulse) {
+        if (!voiceSteps.heading || !voiceSteps.summary || !voiceSteps.anchor || !voiceSteps.pulse) {
           toast({
-            title: "Please complete all three voice recordings",
+            title: "Please complete all fields including heading",
             variant: "destructive"
           });
           return;
         }
         
         dotData = {
+          oneWordSummary: voiceSteps.heading.substring(0, 30),
           summary: voiceSteps.summary.substring(0, 220),
           anchor: voiceSteps.anchor.substring(0, 300),
           pulse: voiceSteps.pulse.split(' ')[0],
@@ -410,10 +417,10 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
       
       toast({
         title: "Dot Saved Successfully!",
-        description: "Your three-layer dot has been captured.",
+        description: "Your dot has been captured.",
       });
       
-      handleClose();
+      setIsSaved(true);
     } catch (error) {
       console.error('Failed to submit dot:', error);
       toast({
@@ -915,13 +922,31 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                       </div>
                     </div>
 
-                    <Button 
-                      onClick={handleSubmit}
-                      className="w-full h-12 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl text-lg font-semibold shadow-lg"
-                      disabled={!structuredInput.heading || !structuredInput.summary || !structuredInput.anchor || !structuredInput.pulse}
-                    >
-                      Save a Dot
-                    </Button>
+                    {!isSaved ? (
+                      <Button 
+                        onClick={handleSubmit}
+                        className="w-full h-12 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl text-lg font-semibold shadow-lg"
+                        disabled={!structuredInput.heading || !structuredInput.summary || !structuredInput.anchor || !structuredInput.pulse}
+                      >
+                        Save a Dot
+                      </Button>
+                    ) : (
+                      <div className="space-y-3">
+                        <Button 
+                          className="w-full h-12 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl text-lg font-semibold shadow-lg cursor-default"
+                          disabled
+                        >
+                          ✓ Saved
+                        </Button>
+                        <Button 
+                          onClick={confirmClose}
+                          variant="outline"
+                          className="w-full h-10 border-2 border-gray-300 hover:border-gray-400 text-gray-700 rounded-xl font-medium"
+                        >
+                          Close
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
@@ -954,9 +979,10 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                       {/* Motivational tooltip */}
                       <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none z-50">
                         {Object.values(voiceSteps).filter(Boolean).length === 0 && "Start recording! 🎤"}
-                        {Object.values(voiceSteps).filter(Boolean).length === 1 && "Keep going! 2 more steps 🔊"}
-                        {Object.values(voiceSteps).filter(Boolean).length === 2 && "Final step! Almost done 🎯"}
-                        {Object.values(voiceSteps).filter(Boolean).length === 3 && "Voice dot mastered! 🏆"}
+                        {Object.values(voiceSteps).filter(Boolean).length === 1 && "Keep going! 3 more steps 🔊"}
+                        {Object.values(voiceSteps).filter(Boolean).length === 2 && "Halfway there! 2 more steps 🎯"}
+                        {Object.values(voiceSteps).filter(Boolean).length === 3 && "Almost done! 1 more step 🏁"}
+                        {Object.values(voiceSteps).filter(Boolean).length === 4 && "Voice dot mastered! 🏆"}
                       </div>
                       
                       {/* Outer glow ring with intensity levels */}
