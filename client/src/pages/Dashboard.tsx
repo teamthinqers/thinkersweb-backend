@@ -725,11 +725,9 @@ const Dashboard: React.FC = () => {
             title={isPWA ? "Reset Scroll Position" : "Reset Drag Position"}
           >
             <svg className={`fill="none" stroke="white" viewBox="0 0 24 24" ${
-              isPWA ? 'w-6 h-6' : 'w-5 h-5'
+              isPWA ? 'w-6 h-6' : 'w-6 h-6'
             }`}>
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2 2z" />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 21l4-7 4 7" />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 2v5" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
             </svg>
           </button>
         </div>
@@ -832,33 +830,31 @@ const Dashboard: React.FC = () => {
               </div>
 
               {/* Fullscreen Stats - Right side */}
-              <div className="absolute top-20 right-4 z-60 flex flex-col sm:flex-row gap-1 sm:gap-2">
-                <div className="bg-white/90 backdrop-blur rounded-lg px-2 py-1 border-2 border-amber-200 text-xs font-semibold text-amber-800 hover:bg-amber-50 transition-colors whitespace-nowrap">
+              <div className="absolute top-20 right-4 z-60 flex flex-col gap-1">
+                <button className="bg-white/90 backdrop-blur rounded-lg px-3 py-2 border-2 border-amber-200 text-sm font-semibold text-amber-800 hover:bg-amber-50 transition-colors whitespace-nowrap shadow-lg">
                   Dots: {totalDots}
-                </div>
-                <div className="bg-white/90 backdrop-blur rounded-lg px-2 py-1 border-2 border-amber-200 text-xs font-semibold text-amber-800 hover:bg-amber-50 transition-colors whitespace-nowrap">
+                </button>
+                <button className="bg-white/90 backdrop-blur rounded-lg px-3 py-2 border-2 border-amber-200 text-sm font-semibold text-amber-800 hover:bg-amber-50 transition-colors whitespace-nowrap shadow-lg">
                   Wheels: {totalWheels}
-                </div>
+                </button>
               </div>
 
-              {/* Fullscreen Navigation Controls - Center */}
-              <div className="absolute top-32 left-1/2 transform -translate-x-1/2 z-60">
+              {/* Fullscreen Navigation Controls - Top Center */}
+              <div className="absolute top-20 left-1/2 transform -translate-x-1/2 z-60">
                 <div className={`bg-white/90 backdrop-blur rounded-lg border-2 border-amber-200 shadow-lg ${
-                  isPWA ? 'p-2' : 'p-1 sm:p-2'
+                  isPWA ? 'p-2' : 'p-2'
                 }`}>
                   <button
                     onClick={resetView}
                     className={`bg-amber-500 hover:bg-amber-600 text-white transition-colors ${
-                      isPWA ? 'rounded-lg p-2 w-10 h-10' : 'rounded p-1'
+                      isPWA ? 'rounded-lg p-2 w-10 h-10' : 'rounded-lg p-2 w-10 h-10'
                     }`}
                     title={isPWA ? "Reset Scroll Position" : "Reset Drag Position"}
                   >
                     <svg className={`fill="none" stroke="white" viewBox="0 0 24 24" ${
-                      isPWA ? 'w-6 h-6' : 'w-5 h-5'
+                      isPWA ? 'w-6 h-6' : 'w-6 h-6'
                     }`}>
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2 2z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 21l4-7 4 7" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 2v5" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
                     </svg>
                   </button>
                 </div>
