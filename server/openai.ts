@@ -44,26 +44,45 @@ export async function generateOneWordSummary(summary: string, anchor: string): P
       messages: [
         {
           role: "system",
-          content: "You are an expert at creating concise one-word summaries. Analyze the given content and return exactly ONE word that best captures the core essence or topic. The word should be a noun, concept, or key theme that represents the main idea."
+          content: "Extract exactly ONE meaningful keyword from the given content. Priority order: 1) Extract a specific noun, topic, or concept mentioned in the text 2) Use a domain-specific term if present 3) Identify the main subject. Avoid generic words like 'insight', 'thought', 'idea', 'learning'. Return only the most specific, meaningful word that appears in or relates directly to the content."
         },
         {
           role: "user",
-          content: `Create a one-word summary for this content:
+          content: `Extract one specific keyword from this content:
 Summary: ${summary}
 Context: ${anchor}
 
-Respond with only ONE word that captures the essence.`
+Return only ONE specific word from the content itself or directly related to the topic discussed.`
         }
       ],
       max_tokens: 5,
-      temperature: 0.3
+      temperature: 0.1
     });
 
-    const oneWord = response.choices[0]?.message?.content?.trim() || "Insight";
-    return oneWord.split(/\s+/)[0]; // Ensure only one word
+    let oneWord = response.choices[0]?.message?.content?.trim() || "";
+    
+    // Clean the response and ensure it's a single word
+    oneWord = oneWord.replace(/[^\w]/g, '').split(/\s+/)[0];
+    
+    // If it's still generic or empty, extract from the actual content
+    if (!oneWord || ['insight', 'thought', 'idea', 'learning', 'knowledge'].includes(oneWord.toLowerCase())) {
+      // Extract nouns from the content directly
+      const combinedText = `${summary} ${anchor}`.toLowerCase();
+      const words = combinedText.match(/\b[a-z]{3,}\b/g) || [];
+      
+      // Filter out common words and find the most meaningful one
+      const meaningfulWords = words.filter(word => 
+        !['the', 'and', 'for', 'are', 'but', 'not', 'you', 'all', 'can', 'had', 'her', 'was', 'one', 'our', 'out', 'day', 'get', 'has', 'him', 'his', 'how', 'its', 'may', 'new', 'now', 'old', 'see', 'two', 'who', 'boy', 'did', 'she', 'use', 'way', 'what', 'when', 'where', 'will', 'with', 'have', 'this', 'that', 'they', 'from', 'been', 'said', 'each', 'which', 'their', 'time', 'into', 'very', 'what', 'know', 'just', 'first', 'could', 'any', 'my', 'now', 'people', 'over', 'think', 'also', 'back', 'after', 'use', 'her', 'work', 'life', 'only', 'way', 'years', 'would', 'good', 'well', 'man', 'year', 'come', 'make', 'most', 'world', 'through', 'need', 'much', 'before', 'right', 'try', 'again', 'turn', 'here', 'why', 'should', 'each', 'those', 'both', 'go', 'about', 'thought', 'insight', 'idea', 'learning', 'knowledge'].includes(word)
+      );
+      
+      oneWord = meaningfulWords[0] || "Topic";
+    }
+    
+    // Capitalize first letter
+    return oneWord.charAt(0).toUpperCase() + oneWord.slice(1).toLowerCase();
   } catch (error) {
     console.error("Error generating one-word summary:", error);
-    return "Insight"; // Fallback
+    return "Topic"; // Better fallback than "Insight"
   }
 }
 

@@ -856,13 +856,15 @@ Changelog:
   * Added animate-pulse effect to brain icon for visual consistency with neural branding
 - June 19, 2025. Implemented one-word summary and flash card format system:
   * Added oneWordSummary field to dots database schema for auto-generated flash card headings
-  * Created OpenAI-powered generateOneWordSummary function to extract essence from dot content
+  * Created intelligent OpenAI-powered generateOneWordSummary function that extracts actual keywords from dot content
+  * Enhanced keyword extraction logic to prioritize specific nouns, topics, and domain terms from the actual text
+  * Implemented fallback content analysis to avoid generic words like "insight" and extract meaningful terms
   * Updated dots API endpoints to generate and return one-word summaries for all new dots
   * Integrated flash card format directly into dots grid with one-word summaries as prominent headings
   * Dots grid cards ARE the flash card view - clicking opens full view directly
   * Updated all dot interactions to show "Click for full view" since cards already display flash card format
-  * Enhanced visual hierarchy with one-word summaries for quick scanning across dashboard and preview modes
-  * System provides immediate flash card visualization in grid format with single-click access to full details
+  * Enhanced visual hierarchy with meaningful keywords for quick scanning and topic identification
+  * System provides immediate flash card visualization with real content-based keywords for better dot recognition
 - June 15, 2025. Enhanced PWA installation detection in neuraStorage utility:
   * Added comprehensive PWA installation checking across platforms
   * Implemented cross-platform installation status synchronization
