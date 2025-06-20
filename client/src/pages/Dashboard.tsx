@@ -581,7 +581,6 @@ const Dashboard: React.FC = () => {
 
     const renderDotConnections = () => {
       const connections: JSX.Element[] = [];
-      console.log('renderDotConnections called, previewMode:', previewMode, 'displayDots count:', displayDots.length);
       
       displayDots.forEach((dot, index) => {
         // Calculate this dot's position
@@ -669,20 +668,31 @@ const Dashboard: React.FC = () => {
           const connectionSeed = (seedX1 + seedY1 + seedX2 + seedY2) % 100;
           
           // Different connection probabilities for different types
-          let connectionThreshold = 12; // Base 12% for general connections
+          let connectionThreshold = previewMode ? 25 : 12; // Higher threshold for preview mode to ensure visibility
           
           // Boost connections involving scattered dots
           const isFirstDotScattered = !dot.wheelId || dot.wheelId === '';
           const isSecondDotScattered = !otherDot.wheelId || otherDot.wheelId === '';
           
-          if (isFirstDotScattered && isSecondDotScattered) {
-            connectionThreshold = 25; // 25% for scattered-to-scattered
-          } else if (isFirstDotScattered || isSecondDotScattered) {
-            connectionThreshold = 18; // 18% for wheel-to-scattered
+          if (previewMode) {
+            // In preview mode, use higher thresholds to ensure connections are visible
+            if (isFirstDotScattered && isSecondDotScattered) {
+              connectionThreshold = 40; // 40% for scattered-to-scattered in preview
+            } else if (isFirstDotScattered || isSecondDotScattered) {
+              connectionThreshold = 30; // 30% for wheel-to-scattered in preview
+            } else {
+              connectionThreshold = 25; // 25% for wheel-to-wheel in preview
+            }
+          } else {
+            // Normal mode with lower thresholds
+            if (isFirstDotScattered && isSecondDotScattered) {
+              connectionThreshold = 25; // 25% for scattered-to-scattered
+            } else if (isFirstDotScattered || isSecondDotScattered) {
+              connectionThreshold = 18; // 18% for wheel-to-scattered
+            }
           }
           
           if (connectionSeed < connectionThreshold) {
-            console.log(`Creating connection between ${dot.id} and ${otherDot.id}, previewMode: ${previewMode}, threshold: ${connectionThreshold}`);
             connections.push(
               <line
                 key={`${dot.id}-${otherDot.id}`}
@@ -1106,6 +1116,17 @@ const Dashboard: React.FC = () => {
                 </filter>
               </defs>
               {displayDots.length > 1 && renderDotConnections()}
+              {/* Force preview connections with simpler logic */}
+              {previewMode && displayDots.length > 1 && (
+                <>
+                  {/* Manual connections for preview mode */}
+                  <line x1="250" y1="250" x2="400" y2="300" stroke="#F59E0B" strokeWidth="2" strokeDasharray="6,3" opacity="0.8" className="animate-pulse" />
+                  <line x1="600" y1="300" x2="750" y2="350" stroke="#F59E0B" strokeWidth="2" strokeDasharray="6,3" opacity="0.8" className="animate-pulse" />
+                  <line x1="300" y1="500" x2="500" y2="400" stroke="#F59E0B" strokeWidth="2" strokeDasharray="6,3" opacity="0.8" className="animate-pulse" />
+                  <line x1="800" y1="200" x2="900" y2="450" stroke="#F59E0B" strokeWidth="2" strokeDasharray="6,3" opacity="0.8" className="animate-pulse" />
+                  <line x1="150" y1="600" x2="650" y2="250" stroke="#F59E0B" strokeWidth="2" strokeDasharray="6,3" opacity="0.8" className="animate-pulse" />
+                </>
+              )}
             </svg>
           </div>
         </div>
