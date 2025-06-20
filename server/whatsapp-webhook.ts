@@ -153,38 +153,19 @@ whatsappWebhookRouter.post('/', async (req: Request, res: Response) => {
 
       let userId;
       
-      // If no linked account found, use the demo account to allow immediate usage
+      // Only proceed if user has a linked account - no demo user fallback
       if (whatsappUser && whatsappUser.userId) {
         userId = whatsappUser.userId;
         console.log(`⭐️ Found linked user ID: ${userId} for phone ${normalizedPhone}`);
       } else {
-        // Use the demo user ID as a fallback for all unlinked WhatsApp users
-        userId = 1; // Demo user ID
-        console.log(`⚠️ No linked user found. Using demo user ID: ${userId} for phone ${normalizedPhone}`);
-        
-        // Standardize phone format for consistent storage
-        const standardizedPhone = normalizedPhone.startsWith('+') 
-          ? normalizedPhone 
-          : `+${normalizedPhone}`;
-        
-        // Auto-register this phone number with the demo account if not already registered
-        try {
-          const [newUser] = await db.insert(whatsappUsers).values({
-            userId: userId,
-            phoneNumber: standardizedPhone, // Use standardized format
-            active: true,
-            lastMessageSentAt: new Date(),
-          }).onConflictDoNothing().returning();
-          
-          if (newUser) {
-            console.log(`⭐️ Auto-registered phone ${standardizedPhone} with demo user ID ${userId}`);
-          } else {
-            console.log(`⚠️ WhatsApp user registration skipped (already exists)`);
-          }
-        } catch (regError) {
-          console.error("⛔️ Error registering phone with demo user:", regError);
-          // Continue anyway
-        }
+        console.log(`⚠️ No linked user found for phone ${normalizedPhone}. User must register first.`);
+        // Send message prompting user to register and exit
+        await sendWhatsAppMessage(
+          normalizedPhone,
+          "Hi! To use DotSpark via WhatsApp, please first create an account at https://www.dotspark.in and link your phone number. Thank you!"
+        );
+        res.status(200).send('User must register first');
+        return;
       }
       
       // Always create an entry for the received message, regardless of user status

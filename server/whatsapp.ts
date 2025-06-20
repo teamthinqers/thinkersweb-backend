@@ -183,33 +183,14 @@ export async function processWhatsAppMessage(from: string, messageText: string):
     // Also track if this is linked to an account
     const isLinkedToAccount = !!userId;
     
-    // If no linked account found, use the demo account to allow immediate usage
+    // If no linked account found, require user registration
     if (!userId) {
-      // Use the demo user ID as a fallback for all unlinked WhatsApp users
-      const DEMO_USER_ID = 1;
-      userId = DEMO_USER_ID;
+      console.log(`⚠️ No linked user found for phone ${standardizedPhone}. User must register first.`);
       
-      // Auto-register this phone number with the demo account
-      console.log(`⭐️ Auto-registering new WhatsApp user with demo account: ${standardizedPhone}`);
-      try {
-        // Use standardized phone format for storage
-        const [newWhatsappUser] = await db.insert(whatsappUsers).values({
-          userId: DEMO_USER_ID,
-          phoneNumber: standardizedPhone,
-          active: true,
-          lastMessageSentAt: new Date(),
-        }).onConflictDoNothing().returning();
-        
-        if (newWhatsappUser) {
-          console.log(`⭐️ Successfully registered WhatsApp user: ${JSON.stringify(newWhatsappUser)}`);
-        } else {
-          console.log(`⚠️ WhatsApp user already exists (onConflictDoNothing took effect)`);
-        }
-      } catch (error) {
-        // If there's an error (like duplicate entry), just log it but continue
-        console.error("Error registering WhatsApp user:", error);
-        console.log("⚠️ Continuing with demo user ID despite registration error");
-      }
+      return {
+        success: true,
+        message: "Hi! To use DotSpark via WhatsApp, please first create an account at https://www.dotspark.in and link your phone number. Thank you!"
+      };
     }
     
     // Check for our default prompt message with broader matching
@@ -286,7 +267,7 @@ export async function processWhatsAppMessage(from: string, messageText: string):
     else if (isDefaultPrompt && !isFirstTimeUser && !isActivationAttempt) {
       console.log(`Default prompt detected from returning user ${from} (not an activation attempt)`);
       const returningUserGreeting = 
-        "Hi ThinQer, please share what's on your mind and I'll organize it into a three-layer dot (Summary, Anchor, Pulse) for you";
+        "Hi ThinQer, please share what's on your mind and I'll organize it into a three-layer dot (Summary, Anchor, Pulse) for you.";
       
       await sendWhatsAppReply(from, returningUserGreeting);
       
