@@ -8,6 +8,7 @@ import { Mic, Type, Eye, Brain, Network, Zap, Search, Clock, Info, Database, Cpu
 import { useQuery } from "@tanstack/react-query";
 import DotFullView from "@/components/DotFullView";
 import DotFlashCard from "@/components/DotFlashCard";
+import { isRunningAsStandalone } from "@/lib/pwaUtils";
 
 // Data structure for dots
 interface Dot {
@@ -48,6 +49,9 @@ const Dashboard: React.FC = () => {
   const [showPreview, setShowPreview] = useState(false);
   const [isMapFullscreen, setIsMapFullscreen] = useState(false);
   const [onlySparks, setOnlySparks] = useState(false);
+  
+  // PWA detection for smaller button sizing
+  const isPWA = isRunningAsStandalone();
 
   // Fetch real dots from API
   const { data: dots = [], isLoading, refetch } = useQuery({
@@ -760,19 +764,25 @@ const Dashboard: React.FC = () => {
         {/* Preview toggle and Only Sparks toggle */}
         <div className="absolute top-4 left-4 z-10 flex flex-col gap-2">
           {(previewMode || displayDots.length > 0) && (
-            <div className="flex items-center gap-2 bg-white/90 backdrop-blur rounded-lg px-2 py-1 border-2 border-amber-200">
-              <label className="text-xs font-medium text-amber-800 hidden sm:block">Preview Mode</label>
-              <label className="text-xs font-medium text-amber-800 sm:hidden">Preview</label>
+            <div className={`flex items-center gap-2 bg-white/90 backdrop-blur rounded-lg border-2 border-amber-200 ${
+              isPWA ? 'px-1.5 py-0.5' : 'px-2 py-1'
+            }`}>
+              <label className={`font-medium text-amber-800 hidden sm:block ${
+                isPWA ? 'text-[10px]' : 'text-xs'
+              }`}>Preview Mode</label>
+              <label className={`font-medium text-amber-800 sm:hidden ${
+                isPWA ? 'text-[10px]' : 'text-xs'
+              }`}>Preview</label>
               <button
                 onClick={() => setPreviewMode(!previewMode)}
-                className={`relative inline-flex h-4 w-7 items-center rounded-full transition-colors ${
-                  previewMode ? 'bg-amber-500' : 'bg-gray-300'
-                }`}
+                className={`relative inline-flex items-center rounded-full transition-colors ${
+                  isPWA ? 'h-3 w-5' : 'h-4 w-7'
+                } ${previewMode ? 'bg-amber-500' : 'bg-gray-300'}`}
               >
                 <span
-                  className={`inline-block h-2 w-2 transform rounded-full bg-white transition-transform ${
-                    previewMode ? 'translate-x-4' : 'translate-x-1'
-                  }`}
+                  className={`inline-block transform rounded-full bg-white transition-transform ${
+                    isPWA ? 'h-1.5 w-1.5' : 'h-2 w-2'
+                  } ${previewMode ? (isPWA ? 'translate-x-2.5' : 'translate-x-4') : 'translate-x-1'}`}
                 />
               </button>
             </div>
@@ -780,19 +790,25 @@ const Dashboard: React.FC = () => {
           
           {/* Only Sparks toggle */}
           {(previewMode || displayDots.length > 0) && (
-            <div className="flex items-center gap-2 bg-white/90 backdrop-blur rounded-lg px-2 py-1 border-2 border-amber-200">
-              <label className="text-xs font-medium text-amber-800 hidden sm:block">Only Sparks</label>
-              <label className="text-xs font-medium text-amber-800 sm:hidden">Sparks</label>
+            <div className={`flex items-center gap-2 bg-white/90 backdrop-blur rounded-lg border-2 border-amber-200 ${
+              isPWA ? 'px-1.5 py-0.5' : 'px-2 py-1'
+            }`}>
+              <label className={`font-medium text-amber-800 hidden sm:block ${
+                isPWA ? 'text-[10px]' : 'text-xs'
+              }`}>Only Sparks</label>
+              <label className={`font-medium text-amber-800 sm:hidden ${
+                isPWA ? 'text-[10px]' : 'text-xs'
+              }`}>Sparks</label>
               <button
                 onClick={() => setOnlySparks(!onlySparks)}
-                className={`relative inline-flex h-4 w-7 items-center rounded-full transition-colors ${
-                  onlySparks ? 'bg-amber-500' : 'bg-gray-300'
-                }`}
+                className={`relative inline-flex items-center rounded-full transition-colors ${
+                  isPWA ? 'h-3 w-5' : 'h-4 w-7'
+                } ${onlySparks ? 'bg-amber-500' : 'bg-gray-300'}`}
               >
                 <span
-                  className={`inline-block h-2 w-2 transform rounded-full bg-white transition-transform ${
-                    onlySparks ? 'translate-x-4' : 'translate-x-1'
-                  }`}
+                  className={`inline-block transform rounded-full bg-white transition-transform ${
+                    isPWA ? 'h-1.5 w-1.5' : 'h-2 w-2'
+                  } ${onlySparks ? (isPWA ? 'translate-x-2.5' : 'translate-x-4') : 'translate-x-1'}`}
                 />
               </button>
             </div>
@@ -810,19 +826,19 @@ const Dashboard: React.FC = () => {
         </div>
         
         {/* Zoom Controls */}
-        <div className={`absolute z-10 flex items-center gap-2 bg-white/90 backdrop-blur rounded-lg p-2 border-2 border-amber-200 shadow-lg ${
-          isPWA ? 'bottom-4 left-4' : 'bottom-4 left-4'
+        <div className={`absolute z-10 flex items-center bg-white/90 backdrop-blur rounded-lg border-2 border-amber-200 shadow-lg ${
+          isPWA ? 'bottom-4 left-4 gap-1 p-1.5' : 'bottom-4 left-4 gap-2 p-2'
         }`}>
           {/* Zoom Out */}
           <button
             onClick={() => setZoom(Math.max(0.5, zoom - 0.1))}
-            className={`bg-amber-500 hover:bg-amber-600 text-white rounded transition-colors ${
-              isPWA ? 'p-2 touch-manipulation' : 'p-2'
+            className={`bg-amber-500 hover:bg-amber-600 text-white rounded transition-colors touch-manipulation ${
+              isPWA ? 'p-1.5' : 'p-2'
             }`}
             title="Zoom Out"
           >
             <svg className={`fill="none" stroke="currentColor" viewBox="0 0 24 24" ${
-              isPWA ? 'w-4 h-4' : 'w-3 h-3'
+              isPWA ? 'w-3 h-3' : 'w-3 h-3'
             }`}>
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
             </svg>
@@ -830,7 +846,7 @@ const Dashboard: React.FC = () => {
           
           {/* Zoom Level Display */}
           <span className={`font-semibold text-amber-800 text-center ${
-            isPWA ? 'text-xs min-w-[45px]' : 'text-xs min-w-[45px]'
+            isPWA ? 'text-[10px] min-w-[35px]' : 'text-xs min-w-[45px]'
           }`}>
             {Math.round(zoom * 100)}%
           </span>
@@ -838,13 +854,13 @@ const Dashboard: React.FC = () => {
           {/* Zoom In */}
           <button
             onClick={() => setZoom(Math.min(2, zoom + 0.1))}
-            className={`bg-amber-500 hover:bg-amber-600 text-white rounded transition-colors ${
-              isPWA ? 'p-2 touch-manipulation' : 'p-2'
+            className={`bg-amber-500 hover:bg-amber-600 text-white rounded transition-colors touch-manipulation ${
+              isPWA ? 'p-1.5' : 'p-2'
             }`}
             title="Zoom In"
           >
             <svg className={`fill="none" stroke="currentColor" viewBox="0 0 24 24" ${
-              isPWA ? 'w-4 h-4' : 'w-3 h-3'
+              isPWA ? 'w-3 h-3' : 'w-3 h-3'
             }`}>
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
             </svg>
