@@ -175,7 +175,7 @@ function Router() {
       <Route path="/auth" component={AuthPage} />
       
       {/* Dashboard route - allow anonymous viewing */}
-      <Route path="/dashboard" component={AppWithLayout} />
+      <Route path="/dashboard" component={Dashboard} />
       
       {/* Other protected routes */}
       <Route path="/entries" component={() => <ProtectedRoute><AppWithLayout /></ProtectedRoute>} />

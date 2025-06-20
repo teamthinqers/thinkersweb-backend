@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
-import { useAuth } from '@/hooks/use-auth';
+
 import { useToast } from '@/hooks/use-toast';
 import { useDotSparkTuning } from '@/hooks/useDotSparkTuning';
 import { neuraStorage } from '@/lib/neuraStorage';
@@ -49,7 +49,7 @@ import { DotSparkSettings } from "@/components/dotspark/DotSparkSettings";
 
 export default function MyNeura() {
   const [, setLocation] = useLocation();
-  const { user } = useAuth();
+
   const { toast } = useToast();
   
   // DotSpark name using neuraStorage utility
