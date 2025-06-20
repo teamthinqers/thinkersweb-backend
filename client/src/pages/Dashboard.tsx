@@ -362,7 +362,7 @@ const Dashboard: React.FC = () => {
         id: 'preview-wheel-1',
         name: 'Flow State',
         category: 'Random',
-        color: '#F97316', // Orange theme
+        color: '#F59E0B', // Same amber theme as first spark
         dots: [],
         connections: ['preview-wheel-0'],
         position: { x: 550, y: 250 }
@@ -397,72 +397,10 @@ const Dashboard: React.FC = () => {
       previewWheels.push(secondSparkGroup);
 
       // Third spark group demonstrating duplicate dots - reuses dots from other groups
-      const ethicsSparkGroup: Wheel = {
-        id: 'preview-wheel-2',
-        name: 'Ethics Spark',
-        category: 'Professional',
-        color: '#10B981',
-        dots: [],
-        connections: [],
-        position: { x: 400, y: 400 }
-      };
 
-      // Create duplicate dots by reusing AI Ethics and Psychology from other groups
-      const duplicateAIEthics: Dot = {
-        id: `duplicate-ai-ethics`,
-        oneWordSummary: 'AI Ethics',
-        summary: 'Ethical frameworks for responsible AI development and deployment',
-        anchor: 'Research context and implementation strategy for AI ethics initiative',
-        pulse: emotions[Math.floor(Math.random() * emotions.length)],
-        wheelId: ethicsSparkGroup.id,
-        timestamp: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
-        sourceType: Math.random() > 0.5 ? 'voice' : 'text',
-        captureMode: Math.random() > 0.7 ? 'ai' : 'natural'
-      };
-
-      const duplicatePsychology: Dot = {
-        id: `duplicate-psychology`,
-        oneWordSummary: 'Psychology',
-        summary: 'Cognitive biases in decision-making and behavioral economics insights',
-        anchor: 'Learning context and practical application notes for psychology mastery',
-        pulse: emotions[Math.floor(Math.random() * emotions.length)],
-        wheelId: ethicsSparkGroup.id,
-        timestamp: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
-        sourceType: Math.random() > 0.5 ? 'voice' : 'text',
-        captureMode: Math.random() > 0.7 ? 'ai' : 'natural'
-      };
-
-      // Add new unique dots to complete the ethics spark
-      const ethicsHeadings = ['Privacy', 'Transparency'];
-      const ethicsSummaries = [
-        'Data privacy frameworks and user consent management in digital platforms',
-        'Algorithmic transparency and explainable AI in decision-making systems'
-      ];
-
-      [duplicateAIEthics, duplicatePsychology].forEach(dot => {
-        previewDots.push(dot);
-        ethicsSparkGroup.dots.push(dot);
-      });
-
-      for (let i = 0; i < 2; i++) {
-        const dot: Dot = {
-          id: `ethics-${i + 1}`,
-          oneWordSummary: ethicsHeadings[i],
-          summary: ethicsSummaries[i],
-          anchor: `Ethical considerations and implementation notes for ${ethicsHeadings[i].toLowerCase()} practices`,
-          pulse: emotions[Math.floor(Math.random() * emotions.length)],
-          wheelId: ethicsSparkGroup.id,
-          timestamp: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
-          sourceType: Math.random() > 0.5 ? 'voice' : 'text',
-          captureMode: Math.random() > 0.7 ? 'ai' : 'natural'
-        };
-        previewDots.push(dot);
-        ethicsSparkGroup.dots.push(dot);
-      }
-      previewWheels.push(ethicsSparkGroup);
 
       // Add more individual scattered dots showing not all dots need grouping
-      const individualHeadings = ['Sunset', 'Phone', 'Garden', 'Grocery', 'Parking', 'Weather', 'Sleep'];
+      const individualHeadings = ['Sunset', 'Phone', 'Garden', 'Grocery', 'Parking', 'Weather', 'Sleep', 'Traffic', 'Cooking'];
       const individualSummaries = [
         'Beautiful sunset moments creating unexpected moments of gratitude',
         'Phone notifications disrupting focus and productivity patterns',
@@ -470,10 +408,12 @@ const Dashboard: React.FC = () => {
         'Grocery shopping revealing decision fatigue and choice overwhelm',
         'Parking challenges in city leading to arrival stress management',
         'Weather changes affecting mood and energy levels throughout day',
-        'Sleep quality patterns correlating with next-day performance'
+        'Sleep quality patterns correlating with next-day performance',
+        'Traffic patterns teaching patience and alternative route planning',
+        'Cooking experiments sparking creativity and mindful preparation'
       ];
 
-      for (let i = 0; i < 7; i++) {
+      for (let i = 0; i < 9; i++) {
         const dot: Dot = {
           id: `individual-${i + 1}`,
           oneWordSummary: individualHeadings[i],
@@ -959,12 +899,7 @@ const Dashboard: React.FC = () => {
                       e.preventDefault();
                     }}
                     onMouseEnter={() => setHoveredDot(dot)}
-                    onMouseLeave={() => {
-                      // Only clear if not clicked
-                      if (hoveredDot?.id !== dot.id) {
-                        setHoveredDot(null);
-                      }
-                    }}
+                    onMouseLeave={() => setHoveredDot(null)}
                   >
                     {/* Pulse animation for voice dots */}
                     {dot.sourceType === 'voice' && (
