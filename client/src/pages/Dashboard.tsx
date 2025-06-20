@@ -54,21 +54,27 @@ const Dashboard: React.FC = () => {
   // PWA detection for smaller button sizing
   const isPWA = isRunningAsStandalone();
 
-  // Fetch real dots from API - handle authentication gracefully
+  // Fetch real dots from API with graceful error handling
   const { data: dots = [], isLoading, refetch, error } = useQuery({
     queryKey: ['/api/dots'],
     queryFn: async () => {
-      const response = await fetch('/api/dots');
-      if (!response.ok) {
-        // For 401 errors, return empty array instead of throwing
-        if (response.status === 401) {
+      try {
+        const response = await fetch('/api/dots');
+        if (!response.ok) {
           return [];
         }
-        throw new Error('Failed to fetch dots');
+        return response.json();
+      } catch (error) {
+        return [];
       }
-      return response.json();
     },
-    retry: false // Don't retry on authentication errors
+    retry: false,
+    staleTime: 60000, // Cache for 1 minute
+    refetchOnWindowFocus: false,
+    refetchOnMount: false, // Don't refetch on component mount if cached
+    enabled: true, // Always enabled but with aggressive caching
+    refetchInterval: false, // Disable automatic refetching
+    gcTime: 5 * 60 * 1000 // Keep data in cache for 5 minutes
   });
 
   // Example data for preview mode when no dots exist
