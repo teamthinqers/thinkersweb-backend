@@ -972,6 +972,11 @@ Changelog:
   * Added DotSpark Social to sidebar menu with Users icon and orange color theme
   * Fixed PWA back button functionality in DotSpark Social page using display-mode detection
   * Enhanced cross-platform navigation consistency for social features
+- June 20, 2025. Optimized PWA button layout and sizing:
+  * Positioned Social button below Recent Dots button in PWA mode for better space utilization
+  * Reduced button sizes in PWA: smaller padding (px-2 py-1.5) and text size (text-xs) for mobile optimization
+  * Desktop maintains larger button sizes (px-4 py-2, text-base) for better visibility
+  * Enhanced responsive design with vertical stacking on mobile, horizontal on desktop
 - June 19, 2025. Renamed Dot Wheels Map to DotSpark Map:
   * Updated main heading from "Dot Wheels Map" to "DotSpark Map" for brand consistency
   * Updated dialog title from "About Dot Wheels Map" to "About DotSpark Map"

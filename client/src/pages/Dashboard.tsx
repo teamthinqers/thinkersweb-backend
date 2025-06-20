@@ -1480,40 +1480,42 @@ const Dashboard: React.FC = () => {
               </h2>
               
               {/* Recent Dots Filter and Social Button */}
-              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-                <button
-                  onClick={() => setShowRecentFilter(!showRecentFilter)}
-                  className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg font-medium transition-all duration-200 text-sm sm:text-base ${
-                    showRecentFilter 
-                      ? 'bg-orange-600 hover:bg-orange-700 text-white shadow-lg hover:shadow-xl transform hover:scale-105' 
-                      : 'bg-orange-500 hover:bg-orange-600 text-white shadow-md hover:shadow-lg'
-                  }`}
-                >
-                  <Clock className="w-3 h-3 sm:w-4 sm:h-4" />
-                  <span className="font-semibold whitespace-nowrap">Recent Dots</span>
-                  {dots.length > 0 && (
-                    <Badge className={`border-0 ml-1 text-xs ${
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
+                <div className="flex flex-col gap-2 sm:flex-row sm:gap-4">
+                  <button
+                    onClick={() => setShowRecentFilter(!showRecentFilter)}
+                    className={`flex items-center gap-2 px-2 py-1.5 sm:px-4 sm:py-2 rounded-lg font-medium transition-all duration-200 text-xs sm:text-base ${
                       showRecentFilter 
-                        ? 'bg-white/30 text-white' 
-                        : 'bg-white/20 text-white'
-                    }`}>
-                      {Math.min(dots.length, recentDotsCount)}
+                        ? 'bg-orange-600 hover:bg-orange-700 text-white shadow-lg hover:shadow-xl transform hover:scale-105' 
+                        : 'bg-orange-500 hover:bg-orange-600 text-white shadow-md hover:shadow-lg'
+                    }`}
+                  >
+                    <Clock className="w-3 h-3 sm:w-4 sm:h-4" />
+                    <span className="font-semibold whitespace-nowrap">Recent Dots</span>
+                    {dots.length > 0 && (
+                      <Badge className={`border-0 ml-1 text-xs ${
+                        showRecentFilter 
+                          ? 'bg-white/30 text-white' 
+                          : 'bg-white/20 text-white'
+                      }`}>
+                        {Math.min(dots.length, recentDotsCount)}
+                      </Badge>
+                    )}
+                  </button>
+                  
+                  {/* Social Button - Placeholder for future social brain filtering */}
+                  <button
+                    className="flex items-center gap-2 px-2 py-1.5 sm:px-4 sm:py-2 rounded-lg font-medium transition-all duration-200 text-xs sm:text-base bg-purple-500 hover:bg-purple-600 text-white shadow-md hover:shadow-lg opacity-50 cursor-not-allowed"
+                    disabled
+                    title="Social Brain filtering coming soon"
+                  >
+                    <Brain className="w-3 h-3 sm:w-4 sm:h-4 animate-pulse" />
+                    <span className="font-semibold whitespace-nowrap">Social</span>
+                    <Badge className="border-0 ml-1 text-xs bg-white/20 text-white">
+                      Soon
                     </Badge>
-                  )}
-                </button>
-                
-                {/* Social Button - Placeholder for future social brain filtering */}
-                <button
-                  className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg font-medium transition-all duration-200 text-sm sm:text-base bg-purple-500 hover:bg-purple-600 text-white shadow-md hover:shadow-lg opacity-50 cursor-not-allowed"
-                  disabled
-                  title="Social Brain filtering coming soon"
-                >
-                  <Brain className="w-3 h-3 sm:w-4 sm:h-4 animate-pulse" />
-                  <span className="font-semibold whitespace-nowrap">Social</span>
-                  <Badge className="border-0 ml-1 text-xs bg-white/20 text-white">
-                    Soon
-                  </Badge>
-                </button>
+                  </button>
+                </div>
                 
                 {showRecentFilter && (
                   <div className="flex items-center gap-2 text-xs sm:text-sm">
