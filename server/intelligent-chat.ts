@@ -267,7 +267,7 @@ export async function processConfirmedDot(
 }> {
   try {
     // Generate one-word summary for the heading
-    const oneWordSummary = await generateOneWordSummary(dotProposal.summary + " " + dotProposal.anchor);
+    const oneWordSummary = await generateOneWordSummary(dotProposal.summary, dotProposal.anchor);
     
     return {
       success: true,

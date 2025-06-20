@@ -169,8 +169,13 @@ export default function ChatPage() {
       }, 200); // Fast typing simulation
 
       try {
-        const response = await axios.post('/api/chat', {
+        const response = await axios.post('/api/chat/intelligent', {
           message: userMessage.content,
+          messages: messages.map(msg => ({
+            role: msg.isUser ? 'user' : 'assistant',
+            content: msg.content
+          })),
+          action: 'chat'
         });
 
         // Clear typing simulation and show real response
@@ -179,7 +184,13 @@ export default function ChatPage() {
         setMessages((prev) => 
           prev.map(msg => 
             msg.id === responseId 
-              ? { ...msg, content: response.data.reply || "I'm here to help you." }
+              ? { 
+                  ...msg, 
+                  content: response.data.reply || "I'm here to help you.",
+                  dotProposal: response.data.dotProposal,
+                  needsConfirmation: response.data.needsConfirmation,
+                  action: response.data.action
+                }
               : msg
           )
         );
@@ -206,6 +217,40 @@ export default function ChatPage() {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       handleSendMessage();
+    }
+  };
+
+  const handleConfirmDot = async (dotProposal: DotProposal) => {
+    setIsLoading(true);
+    
+    try {
+      const response = await axios.post('/api/chat/intelligent', {
+        message: 'yes',
+        dotProposal,
+        action: 'confirm_dot'
+      });
+
+      const confirmationMessage: Message = {
+        id: Date.now().toString(),
+        content: response.data.reply,
+        isUser: false,
+        timestamp: new Date(),
+        action: 'dot_saved'
+      };
+
+      setMessages(prev => [...prev, confirmationMessage]);
+
+    } catch (error) {
+      console.error('Error confirming dot:', error);
+      const errorMessage: Message = {
+        id: Date.now().toString(),
+        content: "I had trouble saving your dot. Please try again.",
+        isUser: false,
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, errorMessage]);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -258,7 +303,78 @@ export default function ChatPage() {
                         : 'bg-muted'
                     }`}
                   >
-                    <p className="text-sm">{message.content}</p>
+                    <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                    
+                    {/* Show dot proposal if available */}
+                    {message.dotProposal && message.needsConfirmation && (
+                      <div className="mt-4 p-4 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-lg border border-amber-200 dark:border-amber-800">
+                        <div className="space-y-3">
+                          <div className="flex items-center gap-2 mb-3">
+                            <div className="w-2 h-2 bg-amber-500 rounded-full animate-pulse"></div>
+                            <h4 className="font-semibold text-amber-800 dark:text-amber-200">
+                              {message.dotProposal.heading}
+                            </h4>
+                          </div>
+                          
+                          <div className="space-y-2 text-sm">
+                            <div>
+                              <span className="font-medium text-gray-700 dark:text-gray-300">Summary:</span>
+                              <p className="text-gray-600 dark:text-gray-400 mt-1">{message.dotProposal.summary}</p>
+                            </div>
+                            
+                            <div>
+                              <span className="font-medium text-gray-700 dark:text-gray-300">Anchor:</span>
+                              <p className="text-gray-600 dark:text-gray-400 mt-1">{message.dotProposal.anchor}</p>
+                            </div>
+                            
+                            <div>
+                              <span className="font-medium text-gray-700 dark:text-gray-300">Pulse:</span>
+                              <span className="inline-block ml-2 px-2 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-full text-xs font-medium">
+                                {message.dotProposal.pulse}
+                              </span>
+                            </div>
+                          </div>
+                          
+                          <div className="flex gap-2 mt-4">
+                            <Button
+                              onClick={() => handleConfirmDot(message.dotProposal!)}
+                              disabled={isLoading}
+                              className="bg-green-600 hover:bg-green-700 text-white text-sm px-4 py-2"
+                            >
+                              {isLoading ? (
+                                <>
+                                  <Loader2 className="w-3 h-3 mr-1 animate-spin" />
+                                  Saving...
+                                </>
+                              ) : (
+                                'Save This Dot'
+                              )}
+                            </Button>
+                            <Button
+                              variant="outline"
+                              onClick={() => {
+                                setInputValue("I'd like to modify this dot");
+                              }}
+                              className="text-sm px-4 py-2"
+                            >
+                              Modify
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    
+                    {/* Show success message for saved dots */}
+                    {message.action === 'dot_saved' && (
+                      <div className="mt-3 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                          <span className="text-green-700 dark:text-green-300 text-sm font-medium">
+                            Dot saved successfully!
+                          </span>
+                        </div>
+                      </div>
+                    )}
                   </div>
                   {message.isUser && (
                     <Avatar className="h-8 w-8">
