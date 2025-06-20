@@ -407,6 +407,94 @@ const Dashboard: React.FC = () => {
       }
       previewWheels.push(learningWheel);
 
+      // Third spark group demonstrating duplicate dots - reuses dots from other groups
+      const ethicsSparkGroup: Wheel = {
+        id: 'preview-wheel-2',
+        name: 'Ethics Spark',
+        category: 'Professional',
+        color: '#10B981',
+        dots: [],
+        connections: [],
+        position: { x: 400, y: 400 }
+      };
+
+      // Create duplicate dots by reusing AI Ethics and Psychology from other groups
+      const duplicateAIEthics: Dot = {
+        id: `duplicate-ai-ethics`,
+        oneWordSummary: 'AI Ethics',
+        summary: 'Ethical frameworks for responsible AI development and deployment',
+        anchor: 'Research context and implementation strategy for AI ethics initiative',
+        pulse: emotions[Math.floor(Math.random() * emotions.length)],
+        wheelId: ethicsSparkGroup.id,
+        timestamp: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
+        sourceType: Math.random() > 0.5 ? 'voice' : 'text',
+        captureMode: Math.random() > 0.7 ? 'ai' : 'natural'
+      };
+
+      const duplicatePsychology: Dot = {
+        id: `duplicate-psychology`,
+        oneWordSummary: 'Psychology',
+        summary: 'Cognitive biases in decision-making and behavioral economics insights',
+        anchor: 'Learning context and practical application notes for psychology mastery',
+        pulse: emotions[Math.floor(Math.random() * emotions.length)],
+        wheelId: ethicsSparkGroup.id,
+        timestamp: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
+        sourceType: Math.random() > 0.5 ? 'voice' : 'text',
+        captureMode: Math.random() > 0.7 ? 'ai' : 'natural'
+      };
+
+      // Add new unique dots to complete the ethics spark
+      const ethicsHeadings = ['Privacy', 'Transparency'];
+      const ethicsSummaries = [
+        'Data privacy frameworks and user consent management in digital platforms',
+        'Algorithmic transparency and explainable AI in decision-making systems'
+      ];
+
+      [duplicateAIEthics, duplicatePsychology].forEach(dot => {
+        previewDots.push(dot);
+        ethicsSparkGroup.dots.push(dot);
+      });
+
+      for (let i = 0; i < 2; i++) {
+        const dot: Dot = {
+          id: `ethics-${i + 1}`,
+          oneWordSummary: ethicsHeadings[i],
+          summary: ethicsSummaries[i],
+          anchor: `Ethical considerations and implementation notes for ${ethicsHeadings[i].toLowerCase()} practices`,
+          pulse: emotions[Math.floor(Math.random() * emotions.length)],
+          wheelId: ethicsSparkGroup.id,
+          timestamp: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
+          sourceType: Math.random() > 0.5 ? 'voice' : 'text',
+          captureMode: Math.random() > 0.7 ? 'ai' : 'natural'
+        };
+        previewDots.push(dot);
+        ethicsSparkGroup.dots.push(dot);
+      }
+      previewWheels.push(ethicsSparkGroup);
+
+      // Add some individual scattered dots
+      const individualHeadings = ['Meditation', 'Travel', 'Music'];
+      const individualSummaries = [
+        'Daily mindfulness practices for mental clarity and emotional balance',
+        'Travel planning insights and cultural immersion experiences',
+        'Music theory fundamentals and creative composition techniques'
+      ];
+
+      for (let i = 0; i < 3; i++) {
+        const dot: Dot = {
+          id: `individual-${i + 1}`,
+          oneWordSummary: individualHeadings[i],
+          summary: individualSummaries[i],
+          anchor: `Personal insights and experiences related to ${individualHeadings[i].toLowerCase()} practices`,
+          pulse: emotions[Math.floor(Math.random() * emotions.length)],
+          wheelId: '', // No wheel - individual dot
+          timestamp: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
+          sourceType: Math.random() > 0.5 ? 'voice' : 'text',
+          captureMode: Math.random() > 0.7 ? 'ai' : 'natural'
+        };
+        previewDots.push(dot);
+      }
+
       return { previewDots, previewWheels };
     };
 

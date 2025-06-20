@@ -958,6 +958,14 @@ Changelog:
   * Maintained dotted circle wheel boundaries around grouped dots
   * Updated count logic to reflect spark-based grouping instead of category-based wheel formation
   * Wheels now represent user-grouped dots via future spark interface functionality
+- June 19, 2025. Implemented duplicate dots concept for multiple spark connections:
+  * Added third "Ethics Spark" group demonstrating duplicate dots functionality
+  * Same dot can now belong to multiple spark groups for different insights
+  * Created duplicate "AI Ethics" and "Psychology" dots appearing in multiple spark circles
+  * Preview mode now shows 3 spark groups (Innovation: 9 dots, Learning: 9 dots, Ethics: 4 dots with 2 duplicates)
+  * Added 3 individual scattered dots outside spark groups
+  * Total display: 25 dots across 3 spark groups plus individual dots, demonstrating many-to-many relationships
+  * System supports overlapping dot memberships for cross-spark insight generation
 - June 15, 2025. Enhanced PWA installation detection in neuraStorage utility:
   * Added comprehensive PWA installation checking across platforms
   * Implemented cross-platform installation status synchronization
