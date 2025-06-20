@@ -1277,10 +1277,6 @@ const Dashboard: React.FC = () => {
                     </DialogHeader>
                     <div className="space-y-3 text-sm text-gray-700">
                       <p>You can see the dots and sparks you saved in this grid.</p>
-                      <div>
-                        <p className="font-semibold text-amber-700 mb-1">What are Wheels?</p>
-                        <p>Dots of the same category form a Dot Wheel which is nothing but a bigger dot. Keep adding your dots and let DotSpark fix it into relevant Wheels.</p>
-                      </div>
                     </div>
                   </DialogContent>
                 </Dialog>
