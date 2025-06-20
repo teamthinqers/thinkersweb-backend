@@ -786,6 +786,24 @@ const Dashboard: React.FC = () => {
                   } ${previewMode ? (isPWA ? 'translate-x-2.5' : 'translate-x-4') : 'translate-x-1'}`}
                 />
               </button>
+              
+              {/* Info icon for preview mode */}
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button className={`rounded-full hover:bg-amber-100 transition-colors ${
+                    isPWA ? 'p-0.5' : 'p-1'
+                  }`}>
+                    <Info className={`text-amber-600 ${
+                      isPWA ? 'w-2.5 h-2.5' : 'w-3 h-3'
+                    }`} />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent className="w-64 p-3 text-xs" side="bottom" align="start">
+                  <p className="text-gray-700">
+                    This is a demo mode for you to visualize how Dots and Sparks work.
+                  </p>
+                </PopoverContent>
+              </Popover>
             </div>
           )}
           
