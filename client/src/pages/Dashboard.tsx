@@ -581,7 +581,6 @@ const Dashboard: React.FC = () => {
 
     const renderDotConnections = () => {
       const connections: JSX.Element[] = [];
-      console.log('Rendering connections for displayDots:', displayDots.length);
       
       displayDots.forEach((dot, index) => {
         // Calculate this dot's position
@@ -689,10 +688,10 @@ const Dashboard: React.FC = () => {
                 y1={y1}
                 x2={x2}
                 y2={y2}
-                stroke="url(#dotConnectionGradient)"
-                strokeWidth="1.5"
+                stroke={previewMode ? "#F59E0B" : "url(#dotConnectionGradient)"}
+                strokeWidth={previewMode ? "2" : "1.5"}
                 strokeDasharray="6,3"
-                opacity="0.5"
+                opacity={previewMode ? "0.8" : "0.5"}
                 filter="url(#glow)"
                 className="animate-pulse"
               />

@@ -986,6 +986,7 @@ Changelog:
   * Enhanced connection system with variable probabilities: 25% scattered-to-scattered, 18% wheel-to-scattered, 12% wheel-to-wheel
   * Fixed connection logic to properly include scattered dots throughout the grid instead of just consecutive array positions
   * Reduced overall visual clutter while ensuring scattered dots demonstrate higher interconnectivity potential
+  * Fixed connection line visibility in preview mode: increased opacity to 0.8, solid amber color, 2px stroke width for better visibility
 - June 15, 2025. Enhanced PWA installation detection in neuraStorage utility:
   * Added comprehensive PWA installation checking across platforms
   * Implemented cross-platform installation status synchronization
