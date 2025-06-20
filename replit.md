@@ -844,6 +844,14 @@ Changelog:
   * Implemented immediate touch response for PWA dot clicks with debugging to resolve summary card display issues
   * Fixed summary box positioning to appear next to clicked dots instead of viewport center for better PWA visibility
   * Centered recenter button between preview toggle and dot/wheel count buttons for optimal visual balance
+- June 20, 2025. Enhanced DotSpark Map with "Only Sparks" filtering functionality:
+  * Added "Only Sparks" toggle button below Preview Mode with matching amber color scheme
+  * Toggle filters display to show only spark wheels and their related dots, hiding scattered individual dots
+  * Works correctly in both normal and preview modes for user understanding of spark grouping feature
+  * In preview mode with toggle ON: shows only 8 dots from Morning Clarity and Flow State spark wheels
+  * In preview mode with toggle OFF: shows all 27 preview dots (8 spark + 19 scattered)
+  * Connection lines filtered to only display between spark wheel dots when toggle is active
+  * Enhanced user experience by demonstrating focused view of organized cognitive insights vs full network
 - June 15, 2025. Completed PWA Dot Wheels Map optimization with enhanced user interaction:
   * Finalized summary box positioning to appear next to clicked dots for intuitive PWA navigation
   * Achieved perfect control layout balance with centered recenter button between preview and statistics
