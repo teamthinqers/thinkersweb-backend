@@ -948,6 +948,16 @@ Changelog:
   * Updated dialog title from "About Dot Wheels Map" to "About DotSpark Map"
   * Updated section comment from "Dot Wheels Map Section" to "DotSpark Map Section"
   * Maintained all existing functionality while improving brand alignment
+- June 19, 2025. Implemented spark-based grouping system replacing 9-dot wheel concept:
+  * Changed count box from "Wheels" to "Sparks" for new terminology
+  * Updated dialog description to "You can see the dots and sparks you saved in this grid"
+  * Removed "What are Wheels?" explanation section from info dialog
+  * Redesigned preview mode with spark groups: 4-dot group and 9-dot group with blinking spark symbols
+  * Added 6 random individual dots scattered across grid with interconnected dotted lines
+  * Implemented blinking star spark symbols on top of grouped dot wheels with pulse and ping animations
+  * Maintained dotted circle wheel boundaries around grouped dots
+  * Updated count logic to reflect spark-based grouping instead of category-based wheel formation
+  * Wheels now represent user-grouped dots via future spark interface functionality
 - June 15, 2025. Enhanced PWA installation detection in neuraStorage utility:
   * Added comprehensive PWA installation checking across platforms
   * Implemented cross-platform installation status synchronization
