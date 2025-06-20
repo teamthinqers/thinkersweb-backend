@@ -1119,59 +1119,129 @@ const Dashboard: React.FC = () => {
               {/* Strategic preview connections - connecting actual dots */}
               {previewMode && displayDots.length > 1 && (
                 <>
-                  {/* Connect dots strategically - only valid indices */}
                   {(() => {
                     const maxDots = displayDots.length;
-                    const validPairs = [
-                      [0, 2], [1, 3], [2, 4], [0, 5], [1, 6], 
-                      [3, 7], [4, 8], [5, 9], [0, 10]
-                    ].filter(([i, j]) => i < maxDots && j < maxDots).slice(0, 9);
                     
-                    return validPairs.map(([i, j], idx) => {
-                      // Calculate positions for dots i and j
-                      const calculateDotPosition = (dot: any, index: number) => {
-                        const dotId = String(dot.id || index);
-                        const seedX = dotId.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
-                        const seedY = dotId.split('').reverse().reduce((a, b) => a + b.charCodeAt(0), 0);
-                        
-                        if (dot.wheelId && dot.wheelId !== '') {
-                          const wheel = displayWheels.find(w => w.id === dot.wheelId);
-                          if (wheel) {
-                            const dotsInWheel = displayDots.filter(d => d.wheelId === dot.wheelId);
-                            const dotIndexInWheel = dotsInWheel.findIndex(d => d.id === dot.id);
-                            const radius = 60;
-                            const angle = (dotIndexInWheel * 2 * Math.PI) / dotsInWheel.length;
-                            return {
-                              x: wheel.position.x + Math.cos(angle) * radius + 24,
-                              y: wheel.position.y + Math.sin(angle) * radius + 24
-                            };
-                          }
+                    // Calculate dot position helper function
+                    const calculateDotPosition = (dot: any, index: number) => {
+                      const dotId = String(dot.id || index);
+                      const seedX = dotId.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
+                      const seedY = dotId.split('').reverse().reduce((a, b) => a + b.charCodeAt(0), 0);
+                      
+                      if (dot.wheelId && dot.wheelId !== '') {
+                        const wheel = displayWheels.find(w => w.id === dot.wheelId);
+                        if (wheel) {
+                          const dotsInWheel = displayDots.filter(d => d.wheelId === dot.wheelId);
+                          const dotIndexInWheel = dotsInWheel.findIndex(d => d.id === dot.id);
+                          const radius = 60;
+                          const angle = (dotIndexInWheel * 2 * Math.PI) / dotsInWheel.length;
                           return {
-                            x: 100 + (seedX % 900) + (index * 67) % 400 + 24,
-                            y: 100 + (seedY % 600) + (index * 83) % 300 + 24
+                            x: wheel.position.x + Math.cos(angle) * radius + 24,
+                            y: wheel.position.y + Math.sin(angle) * radius + 24
                           };
                         }
                         return {
-                          x: 80 + (seedX % 1000) + (index * 137) % 800 + 24,
-                          y: 80 + (seedY % 600) + (index * 97) % 500 + 24
+                          x: 100 + (seedX % 900) + (index * 67) % 400 + 24,
+                          y: 100 + (seedY % 600) + (index * 83) % 300 + 24
                         };
+                      }
+                      return {
+                        x: 80 + (seedX % 1000) + (index * 137) % 800 + 24,
+                        y: 80 + (seedY % 600) + (index * 97) % 500 + 24
                       };
-                      
-                      const pos1 = calculateDotPosition(displayDots[i], i);
-                      const pos2 = calculateDotPosition(displayDots[j], j);
-                      
-                      return (
-                        <line 
-                          key={`preview-connection-${idx}`}
-                          x1={pos1.x} y1={pos1.y} 
-                          x2={pos2.x} y2={pos2.y} 
-                          stroke="#F59E0B" 
-                          strokeWidth="1.5" 
-                          strokeDasharray="6,3" 
-                          opacity="0.6" 
-                        />
-                      );
-                    });
+                    };
+                    
+                    // Separate wheel dots from scattered dots
+                    const wheelDots = displayDots.filter(dot => dot.wheelId && dot.wheelId !== '');
+                    const scatteredDots = displayDots.filter(dot => !dot.wheelId || dot.wheelId === '');
+                    
+                    // Create mixed connection pairs: wheel-to-wheel, wheel-to-scattered, scattered-to-scattered
+                    const connections = [];
+                    let connectionCount = 0;
+                    
+                    // Add wheel-to-scattered connections
+                    if (wheelDots.length > 0 && scatteredDots.length > 0) {
+                      for (let i = 0; i < Math.min(3, wheelDots.length); i++) {
+                        for (let j = 0; j < Math.min(2, scatteredDots.length); j++) {
+                          if (connectionCount >= 9) break;
+                          const wheelDotIndex = displayDots.findIndex(d => d.id === wheelDots[i].id);
+                          const scatteredDotIndex = displayDots.findIndex(d => d.id === scatteredDots[j].id);
+                          
+                          if (wheelDotIndex !== -1 && scatteredDotIndex !== -1) {
+                            const pos1 = calculateDotPosition(wheelDots[i], wheelDotIndex);
+                            const pos2 = calculateDotPosition(scatteredDots[j], scatteredDotIndex);
+                            
+                            connections.push(
+                              <line 
+                                key={`preview-connection-${connectionCount}`}
+                                x1={pos1.x} y1={pos1.y} 
+                                x2={pos2.x} y2={pos2.y} 
+                                stroke="#F59E0B" 
+                                strokeWidth="1.5" 
+                                strokeDasharray="6,3" 
+                                opacity="0.6" 
+                              />
+                            );
+                            connectionCount++;
+                          }
+                        }
+                        if (connectionCount >= 9) break;
+                      }
+                    }
+                    
+                    // Add scattered-to-scattered connections
+                    for (let i = 0; i < scatteredDots.length && connectionCount < 9; i++) {
+                      for (let j = i + 1; j < scatteredDots.length && connectionCount < 9; j++) {
+                        const dot1Index = displayDots.findIndex(d => d.id === scatteredDots[i].id);
+                        const dot2Index = displayDots.findIndex(d => d.id === scatteredDots[j].id);
+                        
+                        if (dot1Index !== -1 && dot2Index !== -1) {
+                          const pos1 = calculateDotPosition(scatteredDots[i], dot1Index);
+                          const pos2 = calculateDotPosition(scatteredDots[j], dot2Index);
+                          
+                          connections.push(
+                            <line 
+                              key={`preview-connection-${connectionCount}`}
+                              x1={pos1.x} y1={pos1.y} 
+                              x2={pos2.x} y2={pos2.y} 
+                              stroke="#F59E0B" 
+                              strokeWidth="1.5" 
+                              strokeDasharray="6,3" 
+                              opacity="0.6" 
+                            />
+                          );
+                          connectionCount++;
+                        }
+                      }
+                    }
+                    
+                    // Add wheel-to-wheel connections if we still need more
+                    for (let i = 0; i < wheelDots.length && connectionCount < 9; i++) {
+                      for (let j = i + 1; j < wheelDots.length && connectionCount < 9; j++) {
+                        const dot1Index = displayDots.findIndex(d => d.id === wheelDots[i].id);
+                        const dot2Index = displayDots.findIndex(d => d.id === wheelDots[j].id);
+                        
+                        if (dot1Index !== -1 && dot2Index !== -1) {
+                          const pos1 = calculateDotPosition(wheelDots[i], dot1Index);
+                          const pos2 = calculateDotPosition(wheelDots[j], dot2Index);
+                          
+                          connections.push(
+                            <line 
+                              key={`preview-connection-${connectionCount}`}
+                              x1={pos1.x} y1={pos1.y} 
+                              x2={pos2.x} y2={pos2.y} 
+                              stroke="#F59E0B" 
+                              strokeWidth="1.5" 
+                              strokeDasharray="6,3" 
+                              opacity="0.6" 
+                            />
+                          );
+                          connectionCount++;
+                        }
+                      }
+                    }
+                    
+                    return connections;
                   })()}
                 </>
               )}
