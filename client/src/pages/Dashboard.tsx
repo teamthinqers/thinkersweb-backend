@@ -1116,13 +1116,19 @@ const Dashboard: React.FC = () => {
                 </filter>
               </defs>
               {!previewMode && displayDots.length > 1 && renderDotConnections()}
-              {/* Simple preview connections - just a few strategic lines */}
+              {/* Strategic preview connections - 9 lines to show interconnectivity */}
               {previewMode && (
                 <>
-                  {/* Few strategic connections to show interconnectivity concept */}
+                  {/* 9 strategic connections across different areas of the grid */}
                   <line x1="250" y1="250" x2="600" y2="300" stroke="#F59E0B" strokeWidth="1.5" strokeDasharray="6,3" opacity="0.6" />
                   <line x1="300" y1="500" x2="750" y2="350" stroke="#F59E0B" strokeWidth="1.5" strokeDasharray="6,3" opacity="0.6" />
                   <line x1="800" y1="200" x2="400" y2="450" stroke="#F59E0B" strokeWidth="1.5" strokeDasharray="6,3" opacity="0.6" />
+                  <line x1="150" y1="400" x2="550" y2="200" stroke="#F59E0B" strokeWidth="1.5" strokeDasharray="6,3" opacity="0.6" />
+                  <line x1="700" y1="500" x2="200" y2="350" stroke="#F59E0B" strokeWidth="1.5" strokeDasharray="6,3" opacity="0.6" />
+                  <line x1="450" y1="150" x2="350" y2="600" stroke="#F59E0B" strokeWidth="1.5" strokeDasharray="6,3" opacity="0.6" />
+                  <line x1="900" y1="400" x2="500" y2="550" stroke="#F59E0B" strokeWidth="1.5" strokeDasharray="6,3" opacity="0.6" />
+                  <line x1="650" y1="150" x2="850" y2="550" stroke="#F59E0B" strokeWidth="1.5" strokeDasharray="6,3" opacity="0.6" />
+                  <line x1="100" y1="600" x2="950" y2="300" stroke="#F59E0B" strokeWidth="1.5" strokeDasharray="6,3" opacity="0.6" />
                 </>
               )}
             </svg>
