@@ -477,13 +477,7 @@ const Dashboard: React.FC = () => {
     let baseDotsToDisplay = previewMode ? previewDots : filteredDots;
     if (onlySparks) {
       // Show only dots that belong to spark wheels (have wheelId)
-      const beforeFilter = baseDotsToDisplay.length;
       baseDotsToDisplay = baseDotsToDisplay.filter(dot => dot.wheelId && dot.wheelId !== '');
-      console.log(`Only Sparks Filter: ${beforeFilter} -> ${baseDotsToDisplay.length} dots`, {
-        previewMode,
-        onlySparks,
-        sampleDots: baseDotsToDisplay.slice(0, 3).map(d => ({id: d.id, wheelId: d.wheelId}))
-      });
     }
     
     const displayDots = baseDotsToDisplay;
@@ -612,12 +606,8 @@ const Dashboard: React.FC = () => {
     const renderDotConnections = () => {
       const connections: JSX.Element[] = [];
       
-      // Filter dots for connections based on "Only Sparks" toggle
-      const dotsForConnections = onlySparks 
-        ? displayDots.filter(dot => dot.wheelId && dot.wheelId !== '') // Only spark wheel dots
-        : displayDots; // All dots
-      
-      dotsForConnections.forEach((dot, index) => {
+      // Use displayDots directly - already filtered by "Only Sparks" toggle above
+      displayDots.forEach((dot, index) => {
         // Calculate this dot's position
         const dotId1 = String(dot.id || index);
         const seedX1 = dotId1.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
