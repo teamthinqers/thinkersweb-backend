@@ -1329,7 +1329,19 @@ const Dashboard: React.FC = () => {
             <Button 
               variant="ghost" 
               size="sm"
-              onClick={() => window.history.back()}
+              onClick={() => {
+                // Check for PWA navigation flag
+                const dotDashboardNavigation = localStorage.getItem('dotDashboardNavigation');
+                
+                if (dotDashboardNavigation === 'true') {
+                  // Clear the flag and navigate to dot interface
+                  localStorage.removeItem('dotDashboardNavigation');
+                  setLocation('/dot');
+                } else {
+                  // Standard browser back behavior
+                  window.history.back();
+                }
+              }}
               className="p-2 hover:bg-amber-100 text-amber-600 hover:text-amber-700"
             >
               <ArrowLeft className="w-5 h-5" />
