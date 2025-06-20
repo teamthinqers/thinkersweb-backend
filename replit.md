@@ -966,6 +966,12 @@ Changelog:
   * Removed Social Neura menu item from sidebar navigation
   * Simplified social architecture to focus solely on DotSpark Social platform
   * Application now has single unified social section without neural component separation
+- June 20, 2025. Enhanced dashboard with Social Brain filtering placeholder and navigation:
+  * Added Social button with brain icon next to Recent Dots button as placeholder for future social brain filtering
+  * Social button displays purple theme with "Soon" badge and disabled state
+  * Added DotSpark Social to sidebar menu with Users icon and orange color theme
+  * Fixed PWA back button functionality in DotSpark Social page using display-mode detection
+  * Enhanced cross-platform navigation consistency for social features
 - June 19, 2025. Renamed Dot Wheels Map to DotSpark Map:
   * Updated main heading from "Dot Wheels Map" to "DotSpark Map" for brand consistency
   * Updated dialog title from "About Dot Wheels Map" to "About DotSpark Map"
