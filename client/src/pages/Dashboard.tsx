@@ -1509,7 +1509,7 @@ const Dashboard: React.FC = () => {
                     disabled
                     title="Social Brain filtering coming soon"
                   >
-                    <Brain className="w-3 h-3 sm:w-4 sm:h-4 animate-pulse" />
+                    <Users className="w-3 h-3 sm:w-4 sm:h-4 animate-pulse" />
                     <span className="font-semibold whitespace-nowrap">Social</span>
                     <Badge className="border-0 ml-1 text-xs bg-white/20 text-white">
                       Soon

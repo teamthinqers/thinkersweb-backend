@@ -206,7 +206,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
               {/* Social button */}
               <Link href="/social">
                 <div className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white h-9 w-9 p-0 shadow-md rounded-md flex items-center justify-center">
-                  <Brain className="h-5 w-5 animate-pulse" />
+                  <Users className="h-5 w-5" />
                 </div>
               </Link>
               

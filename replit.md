@@ -982,6 +982,11 @@ Changelog:
   * Added Social button to PWA header with orange-red gradient styling and animated pulse effect
   * Both desktop and PWA headers now have consistent Social access alongside existing navigation
   * Maintained orange-red color theme with Brain icon for visual consistency across platforms
+- June 20, 2025. Standardized Social button icons across application:
+  * Dashboard header Social button: Brain icon (unique location for social brain filtering context)
+  * All other Social buttons: Users icon (PWA header, sidebar menu, dashboard placeholder)
+  * Maintains visual distinction between general social features (Users) and social brain filtering (Brain)
+  * Updated dashboard placeholder Social button from Brain to Users icon for consistency
 - June 19, 2025. Renamed Dot Wheels Map to DotSpark Map:
   * Updated main heading from "Dot Wheels Map" to "DotSpark Map" for brand consistency
   * Updated dialog title from "About Dot Wheels Map" to "About DotSpark Map"
