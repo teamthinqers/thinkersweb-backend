@@ -10,6 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 import DotFullView from "@/components/DotFullView";
 import DotFlashCard from "@/components/DotFlashCard";
 import { isRunningAsStandalone } from "@/lib/pwaUtils";
+import { useLocation } from "wouter";
 
 
 // Data structure for dots

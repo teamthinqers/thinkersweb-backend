@@ -3,6 +3,7 @@ import { useLocation } from 'wouter';
 
 import { useToast } from '@/hooks/use-toast';
 import { useDotSparkTuning } from '@/hooks/useDotSparkTuning';
+
 import { neuraStorage } from '@/lib/neuraStorage';
 import { Slider } from '@/components/ui/slider';
 import { Button } from '@/components/ui/button';
@@ -420,7 +421,23 @@ export default function MyNeura() {
       return;
     }
     
-
+    // Check if user is authenticated by checking localStorage for user data
+    const storedUser = localStorage.getItem('dotspark_user');
+    if (!storedUser) {
+      // User is not authenticated - show sign-in prompt
+      toast({
+        title: "Sign in Required",
+        description: "Please sign in to save your changes.",
+        variant: "destructive",
+      });
+      
+      // Redirect to auth page after a short delay
+      setTimeout(() => {
+        setLocation('/auth');
+      }, 1500);
+      
+      return;
+    }
     
     try {
       // Update using the mutation function from the hook
