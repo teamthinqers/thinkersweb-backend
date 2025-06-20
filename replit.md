@@ -961,6 +961,11 @@ Changelog:
   * Cleaned up debugging console logs for better performance
   * Both toggle sequences now work independently: Preview → Only Sparks and Only Sparks → Preview
   * Created stable backup version "magic_v1" for future reference
+- June 20, 2025. Removed Social Neura concept, keeping only DotSpark Social:
+  * Removed Social button from dashboard header (both mobile and desktop)
+  * Removed Social Neura menu item from sidebar navigation
+  * Simplified social architecture to focus solely on DotSpark Social platform
+  * Application now has single unified social section without neural component separation
 - June 19, 2025. Renamed Dot Wheels Map to DotSpark Map:
   * Updated main heading from "Dot Wheels Map" to "DotSpark Map" for brand consistency
   * Updated dialog title from "About Dot Wheels Map" to "About DotSpark Map"
