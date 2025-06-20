@@ -32,7 +32,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isMobile, onNewEntry
     { icon: Home, label: "Home", path: "/" },
     { icon: "dotspark-logo", label: "My DotSpark", path: "/sectioned-dotspark-tuning", isSpecial: true, showActivationSpark: true },
     { icon: Brain, label: "My Neura", path: "/my-neura", showActivationDot: true },
-    { icon: Brain, label: "Social Neura", path: "/social-neura", showAnimatedBrain: true },
   ];
 
   const sidebarClasses = isMobile
