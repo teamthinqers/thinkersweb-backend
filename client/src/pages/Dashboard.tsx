@@ -581,6 +581,7 @@ const Dashboard: React.FC = () => {
 
     const renderDotConnections = () => {
       const connections: JSX.Element[] = [];
+      console.log('Rendering connections for displayDots:', displayDots.length);
       
       displayDots.forEach((dot, index) => {
         // Calculate this dot's position
