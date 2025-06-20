@@ -477,7 +477,13 @@ const Dashboard: React.FC = () => {
     let baseDotsToDisplay = previewMode ? previewDots : filteredDots;
     if (onlySparks) {
       // Show only dots that belong to spark wheels (have wheelId)
+      const beforeFilter = baseDotsToDisplay.length;
       baseDotsToDisplay = baseDotsToDisplay.filter(dot => dot.wheelId && dot.wheelId !== '');
+      console.log(`Only Sparks Filter: ${beforeFilter} -> ${baseDotsToDisplay.length} dots`, {
+        previewMode,
+        onlySparks,
+        sampleDots: baseDotsToDisplay.slice(0, 3).map(d => ({id: d.id, wheelId: d.wheelId}))
+      });
     }
     
     const displayDots = baseDotsToDisplay;
