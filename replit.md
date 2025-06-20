@@ -977,6 +977,11 @@ Changelog:
   * Reduced button sizes in PWA: smaller padding (px-2 py-1.5) and text size (text-xs) for mobile optimization
   * Desktop maintains larger button sizes (px-4 py-2, text-base) for better visibility
   * Enhanced responsive design with vertical stacking on mobile, horizontal on desktop
+- June 20, 2025. Added Social button back to header navigation:
+  * Added Social button with brain icon to dashboard header that redirects to DotSpark Social page
+  * Added Social button to PWA header with orange-red gradient styling and animated pulse effect
+  * Both desktop and PWA headers now have consistent Social access alongside existing navigation
+  * Maintained orange-red color theme with Brain icon for visual consistency across platforms
 - June 19, 2025. Renamed Dot Wheels Map to DotSpark Map:
   * Updated main heading from "Dot Wheels Map" to "DotSpark Map" for brand consistency
   * Updated dialog title from "About Dot Wheels Map" to "About DotSpark Map"

@@ -203,6 +203,13 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
             </div>
             
             <div className="flex items-center space-x-2">
+              {/* Social button */}
+              <Link href="/social">
+                <div className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white h-9 w-9 p-0 shadow-md rounded-md flex items-center justify-center">
+                  <Brain className="h-5 w-5 animate-pulse" />
+                </div>
+              </Link>
+              
               {/* Neura status indicator - just brain icon with green indicator */}
               <div className="bg-gradient-to-r from-amber-700 to-primary text-white h-9 w-9 p-0 shadow-md rounded-md flex items-center justify-center">
                 <div className="relative">

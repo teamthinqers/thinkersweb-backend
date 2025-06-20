@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { MessageSquare, PenSquare, MessageCircle } from "lucide-react";
+import { MessageSquare, PenSquare, MessageCircle, Brain } from "lucide-react";
+import { Link } from "wouter";
 import { useMobile } from "@/hooks/use-mobile";
 import ChatEntryForm from "@/components/chat/ChatEntryForm";
 import { useWhatsAppStatus } from "@/hooks/useWhatsAppStatus";
@@ -56,8 +57,20 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onNewEntry }) => {
         <p className="text-gray-600">Your personal learning journey at a glance</p>
       </div>
       
-      {/* Chat button - opens contact options dialog for all users */}
-      <div className="flex items-center">
+      {/* Header buttons */}
+      <div className="flex items-center gap-3">
+        {/* Social button */}
+        <Link href="/social">
+          <Button
+            size="sm"
+            className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white shadow-md flex items-center"
+          >
+            <Brain className="h-4 w-4 mr-1.5 animate-pulse" />
+            <span>Social</span>
+          </Button>
+        </Link>
+        
+        {/* Chat button - opens contact options dialog for all users */}
         <Button
           onClick={handleChatClick}
           size="sm"
