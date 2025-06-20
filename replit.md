@@ -968,6 +968,8 @@ Changelog:
   * Reduced button sizes (px-2 py-1.5 text-xs) in PWA mode for improved mobile fit
   * Applied orange-red gradient theme to Social button matching Social Neura branding
   * Enhanced responsive layout with separate flex directions for browser vs PWA
+  * Fixed Recent Dots dropdown positioning to appear below button instead of overlapping Social button
+  * Added DotSpark Map margin adjustment when Recent Dots filter is active for proper spacing
 - June 19, 2025. Renamed Dot Wheels Map to DotSpark Map:
   * Updated main heading from "Dot Wheels Map" to "DotSpark Map" for brand consistency
   * Updated dialog title from "About Dot Wheels Map" to "About DotSpark Map"
