@@ -621,9 +621,12 @@ const Dashboard: React.FC = () => {
           y1 = 60 + (seedY1 % 600) + (index * 73) % 180 + 24;
         }
         
-        displayDots.slice(index + 1).forEach((otherDot, otherIndex) => {
+        // Connect to a selection of other dots (not just subsequent ones)
+        displayDots.forEach((otherDot, otherIndex) => {
+          if (otherIndex <= index) return; // Avoid duplicate connections
+          
           // Calculate other dot's position
-          const realOtherIndex = index + 1 + otherIndex;
+          const realOtherIndex = otherIndex;
           const dotId2 = String(otherDot.id || realOtherIndex);
           const seedX2 = dotId2.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
           const seedY2 = dotId2.split('').reverse().reduce((a, b) => a + b.charCodeAt(0), 0);
@@ -663,7 +666,21 @@ const Dashboard: React.FC = () => {
           
           // Create consistent connection logic based on dot IDs
           const connectionSeed = (seedX1 + seedY1 + seedX2 + seedY2) % 100;
-          if (connectionSeed < 30) { // 30% chance of connection for better interconnectivity visualization
+          
+          // Different connection probabilities for different types
+          let connectionThreshold = 12; // Base 12% for general connections
+          
+          // Boost connections involving scattered dots
+          const isFirstDotScattered = !dot.wheelId || dot.wheelId === '';
+          const isSecondDotScattered = !otherDot.wheelId || otherDot.wheelId === '';
+          
+          if (isFirstDotScattered && isSecondDotScattered) {
+            connectionThreshold = 25; // 25% for scattered-to-scattered
+          } else if (isFirstDotScattered || isSecondDotScattered) {
+            connectionThreshold = 18; // 18% for wheel-to-scattered
+          }
+          
+          if (connectionSeed < connectionThreshold) {
             connections.push(
               <line
                 key={`${dot.id}-${otherDot.id}`}
