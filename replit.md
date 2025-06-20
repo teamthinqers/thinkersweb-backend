@@ -852,6 +852,9 @@ Changelog:
   * In preview mode with toggle OFF: shows all 27 preview dots (8 spark + 19 scattered)
   * Connection lines filtered to only display between spark wheel dots when toggle is active
   * Enhanced user experience by demonstrating focused view of organized cognitive insights vs full network
+  * Added PWA-optimized button sizing for preview, sparks, and zoom controls with reduced padding and text sizes
+  * Added info icon next to preview mode button with popover explaining "This is a demo mode for you to visualize how Dots and Sparks work"
+  * Fixed "Only Sparks" filtering logic to work consistently across both preview and normal modes
 - June 15, 2025. Completed PWA Dot Wheels Map optimization with enhanced user interaction:
   * Finalized summary box positioning to appear next to clicked dots for intuitive PWA navigation
   * Achieved perfect control layout balance with centered recenter button between preview and statistics

@@ -476,13 +476,8 @@ const Dashboard: React.FC = () => {
     // Apply "Only Sparks" filter if enabled
     let baseDotsToDisplay = previewMode ? previewDots : filteredDots;
     if (onlySparks) {
-      if (previewMode) {
-        // In preview mode, show only dots that belong to preview spark wheels
-        baseDotsToDisplay = previewDots.filter(dot => dot.wheelId && dot.wheelId !== '');
-      } else {
-        // In normal mode, show only dots that belong to actual spark wheels
-        baseDotsToDisplay = filteredDots.filter(dot => dot.wheelId && dot.wheelId !== '');
-      }
+      // Show only dots that belong to spark wheels (have wheelId)
+      baseDotsToDisplay = baseDotsToDisplay.filter(dot => dot.wheelId && dot.wheelId !== '');
     }
     
     const displayDots = baseDotsToDisplay;
