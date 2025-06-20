@@ -988,8 +988,8 @@ Changelog:
   * Reduced overall visual clutter while ensuring scattered dots demonstrate higher interconnectivity potential
   * Unified connection line color theme: consistent amber (#F59E0B) color, 1.5px stroke width, 0.6 opacity across both preview and normal modes
   * Fixed preview mode connection lines to connect actual dot positions using same positioning logic as dot rendering
-  * Implemented mixed connection strategy: wheel-to-scattered (priority), scattered-to-scattered, and wheel-to-wheel connections
-  * Connection system demonstrates realistic cross-network relationships between spark groups and individual scattered dots
+  * Simplified connection strategy: exactly 3 connections between spark wheels and 4 connections from wheel dots to scattered dots
+  * Clean 7-line connection system demonstrates targeted relationships without visual overwhelm
   * Improved performance by disabling complex connection logic in preview mode, eliminating grid slowness and stuttering
   * Enhanced connection probabilities for normal mode: 40% scattered-to-scattered, 30% wheel-to-scattered, 25% wheel-to-wheel
 - June 15, 2025. Enhanced PWA installation detection in neuraStorage utility:
