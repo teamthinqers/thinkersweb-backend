@@ -581,6 +581,7 @@ const Dashboard: React.FC = () => {
 
     const renderDotConnections = () => {
       const connections: JSX.Element[] = [];
+      console.log('renderDotConnections called, previewMode:', previewMode, 'displayDots count:', displayDots.length);
       
       displayDots.forEach((dot, index) => {
         // Calculate this dot's position
@@ -681,6 +682,7 @@ const Dashboard: React.FC = () => {
           }
           
           if (connectionSeed < connectionThreshold) {
+            console.log(`Creating connection between ${dot.id} and ${otherDot.id}, previewMode: ${previewMode}, threshold: ${connectionThreshold}`);
             connections.push(
               <line
                 key={`${dot.id}-${otherDot.id}`}
