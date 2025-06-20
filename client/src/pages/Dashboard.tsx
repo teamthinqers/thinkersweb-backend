@@ -464,17 +464,18 @@ const Dashboard: React.FC = () => {
     
     const displayWheels = baseWheelsToDisplay;
     
-    // Filter dots based on recent filter and only sparks settings
-    let filteredDots = actualDots;
+    // Start with the appropriate base data source
+    let baseDotsToDisplay = previewMode ? previewDots : actualDots;
+    
+    // Apply recent filter if enabled (only in normal mode)
     if (showingRecentFilter && !previewMode) {
       // Sort by timestamp (most recent first) and take the specified number
-      filteredDots = [...actualDots]
+      baseDotsToDisplay = [...baseDotsToDisplay]
         .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
         .slice(0, recentCount);
     }
     
-    // Apply "Only Sparks" filter if enabled
-    let baseDotsToDisplay = previewMode ? previewDots : filteredDots;
+    // Apply "Only Sparks" filter if enabled (works in both modes)
     if (onlySparks) {
       // Show only dots that belong to spark wheels (have wheelId)
       baseDotsToDisplay = baseDotsToDisplay.filter(dot => dot.wheelId && dot.wheelId !== '');
