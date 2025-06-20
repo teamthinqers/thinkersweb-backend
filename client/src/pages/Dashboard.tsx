@@ -1482,55 +1482,58 @@ const Dashboard: React.FC = () => {
               {/* Recent Dots Filter and Social Button */}
               <div className="relative">
                 <div className={`flex gap-2 ${isPWA ? 'flex-col' : 'flex-row items-center'}`}>
-                  <button
-                    onClick={() => setShowRecentFilter(!showRecentFilter)}
-                    className={`flex items-center gap-2 ${isPWA ? 'px-2 py-1.5 text-xs' : 'px-3 sm:px-4 py-2 text-sm sm:text-base'} rounded-lg font-medium transition-all duration-200 ${
-                      showRecentFilter 
-                        ? 'bg-orange-600 hover:bg-orange-700 text-white shadow-lg hover:shadow-xl transform hover:scale-105' 
-                        : 'bg-orange-500 hover:bg-orange-600 text-white shadow-md hover:shadow-lg'
-                    }`}
-                  >
-                    <Clock className={`${isPWA ? 'w-3 h-3' : 'w-3 h-3 sm:w-4 sm:h-4'}`} />
-                    <span className="font-semibold whitespace-nowrap">Recent Dots</span>
-                    {dots.length > 0 && (
-                      <Badge className={`border-0 ml-1 text-xs ${
+                  {/* Recent Dots Button with Dropdown Container */}
+                  <div className="relative">
+                    <button
+                      onClick={() => setShowRecentFilter(!showRecentFilter)}
+                      className={`flex items-center gap-2 ${isPWA ? 'px-2 py-1.5 text-xs' : 'px-3 sm:px-4 py-2 text-sm sm:text-base'} rounded-lg font-medium transition-all duration-200 ${
                         showRecentFilter 
-                          ? 'bg-white/30 text-white' 
-                          : 'bg-white/20 text-white'
-                      }`}>
-                        {Math.min(dots.length, recentDotsCount)}
-                      </Badge>
+                          ? 'bg-orange-600 hover:bg-orange-700 text-white shadow-lg hover:shadow-xl transform hover:scale-105' 
+                          : 'bg-orange-500 hover:bg-orange-600 text-white shadow-md hover:shadow-lg'
+                      }`}
+                    >
+                      <Clock className={`${isPWA ? 'w-3 h-3' : 'w-3 h-3 sm:w-4 sm:h-4'}`} />
+                      <span className="font-semibold whitespace-nowrap">Recent Dots</span>
+                      {dots.length > 0 && (
+                        <Badge className={`border-0 ml-1 text-xs ${
+                          showRecentFilter 
+                            ? 'bg-white/30 text-white' 
+                            : 'bg-white/20 text-white'
+                        }`}>
+                          {Math.min(dots.length, recentDotsCount)}
+                        </Badge>
+                      )}
+                    </button>
+                    
+                    {/* Recent Dots Count Dropdown - positioned relative to Recent Dots button */}
+                    {showRecentFilter && (
+                      <div className={`${isPWA ? 'mt-2' : 'absolute left-0 mt-2'} p-2 bg-white/90 backdrop-blur border-2 border-amber-200 rounded-lg shadow-lg z-10`}>
+                        <div className="flex items-center gap-2 text-xs">
+                          <span className="text-gray-600 whitespace-nowrap">Show:</span>
+                          <select
+                            value={recentDotsCount}
+                            onChange={(e) => setRecentDotsCount(parseInt(e.target.value))}
+                            className="px-2 py-1 text-xs border border-amber-300 rounded focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white min-w-[60px]"
+                          >
+                            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 20].map(num => (
+                              <option key={num} value={num}>{num}</option>
+                            ))}
+                          </select>
+                          <span className="text-gray-600 whitespace-nowrap">dots</span>
+                        </div>
+                      </div>
                     )}
-                  </button>
+                  </div>
                   
                   {/* Social Button */}
                   <button
                     onClick={() => window.open('/social-neura', '_blank')}
-                    className={`flex items-center gap-2 ${isPWA ? 'px-2 py-1.5 text-xs' : 'px-3 sm:px-4 py-2 text-sm sm:text-base'} rounded-lg font-medium transition-all duration-200 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white shadow-md hover:shadow-lg hover:scale-105`}
+                    className={`flex items-center gap-2 ${isPWA ? 'px-2 py-1.5 text-xs' : 'px-3 sm:px-4 py-2 text-sm sm:text-base'} rounded-lg font-medium transition-all duration-200 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white shadow-md hover:shadow-lg hover:scale-105 ${showRecentFilter && isPWA ? 'mt-12' : ''}`}
                   >
                     <Brain className={`${isPWA ? 'w-3 h-3' : 'w-3 h-3 sm:w-4 sm:h-4'} animate-pulse`} />
                     <span className="font-semibold whitespace-nowrap">Social</span>
                   </button>
                 </div>
-                
-                {/* Recent Dots Count Dropdown - positioned below Recent Dots button */}
-                {showRecentFilter && (
-                  <div className="mt-3 p-3 bg-white/90 backdrop-blur border-2 border-amber-200 rounded-lg shadow-lg">
-                    <div className="flex items-center gap-2 text-xs sm:text-sm">
-                      <span className="text-gray-600 whitespace-nowrap">Show:</span>
-                      <select
-                        value={recentDotsCount}
-                        onChange={(e) => setRecentDotsCount(parseInt(e.target.value))}
-                        className="px-2 py-1 text-xs sm:text-sm border border-amber-300 rounded focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white min-w-[60px] sm:min-w-[80px]"
-                      >
-                        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 20].map(num => (
-                          <option key={num} value={num}>{num}</option>
-                        ))}
-                      </select>
-                      <span className="text-gray-600 whitespace-nowrap">dots</span>
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
             
