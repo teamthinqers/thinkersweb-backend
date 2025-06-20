@@ -47,6 +47,7 @@ const Dashboard: React.FC = () => {
   const [recentDotsCount, setRecentDotsCount] = useState(4);
   const [showPreview, setShowPreview] = useState(false);
   const [isMapFullscreen, setIsMapFullscreen] = useState(false);
+  const [onlySparks, setOnlySparks] = useState(false);
 
   // Fetch real dots from API
   const { data: dots = [], isLoading, refetch } = useQuery({
@@ -445,9 +446,20 @@ const Dashboard: React.FC = () => {
     };
 
     const { previewDots, previewWheels } = generatePreviewData();
-    const displayWheels = previewMode ? previewWheels : wheels;
     
-    // Filter dots based on recent filter setting
+    // Apply "Only Sparks" filter to wheels if enabled
+    let baseWheelsToDisplay = previewMode ? previewWheels : wheels;
+    if (onlySparks) {
+      // In preview mode, show all preview wheels (they are all spark wheels)
+      // In normal mode, show only wheels that have dots (actual spark wheels)
+      if (!previewMode) {
+        baseWheelsToDisplay = wheels.filter(wheel => wheel.dots && wheel.dots.length > 0);
+      }
+    }
+    
+    const displayWheels = baseWheelsToDisplay;
+    
+    // Filter dots based on recent filter and only sparks settings
     let filteredDots = actualDots;
     if (showingRecentFilter && !previewMode) {
       // Sort by timestamp (most recent first) and take the specified number
@@ -456,7 +468,14 @@ const Dashboard: React.FC = () => {
         .slice(0, recentCount);
     }
     
-    const displayDots = previewMode ? previewDots : filteredDots;
+    // Apply "Only Sparks" filter if enabled
+    let baseDotsToDisplay = previewMode ? previewDots : filteredDots;
+    if (onlySparks) {
+      // Show only dots that belong to spark wheels (have wheelId)
+      baseDotsToDisplay = baseDotsToDisplay.filter(dot => dot.wheelId && dot.wheelId !== '');
+    }
+    
+    const displayDots = baseDotsToDisplay;
     const totalDots = displayDots.length;
     
     // Count actual formed sparks - user-grouped dots via spark interface
@@ -582,7 +601,12 @@ const Dashboard: React.FC = () => {
     const renderDotConnections = () => {
       const connections: JSX.Element[] = [];
       
-      displayDots.forEach((dot, index) => {
+      // Filter dots for connections based on "Only Sparks" toggle
+      const dotsForConnections = onlySparks 
+        ? displayDots.filter(dot => dot.wheelId && dot.wheelId !== '') // Only spark wheel dots
+        : displayDots; // All dots
+      
+      dotsForConnections.forEach((dot, index) => {
         // Calculate this dot's position
         const dotId1 = String(dot.id || index);
         const seedX1 = dotId1.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
@@ -622,8 +646,15 @@ const Dashboard: React.FC = () => {
         }
         
         // Connect to a selection of other dots (not just subsequent ones)
-        displayDots.forEach((otherDot, otherIndex) => {
-          if (otherIndex <= index) return; // Avoid duplicate connections
+        // When "Only Sparks" is enabled, only connect to other dots in the filtered set
+        const otherDotsForConnections = onlySparks 
+          ? dotsForConnections // Only spark wheel dots
+          : displayDots; // All dots
+          
+        otherDotsForConnections.forEach((otherDot, otherIndex) => {
+          // Find the original index of otherDot in dotsForConnections array
+          const originalOtherIndex = dotsForConnections.findIndex(d => d.id === otherDot.id);
+          if (originalOtherIndex <= index) return; // Avoid duplicate connections
           
           // Calculate other dot's position
           const realOtherIndex = otherIndex;
@@ -721,7 +752,7 @@ const Dashboard: React.FC = () => {
           ? 'fixed inset-0 z-50 p-8' 
           : 'rounded-xl p-4 min-h-[500px] border-2 border-amber-200 shadow-lg'
       } overflow-hidden`}>
-        {/* Preview toggle and Recent Filter Indicator */}
+        {/* Preview toggle and Only Sparks toggle */}
         <div className="absolute top-4 left-4 z-10 flex flex-col gap-2">
           {(previewMode || displayDots.length > 0) && (
             <div className="flex items-center gap-2 bg-white/90 backdrop-blur rounded-lg px-2 py-1 border-2 border-amber-200">
@@ -736,6 +767,26 @@ const Dashboard: React.FC = () => {
                 <span
                   className={`inline-block h-2 w-2 transform rounded-full bg-white transition-transform ${
                     previewMode ? 'translate-x-4' : 'translate-x-1'
+                  }`}
+                />
+              </button>
+            </div>
+          )}
+          
+          {/* Only Sparks toggle */}
+          {(previewMode || displayDots.length > 0) && (
+            <div className="flex items-center gap-2 bg-white/90 backdrop-blur rounded-lg px-2 py-1 border-2 border-amber-200">
+              <label className="text-xs font-medium text-amber-800 hidden sm:block">Only Sparks</label>
+              <label className="text-xs font-medium text-amber-800 sm:hidden">Sparks</label>
+              <button
+                onClick={() => setOnlySparks(!onlySparks)}
+                className={`relative inline-flex h-4 w-7 items-center rounded-full transition-colors ${
+                  onlySparks ? 'bg-amber-500' : 'bg-gray-300'
+                }`}
+              >
+                <span
+                  className={`inline-block h-2 w-2 transform rounded-full bg-white transition-transform ${
+                    onlySparks ? 'translate-x-4' : 'translate-x-1'
                   }`}
                 />
               </button>
