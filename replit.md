@@ -987,9 +987,9 @@ Changelog:
   * Fixed connection logic to properly include scattered dots throughout the grid instead of just consecutive array positions
   * Reduced overall visual clutter while ensuring scattered dots demonstrate higher interconnectivity potential
   * Unified connection line color theme: consistent amber (#F59E0B) color, 1.5px stroke width, 0.6 opacity across both preview and normal modes
-  * Added manual connection lines for preview mode to ensure interconnectivity is always visible when preview toggle is enabled
-  * Enhanced connection probabilities for preview mode: 40% scattered-to-scattered, 30% wheel-to-scattered, 25% wheel-to-wheel
-  * Applied consistent visual styling with glow filter and pulse animation for all connection lines
+  * Optimized preview mode with only 3 strategic connection lines to demonstrate interconnectivity concept without visual clutter
+  * Improved performance by disabling complex connection logic in preview mode, eliminating grid slowness and stuttering
+  * Enhanced connection probabilities for normal mode: 40% scattered-to-scattered, 30% wheel-to-scattered, 25% wheel-to-wheel
 - June 15, 2025. Enhanced PWA installation detection in neuraStorage utility:
   * Added comprehensive PWA installation checking across platforms
   * Implemented cross-platform installation status synchronization
