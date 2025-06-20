@@ -989,6 +989,7 @@ Changelog:
   * Unified connection line color theme: consistent amber (#F59E0B) color, 1.5px stroke width, 0.6 opacity across both preview and normal modes
   * Fixed preview mode connection lines to connect actual dot positions using same positioning logic as dot rendering
   * Simplified connection strategy: exactly 3 connections between spark wheels and 4 connections from wheel dots to scattered dots
+  * Distributed wheel-to-scattered connections across different wheel dots (indices 0,2,4,6) instead of clustering from single dot
   * Clean 7-line connection system demonstrates targeted relationships without visual overwhelm
   * Improved performance by disabling complex connection logic in preview mode, eliminating grid slowness and stuttering
   * Enhanced connection probabilities for normal mode: 40% scattered-to-scattered, 30% wheel-to-scattered, 25% wheel-to-wheel

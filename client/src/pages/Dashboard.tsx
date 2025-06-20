@@ -1188,28 +1188,36 @@ const Dashboard: React.FC = () => {
                     }
                     
                     // 2) 4 connections from spark wheel dots to scattered dots
+                    // Use different wheel dots as starting points to distribute connections
                     let scatteredConnections = 0;
-                    for (let i = 0; i < wheelDots.length && scatteredConnections < 4; i++) {
-                      for (let j = 0; j < scatteredDots.length && scatteredConnections < 4; j++) {
-                        const wheelDotIndex = displayDots.findIndex(d => d.id === wheelDots[i].id);
-                        const scatteredDotIndex = displayDots.findIndex(d => d.id === scatteredDots[j].id);
-                        
-                        if (wheelDotIndex !== -1 && scatteredDotIndex !== -1) {
-                          const pos1 = calculateDotPosition(wheelDots[i], wheelDotIndex);
-                          const pos2 = calculateDotPosition(scatteredDots[j], scatteredDotIndex);
+                    const wheelDotIndices = [0, 2, 4, 6]; // Use different dots from wheels
+                    
+                    for (let i = 0; i < wheelDotIndices.length && scatteredConnections < 4; i++) {
+                      const wheelDotIdx = wheelDotIndices[i];
+                      if (wheelDotIdx < wheelDots.length) {
+                        // Use different scattered dots too
+                        const scatteredDotIdx = i % scatteredDots.length;
+                        if (scatteredDotIdx < scatteredDots.length) {
+                          const wheelDotIndex = displayDots.findIndex(d => d.id === wheelDots[wheelDotIdx].id);
+                          const scatteredDotIndex = displayDots.findIndex(d => d.id === scatteredDots[scatteredDotIdx].id);
                           
-                          connections.push(
-                            <line 
-                              key={`scattered-connection-${scatteredConnections}`}
-                              x1={pos1.x} y1={pos1.y} 
-                              x2={pos2.x} y2={pos2.y} 
-                              stroke="#F59E0B" 
-                              strokeWidth="1.5" 
-                              strokeDasharray="6,3" 
-                              opacity="0.6" 
-                            />
-                          );
-                          scatteredConnections++;
+                          if (wheelDotIndex !== -1 && scatteredDotIndex !== -1) {
+                            const pos1 = calculateDotPosition(wheelDots[wheelDotIdx], wheelDotIndex);
+                            const pos2 = calculateDotPosition(scatteredDots[scatteredDotIdx], scatteredDotIndex);
+                            
+                            connections.push(
+                              <line 
+                                key={`scattered-connection-${scatteredConnections}`}
+                                x1={pos1.x} y1={pos1.y} 
+                                x2={pos2.x} y2={pos2.y} 
+                                stroke="#F59E0B" 
+                                strokeWidth="1.5" 
+                                strokeDasharray="6,3" 
+                                opacity="0.6" 
+                              />
+                            );
+                            scatteredConnections++;
+                          }
                         }
                       }
                     }
