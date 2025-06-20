@@ -153,6 +153,8 @@ Changelog:
   * Enhanced PWA-specific navigation: DotSpark Social button in PWA Dot interface sets localStorage flag for proper back navigation
   * Social pages now check localStorage flag specifically for PWA users coming from Dot interface
   * All other navigation instances use standard browser back functionality as expected
+  * Added backspace button to Dashboard page header with ArrowLeft icon and amber theme styling
+  * Dashboard backspace button uses window.history.back() for proper navigation to previous page
 - June 13, 2025. Updated DotSpark logo implementation:
   * Added new logo icon (dotspark-logo-icon.jpeg) to public directory
   * Updated PWA header with icon + "DotSpark" text layout
