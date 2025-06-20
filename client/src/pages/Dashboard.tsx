@@ -1464,24 +1464,18 @@ const Dashboard: React.FC = () => {
                 <span className="bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent">
                   DotSpark Map
                 </span>
-                <Dialog>
-                  <DialogTrigger asChild>
+                <Popover>
+                  <PopoverTrigger asChild>
                     <button className="ml-2 p-1 rounded-full hover:bg-amber-100 transition-colors">
                       <Info className="w-4 h-4 text-amber-600" />
                     </button>
-                  </DialogTrigger>
-                  <DialogContent className="max-w-md">
-                    <DialogHeader>
-                      <DialogTitle className="flex items-center gap-2">
-                        <Info className="w-5 h-5 text-amber-600" />
-                        About DotSpark Map
-                      </DialogTitle>
-                    </DialogHeader>
-                    <div className="space-y-3 text-sm text-gray-700">
-                      <p>You can see the dots and sparks you saved in this grid. The dots saved in Natural mode will have orange and amber color codes while the ones saved using AI mode will have a purple color code.</p>
-                    </div>
-                  </DialogContent>
-                </Dialog>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-80 p-3 text-sm" side="bottom" align="start">
+                    <p className="text-gray-700">
+                      You can see the dots and sparks you saved in this grid. The dots saved in Natural mode will have orange and amber color codes while the ones saved using AI mode will have a purple color code.
+                    </p>
+                  </PopoverContent>
+                </Popover>
               </h2>
               
               {/* Recent Dots Filter */}
