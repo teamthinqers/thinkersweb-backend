@@ -940,9 +940,14 @@ Changelog:
   * Added zoom controls with zoom in/out buttons and reset view functionality
   * Implemented mouse wheel zoom for browser and zoom level display (50%-200%)
   * Added tighter boundary constraints to prevent navigation beyond grid limits
-  * Enhanced Dot Wheels Map with comprehensive zoom and navigation control panel
+  * Enhanced DotSpark Map with comprehensive zoom and navigation control panel
   * Fixed PWA button overlap by repositioning zoom controls below preview toggle on mobile
   * Optimized zoom control sizing for mobile with smaller icons and compact spacing
+- June 19, 2025. Renamed Dot Wheels Map to DotSpark Map:
+  * Updated main heading from "Dot Wheels Map" to "DotSpark Map" for brand consistency
+  * Updated dialog title from "About Dot Wheels Map" to "About DotSpark Map"
+  * Updated section comment from "Dot Wheels Map Section" to "DotSpark Map Section"
+  * Maintained all existing functionality while improving brand alignment
 - June 15, 2025. Enhanced PWA installation detection in neuraStorage utility:
   * Added comprehensive PWA installation checking across platforms
   * Implemented cross-platform installation status synchronization

@@ -1253,14 +1253,14 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
 
-        {/* Dot Wheels Map Section */}
+        {/* DotSpark Map Section */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-4">
               <h2 className="text-lg sm:text-xl font-semibold flex items-center gap-2">
                 <Network className="w-4 h-4 sm:w-5 sm:h-5 text-amber-500" />
                 <span className="bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent">
-                  Dot Wheels Map
+                  DotSpark Map
                 </span>
                 <Dialog>
                   <DialogTrigger asChild>
@@ -1272,7 +1272,7 @@ const Dashboard: React.FC = () => {
                     <DialogHeader>
                       <DialogTitle className="flex items-center gap-2">
                         <Info className="w-5 h-5 text-amber-600" />
-                        About Dot Wheels Map
+                        About DotSpark Map
                       </DialogTitle>
                     </DialogHeader>
                     <div className="space-y-3 text-sm text-gray-700">
