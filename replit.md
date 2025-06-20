@@ -966,6 +966,13 @@ Changelog:
   * Added 3 individual scattered dots outside spark groups
   * Total display: 25 dots across 3 spark groups plus individual dots, demonstrating many-to-many relationships
   * System supports overlapping dot memberships for cross-spark insight generation
+- June 20, 2025. Enhanced spark visualization with random themes and selective connections:
+  * Updated spark themes to random topics: "Morning Clarity" (Coffee, Meditation, Rain, Exercise, Books), "Flow State" (Colors, Numbers, Dreams, Music), "Weekend Vibes" (Pizza, Walks, Friends)
+  * Maintained amber/orange color theme for all spark circles consistent with DotSpark branding
+  * Increased scattered individual dots from 3 to 7: Sunset, Phone, Garden, Grocery, Parking, Weather, Sleep
+  * Reduced dotted connection lines from 25% to 15% probability for more selective, organic visual connections
+  * Connection lines now span across spark groups and individual dots showing interconnectedness without overwhelming interface
+  * Demonstrates random dot groupings can create meaningful sparks regardless of topical similarity
 - June 15, 2025. Enhanced PWA installation detection in neuraStorage utility:
   * Added comprehensive PWA installation checking across platforms
   * Implemented cross-platform installation status synchronization

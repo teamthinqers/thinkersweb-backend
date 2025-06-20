@@ -461,20 +461,24 @@ const Dashboard: React.FC = () => {
       }
       previewWheels.push(ethicsSparkGroup);
 
-      // Add some individual scattered dots
-      const individualHeadings = ['Meditation', 'Travel', 'Music'];
+      // Add more individual scattered dots showing not all dots need grouping
+      const individualHeadings = ['Sunset', 'Phone', 'Garden', 'Grocery', 'Parking', 'Weather', 'Sleep'];
       const individualSummaries = [
-        'Daily mindfulness practices for mental clarity and emotional balance',
-        'Travel planning insights and cultural immersion experiences',
-        'Music theory fundamentals and creative composition techniques'
+        'Beautiful sunset moments creating unexpected moments of gratitude',
+        'Phone notifications disrupting focus and productivity patterns',
+        'Backyard gardening teaching patience and natural growth cycles',
+        'Grocery shopping revealing decision fatigue and choice overwhelm',
+        'Parking challenges in city leading to arrival stress management',
+        'Weather changes affecting mood and energy levels throughout day',
+        'Sleep quality patterns correlating with next-day performance'
       ];
 
-      for (let i = 0; i < 3; i++) {
+      for (let i = 0; i < 7; i++) {
         const dot: Dot = {
           id: `individual-${i + 1}`,
           oneWordSummary: individualHeadings[i],
           summary: individualSummaries[i],
-          anchor: `Personal insights and experiences related to ${individualHeadings[i].toLowerCase()} practices`,
+          anchor: `Random daily observation about ${individualHeadings[i].toLowerCase()} and life patterns`,
           pulse: emotions[Math.floor(Math.random() * emotions.length)],
           wheelId: '', // No wheel - individual dot
           timestamp: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
@@ -682,7 +686,7 @@ const Dashboard: React.FC = () => {
           
           // Create consistent connection logic based on dot IDs
           const connectionSeed = (seedX1 + seedY1 + seedX2 + seedY2) % 100;
-          if (connectionSeed < 25) { // 25% chance of connection for organic feel
+          if (connectionSeed < 15) { // 15% chance of connection for sparse, organic feel
             connections.push(
               <line
                 key={`${dot.id}-${otherDot.id}`}
