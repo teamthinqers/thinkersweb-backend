@@ -49,7 +49,7 @@ import ChatEntryForm from "@/components/chat/ChatEntryForm";
 import { StructuredFloatingDot } from "@/components/dotspark/StructuredFloatingDot";
 import { neuraStorage } from "@/lib/neuraStorage";
 import { Loader2 } from "lucide-react";
-import MockDashboard from "@/components/dashboard/MockDashboard";
+
 import { PWAInstallButton } from "@/components/ui/pwa-install-button";
 import { IosPwaInstallPrompt } from "@/components/ui/ios-pwa-install-prompt";
 import { isRunningAsStandalone } from "@/lib/pwaUtils";

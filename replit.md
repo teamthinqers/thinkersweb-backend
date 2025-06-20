@@ -128,6 +128,12 @@ Changelog:
   * Comprehensive intelligent chat system guides users through conversational dot creation
   * Visual dot proposal display with confirmation interface in chat
   * Seamless integration between chat interface and dot creation workflow
+- June 20, 2025. Complete elimination of demo user concept across entire application:
+  * Removed demo user fallback from WhatsApp integration - now requires proper user registration and authentication
+  * Deleted MockDashboard and MockDashboardHeader components as dashboard is now common for all users
+  * Updated WhatsApp processing to return registration prompt for unlinked phone numbers
+  * Cleaned up App.tsx imports and removed unused demo user references
+  * Dashboard system no longer uses demo user concept - unified experience for all authenticated users
 - June 13, 2025. Updated DotSpark logo implementation:
   * Added new logo icon (dotspark-logo-icon.jpeg) to public directory
   * Updated PWA header with icon + "DotSpark" text layout
