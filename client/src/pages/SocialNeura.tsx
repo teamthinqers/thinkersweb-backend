@@ -1,10 +1,20 @@
 import { ArrowLeft, Brain, Users, Zap, Network, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useLocation } from 'wouter';
 
 export default function SocialNeura() {
+  const [, setLocation] = useLocation();
+
   const handleBack = () => {
-    window.history.back();
+    // Check if user came from dot interface
+    const referrer = document.referrer;
+    
+    if (referrer.includes('/dot') || referrer.includes('/dot-capture')) {
+      setLocation('/dot');
+    } else {
+      window.history.back();
+    }
   };
 
   return (

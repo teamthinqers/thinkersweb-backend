@@ -146,6 +146,8 @@ Changelog:
   * Back button positioned in top-left corner and navigates users to home page
   * Anonymous users can explore core DotSpark functionality while authentication protects user-specific features
   * Maintained security for user data operations and personal functionality
+  * Fixed Social pages back button navigation to properly return to Dot interface when accessed from /dot route
+  * Updated both DotSpark Social and Social Neura pages with intelligent navigation based on referrer URL
 - June 13, 2025. Updated DotSpark logo implementation:
   * Added new logo icon (dotspark-logo-icon.jpeg) to public directory
   * Updated PWA header with icon + "DotSpark" text layout

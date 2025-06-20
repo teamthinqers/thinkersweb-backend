@@ -8,7 +8,15 @@ export default function Social() {
   const [, setLocation] = useLocation();
 
   const handleBack = () => {
-    window.history.back();
+    // Check if user came from dot interface
+    const referrer = document.referrer;
+    const currentOrigin = window.location.origin;
+    
+    if (referrer.includes('/dot') || referrer.includes('/dot-capture')) {
+      setLocation('/dot');
+    } else {
+      window.history.back();
+    }
   };
 
   return (
