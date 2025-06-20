@@ -129,26 +129,14 @@ export function setupAuth(app: Express) {
   
   console.log("Setting up authentication with session support");
   
-  // Create session store with error handling for database connectivity issues
-  let sessionStore;
-  try {
-    sessionStore = new PostgresSessionStore({ 
-      pool,
-      createTableIfMissing: true,
-      tableName: 'session',
-      disableTouch: false,
-      pruneSessionInterval: 15 * 60,
-    });
-  } catch (error) {
-    console.warn("Database session store unavailable, falling back to memory store:", error.message);
-    sessionStore = undefined; // Use default memory store
-  }
+  // Temporarily use memory store to avoid database connection issues
+  console.log("Using memory session store (temporary fix for database connectivity)");
 
   const sessionSettings: session.SessionOptions = {
     secret: sessionSecret,
-    resave: false, // Reduce database load when using fallback
-    saveUninitialized: false, // Only save sessions when needed
-    store: sessionStore,
+    resave: false,
+    saveUninitialized: false,
+    // store: undefined, // Use default memory store
     cookie: {
       secure: process.env.NODE_ENV === "production",
       // Set to 365 days by default for persistent sessions
