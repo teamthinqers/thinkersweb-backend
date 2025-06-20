@@ -17,15 +17,7 @@ type AuthContextType = {
 
 // Enhanced Firebase auth hook with persistence
 export function useAuth(): AuthContextType {
-  const [user, setUser] = useState<UserInfo | null>(() => {
-    // Try to restore user from localStorage on initialization
-    try {
-      const storedUser = localStorage.getItem('dotspark_user');
-      return storedUser ? JSON.parse(storedUser) : null;
-    } catch {
-      return null;
-    }
-  });
+  const [user, setUser] = useState<UserInfo | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {

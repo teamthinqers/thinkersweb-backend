@@ -49,15 +49,42 @@ import ChatEntryForm from "@/components/chat/ChatEntryForm";
 import { StructuredFloatingDot } from "@/components/dotspark/StructuredFloatingDot";
 import { neuraStorage } from "@/lib/neuraStorage";
 import { Loader2 } from "lucide-react";
+import { useAuth } from "@/hooks/use-auth";
 
 import { PWAInstallButton } from "@/components/ui/pwa-install-button";
 import { IosPwaInstallPrompt } from "@/components/ui/ios-pwa-install-prompt";
 import { isRunningAsStandalone } from "@/lib/pwaUtils";
 
 
-// Simple Protected route component - disabled to fix routing loops
+// Protected route component - requires authentication
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  // Authentication temporarily disabled to prevent infinite routing loops
+  const { user, isLoading } = useAuth();
+  const [, setLocation] = useLocation();
+
+  useEffect(() => {
+    if (!isLoading && !user) {
+      setLocation("/auth");
+    }
+  }, [user, isLoading, setLocation]);
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen">
+        <Loader2 className="h-8 w-8 animate-spin text-primary mb-4" />
+        <p className="text-center text-muted-foreground">Loading...</p>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen">
+        <Loader2 className="h-8 w-8 animate-spin text-primary mb-4" />
+        <p className="text-center text-muted-foreground">Redirecting to login...</p>
+      </div>
+    );
+  }
+
   return <>{children}</>;
 }
 
@@ -148,15 +175,15 @@ function Router() {
       <Route path="/auth" component={AuthPage} />
       
       {/* Dashboard route - protected route */}
-      <Route path="/dashboard" component={() => <AppWithLayout />} />
+      <Route path="/dashboard" component={() => <ProtectedRoute><AppWithLayout /></ProtectedRoute>} />
       
       {/* Other protected routes */}
-      <Route path="/entries" component={() => <AppWithLayout />} />
-      <Route path="/insights" component={() => <AppWithLayout />} />
-      <Route path="/favorites" component={() => <AppWithLayout />} />
-      <Route path="/network" component={() => <AppWithLayout />} />
-      <Route path="/settings" component={() => <AppWithLayout />} />
-      <Route path="/profile" component={() => <AppWithLayout />} />
+      <Route path="/entries" component={() => <ProtectedRoute><AppWithLayout /></ProtectedRoute>} />
+      <Route path="/insights" component={() => <ProtectedRoute><AppWithLayout /></ProtectedRoute>} />
+      <Route path="/favorites" component={() => <ProtectedRoute><AppWithLayout /></ProtectedRoute>} />
+      <Route path="/network" component={() => <ProtectedRoute><AppWithLayout /></ProtectedRoute>} />
+      <Route path="/settings" component={() => <ProtectedRoute><AppWithLayout /></ProtectedRoute>} />
+      <Route path="/profile" component={() => <ProtectedRoute><AppWithLayout /></ProtectedRoute>} />
       <Route path="/social" component={Social} />
       <Route path="/social-neura" component={SocialNeura} />
       <Route path="/sparktest" component={SparkTest} />
@@ -173,8 +200,8 @@ function Router() {
       <Route path="/activate-neura">
         {() => <MyNeura />}
       </Route>
-      <Route path="/my-neura" component={MyNeura} />
-      <Route path="/neura" component={MyNeura} />
+      <Route path="/my-neura" component={() => <ProtectedRoute><MyNeura /></ProtectedRoute>} />
+      <Route path="/neura" component={() => <ProtectedRoute><MyNeura /></ProtectedRoute>} />
       {/* DotSpark tuning section pages - Order: Core, Cognitive, Learning, Expertise */}
       <Route path="/dotspark-tuning/core" component={NeuraTuningCore} />
       <Route path="/dotspark-tuning/cognitive" component={NeuraTuningCognitive} />
@@ -204,7 +231,7 @@ function Router() {
       <Route path="/install-guide" component={PwaInstallGuide} />
       <Route path="/testing" component={Testing} />
       <Route path="/test-auth" component={TestGoogleAuth} />
-      <Route path="/chat" component={ChatPage} />
+      <Route path="/chat" component={() => <ProtectedRoute><ChatPage /></ProtectedRoute>} />
       <Route component={NotFound} />
     </Switch>
   );
