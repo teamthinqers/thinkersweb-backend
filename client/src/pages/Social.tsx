@@ -21,10 +21,11 @@ export default function Social() {
             onClick={handleBack}
             variant="outline"
             size="sm"
-            className="absolute left-0 top-0 flex items-center gap-2 border-amber-200 hover:bg-amber-50 hover:border-amber-300"
+            className="absolute left-0 top-0 flex items-center gap-2 border-amber-200 hover:bg-amber-50 hover:border-amber-300 z-10"
+            style={{ touchAction: 'manipulation' }}
           >
             <ArrowLeft className="h-4 w-4" />
-            Back
+            <span className="hidden sm:inline">Back</span>
           </Button>
           <div className="flex items-center justify-center gap-3 mb-4">
             <div className="relative">

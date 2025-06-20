@@ -1479,17 +1479,17 @@ const Dashboard: React.FC = () => {
                 </Popover>
               </h2>
               
-              {/* Recent Dots Filter */}
+              {/* Recent Dots Filter and Social Button */}
               <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
                 <button
                   onClick={() => setShowRecentFilter(!showRecentFilter)}
-                  className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg font-medium transition-all duration-200 text-sm sm:text-base ${
+                  className={`flex items-center gap-2 ${isPWA ? 'px-2 py-1.5 text-xs' : 'px-3 sm:px-4 py-2 text-sm sm:text-base'} rounded-lg font-medium transition-all duration-200 ${
                     showRecentFilter 
                       ? 'bg-orange-600 hover:bg-orange-700 text-white shadow-lg hover:shadow-xl transform hover:scale-105' 
                       : 'bg-orange-500 hover:bg-orange-600 text-white shadow-md hover:shadow-lg'
                   }`}
                 >
-                  <Clock className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <Clock className={`${isPWA ? 'w-3 h-3' : 'w-3 h-3 sm:w-4 sm:h-4'}`} />
                   <span className="font-semibold whitespace-nowrap">Recent Dots</span>
                   {dots.length > 0 && (
                     <Badge className={`border-0 ml-1 text-xs ${
@@ -1500,6 +1500,15 @@ const Dashboard: React.FC = () => {
                       {Math.min(dots.length, recentDotsCount)}
                     </Badge>
                   )}
+                </button>
+                
+                {/* Social Button */}
+                <button
+                  onClick={() => window.open('/social-neura', '_blank')}
+                  className={`flex items-center gap-2 ${isPWA ? 'px-2 py-1.5 text-xs' : 'px-3 sm:px-4 py-2 text-sm sm:text-base'} rounded-lg font-medium transition-all duration-200 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white shadow-md hover:shadow-lg hover:scale-105`}
+                >
+                  <Brain className={`${isPWA ? 'w-3 h-3' : 'w-3 h-3 sm:w-4 sm:h-4'} animate-pulse`} />
+                  <span className="font-semibold whitespace-nowrap">Social</span>
                 </button>
                 
                 {showRecentFilter && (
