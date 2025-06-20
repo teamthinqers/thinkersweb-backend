@@ -1119,57 +1119,60 @@ const Dashboard: React.FC = () => {
               {/* Strategic preview connections - connecting actual dots */}
               {previewMode && displayDots.length > 1 && (
                 <>
-                  {/* Connect dots 0-2, 1-4, 2-6, etc. for strategic visualization */}
-                  {displayDots.slice(0, 9).map((_, idx) => {
-                    const pairs = [[0, 2], [1, 4], [2, 6], [3, 8], [0, 5], [4, 7], [1, 9], [6, 11], [3, 10]];
-                    const [i, j] = pairs[idx] || [0, 1];
+                  {/* Connect dots strategically - only valid indices */}
+                  {(() => {
+                    const maxDots = displayDots.length;
+                    const validPairs = [
+                      [0, 2], [1, 3], [2, 4], [0, 5], [1, 6], 
+                      [3, 7], [4, 8], [5, 9], [0, 10]
+                    ].filter(([i, j]) => i < maxDots && j < maxDots).slice(0, 9);
                     
-                    if (i >= displayDots.length || j >= displayDots.length) return null;
-                    
-                    // Calculate positions for dots i and j
-                    const calculateDotPosition = (dot: any, index: number) => {
-                      const dotId = String(dot.id || index);
-                      const seedX = dotId.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
-                      const seedY = dotId.split('').reverse().reduce((a, b) => a + b.charCodeAt(0), 0);
-                      
-                      if (dot.wheelId && dot.wheelId !== '') {
-                        const wheel = displayWheels.find(w => w.id === dot.wheelId);
-                        if (wheel) {
-                          const dotsInWheel = displayDots.filter(d => d.wheelId === dot.wheelId);
-                          const dotIndexInWheel = dotsInWheel.findIndex(d => d.id === dot.id);
-                          const radius = 60;
-                          const angle = (dotIndexInWheel * 2 * Math.PI) / dotsInWheel.length;
+                    return validPairs.map(([i, j], idx) => {
+                      // Calculate positions for dots i and j
+                      const calculateDotPosition = (dot: any, index: number) => {
+                        const dotId = String(dot.id || index);
+                        const seedX = dotId.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
+                        const seedY = dotId.split('').reverse().reduce((a, b) => a + b.charCodeAt(0), 0);
+                        
+                        if (dot.wheelId && dot.wheelId !== '') {
+                          const wheel = displayWheels.find(w => w.id === dot.wheelId);
+                          if (wheel) {
+                            const dotsInWheel = displayDots.filter(d => d.wheelId === dot.wheelId);
+                            const dotIndexInWheel = dotsInWheel.findIndex(d => d.id === dot.id);
+                            const radius = 60;
+                            const angle = (dotIndexInWheel * 2 * Math.PI) / dotsInWheel.length;
+                            return {
+                              x: wheel.position.x + Math.cos(angle) * radius + 24,
+                              y: wheel.position.y + Math.sin(angle) * radius + 24
+                            };
+                          }
                           return {
-                            x: wheel.position.x + Math.cos(angle) * radius + 24,
-                            y: wheel.position.y + Math.sin(angle) * radius + 24
+                            x: 100 + (seedX % 900) + (index * 67) % 400 + 24,
+                            y: 100 + (seedY % 600) + (index * 83) % 300 + 24
                           };
                         }
                         return {
-                          x: 100 + (seedX % 900) + (index * 67) % 400 + 24,
-                          y: 100 + (seedY % 600) + (index * 83) % 300 + 24
+                          x: 80 + (seedX % 1000) + (index * 137) % 800 + 24,
+                          y: 80 + (seedY % 600) + (index * 97) % 500 + 24
                         };
-                      }
-                      return {
-                        x: 80 + (seedX % 1000) + (index * 137) % 800 + 24,
-                        y: 80 + (seedY % 600) + (index * 97) % 500 + 24
                       };
-                    };
-                    
-                    const pos1 = calculateDotPosition(displayDots[i], i);
-                    const pos2 = calculateDotPosition(displayDots[j], j);
-                    
-                    return (
-                      <line 
-                        key={`preview-connection-${idx}`}
-                        x1={pos1.x} y1={pos1.y} 
-                        x2={pos2.x} y2={pos2.y} 
-                        stroke="#F59E0B" 
-                        strokeWidth="1.5" 
-                        strokeDasharray="6,3" 
-                        opacity="0.6" 
-                      />
-                    );
-                  })}
+                      
+                      const pos1 = calculateDotPosition(displayDots[i], i);
+                      const pos2 = calculateDotPosition(displayDots[j], j);
+                      
+                      return (
+                        <line 
+                          key={`preview-connection-${idx}`}
+                          x1={pos1.x} y1={pos1.y} 
+                          x2={pos2.x} y2={pos2.y} 
+                          stroke="#F59E0B" 
+                          strokeWidth="1.5" 
+                          strokeDasharray="6,3" 
+                          opacity="0.6" 
+                        />
+                      );
+                    });
+                  })()}
                 </>
               )}
             </svg>
