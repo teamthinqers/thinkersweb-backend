@@ -286,7 +286,7 @@ export async function processWhatsAppMessage(from: string, messageText: string):
     else if (isDefaultPrompt && !isFirstTimeUser && !isActivationAttempt) {
       console.log(`Default prompt detected from returning user ${from} (not an activation attempt)`);
       const returningUserGreeting = 
-        "Hi ThinQer, please share what's on your mind and I'll organize it into a three-layer dot (Summary, Anchor, Pulse) for you.";
+        "Hi ThinQer, please share what's on your mind and I'll organize it into a three-layer dot (Summary, Anchor, Pulse) for you";
       
       await sendWhatsAppReply(from, returningUserGreeting);
       
