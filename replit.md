@@ -148,6 +148,9 @@ Changelog:
   * Maintained security for user data operations and personal functionality
   * Fixed Social pages back button navigation to properly return to Dot interface when accessed from /dot route
   * Updated both DotSpark Social and Social Neura pages with intelligent navigation based on referrer URL
+  * Enhanced PWA-specific navigation: DotSpark Social button in PWA Dot interface sets localStorage flag for proper back navigation
+  * Social pages now check localStorage flag specifically for PWA users coming from Dot interface
+  * All other navigation instances use standard browser back functionality as expected
 - June 13, 2025. Updated DotSpark logo implementation:
   * Added new logo icon (dotspark-logo-icon.jpeg) to public directory
   * Updated PWA header with icon + "DotSpark" text layout

@@ -233,7 +233,11 @@ export default function DotCapture() {
                   </Button>
 
                   <Button
-                    onClick={() => window.open("https://www.dotspark.in/social", "_blank")}
+                    onClick={() => {
+                      // Set flag for PWA navigation from Dot interface
+                      localStorage.setItem('dotSocialNavigation', 'true');
+                      window.open("https://www.dotspark.in/social", "_blank");
+                    }}
                     className="w-full h-16 bg-gradient-to-r from-orange-500 via-red-500 to-orange-600 hover:from-orange-600 hover:via-red-600 hover:to-orange-700 text-white rounded-2xl shadow-xl border-0 transform transition-all duration-300 hover:scale-105 hover:shadow-2xl group relative overflow-hidden"
                   >
                     {/* Button glow effect */}

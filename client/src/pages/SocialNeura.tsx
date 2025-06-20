@@ -7,10 +7,13 @@ export default function SocialNeura() {
   const [, setLocation] = useLocation();
 
   const handleBack = () => {
-    // Check if user came from dot interface
-    const referrer = document.referrer;
+    // Check if user came from PWA dot interface
+    const fromDotInterface = localStorage.getItem('dotSocialNavigation');
     
-    if (referrer.includes('/dot') || referrer.includes('/dot-capture')) {
+    if (fromDotInterface === 'true') {
+      // Clear the flag
+      localStorage.removeItem('dotSocialNavigation');
+      // Navigate back to dot interface
       setLocation('/dot');
     } else {
       window.history.back();
