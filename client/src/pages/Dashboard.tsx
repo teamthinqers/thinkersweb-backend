@@ -425,9 +425,9 @@ const Dashboard: React.FC = () => {
     const displayDots = previewMode ? previewDots : filteredDots;
     const totalDots = displayDots.length;
     
-    // Count actual formed wheels - only wheels with 9+ dots of same category
-    const actualFormedWheels = previewMode ? previewWheels.length : 0; // Real users haven't formed complete wheels yet
-    const totalWheels = actualFormedWheels;
+    // Count actual formed sparks - user-grouped dots via spark interface
+    const actualFormedSparks = previewMode ? previewWheels.length : 0; // Real users will create sparks via spark interface
+    const totalWheels = actualFormedSparks;
 
     if (!previewMode && wheels.length === 0 && actualDots.length === 0) {
       // Show empty state with preview toggle
@@ -730,7 +730,7 @@ const Dashboard: React.FC = () => {
             Dots: {totalDots}
           </button>
           <button className="bg-white/90 backdrop-blur rounded-lg px-2 py-1 border-2 border-amber-200 text-xs font-semibold text-amber-800 hover:bg-amber-50 transition-colors whitespace-nowrap">
-            Wheels: {totalWheels}
+            Sparks: {totalWheels}
           </button>
         </div>
 
@@ -973,10 +973,26 @@ const Dashboard: React.FC = () => {
                   }}
                 />
                 
-                {/* Wheel label */}
+                {/* Blinking Spark Symbol on top of wheel */}
                 <div 
-                  className="absolute top-[-40px] left-1/2 transform -translate-x-1/2 text-center"
+                  className="absolute top-[-60px] left-1/2 transform -translate-x-1/2 flex flex-col items-center"
                 >
+                  {/* Spark symbol with blinking animation */}
+                  <div className="relative mb-2">
+                    <div className="animate-pulse">
+                      <svg className="w-8 h-8 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                      </svg>
+                    </div>
+                    {/* Blinking ring effect */}
+                    <div className="absolute inset-0 animate-ping">
+                      <svg className="w-8 h-8 text-yellow-300 opacity-75" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                      </svg>
+                    </div>
+                  </div>
+                  
+                  {/* Wheel label */}
                   <div 
                     className="text-sm font-bold px-3 py-1 rounded-full text-white shadow-lg"
                     style={{ backgroundColor: wheel.color }}
