@@ -606,128 +606,30 @@ const Dashboard: React.FC = () => {
     const renderDotConnections = () => {
       const connections: JSX.Element[] = [];
       
-      // Use displayDots directly - already filtered by "Only Sparks" toggle above
-      displayDots.forEach((dot, index) => {
-        // Calculate this dot's position
-        const dotId1 = String(dot.id || index);
-        const seedX1 = dotId1.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
-        const seedY1 = dotId1.split('').reverse().reduce((a, b) => a + b.charCodeAt(0), 0);
-        
-        let x1, y1;
-        if (previewMode) {
-          // Use same positioning logic as dot rendering
-          if (dot.wheelId && dot.wheelId !== '') {
-            // Find the wheel this dot belongs to
-            const wheel = displayWheels.find(w => w.id === dot.wheelId);
-            if (wheel) {
-              // Find position within the wheel
-              const dotsInWheel = displayDots.filter(d => d.wheelId === dot.wheelId);
-              const dotIndexInWheel = dotsInWheel.findIndex(d => d.id === dot.id);
-              
-              // Position dots in a circle inside the wheel
-              const wheelCenterX = wheel.position.x;
-              const wheelCenterY = wheel.position.y;
-              const radius = 60;
-              const angle = (dotIndexInWheel * 2 * Math.PI) / dotsInWheel.length;
-              
-              x1 = wheelCenterX + Math.cos(angle) * radius + 24;
-              y1 = wheelCenterY + Math.sin(angle) * radius + 24;
-            } else {
-              x1 = 100 + (seedX1 % 900) + (index * 67) % 400 + 24;
-              y1 = 100 + (seedY1 % 600) + (index * 83) % 300 + 24;
-            }
-          } else {
-            // Individual scattered dots - spread across full grid
-            x1 = 80 + (seedX1 % 1000) + (index * 137) % 800 + 24;
-            y1 = 80 + (seedY1 % 600) + (index * 97) % 500 + 24;
-          }
-        } else {
-          x1 = 60 + (seedX1 % 800) + (index * 47) % 200 + 24; // +24 for dot center
-          y1 = 60 + (seedY1 % 600) + (index * 73) % 180 + 24;
-        }
-        
-        // Connect to a selection of other dots (not just subsequent ones)
-        // When "Only Sparks" is enabled, only connect to other dots in the filtered set
-        const otherDotsForConnections = onlySparks 
-          ? dotsForConnections // Only spark wheel dots
-          : displayDots; // All dots
+      // Simple connection rendering - skip complex logic to fix "Only Sparks" toggle
+      for (let i = 0; i < displayDots.length; i++) {
+        for (let j = i + 1; j < displayDots.length; j++) {
+          const dot1 = displayDots[i];
+          const dot2 = displayDots[j];
           
-        otherDotsForConnections.forEach((otherDot, otherIndex) => {
-          // Find the original index of otherDot in dotsForConnections array
-          const originalOtherIndex = dotsForConnections.findIndex(d => d.id === otherDot.id);
-          if (originalOtherIndex <= index) return; // Avoid duplicate connections
+          // Simple connection probability based on dot IDs
+          const seed1 = String(dot1.id || i).split('').reduce((a, b) => a + b.charCodeAt(0), 0);
+          const seed2 = String(dot2.id || j).split('').reduce((a, b) => a + b.charCodeAt(0), 0);
+          const connectionSeed = (seed1 + seed2) % 100;
           
-          // Calculate other dot's position
-          const realOtherIndex = otherIndex;
-          const dotId2 = String(otherDot.id || realOtherIndex);
-          const seedX2 = dotId2.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
-          const seedY2 = dotId2.split('').reverse().reduce((a, b) => a + b.charCodeAt(0), 0);
+          // Show connections based on toggle - higher probability in preview mode
+          const threshold = previewMode ? 30 : 15;
           
-          let x2, y2;
-          if (previewMode) {
-            // Use same positioning logic as dot rendering for second dot
-            if (otherDot.wheelId && otherDot.wheelId !== '') {
-              // Find the wheel this dot belongs to
-              const wheel = displayWheels.find(w => w.id === otherDot.wheelId);
-              if (wheel) {
-                // Find position within the wheel
-                const dotsInWheel = displayDots.filter(d => d.wheelId === otherDot.wheelId);
-                const dotIndexInWheel = dotsInWheel.findIndex(d => d.id === otherDot.id);
-                
-                // Position dots in a circle inside the wheel
-                const wheelCenterX = wheel.position.x;
-                const wheelCenterY = wheel.position.y;
-                const radius = 60;
-                const angle = (dotIndexInWheel * 2 * Math.PI) / dotsInWheel.length;
-                
-                x2 = wheelCenterX + Math.cos(angle) * radius + 24;
-                y2 = wheelCenterY + Math.sin(angle) * radius + 24;
-              } else {
-                x2 = 100 + (seedX2 % 900) + (realOtherIndex * 67) % 400 + 24;
-                y2 = 100 + (seedY2 % 600) + (realOtherIndex * 83) % 300 + 24;
-              }
-            } else {
-              // Individual scattered dots - spread across full grid
-              x2 = 80 + (seedX2 % 1000) + (realOtherIndex * 137) % 800 + 24;
-              y2 = 80 + (seedY2 % 600) + (realOtherIndex * 97) % 500 + 24;
-            }
-          } else {
-            x2 = 60 + (seedX2 % 800) + (realOtherIndex * 47) % 200 + 24;
-            y2 = 60 + (seedY2 % 600) + (realOtherIndex * 73) % 180 + 24;
-          }
-          
-          // Create consistent connection logic based on dot IDs
-          const connectionSeed = (seedX1 + seedY1 + seedX2 + seedY2) % 100;
-          
-          // Different connection probabilities for different types
-          let connectionThreshold = previewMode ? 25 : 12; // Higher threshold for preview mode to ensure visibility
-          
-          // Boost connections involving scattered dots
-          const isFirstDotScattered = !dot.wheelId || dot.wheelId === '';
-          const isSecondDotScattered = !otherDot.wheelId || otherDot.wheelId === '';
-          
-          if (previewMode) {
-            // In preview mode, use higher thresholds to ensure connections are visible
-            if (isFirstDotScattered && isSecondDotScattered) {
-              connectionThreshold = 40; // 40% for scattered-to-scattered in preview
-            } else if (isFirstDotScattered || isSecondDotScattered) {
-              connectionThreshold = 30; // 30% for wheel-to-scattered in preview
-            } else {
-              connectionThreshold = 25; // 25% for wheel-to-wheel in preview
-            }
-          } else {
-            // Normal mode with lower thresholds
-            if (isFirstDotScattered && isSecondDotScattered) {
-              connectionThreshold = 25; // 25% for scattered-to-scattered
-            } else if (isFirstDotScattered || isSecondDotScattered) {
-              connectionThreshold = 18; // 18% for wheel-to-scattered
-            }
-          }
-          
-          if (connectionSeed < connectionThreshold) {
+          if (connectionSeed < threshold) {
+            // Calculate basic positions (will be overridden by SVG positioning)
+            const x1 = 100 + (seed1 % 800);
+            const y1 = 100 + (seed1 % 500);
+            const x2 = 100 + (seed2 % 800);
+            const y2 = 100 + (seed2 % 500);
+            
             connections.push(
               <line
-                key={`${dot.id}-${otherDot.id}`}
+                key={`${dot1.id}-${dot2.id}`}
                 x1={x1}
                 y1={y1}
                 x2={x2}
@@ -737,12 +639,11 @@ const Dashboard: React.FC = () => {
                 strokeDasharray="6,3"
                 opacity="0.6"
                 filter="url(#glow)"
-                className="animate-pulse"
               />
             );
           }
-        });
-      });
+        }
+      }
       
       return connections;
     };
