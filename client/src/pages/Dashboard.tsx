@@ -42,6 +42,7 @@ interface Wheel {
 }
 
 const Dashboard: React.FC = () => {
+  const [, setLocation] = useLocation();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedWheel, setSelectedWheel] = useState<string | null>(null);
   const [viewFullDot, setViewFullDot] = useState<Dot | null>(null);

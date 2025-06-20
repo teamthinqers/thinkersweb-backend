@@ -212,7 +212,11 @@ export default function DotCapture() {
                   </Button>
                   
                   <Button
-                    onClick={() => window.open("https://www.dotspark.in/dashboard", "_blank")}
+                    onClick={() => {
+                      // Set flag for PWA navigation from Dot interface to Dashboard
+                      localStorage.setItem('dotDashboardNavigation', 'true');
+                      setLocation('/dashboard');
+                    }}
                     className="w-full h-16 bg-gradient-to-r from-amber-600 via-orange-600 to-amber-700 hover:from-amber-700 hover:via-orange-700 hover:to-amber-800 text-white rounded-2xl shadow-xl border-0 transform transition-all duration-300 hover:scale-105 hover:shadow-2xl group relative overflow-hidden"
                   >
                     {/* Button glow effect */}
