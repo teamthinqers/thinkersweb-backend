@@ -477,20 +477,8 @@ const Dashboard: React.FC = () => {
     
     // Apply "Only Sparks" filter if enabled (works in both modes)
     if (onlySparks) {
-      console.log('Only Sparks Filter Debug:', {
-        previewMode,
-        beforeFilter: baseDotsToDisplay.length,
-        sampleDots: baseDotsToDisplay.slice(0, 3).map(d => ({
-          id: d.id,
-          wheelId: d.wheelId,
-          hasWheelId: !!(d.wheelId && d.wheelId !== '')
-        }))
-      });
-      
       // Show only dots that belong to spark wheels (have wheelId)
       baseDotsToDisplay = baseDotsToDisplay.filter(dot => dot.wheelId && dot.wheelId !== '');
-      
-      console.log('After Only Sparks Filter:', baseDotsToDisplay.length);
     }
     
     const displayDots = baseDotsToDisplay;
@@ -1490,7 +1478,7 @@ const Dashboard: React.FC = () => {
                       </DialogTitle>
                     </DialogHeader>
                     <div className="space-y-3 text-sm text-gray-700">
-                      <p>You can see the dots and sparks you saved in this grid.</p>
+                      <p>You can see the dots and sparks you saved in this grid. The dots saved in Natural mode will have orange and amber color codes while the ones saved using AI mode will have a purple color code.</p>
                     </div>
                   </DialogContent>
                 </Dialog>
