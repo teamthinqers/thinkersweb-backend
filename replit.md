@@ -961,33 +961,6 @@ Changelog:
   * Cleaned up debugging console logs for better performance
   * Both toggle sequences now work independently: Preview → Only Sparks and Only Sparks → Preview
   * Created stable backup version "magic_v1" for future reference
-- June 20, 2025. Removed Social Neura concept, keeping only DotSpark Social:
-  * Removed Social button from dashboard header (both mobile and desktop)
-  * Removed Social Neura menu item from sidebar navigation
-  * Simplified social architecture to focus solely on DotSpark Social platform
-  * Application now has single unified social section without neural component separation
-- June 20, 2025. Enhanced dashboard with Social Brain filtering placeholder and navigation:
-  * Added Social button with brain icon next to Recent Dots button as placeholder for future social brain filtering
-  * Social button displays purple theme with "Soon" badge and disabled state
-  * Added DotSpark Social to sidebar menu with Users icon and orange color theme
-  * Fixed PWA back button functionality in DotSpark Social page using display-mode detection
-  * Enhanced cross-platform navigation consistency for social features
-- June 20, 2025. Optimized PWA button layout and sizing:
-  * Positioned Social button below Recent Dots button in PWA mode for better space utilization
-  * Reduced button sizes in PWA: smaller padding (px-2 py-1.5) and text size (text-xs) for mobile optimization
-  * Desktop maintains larger button sizes (px-4 py-2, text-base) for better visibility
-  * Enhanced responsive design with vertical stacking on mobile, horizontal on desktop
-- June 20, 2025. Added Social button back to header navigation:
-  * Added Social button with brain icon to dashboard header that redirects to DotSpark Social page
-  * Added Social button to PWA header with orange-red gradient styling and animated pulse effect
-  * Both desktop and PWA headers now have consistent Social access alongside existing navigation
-  * Maintained orange-red color theme with Brain icon for visual consistency across platforms
-- June 20, 2025. Standardized Social button icons across application:
-  * Dashboard header Social button: Brain icon (social brain filtering context)
-  * Dashboard placeholder Social button: Brain icon (social brain filtering placeholder)
-  * All other Social buttons: Users icon (PWA header, sidebar menu for general DotSpark Social)
-  * Maintains visual distinction between social brain filtering (Brain) and general social features (Users)
-  * Brain icons indicate social brain filtering functionality, Users icons indicate general DotSpark Social access
 - June 19, 2025. Renamed Dot Wheels Map to DotSpark Map:
   * Updated main heading from "Dot Wheels Map" to "DotSpark Map" for brand consistency
   * Updated dialog title from "About Dot Wheels Map" to "About DotSpark Map"

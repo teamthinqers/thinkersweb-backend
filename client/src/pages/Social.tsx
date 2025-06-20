@@ -8,14 +8,7 @@ export default function Social() {
   const [, setLocation] = useLocation();
 
   const handleBack = () => {
-    // Check if we're in PWA mode or if history.back() won't work
-    if (window.history.length <= 1 || window.matchMedia('(display-mode: standalone)').matches) {
-      // In PWA mode or no history, navigate to dashboard
-      setLocation("/dashboard");
-    } else {
-      // Normal browser mode with history
-      window.history.back();
-    }
+    window.history.back();
   };
 
   return (

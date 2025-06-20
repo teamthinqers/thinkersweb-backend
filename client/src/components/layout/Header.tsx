@@ -203,13 +203,6 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
             </div>
             
             <div className="flex items-center space-x-2">
-              {/* Social button */}
-              <Link href="/social">
-                <div className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white h-9 w-9 p-0 shadow-md rounded-md flex items-center justify-center">
-                  <Users className="h-5 w-5" />
-                </div>
-              </Link>
-              
               {/* Neura status indicator - just brain icon with green indicator */}
               <div className="bg-gradient-to-r from-amber-700 to-primary text-white h-9 w-9 p-0 shadow-md rounded-md flex items-center justify-center">
                 <div className="relative">
@@ -218,7 +211,23 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 </div>
               </div>
               
-
+              {/* Social Neura button with brain icon */}
+              <Button
+                variant="ghost"
+                size="sm"
+                className="bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-md hover:bg-gradient-to-r hover:from-orange-600 hover:to-red-600 transition-all duration-300 ml-2"
+                onClick={() => setLocation("/social-neura")}
+              >
+                <div className="flex items-center gap-1">
+                  <div className="relative">
+                    <Brain className="h-4 w-4 animate-pulse hover:animate-bounce transition-all duration-300" />
+                    <div className="absolute inset-0 animate-ping opacity-30">
+                      <Brain className="h-4 w-4" />
+                    </div>
+                  </div>
+                  <span className="text-xs">Social</span>
+                </div>
+              </Button>
               
               {/* Profile button - Mobile */}
               <DropdownMenu>
@@ -326,7 +335,23 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 </div>
               </Button>
               
-
+              {/* Social Neura button with brain icon */}
+              <Button
+                variant="ghost"
+                size="sm"
+                className="mr-2 bg-gradient-to-r from-red-500 to-orange-600 text-white shadow-md hover:bg-gradient-to-r hover:from-red-600 hover:to-orange-700 transition-all duration-300"
+                onClick={() => setLocation("/social-neura")}
+              >
+                <div className="flex items-center gap-2">
+                  <div className="relative">
+                    <Brain className="h-5 w-5 animate-pulse hover:animate-bounce transition-all duration-300" />
+                    <div className="absolute inset-0 animate-ping opacity-30">
+                      <Brain className="h-5 w-5" />
+                    </div>
+                  </div>
+                  <span className="text-sm font-medium">Social</span>
+                </div>
+              </Button>
               
               {/* Profile button - Desktop */}
               <DropdownMenu>

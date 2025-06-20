@@ -7,8 +7,7 @@ import {
   Home, 
   Brain,
   Sparkles,
-  Shield,
-  Users
+  Shield
 } from "lucide-react";
 import { neuraStorage } from "@/lib/neuraStorage";
 
@@ -33,7 +32,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isMobile, onNewEntry
     { icon: Home, label: "Home", path: "/" },
     { icon: "dotspark-logo", label: "My DotSpark", path: "/sectioned-dotspark-tuning", isSpecial: true, showActivationSpark: true },
     { icon: Brain, label: "My Neura", path: "/my-neura", showActivationDot: true },
-    { icon: Users, label: "DotSpark Social", path: "/social", showSocialIcon: true },
+    { icon: Brain, label: "Social Neura", path: "/social-neura", showAnimatedBrain: true },
   ];
 
   const sidebarClasses = isMobile
@@ -84,8 +83,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isMobile, onNewEntry
                             ? "text-amber-600 dark:text-amber-400"
                             : item.label === "My Neura"
                               ? "text-amber-600 dark:text-amber-400"
-                              : item.label === "DotSpark Social"
-                                ? "text-orange-600 dark:text-orange-400"
+                              : item.label === "Social Neura"
+                                ? "text-red-600 dark:text-red-400 animate-pulse"
                                 : "text-gray-500 dark:text-gray-400"
                         }`, 
                         size: 20
