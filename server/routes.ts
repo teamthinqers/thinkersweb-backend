@@ -465,7 +465,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Enhanced intelligent chat endpoint for conversational dot creation
   app.post(`${apiPrefix}/chat/intelligent`, async (req: AuthenticatedRequest, res: Response) => {
     try {
-      const userId = req.user?.id || req.session?.userId || 1;
+      const userId = req.user?.id || req.session?.userId;
+      
+      if (!userId) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
       const { message, messages = [], action = 'chat' } = req.body;
 
       if (!message) {
@@ -532,7 +536,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Legacy chat endpoint - kept for backward compatibility
   app.post(`${apiPrefix}/chat/create-dot`, async (req: AuthenticatedRequest, res: Response) => {
     try {
-      const userId = req.user?.id || req.session?.userId || 1;
+      const userId = req.user?.id || req.session?.userId;
+      
+      if (!userId) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
       const { message, messages = [] } = req.body;
 
       if (!message) {
@@ -581,7 +589,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Delete a specific dot
   app.delete(`${apiPrefix}/dots/:id`, async (req: AuthenticatedRequest, res: Response) => {
     try {
-      const userId = req.user?.id || req.session?.userId || 1;
+      const userId = req.user?.id || req.session?.userId;
+      
+      if (!userId) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
       const dotId = parseInt(req.params.id);
 
       if (!dotId) {

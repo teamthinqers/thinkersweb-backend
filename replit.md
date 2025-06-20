@@ -958,6 +958,12 @@ Changelog:
   * Implemented mouse wheel zoom for browser and zoom level display (50%-200%)
   * Added tighter boundary constraints to prevent navigation beyond grid limits
   * Enhanced DotSpark Map with comprehensive zoom and navigation control panel
+- June 20, 2025. Removed automatic demo user sign-in functionality:
+  * Eliminated demo user fallback (userId || 1) from all API endpoints
+  * Users accessing Neura section without authentication now receive proper 401 authentication required responses
+  * Removed unwanted automatic demo user behavior when accessing protected features
+  * Enhanced security by requiring explicit authentication for all dot and chat operations
+  * Preview mode remains accessible to all users for demonstration purposes
   * Fixed PWA button overlap by repositioning zoom controls below preview toggle on mobile
   * Optimized zoom control sizing for mobile with smaller icons and compact spacing
 - June 20, 2025. Fixed DotSpark Map toggle interaction issues (Magic Version 1):
