@@ -954,6 +954,13 @@ Changelog:
   * Enhanced DotSpark Map with comprehensive zoom and navigation control panel
   * Fixed PWA button overlap by repositioning zoom controls below preview toggle on mobile
   * Optimized zoom control sizing for mobile with smaller icons and compact spacing
+- June 20, 2025. Fixed DotSpark Map toggle interaction issues (Magic Version 1):
+  * Fixed Preview toggle automatically switching off when "Only Sparks" toggle is activated
+  * Updated DotSpark Map info icon to use small popover instead of full dialog
+  * Added color coding explanation: Natural mode dots (orange/amber), AI mode dots (purple)
+  * Cleaned up debugging console logs for better performance
+  * Both toggle sequences now work independently: Preview → Only Sparks and Only Sparks → Preview
+  * Created stable backup version "magic_v1" for future reference
 - June 19, 2025. Renamed Dot Wheels Map to DotSpark Map:
   * Updated main heading from "Dot Wheels Map" to "DotSpark Map" for brand consistency
   * Updated dialog title from "About Dot Wheels Map" to "About DotSpark Map"

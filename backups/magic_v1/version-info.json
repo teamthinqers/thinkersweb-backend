@@ -1,0 +1,12 @@
+{
+  "name": "magic_v1",
+  "date": "2025-06-20T08:03:11.980Z",
+  "files": [
+    "server/whatsapp.ts",
+    "server/openai.ts",
+    "client/src/components/landing/WhatsAppPromo.tsx",
+    "client/src/components/landing/WhatsAppContactButton.tsx",
+    "client/src/components/landing/CompactWhatsAppButton.tsx"
+  ],
+  "description": "Neural extension with interactive WhatsApp chat capabilities"
+}
