@@ -17,6 +17,17 @@ type Message = {
   content: string;
   isUser: boolean;
   timestamp: Date;
+  dotProposal?: DotProposal;
+  needsConfirmation?: boolean;
+  action?: string;
+};
+
+type DotProposal = {
+  heading: string;
+  summary: string;
+  anchor: string;
+  pulse: string;
+  needsConfirmation: boolean;
 };
 
 export default function ChatPage() {

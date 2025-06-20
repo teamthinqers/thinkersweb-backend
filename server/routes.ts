@@ -436,7 +436,74 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Create dot through AI chat conversation
+  // Enhanced intelligent chat endpoint for conversational dot creation
+  app.post(`${apiPrefix}/chat/intelligent`, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const userId = req.user?.id || req.session?.userId || 1;
+      const { message, messages = [], action = 'chat' } = req.body;
+
+      if (!message) {
+        return res.status(400).json({ error: 'Message is required' });
+      }
+
+      // Import intelligent chat functions
+      const { generateIntelligentChatResponse, processConfirmedDot } = await import('./intelligent-chat.js');
+
+      // Handle different actions
+      if (action === 'confirm_dot') {
+        // User is confirming a dot proposal
+        const { dotProposal } = req.body;
+        if (!dotProposal) {
+          return res.status(400).json({ error: 'Dot proposal is required for confirmation' });
+        }
+
+        // Save the confirmed dot
+        const { generateOneWordSummary } = await import('./openai.js');
+        const oneWordSummary = await generateOneWordSummary(dotProposal.summary, dotProposal.anchor);
+        
+        const entryData = {
+          userId,
+          title: dotProposal.summary.substring(0, 50) + (dotProposal.summary.length > 50 ? '...' : ''),
+          content: JSON.stringify({
+            oneWordSummary,
+            summary: dotProposal.summary,
+            anchor: dotProposal.anchor,
+            pulse: dotProposal.pulse,
+            sourceType: 'text',
+            captureMode: 'ai',
+            dotType: 'three-layer'
+          }),
+          visibility: 'private'
+        };
+        
+        const [newDot] = await db.insert(entries).values(entryData).returning();
+        
+        return res.json({
+          reply: "Hey ThinQer, your dot is saved. You can find your dot in DotSpark Map in the Neura section for reference. Thank you!",
+          action: 'dot_saved',
+          dotId: newDot.id,
+          success: true
+        });
+      }
+
+      // Generate intelligent conversational response
+      const result = await generateIntelligentChatResponse(message, messages);
+
+      res.json({
+        reply: result.response,
+        action: result.action || 'continue',
+        conversationState: result.conversationState,
+        dotProposal: result.dotProposal,
+        needsConfirmation: result.dotProposal?.needsConfirmation || false
+      });
+
+    } catch (error) {
+      console.error('Error in intelligent chat:', error);
+      res.status(500).json({ error: 'Failed to process chat message' });
+    }
+  });
+
+  // Legacy chat endpoint - kept for backward compatibility
   app.post(`${apiPrefix}/chat/create-dot`, async (req: AuthenticatedRequest, res: Response) => {
     try {
       const userId = req.user?.id || req.session?.userId || 1;
