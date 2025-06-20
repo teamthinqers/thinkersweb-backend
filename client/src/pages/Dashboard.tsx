@@ -1480,7 +1480,7 @@ const Dashboard: React.FC = () => {
               </h2>
               
               {/* Recent Dots Filter and Social Button */}
-              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+              <div className={`flex gap-2 ${isPWA ? 'flex-col' : 'flex-col sm:flex-row sm:items-center sm:gap-4'}`}>
                 <button
                   onClick={() => setShowRecentFilter(!showRecentFilter)}
                   className={`flex items-center gap-2 ${isPWA ? 'px-2 py-1.5 text-xs' : 'px-3 sm:px-4 py-2 text-sm sm:text-base'} rounded-lg font-medium transition-all duration-200 ${

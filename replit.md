@@ -961,6 +961,13 @@ Changelog:
   * Cleaned up debugging console logs for better performance
   * Both toggle sequences now work independently: Preview → Only Sparks and Only Sparks → Preview
   * Created stable backup version "magic_v1" for future reference
+- June 20, 2025. Enhanced PWA Social section and added Social button to Dashboard:
+  * Fixed PWA Social back button with z-index and touch action improvements to prevent text overlap
+  * Added Social button with Brain icon next to Recent Dots in browser dashboard
+  * Positioned Social button below Recent Dots in PWA mode for better space utilization
+  * Reduced button sizes (px-2 py-1.5 text-xs) in PWA mode for improved mobile fit
+  * Applied orange-red gradient theme to Social button matching Social Neura branding
+  * Enhanced responsive layout with separate flex directions for browser vs PWA
 - June 19, 2025. Renamed Dot Wheels Map to DotSpark Map:
   * Updated main heading from "Dot Wheels Map" to "DotSpark Map" for brand consistency
   * Updated dialog title from "About Dot Wheels Map" to "About DotSpark Map"
