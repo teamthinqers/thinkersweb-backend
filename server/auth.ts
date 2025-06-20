@@ -129,18 +129,26 @@ export function setupAuth(app: Express) {
   
   console.log("Setting up authentication with session support");
   
-  const sessionSettings: session.SessionOptions = {
-    secret: sessionSecret,
-    resave: true, // Keep true to ensure session is saved on each request
-    saveUninitialized: true, // Keep true to create session for all users
-    store: new PostgresSessionStore({ 
+  // Create session store with error handling for database connectivity issues
+  let sessionStore;
+  try {
+    sessionStore = new PostgresSessionStore({ 
       pool,
       createTableIfMissing: true,
       tableName: 'session',
-      disableTouch: false, // Make sure session expiration is updated on activity
-      // Check for expired sessions every 15 minutes instead of every minute to reduce DB load
-      pruneSessionInterval: 15 * 60, 
-    }),
+      disableTouch: false,
+      pruneSessionInterval: 15 * 60,
+    });
+  } catch (error) {
+    console.warn("Database session store unavailable, falling back to memory store:", error.message);
+    sessionStore = undefined; // Use default memory store
+  }
+
+  const sessionSettings: session.SessionOptions = {
+    secret: sessionSecret,
+    resave: false, // Reduce database load when using fallback
+    saveUninitialized: false, // Only save sessions when needed
+    store: sessionStore,
     cookie: {
       secure: process.env.NODE_ENV === "production",
       // Set to 365 days by default for persistent sessions

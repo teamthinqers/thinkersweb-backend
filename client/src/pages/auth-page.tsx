@@ -16,7 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
-import { ArrowRight, Brain } from "lucide-react";
+import { ArrowRight, Brain, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/use-auth";
 
@@ -198,6 +198,17 @@ export default function AuthPage() {
     <div className="flex min-h-screen">
       {/* Left side with forms */}
       <div className="flex-1 flex items-center justify-center p-8">
+        {/* Back button */}
+        <Button
+          variant="ghost"
+          size="sm"
+          className="absolute top-4 left-4 flex items-center gap-2"
+          onClick={() => setLocation('/')}
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to Home
+        </Button>
+        
         <div className="w-full max-w-md space-y-8">
           <div className="text-center">
             <div className="mx-auto w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mb-4">

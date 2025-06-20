@@ -139,6 +139,13 @@ Changelog:
   * All protected routes (dashboard, my-neura, chat, profile, etc.) now require explicit user authentication
   * API endpoints return "Not authenticated" for unauthenticated requests
   * No automatic sign-ins occur - users must explicitly authenticate to access protected features
+- June 20, 2025. Enhanced user experience with anonymous viewing and improved navigation:
+  * Enabled anonymous viewing of Dashboard and Neura pages for public preview access
+  * Removed ProtectedRoute wrapper from /dashboard, /my-neura, and /neura routes
+  * Added back button to authentication page with arrow icon and "Back to Home" text
+  * Back button positioned in top-left corner and navigates users to home page
+  * Anonymous users can explore core DotSpark functionality while authentication protects user-specific features
+  * Maintained security for user data operations and personal functionality
 - June 13, 2025. Updated DotSpark logo implementation:
   * Added new logo icon (dotspark-logo-icon.jpeg) to public directory
   * Updated PWA header with icon + "DotSpark" text layout
