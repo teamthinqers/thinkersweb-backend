@@ -1116,19 +1116,60 @@ const Dashboard: React.FC = () => {
                 </filter>
               </defs>
               {!previewMode && displayDots.length > 1 && renderDotConnections()}
-              {/* Strategic preview connections - 9 lines to show interconnectivity */}
-              {previewMode && (
+              {/* Strategic preview connections - connecting actual dots */}
+              {previewMode && displayDots.length > 1 && (
                 <>
-                  {/* 9 strategic connections across different areas of the grid */}
-                  <line x1="250" y1="250" x2="600" y2="300" stroke="#F59E0B" strokeWidth="1.5" strokeDasharray="6,3" opacity="0.6" />
-                  <line x1="300" y1="500" x2="750" y2="350" stroke="#F59E0B" strokeWidth="1.5" strokeDasharray="6,3" opacity="0.6" />
-                  <line x1="800" y1="200" x2="400" y2="450" stroke="#F59E0B" strokeWidth="1.5" strokeDasharray="6,3" opacity="0.6" />
-                  <line x1="150" y1="400" x2="550" y2="200" stroke="#F59E0B" strokeWidth="1.5" strokeDasharray="6,3" opacity="0.6" />
-                  <line x1="700" y1="500" x2="200" y2="350" stroke="#F59E0B" strokeWidth="1.5" strokeDasharray="6,3" opacity="0.6" />
-                  <line x1="450" y1="150" x2="350" y2="600" stroke="#F59E0B" strokeWidth="1.5" strokeDasharray="6,3" opacity="0.6" />
-                  <line x1="900" y1="400" x2="500" y2="550" stroke="#F59E0B" strokeWidth="1.5" strokeDasharray="6,3" opacity="0.6" />
-                  <line x1="650" y1="150" x2="850" y2="550" stroke="#F59E0B" strokeWidth="1.5" strokeDasharray="6,3" opacity="0.6" />
-                  <line x1="100" y1="600" x2="950" y2="300" stroke="#F59E0B" strokeWidth="1.5" strokeDasharray="6,3" opacity="0.6" />
+                  {/* Connect dots 0-2, 1-4, 2-6, etc. for strategic visualization */}
+                  {displayDots.slice(0, 9).map((_, idx) => {
+                    const pairs = [[0, 2], [1, 4], [2, 6], [3, 8], [0, 5], [4, 7], [1, 9], [6, 11], [3, 10]];
+                    const [i, j] = pairs[idx] || [0, 1];
+                    
+                    if (i >= displayDots.length || j >= displayDots.length) return null;
+                    
+                    // Calculate positions for dots i and j
+                    const calculateDotPosition = (dot: any, index: number) => {
+                      const dotId = String(dot.id || index);
+                      const seedX = dotId.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
+                      const seedY = dotId.split('').reverse().reduce((a, b) => a + b.charCodeAt(0), 0);
+                      
+                      if (dot.wheelId && dot.wheelId !== '') {
+                        const wheel = displayWheels.find(w => w.id === dot.wheelId);
+                        if (wheel) {
+                          const dotsInWheel = displayDots.filter(d => d.wheelId === dot.wheelId);
+                          const dotIndexInWheel = dotsInWheel.findIndex(d => d.id === dot.id);
+                          const radius = 60;
+                          const angle = (dotIndexInWheel * 2 * Math.PI) / dotsInWheel.length;
+                          return {
+                            x: wheel.position.x + Math.cos(angle) * radius + 24,
+                            y: wheel.position.y + Math.sin(angle) * radius + 24
+                          };
+                        }
+                        return {
+                          x: 100 + (seedX % 900) + (index * 67) % 400 + 24,
+                          y: 100 + (seedY % 600) + (index * 83) % 300 + 24
+                        };
+                      }
+                      return {
+                        x: 80 + (seedX % 1000) + (index * 137) % 800 + 24,
+                        y: 80 + (seedY % 600) + (index * 97) % 500 + 24
+                      };
+                    };
+                    
+                    const pos1 = calculateDotPosition(displayDots[i], i);
+                    const pos2 = calculateDotPosition(displayDots[j], j);
+                    
+                    return (
+                      <line 
+                        key={`preview-connection-${idx}`}
+                        x1={pos1.x} y1={pos1.y} 
+                        x2={pos2.x} y2={pos2.y} 
+                        stroke="#F59E0B" 
+                        strokeWidth="1.5" 
+                        strokeDasharray="6,3" 
+                        opacity="0.6" 
+                      />
+                    );
+                  })}
                 </>
               )}
             </svg>
