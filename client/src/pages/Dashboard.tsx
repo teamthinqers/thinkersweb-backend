@@ -700,10 +700,10 @@ const Dashboard: React.FC = () => {
                 y1={y1}
                 x2={x2}
                 y2={y2}
-                stroke={previewMode ? "#F59E0B" : "url(#dotConnectionGradient)"}
-                strokeWidth={previewMode ? "2" : "1.5"}
+                stroke="#F59E0B"
+                strokeWidth="1.5"
                 strokeDasharray="6,3"
-                opacity={previewMode ? "0.8" : "0.5"}
+                opacity="0.6"
                 filter="url(#glow)"
                 className="animate-pulse"
               />
@@ -1120,11 +1120,11 @@ const Dashboard: React.FC = () => {
               {previewMode && displayDots.length > 1 && (
                 <>
                   {/* Manual connections for preview mode */}
-                  <line x1="250" y1="250" x2="400" y2="300" stroke="#F59E0B" strokeWidth="2" strokeDasharray="6,3" opacity="0.8" className="animate-pulse" />
-                  <line x1="600" y1="300" x2="750" y2="350" stroke="#F59E0B" strokeWidth="2" strokeDasharray="6,3" opacity="0.8" className="animate-pulse" />
-                  <line x1="300" y1="500" x2="500" y2="400" stroke="#F59E0B" strokeWidth="2" strokeDasharray="6,3" opacity="0.8" className="animate-pulse" />
-                  <line x1="800" y1="200" x2="900" y2="450" stroke="#F59E0B" strokeWidth="2" strokeDasharray="6,3" opacity="0.8" className="animate-pulse" />
-                  <line x1="150" y1="600" x2="650" y2="250" stroke="#F59E0B" strokeWidth="2" strokeDasharray="6,3" opacity="0.8" className="animate-pulse" />
+                  <line x1="250" y1="250" x2="400" y2="300" stroke="#F59E0B" strokeWidth="1.5" strokeDasharray="6,3" opacity="0.6" filter="url(#glow)" className="animate-pulse" />
+                  <line x1="600" y1="300" x2="750" y2="350" stroke="#F59E0B" strokeWidth="1.5" strokeDasharray="6,3" opacity="0.6" filter="url(#glow)" className="animate-pulse" />
+                  <line x1="300" y1="500" x2="500" y2="400" stroke="#F59E0B" strokeWidth="1.5" strokeDasharray="6,3" opacity="0.6" filter="url(#glow)" className="animate-pulse" />
+                  <line x1="800" y1="200" x2="900" y2="450" stroke="#F59E0B" strokeWidth="1.5" strokeDasharray="6,3" opacity="0.6" filter="url(#glow)" className="animate-pulse" />
+                  <line x1="150" y1="600" x2="650" y2="250" stroke="#F59E0B" strokeWidth="1.5" strokeDasharray="6,3" opacity="0.6" filter="url(#glow)" className="animate-pulse" />
                 </>
               )}
             </svg>
