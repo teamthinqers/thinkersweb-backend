@@ -663,7 +663,7 @@ const Dashboard: React.FC = () => {
           
           // Create consistent connection logic based on dot IDs
           const connectionSeed = (seedX1 + seedY1 + seedX2 + seedY2) % 100;
-          if (connectionSeed < 15) { // 15% chance of connection for sparse, organic feel
+          if (connectionSeed < 30) { // 30% chance of connection for better interconnectivity visualization
             connections.push(
               <line
                 key={`${dot.id}-${otherDot.id}`}

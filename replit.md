@@ -983,6 +983,7 @@ Changelog:
   * Updated connection line rendering to match new positioning system for accurate dot-to-dot connections
   * Preview mode now clearly shows: 9 dots in 2 spark groups + 19 scattered individual dots across entire grid
   * Enhanced grid utilization with dots spread across full 1200x800 canvas area
+  * Increased dotted connection probability from 15% to 30% to show more interconnectivity between scattered dots and spark groups
 - June 15, 2025. Enhanced PWA installation detection in neuraStorage utility:
   * Added comprehensive PWA installation checking across platforms
   * Implemented cross-platform installation status synchronization
