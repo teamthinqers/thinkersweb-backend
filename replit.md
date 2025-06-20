@@ -973,6 +973,16 @@ Changelog:
   * Reduced dotted connection lines from 25% to 15% probability for more selective, organic visual connections
   * Connection lines now span across spark groups and individual dots showing interconnectedness without overwhelming interface
   * Demonstrates random dot groupings can create meaningful sparks regardless of topical similarity
+- June 20, 2025. Comprehensive dot distribution and visualization improvements:
+  * Removed third Ethics spark group to simplify preview mode to 2 spark groups
+  * Unified both spark groups to same amber color theme (#F59E0B) for consistent branding
+  * Fixed hover flashcard behavior - cards now disappear immediately when cursor moves away from dots
+  * Massively increased scattered individual dots from 9 to 19 total across full grid
+  * Added 10 new scattered dots: Mirror, Shoes, Keys, Water, Light, Sound, Paper, Window, Clock, Door
+  * Fixed dot positioning logic to properly separate wheel dots from scattered individual dots
+  * Updated connection line rendering to match new positioning system for accurate dot-to-dot connections
+  * Preview mode now clearly shows: 9 dots in 2 spark groups + 19 scattered individual dots across entire grid
+  * Enhanced grid utilization with dots spread across full 1200x800 canvas area
 - June 15, 2025. Enhanced PWA installation detection in neuraStorage utility:
   * Added comprehensive PWA installation checking across platforms
   * Implemented cross-platform installation status synchronization

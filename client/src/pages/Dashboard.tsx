@@ -399,8 +399,11 @@ const Dashboard: React.FC = () => {
       // Third spark group demonstrating duplicate dots - reuses dots from other groups
 
 
-      // Add more individual scattered dots showing not all dots need grouping
-      const individualHeadings = ['Sunset', 'Phone', 'Garden', 'Grocery', 'Parking', 'Weather', 'Sleep', 'Traffic', 'Cooking'];
+      // Add many more individual scattered dots showing not all dots need grouping
+      const individualHeadings = [
+        'Sunset', 'Phone', 'Garden', 'Grocery', 'Parking', 'Weather', 'Sleep', 'Traffic', 'Cooking',
+        'Mirror', 'Shoes', 'Keys', 'Water', 'Light', 'Sound', 'Paper', 'Window', 'Clock', 'Door'
+      ];
       const individualSummaries = [
         'Beautiful sunset moments creating unexpected moments of gratitude',
         'Phone notifications disrupting focus and productivity patterns',
@@ -410,10 +413,20 @@ const Dashboard: React.FC = () => {
         'Weather changes affecting mood and energy levels throughout day',
         'Sleep quality patterns correlating with next-day performance',
         'Traffic patterns teaching patience and alternative route planning',
-        'Cooking experiments sparking creativity and mindful preparation'
+        'Cooking experiments sparking creativity and mindful preparation',
+        'Mirror reflections prompting self-awareness and appearance thoughts',
+        'Shoe choices affecting comfort and confidence throughout day',
+        'Key placement habits revealing organizational patterns and stress',
+        'Water consumption awareness and hydration impact on energy',
+        'Natural light exposure influencing mood and productivity cycles',
+        'Background sounds affecting concentration and creative flow',
+        'Paper texture preferences in note-taking and writing experiences',
+        'Window views providing mental breaks and perspective shifts',
+        'Clock watching patterns revealing time anxiety and productivity pressure',
+        'Door sounds indicating home activity patterns and privacy needs'
       ];
 
-      for (let i = 0; i < 9; i++) {
+      for (let i = 0; i < 19; i++) {
         const dot: Dot = {
           id: `individual-${i + 1}`,
           oneWordSummary: individualHeadings[i],
@@ -577,19 +590,31 @@ const Dashboard: React.FC = () => {
         
         let x1, y1;
         if (previewMode) {
-          // Calculate wheel-based position for preview mode
-          const wheelIndex1 = Math.floor(index / 9);
-          const dotInWheelIndex1 = index % 9;
-          const wheel1 = displayWheels[wheelIndex1];
-          
-          if (wheel1) {
-            const radius = 60;
-            const angle = (dotInWheelIndex1 * 2 * Math.PI) / 9;
-            x1 = wheel1.position.x + Math.cos(angle) * radius + 24;
-            y1 = wheel1.position.y + Math.sin(angle) * radius + 24;
+          // Use same positioning logic as dot rendering
+          if (dot.wheelId && dot.wheelId !== '') {
+            // Find the wheel this dot belongs to
+            const wheel = displayWheels.find(w => w.id === dot.wheelId);
+            if (wheel) {
+              // Find position within the wheel
+              const dotsInWheel = displayDots.filter(d => d.wheelId === dot.wheelId);
+              const dotIndexInWheel = dotsInWheel.findIndex(d => d.id === dot.id);
+              
+              // Position dots in a circle inside the wheel
+              const wheelCenterX = wheel.position.x;
+              const wheelCenterY = wheel.position.y;
+              const radius = 60;
+              const angle = (dotIndexInWheel * 2 * Math.PI) / dotsInWheel.length;
+              
+              x1 = wheelCenterX + Math.cos(angle) * radius + 24;
+              y1 = wheelCenterY + Math.sin(angle) * radius + 24;
+            } else {
+              x1 = 100 + (seedX1 % 900) + (index * 67) % 400 + 24;
+              y1 = 100 + (seedY1 % 600) + (index * 83) % 300 + 24;
+            }
           } else {
-            x1 = 80 + (seedX1 % 700) + (index * 73) % 300 + 24;
-            y1 = 80 + (seedY1 % 500) + (index * 89) % 250 + 24;
+            // Individual scattered dots - spread across full grid
+            x1 = 80 + (seedX1 % 1000) + (index * 137) % 800 + 24;
+            y1 = 80 + (seedY1 % 600) + (index * 97) % 500 + 24;
           }
         } else {
           x1 = 60 + (seedX1 % 800) + (index * 47) % 200 + 24; // +24 for dot center
@@ -605,19 +630,31 @@ const Dashboard: React.FC = () => {
           
           let x2, y2;
           if (previewMode) {
-            // Calculate wheel-based position for preview mode
-            const wheelIndex2 = Math.floor(realOtherIndex / 9);
-            const dotInWheelIndex2 = realOtherIndex % 9;
-            const wheel2 = displayWheels[wheelIndex2];
-            
-            if (wheel2) {
-              const radius = 60;
-              const angle = (dotInWheelIndex2 * 2 * Math.PI) / 9;
-              x2 = wheel2.position.x + Math.cos(angle) * radius + 24;
-              y2 = wheel2.position.y + Math.sin(angle) * radius + 24;
+            // Use same positioning logic as dot rendering for second dot
+            if (otherDot.wheelId && otherDot.wheelId !== '') {
+              // Find the wheel this dot belongs to
+              const wheel = displayWheels.find(w => w.id === otherDot.wheelId);
+              if (wheel) {
+                // Find position within the wheel
+                const dotsInWheel = displayDots.filter(d => d.wheelId === otherDot.wheelId);
+                const dotIndexInWheel = dotsInWheel.findIndex(d => d.id === otherDot.id);
+                
+                // Position dots in a circle inside the wheel
+                const wheelCenterX = wheel.position.x;
+                const wheelCenterY = wheel.position.y;
+                const radius = 60;
+                const angle = (dotIndexInWheel * 2 * Math.PI) / dotsInWheel.length;
+                
+                x2 = wheelCenterX + Math.cos(angle) * radius + 24;
+                y2 = wheelCenterY + Math.sin(angle) * radius + 24;
+              } else {
+                x2 = 100 + (seedX2 % 900) + (realOtherIndex * 67) % 400 + 24;
+                y2 = 100 + (seedY2 % 600) + (realOtherIndex * 83) % 300 + 24;
+              }
             } else {
-              x2 = 80 + (seedX2 % 700) + (realOtherIndex * 73) % 300 + 24;
-              y2 = 80 + (seedY2 % 500) + (realOtherIndex * 89) % 250 + 24;
+              // Individual scattered dots - spread across full grid
+              x2 = 80 + (seedX2 % 1000) + (realOtherIndex * 137) % 800 + 24;
+              y2 = 80 + (seedY2 % 600) + (realOtherIndex * 97) % 500 + 24;
             }
           } else {
             x2 = 60 + (seedX2 % 800) + (realOtherIndex * 47) % 200 + 24;
@@ -826,28 +863,38 @@ const Dashboard: React.FC = () => {
               const seedX = dotId.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
               const seedY = dotId.split('').reverse().reduce((a, b) => a + b.charCodeAt(0), 0);
               
-              // Position dots inside wheels for preview mode
+              // Position dots based on whether they belong to a wheel or are individual
               let x, y;
               if (previewMode) {
-                // Find which wheel this dot belongs to
-                const wheelIndex = Math.floor(index / 9);
-                const dotInWheelIndex = index % 9;
-                const wheel = displayWheels[wheelIndex];
-                
-                if (wheel) {
-                  // Position dots in a circle inside the wheel
-                  const wheelCenterX = wheel.position.x;
-                  const wheelCenterY = wheel.position.y;
-                  const radius = 60; // Radius for dot positioning inside wheel
-                  const angle = (dotInWheelIndex * 2 * Math.PI) / 9; // 9 dots in circle
-                  
-                  x = wheelCenterX + Math.cos(angle) * radius;
-                  y = wheelCenterY + Math.sin(angle) * radius;
+                // Check if this dot belongs to a wheel
+                if (dot.wheelId && dot.wheelId !== '') {
+                  // Find the wheel this dot belongs to
+                  const wheel = displayWheels.find(w => w.id === dot.wheelId);
+                  if (wheel) {
+                    // Find position within the wheel
+                    const dotsInWheel = displayDots.filter(d => d.wheelId === dot.wheelId);
+                    const dotIndexInWheel = dotsInWheel.findIndex(d => d.id === dot.id);
+                    
+                    // Position dots in a circle inside the wheel
+                    const wheelCenterX = wheel.position.x;
+                    const wheelCenterY = wheel.position.y;
+                    const radius = 60; // Radius for dot positioning inside wheel
+                    const angle = (dotIndexInWheel * 2 * Math.PI) / dotsInWheel.length;
+                    
+                    x = wheelCenterX + Math.cos(angle) * radius;
+                    y = wheelCenterY + Math.sin(angle) * radius;
+                  } else {
+                    // Fallback for wheel dots without wheel found
+                    x = 100 + (seedX % 900) + (index * 67) % 400;
+                    y = 100 + (seedY % 600) + (index * 83) % 300;
+                  }
                 } else {
-                  x = 80 + (seedX % 700) + (index * 73) % 300;
-                  y = 80 + (seedY % 500) + (index * 89) % 250;
+                  // Individual scattered dots - spread across full grid
+                  x = 80 + (seedX % 1000) + (index * 137) % 800;
+                  y = 80 + (seedY % 600) + (index * 97) % 500;
                 }
               } else {
+                // Real mode positioning
                 x = 60 + (seedX % 800) + (index * 47) % 200;
                 y = 60 + (seedY % 600) + (index * 73) % 180;
               }
