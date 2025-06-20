@@ -275,6 +275,7 @@ const Dashboard: React.FC = () => {
     const [selectedDotPosition, setSelectedDotPosition] = useState<{ x: number; y: number } | null>(null);
     const [hoveredDot, setHoveredDot] = useState<Dot | null>(null);
     const [previewMode, setPreviewMode] = useState(false);
+    const [onlySparks, setOnlySparks] = useState(false);
     const [zoom, setZoom] = useState(1);
     const gridContainerRef = useRef<HTMLDivElement>(null);
     const [dragStart, setDragStart] = useState<{ x: number; y: number } | null>(null);
@@ -657,7 +658,7 @@ const Dashboard: React.FC = () => {
       } overflow-hidden`}>
         {/* Preview toggle and Only Sparks toggle */}
         <div className="absolute top-4 left-4 z-10 flex flex-col gap-2">
-          {(previewMode || displayDots.length > 0) && (
+          {(previewMode || actualDots.length > 0) && (
             <div className={`flex items-center gap-2 bg-white/90 backdrop-blur rounded-lg border-2 border-amber-200 ${
               isPWA ? 'px-1.5 py-0.5' : 'px-2 py-1'
             }`}>
@@ -701,7 +702,7 @@ const Dashboard: React.FC = () => {
           )}
           
           {/* Only Sparks toggle */}
-          {(previewMode || displayDots.length > 0) && (
+          {(previewMode || actualDots.length > 0) && (
             <div className={`flex items-center gap-2 bg-white/90 backdrop-blur rounded-lg border-2 border-amber-200 ${
               isPWA ? 'px-1.5 py-0.5' : 'px-2 py-1'
             }`}>
