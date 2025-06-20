@@ -174,8 +174,8 @@ function Router() {
       <Route path="/" component={LandingPage} />
       <Route path="/auth" component={AuthPage} />
       
-      {/* Dashboard route - protected route */}
-      <Route path="/dashboard" component={() => <ProtectedRoute><AppWithLayout /></ProtectedRoute>} />
+      {/* Dashboard route - allow anonymous viewing */}
+      <Route path="/dashboard" component={AppWithLayout} />
       
       {/* Other protected routes */}
       <Route path="/entries" component={() => <ProtectedRoute><AppWithLayout /></ProtectedRoute>} />
@@ -200,8 +200,8 @@ function Router() {
       <Route path="/activate-neura">
         {() => <MyNeura />}
       </Route>
-      <Route path="/my-neura" component={() => <ProtectedRoute><MyNeura /></ProtectedRoute>} />
-      <Route path="/neura" component={() => <ProtectedRoute><MyNeura /></ProtectedRoute>} />
+      <Route path="/my-neura" component={MyNeura} />
+      <Route path="/neura" component={MyNeura} />
       {/* DotSpark tuning section pages - Order: Core, Cognitive, Learning, Expertise */}
       <Route path="/dotspark-tuning/core" component={NeuraTuningCore} />
       <Route path="/dotspark-tuning/cognitive" component={NeuraTuningCognitive} />
