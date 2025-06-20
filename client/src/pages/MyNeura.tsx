@@ -238,15 +238,6 @@ export default function MyNeura() {
   
   // Function to handle DotSpark activation with invite validation
   const handleActivateDotSpark = () => {
-    // Check if user has been authenticated before activating
-    if (!user) {
-      toast({
-        title: "Authentication Required",
-        description: "Please sign in to activate your DotSpark.",
-        variant: "destructive",
-      });
-      return;
-    }
     
     // If invite has been validated before, activate directly
     if (neuraStorage.isInviteValidated()) {
@@ -320,21 +311,7 @@ export default function MyNeura() {
   
   // Toggle DotSpark activation
   const toggleDotSparkActivation = () => {
-    // If trying to activate and user is not signed in, prompt them to sign in
-    if (!isActivated && !user) {
-      toast({
-        title: "Sign in Required",
-        description: "Please sign in to activate your DotSpark.",
-        variant: "default",
-      });
-      
-      // Optional: Redirect to auth page after a short delay
-      setTimeout(() => {
-        setLocation('/auth');
-      }, 1500);
-      
-      return;
-    }
+
     
     // Otherwise, proceed as normal
     if (isActivated) {
@@ -443,21 +420,7 @@ export default function MyNeura() {
       return;
     }
     
-    if (!user) {
-      // Prompt login if user is not authenticated
-      toast({
-        title: "Sign in Required",
-        description: "Please sign in to save your neural tuning settings.",
-        variant: "default",
-      });
-      
-      // Redirect to auth page after a short delay
-      setTimeout(() => {
-        setLocation('/auth');
-      }, 1500);
-      
-      return;
-    }
+
     
     try {
       // Update using the mutation function from the hook

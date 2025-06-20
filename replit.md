@@ -142,6 +142,8 @@ Changelog:
 - June 20, 2025. Enhanced user experience with anonymous viewing and improved navigation:
   * Enabled anonymous viewing of Dashboard and Neura pages for public preview access
   * Removed ProtectedRoute wrapper from /dashboard, /my-neura, and /neura routes
+  * Updated Dashboard route to bypass AppWithLayout authentication wrapper for direct anonymous access
+  * Removed useAuth imports and authentication checks from Dashboard and MyNeura components
   * Added back button to authentication page with arrow icon and "Back to Home" text
   * Back button positioned in top-left corner and navigates users to home page
   * Anonymous users can explore core DotSpark functionality while authentication protects user-specific features
