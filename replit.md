@@ -877,6 +877,11 @@ Changelog:
   * Implemented immediate touch response for PWA dot clicks with debugging to resolve summary card display issues
   * Fixed summary box positioning to appear next to clicked dots instead of viewport center for better PWA visibility
   * Centered recenter button between preview toggle and dot/wheel count buttons for optimal visual balance
+- June 21, 2025. Fixed mobile browser grid dot interaction:
+  * Updated dot click handlers to check for mobile devices (screen width < 768px) in addition to PWA mode
+  * Fixed flash card display logic to show for both PWA mode AND mobile browsers  
+  * Mobile browser users now see flash card view instead of jumping directly to full view
+  * Provides consistent two-step interaction pattern across PWA and mobile browser modes
 - June 20, 2025. Enhanced DotSpark Map with "Only Sparks" filtering functionality:
   * Added "Only Sparks" toggle button below Preview Mode with matching amber color scheme
   * Toggle filters display to show only spark wheels and their related dots, hiding scattered individual dots

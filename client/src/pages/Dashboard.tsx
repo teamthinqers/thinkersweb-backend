@@ -946,8 +946,9 @@ const Dashboard: React.FC = () => {
                       e.stopPropagation();
                       e.preventDefault();
                       console.log('Dot clicked:', dot.id);
-                      // For PWA mode, show centered flash card overlay
-                      if (isPWA) {
+                      // Check if mobile (screen width < 768px) or PWA mode for flash card view
+                      const isMobile = window.innerWidth < 768;
+                      if (isPWA || isMobile) {
                         setSelectedDot(dot);
                       } else {
                         setViewFullDot(dot);
@@ -959,8 +960,9 @@ const Dashboard: React.FC = () => {
                       e.stopPropagation();
                       e.preventDefault();
                       console.log('Dot touched:', dot.id);
-                      // For PWA mode, show centered flash card overlay
-                      if (isPWA) {
+                      // Check if mobile (screen width < 768px) or PWA mode for flash card view
+                      const isMobile = window.innerWidth < 768;
+                      if (isPWA || isMobile) {
                         setSelectedDot(dot);
                       } else {
                         setViewFullDot(dot);
@@ -1228,7 +1230,7 @@ const Dashboard: React.FC = () => {
         </div>
         
         {/* Centered Flash Card Overlay for PWA */}
-        {selectedDot && isPWA && (
+        {selectedDot && (isPWA || window.innerWidth < 768) && (
           <>
             {/* Backdrop to close flash card when clicking outside */}
             <div 
