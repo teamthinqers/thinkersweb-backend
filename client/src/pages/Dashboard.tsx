@@ -60,7 +60,7 @@ const Dashboard: React.FC = () => {
   const [recentDotsCount, setRecentDotsCount] = useState(4);
   const [showPreview, setShowPreview] = useState(false);
   const [isMapFullscreen, setIsMapFullscreen] = useState(false);
-  const [previewMode, setPreviewMode] = useState(false); // Lifted up to prevent resets
+  const [previewMode, setPreviewMode] = useState(true); // Enable preview mode by default to show demo wheels // Lifted up to prevent resets
   
   // PWA detection for smaller button sizing
   const isPWA = isRunningAsStandalone();
@@ -1184,6 +1184,7 @@ const Dashboard: React.FC = () => {
                         e.stopPropagation();
                         // Don't show flash card if user is dragging
                         if (dragStart) return;
+                        console.log('Wheel hover:', wheel.name, 'Position:', wheelPosition, 'Size:', wheelSize);
                         setHoveredWheel(wheel);
                       }}
                       onMouseLeave={(e) => {
