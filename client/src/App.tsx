@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Switch, Route, useLocation } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
-import { Toaster } from "@/components/ui/toaster";
 import NotFound from "@/pages/not-found";
 import Dashboard from "@/pages/Dashboard";
 import AllEntries from "@/pages/AllEntries";
@@ -46,15 +45,15 @@ import AppLayout from "@/components/layout/AppLayout";
 import EntryDetail from "@/components/entries/EntryDetail";
 import ChatEntryForm from "@/components/chat/ChatEntryForm";
 
-// Temporarily commenting out problematic components to isolate TDZ issue
+// Temporarily removing problematic imports to fix temporal dead zone issues
 // import { StructuredFloatingDot } from "@/components/dotspark/StructuredFloatingDot";
+// import { PWAInstallButton } from "@/components/ui/pwa-install-button";
+// import { IosPwaInstallPrompt } from "@/components/ui/ios-pwa-install-prompt";
 import { neuraStorage } from "@/lib/neuraStorage";
 import { Loader2 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
-
-// import { PWAInstallButton } from "@/components/ui/pwa-install-button";
-// import { IosPwaInstallPrompt } from "@/components/ui/ios-pwa-install-prompt";
 import { isRunningAsStandalone } from "@/lib/pwaUtils";
+import { Toaster } from "@/components/ui/toaster";
 
 
 // Protected route component - requires authentication
