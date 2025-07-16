@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { Mic, Type, Eye, Brain, Network, Zap, Search, Clock, Info, Database, Cpu, Sparkles, Users, Maximize, Minimize, RotateCcw, X, ArrowLeft } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import DotFullView from "@/components/DotFullView";
@@ -1449,15 +1450,16 @@ const Dashboard: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50 flex">
-      {/* Tools Sidebar */}
-      <ToolsSidebar 
-        selectedTool={selectedTool} 
-        onToolChange={setSelectedTool} 
-      />
-      
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col">
+    <TooltipProvider>
+      <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50 flex">
+        {/* Tools Sidebar */}
+        <ToolsSidebar 
+          selectedTool={selectedTool} 
+          onToolChange={setSelectedTool} 
+        />
+        
+        {/* Main Content Area */}
+        <div className="flex-1 flex flex-col">
         {/* Header */}
         <div className="bg-white border-b border-amber-200 px-4 py-3">
         <div className="flex items-center justify-between">
@@ -1649,8 +1651,9 @@ const Dashboard: React.FC = () => {
           }}
         />
       )}
+        </div>
       </div>
-    </div>
+    </TooltipProvider>
   );
 };
 
