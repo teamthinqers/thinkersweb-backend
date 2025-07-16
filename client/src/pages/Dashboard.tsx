@@ -1151,9 +1151,8 @@ const Dashboard: React.FC = () => {
                   {/* Blinking Spark Symbol on top of wheel */}
                   <div 
                     className={`absolute left-1/2 transform -translate-x-1/2 flex flex-col items-center ${
-                      isParentWheel ? 'top-[-80px]' : 'top-[-60px]'
+                      isParentWheel ? 'top-[-120px]' : 'top-[-100px]'
                     }`}
-                    style={{ position: 'relative' }}
                   >
                     {/* Spark symbol with blinking animation */}
                     <div className="relative mb-2">
