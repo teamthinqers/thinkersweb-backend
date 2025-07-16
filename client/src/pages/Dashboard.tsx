@@ -56,7 +56,6 @@ const Dashboard: React.FC = () => {
   const [viewFlashCard, setViewFlashCard] = useState<Dot | null>(null);
   const [viewFlashCardWheel, setViewFlashCardWheel] = useState<Wheel | null>(null);
   const [viewFullWheel, setViewFullWheel] = useState<Wheel | null>(null);
-  const [viewWheelFlashCard, setViewWheelFlashCard] = useState<Wheel | null>(null);
   const [searchResults, setSearchResults] = useState<Dot[]>([]);
   const [showRecentFilter, setShowRecentFilter] = useState(false);
   const [recentDotsCount, setRecentDotsCount] = useState(4);
@@ -305,16 +304,16 @@ const Dashboard: React.FC = () => {
     recentCount?: number,
     isFullscreen?: boolean,
     onFullscreenChange?: (isFullscreen: boolean) => void,
-    setViewWheelFlashCard: (wheel: Wheel | null) => void,
     setViewFullWheel: (wheel: Wheel | null) => void,
     previewMode: boolean,
     setPreviewMode: (previewMode: boolean) => void
-  }> = ({ wheels, actualDots, showingRecentFilter = false, recentCount = 4, isFullscreen = false, onFullscreenChange, setViewWheelFlashCard, setViewFullWheel, previewMode, setPreviewMode }) => {
+  }> = ({ wheels, actualDots, showingRecentFilter = false, recentCount = 4, isFullscreen = false, onFullscreenChange, setViewFullWheel, previewMode, setPreviewMode }) => {
     const [selectedWheel, setSelectedWheel] = useState<string | null>(null);
     const [viewFullDot, setViewFullDot] = useState<Dot | null>(null);
     const [selectedDot, setSelectedDot] = useState<Dot | null>(null);
     const [selectedDotPosition, setSelectedDotPosition] = useState<{ x: number; y: number } | null>(null);
     const [hoveredDot, setHoveredDot] = useState<Dot | null>(null);
+    const [hoveredWheel, setHoveredWheel] = useState<Wheel | null>(null);
     // previewMode is now passed as props from parent component
     const [onlySparks, setOnlySparks] = useState(false);
     const [zoom, setZoom] = useState(1);
@@ -1254,11 +1253,11 @@ const Dashboard: React.FC = () => {
                         e.stopPropagation();
                         // Don't show flash card if user is dragging
                         if (dragStart) return;
-                        setViewWheelFlashCard(wheel);
+                        setHoveredWheel(wheel);
                       }}
                       onMouseLeave={(e) => {
                         e.stopPropagation();
-                        setViewWheelFlashCard(null);
+                        setHoveredWheel(null);
                       }}
                       onClick={(e) => {
                         e.stopPropagation();
@@ -1270,27 +1269,25 @@ const Dashboard: React.FC = () => {
                     </div>
                   </div>
                   
-                  {/* Wheel Flash Card - positioned relative to wheel like dots */}
-                  {viewWheelFlashCard?.id === wheel.id && (
+                  {/* Wheel Flash Card - positioned like dot flash cards */}
+                  {hoveredWheel?.id === wheel.id && (
                     <div 
                       className="absolute bg-white border-2 border-purple-200 rounded-lg p-3 shadow-xl z-50 w-64 cursor-pointer"
                       style={{
-                        // Position to the right of the wheel
-                        left: `${wheel.position.x + wheelSize + 10}px`,
-                        top: `${Math.max(0, wheel.position.y - 20)}px`,
+                        // Position to the right of the wheel, similar to dots
+                        left: isPWA ? '60px' : `${wheel.position.x + wheelSize + 10}px`,
+                        top: isPWA ? '-20px' : `${Math.max(0, wheel.position.y - 20)}px`,
                         maxWidth: '280px'
                       }}
                       onClick={(e) => {
                         e.stopPropagation();
                         setViewFullWheel(wheel);
-                        setViewWheelFlashCard(null);
+                        setHoveredWheel(null);
                       }}
-                      onMouseEnter={(e) => {
+                      onTouchStart={(e) => {
                         e.stopPropagation();
-                      }}
-                      onMouseLeave={(e) => {
-                        e.stopPropagation();
-                        setViewWheelFlashCard(null);
+                        setViewFullWheel(wheel);
+                        setHoveredWheel(null);
                       }}
                     >
                       <div className="space-y-2">
@@ -1812,7 +1809,6 @@ const Dashboard: React.FC = () => {
               recentCount={recentDotsCount}
               isFullscreen={isMapFullscreen}
               onFullscreenChange={setIsMapFullscreen}
-              setViewWheelFlashCard={setViewWheelFlashCard}
               setViewFullWheel={setViewFullWheel}
               previewMode={previewMode}
               setPreviewMode={setPreviewMode}
