@@ -142,71 +142,7 @@ const Dashboard: React.FC = () => {
   }, [searchTerm, dots]);
 
   // Mock wheels data for visualization
-  const [wheels] = useState<Wheel[]>([
-    {
-      id: '1',
-      name: 'Innovation Ideas',
-      category: 'Technology',
-      color: '#3B82F6',
-      dots: [
-        {
-          id: '1',
-          oneWordSummary: 'PlantCare',
-          summary: 'AI-powered plant care system that learns from user behavior and environmental data',
-          anchor: 'Inspired by struggling to keep houseplants alive. Combines IoT sensors with machine learning for personalized care recommendations.',
-          pulse: 'excited',
-          wheelId: '1',
-          timestamp: new Date(),
-          sourceType: 'text',
-          captureMode: 'natural'
-        }
-      ],
-      connections: ['2'],
-      position: { x: 100, y: 100 }
-    },
-    {
-      id: '2', 
-      name: 'Business Strategies',
-      category: 'Professional',
-      color: '#10B981',
-      dots: [
-        {
-          id: '2',
-          oneWordSummary: 'MicroSaaS',
-          summary: 'Focus on micro-SaaS products targeting specific professional niches instead of broad markets',
-          anchor: 'Research shows specialized tools have higher retention rates and customer lifetime value than generic solutions.',
-          pulse: 'confident',
-          wheelId: '2',
-          timestamp: new Date(),
-          sourceType: 'voice',
-          captureMode: 'natural'
-        }
-      ],
-      connections: ['1', '3'],
-      position: { x: 300, y: 150 }
-    },
-    {
-      id: '3',
-      name: 'Learning Insights', 
-      category: 'Personal Growth',
-      color: '#F59E0B',
-      dots: [
-        {
-          id: '3',
-          oneWordSummary: 'Teaching',
-          summary: 'Active recall through teaching others is the most effective way to solidify new knowledge',
-          anchor: 'Feynman technique in practice - explaining complex concepts in simple terms reveals knowledge gaps and strengthens understanding.',
-          pulse: 'enlightened',
-          wheelId: '3',
-          timestamp: new Date(),
-          sourceType: 'voice',
-          captureMode: 'ai'
-        }
-      ],
-      connections: ['2'],
-      position: { x: 200, y: 280 }
-    }
-  ]);
+  const [wheels] = useState<Wheel[]>([]);
 
   const DotCard: React.FC<{ dot: Dot; isPreview?: boolean; onClick?: () => void }> = ({ dot, isPreview = false, onClick }) => {
     const handleDotClick = () => {
@@ -1392,11 +1328,10 @@ const Dashboard: React.FC = () => {
           </>
         )}
 
-        {/* Wheel Flash Card - positioned near the clicked wheel */}
+        {/* Wheel Flash Card - centered modal like dot flash cards */}
         {viewFlashCardWheel && (
           <WheelFlashCard 
             wheel={viewFlashCardWheel}
-            position={wheelFlashCardPosition}
             onClose={() => {
               setViewFlashCardWheel(null);
               setWheelFlashCardPosition(null);

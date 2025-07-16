@@ -1,6 +1,8 @@
 import React from 'react';
-import { Card, CardContent } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from '@/components/ui/badge';
+import { Button } from "@/components/ui/button";
+import { Eye, X, Settings } from "lucide-react";
 
 interface Wheel {
   id: string;
@@ -16,87 +18,76 @@ interface Wheel {
 
 interface WheelFlashCardProps {
   wheel: Wheel;
-  position?: { x: number; y: number };
   onClose: () => void;
-  onViewFull?: () => void;
-  onClick?: () => void;
+  onViewFull: () => void;
 }
 
-const WheelFlashCard: React.FC<WheelFlashCardProps> = ({ wheel, position, onClose, onViewFull, onClick }) => {
-  const handleCardClick = () => {
-    if (onViewFull) {
-      onViewFull();
-    } else if (onClick) {
-      onClick();
-    }
-  };
-
+const WheelFlashCard: React.FC<WheelFlashCardProps> = ({ wheel, onClose, onViewFull }) => {
   return (
-    <div 
-      className="fixed z-[100] pointer-events-auto wheel-flash-card"
-      style={{
-        left: position ? `${Math.min(position.x, window.innerWidth - 200)}px` : '50%',
-        top: position ? `${Math.min(position.y, window.innerHeight - 140)}px` : '50%',
-        transform: position ? 'none' : 'translate(-50%, -50%)',
-        maxWidth: '180px'
-      }}
-      onMouseEnter={(e) => {
-        e.stopPropagation();
-      }}
-      onMouseLeave={(e) => {
-        e.stopPropagation();
-        onClose();
-      }}
-    >
-      <Card 
-        className="bg-white border-2 border-amber-300 shadow-xl cursor-pointer hover:shadow-2xl transition-all duration-200 transform hover:scale-105"
-        onClick={(e) => {
-          e.stopPropagation();
-          handleCardClick();
-        }}
-      >
-        <CardContent className="p-2">
-          <div className="flex justify-between items-start mb-2">
-            <Badge 
-              variant="outline" 
-              className="text-xs border-purple-300 text-purple-700 bg-purple-50/80"
-            >
-              <div className="w-3 h-3 rounded-full bg-purple-500 mr-1"></div>
-              Wheel
-            </Badge>
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onClose();
-              }}
-              className="text-gray-400 hover:text-gray-600 text-sm"
-            >
-              ✕
-            </button>
+    <Dialog open={true} onOpenChange={onClose}>
+      <DialogContent className="max-w-md mx-auto bg-gradient-to-br from-purple-50 to-violet-50 border-2 border-purple-200">
+        <DialogHeader>
+          <div className="flex justify-between items-start mb-4">
+            <div className="flex items-center gap-2">
+              <Badge variant="outline" className="text-xs border-purple-300 text-purple-700 bg-purple-50/80">
+                <Settings className="h-3 w-3 mr-1" />
+                Wheel
+              </Badge>
+              {wheel.category && (
+                <Badge className="bg-gradient-to-r from-purple-100 to-violet-100 text-purple-800 border-purple-200 text-xs">
+                  {wheel.category}
+                </Badge>
+              )}
+            </div>
+            {wheel.timeline && (
+              <Badge className="bg-gradient-to-r from-purple-100 to-violet-100 text-purple-800 border-purple-200">
+                {wheel.timeline}
+              </Badge>
+            )}
           </div>
           
-          <h3 className="font-bold text-sm mb-1 text-purple-800 border-b border-purple-200 pb-1">
+          {/* Flash Card Heading */}
+          <DialogTitle className="text-2xl font-bold text-purple-800 text-center mb-6 border-b-2 border-purple-300 pb-3">
             {wheel.heading || wheel.name}
-          </h3>
-          
+          </DialogTitle>
+        </DialogHeader>
+        
+        {/* Flash Card Content */}
+        <div className="space-y-4">
           {wheel.purpose && (
-            <p className="text-xs text-gray-700 leading-relaxed mb-2 line-clamp-2">
-              {wheel.purpose}
-            </p>
+            <div className="bg-white/70 backdrop-blur rounded-lg p-4 border border-purple-200">
+              <h4 className="font-semibold text-purple-800 text-sm mb-2">Purpose</h4>
+              <p className="text-sm text-gray-700 leading-relaxed">{wheel.purpose}</p>
+            </div>
           )}
           
-          {wheel.timeline && (
-            <Badge className="bg-gradient-to-r from-purple-100 to-violet-100 text-purple-800 border-purple-200 text-xs mb-2">
-              {wheel.timeline}
-            </Badge>
+          {wheel.createdAt && (
+            <div className="text-xs text-purple-700 text-center">
+              Created: {wheel.createdAt.toLocaleString()}
+            </div>
           )}
-          
-          <div className="text-xs text-amber-600 mt-1 font-medium">
-            Click for full view
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+        </div>
+        
+        {/* Action Buttons */}
+        <div className="flex gap-3 mt-6">
+          <Button 
+            onClick={onClose}
+            variant="outline" 
+            className="flex-1 border-purple-300 text-purple-700 hover:bg-purple-50"
+          >
+            <X className="h-4 w-4 mr-2" />
+            Close
+          </Button>
+          <Button 
+            onClick={onViewFull}
+            className="flex-1 bg-gradient-to-r from-purple-500 to-violet-500 hover:from-purple-600 hover:to-violet-600 text-white"
+          >
+            <Eye className="h-4 w-4 mr-2" />
+            Full View
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 };
 
