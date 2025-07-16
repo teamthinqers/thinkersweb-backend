@@ -1056,9 +1056,60 @@ const Dashboard: React.FC = () => {
                   y = 80 + (seedY % 600) + (index * 97) % 500;
                 }
               } else {
-                // Real mode positioning
-                x = 60 + (seedX % 800) + (index * 47) % 200;
-                y = 60 + (seedY % 600) + (index * 73) % 180;
+                // Real mode - intelligent positioning system
+                if (dot.wheelId && dot.wheelId !== '') {
+                  // Find the wheel this dot belongs to
+                  const wheel = displayWheels.find(w => w.id === dot.wheelId);
+                  if (wheel) {
+                    // Position dots in a circle inside the wheel
+                    const dotsInWheel = displayDots.filter(d => d.wheelId === dot.wheelId);
+                    const dotIndexInWheel = dotsInWheel.findIndex(d => d.id === dot.id);
+                    
+                    // Use intelligent positioning for wheel center
+                    let wheelCenterX, wheelCenterY;
+                    if (!previewMode && (!wheel.position || (wheel.position.x === 0 && wheel.position.y === 0))) {
+                      // Auto-position wheels in a grid layout for real data
+                      const wheelIndex = displayWheels.findIndex(w => w.id === wheel.id);
+                      const wheelGridCols = 3;
+                      const wheelSpacing = 250;
+                      const wheelBaseX = 200;
+                      const wheelBaseY = 200;
+                      
+                      wheelCenterX = (wheelIndex % wheelGridCols) * wheelSpacing + wheelBaseX;
+                      wheelCenterY = Math.floor(wheelIndex / wheelGridCols) * wheelSpacing + wheelBaseY;
+                    } else {
+                      wheelCenterX = wheel.position.x;
+                      wheelCenterY = wheel.position.y;
+                    }
+                    const radius = 70; // Radius for dot positioning inside wheel
+                    const angle = (dotIndexInWheel * 2 * Math.PI) / dotsInWheel.length;
+                    
+                    x = wheelCenterX + Math.cos(angle) * radius;
+                    y = wheelCenterY + Math.sin(angle) * radius;
+                  } else {
+                    // Fallback for wheel dots without wheel found - use grid positioning
+                    const gridCols = 8;
+                    const gridSpacing = 120;
+                    const gridX = (index % gridCols) * gridSpacing + 100;
+                    const gridY = Math.floor(index / gridCols) * gridSpacing + 100;
+                    x = gridX + (seedX % 40) - 20; // Add small random offset
+                    y = gridY + (seedY % 40) - 20;
+                  }
+                } else {
+                  // Individual scattered dots - use intelligent grid system
+                  const gridCols = 6;
+                  const gridSpacing = 140;
+                  const baseX = 100;
+                  const baseY = 100;
+                  
+                  // Calculate grid position with some randomness for natural look
+                  const gridX = (index % gridCols) * gridSpacing + baseX;
+                  const gridY = Math.floor(index / gridCols) * gridSpacing + baseY;
+                  
+                  // Add controlled randomness while maintaining minimum spacing
+                  x = gridX + (seedX % 60) - 30;
+                  y = gridY + (seedY % 60) - 30;
+                }
               }
               
               return (
@@ -1179,12 +1230,27 @@ const Dashboard: React.FC = () => {
               );
             })}
             
-            {/* Wheel Boundaries for Preview Mode */}
-            {previewMode && displayWheels.map((wheel, wheelIndex) => {
+            {/* Wheel Boundaries - Both Preview and Real Mode */}
+            {displayWheels.map((wheel, wheelIndex) => {
+              // Determine wheel size and positioning
+              let wheelPosition = wheel.position;
+              
+              // In real mode, auto-position wheels intelligently if no position is set
+              if (!previewMode && (!wheel.position || (wheel.position.x === 0 && wheel.position.y === 0))) {
+                // Auto-position wheels in a grid layout for real data
+                const wheelGridCols = 3;
+                const wheelSpacing = 250;
+                const wheelBaseX = 200;
+                const wheelBaseY = 200;
+                
+                const wheelGridX = (wheelIndex % wheelGridCols) * wheelSpacing + wheelBaseX;
+                const wheelGridY = Math.floor(wheelIndex / wheelGridCols) * wheelSpacing + wheelBaseY;
+                
+                wheelPosition = { x: wheelGridX, y: wheelGridY };
+              }
+              
               // Determine wheel size based on type and hierarchy
-              // Only "Build an Enduring Company" is the parent wheel (400px)
-              // All others (GTM, Strengthen Leadership, Product Innovation, Health & Wellness) are 180px
-              const isParentWheel = wheel.id === 'preview-wheel-parent';
+              const isParentWheel = wheel.id === 'preview-wheel-parent' || wheel.parentWheelId === undefined;
               
               let wheelSize;
               if (isParentWheel) {
@@ -1200,8 +1266,8 @@ const Dashboard: React.FC = () => {
                   key={wheel.id}
                   className="absolute pointer-events-none"
                   style={{
-                    left: `${wheel.position.x - wheelRadius}px`,
-                    top: `${wheel.position.y - wheelRadius}px`,
+                    left: `${wheelPosition.x - wheelRadius}px`,
+                    top: `${wheelPosition.y - wheelRadius}px`,
                     width: `${wheelSize}px`,
                     height: `${wheelSize}px`
                   }}
@@ -1275,8 +1341,8 @@ const Dashboard: React.FC = () => {
                       className="absolute bg-white border-2 border-purple-200 rounded-lg p-3 shadow-xl z-50 w-64 cursor-pointer"
                       style={{
                         // Position relative to wheel accounting for grid transformation
-                        left: isPWA ? '60px' : `${(wheel.position.x + wheelSize + 10) * zoom + offset.x}px`,
-                        top: isPWA ? '-20px' : `${Math.max(0, (wheel.position.y - 20) * zoom + offset.y)}px`,
+                        left: isPWA ? '60px' : `${(wheelPosition.x + wheelSize + 10) * zoom + offset.x}px`,
+                        top: isPWA ? '-20px' : `${Math.max(0, (wheelPosition.y - 20) * zoom + offset.y)}px`,
                         maxWidth: '280px'
                       }}
                       onClick={(e) => {
