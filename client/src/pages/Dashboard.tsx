@@ -964,7 +964,7 @@ const Dashboard: React.FC = () => {
         {/* Interactive grid */}
         <div 
           ref={gridContainerRef}
-          className={`relative ${
+          className={`relative transition-transform duration-100 ease-out ${
             isFullscreen 
               ? 'h-screen w-screen' 
               : 'h-[450px] w-full'
@@ -1008,8 +1008,10 @@ const Dashboard: React.FC = () => {
               <Minimize className="w-4 h-4" />
             </button>
           )}
+          
+          {/* Virtual Grid Container - maintains consistent size regardless of mode */}
           <div 
-            className="relative transition-transform duration-100 ease-out"
+            className="relative"
             style={{ 
               width: isPWA ? '1200px' : `${1200 * zoom}px`, 
               height: isPWA ? '800px' : `${800 * zoom}px`,
