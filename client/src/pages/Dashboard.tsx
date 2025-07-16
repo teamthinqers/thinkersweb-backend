@@ -55,6 +55,7 @@ const Dashboard: React.FC = () => {
   const [viewFullDot, setViewFullDot] = useState<Dot | null>(null);
   const [viewFlashCard, setViewFlashCard] = useState<Dot | null>(null);
   const [viewFlashCardWheel, setViewFlashCardWheel] = useState<Wheel | null>(null);
+  const [wheelFlashCardPosition, setWheelFlashCardPosition] = useState<{ x: number; y: number } | null>(null);
   const [viewFullWheel, setViewFullWheel] = useState<Wheel | null>(null);
   const [searchResults, setSearchResults] = useState<Dot[]>([]);
   const [showRecentFilter, setShowRecentFilter] = useState(false);
@@ -392,7 +393,7 @@ const Dashboard: React.FC = () => {
         color: '#F59E0B', // Consistent amber theme
         dots: [],
         connections: ['preview-wheel-1'],
-        position: { x: 320, y: 240 }, // Position inside parent wheel - left side with better spacing
+        position: { x: 280, y: 200 }, // Position inside parent wheel - left side with more spacing
         parentWheelId: 'preview-wheel-parent',
         createdAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000) // 15 days ago
       };
@@ -437,7 +438,7 @@ const Dashboard: React.FC = () => {
         color: '#F59E0B', // Consistent amber theme
         dots: [],
         connections: ['preview-wheel-0', 'preview-wheel-2'],
-        position: { x: 480, y: 240 }, // Position inside parent wheel - right side with better spacing
+        position: { x: 520, y: 200 }, // Position inside parent wheel - right side with more spacing
         parentWheelId: 'preview-wheel-parent',
         createdAt: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000) // 20 days ago
       };
@@ -481,7 +482,7 @@ const Dashboard: React.FC = () => {
         color: '#F59E0B', // Consistent amber theme
         dots: [],
         connections: ['preview-wheel-1'],
-        position: { x: 400, y: 360 }, // Position inside parent wheel - bottom center with better spacing
+        position: { x: 400, y: 380 }, // Position inside parent wheel - bottom center with more spacing
         parentWheelId: 'preview-wheel-parent',
         createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000) // 10 days ago
       };
@@ -757,50 +758,7 @@ const Dashboard: React.FC = () => {
       }
     };
 
-    const renderDotConnections = () => {
-      const connections: JSX.Element[] = [];
-      
-      // Simple connection rendering - skip complex logic to fix "Only Sparks" toggle
-      for (let i = 0; i < displayDots.length; i++) {
-        for (let j = i + 1; j < displayDots.length; j++) {
-          const dot1 = displayDots[i];
-          const dot2 = displayDots[j];
-          
-          // Simple connection probability based on dot IDs
-          const seed1 = String(dot1.id || i).split('').reduce((a, b) => a + b.charCodeAt(0), 0);
-          const seed2 = String(dot2.id || j).split('').reduce((a, b) => a + b.charCodeAt(0), 0);
-          const connectionSeed = (seed1 + seed2) % 100;
-          
-          // Show connections based on toggle - higher probability in preview mode
-          const threshold = previewMode ? 30 : 15;
-          
-          if (connectionSeed < threshold) {
-            // Calculate basic positions (will be overridden by SVG positioning)
-            const x1 = 100 + (seed1 % 800);
-            const y1 = 100 + (seed1 % 500);
-            const x2 = 100 + (seed2 % 800);
-            const y2 = 100 + (seed2 % 500);
-            
-            connections.push(
-              <line
-                key={`${dot1.id}-${dot2.id}`}
-                x1={x1}
-                y1={y1}
-                x2={x2}
-                y2={y2}
-                stroke="#F59E0B"
-                strokeWidth="1.5"
-                strokeDasharray="6,3"
-                opacity="0.6"
-                filter="url(#glow)"
-              />
-            );
-          }
-        }
-      }
-      
-      return connections;
-    };
+
 
     return (
       <div className={`relative bg-gradient-to-br from-amber-50/50 to-orange-50/50 ${
@@ -1257,7 +1215,7 @@ const Dashboard: React.FC = () => {
                 // In preview mode, use specific sizing logic
                 isParentWheel = wheel.id === 'preview-wheel-parent';
                 if (isParentWheel) {
-                  wheelSize = 400; // Parent wheel (Build an Enduring Company) is biggest
+                  wheelSize = 500; // Parent wheel (Build an Enduring Company) is bigger - increased from 400px
                 } else {
                   wheelSize = 180; // All child wheels (GTM, Strengthen Leadership, Product Innovation, Health & Wellness) are same 180px size
                 }
@@ -1336,7 +1294,16 @@ const Dashboard: React.FC = () => {
                       onClick={(e) => {
                         e.stopPropagation();
                         setHoveredWheel(null);
-                        setViewFullWheel(wheel);
+                        
+                        // Calculate position for flash card near the clicked wheel
+                        const rect = e.currentTarget.getBoundingClientRect();
+                        const position = {
+                          x: rect.right + 10, // Position to the right of the wheel
+                          y: rect.top + (rect.height / 2) - 70 // Center vertically
+                        };
+                        
+                        setWheelFlashCardPosition(position);
+                        setViewFlashCardWheel(wheel);
                       }}
                     >
                       {wheel.name}
@@ -1392,139 +1359,6 @@ const Dashboard: React.FC = () => {
                 </div>
               );
             })}
-            
-            {/* Stunning Connection Lines Between Dots */}
-            <svg className="absolute inset-0 w-full h-full pointer-events-none">
-              <defs>
-                <marker id="dotArrowhead" markerWidth="8" markerHeight="6" 
-                 refX="7" refY="3" orient="auto">
-                  <polygon points="0 0, 8 3, 0 6" fill="#F59E0B" opacity="0.7" />
-                </marker>
-                <linearGradient id="dotConnectionGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#F59E0B" stopOpacity="0.4" />
-                  <stop offset="50%" stopColor="#3B82F6" stopOpacity="0.5" />
-                  <stop offset="100%" stopColor="#10B981" stopOpacity="0.4" />
-                </linearGradient>
-                <filter id="glow">
-                  <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
-                  <feMerge> 
-                    <feMergeNode in="coloredBlur"/>
-                    <feMergeNode in="SourceGraphic"/>
-                  </feMerge>
-                </filter>
-              </defs>
-              {!previewMode && displayDots.length > 1 && renderDotConnections()}
-              {/* Strategic preview connections - connecting actual dots */}
-              {previewMode && displayDots.length > 1 && (
-                <>
-                  {(() => {
-                    const maxDots = displayDots.length;
-                    
-                    // Calculate dot position helper function
-                    const calculateDotPosition = (dot: any, index: number) => {
-                      const dotId = String(dot.id || index);
-                      const seedX = dotId.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
-                      const seedY = dotId.split('').reverse().reduce((a, b) => a + b.charCodeAt(0), 0);
-                      
-                      if (dot.wheelId && dot.wheelId !== '') {
-                        const wheel = displayWheels.find(w => w.id === dot.wheelId);
-                        if (wheel) {
-                          const dotsInWheel = displayDots.filter(d => d.wheelId === dot.wheelId);
-                          const dotIndexInWheel = dotsInWheel.findIndex(d => d.id === dot.id);
-                          const radius = 60;
-                          const angle = (dotIndexInWheel * 2 * Math.PI) / dotsInWheel.length;
-                          return {
-                            x: wheel.position.x + Math.cos(angle) * radius + 24,
-                            y: wheel.position.y + Math.sin(angle) * radius + 24
-                          };
-                        }
-                        return {
-                          x: 100 + (seedX % 900) + (index * 67) % 400 + 24,
-                          y: 100 + (seedY % 600) + (index * 83) % 300 + 24
-                        };
-                      }
-                      return {
-                        x: 80 + (seedX % 1000) + (index * 137) % 800 + 24,
-                        y: 80 + (seedY % 600) + (index * 97) % 500 + 24
-                      };
-                    };
-                    
-                    // Separate wheel dots from scattered dots
-                    const wheelDots = displayDots.filter(dot => dot.wheelId && dot.wheelId !== '');
-                    const scatteredDots = displayDots.filter(dot => !dot.wheelId || dot.wheelId === '');
-                    
-                    const connections = [];
-                    
-                    // 1) 3 connections between spark wheels (wheel-to-wheel)
-                    let wheelConnections = 0;
-                    for (let i = 0; i < wheelDots.length && wheelConnections < 3; i++) {
-                      for (let j = i + 1; j < wheelDots.length && wheelConnections < 3; j++) {
-                        // Only connect dots from different wheels
-                        if (wheelDots[i].wheelId !== wheelDots[j].wheelId) {
-                          const dot1Index = displayDots.findIndex(d => d.id === wheelDots[i].id);
-                          const dot2Index = displayDots.findIndex(d => d.id === wheelDots[j].id);
-                          
-                          if (dot1Index !== -1 && dot2Index !== -1) {
-                            const pos1 = calculateDotPosition(wheelDots[i], dot1Index);
-                            const pos2 = calculateDotPosition(wheelDots[j], dot2Index);
-                            
-                            connections.push(
-                              <line 
-                                key={`wheel-connection-${wheelConnections}`}
-                                x1={pos1.x} y1={pos1.y} 
-                                x2={pos2.x} y2={pos2.y} 
-                                stroke="#F59E0B" 
-                                strokeWidth="1.5" 
-                                strokeDasharray="6,3" 
-                                opacity="0.6" 
-                              />
-                            );
-                            wheelConnections++;
-                          }
-                        }
-                      }
-                    }
-                    
-                    // 2) 4 connections from spark wheel dots to scattered dots
-                    // Use different wheel dots as starting points to distribute connections
-                    let scatteredConnections = 0;
-                    const wheelDotIndices = [0, 2, 4, 6]; // Use different dots from wheels
-                    
-                    for (let i = 0; i < wheelDotIndices.length && scatteredConnections < 4; i++) {
-                      const wheelDotIdx = wheelDotIndices[i];
-                      if (wheelDotIdx < wheelDots.length) {
-                        // Use different scattered dots too
-                        const scatteredDotIdx = i % scatteredDots.length;
-                        if (scatteredDotIdx < scatteredDots.length) {
-                          const wheelDotIndex = displayDots.findIndex(d => d.id === wheelDots[wheelDotIdx].id);
-                          const scatteredDotIndex = displayDots.findIndex(d => d.id === scatteredDots[scatteredDotIdx].id);
-                          
-                          if (wheelDotIndex !== -1 && scatteredDotIndex !== -1) {
-                            const pos1 = calculateDotPosition(wheelDots[wheelDotIdx], wheelDotIndex);
-                            const pos2 = calculateDotPosition(scatteredDots[scatteredDotIdx], scatteredDotIndex);
-                            
-                            connections.push(
-                              <line 
-                                key={`scattered-connection-${scatteredConnections}`}
-                                x1={pos1.x} y1={pos1.y} 
-                                x2={pos2.x} y2={pos2.y} 
-                                stroke="#F59E0B" 
-                                strokeWidth="1.5" 
-                                strokeDasharray="6,3" 
-                                opacity="0.6" 
-                              />
-                            );
-                            scatteredConnections++;
-                          }
-                        }
-                      }
-                    }
-                    
-                    return connections;
-                  })()}
-                </>
-              )}
-            </svg>
           </div>
         </div>
         
@@ -1576,14 +1410,12 @@ const Dashboard: React.FC = () => {
                           <><Type className="w-3 h-3" /> Text</>
                         )}
                       </span>
-                      
                       <button
-                        onClick={(e) => {
-                          e.stopPropagation();
+                        onClick={() => {
                           setViewFullDot(selectedDot);
                           setSelectedDot(null);
                         }}
-                        className="bg-amber-500 hover:bg-amber-600 text-white px-3 py-1 rounded-lg text-sm font-medium transition-colors"
+                        className="text-xs text-amber-600 hover:text-amber-700 font-medium"
                       >
                         View Full
                       </button>
@@ -1595,191 +1427,143 @@ const Dashboard: React.FC = () => {
           </>
         )}
 
-        {/* Full Dot View Modal */}
+        {/* Wheel Flash Card - positioned near the clicked wheel */}
+        {viewFlashCardWheel && (
+          <WheelFlashCard 
+            wheel={viewFlashCardWheel}
+            position={wheelFlashCardPosition}
+            onClose={() => {
+              setViewFlashCardWheel(null);
+              setWheelFlashCardPosition(null);
+            }}
+            onViewFull={() => {
+              setViewFullWheel(viewFlashCardWheel);
+              setViewFlashCardWheel(null);
+              setWheelFlashCardPosition(null);
+            }}
+          />
+        )}
+
+        {/* Dot Full View Modal */}
         {viewFullDot && (
           <DotFullView 
             dot={viewFullDot} 
             onClose={() => setViewFullDot(null)}
             onDelete={(dotId) => {
-              // Refetch dots after deletion
-              refetch();
               setViewFullDot(null);
+              // Trigger a refetch of dots data
+              window.location.reload();
             }}
+          />
+        )}
+
+        {/* Wheel Full View Modal */}
+        {selectedWheel && (
+          <WheelFullView 
+            wheelId={selectedWheel}
+            onClose={() => setSelectedWheel(null)}
+            wheels={wheels}
+            dots={dots}
           />
         )}
       </div>
     );
   };
 
-  if (isLoading) {
-    return (
-      <div className="container mx-auto px-4 py-6">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading your dots...</p>
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50">
+      {/* Header */}
+      <div className="bg-white border-b border-amber-200 px-4 py-3">
+        <div className="flex items-center justify-between">
+          {/* Left side - Logo and title */}
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => window.history.back()}
+              className="p-2 hover:bg-amber-100 rounded-lg transition-colors"
+            >
+              <ArrowLeft className="w-5 h-5 text-amber-600" />
+            </button>
+            <div className="flex items-center gap-2">
+              <img 
+                src="/dotspark-logo-icon.jpeg" 
+                alt="DotSpark" 
+                className="w-8 h-8 rounded-full"
+              />
+              <div>
+                <h1 className="text-xl font-bold bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent flex items-center gap-2">
+                  <Brain className="w-5 h-5 text-amber-500" />
+                  My DotSpark Neura
+                </h1>
+              </div>
+            </div>
+          </div>
+
+          {/* Right side - Stats and controls */}
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 text-sm">
+              <div className="px-3 py-1 bg-amber-100 text-amber-800 rounded-full font-medium">
+                Total Dots: {dots.length}
+              </div>
+              <div className="px-3 py-1 bg-orange-100 text-orange-800 rounded-full font-medium">
+                Total Wheels: {wheels.filter(w => w.dots && w.dots.length > 0).length}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    );
-  }
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50/30 to-orange-50/30">
-      <div className="container mx-auto px-4 py-6">
-        {/* Header */}
-        <div className="mb-6">
-          <div className="flex items-center gap-3 mb-4">
-            <Button 
-              variant="ghost" 
-              size="sm"
-              onClick={() => {
-                // Check for PWA navigation flag
-                const dotDashboardNavigation = localStorage.getItem('dotDashboardNavigation');
-                
-                if (dotDashboardNavigation === 'true') {
-                  // Clear the flag and navigate to dot interface
-                  localStorage.removeItem('dotDashboardNavigation');
-                  setLocation('/dot');
-                } else {
-                  // Standard browser back behavior
-                  window.history.back();
-                }
-              }}
-              className="p-2 hover:bg-amber-100 text-amber-600 hover:text-amber-700"
-            >
-              <ArrowLeft className="w-5 h-5" />
-            </Button>
-            <h1 className="text-2xl font-bold flex items-center gap-3">
-              <Brain className="w-8 h-8 text-amber-600" />
-              <span className="bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent">
-                My DotSpark Neura
-              </span>
-            </h1>
+      {/* Main Content */}
+      <div className="p-4">
+        {/* Capacity Metrics - 4 core parameters */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          {/* Memory Capacity */}
+          <div className="bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl p-4 text-white">
+            <div className="flex items-center gap-3">
+              <Database className="w-6 h-6" />
+              <div>
+                <h3 className="font-semibold">Memory</h3>
+                <p className="text-sm opacity-90">Storage & Recall</p>
+              </div>
+            </div>
           </div>
 
-          {/* Capacity Box */}
-          <Card className="bg-gradient-to-br from-white to-amber-50/30 border-2 border-amber-200 shadow-lg">
-            <CardContent className="p-6">
-              <h2 className="text-xl font-semibold mb-6 text-center bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent">
-                My Neural Capacity
-              </h2>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {/* Memory */}
-                <div className="flex flex-col items-center text-center space-y-2">
-                  <div className="p-3 rounded-full bg-gradient-to-br from-amber-600 to-yellow-600 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 group">
-                    <Database className="w-6 h-6 text-white animate-pulse group-hover:animate-bounce" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-amber-700 text-sm">Memory</h3>
-                    <p className="text-amber-600 text-xs">Storage & Recall</p>
-                  </div>
-                </div>
-
-                {/* Learning Engine */}
-                <div className="flex flex-col items-center text-center space-y-2">
-                  <div className="p-3 rounded-full bg-gradient-to-br from-amber-500 to-orange-600 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 group">
-                    <Cpu className="w-6 h-6 text-white animate-spin group-hover:animate-pulse" style={{ animationDuration: '3s' }} />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-amber-700 text-sm">Learning Engine</h3>
-                    <p className="text-amber-600 text-xs">Learning Rituals</p>
-                  </div>
-                </div>
-
-                {/* Sparks */}
-                <div className="flex flex-col items-center text-center space-y-2">
-                  <div className="p-3 rounded-full bg-gradient-to-br from-yellow-500 to-amber-600 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 group">
-                    <Sparkles className="w-6 h-6 text-white animate-ping group-hover:animate-bounce" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-yellow-700 text-sm">Sparks</h3>
-                    <p className="text-yellow-600 text-xs">Insights & Ideas</p>
-                  </div>
-                </div>
-
-                {/* Social */}
-                <div className="flex flex-col items-center text-center space-y-2">
-                  <div className="p-3 rounded-full bg-gradient-to-br from-red-500 to-orange-600 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 group">
-                    <Brain className="w-6 h-6 text-white animate-pulse group-hover:animate-ping" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-red-700 text-sm">Social</h3>
-                    <p className="text-red-600 text-xs">Connections</p>
-                  </div>
-                </div>
+          {/* Learning Engine */}
+          <div className="bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-xl p-4 text-white">
+            <div className="flex items-center gap-3">
+              <Cpu className="w-6 h-6" />
+              <div>
+                <h3 className="font-semibold">Learning Engine</h3>
+                <p className="text-sm opacity-90">AI Processing</p>
               </div>
-            </CardContent>
-          </Card>
-        </div>
+            </div>
+          </div>
 
-
-
-
-
-        {/* Spark Section */}
-        <div className="mb-6">
-          <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-6">
-            {/* Spark Button */}
-            <button className="group relative overflow-hidden bg-gradient-to-r from-yellow-400 via-amber-500 to-orange-500 hover:from-yellow-500 hover:via-amber-600 hover:to-orange-600 text-white px-8 py-4 rounded-2xl shadow-xl hover:shadow-2xl transform transition-all duration-300 hover:scale-105 active:scale-95 flex-shrink-0 w-fit">
-              <div className="flex items-center gap-3">
-                <div className="relative">
-                  <Sparkles className="w-6 h-6 animate-pulse" />
-                  <div className="absolute inset-0 animate-ping">
-                    <Sparkles className="w-6 h-6 opacity-30" />
-                  </div>
-                </div>
-                <span className="text-lg font-bold tracking-wide">SPARK</span>
+          {/* Sparks Generation */}
+          <div className="bg-gradient-to-r from-orange-500 to-red-500 rounded-xl p-4 text-white">
+            <div className="flex items-center gap-3">
+              <Sparkles className="w-6 h-6" />
+              <div>
+                <h3 className="font-semibold">Sparks</h3>
+                <p className="text-sm opacity-90">Insights & Ideas</p>
               </div>
-              
-              {/* Animated background effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 transform -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
-            </button>
-            
-            {/* Content Box - matching button width approximately */}
-            <div className="bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-200 rounded-2xl p-6 w-full md:w-80 text-left shadow-lg">
-              <p className="text-gray-800 font-medium leading-relaxed">
-                This isn't magic. It's you, thinking sharper.
-              </p>
-              <p className="text-amber-700 font-semibold mt-2">
-                Let's connect the dots.
-              </p>
+            </div>
+          </div>
+
+          {/* Social Connections */}
+          <div className="bg-gradient-to-r from-teal-500 to-emerald-500 rounded-xl p-4 text-white">
+            <div className="flex items-center gap-3">
+              <Users className="w-6 h-6" />
+              <div>
+                <h3 className="font-semibold">Social</h3>
+                <p className="text-sm opacity-90">Connections</p>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Search Results Section - only show when searching */}
-        {searchTerm.trim() && (
-          <div className="mb-8">
-            <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-              <Search className="w-5 h-5 text-amber-500" />
-              <span className="bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent">
-                Search Results ({searchResults.length})
-              </span>
-            </h2>
-            <div className="bg-white/80 backdrop-blur border-2 border-amber-200 rounded-xl p-4 max-h-96 overflow-y-auto shadow-lg">
-              <div className="space-y-4">
-                {searchResults.length > 0 ? (
-                  searchResults.map((dot: Dot) => (
-                    <DotCard 
-                      key={dot.id} 
-                      dot={dot} 
-                      onClick={() => setViewFullDot(dot)}
-                    />
-                  ))
-                ) : (
-                  <div className="text-center py-6 text-amber-600">
-                    <Search className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                    <p>No dots found matching "{searchTerm}"</p>
-                    <p className="text-sm text-amber-500">Try different keywords or check your spelling</p>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Search Bar */}
-        <div className="mb-4">
-          <div className="relative">
+        {/* Search Section */}
+        <div className="mb-6">
+          <div className="relative max-w-md">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-amber-500" />
             <Input
               type="text"
@@ -1890,45 +1674,6 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
       </div>
-      
-
-
-      {/* Flash Card Modal */}
-      {viewFlashCard && (
-        <DotFlashCard 
-          dot={viewFlashCard} 
-          onClose={() => setViewFlashCard(null)}
-          onViewFull={() => {
-            setViewFullDot(viewFlashCard);
-            setViewFlashCard(null);
-          }}
-        />
-      )}
-
-      {/* Full Dot View Modal */}
-      {viewFullDot && (
-        <DotFullView 
-          dot={viewFullDot} 
-          onClose={() => setViewFullDot(null)}
-          onDelete={async () => {
-            // Refetch dots after deletion
-            await refetch();
-            setViewFullDot(null);
-          }}
-        />
-      )}
-
-
-
-      {/* Full Wheel View Modal */}
-      {viewFullWheel && (
-        <WheelFullView 
-          wheel={viewFullWheel} 
-          onClose={() => setViewFullWheel(null)}
-        />
-      )}
-
-
     </div>
   );
 };
