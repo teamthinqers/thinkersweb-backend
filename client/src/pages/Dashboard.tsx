@@ -1230,8 +1230,8 @@ const Dashboard: React.FC = () => {
               );
             })}
             
-            {/* Wheel Boundaries - Both Preview and Real Mode */}
-            {displayWheels.map((wheel, wheelIndex) => {
+            {/* Wheel Boundaries - Only show when wheels exist */}
+            {(previewMode ? displayWheels : displayWheels.filter(w => w.dots && w.dots.length > 0)).map((wheel, wheelIndex) => {
               // Determine wheel size and positioning
               let wheelPosition = wheel.position;
               
@@ -1250,13 +1250,21 @@ const Dashboard: React.FC = () => {
               }
               
               // Determine wheel size based on type and hierarchy
-              const isParentWheel = wheel.id === 'preview-wheel-parent' || wheel.parentWheelId === undefined;
-              
               let wheelSize;
-              if (isParentWheel) {
-                wheelSize = 400; // Parent wheel (Build an Enduring Company) is biggest
+              let isParentWheel;
+              
+              if (previewMode) {
+                // In preview mode, use specific sizing logic
+                isParentWheel = wheel.id === 'preview-wheel-parent';
+                if (isParentWheel) {
+                  wheelSize = 400; // Parent wheel (Build an Enduring Company) is biggest
+                } else {
+                  wheelSize = 180; // All child wheels (GTM, Strengthen Leadership, Product Innovation, Health & Wellness) are same 180px size
+                }
               } else {
-                wheelSize = 180; // All child wheels (GTM, Strengthen Leadership, Product Innovation, Health & Wellness) are same 180px size
+                // In real mode, use standard wheel sizes
+                isParentWheel = wheel.parentWheelId === undefined;
+                wheelSize = isParentWheel ? 300 : 150; // Smaller sizes for real mode
               }
               
               const wheelRadius = wheelSize / 2;
