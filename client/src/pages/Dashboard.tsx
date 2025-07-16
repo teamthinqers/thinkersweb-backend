@@ -56,6 +56,8 @@ const Dashboard: React.FC = () => {
   const [viewFlashCard, setViewFlashCard] = useState<Dot | null>(null);
   const [viewFlashCardWheel, setViewFlashCardWheel] = useState<Wheel | null>(null);
   const [viewFullWheel, setViewFullWheel] = useState<Wheel | null>(null);
+  const [viewWheelFlashCard, setViewWheelFlashCard] = useState<Wheel | null>(null);
+  const [wheelFlashCardPosition, setWheelFlashCardPosition] = useState<{ x: number; y: number } | null>(null);
   const [searchResults, setSearchResults] = useState<Dot[]>([]);
   const [showRecentFilter, setShowRecentFilter] = useState(false);
   const [recentDotsCount, setRecentDotsCount] = useState(4);
@@ -302,8 +304,11 @@ const Dashboard: React.FC = () => {
   showingRecentFilter?: boolean, 
   recentCount?: number,
   isFullscreen?: boolean,
-  onFullscreenChange?: (isFullscreen: boolean) => void
-}> = ({ wheels, actualDots, showingRecentFilter = false, recentCount = 4, isFullscreen = false, onFullscreenChange }) => {
+  onFullscreenChange?: (isFullscreen: boolean) => void,
+  setViewWheelFlashCard: (wheel: Wheel | null) => void,
+  setWheelFlashCardPosition: (position: { x: number; y: number } | null) => void,
+  setViewFullWheel: (wheel: Wheel | null) => void
+}> = ({ wheels, actualDots, showingRecentFilter = false, recentCount = 4, isFullscreen = false, onFullscreenChange, setViewWheelFlashCard, setWheelFlashCardPosition, setViewFullWheel }) => {
     const [selectedWheel, setSelectedWheel] = useState<string | null>(null);
     const [viewFullDot, setViewFullDot] = useState<Dot | null>(null);
     const [selectedDot, setSelectedDot] = useState<Dot | null>(null);
@@ -317,10 +322,7 @@ const Dashboard: React.FC = () => {
     const [offset, setOffset] = useState({ x: 0, y: 0 });
     const [isPWA, setIsPWA] = useState(false);
     
-    // Add wheel interaction state variables
-    const [viewWheelFlashCard, setViewWheelFlashCard] = useState<Wheel | null>(null);
-    const [wheelFlashCardPosition, setWheelFlashCardPosition] = useState<{ x: number; y: number } | null>(null);
-    const [viewFullWheel, setViewFullWheel] = useState<Wheel | null>(null);
+
 
     // Detect PWA mode
     useEffect(() => {
@@ -1741,6 +1743,9 @@ const Dashboard: React.FC = () => {
               recentCount={recentDotsCount}
               isFullscreen={isMapFullscreen}
               onFullscreenChange={setIsMapFullscreen}
+              setViewWheelFlashCard={setViewWheelFlashCard}
+              setWheelFlashCardPosition={setWheelFlashCardPosition}
+              setViewFullWheel={setViewFullWheel}
             />
           </div>
         </div>
