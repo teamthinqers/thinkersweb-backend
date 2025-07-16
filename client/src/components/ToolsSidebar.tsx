@@ -42,7 +42,15 @@ export function ToolsSidebar({ selectedTool, onToolChange }: ToolsSidebarProps) 
   ];
 
   return (
-    <div className="w-16 bg-white border-r border-gray-200 flex flex-col items-center py-4 space-y-3">
+    <div className="w-20 bg-gradient-to-b from-gray-50 to-gray-100 border-r-2 border-amber-200 shadow-lg flex flex-col items-center py-6 space-y-4 min-h-screen">
+      {/* Sidebar Header */}
+      <div className="mb-4 text-center">
+        <div className="w-12 h-12 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl flex items-center justify-center mb-2 shadow-md">
+          <Settings className="w-6 h-6 text-white" />
+        </div>
+        <div className="text-xs font-bold text-gray-700">Tools</div>
+      </div>
+      
       <TooltipProvider>
         {tools.map((tool) => {
           const Icon = tool.icon;
@@ -56,17 +64,18 @@ export function ToolsSidebar({ selectedTool, onToolChange }: ToolsSidebarProps) 
                   size="sm"
                   onClick={() => onToolChange(tool.id)}
                   className={cn(
-                    "w-12 h-12 p-0 rounded-lg border-2 transition-all duration-200",
+                    "w-14 h-14 p-0 rounded-xl border-2 transition-all duration-300 shadow-sm",
                     isSelected 
-                      ? `${tool.color} border-current shadow-md scale-105` 
-                      : "border-transparent hover:border-gray-300"
+                      ? `${tool.color} border-current shadow-lg scale-110 ring-2 ring-amber-300` 
+                      : "border-gray-300 hover:border-amber-400 hover:shadow-md hover:scale-105"
                   )}
                 >
                   <Icon 
                     className={cn(
-                      "w-6 h-6",
+                      "w-7 h-7",
                       tool.id === 'create-wheel' && isSelected && "animate-spin",
-                      tool.id === 'create-wheel' && "transition-transform duration-300"
+                      tool.id === 'create-wheel' && "transition-transform duration-300",
+                      isSelected && "drop-shadow-sm"
                     )}
                     style={tool.id === 'create-wheel' && isSelected ? { animationDuration: '3s' } : undefined}
                   />
@@ -83,19 +92,28 @@ export function ToolsSidebar({ selectedTool, onToolChange }: ToolsSidebarProps) 
         })}
       </TooltipProvider>
       
-      {/* Info section */}
-      <div className="mt-auto pt-4 border-t border-gray-200">
+      {/* Tool Status Indicator */}
+      <div className="mt-auto pt-6 border-t-2 border-amber-200 space-y-3">
+        <div className="text-center">
+          <div className="text-xs font-semibold text-gray-600 mb-1">Active Tool</div>
+          <div className="text-xs font-bold text-amber-700 bg-amber-100 px-2 py-1 rounded-full">
+            {tools.find(t => t.id === selectedTool)?.label}
+          </div>
+        </div>
+        
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button variant="ghost" size="sm" className="w-12 h-12 p-0 rounded-lg">
+            <Button variant="ghost" size="sm" className="w-12 h-12 p-0 rounded-lg border border-gray-300 hover:border-amber-400">
               <Info className="w-5 h-5 text-gray-500" />
             </Button>
           </TooltipTrigger>
           <TooltipContent side="right" className="max-w-xs">
             <div className="text-center">
-              <p className="font-semibold">Tool Help</p>
+              <p className="font-semibold">Usage Guide</p>
               <p className="text-xs text-gray-600 mt-1">
-                Select a tool, then click on the grid to create dots or wheels
+                1. Select a tool from the sidebar<br/>
+                2. Click anywhere on the grid<br/>
+                3. Fill in the creation form
               </p>
             </div>
           </TooltipContent>

@@ -933,6 +933,32 @@ const Dashboard: React.FC = () => {
 
 
         
+        {/* Grid Header with Tool Status */}
+        {!isFullscreen && (
+          <div className="bg-white/90 backdrop-blur border-b border-amber-200 px-4 py-2 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
+                <Network className="w-4 h-4 text-amber-600" />
+                <span className="text-sm font-semibold text-gray-700">Interactive Grid</span>
+              </div>
+              <div className={`px-3 py-1 rounded-full text-xs font-medium ${
+                selectedTool === 'select' 
+                  ? 'bg-gray-100 text-gray-700' 
+                  : selectedTool === 'create-dot'
+                  ? 'bg-amber-100 text-amber-700'
+                  : 'bg-orange-100 text-orange-700'
+              }`}>
+                {selectedTool === 'select' && 'Navigate Mode'}
+                {selectedTool === 'create-dot' && 'Click to Create Dot'}
+                {selectedTool === 'create-wheel' && 'Click to Create Wheel'}
+              </div>
+            </div>
+            <div className="text-xs text-gray-500">
+              {selectedTool !== 'select' && 'Click anywhere on the grid below'}
+            </div>
+          </div>
+        )}
+
         {/* Interactive grid */}
         <div 
           ref={gridContainerRef}
@@ -940,7 +966,11 @@ const Dashboard: React.FC = () => {
             isFullscreen 
               ? 'h-screen w-screen' 
               : 'h-[450px] w-full'
-          } overflow-hidden ${
+          } overflow-hidden border-2 ${
+            selectedTool !== 'select' 
+              ? 'border-amber-400 border-dashed animate-pulse' 
+              : 'border-gray-200'
+          } ${
             selectedTool === 'select' 
               ? isPWA ? 'cursor-grab active:cursor-grabbing' : 'cursor-grab active:cursor-grabbing'
               : selectedTool === 'create-dot'
