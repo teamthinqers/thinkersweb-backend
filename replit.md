@@ -921,6 +921,11 @@ Changelog:
   * Updated voice interface to include heading field as first layer (4 layers total)
   * Fixed progress meter logic to handle 4 steps instead of 3 for voice capture
   * Enhanced preview mode with realistic wheel names: "Innovation" and "Learning"
+- July 16, 2025. Removed mode switching buttons from capture interfaces:
+  * Eliminated Natural Mode ↻ / AI Mode ↻ switching buttons from text and voice capture interfaces
+  * Mode switching now only available in initial selection screens, preventing mid-capture mode changes
+  * Applied changes to both dot creation (text capture) and wheel creation (text/voice) interfaces
+  * Users must select capture mode before entering voice/text interfaces, improving workflow clarity
 - July 16, 2025. Aligned color coding for wheel creation interfaces:
   * Updated wheel creation buttons and interfaces to follow consistent color theme
   * Natural Mode: Uses amber/orange gradient colors across all wheel creation interfaces

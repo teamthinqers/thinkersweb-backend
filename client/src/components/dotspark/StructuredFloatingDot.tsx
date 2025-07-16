@@ -843,38 +843,7 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                     >
                       <ArrowLeft className="w-4 h-4" />
                     </Button>
-                    <div className="flex items-center gap-2">
-                      <h3 className="font-medium">Save Dot - Text</h3>
-                      {userCaptureMode === 'natural' ? (
-                        <button
-                          onClick={() => {
-                            setUserCaptureMode('ai');
-                            localStorage.setItem('dotCaptureMode', 'ai');
-                            window.dispatchEvent(new StorageEvent('storage', {
-                              key: 'dotCaptureMode',
-                              newValue: 'ai'
-                            }));
-                          }}
-                          className="px-4 py-2 text-sm font-semibold bg-gradient-to-r from-orange-100 to-amber-100 text-orange-700 rounded-full border border-orange-200 hover:from-orange-200 hover:to-amber-200 hover:shadow-md transition-all duration-200 cursor-pointer transform hover:scale-105"
-                        >
-                          Natural Mode ↻
-                        </button>
-                      ) : (
-                        <button
-                          onClick={() => {
-                            setUserCaptureMode('natural');
-                            localStorage.setItem('dotCaptureMode', 'natural');
-                            window.dispatchEvent(new StorageEvent('storage', {
-                              key: 'dotCaptureMode',
-                              newValue: 'natural'
-                            }));
-                          }}
-                          className="px-4 py-2 text-sm font-semibold bg-gradient-to-r from-purple-100 to-violet-100 text-purple-700 rounded-full border border-purple-200 hover:from-purple-200 hover:to-violet-200 hover:shadow-md transition-all duration-200 cursor-pointer transform hover:scale-105"
-                        >
-                          AI Mode ↻
-                        </button>
-                      )}
-                    </div>
+                    <h3 className="font-medium">Save Dot - Text</h3>
                     <Button
                       variant="ghost"
                       onClick={handleClose}
@@ -1042,38 +1011,7 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                     >
                       <ArrowLeft className="w-4 h-4" />
                     </Button>
-                    <div className="flex items-center gap-2">
-                      <h3 className="font-medium">Create Wheel - Text</h3>
-                      {userCaptureMode === 'natural' ? (
-                        <button
-                          onClick={() => {
-                            setUserCaptureMode('ai');
-                            localStorage.setItem('dotCaptureMode', 'ai');
-                            window.dispatchEvent(new StorageEvent('storage', {
-                              key: 'dotCaptureMode',
-                              newValue: 'ai'
-                            }));
-                          }}
-                          className="px-4 py-2 text-sm font-semibold bg-gradient-to-r from-orange-100 to-amber-100 text-orange-700 rounded-full border border-orange-200 hover:from-orange-200 hover:to-amber-200 hover:shadow-md transition-all duration-200 cursor-pointer transform hover:scale-105"
-                        >
-                          Natural Mode ↻
-                        </button>
-                      ) : (
-                        <button
-                          onClick={() => {
-                            setUserCaptureMode('natural');
-                            localStorage.setItem('dotCaptureMode', 'natural');
-                            window.dispatchEvent(new StorageEvent('storage', {
-                              key: 'dotCaptureMode',
-                              newValue: 'natural'
-                            }));
-                          }}
-                          className="px-4 py-2 text-sm font-semibold bg-gradient-to-r from-purple-100 to-violet-100 text-purple-700 rounded-full border border-purple-200 hover:from-purple-200 hover:to-violet-200 hover:shadow-md transition-all duration-200 cursor-pointer transform hover:scale-105"
-                        >
-                          AI Mode ↻
-                        </button>
-                      )}
-                    </div>
+                    <h3 className="font-medium">Create Wheel - Text</h3>
                     <Button
                       variant="ghost"
                       onClick={handleClose}
