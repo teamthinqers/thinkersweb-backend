@@ -1758,6 +1758,7 @@ const Dashboard: React.FC = () => {
           // Remove pending dot on successful creation
           setPendingDots(prev => prev.filter(dot => dot.id !== editingElementId));
           setEditingElementId(null);
+          refetch(); // Refresh dots data
         }}
         onCancel={() => {
           // Remove pending dot on cancel
