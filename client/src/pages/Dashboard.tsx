@@ -69,9 +69,6 @@ const Dashboard: React.FC = () => {
   const [showDotCreation, setShowDotCreation] = useState(false);
   const [showWheelCreation, setShowWheelCreation] = useState(false);
   const [creationPosition, setCreationPosition] = useState({ x: 0, y: 0 });
-  const [pendingDots, setPendingDots] = useState<Array<{id: string, position: {x: number, y: number}}>>([]);
-  const [pendingWheels, setPendingWheels] = useState<Array<{id: string, position: {x: number, y: number}}>>([]);
-  const [editingElementId, setEditingElementId] = useState<string | null>(null);
   
   // PWA detection for smaller button sizing
   const isPWA = isRunningAsStandalone();
@@ -150,28 +147,8 @@ const Dashboard: React.FC = () => {
     }
   }, [searchTerm, dots]);
 
-  // Fetch wheels data from API
-  const { data: wheels = [], isLoading: wheelsLoading, refetch: refetchWheels } = useQuery({
-    queryKey: ['/api/wheels'],
-    queryFn: async () => {
-      try {
-        const response = await fetch('/api/wheels');
-        if (!response.ok) {
-          return [];
-        }
-        return response.json();
-      } catch (error) {
-        return [];
-      }
-    },
-    retry: false,
-    staleTime: 60000, // Cache for 1 minute
-    refetchOnWindowFocus: false,
-    refetchOnMount: false, // Don't refetch on component mount if cached
-    enabled: true, // Always enabled but with aggressive caching
-    refetchInterval: false, // Disable automatic refetching
-    gcTime: 5 * 60 * 1000 // Keep data in cache for 5 minutes
-  });
+  // Mock wheels data for visualization
+  const [wheels] = useState<Wheel[]>([]);
 
   const DotCard: React.FC<{ dot: Dot; isPreview?: boolean; onClick?: () => void }> = ({ dot, isPreview = false, onClick }) => {
     const handleDotClick = () => {
@@ -604,6 +581,31 @@ const Dashboard: React.FC = () => {
             <span className="bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-sm font-medium">
               Empty
             </span>
+            <div className="flex items-center gap-2 bg-white/90 backdrop-blur rounded-lg px-3 py-2 border-2 border-amber-200">
+              <label className="text-sm font-medium text-amber-800">Preview Mode</label>
+              <button
+                onClick={() => setPreviewMode(!previewMode)}
+                className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
+                  previewMode ? 'bg-amber-500' : 'bg-gray-300'
+                }`}
+              >
+                <span
+                  className={`inline-block h-3 w-3 transform rounded-full bg-white transition-transform ${
+                    previewMode ? 'translate-x-5' : 'translate-x-1'
+                  }`}
+                />
+              </button>
+            </div>
+          </div>
+          
+          {/* Stats Buttons */}
+          <div className="absolute top-4 right-4 z-10 flex flex-col sm:flex-row gap-1 sm:gap-2">
+            <button className="bg-white/90 backdrop-blur rounded-lg px-2 py-1 border-2 border-amber-200 text-xs font-semibold text-amber-800 hover:bg-amber-50 transition-colors whitespace-nowrap">
+              {previewMode ? `Total Dots: ${totalDots}` : `Dots: ${totalDots}`}
+            </button>
+            <button className="bg-white/90 backdrop-blur rounded-lg px-2 py-1 border-2 border-amber-200 text-xs font-semibold text-amber-800 hover:bg-amber-50 transition-colors whitespace-nowrap">
+              {previewMode ? `Total Wheels: ${totalWheels}` : `Wheels: ${totalWheels}`}
+            </button>
           </div>
 
 
@@ -701,16 +703,10 @@ const Dashboard: React.FC = () => {
           const y = e.clientY - rect.top;
           setCreationPosition({ x, y });
           
-          // Create visual element first, then open input modal
+          // Open appropriate creation modal based on selected tool
           if (selectedTool === 'create-dot') {
-            const newDotId = `pending-dot-${Date.now()}`;
-            setPendingDots(prev => [...prev, { id: newDotId, position: { x, y } }]);
-            setEditingElementId(newDotId);
             setShowDotCreation(true);
           } else if (selectedTool === 'create-wheel') {
-            const newWheelId = `pending-wheel-${Date.now()}`;
-            setPendingWheels(prev => [...prev, { id: newWheelId, position: { x, y } }]);
-            setEditingElementId(newWheelId);
             setShowWheelCreation(true);
           }
         }
@@ -794,7 +790,61 @@ const Dashboard: React.FC = () => {
           ? 'fixed inset-0 z-50 p-8' 
           : 'rounded-xl p-4 min-h-[500px] border-2 border-amber-200 shadow-lg'
       } overflow-hidden`}>
+        {/* Preview toggle and Only Sparks toggle */}
+        <div className="absolute top-4 left-4 z-10 flex flex-col gap-2">
+          <div className={`flex items-center gap-2 bg-white/90 backdrop-blur rounded-lg border-2 border-amber-200 ${
+            isPWA ? 'px-1.5 py-0.5' : 'px-2 py-1'
+          }`}>
+            <label className={`font-medium text-amber-800 hidden sm:block ${
+              isPWA ? 'text-[10px]' : 'text-xs'
+            }`}>Preview Mode</label>
+            <label className={`font-medium text-amber-800 sm:hidden ${
+              isPWA ? 'text-[10px]' : 'text-xs'
+            }`}>Preview</label>
+            <button
+              onClick={() => setPreviewMode(!previewMode)}
+              className={`relative inline-flex items-center rounded-full transition-colors ${
+                isPWA ? 'h-3 w-5' : 'h-4 w-7'
+              } ${previewMode ? 'bg-amber-500' : 'bg-gray-300'}`}
+            >
+              <span
+                className={`inline-block transform rounded-full bg-white transition-transform ${
+                  isPWA ? 'h-1.5 w-1.5' : 'h-2 w-2'
+                } ${previewMode ? (isPWA ? 'translate-x-2.5' : 'translate-x-4') : 'translate-x-1'}`}
+              />
+            </button>
+            
+            {/* Info icon for preview mode */}
+            <Popover>
+              <PopoverTrigger asChild>
+                <button className={`rounded-full hover:bg-amber-100 transition-colors ${
+                  isPWA ? 'p-0.5' : 'p-1'
+                }`}>
+                  <Info className={`text-amber-600 ${
+                    isPWA ? 'w-2.5 h-2.5' : 'w-3 h-3'
+                  }`} />
+                </button>
+              </PopoverTrigger>
+              <PopoverContent className="w-64 p-3 text-xs" side="bottom" align="start">
+                <p className="text-gray-700">
+                  This is a demo mode for you to visualize how Dots and Sparks work.
+                </p>
+              </PopoverContent>
+            </Popover>
+          </div>
+          
 
+          
+          {/* Recent Filter Indicator */}
+          {showingRecentFilter && !previewMode && (
+            <div className="bg-gradient-to-r from-amber-600 to-orange-600 text-white rounded-lg px-3 py-2 border-2 border-amber-400 shadow-lg">
+              <div className="flex items-center gap-2">
+                <Clock className="w-3 h-3" />
+                <span className="text-xs font-medium">Showing {recentCount} Recent Dots</span>
+              </div>
+            </div>
+          )}
+        </div>
         
         {/* Zoom Controls */}
         <div className={`${isFullscreen ? 'fixed' : 'absolute'} z-10 flex items-center bg-white/90 backdrop-blur rounded-lg border-2 border-amber-200 shadow-lg ${
@@ -840,7 +890,31 @@ const Dashboard: React.FC = () => {
           </button>
         </div>
 
-
+        {/* Navigation Icon - Clean arrow without button styling */}
+        <div className={`absolute z-10 ${
+          isPWA 
+            ? 'top-4 left-1/2 transform -translate-x-1/2' // PWA: Top center
+            : 'top-16 sm:top-4 left-1/2 transform -translate-x-1/2' // Browser: Original position
+        }`}>
+          {/* Reset View Arrow Icon */}
+          <div
+            onClick={resetView}
+            className="cursor-pointer hover:scale-110 transition-transform"
+            title={isPWA ? "Reset Scroll Position" : "Reset Drag Position"}
+          >
+            <RotateCcw className="w-6 h-6 text-amber-600 hover:text-amber-700 drop-shadow-lg" />
+          </div>
+        </div>
+        
+        {/* Stats Buttons */}
+        <div className="absolute top-4 right-4 z-10 flex flex-col sm:flex-row gap-1 sm:gap-2">
+          <button className="bg-white/90 backdrop-blur rounded-lg px-2 py-1 border-2 border-amber-200 text-xs font-semibold text-amber-800 hover:bg-amber-50 transition-colors whitespace-nowrap">
+            {previewMode ? `Total Dots: ${totalDots}` : `Dots: ${totalDots}`}
+          </button>
+          <button className="bg-white/90 backdrop-blur rounded-lg px-2 py-1 border-2 border-amber-200 text-xs font-semibold text-amber-800 hover:bg-amber-50 transition-colors whitespace-nowrap">
+            {previewMode ? `Total Wheels: ${totalWheels}` : `Wheels: ${totalWheels}`}
+          </button>
+        </div>
 
         {/* Fullscreen Toggle - Bottom right for both modes when not fullscreen */}
         {!isFullscreen && (
@@ -859,8 +933,8 @@ const Dashboard: React.FC = () => {
 
 
         
-        {/* Grid Header with Tool Status - Only for non-preview mode when using creation tools */}
-        {!isFullscreen && !previewMode && selectedTool !== 'select' && (
+        {/* Grid Header with Tool Status */}
+        {!isFullscreen && (
           <div className="bg-white/90 backdrop-blur border-b border-amber-200 px-4 py-2 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-2">
@@ -868,16 +942,19 @@ const Dashboard: React.FC = () => {
                 <span className="text-sm font-semibold text-gray-700">Interactive Grid</span>
               </div>
               <div className={`px-3 py-1 rounded-full text-xs font-medium ${
-                selectedTool === 'create-dot'
+                selectedTool === 'select' 
+                  ? 'bg-gray-100 text-gray-700' 
+                  : selectedTool === 'create-dot'
                   ? 'bg-amber-100 text-amber-700'
                   : 'bg-orange-100 text-orange-700'
               }`}>
+                {selectedTool === 'select' && 'Navigate Mode'}
                 {selectedTool === 'create-dot' && 'Click to Create Dot'}
                 {selectedTool === 'create-wheel' && 'Click to Create Wheel'}
               </div>
             </div>
             <div className="text-xs text-gray-500">
-              Click anywhere on the grid below
+              {selectedTool !== 'select' && 'Click anywhere on the grid below'}
             </div>
           </div>
         )}
@@ -914,75 +991,6 @@ const Dashboard: React.FC = () => {
             userSelect: 'none'
           }}
         >
-          {/* Grid Controls - Inside Grid Boundary near Empty area */}
-          <div className="absolute top-16 left-16 z-[60] flex flex-col gap-2" style={{ pointerEvents: 'auto' }}>
-            
-            {/* Preview Mode Toggle */}
-            <div className={`flex items-center gap-2 bg-white shadow-xl rounded-lg border-4 border-amber-400 ${
-              isPWA ? 'px-2 py-1' : 'px-3 py-2'
-            }`} style={{ backgroundColor: '#fff', border: '4px solid #f59e0b' }}>
-              <label className={`font-semibold text-amber-800 ${
-                isPWA ? 'text-xs' : 'text-sm'
-              }`}>Preview</label>
-              <button
-                onClick={() => setPreviewMode(!previewMode)}
-                className={`relative inline-flex items-center rounded-full transition-colors ${
-                  isPWA ? 'h-4 w-6' : 'h-5 w-8'
-                } ${previewMode ? 'bg-amber-500' : 'bg-gray-300'}`}
-              >
-                <span
-                  className={`inline-block transform rounded-full bg-white transition-transform ${
-                    isPWA ? 'h-2 w-2' : 'h-3 w-3'
-                  } ${previewMode ? (isPWA ? 'translate-x-2' : 'translate-x-3') : 'translate-x-0.5'}`}
-                />
-              </button>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <button className={`rounded-full hover:bg-amber-100 transition-colors ${
-                    isPWA ? 'p-1' : 'p-1.5'
-                  }`}>
-                    <Info className={`text-amber-600 ${
-                      isPWA ? 'w-3 h-3' : 'w-4 h-4'
-                    }`} />
-                  </button>
-                </PopoverTrigger>
-                <PopoverContent className="w-64 p-3 text-sm" side="bottom" align="start">
-                  <p className="text-gray-700">
-                    This is a demo mode for you to visualize how Dots and Sparks work.
-                  </p>
-                </PopoverContent>
-              </Popover>
-            </div>
-
-            {/* Navigation Reset */}
-            <div className={`flex items-center gap-2 bg-white shadow-xl rounded-lg border-4 border-amber-400 ${
-              isPWA ? 'px-2 py-1' : 'px-3 py-2'
-            }`} style={{ backgroundColor: '#fff', border: '4px solid #f59e0b' }}>
-              <div
-                onClick={resetView}
-                className="cursor-pointer hover:scale-110 transition-transform flex items-center gap-2"
-                title={isPWA ? "Reset Scroll Position" : "Reset Drag Position"}
-              >
-                <RotateCcw className={`text-amber-600 ${
-                  isPWA ? 'w-3 h-3' : 'w-4 h-4'
-                }`} />
-                <span className={`font-semibold text-amber-800 ${
-                  isPWA ? 'text-xs' : 'text-sm'
-                }`}>Reset View</span>
-              </div>
-            </div>
-
-            {/* Stats Display */}
-            <div className={`flex flex-col gap-1`}>
-              <button className="bg-white shadow-xl rounded-lg px-3 py-2 border-4 border-amber-400 text-sm font-semibold text-amber-800 hover:bg-amber-50 transition-colors whitespace-nowrap" style={{ backgroundColor: '#fff', border: '4px solid #f59e0b' }}>
-                Dots: {totalDots}
-              </button>
-              <button className="bg-white shadow-xl rounded-lg px-3 py-2 border-4 border-amber-400 text-sm font-semibold text-amber-800 hover:bg-amber-50 transition-colors whitespace-nowrap" style={{ backgroundColor: '#fff', border: '4px solid #f59e0b' }}>
-                Wheels: {totalWheels}
-              </button>
-            </div>
-          </div>
-
           {/* Fullscreen exit button - bottom right */}
           {isFullscreen && (
             <button
@@ -998,53 +1006,17 @@ const Dashboard: React.FC = () => {
               <Minimize className="w-4 h-4" />
             </button>
           )}
-          
-          {/* Grid content with transform applied directly */}
           <div 
-            className="absolute inset-0 transition-transform duration-100 ease-out"
+            className="relative transition-transform duration-100 ease-out"
             style={{ 
+              width: isPWA ? '1200px' : `${1200 * zoom}px`, 
+              height: isPWA ? '800px' : `${800 * zoom}px`,
+              minWidth: isPWA ? '1200px' : 'auto',
+              minHeight: isPWA ? '800px' : 'auto',
               transform: `translate(${offset.x}px, ${offset.y}px) scale(${zoom})`,
               transformOrigin: 'center center'
             }}
           >
-            {/* Pending Dots - Visual elements created before filling details */}
-            {pendingDots.map((pendingDot) => (
-              <div
-                key={pendingDot.id}
-                className="absolute dot-element animate-pulse"
-                style={{
-                  left: `${pendingDot.position.x - 15}px`,
-                  top: `${pendingDot.position.y - 15}px`,
-                  width: '30px',
-                  height: '30px'
-                }}
-              >
-                <div className="w-full h-full bg-gradient-to-br from-amber-300 to-orange-400 rounded-full border-2 border-amber-500 shadow-lg flex items-center justify-center">
-                  <div className="w-3 h-3 bg-white rounded-full animate-ping"></div>
-                </div>
-              </div>
-            ))}
-
-            {/* Pending Wheels - Visual elements created before filling details */}
-            {pendingWheels.map((pendingWheel) => (
-              <div
-                key={pendingWheel.id}
-                className="absolute animate-pulse"
-                style={{
-                  left: `${pendingWheel.position.x - 75}px`,
-                  top: `${pendingWheel.position.y - 75}px`,
-                  width: '150px',
-                  height: '150px'
-                }}
-              >
-                <div className="w-full h-full rounded-full border-4 border-dashed border-orange-400 bg-gradient-to-br from-orange-100 to-amber-100 opacity-80 flex items-center justify-center">
-                  <div className="w-8 h-8 bg-orange-400 rounded-full animate-ping"></div>
-                </div>
-              </div>
-            ))}
-
-
-
             {/* Individual Dots Random Grid */}
             {displayDots.map((dot, index) => {
               // Generate consistent random positions based on dot ID for stability
@@ -1543,7 +1515,14 @@ const Dashboard: React.FC = () => {
 
           {/* Right side - Stats and controls */}
           <div className="flex items-center gap-3">
-            {/* Stats removed - now only in grid overlay */}
+            <div className="flex items-center gap-2 text-sm">
+              <div className="px-3 py-1 bg-amber-100 text-amber-800 rounded-full font-medium">
+                Total Dots: {dots.length}
+              </div>
+              <div className="px-3 py-1 bg-orange-100 text-orange-800 rounded-full font-medium">
+                Total Wheels: {wheels.filter(w => w.dots && w.dots.length > 0).length}
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -1692,7 +1671,7 @@ const Dashboard: React.FC = () => {
           onDelete={async (wheelId) => {
             try {
               await fetch(`/api/wheels/${wheelId}`, { method: 'DELETE' });
-              refetchWheels(); // Refresh wheels data
+              // Refresh wheels data if needed
             } catch (error) {
               console.error('Error deleting wheel:', error);
             }
@@ -1708,20 +1687,8 @@ const Dashboard: React.FC = () => {
         onClose={() => {
           setShowDotCreation(false);
           setSelectedTool('select'); // Reset to select tool after creation
-          setEditingElementId(null);
         }}
         position={creationPosition}
-        onSuccess={() => {
-          // Remove pending dot on successful creation
-          setPendingDots(prev => prev.filter(dot => dot.id !== editingElementId));
-          setEditingElementId(null);
-          refetch(); // Refresh dots data
-        }}
-        onCancel={() => {
-          // Remove pending dot on cancel
-          setPendingDots(prev => prev.filter(dot => dot.id !== editingElementId));
-          setEditingElementId(null);
-        }}
       />
       
       <WheelCreationModal 
@@ -1729,20 +1696,8 @@ const Dashboard: React.FC = () => {
         onClose={() => {
           setShowWheelCreation(false);
           setSelectedTool('select'); // Reset to select tool after creation
-          setEditingElementId(null);
         }}
         position={creationPosition}
-        onSuccess={() => {
-          // Remove pending wheel on successful creation
-          setPendingWheels(prev => prev.filter(wheel => wheel.id !== editingElementId));
-          setEditingElementId(null);
-          refetchWheels(); // Refresh wheels data
-        }}
-        onCancel={() => {
-          // Remove pending wheel on cancel
-          setPendingWheels(prev => prev.filter(wheel => wheel.id !== editingElementId));
-          setEditingElementId(null);
-        }}
       />
     </TooltipProvider>
   );

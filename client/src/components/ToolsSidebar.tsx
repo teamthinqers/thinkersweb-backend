@@ -42,19 +42,17 @@ export function ToolsSidebar({ selectedTool, onToolChange }: ToolsSidebarProps) 
   ];
 
   return (
-    <div className="w-20 bg-gradient-to-b from-gray-50 to-gray-100 border-r-2 border-amber-200 shadow-lg flex flex-col min-h-screen">
+    <div className="w-20 bg-gradient-to-b from-gray-50 to-gray-100 border-r-2 border-amber-200 shadow-lg flex flex-col items-center py-6 space-y-4 min-h-screen">
       {/* Sidebar Header */}
-      <div className="flex flex-col items-center py-4 border-b border-amber-200">
+      <div className="mb-4 text-center">
         <div className="w-12 h-12 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl flex items-center justify-center mb-2 shadow-md">
           <Settings className="w-6 h-6 text-white" />
         </div>
         <div className="text-xs font-bold text-gray-700">Tools</div>
       </div>
       
-      {/* Tools Section - Centered */}
-      <div className="flex-1 flex flex-col items-center justify-center space-y-6 py-8">
-        <TooltipProvider>
-          {tools.map((tool) => {
+      <TooltipProvider>
+        {tools.map((tool) => {
           const Icon = tool.icon;
           const isSelected = selectedTool === tool.id;
           
@@ -90,14 +88,13 @@ export function ToolsSidebar({ selectedTool, onToolChange }: ToolsSidebarProps) 
                 </div>
               </TooltipContent>
             </Tooltip>
-            );
-          })}
-        </TooltipProvider>
-      </div>
+          );
+        })}
+      </TooltipProvider>
       
       {/* Tool Status Indicator */}
-      <div className="border-t-2 border-amber-200 py-4 flex flex-col items-center space-y-3">
-        <div className="text-center px-2">
+      <div className="mt-auto pt-6 border-t-2 border-amber-200 space-y-3">
+        <div className="text-center">
           <div className="text-xs font-semibold text-gray-600 mb-1">Active Tool</div>
           <div className="text-xs font-bold text-amber-700 bg-amber-100 px-2 py-1 rounded-full">
             {tools.find(t => t.id === selectedTool)?.label}

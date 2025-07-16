@@ -12,8 +12,6 @@ interface WheelCreationModalProps {
   isOpen: boolean;
   onClose: () => void;
   position: { x: number; y: number };
-  onSuccess?: () => void; // Called when wheel is successfully created
-  onCancel?: () => void; // Called when creation is cancelled
 }
 
 interface WheelFormData {
@@ -22,7 +20,7 @@ interface WheelFormData {
   timeline: string;
 }
 
-export function WheelCreationModal({ isOpen, onClose, position, onSuccess, onCancel }: WheelCreationModalProps) {
+export function WheelCreationModal({ isOpen, onClose, position }: WheelCreationModalProps) {
   const [formData, setFormData] = useState<WheelFormData>({
     heading: '',
     purpose: '',
@@ -69,7 +67,6 @@ export function WheelCreationModal({ isOpen, onClose, position, onSuccess, onCan
       setSaved(true);
       queryClient.invalidateQueries({ queryKey: ['/api/wheels'] });
       queryClient.invalidateQueries({ queryKey: ['/api/dots'] });
-      onSuccess?.(); // Notify parent component
       toast({
         title: "Wheel Created",
         description: "Your wheel has been saved successfully.",
@@ -100,13 +97,9 @@ export function WheelCreationModal({ isOpen, onClose, position, onSuccess, onCan
   const handleClose = () => {
     if (!saved && (formData.heading || formData.purpose || formData.timeline)) {
       if (confirm("You have unsaved changes. Are you sure you want to close?")) {
-        onCancel?.(); // Remove pending wheel if cancelled
         onClose();
       }
     } else {
-      if (!saved) {
-        onCancel?.(); // Remove pending wheel if closed without saving
-      }
       onClose();
     }
   };

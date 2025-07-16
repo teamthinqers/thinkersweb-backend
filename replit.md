@@ -956,12 +956,6 @@ Changelog:
   * Added realistic creation timestamps (10-30 days ago) for authentic preview experience
   * Integrated WheelFlashCard and WheelFullView components for consistent interaction patterns
   * Wheel interactions now mirror dot functionality with hover flash cards and click for full view
-- July 16, 2025. Fixed tool-based creation workflow to work in actual grid instead of preview mode:
-  * Corrected tool-based dot and wheel creation to function in real grid (non-preview mode)
-  * Added missing refetch() call for dots creation to ensure immediate grid updates
-  * Visual-first workflow now works properly: elements appear on grid FIRST, then input modal opens
-  * Complete tool-based creation system now functional for both dots and wheels in production grid
-  * Users can select creation tools from sidebar and click anywhere on grid to create elements
 - June 19, 2025. Integrated Recent Dots filter with dashboard search functionality:
   * Removed separate "Recent Dots" button and integrated as filter near Dot Wheels Map heading
   * Added customizable number input (default 4) for users to specify how many recent dots to view
