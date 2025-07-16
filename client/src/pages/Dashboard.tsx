@@ -380,7 +380,7 @@ const Dashboard: React.FC = () => {
         color: '#F59E0B', // Consistent amber theme
         dots: [],
         connections: ['preview-wheel-0', 'preview-wheel-1'],
-        position: { x: 400, y: 200 }, // Centered position
+        position: { x: 400, y: 300 }, // Centered position for parent wheel
         createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) // 30 days ago
       };
 
@@ -395,7 +395,7 @@ const Dashboard: React.FC = () => {
         color: '#F59E0B', // Consistent amber theme
         dots: [],
         connections: ['preview-wheel-1'],
-        position: { x: 220, y: 120 }, // Position with proper spacing from other wheels
+        position: { x: 320, y: 220 }, // Position inside parent wheel - top left
         parentWheelId: 'preview-wheel-parent',
         createdAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000) // 15 days ago
       };
@@ -440,7 +440,7 @@ const Dashboard: React.FC = () => {
         color: '#F59E0B', // Consistent amber theme
         dots: [],
         connections: ['preview-wheel-0', 'preview-wheel-2'],
-        position: { x: 580, y: 120 }, // Position with proper spacing from GTM wheel
+        position: { x: 480, y: 220 }, // Position inside parent wheel - top right
         parentWheelId: 'preview-wheel-parent',
         createdAt: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000) // 20 days ago
       };
@@ -484,7 +484,7 @@ const Dashboard: React.FC = () => {
         color: '#F59E0B', // Consistent amber theme
         dots: [],
         connections: ['preview-wheel-1'],
-        position: { x: 220, y: 320 }, // Position with proper spacing below GTM
+        position: { x: 400, y: 340 }, // Position inside parent wheel - bottom center
         parentWheelId: 'preview-wheel-parent',
         createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000) // 10 days ago
       };
@@ -528,7 +528,7 @@ const Dashboard: React.FC = () => {
         color: '#EC4899', // Pink theme
         dots: [],
         connections: [],
-        position: { x: 580, y: 320 }, // Position with proper spacing, same size as other child wheels
+        position: { x: 650, y: 500 }, // Standalone position, same 180px size as other child wheels
         // No parentWheelId - this is a standalone wheel
         createdAt: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000) // 25 days ago
       };
@@ -1185,13 +1185,15 @@ const Dashboard: React.FC = () => {
             {/* Wheel Boundaries for Preview Mode */}
             {previewMode && displayWheels.map((wheel, wheelIndex) => {
               // Determine wheel size based on type and hierarchy
-              const isParentWheel = !wheel.parentWheelId;
+              // Only "Build an Enduring Company" is the parent wheel (400px)
+              // All others (GTM, Strengthen Leadership, Product Innovation, Health & Wellness) are 180px
+              const isParentWheel = wheel.id === 'preview-wheel-parent';
               
               let wheelSize;
               if (isParentWheel) {
                 wheelSize = 400; // Parent wheel (Build an Enduring Company) is biggest
               } else {
-                wheelSize = 180; // All other wheels (GTM, Strengthen leadership, Product innovation, Health & Wellness) same size
+                wheelSize = 180; // All child wheels (GTM, Strengthen Leadership, Product Innovation, Health & Wellness) are same 180px size
               }
               
               const wheelRadius = wheelSize / 2;
