@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Switch, Route, useLocation } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
+import { Toaster } from "@/components/ui/toaster";
 import NotFound from "@/pages/not-found";
 import Dashboard from "@/pages/Dashboard";
 import AllEntries from "@/pages/AllEntries";
@@ -46,14 +47,13 @@ import EntryDetail from "@/components/entries/EntryDetail";
 import ChatEntryForm from "@/components/chat/ChatEntryForm";
 
 import { StructuredFloatingDot } from "@/components/dotspark/StructuredFloatingDot";
-// Keeping PWA components commented for now to prevent TDZ issues
-// import { PWAInstallButton } from "@/components/ui/pwa-install-button";
-// import { IosPwaInstallPrompt } from "@/components/ui/ios-pwa-install-prompt";
 import { neuraStorage } from "@/lib/neuraStorage";
 import { Loader2 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
+
+import { PWAInstallButton } from "@/components/ui/pwa-install-button";
+import { IosPwaInstallPrompt } from "@/components/ui/ios-pwa-install-prompt";
 import { isRunningAsStandalone } from "@/lib/pwaUtils";
-import { Toaster } from "@/components/ui/toaster";
 
 
 // Protected route component - requires authentication
@@ -353,12 +353,14 @@ function App() {
         )}
         <Router />
         <Toaster />
-        <StructuredFloatingDot isActive={neuraStorage.isActivated()} />
-        {/* Keeping PWA components commented for now to prevent TDZ issues */}
-        {/* <IosPwaInstallPrompt /> */}
-        {/* <div className="fixed bottom-4 right-4 left-4 md:left-auto z-50">
+        {/* Global Floating Dot for All Modes */}
+        <StructuredFloatingDot isActive={isDotSparkActive || neuraStorage.isActivated()} />
+        {/* iOS PWA Install Prompt */}
+        <IosPwaInstallPrompt />
+        {/* PWA Install Floating Button (only visible when installable) */}
+        <div className="fixed bottom-4 right-4 left-4 md:left-auto z-50">
           <PWAInstallButton size="lg" className="w-full md:w-auto" />
-        </div> */}
+        </div>
     </QueryClientProvider>
   );
 }

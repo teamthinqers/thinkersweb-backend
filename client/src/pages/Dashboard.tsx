@@ -5,7 +5,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { TooltipProvider } from "@/components/ui/tooltip";
 import { Mic, Type, Eye, Brain, Network, Zap, Search, Clock, Info, Database, Cpu, Sparkles, Users, Maximize, Minimize, RotateCcw, X, ArrowLeft } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import DotFullView from "@/components/DotFullView";
@@ -14,9 +13,6 @@ import WheelFlashCard from "@/components/WheelFlashCard";
 import WheelFullView from "@/components/WheelFullView";
 import { isRunningAsStandalone } from "@/lib/pwaUtils";
 import { useLocation } from "wouter";
-import { ToolsSidebar, ToolMode } from "@/components/ToolsSidebar";
-import { DotCreationModal } from "@/components/DotCreationModal";
-import { WheelCreationModal } from "@/components/WheelCreationModal";
 
 
 // Data structure for dots
@@ -64,11 +60,7 @@ const Dashboard: React.FC = () => {
   const [recentDotsCount, setRecentDotsCount] = useState(4);
   const [showPreview, setShowPreview] = useState(false);
   const [isMapFullscreen, setIsMapFullscreen] = useState(false);
-  const [previewMode, setPreviewMode] = useState(false); // Start with preview mode off to show real data first
-  const [selectedTool, setSelectedTool] = useState<ToolMode>('select');
-  const [showDotCreation, setShowDotCreation] = useState(false);
-  const [showWheelCreation, setShowWheelCreation] = useState(false);
-  const [creationPosition, setCreationPosition] = useState({ x: 0, y: 0 });
+  const [previewMode, setPreviewMode] = useState(true); // Enable preview mode by default to show demo wheels // Lifted up to prevent resets
   
   // PWA detection for smaller button sizing
   const isPWA = isRunningAsStandalone();
@@ -135,11 +127,11 @@ const Dashboard: React.FC = () => {
 
   // Search functionality
   React.useEffect(() => {
-    if (searchTerm.trim() && dots && Array.isArray(dots)) {
+    if (searchTerm.trim()) {
       const filtered = dots.filter((dot: Dot) => 
-        dot.summary?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        dot.anchor?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        dot.pulse?.toLowerCase().includes(searchTerm.toLowerCase())
+        dot.summary.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        dot.anchor.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        dot.pulse.toLowerCase().includes(searchTerm.toLowerCase())
       );
       setSearchResults(filtered);
     } else {
@@ -250,6 +242,8 @@ const Dashboard: React.FC = () => {
     previewMode: boolean,
     setPreviewMode: (previewMode: boolean) => void
   }> = ({ wheels, actualDots, showingRecentFilter = false, recentCount = 4, isFullscreen = false, onFullscreenChange, setViewFullWheel, previewMode, setPreviewMode }) => {
+    const [selectedWheel, setSelectedWheel] = useState<string | null>(null);
+    const [viewFullDot, setViewFullDot] = useState<Dot | null>(null);
     const [selectedDot, setSelectedDot] = useState<Dot | null>(null);
     const [selectedDotPosition, setSelectedDotPosition] = useState<{ x: number; y: number } | null>(null);
     const [hoveredDot, setHoveredDot] = useState<Dot | null>(null);
@@ -260,18 +254,6 @@ const Dashboard: React.FC = () => {
     const [dragStart, setDragStart] = useState<{ x: number; y: number } | null>(null);
     const [offset, setOffset] = useState({ x: 0, y: 0 });
     const [isPWA, setIsPWA] = useState(false);
-
-    // Define toggleFullscreen function early to prevent temporal dead zone issues
-    const toggleFullscreen = () => {
-      if (onFullscreenChange) {
-        onFullscreenChange(!isFullscreen);
-        if (!isFullscreen) {
-          // Reset zoom and position when entering fullscreen
-          setZoom(1);
-          setOffset({ x: 0, y: 0 });
-        }
-      }
-    };
     
 
 
@@ -598,70 +580,12 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
           
-          {/* Stats Buttons */}
-          <div className="absolute top-4 right-4 z-10 flex flex-col sm:flex-row gap-1 sm:gap-2">
-            <button className="bg-white/90 backdrop-blur rounded-lg px-2 py-1 border-2 border-amber-200 text-xs font-semibold text-amber-800 hover:bg-amber-50 transition-colors whitespace-nowrap">
-              {previewMode ? `Total Dots: ${totalDots}` : `Dots: ${totalDots}`}
+          <div className="absolute top-4 right-4 flex gap-2 z-10">
+            <button className="bg-white/90 backdrop-blur rounded-lg px-3 py-2 border-2 border-amber-200 text-sm font-semibold text-amber-800">
+              Total Dots: {totalDots}
             </button>
-            <button className="bg-white/90 backdrop-blur rounded-lg px-2 py-1 border-2 border-amber-200 text-xs font-semibold text-amber-800 hover:bg-amber-50 transition-colors whitespace-nowrap">
-              {previewMode ? `Total Wheels: ${totalWheels}` : `Wheels: ${totalWheels}`}
-            </button>
-          </div>
-
-
-
-          {/* Zoom Controls */}
-          <div className={`absolute z-10 flex items-center bg-white/90 backdrop-blur rounded-lg border-2 border-amber-200 shadow-lg ${
-            isPWA ? 'bottom-4 left-4 gap-1 p-1.5' : 'bottom-4 left-4 gap-2 p-2'
-          }`}>
-            {/* Zoom Out */}
-            <button
-              onClick={() => setZoom(Math.max(0.5, zoom - 0.1))}
-              className={`bg-amber-500 hover:bg-amber-600 text-white rounded transition-colors touch-manipulation ${
-                isPWA ? 'p-1.5' : 'p-2'
-              }`}
-              title="Zoom Out"
-            >
-              <svg className={`fill="none" stroke="currentColor" viewBox="0 0 24 24" ${
-                isPWA ? 'w-3 h-3' : 'w-3 h-3'
-              }`}>
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
-              </svg>
-            </button>
-            
-            {/* Zoom Level Display */}
-            <span className={`font-semibold text-amber-800 text-center ${
-              isPWA ? 'text-[10px] min-w-[35px]' : 'text-xs min-w-[45px]'
-            }`}>
-              {Math.round(zoom * 100)}%
-            </span>
-            
-            {/* Zoom In */}
-            <button
-              onClick={() => setZoom(Math.min(2, zoom + 0.1))}
-              className={`bg-amber-500 hover:bg-amber-600 text-white rounded transition-colors touch-manipulation ${
-                isPWA ? 'p-1.5' : 'p-2'
-              }`}
-              title="Zoom In"
-            >
-              <svg className={`fill="none" stroke="currentColor" viewBox="0 0 24 24" ${
-                isPWA ? 'w-3 h-3' : 'w-3 h-3'
-              }`}>
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-              </svg>
-            </button>
-          </div>
-
-          {/* Fullscreen Toggle - Bottom right */}
-          <div className="absolute bottom-4 right-4 z-10">
-            <button 
-              onClick={toggleFullscreen}
-              className={`bg-amber-500 hover:bg-amber-600 text-white rounded-lg transition-colors shadow-lg ${
-                isPWA ? 'p-3 touch-manipulation' : 'p-2'
-              }`}
-              title="Enter Fullscreen"
-            >
-              <Maximize className={isPWA ? "w-7 h-7" : "w-5 h-5"} />
+            <button className="bg-white/90 backdrop-blur rounded-lg px-3 py-2 border-2 border-amber-200 text-sm font-semibold text-amber-800">
+              Total Wheels: {totalWheels}
             </button>
           </div>
           
@@ -683,45 +607,8 @@ const Dashboard: React.FC = () => {
       setZoom(1);
     };
 
-    // Grid click handler for tool-based creation
-    const handleGridClick = (e: React.MouseEvent) => {
-      const target = e.target as HTMLElement;
-      
-      // Don't create if clicking on existing elements
-      if (target.closest('[data-wheel-label]') || target.closest('.pointer-events-auto') || target.closest('.dot-element')) {
-        return;
-      }
-      
-      // Only create if using creation tools AND NOT in preview mode
-      if ((selectedTool === 'create-dot' || selectedTool === 'create-wheel') && !previewMode) {
-        e.preventDefault();
-        e.stopPropagation();
-        
-        const rect = gridContainerRef.current?.getBoundingClientRect();
-        if (rect) {
-          const x = e.clientX - rect.left;
-          const y = e.clientY - rect.top;
-          setCreationPosition({ x, y });
-          
-          // Open appropriate creation modal based on selected tool
-          if (selectedTool === 'create-dot') {
-            setShowDotCreation(true);
-          } else if (selectedTool === 'create-wheel') {
-            setShowWheelCreation(true);
-          }
-        }
-        return;
-      }
-    };
-
     // Unified drag handlers for both browser and PWA
     const handleMouseDown = (e: React.MouseEvent) => {
-      // Handle creation tool clicks first (only in normal mode)
-      if (selectedTool !== 'select' && !previewMode) {
-        handleGridClick(e);
-        return;
-      }
-      
       // Only start dragging if clicked on the grid background, not on interactive elements
       const target = e.target as HTMLElement;
       if (target.closest('[data-wheel-label]') || target.closest('.pointer-events-auto')) {
@@ -772,7 +659,17 @@ const Dashboard: React.FC = () => {
       setDragStart(null);
     };
 
-    // toggleFullscreen function now defined earlier in the component
+    // Fullscreen handler
+    const toggleFullscreen = () => {
+      if (onFullscreenChange) {
+        onFullscreenChange(!isFullscreen);
+        if (!isFullscreen) {
+          // Reset zoom and position when entering fullscreen
+          setZoom(1);
+          setOffset({ x: 0, y: 0 });
+        }
+      }
+    };
 
     // Disabled mouse wheel zoom - using only button-based zooming
     const handleWheel = (e: React.WheelEvent) => {
@@ -909,10 +806,10 @@ const Dashboard: React.FC = () => {
         {/* Stats Buttons */}
         <div className="absolute top-4 right-4 z-10 flex flex-col sm:flex-row gap-1 sm:gap-2">
           <button className="bg-white/90 backdrop-blur rounded-lg px-2 py-1 border-2 border-amber-200 text-xs font-semibold text-amber-800 hover:bg-amber-50 transition-colors whitespace-nowrap">
-            {previewMode ? `Total Dots: ${totalDots}` : `Dots: ${totalDots}`}
+            Dots: {totalDots}
           </button>
           <button className="bg-white/90 backdrop-blur rounded-lg px-2 py-1 border-2 border-amber-200 text-xs font-semibold text-amber-800 hover:bg-amber-50 transition-colors whitespace-nowrap">
-            {previewMode ? `Total Wheels: ${totalWheels}` : `Wheels: ${totalWheels}`}
+            Wheels: {totalWheels}
           </button>
         </div>
 
@@ -933,52 +830,14 @@ const Dashboard: React.FC = () => {
 
 
         
-        {/* Grid Header with Tool Status */}
-        {!isFullscreen && (
-          <div className="bg-white/90 backdrop-blur border-b border-amber-200 px-4 py-2 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2">
-                <Network className="w-4 h-4 text-amber-600" />
-                <span className="text-sm font-semibold text-gray-700">Interactive Grid</span>
-              </div>
-              {!previewMode && (
-                <div className={`px-3 py-1 rounded-full text-xs font-medium ${
-                  selectedTool === 'select' 
-                    ? 'bg-gray-100 text-gray-700' 
-                    : selectedTool === 'create-dot'
-                    ? 'bg-amber-100 text-amber-700'
-                    : 'bg-orange-100 text-orange-700'
-                }`}>
-                  {selectedTool === 'select' && 'Navigate Mode'}
-                  {selectedTool === 'create-dot' && 'Click to Create Dot'}
-                  {selectedTool === 'create-wheel' && 'Click to Create Wheel'}
-                </div>
-              )}
-            </div>
-            <div className="text-xs text-gray-500">
-              {!previewMode && selectedTool !== 'select' && 'Click anywhere on the grid below'}
-            </div>
-          </div>
-        )}
-
         {/* Interactive grid */}
         <div 
           ref={gridContainerRef}
-          className={`relative transition-transform duration-100 ease-out ${
+          className={`relative ${
             isFullscreen 
               ? 'h-screen w-screen' 
               : 'h-[450px] w-full'
-          } overflow-hidden border-2 ${
-            !previewMode && selectedTool !== 'select' 
-              ? 'border-amber-400 border-dashed animate-pulse' 
-              : 'border-gray-200'
-          } ${
-            previewMode || selectedTool === 'select' 
-              ? isPWA ? 'cursor-grab active:cursor-grabbing' : 'cursor-grab active:cursor-grabbing'
-              : selectedTool === 'create-dot'
-              ? 'cursor-crosshair'
-              : 'cursor-copy'
-          }`}
+          } overflow-hidden ${isPWA ? 'cursor-grab active:cursor-grabbing' : 'cursor-grab active:cursor-grabbing'}`}
           onWheel={handleWheel}
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
@@ -987,7 +846,6 @@ const Dashboard: React.FC = () => {
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
-          onClick={handleGridClick}
           style={{ 
             touchAction: 'none',
             userSelect: 'none'
@@ -1008,10 +866,8 @@ const Dashboard: React.FC = () => {
               <Minimize className="w-4 h-4" />
             </button>
           )}
-          
-          {/* Virtual Grid Container - maintains consistent size regardless of mode */}
           <div 
-            className="relative"
+            className="relative transition-transform duration-100 ease-out"
             style={{ 
               width: isPWA ? '1200px' : `${1200 * zoom}px`, 
               height: isPWA ? '800px' : `${800 * zoom}px`,
@@ -1475,24 +1331,36 @@ const Dashboard: React.FC = () => {
 
 
 
+        {/* Dot Full View Modal */}
+        {viewFullDot && (
+          <DotFullView 
+            dot={viewFullDot} 
+            onClose={() => setViewFullDot(null)}
+            onDelete={(dotId) => {
+              setViewFullDot(null);
+              // Trigger a refetch of dots data
+              window.location.reload();
+            }}
+          />
+        )}
 
+        {/* Wheel Full View Modal */}
+        {selectedWheel && (
+          <WheelFullView 
+            wheelId={selectedWheel}
+            onClose={() => setSelectedWheel(null)}
+            wheels={wheels}
+            dots={dots}
+          />
+        )}
       </div>
     );
   };
 
   return (
-    <TooltipProvider>
-      <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50 flex">
-        {/* Tools Sidebar - Only functional in normal mode */}
-        <ToolsSidebar 
-          selectedTool={previewMode ? 'select' : selectedTool} 
-          onToolChange={previewMode ? () => {} : setSelectedTool} 
-        />
-        
-        {/* Main Content Area */}
-        <div className="flex-1 flex flex-col">
-        {/* Header */}
-        <div className="bg-white border-b border-amber-200 px-4 py-3">
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50">
+      {/* Header */}
+      <div className="bg-white border-b border-amber-200 px-4 py-3">
         <div className="flex items-center justify-between">
           {/* Left side - Logo and title */}
           <div className="flex items-center gap-3">
@@ -1517,15 +1385,22 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
 
-          {/* Right side - Empty for now */}
+          {/* Right side - Stats and controls */}
           <div className="flex items-center gap-3">
-            {/* Stats removed as requested */}
+            <div className="flex items-center gap-2 text-sm">
+              <div className="px-3 py-1 bg-amber-100 text-amber-800 rounded-full font-medium">
+                Total Dots: {dots.length}
+              </div>
+              <div className="px-3 py-1 bg-orange-100 text-orange-800 rounded-full font-medium">
+                Total Wheels: {wheels.filter(w => w.dots && w.dots.length > 0).length}
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-        {/* Main Content */}
-        <div className="flex-1 p-4">
+      {/* Main Content */}
+      <div className="p-4">
 
 
         {/* Search Section */}
@@ -1629,7 +1504,7 @@ const Dashboard: React.FC = () => {
           <div className={`transition-all duration-200 ${showRecentFilter ? 'mt-4' : 'mt-0'}`}>
             <DotWheelsMap 
               wheels={wheels} 
-              actualDots={showRecentFilter ? (dots || []).slice(0, recentDotsCount) : (dots || [])} 
+              actualDots={showRecentFilter ? dots.slice(0, recentDotsCount) : dots} 
               showingRecentFilter={showRecentFilter}
               recentCount={recentDotsCount}
               isFullscreen={isMapFullscreen}
@@ -1675,28 +1550,7 @@ const Dashboard: React.FC = () => {
           }}
         />
       )}
-        </div>
-      </div>
-
-      {/* Creation Modals */}
-      <DotCreationModal 
-        isOpen={showDotCreation}
-        onClose={() => {
-          setShowDotCreation(false);
-          setSelectedTool('select'); // Reset to select tool after creation
-        }}
-        position={creationPosition}
-      />
-      
-      <WheelCreationModal 
-        isOpen={showWheelCreation}
-        onClose={() => {
-          setShowWheelCreation(false);
-          setSelectedTool('select'); // Reset to select tool after creation
-        }}
-        position={creationPosition}
-      />
-    </TooltipProvider>
+    </div>
   );
 };
 

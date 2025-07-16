@@ -14,15 +14,7 @@ import {
   users, 
   whatsappOtpVerifications,
   whatsappUsers,
-  wheels,
-  insertWheelSchema,
-  insertDotSchema,
-  dots,
-  type User,
-  type InsertWheel,
-  type Wheel,
-  type InsertDot,
-  type Dot
+  type User 
 } from "@shared/schema";
 import { processEntryFromChat, generateChatResponse, type Message } from "./chat";
 import { connectionsService } from "./connections";
@@ -626,100 +618,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Error deleting dot:', error);
       res.status(500).json({ error: 'Failed to delete dot' });
-    }
-  });
-
-  // Wheels API endpoints
-  // Create a new wheel
-  app.post(`${apiPrefix}/wheels`, async (req: AuthenticatedRequest, res: Response) => {
-    try {
-      const userId = req.user?.id || req.session?.userId;
-      
-      if (!userId) {
-        return res.status(401).json({ error: 'Authentication required' });
-      }
-      
-      const { heading, purpose, timeline, parentWheelId, color = "#8B5CF6", positionX = 100, positionY = 100 } = req.body;
-      
-      // Validate the wheel data
-      const wheelData = {
-        userId,
-        heading,
-        purpose,
-        timeline,
-        parentWheelId: parentWheelId || null,
-        color,
-        positionX,
-        positionY
-      };
-      
-      const validatedData = insertWheelSchema.parse(wheelData);
-      const [newWheel] = await db.insert(wheels).values(validatedData).returning();
-      
-      res.status(201).json(newWheel);
-    } catch (error) {
-      console.error('Error creating wheel:', error);
-      if (error instanceof z.ZodError) {
-        return res.status(400).json({ error: 'Validation failed', details: error.errors });
-      }
-      res.status(500).json({ error: 'Failed to create wheel' });
-    }
-  });
-
-  // Get wheels for dashboard
-  app.get(`${apiPrefix}/wheels`, async (req: AuthenticatedRequest, res: Response) => {
-    try {
-      const userId = req.user?.id || req.session?.userId;
-      
-      if (!userId) {
-        return res.status(401).json({ error: 'Authentication required' });
-      }
-      
-      const userWheels = await db.query.wheels.findMany({
-        where: eq(wheels.userId, userId),
-        orderBy: desc(wheels.createdAt),
-        with: {
-          dots: true,
-          childWheels: true
-        }
-      });
-
-      res.json(userWheels);
-    } catch (error) {
-      console.error('Error fetching wheels:', error);
-      res.status(500).json({ error: 'Failed to fetch wheels' });
-    }
-  });
-
-  // Delete a wheel
-  app.delete(`${apiPrefix}/wheels/:id`, async (req: AuthenticatedRequest, res: Response) => {
-    try {
-      const userId = req.user?.id || req.session?.userId;
-      
-      if (!userId) {
-        return res.status(401).json({ error: 'Authentication required' });
-      }
-      
-      const wheelId = parseInt(req.params.id);
-      
-      if (isNaN(wheelId)) {
-        return res.status(400).json({ error: 'Invalid wheel ID' });
-      }
-      
-      // Verify the wheel belongs to the user
-      const wheel = await db.query.wheels.findFirst({
-        where: and(eq(wheels.id, wheelId), eq(wheels.userId, userId))
-      });
-      
-      if (!wheel) {
-        return res.status(404).json({ error: 'Wheel not found' });
-      }
-      
-      await db.delete(wheels).where(eq(wheels.id, wheelId));
-      res.status(200).json({ message: 'Wheel deleted successfully' });
-    } catch (error) {
-      console.error('Error deleting wheel:', error);
-      res.status(500).json({ error: 'Failed to delete wheel' });
     }
   });
 
