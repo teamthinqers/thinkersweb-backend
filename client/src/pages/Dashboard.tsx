@@ -1274,9 +1274,9 @@ const Dashboard: React.FC = () => {
                     <div 
                       className="absolute bg-white border-2 border-purple-200 rounded-lg p-3 shadow-xl z-50 w-64 cursor-pointer"
                       style={{
-                        // Position relative to wheel position adjusted for grid translation
-                        left: isPWA ? '60px' : `${(wheel.position.x - gridPosition.x) + wheelSize + 10}px`,
-                        top: isPWA ? '-20px' : `${Math.max(0, (wheel.position.y - gridPosition.y) - 20)}px`,
+                        // Position to the right of the wheel, similar to dots
+                        left: isPWA ? '60px' : `${wheel.position.x + wheelSize + 10}px`,
+                        top: isPWA ? '-20px' : `${Math.max(0, wheel.position.y - 20)}px`,
                         maxWidth: '280px'
                       }}
                       onClick={(e) => {
