@@ -62,7 +62,7 @@ const Dashboard: React.FC = () => {
   const [recentDotsCount, setRecentDotsCount] = useState(4);
   const [showPreview, setShowPreview] = useState(false);
   const [isMapFullscreen, setIsMapFullscreen] = useState(false);
-  const [previewMode, setPreviewMode] = useState(true); // Enable preview mode by default to show demo wheels // Lifted up to prevent resets
+  const [previewMode, setPreviewMode] = useState(false); // Start with preview mode off to show real data first
   const [selectedTool, setSelectedTool] = useState<ToolMode>('select');
   const [showCreationModal, setShowCreationModal] = useState(false);
   const [creationPosition, setCreationPosition] = useState({ x: 0, y: 0 });
@@ -1423,28 +1423,7 @@ const Dashboard: React.FC = () => {
 
 
 
-        {/* Dot Full View Modal */}
-        {viewFullDot && (
-          <DotFullView 
-            dot={viewFullDot} 
-            onClose={() => setViewFullDot(null)}
-            onDelete={(dotId) => {
-              setViewFullDot(null);
-              // Trigger a refetch of dots data
-              window.location.reload();
-            }}
-          />
-        )}
 
-        {/* Wheel Full View Modal */}
-        {selectedWheel && (
-          <WheelFullView 
-            wheelId={selectedWheel}
-            onClose={() => setSelectedWheel(null)}
-            wheels={wheels}
-            dots={dots}
-          />
-        )}
       </div>
     );
   };
