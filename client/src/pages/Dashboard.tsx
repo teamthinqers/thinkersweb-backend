@@ -316,6 +316,11 @@ const Dashboard: React.FC = () => {
     const [dragStart, setDragStart] = useState<{ x: number; y: number } | null>(null);
     const [offset, setOffset] = useState({ x: 0, y: 0 });
     const [isPWA, setIsPWA] = useState(false);
+    
+    // Add wheel interaction state variables
+    const [viewWheelFlashCard, setViewWheelFlashCard] = useState<Wheel | null>(null);
+    const [wheelFlashCardPosition, setWheelFlashCardPosition] = useState<{ x: number; y: number } | null>(null);
+    const [viewFullWheel, setViewFullWheel] = useState<Wheel | null>(null);
 
     // Detect PWA mode
     useEffect(() => {
@@ -359,7 +364,7 @@ const Dashboard: React.FC = () => {
       const previewDots: Dot[] = [];
       const previewWheels: Wheel[] = [];
 
-      // Parent wheel for business hierarchy
+      // Parent wheel for business hierarchy - bigger and encompassing
       const parentBusinessWheel: Wheel = {
         id: 'preview-wheel-parent',
         name: 'Build an Enduring Company',
@@ -367,14 +372,14 @@ const Dashboard: React.FC = () => {
         purpose: 'Creating a sustainable, innovative business that delivers value to customers while maintaining long-term growth and meaningful impact in the market.',
         timeline: 'Long-term (5+ years)',
         category: 'Business',
-        color: '#7C3AED', // Purple theme for parent
+        color: '#F59E0B', // Consistent amber theme
         dots: [],
         connections: ['preview-wheel-0', 'preview-wheel-1'],
-        position: { x: 400, y: 100 },
+        position: { x: 400, y: 200 }, // Centered position
         createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) // 30 days ago
       };
 
-      // First business wheel - GTM
+      // First business wheel - GTM (inside parent wheel)
       const firstSparkGroup: Wheel = {
         id: 'preview-wheel-0',
         name: 'GTM (Go-To-Market)',
@@ -382,10 +387,10 @@ const Dashboard: React.FC = () => {
         purpose: 'Developing comprehensive go-to-market strategies including product positioning, customer acquisition, pricing models, and sales funnel optimization for successful product launches.',
         timeline: 'Quarterly',
         category: 'Business',
-        color: '#F59E0B', // Amber theme
+        color: '#F59E0B', // Consistent amber theme
         dots: [],
         connections: ['preview-wheel-1'],
-        position: { x: 200, y: 200 },
+        position: { x: 300, y: 150 }, // Position inside parent wheel
         parentWheelId: 'preview-wheel-parent',
         createdAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000) // 15 days ago
       };
@@ -419,7 +424,7 @@ const Dashboard: React.FC = () => {
       }
       previewWheels.push(firstSparkGroup);
 
-      // Second business wheel - Leadership
+      // Second business wheel - Leadership (inside parent wheel)
       const secondSparkGroup: Wheel = {
         id: 'preview-wheel-1',
         name: 'Strengthen Leadership',
@@ -427,10 +432,10 @@ const Dashboard: React.FC = () => {
         purpose: 'Building strong leadership capabilities through team management, strategic communication, decision-making frameworks, and vision alignment to drive organizational success.',
         timeline: 'Ongoing',
         category: 'Business',
-        color: '#3B82F6', // Blue theme
+        color: '#F59E0B', // Consistent amber theme
         dots: [],
         connections: ['preview-wheel-0', 'preview-wheel-2'],
-        position: { x: 600, y: 200 },
+        position: { x: 500, y: 150 }, // Position inside parent wheel
         parentWheelId: 'preview-wheel-parent',
         createdAt: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000) // 20 days ago
       };
@@ -463,7 +468,7 @@ const Dashboard: React.FC = () => {
       }
       previewWheels.push(secondSparkGroup);
 
-      // Third business wheel - Product Development (part of enduring company)
+      // Third business wheel - Product Development (inside parent wheel)
       const thirdBusinessWheel: Wheel = {
         id: 'preview-wheel-2',
         name: 'Product Innovation',
@@ -471,10 +476,10 @@ const Dashboard: React.FC = () => {
         purpose: 'Driving continuous product innovation through user research, feature prioritization, technical excellence, and breakthrough development pipelines that deliver exceptional user value.',
         timeline: 'Monthly',
         category: 'Business',
-        color: '#10B981', // Green theme
+        color: '#F59E0B', // Consistent amber theme
         dots: [],
         connections: ['preview-wheel-1'],
-        position: { x: 400, y: 300 },
+        position: { x: 400, y: 250 }, // Position inside parent wheel
         parentWheelId: 'preview-wheel-parent',
         createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000) // 10 days ago
       };
@@ -1165,69 +1170,86 @@ const Dashboard: React.FC = () => {
             })}
             
             {/* Wheel Boundaries for Preview Mode */}
-            {previewMode && displayWheels.map((wheel, wheelIndex) => (
-              <div
-                key={wheel.id}
-                className="absolute pointer-events-none"
-                style={{
-                  left: `${wheel.position.x - 90}px`,
-                  top: `${wheel.position.y - 90}px`,
-                  width: '180px',
-                  height: '180px'
-                }}
-              >
-                {/* Dotted circle boundary */}
-                <div 
-                  className="w-full h-full rounded-full border-4 border-dashed opacity-60"
-                  style={{ 
-                    borderColor: wheel.color,
-                    background: `linear-gradient(135deg, ${wheel.color}10, ${wheel.color}05)`
+            {previewMode && displayWheels.map((wheel, wheelIndex) => {
+              // Determine if this is a parent wheel (no parentWheelId)
+              const isParentWheel = !wheel.parentWheelId;
+              const wheelSize = isParentWheel ? 350 : 180; // Parent wheel is much bigger
+              const wheelRadius = wheelSize / 2;
+              
+              return (
+                <div
+                  key={wheel.id}
+                  className="absolute pointer-events-none"
+                  style={{
+                    left: `${wheel.position.x - wheelRadius}px`,
+                    top: `${wheel.position.y - wheelRadius}px`,
+                    width: `${wheelSize}px`,
+                    height: `${wheelSize}px`
                   }}
-                />
-                
-                {/* Blinking Spark Symbol on top of wheel */}
-                <div 
-                  className="absolute top-[-60px] left-1/2 transform -translate-x-1/2 flex flex-col items-center"
                 >
-                  {/* Spark symbol with blinking animation */}
-                  <div className="relative mb-2">
-                    <div className="animate-pulse">
-                      <svg className="w-8 h-8 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                      </svg>
-                    </div>
-                    {/* Blinking ring effect */}
-                    <div className="absolute inset-0 animate-ping">
-                      <svg className="w-8 h-8 text-yellow-300 opacity-75" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                      </svg>
-                    </div>
-                  </div>
-                  
-                  {/* Wheel label */}
+                  {/* Dotted circle boundary */}
                   <div 
-                    className="text-sm font-bold px-3 py-1 rounded-full text-white shadow-lg cursor-pointer hover:shadow-xl transition-all duration-200 hover:scale-105 pointer-events-auto"
-                    style={{ backgroundColor: wheel.color }}
-                    onMouseEnter={(e) => {
-                      const rect = e.currentTarget.getBoundingClientRect();
-                      setWheelFlashCardPosition({ x: rect.right + 10, y: rect.top });
-                      setViewWheelFlashCard(wheel);
+                    className={`w-full h-full rounded-full border-4 border-dashed ${
+                      isParentWheel ? 'opacity-40' : 'opacity-60'
+                    }`}
+                    style={{ 
+                      borderColor: wheel.color,
+                      background: `linear-gradient(135deg, ${wheel.color}10, ${wheel.color}05)`
                     }}
-                    onMouseLeave={() => {
-                      setViewWheelFlashCard(null);
-                      setWheelFlashCardPosition(null);
-                    }}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setViewWheelFlashCard(null);
-                      setViewFullWheel(wheel);
-                    }}
+                  />
+                  
+                  {/* Blinking Spark Symbol on top of wheel */}
+                  <div 
+                    className={`absolute left-1/2 transform -translate-x-1/2 flex flex-col items-center ${
+                      isParentWheel ? 'top-[-80px]' : 'top-[-60px]'
+                    }`}
                   >
-                    {wheel.name}
+                    {/* Spark symbol with blinking animation */}
+                    <div className="relative mb-2">
+                      <div className="animate-pulse">
+                        <svg className={`text-yellow-400 ${
+                          isParentWheel ? 'w-10 h-10' : 'w-8 h-8'
+                        }`} fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                      </div>
+                      {/* Blinking ring effect */}
+                      <div className="absolute inset-0 animate-ping">
+                        <svg className={`text-yellow-300 opacity-75 ${
+                          isParentWheel ? 'w-10 h-10' : 'w-8 h-8'
+                        }`} fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                      </div>
+                    </div>
+                    
+                    {/* Wheel label */}
+                    <div 
+                      className={`font-bold rounded-full text-white shadow-lg cursor-pointer hover:shadow-xl transition-all duration-200 hover:scale-105 pointer-events-auto ${
+                        isParentWheel ? 'text-base px-4 py-2' : 'text-sm px-3 py-1'
+                      }`}
+                      style={{ backgroundColor: wheel.color }}
+                      onMouseEnter={(e) => {
+                        const rect = e.currentTarget.getBoundingClientRect();
+                        setWheelFlashCardPosition({ x: rect.right + 10, y: rect.top });
+                        setViewWheelFlashCard(wheel);
+                      }}
+                      onMouseLeave={() => {
+                        setViewWheelFlashCard(null);
+                        setWheelFlashCardPosition(null);
+                      }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setViewWheelFlashCard(null);
+                        setViewFullWheel(wheel);
+                      }}
+                    >
+                      {wheel.name}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
             
             {/* Stunning Connection Lines Between Dots */}
             <svg className="absolute inset-0 w-full h-full pointer-events-none">
@@ -1751,32 +1773,28 @@ const Dashboard: React.FC = () => {
         />
       )}
 
-      {/* Wheel Flash Card Modal */}
-      {viewFlashCardWheel && (
+      {/* Wheel Flash Card - positioned absolutely */}
+      {viewWheelFlashCard && wheelFlashCardPosition && (
         <WheelFlashCard 
-          wheel={viewFlashCardWheel} 
-          position={{ x: 0, y: 0 }} // Centered modal
-          onClose={() => setViewFlashCardWheel(null)}
-          onClick={() => {
-            setViewFullWheel(viewFlashCardWheel);
-            setViewFlashCardWheel(null);
+          wheel={viewWheelFlashCard}
+          position={wheelFlashCardPosition}
+          onClose={() => setViewWheelFlashCard(null)}
+          onViewFull={() => {
+            setViewFullWheel(viewWheelFlashCard);
+            setViewWheelFlashCard(null);
           }}
         />
       )}
 
-      {/* Wheel Full View Modal */}
+      {/* Full Wheel View Modal */}
       {viewFullWheel && (
         <WheelFullView 
           wheel={viewFullWheel} 
-          isOpen={!!viewFullWheel}
           onClose={() => setViewFullWheel(null)}
-          onDelete={async (wheelId) => {
-            // Refetch wheels after deletion
-            await refetch();
-            setViewFullWheel(null);
-          }}
         />
       )}
+
+
     </div>
   );
 };

@@ -18,12 +18,12 @@ interface Wheel {
 
 interface WheelFullViewProps {
   wheel: Wheel | null;
-  isOpen: boolean;
+  isOpen?: boolean;
   onClose: () => void;
   onDelete?: (wheelId: string) => void;
 }
 
-const WheelFullView: React.FC<WheelFullViewProps> = ({ wheel, isOpen, onClose, onDelete }) => {
+const WheelFullView: React.FC<WheelFullViewProps> = ({ wheel, isOpen = true, onClose, onDelete }) => {
   if (!wheel) return null;
 
   const handleDelete = () => {

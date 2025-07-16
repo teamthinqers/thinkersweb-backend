@@ -16,18 +16,28 @@ interface Wheel {
 
 interface WheelFlashCardProps {
   wheel: Wheel;
-  position: { x: number; y: number };
+  position?: { x: number; y: number };
   onClose: () => void;
-  onClick: () => void;
+  onViewFull?: () => void;
+  onClick?: () => void;
 }
 
-const WheelFlashCard: React.FC<WheelFlashCardProps> = ({ wheel, position, onClose, onClick }) => {
+const WheelFlashCard: React.FC<WheelFlashCardProps> = ({ wheel, position, onClose, onViewFull, onClick }) => {
+  const handleCardClick = () => {
+    if (onViewFull) {
+      onViewFull();
+    } else if (onClick) {
+      onClick();
+    }
+  };
+
   return (
     <div 
       className="fixed z-50 pointer-events-auto"
       style={{
-        left: `${Math.min(position.x, window.innerWidth - 300)}px`,
-        top: `${Math.min(position.y, window.innerHeight - 200)}px`,
+        left: position ? `${Math.min(position.x, window.innerWidth - 300)}px` : '50%',
+        top: position ? `${Math.min(position.y, window.innerHeight - 200)}px` : '50%',
+        transform: position ? 'none' : 'translate(-50%, -50%)',
         maxWidth: '280px'
       }}
     >
@@ -35,7 +45,7 @@ const WheelFlashCard: React.FC<WheelFlashCardProps> = ({ wheel, position, onClos
         className="bg-white border-2 border-amber-300 shadow-xl cursor-pointer hover:shadow-2xl transition-all duration-200 transform hover:scale-105"
         onClick={(e) => {
           e.stopPropagation();
-          onClick();
+          handleCardClick();
         }}
       >
         <CardContent className="p-4">
