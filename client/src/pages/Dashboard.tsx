@@ -1257,13 +1257,18 @@ const Dashboard: React.FC = () => {
                         // Don't show flash card if user is dragging
                         if (dragStart) return;
                         const rect = e.currentTarget.getBoundingClientRect();
-                        setWheelFlashCardPosition({ x: rect.right + 10, y: rect.top });
+                        setWheelFlashCardPosition({ x: rect.right + 5, y: rect.top }); // Reduced gap
                         setViewWheelFlashCard(wheel);
                       }}
                       onMouseLeave={(e) => {
                         e.stopPropagation();
-                        setViewWheelFlashCard(null);
-                        setWheelFlashCardPosition(null);
+                        // Add delay to prevent flickering when moving to flash card
+                        setTimeout(() => {
+                          if (!e.relatedTarget || !e.relatedTarget.closest('.wheel-flash-card')) {
+                            setViewWheelFlashCard(null);
+                            setWheelFlashCardPosition(null);
+                          }
+                        }, 150);
                       }}
                       onClick={(e) => {
                         e.stopPropagation();

@@ -33,14 +33,23 @@ const WheelFlashCard: React.FC<WheelFlashCardProps> = ({ wheel, position, onClos
 
   return (
     <div 
-      className="fixed z-[100] pointer-events-auto"
+      className="fixed z-[100] pointer-events-auto wheel-flash-card"
       style={{
         left: position ? `${Math.min(position.x, window.innerWidth - 200)}px` : '50%',
         top: position ? `${Math.min(position.y, window.innerHeight - 140)}px` : '50%',
         transform: position ? 'none' : 'translate(-50%, -50%)',
         maxWidth: '180px'
       }}
-      onMouseLeave={onClose}
+      onMouseEnter={(e) => {
+        e.stopPropagation();
+      }}
+      onMouseLeave={(e) => {
+        e.stopPropagation();
+        // Add a small delay to prevent flicker when moving between wheel and flash card
+        setTimeout(() => {
+          onClose();
+        }, 100);
+      }}
     >
       <Card 
         className="bg-white border-2 border-amber-300 shadow-xl cursor-pointer hover:shadow-2xl transition-all duration-200 transform hover:scale-105"
