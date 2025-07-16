@@ -749,7 +749,9 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                       <Button
                         onClick={() => setCaptureMode(createType === 'wheel' ? 'wheel-voice' : 'voice')}
                         className={`h-28 ${createType === 'wheel' 
-                          ? 'bg-gradient-to-br from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700' 
+                          ? (userCaptureMode === 'ai' 
+                            ? 'bg-gradient-to-br from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700'
+                            : 'bg-gradient-to-br from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700')
                           : 'bg-gradient-to-br from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700'
                         } text-white rounded-xl flex flex-col items-center justify-center space-y-3 shadow-lg transform transition-all duration-200 hover:scale-105`}
                       >
@@ -759,7 +761,9 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                       <Button
                         onClick={() => setCaptureMode(createType === 'wheel' ? 'wheel-text' : 'text')}
                         className={`h-28 ${createType === 'wheel' 
-                          ? 'bg-gradient-to-br from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700' 
+                          ? (userCaptureMode === 'ai' 
+                            ? 'bg-gradient-to-br from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700'
+                            : 'bg-gradient-to-br from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700')
                           : 'bg-gradient-to-br from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700'
                         } text-white rounded-xl flex flex-col items-center justify-center space-y-3 shadow-lg transform transition-all duration-200 hover:scale-105`}
                       >
@@ -1082,63 +1086,110 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                   {/* Three Layer Wheel Input */}
                   <div className="space-y-6">
                     {/* Layer 1: Heading */}
-                    <div className="p-4 bg-gradient-to-br from-indigo-50/50 to-purple-50/50 rounded-xl border-2 border-indigo-300 shadow-sm hover:shadow-md transition-all duration-300">
+                    <div className={`p-4 rounded-xl border-2 shadow-sm hover:shadow-md transition-all duration-300 ${
+                      userCaptureMode === 'ai' 
+                        ? 'bg-gradient-to-br from-purple-50/50 to-violet-50/50 border-purple-300'
+                        : 'bg-gradient-to-br from-amber-50/50 to-orange-50/50 border-amber-300'
+                    }`}>
                       <div className="flex items-center gap-2 mb-3">
-                        <div className="w-6 h-6 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 flex items-center justify-center">
+                        <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
+                          userCaptureMode === 'ai'
+                            ? 'bg-gradient-to-r from-purple-500 to-violet-600'
+                            : 'bg-gradient-to-r from-amber-500 to-orange-600'
+                        }`}>
                           <span className="text-white text-xs font-bold">1</span>
                         </div>
-                        <h5 className="text-sm font-semibold text-indigo-700">Layer 1: Heading</h5>
+                        <h5 className={`text-sm font-semibold ${
+                          userCaptureMode === 'ai' ? 'text-purple-700' : 'text-amber-700'
+                        }`}>Layer 1: Heading</h5>
                         {wheelInput.heading && <span className="text-xs text-green-600 ml-auto">✓ Done</span>}
                       </div>
                       <Input
                         value={wheelInput.heading}
                         onChange={(e) => setWheelInput(prev => ({ ...prev, heading: e.target.value }))}
                         placeholder="Enter wheel heading (e.g., Morning Clarity)"
-                        className="border-indigo-200 focus:border-indigo-400 focus:ring-indigo-400"
+                        className={userCaptureMode === 'ai' 
+                          ? 'border-purple-200 focus:border-purple-400 focus:ring-purple-400'
+                          : 'border-amber-200 focus:border-amber-400 focus:ring-amber-400'
+                        }
                       />
-                      <p className="text-xs text-indigo-600 mt-2">
+                      <p className={`text-xs mt-2 ${
+                        userCaptureMode === 'ai' ? 'text-purple-600' : 'text-amber-600'
+                      }`}>
                         Give your wheel a clear, memorable name
                       </p>
                     </div>
 
                     {/* Layer 2: Purpose */}
-                    <div className="p-4 bg-gradient-to-br from-indigo-50/60 to-purple-50/60 rounded-xl border-2 border-indigo-400 shadow-sm hover:shadow-md transition-all duration-300">
+                    <div className={`p-4 rounded-xl border-2 shadow-sm hover:shadow-md transition-all duration-300 ${
+                      userCaptureMode === 'ai' 
+                        ? 'bg-gradient-to-br from-purple-50/60 to-violet-50/60 border-purple-400'
+                        : 'bg-gradient-to-br from-amber-50/60 to-orange-50/60 border-amber-400'
+                    }`}>
                       <div className="flex items-center gap-2 mb-3">
-                        <div className="w-6 h-6 rounded-full bg-gradient-to-r from-indigo-600 to-purple-700 flex items-center justify-center">
+                        <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
+                          userCaptureMode === 'ai'
+                            ? 'bg-gradient-to-r from-purple-600 to-violet-700'
+                            : 'bg-gradient-to-r from-amber-600 to-orange-700'
+                        }`}>
                           <span className="text-white text-xs font-bold">2</span>
                         </div>
-                        <h5 className="text-sm font-semibold text-indigo-800">Layer 2: Purpose</h5>
+                        <h5 className={`text-sm font-semibold ${
+                          userCaptureMode === 'ai' ? 'text-purple-800' : 'text-amber-800'
+                        }`}>Layer 2: Purpose</h5>
                         {wheelInput.purpose && <span className="text-xs text-green-600 ml-auto">✓ Done</span>}
                       </div>
                       <Textarea
                         value={wheelInput.purpose}
                         onChange={(e) => setWheelInput(prev => ({ ...prev, purpose: e.target.value }))}
                         placeholder="Describe the purpose of this wheel..."
-                        className="border-indigo-200 focus:border-indigo-400 focus:ring-indigo-400 min-h-[80px]"
+                        className={userCaptureMode === 'ai' 
+                          ? 'border-purple-200 focus:border-purple-400 focus:ring-purple-400 min-h-[80px]'
+                          : 'border-amber-200 focus:border-amber-400 focus:ring-amber-400 min-h-[80px]'
+                        }
                         maxLength={300}
                       />
                       <div className="flex justify-between text-xs mt-2">
-                        <span className="text-indigo-600">Define what this wheel is meant to organize</span>
-                        <span className="text-indigo-500">{wheelInput.purpose.length}/300</span>
+                        <span className={userCaptureMode === 'ai' ? 'text-purple-600' : 'text-amber-600'}>
+                          Define what this wheel is meant to organize
+                        </span>
+                        <span className={userCaptureMode === 'ai' ? 'text-purple-500' : 'text-amber-500'}>
+                          {wheelInput.purpose.length}/300
+                        </span>
                       </div>
                     </div>
 
                     {/* Layer 3: Timeline */}
-                    <div className="p-4 bg-gradient-to-br from-purple-50/30 to-indigo-50/30 rounded-xl border-2 border-purple-200 shadow-sm hover:shadow-md transition-all duration-300">
+                    <div className={`p-4 rounded-xl border-2 shadow-sm hover:shadow-md transition-all duration-300 ${
+                      userCaptureMode === 'ai' 
+                        ? 'bg-gradient-to-br from-purple-50/30 to-violet-50/30 border-purple-200'
+                        : 'bg-gradient-to-br from-orange-50/30 to-red-50/30 border-orange-200'
+                    }`}>
                       <div className="flex items-center gap-2 mb-3">
-                        <div className="w-6 h-6 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 flex items-center justify-center">
+                        <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
+                          userCaptureMode === 'ai'
+                            ? 'bg-gradient-to-r from-purple-600 to-violet-600'
+                            : 'bg-gradient-to-r from-orange-600 to-red-600'
+                        }`}>
                           <span className="text-white text-xs font-bold">3</span>
                         </div>
-                        <h5 className="text-sm font-semibold text-purple-700">Layer 3: Timeline</h5>
+                        <h5 className={`text-sm font-semibold ${
+                          userCaptureMode === 'ai' ? 'text-purple-700' : 'text-orange-700'
+                        }`}>Layer 3: Timeline</h5>
                         {wheelInput.timeline && <span className="text-xs text-green-600 ml-auto">✓ Done</span>}
                       </div>
                       <Input
                         value={wheelInput.timeline}
                         onChange={(e) => setWheelInput(prev => ({ ...prev, timeline: e.target.value }))}
                         placeholder="Timeline (e.g., Daily, Weekly, Ongoing)"
-                        className="border-purple-200 focus:border-purple-400 focus:ring-purple-400"
+                        className={userCaptureMode === 'ai' 
+                          ? 'border-purple-200 focus:border-purple-400 focus:ring-purple-400'
+                          : 'border-orange-200 focus:border-orange-400 focus:ring-orange-400'
+                        }
                       />
-                      <p className="text-xs text-purple-600 mt-2">
+                      <p className={`text-xs mt-2 ${
+                        userCaptureMode === 'ai' ? 'text-purple-600' : 'text-orange-600'
+                      }`}>
                         When will this wheel be most relevant?
                       </p>
                     </div>
@@ -1181,7 +1232,11 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                           });
                           setIsSaved(true);
                         }}
-                        className="w-full h-12 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white rounded-xl text-lg font-semibold shadow-lg"
+                        className={`w-full h-12 text-white rounded-xl text-lg font-semibold shadow-lg ${
+                          userCaptureMode === 'ai'
+                            ? 'bg-gradient-to-r from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700'
+                            : 'bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700'
+                        }`}
                       >
                         Create Wheel
                       </Button>
@@ -1213,15 +1268,27 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                   {/* Three Layer Voice Wheel Input */}
                   <div className="space-y-4">
                     {/* Layer 1: Heading */}
-                    <div className="p-4 bg-gradient-to-br from-indigo-50/50 to-purple-50/50 rounded-xl border-2 border-indigo-300 shadow-sm">
+                    <div className={`p-4 rounded-xl border-2 shadow-sm ${
+                      userCaptureMode === 'ai' 
+                        ? 'bg-gradient-to-br from-purple-50/50 to-violet-50/50 border-purple-300'
+                        : 'bg-gradient-to-br from-amber-50/50 to-orange-50/50 border-amber-300'
+                    }`}>
                       <div className="flex items-center gap-2 mb-3">
-                        <div className="w-6 h-6 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 flex items-center justify-center">
+                        <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
+                          userCaptureMode === 'ai'
+                            ? 'bg-gradient-to-r from-purple-500 to-violet-600'
+                            : 'bg-gradient-to-r from-amber-500 to-orange-600'
+                        }`}>
                           <span className="text-white text-xs font-bold">1</span>
                         </div>
-                        <h5 className="text-sm font-semibold text-indigo-700">Layer 1: Heading</h5>
+                        <h5 className={`text-sm font-semibold ${
+                          userCaptureMode === 'ai' ? 'text-purple-700' : 'text-amber-700'
+                        }`}>Layer 1: Heading</h5>
                         {wheelVoiceSteps.heading && <span className="text-xs text-green-600 ml-auto">✓ Done</span>}
                       </div>
-                      <p className="text-xs text-indigo-600 mb-3">
+                      <p className={`text-xs mb-3 ${
+                        userCaptureMode === 'ai' ? 'text-purple-600' : 'text-amber-600'
+                      }`}>
                         "What would you like to name this wheel?"
                       </p>
                       <Button
@@ -1234,28 +1301,46 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                             setWheelVoiceSteps(prev => ({ ...prev, heading: 'Morning Clarity' }));
                           }, 2000);
                         }}
-                        className="w-full h-10 text-sm bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white"
+                        className={`w-full h-10 text-sm text-white ${
+                          userCaptureMode === 'ai'
+                            ? 'bg-gradient-to-r from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700'
+                            : 'bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700'
+                        }`}
                       >
                         <Mic className="h-4 w-4 mr-2" />
                         Record Heading
                       </Button>
                       {wheelVoiceSteps.heading && (
-                        <div className="mt-3 p-3 bg-white/80 rounded-lg text-xs border border-indigo-200">
+                        <div className={`mt-3 p-3 bg-white/80 rounded-lg text-xs border ${
+                          userCaptureMode === 'ai' ? 'border-purple-200' : 'border-amber-200'
+                        }`}>
                           "{wheelVoiceSteps.heading}"
                         </div>
                       )}
                     </div>
 
                     {/* Layer 2: Purpose */}
-                    <div className="p-4 bg-gradient-to-br from-indigo-50/60 to-purple-50/60 rounded-xl border-2 border-indigo-400 shadow-sm">
+                    <div className={`p-4 rounded-xl border-2 shadow-sm ${
+                      userCaptureMode === 'ai' 
+                        ? 'bg-gradient-to-br from-purple-50/60 to-violet-50/60 border-purple-400'
+                        : 'bg-gradient-to-br from-amber-50/60 to-orange-50/60 border-amber-400'
+                    }`}>
                       <div className="flex items-center gap-2 mb-3">
-                        <div className="w-6 h-6 rounded-full bg-gradient-to-r from-indigo-600 to-purple-700 flex items-center justify-center">
+                        <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
+                          userCaptureMode === 'ai'
+                            ? 'bg-gradient-to-r from-purple-600 to-violet-700'
+                            : 'bg-gradient-to-r from-amber-600 to-orange-700'
+                        }`}>
                           <span className="text-white text-xs font-bold">2</span>
                         </div>
-                        <h5 className="text-sm font-semibold text-indigo-800">Layer 2: Purpose</h5>
+                        <h5 className={`text-sm font-semibold ${
+                          userCaptureMode === 'ai' ? 'text-purple-800' : 'text-amber-800'
+                        }`}>Layer 2: Purpose</h5>
                         {wheelVoiceSteps.purpose && <span className="text-xs text-green-600 ml-auto">✓ Done</span>}
                       </div>
-                      <p className="text-xs text-indigo-700 mb-3">
+                      <p className={`text-xs mb-3 ${
+                        userCaptureMode === 'ai' ? 'text-purple-700' : 'text-amber-700'
+                      }`}>
                         "Describe the purpose of this wheel. What will it organize?"
                       </p>
                       <Button
@@ -1268,29 +1353,47 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                             setWheelVoiceSteps(prev => ({ ...prev, purpose: 'A collection of morning routines and thoughts to start the day with clarity and focus' }));
                           }, 3000);
                         }}
-                        className="w-full h-10 text-sm bg-gradient-to-r from-indigo-600 to-purple-700 hover:from-indigo-700 hover:to-purple-800 text-white"
+                        className={`w-full h-10 text-sm text-white ${
+                          userCaptureMode === 'ai'
+                            ? 'bg-gradient-to-r from-purple-600 to-violet-700 hover:from-purple-700 hover:to-violet-800'
+                            : 'bg-gradient-to-r from-amber-600 to-orange-700 hover:from-amber-700 hover:to-orange-800'
+                        }`}
                         disabled={!wheelVoiceSteps.heading}
                       >
                         <Mic className="h-4 w-4 mr-2" />
                         Record Purpose
                       </Button>
                       {wheelVoiceSteps.purpose && (
-                        <div className="mt-3 p-3 bg-white/80 rounded-lg text-xs border border-indigo-200">
+                        <div className={`mt-3 p-3 bg-white/80 rounded-lg text-xs border ${
+                          userCaptureMode === 'ai' ? 'border-purple-200' : 'border-amber-200'
+                        }`}>
                           {wheelVoiceSteps.purpose.substring(0, 80)}... ({wheelVoiceSteps.purpose.length}/300 charac)
                         </div>
                       )}
                     </div>
 
                     {/* Layer 3: Timeline */}
-                    <div className="p-4 bg-gradient-to-br from-purple-50/30 to-indigo-50/30 rounded-xl border-2 border-purple-200 shadow-sm">
+                    <div className={`p-4 rounded-xl border-2 shadow-sm ${
+                      userCaptureMode === 'ai' 
+                        ? 'bg-gradient-to-br from-purple-50/30 to-violet-50/30 border-purple-200'
+                        : 'bg-gradient-to-br from-orange-50/30 to-red-50/30 border-orange-200'
+                    }`}>
                       <div className="flex items-center gap-2 mb-3">
-                        <div className="w-6 h-6 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 flex items-center justify-center">
+                        <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
+                          userCaptureMode === 'ai'
+                            ? 'bg-gradient-to-r from-purple-600 to-violet-600'
+                            : 'bg-gradient-to-r from-orange-600 to-red-600'
+                        }`}>
                           <span className="text-white text-xs font-bold">3</span>
                         </div>
-                        <h5 className="text-sm font-semibold text-purple-700">Layer 3: Timeline</h5>
+                        <h5 className={`text-sm font-semibold ${
+                          userCaptureMode === 'ai' ? 'text-purple-700' : 'text-orange-700'
+                        }`}>Layer 3: Timeline</h5>
                         {wheelVoiceSteps.timeline && <span className="text-xs text-green-600 ml-auto">✓ Done</span>}
                       </div>
-                      <p className="text-xs text-purple-600 mb-3">
+                      <p className={`text-xs mb-3 ${
+                        userCaptureMode === 'ai' ? 'text-purple-600' : 'text-orange-600'
+                      }`}>
                         "When will this wheel be most relevant? Daily, weekly, or ongoing?"
                       </p>
                       <Button
@@ -1303,14 +1406,20 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                             setWheelVoiceSteps(prev => ({ ...prev, timeline: 'Daily' }));
                           }, 1500);
                         }}
-                        className="w-full h-10 text-sm bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white"
+                        className={`w-full h-10 text-sm text-white ${
+                          userCaptureMode === 'ai'
+                            ? 'bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700'
+                            : 'bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700'
+                        }`}
                         disabled={!wheelVoiceSteps.purpose}
                       >
                         <Mic className="h-4 w-4 mr-2" />
                         Record Timeline
                       </Button>
                       {wheelVoiceSteps.timeline && (
-                        <div className="mt-3 p-3 bg-white/80 rounded-lg text-xs border border-purple-200 text-center font-medium">
+                        <div className={`mt-3 p-3 bg-white/80 rounded-lg text-xs text-center font-medium border ${
+                          userCaptureMode === 'ai' ? 'border-purple-200' : 'border-orange-200'
+                        }`}>
                           Timeline: "{wheelVoiceSteps.timeline}"
                         </div>
                       )}
@@ -1325,7 +1434,11 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                           });
                           setIsSaved(true);
                         }}
-                        className="w-full h-12 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white rounded-xl text-lg font-semibold shadow-lg"
+                        className={`w-full h-12 text-white rounded-xl text-lg font-semibold shadow-lg ${
+                          userCaptureMode === 'ai'
+                            ? 'bg-gradient-to-r from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700'
+                            : 'bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700'
+                        }`}
                       >
                         Create Voice Wheel
                       </Button>

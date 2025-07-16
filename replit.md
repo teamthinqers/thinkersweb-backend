@@ -921,6 +921,14 @@ Changelog:
   * Updated voice interface to include heading field as first layer (4 layers total)
   * Fixed progress meter logic to handle 4 steps instead of 3 for voice capture
   * Enhanced preview mode with realistic wheel names: "Innovation" and "Learning"
+- July 16, 2025. Aligned color coding for wheel creation interfaces:
+  * Updated wheel creation buttons and interfaces to follow consistent color theme
+  * Natural Mode: Uses amber/orange gradient colors across all wheel creation interfaces
+  * AI Mode: Uses purple/violet gradient colors exclusively for AI-assisted creation
+  * WhatsApp: Maintains green color scheme as requested for messaging integration
+  * Applied color consistency to both voice and text wheel creation modes
+  * All layer interfaces (Heading, Purpose, Timeline) now use mode-appropriate colors
+  * Save buttons dynamically change colors based on selected creation mode
   * Added authentic dot headings for Innovation wheel: AI Ethics, Blockchain, Quantum, Sustainability, Automation, Biotech, AR/VR, IoT, Robotics
   * Added practical dot headings for Learning wheel: TypeScript, Leadership, Psychology, Design, Finance, Negotiation, Systems, Mindfulness, Strategy
   * Replaced generic numbered headings with meaningful topic-based content for better demonstration
