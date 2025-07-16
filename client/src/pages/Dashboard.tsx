@@ -306,11 +306,10 @@ const Dashboard: React.FC = () => {
     isFullscreen?: boolean,
     onFullscreenChange?: (isFullscreen: boolean) => void,
     setViewWheelFlashCard: (wheel: Wheel | null) => void,
-    setWheelFlashCardPosition: (position: { x: number; y: number } | null) => void,
     setViewFullWheel: (wheel: Wheel | null) => void,
     previewMode: boolean,
     setPreviewMode: (previewMode: boolean) => void
-  }> = ({ wheels, actualDots, showingRecentFilter = false, recentCount = 4, isFullscreen = false, onFullscreenChange, setViewWheelFlashCard, setWheelFlashCardPosition, setViewFullWheel, previewMode, setPreviewMode }) => {
+  }> = ({ wheels, actualDots, showingRecentFilter = false, recentCount = 4, isFullscreen = false, onFullscreenChange, setViewWheelFlashCard, setViewFullWheel, previewMode, setPreviewMode }) => {
     const [selectedWheel, setSelectedWheel] = useState<string | null>(null);
     const [viewFullDot, setViewFullDot] = useState<Dot | null>(null);
     const [selectedDot, setSelectedDot] = useState<Dot | null>(null);
@@ -1814,7 +1813,6 @@ const Dashboard: React.FC = () => {
               isFullscreen={isMapFullscreen}
               onFullscreenChange={setIsMapFullscreen}
               setViewWheelFlashCard={setViewWheelFlashCard}
-              setWheelFlashCardPosition={setWheelFlashCardPosition}
               setViewFullWheel={setViewFullWheel}
               previewMode={previewMode}
               setPreviewMode={setPreviewMode}
