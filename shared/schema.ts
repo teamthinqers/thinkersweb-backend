@@ -280,6 +280,7 @@ export type WhatsappUser = typeof whatsappUsers.$inferSelect;
 export const wheels = pgTable("wheels", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").references(() => users.id).notNull(),
+  parentWheelId: integer("parent_wheel_id").references(() => wheels.id), // For hierarchical wheel structures
   heading: text("heading").notNull(), // Layer 1: Wheel title/name
   purpose: text("purpose").notNull(), // Layer 2: Purpose description
   timeline: text("timeline").notNull(), // Layer 3: Timeline/deadline
@@ -295,6 +296,12 @@ export const wheelsRelations = relations(wheels, ({ one, many }) => ({
     fields: [wheels.userId],
     references: [users.id],
   }),
+  parentWheel: one(wheels, {
+    fields: [wheels.parentWheelId],
+    references: [wheels.id],
+    relationName: "parentWheel",
+  }),
+  childWheels: many(wheels, { relationName: "parentWheel" }),
   dots: many(dots),
   sourceConnections: many(wheelConnections, { relationName: "sourceWheel" }),
   targetConnections: many(wheelConnections, { relationName: "targetWheel" }),
@@ -383,6 +390,7 @@ export const insertWheelSchema = createInsertSchema(wheels, {
   heading: (schema) => schema.min(2, "Wheel heading must be at least 2 characters").max(100, "Heading must be 100 characters or less"),
   purpose: (schema) => schema.min(10, "Purpose must be at least 10 characters").max(300, "Purpose must be 300 characters or less"),
   timeline: (schema) => schema.min(2, "Timeline must be at least 2 characters").max(100, "Timeline must be 100 characters or less"),
+  parentWheelId: (schema) => schema.optional(),
   color: (schema) => schema.optional(),
   positionX: (schema) => schema.optional(),
   positionY: (schema) => schema.optional(),

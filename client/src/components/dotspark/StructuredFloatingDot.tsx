@@ -44,7 +44,8 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
     heading: '',
     summary: '',
     anchor: '',
-    pulse: ''
+    pulse: '',
+    wheelId: null as number | null
   });
   
   // Voice recording states for wheels
@@ -67,15 +68,24 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
     heading: '',
     summary: '',
     anchor: '',
-    pulse: ''
+    pulse: '',
+    wheelId: null as number | null
   });
   
   // Text input states for wheels
   const [wheelInput, setWheelInput] = useState({
     heading: '',
     purpose: '',
-    timeline: ''
+    timeline: '',
+    parentWheelId: null as number | null
   });
+  
+  // Available wheels for parent selection
+  const [availableWheels, setAvailableWheels] = useState<Array<{
+    id: number;
+    heading: string;
+    purpose: string;
+  }>>([]);
   
   const [isDragging, setIsDragging] = useState(false);
   const [isFirstActivation, setIsFirstActivation] = useState(false);
@@ -131,6 +141,31 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
   useEffect(() => {
     localStorage.setItem('structured-floating-dot-position', JSON.stringify(position));
   }, [position]);
+
+  // Fetch available wheels when wheel creation modes are accessed
+  const fetchAvailableWheels = async () => {
+    try {
+      const response = await fetch('/api/wheels');
+      if (response.ok) {
+        const wheels = await response.json();
+        setAvailableWheels(wheels.map((wheel: any) => ({
+          id: wheel.id,
+          heading: wheel.heading,
+          purpose: wheel.purpose
+        })));
+      }
+    } catch (error) {
+      console.error('Failed to fetch wheels:', error);
+    }
+  };
+
+  // Fetch wheels when entering wheel or dot creation modes
+  useEffect(() => {
+    if (captureMode === 'wheel-text' || captureMode === 'wheel-voice' || 
+        captureMode === 'text' || captureMode === 'voice') {
+      fetchAvailableWheels();
+    }
+  }, [captureMode]);
 
   const handleMouseDown = (e: React.MouseEvent) => {
     if (isExpanded) return;
@@ -794,6 +829,205 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                 </div>
               )}
 
+              {captureMode === 'text' && (
+                <div className="p-6 space-y-4">
+                  <div className="flex items-center justify-between mb-4">
+                    <Button
+                      variant="ghost"
+                      onClick={() => setCaptureMode('create-type')}
+                      className="h-8 w-8 p-0 rounded-full"
+                    >
+                      <ArrowLeft className="w-4 h-4" />
+                    </Button>
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-medium">Save Dot - Text</h3>
+                      {userCaptureMode === 'natural' ? (
+                        <button
+                          onClick={() => {
+                            setUserCaptureMode('ai');
+                            localStorage.setItem('dotCaptureMode', 'ai');
+                            window.dispatchEvent(new StorageEvent('storage', {
+                              key: 'dotCaptureMode',
+                              newValue: 'ai'
+                            }));
+                          }}
+                          className="px-4 py-2 text-sm font-semibold bg-gradient-to-r from-orange-100 to-amber-100 text-orange-700 rounded-full border border-orange-200 hover:from-orange-200 hover:to-amber-200 hover:shadow-md transition-all duration-200 cursor-pointer transform hover:scale-105"
+                        >
+                          Natural Mode ↻
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => {
+                            setUserCaptureMode('natural');
+                            localStorage.setItem('dotCaptureMode', 'natural');
+                            window.dispatchEvent(new StorageEvent('storage', {
+                              key: 'dotCaptureMode',
+                              newValue: 'natural'
+                            }));
+                          }}
+                          className="px-4 py-2 text-sm font-semibold bg-gradient-to-r from-purple-100 to-violet-100 text-purple-700 rounded-full border border-purple-200 hover:from-purple-200 hover:to-violet-200 hover:shadow-md transition-all duration-200 cursor-pointer transform hover:scale-105"
+                        >
+                          AI Mode ↻
+                        </button>
+                      )}
+                    </div>
+                    <Button
+                      variant="ghost"
+                      onClick={handleClose}
+                      className="h-8 w-8 p-0 rounded-full"
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
+                  </div>
+
+                  {/* Five Layer Dot Input */}
+                  <div className="space-y-6">
+                    {/* Layer 1: Heading */}
+                    <div className="p-4 bg-gradient-to-br from-amber-50/50 to-orange-50/50 rounded-xl border-2 border-amber-300 shadow-sm hover:shadow-md transition-all duration-300">
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="w-6 h-6 rounded-full bg-gradient-to-r from-amber-500 to-orange-600 flex items-center justify-center">
+                          <span className="text-white text-xs font-bold">1</span>
+                        </div>
+                        <h5 className="text-sm font-semibold text-amber-700">Layer 1: Heading</h5>
+                        {structuredInput.heading && <span className="text-xs text-green-600 ml-auto">✓ Done</span>}
+                      </div>
+                      <Input
+                        value={structuredInput.heading}
+                        onChange={(e) => setStructuredInput(prev => ({ ...prev, heading: e.target.value }))}
+                        placeholder="Enter dot heading (e.g., Morning Clarity)"
+                        className="border-amber-200 focus:border-amber-400 focus:ring-amber-400"
+                      />
+                      <p className="text-xs text-amber-600 mt-2">
+                        Give your dot a clear, memorable heading
+                      </p>
+                    </div>
+
+                    {/* Layer 2: Summary */}
+                    <div className="p-4 bg-gradient-to-br from-amber-50/60 to-orange-50/60 rounded-xl border-2 border-amber-400 shadow-sm hover:shadow-md transition-all duration-300">
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="w-6 h-6 rounded-full bg-gradient-to-r from-amber-600 to-orange-700 flex items-center justify-center">
+                          <span className="text-white text-xs font-bold">2</span>
+                        </div>
+                        <h5 className="text-sm font-semibold text-amber-800">Layer 2: Summary</h5>
+                        {structuredInput.summary && <span className="text-xs text-green-600 ml-auto">✓ Done</span>}
+                      </div>
+                      <Textarea
+                        value={structuredInput.summary}
+                        onChange={(e) => setStructuredInput(prev => ({ ...prev, summary: e.target.value }))}
+                        placeholder="Describe your thoughts and insights..."
+                        className="border-amber-200 focus:border-amber-400 focus:ring-amber-400 min-h-[80px]"
+                        maxLength={220}
+                      />
+                      <div className="flex justify-between text-xs mt-2">
+                        <span className="text-amber-600">Core insight or thought</span>
+                        <span className="text-amber-500">{structuredInput.summary.length}/220</span>
+                      </div>
+                    </div>
+
+                    {/* Layer 3: Anchor */}
+                    <div className="p-4 bg-gradient-to-br from-blue-50/50 to-indigo-50/50 rounded-xl border-2 border-blue-300 shadow-sm hover:shadow-md transition-all duration-300">
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="w-6 h-6 rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 flex items-center justify-center">
+                          <span className="text-white text-xs font-bold">3</span>
+                        </div>
+                        <h5 className="text-sm font-semibold text-blue-700">Layer 3: Anchor</h5>
+                        {structuredInput.anchor && <span className="text-xs text-green-600 ml-auto">✓ Done</span>}
+                      </div>
+                      <Textarea
+                        value={structuredInput.anchor}
+                        onChange={(e) => setStructuredInput(prev => ({ ...prev, anchor: e.target.value }))}
+                        placeholder="Memory anchor - what helps you remember this..."
+                        className="border-blue-200 focus:border-blue-400 focus:ring-blue-400 min-h-[80px]"
+                        maxLength={300}
+                      />
+                      <div className="flex justify-between text-xs mt-2">
+                        <span className="text-blue-600">Context that makes this memorable</span>
+                        <span className="text-blue-500">{structuredInput.anchor.length}/300</span>
+                      </div>
+                    </div>
+
+                    {/* Layer 4: Pulse */}
+                    <div className="p-4 bg-gradient-to-br from-purple-50/30 to-pink-50/30 rounded-xl border-2 border-purple-200 shadow-sm hover:shadow-md transition-all duration-300">
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="w-6 h-6 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 flex items-center justify-center">
+                          <span className="text-white text-xs font-bold">4</span>
+                        </div>
+                        <h5 className="text-sm font-semibold text-purple-700">Layer 4: Pulse</h5>
+                        {structuredInput.pulse && <span className="text-xs text-green-600 ml-auto">✓ Done</span>}
+                      </div>
+                      <div className="grid grid-cols-3 gap-2 mb-4">
+                        {['excited', 'curious', 'focused', 'happy', 'calm', 'inspired', 'confident', 'grateful', 'motivated'].map((emotion) => (
+                          <button
+                            key={emotion}
+                            onClick={() => setStructuredInput(prev => ({ ...prev, pulse: emotion }))}
+                            className={`p-2 text-xs rounded-lg transition-all duration-200 ${
+                              structuredInput.pulse === emotion
+                                ? 'bg-purple-200 text-purple-800 ring-2 ring-purple-400'
+                                : 'bg-purple-50 text-purple-600 hover:bg-purple-100'
+                            }`}
+                          >
+                            {emotion}
+                          </button>
+                        ))}
+                      </div>
+                      <Input
+                        value={structuredInput.pulse}
+                        onChange={(e) => setStructuredInput(prev => ({ ...prev, pulse: e.target.value }))}
+                        placeholder="One word emotion"
+                        className="border-purple-200 focus:border-purple-400 focus:ring-purple-400 text-center"
+                      />
+                      <p className="text-xs text-purple-600 mt-2 text-center">
+                        The emotion driving this thought
+                      </p>
+                    </div>
+
+                    {/* Layer 5: Wheel Selection */}
+                    <div className="p-4 bg-gradient-to-br from-slate-50/30 to-gray-50/30 rounded-xl border-2 border-slate-200 shadow-sm hover:shadow-md transition-all duration-300">
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="w-6 h-6 rounded-full bg-gradient-to-r from-slate-500 to-gray-600 flex items-center justify-center">
+                          <span className="text-white text-xs font-bold">5</span>
+                        </div>
+                        <h5 className="text-sm font-semibold text-slate-700">Layer 5: Wheel (Optional)</h5>
+                        {structuredInput.wheelId && <span className="text-xs text-green-600 ml-auto">✓ Selected</span>}
+                      </div>
+                      <select
+                        value={structuredInput.wheelId || ''}
+                        onChange={(e) => setStructuredInput(prev => ({ 
+                          ...prev, 
+                          wheelId: e.target.value ? parseInt(e.target.value) : null 
+                        }))}
+                        className="w-full p-2 border-slate-200 rounded-lg focus:border-slate-400 focus:ring-slate-400"
+                      >
+                        <option value="">Save as standalone dot</option>
+                        {availableWheels.map(wheel => (
+                          <option key={wheel.id} value={wheel.id}>
+                            {wheel.heading} - {wheel.purpose.substring(0, 30)}...
+                          </option>
+                        ))}
+                      </select>
+                      <p className="text-xs text-slate-600 mt-2">
+                        Choose which wheel this dot belongs to
+                      </p>
+                    </div>
+
+                    {structuredInput.heading && structuredInput.summary && structuredInput.anchor && structuredInput.pulse && (
+                      <Button 
+                        onClick={() => {
+                          toast({
+                            title: "Dot Saved!",
+                            description: `"${structuredInput.heading}" has been successfully saved.`,
+                          });
+                          setIsSaved(true);
+                        }}
+                        className="w-full h-12 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl text-lg font-semibold shadow-lg"
+                      >
+                        Save Dot
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              )}
+
               {captureMode === 'wheel-text' && (
                 <div className="p-6 space-y-4">
                   <div className="flex items-center justify-between mb-4">
@@ -906,6 +1140,35 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                       />
                       <p className="text-xs text-purple-600 mt-2">
                         When will this wheel be most relevant?
+                      </p>
+                    </div>
+
+                    {/* Parent Wheel Selection (Optional) */}
+                    <div className="p-4 bg-gradient-to-br from-slate-50/30 to-gray-50/30 rounded-xl border-2 border-slate-200 shadow-sm hover:shadow-md transition-all duration-300">
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="w-6 h-6 rounded-full bg-gradient-to-r from-slate-500 to-gray-600 flex items-center justify-center">
+                          <span className="text-white text-xs font-bold">+</span>
+                        </div>
+                        <h5 className="text-sm font-semibold text-slate-700">Parent Wheel (Optional)</h5>
+                        {wheelInput.parentWheelId && <span className="text-xs text-green-600 ml-auto">✓ Selected</span>}
+                      </div>
+                      <select
+                        value={wheelInput.parentWheelId || ''}
+                        onChange={(e) => setWheelInput(prev => ({ 
+                          ...prev, 
+                          parentWheelId: e.target.value ? parseInt(e.target.value) : null 
+                        }))}
+                        className="w-full p-2 border-slate-200 rounded-lg focus:border-slate-400 focus:ring-slate-400"
+                      >
+                        <option value="">Create as standalone wheel</option>
+                        {availableWheels.map(wheel => (
+                          <option key={wheel.id} value={wheel.id}>
+                            {wheel.heading} - {wheel.purpose.substring(0, 30)}...
+                          </option>
+                        ))}
+                      </select>
+                      <p className="text-xs text-slate-600 mt-2">
+                        Choose a parent wheel to create a hierarchical structure
                       </p>
                     </div>
 

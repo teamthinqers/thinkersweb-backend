@@ -350,27 +350,39 @@ const Dashboard: React.FC = () => {
       const previewDots: Dot[] = [];
       const previewWheels: Wheel[] = [];
 
-      // First spark group with random theme
+      // Parent wheel for business hierarchy
+      const parentBusinessWheel: Wheel = {
+        id: 'preview-wheel-parent',
+        name: 'Build an Enduring Company',
+        category: 'Business',
+        color: '#7C3AED', // Purple theme for parent
+        dots: [],
+        connections: ['preview-wheel-0', 'preview-wheel-1'],
+        position: { x: 400, y: 100 }
+      };
+
+      // First business wheel - GTM
       const firstSparkGroup: Wheel = {
         id: 'preview-wheel-0',
-        name: 'Morning Clarity',
-        category: 'Random',
+        name: 'GTM (Go-To-Market)',
+        category: 'Business',
         color: '#F59E0B', // Amber theme
         dots: [],
         connections: ['preview-wheel-1'],
-        position: { x: 200, y: 200 }
+        position: { x: 200, y: 200 },
+        parentWheelId: 'preview-wheel-parent'
       };
 
       const firstSparkHeadings = [
-        'Coffee', 'Meditation', 'Rain', 'Exercise', 'Books'
+        'Product-Market Fit', 'Customer Segments', 'Value Proposition', 'Sales Funnel', 'Pricing Strategy'
       ];
 
       const firstSparkSummaries = [
-        'Morning coffee ritual and its impact on daily productivity patterns',
-        'Five-minute meditation practice creating mental clarity throughout day',
-        'Sound of rain helping focus during work sessions',
-        'Quick morning stretches boosting energy levels significantly', 
-        'Reading fiction before bed improving sleep quality'
+        'Validating product-market fit through customer interviews and usage metrics',
+        'Identifying and targeting high-value customer segments for focused growth',
+        'Crafting compelling value propositions that resonate with target markets',
+        'Building efficient sales funnels that convert prospects to customers',
+        'Developing competitive pricing strategies that maximize revenue and adoption'
       ];
 
       for (let i = 0; i < 5; i++) {
@@ -390,26 +402,27 @@ const Dashboard: React.FC = () => {
       }
       previewWheels.push(firstSparkGroup);
 
-      // Second spark group with random theme
+      // Second business wheel - Leadership
       const secondSparkGroup: Wheel = {
         id: 'preview-wheel-1',
-        name: 'Flow State',
-        category: 'Random',
-        color: '#F59E0B', // Same amber theme as first spark
+        name: 'Strengthen Leadership',
+        category: 'Business',
+        color: '#3B82F6', // Blue theme
         dots: [],
-        connections: ['preview-wheel-0'],
-        position: { x: 550, y: 250 }
+        connections: ['preview-wheel-0', 'preview-wheel-2'],
+        position: { x: 600, y: 200 },
+        parentWheelId: 'preview-wheel-parent'
       };
 
       const secondSparkHeadings = [
-        'Colors', 'Numbers', 'Dreams', 'Music'
+        'Team Building', 'Communication', 'Decision Making', 'Vision Setting'
       ];
 
       const secondSparkSummaries = [
-        'Blue and green colors creating calming workspace environments',
-        'Number patterns noticed in daily scheduling and time management',
-        'Recurring dream themes providing creative inspiration for projects',
-        'Jazz music enhancing problem-solving and analytical thinking'
+        'Building high-performing teams through trust and clear role definition',
+        'Developing authentic communication styles that inspire and motivate teams',
+        'Making strategic decisions under uncertainty with confidence and clarity',
+        'Setting compelling visions that align team efforts toward common goals'
       ];
 
       for (let i = 0; i < 4; i++) {
@@ -429,42 +442,111 @@ const Dashboard: React.FC = () => {
       }
       previewWheels.push(secondSparkGroup);
 
-      // Third spark group demonstrating duplicate dots - reuses dots from other groups
+      // Third business wheel - Product Development (part of enduring company)
+      const thirdBusinessWheel: Wheel = {
+        id: 'preview-wheel-2',
+        name: 'Product Innovation',
+        category: 'Business',
+        color: '#10B981', // Green theme
+        dots: [],
+        connections: ['preview-wheel-1'],
+        position: { x: 400, y: 300 },
+        parentWheelId: 'preview-wheel-parent'
+      };
 
+      const thirdSparkHeadings = [
+        'User Research', 'Feature Priority', 'Tech Debt', 'Innovation Pipeline'
+      ];
 
-      // Add many more individual scattered dots showing not all dots need grouping
+      const thirdSparkSummaries = [
+        'Conducting deep user research to uncover unmet needs and pain points',
+        'Prioritizing features based on user impact and technical complexity',
+        'Managing technical debt while maintaining development velocity',
+        'Building innovation pipelines that balance risk with breakthrough potential'
+      ];
+
+      for (let i = 0; i < 4; i++) {
+        const dot: Dot = {
+          id: `preview-dot-2-${i}`,
+          oneWordSummary: thirdSparkHeadings[i],
+          summary: thirdSparkSummaries[i],
+          anchor: `Strategic insights about ${thirdSparkHeadings[i].toLowerCase()} and product excellence`,
+          pulse: emotions[Math.floor(Math.random() * emotions.length)],
+          wheelId: thirdBusinessWheel.id,
+          timestamp: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
+          sourceType: Math.random() > 0.5 ? 'voice' : 'text',
+          captureMode: Math.random() > 0.7 ? 'ai' : 'natural'
+        };
+        previewDots.push(dot);
+        thirdBusinessWheel.dots.push(dot);
+      }
+      previewWheels.push(thirdBusinessWheel);
+
+      // Personal wheel - standalone (not part of business hierarchy)
+      const personalWheel: Wheel = {
+        id: 'preview-wheel-personal',
+        name: 'Health & Wellness',
+        category: 'Personal',
+        color: '#EC4899', // Pink theme
+        dots: [],
+        connections: [],
+        position: { x: 150, y: 450 }
+        // No parentWheelId - this is a standalone wheel
+      };
+
+      const personalHeadings = [
+        'Morning Routine', 'Exercise', 'Nutrition', 'Sleep Quality', 'Stress Management'
+      ];
+
+      const personalSummaries = [
+        'Establishing consistent morning routines that set positive tone for entire day',
+        'Finding exercise routines that balance challenge with enjoyment and sustainability',
+        'Understanding nutrition patterns that boost energy and mental clarity',
+        'Optimizing sleep quality through environment and pre-sleep habits',
+        'Developing healthy stress management techniques for work-life balance'
+      ];
+
+      for (let i = 0; i < 5; i++) {
+        const dot: Dot = {
+          id: `preview-dot-personal-${i}`,
+          oneWordSummary: personalHeadings[i],
+          summary: personalSummaries[i],
+          anchor: `Personal insights about ${personalHeadings[i].toLowerCase()} and well-being`,
+          pulse: emotions[Math.floor(Math.random() * emotions.length)],
+          wheelId: personalWheel.id,
+          timestamp: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
+          sourceType: Math.random() > 0.5 ? 'voice' : 'text',
+          captureMode: Math.random() > 0.7 ? 'ai' : 'natural'
+        };
+        previewDots.push(dot);
+        personalWheel.dots.push(dot);
+      }
+      previewWheels.push(personalWheel);
+
+      // Add parent wheel after all child wheels are defined
+      previewWheels.push(parentBusinessWheel);
+
+      // Add some individual scattered dots showing not all dots need grouping
       const individualHeadings = [
-        'Sunset', 'Phone', 'Garden', 'Grocery', 'Parking', 'Weather', 'Sleep', 'Traffic', 'Cooking',
-        'Mirror', 'Shoes', 'Keys', 'Water', 'Light', 'Sound', 'Paper', 'Window', 'Clock', 'Door'
+        'Coffee', 'Weather', 'Music', 'Reading', 'Travel', 'Technology', 'Art', 'Nature'
       ];
       const individualSummaries = [
-        'Beautiful sunset moments creating unexpected moments of gratitude',
-        'Phone notifications disrupting focus and productivity patterns',
-        'Backyard gardening teaching patience and natural growth cycles',
-        'Grocery shopping revealing decision fatigue and choice overwhelm',
-        'Parking challenges in city leading to arrival stress management',
+        'Morning coffee ritual and its impact on daily productivity patterns',
         'Weather changes affecting mood and energy levels throughout day',
-        'Sleep quality patterns correlating with next-day performance',
-        'Traffic patterns teaching patience and alternative route planning',
-        'Cooking experiments sparking creativity and mindful preparation',
-        'Mirror reflections prompting self-awareness and appearance thoughts',
-        'Shoe choices affecting comfort and confidence throughout day',
-        'Key placement habits revealing organizational patterns and stress',
-        'Water consumption awareness and hydration impact on energy',
-        'Natural light exposure influencing mood and productivity cycles',
-        'Background sounds affecting concentration and creative flow',
-        'Paper texture preferences in note-taking and writing experiences',
-        'Window views providing mental breaks and perspective shifts',
-        'Clock watching patterns revealing time anxiety and productivity pressure',
-        'Door sounds indicating home activity patterns and privacy needs'
+        'Music preferences enhancing focus and creative thinking processes',
+        'Reading habits revealing learning patterns and knowledge retention',
+        'Travel experiences broadening perspective and cultural understanding',
+        'Technology tools streamlining daily workflows and communication',
+        'Art appreciation inspiring creativity and aesthetic sensibilities',
+        'Nature observations providing mental clarity and stress relief'
       ];
 
-      for (let i = 0; i < 19; i++) {
+      for (let i = 0; i < 8; i++) {
         const dot: Dot = {
           id: `individual-${i + 1}`,
           oneWordSummary: individualHeadings[i],
           summary: individualSummaries[i],
-          anchor: `Random daily observation about ${individualHeadings[i].toLowerCase()} and life patterns`,
+          anchor: `Personal observation about ${individualHeadings[i].toLowerCase()} and its impact on daily life`,
           pulse: emotions[Math.floor(Math.random() * emotions.length)],
           wheelId: '', // No wheel - individual dot
           timestamp: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
