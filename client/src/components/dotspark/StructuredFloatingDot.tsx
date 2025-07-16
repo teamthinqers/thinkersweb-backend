@@ -39,9 +39,8 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
   
   // Voice recording states
   const [isRecording, setIsRecording] = useState(false);
-  const [currentStep, setCurrentStep] = useState<1 | 2 | 3 | 4>(1);
+  const [currentStep, setCurrentStep] = useState<1 | 2 | 3>(1);
   const [voiceSteps, setVoiceSteps] = useState({
-    heading: '',
     summary: '',
     anchor: '',
     pulse: '',
@@ -55,7 +54,6 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
     timeline: ''
   });
   const [audioRecordings, setAudioRecordings] = useState<{
-    heading?: string;
     summary?: string;
     anchor?: string;
     pulse?: string;
@@ -65,7 +63,6 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
   
   // Text input states for dots
   const [structuredInput, setStructuredInput] = useState({
-    heading: '',
     summary: '',
     anchor: '',
     pulse: '',
@@ -284,9 +281,9 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
     if (isSaved) return false;
     
     if (captureMode === 'text') {
-      return structuredInput.heading.trim() || structuredInput.summary.trim() || structuredInput.anchor.trim() || structuredInput.pulse.trim();
+      return structuredInput.summary.trim() || structuredInput.anchor.trim() || structuredInput.pulse.trim();
     } else if (captureMode === 'voice') {
-      return voiceSteps.heading.trim() || voiceSteps.summary.trim() || voiceSteps.anchor.trim() || voiceSteps.pulse.trim();
+      return voiceSteps.summary.trim() || voiceSteps.anchor.trim() || voiceSteps.pulse.trim();
     }
     return false;
   };
@@ -302,8 +299,8 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
   const confirmClose = () => {
     setIsExpanded(false);
     setCaptureMode('select');
-    setStructuredInput({ heading: '', summary: '', anchor: '', pulse: '' });
-    setVoiceSteps({ heading: '', summary: '', anchor: '', pulse: '' });
+    setStructuredInput({ summary: '', anchor: '', pulse: '', wheelId: null });
+    setVoiceSteps({ summary: '', anchor: '', pulse: '', wheelId: null });
     setCurrentStep(1);
     setIsRecording(false);
     setShowExitWarning(false);
@@ -357,7 +354,7 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
 
   const processVoiceRecording = async (base64Audio: string) => {
     try {
-      const layerKey = currentStep === 1 ? 'heading' : currentStep === 2 ? 'summary' : currentStep === 3 ? 'anchor' : 'pulse';
+      const layerKey = currentStep === 1 ? 'summary' : currentStep === 2 ? 'anchor' : 'pulse';
       
       // Store the audio recording
       setAudioRecordings(prev => ({
@@ -388,8 +385,8 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
       }));
       
       // Move to next step if not at the end
-      if (currentStep < 4) {
-        setCurrentStep((prev) => (prev + 1) as 1 | 2 | 3 | 4);
+      if (currentStep < 3) {
+        setCurrentStep((prev) => (prev + 1) as 1 | 2 | 3);
       }
     } catch (error) {
       console.error('Voice processing error:', error);
@@ -401,7 +398,7 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
     }
   };
 
-  const handleVoiceStep = (step: 1 | 2 | 3 | 4) => {
+  const handleVoiceStep = (step: 1 | 2 | 3) => {
     setCurrentStep(step);
     if (isRecording) {
       stopRecording();
@@ -416,16 +413,15 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
       
       if (captureMode === 'text') {
         // Validate text inputs
-        if (!structuredInput.heading || !structuredInput.summary || !structuredInput.anchor || !structuredInput.pulse) {
+        if (!structuredInput.summary || !structuredInput.anchor || !structuredInput.pulse) {
           toast({
-            title: "Please complete all fields including heading",
+            title: "Please complete all three layers",
             variant: "destructive"
           });
           return;
         }
         
         dotData = {
-          oneWordSummary: structuredInput.heading.substring(0, 30),
           summary: structuredInput.summary.substring(0, 220),
           anchor: structuredInput.anchor.substring(0, 300),
           pulse: structuredInput.pulse.split(' ')[0],
@@ -433,16 +429,15 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
         };
       } else {
         // Validate voice inputs
-        if (!voiceSteps.heading || !voiceSteps.summary || !voiceSteps.anchor || !voiceSteps.pulse) {
+        if (!voiceSteps.summary || !voiceSteps.anchor || !voiceSteps.pulse) {
           toast({
-            title: "Please complete all fields including heading",
+            title: "Please complete all three layers",
             variant: "destructive"
           });
           return;
         }
         
         dotData = {
-          oneWordSummary: voiceSteps.heading.substring(0, 30),
           summary: voiceSteps.summary.substring(0, 220),
           anchor: voiceSteps.anchor.substring(0, 300),
           pulse: voiceSteps.pulse.split(' ')[0],
@@ -853,35 +848,15 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                     </Button>
                   </div>
 
-                  {/* Five Layer Dot Input */}
+                  {/* Three Layer Dot Input */}
                   <div className="space-y-6">
-                    {/* Layer 1: Heading */}
-                    <div className="p-4 bg-gradient-to-br from-amber-50/50 to-orange-50/50 rounded-xl border-2 border-amber-300 shadow-sm hover:shadow-md transition-all duration-300">
-                      <div className="flex items-center gap-2 mb-3">
-                        <div className="w-6 h-6 rounded-full bg-gradient-to-r from-amber-500 to-orange-600 flex items-center justify-center">
-                          <span className="text-white text-xs font-bold">1</span>
-                        </div>
-                        <h5 className="text-sm font-semibold text-amber-700">Layer 1: Heading</h5>
-                        {structuredInput.heading && <span className="text-xs text-green-600 ml-auto">✓ Done</span>}
-                      </div>
-                      <Input
-                        value={structuredInput.heading}
-                        onChange={(e) => setStructuredInput(prev => ({ ...prev, heading: e.target.value }))}
-                        placeholder="Enter dot heading (e.g., Morning Clarity)"
-                        className="border-amber-200 focus:border-amber-400 focus:ring-amber-400"
-                      />
-                      <p className="text-xs text-amber-600 mt-2">
-                        Give your dot a clear, memorable heading
-                      </p>
-                    </div>
-
-                    {/* Layer 2: Summary */}
+                    {/* Layer 1: Summary */}
                     <div className="p-4 bg-gradient-to-br from-amber-50/60 to-orange-50/60 rounded-xl border-2 border-amber-400 shadow-sm hover:shadow-md transition-all duration-300">
                       <div className="flex items-center gap-2 mb-3">
                         <div className="w-6 h-6 rounded-full bg-gradient-to-r from-amber-600 to-orange-700 flex items-center justify-center">
-                          <span className="text-white text-xs font-bold">2</span>
+                          <span className="text-white text-xs font-bold">1</span>
                         </div>
-                        <h5 className="text-sm font-semibold text-amber-800">Layer 2: Summary</h5>
+                        <h5 className="text-sm font-semibold text-amber-800">Layer 1: Summary</h5>
                         {structuredInput.summary && <span className="text-xs text-green-600 ml-auto">✓ Done</span>}
                       </div>
                       <Textarea
@@ -901,9 +876,9 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                     <div className="p-4 bg-gradient-to-br from-blue-50/50 to-indigo-50/50 rounded-xl border-2 border-blue-300 shadow-sm hover:shadow-md transition-all duration-300">
                       <div className="flex items-center gap-2 mb-3">
                         <div className="w-6 h-6 rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 flex items-center justify-center">
-                          <span className="text-white text-xs font-bold">3</span>
+                          <span className="text-white text-xs font-bold">2</span>
                         </div>
-                        <h5 className="text-sm font-semibold text-blue-700">Layer 3: Anchor</h5>
+                        <h5 className="text-sm font-semibold text-blue-700">Layer 2: Anchor</h5>
                         {structuredInput.anchor && <span className="text-xs text-green-600 ml-auto">✓ Done</span>}
                       </div>
                       <Textarea
@@ -923,9 +898,9 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                     <div className="p-4 bg-gradient-to-br from-purple-50/30 to-pink-50/30 rounded-xl border-2 border-purple-200 shadow-sm hover:shadow-md transition-all duration-300">
                       <div className="flex items-center gap-2 mb-3">
                         <div className="w-6 h-6 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 flex items-center justify-center">
-                          <span className="text-white text-xs font-bold">4</span>
+                          <span className="text-white text-xs font-bold">3</span>
                         </div>
-                        <h5 className="text-sm font-semibold text-purple-700">Layer 4: Pulse</h5>
+                        <h5 className="text-sm font-semibold text-purple-700">Layer 3: Pulse</h5>
                         {structuredInput.pulse && <span className="text-xs text-green-600 ml-auto">✓ Done</span>}
                       </div>
                       <div className="grid grid-cols-3 gap-2 mb-4">
@@ -983,12 +958,12 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                       </p>
                     </div>
 
-                    {structuredInput.heading && structuredInput.summary && structuredInput.anchor && structuredInput.pulse && (
+                    {structuredInput.summary && structuredInput.anchor && structuredInput.pulse && (
                       <Button 
                         onClick={() => {
                           toast({
                             title: "Dot Saved!",
-                            description: `"${structuredInput.heading}" has been successfully saved.`,
+                            description: "Your dot has been successfully saved.",
                           });
                           setIsSaved(true);
                         }}
@@ -1426,7 +1401,7 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
               onClick={() => {
                 setShowExitWarning(false);
                 setIsExpanded(false);
-                setStructuredInput({ heading: '', summary: '', anchor: '', pulse: '' });
+                setStructuredInput({ summary: '', anchor: '', pulse: '' });
                 setWheelInput({ heading: '', purpose: '', timeline: '' });
                 setWheelVoiceSteps({ heading: '', purpose: '', timeline: '' });
                 setCurrentStep(1);
