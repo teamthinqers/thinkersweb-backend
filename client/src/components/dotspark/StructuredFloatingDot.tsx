@@ -644,10 +644,10 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                         setCreateType('wheel');
                         setCaptureMode('create-type');
                       }}
-                      className="h-32 bg-gradient-to-br from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white rounded-xl flex flex-col items-center justify-center space-y-3 shadow-lg transform transition-all duration-200 hover:scale-105"
+                      className="h-32 bg-gradient-to-br from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl flex flex-col items-center justify-center space-y-3 shadow-lg transform transition-all duration-200 hover:scale-105"
                     >
                       <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
-                        <div className="w-8 h-8 rounded-full bg-indigo-500"></div>
+                        <Settings className="w-8 h-8 text-white animate-spin" style={{ animationDuration: '3s' }} />
                       </div>
                       <span className="text-xl font-semibold">Create a Wheel</span>
                       <span className="text-xs opacity-80">Organize your thoughts</span>
@@ -725,11 +725,11 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                   <div className="text-center mb-6">
                     <div className={`w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center ${
                       createType === 'wheel' 
-                        ? 'bg-gradient-to-r from-indigo-500 to-purple-600' 
+                        ? 'bg-gradient-to-r from-amber-500 to-orange-600' 
                         : 'bg-gradient-to-r from-amber-500 to-orange-600'
                     }`}>
                       {createType === 'wheel' ? (
-                        <div className="w-8 h-8 rounded-full bg-indigo-500"></div>
+                        <Settings className="w-8 h-8 text-white animate-spin" style={{ animationDuration: '3s' }} />
                       ) : (
                         <div className="w-4 h-4 bg-white rounded-full"></div>
                       )}
