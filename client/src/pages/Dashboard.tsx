@@ -1200,15 +1200,22 @@ const Dashboard: React.FC = () => {
                     </div>
                   </div>
                   
-                  {/* Wheel Flash Card - positioned like dot flash cards */}
+                  {/* Wheel Flash Card - positioned exactly like dot flash cards */}
                   {hoveredWheel?.id === wheel.id && (
                     <div 
                       className="absolute bg-white border-2 border-amber-200 rounded-lg p-3 shadow-xl z-50 w-64 cursor-pointer"
                       style={{
-                        // Position relative to wheel accounting for grid transformation
-                        left: isPWA ? '60px' : `${(wheelPosition.x + wheelSize + 10) * zoom + offset.x}px`,
-                        top: isPWA ? '-20px' : `${Math.max(0, (wheelPosition.y - 20) * zoom + offset.y)}px`,
+                        // Position exactly like dot flash cards using simple coordinates
+                        left: isPWA ? '60px' : `${wheelPosition.x + wheelSize + 60}px`,
+                        top: isPWA ? '-20px' : `${Math.max(0, wheelPosition.y - 20)}px`,
                         maxWidth: '280px'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.stopPropagation();
+                      }}
+                      onMouseLeave={(e) => {
+                        e.stopPropagation();
+                        setHoveredWheel(null);
                       }}
                       onClick={(e) => {
                         e.stopPropagation();
