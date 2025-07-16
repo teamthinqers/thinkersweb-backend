@@ -1633,24 +1633,22 @@ const Dashboard: React.FC = () => {
         />
       )}
 
-        {/* Full Wheel View Dialog */}
-        {viewFullWheel && (
-          <WheelFullView 
-            wheel={viewFullWheel} 
-            isOpen={!!viewFullWheel} 
-            onClose={() => setViewFullWheel(null)}
-            onDelete={async (wheelId) => {
-              try {
-                await fetch(`/api/wheels/${wheelId}`, { method: 'DELETE' });
-                // Refresh wheels data if needed
-              } catch (error) {
-                console.error('Error deleting wheel:', error);
-              }
-            }}
-          />
-        )}
-        </div>
-      </div>
+      {/* Full Wheel View Dialog */}
+      {viewFullWheel && (
+        <WheelFullView 
+          wheel={viewFullWheel} 
+          isOpen={!!viewFullWheel} 
+          onClose={() => setViewFullWheel(null)}
+          onDelete={async (wheelId) => {
+            try {
+              await fetch(`/api/wheels/${wheelId}`, { method: 'DELETE' });
+              // Refresh wheels data if needed
+            } catch (error) {
+              console.error('Error deleting wheel:', error);
+            }
+          }}
+        />
+      )}
     </div>
   );
 };
