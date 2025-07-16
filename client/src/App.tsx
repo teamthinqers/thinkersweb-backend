@@ -46,13 +46,14 @@ import AppLayout from "@/components/layout/AppLayout";
 import EntryDetail from "@/components/entries/EntryDetail";
 import ChatEntryForm from "@/components/chat/ChatEntryForm";
 
-import { StructuredFloatingDot } from "@/components/dotspark/StructuredFloatingDot";
+// Temporarily commenting out problematic components to isolate TDZ issue
+// import { StructuredFloatingDot } from "@/components/dotspark/StructuredFloatingDot";
 import { neuraStorage } from "@/lib/neuraStorage";
 import { Loader2 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 
-import { PWAInstallButton } from "@/components/ui/pwa-install-button";
-import { IosPwaInstallPrompt } from "@/components/ui/ios-pwa-install-prompt";
+// import { PWAInstallButton } from "@/components/ui/pwa-install-button";
+// import { IosPwaInstallPrompt } from "@/components/ui/ios-pwa-install-prompt";
 import { isRunningAsStandalone } from "@/lib/pwaUtils";
 
 
@@ -353,14 +354,12 @@ function App() {
         )}
         <Router />
         <Toaster />
-        {/* Global Floating Dot for All Modes */}
-        <StructuredFloatingDot isActive={isDotSparkActive || neuraStorage.isActivated()} />
-        {/* iOS PWA Install Prompt */}
-        <IosPwaInstallPrompt />
-        {/* PWA Install Floating Button (only visible when installable) */}
-        <div className="fixed bottom-4 right-4 left-4 md:left-auto z-50">
+        {/* Temporarily commenting out problematic components */}
+        {/* <StructuredFloatingDot isActive={neuraStorage.isActivated()} /> */}
+        {/* <IosPwaInstallPrompt /> */}
+        {/* <div className="fixed bottom-4 right-4 left-4 md:left-auto z-50">
           <PWAInstallButton size="lg" className="w-full md:w-auto" />
-        </div>
+        </div> */}
     </QueryClientProvider>
   );
 }

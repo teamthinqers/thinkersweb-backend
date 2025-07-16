@@ -257,6 +257,18 @@ const Dashboard: React.FC = () => {
     const [dragStart, setDragStart] = useState<{ x: number; y: number } | null>(null);
     const [offset, setOffset] = useState({ x: 0, y: 0 });
     const [isPWA, setIsPWA] = useState(false);
+
+    // Define toggleFullscreen function early to prevent temporal dead zone issues
+    const toggleFullscreen = () => {
+      if (onFullscreenChange) {
+        onFullscreenChange(!isFullscreen);
+        if (!isFullscreen) {
+          // Reset zoom and position when entering fullscreen
+          setZoom(1);
+          setOffset({ x: 0, y: 0 });
+        }
+      }
+    };
     
 
 
@@ -593,6 +605,8 @@ const Dashboard: React.FC = () => {
             </button>
           </div>
 
+
+
           {/* Zoom Controls */}
           <div className={`absolute z-10 flex items-center bg-white/90 backdrop-blur rounded-lg border-2 border-amber-200 shadow-lg ${
             isPWA ? 'bottom-4 left-4 gap-1 p-1.5' : 'bottom-4 left-4 gap-2 p-2'
@@ -749,17 +763,7 @@ const Dashboard: React.FC = () => {
       setDragStart(null);
     };
 
-    // Fullscreen handler
-    const toggleFullscreen = () => {
-      if (onFullscreenChange) {
-        onFullscreenChange(!isFullscreen);
-        if (!isFullscreen) {
-          // Reset zoom and position when entering fullscreen
-          setZoom(1);
-          setOffset({ x: 0, y: 0 });
-        }
-      }
-    };
+    // toggleFullscreen function now defined earlier in the component
 
     // Disabled mouse wheel zoom - using only button-based zooming
     const handleWheel = (e: React.WheelEvent) => {
