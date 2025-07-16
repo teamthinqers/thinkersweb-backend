@@ -604,31 +604,6 @@ const Dashboard: React.FC = () => {
             <span className="bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-sm font-medium">
               Empty
             </span>
-            <div className="flex items-center gap-2 bg-white/90 backdrop-blur rounded-lg px-3 py-2 border-2 border-amber-200">
-              <label className="text-sm font-medium text-amber-800">Preview Mode</label>
-              <button
-                onClick={() => setPreviewMode(!previewMode)}
-                className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
-                  previewMode ? 'bg-amber-500' : 'bg-gray-300'
-                }`}
-              >
-                <span
-                  className={`inline-block h-3 w-3 transform rounded-full bg-white transition-transform ${
-                    previewMode ? 'translate-x-5' : 'translate-x-1'
-                  }`}
-                />
-              </button>
-            </div>
-          </div>
-          
-          {/* Stats Buttons */}
-          <div className="absolute top-4 right-4 z-10 flex flex-col sm:flex-row gap-1 sm:gap-2">
-            <button className="bg-white/90 backdrop-blur rounded-lg px-2 py-1 border-2 border-amber-200 text-xs font-semibold text-amber-800 hover:bg-amber-50 transition-colors whitespace-nowrap">
-              {previewMode ? `Total Dots: ${totalDots}` : `Dots: ${totalDots}`}
-            </button>
-            <button className="bg-white/90 backdrop-blur rounded-lg px-2 py-1 border-2 border-amber-200 text-xs font-semibold text-amber-800 hover:bg-amber-50 transition-colors whitespace-nowrap">
-              {previewMode ? `Total Wheels: ${totalWheels}` : `Wheels: ${totalWheels}`}
-            </button>
           </div>
 
 
@@ -819,61 +794,7 @@ const Dashboard: React.FC = () => {
           ? 'fixed inset-0 z-50 p-8' 
           : 'rounded-xl p-4 min-h-[500px] border-2 border-amber-200 shadow-lg'
       } overflow-hidden`}>
-        {/* Preview toggle and Only Sparks toggle */}
-        <div className="absolute top-4 left-4 z-10 flex flex-col gap-2">
-          <div className={`flex items-center gap-2 bg-white/90 backdrop-blur rounded-lg border-2 border-amber-200 ${
-            isPWA ? 'px-1.5 py-0.5' : 'px-2 py-1'
-          }`}>
-            <label className={`font-medium text-amber-800 hidden sm:block ${
-              isPWA ? 'text-[10px]' : 'text-xs'
-            }`}>Preview Mode</label>
-            <label className={`font-medium text-amber-800 sm:hidden ${
-              isPWA ? 'text-[10px]' : 'text-xs'
-            }`}>Preview</label>
-            <button
-              onClick={() => setPreviewMode(!previewMode)}
-              className={`relative inline-flex items-center rounded-full transition-colors ${
-                isPWA ? 'h-3 w-5' : 'h-4 w-7'
-              } ${previewMode ? 'bg-amber-500' : 'bg-gray-300'}`}
-            >
-              <span
-                className={`inline-block transform rounded-full bg-white transition-transform ${
-                  isPWA ? 'h-1.5 w-1.5' : 'h-2 w-2'
-                } ${previewMode ? (isPWA ? 'translate-x-2.5' : 'translate-x-4') : 'translate-x-1'}`}
-              />
-            </button>
-            
-            {/* Info icon for preview mode */}
-            <Popover>
-              <PopoverTrigger asChild>
-                <button className={`rounded-full hover:bg-amber-100 transition-colors ${
-                  isPWA ? 'p-0.5' : 'p-1'
-                }`}>
-                  <Info className={`text-amber-600 ${
-                    isPWA ? 'w-2.5 h-2.5' : 'w-3 h-3'
-                  }`} />
-                </button>
-              </PopoverTrigger>
-              <PopoverContent className="w-64 p-3 text-xs" side="bottom" align="start">
-                <p className="text-gray-700">
-                  This is a demo mode for you to visualize how Dots and Sparks work.
-                </p>
-              </PopoverContent>
-            </Popover>
-          </div>
-          
 
-          
-          {/* Recent Filter Indicator */}
-          {showingRecentFilter && !previewMode && (
-            <div className="bg-gradient-to-r from-amber-600 to-orange-600 text-white rounded-lg px-3 py-2 border-2 border-amber-400 shadow-lg">
-              <div className="flex items-center gap-2">
-                <Clock className="w-3 h-3" />
-                <span className="text-xs font-medium">Showing {recentCount} Recent Dots</span>
-              </div>
-            </div>
-          )}
-        </div>
         
         {/* Zoom Controls */}
         <div className={`${isFullscreen ? 'fixed' : 'absolute'} z-10 flex items-center bg-white/90 backdrop-blur rounded-lg border-2 border-amber-200 shadow-lg ${
@@ -962,8 +883,8 @@ const Dashboard: React.FC = () => {
 
 
         
-        {/* Grid Header with Tool Status */}
-        {!isFullscreen && (
+        {/* Grid Header with Tool Status - Only for non-preview mode when using creation tools */}
+        {!isFullscreen && !previewMode && selectedTool !== 'select' && (
           <div className="bg-white/90 backdrop-blur border-b border-amber-200 px-4 py-2 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-2">
@@ -971,9 +892,7 @@ const Dashboard: React.FC = () => {
                 <span className="text-sm font-semibold text-gray-700">Interactive Grid</span>
               </div>
               <div className={`px-3 py-1 rounded-full text-xs font-medium ${
-                selectedTool === 'select' 
-                  ? 'bg-gray-100 text-gray-700' 
-                  : selectedTool === 'create-dot'
+                selectedTool === 'create-dot'
                   ? 'bg-amber-100 text-amber-700'
                   : 'bg-orange-100 text-orange-700'
               }`}>
@@ -982,7 +901,7 @@ const Dashboard: React.FC = () => {
               </div>
             </div>
             <div className="text-xs text-gray-500">
-              {selectedTool !== 'select' && 'Click anywhere on the grid below'}
+              Click anywhere on the grid below
             </div>
           </div>
         )}
@@ -1034,13 +953,10 @@ const Dashboard: React.FC = () => {
               <Minimize className="w-4 h-4" />
             </button>
           )}
+          {/* Grid content with transform applied directly */}
           <div 
-            className="relative transition-transform duration-100 ease-out"
+            className="absolute inset-0 transition-transform duration-100 ease-out"
             style={{ 
-              width: isPWA ? '1200px' : `${1200 * zoom}px`, 
-              height: isPWA ? '800px' : `${800 * zoom}px`,
-              minWidth: isPWA ? '1200px' : 'auto',
-              minHeight: isPWA ? '800px' : 'auto',
               transform: `translate(${offset.x}px, ${offset.y}px) scale(${zoom})`,
               transformOrigin: 'center center'
             }}
@@ -1080,6 +996,60 @@ const Dashboard: React.FC = () => {
                 </div>
               </div>
             ))}
+
+            {/* Preview mode controls overlay - Inside grid */}
+            <div className="absolute top-4 left-4 z-50 flex flex-col gap-2">
+              <div className={`flex items-center gap-2 bg-white/90 backdrop-blur rounded-lg border-2 border-amber-200 ${
+                isPWA ? 'px-1.5 py-0.5' : 'px-2 py-1'
+              }`}>
+                <label className={`font-medium text-amber-800 hidden sm:block ${
+                  isPWA ? 'text-[10px]' : 'text-xs'
+                }`}>Preview Mode</label>
+                <label className={`font-medium text-amber-800 sm:hidden ${
+                  isPWA ? 'text-[10px]' : 'text-xs'
+                }`}>Preview</label>
+                <button
+                  onClick={() => setPreviewMode(!previewMode)}
+                  className={`relative inline-flex items-center rounded-full transition-colors ${
+                    isPWA ? 'h-3 w-5' : 'h-4 w-7'
+                  } ${previewMode ? 'bg-amber-500' : 'bg-gray-300'}`}
+                >
+                  <span
+                    className={`inline-block transform rounded-full bg-white transition-transform ${
+                      isPWA ? 'h-1.5 w-1.5' : 'h-2 w-2'
+                    } ${previewMode ? (isPWA ? 'translate-x-2.5' : 'translate-x-4') : 'translate-x-1'}`}
+                  />
+                </button>
+                
+                {/* Info icon for preview mode */}
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <button className={`rounded-full hover:bg-amber-100 transition-colors ${
+                      isPWA ? 'p-0.5' : 'p-1'
+                    }`}>
+                      <Info className={`text-amber-600 ${
+                        isPWA ? 'w-2.5 h-2.5' : 'w-3 h-3'
+                      }`} />
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-64 p-3 text-xs" side="bottom" align="start">
+                    <p className="text-gray-700">
+                      This is a demo mode for you to visualize how Dots and Sparks work.
+                    </p>
+                  </PopoverContent>
+                </Popover>
+              </div>
+            </div>
+
+            {/* Stats/Counts overlay - Inside grid */}
+            <div className="absolute top-4 right-4 z-50 flex flex-col sm:flex-row gap-1 sm:gap-2">
+              <button className="bg-white/90 backdrop-blur rounded-lg px-2 py-1 border-2 border-amber-200 text-xs font-semibold text-amber-800 hover:bg-amber-50 transition-colors whitespace-nowrap">
+                {previewMode ? `Total Dots: ${totalDots}` : `Dots: ${totalDots}`}
+              </button>
+              <button className="bg-white/90 backdrop-blur rounded-lg px-2 py-1 border-2 border-amber-200 text-xs font-semibold text-amber-800 hover:bg-amber-50 transition-colors whitespace-nowrap">
+                {previewMode ? `Total Wheels: ${totalWheels}` : `Wheels: ${totalWheels}`}
+              </button>
+            </div>
 
             {/* Individual Dots Random Grid */}
             {displayDots.map((dot, index) => {
@@ -1579,14 +1549,7 @@ const Dashboard: React.FC = () => {
 
           {/* Right side - Stats and controls */}
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 text-sm">
-              <div className="px-3 py-1 bg-amber-100 text-amber-800 rounded-full font-medium">
-                Total Dots: {dots.length}
-              </div>
-              <div className="px-3 py-1 bg-orange-100 text-orange-800 rounded-full font-medium">
-                Total Wheels: {wheels.filter(w => w.dots && w.dots.length > 0).length}
-              </div>
-            </div>
+            {/* Stats removed - now only in grid overlay */}
           </div>
         </div>
       </div>
