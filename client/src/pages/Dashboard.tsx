@@ -392,7 +392,7 @@ const Dashboard: React.FC = () => {
         color: '#F59E0B', // Consistent amber theme
         dots: [],
         connections: ['preview-wheel-1'],
-        position: { x: 150, y: 200 }, // Position inside parent wheel - far left with much more spacing
+        position: { x: 320, y: 240 }, // Position inside parent wheel - left side with better spacing
         parentWheelId: 'preview-wheel-parent',
         createdAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000) // 15 days ago
       };
@@ -437,7 +437,7 @@ const Dashboard: React.FC = () => {
         color: '#F59E0B', // Consistent amber theme
         dots: [],
         connections: ['preview-wheel-0', 'preview-wheel-2'],
-        position: { x: 650, y: 200 }, // Position inside parent wheel - far right with much more spacing
+        position: { x: 480, y: 240 }, // Position inside parent wheel - right side with better spacing
         parentWheelId: 'preview-wheel-parent',
         createdAt: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000) // 20 days ago
       };
@@ -481,7 +481,7 @@ const Dashboard: React.FC = () => {
         color: '#F59E0B', // Consistent amber theme
         dots: [],
         connections: ['preview-wheel-1'],
-        position: { x: 400, y: 450 }, // Position inside parent wheel - bottom center with much more spacing
+        position: { x: 400, y: 360 }, // Position inside parent wheel - bottom center with better spacing
         parentWheelId: 'preview-wheel-parent',
         createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000) // 10 days ago
       };
@@ -525,7 +525,7 @@ const Dashboard: React.FC = () => {
         color: '#EC4899', // Pink theme
         dots: [],
         connections: [],
-        position: { x: 900, y: 450 }, // Standalone position, much further away from business hierarchy
+        position: { x: 750, y: 180 }, // Standalone position, separate from business hierarchy
         // No parentWheelId - this is a standalone wheel
         createdAt: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000) // 25 days ago
       };
@@ -1274,9 +1274,9 @@ const Dashboard: React.FC = () => {
                     <div 
                       className="absolute bg-white border-2 border-purple-200 rounded-lg p-3 shadow-xl z-50 w-64 cursor-pointer"
                       style={{
-                        // Position to the right of the wheel, similar to dots
-                        left: isPWA ? '60px' : `${wheel.position.x + wheelSize + 10}px`,
-                        top: isPWA ? '-20px' : `${Math.max(0, wheel.position.y - 20)}px`,
+                        // Position relative to wheel accounting for grid transformation
+                        left: isPWA ? '60px' : `${(wheel.position.x + wheelSize + 10) * zoom + offset.x}px`,
+                        top: isPWA ? '-20px' : `${Math.max(0, (wheel.position.y - 20) * zoom + offset.y)}px`,
                         maxWidth: '280px'
                       }}
                       onClick={(e) => {
