@@ -690,11 +690,19 @@ const Dashboard: React.FC = () => {
 
     // Unified drag handlers for both browser and PWA
     const handleMouseDown = (e: React.MouseEvent) => {
+      // Only start dragging if clicked on the grid background, not on interactive elements
+      const target = e.target as HTMLElement;
+      if (target.closest('[data-wheel-label]') || target.closest('.pointer-events-auto')) {
+        return;
+      }
+      e.preventDefault();
       setDragStart({ x: e.clientX - offset.x, y: e.clientY - offset.y });
     };
 
     const handleMouseMove = (e: React.MouseEvent) => {
       if (!dragStart) return;
+      e.preventDefault();
+      e.stopPropagation();
       setOffset({
         x: e.clientX - dragStart.x,
         y: e.clientY - dragStart.y
@@ -1237,16 +1245,21 @@ const Dashboard: React.FC = () => {
                     
                     {/* Wheel label */}
                     <div 
+                      data-wheel-label
                       className={`font-bold rounded-full text-white shadow-lg cursor-pointer hover:shadow-xl transition-all duration-200 hover:scale-105 pointer-events-auto ${
                         isParentWheel ? 'text-base px-4 py-2' : 'text-sm px-3 py-1'
                       }`}
                       style={{ backgroundColor: wheel.color }}
                       onMouseEnter={(e) => {
+                        e.stopPropagation();
+                        // Don't show flash card if user is dragging
+                        if (dragStart) return;
                         const rect = e.currentTarget.getBoundingClientRect();
                         setWheelFlashCardPosition({ x: rect.right + 10, y: rect.top });
                         setViewWheelFlashCard(wheel);
                       }}
-                      onMouseLeave={() => {
+                      onMouseLeave={(e) => {
+                        e.stopPropagation();
                         setViewWheelFlashCard(null);
                         setWheelFlashCardPosition(null);
                       }}
