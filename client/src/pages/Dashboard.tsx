@@ -938,6 +938,60 @@ const Dashboard: React.FC = () => {
             userSelect: 'none'
           }}
         >
+          {/* Preview mode controls overlay - Fixed position outside transform */}
+          <div className="absolute top-4 left-4 z-50 flex flex-col gap-2">
+            <div className={`flex items-center gap-2 bg-white/90 backdrop-blur rounded-lg border-2 border-amber-200 ${
+              isPWA ? 'px-1.5 py-0.5' : 'px-2 py-1'
+            }`}>
+              <label className={`font-medium text-amber-800 hidden sm:block ${
+                isPWA ? 'text-[10px]' : 'text-xs'
+              }`}>Preview Mode</label>
+              <label className={`font-medium text-amber-800 sm:hidden ${
+                isPWA ? 'text-[10px]' : 'text-xs'
+              }`}>Preview</label>
+              <button
+                onClick={() => setPreviewMode(!previewMode)}
+                className={`relative inline-flex items-center rounded-full transition-colors ${
+                  isPWA ? 'h-3 w-5' : 'h-4 w-7'
+                } ${previewMode ? 'bg-amber-500' : 'bg-gray-300'}`}
+              >
+                <span
+                  className={`inline-block transform rounded-full bg-white transition-transform ${
+                    isPWA ? 'h-1.5 w-1.5' : 'h-2 w-2'
+                  } ${previewMode ? (isPWA ? 'translate-x-2.5' : 'translate-x-4') : 'translate-x-1'}`}
+                />
+              </button>
+              
+              {/* Info icon for preview mode */}
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button className={`rounded-full hover:bg-amber-100 transition-colors ${
+                    isPWA ? 'p-0.5' : 'p-1'
+                  }`}>
+                    <Info className={`text-amber-600 ${
+                      isPWA ? 'w-2.5 h-2.5' : 'w-3 h-3'
+                    }`} />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent className="w-64 p-3 text-xs" side="bottom" align="start">
+                  <p className="text-gray-700">
+                    This is a demo mode for you to visualize how Dots and Sparks work.
+                  </p>
+                </PopoverContent>
+              </Popover>
+            </div>
+          </div>
+
+          {/* Stats/Counts overlay - Fixed position outside transform */}
+          <div className="absolute top-4 right-4 z-50 flex flex-col sm:flex-row gap-1 sm:gap-2">
+            <button className="bg-white/90 backdrop-blur rounded-lg px-2 py-1 border-2 border-amber-200 text-xs font-semibold text-amber-800 hover:bg-amber-50 transition-colors whitespace-nowrap">
+              {previewMode ? `Total Dots: ${totalDots}` : `Dots: ${totalDots}`}
+            </button>
+            <button className="bg-white/90 backdrop-blur rounded-lg px-2 py-1 border-2 border-amber-200 text-xs font-semibold text-amber-800 hover:bg-amber-50 transition-colors whitespace-nowrap">
+              {previewMode ? `Total Wheels: ${totalWheels}` : `Wheels: ${totalWheels}`}
+            </button>
+          </div>
+
           {/* Fullscreen exit button - bottom right */}
           {isFullscreen && (
             <button
@@ -953,6 +1007,7 @@ const Dashboard: React.FC = () => {
               <Minimize className="w-4 h-4" />
             </button>
           )}
+          
           {/* Grid content with transform applied directly */}
           <div 
             className="absolute inset-0 transition-transform duration-100 ease-out"
