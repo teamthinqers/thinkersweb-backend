@@ -9,6 +9,8 @@ import { Mic, Type, Eye, Brain, Network, Zap, Search, Clock, Info, Database, Cpu
 import { useQuery } from "@tanstack/react-query";
 import DotFullView from "@/components/DotFullView";
 import DotFlashCard from "@/components/DotFlashCard";
+import WheelFlashCard from "@/components/WheelFlashCard";
+import WheelFullView from "@/components/WheelFullView";
 import { isRunningAsStandalone } from "@/lib/pwaUtils";
 import { useLocation } from "wouter";
 
@@ -34,11 +36,16 @@ interface Dot {
 interface Wheel {
   id: string;
   name: string;
+  heading?: string;
+  purpose?: string;
+  timeline?: string;
   category: string;
   color: string;
   dots: Dot[];
   connections: string[]; // IDs of connected wheels
   position: { x: number; y: number };
+  parentWheelId?: string;
+  createdAt?: Date;
 }
 
 const Dashboard: React.FC = () => {
@@ -47,6 +54,8 @@ const Dashboard: React.FC = () => {
   const [selectedWheel, setSelectedWheel] = useState<string | null>(null);
   const [viewFullDot, setViewFullDot] = useState<Dot | null>(null);
   const [viewFlashCard, setViewFlashCard] = useState<Dot | null>(null);
+  const [viewFlashCardWheel, setViewFlashCardWheel] = useState<Wheel | null>(null);
+  const [viewFullWheel, setViewFullWheel] = useState<Wheel | null>(null);
   const [searchResults, setSearchResults] = useState<Dot[]>([]);
   const [showRecentFilter, setShowRecentFilter] = useState(false);
   const [recentDotsCount, setRecentDotsCount] = useState(4);
@@ -354,23 +363,31 @@ const Dashboard: React.FC = () => {
       const parentBusinessWheel: Wheel = {
         id: 'preview-wheel-parent',
         name: 'Build an Enduring Company',
+        heading: 'Build an Enduring Company',
+        purpose: 'Creating a sustainable, innovative business that delivers value to customers while maintaining long-term growth and meaningful impact in the market.',
+        timeline: 'Long-term (5+ years)',
         category: 'Business',
         color: '#7C3AED', // Purple theme for parent
         dots: [],
         connections: ['preview-wheel-0', 'preview-wheel-1'],
-        position: { x: 400, y: 100 }
+        position: { x: 400, y: 100 },
+        createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) // 30 days ago
       };
 
       // First business wheel - GTM
       const firstSparkGroup: Wheel = {
         id: 'preview-wheel-0',
         name: 'GTM (Go-To-Market)',
+        heading: 'GTM (Go-To-Market) Strategy',
+        purpose: 'Developing comprehensive go-to-market strategies including product positioning, customer acquisition, pricing models, and sales funnel optimization for successful product launches.',
+        timeline: 'Quarterly',
         category: 'Business',
         color: '#F59E0B', // Amber theme
         dots: [],
         connections: ['preview-wheel-1'],
         position: { x: 200, y: 200 },
-        parentWheelId: 'preview-wheel-parent'
+        parentWheelId: 'preview-wheel-parent',
+        createdAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000) // 15 days ago
       };
 
       const firstSparkHeadings = [
@@ -406,12 +423,16 @@ const Dashboard: React.FC = () => {
       const secondSparkGroup: Wheel = {
         id: 'preview-wheel-1',
         name: 'Strengthen Leadership',
+        heading: 'Leadership Development',
+        purpose: 'Building strong leadership capabilities through team management, strategic communication, decision-making frameworks, and vision alignment to drive organizational success.',
+        timeline: 'Ongoing',
         category: 'Business',
         color: '#3B82F6', // Blue theme
         dots: [],
         connections: ['preview-wheel-0', 'preview-wheel-2'],
         position: { x: 600, y: 200 },
-        parentWheelId: 'preview-wheel-parent'
+        parentWheelId: 'preview-wheel-parent',
+        createdAt: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000) // 20 days ago
       };
 
       const secondSparkHeadings = [
@@ -446,12 +467,16 @@ const Dashboard: React.FC = () => {
       const thirdBusinessWheel: Wheel = {
         id: 'preview-wheel-2',
         name: 'Product Innovation',
+        heading: 'Product Innovation Excellence',
+        purpose: 'Driving continuous product innovation through user research, feature prioritization, technical excellence, and breakthrough development pipelines that deliver exceptional user value.',
+        timeline: 'Monthly',
         category: 'Business',
         color: '#10B981', // Green theme
         dots: [],
         connections: ['preview-wheel-1'],
         position: { x: 400, y: 300 },
-        parentWheelId: 'preview-wheel-parent'
+        parentWheelId: 'preview-wheel-parent',
+        createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000) // 10 days ago
       };
 
       const thirdSparkHeadings = [
@@ -486,12 +511,16 @@ const Dashboard: React.FC = () => {
       const personalWheel: Wheel = {
         id: 'preview-wheel-personal',
         name: 'Health & Wellness',
+        heading: 'Health & Wellness Mastery',
+        purpose: 'Building sustainable health and wellness habits including consistent routines, regular exercise, balanced nutrition, quality sleep, and effective stress management for optimal life balance.',
+        timeline: 'Daily',
         category: 'Personal',
         color: '#EC4899', // Pink theme
         dots: [],
         connections: [],
-        position: { x: 150, y: 450 }
+        position: { x: 150, y: 450 },
         // No parentWheelId - this is a standalone wheel
+        createdAt: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000) // 25 days ago
       };
 
       const personalHeadings = [
@@ -1177,8 +1206,22 @@ const Dashboard: React.FC = () => {
                   
                   {/* Wheel label */}
                   <div 
-                    className="text-sm font-bold px-3 py-1 rounded-full text-white shadow-lg"
+                    className="text-sm font-bold px-3 py-1 rounded-full text-white shadow-lg cursor-pointer hover:shadow-xl transition-all duration-200 hover:scale-105 pointer-events-auto"
                     style={{ backgroundColor: wheel.color }}
+                    onMouseEnter={(e) => {
+                      const rect = e.currentTarget.getBoundingClientRect();
+                      setWheelFlashCardPosition({ x: rect.right + 10, y: rect.top });
+                      setViewWheelFlashCard(wheel);
+                    }}
+                    onMouseLeave={() => {
+                      setViewWheelFlashCard(null);
+                      setWheelFlashCardPosition(null);
+                    }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setViewWheelFlashCard(null);
+                      setViewFullWheel(wheel);
+                    }}
                   >
                     {wheel.name}
                   </div>
@@ -1704,6 +1747,33 @@ const Dashboard: React.FC = () => {
             // Refetch dots after deletion
             await refetch();
             setViewFullDot(null);
+          }}
+        />
+      )}
+
+      {/* Wheel Flash Card Modal */}
+      {viewFlashCardWheel && (
+        <WheelFlashCard 
+          wheel={viewFlashCardWheel} 
+          position={{ x: 0, y: 0 }} // Centered modal
+          onClose={() => setViewFlashCardWheel(null)}
+          onClick={() => {
+            setViewFullWheel(viewFlashCardWheel);
+            setViewFlashCardWheel(null);
+          }}
+        />
+      )}
+
+      {/* Wheel Full View Modal */}
+      {viewFullWheel && (
+        <WheelFullView 
+          wheel={viewFullWheel} 
+          isOpen={!!viewFullWheel}
+          onClose={() => setViewFullWheel(null)}
+          onDelete={async (wheelId) => {
+            // Refetch wheels after deletion
+            await refetch();
+            setViewFullWheel(null);
           }}
         />
       )}

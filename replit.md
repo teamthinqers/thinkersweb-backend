@@ -933,6 +933,16 @@ Changelog:
   * Added practical dot headings for Learning wheel: TypeScript, Leadership, Psychology, Design, Finance, Negotiation, Systems, Mindfulness, Strategy
   * Replaced generic numbered headings with meaningful topic-based content for better demonstration
   * Removed "9 dots" requirement tags from wheel labels and info dialog for cleaner interface
+- July 16, 2025. Enhanced preview data with comprehensive three-layer wheel structure:
+  * Updated all preview wheels with proper heading, purpose, and timeline information
+  * Build an Enduring Company (parent): Long-term sustainable business focus with 5+ year timeline
+  * GTM (Go-To-Market) Strategy: Quarterly business development focusing on positioning and acquisition
+  * Leadership Development: Ongoing capability building through team management and decision frameworks
+  * Product Innovation Excellence: Monthly innovation cycles with user research and technical excellence
+  * Health & Wellness Mastery: Daily personal habits for optimal life balance and well-being
+  * Added realistic creation timestamps (10-30 days ago) for authentic preview experience
+  * Integrated WheelFlashCard and WheelFullView components for consistent interaction patterns
+  * Wheel interactions now mirror dot functionality with hover flash cards and click for full view
 - June 19, 2025. Integrated Recent Dots filter with dashboard search functionality:
   * Removed separate "Recent Dots" button and integrated as filter near Dot Wheels Map heading
   * Added customizable number input (default 4) for users to specify how many recent dots to view
