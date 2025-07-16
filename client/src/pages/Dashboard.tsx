@@ -1513,16 +1513,9 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
 
-          {/* Right side - Stats and controls */}
+          {/* Right side - Empty for now */}
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 text-sm">
-              <div className="px-3 py-1 bg-amber-100 text-amber-800 rounded-full font-medium">
-                Total Dots: {dots.length}
-              </div>
-              <div className="px-3 py-1 bg-orange-100 text-orange-800 rounded-full font-medium">
-                Total Wheels: {wheels.filter(w => w.dots && w.dots.length > 0).length}
-              </div>
-            </div>
+            {/* Stats removed as requested */}
           </div>
         </div>
       </div>
