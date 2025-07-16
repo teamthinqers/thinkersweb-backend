@@ -941,11 +941,7 @@ const Dashboard: React.FC = () => {
                 <Network className="w-4 h-4 text-amber-600" />
                 <span className="text-sm font-semibold text-gray-700">Interactive Grid</span>
               </div>
-              {previewMode ? (
-                <div className="px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">
-                  Preview Mode - Tools Disabled
-                </div>
-              ) : (
+              {!previewMode && (
                 <div className={`px-3 py-1 rounded-full text-xs font-medium ${
                   selectedTool === 'select' 
                     ? 'bg-gray-100 text-gray-700' 
@@ -961,7 +957,6 @@ const Dashboard: React.FC = () => {
             </div>
             <div className="text-xs text-gray-500">
               {!previewMode && selectedTool !== 'select' && 'Click anywhere on the grid below'}
-              {previewMode && 'Turn off Preview Mode to use creation tools'}
             </div>
           </div>
         )}
