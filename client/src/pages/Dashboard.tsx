@@ -13,6 +13,7 @@ import WheelFlashCard from "@/components/WheelFlashCard";
 import WheelFullView from "@/components/WheelFullView";
 import { isRunningAsStandalone } from "@/lib/pwaUtils";
 import { useLocation } from "wouter";
+import { ToolsSidebar, ToolMode } from "@/components/ToolsSidebar";
 
 
 // Data structure for dots
@@ -61,6 +62,9 @@ const Dashboard: React.FC = () => {
   const [showPreview, setShowPreview] = useState(false);
   const [isMapFullscreen, setIsMapFullscreen] = useState(false);
   const [previewMode, setPreviewMode] = useState(true); // Enable preview mode by default to show demo wheels // Lifted up to prevent resets
+  const [selectedTool, setSelectedTool] = useState<ToolMode>('select');
+  const [showCreationModal, setShowCreationModal] = useState(false);
+  const [creationPosition, setCreationPosition] = useState({ x: 0, y: 0 });
   
   // PWA detection for smaller button sizing
   const isPWA = isRunningAsStandalone();
@@ -580,12 +584,68 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
           
-          <div className="absolute top-4 right-4 flex gap-2 z-10">
-            <button className="bg-white/90 backdrop-blur rounded-lg px-3 py-2 border-2 border-amber-200 text-sm font-semibold text-amber-800">
-              Total Dots: {totalDots}
+          {/* Stats Buttons */}
+          <div className="absolute top-4 right-4 z-10 flex flex-col sm:flex-row gap-1 sm:gap-2">
+            <button className="bg-white/90 backdrop-blur rounded-lg px-2 py-1 border-2 border-amber-200 text-xs font-semibold text-amber-800 hover:bg-amber-50 transition-colors whitespace-nowrap">
+              {previewMode ? `Total Dots: ${totalDots}` : `Dots: ${totalDots}`}
             </button>
-            <button className="bg-white/90 backdrop-blur rounded-lg px-3 py-2 border-2 border-amber-200 text-sm font-semibold text-amber-800">
-              Total Wheels: {totalWheels}
+            <button className="bg-white/90 backdrop-blur rounded-lg px-2 py-1 border-2 border-amber-200 text-xs font-semibold text-amber-800 hover:bg-amber-50 transition-colors whitespace-nowrap">
+              {previewMode ? `Total Wheels: ${totalWheels}` : `Wheels: ${totalWheels}`}
+            </button>
+          </div>
+
+          {/* Zoom Controls */}
+          <div className={`absolute z-10 flex items-center bg-white/90 backdrop-blur rounded-lg border-2 border-amber-200 shadow-lg ${
+            isPWA ? 'bottom-4 left-4 gap-1 p-1.5' : 'bottom-4 left-4 gap-2 p-2'
+          }`}>
+            {/* Zoom Out */}
+            <button
+              onClick={() => setZoom(Math.max(0.5, zoom - 0.1))}
+              className={`bg-amber-500 hover:bg-amber-600 text-white rounded transition-colors touch-manipulation ${
+                isPWA ? 'p-1.5' : 'p-2'
+              }`}
+              title="Zoom Out"
+            >
+              <svg className={`fill="none" stroke="currentColor" viewBox="0 0 24 24" ${
+                isPWA ? 'w-3 h-3' : 'w-3 h-3'
+              }`}>
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+              </svg>
+            </button>
+            
+            {/* Zoom Level Display */}
+            <span className={`font-semibold text-amber-800 text-center ${
+              isPWA ? 'text-[10px] min-w-[35px]' : 'text-xs min-w-[45px]'
+            }`}>
+              {Math.round(zoom * 100)}%
+            </span>
+            
+            {/* Zoom In */}
+            <button
+              onClick={() => setZoom(Math.min(2, zoom + 0.1))}
+              className={`bg-amber-500 hover:bg-amber-600 text-white rounded transition-colors touch-manipulation ${
+                isPWA ? 'p-1.5' : 'p-2'
+              }`}
+              title="Zoom In"
+            >
+              <svg className={`fill="none" stroke="currentColor" viewBox="0 0 24 24" ${
+                isPWA ? 'w-3 h-3' : 'w-3 h-3'
+              }`}>
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+            </button>
+          </div>
+
+          {/* Fullscreen Toggle - Bottom right */}
+          <div className="absolute bottom-4 right-4 z-10">
+            <button 
+              onClick={toggleFullscreen}
+              className={`bg-amber-500 hover:bg-amber-600 text-white rounded-lg transition-colors shadow-lg ${
+                isPWA ? 'p-3 touch-manipulation' : 'p-2'
+              }`}
+              title="Enter Fullscreen"
+            >
+              <Maximize className={isPWA ? "w-7 h-7" : "w-5 h-5"} />
             </button>
           </div>
           
@@ -607,8 +667,39 @@ const Dashboard: React.FC = () => {
       setZoom(1);
     };
 
+    // Grid click handler for tool-based creation
+    const handleGridClick = (e: React.MouseEvent) => {
+      const target = e.target as HTMLElement;
+      
+      // Don't create if clicking on existing elements
+      if (target.closest('[data-wheel-label]') || target.closest('.pointer-events-auto') || target.closest('.dot-element')) {
+        return;
+      }
+      
+      // Only create if using creation tools
+      if (selectedTool === 'create-dot' || selectedTool === 'create-wheel') {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const rect = gridContainerRef.current?.getBoundingClientRect();
+        if (rect) {
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          setCreationPosition({ x, y });
+          setShowCreationModal(true);
+        }
+        return;
+      }
+    };
+
     // Unified drag handlers for both browser and PWA
     const handleMouseDown = (e: React.MouseEvent) => {
+      // Handle creation tool clicks first
+      if (selectedTool !== 'select') {
+        handleGridClick(e);
+        return;
+      }
+      
       // Only start dragging if clicked on the grid background, not on interactive elements
       const target = e.target as HTMLElement;
       if (target.closest('[data-wheel-label]') || target.closest('.pointer-events-auto')) {
@@ -806,10 +897,10 @@ const Dashboard: React.FC = () => {
         {/* Stats Buttons */}
         <div className="absolute top-4 right-4 z-10 flex flex-col sm:flex-row gap-1 sm:gap-2">
           <button className="bg-white/90 backdrop-blur rounded-lg px-2 py-1 border-2 border-amber-200 text-xs font-semibold text-amber-800 hover:bg-amber-50 transition-colors whitespace-nowrap">
-            Dots: {totalDots}
+            {previewMode ? `Total Dots: ${totalDots}` : `Dots: ${totalDots}`}
           </button>
           <button className="bg-white/90 backdrop-blur rounded-lg px-2 py-1 border-2 border-amber-200 text-xs font-semibold text-amber-800 hover:bg-amber-50 transition-colors whitespace-nowrap">
-            Wheels: {totalWheels}
+            {previewMode ? `Total Wheels: ${totalWheels}` : `Wheels: ${totalWheels}`}
           </button>
         </div>
 
@@ -1358,9 +1449,17 @@ const Dashboard: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50">
-      {/* Header */}
-      <div className="bg-white border-b border-amber-200 px-4 py-3">
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50 flex">
+      {/* Tools Sidebar */}
+      <ToolsSidebar 
+        selectedTool={selectedTool} 
+        onToolChange={setSelectedTool} 
+      />
+      
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col">
+        {/* Header */}
+        <div className="bg-white border-b border-amber-200 px-4 py-3">
         <div className="flex items-center justify-between">
           {/* Left side - Logo and title */}
           <div className="flex items-center gap-3">
@@ -1399,8 +1498,8 @@ const Dashboard: React.FC = () => {
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="p-4">
+        {/* Main Content */}
+        <div className="flex-1 p-4">
 
 
         {/* Search Section */}
@@ -1534,22 +1633,24 @@ const Dashboard: React.FC = () => {
         />
       )}
 
-      {/* Full Wheel View Dialog */}
-      {viewFullWheel && (
-        <WheelFullView 
-          wheel={viewFullWheel} 
-          isOpen={!!viewFullWheel} 
-          onClose={() => setViewFullWheel(null)}
-          onDelete={async (wheelId) => {
-            try {
-              await fetch(`/api/wheels/${wheelId}`, { method: 'DELETE' });
-              // Refresh wheels data if needed
-            } catch (error) {
-              console.error('Error deleting wheel:', error);
-            }
-          }}
-        />
-      )}
+        {/* Full Wheel View Dialog */}
+        {viewFullWheel && (
+          <WheelFullView 
+            wheel={viewFullWheel} 
+            isOpen={!!viewFullWheel} 
+            onClose={() => setViewFullWheel(null)}
+            onDelete={async (wheelId) => {
+              try {
+                await fetch(`/api/wheels/${wheelId}`, { method: 'DELETE' });
+                // Refresh wheels data if needed
+              } catch (error) {
+                console.error('Error deleting wheel:', error);
+              }
+            }}
+          />
+        )}
+        </div>
+      </div>
     </div>
   );
 };
