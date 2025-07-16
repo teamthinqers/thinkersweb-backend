@@ -69,6 +69,9 @@ const Dashboard: React.FC = () => {
   const [showDotCreation, setShowDotCreation] = useState(false);
   const [showWheelCreation, setShowWheelCreation] = useState(false);
   const [creationPosition, setCreationPosition] = useState({ x: 0, y: 0 });
+  const [pendingDots, setPendingDots] = useState<Array<{id: string, position: {x: number, y: number}}>>([]);
+  const [pendingWheels, setPendingWheels] = useState<Array<{id: string, position: {x: number, y: number}}>>([]);
+  const [editingElementId, setEditingElementId] = useState<string | null>(null);
   
   // PWA detection for smaller button sizing
   const isPWA = isRunningAsStandalone();
@@ -703,10 +706,16 @@ const Dashboard: React.FC = () => {
           const y = e.clientY - rect.top;
           setCreationPosition({ x, y });
           
-          // Open appropriate creation modal based on selected tool
+          // Create visual element first, then open input modal
           if (selectedTool === 'create-dot') {
+            const newDotId = `pending-dot-${Date.now()}`;
+            setPendingDots(prev => [...prev, { id: newDotId, position: { x, y } }]);
+            setEditingElementId(newDotId);
             setShowDotCreation(true);
           } else if (selectedTool === 'create-wheel') {
+            const newWheelId = `pending-wheel-${Date.now()}`;
+            setPendingWheels(prev => [...prev, { id: newWheelId, position: { x, y } }]);
+            setEditingElementId(newWheelId);
             setShowWheelCreation(true);
           }
         }
@@ -1017,6 +1026,42 @@ const Dashboard: React.FC = () => {
               transformOrigin: 'center center'
             }}
           >
+            {/* Pending Dots - Visual elements created before filling details */}
+            {pendingDots.map((pendingDot) => (
+              <div
+                key={pendingDot.id}
+                className="absolute dot-element animate-pulse"
+                style={{
+                  left: `${pendingDot.position.x - 15}px`,
+                  top: `${pendingDot.position.y - 15}px`,
+                  width: '30px',
+                  height: '30px'
+                }}
+              >
+                <div className="w-full h-full bg-gradient-to-br from-amber-300 to-orange-400 rounded-full border-2 border-amber-500 shadow-lg flex items-center justify-center">
+                  <div className="w-3 h-3 bg-white rounded-full animate-ping"></div>
+                </div>
+              </div>
+            ))}
+
+            {/* Pending Wheels - Visual elements created before filling details */}
+            {pendingWheels.map((pendingWheel) => (
+              <div
+                key={pendingWheel.id}
+                className="absolute animate-pulse"
+                style={{
+                  left: `${pendingWheel.position.x - 75}px`,
+                  top: `${pendingWheel.position.y - 75}px`,
+                  width: '150px',
+                  height: '150px'
+                }}
+              >
+                <div className="w-full h-full rounded-full border-4 border-dashed border-orange-400 bg-gradient-to-br from-orange-100 to-amber-100 opacity-80 flex items-center justify-center">
+                  <div className="w-8 h-8 bg-orange-400 rounded-full animate-ping"></div>
+                </div>
+              </div>
+            ))}
+
             {/* Individual Dots Random Grid */}
             {displayDots.map((dot, index) => {
               // Generate consistent random positions based on dot ID for stability
@@ -1687,8 +1732,19 @@ const Dashboard: React.FC = () => {
         onClose={() => {
           setShowDotCreation(false);
           setSelectedTool('select'); // Reset to select tool after creation
+          setEditingElementId(null);
         }}
         position={creationPosition}
+        onSuccess={() => {
+          // Remove pending dot on successful creation
+          setPendingDots(prev => prev.filter(dot => dot.id !== editingElementId));
+          setEditingElementId(null);
+        }}
+        onCancel={() => {
+          // Remove pending dot on cancel
+          setPendingDots(prev => prev.filter(dot => dot.id !== editingElementId));
+          setEditingElementId(null);
+        }}
       />
       
       <WheelCreationModal 
@@ -1696,8 +1752,19 @@ const Dashboard: React.FC = () => {
         onClose={() => {
           setShowWheelCreation(false);
           setSelectedTool('select'); // Reset to select tool after creation
+          setEditingElementId(null);
         }}
         position={creationPosition}
+        onSuccess={() => {
+          // Remove pending wheel on successful creation
+          setPendingWheels(prev => prev.filter(wheel => wheel.id !== editingElementId));
+          setEditingElementId(null);
+        }}
+        onCancel={() => {
+          // Remove pending wheel on cancel
+          setPendingWheels(prev => prev.filter(wheel => wheel.id !== editingElementId));
+          setEditingElementId(null);
+        }}
       />
     </TooltipProvider>
   );

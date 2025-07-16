@@ -12,6 +12,8 @@ interface DotCreationModalProps {
   isOpen: boolean;
   onClose: () => void;
   position: { x: number; y: number };
+  onSuccess?: () => void; // Called when dot is successfully created
+  onCancel?: () => void; // Called when creation is cancelled
 }
 
 interface DotFormData {
@@ -25,7 +27,7 @@ const EMOTIONS = [
   'inspired', 'confident', 'grateful', 'motivated'
 ];
 
-export function DotCreationModal({ isOpen, onClose, position }: DotCreationModalProps) {
+export function DotCreationModal({ isOpen, onClose, position, onSuccess, onCancel }: DotCreationModalProps) {
   const [formData, setFormData] = useState<DotFormData>({
     summary: '',
     anchor: '',
@@ -72,6 +74,7 @@ export function DotCreationModal({ isOpen, onClose, position }: DotCreationModal
     onSuccess: () => {
       setSaved(true);
       queryClient.invalidateQueries({ queryKey: ['/api/dots'] });
+      onSuccess?.(); // Notify parent component
       toast({
         title: "Dot Created",
         description: "Your dot has been saved successfully.",
@@ -102,9 +105,13 @@ export function DotCreationModal({ isOpen, onClose, position }: DotCreationModal
   const handleClose = () => {
     if (!saved && (formData.summary || formData.anchor || formData.pulse)) {
       if (confirm("You have unsaved changes. Are you sure you want to close?")) {
+        onCancel?.(); // Remove pending dot if cancelled
         onClose();
       }
     } else {
+      if (!saved) {
+        onCancel?.(); // Remove pending dot if closed without saving
+      }
       onClose();
     }
   };
