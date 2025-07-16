@@ -132,11 +132,11 @@ const Dashboard: React.FC = () => {
 
   // Search functionality
   React.useEffect(() => {
-    if (searchTerm.trim()) {
+    if (searchTerm.trim() && dots && Array.isArray(dots)) {
       const filtered = dots.filter((dot: Dot) => 
-        dot.summary.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        dot.anchor.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        dot.pulse.toLowerCase().includes(searchTerm.toLowerCase())
+        dot.summary?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        dot.anchor?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        dot.pulse?.toLowerCase().includes(searchTerm.toLowerCase())
       );
       setSearchResults(filtered);
     } else {
@@ -247,8 +247,6 @@ const Dashboard: React.FC = () => {
     previewMode: boolean,
     setPreviewMode: (previewMode: boolean) => void
   }> = ({ wheels, actualDots, showingRecentFilter = false, recentCount = 4, isFullscreen = false, onFullscreenChange, setViewFullWheel, previewMode, setPreviewMode }) => {
-    const [selectedWheel, setSelectedWheel] = useState<string | null>(null);
-    const [viewFullDot, setViewFullDot] = useState<Dot | null>(null);
     const [selectedDot, setSelectedDot] = useState<Dot | null>(null);
     const [selectedDotPosition, setSelectedDotPosition] = useState<{ x: number; y: number } | null>(null);
     const [hoveredDot, setHoveredDot] = useState<Dot | null>(null);
@@ -1584,7 +1582,7 @@ const Dashboard: React.FC = () => {
           <div className={`transition-all duration-200 ${showRecentFilter ? 'mt-4' : 'mt-0'}`}>
             <DotWheelsMap 
               wheels={wheels} 
-              actualDots={showRecentFilter ? dots.slice(0, recentDotsCount) : dots} 
+              actualDots={showRecentFilter ? (dots || []).slice(0, recentDotsCount) : (dots || [])} 
               showingRecentFilter={showRecentFilter}
               recentCount={recentDotsCount}
               isFullscreen={isMapFullscreen}
