@@ -62,7 +62,6 @@ const Dashboard: React.FC = () => {
   const [recentDotsCount, setRecentDotsCount] = useState(4);
   const [showPreview, setShowPreview] = useState(false);
   const [isMapFullscreen, setIsMapFullscreen] = useState(false);
-  const [onlySparks, setOnlySparks] = useState(false);
   const [previewMode, setPreviewMode] = useState(false); // Lifted up to prevent resets
   
   // PWA detection for smaller button sizing
@@ -316,7 +315,6 @@ const Dashboard: React.FC = () => {
     const [hoveredDot, setHoveredDot] = useState<Dot | null>(null);
     const [hoveredWheel, setHoveredWheel] = useState<Wheel | null>(null);
     // previewMode is now passed as props from parent component
-    const [onlySparks, setOnlySparks] = useState(false);
     const [zoom, setZoom] = useState(1);
     const gridContainerRef = useRef<HTMLDivElement>(null);
     const [dragStart, setDragStart] = useState<{ x: number; y: number } | null>(null);
@@ -598,15 +596,8 @@ const Dashboard: React.FC = () => {
 
     const { previewDots, previewWheels } = generatePreviewData();
     
-    // Apply "Only Sparks" filter to wheels if enabled
+    // Base wheels to display
     let baseWheelsToDisplay = previewMode ? previewWheels : wheels;
-    if (onlySparks) {
-      // In preview mode, show all preview wheels (they are all spark wheels)
-      // In normal mode, show only wheels that have dots (actual spark wheels)
-      if (!previewMode) {
-        baseWheelsToDisplay = wheels.filter(wheel => wheel.dots && wheel.dots.length > 0);
-      }
-    }
     
     const displayWheels = baseWheelsToDisplay;
     
@@ -621,11 +612,7 @@ const Dashboard: React.FC = () => {
         .slice(0, recentCount);
     }
     
-    // Apply "Only Sparks" filter if enabled (works in both modes)
-    if (onlySparks) {
-      // Show only dots that belong to spark wheels (have wheelId)
-      baseDotsToDisplay = baseDotsToDisplay.filter(dot => dot.wheelId && dot.wheelId !== '');
-    }
+    // Base dots to display (no spark filtering)
     
     const displayDots = baseDotsToDisplay;
     const totalDots = displayDots.length;
@@ -809,29 +796,7 @@ const Dashboard: React.FC = () => {
             </Popover>
           </div>
           
-          {/* Only Sparks toggle */}
-          <div className={`flex items-center gap-2 bg-white/90 backdrop-blur rounded-lg border-2 border-amber-200 ${
-            isPWA ? 'px-1.5 py-0.5' : 'px-2 py-1'
-          }`}>
-            <label className={`font-medium text-amber-800 hidden sm:block ${
-              isPWA ? 'text-[10px]' : 'text-xs'
-            }`}>Only Wheels</label>
-            <label className={`font-medium text-amber-800 sm:hidden ${
-              isPWA ? 'text-[10px]' : 'text-xs'
-            }`}>Wheels</label>
-            <button
-              onClick={() => setOnlySparks(!onlySparks)}
-              className={`relative inline-flex items-center rounded-full transition-colors ${
-                isPWA ? 'h-3 w-5' : 'h-4 w-7'
-              } ${onlySparks ? 'bg-amber-500' : 'bg-gray-300'}`}
-            >
-              <span
-                className={`inline-block transform rounded-full bg-white transition-transform ${
-                  isPWA ? 'h-1.5 w-1.5' : 'h-2 w-2'
-                } ${onlySparks ? (isPWA ? 'translate-x-2.5' : 'translate-x-4') : 'translate-x-1'}`}
-              />
-            </button>
-          </div>
+
           
           {/* Recent Filter Indicator */}
           {showingRecentFilter && !previewMode && (
@@ -1514,52 +1479,7 @@ const Dashboard: React.FC = () => {
 
       {/* Main Content */}
       <div className="p-4">
-        {/* Capacity Metrics - 4 core parameters */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          {/* Memory Capacity */}
-          <div className="bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl p-4 text-white">
-            <div className="flex items-center gap-3">
-              <Database className="w-6 h-6" />
-              <div>
-                <h3 className="font-semibold">Memory</h3>
-                <p className="text-sm opacity-90">Storage & Recall</p>
-              </div>
-            </div>
-          </div>
 
-          {/* Learning Engine */}
-          <div className="bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-xl p-4 text-white">
-            <div className="flex items-center gap-3">
-              <Cpu className="w-6 h-6" />
-              <div>
-                <h3 className="font-semibold">Learning Engine</h3>
-                <p className="text-sm opacity-90">AI Processing</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Sparks Generation */}
-          <div className="bg-gradient-to-r from-orange-500 to-red-500 rounded-xl p-4 text-white">
-            <div className="flex items-center gap-3">
-              <Sparkles className="w-6 h-6" />
-              <div>
-                <h3 className="font-semibold">Sparks</h3>
-                <p className="text-sm opacity-90">Insights & Ideas</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Social Connections */}
-          <div className="bg-gradient-to-r from-teal-500 to-emerald-500 rounded-xl p-4 text-white">
-            <div className="flex items-center gap-3">
-              <Users className="w-6 h-6" />
-              <div>
-                <h3 className="font-semibold">Social</h3>
-                <p className="text-sm opacity-90">Connections</p>
-              </div>
-            </div>
-          </div>
-        </div>
 
         {/* Search Section */}
         <div className="mb-6">
