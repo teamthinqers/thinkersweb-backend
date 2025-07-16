@@ -1328,10 +1328,11 @@ const Dashboard: React.FC = () => {
           </>
         )}
 
-        {/* Wheel Flash Card - centered modal like dot flash cards */}
+        {/* Wheel Flash Card - positioned near the clicked wheel */}
         {viewFlashCardWheel && (
           <WheelFlashCard 
             wheel={viewFlashCardWheel}
+            position={wheelFlashCardPosition}
             onClose={() => {
               setViewFlashCardWheel(null);
               setWheelFlashCardPosition(null);
