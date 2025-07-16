@@ -39,12 +39,12 @@ const WheelFullView: React.FC<WheelFullViewProps> = ({ wheel, isOpen = true, onC
         <DialogHeader className="pb-4">
           <div className="flex justify-between items-start">
             <div className="flex items-center gap-2">
-              <Badge variant="outline" className="text-xs border-purple-300 text-purple-700 bg-purple-50/80">
-                <div className="w-3 h-3 rounded-full bg-purple-500 mr-1"></div>
+              <Badge variant="outline" className="text-xs border-amber-300 text-amber-700 bg-amber-50/80">
+                <div className="w-3 h-3 rounded-full bg-amber-500 mr-1"></div>
                 Wheel
               </Badge>
               {wheel.category && (
-                <Badge className="bg-gradient-to-r from-purple-100 to-violet-100 text-purple-800 border-purple-200 text-xs">
+                <Badge className="bg-gradient-to-r from-amber-100 to-orange-100 text-amber-800 border-amber-200 text-xs">
                   {wheel.category}
                 </Badge>
               )}
@@ -60,41 +60,41 @@ const WheelFullView: React.FC<WheelFullViewProps> = ({ wheel, isOpen = true, onC
               </Button>
             )}
           </div>
-          <DialogTitle className="text-2xl font-bold text-purple-800 border-b border-purple-200 pb-3">
+          <DialogTitle className="text-2xl font-bold text-amber-800 border-b border-amber-200 pb-3">
             {wheel.heading || wheel.name}
           </DialogTitle>
         </DialogHeader>
 
         <div className="space-y-6">
           {/* Layer 1: Heading */}
-          <div className="bg-gradient-to-br from-purple-50/60 to-violet-50/60 rounded-xl border-2 border-purple-400 p-4">
+          <div className="bg-gradient-to-br from-amber-50/60 to-orange-50/60 rounded-xl border-2 border-amber-400 p-4">
             <div className="flex items-center gap-2 mb-3">
-              <div className="w-6 h-6 rounded-full bg-gradient-to-r from-purple-600 to-violet-700 flex items-center justify-center">
+              <div className="w-6 h-6 rounded-full bg-gradient-to-r from-amber-600 to-orange-700 flex items-center justify-center">
                 <span className="text-white text-xs font-bold">1</span>
               </div>
-              <h3 className="text-lg font-semibold text-purple-800 flex items-center gap-2">
-                <Target className="w-5 h-5 text-purple-600" />
+              <h3 className="text-lg font-semibold text-amber-800 flex items-center gap-2">
+                <Target className="w-5 h-5 text-amber-600" />
                 Heading
               </h3>
             </div>
-            <p className="text-purple-700 font-medium text-lg pl-8">
+            <p className="text-amber-700 font-medium text-lg pl-8">
               {wheel.heading || wheel.name}
             </p>
           </div>
 
           {/* Layer 2: Purpose */}
           {wheel.purpose && (
-            <div className="bg-gradient-to-br from-purple-50/60 to-violet-50/60 rounded-xl border-2 border-purple-400 p-4">
+            <div className="bg-gradient-to-br from-amber-50/60 to-orange-50/60 rounded-xl border-2 border-amber-400 p-4">
               <div className="flex items-center gap-2 mb-3">
-                <div className="w-6 h-6 rounded-full bg-gradient-to-r from-purple-600 to-violet-700 flex items-center justify-center">
+                <div className="w-6 h-6 rounded-full bg-gradient-to-r from-amber-600 to-orange-700 flex items-center justify-center">
                   <span className="text-white text-xs font-bold">2</span>
                 </div>
-                <h3 className="text-lg font-semibold text-purple-800 flex items-center gap-2">
-                  <Target className="w-5 h-5 text-purple-600" />
+                <h3 className="text-lg font-semibold text-amber-800 flex items-center gap-2">
+                  <Target className="w-5 h-5 text-amber-600" />
                   Purpose
                 </h3>
               </div>
-              <p className="text-purple-700 leading-relaxed pl-8">
+              <p className="text-amber-700 leading-relaxed pl-8">
                 {wheel.purpose}
               </p>
             </div>
@@ -102,17 +102,17 @@ const WheelFullView: React.FC<WheelFullViewProps> = ({ wheel, isOpen = true, onC
 
           {/* Layer 3: Timeline */}
           {wheel.timeline && (
-            <div className="bg-gradient-to-br from-purple-50/30 to-violet-50/30 rounded-xl border-2 border-purple-200 p-4">
+            <div className="bg-gradient-to-br from-amber-50/30 to-orange-50/30 rounded-xl border-2 border-amber-200 p-4">
               <div className="flex items-center gap-2 mb-3">
-                <div className="w-6 h-6 rounded-full bg-gradient-to-r from-purple-600 to-violet-600 flex items-center justify-center">
+                <div className="w-6 h-6 rounded-full bg-gradient-to-r from-amber-600 to-orange-600 flex items-center justify-center">
                   <span className="text-white text-xs font-bold">3</span>
                 </div>
-                <h3 className="text-lg font-semibold text-purple-700 flex items-center gap-2">
-                  <Calendar className="w-5 h-5 text-purple-600" />
+                <h3 className="text-lg font-semibold text-amber-800 flex items-center gap-2">
+                  <Calendar className="w-5 h-5 text-amber-600" />
                   Timeline
                 </h3>
               </div>
-              <p className="text-purple-600 font-medium text-lg pl-8">
+              <p className="text-amber-700 font-medium text-lg pl-8">
                 {wheel.timeline}
               </p>
             </div>

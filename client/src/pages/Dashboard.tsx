@@ -1151,7 +1151,7 @@ const Dashboard: React.FC = () => {
                   {/* Blinking Spark Symbol on top of wheel */}
                   <div 
                     className={`absolute left-1/2 transform -translate-x-1/2 flex flex-col items-center ${
-                      isParentWheel ? 'top-[-120px]' : 'top-[-100px]'
+                      isParentWheel ? 'top-[-95px]' : 'top-[-75px]'
                     }`}
                   >
                     {/* Spark symbol with blinking animation */}
@@ -1514,6 +1514,40 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Full Dot View Dialog */}
+      {viewFullDot && (
+        <DotFullView 
+          dot={viewFullDot} 
+          isOpen={!!viewFullDot} 
+          onClose={() => setViewFullDot(null)}
+          onDelete={async (dotId) => {
+            try {
+              await fetch(`/api/dots/${dotId}`, { method: 'DELETE' });
+              refetch(); // Refresh the dots data
+            } catch (error) {
+              console.error('Error deleting dot:', error);
+            }
+          }}
+        />
+      )}
+
+      {/* Full Wheel View Dialog */}
+      {viewFullWheel && (
+        <WheelFullView 
+          wheel={viewFullWheel} 
+          isOpen={!!viewFullWheel} 
+          onClose={() => setViewFullWheel(null)}
+          onDelete={async (wheelId) => {
+            try {
+              await fetch(`/api/wheels/${wheelId}`, { method: 'DELETE' });
+              // Refresh wheels data if needed
+            } catch (error) {
+              console.error('Error deleting wheel:', error);
+            }
+          }}
+        />
+      )}
     </div>
   );
 };
