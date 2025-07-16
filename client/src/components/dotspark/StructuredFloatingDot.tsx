@@ -929,13 +929,11 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                       </p>
                     </div>
 
-                    {/* Layer 5: Wheel Selection */}
+                    {/* Wheel Selection (Optional) */}
                     <div className="p-4 bg-gradient-to-br from-slate-50/30 to-gray-50/30 rounded-xl border-2 border-slate-200 shadow-sm hover:shadow-md transition-all duration-300">
                       <div className="flex items-center gap-2 mb-3">
-                        <div className="w-6 h-6 rounded-full bg-gradient-to-r from-slate-500 to-gray-600 flex items-center justify-center">
-                          <span className="text-white text-xs font-bold">5</span>
-                        </div>
-                        <h5 className="text-sm font-semibold text-slate-700">Layer 5: Wheel (Optional)</h5>
+                        <Settings className="w-5 h-5 text-slate-600" />
+                        <h5 className="text-sm font-semibold text-slate-700">Wheel (Optional)</h5>
                         {structuredInput.wheelId && <span className="text-xs text-green-600 ml-auto">✓ Selected</span>}
                       </div>
                       <select

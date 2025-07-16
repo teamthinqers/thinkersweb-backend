@@ -926,6 +926,14 @@ Changelog:
   * Mode switching now only available in initial selection screens, preventing mid-capture mode changes
   * Applied changes to both dot creation (text capture) and wheel creation (text/voice) interfaces
   * Users must select capture mode before entering voice/text interfaces, improving workflow clarity
+- July 16, 2025. Simplified dot structure to exactly 3 layers:
+  * Removed heading layer from dots completely - dots now have only summary, anchor, and pulse
+  * Updated text input interface layer numbering from 2-4 to 1-3 for proper sequence
+  * Fixed voice recording progress tracking to handle 3 steps instead of 4
+  * Updated API validation to only require 3 core layers without heading
+  * Fixed save button validation logic and removed all heading references
+  * Changed wheel selection from "Layer 5" to "Wheel (Optional)" with settings icon
+  * Backend automatically generates oneWordSummary from dot content for flash cards
 - July 16, 2025. Aligned color coding for wheel creation interfaces:
   * Updated wheel creation buttons and interfaces to follow consistent color theme
   * Natural Mode: Uses amber/orange gradient colors across all wheel creation interfaces
