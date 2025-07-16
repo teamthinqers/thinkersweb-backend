@@ -57,7 +57,6 @@ const Dashboard: React.FC = () => {
   const [viewFlashCardWheel, setViewFlashCardWheel] = useState<Wheel | null>(null);
   const [viewFullWheel, setViewFullWheel] = useState<Wheel | null>(null);
   const [viewWheelFlashCard, setViewWheelFlashCard] = useState<Wheel | null>(null);
-  const [wheelFlashCardPosition, setWheelFlashCardPosition] = useState<{ x: number; y: number } | null>(null);
   const [searchResults, setSearchResults] = useState<Dot[]>([]);
   const [showRecentFilter, setShowRecentFilter] = useState(false);
   const [recentDotsCount, setRecentDotsCount] = useState(4);
@@ -395,7 +394,7 @@ const Dashboard: React.FC = () => {
         color: '#F59E0B', // Consistent amber theme
         dots: [],
         connections: ['preview-wheel-1'],
-        position: { x: 300, y: 260 }, // Position inside parent wheel - left side with better spacing
+        position: { x: 280, y: 280 }, // Position inside parent wheel - left side with more spacing
         parentWheelId: 'preview-wheel-parent',
         createdAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000) // 15 days ago
       };
@@ -440,7 +439,7 @@ const Dashboard: React.FC = () => {
         color: '#F59E0B', // Consistent amber theme
         dots: [],
         connections: ['preview-wheel-0', 'preview-wheel-2'],
-        position: { x: 500, y: 260 }, // Position inside parent wheel - right side with better spacing
+        position: { x: 520, y: 280 }, // Position inside parent wheel - right side with more spacing
         parentWheelId: 'preview-wheel-parent',
         createdAt: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000) // 20 days ago
       };
@@ -484,7 +483,7 @@ const Dashboard: React.FC = () => {
         color: '#F59E0B', // Consistent amber theme
         dots: [],
         connections: ['preview-wheel-1'],
-        position: { x: 400, y: 380 }, // Position inside parent wheel - bottom center with better spacing
+        position: { x: 400, y: 400 }, // Position inside parent wheel - bottom center with more spacing
         parentWheelId: 'preview-wheel-parent',
         createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000) // 10 days ago
       };
@@ -1256,14 +1255,11 @@ const Dashboard: React.FC = () => {
                         e.stopPropagation();
                         // Don't show flash card if user is dragging
                         if (dragStart) return;
-                        const rect = e.currentTarget.getBoundingClientRect();
-                        setWheelFlashCardPosition({ x: rect.right + 5, y: rect.top });
                         setViewWheelFlashCard(wheel);
                       }}
                       onMouseLeave={(e) => {
                         e.stopPropagation();
                         setViewWheelFlashCard(null);
-                        setWheelFlashCardPosition(null);
                       }}
                       onClick={(e) => {
                         e.stopPropagation();
@@ -1274,6 +1270,55 @@ const Dashboard: React.FC = () => {
                       {wheel.name}
                     </div>
                   </div>
+                  
+                  {/* Wheel Flash Card - positioned relative to wheel like dots */}
+                  {viewWheelFlashCard?.id === wheel.id && (
+                    <div 
+                      className="absolute bg-white border-2 border-purple-200 rounded-lg p-3 shadow-xl z-50 w-64 cursor-pointer"
+                      style={{
+                        // Position to the right of the wheel
+                        left: `${wheel.position.x + wheelSize + 10}px`,
+                        top: `${Math.max(0, wheel.position.y - 20)}px`,
+                        maxWidth: '280px'
+                      }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setViewFullWheel(wheel);
+                        setViewWheelFlashCard(null);
+                      }}
+                      onMouseEnter={(e) => {
+                        e.stopPropagation();
+                      }}
+                      onMouseLeave={(e) => {
+                        e.stopPropagation();
+                        setViewWheelFlashCard(null);
+                      }}
+                    >
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <Badge className="bg-purple-100 text-purple-800 text-xs">
+                            Wheel
+                          </Badge>
+                          {wheel.timeline && (
+                            <Badge className="bg-gray-100 text-gray-700 text-xs">
+                              {wheel.timeline}
+                            </Badge>
+                          )}
+                        </div>
+                        <h4 className="font-bold text-lg text-purple-800 border-b border-purple-200 pb-2 mb-3">
+                          {wheel.heading || wheel.name}
+                        </h4>
+                        {wheel.purpose && (
+                          <p className="text-xs text-gray-600 line-clamp-3">
+                            {wheel.purpose}
+                          </p>
+                        )}
+                        <div className="text-xs text-purple-600 mt-2 font-medium">
+                          Click for full view
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               );
             })}
@@ -1805,18 +1850,7 @@ const Dashboard: React.FC = () => {
         />
       )}
 
-      {/* Wheel Flash Card - positioned absolutely */}
-      {viewWheelFlashCard && wheelFlashCardPosition && (
-        <WheelFlashCard 
-          wheel={viewWheelFlashCard}
-          position={wheelFlashCardPosition}
-          onClose={() => setViewWheelFlashCard(null)}
-          onViewFull={() => {
-            setViewFullWheel(viewWheelFlashCard);
-            setViewWheelFlashCard(null);
-          }}
-        />
-      )}
+
 
       {/* Full Wheel View Modal */}
       {viewFullWheel && (
