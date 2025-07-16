@@ -49,7 +49,7 @@ const WheelFlashCard: React.FC<WheelFlashCardProps> = ({ wheel, position, onClos
       }}
     >
       <Card 
-        className="bg-white border-2 border-purple-300 shadow-xl cursor-pointer hover:shadow-2xl transition-all duration-200 transform hover:scale-105"
+        className="bg-white border-2 border-amber-300 shadow-xl cursor-pointer hover:shadow-2xl transition-all duration-200 transform hover:scale-105"
         onClick={(e) => {
           e.stopPropagation();
           handleCardClick();
@@ -59,9 +59,9 @@ const WheelFlashCard: React.FC<WheelFlashCardProps> = ({ wheel, position, onClos
           <div className="flex justify-between items-start mb-2">
             <Badge 
               variant="outline" 
-              className="text-xs border-purple-300 text-purple-700 bg-purple-50/80"
+              className="text-xs border-amber-300 text-amber-700 bg-amber-50/80"
             >
-              <div className="w-3 h-3 rounded-full bg-purple-500 mr-1"></div>
+              <div className="w-3 h-3 rounded-full bg-amber-500 mr-1"></div>
               Wheel
             </Badge>
             <button
@@ -75,7 +75,7 @@ const WheelFlashCard: React.FC<WheelFlashCardProps> = ({ wheel, position, onClos
             </button>
           </div>
           
-          <h3 className="font-bold text-sm mb-1 text-purple-800 border-b border-purple-200 pb-1">
+          <h3 className="font-bold text-sm mb-1 text-amber-800 border-b border-amber-200 pb-1">
             {wheel.heading || wheel.name}
           </h3>
           
@@ -86,12 +86,12 @@ const WheelFlashCard: React.FC<WheelFlashCardProps> = ({ wheel, position, onClos
           )}
           
           {wheel.timeline && (
-            <Badge className="bg-gradient-to-r from-purple-100 to-violet-100 text-purple-800 border-purple-200 text-xs mb-2">
+            <Badge className="bg-gradient-to-r from-amber-100 to-orange-100 text-amber-800 border-amber-200 text-xs mb-2">
               {wheel.timeline}
             </Badge>
           )}
           
-          <div className="text-xs text-purple-600 mt-1 font-medium">
+          <div className="text-xs text-amber-600 mt-1 font-medium">
             Click for full view
           </div>
         </CardContent>

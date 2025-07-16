@@ -54,8 +54,6 @@ const Dashboard: React.FC = () => {
   const [selectedWheel, setSelectedWheel] = useState<string | null>(null);
   const [viewFullDot, setViewFullDot] = useState<Dot | null>(null);
   const [viewFlashCard, setViewFlashCard] = useState<Dot | null>(null);
-  const [viewFlashCardWheel, setViewFlashCardWheel] = useState<Wheel | null>(null);
-  const [wheelFlashCardPosition, setWheelFlashCardPosition] = useState<{ x: number; y: number } | null>(null);
   const [viewFullWheel, setViewFullWheel] = useState<Wheel | null>(null);
   const [searchResults, setSearchResults] = useState<Dot[]>([]);
   const [showRecentFilter, setShowRecentFilter] = useState(false);
@@ -1195,16 +1193,7 @@ const Dashboard: React.FC = () => {
                       onClick={(e) => {
                         e.stopPropagation();
                         setHoveredWheel(null);
-                        
-                        // Calculate position for flash card near the clicked wheel
-                        const rect = e.currentTarget.getBoundingClientRect();
-                        const position = {
-                          x: rect.right + 10, // Position to the right of the wheel
-                          y: rect.top + (rect.height / 2) - 70 // Center vertically
-                        };
-                        
-                        setWheelFlashCardPosition(position);
-                        setViewFlashCardWheel(wheel);
+                        setViewFullWheel(wheel);
                       }}
                     >
                       {wheel.name}
@@ -1214,7 +1203,7 @@ const Dashboard: React.FC = () => {
                   {/* Wheel Flash Card - positioned like dot flash cards */}
                   {hoveredWheel?.id === wheel.id && (
                     <div 
-                      className="absolute bg-white border-2 border-purple-200 rounded-lg p-3 shadow-xl z-50 w-64 cursor-pointer"
+                      className="absolute bg-white border-2 border-amber-200 rounded-lg p-3 shadow-xl z-50 w-64 cursor-pointer"
                       style={{
                         // Position relative to wheel accounting for grid transformation
                         left: isPWA ? '60px' : `${(wheelPosition.x + wheelSize + 10) * zoom + offset.x}px`,
@@ -1234,7 +1223,7 @@ const Dashboard: React.FC = () => {
                     >
                       <div className="space-y-2">
                         <div className="flex items-center justify-between">
-                          <Badge className="bg-purple-100 text-purple-800 text-xs">
+                          <Badge className="bg-amber-100 text-amber-800 text-xs">
                             Wheel
                           </Badge>
                           {wheel.timeline && (
@@ -1243,7 +1232,7 @@ const Dashboard: React.FC = () => {
                             </Badge>
                           )}
                         </div>
-                        <h4 className="font-bold text-lg text-purple-800 border-b border-purple-200 pb-2 mb-3">
+                        <h4 className="font-bold text-lg text-amber-800 border-b border-amber-200 pb-2 mb-3">
                           {wheel.heading || wheel.name}
                         </h4>
                         {wheel.purpose && (
@@ -1251,7 +1240,7 @@ const Dashboard: React.FC = () => {
                             {wheel.purpose}
                           </p>
                         )}
-                        <div className="text-xs text-purple-600 mt-2 font-medium">
+                        <div className="text-xs text-amber-600 mt-2 font-medium">
                           Click for full view
                         </div>
                       </div>
@@ -1328,22 +1317,7 @@ const Dashboard: React.FC = () => {
           </>
         )}
 
-        {/* Wheel Flash Card - positioned near the clicked wheel */}
-        {viewFlashCardWheel && (
-          <WheelFlashCard 
-            wheel={viewFlashCardWheel}
-            position={wheelFlashCardPosition}
-            onClose={() => {
-              setViewFlashCardWheel(null);
-              setWheelFlashCardPosition(null);
-            }}
-            onViewFull={() => {
-              setViewFullWheel(viewFlashCardWheel);
-              setViewFlashCardWheel(null);
-              setWheelFlashCardPosition(null);
-            }}
-          />
-        )}
+
 
         {/* Dot Full View Modal */}
         {viewFullDot && (
