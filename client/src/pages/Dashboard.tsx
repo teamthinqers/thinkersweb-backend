@@ -395,7 +395,7 @@ const Dashboard: React.FC = () => {
         color: '#F59E0B', // Consistent amber theme
         dots: [],
         connections: ['preview-wheel-1'],
-        position: { x: 300, y: 150 }, // Position inside parent wheel
+        position: { x: 220, y: 120 }, // Position with proper spacing from other wheels
         parentWheelId: 'preview-wheel-parent',
         createdAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000) // 15 days ago
       };
@@ -440,7 +440,7 @@ const Dashboard: React.FC = () => {
         color: '#F59E0B', // Consistent amber theme
         dots: [],
         connections: ['preview-wheel-0', 'preview-wheel-2'],
-        position: { x: 300, y: 120 }, // Position with proper spacing
+        position: { x: 580, y: 120 }, // Position with proper spacing from GTM wheel
         parentWheelId: 'preview-wheel-parent',
         createdAt: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000) // 20 days ago
       };
@@ -484,7 +484,7 @@ const Dashboard: React.FC = () => {
         color: '#F59E0B', // Consistent amber theme
         dots: [],
         connections: ['preview-wheel-1'],
-        position: { x: 520, y: 280 }, // Position with proper spacing
+        position: { x: 220, y: 320 }, // Position with proper spacing below GTM
         parentWheelId: 'preview-wheel-parent',
         createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000) // 10 days ago
       };
@@ -528,7 +528,7 @@ const Dashboard: React.FC = () => {
         color: '#EC4899', // Pink theme
         dots: [],
         connections: [],
-        position: { x: 150, y: 520 },
+        position: { x: 580, y: 320 }, // Position with proper spacing, same size as other child wheels
         // No parentWheelId - this is a standalone wheel
         createdAt: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000) // 25 days ago
       };

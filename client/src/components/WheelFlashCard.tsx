@@ -40,6 +40,7 @@ const WheelFlashCard: React.FC<WheelFlashCardProps> = ({ wheel, position, onClos
         transform: position ? 'none' : 'translate(-50%, -50%)',
         maxWidth: '180px'
       }}
+      onMouseLeave={onClose}
     >
       <Card 
         className="bg-white border-2 border-amber-300 shadow-xl cursor-pointer hover:shadow-2xl transition-all duration-200 transform hover:scale-105"
