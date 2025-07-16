@@ -45,8 +45,8 @@ import AppLayout from "@/components/layout/AppLayout";
 import EntryDetail from "@/components/entries/EntryDetail";
 import ChatEntryForm from "@/components/chat/ChatEntryForm";
 
-// Temporarily removing problematic imports to fix temporal dead zone issues
-// import { StructuredFloatingDot } from "@/components/dotspark/StructuredFloatingDot";
+import { StructuredFloatingDot } from "@/components/dotspark/StructuredFloatingDot";
+// Keeping PWA components commented for now to prevent TDZ issues
 // import { PWAInstallButton } from "@/components/ui/pwa-install-button";
 // import { IosPwaInstallPrompt } from "@/components/ui/ios-pwa-install-prompt";
 import { neuraStorage } from "@/lib/neuraStorage";
@@ -353,8 +353,8 @@ function App() {
         )}
         <Router />
         <Toaster />
-        {/* Temporarily commenting out problematic components */}
-        {/* <StructuredFloatingDot isActive={neuraStorage.isActivated()} /> */}
+        <StructuredFloatingDot isActive={neuraStorage.isActivated()} />
+        {/* Keeping PWA components commented for now to prevent TDZ issues */}
         {/* <IosPwaInstallPrompt /> */}
         {/* <div className="fixed bottom-4 right-4 left-4 md:left-auto z-50">
           <PWAInstallButton size="lg" className="w-full md:w-auto" />

@@ -15,6 +15,8 @@ import WheelFullView from "@/components/WheelFullView";
 import { isRunningAsStandalone } from "@/lib/pwaUtils";
 import { useLocation } from "wouter";
 import { ToolsSidebar, ToolMode } from "@/components/ToolsSidebar";
+import { DotCreationModal } from "@/components/DotCreationModal";
+import { WheelCreationModal } from "@/components/WheelCreationModal";
 
 
 // Data structure for dots
@@ -64,7 +66,8 @@ const Dashboard: React.FC = () => {
   const [isMapFullscreen, setIsMapFullscreen] = useState(false);
   const [previewMode, setPreviewMode] = useState(false); // Start with preview mode off to show real data first
   const [selectedTool, setSelectedTool] = useState<ToolMode>('select');
-  const [showCreationModal, setShowCreationModal] = useState(false);
+  const [showDotCreation, setShowDotCreation] = useState(false);
+  const [showWheelCreation, setShowWheelCreation] = useState(false);
   const [creationPosition, setCreationPosition] = useState({ x: 0, y: 0 });
   
   // PWA detection for smaller button sizing
@@ -699,7 +702,13 @@ const Dashboard: React.FC = () => {
           const x = e.clientX - rect.left;
           const y = e.clientY - rect.top;
           setCreationPosition({ x, y });
-          setShowCreationModal(true);
+          
+          // Open appropriate creation modal based on selected tool
+          if (selectedTool === 'create-dot') {
+            setShowDotCreation(true);
+          } else if (selectedTool === 'create-wheel') {
+            setShowWheelCreation(true);
+          }
         }
         return;
       }
@@ -931,7 +940,13 @@ const Dashboard: React.FC = () => {
             isFullscreen 
               ? 'h-screen w-screen' 
               : 'h-[450px] w-full'
-          } overflow-hidden ${isPWA ? 'cursor-grab active:cursor-grabbing' : 'cursor-grab active:cursor-grabbing'}`}
+          } overflow-hidden ${
+            selectedTool === 'select' 
+              ? isPWA ? 'cursor-grab active:cursor-grabbing' : 'cursor-grab active:cursor-grabbing'
+              : selectedTool === 'create-dot'
+              ? 'cursor-crosshair'
+              : 'cursor-copy'
+          }`}
           onWheel={handleWheel}
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
@@ -940,6 +955,7 @@ const Dashboard: React.FC = () => {
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
+          onClick={handleGridClick}
           style={{ 
             touchAction: 'none',
             userSelect: 'none'
@@ -1634,6 +1650,25 @@ const Dashboard: React.FC = () => {
       )}
         </div>
       </div>
+
+      {/* Creation Modals */}
+      <DotCreationModal 
+        isOpen={showDotCreation}
+        onClose={() => {
+          setShowDotCreation(false);
+          setSelectedTool('select'); // Reset to select tool after creation
+        }}
+        position={creationPosition}
+      />
+      
+      <WheelCreationModal 
+        isOpen={showWheelCreation}
+        onClose={() => {
+          setShowWheelCreation(false);
+          setSelectedTool('select'); // Reset to select tool after creation
+        }}
+        position={creationPosition}
+      />
     </TooltipProvider>
   );
 };
