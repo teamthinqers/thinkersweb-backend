@@ -64,6 +64,7 @@ const Dashboard: React.FC = () => {
   const [showPreview, setShowPreview] = useState(false);
   const [isMapFullscreen, setIsMapFullscreen] = useState(false);
   const [onlySparks, setOnlySparks] = useState(false);
+  const [previewMode, setPreviewMode] = useState(false); // Lifted up to prevent resets
   
   // PWA detection for smaller button sizing
   const isPWA = isRunningAsStandalone();
@@ -299,22 +300,24 @@ const Dashboard: React.FC = () => {
   };
 
   const DotWheelsMap: React.FC<{ 
-  wheels: Wheel[], 
-  actualDots: Dot[], 
-  showingRecentFilter?: boolean, 
-  recentCount?: number,
-  isFullscreen?: boolean,
-  onFullscreenChange?: (isFullscreen: boolean) => void,
-  setViewWheelFlashCard: (wheel: Wheel | null) => void,
-  setWheelFlashCardPosition: (position: { x: number; y: number } | null) => void,
-  setViewFullWheel: (wheel: Wheel | null) => void
-}> = ({ wheels, actualDots, showingRecentFilter = false, recentCount = 4, isFullscreen = false, onFullscreenChange, setViewWheelFlashCard, setWheelFlashCardPosition, setViewFullWheel }) => {
+    wheels: Wheel[], 
+    actualDots: Dot[], 
+    showingRecentFilter?: boolean, 
+    recentCount?: number,
+    isFullscreen?: boolean,
+    onFullscreenChange?: (isFullscreen: boolean) => void,
+    setViewWheelFlashCard: (wheel: Wheel | null) => void,
+    setWheelFlashCardPosition: (position: { x: number; y: number } | null) => void,
+    setViewFullWheel: (wheel: Wheel | null) => void,
+    previewMode: boolean,
+    setPreviewMode: (previewMode: boolean) => void
+  }> = ({ wheels, actualDots, showingRecentFilter = false, recentCount = 4, isFullscreen = false, onFullscreenChange, setViewWheelFlashCard, setWheelFlashCardPosition, setViewFullWheel, previewMode, setPreviewMode }) => {
     const [selectedWheel, setSelectedWheel] = useState<string | null>(null);
     const [viewFullDot, setViewFullDot] = useState<Dot | null>(null);
     const [selectedDot, setSelectedDot] = useState<Dot | null>(null);
     const [selectedDotPosition, setSelectedDotPosition] = useState<{ x: number; y: number } | null>(null);
     const [hoveredDot, setHoveredDot] = useState<Dot | null>(null);
-    const [previewMode, setPreviewMode] = useState(false);
+    // previewMode is now passed as props from parent component
     const [onlySparks, setOnlySparks] = useState(false);
     const [zoom, setZoom] = useState(1);
     const gridContainerRef = useRef<HTMLDivElement>(null);
@@ -437,7 +440,7 @@ const Dashboard: React.FC = () => {
         color: '#F59E0B', // Consistent amber theme
         dots: [],
         connections: ['preview-wheel-0', 'preview-wheel-2'],
-        position: { x: 480, y: 140 }, // Position inside parent wheel
+        position: { x: 300, y: 120 }, // Position with proper spacing
         parentWheelId: 'preview-wheel-parent',
         createdAt: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000) // 20 days ago
       };
@@ -481,7 +484,7 @@ const Dashboard: React.FC = () => {
         color: '#F59E0B', // Consistent amber theme
         dots: [],
         connections: ['preview-wheel-1'],
-        position: { x: 380, y: 260 }, // Position inside parent wheel
+        position: { x: 520, y: 280 }, // Position with proper spacing
         parentWheelId: 'preview-wheel-parent',
         createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000) // 10 days ago
       };
@@ -525,7 +528,7 @@ const Dashboard: React.FC = () => {
         color: '#EC4899', // Pink theme
         dots: [],
         connections: [],
-        position: { x: 150, y: 480 },
+        position: { x: 150, y: 520 },
         // No parentWheelId - this is a standalone wheel
         createdAt: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000) // 25 days ago
       };
@@ -1175,15 +1178,12 @@ const Dashboard: React.FC = () => {
             {previewMode && displayWheels.map((wheel, wheelIndex) => {
               // Determine wheel size based on type and hierarchy
               const isParentWheel = !wheel.parentWheelId;
-              const isPersonalWheel = wheel.id === 'preview-wheel-personal';
               
               let wheelSize;
               if (isParentWheel) {
                 wheelSize = 400; // Parent wheel (Build an Enduring Company) is biggest
-              } else if (isPersonalWheel) {
-                wheelSize = 160; // Personal wheel (Health & Wellness) is smaller
               } else {
-                wheelSize = 180; // Regular child wheels
+                wheelSize = 180; // All other wheels (GTM, Strengthen leadership, Product innovation, Health & Wellness) same size
               }
               
               const wheelRadius = wheelSize / 2;
@@ -1756,6 +1756,8 @@ const Dashboard: React.FC = () => {
               setViewWheelFlashCard={setViewWheelFlashCard}
               setWheelFlashCardPosition={setWheelFlashCardPosition}
               setViewFullWheel={setViewFullWheel}
+              previewMode={previewMode}
+              setPreviewMode={setPreviewMode}
             />
           </div>
         </div>
