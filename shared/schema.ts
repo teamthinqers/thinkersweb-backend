@@ -276,12 +276,13 @@ export const insertWhatsappUserSchema = createInsertSchema(whatsappUsers, {
 export type InsertWhatsappUser = z.infer<typeof insertWhatsappUserSchema>;
 export type WhatsappUser = typeof whatsappUsers.$inferSelect;
 
-// Wheels - collections of related dots
+// Wheels - user-defined containers with three layers (heading, purpose, timeline)
 export const wheels = pgTable("wheels", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").references(() => users.id).notNull(),
-  name: text("name").notNull(),
-  category: text("category").notNull(),
+  heading: text("heading").notNull(), // Layer 1: Wheel title/name
+  purpose: text("purpose").notNull(), // Layer 2: Purpose description
+  timeline: text("timeline").notNull(), // Layer 3: Timeline/deadline
   color: text("color").notNull().default("#8B5CF6"),
   positionX: integer("position_x").default(100).notNull(),
   positionY: integer("position_y").default(100).notNull(),
@@ -379,8 +380,9 @@ export const dotConnectionsRelations = relations(dotConnections, ({ one }) => ({
 
 // Validation schemas
 export const insertWheelSchema = createInsertSchema(wheels, {
-  name: (schema) => schema.min(2, "Wheel name must be at least 2 characters"),
-  category: (schema) => schema.min(2, "Category must be at least 2 characters"),
+  heading: (schema) => schema.min(2, "Wheel heading must be at least 2 characters").max(100, "Heading must be 100 characters or less"),
+  purpose: (schema) => schema.min(10, "Purpose must be at least 10 characters").max(300, "Purpose must be 300 characters or less"),
+  timeline: (schema) => schema.min(2, "Timeline must be at least 2 characters").max(100, "Timeline must be 100 characters or less"),
   color: (schema) => schema.optional(),
   positionX: (schema) => schema.optional(),
   positionY: (schema) => schema.optional(),

@@ -33,8 +33,9 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
     return saved ? JSON.parse(saved) : { x: 320, y: 180 };
   });
   const [isExpanded, setIsExpanded] = useState(false);
-  const [captureMode, setCaptureMode] = useState<'select' | 'text' | 'voice' | 'direct-chat' | 'whatsapp'>('select');
+  const [captureMode, setCaptureMode] = useState<'select' | 'create-type' | 'text' | 'voice' | 'direct-chat' | 'whatsapp'>('select');
   const [userCaptureMode, setUserCaptureMode] = useState<'natural' | 'ai'>('natural');
+  const [createType, setCreateType] = useState<'dot' | 'wheel' | null>(null);
   
   // Voice recording states
   const [isRecording, setIsRecording] = useState(false);
@@ -45,6 +46,13 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
     anchor: '',
     pulse: ''
   });
+  
+  // Voice recording states for wheels
+  const [wheelVoiceSteps, setWheelVoiceSteps] = useState({
+    heading: '',
+    purpose: '',
+    timeline: ''
+  });
   const [audioRecordings, setAudioRecordings] = useState<{
     heading?: string;
     summary?: string;
@@ -54,12 +62,19 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   
-  // Text input states
+  // Text input states for dots
   const [structuredInput, setStructuredInput] = useState({
     heading: '',
     summary: '',
     anchor: '',
     pulse: ''
+  });
+  
+  // Text input states for wheels
+  const [wheelInput, setWheelInput] = useState({
+    heading: '',
+    purpose: '',
+    timeline: ''
   });
   
   const [isDragging, setIsDragging] = useState(false);

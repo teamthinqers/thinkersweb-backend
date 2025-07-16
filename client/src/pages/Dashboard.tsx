@@ -721,10 +721,10 @@ const Dashboard: React.FC = () => {
           }`}>
             <label className={`font-medium text-amber-800 hidden sm:block ${
               isPWA ? 'text-[10px]' : 'text-xs'
-            }`}>Only Sparks</label>
+            }`}>Only Wheels</label>
             <label className={`font-medium text-amber-800 sm:hidden ${
               isPWA ? 'text-[10px]' : 'text-xs'
-            }`}>Sparks</label>
+            }`}>Wheels</label>
             <button
               onClick={() => setOnlySparks(!onlySparks)}
               className={`relative inline-flex items-center rounded-full transition-colors ${
@@ -814,7 +814,7 @@ const Dashboard: React.FC = () => {
             Dots: {totalDots}
           </button>
           <button className="bg-white/90 backdrop-blur rounded-lg px-2 py-1 border-2 border-amber-200 text-xs font-semibold text-amber-800 hover:bg-amber-50 transition-colors whitespace-nowrap">
-            Sparks: {totalWheels}
+            Wheels: {totalWheels}
           </button>
         </div>
 
