@@ -45,10 +45,7 @@ const WheelFlashCard: React.FC<WheelFlashCardProps> = ({ wheel, position, onClos
       }}
       onMouseLeave={(e) => {
         e.stopPropagation();
-        // Add a small delay to prevent flicker when moving between wheel and flash card
-        setTimeout(() => {
-          onClose();
-        }, 100);
+        onClose();
       }}
     >
       <Card 
