@@ -840,31 +840,7 @@ const Dashboard: React.FC = () => {
           </button>
         </div>
 
-        {/* Navigation Icon - Clean arrow without button styling */}
-        <div className={`absolute z-10 ${
-          isPWA 
-            ? 'top-4 left-1/2 transform -translate-x-1/2' // PWA: Top center
-            : 'top-16 sm:top-4 left-1/2 transform -translate-x-1/2' // Browser: Original position
-        }`}>
-          {/* Reset View Arrow Icon */}
-          <div
-            onClick={resetView}
-            className="cursor-pointer hover:scale-110 transition-transform"
-            title={isPWA ? "Reset Scroll Position" : "Reset Drag Position"}
-          >
-            <RotateCcw className="w-6 h-6 text-amber-600 hover:text-amber-700 drop-shadow-lg" />
-          </div>
-        </div>
-        
-        {/* Stats Buttons */}
-        <div className="absolute top-4 right-4 z-10 flex flex-col sm:flex-row gap-1 sm:gap-2">
-          <button className="bg-white/90 backdrop-blur rounded-lg px-2 py-1 border-2 border-amber-200 text-xs font-semibold text-amber-800 hover:bg-amber-50 transition-colors whitespace-nowrap">
-            {previewMode ? `Total Dots: ${totalDots}` : `Dots: ${totalDots}`}
-          </button>
-          <button className="bg-white/90 backdrop-blur rounded-lg px-2 py-1 border-2 border-amber-200 text-xs font-semibold text-amber-800 hover:bg-amber-50 transition-colors whitespace-nowrap">
-            {previewMode ? `Total Wheels: ${totalWheels}` : `Wheels: ${totalWheels}`}
-          </button>
-        </div>
+
 
         {/* Fullscreen Toggle - Bottom right for both modes when not fullscreen */}
         {!isFullscreen && (
@@ -938,17 +914,14 @@ const Dashboard: React.FC = () => {
             userSelect: 'none'
           }}
         >
-          {/* Grid Overlay Controls - All Fixed Position */}
-          
-          {/* Left: Preview Mode Toggle */}
-          <div className="absolute top-4 left-4 z-[60] pointer-events-auto" style={{ zIndex: 60 }}>
+          {/* Grid Controls - Inside Grid Boundary near Empty area */}
+          <div className="absolute top-16 left-16 z-[60] flex flex-col gap-2" style={{ pointerEvents: 'auto' }}>
+            
+            {/* Preview Mode Toggle */}
             <div className={`flex items-center gap-2 bg-white shadow-xl rounded-lg border-4 border-amber-400 ${
               isPWA ? 'px-2 py-1' : 'px-3 py-2'
             }`} style={{ backgroundColor: '#fff', border: '4px solid #f59e0b' }}>
-              <label className={`font-semibold text-amber-800 hidden sm:block ${
-                isPWA ? 'text-xs' : 'text-sm'
-              }`}>Preview Mode</label>
-              <label className={`font-semibold text-amber-800 sm:hidden ${
+              <label className={`font-semibold text-amber-800 ${
                 isPWA ? 'text-xs' : 'text-sm'
               }`}>Preview</label>
               <button
@@ -963,8 +936,6 @@ const Dashboard: React.FC = () => {
                   } ${previewMode ? (isPWA ? 'translate-x-2' : 'translate-x-3') : 'translate-x-0.5'}`}
                 />
               </button>
-              
-              {/* Info icon for preview mode */}
               <Popover>
                 <PopoverTrigger asChild>
                   <button className={`rounded-full hover:bg-amber-100 transition-colors ${
@@ -982,30 +953,34 @@ const Dashboard: React.FC = () => {
                 </PopoverContent>
               </Popover>
             </div>
-          </div>
 
-          {/* Center: Navigation Icon */}
-          <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-[60] pointer-events-auto" style={{ zIndex: 60 }}>
+            {/* Navigation Reset */}
             <div className={`flex items-center gap-2 bg-white shadow-xl rounded-lg border-4 border-amber-400 ${
               isPWA ? 'px-2 py-1' : 'px-3 py-2'
             }`} style={{ backgroundColor: '#fff', border: '4px solid #f59e0b' }}>
-              <Network className={`text-amber-600 ${
-                isPWA ? 'w-3 h-3' : 'w-4 h-4'
-              }`} />
-              <span className={`font-semibold text-amber-800 ${
-                isPWA ? 'text-xs' : 'text-sm'
-              }`}>Grid Map</span>
+              <div
+                onClick={resetView}
+                className="cursor-pointer hover:scale-110 transition-transform flex items-center gap-2"
+                title={isPWA ? "Reset Scroll Position" : "Reset Drag Position"}
+              >
+                <RotateCcw className={`text-amber-600 ${
+                  isPWA ? 'w-3 h-3' : 'w-4 h-4'
+                }`} />
+                <span className={`font-semibold text-amber-800 ${
+                  isPWA ? 'text-xs' : 'text-sm'
+                }`}>Reset View</span>
+              </div>
             </div>
-          </div>
 
-          {/* Right: Dots & Wheels Count */}
-          <div className="absolute top-4 right-4 z-[60] pointer-events-auto flex flex-col sm:flex-row gap-2" style={{ zIndex: 60 }}>
-            <button className="bg-white shadow-xl rounded-lg px-3 py-2 border-4 border-amber-400 text-sm font-semibold text-amber-800 hover:bg-amber-50 transition-colors whitespace-nowrap" style={{ backgroundColor: '#fff', border: '4px solid #f59e0b' }}>
-              {previewMode ? `Total Dots: ${totalDots}` : `Dots: ${totalDots}`}
-            </button>
-            <button className="bg-white shadow-xl rounded-lg px-3 py-2 border-4 border-amber-400 text-sm font-semibold text-amber-800 hover:bg-amber-50 transition-colors whitespace-nowrap" style={{ backgroundColor: '#fff', border: '4px solid #f59e0b' }}>
-              {previewMode ? `Total Wheels: ${totalWheels}` : `Wheels: ${totalWheels}`}
-            </button>
+            {/* Stats Display */}
+            <div className={`flex flex-col gap-1`}>
+              <button className="bg-white shadow-xl rounded-lg px-3 py-2 border-4 border-amber-400 text-sm font-semibold text-amber-800 hover:bg-amber-50 transition-colors whitespace-nowrap" style={{ backgroundColor: '#fff', border: '4px solid #f59e0b' }}>
+                Dots: {totalDots}
+              </button>
+              <button className="bg-white shadow-xl rounded-lg px-3 py-2 border-4 border-amber-400 text-sm font-semibold text-amber-800 hover:bg-amber-50 transition-colors whitespace-nowrap" style={{ backgroundColor: '#fff', border: '4px solid #f59e0b' }}>
+                Wheels: {totalWheels}
+              </button>
+            </div>
           </div>
 
           {/* Fullscreen exit button - bottom right */}
