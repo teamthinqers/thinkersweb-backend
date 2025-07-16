@@ -33,7 +33,7 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
     return saved ? JSON.parse(saved) : { x: 320, y: 180 };
   });
   const [isExpanded, setIsExpanded] = useState(false);
-  const [captureMode, setCaptureMode] = useState<'select' | 'create-type' | 'text' | 'voice' | 'direct-chat' | 'whatsapp'>('select');
+  const [captureMode, setCaptureMode] = useState<'select' | 'create-type' | 'text' | 'voice' | 'wheel-text' | 'wheel-voice' | 'direct-chat' | 'whatsapp'>('select');
   const [userCaptureMode, setUserCaptureMode] = useState<'natural' | 'ai'>('natural');
   const [createType, setCreateType] = useState<'dot' | 'wheel' | null>(null);
   
@@ -590,7 +590,7 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                         </button>
                       )}
                     </div>
-                    <h3 className="text-xl font-semibold text-gray-800">Save a Dot</h3>
+                    <h3 className="text-xl font-semibold text-gray-800">Create or Save</h3>
                     <Button
                       variant="ghost"
                       onClick={handleClose}
@@ -604,21 +604,129 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                     <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-amber-500 to-orange-600 flex items-center justify-center">
                       <div className="w-4 h-4 bg-white rounded-full"></div>
                     </div>
-                    <p className="text-gray-600">How would you like to capture your Dot?</p>
+                    <p className="text-gray-600">What would you like to create?</p>
+                  </div>
+                  
+                  {/* Creation Type Selection */}
+                  <div className="grid grid-cols-2 gap-4 mb-6">
+                    <Button
+                      onClick={() => {
+                        setCreateType('wheel');
+                        setCaptureMode('create-type');
+                      }}
+                      className="h-32 bg-gradient-to-br from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white rounded-xl flex flex-col items-center justify-center space-y-3 shadow-lg transform transition-all duration-200 hover:scale-105"
+                    >
+                      <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
+                        <div className="w-8 h-8 rounded-full bg-indigo-500"></div>
+                      </div>
+                      <span className="text-xl font-semibold">Create a Wheel</span>
+                      <span className="text-xs opacity-80">Organize your thoughts</span>
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        setCreateType('dot');
+                        setCaptureMode('create-type');
+                      }}
+                      className="h-32 bg-gradient-to-br from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl flex flex-col items-center justify-center space-y-3 shadow-lg transform transition-all duration-200 hover:scale-105"
+                    >
+                      <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
+                        <div className="w-4 h-4 bg-white rounded-full"></div>
+                      </div>
+                      <span className="text-xl font-semibold">Save a Dot</span>
+                      <span className="text-xs opacity-80">Capture your insight</span>
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              {captureMode === 'create-type' && (
+                <div className="p-6 space-y-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <Button
+                      variant="ghost"
+                      onClick={() => setCaptureMode('select')}
+                      className="h-8 w-8 p-0 rounded-full"
+                    >
+                      <ArrowLeft className="w-4 h-4" />
+                    </Button>
+                    <div className="flex items-center gap-2">
+                      {userCaptureMode === 'natural' ? (
+                        <button
+                          onClick={() => {
+                            setUserCaptureMode('ai');
+                            localStorage.setItem('dotCaptureMode', 'ai');
+                            window.dispatchEvent(new StorageEvent('storage', {
+                              key: 'dotCaptureMode',
+                              newValue: 'ai'
+                            }));
+                          }}
+                          className="px-4 py-2 text-sm font-semibold bg-gradient-to-r from-orange-100 to-amber-100 text-orange-700 rounded-full border border-orange-200 hover:from-orange-200 hover:to-amber-200 hover:shadow-md transition-all duration-200 cursor-pointer transform hover:scale-105"
+                        >
+                          Natural Mode ↻
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => {
+                            setUserCaptureMode('natural');
+                            localStorage.setItem('dotCaptureMode', 'natural');
+                            window.dispatchEvent(new StorageEvent('storage', {
+                              key: 'dotCaptureMode',
+                              newValue: 'natural'
+                            }));
+                          }}
+                          className="px-4 py-2 text-sm font-semibold bg-gradient-to-r from-purple-100 to-violet-100 text-purple-700 rounded-full border border-purple-200 hover:from-purple-200 hover:to-violet-200 hover:shadow-md transition-all duration-200 cursor-pointer transform hover:scale-105"
+                        >
+                          AI Mode ↻
+                        </button>
+                      )}
+                    </div>
+                    <h3 className="text-xl font-semibold text-gray-800">
+                      {createType === 'wheel' ? 'Create a Wheel' : 'Save a Dot'}
+                    </h3>
+                    <Button
+                      variant="ghost"
+                      onClick={handleClose}
+                      className="h-8 w-8 p-0 rounded-full"
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
+                  </div>
+                  
+                  <div className="text-center mb-6">
+                    <div className={`w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center ${
+                      createType === 'wheel' 
+                        ? 'bg-gradient-to-r from-indigo-500 to-purple-600' 
+                        : 'bg-gradient-to-r from-amber-500 to-orange-600'
+                    }`}>
+                      {createType === 'wheel' ? (
+                        <div className="w-8 h-8 rounded-full bg-indigo-500"></div>
+                      ) : (
+                        <div className="w-4 h-4 bg-white rounded-full"></div>
+                      )}
+                    </div>
+                    <p className="text-gray-600">
+                      How would you like to {createType === 'wheel' ? 'create your Wheel' : 'capture your Dot'}?
+                    </p>
                   </div>
                   
                   {userCaptureMode === 'natural' ? (
                     <div className="grid grid-cols-2 gap-4">
                       <Button
-                        onClick={() => setCaptureMode('voice')}
-                        className="h-28 bg-gradient-to-br from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl flex flex-col items-center justify-center space-y-3 shadow-lg transform transition-all duration-200 hover:scale-105"
+                        onClick={() => setCaptureMode(createType === 'wheel' ? 'wheel-voice' : 'voice')}
+                        className={`h-28 ${createType === 'wheel' 
+                          ? 'bg-gradient-to-br from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700' 
+                          : 'bg-gradient-to-br from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700'
+                        } text-white rounded-xl flex flex-col items-center justify-center space-y-3 shadow-lg transform transition-all duration-200 hover:scale-105`}
                       >
                         <Mic className="w-10 h-10" />
                         <span className="text-xl font-semibold">Voice</span>
                       </Button>
                       <Button
-                        onClick={() => setCaptureMode('text')}
-                        className="h-28 bg-gradient-to-br from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl flex flex-col items-center justify-center space-y-3 shadow-lg transform transition-all duration-200 hover:scale-105"
+                        onClick={() => setCaptureMode(createType === 'wheel' ? 'wheel-text' : 'text')}
+                        className={`h-28 ${createType === 'wheel' 
+                          ? 'bg-gradient-to-br from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700' 
+                          : 'bg-gradient-to-br from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700'
+                        } text-white rounded-xl flex flex-col items-center justify-center space-y-3 shadow-lg transform transition-all duration-200 hover:scale-105`}
                       >
                         <Type className="w-10 h-10" />
                         <span className="text-xl font-semibold">Text</span>
@@ -642,12 +750,15 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                           try {
                             const response = await fetch('/api/whatsapp/contact');
                             const data = await response.json();
-                            const defaultMessage = encodeURIComponent("Hi DotSpark, I would need your assistance in saving a dot");
+                            const defaultMessage = encodeURIComponent(
+                              createType === 'wheel' 
+                                ? "Hi DotSpark, I would need your assistance in creating a wheel"
+                                : "Hi DotSpark, I would need your assistance in saving a dot"
+                            );
                             const whatsappUrl = `https://wa.me/${data.phoneNumber}?text=${defaultMessage}`;
                             window.location.href = whatsappUrl;
                           } catch (error) {
                             console.error('Failed to get WhatsApp contact:', error);
-                            // Fallback to direct WhatsApp web
                             window.location.href = 'https://web.whatsapp.com/';
                           }
                         }}
@@ -683,18 +794,18 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                 </div>
               )}
 
-              {captureMode === 'text' && (
+              {captureMode === 'wheel-text' && (
                 <div className="p-6 space-y-4">
                   <div className="flex items-center justify-between mb-4">
                     <Button
                       variant="ghost"
-                      onClick={() => setCaptureMode('select')}
+                      onClick={() => setCaptureMode('create-type')}
                       className="h-8 w-8 p-0 rounded-full"
                     >
                       <ArrowLeft className="w-4 h-4" />
                     </Button>
                     <div className="flex items-center gap-2">
-                      <h3 className="font-medium">Text Input</h3>
+                      <h3 className="font-medium">Create Wheel - Text</h3>
                       {userCaptureMode === 'natural' ? (
                         <button
                           onClick={() => {
@@ -725,537 +836,292 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                         </button>
                       )}
                     </div>
-                    
-                    {/* Gamified Progress Meter */}
-                    <div className="relative w-10 h-10 group">
-                      {/* Motivational tooltip */}
-                      <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none z-50">
-                        {Object.values(structuredInput).filter(Boolean).length === 0 && "Start your dot journey! 🚀"}
-                        {Object.values(structuredInput).filter(Boolean).length === 1 && "Great start! 2 more layers 💪"}
-                        {Object.values(structuredInput).filter(Boolean).length === 2 && "Almost there! Final layer 🔥"}
-                        {Object.values(structuredInput).filter(Boolean).length === 3 && "Perfect dot completed! ⭐"}
-                      </div>
-                      
-                      {/* Outer glow ring with intensity levels */}
-                      <div className={`absolute inset-0 rounded-full transition-all duration-700 ${
-                        Object.values(structuredInput).filter(Boolean).length === 3 
-                          ? 'bg-gradient-to-r from-green-400 to-emerald-500 animate-pulse shadow-xl shadow-green-400/60' 
-                          : Object.values(structuredInput).filter(Boolean).length === 2
-                          ? 'bg-gradient-to-r from-orange-400 to-red-500 shadow-lg shadow-orange-400/50'
-                          : Object.values(structuredInput).filter(Boolean).length === 1
-                          ? 'bg-gradient-to-r from-amber-400 to-orange-500 shadow-md shadow-amber-400/40'
-                          : 'bg-gradient-to-r from-gray-300 to-gray-400 shadow-sm shadow-gray-300/20'
-                      }`} style={{
-                        filter: `blur(${
-                          Object.values(structuredInput).filter(Boolean).length === 3 ? '3px' : 
-                          Object.values(structuredInput).filter(Boolean).length === 2 ? '2px' : 
-                          Object.values(structuredInput).filter(Boolean).length === 1 ? '1.5px' : '1px'
-                        })`
-                      }}></div>
-                      
-                      {/* Main progress ring */}
-                      <svg className="w-10 h-10 transform -rotate-90 relative z-10" viewBox="0 0 40 40">
-                        {/* Background circle */}
-                        <circle
-                          cx="20"
-                          cy="20"
-                          r="16"
-                          stroke="currentColor"
-                          strokeWidth="3"
-                          fill="none"
-                          className="text-gray-200/50"
-                        />
-                        
-                        {/* Progress circle with gradient */}
-                        <circle
-                          cx="20"
-                          cy="20"
-                          r="16"
-                          stroke="url(#progressGradient)"
-                          strokeWidth="3"
-                          fill="none"
-                          strokeDasharray={`${2 * Math.PI * 16}`}
-                          strokeDashoffset={`${2 * Math.PI * 16 * (1 - (Object.values(structuredInput).filter(Boolean).length / 4))}`}
-                          className="transition-all duration-700 ease-out"
-                          strokeLinecap="round"
-                          style={{
-                            filter: Object.values(structuredInput).filter(Boolean).length === 4 ? 'drop-shadow(0 0 4px rgba(34, 197, 94, 0.6))' : 'none'
-                          }}
-                        />
-                        
-                        {/* Gradient definitions */}
-                        <defs>
-                          <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stopColor={Object.values(structuredInput).filter(Boolean).length === 4 ? "#10b981" : "#f59e0b"} />
-                            <stop offset="50%" stopColor={Object.values(structuredInput).filter(Boolean).length === 4 ? "#22c55e" : "#f97316"} />
-                            <stop offset="100%" stopColor={Object.values(structuredInput).filter(Boolean).length === 4 ? "#34d399" : "#ea580c"} />
-                          </linearGradient>
-                        </defs>
-                      </svg>
-                      
-                      {/* Center content */}
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        {Object.values(structuredInput).filter(Boolean).length === 4 ? (
-                          <div className="flex items-center justify-center">
-                            <div className="w-4 h-4 rounded-full bg-gradient-to-r from-green-400 to-emerald-500 animate-bounce shadow-lg"></div>
-                          </div>
-                        ) : (
-                          <div className="text-center">
-                            <div className={`text-xs font-bold transition-all duration-300 ${
-                              Object.values(structuredInput).filter(Boolean).length === 0 ? 'text-gray-400' :
-                              Object.values(structuredInput).filter(Boolean).length === 1 ? 'text-amber-600' :
-                              Object.values(structuredInput).filter(Boolean).length < 4 ? 'text-orange-600' :
-                              'text-green-600'
-                            }`}>
-                              {Object.values(structuredInput).filter(Boolean).length}/4
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                      
-                      {/* Achievement celebration when complete */}
-                      {Object.values(structuredInput).filter(Boolean).length === 4 && (
-                        <>
-                          {/* Victory sparkles */}
-                          <div className="absolute -top-2 -right-2 w-3 h-3 bg-yellow-400 rounded-full animate-ping shadow-lg"></div>
-                          <div className="absolute -bottom-2 -left-2 w-2 h-2 bg-green-400 rounded-full animate-ping shadow-md" style={{animationDelay: '0.3s'}}></div>
-                          <div className="absolute top-0 -left-2 w-1.5 h-1.5 bg-emerald-400 rounded-full animate-ping" style={{animationDelay: '0.6s'}}></div>
-                          <div className="absolute -top-1 left-0 w-1 h-1 bg-blue-400 rounded-full animate-ping" style={{animationDelay: '0.9s'}}></div>
-                          <div className="absolute bottom-0 -right-1 w-1.5 h-1.5 bg-purple-400 rounded-full animate-ping" style={{animationDelay: '1.2s'}}></div>
-                          
-                          {/* Success burst effect */}
-                          <div className="absolute inset-0 rounded-full bg-gradient-to-r from-green-300 to-emerald-400 animate-ping opacity-20"></div>
-                        </>
-                      )}
-                    </div>
+                    <Button
+                      variant="ghost"
+                      onClick={handleClose}
+                      className="h-8 w-8 p-0 rounded-full"
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
                   </div>
-                  
-                  <div className="space-y-3">
-                    {/* Heading Input */}
-                    <div className="p-4 bg-gradient-to-br from-yellow-50 to-amber-50 rounded-xl border-2 border-yellow-200 shadow-sm hover:shadow-md transition-all duration-300">
-                      <div className="flex items-center gap-2 mb-3">
-                        <div className="w-6 h-6 rounded-full bg-gradient-to-r from-yellow-600 to-amber-600 flex items-center justify-center">
-                          <span className="text-white text-xs font-bold">H</span>
-                        </div>
-                        <label className="text-sm font-semibold text-yellow-700">
-                          Heading (max 30 chars)
-                        </label>
-                      </div>
-                      <Input
-                        value={structuredInput.heading}
-                        onChange={(e) => setStructuredInput(prev => ({...prev, heading: e.target.value}))}
-                        placeholder="Enter a short heading for your dot"
-                        maxLength={30}
-                        className="text-sm border-yellow-300 focus:border-yellow-500 focus:ring-yellow-400 bg-white/80 backdrop-blur-sm font-medium"
-                      />
-                      <div className="text-xs text-yellow-600 mt-2 flex justify-between items-center">
-                        <span>Short keyword or phrase to identify this dot</span>
-                        <span className="font-medium">{structuredInput.heading.length}/30</span>
-                      </div>
-                    </div>
 
-                    <div className="p-4 bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl border-2 border-amber-200 shadow-sm hover:shadow-md transition-all duration-300">
+                  {/* Three Layer Wheel Input */}
+                  <div className="space-y-6">
+                    {/* Layer 1: Heading */}
+                    <div className="p-4 bg-gradient-to-br from-indigo-50/50 to-purple-50/50 rounded-xl border-2 border-indigo-300 shadow-sm hover:shadow-md transition-all duration-300">
                       <div className="flex items-center gap-2 mb-3">
-                        <div className="w-6 h-6 rounded-full bg-gradient-to-r from-amber-600 to-orange-600 flex items-center justify-center">
+                        <div className="w-6 h-6 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 flex items-center justify-center">
                           <span className="text-white text-xs font-bold">1</span>
                         </div>
-                        <label className="text-sm font-semibold text-amber-700">
-                          Layer 1: Summary (max 220 chars)
-                        </label>
+                        <h5 className="text-sm font-semibold text-indigo-700">Layer 1: Heading</h5>
+                        {wheelInput.heading && <span className="text-xs text-green-600 ml-auto">✓ Done</span>}
                       </div>
-                      <Textarea
-                        value={structuredInput.summary}
-                        onChange={(e) => setStructuredInput(prev => ({...prev, summary: e.target.value}))}
-                        placeholder="Enter your thoughts here"
-                        maxLength={220}
-                        className="min-h-16 text-sm border-amber-300 focus:border-amber-500 focus:ring-amber-400 bg-white/80 backdrop-blur-sm"
+                      <Input
+                        value={wheelInput.heading}
+                        onChange={(e) => setWheelInput(prev => ({ ...prev, heading: e.target.value }))}
+                        placeholder="Enter wheel heading (e.g., Morning Clarity)"
+                        className="border-indigo-200 focus:border-indigo-400 focus:ring-indigo-400"
                       />
-                      <div className="text-xs text-amber-600 mt-2 flex justify-between items-center">
-                        <span>Sharp thoughts spark better insights</span>
-                        <span className="font-medium">{structuredInput.summary.length}/220</span>
-                      </div>
+                      <p className="text-xs text-indigo-600 mt-2">
+                        Give your wheel a clear, memorable name
+                      </p>
                     </div>
 
-                    <div className="p-4 bg-gradient-to-br from-amber-50/50 to-orange-50/50 rounded-xl border-2 border-amber-300 shadow-sm hover:shadow-md transition-all duration-300">
+                    {/* Layer 2: Purpose */}
+                    <div className="p-4 bg-gradient-to-br from-indigo-50/60 to-purple-50/60 rounded-xl border-2 border-indigo-400 shadow-sm hover:shadow-md transition-all duration-300">
                       <div className="flex items-center gap-2 mb-3">
-                        <div className="w-6 h-6 rounded-full bg-gradient-to-r from-amber-700 to-orange-700 flex items-center justify-center">
+                        <div className="w-6 h-6 rounded-full bg-gradient-to-r from-indigo-600 to-purple-700 flex items-center justify-center">
                           <span className="text-white text-xs font-bold">2</span>
                         </div>
-                        <label className="text-sm font-semibold text-amber-800">
-                          Layer 2: Anchor (max 300 chars)
-                        </label>
+                        <h5 className="text-sm font-semibold text-indigo-800">Layer 2: Purpose</h5>
+                        {wheelInput.purpose && <span className="text-xs text-green-600 ml-auto">✓ Done</span>}
                       </div>
                       <Textarea
-                        value={structuredInput.anchor}
-                        onChange={(e) => setStructuredInput(prev => ({...prev, anchor: e.target.value}))}
-                        placeholder="Context or memory anchor"
+                        value={wheelInput.purpose}
+                        onChange={(e) => setWheelInput(prev => ({ ...prev, purpose: e.target.value }))}
+                        placeholder="Describe the purpose of this wheel..."
+                        className="border-indigo-200 focus:border-indigo-400 focus:ring-indigo-400 min-h-[80px]"
                         maxLength={300}
-                        className="min-h-20 text-sm border-amber-400 focus:border-amber-600 focus:ring-amber-500 bg-white/80 backdrop-blur-sm"
                       />
-                      <div className="text-xs text-amber-700 mt-2 flex justify-between items-center">
-                        <span>Context that helps you remember later</span>
-                        <span className="font-medium">{structuredInput.anchor.length}/300</span>
+                      <div className="flex justify-between text-xs mt-2">
+                        <span className="text-indigo-600">Define what this wheel is meant to organize</span>
+                        <span className="text-indigo-500">{wheelInput.purpose.length}/300</span>
                       </div>
                     </div>
 
-                    <div className="p-4 bg-gradient-to-br from-orange-50/30 to-amber-50/30 rounded-xl border-2 border-orange-200 shadow-sm hover:shadow-md transition-all duration-300">
+                    {/* Layer 3: Timeline */}
+                    <div className="p-4 bg-gradient-to-br from-purple-50/30 to-indigo-50/30 rounded-xl border-2 border-purple-200 shadow-sm hover:shadow-md transition-all duration-300">
                       <div className="flex items-center gap-2 mb-3">
-                        <div className="w-6 h-6 rounded-full bg-gradient-to-r from-orange-600 to-amber-600 flex items-center justify-center">
+                        <div className="w-6 h-6 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 flex items-center justify-center">
                           <span className="text-white text-xs font-bold">3</span>
                         </div>
-                        <label className="text-sm font-semibold text-orange-700">
-                          Layer 3: Pulse (One word emotion)
-                        </label>
+                        <h5 className="text-sm font-semibold text-purple-700">Layer 3: Timeline</h5>
+                        {wheelInput.timeline && <span className="text-xs text-green-600 ml-auto">✓ Done</span>}
                       </div>
-                      
-                      {/* Emotion Selection Grid */}
-                      <div className="grid grid-cols-3 gap-2 mb-3">
-                        {['excited', 'curious', 'focused', 'happy', 'calm', 'inspired', 'confident', 'grateful', 'motivated'].map((emotion) => (
-                          <button
-                            key={emotion}
-                            onClick={() => setStructuredInput(prev => ({...prev, pulse: emotion}))}
-                            className={`px-2 py-1 text-xs rounded-lg border transition-all duration-200 ${
-                              structuredInput.pulse === emotion
-                                ? 'bg-orange-500 text-white border-orange-600 shadow-md'
-                                : 'bg-white/80 text-orange-700 border-orange-200 hover:bg-orange-50 hover:border-orange-300'
-                            }`}
-                          >
-                            {emotion}
-                          </button>
-                        ))}
-                      </div>
-                      
                       <Input
-                        value={structuredInput.pulse}
-                        onChange={(e) => setStructuredInput(prev => ({...prev, pulse: e.target.value}))}
-                        placeholder="Or type your own..."
-                        maxLength={20}
-                        className="text-center border-2 border-orange-300 focus:border-orange-500 focus:ring-orange-400 bg-white/80 backdrop-blur-sm font-medium text-sm"
+                        value={wheelInput.timeline}
+                        onChange={(e) => setWheelInput(prev => ({ ...prev, timeline: e.target.value }))}
+                        placeholder="Timeline (e.g., Daily, Weekly, Ongoing)"
+                        className="border-purple-200 focus:border-purple-400 focus:ring-purple-400"
                       />
-                      <div className="text-xs text-orange-600 mt-2 text-center">
-                        Select or type your emotional state
-                      </div>
+                      <p className="text-xs text-purple-600 mt-2">
+                        When will this wheel be most relevant?
+                      </p>
                     </div>
 
-                    {!isSaved ? (
+                    {wheelInput.heading && wheelInput.purpose && wheelInput.timeline && (
                       <Button 
-                        onClick={handleSubmit}
-                        className="w-full h-12 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl text-lg font-semibold shadow-lg"
-                        disabled={!structuredInput.heading || !structuredInput.summary || !structuredInput.anchor || !structuredInput.pulse}
+                        onClick={() => {
+                          toast({
+                            title: "Wheel Created!",
+                            description: `"${wheelInput.heading}" has been successfully created.`,
+                          });
+                          setIsSaved(true);
+                        }}
+                        className="w-full h-12 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white rounded-xl text-lg font-semibold shadow-lg"
                       >
-                        Save a Dot
+                        Create Wheel
                       </Button>
-                    ) : (
-                      <div className="space-y-3">
-                        <Button 
-                          className="w-full h-12 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl text-lg font-semibold shadow-lg cursor-default"
-                          disabled
-                        >
-                          ✓ Saved
-                        </Button>
-                        <Button 
-                          onClick={confirmClose}
-                          variant="outline"
-                          className="w-full h-10 border-2 border-gray-300 hover:border-gray-400 text-gray-700 rounded-xl font-medium"
-                        >
-                          Close
-                        </Button>
-                      </div>
                     )}
                   </div>
                 </div>
               )}
 
-              {captureMode === 'voice' && (
+              {captureMode === 'wheel-voice' && (
                 <div className="p-6 space-y-4">
                   <div className="flex items-center justify-between mb-4">
                     <Button
                       variant="ghost"
-                      onClick={() => setCaptureMode('select')}
+                      onClick={() => setCaptureMode('create-type')}
                       className="h-8 w-8 p-0 rounded-full"
                     >
                       <ArrowLeft className="w-4 h-4" />
                     </Button>
-                    <div className="flex items-center gap-2">
-                      <h3 className="font-medium">Voice Input</h3>
-                      {userCaptureMode === 'natural' ? (
-                        <span className="px-2 py-1 text-xs font-medium bg-gradient-to-r from-orange-100 to-amber-100 text-orange-700 rounded-full border border-orange-200">
-                          Natural
-                        </span>
-                      ) : (
-                        <span className="px-2 py-1 text-xs font-medium bg-gradient-to-r from-purple-100 to-violet-100 text-purple-700 rounded-full border border-purple-200">
-                          AI
-                        </span>
-                      )}
-                    </div>
-                    
-                    {/* Gamified Progress Meter */}
-                    <div className="relative w-10 h-10 group">
-                      {/* Motivational tooltip */}
-                      <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none z-50">
-                        {Object.values(voiceSteps).filter(Boolean).length === 0 && "Start recording! 🎤"}
-                        {Object.values(voiceSteps).filter(Boolean).length === 1 && "Keep going! 3 more steps 🔊"}
-                        {Object.values(voiceSteps).filter(Boolean).length === 2 && "Halfway there! 2 more steps 🎯"}
-                        {Object.values(voiceSteps).filter(Boolean).length === 3 && "Almost done! 1 more step 🏁"}
-                        {Object.values(voiceSteps).filter(Boolean).length === 4 && "Voice dot mastered! 🏆"}
-                      </div>
-                      
-                      {/* Outer glow ring with intensity levels */}
-                      <div className={`absolute inset-0 rounded-full transition-all duration-700 ${
-                        Object.values(voiceSteps).filter(Boolean).length === 3 
-                          ? 'bg-gradient-to-r from-green-400 to-emerald-500 animate-pulse shadow-xl shadow-green-400/60' 
-                          : Object.values(voiceSteps).filter(Boolean).length === 2
-                          ? 'bg-gradient-to-r from-orange-400 to-red-500 shadow-lg shadow-orange-400/50'
-                          : Object.values(voiceSteps).filter(Boolean).length === 1
-                          ? 'bg-gradient-to-r from-amber-400 to-orange-500 shadow-md shadow-amber-400/40'
-                          : 'bg-gradient-to-r from-gray-300 to-gray-400 shadow-sm shadow-gray-300/20'
-                      }`} style={{
-                        filter: `blur(${
-                          Object.values(voiceSteps).filter(Boolean).length === 3 ? '3px' : 
-                          Object.values(voiceSteps).filter(Boolean).length === 2 ? '2px' : 
-                          Object.values(voiceSteps).filter(Boolean).length === 1 ? '1.5px' : '1px'
-                        })`
-                      }}></div>
-                      
-                      {/* Main progress ring */}
-                      <svg className="w-10 h-10 transform -rotate-90 relative z-10" viewBox="0 0 40 40">
-                        {/* Background circle */}
-                        <circle
-                          cx="20"
-                          cy="20"
-                          r="16"
-                          stroke="currentColor"
-                          strokeWidth="3"
-                          fill="none"
-                          className="text-gray-200/50"
-                        />
-                        
-                        {/* Progress circle with gradient */}
-                        <circle
-                          cx="20"
-                          cy="20"
-                          r="16"
-                          stroke="url(#voiceProgressGradient)"
-                          strokeWidth="3"
-                          fill="none"
-                          strokeDasharray={`${2 * Math.PI * 16}`}
-                          strokeDashoffset={`${2 * Math.PI * 16 * (1 - (Object.values(voiceSteps).filter(Boolean).length / 4))}`}
-                          className="transition-all duration-700 ease-out"
-                          strokeLinecap="round"
-                          style={{
-                            filter: Object.values(voiceSteps).filter(Boolean).length === 4 ? 'drop-shadow(0 0 4px rgba(34, 197, 94, 0.6))' : 'none'
-                          }}
-                        />
-                        
-                        {/* Gradient definitions */}
-                        <defs>
-                          <linearGradient id="voiceProgressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stopColor={Object.values(voiceSteps).filter(Boolean).length === 4 ? "#10b981" : "#f59e0b"} />
-                            <stop offset="50%" stopColor={Object.values(voiceSteps).filter(Boolean).length === 4 ? "#22c55e" : "#f97316"} />
-                            <stop offset="100%" stopColor={Object.values(voiceSteps).filter(Boolean).length === 4 ? "#34d399" : "#ea580c"} />
-                          </linearGradient>
-                        </defs>
-                      </svg>
-                      
-                      {/* Center content */}
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        {Object.values(voiceSteps).filter(Boolean).length === 4 ? (
-                          <div className="flex items-center justify-center">
-                            <div className="w-4 h-4 rounded-full bg-gradient-to-r from-green-400 to-emerald-500 animate-bounce shadow-lg"></div>
-                          </div>
-                        ) : (
-                          <div className="text-center">
-                            <div className={`text-xs font-bold transition-all duration-300 ${
-                              Object.values(voiceSteps).filter(Boolean).length === 0 ? 'text-gray-400' :
-                              Object.values(voiceSteps).filter(Boolean).length === 1 ? 'text-amber-600' :
-                              'text-orange-600'
-                            }`}>
-                              {Object.values(voiceSteps).filter(Boolean).length}/4
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                      
-                      {/* Achievement celebration when complete */}
-                      {Object.values(voiceSteps).filter(Boolean).length === 4 && (
-                        <>
-                          {/* Victory sparkles */}
-                          <div className="absolute -top-2 -right-2 w-3 h-3 bg-yellow-400 rounded-full animate-ping shadow-lg"></div>
-                          <div className="absolute -bottom-2 -left-2 w-2 h-2 bg-green-400 rounded-full animate-ping shadow-md" style={{animationDelay: '0.3s'}}></div>
-                          <div className="absolute top-0 -left-2 w-1.5 h-1.5 bg-emerald-400 rounded-full animate-ping" style={{animationDelay: '0.6s'}}></div>
-                          <div className="absolute -top-1 left-0 w-1 h-1 bg-blue-400 rounded-full animate-ping" style={{animationDelay: '0.9s'}}></div>
-                          <div className="absolute bottom-0 -right-1 w-1.5 h-1.5 bg-purple-400 rounded-full animate-ping" style={{animationDelay: '1.2s'}}></div>
-                          
-                          {/* Success burst effect */}
-                          <div className="absolute inset-0 rounded-full bg-gradient-to-r from-green-300 to-emerald-400 animate-ping opacity-20"></div>
-                        </>
-                      )}
-                    </div>
+                    <h3 className="font-medium">Create Wheel - Voice</h3>
+                    <Button
+                      variant="ghost"
+                      onClick={handleClose}
+                      className="h-8 w-8 p-0 rounded-full"
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
                   </div>
-                  
-                  <div className="space-y-3">
-                    <div className="p-4 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border-2 border-blue-200 shadow-sm hover:shadow-md transition-all duration-300">
+
+                  {/* Three Layer Voice Wheel Input */}
+                  <div className="space-y-4">
+                    {/* Layer 1: Heading */}
+                    <div className="p-4 bg-gradient-to-br from-indigo-50/50 to-purple-50/50 rounded-xl border-2 border-indigo-300 shadow-sm">
                       <div className="flex items-center gap-2 mb-3">
-                        <div className="w-6 h-6 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 flex items-center justify-center">
+                        <div className="w-6 h-6 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 flex items-center justify-center">
                           <span className="text-white text-xs font-bold">1</span>
                         </div>
-                        <h5 className="text-sm font-semibold text-blue-700">Layer 1: Heading (10 sec)</h5>
-                        {voiceSteps.heading && <span className="text-xs text-green-600 ml-auto">✓ Done</span>}
+                        <h5 className="text-sm font-semibold text-indigo-700">Layer 1: Heading</h5>
+                        {wheelVoiceSteps.heading && <span className="text-xs text-green-600 ml-auto">✓ Done</span>}
                       </div>
-                      <p className="text-xs text-blue-600 mb-3">
-                        "Start with a short heading for your dot"
+                      <p className="text-xs text-indigo-600 mb-3">
+                        "What would you like to name this wheel?"
                       </p>
                       <Button
-                        variant={isRecording && currentStep === 1 ? 'destructive' : 'default'}
-                        onClick={() => handleVoiceStep(1)}
-                        className="w-full h-10 text-sm bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white"
+                        onClick={() => {
+                          toast({
+                            title: "Voice recording simulation",
+                            description: "Voice recording started for wheel heading",
+                          });
+                          setTimeout(() => {
+                            setWheelVoiceSteps(prev => ({ ...prev, heading: 'Morning Clarity' }));
+                          }, 2000);
+                        }}
+                        className="w-full h-10 text-sm bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white"
                       >
                         <Mic className="h-4 w-4 mr-2" />
-                        {isRecording && currentStep === 1 ? 'Recording...' : 'Record Heading'}
+                        Record Heading
                       </Button>
-                      {voiceSteps.heading && (
-                        <div className="mt-3 p-3 bg-white/80 rounded-lg text-xs border border-blue-200">
-                          {voiceSteps.heading.substring(0, 30)}... ({voiceSteps.heading.length}/100 charac)
+                      {wheelVoiceSteps.heading && (
+                        <div className="mt-3 p-3 bg-white/80 rounded-lg text-xs border border-indigo-200">
+                          "{wheelVoiceSteps.heading}"
                         </div>
                       )}
                     </div>
 
-                    <div className="p-4 bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl border-2 border-amber-200 shadow-sm hover:shadow-md transition-all duration-300">
+                    {/* Layer 2: Purpose */}
+                    <div className="p-4 bg-gradient-to-br from-indigo-50/60 to-purple-50/60 rounded-xl border-2 border-indigo-400 shadow-sm">
                       <div className="flex items-center gap-2 mb-3">
-                        <div className="w-6 h-6 rounded-full bg-gradient-to-r from-amber-600 to-orange-600 flex items-center justify-center">
+                        <div className="w-6 h-6 rounded-full bg-gradient-to-r from-indigo-600 to-purple-700 flex items-center justify-center">
                           <span className="text-white text-xs font-bold">2</span>
                         </div>
-                        <h5 className="text-sm font-semibold text-amber-700">Layer 2: Dot (20-30 sec)</h5>
-                        {voiceSteps.summary && <span className="text-xs text-green-600 ml-auto">✓ Done</span>}
+                        <h5 className="text-sm font-semibold text-indigo-800">Layer 2: Purpose</h5>
+                        {wheelVoiceSteps.purpose && <span className="text-xs text-green-600 ml-auto">✓ Done</span>}
                       </div>
-                      <p className="text-xs text-amber-600 mb-3">
-                        "Now explain your core insight. What's the main thought?"
+                      <p className="text-xs text-indigo-700 mb-3">
+                        "Describe the purpose of this wheel. What will it organize?"
                       </p>
                       <Button
-                        variant={isRecording && currentStep === 2 ? 'destructive' : 'default'}
-                        onClick={() => handleVoiceStep(2)}
-                        className="w-full h-10 text-sm bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white"
-                        disabled={!voiceSteps.heading}
+                        onClick={() => {
+                          toast({
+                            title: "Voice recording simulation",
+                            description: "Voice recording started for wheel purpose",
+                          });
+                          setTimeout(() => {
+                            setWheelVoiceSteps(prev => ({ ...prev, purpose: 'A collection of morning routines and thoughts to start the day with clarity and focus' }));
+                          }, 3000);
+                        }}
+                        className="w-full h-10 text-sm bg-gradient-to-r from-indigo-600 to-purple-700 hover:from-indigo-700 hover:to-purple-800 text-white"
+                        disabled={!wheelVoiceSteps.heading}
                       >
                         <Mic className="h-4 w-4 mr-2" />
-                        {isRecording && currentStep === 2 ? 'Recording...' : 'Record Dot'}
+                        Record Purpose
                       </Button>
-                      {voiceSteps.summary && (
-                        <div className="mt-3 p-3 bg-white/80 rounded-lg text-xs border border-amber-200">
-                          {voiceSteps.summary.substring(0, 50)}... ({voiceSteps.summary.length}/220 charac)
+                      {wheelVoiceSteps.purpose && (
+                        <div className="mt-3 p-3 bg-white/80 rounded-lg text-xs border border-indigo-200">
+                          {wheelVoiceSteps.purpose.substring(0, 80)}... ({wheelVoiceSteps.purpose.length}/300 charac)
                         </div>
                       )}
                     </div>
 
-                    <div className="p-4 bg-gradient-to-br from-amber-50/50 to-orange-50/50 rounded-xl border-2 border-amber-300 shadow-sm hover:shadow-md transition-all duration-300">
+                    {/* Layer 3: Timeline */}
+                    <div className="p-4 bg-gradient-to-br from-purple-50/30 to-indigo-50/30 rounded-xl border-2 border-purple-200 shadow-sm">
                       <div className="flex items-center gap-2 mb-3">
-                        <div className="w-6 h-6 rounded-full bg-gradient-to-r from-amber-700 to-orange-700 flex items-center justify-center">
+                        <div className="w-6 h-6 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 flex items-center justify-center">
                           <span className="text-white text-xs font-bold">3</span>
                         </div>
-                        <h5 className="text-sm font-semibold text-amber-800">Layer 3: Anchor (30-40 sec)</h5>
-                        {voiceSteps.anchor && <span className="text-xs text-green-600 ml-auto">✓ Done</span>}
+                        <h5 className="text-sm font-semibold text-purple-700">Layer 3: Timeline</h5>
+                        {wheelVoiceSteps.timeline && <span className="text-xs text-green-600 ml-auto">✓ Done</span>}
                       </div>
-                      <p className="text-xs text-amber-700 mb-3">
-                        "Now provide context. What will help you remember this?"
+                      <p className="text-xs text-purple-600 mb-3">
+                        "When will this wheel be most relevant? Daily, weekly, or ongoing?"
                       </p>
                       <Button
-                        variant={isRecording && currentStep === 3 ? 'destructive' : 'default'}
-                        onClick={() => handleVoiceStep(3)}
-                        className="w-full h-10 text-sm bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white"
-                        disabled={!voiceSteps.summary}
+                        onClick={() => {
+                          toast({
+                            title: "Voice recording simulation",
+                            description: "Voice recording started for wheel timeline",
+                          });
+                          setTimeout(() => {
+                            setWheelVoiceSteps(prev => ({ ...prev, timeline: 'Daily' }));
+                          }, 1500);
+                        }}
+                        className="w-full h-10 text-sm bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white"
+                        disabled={!wheelVoiceSteps.purpose}
                       >
                         <Mic className="h-4 w-4 mr-2" />
-                        {isRecording && currentStep === 3 ? 'Recording...' : 'Record Anchor'}
+                        Record Timeline
                       </Button>
-                      {voiceSteps.anchor && (
-                        <div className="mt-3 p-3 bg-white/80 rounded-lg text-xs border border-amber-200">
-                          {voiceSteps.anchor.substring(0, 50)}... ({voiceSteps.anchor.length}/300 charac)
+                      {wheelVoiceSteps.timeline && (
+                        <div className="mt-3 p-3 bg-white/80 rounded-lg text-xs border border-purple-200 text-center font-medium">
+                          Timeline: "{wheelVoiceSteps.timeline}"
                         </div>
                       )}
                     </div>
 
-                    <div className="p-4 bg-gradient-to-br from-orange-50/30 to-amber-50/30 rounded-xl border-2 border-orange-200 shadow-sm hover:shadow-md transition-all duration-300">
-                      <div className="flex items-center gap-2 mb-3">
-                        <div className="w-6 h-6 rounded-full bg-gradient-to-r from-orange-600 to-amber-600 flex items-center justify-center">
-                          <span className="text-white text-xs font-bold">4</span>
-                        </div>
-                        <h5 className="text-sm font-semibold text-orange-700">Layer 4: Pulse (5 sec)</h5>
-                        {voiceSteps.pulse && <span className="text-xs text-green-600 ml-auto">✓ Done</span>}
-                      </div>
-                      <p className="text-xs text-orange-600 mb-3">
-                        "Finally, say one emotion word that captures how you feel."
-                      </p>
-                      <Button
-                        variant={isRecording && currentStep === 4 ? 'destructive' : 'default'}
-                        onClick={() => handleVoiceStep(4)}
-                        className="w-full h-10 text-sm bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white"
-                        disabled={!voiceSteps.anchor}
+                    {wheelVoiceSteps.heading && wheelVoiceSteps.purpose && wheelVoiceSteps.timeline && (
+                      <Button 
+                        onClick={() => {
+                          toast({
+                            title: "Wheel Created!",
+                            description: `"${wheelVoiceSteps.heading}" has been successfully created.`,
+                          });
+                          setIsSaved(true);
+                        }}
+                        className="w-full h-12 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white rounded-xl text-lg font-semibold shadow-lg"
                       >
-                        <Mic className="h-4 w-4 mr-2" />
-                        {isRecording && currentStep === 4 ? 'Recording...' : 'Record Pulse'}
+                        Create Voice Wheel
                       </Button>
-                      {voiceSteps.pulse && (
-                        <div className="mt-3 p-3 bg-white/80 rounded-lg text-xs border border-orange-200 text-center font-medium">
-                          Pulse: "{voiceSteps.pulse}"
-                        </div>
-                      )}
-                    </div>
-
-                    {voiceSteps.heading && voiceSteps.summary && voiceSteps.anchor && voiceSteps.pulse && (
-                      !isSaved ? (
-                        <Button 
-                          onClick={handleSubmit}
-                          className="w-full h-12 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl text-lg font-semibold shadow-lg"
-                        >
-                          Save Voice Dot
-                        </Button>
-                      ) : (
-                        <div className="space-y-3">
-                          <Button 
-                            className="w-full h-12 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl text-lg font-semibold shadow-lg cursor-default"
-                            disabled
-                          >
-                            ✓ Saved
-                          </Button>
-                          <Button 
-                            onClick={confirmClose}
-                            variant="outline"
-                            className="w-full h-10 border-2 border-gray-300 hover:border-gray-400 text-gray-700 rounded-xl font-medium"
-                          >
-                            Close
-                          </Button>
-                        </div>
-                      )
                     )}
                   </div>
+                </div>
+              )}
+
+              {/* Saved state UI */}
+              {isSaved && (
+                <div className="text-center p-6">
+                  <div className="w-16 h-16 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center">
+                    <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-2">Saved Successfully!</h3>
+                  <p className="text-gray-600 mb-4">Your {createType} has been created and saved.</p>
+                  <Button 
+                    onClick={handleClose}
+                    className="bg-green-600 hover:bg-green-700 text-white"
+                  >
+                    Close
+                  </Button>
                 </div>
               )}
             </CardContent>
           </Card>
         </div>
       )}
-      
-      {/* Unsaved Changes Warning Dialog */}
+
+      {/* Exit Warning Dialog */}
       <AlertDialog open={showExitWarning} onOpenChange={setShowExitWarning}>
-        <AlertDialogContent className="sm:max-w-md">
+        <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle className="flex items-center gap-2">
-              <AlertTriangle className="w-5 h-5 text-amber-500" />
-              Your Dot is unsaved
-            </AlertDialogTitle>
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="h-5 w-5 text-amber-600" />
+              <AlertDialogTitle>Unsaved Changes</AlertDialogTitle>
+            </div>
             <AlertDialogDescription>
-              Are you sure you want to exit? Your progress will be lost if you haven't saved your dot.
+              You have unsaved changes that will be lost if you continue. Are you sure you want to exit?
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>
-              Continue editing
-            </AlertDialogCancel>
+            <AlertDialogCancel>Stay</AlertDialogCancel>
             <AlertDialogAction 
-              onClick={confirmClose}
-              className="bg-red-500 hover:bg-red-600"
+              onClick={() => {
+                setShowExitWarning(false);
+                setIsExpanded(false);
+                setStructuredInput({ heading: '', summary: '', anchor: '', pulse: '' });
+                setWheelInput({ heading: '', purpose: '', timeline: '' });
+                setWheelVoiceSteps({ heading: '', purpose: '', timeline: '' });
+                setCurrentStep(1);
+                setCaptureMode('select');
+                setIsSaved(false);
+              }}
+              className="bg-red-600 hover:bg-red-700"
             >
-              Exit without saving
+              Exit Anyway
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

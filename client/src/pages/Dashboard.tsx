@@ -244,38 +244,48 @@ const Dashboard: React.FC = () => {
     );
   };
 
-  const WheelCard: React.FC<{ wheel: Wheel }> = ({ wheel }) => (
-    <Card className="mb-4 hover:shadow-lg transition-shadow border-2 border-amber-100 bg-gradient-to-br from-white to-amber-50/20">
-      <CardHeader className="pb-2">
-        <div className="flex justify-between items-start">
-          <CardTitle className="text-lg font-semibold bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent">
-            {wheel.name}
-          </CardTitle>
-          <Badge variant="secondary" className="text-xs bg-amber-100 text-amber-800 border-amber-200">
-            {wheel.category}
-          </Badge>
-        </div>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-2">
-          {wheel.dots.map(dot => (
-            <div key={dot.id} className="p-2 bg-gradient-to-r from-amber-50/50 to-orange-50/50 rounded-md border border-amber-200">
-              <p className="text-sm font-medium mb-1 text-gray-800">{dot.summary}</p>
-              <div className="flex justify-between items-center">
-                <Badge className="bg-amber-100 text-amber-800 border-amber-200 text-xs">
-                  {dot.pulse}
+  const WheelCard: React.FC<{ wheel: Wheel; isPreview?: boolean; onClick?: () => void }> = ({ wheel, isPreview = false, onClick }) => {
+    const handleWheelClick = () => {
+      if (onClick) {
+        onClick();
+      } else {
+        // TODO: Implement wheel full view
+        console.log('Wheel clicked:', wheel.heading);
+      }
+    };
+
+    return (
+      <Card className={`mb-4 hover:shadow-md transition-shadow border border-indigo-200 bg-gradient-to-br from-indigo-50 to-purple-50 backdrop-blur cursor-pointer hover:bg-indigo-100/50`} onClick={handleWheelClick}>
+        <CardHeader className="pb-2">
+          <div className="flex justify-between items-start">
+            <div className="flex items-center gap-2">
+              <Badge variant="outline" className="text-xs border-indigo-300 text-indigo-700 bg-indigo-50/80">
+                <div className="w-3 h-3 rounded-full bg-indigo-500 mr-1"></div>
+                Wheel
+              </Badge>
+              {isPreview && (
+                <Badge className="bg-orange-100 text-orange-700 border-orange-200 text-xs">
+                  Preview
                 </Badge>
-                <span className="text-xs text-amber-600">{dot.sourceType}</span>
-              </div>
+              )}
             </div>
-          ))}
-        </div>
-        <div className="mt-3 text-xs text-amber-600">
-          Connected to: {wheel.connections.length} wheels
-        </div>
-      </CardContent>
-    </Card>
-  );
+            <Badge className="bg-gradient-to-r from-indigo-100 to-purple-100 text-indigo-800 border-indigo-200">
+              {wheel.timeline}
+            </Badge>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <h3 className="font-bold text-lg mb-3 text-indigo-800 border-b border-indigo-200 pb-2">
+            {wheel.heading}
+          </h3>
+          <p className="text-sm text-gray-700 leading-relaxed mb-2">{wheel.purpose}</p>
+          <div className="mt-2 text-xs text-indigo-700">
+            {wheel.createdAt ? new Date(wheel.createdAt).toLocaleString() : 'Preview'}
+          </div>
+        </CardContent>
+      </Card>
+    );
+  };
 
   const DotWheelsMap: React.FC<{ 
   wheels: Wheel[], 
