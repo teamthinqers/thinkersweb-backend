@@ -42,12 +42,16 @@ interface Wheel {
 }
 
 interface DashboardProps {
-  wheels: Wheel[];
-  dots: Dot[];
-  setViewFullWheel: (wheelId: string | null) => void;
+  wheels?: Wheel[];
+  dots?: Dot[];
+  setViewFullWheel?: (wheelId: string | null) => void;
 }
 
-const Dashboard: React.FC<DashboardProps> = ({ wheels, dots, setViewFullWheel }) => {
+const Dashboard: React.FC<DashboardProps> = ({ 
+  wheels = [], 
+  dots = [], 
+  setViewFullWheel = () => {} 
+}) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [viewFullDot, setViewFullDot] = useState<Dot | null>(null);
   const [selectedWheel, setSelectedWheel] = useState<string | null>(null);
