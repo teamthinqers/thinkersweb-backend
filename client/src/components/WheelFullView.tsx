@@ -37,7 +37,7 @@ const WheelFullView: React.FC<WheelFullViewProps> = ({ wheel, isOpen = true, onC
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader className="pb-4">
-          <div className="flex justify-between items-start">
+          <div className="flex justify-between items-start mb-4">
             <div className="flex items-center gap-2">
               <Badge variant="outline" className="text-xs border-amber-300 text-amber-700 bg-amber-50/80">
                 <div className="w-3 h-3 rounded-full bg-amber-500 mr-1"></div>
@@ -49,20 +49,26 @@ const WheelFullView: React.FC<WheelFullViewProps> = ({ wheel, isOpen = true, onC
                 </Badge>
               )}
             </div>
-            {onDelete && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleDelete}
-                className="text-red-500 hover:text-red-700 hover:bg-red-50"
-              >
-                <Trash2 className="w-4 h-4" />
-              </Button>
-            )}
+            {/* Spacer to push close button away from content */}
+            <div className="w-8"></div>
           </div>
           <DialogTitle className="text-2xl font-bold text-amber-800 border-b border-amber-200 pb-3">
             {wheel.heading || wheel.name}
           </DialogTitle>
+          {/* Delete button moved below title for better separation */}
+          {onDelete && (
+            <div className="flex justify-end pt-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleDelete}
+                className="text-red-500 hover:text-red-700 hover:bg-red-50 mr-8"
+              >
+                <Trash2 className="w-4 h-4 mr-1" />
+                Delete Wheel
+              </Button>
+            </div>
+          )}
         </DialogHeader>
 
         <div className="space-y-6">
