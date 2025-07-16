@@ -1153,6 +1153,7 @@ const Dashboard: React.FC = () => {
                     className={`absolute left-1/2 transform -translate-x-1/2 flex flex-col items-center ${
                       isParentWheel ? 'top-[-80px]' : 'top-[-60px]'
                     }`}
+                    style={{ position: 'relative' }}
                   >
                     {/* Spark symbol with blinking animation */}
                     <div className="relative mb-2">
@@ -1176,7 +1177,7 @@ const Dashboard: React.FC = () => {
                     {/* Wheel label */}
                     <div 
                       data-wheel-label
-                      className={`font-bold rounded-full text-white shadow-lg cursor-pointer hover:shadow-xl transition-all duration-200 hover:scale-105 pointer-events-auto ${
+                      className={`relative font-bold rounded-full text-white shadow-lg cursor-pointer hover:shadow-xl transition-all duration-200 hover:scale-105 pointer-events-auto ${
                         isParentWheel ? 'text-base px-4 py-2' : 'text-sm px-3 py-1'
                       }`}
                       style={{ backgroundColor: wheel.color }}
@@ -1198,62 +1199,64 @@ const Dashboard: React.FC = () => {
                       }}
                     >
                       {wheel.name}
+                      
+                      {/* Wheel Flash Card - positioned directly relative to the label */}
+                      {hoveredWheel?.id === wheel.id && (
+                        <div 
+                          className="absolute bg-white border-2 border-amber-200 rounded-lg p-3 shadow-xl z-50 w-64 cursor-pointer"
+                          style={{
+                            // Position directly next to the wheel label in browser mode
+                            left: isPWA ? '60px' : '100%',
+                            top: isPWA ? '-20px' : '0px',
+                            marginLeft: isPWA ? '0px' : '8px',
+                            maxWidth: '280px'
+                          }}
+                          onMouseEnter={(e) => {
+                            e.stopPropagation();
+                          }}
+                          onMouseLeave={(e) => {
+                            e.stopPropagation();
+                            setHoveredWheel(null);
+                          }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setViewFullWheel(wheel);
+                            setHoveredWheel(null);
+                          }}
+                          onTouchStart={(e) => {
+                            e.stopPropagation();
+                            setViewFullWheel(wheel);
+                            setHoveredWheel(null);
+                          }}
+                        >
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between">
+                              <Badge className="bg-amber-100 text-amber-800 text-xs">
+                                Wheel
+                              </Badge>
+                              {wheel.timeline && (
+                                <Badge className="bg-gray-100 text-gray-700 text-xs">
+                                  {wheel.timeline}
+                                </Badge>
+                              )}
+                            </div>
+                            <h4 className="font-bold text-lg text-amber-800 border-b border-amber-200 pb-2 mb-3">
+                              {wheel.heading || wheel.name}
+                            </h4>
+                            {wheel.purpose && (
+                              <p className="text-xs text-gray-600 line-clamp-3">
+                                {wheel.purpose}
+                              </p>
+                            )}
+                            <div className="text-xs text-amber-600 mt-2 font-medium">
+                              Click for full view
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
-                  
-                  {/* Wheel Flash Card - positioned exactly like dot flash cards */}
-                  {hoveredWheel?.id === wheel.id && (
-                    <div 
-                      className="absolute bg-white border-2 border-amber-200 rounded-lg p-3 shadow-xl z-50 w-64 cursor-pointer"
-                      style={{
-                        // Position next to wheel label like dot flash cards
-                        left: isPWA ? '60px' : `${wheelPosition.x + 120}px`,
-                        top: isPWA ? '-20px' : `${wheelPosition.y - (isParentWheel ? 100 : 80)}px`,
-                        maxWidth: '280px'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.stopPropagation();
-                      }}
-                      onMouseLeave={(e) => {
-                        e.stopPropagation();
-                        setHoveredWheel(null);
-                      }}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setViewFullWheel(wheel);
-                        setHoveredWheel(null);
-                      }}
-                      onTouchStart={(e) => {
-                        e.stopPropagation();
-                        setViewFullWheel(wheel);
-                        setHoveredWheel(null);
-                      }}
-                    >
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between">
-                          <Badge className="bg-amber-100 text-amber-800 text-xs">
-                            Wheel
-                          </Badge>
-                          {wheel.timeline && (
-                            <Badge className="bg-gray-100 text-gray-700 text-xs">
-                              {wheel.timeline}
-                            </Badge>
-                          )}
-                        </div>
-                        <h4 className="font-bold text-lg text-amber-800 border-b border-amber-200 pb-2 mb-3">
-                          {wheel.heading || wheel.name}
-                        </h4>
-                        {wheel.purpose && (
-                          <p className="text-xs text-gray-600 line-clamp-3">
-                            {wheel.purpose}
-                          </p>
-                        )}
-                        <div className="text-xs text-amber-600 mt-2 font-medium">
-                          Click for full view
-                        </div>
-                      </div>
-                    </div>
-                  )}
+
                 </div>
               );
             })}
