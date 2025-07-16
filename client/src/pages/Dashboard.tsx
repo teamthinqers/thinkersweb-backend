@@ -437,7 +437,7 @@ const Dashboard: React.FC = () => {
         color: '#F59E0B', // Consistent amber theme
         dots: [],
         connections: ['preview-wheel-0', 'preview-wheel-2'],
-        position: { x: 500, y: 150 }, // Position inside parent wheel
+        position: { x: 480, y: 140 }, // Position inside parent wheel
         parentWheelId: 'preview-wheel-parent',
         createdAt: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000) // 20 days ago
       };
@@ -481,7 +481,7 @@ const Dashboard: React.FC = () => {
         color: '#F59E0B', // Consistent amber theme
         dots: [],
         connections: ['preview-wheel-1'],
-        position: { x: 400, y: 250 }, // Position inside parent wheel
+        position: { x: 380, y: 260 }, // Position inside parent wheel
         parentWheelId: 'preview-wheel-parent',
         createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000) // 10 days ago
       };
@@ -525,7 +525,7 @@ const Dashboard: React.FC = () => {
         color: '#EC4899', // Pink theme
         dots: [],
         connections: [],
-        position: { x: 150, y: 450 },
+        position: { x: 150, y: 480 },
         // No parentWheelId - this is a standalone wheel
         createdAt: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000) // 25 days ago
       };
@@ -1173,9 +1173,19 @@ const Dashboard: React.FC = () => {
             
             {/* Wheel Boundaries for Preview Mode */}
             {previewMode && displayWheels.map((wheel, wheelIndex) => {
-              // Determine if this is a parent wheel (no parentWheelId)
+              // Determine wheel size based on type and hierarchy
               const isParentWheel = !wheel.parentWheelId;
-              const wheelSize = isParentWheel ? 350 : 180; // Parent wheel is much bigger
+              const isPersonalWheel = wheel.id === 'preview-wheel-personal';
+              
+              let wheelSize;
+              if (isParentWheel) {
+                wheelSize = 400; // Parent wheel (Build an Enduring Company) is biggest
+              } else if (isPersonalWheel) {
+                wheelSize = 160; // Personal wheel (Health & Wellness) is smaller
+              } else {
+                wheelSize = 180; // Regular child wheels
+              }
+              
               const wheelRadius = wheelSize / 2;
               
               return (

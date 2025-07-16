@@ -33,12 +33,12 @@ const WheelFlashCard: React.FC<WheelFlashCardProps> = ({ wheel, position, onClos
 
   return (
     <div 
-      className="fixed z-50 pointer-events-auto"
+      className="fixed z-[100] pointer-events-auto"
       style={{
-        left: position ? `${Math.min(position.x, window.innerWidth - 300)}px` : '50%',
-        top: position ? `${Math.min(position.y, window.innerHeight - 200)}px` : '50%',
+        left: position ? `${Math.min(position.x, window.innerWidth - 200)}px` : '50%',
+        top: position ? `${Math.min(position.y, window.innerHeight - 140)}px` : '50%',
         transform: position ? 'none' : 'translate(-50%, -50%)',
-        maxWidth: '280px'
+        maxWidth: '180px'
       }}
     >
       <Card 
@@ -48,8 +48,8 @@ const WheelFlashCard: React.FC<WheelFlashCardProps> = ({ wheel, position, onClos
           handleCardClick();
         }}
       >
-        <CardContent className="p-4">
-          <div className="flex justify-between items-start mb-3">
+        <CardContent className="p-2">
+          <div className="flex justify-between items-start mb-2">
             <Badge 
               variant="outline" 
               className="text-xs border-purple-300 text-purple-700 bg-purple-50/80"
@@ -68,12 +68,12 @@ const WheelFlashCard: React.FC<WheelFlashCardProps> = ({ wheel, position, onClos
             </button>
           </div>
           
-          <h3 className="font-bold text-lg mb-2 text-purple-800 border-b border-purple-200 pb-2">
+          <h3 className="font-bold text-sm mb-1 text-purple-800 border-b border-purple-200 pb-1">
             {wheel.heading || wheel.name}
           </h3>
           
           {wheel.purpose && (
-            <p className="text-sm text-gray-700 leading-relaxed mb-2 line-clamp-3">
+            <p className="text-xs text-gray-700 leading-relaxed mb-2 line-clamp-2">
               {wheel.purpose}
             </p>
           )}
@@ -84,12 +84,8 @@ const WheelFlashCard: React.FC<WheelFlashCardProps> = ({ wheel, position, onClos
             </Badge>
           )}
           
-          <div className="text-xs text-amber-600 mt-2 font-medium">
+          <div className="text-xs text-amber-600 mt-1 font-medium">
             Click for full view
-          </div>
-          
-          <div className="mt-2 text-xs text-gray-500">
-            {wheel.createdAt ? new Date(wheel.createdAt).toLocaleString() : 'Preview'}
           </div>
         </CardContent>
       </Card>
