@@ -150,8 +150,28 @@ const Dashboard: React.FC = () => {
     }
   }, [searchTerm, dots]);
 
-  // Mock wheels data for visualization
-  const [wheels] = useState<Wheel[]>([]);
+  // Fetch wheels data from API
+  const { data: wheels = [], isLoading: wheelsLoading, refetch: refetchWheels } = useQuery({
+    queryKey: ['/api/wheels'],
+    queryFn: async () => {
+      try {
+        const response = await fetch('/api/wheels');
+        if (!response.ok) {
+          return [];
+        }
+        return response.json();
+      } catch (error) {
+        return [];
+      }
+    },
+    retry: false,
+    staleTime: 60000, // Cache for 1 minute
+    refetchOnWindowFocus: false,
+    refetchOnMount: false, // Don't refetch on component mount if cached
+    enabled: true, // Always enabled but with aggressive caching
+    refetchInterval: false, // Disable automatic refetching
+    gcTime: 5 * 60 * 1000 // Keep data in cache for 5 minutes
+  });
 
   const DotCard: React.FC<{ dot: Dot; isPreview?: boolean; onClick?: () => void }> = ({ dot, isPreview = false, onClick }) => {
     const handleDotClick = () => {
@@ -957,7 +977,6 @@ const Dashboard: React.FC = () => {
                   ? 'bg-amber-100 text-amber-700'
                   : 'bg-orange-100 text-orange-700'
               }`}>
-                {selectedTool === 'select' && 'Navigate Mode'}
                 {selectedTool === 'create-dot' && 'Click to Create Dot'}
                 {selectedTool === 'create-wheel' && 'Click to Create Wheel'}
               </div>
@@ -1716,7 +1735,7 @@ const Dashboard: React.FC = () => {
           onDelete={async (wheelId) => {
             try {
               await fetch(`/api/wheels/${wheelId}`, { method: 'DELETE' });
-              // Refresh wheels data if needed
+              refetchWheels(); // Refresh wheels data
             } catch (error) {
               console.error('Error deleting wheel:', error);
             }
@@ -1759,6 +1778,7 @@ const Dashboard: React.FC = () => {
           // Remove pending wheel on successful creation
           setPendingWheels(prev => prev.filter(wheel => wheel.id !== editingElementId));
           setEditingElementId(null);
+          refetchWheels(); // Refresh wheels data
         }}
         onCancel={() => {
           // Remove pending wheel on cancel
