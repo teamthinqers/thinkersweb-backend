@@ -692,8 +692,8 @@ const Dashboard: React.FC = () => {
         return;
       }
       
-      // Only create if using creation tools
-      if (selectedTool === 'create-dot' || selectedTool === 'create-wheel') {
+      // Only create if using creation tools AND NOT in preview mode
+      if ((selectedTool === 'create-dot' || selectedTool === 'create-wheel') && !previewMode) {
         e.preventDefault();
         e.stopPropagation();
         
@@ -716,8 +716,8 @@ const Dashboard: React.FC = () => {
 
     // Unified drag handlers for both browser and PWA
     const handleMouseDown = (e: React.MouseEvent) => {
-      // Handle creation tool clicks first
-      if (selectedTool !== 'select') {
+      // Handle creation tool clicks first (only in normal mode)
+      if (selectedTool !== 'select' && !previewMode) {
         handleGridClick(e);
         return;
       }
@@ -941,20 +941,27 @@ const Dashboard: React.FC = () => {
                 <Network className="w-4 h-4 text-amber-600" />
                 <span className="text-sm font-semibold text-gray-700">Interactive Grid</span>
               </div>
-              <div className={`px-3 py-1 rounded-full text-xs font-medium ${
-                selectedTool === 'select' 
-                  ? 'bg-gray-100 text-gray-700' 
-                  : selectedTool === 'create-dot'
-                  ? 'bg-amber-100 text-amber-700'
-                  : 'bg-orange-100 text-orange-700'
-              }`}>
-                {selectedTool === 'select' && 'Navigate Mode'}
-                {selectedTool === 'create-dot' && 'Click to Create Dot'}
-                {selectedTool === 'create-wheel' && 'Click to Create Wheel'}
-              </div>
+              {previewMode ? (
+                <div className="px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">
+                  Preview Mode - Tools Disabled
+                </div>
+              ) : (
+                <div className={`px-3 py-1 rounded-full text-xs font-medium ${
+                  selectedTool === 'select' 
+                    ? 'bg-gray-100 text-gray-700' 
+                    : selectedTool === 'create-dot'
+                    ? 'bg-amber-100 text-amber-700'
+                    : 'bg-orange-100 text-orange-700'
+                }`}>
+                  {selectedTool === 'select' && 'Navigate Mode'}
+                  {selectedTool === 'create-dot' && 'Click to Create Dot'}
+                  {selectedTool === 'create-wheel' && 'Click to Create Wheel'}
+                </div>
+              )}
             </div>
             <div className="text-xs text-gray-500">
-              {selectedTool !== 'select' && 'Click anywhere on the grid below'}
+              {!previewMode && selectedTool !== 'select' && 'Click anywhere on the grid below'}
+              {previewMode && 'Turn off Preview Mode to use creation tools'}
             </div>
           </div>
         )}
@@ -967,11 +974,11 @@ const Dashboard: React.FC = () => {
               ? 'h-screen w-screen' 
               : 'h-[450px] w-full'
           } overflow-hidden border-2 ${
-            selectedTool !== 'select' 
+            !previewMode && selectedTool !== 'select' 
               ? 'border-amber-400 border-dashed animate-pulse' 
               : 'border-gray-200'
           } ${
-            selectedTool === 'select' 
+            previewMode || selectedTool === 'select' 
               ? isPWA ? 'cursor-grab active:cursor-grabbing' : 'cursor-grab active:cursor-grabbing'
               : selectedTool === 'create-dot'
               ? 'cursor-crosshair'
@@ -1479,10 +1486,10 @@ const Dashboard: React.FC = () => {
   return (
     <TooltipProvider>
       <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50 flex">
-        {/* Tools Sidebar */}
+        {/* Tools Sidebar - Only functional in normal mode */}
         <ToolsSidebar 
-          selectedTool={selectedTool} 
-          onToolChange={setSelectedTool} 
+          selectedTool={previewMode ? 'select' : selectedTool} 
+          onToolChange={previewMode ? () => {} : setSelectedTool} 
         />
         
         {/* Main Content Area */}
