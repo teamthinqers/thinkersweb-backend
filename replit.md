@@ -160,6 +160,8 @@ Changelog:
   * Enhanced search functionality to work with preview mode data for comprehensive keyword searching
   * Added preview data generation at Dashboard level for search compatibility across all modes
   * Search now works seamlessly in both normal and preview modes with full three-tier architecture support
+  * Modified AI mode interface to skip creation type selection and directly show Direct Chat and WhatsApp options
+  * Streamlined AI mode user flow - users go straight to AI assistance options without intermediate steps
   * Updated StructuredFloatingDot.tsx with consistent amber/orange gradients across all chakra voice recording layers
   * Fixed creation type selection buttons: double layered rotating circle for wheels, Settings icon for chakras
   * Updated center icons in creation mode display to match standardized icon usage

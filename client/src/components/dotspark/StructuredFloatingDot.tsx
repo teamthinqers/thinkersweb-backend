@@ -687,60 +687,112 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                     </Button>
                   </div>
                   
-                  <div className="text-center mb-6">
-                    <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-amber-500 to-orange-600 flex items-center justify-center">
-                      <div className="w-4 h-4 bg-white rounded-full"></div>
-                    </div>
-                    <h2 className="text-xl font-semibold bg-gradient-to-r from-amber-700 to-orange-700 bg-clip-text text-transparent">
-                      What would you like to create?
-                    </h2>
-                  </div>
-                  
-                  {/* Creation Type Selection */}
-                  <div className="grid grid-cols-3 gap-3 mb-6">
-                    <Button
-                      onClick={() => {
-                        setCreateType('dot');
-                        setCaptureMode('create-type');
-                      }}
-                      className="h-28 bg-gradient-to-br from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl flex flex-col items-center justify-center space-y-2 shadow-lg transform transition-all duration-200 hover:scale-105"
-                    >
-                      <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
-                        <div className="w-3 h-3 bg-white rounded-full"></div>
-                      </div>
-                      <span className="text-sm font-semibold">Save a Dot</span>
-                      <span className="text-xs opacity-80">Capture insight</span>
-                    </Button>
-                    <Button
-                      onClick={() => {
-                        setCreateType('wheel');
-                        setCaptureMode('create-type');
-                      }}
-                      className="h-28 bg-gradient-to-br from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white rounded-xl flex flex-col items-center justify-center space-y-2 shadow-lg transform transition-all duration-200 hover:scale-105"
-                    >
-                      <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
-                        <div className="relative w-6 h-6">
-                          <div className="absolute inset-0 w-6 h-6 border-2 border-white rounded-full animate-spin"></div>
-                          <div className="absolute inset-1 w-4 h-4 border-2 border-white/70 rounded-full animate-spin" style={{ animationDirection: 'reverse', animationDuration: '3s' }}></div>
+                  {userCaptureMode === 'ai' ? (
+                    // AI Mode - Direct options
+                    <>
+                      <div className="text-center mb-6">
+                        <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-purple-500 to-violet-600 flex items-center justify-center">
+                          <Brain className="w-8 h-8 text-white" />
                         </div>
+                        <h2 className="text-xl font-semibold bg-gradient-to-r from-purple-700 to-violet-700 bg-clip-text text-transparent">
+                          How would you like to get AI assistance?
+                        </h2>
                       </div>
-                      <span className="text-sm font-semibold">Create Wheel</span>
-                      <span className="text-xs opacity-80">Organize dots</span>
-                    </Button>
-                    <Button
-                      onClick={() => {
-                        setCreateType('chakra');
-                        setCaptureMode('create-type');
-                      }}
-                      className="h-28 bg-gradient-to-br from-amber-600 to-orange-700 hover:from-amber-700 hover:to-orange-800 text-white rounded-xl flex flex-col items-center justify-center space-y-2 shadow-lg transform transition-all duration-200 hover:scale-105"
-                    >
-                      <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
-                        <Settings className="w-6 h-6 text-white animate-spin" style={{ animationDuration: '4s' }} />
+                      
+                      {/* AI Mode Options */}
+                      <div className="grid grid-cols-2 gap-4">
+                        <Button
+                          onClick={() => {
+                            setIsExpanded(false);
+                            window.location.href = '/chat';
+                          }}
+                          className="h-28 bg-gradient-to-br from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700 text-white rounded-xl flex flex-col items-center justify-center space-y-3 shadow-lg transform transition-all duration-200 hover:scale-105"
+                        >
+                          <BrainCircuit className="w-10 h-10" />
+                          <span className="text-xl font-semibold">Direct Chat</span>
+                        </Button>
+                        <Button
+                          onClick={async () => {
+                            setIsExpanded(false);
+                            try {
+                              const response = await fetch('/api/whatsapp/contact');
+                              const data = await response.json();
+                              const defaultMessage = encodeURIComponent("Hi DotSpark, I would need your assistance in saving a dot");
+                              const whatsappUrl = `https://wa.me/${data.phoneNumber}?text=${defaultMessage}`;
+                              window.location.href = whatsappUrl;
+                            } catch (error) {
+                              console.error('Failed to get WhatsApp contact:', error);
+                              window.location.href = 'https://web.whatsapp.com/';
+                            }
+                          }}
+                          className="h-28 bg-gradient-to-br from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-xl flex flex-col items-center justify-center space-y-3 shadow-lg transform transition-all duration-200 hover:scale-105"
+                        >
+                          <svg className="w-10 h-10" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.465 3.063" />
+                          </svg>
+                          <span className="text-xl font-semibold">WhatsApp</span>
+                        </Button>
                       </div>
-                      <span className="text-sm font-semibold">Create Chakra</span>
-                      <span className="text-xs opacity-80">Group wheels</span>
-                    </Button>
-                  </div>
+                    </>
+                  ) : (
+                    // Natural Mode - Creation type selection
+                    <>
+                      <div className="text-center mb-6">
+                        <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-amber-500 to-orange-600 flex items-center justify-center">
+                          <div className="w-4 h-4 bg-white rounded-full"></div>
+                        </div>
+                        <h2 className="text-xl font-semibold bg-gradient-to-r from-amber-700 to-orange-700 bg-clip-text text-transparent">
+                          What would you like to create?
+                        </h2>
+                      </div>
+                      
+                      {/* Creation Type Selection */}
+                      <div className="grid grid-cols-3 gap-3 mb-6">
+                        <Button
+                          onClick={() => {
+                            setCreateType('dot');
+                            setCaptureMode('create-type');
+                          }}
+                          className="h-28 bg-gradient-to-br from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl flex flex-col items-center justify-center space-y-2 shadow-lg transform transition-all duration-200 hover:scale-105"
+                        >
+                          <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                            <div className="w-3 h-3 bg-white rounded-full"></div>
+                          </div>
+                          <span className="text-sm font-semibold">Save a Dot</span>
+                          <span className="text-xs opacity-80">Capture insight</span>
+                        </Button>
+                        <Button
+                          onClick={() => {
+                            setCreateType('wheel');
+                            setCaptureMode('create-type');
+                          }}
+                          className="h-28 bg-gradient-to-br from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white rounded-xl flex flex-col items-center justify-center space-y-2 shadow-lg transform transition-all duration-200 hover:scale-105"
+                        >
+                          <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                            <div className="relative w-6 h-6">
+                              <div className="absolute inset-0 w-6 h-6 border-2 border-white rounded-full animate-spin"></div>
+                              <div className="absolute inset-1 w-4 h-4 border-2 border-white/70 rounded-full animate-spin" style={{ animationDirection: 'reverse', animationDuration: '3s' }}></div>
+                            </div>
+                          </div>
+                          <span className="text-sm font-semibold">Create Wheel</span>
+                          <span className="text-xs opacity-80">Organize dots</span>
+                        </Button>
+                        <Button
+                          onClick={() => {
+                            setCreateType('chakra');
+                            setCaptureMode('create-type');
+                          }}
+                          className="h-28 bg-gradient-to-br from-amber-600 to-orange-700 hover:from-amber-700 hover:to-orange-800 text-white rounded-xl flex flex-col items-center justify-center space-y-2 shadow-lg transform transition-all duration-200 hover:scale-105"
+                        >
+                          <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                            <Settings className="w-6 h-6 text-white animate-spin" style={{ animationDuration: '4s' }} />
+                          </div>
+                          <span className="text-sm font-semibold">Create Chakra</span>
+                          <span className="text-xs opacity-80">Group wheels</span>
+                        </Button>
+                      </div>
+                    </>
+                  )}
                 </div>
               )}
 
