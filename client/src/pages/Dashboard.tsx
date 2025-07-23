@@ -249,7 +249,7 @@ const Dashboard: React.FC = () => {
     const [hoveredDot, setHoveredDot] = useState<Dot | null>(null);
     const [hoveredWheel, setHoveredWheel] = useState<Wheel | null>(null);
     // previewMode is now passed as props from parent component
-    const [zoom, setZoom] = useState(1);
+    const [zoom, setZoom] = useState(0.6);
     const gridContainerRef = useRef<HTMLDivElement>(null);
     const [dragStart, setDragStart] = useState<{ x: number; y: number } | null>(null);
     const [offset, setOffset] = useState({ x: 0, y: 0 });
