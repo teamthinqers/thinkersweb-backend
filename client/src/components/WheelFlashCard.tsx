@@ -38,13 +38,14 @@ const WheelFlashCard: React.FC<WheelFlashCardProps> = ({ wheel, position, onClos
 
   return (
     <div 
-      className="fixed z-[9999] pointer-events-auto wheel-flash-card"
+      className="fixed z-[99999] pointer-events-auto wheel-flash-card"
       style={{
         left: position ? `${Math.min(position.x, window.innerWidth - 240)}px` : '50%',
         top: position ? `${Math.min(position.y, window.innerHeight - 140)}px` : '50%',
         transform: position ? 'none' : 'translate(-50%, -50%)',
         maxWidth: '220px',
-        minWidth: '200px'
+        minWidth: '200px',
+        zIndex: 99999
       }}
       onMouseEnter={(e) => {
         e.stopPropagation();
