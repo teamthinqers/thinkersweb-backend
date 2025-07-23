@@ -40,10 +40,11 @@ const WheelFlashCard: React.FC<WheelFlashCardProps> = ({ wheel, position, onClos
     <div 
       className="fixed z-[100] pointer-events-auto wheel-flash-card"
       style={{
-        left: position ? `${Math.min(position.x, window.innerWidth - 200)}px` : '50%',
+        left: position ? `${Math.min(position.x, window.innerWidth - 220)}px` : '50%',
         top: position ? `${Math.min(position.y, window.innerHeight - 140)}px` : '50%',
         transform: position ? 'none' : 'translate(-50%, -50%)',
-        maxWidth: '180px'
+        maxWidth: '200px',
+        minWidth: '180px'
       }}
       onMouseEnter={(e) => {
         e.stopPropagation();
@@ -80,7 +81,7 @@ const WheelFlashCard: React.FC<WheelFlashCardProps> = ({ wheel, position, onClos
             </button>
           </div>
           
-          <h3 className={`font-bold text-sm mb-1 ${isChakra ? 'text-amber-800 border-b border-amber-200' : 'text-indigo-800 border-b border-indigo-200'} pb-1`}>
+          <h3 className={`font-bold text-sm mb-1 ${isChakra ? 'text-amber-800 border-b border-amber-200' : 'text-indigo-800 border-b border-indigo-200'} pb-1 break-words overflow-hidden line-clamp-2`}>
             {wheel.heading || wheel.name}
           </h3>
           
