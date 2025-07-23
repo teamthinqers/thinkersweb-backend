@@ -274,6 +274,67 @@ router.put('/position', async (req, res) => {
 });
 
 /**
+ * PUT /api/drag/relationship - Update parent-child relationships (dot to wheel, wheel to chakra)
+ */
+router.put('/relationship', async (req, res) => {
+  try {
+    const { elementId, newParentId, elementType } = req.body;
+    
+    if (!elementId || !elementType) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required fields: elementId, elementType'
+      });
+    }
+    
+    const userId = req.session?.userId || 1;
+    
+    // Update relationship in database based on element type
+    if (elementType === 'dot') {
+      // Move dot to different wheel (or make it free if newParentId is null)
+      await db.update(dots)
+        .set({ 
+          wheelId: newParentId ? parseInt(newParentId) : null,
+          updatedAt: new Date()
+        })
+        .where(and(eq(dots.id, parseInt(elementId)), eq(dots.userId, userId)));
+        
+      return res.json({
+        success: true,
+        message: `Dot ${newParentId ? 'moved to wheel' : 'made free'}`
+      });
+      
+    } else if (elementType === 'wheel') {
+      // Move wheel to different chakra (or make it free if newParentId is null)
+      await db.update(wheels)
+        .set({ 
+          chakraId: newParentId ? parseInt(newParentId) : null,
+          updatedAt: new Date()
+        })
+        .where(and(eq(wheels.id, parseInt(elementId)), eq(wheels.userId, userId)));
+        
+      return res.json({
+        success: true,
+        message: `Wheel ${newParentId ? 'moved to chakra' : 'made free'}`
+      });
+      
+    } else {
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid element type for relationship update'
+      });
+    }
+    
+  } catch (error) {
+    console.error('Relationship update error:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to update relationship'
+    });
+  }
+});
+
+/**
  * POST /api/drag/auto-arrange - Auto-arrange all elements optimally
  */
 router.post('/auto-arrange', async (req, res) => {

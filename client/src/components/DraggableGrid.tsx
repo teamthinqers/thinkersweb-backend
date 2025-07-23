@@ -23,6 +23,9 @@ interface DragPosition {
 interface DragElement extends DragPosition {
   isDragging?: boolean;
   data?: any; // Additional element data (dot/wheel/chakra details)
+  parentId?: string; // Current parent (wheelId for dots, chakraId for wheels)
+  isDropTarget?: boolean; // Whether this element can accept drops
+  isValidDropTarget?: boolean; // Whether current drag is valid for this target
 }
 
 interface CanvasConfig {
@@ -59,6 +62,8 @@ export function DraggableGrid({
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [previewMode, setPreviewMode] = useState(false);
   const [isPWA, setIsPWA] = useState(false);
+  const [dropTargets, setDropTargets] = useState<string[]>([]);
+  const [hoveredDropTarget, setHoveredDropTarget] = useState<string | null>(null);
   
   const containerRef = useRef<HTMLDivElement>(null);
   
@@ -98,6 +103,25 @@ export function DraggableGrid({
       elementType: string;
     }) => {
       const response = await fetch('/api/drag/position', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(params)
+      });
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/drag/positions'] });
+    }
+  });
+  
+  // Relationship update mutation (for moving dots between wheels, wheels between chakras)
+  const updateRelationshipMutation = useMutation({
+    mutationFn: async (params: {
+      elementId: string;
+      newParentId: string | null;
+      elementType: string;
+    }) => {
+      const response = await fetch('/api/drag/relationship', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(params)
@@ -194,6 +218,26 @@ export function DraggableGrid({
       x: canvasX - element.x,
       y: canvasY - element.y
     });
+    
+    // Calculate valid drop targets based on element type
+    const validTargets: string[] = [];
+    if (element.type === 'dot') {
+      // Dots can be dropped on wheels or canvas (to become free dots)
+      elements.forEach(el => {
+        if (el.type === 'wheel' && el.id !== element.parentId) {
+          validTargets.push(el.id);
+        }
+      });
+    } else if (element.type === 'wheel') {
+      // Wheels can be dropped on chakras or canvas (to become free wheels)
+      elements.forEach(el => {
+        if (el.type === 'chakra' && el.id !== element.parentId) {
+          validTargets.push(el.id);
+        }
+      });
+    }
+    
+    setDropTargets(validTargets);
   }, [elements, offset, zoom]);
   
   const handleElementMouseMove = useCallback((e: React.MouseEvent) => {
@@ -217,7 +261,27 @@ export function DraggableGrid({
       element.y = newPosition.y;
       element.isDragging = true;
     }
-  }, [draggedElement, offset, zoom, dragOffset, elements]);
+    
+    // Check for hover over drop targets
+    let newHoveredTarget: string | null = null;
+    for (const targetId of dropTargets) {
+      const target = elements.find(el => el.id === targetId);
+      if (!target) continue;
+      
+      const distance = Math.sqrt(
+        Math.pow(newPosition.x - target.x, 2) + 
+        Math.pow(newPosition.y - target.y, 2)
+      );
+      
+      // Check if dragged element is within drop target radius
+      if (distance < target.radius) {
+        newHoveredTarget = targetId;
+        break;
+      }
+    }
+    
+    setHoveredDropTarget(newHoveredTarget);
+  }, [draggedElement, offset, zoom, dragOffset, elements, dropTargets]);
   
   const handleElementMouseUp = useCallback(async () => {
     if (!draggedElement) return;
@@ -225,21 +289,44 @@ export function DraggableGrid({
     const element = elements.find(el => el.id === draggedElement);
     if (!element) return;
     
-    // Validate and update position
     try {
+      // Check if dropped on a valid target for relationship change
+      if (hoveredDropTarget) {
+        const targetElement = elements.find(el => el.id === hoveredDropTarget);
+        if (targetElement) {
+          // Update relationship
+          await updateRelationshipMutation.mutateAsync({
+            elementId: element.id,
+            newParentId: hoveredDropTarget,
+            elementType: element.type
+          });
+          
+          toast({
+            title: "Relationship Updated",
+            description: `${element.type} moved to new ${targetElement.type}`,
+          });
+          
+          element.isDragging = false;
+          setDraggedElement(null);
+          setDropTargets([]);
+          setHoveredDropTarget(null);
+          return;
+        }
+      }
+      
+      // Regular position validation and update
       const validationResult = await validatePositionMutation.mutateAsync({
         elementId: element.id,
         position: { x: element.x, y: element.y },
         elementType: element.type,
         radius: element.radius,
-        parentId: element.type === 'dot' ? element.data?.wheelId : 
-                  element.type === 'wheel' ? element.data?.chakraId : undefined
+        parentId: element.parentId
       });
       
       if (validationResult.success) {
         const finalPosition = validationResult.position || { x: element.x, y: element.y };
         
-        // Update in database
+        // Update position in database
         await updatePositionMutation.mutateAsync({
           elementId: element.id,
           position: finalPosition,
@@ -270,10 +357,10 @@ export function DraggableGrid({
         queryClient.invalidateQueries({ queryKey: ['/api/drag/positions'] });
       }
     } catch (error) {
-      console.error('Position update failed:', error);
+      console.error('Update failed:', error);
       toast({
         title: "Update Failed",
-        description: "Could not update element position.",
+        description: "Could not update element.",
         variant: "destructive"
       });
       
@@ -283,7 +370,9 @@ export function DraggableGrid({
     
     element.isDragging = false;
     setDraggedElement(null);
-  }, [draggedElement, elements, validatePositionMutation, updatePositionMutation, toast, queryClient]);
+    setDropTargets([]);
+    setHoveredDropTarget(null);
+  }, [draggedElement, elements, hoveredDropTarget, validatePositionMutation, updatePositionMutation, updateRelationshipMutation, toast, queryClient]);
   
   // Reset view function
   const resetView = useCallback(() => {
@@ -300,22 +389,40 @@ export function DraggableGrid({
   
   // Render individual element
   const renderElement = useCallback((element: DragElement) => {
+    const isDropTarget = dropTargets.includes(element.id);
+    const isHoveredTarget = hoveredDropTarget === element.id;
+    
     const style = {
       left: element.x - element.radius,
       top: element.y - element.radius,
       width: element.radius * 2,
       height: element.radius * 2,
       cursor: element.isDragging ? 'grabbing' : 'grab',
-      zIndex: element.isDragging ? 1000 : element.type === 'chakra' ? 1 : element.type === 'wheel' ? 2 : 3
+      zIndex: element.isDragging ? 1000 : 
+              isDropTarget ? 100 : 
+              element.type === 'chakra' ? 1 : element.type === 'wheel' ? 2 : 3
     };
     
-    const className = `absolute rounded-full transition-all duration-200 border-2 ${
-      element.isDragging ? 'shadow-2xl scale-110' : 'hover:shadow-lg hover:scale-105'
-    } ${
-      element.type === 'dot' ? 'bg-gradient-to-br from-amber-400 to-orange-500 border-amber-300' :
-      element.type === 'wheel' ? 'bg-gradient-to-br from-orange-500 to-red-500 border-orange-400' :
-      'bg-gradient-to-br from-amber-600 to-amber-800 border-amber-500'
+    let className = `absolute rounded-full transition-all duration-200 border-2 ${
+      element.isDragging ? 'shadow-2xl scale-110' : 
+      isHoveredTarget ? 'shadow-2xl scale-110 animate-pulse' :
+      isDropTarget ? 'shadow-lg scale-105 border-dashed' :
+      'hover:shadow-lg hover:scale-105'
     }`;
+    
+    // Base colors
+    if (element.type === 'dot') {
+      className += ' bg-gradient-to-br from-amber-400 to-orange-500 border-amber-300';
+    } else if (element.type === 'wheel') {
+      className += ' bg-gradient-to-br from-orange-500 to-red-500 border-orange-400';
+    } else {
+      className += ' bg-gradient-to-br from-amber-600 to-amber-800 border-amber-500';
+    }
+    
+    // Drop target highlighting
+    if (isDropTarget) {
+      className += isHoveredTarget ? ' border-green-400 ring-4 ring-green-200' : ' border-blue-400 ring-2 ring-blue-200';
+    }
     
     return (
       <div
@@ -323,7 +430,7 @@ export function DraggableGrid({
         style={style}
         className={className}
         onMouseDown={(e) => handleElementMouseDown(e, element.id)}
-        title={`${element.type}: ${element.id}`}
+        title={`${element.type}: ${element.id}${isDropTarget ? ' (Drop Target)' : ''}`}
       >
         {/* Element content/icon */}
         <div className="w-full h-full flex items-center justify-center text-white">
@@ -331,9 +438,18 @@ export function DraggableGrid({
           {element.type === 'wheel' && <Settings className="w-6 h-6" />}
           {element.type === 'chakra' && <Settings className="w-8 h-8" />}
         </div>
+        
+        {/* Drop target indicator */}
+        {isDropTarget && (
+          <div className="absolute -inset-2 rounded-full border-2 border-dashed border-blue-400 pointer-events-none">
+            {isHoveredTarget && (
+              <div className="absolute -inset-1 rounded-full bg-green-400/20 animate-pulse" />
+            )}
+          </div>
+        )}
       </div>
     );
-  }, [handleElementMouseDown]);
+  }, [handleElementMouseDown, dropTargets, hoveredDropTarget]);
   
   if (isLoading) {
     return (
