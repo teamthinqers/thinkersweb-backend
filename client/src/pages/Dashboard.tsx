@@ -490,17 +490,69 @@ const Dashboard: React.FC = () => {
     );
   };
 
-  // Standard Grid Configuration Constants
-  const GRID_CONFIG = {
-    preview: {
-      wheelRadius: 60, // 120px diameter
-      dotRadius: { base: 25, min: 20, reduction: 2 }, // For ≤3 dots: 25px, min 20px
-      safetyBuffer: 35 // 60 - 25 = 35px buffer
-    },
-    real: {
-      wheelRadius: 75, // 150px diameter  
-      dotRadius: { base: 35, min: 28, reduction: 2 }, // For ≤3 dots: 35px, min 28px
-      safetyBuffer: 40 // 75 - 35 = 40px buffer
+  // Dynamic Grid Configuration - Adapts based on content
+  const calculateDynamicSizing = (mode: 'preview' | 'real', contentCount: number, contentType: 'dots' | 'wheels') => {
+    const baseConfig = {
+      preview: {
+        wheelRadius: { base: 60, min: 45, max: 90 }, // Adaptive wheel size
+        dotRadius: { base: 25, min: 20, max: 35 }, 
+        chakraRadius: { base: 210, min: 180, max: 280 }, // Adaptive chakra size
+        safetyBuffer: 35
+      },
+      real: {
+        wheelRadius: { base: 75, min: 60, max: 110 }, // Adaptive wheel size
+        dotRadius: { base: 35, min: 28, max: 45 },
+        chakraRadius: { base: 285, min: 240, max: 360 }, // Adaptive chakra size  
+        safetyBuffer: 40
+      }
+    };
+
+    const config = baseConfig[mode];
+    
+    if (contentType === 'dots') {
+      // Dynamic dot sizing based on dots per wheel
+      if (contentCount <= 3) {
+        return config.dotRadius.base;
+      } else if (contentCount <= 6) {
+        return Math.max(config.dotRadius.min, config.dotRadius.base - 3);
+      } else if (contentCount <= 9) {
+        return Math.max(config.dotRadius.min, config.dotRadius.base - 5);
+      } else {
+        return Math.max(config.dotRadius.min, config.dotRadius.base - Math.floor(contentCount / 2));
+      }
+    } else if (contentType === 'wheels') {
+      // Dynamic wheel sizing based on wheels per chakra
+      if (contentCount <= 3) {
+        return config.wheelRadius.base;
+      } else if (contentCount <= 5) {
+        return Math.max(config.wheelRadius.min, config.wheelRadius.base - 8);
+      } else if (contentCount <= 8) {
+        return Math.max(config.wheelRadius.min, config.wheelRadius.base - 12);
+      } else {
+        return Math.max(config.wheelRadius.min, config.wheelRadius.base - 15);
+      }
+    }
+    
+    return config.wheelRadius.base;
+  };
+
+  // Get dynamic chakra sizing based on wheels count
+  const getChakraSize = (mode: 'preview' | 'real', wheelsCount: number) => {
+    const baseConfig = {
+      preview: { base: 210, min: 180, max: 280 },
+      real: { base: 285, min: 240, max: 360 }
+    };
+    
+    const config = baseConfig[mode];
+    
+    if (wheelsCount <= 3) {
+      return config.base;
+    } else if (wheelsCount <= 5) {
+      return Math.min(config.max, config.base + 20);
+    } else if (wheelsCount <= 8) {
+      return Math.min(config.max, config.base + 35);
+    } else {
+      return config.max;
     }
   };
 
@@ -1176,9 +1228,8 @@ const Dashboard: React.FC = () => {
                     const wheelCenterX = wheel.position.x;
                     const wheelCenterY = wheel.position.y;
                     const wheelRadius = 60; // Wheel radius (120px diameter / 2)
-                    // Use standard grid configuration for consistent user experience
-                    const config = GRID_CONFIG.preview;
-                    const dotRadius = dotsInWheel.length <= 3 ? config.dotRadius.base : Math.max(config.dotRadius.min, config.dotRadius.base + 10 - dotsInWheel.length * config.dotRadius.reduction);
+                    // Use dynamic sizing for consistent user experience
+                    const dotRadius = calculateDynamicSizing('preview', dotsInWheel.length, 'dots');
                     const angle = (dotIndexInWheel * 2 * Math.PI) / dotsInWheel.length;
                     
                     x = wheelCenterX + Math.cos(angle) * dotRadius;
@@ -1219,9 +1270,8 @@ const Dashboard: React.FC = () => {
                       wheelCenterX = wheel.position.x;
                       wheelCenterY = wheel.position.y;
                     }
-                    // Use standard grid configuration for consistent user experience in real mode
-                    const config = GRID_CONFIG.real;
-                    const dotRadius = dotsInWheel.length <= 3 ? config.dotRadius.base : Math.max(config.dotRadius.min, config.dotRadius.base + 15 - dotsInWheel.length * config.dotRadius.reduction);
+                    // Use dynamic sizing for consistent user experience in real mode
+                    const dotRadius = calculateDynamicSizing('real', dotsInWheel.length, 'dots');
                     const angle = (dotIndexInWheel * 2 * Math.PI) / dotsInWheel.length;
                     
                     x = wheelCenterX + Math.cos(angle) * dotRadius;
@@ -1371,9 +1421,12 @@ const Dashboard: React.FC = () => {
               
               // In real mode, auto-position wheels intelligently if no position is set
               if (!previewMode && (!wheel.position || (wheel.position.x === 0 && wheel.position.y === 0))) {
-                // Auto-position wheels in a grid layout for real data
+                // Auto-position wheels in a grid layout for real data with dynamic spacing
                 const wheelGridCols = 3;
-                const wheelSpacing = 250;
+                // Dynamic spacing based on content - more content = tighter spacing
+                const totalWheelsCount = displayWheels.length;
+                const baseSpacing = 250;
+                const wheelSpacing = totalWheelsCount <= 6 ? baseSpacing : Math.max(200, baseSpacing - (totalWheelsCount - 6) * 10);
                 const wheelBaseX = 200;
                 const wheelBaseY = 200;
                 
@@ -1383,22 +1436,34 @@ const Dashboard: React.FC = () => {
                 wheelPosition = { x: wheelGridX, y: wheelGridY };
               }
               
-              // Determine wheel size based on type and hierarchy
+              // Determine wheel size based on type and hierarchy using dynamic sizing
               let wheelSize;
               let isChakra;
               
               if (previewMode) {
-                // In preview mode, use specific sizing logic
+                // In preview mode, use dynamic sizing logic
                 isChakra = wheel.id === 'preview-chakra-business';
                 if (isChakra) {
-                  wheelSize = 420; // Chakra circle that encompasses the three wheels
+                  // Dynamic chakra sizing based on child wheels count
+                  const childWheels = displayWheels.filter(w => w.chakraId === wheel.id);
+                  wheelSize = getChakraSize('preview', childWheels.length);
                 } else {
-                  wheelSize = 120; // Smaller child wheels that fit inside the Chakra
+                  // Dynamic wheel sizing based on dots count
+                  const wheelDots = displayDots.filter(d => d.wheelId === wheel.id);
+                  wheelSize = calculateDynamicSizing('preview', wheelDots.length, 'wheels') * 2; // Convert radius to diameter
                 }
               } else {
-                // In real mode, use standard wheel sizes
+                // In real mode, use dynamic sizing system
                 isChakra = wheel.chakraId === undefined;
-                wheelSize = isChakra ? 370 : 150; // Smaller sizes for real mode
+                if (isChakra) {
+                  // Dynamic chakra sizing based on child wheels count
+                  const childWheels = displayWheels.filter(w => w.chakraId === wheel.id);
+                  wheelSize = getChakraSize('real', childWheels.length);
+                } else {
+                  // Dynamic wheel sizing based on dots count
+                  const wheelDots = displayDots.filter(d => d.wheelId === wheel.id);
+                  wheelSize = calculateDynamicSizing('real', wheelDots.length, 'wheels') * 2; // Convert radius to diameter
+                }
               }
               
               const wheelRadius = wheelSize / 2;
