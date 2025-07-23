@@ -741,7 +741,7 @@ const Dashboard: React.FC = () => {
         color: '#EA580C', // Orange theme for wheels
         dots: [],
         connections: ['preview-wheel-1'],
-        position: { x: 400, y: 380 }, // Position inside Chakra - bottom wheel with wider spacing
+        position: { x: 400, y: 400 }, // Position inside Chakra - bottom wheel with wider spacing
         chakraId: 'preview-chakra-business',
         createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000) // 10 days ago
       };
