@@ -332,7 +332,7 @@ const Dashboard: React.FC = () => {
         color: '#EA580C', // Orange theme for wheels
         dots: [],
         connections: ['preview-wheel-1'],
-        position: { x: 320, y: 240 }, // Position inside Chakra - left wheel
+        position: { x: 350, y: 280 }, // Position inside Chakra - left wheel (adjusted for better containment)
         chakraId: 'preview-chakra-business',
         createdAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000) // 15 days ago
       };
@@ -377,7 +377,7 @@ const Dashboard: React.FC = () => {
         color: '#EA580C', // Orange theme for wheels
         dots: [],
         connections: ['preview-wheel-0', 'preview-wheel-2'],
-        position: { x: 480, y: 240 }, // Position inside Chakra - right wheel
+        position: { x: 450, y: 280 }, // Position inside Chakra - right wheel (adjusted for better containment)
         chakraId: 'preview-chakra-business',
         createdAt: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000) // 20 days ago
       };
@@ -421,7 +421,7 @@ const Dashboard: React.FC = () => {
         color: '#EA580C', // Orange theme for wheels
         dots: [],
         connections: ['preview-wheel-1'],
-        position: { x: 400, y: 320 }, // Position inside Chakra - bottom wheel
+        position: { x: 400, y: 340 }, // Position inside Chakra - bottom wheel (adjusted for better containment)
         chakraId: 'preview-chakra-business',
         createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000) // 10 days ago
       };
@@ -915,14 +915,15 @@ const Dashboard: React.FC = () => {
                     const dotsInWheel = displayDots.filter(d => d.wheelId === dot.wheelId);
                     const dotIndexInWheel = dotsInWheel.findIndex(d => d.id === dot.id);
                     
-                    // Position dots in a circle inside the wheel
+                    // Position dots in a circle inside the wheel (ensure they stay within wheel boundaries)
                     const wheelCenterX = wheel.position.x;
                     const wheelCenterY = wheel.position.y;
-                    const radius = 60; // Radius for dot positioning inside wheel
+                    const wheelRadius = 60; // Wheel radius (120px diameter / 2)
+                    const dotRadius = 35; // Keep dots well within wheel boundaries
                     const angle = (dotIndexInWheel * 2 * Math.PI) / dotsInWheel.length;
                     
-                    x = wheelCenterX + Math.cos(angle) * radius;
-                    y = wheelCenterY + Math.sin(angle) * radius;
+                    x = wheelCenterX + Math.cos(angle) * dotRadius;
+                    y = wheelCenterY + Math.sin(angle) * dotRadius;
                   } else {
                     // Fallback for wheel dots without wheel found
                     x = 100 + (seedX % 900) + (index * 67) % 400;
@@ -959,11 +960,11 @@ const Dashboard: React.FC = () => {
                       wheelCenterX = wheel.position.x;
                       wheelCenterY = wheel.position.y;
                     }
-                    const radius = 70; // Radius for dot positioning inside wheel
+                    const dotRadius = 50; // Keep dots within wheel boundaries (wheels are larger in real mode)
                     const angle = (dotIndexInWheel * 2 * Math.PI) / dotsInWheel.length;
                     
-                    x = wheelCenterX + Math.cos(angle) * radius;
-                    y = wheelCenterY + Math.sin(angle) * radius;
+                    x = wheelCenterX + Math.cos(angle) * dotRadius;
+                    y = wheelCenterY + Math.sin(angle) * dotRadius;
                   } else {
                     // Fallback for wheel dots without wheel found - use grid positioning
                     const gridCols = 8;
