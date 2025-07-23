@@ -121,6 +121,14 @@ DotSpark is a full-stack web application that serves as a personalized learning 
 ## Changelog
 ```
 Changelog:
+- July 23, 2025. FIXED duplicate key warning and completed three-tier architecture implementation:
+  * Fixed duplicate rendering of preview-chakra-business by removing duplicate businessChakra addition to previewWheels array
+  * Added purpose field to wheels table schema to support Chakras (wheels with chakraId === undefined use purpose field)
+  * Completed comprehensive three-tier counting system: Total Dots, Total Wheels (chakraId !== undefined), Total Chakras (chakraId === undefined)
+  * Applied purple color theme to Chakra count button for visual distinction from Wheels (amber theme)
+  * Successfully pushed database migration with new purpose field for hierarchical differentiation
+  * Fixed all React duplicate key warnings for stable component rendering
+  * Chakras now properly use "purpose" field while regular Wheels use "goals" field for middle layer content
 - July 23, 2025. CORRECTED preview data hierarchy to properly reflect three-tier architecture:
   * Fixed "Build an Enduring Company" to be displayed as a Chakra (top-level, chakraId = null) with purple color theme
   * Updated GTM Strategy, Leadership Development, and Product Innovation as wheels belonging to the business Chakra

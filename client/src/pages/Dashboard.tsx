@@ -37,7 +37,8 @@ interface Wheel {
   id: string;
   name: string;
   heading?: string;
-  goals?: string; // Updated from 'purpose' to match database schema
+  goals?: string; // For regular wheels
+  purpose?: string; // For Chakras (top-level)
   timeline?: string;
   category: string;
   color: string;
@@ -198,14 +199,18 @@ const Dashboard: React.FC = () => {
       }
     };
 
+    const isChakra = wheel.chakraId === undefined;
+    const wheelType = isChakra ? "Chakra" : "Wheel";
+    const description = isChakra ? wheel.purpose : wheel.goals;
+
     return (
-      <Card className={`mb-4 hover:shadow-md transition-shadow border border-indigo-200 bg-gradient-to-br from-indigo-50 to-purple-50 backdrop-blur cursor-pointer hover:bg-indigo-100/50`} onClick={handleWheelClick}>
+      <Card className={`mb-4 hover:shadow-md transition-shadow border ${isChakra ? 'border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50' : 'border-indigo-200 bg-gradient-to-br from-indigo-50 to-purple-50'} backdrop-blur cursor-pointer ${isChakra ? 'hover:bg-amber-100/50' : 'hover:bg-indigo-100/50'}`} onClick={handleWheelClick}>
         <CardHeader className="pb-2">
           <div className="flex justify-between items-start">
             <div className="flex items-center gap-2">
-              <Badge variant="outline" className="text-xs border-indigo-300 text-indigo-700 bg-indigo-50/80">
-                <div className="w-3 h-3 rounded-full bg-indigo-500 mr-1"></div>
-                Wheel
+              <Badge variant="outline" className={`text-xs ${isChakra ? 'border-amber-300 text-amber-700 bg-amber-50/80' : 'border-indigo-300 text-indigo-700 bg-indigo-50/80'}`}>
+                <div className={`w-3 h-3 rounded-full ${isChakra ? 'bg-amber-500' : 'bg-indigo-500'} mr-1`}></div>
+                {wheelType}
               </Badge>
               {isPreview && (
                 <Badge className="bg-orange-100 text-orange-700 border-orange-200 text-xs">
@@ -213,16 +218,16 @@ const Dashboard: React.FC = () => {
                 </Badge>
               )}
             </div>
-            <Badge className="bg-gradient-to-r from-indigo-100 to-purple-100 text-indigo-800 border-indigo-200">
+            <Badge className={`bg-gradient-to-r ${isChakra ? 'from-amber-100 to-orange-100 text-amber-800 border-amber-200' : 'from-indigo-100 to-purple-100 text-indigo-800 border-indigo-200'}`}>
               {wheel.timeline}
             </Badge>
           </div>
         </CardHeader>
         <CardContent>
-          <h3 className="font-bold text-lg mb-3 text-indigo-800 border-b border-indigo-200 pb-2">
+          <h3 className={`font-bold text-lg mb-3 ${isChakra ? 'text-amber-800' : 'text-indigo-800'} border-b ${isChakra ? 'border-amber-200' : 'border-indigo-200'} pb-2`}>
             {wheel.heading}
           </h3>
-          <p className="text-sm text-gray-700 leading-relaxed mb-2">{wheel.goals}</p>
+          <p className="text-sm text-gray-700 leading-relaxed mb-2">{description}</p>
           <div className="mt-2 text-xs text-indigo-700">
             {wheel.createdAt ? new Date(wheel.createdAt).toLocaleString() : 'Preview'}
           </div>
@@ -305,6 +310,7 @@ const Dashboard: React.FC = () => {
         name: 'Build an Enduring Company',
         heading: 'Build an Enduring Company',
         goals: 'Creating a sustainable, innovative business that delivers value to customers while maintaining long-term growth and meaningful impact in the market.',
+        purpose: 'Creating a sustainable, innovative business that delivers value to customers while maintaining long-term growth and meaningful impact in the market.',
         timeline: 'Long-term (5+ years)',
         category: 'Business',
         color: '#D97706', // Amber theme for Chakras
@@ -493,8 +499,7 @@ const Dashboard: React.FC = () => {
       }
       previewWheels.push(personalWheel);
 
-      // Add Chakra after all child wheels are defined
-      previewWheels.push(businessChakra);
+
 
       // Add some individual scattered dots showing not all dots need grouping
       const individualHeadings = [
@@ -526,8 +531,7 @@ const Dashboard: React.FC = () => {
         previewDots.push(dot);
       }
 
-      // Add the Chakra to the wheels array
-      previewWheels.push(businessChakra);
+
       
       return { previewDots, previewWheels };
     };
@@ -555,9 +559,9 @@ const Dashboard: React.FC = () => {
     const displayDots = baseDotsToDisplay;
     const totalDots = displayDots.length;
     
-    // Count actual formed sparks - user-grouped dots via spark interface
-    const actualFormedSparks = previewMode ? previewWheels.length : 0; // Real users will create sparks via spark interface
-    const totalWheels = actualFormedSparks;
+    // Count Wheels and Chakras separately
+    const totalWheels = previewMode ? previewWheels.filter(w => w.chakraId !== undefined).length : wheels.filter(w => w.chakraId !== undefined).length;
+    const totalChakras = previewMode ? previewWheels.filter(w => w.chakraId === undefined).length : wheels.filter(w => w.chakraId === undefined).length;
 
     if (!previewMode && wheels.length === 0 && actualDots.length === 0) {
       // Show empty state with preview toggle
@@ -590,6 +594,9 @@ const Dashboard: React.FC = () => {
             </button>
             <button className="bg-white/90 backdrop-blur rounded-lg px-3 py-2 border-2 border-amber-200 text-sm font-semibold text-amber-800">
               Total Wheels: {totalWheels}
+            </button>
+            <button className="bg-white/90 backdrop-blur rounded-lg px-3 py-2 border-2 border-purple-200 text-sm font-semibold text-purple-800">
+              Total Chakras: {totalChakras}
             </button>
           </div>
           
@@ -814,6 +821,9 @@ const Dashboard: React.FC = () => {
           </button>
           <button className="bg-white/90 backdrop-blur rounded-lg px-2 py-1 border-2 border-amber-200 text-xs font-semibold text-amber-800 hover:bg-amber-50 transition-colors whitespace-nowrap">
             Wheels: {totalWheels}
+          </button>
+          <button className="bg-white/90 backdrop-blur rounded-lg px-2 py-1 border-2 border-purple-200 text-xs font-semibold text-purple-800 hover:bg-purple-50 transition-colors whitespace-nowrap">
+            Chakras: {totalChakras}
           </button>
         </div>
 

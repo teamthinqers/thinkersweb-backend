@@ -8,7 +8,8 @@ interface Wheel {
   id: string;
   name: string;
   heading?: string;
-  goals?: string;
+  goals?: string; // For regular wheels
+  purpose?: string; // For Chakras (top-level)
   timeline?: string;
   category?: string;
   color?: string;
@@ -26,6 +27,10 @@ interface WheelFullViewProps {
 const WheelFullView: React.FC<WheelFullViewProps> = ({ wheel, isOpen = true, onClose, onDelete }) => {
   if (!wheel) return null;
 
+  const isChakra = wheel.chakraId === undefined;
+  const wheelType = isChakra ? "Chakra" : "Wheel";
+  const description = isChakra ? wheel.purpose : wheel.goals;
+
   const handleDelete = () => {
     if (onDelete && wheel.id) {
       onDelete(wheel.id);
@@ -39,9 +44,9 @@ const WheelFullView: React.FC<WheelFullViewProps> = ({ wheel, isOpen = true, onC
         <DialogHeader className="pb-4">
           <div className="flex justify-between items-start mb-4">
             <div className="flex items-center gap-2">
-              <Badge variant="outline" className="text-xs border-amber-300 text-amber-700 bg-amber-50/80">
-                <div className="w-3 h-3 rounded-full bg-amber-500 mr-1"></div>
-                Wheel
+              <Badge variant="outline" className={`text-xs ${isChakra ? 'border-amber-300 text-amber-700 bg-amber-50/80' : 'border-indigo-300 text-indigo-700 bg-indigo-50/80'}`}>
+                <div className={`w-3 h-3 rounded-full ${isChakra ? 'bg-amber-500' : 'bg-indigo-500'} mr-1`}></div>
+                {wheelType}
               </Badge>
               {wheel.category && (
                 <Badge className="bg-gradient-to-r from-amber-100 to-orange-100 text-amber-800 border-amber-200 text-xs">
@@ -88,8 +93,8 @@ const WheelFullView: React.FC<WheelFullViewProps> = ({ wheel, isOpen = true, onC
             </p>
           </div>
 
-          {/* Layer 2: Goals */}
-          {wheel.goals && (
+          {/* Layer 2: Goals/Purpose */}
+          {description && (
             <div className="bg-gradient-to-br from-amber-50/60 to-orange-50/60 rounded-xl border-2 border-amber-400 p-4">
               <div className="flex items-center gap-2 mb-3">
                 <div className="w-6 h-6 rounded-full bg-gradient-to-r from-amber-600 to-orange-700 flex items-center justify-center">
@@ -97,11 +102,11 @@ const WheelFullView: React.FC<WheelFullViewProps> = ({ wheel, isOpen = true, onC
                 </div>
                 <h3 className="text-lg font-semibold text-amber-800 flex items-center gap-2">
                   <Target className="w-5 h-5 text-amber-600" />
-                  Goals
+                  {isChakra ? 'Purpose' : 'Goals'}
                 </h3>
               </div>
               <p className="text-amber-700 leading-relaxed pl-8">
-                {wheel.goals}
+                {description}
               </p>
             </div>
           )}

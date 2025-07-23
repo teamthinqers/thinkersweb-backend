@@ -282,7 +282,8 @@ export const wheels = pgTable("wheels", {
   userId: integer("user_id").references(() => users.id).notNull(),
   chakraId: integer("chakra_id").references(() => wheels.id), // For hierarchical wheel structures - wheels belong to a Chakra
   heading: text("heading").notNull(), // Layer 1: Wheel title/name
-  goals: text("goals").notNull(), // Layer 2: Goals description
+  goals: text("goals"), // Layer 2: Goals description (for regular wheels)
+  purpose: text("purpose"), // Layer 2: Purpose description (for Chakras)
   timeline: text("timeline").notNull(), // Layer 3: Timeline/deadline
   color: text("color").notNull().default("#8B5CF6"),
   positionX: integer("position_x").default(100).notNull(),
@@ -388,7 +389,8 @@ export const dotConnectionsRelations = relations(dotConnections, ({ one }) => ({
 // Validation schemas
 export const insertWheelSchema = createInsertSchema(wheels, {
   heading: (schema) => schema.min(2, "Wheel heading must be at least 2 characters").max(100, "Heading must be 100 characters or less"),
-  purpose: (schema) => schema.min(10, "Purpose must be at least 10 characters").max(300, "Purpose must be 300 characters or less"),
+  goals: (schema) => schema.optional(),
+  purpose: (schema) => schema.optional(),
   timeline: (schema) => schema.min(2, "Timeline must be at least 2 characters").max(100, "Timeline must be 100 characters or less"),
   chakraId: (schema) => schema.optional(),
   color: (schema) => schema.optional(),
