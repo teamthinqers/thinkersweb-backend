@@ -313,7 +313,7 @@ const Dashboard: React.FC = () => {
         purpose: 'Creating a sustainable, innovative business that delivers value to customers while maintaining long-term growth and meaningful impact in the market.',
         timeline: 'Long-term (5+ years)',
         category: 'Business',
-        color: '#8B5CF6', // Purple theme for Chakras
+        color: '#D97706', // Amber theme for Chakras
         dots: [],
         connections: ['preview-wheel-0', 'preview-wheel-1', 'preview-wheel-2'],
         position: { x: 400, y: 300 }, // Centered to encompass the three wheels below
@@ -596,7 +596,7 @@ const Dashboard: React.FC = () => {
             <button className="bg-white/90 backdrop-blur rounded-lg px-3 py-2 border-2 border-amber-200 text-sm font-semibold text-amber-800">
               Total Wheels: {totalWheels}
             </button>
-            <button className="bg-white/90 backdrop-blur rounded-lg px-3 py-2 border-2 border-purple-200 text-sm font-semibold text-purple-800">
+            <button className="bg-white/90 backdrop-blur rounded-lg px-3 py-2 border-2 border-amber-200 text-sm font-semibold text-amber-800">
               Total Chakras: {totalChakras}
             </button>
           </div>
@@ -823,7 +823,7 @@ const Dashboard: React.FC = () => {
           <button className="bg-white/90 backdrop-blur rounded-lg px-2 py-1 border-2 border-amber-200 text-xs font-semibold text-amber-800 hover:bg-amber-50 transition-colors whitespace-nowrap">
             Wheels: {totalWheels}
           </button>
-          <button className="bg-white/90 backdrop-blur rounded-lg px-2 py-1 border-2 border-purple-200 text-xs font-semibold text-purple-800 hover:bg-purple-50 transition-colors whitespace-nowrap">
+          <button className="bg-white/90 backdrop-blur rounded-lg px-2 py-1 border-2 border-amber-200 text-xs font-semibold text-amber-800 hover:bg-amber-50 transition-colors whitespace-nowrap">
             Chakras: {totalChakras}
           </button>
         </div>
