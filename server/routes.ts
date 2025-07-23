@@ -718,9 +718,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Drag grid system routes for manual positioning
-  app.use(`${apiPrefix}/drag`, (await import('./routes/drag')).default);
-
   // Grid positioning API endpoints - simplified version using existing entries
   app.get(`${apiPrefix}/grid/positions`, async (req: AuthenticatedRequest, res: Response) => {
     try {
@@ -728,77 +725,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const isPreview = req.query.preview === 'true';
       
       if (isPreview) {
-        // Generate preview data using proper spacing enforcement
-        const { 
-          calculateGridPositions, 
-          GRID_CONFIG 
-        } = await import('./grid-positioning');
-        
-        // Create mock preview data with proper structure
-        const previewDots = [
-          { id: 'preview-dot-1', wheelId: 'preview-wheel-1' },
-          { id: 'preview-dot-2', wheelId: 'preview-wheel-1' },
-          { id: 'preview-dot-3', wheelId: 'preview-wheel-1' },
-          { id: 'preview-dot-4', wheelId: 'preview-wheel-1' },
-          { id: 'preview-dot-5', wheelId: 'preview-wheel-1' },
-          { id: 'preview-dot-6', wheelId: 'preview-wheel-2' },
-          { id: 'preview-dot-7', wheelId: 'preview-wheel-2' },
-          { id: 'preview-dot-8', wheelId: 'preview-wheel-2' },
-          { id: 'preview-dot-9', wheelId: 'preview-wheel-2' }
-        ];
-        
-        const previewData = {
-          dots: previewDots,
-          wheels: [
-            { 
-              id: 'preview-wheel-1', 
-              chakraId: 'preview-chakra-business',
-              dots: previewDots.filter(dot => dot.wheelId === 'preview-wheel-1')
-            },
-            { 
-              id: 'preview-wheel-2', 
-              chakraId: 'preview-chakra-business',
-              dots: previewDots.filter(dot => dot.wheelId === 'preview-wheel-2')
-            }
-          ],
-          chakras: [
-            { id: 'preview-chakra-business' }
-          ]
-        };
-        
-        // Use grid positioning system with proper spacing enforcement
-        const layoutResult = calculateGridPositions(
-          previewData.dots,
-          previewData.wheels, 
-          previewData.chakras,
-          true // isPreview mode
-        );
-        
-        // Convert Maps to plain objects for API response
-        const layoutData = {
-          dotPositions: Object.fromEntries(layoutResult.dotPositions),
-          wheelPositions: Object.fromEntries(layoutResult.wheelPositions),
-          chakraPositions: Object.fromEntries(layoutResult.chakraPositions),
-          sizes: layoutResult.sizes ? {
-            dotRadius: layoutResult.sizes.dotRadius,
-            wheelRadii: Object.fromEntries(layoutResult.sizes.wheelRadii),
-            chakraRadii: Object.fromEntries(layoutResult.sizes.chakraRadii)
-          } : {
-            dotRadius: 35,
-            wheelRadii: {},
-            chakraRadii: {}
+        // Return preview mode data with optimized positions
+        const previewPositions = {
+          dotPositions: {
+            'preview-dot-1': { x: 250, y: 180 },
+            'preview-dot-2': { x: 310, y: 220 },
+            'preview-dot-3': { x: 290, y: 160 },
+            'preview-dot-4': { x: 350, y: 200 },
+            'preview-dot-5': { x: 270, y: 240 },
+            'preview-dot-6': { x: 450, y: 340 },
+            'preview-dot-7': { x: 510, y: 380 },
+            'preview-dot-8': { x: 490, y: 320 },
+            'preview-dot-9': { x: 530, y: 360 }
+          },
+          wheelPositions: {
+            'preview-wheel-1': { x: 300, y: 200 },
+            'preview-wheel-2': { x: 500, y: 360 }
+          },
+          chakraPositions: {
+            'preview-chakra-business': { x: 400, y: 280 }
           },
           statistics: {
-            totalDots: previewData.dots.length,
-            totalWheels: previewData.wheels.length,
-            totalChakras: previewData.chakras.length,
-            freeDots: previewData.dots.filter(dot => !dot.wheelId).length
+            totalDots: 9,
+            totalWheels: 2,
+            totalChakras: 1,
+            freeDots: 0
           }
         };
         
         return res.json({
           success: true,
-          data: layoutData
+          data: previewPositions
         });
       }
       
@@ -878,8 +835,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     }
   });
-
-
 
   return httpServer;
 }
