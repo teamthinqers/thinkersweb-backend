@@ -1403,24 +1403,10 @@ const Dashboard: React.FC = () => {
       <div className="p-4">
 
 
-        {/* Search Section */}
-        <div className="mb-6">
-          <div className="relative max-w-md">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-amber-500" />
-            <Input
-              type="text"
-              placeholder="Search for your dot or spark"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 h-12 text-base border-2 border-amber-200 bg-white/90 backdrop-blur focus:border-amber-500 focus:ring-amber-500/20 rounded-xl placeholder:text-gray-500 text-gray-800 shadow-sm"
-            />
-          </div>
-        </div>
-
         {/* DotSpark Map Section */}
         <div className="mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-4">
+          <div className="flex items-center justify-between mb-4 flex-wrap gap-4">
+            <div className="flex items-center gap-4 flex-wrap">
               <h2 className="text-lg sm:text-xl font-semibold flex items-center gap-2">
                 <Network className="w-4 h-4 sm:w-5 sm:h-5 text-amber-500" />
                 <span className="bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent">
@@ -1439,6 +1425,18 @@ const Dashboard: React.FC = () => {
                   </PopoverContent>
                 </Popover>
               </h2>
+              
+              {/* Search Bar */}
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-amber-500" />
+                <Input
+                  type="text"
+                  placeholder="Search for your dot or spark"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10 h-10 w-64 text-sm border-2 border-amber-200 bg-white/90 backdrop-blur focus:border-amber-500 focus:ring-amber-500/20 rounded-xl placeholder:text-gray-500 text-gray-800 shadow-sm"
+                />
+              </div>
               
               {/* Recent Dots Filter and Social Button */}
               <div className="relative">
