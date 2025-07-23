@@ -994,11 +994,7 @@ const Dashboard: React.FC = () => {
                     style={{
                       left: `${x}px`,
                       top: `${y}px`,
-                      background: `linear-gradient(135deg, ${
-                        dot.sourceType === 'voice' 
-                          ? '#F59E0B, #D97706' // Light amber gradient for voice dots
-                          : '#F59E0B, #D97706' // Light amber gradient for text dots
-                      })`,
+                      background: 'linear-gradient(135deg, #F59E0B, #D97706)', // Light amber gradient for all dots
                       pointerEvents: 'auto'
                     }}
                     onClick={(e) => {

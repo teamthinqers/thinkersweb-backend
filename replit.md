@@ -139,7 +139,7 @@ Changelog:
   * Updated delete button in full view to dynamically show "Delete Chakra" or "Delete Wheel" based on item type
   * Standardized Health & Wellness wheel color from pink (#EC4899) to amber (#D97706) for consistent theme across all grid elements
   * Implemented three-tier color differentiation within amber/orange theme:
-    - Dots: Light amber gradient (#F59E0B to #D97706) for individual cognitive elements
+    - Dots: Light amber gradient (#F59E0B to #D97706) for all individual cognitive elements (no voice/text distinction)
     - Wheels: Orange (#EA580C) for mid-level groupings  
     - Chakras: Dark amber (#B45309) for top-level containers
 - July 23, 2025. CORRECTED preview data hierarchy to properly reflect three-tier architecture:
