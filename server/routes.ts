@@ -762,14 +762,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
           { id: 'preview-dot-2-2', x: wheel3.x + Math.cos(4.19) * 25, y: wheel3.y + Math.sin(4.19) * 25 }
         ];
         
-        // Health dots (scattered individual dots outside chakra)
-        const healthDots = [
-          { id: 'preview-dot-health-1-0', x: 150, y: 150 },
-          { id: 'preview-dot-health-1-1', x: 200, y: 180 },
-          { id: 'preview-dot-health-1-2', x: 180, y: 220 },
-          { id: 'preview-dot-health-1-3', x: 220, y: 250 },
-          { id: 'preview-dot-health-2-0', x: 160, y: 280 }
+        // Health wheel dots (positioned within their respective wheels)
+        // Health Chakra is at position (1300, 250) with radius ~210px
+        const healthChakraCenter = { x: 1300, y: 250 };
+        
+        // Fitness wheel (top-left in health chakra)
+        const fitnessWheel = { x: healthChakraCenter.x - 50, y: healthChakraCenter.y - 80 };
+        const fitnessRadius = 30;
+        const fitnessDots = [
+          { id: 'preview-dot-health-1-0', x: fitnessWheel.x + Math.cos(0) * fitnessRadius, y: fitnessWheel.y + Math.sin(0) * fitnessRadius },
+          { id: 'preview-dot-health-1-1', x: fitnessWheel.x + Math.cos(1.57) * fitnessRadius, y: fitnessWheel.y + Math.sin(1.57) * fitnessRadius },
+          { id: 'preview-dot-health-1-2', x: fitnessWheel.x + Math.cos(3.14) * fitnessRadius, y: fitnessWheel.y + Math.sin(3.14) * fitnessRadius },
+          { id: 'preview-dot-health-1-3', x: fitnessWheel.x + Math.cos(4.71) * fitnessRadius, y: fitnessWheel.y + Math.sin(4.71) * fitnessRadius }
         ];
+        
+        // Nutrition wheel (top-right in health chakra)
+        const nutritionWheel = { x: healthChakraCenter.x + 50, y: healthChakraCenter.y - 80 };
+        const nutritionDots = [
+          { id: 'preview-dot-health-2-0', x: nutritionWheel.x + Math.cos(0) * 25, y: nutritionWheel.y + Math.sin(0) * 25 },
+          { id: 'preview-dot-health-2-1', x: nutritionWheel.x + Math.cos(2.09) * 25, y: nutritionWheel.y + Math.sin(2.09) * 25 },
+          { id: 'preview-dot-health-2-2', x: nutritionWheel.x + Math.cos(4.19) * 25, y: nutritionWheel.y + Math.sin(4.19) * 25 }
+        ];
+        
+        // Mental wellness wheel (bottom center in health chakra)
+        const mentalWheel = { x: healthChakraCenter.x, y: healthChakraCenter.y + 80 };
+        const mentalDots = [
+          { id: 'preview-dot-health-3-0', x: mentalWheel.x + Math.cos(0) * fitnessRadius, y: mentalWheel.y + Math.sin(0) * fitnessRadius },
+          { id: 'preview-dot-health-3-1', x: mentalWheel.x + Math.cos(1.57) * fitnessRadius, y: mentalWheel.y + Math.sin(1.57) * fitnessRadius },
+          { id: 'preview-dot-health-3-2', x: mentalWheel.x + Math.cos(3.14) * fitnessRadius, y: mentalWheel.y + Math.sin(3.14) * fitnessRadius },
+          { id: 'preview-dot-health-3-3', x: mentalWheel.x + Math.cos(4.71) * fitnessRadius, y: mentalWheel.y + Math.sin(4.71) * fitnessRadius }
+        ];
+        
+        const healthDots = [...fitnessDots, ...nutritionDots, ...mentalDots];
         
         // Individual scattered dots - spread across grid avoiding main structures
         const scatteredDots = [
