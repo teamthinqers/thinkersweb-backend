@@ -1260,9 +1260,9 @@ const Dashboard: React.FC = () => {
                     />
                   )}
                   
-                  {/* Chakra label and enhancement */}
+                  {/* Chakra label and enhancement with high z-index */}
                   {isChakra && (
-                    <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 pointer-events-auto">
+                    <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 pointer-events-auto z-[999]" style={{ zIndex: 999 }}>
                       <div 
                         className="bg-gradient-to-r from-amber-600 to-orange-600 text-white px-4 py-2 rounded-full shadow-lg border-2 border-amber-400"
                         style={{
@@ -1277,11 +1277,12 @@ const Dashboard: React.FC = () => {
                     </div>
                   )}
                   
-                  {/* Blinking Spark Symbol on top of wheel */}
+                  {/* Blinking Spark Symbol on top of wheel with high z-index */}
                   <div 
-                    className={`absolute left-1/2 transform -translate-x-1/2 flex flex-col items-center ${
+                    className={`absolute left-1/2 transform -translate-x-1/2 flex flex-col items-center z-[999] ${
                       isChakra ? 'top-[-95px]' : 'top-[-75px]'
                     }`}
+                    style={{ zIndex: 999 }}
                   >
                     {/* Spark symbol with blinking animation */}
                     <div className="relative mb-2">
@@ -1302,13 +1303,17 @@ const Dashboard: React.FC = () => {
                       </div>
                     </div>
                     
-                    {/* Wheel label */}
+                    {/* Wheel label with high z-index to override chakra effects */}
                     <div 
                       data-wheel-label
-                      className={`relative font-bold rounded-full text-white shadow-lg cursor-pointer hover:shadow-xl transition-all duration-200 hover:scale-105 pointer-events-auto text-center whitespace-nowrap ${
+                      className={`relative font-bold rounded-full text-white shadow-lg cursor-pointer hover:shadow-xl transition-all duration-200 hover:scale-105 pointer-events-auto text-center whitespace-nowrap z-[999] ${
                         isChakra ? 'text-base px-4 py-2' : 'text-sm px-3 py-1'
                       }`}
-                      style={{ backgroundColor: wheel.color }}
+                      style={{ 
+                        backgroundColor: wheel.color,
+                        position: 'relative',
+                        zIndex: 999
+                      }}
                       onMouseEnter={(e) => {
                         e.stopPropagation();
                         // Don't show flash card if user is dragging

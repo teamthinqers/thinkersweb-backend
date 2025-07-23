@@ -155,6 +155,8 @@ Changelog:
   * Added visual categorization with color-coded sections and count indicators for each result type
   * Implemented proper three-tier architecture support in search results with appropriate navigation
   * Enhanced user experience with "no results found" messaging and search suggestions
+  * Fixed wheel heading visibility by adding high z-index (999) to override chakra energy effects
+  * Enhanced wheel labels, spark symbols, and chakra labels with proper layering for clear readability
   * Updated StructuredFloatingDot.tsx with consistent amber/orange gradients across all chakra voice recording layers
   * Fixed creation type selection buttons: double layered rotating circle for wheels, Settings icon for chakras
   * Updated center icons in creation mode display to match standardized icon usage
