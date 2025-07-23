@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
-import { Mic, Type, X, ArrowLeft, Minimize2, AlertTriangle, BrainCircuit, Settings } from "lucide-react";
+import { Mic, Type, X, ArrowLeft, Minimize2, AlertTriangle, BrainCircuit, Settings, Brain } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { isRunningAsStandalone } from "@/lib/pwaUtils";
@@ -33,9 +33,9 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
     return saved ? JSON.parse(saved) : { x: 320, y: 180 };
   });
   const [isExpanded, setIsExpanded] = useState(false);
-  const [captureMode, setCaptureMode] = useState<'select' | 'create-type' | 'text' | 'voice' | 'wheel-text' | 'wheel-voice' | 'direct-chat' | 'whatsapp'>('select');
+  const [captureMode, setCaptureMode] = useState<'select' | 'create-type' | 'text' | 'voice' | 'wheel-text' | 'wheel-voice' | 'chakra-text' | 'chakra-voice' | 'direct-chat' | 'whatsapp'>('select');
   const [userCaptureMode, setUserCaptureMode] = useState<'natural' | 'ai'>('natural');
-  const [createType, setCreateType] = useState<'dot' | 'wheel' | null>(null);
+  const [createType, setCreateType] = useState<'dot' | 'wheel' | 'chakra' | null>(null);
   
   // Voice recording states
   const [isRecording, setIsRecording] = useState(false);
@@ -77,6 +77,20 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
     timeline: '',
     chakraId: null as number | null
   });
+
+  // Text input states for chakras
+  const [chakraInput, setChakraInput] = useState({
+    heading: '',
+    purpose: '',
+    timeline: ''
+  });
+
+  // Voice recording states for chakras
+  const [chakraVoiceSteps, setChakraVoiceSteps] = useState({
+    heading: '',
+    purpose: '',
+    timeline: ''
+  });
   
   // Available wheels for Chakra selection
   const [availableWheels, setAvailableWheels] = useState<Array<{
@@ -89,6 +103,7 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
   const [isFirstActivation, setIsFirstActivation] = useState(false);
   const [showExitWarning, setShowExitWarning] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const dotRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
@@ -477,6 +492,47 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
     }
   };
 
+  const handleCreateChakra = async () => {
+    try {
+      setIsSaving(true);
+      
+      const chakraData = {
+        heading: chakraInput.heading,
+        purpose: chakraInput.purpose,
+        timeline: chakraInput.timeline,
+        sourceType: 'text'
+      };
+      
+      // Submit to API endpoint
+      const response = await fetch('/api/chakras', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(chakraData)
+      });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to create Chakra');
+      }
+      
+      toast({
+        title: "Chakra Created Successfully!",
+        description: `"${chakraInput.heading}" has been successfully created.`,
+      });
+      
+      setIsSaved(true);
+    } catch (error) {
+      console.error('Failed to create Chakra:', error);
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to create Chakra. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   useEffect(() => {
     // Only set first activation flag, don't override position as it's already loaded in useState
     const hasSeenDot = localStorage.getItem('has-seen-floating-dot');
@@ -639,32 +695,45 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                   </div>
                   
                   {/* Creation Type Selection */}
-                  <div className="grid grid-cols-2 gap-4 mb-6">
-                    <Button
-                      onClick={() => {
-                        setCreateType('wheel');
-                        setCaptureMode('create-type');
-                      }}
-                      className="h-32 bg-gradient-to-br from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl flex flex-col items-center justify-center space-y-3 shadow-lg transform transition-all duration-200 hover:scale-105"
-                    >
-                      <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
-                        <Settings className="w-8 h-8 text-white animate-spin" style={{ animationDuration: '3s' }} />
-                      </div>
-                      <span className="text-xl font-semibold">Create a Wheel</span>
-                      <span className="text-xs opacity-80">Organize your thoughts</span>
-                    </Button>
+                  <div className="grid grid-cols-3 gap-3 mb-6">
                     <Button
                       onClick={() => {
                         setCreateType('dot');
                         setCaptureMode('create-type');
                       }}
-                      className="h-32 bg-gradient-to-br from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl flex flex-col items-center justify-center space-y-3 shadow-lg transform transition-all duration-200 hover:scale-105"
+                      className="h-28 bg-gradient-to-br from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl flex flex-col items-center justify-center space-y-2 shadow-lg transform transition-all duration-200 hover:scale-105"
                     >
-                      <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
-                        <div className="w-4 h-4 bg-white rounded-full"></div>
+                      <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                        <div className="w-3 h-3 bg-white rounded-full"></div>
                       </div>
-                      <span className="text-xl font-semibold">Save a Dot</span>
-                      <span className="text-xs opacity-80">Capture your insight</span>
+                      <span className="text-sm font-semibold">Save a Dot</span>
+                      <span className="text-xs opacity-80">Capture insight</span>
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        setCreateType('wheel');
+                        setCaptureMode('create-type');
+                      }}
+                      className="h-28 bg-gradient-to-br from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl flex flex-col items-center justify-center space-y-2 shadow-lg transform transition-all duration-200 hover:scale-105"
+                    >
+                      <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                        <Settings className="w-6 h-6 text-white animate-spin" style={{ animationDuration: '3s' }} />
+                      </div>
+                      <span className="text-sm font-semibold">Create Wheel</span>
+                      <span className="text-xs opacity-80">Organize dots</span>
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        setCreateType('chakra');
+                        setCaptureMode('create-type');
+                      }}
+                      className="h-28 bg-gradient-to-br from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700 text-white rounded-xl flex flex-col items-center justify-center space-y-2 shadow-lg transform transition-all duration-200 hover:scale-105"
+                    >
+                      <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                        <Brain className="w-6 h-6 text-white animate-pulse" />
+                      </div>
+                      <span className="text-sm font-semibold">Create Chakra</span>
+                      <span className="text-xs opacity-80">Group wheels</span>
                     </Button>
                   </div>
                 </div>
@@ -712,7 +781,7 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                       )}
                     </div>
                     <h3 className="text-xl font-semibold text-gray-800">
-                      {createType === 'wheel' ? 'Create a Wheel' : 'Save a Dot'}
+                      {createType === 'wheel' ? 'Create a Wheel' : createType === 'chakra' ? 'Create a Chakra' : 'Save a Dot'}
                     </h3>
                     <Button
                       variant="ghost"
@@ -727,31 +796,49 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                     <div className={`w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center ${
                       createType === 'wheel' 
                         ? 'bg-gradient-to-r from-amber-500 to-orange-600' 
+                        : createType === 'chakra'
+                        ? 'bg-gradient-to-r from-purple-500 to-violet-600'
                         : 'bg-gradient-to-r from-amber-500 to-orange-600'
                     }`}>
                       {createType === 'wheel' ? (
                         <Settings className="w-8 h-8 text-white animate-spin" style={{ animationDuration: '3s' }} />
+                      ) : createType === 'chakra' ? (
+                        <Brain className="w-8 h-8 text-white animate-pulse" />
                       ) : (
                         <div className="w-4 h-4 bg-white rounded-full"></div>
                       )}
                     </div>
                     <p className="text-gray-600">
-                      How would you like to {createType === 'wheel' ? 'create your Wheel' : 'capture your Dot'}?
+                      How would you like to {createType === 'wheel' ? 'create your Wheel' : createType === 'chakra' ? 'create your Chakra' : 'capture your Dot'}?
                     </p>
                   </div>
                   
                   {userCaptureMode === 'natural' ? (
                     <div className="grid grid-cols-2 gap-4">
                       <Button
-                        onClick={() => setCaptureMode(createType === 'wheel' ? 'wheel-voice' : 'voice')}
-                        className="h-28 bg-gradient-to-br from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl flex flex-col items-center justify-center space-y-3 shadow-lg transform transition-all duration-200 hover:scale-105"
+                        onClick={() => setCaptureMode(
+                          createType === 'wheel' ? 'wheel-voice' : 
+                          createType === 'chakra' ? 'chakra-voice' : 'voice'
+                        )}
+                        className={`h-28 text-white rounded-xl flex flex-col items-center justify-center space-y-3 shadow-lg transform transition-all duration-200 hover:scale-105 ${
+                          createType === 'chakra'
+                            ? 'bg-gradient-to-br from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700'
+                            : 'bg-gradient-to-br from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700'
+                        }`}
                       >
                         <Mic className="w-10 h-10" />
                         <span className="text-xl font-semibold">Voice</span>
                       </Button>
                       <Button
-                        onClick={() => setCaptureMode(createType === 'wheel' ? 'wheel-text' : 'text')}
-                        className="h-28 bg-gradient-to-br from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl flex flex-col items-center justify-center space-y-3 shadow-lg transform transition-all duration-200 hover:scale-105"
+                        onClick={() => setCaptureMode(
+                          createType === 'wheel' ? 'wheel-text' : 
+                          createType === 'chakra' ? 'chakra-text' : 'text'
+                        )}
+                        className={`h-28 text-white rounded-xl flex flex-col items-center justify-center space-y-3 shadow-lg transform transition-all duration-200 hover:scale-105 ${
+                          createType === 'chakra'
+                            ? 'bg-gradient-to-br from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700'
+                            : 'bg-gradient-to-br from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700'
+                        }`}
                       >
                         <Type className="w-10 h-10" />
                         <span className="text-xl font-semibold">Text</span>
@@ -778,6 +865,8 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                             const defaultMessage = encodeURIComponent(
                               createType === 'wheel' 
                                 ? "Hi DotSpark, I would need your assistance in creating a wheel"
+                                : createType === 'chakra'
+                                ? "Hi DotSpark, I would need your assistance in creating a chakra"
                                 : "Hi DotSpark, I would need your assistance in saving a dot"
                             );
                             const whatsappUrl = `https://wa.me/${data.phoneNumber}?text=${defaultMessage}`;
@@ -1349,6 +1438,277 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                 </div>
               )}
 
+              {/* Chakra Text Input */}
+              {captureMode === 'chakra-text' && (
+                <div className="p-6 space-y-6">
+                  <div className="flex items-center justify-between mb-6">
+                    <Button
+                      variant="ghost"
+                      onClick={() => setCaptureMode('create-type')}
+                      className="h-8 w-8 p-0 rounded-full"
+                    >
+                      <ArrowLeft className="w-4 h-4" />
+                    </Button>
+                    <h3 className="text-xl font-semibold text-gray-800">Create Chakra - Text Input</h3>
+                    <Button
+                      variant="ghost"
+                      onClick={handleClose}
+                      className="h-8 w-8 p-0 rounded-full"
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
+                  </div>
+
+                  <div className="text-center mb-6">
+                    <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-purple-500 to-violet-600 flex items-center justify-center">
+                      <Brain className="w-8 h-8 text-white animate-pulse" />
+                    </div>
+                    <p className="text-gray-600">Enter the three layers of your Chakra</p>
+                  </div>
+
+                  <div className="space-y-6">
+                    {/* Layer 1: Chakra Heading */}
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-600 to-violet-600 flex items-center justify-center">
+                            <span className="text-white text-xs font-bold">1</span>
+                          </div>
+                          <h5 className="text-sm font-semibold text-purple-800">Layer 1: Chakra Heading</h5>
+                          {chakraInput.heading && <span className="text-xs text-green-600 ml-auto">✓ Done</span>}
+                        </div>
+                      </div>
+                      <Input
+                        value={chakraInput.heading}
+                        onChange={(e) => setChakraInput(prev => ({ ...prev, heading: e.target.value }))}
+                        placeholder="Name your Chakra..."
+                        className="border-purple-200 focus:border-purple-400 focus:ring-purple-400"
+                        maxLength={100}
+                      />
+                      <div className="flex justify-between text-xs">
+                        <span className="text-purple-600">A clear name for your Chakra theme</span>
+                        <span className="text-purple-500">{chakraInput.heading.length}/100</span>
+                      </div>
+                    </div>
+
+                    {/* Layer 2: Purpose */}
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 flex items-center justify-center">
+                            <span className="text-white text-xs font-bold">2</span>
+                          </div>
+                          <h5 className="text-sm font-semibold text-indigo-800">Layer 2: Purpose</h5>
+                          {chakraInput.purpose && <span className="text-xs text-green-600 ml-auto">✓ Done</span>}
+                        </div>
+                      </div>
+                      <Textarea
+                        value={chakraInput.purpose}
+                        onChange={(e) => setChakraInput(prev => ({ ...prev, purpose: e.target.value }))}
+                        placeholder="Describe the purpose of this Chakra..."
+                        className="border-indigo-200 focus:border-indigo-400 focus:ring-indigo-400 min-h-[80px]"
+                        maxLength={300}
+                      />
+                      <div className="flex justify-between text-xs mt-2">
+                        <span className="text-indigo-600">Define the overarching purpose and theme</span>
+                        <span className="text-indigo-500">{chakraInput.purpose.length}/300</span>
+                      </div>
+                    </div>
+
+                    {/* Layer 3: Timeline */}
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-700 to-pink-600 flex items-center justify-center">
+                            <span className="text-white text-xs font-bold">3</span>
+                          </div>
+                          <h5 className="text-sm font-semibold text-purple-700">Layer 3: Timeline</h5>
+                          {chakraInput.timeline && <span className="text-xs text-green-600 ml-auto">✓ Done</span>}
+                        </div>
+                      </div>
+                      <Input
+                        value={chakraInput.timeline}
+                        onChange={(e) => setChakraInput(prev => ({ ...prev, timeline: e.target.value }))}
+                        placeholder="e.g., Ongoing, 5 years, Long-term..."
+                        className="border-purple-200 focus:border-purple-400 focus:ring-purple-400"
+                        maxLength={50}
+                      />
+                      <div className="flex justify-between text-xs">
+                        <span className="text-purple-600">When will this Chakra be most relevant?</span>
+                        <span className="text-purple-500">{chakraInput.timeline.length}/50</span>
+                      </div>
+                    </div>
+
+                    {chakraInput.heading && chakraInput.purpose && chakraInput.timeline && (
+                      <Button 
+                        onClick={handleCreateChakra}
+                        disabled={isSaving}
+                        className="w-full h-12 text-white rounded-xl text-lg font-semibold shadow-lg bg-gradient-to-r from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700 disabled:opacity-50"
+                      >
+                        {isSaving ? 'Creating...' : 'Create Chakra'}
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Chakra Voice Input */}
+              {captureMode === 'chakra-voice' && (
+                <div className="p-6 space-y-6">
+                  <div className="flex items-center justify-between mb-6">
+                    <Button
+                      variant="ghost"
+                      onClick={() => setCaptureMode('create-type')}
+                      className="h-8 w-8 p-0 rounded-full"
+                    >
+                      <ArrowLeft className="w-4 h-4" />
+                    </Button>
+                    <h3 className="text-xl font-semibold text-gray-800">Create Chakra - Voice Input</h3>
+                    <Button
+                      variant="ghost"
+                      onClick={handleClose}
+                      className="h-8 w-8 p-0 rounded-full"
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
+                  </div>
+
+                  <div className="text-center mb-6">
+                    <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-purple-500 to-violet-600 flex items-center justify-center">
+                      <Brain className="w-8 h-8 text-white animate-pulse" />
+                    </div>
+                    <p className="text-gray-600">Record the three layers of your Chakra</p>
+                  </div>
+
+                  <div className="space-y-6">
+                    {/* Layer 1: Chakra Heading */}
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-600 to-violet-600 flex items-center justify-center">
+                            <span className="text-white text-xs font-bold">1</span>
+                          </div>
+                          <h5 className="text-sm font-semibold text-purple-800">Layer 1: Chakra Heading</h5>
+                          {chakraVoiceSteps.heading && <span className="text-xs text-green-600 ml-auto">✓ Done</span>}
+                        </div>
+                      </div>
+                      <p className="text-xs mb-3 text-purple-700">
+                        "What would you like to name this Chakra?"
+                      </p>
+                      <Button
+                        onClick={() => {
+                          toast({
+                            title: "Voice recording simulation",
+                            description: "Voice recording started for chakra heading",
+                          });
+                          setTimeout(() => {
+                            setChakraVoiceSteps(prev => ({ ...prev, heading: 'Personal Development Journey' }));
+                          }, 2000);
+                        }}
+                        className="w-full h-10 text-sm text-white bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700"
+                      >
+                        <Mic className="h-4 w-4 mr-2" />
+                        Record Heading
+                      </Button>
+                      {chakraVoiceSteps.heading && (
+                        <div className="mt-3 p-3 bg-white/80 rounded-lg text-xs border border-purple-200">
+                          {chakraVoiceSteps.heading.substring(0, 50)}... ({chakraVoiceSteps.heading.length}/100 charac)
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Layer 2: Purpose */}
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 flex items-center justify-center">
+                            <span className="text-white text-xs font-bold">2</span>
+                          </div>
+                          <h5 className="text-sm font-semibold text-indigo-800">Layer 2: Purpose</h5>
+                          {chakraVoiceSteps.purpose && <span className="text-xs text-green-600 ml-auto">✓ Done</span>}
+                        </div>
+                      </div>
+                      <p className="text-xs mb-3 text-indigo-700">
+                        "Describe the overarching purpose of this Chakra. What theme does it represent?"
+                      </p>
+                      <Button
+                        onClick={() => {
+                          toast({
+                            title: "Voice recording simulation",
+                            description: "Voice recording started for chakra purpose",
+                          });
+                          setTimeout(() => {
+                            setChakraVoiceSteps(prev => ({ ...prev, purpose: 'A comprehensive framework for continuous personal growth encompassing mindfulness, skill development, and life balance to achieve long-term fulfillment and success' }));
+                          }, 3000);
+                        }}
+                        className="w-full h-10 text-sm text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700"
+                        disabled={!chakraVoiceSteps.heading}
+                      >
+                        <Mic className="h-4 w-4 mr-2" />
+                        Record Purpose
+                      </Button>
+                      {chakraVoiceSteps.purpose && (
+                        <div className="mt-3 p-3 bg-white/80 rounded-lg text-xs border border-indigo-200">
+                          {chakraVoiceSteps.purpose.substring(0, 80)}... ({chakraVoiceSteps.purpose.length}/300 charac)
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Layer 3: Timeline */}
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-700 to-pink-600 flex items-center justify-center">
+                            <span className="text-white text-xs font-bold">3</span>
+                          </div>
+                          <h5 className="text-sm font-semibold text-purple-700">Layer 3: Timeline</h5>
+                          {chakraVoiceSteps.timeline && <span className="text-xs text-green-600 ml-auto">✓ Done</span>}
+                        </div>
+                      </div>
+                      <p className="text-xs mb-3 text-purple-600">
+                        "When will this Chakra be most relevant? Is it ongoing, or does it have a specific timeframe?"
+                      </p>
+                      <Button
+                        onClick={() => {
+                          toast({
+                            title: "Voice recording simulation",
+                            description: "Voice recording started for chakra timeline",
+                          });
+                          setTimeout(() => {
+                            setChakraVoiceSteps(prev => ({ ...prev, timeline: 'Ongoing - Lifelong journey' }));
+                          }, 1500);
+                        }}
+                        className="w-full h-10 text-sm text-white bg-gradient-to-r from-purple-700 to-pink-600 hover:from-purple-800 hover:to-pink-700"
+                        disabled={!chakraVoiceSteps.purpose}
+                      >
+                        <Mic className="h-4 w-4 mr-2" />
+                        Record Timeline
+                      </Button>
+                      {chakraVoiceSteps.timeline && (
+                        <div className="mt-3 p-3 bg-white/80 rounded-lg text-xs text-center font-medium border border-purple-200">
+                          Timeline: "{chakraVoiceSteps.timeline}"
+                        </div>
+                      )}
+                    </div>
+
+                    {chakraVoiceSteps.heading && chakraVoiceSteps.purpose && chakraVoiceSteps.timeline && (
+                      <Button 
+                        onClick={() => {
+                          toast({
+                            title: "Chakra Created!",
+                            description: `"${chakraVoiceSteps.heading}" has been successfully created.`,
+                          });
+                          setIsSaved(true);
+                        }}
+                        className="w-full h-12 text-white rounded-xl text-lg font-semibold shadow-lg bg-gradient-to-r from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700"
+                      >
+                        Create Voice Chakra
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              )}
+
               {/* Saved state UI */}
               {isSaved && (
                 <div className="text-center p-6">
@@ -1391,8 +1751,11 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                 setShowExitWarning(false);
                 setIsExpanded(false);
                 setStructuredInput({ summary: '', anchor: '', pulse: '', wheelId: null });
-                setWheelInput({ heading: '', purpose: '', timeline: '', chakraId: null });
-                setWheelVoiceSteps({ heading: '', purpose: '', timeline: '', chakraId: null });
+                setWheelInput({ heading: '', goals: '', timeline: '', chakraId: null });
+                setWheelVoiceSteps({ heading: '', goals: '', timeline: '', chakraId: null });
+                setChakraInput({ heading: '', purpose: '', timeline: '' });
+                setChakraVoiceSteps({ heading: '', purpose: '', timeline: '' });
+                setCreateType(null);
                 setCurrentStep(1);
                 setCaptureMode('select');
                 setIsSaved(false);

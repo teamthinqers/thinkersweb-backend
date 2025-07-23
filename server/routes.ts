@@ -14,6 +14,7 @@ import {
   users, 
   whatsappOtpVerifications,
   whatsappUsers,
+  wheels,
   type User 
 } from "@shared/schema";
 import { processEntryFromChat, generateChatResponse, type Message } from "./chat";
@@ -618,6 +619,101 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Error deleting dot:', error);
       res.status(500).json({ error: 'Failed to delete dot' });
+    }
+  });
+
+  // Create a new Chakra (top-level wheel with chakraId = null)
+  app.post(`${apiPrefix}/chakras`, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const userId = req.user?.id || req.session?.userId;
+      
+      if (!userId) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+
+      let { heading, purpose, timeline, sourceType = 'text' } = req.body;
+      const { headingVoiceUrl, purposeVoiceUrl, timelineVoiceUrl, headingAudio, purposeAudio, timelineAudio } = req.body;
+      
+      // If this is a voice chakra with audio data, transcribe it using OpenAI
+      if (sourceType === 'voice') {
+        try {
+          // Import the OpenAI transcription function
+          const { processVoiceInput } = await import('./openai.js');
+          
+          // Process each layer if audio data is provided
+          if (headingAudio && !heading) {
+            const audioBuffer = Buffer.from(headingAudio, 'base64');
+            const result = await processVoiceInput(audioBuffer, 'heading.wav', 'heading');
+            heading = result.processedText;
+          }
+          
+          if (purposeAudio && !purpose) {
+            const audioBuffer = Buffer.from(purposeAudio, 'base64');
+            const result = await processVoiceInput(audioBuffer, 'purpose.wav', 'purpose');
+            purpose = result.processedText;
+          }
+          
+          if (timelineAudio && !timeline) {
+            const audioBuffer = Buffer.from(timelineAudio, 'base64');
+            const result = await processVoiceInput(audioBuffer, 'timeline.wav', 'timeline');
+            timeline = result.processedText;
+          }
+        } catch (transcriptionError) {
+          console.error('Voice transcription error:', transcriptionError);
+          // Continue with provided text if transcription fails
+        }
+      }
+      
+      // Validate three-layer structure after transcription
+      if (!heading || heading.length > 100) {
+        return res.status(400).json({ 
+          error: 'Heading must be between 1 and 100 characters' 
+        });
+      }
+      
+      if (!purpose || purpose.length > 500) {
+        return res.status(400).json({ 
+          error: 'Purpose must be between 1 and 500 characters' 
+        });
+      }
+      
+      if (!timeline || timeline.length > 200) {
+        return res.status(400).json({ 
+          error: 'Timeline must be between 1 and 200 characters' 
+        });
+      }
+      
+      // Create the Chakra (wheel with chakraId = null)
+      const chakraData = {
+        userId,
+        chakraId: null, // This makes it a top-level Chakra
+        heading,
+        goals: purpose, // Maps to the 'goals' field in the wheels table
+        timeline,
+        color: '#8B5CF6', // Default purple color for Chakras
+        positionX: Math.floor(Math.random() * 400) + 100,
+        positionY: Math.floor(Math.random() * 400) + 100,
+      };
+      
+      const [newChakra] = await db.insert(wheels).values(chakraData).returning();
+      
+      res.status(201).json({ 
+        success: true, 
+        message: 'Chakra created successfully',
+        chakra: {
+          id: newChakra.id,
+          heading: newChakra.heading,
+          purpose: newChakra.goals, // Return as 'purpose' for consistency with frontend
+          timeline: newChakra.timeline,
+          sourceType,
+          color: newChakra.color,
+          position: { x: newChakra.positionX, y: newChakra.positionY },
+          createdAt: newChakra.createdAt
+        }
+      });
+    } catch (error) {
+      console.error('Error creating Chakra:', error);
+      res.status(500).json({ error: 'Failed to create Chakra' });
     }
   });
 
