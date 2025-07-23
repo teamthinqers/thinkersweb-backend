@@ -1853,6 +1853,7 @@ const Dashboard: React.FC = () => {
                   // Dynamic chakra sizing based on child wheels count
                   const childWheels = displayWheels.filter(w => w.chakraId === wheel.id);
                   wheelSize = getChakraSize('preview', childWheels.length);
+                  console.log('Chakra detected:', wheel.name, 'Size:', wheelSize, 'Color:', wheel.color, 'Children:', childWheels.length);
                 } else {
                   // Dynamic wheel sizing based on dots count
                   const wheelDots = displayDots.filter(d => d.wheelId === wheel.id);
@@ -1865,6 +1866,7 @@ const Dashboard: React.FC = () => {
                   // Dynamic chakra sizing based on child wheels count
                   const childWheels = displayWheels.filter(w => w.chakraId === wheel.id);
                   wheelSize = getChakraSize('real', childWheels.length);
+                  console.log('Real mode chakra detected:', wheel.name, 'Size:', wheelSize, 'Color:', wheel.color, 'Children:', childWheels.length);
                 } else {
                   // Dynamic wheel sizing based on dots count
                   const wheelDots = displayDots.filter(d => d.wheelId === wheel.id);
