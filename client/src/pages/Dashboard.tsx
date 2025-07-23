@@ -1151,22 +1151,84 @@ const Dashboard: React.FC = () => {
                   }}
                 >
                   {/* Enhanced Chakra/Wheel boundary */}
-                  <div 
-                    className={`w-full h-full rounded-full ${
-                      isChakra 
-                        ? 'border-8 border-solid opacity-80 shadow-2xl' 
-                        : 'border-4 border-dashed opacity-60'
-                    }`}
-                    style={{ 
-                      borderColor: wheel.color,
-                      background: isChakra 
-                        ? `linear-gradient(135deg, ${wheel.color}15, ${wheel.color}08)` 
-                        : `linear-gradient(135deg, ${wheel.color}10, ${wheel.color}05)`,
-                      ...(isChakra && {
-                        boxShadow: `0 0 40px ${wheel.color}40, inset 0 0 60px ${wheel.color}20`
-                      })
-                    }}
-                  />
+                  {isChakra ? (
+                    /* Advanced Chakra Effect with Multiple Energy Rings */
+                    <div className="relative w-full h-full">
+                      {/* Outer energy ring - rotating slowly */}
+                      <div 
+                        className="absolute inset-0 rounded-full opacity-30 animate-spin"
+                        style={{ 
+                          background: `conic-gradient(from 0deg, ${wheel.color}00, ${wheel.color}80, ${wheel.color}00, ${wheel.color}80, ${wheel.color}00)`,
+                          animationDuration: '20s'
+                        }}
+                      />
+                      
+                      {/* Middle energy ring - pulsing */}
+                      <div 
+                        className="absolute inset-4 rounded-full opacity-40 animate-pulse"
+                        style={{ 
+                          background: `radial-gradient(circle, ${wheel.color}20, ${wheel.color}60, ${wheel.color}20)`,
+                          boxShadow: `0 0 60px ${wheel.color}60, inset 0 0 40px ${wheel.color}30`
+                        }}
+                      />
+                      
+                      {/* Inner core ring - steady glow */}
+                      <div 
+                        className="absolute inset-8 rounded-full opacity-60"
+                        style={{ 
+                          background: `linear-gradient(45deg, ${wheel.color}40, ${wheel.color}20, ${wheel.color}40)`,
+                          boxShadow: `0 0 30px ${wheel.color}80`
+                        }}
+                      />
+                      
+                      {/* Dotted energy nodes around perimeter */}
+                      <div className="absolute inset-0">
+                        {[...Array(8)].map((_, i) => {
+                          const angle = (i * 45) * (Math.PI / 180);
+                          const radius = wheelRadius * 0.9;
+                          const x = wheelRadius + Math.cos(angle) * radius;
+                          const y = wheelRadius + Math.sin(angle) * radius;
+                          return (
+                            <div
+                              key={i}
+                              className="absolute w-3 h-3 rounded-full animate-ping"
+                              style={{
+                                left: `${x - 6}px`,
+                                top: `${y - 6}px`,
+                                background: wheel.color,
+                                animationDelay: `${i * 0.2}s`,
+                                animationDuration: '2s'
+                              }}
+                            />
+                          );
+                        })}
+                      </div>
+                      
+                      {/* Central chakra symbol */}
+                      <div 
+                        className="absolute inset-0 flex items-center justify-center"
+                      >
+                        <div 
+                          className="w-16 h-16 rounded-full flex items-center justify-center text-white font-bold text-lg animate-pulse"
+                          style={{ 
+                            background: `radial-gradient(circle, ${wheel.color}, ${wheel.color}CC)`,
+                            boxShadow: `0 0 20px ${wheel.color}`
+                          }}
+                        >
+                          ॐ
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    /* Regular wheel boundary */
+                    <div 
+                      className="w-full h-full rounded-full border-4 border-dashed opacity-60"
+                      style={{ 
+                        borderColor: wheel.color,
+                        background: `linear-gradient(135deg, ${wheel.color}10, ${wheel.color}05)`
+                      }}
+                    />
+                  )}
                   
                   {/* Chakra label and enhancement */}
                   {isChakra && (
