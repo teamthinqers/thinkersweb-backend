@@ -25,13 +25,13 @@ export interface GridBounds {
   marginY: number;
 }
 
-// Dynamic grid configuration that adapts based on content
+// Dynamic grid configuration optimized for user scaling
 export const GRID_CONFIG = {
-  // Grid dimensions - available canvas space
-  TOTAL_WIDTH: 1800,
-  TOTAL_HEIGHT: 1200,
-  MARGIN_X: 120,
-  MARGIN_Y: 120,
+  // Grid dimensions - expanded for better user growth accommodation
+  TOTAL_WIDTH: 2400,  // Increased width for more chakras
+  TOTAL_HEIGHT: 1600, // Increased height for better distribution
+  MARGIN_X: 150,      // Enhanced safety margins
+  MARGIN_Y: 150,
   
   // Minimum spacing requirements - these are non-negotiable
   MIN_SPACING: {
@@ -42,8 +42,8 @@ export const GRID_CONFIG = {
     WHEEL_TO_CHAKRA_EDGE: 40  // Keep wheels well within chakra boundaries
   },
   
-  // Maximum dots per wheel before creating new wheel
-  MAX_DOTS_PER_WHEEL: 9,
+  // Maximum dots per wheel before creating new wheel - increased for better capacity
+  MAX_DOTS_PER_WHEEL: 12,
   
   // Grid positioning for chakra distribution - better utilization
   CHAKRA_POSITIONS: [
