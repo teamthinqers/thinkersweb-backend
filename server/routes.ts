@@ -31,6 +31,7 @@ import {
 import { eq, inArray, and, lt, desc } from "drizzle-orm";
 import twilio from "twilio";
 import whatsappWebhookRouter from "./whatsapp-webhook";
+import { calculateGridPositions } from "./grid-positioning";
 
 // Interface for authenticated requests
 interface AuthenticatedRequest extends Request {
@@ -714,6 +715,124 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Error creating Chakra:', error);
       res.status(500).json({ error: 'Failed to create Chakra' });
+    }
+  });
+
+  // Grid positioning API endpoints - simplified version using existing entries
+  app.get(`${apiPrefix}/grid/positions`, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const userId = req.user?.id || 1; // Demo user fallback
+      const isPreview = req.query.preview === 'true';
+      
+      if (isPreview) {
+        // Return preview mode data with optimized positions
+        const previewPositions = {
+          dotPositions: {
+            'preview-dot-1': { x: 250, y: 180 },
+            'preview-dot-2': { x: 310, y: 220 },
+            'preview-dot-3': { x: 290, y: 160 },
+            'preview-dot-4': { x: 350, y: 200 },
+            'preview-dot-5': { x: 270, y: 240 },
+            'preview-dot-6': { x: 450, y: 340 },
+            'preview-dot-7': { x: 510, y: 380 },
+            'preview-dot-8': { x: 490, y: 320 },
+            'preview-dot-9': { x: 530, y: 360 }
+          },
+          wheelPositions: {
+            'preview-wheel-1': { x: 300, y: 200 },
+            'preview-wheel-2': { x: 500, y: 360 }
+          },
+          chakraPositions: {
+            'preview-chakra-business': { x: 400, y: 280 }
+          },
+          statistics: {
+            totalDots: 9,
+            totalWheels: 2,
+            totalChakras: 1,
+            freeDots: 0
+          }
+        };
+        
+        return res.json({
+          success: true,
+          data: previewPositions
+        });
+      }
+      
+      // For non-preview mode, use existing entries data 
+      const userEntries = await db.query.entries.findMany({
+        where: eq(entries.userId, userId),
+        orderBy: desc(entries.createdAt),
+        limit: 50
+      });
+
+      // Filter and parse three-layer dots
+      const userDots = userEntries
+        .filter(entry => {
+          try {
+            const parsed = JSON.parse(entry.content);
+            return parsed.dotType === 'three-layer';
+          } catch {
+            return false;
+          }
+        })
+        .map((entry, index) => ({
+          id: entry.id.toString(),
+          x: 200 + (index % 5) * 80 + Math.random() * 40,
+          y: 200 + Math.floor(index / 5) * 80 + Math.random() * 40
+        }));
+      
+      // Get wheels data
+      const userWheels = await db.query.wheels.findMany({
+        where: eq(wheels.userId, userId)
+      });
+      
+      const chakras = userWheels.filter(wheel => !wheel.chakraId);
+      const regularWheels = userWheels.filter(wheel => wheel.chakraId);
+      
+      // Generate positions for wheels and chakras
+      const wheelPositions = regularWheels.reduce((acc, wheel, index) => {
+        acc[wheel.id] = {
+          x: wheel.positionX || (300 + index * 150),
+          y: wheel.positionY || (250 + index * 120)
+        };
+        return acc;
+      }, {} as Record<string, { x: number; y: number }>);
+      
+      const chakraPositions = chakras.reduce((acc, chakra, index) => {
+        acc[chakra.id] = {
+          x: chakra.positionX || (400 + index * 200),
+          y: chakra.positionY || (300 + index * 150)
+        };
+        return acc;
+      }, {} as Record<string, { x: number; y: number }>);
+      
+      const dotPositions = userDots.reduce((acc, dot) => {
+        acc[dot.id] = { x: dot.x, y: dot.y };
+        return acc;
+      }, {} as Record<string, { x: number; y: number }>);
+      
+      return res.json({
+        success: true,
+        data: {
+          dotPositions,
+          wheelPositions,
+          chakraPositions,
+          statistics: {
+            totalDots: userDots.length,
+            totalWheels: regularWheels.length,
+            totalChakras: chakras.length,
+            freeDots: userDots.length
+          }
+        }
+      });
+      
+    } catch (error) {
+      console.error('Grid positioning error:', error);
+      return res.status(500).json({
+        success: false,
+        error: 'Failed to calculate grid positions'
+      });
     }
   });
 

@@ -65,14 +65,14 @@ const Dashboard: React.FC = () => {
   // PWA detection for smaller button sizing
   const isPWA = isRunningAsStandalone();
 
-  // Fetch real dots from API with graceful error handling
-  const { data: dots = [], isLoading, refetch, error } = useQuery({
-    queryKey: ['/api/dots'],
+  // Fetch optimized grid positions from new API
+  const { data: gridData, isLoading: gridLoading, refetch: refetchGrid } = useQuery({
+    queryKey: ['/api/grid/positions', { preview: previewMode }],
     queryFn: async () => {
       try {
-        const response = await fetch('/api/dots');
+        const response = await fetch(`/api/grid/positions?preview=${previewMode}`);
         if (!response.ok) {
-          return [];
+          return { data: { dotPositions: {}, wheelPositions: {}, chakraPositions: {}, statistics: { totalDots: 0, totalWheels: 0, totalChakras: 0, freeDots: 0 } } };
         }
         return response.json();
       } catch (error) {
@@ -86,6 +86,27 @@ const Dashboard: React.FC = () => {
     enabled: true, // Always enabled but with aggressive caching
     refetchInterval: false, // Disable automatic refetching
     gcTime: 5 * 60 * 1000 // Keep data in cache for 5 minutes
+  });
+
+  // Fallback for dots - use old API if new grid API has no data
+  const { data: dots = [], isLoading, refetch } = useQuery({
+    queryKey: ['/api/dots'],
+    queryFn: async () => {
+      try {
+        const response = await fetch('/api/dots');
+        if (!response.ok) {
+          return [];
+        }
+        const data = await response.json();
+        return data;
+      } catch (err) {
+        console.error('Error fetching dots:', err);
+        return [];
+      }
+    },
+    enabled: !gridData?.data?.statistics?.totalDots, // Only fetch if grid has no data
+    refetchOnWindowFocus: false,
+    staleTime: 5 * 60 * 1000 // 5 minutes
   });
 
   // Example data for preview mode when no dots exist
@@ -145,13 +166,13 @@ const Dashboard: React.FC = () => {
     
     // Get current data source based on preview mode
     let searchDots = dots;
-    let searchWheels = wheels;
+    let searchWheels: Wheel[] = [];
     
     // If preview mode is enabled, include preview data
     if (previewMode) {
       const previewData = generatePreviewData();
       searchDots = [...dots, ...previewData.previewDots];
-      searchWheels = [...wheels, ...previewData.previewWheels];
+      searchWheels = [...previewData.previewWheels];
     }
     
     // Search dots
@@ -579,6 +600,16 @@ const Dashboard: React.FC = () => {
     const [dragStart, setDragStart] = useState<{ x: number; y: number } | null>(null);
     const [offset, setOffset] = useState({ x: 0, y: 0 });
     const [isPWA, setIsPWA] = useState(false);
+    
+    // Fetch grid positioning data from algorithmic backend
+    const { data: gridPositions, isLoading: isGridLoading } = useQuery({
+      queryKey: ['/api/grid/positions', previewMode],
+      queryFn: () => 
+        fetch(`/api/grid/positions?preview=${previewMode}`)
+          .then(res => res.json())
+          .then(data => data.success ? data.data : null),
+      refetchOnWindowFocus: false,
+    });
     
 
 
@@ -1638,103 +1669,73 @@ const Dashboard: React.FC = () => {
           >
             {/* Individual Dots Random Grid */}
             {displayDots.map((dot, index) => {
-              // Generate consistent random positions based on dot ID for stability
-              const dotId = String(dot.id || index); // Ensure string conversion
-              const seedX = dotId.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
-              const seedY = dotId.split('').reverse().reduce((a, b) => a + b.charCodeAt(0), 0);
-              
-              // Position dots based on whether they belong to a wheel or are individual
+              // Use algorithmic positioning from backend API when available, fallback to manual calculation
               let x, y;
-              if (previewMode) {
-                // Check if this dot belongs to a wheel
-                if (dot.wheelId && dot.wheelId !== '') {
-                  // Find the wheel this dot belongs to
-                  const wheel = displayWheels.find(w => w.id === dot.wheelId);
-                  if (wheel) {
-                    // Find position within the wheel
-                    const dotsInWheel = displayDots.filter(d => d.wheelId === dot.wheelId);
-                    const dotIndexInWheel = dotsInWheel.findIndex(d => d.id === dot.id);
-                    
-                    // Position dots in a circle inside the wheel (ensure they stay within wheel boundaries)
-                    const wheelCenterX = wheel.position.x;
-                    const wheelCenterY = wheel.position.y;
-                    const wheelRadius = 60; // Wheel radius (120px diameter / 2)
-                    // Use dynamic sizing for consistent user experience
-                    const dotRadius = calculateDynamicSizing('preview', dotsInWheel.length, 'dots');
-                    const angle = (dotIndexInWheel * 2 * Math.PI) / dotsInWheel.length;
-                    
-                    x = wheelCenterX + Math.cos(angle) * dotRadius;
-                    y = wheelCenterY + Math.sin(angle) * dotRadius;
-                  } else {
-                    // Fallback for wheel dots without wheel found
-                    x = 100 + (seedX % 900) + (index * 67) % 400;
-                    y = 100 + (seedY % 600) + (index * 83) % 300;
-                  }
-                } else {
-                  // Individual scattered dots - spread across full grid
-                  x = 80 + (seedX % 1000) + (index * 137) % 800;
-                  y = 80 + (seedY % 600) + (index * 97) % 500;
-                }
+              
+              if (gridPositions?.dotPositions && gridPositions.dotPositions[dot.id]) {
+                // Use backend algorithmic positioning
+                const position = gridPositions.dotPositions[dot.id];
+                x = position.x;
+                y = position.y;
+                console.log(`Using algorithmic position for dot ${dot.id}:`, position);
               } else {
-                // Real mode - intelligent positioning system
-                if (dot.wheelId && dot.wheelId !== '') {
-                  // Find the wheel this dot belongs to
-                  const wheel = displayWheels.find(w => w.id === dot.wheelId);
-                  if (wheel) {
-                    // Position dots in a circle inside the wheel
-                    const dotsInWheel = displayDots.filter(d => d.wheelId === dot.wheelId);
-                    const dotIndexInWheel = dotsInWheel.findIndex(d => d.id === dot.id);
-                    
-                    // Use intelligent positioning for wheel center
-                    let wheelCenterX, wheelCenterY;
-                    if (!previewMode && (!wheel.position || (wheel.position.x === 0 && wheel.position.y === 0))) {
-                      // Auto-position wheels in a grid layout for real data
-                      const wheelIndex = displayWheels.findIndex(w => w.id === wheel.id);
-                      const wheelGridCols = 3;
-                      const wheelSpacing = 250;
-                      const wheelBaseX = 200;
-                      const wheelBaseY = 200;
+                // Fallback to manual positioning logic for dots not in API response
+                const dotId = String(dot.id || index);
+                const seedX = dotId.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
+                const seedY = dotId.split('').reverse().reduce((a, b) => a + b.charCodeAt(0), 0);
+                
+                if (previewMode) {
+                  // Check if this dot belongs to a wheel
+                  if (dot.wheelId && dot.wheelId !== '') {
+                    // Find the wheel this dot belongs to
+                    const wheel = displayWheels.find(w => w.id === dot.wheelId);
+                    if (wheel) {
+                      // Find position within the wheel
+                      const dotsInWheel = displayDots.filter(d => d.wheelId === dot.wheelId);
+                      const dotIndexInWheel = dotsInWheel.findIndex(d => d.id === dot.id);
                       
-                      wheelCenterX = (wheelIndex % wheelGridCols) * wheelSpacing + wheelBaseX;
-                      wheelCenterY = Math.floor(wheelIndex / wheelGridCols) * wheelSpacing + wheelBaseY;
+                      // Position dots in a circle inside the wheel
+                      const wheelCenterX = wheel.position.x;
+                      const wheelCenterY = wheel.position.y;
+                      const wheelRadius = 60;
+                      const dotRadius = calculateDynamicSizing('preview', dotsInWheel.length, 'dots');
+                      const angle = (dotIndexInWheel * 2 * Math.PI) / dotsInWheel.length;
+                      
+                      x = wheelCenterX + Math.cos(angle) * dotRadius;
+                      y = wheelCenterY + Math.sin(angle) * dotRadius;
                     } else {
-                      wheelCenterX = wheel.position.x;
-                      wheelCenterY = wheel.position.y;
+                      x = 100 + (seedX % 900) + (index * 67) % 400;
+                      y = 100 + (seedY % 600) + (index * 83) % 300;
                     }
-                    // Use dynamic sizing for consistent user experience in real mode
-                    const dotRadius = calculateDynamicSizing('real', dotsInWheel.length, 'dots');
-                    const angle = (dotIndexInWheel * 2 * Math.PI) / dotsInWheel.length;
-                    
-                    x = wheelCenterX + Math.cos(angle) * dotRadius;
-                    y = wheelCenterY + Math.sin(angle) * dotRadius;
                   } else {
-                    // Fallback for wheel dots without wheel found - use grid positioning
-                    const gridCols = 8;
-                    const gridSpacing = 120;
-                    const gridX = (index % gridCols) * gridSpacing + 100;
-                    const gridY = Math.floor(index / gridCols) * gridSpacing + 100;
-                    x = gridX + (seedX % 40) - 20; // Add small random offset
-                    y = gridY + (seedY % 40) - 20;
+                    // Individual scattered dots
+                    x = 80 + (seedX % 1000) + (index * 137) % 800;
+                    y = 80 + (seedY % 600) + (index * 97) % 500;
                   }
                 } else {
-                  // Individual scattered dots - use position if available, otherwise grid system
-                  if (dot.position) {
-                    x = dot.position.x;
-                    y = dot.position.y;
+                  // Real mode fallback
+                  if (dot.wheelId && dot.wheelId !== '') {
+                    const wheel = displayWheels.find(w => w.id === dot.wheelId);
+                    if (wheel) {
+                      const dotsInWheel = displayDots.filter(d => d.wheelId === dot.wheelId);
+                      const dotIndexInWheel = dotsInWheel.findIndex(d => d.id === dot.id);
+                      
+                      // Fallback wheel positioning for real mode
+                      const wheelCenterX = wheel.position?.x || (300 + (wheelIndex % 3) * 200);
+                      const wheelCenterY = wheel.position?.y || (250 + Math.floor(wheelIndex / 3) * 180);
+                      const dotRadius = calculateDynamicSizing('real', dotsInWheel.length, 'dots');
+                      const angle = (dotIndexInWheel * 2 * Math.PI) / dotsInWheel.length;
+                      
+                      x = wheelCenterX + Math.cos(angle) * dotRadius;
+                      y = wheelCenterY + Math.sin(angle) * dotRadius;
+                    } else {
+                      x = 100 + (seedX % 900) + (index * 67) % 400;
+                      y = 100 + (seedY % 600) + (index * 83) % 300;
+                    }
                   } else {
-                    // Fallback to intelligent grid system for dots without specific positions
-                    const gridCols = 6;
-                    const gridSpacing = 140;
-                    const baseX = 100;
-                    const baseY = 100;
-                    
-                    // Calculate grid position with some randomness for natural look
-                    const gridX = (index % gridCols) * gridSpacing + baseX;
-                    const gridY = Math.floor(index / gridCols) * gridSpacing + baseY;
-                    
-                    // Add controlled randomness while maintaining minimum spacing
-                    x = gridX + (seedX % 60) - 30;
-                    y = gridY + (seedY % 60) - 30;
+                    // Individual scattered dots
+                    x = 80 + (seedX % 1000) + (index * 137) % 800;
+                    y = 80 + (seedY % 600) + (index * 97) % 500;
                   }
                 }
               }
@@ -1853,24 +1854,35 @@ const Dashboard: React.FC = () => {
             
             {/* Wheel Boundaries - Only show when wheels exist */}
             {(previewMode ? displayWheels : displayWheels.filter(w => w.dots && w.dots.length > 0)).map((wheel, wheelIndex) => {
-              // Determine wheel size and positioning
-              let wheelPosition = wheel.position;
+              // Use algorithmic positioning from backend API when available, fallback to manual positioning
+              let wheelPosition;
               
-              // In real mode, auto-position wheels intelligently if no position is set
-              if (!previewMode && (!wheel.position || (wheel.position.x === 0 && wheel.position.y === 0))) {
-                // Auto-position wheels in a grid layout for real data with dynamic spacing
-                const wheelGridCols = 3;
-                // Dynamic spacing based on content - more content = tighter spacing
-                const totalWheelsCount = displayWheels.length;
-                const baseSpacing = 250;
-                const wheelSpacing = totalWheelsCount <= 6 ? baseSpacing : Math.max(200, baseSpacing - (totalWheelsCount - 6) * 10);
-                const wheelBaseX = 200;
-                const wheelBaseY = 200;
+              if (gridPositions?.wheelPositions && gridPositions.wheelPositions[wheel.id]) {
+                // Use backend algorithmic positioning
+                wheelPosition = gridPositions.wheelPositions[wheel.id];
+                console.log(`Using algorithmic position for wheel ${wheel.id}:`, wheelPosition);
+              } else if (gridPositions?.chakraPositions && gridPositions.chakraPositions[wheel.id]) {
+                // Use chakra positioning for chakras
+                wheelPosition = gridPositions.chakraPositions[wheel.id];
+              } else {
+                // Fallback to manual positioning logic
+                wheelPosition = wheel.position;
                 
-                const wheelGridX = (wheelIndex % wheelGridCols) * wheelSpacing + wheelBaseX;
-                const wheelGridY = Math.floor(wheelIndex / wheelGridCols) * wheelSpacing + wheelBaseY;
-                
-                wheelPosition = { x: wheelGridX, y: wheelGridY };
+                // In real mode, auto-position wheels intelligently if no position is set
+                if (!previewMode && (!wheel.position || (wheel.position.x === 0 && wheel.position.y === 0))) {
+                  // Auto-position wheels in a grid layout for real data with dynamic spacing
+                  const wheelGridCols = 3;
+                  const totalWheelsCount = displayWheels.length;
+                  const baseSpacing = 250;
+                  const wheelSpacing = totalWheelsCount <= 6 ? baseSpacing : Math.max(200, baseSpacing - (totalWheelsCount - 6) * 10);
+                  const wheelBaseX = 200;
+                  const wheelBaseY = 200;
+                  
+                  const wheelGridX = (wheelIndex % wheelGridCols) * wheelSpacing + wheelBaseX;
+                  const wheelGridY = Math.floor(wheelIndex / wheelGridCols) * wheelSpacing + wheelBaseY;
+                  
+                  wheelPosition = { x: wheelGridX, y: wheelGridY };
+                }
               }
               
               // Determine wheel size based on type and hierarchy using dynamic sizing

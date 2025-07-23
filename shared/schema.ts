@@ -276,18 +276,63 @@ export const insertWhatsappUserSchema = createInsertSchema(whatsappUsers, {
 export type InsertWhatsappUser = z.infer<typeof insertWhatsappUserSchema>;
 export type WhatsappUser = typeof whatsappUsers.$inferSelect;
 
-// Wheels - user-defined containers with three layers (heading, purpose, timeline)
+// Dots table for three-layer dot system
+export const dots = pgTable("dots", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  summary: text("summary").notNull(), // 220 chars max
+  anchor: text("anchor").notNull(), // 300 chars max
+  pulse: text("pulse").notNull(), // Single emotion word
+  wheelId: integer("wheel_id").references(() => wheels.id), // Can be null for free dots
+  sourceType: text("source_type").notNull(), // 'voice' or 'text'
+  captureMode: text("capture_mode").notNull(), // 'natural' or 'ai'
+  positionX: integer("position_x").default(0).notNull(),
+  positionY: integer("position_y").default(0).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const dotsRelations = relations(dots, ({ one, many }) => ({
+  user: one(users, {
+    fields: [dots.userId],
+    references: [users.id],
+  }),
+  wheel: one(wheels, {
+    fields: [dots.wheelId], 
+    references: [wheels.id],
+  }),
+  voiceRecordings: many(dotVoiceRecordings),
+}));
+
+export const insertDotSchema = createInsertSchema(dots, {
+  summary: (schema) => schema.min(1, "Summary is required").max(220, "Summary must be 220 characters or less"),
+  anchor: (schema) => schema.min(1, "Anchor is required").max(300, "Anchor must be 300 characters or less"),
+  pulse: (schema) => schema.min(1, "Pulse is required").max(50, "Pulse must be 50 characters or less"),
+  sourceType: (schema) => schema.refine(val => ['voice', 'text'].includes(val), "Source type must be voice or text"),
+  captureMode: (schema) => schema.refine(val => ['natural', 'ai'].includes(val), "Capture mode must be natural or ai"),
+  wheelId: (schema) => schema.optional(),
+  positionX: (schema) => schema.optional(),
+  positionY: (schema) => schema.optional(),
+});
+
+export type InsertDot = z.infer<typeof insertDotSchema>;
+export type Dot = typeof dots.$inferSelect;
+
+// Wheels table for wheel system (includes chakras)
 export const wheels = pgTable("wheels", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").references(() => users.id).notNull(),
-  chakraId: integer("chakra_id").references(() => wheels.id), // For hierarchical wheel structures - wheels belong to a Chakra
-  heading: text("heading").notNull(), // Layer 1: Wheel title/name
-  goals: text("goals"), // Layer 2: Goals description (for regular wheels)
-  purpose: text("purpose"), // Layer 2: Purpose description (for Chakras)
-  timeline: text("timeline").notNull(), // Layer 3: Timeline/deadline
-  color: text("color").notNull().default("#8B5CF6"),
-  positionX: integer("position_x").default(100).notNull(),
-  positionY: integer("position_y").default(100).notNull(),
+  name: text("name").notNull(),
+  heading: text("heading"),
+  goals: text("goals"), // For regular wheels
+  purpose: text("purpose"), // For Chakras (top-level)
+  timeline: text("timeline"),
+  category: text("category").notNull(),
+  color: text("color").notNull().default("#EA580C"),
+  chakraId: integer("chakra_id").references(() => wheels.id), // Self-reference for chakra hierarchy
+  positionX: integer("position_x").default(0).notNull(),
+  positionY: integer("position_y").default(0).notNull(),
+  radius: integer("radius").default(120).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
@@ -300,138 +345,59 @@ export const wheelsRelations = relations(wheels, ({ one, many }) => ({
   chakra: one(wheels, {
     fields: [wheels.chakraId],
     references: [wheels.id],
-    relationName: "chakra",
+    relationName: "wheelChakra",
   }),
-  childWheels: many(wheels, { relationName: "chakra" }),
+  childWheels: many(wheels, {
+    relationName: "wheelChakra",
+  }),
   dots: many(dots),
-  sourceConnections: many(wheelConnections, { relationName: "sourceWheel" }),
-  targetConnections: many(wheelConnections, { relationName: "targetWheel" }),
 }));
 
-// Dots - three-layer thought structure
-export const dots = pgTable("dots", {
-  id: serial("id").primaryKey(),
-  userId: integer("user_id").references(() => users.id).notNull(),
-  wheelId: integer("wheel_id").references(() => wheels.id),
-  oneWordSummary: text("one_word_summary"), // Auto-generated one-word summary for flash card heading
-  summary: text("summary").notNull(), // Layer 1: 220 chars max
-  anchor: text("anchor").notNull(), // Layer 2: 300 chars max
-  pulse: text("pulse").notNull(), // Layer 3: 1 word emotion
-  sourceType: text("source_type").notNull().default("text"), // voice, text, hybrid
-  originalAudioUrl: text("original_audio_url"), // For voice dots
-  transcriptionConfidence: integer("transcription_confidence"), // 0-100
-  processingStatus: text("processing_status").notNull().default("processed"), // raw, transcribed, processed, enhanced
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
-});
-
-export const dotsRelations = relations(dots, ({ one, many }) => ({
-  user: one(users, {
-    fields: [dots.userId],
-    references: [users.id],
-  }),
-  wheel: one(wheels, {
-    fields: [dots.wheelId],
-    references: [wheels.id],
-  }),
-  sourceConnections: many(dotConnections, { relationName: "sourceDot" }),
-  targetConnections: many(dotConnections, { relationName: "targetDot" }),
-}));
-
-// Connections between wheels
-export const wheelConnections = pgTable("wheel_connections", {
-  id: serial("id").primaryKey(),
-  sourceWheelId: integer("source_wheel_id").references(() => wheels.id).notNull(),
-  targetWheelId: integer("target_wheel_id").references(() => wheels.id).notNull(),
-  connectionType: text("connection_type").notNull().default("related"), // logical, temporal, emotional
-  strength: integer("strength").default(50).notNull(), // 0-100
-  reasonForConnection: text("reason_for_connection"), // AI-generated explanation
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
-
-export const wheelConnectionsRelations = relations(wheelConnections, ({ one }) => ({
-  sourceWheel: one(wheels, {
-    fields: [wheelConnections.sourceWheelId],
-    references: [wheels.id],
-    relationName: "sourceWheel",
-  }),
-  targetWheel: one(wheels, {
-    fields: [wheelConnections.targetWheelId],
-    references: [wheels.id],
-    relationName: "targetWheel",
-  }),
-}));
-
-// Connections between individual dots
-export const dotConnections = pgTable("dot_connections", {
-  id: serial("id").primaryKey(),
-  sourceDotId: integer("source_dot_id").references(() => dots.id).notNull(),
-  targetDotId: integer("target_dot_id").references(() => dots.id).notNull(),
-  connectionType: text("connection_type").notNull().default("related"),
-  strength: integer("strength").default(50).notNull(),
-  reasonForConnection: text("reason_for_connection"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
-
-export const dotConnectionsRelations = relations(dotConnections, ({ one }) => ({
-  sourceDot: one(dots, {
-    fields: [dotConnections.sourceDotId],
-    references: [dots.id],
-    relationName: "sourceDot",
-  }),
-  targetDot: one(dots, {
-    fields: [dotConnections.targetDotId],
-    references: [dots.id],
-    relationName: "targetDot",
-  }),
-}));
-
-// Validation schemas
 export const insertWheelSchema = createInsertSchema(wheels, {
-  heading: (schema) => schema.min(2, "Wheel heading must be at least 2 characters").max(100, "Heading must be 100 characters or less"),
+  name: (schema) => schema.min(1, "Name is required").max(100, "Name must be 100 characters or less"),
+  heading: (schema) => schema.optional(),
   goals: (schema) => schema.optional(),
   purpose: (schema) => schema.optional(),
-  timeline: (schema) => schema.min(2, "Timeline must be at least 2 characters").max(100, "Timeline must be 100 characters or less"),
-  chakraId: (schema) => schema.optional(),
+  timeline: (schema) => schema.optional(),
+  category: (schema) => schema.min(1, "Category is required"),
   color: (schema) => schema.optional(),
+  chakraId: (schema) => schema.optional(),
   positionX: (schema) => schema.optional(),
   positionY: (schema) => schema.optional(),
-});
-
-export const insertDotSchema = createInsertSchema(dots, {
-  summary: (schema) => schema.min(1, "Summary is required").max(220, "Summary must be 220 characters or less"),
-  anchor: (schema) => schema.min(1, "Anchor text is required").max(300, "Anchor text must be 300 characters or less"),
-  pulse: (schema) => schema.min(1, "Pulse emotion is required").refine(
-    (val) => val.trim().split(/\s+/).length === 1,
-    "Pulse must be exactly one word"
-  ),
-  sourceType: (schema) => schema.optional(),
-  wheelId: (schema) => schema.optional(),
-  originalAudioUrl: (schema) => schema.optional(),
-  transcriptionConfidence: (schema) => schema.optional(),
-  processingStatus: (schema) => schema.optional(),
-});
-
-export const insertWheelConnectionSchema = createInsertSchema(wheelConnections, {
-  connectionType: (schema) => schema.optional(),
-  strength: (schema) => schema.optional(),
-  reasonForConnection: (schema) => schema.optional(),
-});
-
-export const insertDotConnectionSchema = createInsertSchema(dotConnections, {
-  connectionType: (schema) => schema.optional(),
-  strength: (schema) => schema.optional(),
-  reasonForConnection: (schema) => schema.optional(),
+  radius: (schema) => schema.optional(),
 });
 
 export type InsertWheel = z.infer<typeof insertWheelSchema>;
 export type Wheel = typeof wheels.$inferSelect;
-export type InsertDot = z.infer<typeof insertDotSchema>;
-export type Dot = typeof dots.$inferSelect;
-export type InsertWheelConnection = z.infer<typeof insertWheelConnectionSchema>;
-export type WheelConnection = typeof wheelConnections.$inferSelect;
-export type InsertDotConnection = z.infer<typeof insertDotConnectionSchema>;
-export type DotConnection = typeof dotConnections.$inferSelect;
+
+// Voice recordings for dots
+export const dotVoiceRecordings = pgTable("dot_voice_recordings", {
+  id: serial("id").primaryKey(),
+  dotId: integer("dot_id").references(() => dots.id).notNull(),
+  layer: text("layer").notNull(), // 'summary', 'anchor', or 'pulse'
+  audioUrl: text("audio_url").notNull(),
+  duration: integer("duration"),
+  transcript: text("transcript"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const dotVoiceRecordingsRelations = relations(dotVoiceRecordings, ({ one }) => ({
+  dot: one(dots, {
+    fields: [dotVoiceRecordings.dotId],
+    references: [dots.id],
+  }),
+}));
+
+export const insertDotVoiceRecordingSchema = createInsertSchema(dotVoiceRecordings, {
+  dotId: (schema) => schema.positive("Dot ID must be positive"),
+  layer: (schema) => schema.refine(val => ['summary', 'anchor', 'pulse'].includes(val), "Layer must be summary, anchor, or pulse"),
+  audioUrl: (schema) => schema.url("Must be a valid URL"),
+  duration: (schema) => schema.optional(),
+  transcript: (schema) => schema.optional(),
+});
+
+export type InsertDotVoiceRecording = z.infer<typeof insertDotVoiceRecordingSchema>;
+export type DotVoiceRecording = typeof dotVoiceRecordings.$inferSelect;
 
 // WhatsApp OTP verification schema
 export const whatsappOtpVerifications = pgTable("whatsapp_otp_verifications", {
