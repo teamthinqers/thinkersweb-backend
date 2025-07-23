@@ -56,7 +56,6 @@ const Dashboard: React.FC = () => {
   const [viewFullDot, setViewFullDot] = useState<Dot | null>(null);
   const [viewFlashCard, setViewFlashCard] = useState<Dot | null>(null);
   const [viewFullWheel, setViewFullWheel] = useState<Wheel | null>(null);
-  const [searchResults, setSearchResults] = useState<Dot[]>([]);
   const [showRecentFilter, setShowRecentFilter] = useState(false);
   const [recentDotsCount, setRecentDotsCount] = useState(4);
   const [showPreview, setShowPreview] = useState(false);
@@ -126,22 +125,69 @@ const Dashboard: React.FC = () => {
     }
   ];
 
-  // Search functionality
-  React.useEffect(() => {
-    if (searchTerm.trim()) {
-      const filtered = dots.filter((dot: Dot) => 
-        dot.summary.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        dot.anchor.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        dot.pulse.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setSearchResults(filtered);
-    } else {
-      setSearchResults([]);
-    }
-  }, [searchTerm, dots]);
+  // Enhanced search functionality with keyword-based searching
+  const [searchResults, setSearchResults] = useState<{
+    dots: Dot[];
+    wheels: Wheel[];
+    chakras: Wheel[];
+  }>({ dots: [], wheels: [], chakras: [] });
+  const [showSearchResults, setShowSearchResults] = useState(false);
 
-  // Mock wheels data for visualization
+  // Function to perform comprehensive keyword search
+  const performSearch = (query: string) => {
+    if (!query.trim()) {
+      setSearchResults({ dots: [], wheels: [], chakras: [] });
+      setShowSearchResults(false);
+      return;
+    }
+
+    const keywords = query.toLowerCase().split(' ').filter(k => k.length > 0);
+    
+    // Search dots
+    const filteredDots = dots.filter((dot: Dot) => {
+      const searchText = [
+        dot.summary,
+        dot.anchor,
+        dot.pulse,
+        dot.oneWordSummary
+      ].join(' ').toLowerCase();
+      
+      return keywords.some(keyword => searchText.includes(keyword));
+    });
+
+    // Search wheels and chakras
+    const filteredWheels = wheels.filter(wheel => {
+      const searchText = [
+        wheel.name,
+        wheel.heading || '',
+        wheel.goals || '',
+        wheel.purpose || '',
+        wheel.timeline || '',
+        wheel.category
+      ].join(' ').toLowerCase();
+      
+      return keywords.some(keyword => searchText.includes(keyword));
+    });
+
+    // Separate wheels from chakras
+    const regularWheels = filteredWheels.filter(w => w.chakraId !== null && w.chakraId !== undefined);
+    const chakras = filteredWheels.filter(w => w.chakraId === null || w.chakraId === undefined);
+
+    setSearchResults({
+      dots: filteredDots,
+      wheels: regularWheels,
+      chakras: chakras
+    });
+    setShowSearchResults(true);
+  };
+
+  // Mock wheels data for visualization - moved before search function
   const [wheels] = useState<Wheel[]>([]);
+
+  // Handle search functionality
+  React.useEffect(() => {
+    performSearch(searchTerm);
+  }, [searchTerm, dots, wheels]);
 
   const DotCard: React.FC<{ dot: Dot; isPreview?: boolean; onClick?: () => void }> = ({ dot, isPreview = false, onClick }) => {
     const handleDotClick = () => {
@@ -479,7 +525,7 @@ const Dashboard: React.FC = () => {
         dots: [],
         connections: [],
         position: { x: 750, y: 180 }, // Standalone position, separate from business hierarchy
-        chakraId: null, // This is a standalone wheel, not a chakra
+        chakraId: undefined, // This is a standalone wheel, not a chakra
         createdAt: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000) // 25 days ago
       };
 
@@ -1517,16 +1563,27 @@ const Dashboard: React.FC = () => {
                 </Popover>
               </h2>
               
-              {/* Search Bar */}
+              {/* Enhanced Search Bar */}
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-amber-500" />
                 <Input
                   type="text"
-                  placeholder="search for your dots or wheels"
+                  placeholder="Search dots, wheels, or chakras by keywords..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 h-10 w-64 text-sm border-2 border-amber-200 bg-white/90 backdrop-blur focus:border-amber-500 focus:ring-amber-500/20 rounded-xl placeholder:text-gray-500 text-gray-800 shadow-sm"
+                  className="pl-10 h-10 w-80 text-sm border-2 border-amber-200 bg-white/90 backdrop-blur focus:border-amber-500 focus:ring-amber-500/20 rounded-xl placeholder:text-gray-500 text-gray-800 shadow-sm"
                 />
+                {showSearchResults && searchTerm && (
+                  <button
+                    onClick={() => {
+                      setSearchTerm('');
+                      setShowSearchResults(false);
+                    }}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 p-1 rounded-full hover:bg-gray-100 transition-colors"
+                  >
+                    <X className="h-3 w-3 text-gray-400" />
+                  </button>
+                )}
               </div>
               
               {/* Recent Dots Filter and Social Button */}
@@ -1589,6 +1646,125 @@ const Dashboard: React.FC = () => {
             
 
           </div>
+          
+
+          {/* Search Results Section */}
+          {showSearchResults && searchTerm && (
+            <div className="mb-6 bg-white/95 backdrop-blur border-2 border-amber-200 rounded-xl shadow-lg p-4">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-amber-800">
+                  Search Results for "{searchTerm}"
+                </h3>
+                <div className="text-sm text-gray-600">
+                  {searchResults.dots.length + searchResults.wheels.length + searchResults.chakras.length} results found
+                </div>
+              </div>
+              
+              <div className="space-y-4">
+                {/* Chakras Results */}
+                {searchResults.chakras.length > 0 && (
+                  <div>
+                    <h4 className="text-md font-semibold text-amber-700 mb-2 flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full bg-amber-600"></div>
+                      Chakras ({searchResults.chakras.length})
+                    </h4>
+                    <div className="grid gap-2">
+                      {searchResults.chakras.map((chakra) => (
+                        <Card key={chakra.id} className="cursor-pointer hover:shadow-md transition-shadow border border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50" onClick={() => setViewFullWheel(chakra)}>
+                          <CardContent className="p-3">
+                            <div className="flex justify-between items-start">
+                              <div>
+                                <div className="flex items-center gap-2 mb-1">
+                                  <Badge className="bg-amber-100 text-amber-800 text-xs">Chakra</Badge>
+                                </div>
+                                <h5 className="font-bold text-amber-800">{chakra.heading || chakra.name}</h5>
+                                <p className="text-sm text-gray-600 line-clamp-2">{chakra.purpose}</p>
+                              </div>
+                              <Badge className="bg-amber-100 text-amber-700">{chakra.timeline}</Badge>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Wheels Results */}
+                {searchResults.wheels.length > 0 && (
+                  <div>
+                    <h4 className="text-md font-semibold text-orange-700 mb-2 flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full bg-orange-600"></div>
+                      Wheels ({searchResults.wheels.length})
+                    </h4>
+                    <div className="grid gap-2">
+                      {searchResults.wheels.map((wheel) => (
+                        <Card key={wheel.id} className="cursor-pointer hover:shadow-md transition-shadow border border-orange-200 bg-gradient-to-br from-orange-50 to-red-50" onClick={() => setViewFullWheel(wheel)}>
+                          <CardContent className="p-3">
+                            <div className="flex justify-between items-start">
+                              <div>
+                                <div className="flex items-center gap-2 mb-1">
+                                  <Badge className="bg-orange-100 text-orange-800 text-xs">Wheel</Badge>
+                                </div>
+                                <h5 className="font-bold text-orange-800">{wheel.heading || wheel.name}</h5>
+                                <p className="text-sm text-gray-600 line-clamp-2">{wheel.goals}</p>
+                              </div>
+                              <Badge className="bg-orange-100 text-orange-700">{wheel.timeline}</Badge>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Dots Results */}
+                {searchResults.dots.length > 0 && (
+                  <div>
+                    <h4 className="text-md font-semibold text-amber-700 mb-2 flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full bg-amber-500"></div>
+                      Dots ({searchResults.dots.length})
+                    </h4>
+                    <div className="grid gap-2">
+                      {searchResults.dots.map((dot) => (
+                        <Card key={dot.id} className="cursor-pointer hover:shadow-md transition-shadow border border-amber-200 bg-white/95" onClick={() => setViewFullDot(dot)}>
+                          <CardContent className="p-3">
+                            <div className="flex justify-between items-start">
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2 mb-1">
+                                  <Badge variant="outline" className="text-xs border-amber-300 text-amber-700 bg-amber-50/80">
+                                    {dot.sourceType === 'voice' ? <Mic className="h-3 w-3 mr-1" /> : <Type className="h-3 w-3 mr-1" />}
+                                    {dot.sourceType}
+                                  </Badge>
+                                  {dot.captureMode === 'ai' && (
+                                    <Badge className="bg-purple-100 text-purple-700 text-xs">AI</Badge>
+                                  )}
+                                </div>
+                                <h5 className="font-bold text-amber-800 mb-1">{dot.oneWordSummary}</h5>
+                                <p className="text-sm text-gray-700 line-clamp-2 mb-1">{dot.summary}</p>
+                                <p className="text-xs text-gray-600 line-clamp-1">{dot.anchor}</p>
+                              </div>
+                              <Badge className="bg-gradient-to-r from-amber-100 to-orange-100 text-amber-800 border-amber-200 ml-2">
+                                {dot.pulse}
+                              </Badge>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* No Results Message */}
+                {searchResults.dots.length === 0 && searchResults.wheels.length === 0 && searchResults.chakras.length === 0 && (
+                  <div className="text-center py-8 text-gray-500">
+                    <Search className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                    <p className="text-lg font-medium mb-2">No results found</p>
+                    <p className="text-sm">Try different keywords or check your spelling</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
           
           <div className={`transition-all duration-200 ${showRecentFilter ? 'mt-4' : 'mt-0'}`}>
             <DotWheelsMap 
