@@ -307,13 +307,13 @@ const Dashboard: React.FC = () => {
     // Generate dots for each wheel
     const gtmHeadings = ['Product-Market Fit', 'Customer Segments', 'Value Proposition', 'Sales Funnel', 'Pricing Strategy'];
     const leadershipHeadings = ['Team Building', 'Strategic Vision', 'Communication', 'Decision Making'];
-    const productHeadings = ['User Research', 'Design Thinking', 'Technology', 'Iteration', 'Innovation'];
+    const productHeadings = ['User Research', 'Design Thinking', 'Technology', 'Innovation'];
     const healthHeadings = ['Morning Routine', 'Exercise', 'Nutrition', 'Sleep Quality', 'Stress Management'];
 
-    // Add dots to GTM wheel
+    // Add dots to GTM wheel (dots 1-5)
     gtmHeadings.forEach((heading, i) => {
       const dot: Dot = {
-        id: `preview-dot-gtm-${i}`,
+        id: `preview-dot-${i + 1}`,
         oneWordSummary: heading,
         summary: `Strategic insights about ${heading.toLowerCase()} and business growth`,
         anchor: `Key learnings about ${heading.toLowerCase()} implementation`,
@@ -327,10 +327,10 @@ const Dashboard: React.FC = () => {
       gtmWheel.dots.push(dot);
     });
 
-    // Add dots to Leadership wheel
+    // Add dots to Leadership wheel (dots 6-9)
     leadershipHeadings.forEach((heading, i) => {
       const dot: Dot = {
-        id: `preview-dot-leadership-${i}`,
+        id: `preview-dot-${i + 6}`,
         oneWordSummary: heading,
         summary: `Leadership insights about ${heading.toLowerCase()} and team excellence`,
         anchor: `Key strategies for ${heading.toLowerCase()} development`,
@@ -344,10 +344,10 @@ const Dashboard: React.FC = () => {
       leadershipWheel.dots.push(dot);
     });
 
-    // Add dots to Product wheel
+    // Add dots to Product wheel (dots 10-13)
     productHeadings.forEach((heading, i) => {
       const dot: Dot = {
-        id: `preview-dot-product-${i}`,
+        id: `preview-dot-${i + 10}`,
         oneWordSummary: heading,
         summary: `Product insights about ${heading.toLowerCase()} and innovation excellence`,
         anchor: `Strategic approaches to ${heading.toLowerCase()} implementation`,
@@ -361,10 +361,10 @@ const Dashboard: React.FC = () => {
       productWheel.dots.push(dot);
     });
 
-    // Add dots to Health wheel
+    // Add dots to Health wheel (dots 14-18)
     healthHeadings.forEach((heading, i) => {
       const dot: Dot = {
-        id: `preview-dot-health-${i}`,
+        id: `preview-dot-${i + 14}`,
         oneWordSummary: heading,
         summary: `Health insights about ${heading.toLowerCase()} and wellness optimization`,
         anchor: `Personal strategies for ${heading.toLowerCase()} improvement`,
@@ -395,7 +395,7 @@ const Dashboard: React.FC = () => {
 
     individualHeadings.forEach((heading, i) => {
       const dot: Dot = {
-        id: `individual-${i + 1}`,
+        id: `preview-dot-${i + 19}`,
         oneWordSummary: heading,
         summary: individualSummaries[i],
         anchor: `Personal observation about ${heading.toLowerCase()} and its impact on daily life`,
