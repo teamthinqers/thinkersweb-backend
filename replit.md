@@ -121,6 +121,13 @@ DotSpark is a full-stack web application that serves as a personalized learning 
 ## Changelog
 ```
 Changelog:
+- July 23, 2025. CORRECTED preview data hierarchy to properly reflect three-tier architecture:
+  * Fixed "Build an Enduring Company" to be displayed as a Chakra (top-level, chakraId = null) with purple color theme
+  * Updated GTM Strategy, Leadership Development, and Product Innovation as wheels belonging to the business Chakra
+  * Corrected preview data structure: businessChakra with id 'preview-chakra-business' contains three sub-wheels
+  * Maintained proper database architecture where Chakras are wheels with chakraId = null
+  * Applied consistent purple color coding (#8B5CF6) for Chakras vs amber/orange for regular wheels
+  * Preview now accurately demonstrates: individual dots → wheels (9 dots) → Chakras (multiple wheels)
 - July 23, 2025. COMPLETED comprehensive terminology update: "parent wheel" → "Chakra":
   * Updated database schema: parentWheelId → chakraId field in wheels table
   * Updated backend routes and API endpoints to use chakraId consistently

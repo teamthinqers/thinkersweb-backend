@@ -299,18 +299,19 @@ const Dashboard: React.FC = () => {
       const previewDots: Dot[] = [];
       const previewWheels: Wheel[] = [];
 
-      // Chakra for business hierarchy - bigger and encompassing
-      const parentBusinessWheel: Wheel = {
-        id: 'preview-wheel-parent',
+      // Chakra - top-level business theme (chakraId = null)
+      const businessChakra: Wheel = {
+        id: 'preview-chakra-business',
         name: 'Build an Enduring Company',
         heading: 'Build an Enduring Company',
         goals: 'Creating a sustainable, innovative business that delivers value to customers while maintaining long-term growth and meaningful impact in the market.',
         timeline: 'Long-term (5+ years)',
         category: 'Business',
-        color: '#F59E0B', // Consistent amber theme
+        color: '#8B5CF6', // Purple theme for Chakras
         dots: [],
         connections: ['preview-wheel-0', 'preview-wheel-1'],
         position: { x: 400, y: 300 }, // Centered position for Chakra
+        chakraId: null, // This makes it a Chakra (top-level)
         createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) // 30 days ago
       };
 
@@ -326,7 +327,7 @@ const Dashboard: React.FC = () => {
         dots: [],
         connections: ['preview-wheel-1'],
         position: { x: 280, y: 200 }, // Position inside Chakra - left side with more spacing
-        chakraId: 'preview-wheel-parent',
+        chakraId: 'preview-chakra-business',
         createdAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000) // 15 days ago
       };
 
@@ -371,7 +372,7 @@ const Dashboard: React.FC = () => {
         dots: [],
         connections: ['preview-wheel-0', 'preview-wheel-2'],
         position: { x: 520, y: 200 }, // Position inside Chakra - right side with more spacing
-        chakraId: 'preview-wheel-parent',
+        chakraId: 'preview-chakra-business',
         createdAt: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000) // 20 days ago
       };
 
@@ -415,7 +416,7 @@ const Dashboard: React.FC = () => {
         dots: [],
         connections: ['preview-wheel-1'],
         position: { x: 400, y: 380 }, // Position inside Chakra - bottom center with more spacing
-        chakraId: 'preview-wheel-parent',
+        chakraId: 'preview-chakra-business',
         createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000) // 10 days ago
       };
 
@@ -493,7 +494,7 @@ const Dashboard: React.FC = () => {
       previewWheels.push(personalWheel);
 
       // Add Chakra after all child wheels are defined
-      previewWheels.push(parentBusinessWheel);
+      previewWheels.push(businessChakra);
 
       // Add some individual scattered dots showing not all dots need grouping
       const individualHeadings = [
