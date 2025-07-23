@@ -771,16 +771,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
           { id: 'preview-dot-health-2-0', x: 160, y: 280 }
         ];
         
-        // Individual scattered dots
+        // Individual scattered dots - spread across grid avoiding main structures
         const scatteredDots = [
-          { id: 'scattered-1', x: 650, y: 150 },
-          { id: 'scattered-2', x: 680, y: 200 },
-          { id: 'scattered-3', x: 620, y: 240 },
-          { id: 'scattered-4', x: 700, y: 180 },
-          { id: 'scattered-5', x: 660, y: 280 },
-          { id: 'scattered-6', x: 720, y: 250 },
-          { id: 'scattered-7', x: 640, y: 320 },
-          { id: 'scattered-8', x: 690, y: 350 }
+          { id: 'scattered-1', x: 800, y: 120 },  // Top-right corner
+          { id: 'scattered-2', x: 950, y: 180 },  // Far right
+          { id: 'scattered-3', x: 850, y: 350 },  // Bottom-right
+          { id: 'scattered-4', x: 120, y: 450 },  // Bottom-left
+          { id: 'scattered-5', x: 750, y: 500 },  // Bottom-center
+          { id: 'scattered-6', x: 50, y: 320 },   // Left edge
+          { id: 'scattered-7', x: 900, y: 280 },  // Right side
+          { id: 'scattered-8', x: 180, y: 80 },   // Top-left area
+          { id: 'scattered-9', x: 1050, y: 400 }, // Far bottom-right
+          { id: 'scattered-10', x: 600, y: 50 }   // Top edge
         ];
         
         // Combine all dot positions
@@ -801,10 +803,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
             'preview-chakra-business': chakraCenter
           },
           statistics: {
-            totalDots: 20,
+            totalDots: 22,
             totalWheels: 3,
             totalChakras: 1,
-            freeDots: 13 // Health + Scattered dots
+            freeDots: 15 // Health (5) + Scattered dots (10)
           }
         };
         
