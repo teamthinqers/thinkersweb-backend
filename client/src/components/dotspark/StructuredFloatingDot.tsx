@@ -677,7 +677,7 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                         </button>
                       )}
                     </div>
-                    <h3 className="text-xl font-semibold text-gray-800">Create or Save</h3>
+
                     <Button
                       variant="ghost"
                       onClick={handleClose}
