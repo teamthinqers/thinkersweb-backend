@@ -1761,10 +1761,10 @@ const Dashboard: React.FC = () => {
                   <div
                     className="absolute rounded-full cursor-pointer transition-all duration-300 hover:scale-125 hover:shadow-lg group dot-element"
                     style={{
-                      left: `${x - 35}px`, // Center the dot (35px radius)
-                      top: `${y - 35}px`,  // Center the dot (35px radius)
-                      width: '70px',       // 35px radius = 70px diameter
-                      height: '70px',      // 35px radius = 70px diameter
+                      left: `${x - (gridPositions?.sizes?.dotRadius || 35)}px`, // Center the dot using dynamic radius
+                      top: `${y - (gridPositions?.sizes?.dotRadius || 35)}px`,  // Center the dot using dynamic radius
+                      width: `${(gridPositions?.sizes?.dotRadius || 35) * 2}px`,       // Dynamic radius to diameter conversion
+                      height: `${(gridPositions?.sizes?.dotRadius || 35) * 2}px`,      // Dynamic radius to diameter conversion
                       background: 'linear-gradient(135deg, #F59E0B, #D97706)', // Light amber gradient for all dots
                       pointerEvents: 'auto'
                     }}
@@ -2015,35 +2015,39 @@ const Dashboard: React.FC = () => {
                 }
               }
               
-              // Determine wheel size based on type and hierarchy using dynamic sizing
+              // Determine wheel size based on backend dynamic sizing
               let wheelSize;
               let isChakra;
               
-              if (previewMode) {
-                // In preview mode, use dynamic sizing logic - chakras are identified by having no chakraId
-                isChakra = wheel.chakraId === undefined;
+              isChakra = wheel.chakraId === undefined;
+              
+              if (gridPositions?.sizes) {
+                // Use backend-calculated dynamic sizing
                 if (isChakra) {
-                  // Dynamic chakra sizing based on child wheels count
-                  const childWheels = displayWheels.filter(w => w.chakraId === wheel.id);
-                  wheelSize = getChakraSize('preview', childWheels.length);
-
+                  wheelSize = (gridPositions.sizes.chakraRadii?.[wheel.id] || 300) * 2; // Convert radius to diameter
                 } else {
-                  // Dynamic wheel sizing based on dots count
-                  const wheelDots = displayDots.filter(d => d.wheelId === wheel.id);
-                  wheelSize = calculateDynamicSizing('preview', wheelDots.length, 'wheels') * 2; // Convert radius to diameter
+                  wheelSize = (gridPositions.sizes.wheelRadii?.[wheel.id] || 120) * 2; // Convert radius to diameter
                 }
               } else {
-                // In real mode, use dynamic sizing system
-                isChakra = wheel.chakraId === undefined;
-                if (isChakra) {
-                  // Dynamic chakra sizing based on child wheels count
-                  const childWheels = displayWheels.filter(w => w.chakraId === wheel.id);
-                  wheelSize = getChakraSize('real', childWheels.length);
-
+                // Fallback sizing if dynamic data not available
+                if (previewMode) {
+                  isChakra = wheel.chakraId === undefined;
+                  if (isChakra) {
+                    const childWheels = displayWheels.filter(w => w.chakraId === wheel.id);
+                    wheelSize = getChakraSize('preview', childWheels.length);
+                  } else {
+                    const wheelDots = displayDots.filter(d => d.wheelId === wheel.id);
+                    wheelSize = calculateDynamicSizing('preview', wheelDots.length, 'wheels') * 2;
+                  }
                 } else {
-                  // Dynamic wheel sizing based on dots count
-                  const wheelDots = displayDots.filter(d => d.wheelId === wheel.id);
-                  wheelSize = calculateDynamicSizing('real', wheelDots.length, 'wheels') * 2; // Convert radius to diameter
+                  // In real mode, use fallback sizing
+                  if (isChakra) {
+                    const childWheels = displayWheels.filter(w => w.chakraId === wheel.id);
+                    wheelSize = getChakraSize('real', childWheels.length);
+                  } else {
+                    const wheelDots = displayDots.filter(d => d.wheelId === wheel.id);
+                    wheelSize = calculateDynamicSizing('real', wheelDots.length, 'wheels') * 2;
+                  }
                 }
               }
               

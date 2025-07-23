@@ -25,34 +25,19 @@ export interface GridBounds {
   marginY: number;
 }
 
-// Balanced grid configuration for optimal space utilization
+// Dynamic grid configuration that adapts based on content
 export const GRID_CONFIG = {
-  // Grid dimensions - moderately increased for better space usage
+  // Grid dimensions - available canvas space
   TOTAL_WIDTH: 1800,
   TOTAL_HEIGHT: 1200,
   MARGIN_X: 120,
   MARGIN_Y: 120,
   
-  // Element sizes - updated per user specifications
-  DOT_RADIUS: {
-    PREVIEW: 35,  // User specified: 35px radius (70px diameter)
-    REAL: 45      // Moderate increase from 35
-  },
-  WHEEL_RADIUS: {
-    BASE: 160,    // User specified: 160px radius (320px diameter)
-    MIN: 130,     // Moderate increase from 100
-    MAX: 200      // Moderate increase from 150
-  },
-  CHAKRA_RADIUS: {
-    PREVIEW: 420, // User specified: 420px radius (840px diameter)
-    REAL: 320     // Moderate increase from 185
-  },
-  
-  // Spacing requirements - updated per user specifications
+  // Minimum spacing requirements - these are non-negotiable
   MIN_SPACING: {
-    DOT_TO_DOT: 40,           // User specified: 40px minimum edge-to-edge
-    WHEEL_TO_WHEEL: 180,      // User specified: 180px minimum edge-to-edge
-    CHAKRA_TO_CHAKRA: 360,    // User specified: 360px minimum edge-to-edge
+    DOT_TO_DOT: 40,           // Minimum edge-to-edge spacing between dots
+    WHEEL_TO_WHEEL: 180,      // Minimum edge-to-edge spacing between wheels
+    CHAKRA_TO_CHAKRA: 360,    // Minimum edge-to-edge spacing between chakras
     DOT_TO_WHEEL_EDGE: 20,    // Keep dots well within wheel boundaries
     WHEEL_TO_CHAKRA_EDGE: 40  // Keep wheels well within chakra boundaries
   },
@@ -186,14 +171,13 @@ export function generateRandomPosition(
 export function positionDotsInWheel(
   dots: any[],
   wheel: GridElement,
-  isPreview: boolean = false
+  dotRadius: number
 ): Position[] {
-  const dotRadius = isPreview ? GRID_CONFIG.DOT_RADIUS.PREVIEW : GRID_CONFIG.DOT_RADIUS.REAL;
+  if (dots.length === 0) return [];
+  
   const wheelRadius = wheel.radius;
   const minDotSpacing = dotRadius * 2 + GRID_CONFIG.MIN_SPACING.DOT_TO_DOT; // Center-to-center distance for edge-to-edge spacing
   const maxDotDistance = wheelRadius - dotRadius - GRID_CONFIG.MIN_SPACING.DOT_TO_WHEEL_EDGE; // Stay within wheel boundary
-  
-  if (dots.length === 0) return [];
   if (dots.length === 1) return [{ ...wheel.position }]; // Center for single dot
   
 
@@ -315,14 +299,16 @@ export function positionDotsInWheel(
 export function positionWheelsInChakra(
   wheels: any[],
   chakra: GridElement,
-  isPreview: boolean = false
+  wheelRadii: Map<string, number>
 ): Position[] {
   if (wheels.length === 0) return [];
   
-  const wheelRadius = GRID_CONFIG.WHEEL_RADIUS.BASE;
+  // Use dynamic wheel radii, get max for spacing calculations
+  const getWheelRadius = (wheel: any) => wheelRadii.get(wheel.id) || 100;
+  const maxWheelRadius = Math.max(...wheels.map(getWheelRadius));
   const chakraRadius = chakra.radius;
-  const minWheelSpacing = wheelRadius * 2 + GRID_CONFIG.MIN_SPACING.WHEEL_TO_WHEEL; // Prevent wheel overlap
-  const maxWheelDistance = chakraRadius - wheelRadius - GRID_CONFIG.MIN_SPACING.WHEEL_TO_CHAKRA_EDGE; // Stay within chakra
+  const minWheelSpacing = maxWheelRadius * 2 + GRID_CONFIG.MIN_SPACING.WHEEL_TO_WHEEL; // Prevent wheel overlap
+  const maxWheelDistance = chakraRadius - maxWheelRadius - GRID_CONFIG.MIN_SPACING.WHEEL_TO_CHAKRA_EDGE; // Stay within chakra
   
   if (wheels.length === 1) {
     return [{ ...chakra.position }]; // Center for single wheel
@@ -418,15 +404,20 @@ export function positionWheelsInChakra(
 export function positionChakrasInGrid(
   chakras: any[],
   bounds: GridBounds,
-  isPreview: boolean = false
+  chakraRadii: Map<string, number>
 ): Position[] {
   if (chakras.length === 0) return [];
   
-  const chakraRadius = isPreview ? GRID_CONFIG.CHAKRA_RADIUS.PREVIEW : GRID_CONFIG.CHAKRA_RADIUS.REAL;
-  const minChakraDistance = chakraRadius * 2 + GRID_CONFIG.MIN_SPACING.CHAKRA_TO_CHAKRA;
+  // Use dynamic radii if available, otherwise use default
+  const getChakraRadius = (chakra: any) => chakraRadii.get(chakra.id) || 200;
+  
   const positions: Position[] = [];
   
   for (let i = 0; i < chakras.length; i++) {
+    const chakra = chakras[i];
+    const chakraRadius = getChakraRadius(chakra);
+    const minChakraDistance = chakraRadius * 2 + GRID_CONFIG.MIN_SPACING.CHAKRA_TO_CHAKRA;
+    
     let bestPosition: Position | null = null;
     let attempts = 0;
     const maxAttempts = 50;
@@ -511,9 +502,8 @@ export function positionFreeDotsInGrid(
   freeDots: any[],
   bounds: GridBounds,
   existingElements: GridElement[],
-  isPreview: boolean = false
+  dotRadius: number
 ): Position[] {
-  const dotRadius = isPreview ? GRID_CONFIG.DOT_RADIUS.PREVIEW : GRID_CONFIG.DOT_RADIUS.REAL;
   const positions: Position[] = [];
   
   for (const dot of freeDots) {
@@ -537,16 +527,46 @@ export function positionFreeDotsInGrid(
 }
 
 /**
- * Calculate dynamic wheel radius based on number of dots and spacing requirements
+ * Calculate optimal dot radius based on content density and available space
  */
-export function calculateWheelRadius(dotCount: number, isPreview: boolean = false): number {
-  const dotRadius = isPreview ? GRID_CONFIG.DOT_RADIUS.PREVIEW : GRID_CONFIG.DOT_RADIUS.REAL;
+export function calculateOptimalDotRadius(
+  totalDots: number,
+  totalWheels: number,
+  totalChakras: number,
+  availableSpace: GridBounds
+): number {
+  // Base calculation: determine how much space each dot can reasonably use
+  const availableArea = (availableSpace.width - 2 * availableSpace.marginX) * 
+                       (availableSpace.height - 2 * availableSpace.marginY);
+  
+  // Account for wheel and chakra space usage
+  const baseSpacePerDot = availableArea / Math.max(totalDots, 1);
+  
+  // Calculate radius based on available space, with minimum and maximum bounds
+  const maxRadius = Math.sqrt(baseSpacePerDot / Math.PI) * 0.3; // Conservative space usage
+  const minRadius = 15; // Minimum readable size
+  const defaultRadius = 35; // Good balance size
+  
+  return Math.max(minRadius, Math.min(maxRadius, defaultRadius));
+}
+
+/**
+ * Calculate optimal wheel radius based on dots it contains and spacing requirements
+ */
+export function calculateOptimalWheelRadius(
+  dotCount: number,
+  dotRadius: number,
+  totalWheels: number,
+  availableSpace: GridBounds
+): number {
+  if (dotCount <= 1) {
+    return dotRadius + GRID_CONFIG.MIN_SPACING.DOT_TO_WHEEL_EDGE + 20; // Minimum wheel size
+  }
+  
   const minDotSpacing = dotRadius * 2 + GRID_CONFIG.MIN_SPACING.DOT_TO_DOT;
   const edgeBuffer = GRID_CONFIG.MIN_SPACING.DOT_TO_WHEEL_EDGE;
   
-  if (dotCount <= 1) return GRID_CONFIG.WHEEL_RADIUS.BASE;
-  
-  let requiredRadius = GRID_CONFIG.WHEEL_RADIUS.BASE;
+  let requiredRadius: number;
   
   if (dotCount === 2) {
     // Side-by-side arrangement
@@ -562,20 +582,63 @@ export function calculateWheelRadius(dotCount: number, isPreview: boolean = fals
   } else {
     // Circular arrangement for 5+ dots
     const angle = (2 * Math.PI) / dotCount;
-    const circularRadius = minDotSpacing / (2 * Math.sin(angle / 2));
+    const circularRadius = (minDotSpacing + 1) / (2 * Math.sin(angle / 2)); // Add tolerance
     requiredRadius = circularRadius + dotRadius + edgeBuffer;
   }
   
-  // Use the larger of base size or calculated requirement, capped at maximum
-  const finalRadius = Math.min(Math.max(requiredRadius, GRID_CONFIG.WHEEL_RADIUS.BASE), GRID_CONFIG.WHEEL_RADIUS.MAX);
+  // Ensure wheel can fit in available space considering other wheels
+  const availableArea = (availableSpace.width - 2 * availableSpace.marginX) * 
+                       (availableSpace.height - 2 * availableSpace.marginY);
+  const maxWheelRadius = Math.sqrt(availableArea / Math.max(totalWheels, 1)) * 0.4;
   
-
-  
-  return finalRadius;
+  return Math.min(requiredRadius, maxWheelRadius);
 }
 
 /**
- * Main positioning algorithm that handles the complete grid layout
+ * Calculate optimal chakra radius based on wheels it contains and spacing requirements
+ */
+export function calculateOptimalChakraRadius(
+  wheelCount: number,
+  wheelRadii: number[],
+  totalChakras: number,
+  availableSpace: GridBounds
+): number {
+  if (wheelCount === 0) {
+    return 150; // Minimum chakra size for empty chakras
+  }
+  
+  const maxWheelRadius = Math.max(...wheelRadii);
+  const wheelSpacing = GRID_CONFIG.MIN_SPACING.WHEEL_TO_WHEEL;
+  const edgeBuffer = GRID_CONFIG.MIN_SPACING.WHEEL_TO_CHAKRA_EDGE;
+  
+  let requiredRadius: number;
+  
+  if (wheelCount === 1) {
+    requiredRadius = maxWheelRadius + edgeBuffer + 30;
+  } else if (wheelCount === 2) {
+    // Side-by-side arrangement
+    requiredRadius = maxWheelRadius + (wheelSpacing / 2) + edgeBuffer;
+  } else if (wheelCount === 3) {
+    // Triangle arrangement
+    const triangleRadius = (wheelSpacing + 2 * maxWheelRadius) * Math.sqrt(3) / 3;
+    requiredRadius = triangleRadius + maxWheelRadius + edgeBuffer;
+  } else {
+    // Circular arrangement for 4+ wheels
+    const angle = (2 * Math.PI) / wheelCount;
+    const circularRadius = (wheelSpacing + 2 * maxWheelRadius) / (2 * Math.sin(angle / 2));
+    requiredRadius = circularRadius + maxWheelRadius + edgeBuffer;
+  }
+  
+  // Ensure chakra can fit in available space considering other chakras
+  const availableArea = (availableSpace.width - 2 * availableSpace.marginX) * 
+                       (availableSpace.height - 2 * availableSpace.marginY);
+  const maxChakraRadius = Math.sqrt(availableArea / Math.max(totalChakras, 1)) * 0.5;
+  
+  return Math.min(requiredRadius, maxChakraRadius);
+}
+
+/**
+ * Main positioning algorithm that handles the complete grid layout with dynamic sizing
  */
 export function calculateGridPositions(
   dots: any[],
@@ -594,29 +657,72 @@ export function calculateGridPositions(
     chakraPositions: new Map<string, Position>(),
     wheelPositions: new Map<string, Position>(),
     dotPositions: new Map<string, Position>(),
-    gridElements: [] as GridElement[]
+    gridElements: [] as GridElement[],
+    sizes: {
+      dotRadius: 0,
+      wheelRadii: new Map<string, number>(),
+      chakraRadii: new Map<string, number>()
+    }
   };
   
-  // 1. Position chakras first (largest elements)
-  const chakraRadius = isPreview ? GRID_CONFIG.CHAKRA_RADIUS.PREVIEW : GRID_CONFIG.CHAKRA_RADIUS.REAL;
-  const chakraPositions = positionChakrasInGrid(chakras, bounds, isPreview);
+  // Step 1: Calculate optimal dot radius based on total content and available space
+  const optimalDotRadius = calculateOptimalDotRadius(
+    dots.length,
+    wheels.length,
+    chakras.length,
+    bounds
+  );
+  result.sizes.dotRadius = optimalDotRadius;
+  
+  // Step 2: Calculate wheel radii based on their dot content
+  const wheelRadii = new Map<string, number>();
+  wheels.forEach(wheel => {
+    const wheelDots = dots.filter(dot => dot.wheelId === wheel.id);
+    const wheelRadius = calculateOptimalWheelRadius(
+      wheelDots.length,
+      optimalDotRadius,
+      wheels.length,
+      bounds
+    );
+    wheelRadii.set(wheel.id, wheelRadius);
+    result.sizes.wheelRadii.set(wheel.id, wheelRadius);
+  });
+  
+  // Step 3: Calculate chakra radii based on their wheel content
+  const chakraRadii = new Map<string, number>();
+  chakras.forEach(chakra => {
+    const chakraWheels = wheels.filter(wheel => wheel.chakraId === chakra.id);
+    const chakraWheelRadii = chakraWheels.map(wheel => wheelRadii.get(wheel.id) || 100);
+    const chakraRadius = calculateOptimalChakraRadius(
+      chakraWheels.length,
+      chakraWheelRadii,
+      chakras.length,
+      bounds
+    );
+    chakraRadii.set(chakra.id, chakraRadius);
+    result.sizes.chakraRadii.set(chakra.id, chakraRadius);
+  });
+  
+  // Step 4: Position chakras using their calculated radii
+  const chakraPositions = positionChakrasInGrid(chakras, bounds, chakraRadii);
   
   chakras.forEach((chakra, index) => {
     const position = chakraPositions[index];
+    const radius = chakraRadii.get(chakra.id) || 150;
     result.chakraPositions.set(chakra.id, position);
     result.gridElements.push({
       id: chakra.id,
       position,
-      radius: chakraRadius,
+      radius,
       type: 'chakra'
     });
   });
   
-  // 2. Position wheels (both in chakras and free wheels)
+  // Step 5: Position wheels using their calculated radii
   const wheelElements: GridElement[] = [];
   
   wheels.forEach(wheel => {
-    const wheelRadius = calculateWheelRadius(wheel.dots?.length || 0, isPreview);
+    const wheelRadius = wheelRadii.get(wheel.id) || 100;
     
     if (wheel.chakraId) {
       // Wheel belongs to a chakra
@@ -624,7 +730,7 @@ export function calculateGridPositions(
       if (chakraElement) {
         const chakraWheels = wheels.filter(w => w.chakraId === wheel.chakraId);
         const wheelIndex = chakraWheels.findIndex(w => w.id === wheel.id);
-        const positions = positionWheelsInChakra(chakraWheels, chakraElement, isPreview);
+        const positions = positionWheelsInChakra(chakraWheels, chakraElement, wheelRadii);
         
         const position = positions[wheelIndex];
         result.wheelPositions.set(wheel.id, position);
@@ -667,7 +773,7 @@ export function calculateGridPositions(
     const wheelElement = wheelElements.find(el => el.id === wheel.id);
     if (wheelElement) {
       const wheelDotsList = wheelDots.filter(dot => dot.wheelId === wheel.id);
-      const positions = positionDotsInWheel(wheelDotsList, wheelElement, isPreview);
+      const positions = positionDotsInWheel(wheelDotsList, wheelElement, optimalDotRadius);
       
       wheelDotsList.forEach((dot, index) => {
         result.dotPositions.set(dot.id, positions[index]);
@@ -677,11 +783,18 @@ export function calculateGridPositions(
   
   // Position free dots
   if (freeDots.length > 0) {
-    const freePositions = positionFreeDotsInGrid(freeDots, bounds, result.gridElements, isPreview);
+    const freePositions = positionFreeDotsInGrid(freeDots, bounds, result.gridElements, optimalDotRadius);
     freeDots.forEach((dot, index) => {
       result.dotPositions.set(dot.id, freePositions[index]);
     });
   }
+  
+  // Add sizing information to the result
+  result.sizes = {
+    dotRadius: optimalDotRadius,
+    wheelRadii: wheelRadii,
+    chakraRadii: chakraRadii
+  };
   
   return result;
 }

@@ -776,6 +776,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
           dotPositions: Object.fromEntries(layoutResult.dotPositions),
           wheelPositions: Object.fromEntries(layoutResult.wheelPositions),
           chakraPositions: Object.fromEntries(layoutResult.chakraPositions),
+          sizes: layoutResult.sizes ? {
+            dotRadius: layoutResult.sizes.dotRadius,
+            wheelRadii: Object.fromEntries(layoutResult.sizes.wheelRadii),
+            chakraRadii: Object.fromEntries(layoutResult.sizes.chakraRadii)
+          } : {
+            dotRadius: 35,
+            wheelRadii: {},
+            chakraRadii: {}
+          },
           statistics: {
             totalDots: previewData.dots.length,
             totalWheels: previewData.wheels.length,
