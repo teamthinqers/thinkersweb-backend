@@ -539,8 +539,8 @@ const Dashboard: React.FC = () => {
   // Get dynamic chakra sizing based on wheels count
   const getChakraSize = (mode: 'preview' | 'real', wheelsCount: number) => {
     const baseConfig = {
-      preview: { base: 210, min: 180, max: 280 },
-      real: { base: 285, min: 240, max: 360 }
+      preview: { base: 280, min: 250, max: 350 }, // Increased base size to properly enclose wheels
+      real: { base: 360, min: 320, max: 450 } // Increased base size to properly enclose wheels
     };
     
     const config = baseConfig[mode];
@@ -548,9 +548,9 @@ const Dashboard: React.FC = () => {
     if (wheelsCount <= 3) {
       return config.base;
     } else if (wheelsCount <= 5) {
-      return Math.min(config.max, config.base + 20);
+      return Math.min(config.max, config.base + 30);
     } else if (wheelsCount <= 8) {
-      return Math.min(config.max, config.base + 35);
+      return Math.min(config.max, config.base + 50);
     } else {
       return config.max;
     }
