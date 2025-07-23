@@ -25,47 +25,49 @@ export interface GridBounds {
   marginY: number;
 }
 
-// Standard grid configuration
+// Enhanced grid configuration for better space utilization
 export const GRID_CONFIG = {
-  // Grid dimensions
-  TOTAL_WIDTH: 1600,
-  TOTAL_HEIGHT: 1000,
-  MARGIN_X: 100,
-  MARGIN_Y: 100,
+  // Grid dimensions - larger to utilize available space
+  TOTAL_WIDTH: 2000,
+  TOTAL_HEIGHT: 1400,
+  MARGIN_X: 150,
+  MARGIN_Y: 150,
   
-  // Element sizes
+  // Element sizes - significantly larger for better visibility and spacing
   DOT_RADIUS: {
-    PREVIEW: 25,
-    REAL: 35
+    PREVIEW: 45,  // Increased from 25
+    REAL: 60      // Increased from 35
   },
   WHEEL_RADIUS: {
-    BASE: 120,
-    MIN: 100,
-    MAX: 150
+    BASE: 200,    // Increased from 120
+    MIN: 160,     // Increased from 100
+    MAX: 250      // Increased from 150
   },
   CHAKRA_RADIUS: {
-    PREVIEW: 210, // Half of 420px diameter
-    REAL: 185    // Half of 370px diameter
+    PREVIEW: 350, // Increased from 210 (700px diameter)
+    REAL: 400     // Increased from 185 (800px diameter)
   },
   
-  // Spacing requirements
+  // Spacing requirements - proportionally increased
   MIN_SPACING: {
-    DOT_TO_DOT: 15,
-    WHEEL_TO_WHEEL: 80,
-    CHAKRA_TO_CHAKRA: 150,
-    DOT_TO_WHEEL_EDGE: 10, // Safety buffer inside wheel
-    WHEEL_TO_CHAKRA_EDGE: 20 // Safety buffer inside chakra
+    DOT_TO_DOT: 25,           // Increased from 15
+    WHEEL_TO_WHEEL: 120,      // Increased from 80
+    CHAKRA_TO_CHAKRA: 200,    // Increased from 150
+    DOT_TO_WHEEL_EDGE: 20,    // Increased from 10
+    WHEEL_TO_CHAKRA_EDGE: 40  // Increased from 20
   },
   
   // Maximum dots per wheel before creating new wheel
   MAX_DOTS_PER_WHEEL: 9,
   
-  // Grid quadrants for chakra distribution
-  CHAKRA_QUADRANTS: [
-    { x: 0.25, y: 0.25 }, // Top-left
-    { x: 0.75, y: 0.25 }, // Top-right
-    { x: 0.25, y: 0.75 }, // Bottom-left
-    { x: 0.75, y: 0.75 }  // Bottom-right
+  // Grid positioning for chakra distribution - better utilization
+  CHAKRA_POSITIONS: [
+    { x: 0.2, y: 0.2 },   // Top-left
+    { x: 0.8, y: 0.2 },   // Top-right
+    { x: 0.2, y: 0.8 },   // Bottom-left
+    { x: 0.8, y: 0.8 },   // Bottom-right
+    { x: 0.5, y: 0.1 },   // Top-center
+    { x: 0.5, y: 0.9 }    // Bottom-center
   ]
 };
 
@@ -171,7 +173,7 @@ export function generateRandomPosition(
 }
 
 /**
- * Position dots in circular arrangement within a wheel
+ * Position dots in optimal arrangement within a wheel
  */
 export function positionDotsInWheel(
   dots: any[],
@@ -192,25 +194,52 @@ export function positionDotsInWheel(
     return dots.map(() => ({ ...wheel.position }));
   }
   
-  // For circular arrangement
-  const angleStep = (2 * Math.PI) / dots.length;
-  const startAngle = Math.random() * 2 * Math.PI; // Random starting angle for natural look
-  
-  for (let i = 0; i < dots.length; i++) {
-    const angle = startAngle + i * angleStep;
-    const radiusVariation = safeRadius * (0.3 + Math.random() * 0.7); // 30-100% of safe radius
-    
-    positions.push({
-      x: wheel.position.x + Math.cos(angle) * radiusVariation,
-      y: wheel.position.y + Math.sin(angle) * radiusVariation
+  if (dots.length === 2) {
+    // Side by side for 2 dots
+    const spacing = Math.min(safeRadius * 1.2, dotRadius * 2 + GRID_CONFIG.MIN_SPACING.DOT_TO_DOT);
+    positions.push(
+      { x: wheel.position.x - spacing/2, y: wheel.position.y },
+      { x: wheel.position.x + spacing/2, y: wheel.position.y }
+    );
+  } else if (dots.length === 3) {
+    // Triangle for 3 dots
+    const radius = safeRadius * 0.6;
+    const angles = [-Math.PI/2, Math.PI/6, 5*Math.PI/6]; // Top, bottom-right, bottom-left
+    angles.forEach(angle => {
+      positions.push({
+        x: wheel.position.x + Math.cos(angle) * radius,
+        y: wheel.position.y + Math.sin(angle) * radius
+      });
     });
+  } else if (dots.length === 4) {
+    // Square arrangement for 4 dots
+    const spacing = safeRadius * 0.8;
+    positions.push(
+      { x: wheel.position.x - spacing/2, y: wheel.position.y - spacing/2 }, // Top-left
+      { x: wheel.position.x + spacing/2, y: wheel.position.y - spacing/2 }, // Top-right
+      { x: wheel.position.x - spacing/2, y: wheel.position.y + spacing/2 }, // Bottom-left
+      { x: wheel.position.x + spacing/2, y: wheel.position.y + spacing/2 }  // Bottom-right
+    );
+  } else {
+    // Circular arrangement for 5+ dots with better spacing
+    const angleStep = (2 * Math.PI) / dots.length;
+    const radius = safeRadius * 0.75; // Use more of the available space
+    const startAngle = -Math.PI/2; // Start from top
+    
+    for (let i = 0; i < dots.length; i++) {
+      const angle = startAngle + i * angleStep;
+      positions.push({
+        x: wheel.position.x + Math.cos(angle) * radius,
+        y: wheel.position.y + Math.sin(angle) * radius
+      });
+    }
   }
   
   return positions;
 }
 
 /**
- * Position wheels within a chakra
+ * Position wheels within a chakra with optimal spacing
  */
 export function positionWheelsInChakra(
   wheels: any[],
@@ -234,31 +263,41 @@ export function positionWheelsInChakra(
     return wheels.map(() => ({ ...chakra.position }));
   }
   
-  // For multiple wheels, use strategic positioning
+  // For multiple wheels, use strategic positioning with better spacing
   if (wheels.length === 2) {
-    // Side by side
-    const spacing = Math.min(safeRadius, wheelRadius + GRID_CONFIG.MIN_SPACING.WHEEL_TO_WHEEL);
+    // Side by side with generous spacing
+    const spacing = safeRadius * 1.2;
     positions.push(
       { x: chakra.position.x - spacing/2, y: chakra.position.y },
       { x: chakra.position.x + spacing/2, y: chakra.position.y }
     );
   } else if (wheels.length === 3) {
-    // Triangle arrangement
-    const angles = [0, 2*Math.PI/3, 4*Math.PI/3];
-    const radius = safeRadius * 0.6;
+    // Triangle arrangement with optimal spacing
+    const radius = safeRadius * 0.7;
+    const angles = [-Math.PI/2, Math.PI/6, 5*Math.PI/6]; // Top, bottom-right, bottom-left
     angles.forEach(angle => {
       positions.push({
         x: chakra.position.x + Math.cos(angle) * radius,
         y: chakra.position.y + Math.sin(angle) * radius
       });
     });
+  } else if (wheels.length === 4) {
+    // Square arrangement for 4 wheels
+    const spacing = safeRadius * 1.0;
+    positions.push(
+      { x: chakra.position.x - spacing/2, y: chakra.position.y - spacing/2 }, // Top-left
+      { x: chakra.position.x + spacing/2, y: chakra.position.y - spacing/2 }, // Top-right
+      { x: chakra.position.x - spacing/2, y: chakra.position.y + spacing/2 }, // Bottom-left
+      { x: chakra.position.x + spacing/2, y: chakra.position.y + spacing/2 }  // Bottom-right
+    );
   } else {
-    // Circular arrangement for 4+ wheels
+    // Circular arrangement for 5+ wheels using more space
     const angleStep = (2 * Math.PI) / wheels.length;
-    const radius = safeRadius * 0.7;
+    const radius = safeRadius * 0.8; // Use more of the available space
+    const startAngle = -Math.PI/2; // Start from top
     
     for (let i = 0; i < wheels.length; i++) {
-      const angle = i * angleStep;
+      const angle = startAngle + i * angleStep;
       positions.push({
         x: chakra.position.x + Math.cos(angle) * radius,
         y: chakra.position.y + Math.sin(angle) * radius
