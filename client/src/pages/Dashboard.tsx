@@ -307,7 +307,7 @@ const Dashboard: React.FC = () => {
         goals: 'Creating a sustainable, innovative business that delivers value to customers while maintaining long-term growth and meaningful impact in the market.',
         timeline: 'Long-term (5+ years)',
         category: 'Business',
-        color: '#8B5CF6', // Purple theme for Chakras
+        color: '#D97706', // Amber theme for Chakras
         dots: [],
         connections: ['preview-wheel-0', 'preview-wheel-1'],
         position: { x: 400, y: 300 }, // Centered position for Chakra
@@ -1143,7 +1143,7 @@ const Dashboard: React.FC = () => {
                   {/* Dotted circle boundary */}
                   <div 
                     className={`w-full h-full rounded-full border-4 border-dashed ${
-                      isParentWheel ? 'opacity-40' : 'opacity-60'
+                      isChakra ? 'opacity-40' : 'opacity-60'
                     }`}
                     style={{ 
                       borderColor: wheel.color,
@@ -1154,14 +1154,14 @@ const Dashboard: React.FC = () => {
                   {/* Blinking Spark Symbol on top of wheel */}
                   <div 
                     className={`absolute left-1/2 transform -translate-x-1/2 flex flex-col items-center ${
-                      isParentWheel ? 'top-[-95px]' : 'top-[-75px]'
+                      isChakra ? 'top-[-95px]' : 'top-[-75px]'
                     }`}
                   >
                     {/* Spark symbol with blinking animation */}
                     <div className="relative mb-2">
                       <div className="animate-pulse">
                         <svg className={`text-yellow-400 ${
-                          isParentWheel ? 'w-10 h-10' : 'w-8 h-8'
+                          isChakra ? 'w-10 h-10' : 'w-8 h-8'
                         }`} fill="currentColor" viewBox="0 0 24 24">
                           <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                         </svg>
@@ -1169,7 +1169,7 @@ const Dashboard: React.FC = () => {
                       {/* Blinking ring effect */}
                       <div className="absolute inset-0 animate-ping">
                         <svg className={`text-yellow-300 opacity-75 ${
-                          isParentWheel ? 'w-10 h-10' : 'w-8 h-8'
+                          isChakra ? 'w-10 h-10' : 'w-8 h-8'
                         }`} fill="currentColor" viewBox="0 0 24 24">
                           <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                         </svg>
@@ -1180,7 +1180,7 @@ const Dashboard: React.FC = () => {
                     <div 
                       data-wheel-label
                       className={`relative font-bold rounded-full text-white shadow-lg cursor-pointer hover:shadow-xl transition-all duration-200 hover:scale-105 pointer-events-auto ${
-                        isParentWheel ? 'text-base px-4 py-2' : 'text-sm px-3 py-1'
+                        isChakra ? 'text-base px-4 py-2' : 'text-sm px-3 py-1'
                       }`}
                       style={{ backgroundColor: wheel.color }}
                       onMouseEnter={(e) => {
@@ -1395,7 +1395,7 @@ const Dashboard: React.FC = () => {
               <div className="px-3 py-1 bg-orange-100 text-orange-800 rounded-full font-medium">
                 Total Wheels: {wheels.filter(w => w.dots && w.dots.length > 0 && w.chakraId !== null).length}
               </div>
-              <div className="px-3 py-1 bg-purple-100 text-purple-800 rounded-full font-medium">
+              <div className="px-3 py-1 bg-amber-100 text-amber-800 rounded-full font-medium">
                 Total Chakras: {wheels.filter(w => w.chakraId === null).length}
               </div>
             </div>
