@@ -1677,7 +1677,7 @@ const Dashboard: React.FC = () => {
                 const position = gridPositions.dotPositions[dot.id];
                 x = position.x;
                 y = position.y;
-                console.log(`Using algorithmic position for dot ${dot.id}:`, position);
+
               } else {
                 // Fallback to manual positioning logic for dots not in API response
                 const dotId = String(dot.id || index);
@@ -1806,13 +1806,14 @@ const Dashboard: React.FC = () => {
                   {/* Summary hover card - different positioning for PWA vs Browser */}
                   {hoveredDot?.id === dot.id && (
                     <div 
-                      className="absolute bg-white border-2 border-amber-200 rounded-lg p-3 shadow-xl z-50 w-64 cursor-pointer"
+                      className="absolute bg-white border-2 border-amber-200 rounded-lg p-3 shadow-xl z-[9999] w-64 cursor-pointer"
                       style={{
                         // PWA: Position relative to dot to scroll with grid
                         // Browser: Position in grid coordinates for mouse hover
                         left: isPWA ? '60px' : `${x + 60}px`,
                         top: isPWA ? '-20px' : `${Math.max(0, y - 20)}px`,
-                        maxWidth: '280px'
+                        maxWidth: '280px',
+                        zIndex: 9999
                       }}
                       onClick={(e) => {
                         e.stopPropagation();
@@ -1860,7 +1861,7 @@ const Dashboard: React.FC = () => {
               if (gridPositions?.wheelPositions && gridPositions.wheelPositions[wheel.id]) {
                 // Use backend algorithmic positioning
                 wheelPosition = gridPositions.wheelPositions[wheel.id];
-                console.log(`Using algorithmic position for wheel ${wheel.id}:`, wheelPosition);
+
               } else if (gridPositions?.chakraPositions && gridPositions.chakraPositions[wheel.id]) {
                 // Use chakra positioning for chakras
                 wheelPosition = gridPositions.chakraPositions[wheel.id];
@@ -1974,9 +1975,9 @@ const Dashboard: React.FC = () => {
                     />
                   )}
                   
-                  {/* Chakra label and enhancement with high z-index */}
+                  {/* Chakra label and enhancement */}
                   {isChakra && (
-                    <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 pointer-events-auto z-[999]" style={{ zIndex: 999 }}>
+                    <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 pointer-events-auto z-10">
                       <div 
                         className="bg-gradient-to-r from-amber-600 to-orange-600 text-white px-4 py-2 rounded-full shadow-lg border-2 border-amber-400"
                         style={{
@@ -1991,12 +1992,11 @@ const Dashboard: React.FC = () => {
                     </div>
                   )}
                   
-                  {/* Blinking Spark Symbol on top of wheel with high z-index */}
+                  {/* Blinking Spark Symbol on top of wheel */}
                   <div 
-                    className={`absolute left-1/2 transform -translate-x-1/2 flex flex-col items-center z-[999] ${
+                    className={`absolute left-1/2 transform -translate-x-1/2 flex flex-col items-center z-10 ${
                       isChakra ? 'top-[-95px]' : 'top-[-75px]'
                     }`}
-                    style={{ zIndex: 999 }}
                   >
                     {/* Spark symbol with blinking animation */}
                     <div className="relative mb-2">
@@ -2017,22 +2017,22 @@ const Dashboard: React.FC = () => {
                       </div>
                     </div>
                     
-                    {/* Wheel label with high z-index to override chakra effects */}
+                    {/* Wheel label */}
                     <div 
                       data-wheel-label
-                      className={`relative font-bold rounded-full text-white shadow-lg cursor-pointer hover:shadow-xl transition-all duration-200 hover:scale-105 pointer-events-auto text-center whitespace-nowrap z-[999] ${
+                      className={`relative font-bold rounded-full text-white shadow-lg cursor-pointer hover:shadow-xl transition-all duration-200 hover:scale-105 pointer-events-auto text-center whitespace-nowrap z-10 ${
                         isChakra ? 'text-base px-4 py-2' : 'text-sm px-3 py-1'
                       }`}
                       style={{ 
                         backgroundColor: wheel.color,
                         position: 'relative',
-                        zIndex: 999
+                        zIndex: 10
                       }}
                       onMouseEnter={(e) => {
                         e.stopPropagation();
                         // Don't show flash card if user is dragging
                         if (dragStart) return;
-                        console.log('Wheel hover:', wheel.name, 'Position:', wheelPosition, 'Size:', wheelSize);
+
                         setHoveredWheel(wheel);
                       }}
                       onMouseLeave={(e) => {
@@ -2047,16 +2047,16 @@ const Dashboard: React.FC = () => {
                     >
                       {wheel.name}
                       
-                      {/* Wheel Flash Card - positioned directly relative to the label */}
+                      {/* Wheel Flash Card - positioned same as dot flashcards */}
                       {hoveredWheel?.id === wheel.id && (
                         <div 
-                          className="fixed bg-white border-2 border-amber-200 rounded-lg p-3 shadow-xl z-[99999] w-64 cursor-pointer pointer-events-auto"
+                          className="absolute bg-white border-2 border-amber-200 rounded-lg p-3 shadow-xl z-[9999] w-64 cursor-pointer pointer-events-auto"
                           style={{
-                            // Position using viewport coordinates
-                            left: isPWA ? `${wheelPosition.x + 60}px` : `${wheelPosition.x + wheelSize + 8}px`,
-                            top: isPWA ? `${wheelPosition.y - 20}px` : `${wheelPosition.y}px`,
+                            // Position same as dot flashcards
+                            left: isPWA ? '60px' : `${wheelPosition.x + 60}px`,
+                            top: isPWA ? '-20px' : `${Math.max(0, wheelPosition.y - 20)}px`,
                             maxWidth: '280px',
-                            zIndex: 99999
+                            zIndex: 9999
                           }}
                           onMouseEnter={(e) => {
                             e.stopPropagation();
