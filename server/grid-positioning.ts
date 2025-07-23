@@ -243,15 +243,9 @@ export function positionWheelsInChakra(
       { x: chakra.position.x + spacing/2, y: chakra.position.y }
     );
   } else if (wheels.length === 3) {
-    // Improved triangle arrangement with better visual balance
-    // Use a more compact triangle with optimized angles for better spacing
-    const radius = safeRadius * 0.65; // Slightly larger radius for better distribution
-    const angles = [
-      -Math.PI/2,        // Top (12 o'clock)
-      Math.PI/6,         // Bottom right (2 o'clock)  
-      5*Math.PI/6        // Bottom left (10 o'clock)
-    ];
-    
+    // Triangle arrangement
+    const angles = [0, 2*Math.PI/3, 4*Math.PI/3];
+    const radius = safeRadius * 0.6;
     angles.forEach(angle => {
       positions.push({
         x: chakra.position.x + Math.cos(angle) * radius,
@@ -287,32 +281,39 @@ export function positionChakrasInGrid(
   
   const chakraRadius = isPreview ? GRID_CONFIG.CHAKRA_RADIUS.PREVIEW : GRID_CONFIG.CHAKRA_RADIUS.REAL;
   const positions: Position[] = [];
-  
-  // Define optimal chakra positions for better visual balance
-  const optimalPositions = [
-    { x: 0.25, y: 0.3 },  // Top-left (for Build an Enduring Company - primary position)
-    { x: 0.75, y: 0.25 }, // Top-right 
-    { x: 0.2, y: 0.75 },  // Bottom-left
-    { x: 0.8, y: 0.7 }    // Bottom-right
-  ];
+  const usedQuadrants: number[] = [];
   
   for (let i = 0; i < chakras.length; i++) {
-    const positionIndex = i % optimalPositions.length;
-    const targetPosition = optimalPositions[positionIndex];
+    let quadrantIndex: number;
     
-    // Calculate position with minimal randomization for consistency
-    const baseX = bounds.marginX + targetPosition.x * (bounds.width - 2 * bounds.marginX);
-    const baseY = bounds.marginY + targetPosition.y * (bounds.height - 2 * bounds.marginY);
+    // Select next available quadrant
+    if (usedQuadrants.length < GRID_CONFIG.CHAKRA_QUADRANTS.length) {
+      do {
+        quadrantIndex = Math.floor(Math.random() * GRID_CONFIG.CHAKRA_QUADRANTS.length);
+      } while (usedQuadrants.includes(quadrantIndex));
+      usedQuadrants.push(quadrantIndex);
+    } else {
+      // All quadrants used, distribute randomly
+      quadrantIndex = Math.floor(Math.random() * GRID_CONFIG.CHAKRA_QUADRANTS.length);
+    }
     
-    // Add small randomization to avoid perfect grid alignment
-    const smallOffsetX = (Math.random() - 0.5) * 40; // ±20 pixels
-    const smallOffsetY = (Math.random() - 0.5) * 40; // ±20 pixels
+    const quadrant = GRID_CONFIG.CHAKRA_QUADRANTS[quadrantIndex];
+    
+    // Add randomization within quadrant
+    const quadrantWidth = (bounds.width - 2 * bounds.marginX) / 2;
+    const quadrantHeight = (bounds.height - 2 * bounds.marginY) / 2;
+    
+    const randomOffsetX = (Math.random() - 0.5) * quadrantWidth * 0.6;
+    const randomOffsetY = (Math.random() - 0.5) * quadrantHeight * 0.6;
+    
+    const baseX = bounds.marginX + quadrant.x * (bounds.width - 2 * bounds.marginX);
+    const baseY = bounds.marginY + quadrant.y * (bounds.height - 2 * bounds.marginY);
     
     positions.push({
       x: Math.max(bounds.marginX + chakraRadius, 
-          Math.min(bounds.width - bounds.marginX - chakraRadius, baseX + smallOffsetX)),
+          Math.min(bounds.width - bounds.marginX - chakraRadius, baseX + randomOffsetX)),
       y: Math.max(bounds.marginY + chakraRadius, 
-          Math.min(bounds.height - bounds.marginY - chakraRadius, baseY + smallOffsetY))
+          Math.min(bounds.height - bounds.marginY - chakraRadius, baseY + randomOffsetY))
     });
   }
   
