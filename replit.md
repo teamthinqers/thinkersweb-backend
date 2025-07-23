@@ -145,6 +145,7 @@ Changelog:
   * Settings icon redirects to My Neura page for preference modification
   * Both Natural and AI modes now respect user preferences for streamlined experience
   * Interface shows current preference status (Voice Only, Text Only, Natural Mode, etc.) in floating dot header
+  * Added "(Coming Soon)" label to Cogni Shield section name across all components for clear user expectations
 - July 23, 2025. COMPLETED comprehensive color consistency and icon standardization throughout DotSpark application:
   * FINALIZED color enforcement: all chakra creation interfaces (text and voice modes) now use amber/orange theme exclusively
   * Purple color theme reserved ONLY for AI-related features as per design specifications
