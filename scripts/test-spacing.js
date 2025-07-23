@@ -33,7 +33,12 @@ async function testSpacing() {
       return;
     }
     
-    const { dotPositions, wheelPositions, chakraPositions } = data.data;
+    const { dotPositions, wheelPositions, chakraPositions, sizes } = data.data;
+    
+    console.log('📏 Dynamic sizes from API:');
+    console.log(`  - Dot radius: ${sizes?.dotRadius || 'N/A'}px`);
+    console.log(`  - Wheel radii: ${Object.keys(sizes?.wheelRadii || {}).length} wheels with dynamic sizing`);
+    console.log(`  - Chakra radii: ${Object.keys(sizes?.chakraRadii || {}).length} chakras with dynamic sizing\n`);
     let violations = 0;
     
     // Test Chakra spacing
@@ -45,11 +50,13 @@ async function testSpacing() {
         const chakra2Id = chakraIds[j];
         const chakra1Pos = chakraPositions[chakra1Id];
         const chakra2Pos = chakraPositions[chakra2Id];
+        const chakra1Radius = sizes?.chakraRadii?.[chakra1Id] || GRID_CONFIG.CHAKRA_RADIUS.PREVIEW;
+        const chakra2Radius = sizes?.chakraRadii?.[chakra2Id] || GRID_CONFIG.CHAKRA_RADIUS.PREVIEW;
         const hasCollision = checkCollision(
           chakra1Pos, 
-          GRID_CONFIG.CHAKRA_RADIUS.PREVIEW,
+          chakra1Radius,
           chakra2Pos, 
-          GRID_CONFIG.CHAKRA_RADIUS.PREVIEW,
+          chakra2Radius,
           GRID_CONFIG.MIN_SPACING.CHAKRA_TO_CHAKRA
         );
         
@@ -69,11 +76,13 @@ async function testSpacing() {
         const wheel2Id = wheelIds[j];
         const wheel1Pos = wheelPositions[wheel1Id];
         const wheel2Pos = wheelPositions[wheel2Id];
+        const wheel1Radius = sizes?.wheelRadii?.[wheel1Id] || GRID_CONFIG.WHEEL_RADIUS.BASE;
+        const wheel2Radius = sizes?.wheelRadii?.[wheel2Id] || GRID_CONFIG.WHEEL_RADIUS.BASE;
         const hasCollision = checkCollision(
           wheel1Pos, 
-          GRID_CONFIG.WHEEL_RADIUS.BASE,
+          wheel1Radius,
           wheel2Pos, 
-          GRID_CONFIG.WHEEL_RADIUS.BASE,
+          wheel2Radius,
           GRID_CONFIG.MIN_SPACING.WHEEL_TO_WHEEL
         );
         
@@ -93,11 +102,12 @@ async function testSpacing() {
         const dot2Id = dotIds[j];
         const dot1Pos = dotPositions[dot1Id];
         const dot2Pos = dotPositions[dot2Id];
+        const dotRadius = sizes?.dotRadius || GRID_CONFIG.DOT_RADIUS.PREVIEW;
         const hasCollision = checkCollision(
           dot1Pos, 
-          GRID_CONFIG.DOT_RADIUS.PREVIEW,
+          dotRadius,
           dot2Pos, 
-          GRID_CONFIG.DOT_RADIUS.PREVIEW,
+          dotRadius,
           GRID_CONFIG.MIN_SPACING.DOT_TO_DOT
         );
         

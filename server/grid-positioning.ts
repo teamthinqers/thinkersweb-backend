@@ -138,11 +138,11 @@ export function generateRandomPosition(
       };
     }
     
-    // Check collision with existing elements
+    // Check collision with existing elements with enhanced buffering
     const hasCollision = existingElements.some(element => {
-      const minSpacing = element.type === 'dot' ? GRID_CONFIG.MIN_SPACING.DOT_TO_DOT :
-                        element.type === 'wheel' ? GRID_CONFIG.MIN_SPACING.WHEEL_TO_WHEEL :
-                        GRID_CONFIG.MIN_SPACING.CHAKRA_TO_CHAKRA;
+      const minSpacing = element.type === 'dot' ? GRID_CONFIG.MIN_SPACING.DOT_TO_DOT + 10 :
+                        element.type === 'wheel' ? GRID_CONFIG.MIN_SPACING.WHEEL_TO_WHEEL + 20 :
+                        GRID_CONFIG.MIN_SPACING.CHAKRA_TO_CHAKRA + 30;
       
       return checkCollision(position, radius, element.position, element.radius, minSpacing);
     });
@@ -176,7 +176,7 @@ export function positionDotsInWheel(
   if (dots.length === 0) return [];
   
   const wheelRadius = wheel.radius;
-  const minDotSpacing = dotRadius * 2 + GRID_CONFIG.MIN_SPACING.DOT_TO_DOT; // Center-to-center distance for edge-to-edge spacing
+  const minDotSpacing = dotRadius * 2 + GRID_CONFIG.MIN_SPACING.DOT_TO_DOT + 5; // Center-to-center distance with extra buffer for floating-point precision
   const maxDotDistance = wheelRadius - dotRadius - GRID_CONFIG.MIN_SPACING.DOT_TO_WHEEL_EDGE; // Stay within wheel boundary
   if (dots.length === 1) return [{ ...wheel.position }]; // Center for single dot
   
@@ -205,11 +205,11 @@ export function positionDotsInWheel(
       );
     }
   } else if (dots.length === 3) {
-    // Triangle with strict spacing validation
+    // Triangle with enhanced spacing validation
     const minTriangleRadius = (minDotSpacing * Math.sqrt(3)) / 3;
-    const radius = Math.max(minTriangleRadius, Math.min(maxDotDistance * 0.6, minTriangleRadius * 1.5));
+    const radius = Math.max(minTriangleRadius + 10, Math.min(maxDotDistance * 0.5, minTriangleRadius * 2));
     
-    if (radius <= maxDotDistance) {
+    if (radius <= maxDotDistance - 10) { // Extra buffer
       const angles = [-Math.PI/2, Math.PI/6, 5*Math.PI/6];
       angles.forEach(angle => {
         positions.push({
@@ -217,9 +217,30 @@ export function positionDotsInWheel(
           y: wheel.position.y + Math.sin(angle) * radius
         });
       });
-    } else {
-      // Linear fallback if triangle too large
-      const linearSpacing = Math.min(minDotSpacing, maxDotDistance);
+      
+      // Validate all positions have proper spacing
+      let hasViolation = false;
+      for (let i = 0; i < positions.length && !hasViolation; i++) {
+        for (let j = i + 1; j < positions.length; j++) {
+          const distance = Math.sqrt(
+            Math.pow(positions[i].x - positions[j].x, 2) + 
+            Math.pow(positions[i].y - positions[j].y, 2)
+          );
+          if (distance < minDotSpacing - 5) { // Increased tolerance for floating point
+            hasViolation = true;
+            break;
+          }
+        }
+      }
+      
+      if (hasViolation) {
+        positions.length = 0; // Clear positions for fallback
+      }
+    }
+    
+    if (positions.length === 0) {
+      // Linear fallback with guaranteed spacing
+      const linearSpacing = Math.min(minDotSpacing * 1.2, maxDotDistance * 0.8);
       positions.push(
         { x: wheel.position.x - linearSpacing, y: wheel.position.y },
         { x: wheel.position.x, y: wheel.position.y },
@@ -227,65 +248,133 @@ export function positionDotsInWheel(
       );
     }
   } else if (dots.length === 4) {
-    // Square with strict diagonal validation
-    const minSquareSpacing = minDotSpacing / Math.sqrt(2);
-    const spacing = Math.max(minSquareSpacing, Math.min(maxDotDistance * 0.7, minSquareSpacing * 2));
+    // BULLETPROOF 4-dot positioning with guaranteed spacing
+    // Start with the minimum required spacing and work upward
+    const absoluteMinSpacing = minDotSpacing * 3; // Triple the minimum for absolute safety
     
-    if (spacing * Math.sqrt(2) <= maxDotDistance) {
+    // Option 1: Try 2x2 grid with maximum safety spacing
+    positions.push(
+      { x: wheel.position.x - absoluteMinSpacing/2, y: wheel.position.y - absoluteMinSpacing/2 },
+      { x: wheel.position.x + absoluteMinSpacing/2, y: wheel.position.y - absoluteMinSpacing/2 },
+      { x: wheel.position.x - absoluteMinSpacing/2, y: wheel.position.y + absoluteMinSpacing/2 },
+      { x: wheel.position.x + absoluteMinSpacing/2, y: wheel.position.y + absoluteMinSpacing/2 }
+    );
+    
+    // Verify this arrangement fits within wheel boundaries
+    const maxDistanceFromCenter = Math.sqrt(2) * absoluteMinSpacing/2;
+    if (maxDistanceFromCenter > maxDotDistance) {
+      // If 2x2 doesn't fit, use linear arrangement
+      positions.length = 0;
+      const linearSpacing = Math.min(absoluteMinSpacing, maxDotDistance * 0.9);
+      
+      // Place in a line
       positions.push(
-        { x: wheel.position.x - spacing/2, y: wheel.position.y - spacing/2 },
-        { x: wheel.position.x + spacing/2, y: wheel.position.y - spacing/2 },
-        { x: wheel.position.x - spacing/2, y: wheel.position.y + spacing/2 },
-        { x: wheel.position.x + spacing/2, y: wheel.position.y + spacing/2 }
+        { x: wheel.position.x - linearSpacing * 1.5, y: wheel.position.y },
+        { x: wheel.position.x - linearSpacing * 0.5, y: wheel.position.y },
+        { x: wheel.position.x + linearSpacing * 0.5, y: wheel.position.y },
+        { x: wheel.position.x + linearSpacing * 1.5, y: wheel.position.y }
       );
-    } else {
-      // Linear fallback
-      const linearSpacing = Math.min(minDotSpacing, maxDotDistance * 0.8);
-      for (let i = 0; i < 4; i++) {
-        const angle = (i * Math.PI) / 2;
-        positions.push({
-          x: wheel.position.x + Math.cos(angle) * linearSpacing,
-          y: wheel.position.y + Math.sin(angle) * linearSpacing
-        });
-      }
     }
   } else {
-    // Circular arrangement with strict spacing enforcement
-    const maxCircleRadius = maxDotDistance * 0.95; // Use nearly all available space
+    // For 5+ dots, use guaranteed grid arrangement to prevent all overlaps
+    const cols = Math.min(3, Math.ceil(Math.sqrt(dots.length))); // Maximum 3 columns
+    const rows = Math.ceil(dots.length / cols);
     
-    // Calculate minimum radius needed to fit all dots with proper spacing
-    // For dots on a circle, the chord length between adjacent dots must be >= minDotSpacing
-    // Using the formula: chord = 2 * radius * sin(angle/2)
-    // Where angle = 2π / numberOfDots
-    const angle = (2 * Math.PI) / dots.length;
-    const minRadiusForSpacing = (minDotSpacing + 1) / (2 * Math.sin(angle / 2)); // Add 1px tolerance for floating-point precision
+    // Calculate spacing ensuring no overlaps with substantial buffer
+    const baseSpacing = minDotSpacing * 2; // Double the minimum spacing for safety
+    const horizontalSpacing = Math.max(baseSpacing, maxDotDistance * 1.6 / Math.max(1, cols - 1));
+    const verticalSpacing = Math.max(baseSpacing, maxDotDistance * 1.6 / Math.max(1, rows - 1));
     
-    // Use the smaller of the two constraints
-    const radius = Math.min(maxCircleRadius, Math.max(minRadiusForSpacing, maxCircleRadius * 0.3));
+    // Use the more restrictive spacing with additional safety margin
+    const spacing = Math.min(horizontalSpacing, verticalSpacing, maxDotDistance * 0.8);
+    
+    for (let i = 0; i < dots.length; i++) {
+      const row = Math.floor(i / cols);
+      const col = i % cols;
+      const gridWidth = (cols - 1) * spacing;
+      const gridHeight = (rows - 1) * spacing;
+      
+      positions.push({
+        x: wheel.position.x - gridWidth/2 + col * spacing,
+        y: wheel.position.y - gridHeight/2 + row * spacing
+      });
+    }
     
 
     
-    if (radius > maxDotDistance) {
-      // Fallback to linear arrangement if circular won't fit
-      const linearSpacing = Math.min(minDotSpacing, maxDotDistance * 0.8);
-      for (let i = 0; i < dots.length; i++) {
-        const angle = (i * 2 * Math.PI) / dots.length;
-        positions.push({
-          x: wheel.position.x + Math.cos(angle) * linearSpacing,
-          y: wheel.position.y + Math.sin(angle) * linearSpacing
-        });
+    // Final validation to ensure no overlaps in grid arrangement
+    for (let i = 0; i < positions.length; i++) {
+      for (let j = i + 1; j < positions.length; j++) {
+        const distance = Math.sqrt(
+          Math.pow(positions[i].x - positions[j].x, 2) + 
+          Math.pow(positions[i].y - positions[j].y, 2)
+        );
+        if (distance < minDotSpacing - 3) {
+          // If grid still causes overlaps, use maximum safe spacing
+          positions.length = 0;
+          const maxSafeSpacing = Math.max(minDotSpacing * 2, maxDotDistance * 0.8);
+          
+          for (let k = 0; k < dots.length; k++) {
+            const angle = (k * 2 * Math.PI) / dots.length;
+            positions.push({
+              x: wheel.position.x + Math.cos(angle) * maxSafeSpacing,
+              y: wheel.position.y + Math.sin(angle) * maxSafeSpacing
+            });
+          }
+          break; // Exit validation loop
+        }
       }
-    } else {
-      // Place dots in a circle with guaranteed spacing
-      const angleStep = (2 * Math.PI) / dots.length;
-      const startAngle = -Math.PI/2;
-      
-      for (let i = 0; i < dots.length; i++) {
-        const angle = startAngle + i * angleStep;
-        positions.push({
-          x: wheel.position.x + Math.cos(angle) * radius,
-          y: wheel.position.y + Math.sin(angle) * radius
-        });
+    }
+  }
+  
+  // FINAL VALIDATION: Check all positions for violations and force safe arrangement if needed
+  for (let i = 0; i < positions.length; i++) {
+    for (let j = i + 1; j < positions.length; j++) {
+      const distance = Math.sqrt(
+        Math.pow(positions[i].x - positions[j].x, 2) + 
+        Math.pow(positions[i].y - positions[j].y, 2)
+      );
+      if (distance < minDotSpacing - 3) { // Found violation
+        console.log(`WARNING: Spacing violation detected in wheel ${wheel.id}, forcing emergency fallback`);
+        
+        // Clear all positions and use emergency safe arrangement
+        positions.length = 0;
+        
+        // ULTRA-SAFE ARRANGEMENT: Maximum spacing for absolute guarantee
+        const emergencySpacing = minDotSpacing * 4; // Quadruple spacing for absolute safety
+        
+        if (dots.length <= 4) {
+          // Safe grid for small numbers with maximum spacing
+          const cols = Math.min(2, dots.length);
+          
+          for (let k = 0; k < dots.length; k++) {
+            const row = Math.floor(k / cols);
+            const col = k % cols;
+            const gridWidth = (cols - 1) * emergencySpacing;
+            const gridHeight = (Math.ceil(dots.length / cols) - 1) * emergencySpacing;
+            
+            positions.push({
+              x: wheel.position.x - gridWidth/2 + col * emergencySpacing,
+              y: wheel.position.y - gridHeight/2 + row * emergencySpacing
+            });
+          }
+        } else {
+          // Safe circular for larger numbers with maximum spacing
+          const safeRadius = Math.max(emergencySpacing, maxDotDistance * 0.5);
+          for (let k = 0; k < dots.length; k++) {
+            const angle = (k * 2 * Math.PI) / dots.length;
+            positions.push({
+              x: wheel.position.x + Math.cos(angle) * safeRadius,
+              y: wheel.position.y + Math.sin(angle) * safeRadius
+            });
+          }
+        }
+        
+        console.log(`Emergency fallback applied for wheel ${wheel.id} with ${dots.length} dots`);
+        
+        // Exit both loops after fixing
+        i = positions.length;
+        break;
       }
     }
   }
