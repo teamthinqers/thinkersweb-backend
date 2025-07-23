@@ -33,26 +33,26 @@ export const GRID_CONFIG = {
   MARGIN_X: 120,
   MARGIN_Y: 120,
   
-  // Element sizes - moderately increased for better visibility
+  // Element sizes - updated per user specifications
   DOT_RADIUS: {
-    PREVIEW: 35,  // Moderate increase from 25
+    PREVIEW: 35,  // User specified: 35px radius (70px diameter)
     REAL: 45      // Moderate increase from 35
   },
   WHEEL_RADIUS: {
-    BASE: 160,    // Moderate increase from 120
+    BASE: 160,    // User specified: 160px radius (320px diameter)
     MIN: 130,     // Moderate increase from 100
     MAX: 200      // Moderate increase from 150
   },
   CHAKRA_RADIUS: {
-    PREVIEW: 280, // Moderate increase from 210
+    PREVIEW: 420, // User specified: 420px radius (840px diameter)
     REAL: 320     // Moderate increase from 185
   },
   
-  // Spacing requirements - enforced minimums for collision avoidance
+  // Spacing requirements - updated per user specifications
   MIN_SPACING: {
-    DOT_TO_DOT: 25,           // Ensure dots never touch
-    WHEEL_TO_WHEEL: 120,      // Ensure wheel boundaries never overlap
-    CHAKRA_TO_CHAKRA: 200,    // Ensure chakras never overlap  
+    DOT_TO_DOT: 40,           // User specified: 40px minimum edge-to-edge
+    WHEEL_TO_WHEEL: 180,      // User specified: 180px minimum edge-to-edge
+    CHAKRA_TO_CHAKRA: 360,    // User specified: 360px minimum edge-to-edge
     DOT_TO_WHEEL_EDGE: 20,    // Keep dots well within wheel boundaries
     WHEEL_TO_CHAKRA_EDGE: 40  // Keep wheels well within chakra boundaries
   },
@@ -68,6 +68,14 @@ export const GRID_CONFIG = {
     { x: 0.8, y: 0.8 },   // Bottom-right
     { x: 0.5, y: 0.1 },   // Top-center
     { x: 0.5, y: 0.9 }    // Bottom-center
+  ],
+  
+  // Chakra quadrants for positioning algorithm
+  CHAKRA_QUADRANTS: [
+    { x: 0.25, y: 0.25 }, // Top-left quadrant
+    { x: 0.75, y: 0.25 }, // Top-right quadrant  
+    { x: 0.25, y: 0.75 }, // Bottom-left quadrant
+    { x: 0.75, y: 0.75 }  // Bottom-right quadrant
   ]
 };
 

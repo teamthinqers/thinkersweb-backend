@@ -138,14 +138,21 @@ DotSpark is a full-stack web application that serves as a personalized learning 
 ## Changelog
 ```
 Changelog:
+- July 23, 2025. UPDATED preview mode sizing and spacing per user specifications:
+  * Chakra radius increased to 420px (840px diameter) for better space utilization
+  * Wheel radius maintained at 160px (320px diameter) for optimal proportions
+  * Dot radius confirmed at 35px (70px diameter) for clear visibility
+  * Enhanced spacing requirements: dot-to-dot 40px, wheel-to-wheel 180px, chakra-to-chakra 360px
+  * Larger chakras provide significantly more space for wheel arrangements and content
+  * Increased spacing ensures clear visual separation between all grid elements
 - July 23, 2025. ENHANCED grid positioning with comprehensive spacing enforcement directly in main system:
   * Updated positionDotsInWheel() with strict collision detection enforcing all user spacing rules
-  * Enhanced dot-to-dot spacing validation with 25px minimum edge-to-edge distance
+  * Enhanced dot-to-dot spacing validation with minimum edge-to-edge distance
   * Improved wheel boundary enforcement keeping dots 20px safety buffer from wheel edge
   * Added triangle, square, and circular positioning with mathematical validation for proper spacing
   * Implemented fallback positioning strategies when optimal arrangements don't fit
   * Enhanced wheel-in-chakra positioning with comprehensive collision detection
-  * Chakra positioning already includes strict 200px minimum spacing enforcement
+  * Chakra positioning includes strict minimum spacing enforcement
   * All five user spacing rules now mathematically enforced in production grid system
 - July 23, 2025. IMPLEMENTED strict collision detection system enforcing user's exact spacing requirements:
   * Dots never touch other dots: minimum 25px spacing between dot edges enforced
