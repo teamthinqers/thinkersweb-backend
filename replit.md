@@ -162,6 +162,7 @@ Changelog:
   * Search now works seamlessly in both normal and preview modes with full three-tier architecture support
   * Modified AI mode interface to skip creation type selection and directly show Direct Chat and WhatsApp options
   * Streamlined AI mode user flow - users go straight to AI assistance options without intermediate steps
+  * Added settings icon next to AI/Natural mode switch that takes users to Neura page for default mode configuration
   * Updated StructuredFloatingDot.tsx with consistent amber/orange gradients across all chakra voice recording layers
   * Fixed creation type selection buttons: double layered rotating circle for wheels, Settings icon for chakras
   * Updated center icons in creation mode display to match standardized icon usage

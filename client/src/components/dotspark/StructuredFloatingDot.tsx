@@ -676,6 +676,19 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                           AI Mode ↻
                         </button>
                       )}
+                      
+                      {/* Settings Icon */}
+                      <Button
+                        variant="ghost"
+                        onClick={() => {
+                          setIsExpanded(false);
+                          window.location.href = '/my-neura';
+                        }}
+                        className="h-8 w-8 p-0 rounded-full hover:bg-gray-100 transition-colors"
+                        title="Go to settings to set default mode"
+                      >
+                        <Settings className="w-4 h-4 text-gray-600" />
+                      </Button>
                     </div>
 
                     <Button
