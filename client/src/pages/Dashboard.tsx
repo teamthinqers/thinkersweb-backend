@@ -310,10 +310,10 @@ const Dashboard: React.FC = () => {
     const productHeadings = ['User Research', 'Design Thinking', 'Technology', 'Iteration', 'Innovation'];
     const healthHeadings = ['Morning Routine', 'Exercise', 'Nutrition', 'Sleep Quality', 'Stress Management'];
 
-    // Add dots to GTM wheel
+    // Add dots to GTM wheel (matching backend IDs 1-5)
     gtmHeadings.forEach((heading, i) => {
       const dot: Dot = {
-        id: `preview-dot-gtm-${i}`,
+        id: `preview-dot-${i + 1}`,
         oneWordSummary: heading,
         summary: `Strategic insights about ${heading.toLowerCase()} and business growth`,
         anchor: `Key learnings about ${heading.toLowerCase()} implementation`,
@@ -327,10 +327,10 @@ const Dashboard: React.FC = () => {
       gtmWheel.dots.push(dot);
     });
 
-    // Add dots to Leadership wheel
+    // Add dots to Leadership wheel (matching backend IDs 6-9)
     leadershipHeadings.forEach((heading, i) => {
       const dot: Dot = {
-        id: `preview-dot-leadership-${i}`,
+        id: `preview-dot-${i + 6}`,
         oneWordSummary: heading,
         summary: `Leadership insights about ${heading.toLowerCase()} and team excellence`,
         anchor: `Key strategies for ${heading.toLowerCase()} development`,
@@ -344,10 +344,10 @@ const Dashboard: React.FC = () => {
       leadershipWheel.dots.push(dot);
     });
 
-    // Add dots to Product wheel
+    // Add dots to Product wheel (matching backend IDs 10-13)
     productHeadings.forEach((heading, i) => {
       const dot: Dot = {
-        id: `preview-dot-product-${i}`,
+        id: `preview-dot-${i + 10}`,
         oneWordSummary: heading,
         summary: `Product insights about ${heading.toLowerCase()} and innovation excellence`,
         anchor: `Strategic approaches to ${heading.toLowerCase()} implementation`,
@@ -361,10 +361,10 @@ const Dashboard: React.FC = () => {
       productWheel.dots.push(dot);
     });
 
-    // Add dots to Health wheel
+    // Add dots to Health wheel (matching backend IDs 15-19)
     healthHeadings.forEach((heading, i) => {
       const dot: Dot = {
-        id: `preview-dot-health-${i}`,
+        id: `preview-dot-${i + 15}`,
         oneWordSummary: heading,
         summary: `Health insights about ${heading.toLowerCase()} and wellness optimization`,
         anchor: `Personal strategies for ${heading.toLowerCase()} improvement`,
@@ -395,7 +395,7 @@ const Dashboard: React.FC = () => {
 
     individualHeadings.forEach((heading, i) => {
       const dot: Dot = {
-        id: `individual-${i + 1}`,
+        id: `preview-dot-${i + 20}`,
         oneWordSummary: heading,
         summary: individualSummaries[i],
         anchor: `Personal observation about ${heading.toLowerCase()} and its impact on daily life`,
@@ -641,12 +641,8 @@ const Dashboard: React.FC = () => {
       };
     }, [isFullscreen]);
 
-    // Generate preview data when preview mode is enabled
-    const generatePreviewData = () => {
-      const emotions = ['excited', 'curious', 'focused', 'happy', 'calm', 'inspired', 'confident', 'grateful', 'motivated'];
-      
-      const previewDots: Dot[] = [];
-      const previewWheels: Wheel[] = [];
+    // Use existing generatePreviewData function defined above
+    /*
 
       // Chakra - top-level business theme that encompasses the three wheels
       const businessChakra: Wheel = {
@@ -695,7 +691,7 @@ const Dashboard: React.FC = () => {
 
       for (let i = 0; i < 5; i++) {
         const dot: Dot = {
-          id: `preview-dot-0-${i}`,
+          id: `preview-dot-${i + 1}`,
           oneWordSummary: firstSparkHeadings[i],
           summary: firstSparkSummaries[i],
           anchor: `Personal insights about ${firstSparkHeadings[i].toLowerCase()} and daily routines`,
@@ -739,7 +735,7 @@ const Dashboard: React.FC = () => {
 
       for (let i = 0; i < 4; i++) {
         const dot: Dot = {
-          id: `preview-dot-1-${i}`,
+          id: `preview-dot-${i + 6}`,
           oneWordSummary: secondSparkHeadings[i],
           summary: secondSparkSummaries[i],
           anchor: `Random observations about ${secondSparkHeadings[i].toLowerCase()} in everyday experiences`,
@@ -771,21 +767,22 @@ const Dashboard: React.FC = () => {
       };
 
       const thirdSparkHeadings = [
-        'User Research', 'Feature Priority', 'Tech Excellence'
+        'User Research', 'Feature Priority', 'Tech Excellence', 'Innovation'
       ];
 
       const thirdSparkSummaries = [
         'Conducting deep user research to uncover unmet needs and pain points',
         'Prioritizing features based on user impact and technical complexity',
-        'Managing technical debt while maintaining development velocity and innovation'
+        'Managing technical debt while maintaining development velocity and innovation',
+        'Driving breakthrough innovation through experimentation and creative solutions'
       ];
 
-      for (let i = 0; i < 3; i++) {
+      for (let i = 0; i < 4; i++) {
         const dot: Dot = {
-          id: `preview-dot-2-${i}`,
-          oneWordSummary: thirdSparkHeadings[i],
-          summary: thirdSparkSummaries[i],
-          anchor: `Strategic insights about ${thirdSparkHeadings[i].toLowerCase()} and product excellence`,
+          id: `preview-dot-${i + 10}`,
+          oneWordSummary: thirdSparkHeadings[i] || `Product ${i + 1}`,
+          summary: thirdSparkSummaries[i] || `Product insight ${i + 1}`,
+          anchor: `Strategic insights about ${(thirdSparkHeadings[i] || 'product').toLowerCase()} and product excellence`,
           pulse: emotions[Math.floor(Math.random() * emotions.length)],
           wheelId: thirdBusinessWheel.id,
           timestamp: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
@@ -830,20 +827,21 @@ const Dashboard: React.FC = () => {
         createdAt: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000)
       };
 
-      const fitnessHeadings = ['Morning Workout', 'Strength Training', 'Cardio Sessions', 'Recovery'];
+      const fitnessHeadings = ['Morning Workout', 'Strength Training', 'Cardio Sessions', 'Recovery', 'Flexibility'];
       const fitnessSummaries = [
         'Established consistent morning workout routine with bodyweight exercises',
         'Progressive strength training focusing on compound movements and proper form',
         'High-intensity cardio sessions alternating with steady-state endurance work',
-        'Active recovery with stretching, mobility work, and adequate sleep'
+        'Active recovery with stretching, mobility work, and adequate sleep',
+        'Regular flexibility and mobility work to maintain range of motion'
       ];
 
-      for (let i = 0; i < 4; i++) {
+      for (let i = 0; i < 5; i++) {
         const dot: Dot = {
-          id: `preview-dot-health-1-${i}`,
-          oneWordSummary: fitnessHeadings[i],
-          summary: fitnessSummaries[i],
-          anchor: `Personal observations about ${fitnessHeadings[i].toLowerCase()} and physical wellness`,
+          id: `preview-dot-${i + 14}`,
+          oneWordSummary: fitnessHeadings[i] || `Health ${i + 1}`,
+          summary: fitnessSummaries[i] || `Health insight ${i + 1}`,
+          anchor: `Personal observations about ${(fitnessHeadings[i] || 'health').toLowerCase()} and physical wellness`,
           pulse: emotions[Math.floor(Math.random() * emotions.length)],
           wheelId: fitnessWheel.id,
           timestamp: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
@@ -855,184 +853,41 @@ const Dashboard: React.FC = () => {
       }
       previewWheels.push(fitnessWheel);
 
-      // Second health wheel - Nutrition & Diet
-      const nutritionWheel: Wheel = {
-        id: 'preview-wheel-health-2',
-        name: 'Nutrition & Diet',
-        heading: 'Mindful Nutrition',
-        goals: 'Developing sustainable eating habits focused on whole foods, proper hydration, and mindful consumption for optimal energy and health.',
-        timeline: 'Daily',
-        category: 'Health',
-        color: '#EA580C',
-        dots: [],
-        connections: ['preview-wheel-health-3'],
-        position: { x: 1350, y: 170 }, // Top-right in health chakra
-        chakraId: 'preview-chakra-health',
-        createdAt: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000)
-      };
 
-      const nutritionHeadings = ['Meal Prep', 'Hydration', 'Mindful Eating'];
-      const nutritionSummaries = [
-        'Weekly meal preparation with balanced macronutrients and fresh ingredients',
-        'Consistent hydration tracking with filtered water and electrolyte balance',
-        'Practicing mindful eating habits and listening to hunger/satiety cues'
+
+      // Individual scattered dots (19-26) - not part of any wheel
+      const scatteredHeadings = [
+        'Coffee Ritual', 'Weather Impact', 'Music Flow', 'Reading Pattern', 
+        'Dream Insight', 'Walk Reflection', 'Art Inspiration', 'Code Solution'
+      ];
+      const scatteredSummaries = [
+        'Morning coffee ritual and its profound impact on daily productivity patterns',
+        'Weather changes affecting mood and energy levels throughout the day',
+        'Music preferences enhancing focus and creative thinking processes',
+        'Reading habits revealing deep learning patterns and knowledge retention',
+        'Vivid dream that provided unexpected solution to ongoing life challenge',
+        'Reflective walk that sparked clarity about personal relationships',
+        'Art piece that inspired new perspective on creative problem-solving',
+        'Coding breakthrough that emerged during focused deep work session'
       ];
 
-      for (let i = 0; i < 3; i++) {
+      // Create individual scattered dots with sequential IDs
+      for (let i = 0; i < 8; i++) {
         const dot: Dot = {
-          id: `preview-dot-health-2-${i}`,
-          oneWordSummary: nutritionHeadings[i],
-          summary: nutritionSummaries[i],
-          anchor: `Insights about ${nutritionHeadings[i].toLowerCase()} and nutritional wellness`,
+          id: `preview-dot-${i + 19}`,
+          oneWordSummary: scatteredHeadings[i],
+          summary: scatteredSummaries[i],
+          anchor: `Personal insight about ${scatteredHeadings[i].toLowerCase()} and individual growth`,
           pulse: emotions[Math.floor(Math.random() * emotions.length)],
-          wheelId: nutritionWheel.id,
-          timestamp: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
+          wheelId: null, // No wheel - scattered/unorganized dot
+          timestamp: new Date(Date.now() - Math.random() * 15 * 24 * 60 * 60 * 1000),
           sourceType: Math.random() > 0.5 ? 'voice' : 'text',
           captureMode: Math.random() > 0.7 ? 'ai' : 'natural'
         };
         previewDots.push(dot);
-        nutritionWheel.dots.push(dot);
       }
-      previewWheels.push(nutritionWheel);
 
-      // Third health wheel - Mental Wellness
-      const mentalWellnessWheel: Wheel = {
-        id: 'preview-wheel-health-3',
-        name: 'Mental Wellness',
-        heading: 'Mental & Emotional Balance',
-        goals: 'Cultivating mental resilience through meditation, stress management, and emotional intelligence practices for overall wellbeing.',
-        timeline: 'Daily',
-        category: 'Health',
-        color: '#EA580C',
-        dots: [],
-        connections: [],
-        position: { x: 1300, y: 330 }, // Bottom center in health chakra
-        chakraId: 'preview-chakra-health',
-        createdAt: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000)
-      };
-
-      const mentalHeadings = ['Meditation Practice', 'Stress Management', 'Emotional Intelligence', 'Sleep Quality'];
-      const mentalSummaries = [
-        'Daily meditation practice with breathing exercises and mindfulness techniques',
-        'Stress management through time blocking, boundaries, and relaxation methods',
-        'Developing emotional intelligence and empathy in personal relationships',
-        'Optimizing sleep quality with consistent schedule and sleep hygiene'
-      ];
-
-      for (let i = 0; i < 4; i++) {
-        const dot: Dot = {
-          id: `preview-dot-health-3-${i}`,
-          oneWordSummary: mentalHeadings[i],
-          summary: mentalSummaries[i],
-          anchor: `Personal reflections on ${mentalHeadings[i].toLowerCase()} and mental health`,
-          pulse: emotions[Math.floor(Math.random() * emotions.length)],
-          wheelId: mentalWellnessWheel.id,
-          timestamp: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
-          sourceType: Math.random() > 0.5 ? 'voice' : 'text',
-          captureMode: Math.random() > 0.7 ? 'ai' : 'natural'
-        };
-        previewDots.push(dot);
-        mentalWellnessWheel.dots.push(dot);
-      }
-      previewWheels.push(mentalWellnessWheel);
-
-      // PERSONAL GROWTH CHAKRA with 4 wheels
-      const growthChakra: Wheel = {
-        id: 'preview-chakra-growth',
-        name: 'Personal Growth & Learning',
-        heading: 'Personal Growth & Learning',
-        purpose: 'Continuous self-improvement through skill development, knowledge acquisition, and personal reflection for lifelong growth.',
-        timeline: 'Monthly',
-        category: 'Personal',
-        color: '#B45309', // Dark amber for Chakras
-        dots: [],
-        connections: [],
-        position: { x: 400, y: 800 }, // Personal Growth chakra - bottom-left area
-        chakraId: undefined, // This marks it as a chakra (top-level container)
-        createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000)
-      };
-      previewWheels.push(growthChakra);
-
-      // First growth wheel - Learning & Skills
-      const learningWheel: Wheel = {
-        id: 'preview-wheel-growth-1',
-        name: 'Learning & Skills',
-        heading: 'Continuous Learning',
-        goals: 'Acquiring new skills and knowledge through courses, books, and practical application in areas of personal and professional interest.',
-        timeline: 'Weekly',
-        category: 'Personal',
-        color: '#EA580C',
-        dots: [],
-        connections: ['preview-wheel-growth-2'],
-        position: { x: 300, y: 720 }, // Top-left in growth chakra
-        chakraId: 'preview-chakra-growth',
-        createdAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000)
-      };
-
-      const learningHeadings = ['Online Courses', 'Reading Books', 'Skill Practice'];
-      const learningSummaries = [
-        'Completing online courses in data science and machine learning fundamentals',
-        'Reading personal development and technical books for knowledge expansion',
-        'Practicing new programming languages and frameworks through projects'
-      ];
-
-      for (let i = 0; i < 3; i++) {
-        const dot: Dot = {
-          id: `preview-dot-growth-1-${i}`,
-          oneWordSummary: learningHeadings[i],
-          summary: learningSummaries[i],
-          anchor: `Learning experiences with ${learningHeadings[i].toLowerCase()} and knowledge building`,
-          pulse: emotions[Math.floor(Math.random() * emotions.length)],
-          wheelId: learningWheel.id,
-          timestamp: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
-          sourceType: Math.random() > 0.5 ? 'voice' : 'text',
-          captureMode: Math.random() > 0.7 ? 'ai' : 'natural'
-        };
-        previewDots.push(dot);
-        learningWheel.dots.push(dot);
-      }
-      previewWheels.push(learningWheel);
-
-      // Second growth wheel - Self-Reflection
-      const reflectionWheel: Wheel = {
-        id: 'preview-wheel-growth-2',
-        name: 'Self-Reflection',
-        heading: 'Self-Reflection & Awareness',
-        goals: 'Regular self-reflection through journaling, goal setting, and mindfulness to increase self-awareness and personal growth.',
-        timeline: 'Daily',
-        category: 'Personal',
-        color: '#EA580C',
-        dots: [],
-        connections: ['preview-wheel-growth-3'],
-        position: { x: 500, y: 720 }, // Top-right in growth chakra
-        chakraId: 'preview-chakra-growth',
-        createdAt: new Date(Date.now() - 11 * 24 * 60 * 60 * 1000)
-      };
-
-      const reflectionHeadings = ['Daily Journaling', 'Goal Review', 'Values Alignment', 'Gratitude Practice'];
-      const reflectionSummaries = [
-        'Daily journaling to process thoughts, emotions, and daily experiences',
-        'Weekly goal review and progress tracking for personal objectives',
-        'Reflecting on personal values and ensuring actions align with principles',
-        'Daily gratitude practice to cultivate positive mindset and appreciation'
-      ];
-
-      for (let i = 0; i < 4; i++) {
-        const dot: Dot = {
-          id: `preview-dot-growth-2-${i}`,
-          oneWordSummary: reflectionHeadings[i],
-          summary: reflectionSummaries[i],
-          anchor: `Personal insights about ${reflectionHeadings[i].toLowerCase()} and self-awareness`,
-          pulse: emotions[Math.floor(Math.random() * emotions.length)],
-          wheelId: reflectionWheel.id,
-          timestamp: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
-          sourceType: Math.random() > 0.5 ? 'voice' : 'text',
-          captureMode: Math.random() > 0.7 ? 'ai' : 'natural'
-        };
-        previewDots.push(dot);
-        reflectionWheel.dots.push(dot);
-      }
-      previewWheels.push(reflectionWheel);
+      return { previewDots, previewWheels };
 
       // Third growth wheel - Creativity & Hobbies
       const creativityWheel: Wheel = {
@@ -1290,9 +1145,9 @@ const Dashboard: React.FC = () => {
         { x: 600, y: 600 }    // Center-left area
       ];
 
-      for (let i = 0; i < 10; i++) {
+      for (let i = 0; i < 8; i++) {
         const dot: Dot = {
-          id: `scattered-${i + 1}`,
+          id: `preview-dot-${i + 19}`,
           oneWordSummary: scatteredHeadings[i],
           summary: scatteredSummaries[i],
           anchor: `Personal insight about ${scatteredHeadings[i].toLowerCase()} and individual growth`,
@@ -1309,7 +1164,7 @@ const Dashboard: React.FC = () => {
 
       
       return { previewDots, previewWheels };
-    };
+    */
 
     const { previewDots, previewWheels } = generatePreviewData();
     
