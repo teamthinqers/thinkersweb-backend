@@ -499,7 +499,8 @@ const Dashboard: React.FC = () => {
       }
       previewWheels.push(personalWheel);
 
-
+      // Add Chakra after all child wheels are defined
+      previewWheels.push(businessChakra);
 
       // Add some individual scattered dots showing not all dots need grouping
       const individualHeadings = [
