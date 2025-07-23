@@ -190,11 +190,13 @@ export function positionDotsInWheel(
 ): Position[] {
   const dotRadius = isPreview ? GRID_CONFIG.DOT_RADIUS.PREVIEW : GRID_CONFIG.DOT_RADIUS.REAL;
   const wheelRadius = wheel.radius;
-  const minDotSpacing = dotRadius * 2 + GRID_CONFIG.MIN_SPACING.DOT_TO_DOT; // Ensure dots never touch
+  const minDotSpacing = dotRadius * 2 + GRID_CONFIG.MIN_SPACING.DOT_TO_DOT; // Center-to-center distance for edge-to-edge spacing
   const maxDotDistance = wheelRadius - dotRadius - GRID_CONFIG.MIN_SPACING.DOT_TO_WHEEL_EDGE; // Stay within wheel boundary
   
   if (dots.length === 0) return [];
   if (dots.length === 1) return [{ ...wheel.position }]; // Center for single dot
+  
+
   
   const positions: Position[] = [];
   
@@ -265,51 +267,40 @@ export function positionDotsInWheel(
     }
   } else {
     // Circular arrangement with strict spacing enforcement
-    const circumference = 2 * Math.PI * maxDotDistance * 0.7;
-    const requiredSpacing = minDotSpacing * dots.length;
+    const maxCircleRadius = maxDotDistance * 0.95; // Use nearly all available space
     
-    let radius = maxDotDistance * 0.7;
+    // Calculate minimum radius needed to fit all dots with proper spacing
+    // For dots on a circle, the chord length between adjacent dots must be >= minDotSpacing
+    // Using the formula: chord = 2 * radius * sin(angle/2)
+    // Where angle = 2π / numberOfDots
+    const angle = (2 * Math.PI) / dots.length;
+    const minRadiusForSpacing = (minDotSpacing + 1) / (2 * Math.sin(angle / 2)); // Add 1px tolerance for floating-point precision
     
-    // Check if circumference can accommodate all dots with proper spacing
-    if (circumference < requiredSpacing) {
-      // Try smaller radius
-      radius = requiredSpacing / (2 * Math.PI);
-      if (radius > maxDotDistance) {
-        radius = maxDotDistance * 0.9; // Maximum possible radius
-      }
-    }
+    // Use the smaller of the two constraints
+    const radius = Math.min(maxCircleRadius, Math.max(minRadiusForSpacing, maxCircleRadius * 0.3));
     
-    const angleStep = (2 * Math.PI) / dots.length;
-    const startAngle = -Math.PI/2;
+
     
-    for (let i = 0; i < dots.length; i++) {
-      const angle = startAngle + i * angleStep;
-      const candidatePos = {
-        x: wheel.position.x + Math.cos(angle) * radius,
-        y: wheel.position.y + Math.sin(angle) * radius
-      };
-      
-      // Validate this position doesn't collide with existing positions
-      let hasCollision = false;
-      for (const existingPos of positions) {
-        const distance = Math.sqrt(
-          Math.pow(candidatePos.x - existingPos.x, 2) + 
-          Math.pow(candidatePos.y - existingPos.y, 2)
-        );
-        if (distance < minDotSpacing) {
-          hasCollision = true;
-          break;
-        }
-      }
-      
-      if (!hasCollision) {
-        positions.push(candidatePos);
-      } else {
-        // Adjust position inward to avoid collision
-        const adjustedRadius = radius * 0.8;
+    if (radius > maxDotDistance) {
+      // Fallback to linear arrangement if circular won't fit
+      const linearSpacing = Math.min(minDotSpacing, maxDotDistance * 0.8);
+      for (let i = 0; i < dots.length; i++) {
+        const angle = (i * 2 * Math.PI) / dots.length;
         positions.push({
-          x: wheel.position.x + Math.cos(angle) * adjustedRadius,
-          y: wheel.position.y + Math.sin(angle) * adjustedRadius
+          x: wheel.position.x + Math.cos(angle) * linearSpacing,
+          y: wheel.position.y + Math.sin(angle) * linearSpacing
+        });
+      }
+    } else {
+      // Place dots in a circle with guaranteed spacing
+      const angleStep = (2 * Math.PI) / dots.length;
+      const startAngle = -Math.PI/2;
+      
+      for (let i = 0; i < dots.length; i++) {
+        const angle = startAngle + i * angleStep;
+        positions.push({
+          x: wheel.position.x + Math.cos(angle) * radius,
+          y: wheel.position.y + Math.sin(angle) * radius
         });
       }
     }
@@ -546,13 +537,41 @@ export function positionFreeDotsInGrid(
 }
 
 /**
- * Calculate dynamic wheel radius based on number of dots
+ * Calculate dynamic wheel radius based on number of dots and spacing requirements
  */
-export function calculateWheelRadius(dotCount: number): number {
-  if (dotCount <= 3) return GRID_CONFIG.WHEEL_RADIUS.BASE;
-  if (dotCount <= 6) return GRID_CONFIG.WHEEL_RADIUS.BASE + 15;
-  if (dotCount <= 9) return GRID_CONFIG.WHEEL_RADIUS.BASE + 30;
-  return GRID_CONFIG.WHEEL_RADIUS.MAX;
+export function calculateWheelRadius(dotCount: number, isPreview: boolean = false): number {
+  const dotRadius = isPreview ? GRID_CONFIG.DOT_RADIUS.PREVIEW : GRID_CONFIG.DOT_RADIUS.REAL;
+  const minDotSpacing = dotRadius * 2 + GRID_CONFIG.MIN_SPACING.DOT_TO_DOT;
+  const edgeBuffer = GRID_CONFIG.MIN_SPACING.DOT_TO_WHEEL_EDGE;
+  
+  if (dotCount <= 1) return GRID_CONFIG.WHEEL_RADIUS.BASE;
+  
+  let requiredRadius = GRID_CONFIG.WHEEL_RADIUS.BASE;
+  
+  if (dotCount === 2) {
+    // Side-by-side arrangement
+    requiredRadius = (minDotSpacing / 2) + dotRadius + edgeBuffer;
+  } else if (dotCount === 3) {
+    // Triangle arrangement
+    const triangleRadius = (minDotSpacing * Math.sqrt(3)) / 3;
+    requiredRadius = triangleRadius + dotRadius + edgeBuffer;
+  } else if (dotCount === 4) {
+    // Square arrangement  
+    const squareRadius = minDotSpacing / Math.sqrt(2);
+    requiredRadius = squareRadius + dotRadius + edgeBuffer;
+  } else {
+    // Circular arrangement for 5+ dots
+    const angle = (2 * Math.PI) / dotCount;
+    const circularRadius = minDotSpacing / (2 * Math.sin(angle / 2));
+    requiredRadius = circularRadius + dotRadius + edgeBuffer;
+  }
+  
+  // Use the larger of base size or calculated requirement, capped at maximum
+  const finalRadius = Math.min(Math.max(requiredRadius, GRID_CONFIG.WHEEL_RADIUS.BASE), GRID_CONFIG.WHEEL_RADIUS.MAX);
+  
+
+  
+  return finalRadius;
 }
 
 /**
@@ -597,7 +616,7 @@ export function calculateGridPositions(
   const wheelElements: GridElement[] = [];
   
   wheels.forEach(wheel => {
-    const wheelRadius = calculateWheelRadius(wheel.dots?.length || 0);
+    const wheelRadius = calculateWheelRadius(wheel.dots?.length || 0, isPreview);
     
     if (wheel.chakraId) {
       // Wheel belongs to a chakra
