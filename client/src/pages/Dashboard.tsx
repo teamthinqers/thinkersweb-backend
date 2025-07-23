@@ -636,7 +636,7 @@ const Dashboard: React.FC = () => {
         color: '#B45309', // Dark amber theme for Chakras
         dots: [],
         connections: ['preview-wheel-0', 'preview-wheel-1', 'preview-wheel-2'],
-        position: { x: 400, y: 300 }, // Centered to encompass the three wheels below
+        position: { x: 400, y: 300 }, // Top-left chakra
         chakraId: undefined, // This makes it a Chakra (top-level)
         createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) // 30 days ago
       };
@@ -784,7 +784,7 @@ const Dashboard: React.FC = () => {
         color: '#B45309', // Dark amber for Chakras
         dots: [],
         connections: [],
-        position: { x: 900, y: 200 }, // Position to the right of business chakra
+        position: { x: 1100, y: 300 }, // Top-right chakra, well-spaced from business
         chakraId: undefined, // This marks it as a chakra (top-level container)
         createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000) // 5 days ago
       };
@@ -801,7 +801,7 @@ const Dashboard: React.FC = () => {
         color: '#EA580C', // Orange theme for wheels
         dots: [],
         connections: ['preview-wheel-health-2'],
-        position: { x: 850, y: 120 }, // Top-left in health chakra
+        position: { x: 1050, y: 220 }, // Top-left in health chakra
         chakraId: 'preview-chakra-health',
         createdAt: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000)
       };
@@ -842,7 +842,7 @@ const Dashboard: React.FC = () => {
         color: '#EA580C',
         dots: [],
         connections: ['preview-wheel-health-3'],
-        position: { x: 950, y: 160 }, // Top-right in health chakra
+        position: { x: 1150, y: 220 }, // Top-right in health chakra
         chakraId: 'preview-chakra-health',
         createdAt: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000)
       };
@@ -882,7 +882,7 @@ const Dashboard: React.FC = () => {
         color: '#EA580C',
         dots: [],
         connections: [],
-        position: { x: 900, y: 280 }, // Bottom center in health chakra
+        position: { x: 1100, y: 380 }, // Bottom center in health chakra
         chakraId: 'preview-chakra-health',
         createdAt: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000)
       };
@@ -923,7 +923,7 @@ const Dashboard: React.FC = () => {
         color: '#B45309', // Dark amber for Chakras
         dots: [],
         connections: [],
-        position: { x: 500, y: 600 }, // Bottom center
+        position: { x: 400, y: 800 }, // Bottom-left chakra
         chakraId: undefined, // This marks it as a chakra (top-level container)
         createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000)
       };
@@ -940,7 +940,7 @@ const Dashboard: React.FC = () => {
         color: '#EA580C',
         dots: [],
         connections: ['preview-wheel-growth-2'],
-        position: { x: 420, y: 520 }, // Top-left in growth chakra
+        position: { x: 320, y: 720 }, // Top-left in growth chakra
         chakraId: 'preview-chakra-growth',
         createdAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000)
       };
@@ -980,7 +980,7 @@ const Dashboard: React.FC = () => {
         color: '#EA580C',
         dots: [],
         connections: ['preview-wheel-growth-3'],
-        position: { x: 580, y: 520 }, // Top-right in growth chakra
+        position: { x: 480, y: 720 }, // Top-right in growth chakra
         chakraId: 'preview-chakra-growth',
         createdAt: new Date(Date.now() - 11 * 24 * 60 * 60 * 1000)
       };
@@ -1021,7 +1021,7 @@ const Dashboard: React.FC = () => {
         color: '#EA580C',
         dots: [],
         connections: ['preview-wheel-growth-4'],
-        position: { x: 450, y: 660 }, // Bottom-left in growth chakra
+        position: { x: 350, y: 880 }, // Bottom-left in growth chakra
         chakraId: 'preview-chakra-growth',
         createdAt: new Date(Date.now() - 9 * 24 * 60 * 60 * 1000)
       };
@@ -1061,7 +1061,7 @@ const Dashboard: React.FC = () => {
         color: '#EA580C',
         dots: [],
         connections: [],
-        position: { x: 550, y: 680 }, // Bottom-right in growth chakra
+        position: { x: 450, y: 880 }, // Bottom-right in growth chakra
         chakraId: 'preview-chakra-growth',
         createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
       };
@@ -1101,7 +1101,7 @@ const Dashboard: React.FC = () => {
         color: '#B45309', // Dark amber for Chakras
         dots: [],
         connections: [],
-        position: { x: 1200, y: 450 }, // Right side
+        position: { x: 1100, y: 800 }, // Bottom-right chakra
         chakraId: undefined, // This marks it as a chakra (top-level container)
         createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000)
       };
@@ -1118,7 +1118,7 @@ const Dashboard: React.FC = () => {
         color: '#EA580C',
         dots: [],
         connections: ['preview-wheel-finance-2'],
-        position: { x: 1150, y: 370 }, // Top-left in finance chakra
+        position: { x: 1020, y: 720 }, // Top-left in finance chakra
         chakraId: 'preview-chakra-finance',
         createdAt: new Date(Date.now() - 16 * 24 * 60 * 60 * 1000)
       };
@@ -1159,7 +1159,7 @@ const Dashboard: React.FC = () => {
         color: '#EA580C',
         dots: [],
         connections: ['preview-wheel-finance-3'],
-        position: { x: 1250, y: 410 }, // Top-right in finance chakra
+        position: { x: 1180, y: 720 }, // Top-right in finance chakra
         chakraId: 'preview-chakra-finance',
         createdAt: new Date(Date.now() - 13 * 24 * 60 * 60 * 1000)
       };
@@ -1199,7 +1199,7 @@ const Dashboard: React.FC = () => {
         color: '#EA580C',
         dots: [],
         connections: [],
-        position: { x: 1200, y: 530 }, // Bottom center in finance chakra
+        position: { x: 1100, y: 880 }, // Bottom center in finance chakra
         chakraId: 'preview-chakra-finance',
         createdAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000)
       };
@@ -1231,28 +1231,44 @@ const Dashboard: React.FC = () => {
       // Add Chakra after all child wheels are defined
       previewWheels.push(businessChakra);
 
-      // Add some individual scattered dots showing not all dots need grouping
-      const individualHeadings = [
-        'Coffee', 'Weather', 'Music', 'Reading'
+      // Add scattered unorganized dots across the grid to show diverse thinking
+      const scatteredHeadings = [
+        'Coffee Ritual', 'Weather Impact', 'Music Flow', 'Reading Pattern', 
+        'Dream Insight', 'Walk Reflection', 'Art Inspiration', 'Code Solution',
+        'Nature Connection', 'Social Moment'
       ];
-      const individualSummaries = [
-        'Morning coffee ritual and its impact on daily productivity patterns',
-        'Weather changes affecting mood and energy levels throughout day',
+      const scatteredSummaries = [
+        'Morning coffee ritual and its profound impact on daily productivity patterns',
+        'Weather changes affecting mood and energy levels throughout the day',
         'Music preferences enhancing focus and creative thinking processes',
-        'Reading habits revealing learning patterns and knowledge retention'
+        'Reading habits revealing deep learning patterns and knowledge retention',
+        'Vivid dream that provided unexpected solution to ongoing life challenge',
+        'Reflective walk that sparked clarity about personal relationships',
+        'Art piece that inspired new perspective on creative problem-solving',
+        'Coding breakthrough that emerged during focused deep work session',
+        'Time in nature that restored mental clarity and emotional balance',
+        'Meaningful social interaction that shifted perspective on communication'
       ];
 
-      for (let i = 0; i < 4; i++) {
+      // Scatter 10 dots across different areas of the grid
+      const scatteredPositions = [
+        { x: 200, y: 150 }, { x: 700, y: 180 }, { x: 150, y: 450 }, { x: 850, y: 500 },
+        { x: 600, y: 120 }, { x: 250, y: 650 }, { x: 950, y: 180 }, { x: 750, y: 580 },
+        { x: 180, y: 350 }, { x: 820, y: 350 }
+      ];
+
+      for (let i = 0; i < 10; i++) {
         const dot: Dot = {
-          id: `individual-${i + 1}`,
-          oneWordSummary: individualHeadings[i],
-          summary: individualSummaries[i],
-          anchor: `Personal observation about ${individualHeadings[i].toLowerCase()} and its impact on daily life`,
+          id: `scattered-${i + 1}`,
+          oneWordSummary: scatteredHeadings[i],
+          summary: scatteredSummaries[i],
+          anchor: `Personal insight about ${scatteredHeadings[i].toLowerCase()} and individual growth`,
           pulse: emotions[Math.floor(Math.random() * emotions.length)],
-          wheelId: '', // No wheel - individual dot
-          timestamp: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
+          wheelId: null, // No wheel - scattered/unorganized dot
+          timestamp: new Date(Date.now() - Math.random() * 15 * 24 * 60 * 60 * 1000),
           sourceType: Math.random() > 0.5 ? 'voice' : 'text',
-          captureMode: Math.random() > 0.7 ? 'ai' : 'natural'
+          captureMode: Math.random() > 0.7 ? 'ai' : 'natural',
+          position: scatteredPositions[i] // Direct position for scattered dots
         };
         previewDots.push(dot);
       }
@@ -1692,19 +1708,25 @@ const Dashboard: React.FC = () => {
                     y = gridY + (seedY % 40) - 20;
                   }
                 } else {
-                  // Individual scattered dots - use intelligent grid system
-                  const gridCols = 6;
-                  const gridSpacing = 140;
-                  const baseX = 100;
-                  const baseY = 100;
-                  
-                  // Calculate grid position with some randomness for natural look
-                  const gridX = (index % gridCols) * gridSpacing + baseX;
-                  const gridY = Math.floor(index / gridCols) * gridSpacing + baseY;
-                  
-                  // Add controlled randomness while maintaining minimum spacing
-                  x = gridX + (seedX % 60) - 30;
-                  y = gridY + (seedY % 60) - 30;
+                  // Individual scattered dots - use position if available, otherwise grid system
+                  if (dot.position) {
+                    x = dot.position.x;
+                    y = dot.position.y;
+                  } else {
+                    // Fallback to intelligent grid system for dots without specific positions
+                    const gridCols = 6;
+                    const gridSpacing = 140;
+                    const baseX = 100;
+                    const baseY = 100;
+                    
+                    // Calculate grid position with some randomness for natural look
+                    const gridX = (index % gridCols) * gridSpacing + baseX;
+                    const gridY = Math.floor(index / gridCols) * gridSpacing + baseY;
+                    
+                    // Add controlled randomness while maintaining minimum spacing
+                    x = gridX + (seedX % 60) - 30;
+                    y = gridY + (seedY % 60) - 30;
+                  }
                 }
               }
               
@@ -1853,7 +1875,7 @@ const Dashboard: React.FC = () => {
                   // Dynamic chakra sizing based on child wheels count
                   const childWheels = displayWheels.filter(w => w.chakraId === wheel.id);
                   wheelSize = getChakraSize('preview', childWheels.length);
-                  console.log('Chakra detected:', wheel.name, 'Size:', wheelSize, 'Color:', wheel.color, 'Children:', childWheels.length);
+
                 } else {
                   // Dynamic wheel sizing based on dots count
                   const wheelDots = displayDots.filter(d => d.wheelId === wheel.id);
@@ -1866,7 +1888,7 @@ const Dashboard: React.FC = () => {
                   // Dynamic chakra sizing based on child wheels count
                   const childWheels = displayWheels.filter(w => w.chakraId === wheel.id);
                   wheelSize = getChakraSize('real', childWheels.length);
-                  console.log('Real mode chakra detected:', wheel.name, 'Size:', wheelSize, 'Color:', wheel.color, 'Children:', childWheels.length);
+
                 } else {
                   // Dynamic wheel sizing based on dots count
                   const wheelDots = displayDots.filter(d => d.wheelId === wheel.id);
