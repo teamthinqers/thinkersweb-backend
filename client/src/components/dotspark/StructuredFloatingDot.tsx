@@ -51,7 +51,8 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
   const [wheelVoiceSteps, setWheelVoiceSteps] = useState({
     heading: '',
     purpose: '',
-    timeline: ''
+    timeline: '',
+    parentWheelId: null as number | null
   });
   const [audioRecordings, setAudioRecordings] = useState<{
     summary?: string;
@@ -743,24 +744,14 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                     <div className="grid grid-cols-2 gap-4">
                       <Button
                         onClick={() => setCaptureMode(createType === 'wheel' ? 'wheel-voice' : 'voice')}
-                        className={`h-28 ${createType === 'wheel' 
-                          ? (userCaptureMode === 'ai' 
-                            ? 'bg-gradient-to-br from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700'
-                            : 'bg-gradient-to-br from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700')
-                          : 'bg-gradient-to-br from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700'
-                        } text-white rounded-xl flex flex-col items-center justify-center space-y-3 shadow-lg transform transition-all duration-200 hover:scale-105`}
+                        className="h-28 bg-gradient-to-br from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl flex flex-col items-center justify-center space-y-3 shadow-lg transform transition-all duration-200 hover:scale-105"
                       >
                         <Mic className="w-10 h-10" />
                         <span className="text-xl font-semibold">Voice</span>
                       </Button>
                       <Button
                         onClick={() => setCaptureMode(createType === 'wheel' ? 'wheel-text' : 'text')}
-                        className={`h-28 ${createType === 'wheel' 
-                          ? (userCaptureMode === 'ai' 
-                            ? 'bg-gradient-to-br from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700'
-                            : 'bg-gradient-to-br from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700')
-                          : 'bg-gradient-to-br from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700'
-                        } text-white rounded-xl flex flex-col items-center justify-center space-y-3 shadow-lg transform transition-all duration-200 hover:scale-105`}
+                        className="h-28 bg-gradient-to-br from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl flex flex-col items-center justify-center space-y-3 shadow-lg transform transition-all duration-200 hover:scale-105"
                       >
                         <Type className="w-10 h-10" />
                         <span className="text-xl font-semibold">Text</span>
@@ -1399,9 +1390,9 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
               onClick={() => {
                 setShowExitWarning(false);
                 setIsExpanded(false);
-                setStructuredInput({ summary: '', anchor: '', pulse: '' });
-                setWheelInput({ heading: '', purpose: '', timeline: '' });
-                setWheelVoiceSteps({ heading: '', purpose: '', timeline: '' });
+                setStructuredInput({ summary: '', anchor: '', pulse: '', wheelId: null });
+                setWheelInput({ heading: '', purpose: '', timeline: '', parentWheelId: null });
+                setWheelVoiceSteps({ heading: '', purpose: '', timeline: '', parentWheelId: null });
                 setCurrentStep(1);
                 setCaptureMode('select');
                 setIsSaved(false);
