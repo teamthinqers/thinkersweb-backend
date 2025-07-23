@@ -714,10 +714,10 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                         setCreateType('wheel');
                         setCaptureMode('create-type');
                       }}
-                      className="h-28 bg-gradient-to-br from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl flex flex-col items-center justify-center space-y-2 shadow-lg transform transition-all duration-200 hover:scale-105"
+                      className="h-28 bg-gradient-to-br from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white rounded-xl flex flex-col items-center justify-center space-y-2 shadow-lg transform transition-all duration-200 hover:scale-105"
                     >
                       <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
-                        <Settings className="w-6 h-6 text-white animate-spin" style={{ animationDuration: '3s' }} />
+                        <Brain className="w-6 h-6 text-white" />
                       </div>
                       <span className="text-sm font-semibold">Create Wheel</span>
                       <span className="text-xs opacity-80">Organize dots</span>
@@ -727,10 +727,10 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                         setCreateType('chakra');
                         setCaptureMode('create-type');
                       }}
-                      className="h-28 bg-gradient-to-br from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700 text-white rounded-xl flex flex-col items-center justify-center space-y-2 shadow-lg transform transition-all duration-200 hover:scale-105"
+                      className="h-28 bg-gradient-to-br from-amber-600 to-orange-700 hover:from-amber-700 hover:to-orange-800 text-white rounded-xl flex flex-col items-center justify-center space-y-2 shadow-lg transform transition-all duration-200 hover:scale-105"
                     >
                       <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
-                        <Brain className="w-6 h-6 text-white animate-pulse" />
+                        <Settings className="w-6 h-6 text-white" />
                       </div>
                       <span className="text-sm font-semibold">Create Chakra</span>
                       <span className="text-xs opacity-80">Group wheels</span>
@@ -795,15 +795,15 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                   <div className="text-center mb-6">
                     <div className={`w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center ${
                       createType === 'wheel' 
-                        ? 'bg-gradient-to-r from-amber-500 to-orange-600' 
+                        ? 'bg-gradient-to-r from-orange-500 to-red-600' 
                         : createType === 'chakra'
-                        ? 'bg-gradient-to-r from-purple-500 to-violet-600'
+                        ? 'bg-gradient-to-r from-amber-600 to-orange-700'
                         : 'bg-gradient-to-r from-amber-500 to-orange-600'
                     }`}>
                       {createType === 'wheel' ? (
-                        <Settings className="w-8 h-8 text-white animate-spin" style={{ animationDuration: '3s' }} />
+                        <Brain className="w-8 h-8 text-white" />
                       ) : createType === 'chakra' ? (
-                        <Brain className="w-8 h-8 text-white animate-pulse" />
+                        <Settings className="w-8 h-8 text-white" />
                       ) : (
                         <div className="w-4 h-4 bg-white rounded-full"></div>
                       )}
@@ -822,7 +822,9 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                         )}
                         className={`h-28 text-white rounded-xl flex flex-col items-center justify-center space-y-3 shadow-lg transform transition-all duration-200 hover:scale-105 ${
                           createType === 'chakra'
-                            ? 'bg-gradient-to-br from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700'
+                            ? 'bg-gradient-to-br from-amber-600 to-orange-700 hover:from-amber-700 hover:to-orange-800'
+                            : createType === 'wheel'
+                            ? 'bg-gradient-to-br from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700'
                             : 'bg-gradient-to-br from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700'
                         }`}
                       >
@@ -836,7 +838,9 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                         )}
                         className={`h-28 text-white rounded-xl flex flex-col items-center justify-center space-y-3 shadow-lg transform transition-all duration-200 hover:scale-105 ${
                           createType === 'chakra'
-                            ? 'bg-gradient-to-br from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700'
+                            ? 'bg-gradient-to-br from-amber-600 to-orange-700 hover:from-amber-700 hover:to-orange-800'
+                            : createType === 'wheel'
+                            ? 'bg-gradient-to-br from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700'
                             : 'bg-gradient-to-br from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700'
                         }`}
                       >
@@ -1471,10 +1475,10 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                     <div className="space-y-4">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-600 to-violet-600 flex items-center justify-center">
+                          <div className="w-8 h-8 rounded-full bg-gradient-to-r from-amber-600 to-orange-700 flex items-center justify-center">
                             <span className="text-white text-xs font-bold">1</span>
                           </div>
-                          <h5 className="text-sm font-semibold text-purple-800">Layer 1: Chakra Heading</h5>
+                          <h5 className="text-sm font-semibold text-amber-800">Layer 1: Chakra Heading</h5>
                           {chakraInput.heading && <span className="text-xs text-green-600 ml-auto">✓ Done</span>}
                         </div>
                       </div>
@@ -1482,12 +1486,12 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                         value={chakraInput.heading}
                         onChange={(e) => setChakraInput(prev => ({ ...prev, heading: e.target.value }))}
                         placeholder="Name your Chakra..."
-                        className="border-purple-200 focus:border-purple-400 focus:ring-purple-400"
+                        className="border-amber-200 focus:border-amber-400 focus:ring-amber-400"
                         maxLength={100}
                       />
                       <div className="flex justify-between text-xs">
-                        <span className="text-purple-600">A clear name for your Chakra theme</span>
-                        <span className="text-purple-500">{chakraInput.heading.length}/100</span>
+                        <span className="text-amber-600">A clear name for your Chakra theme</span>
+                        <span className="text-amber-500">{chakraInput.heading.length}/100</span>
                       </div>
                     </div>
 
@@ -1495,10 +1499,10 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                     <div className="space-y-4">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 flex items-center justify-center">
+                          <div className="w-8 h-8 rounded-full bg-gradient-to-r from-amber-700 to-orange-800 flex items-center justify-center">
                             <span className="text-white text-xs font-bold">2</span>
                           </div>
-                          <h5 className="text-sm font-semibold text-indigo-800">Layer 2: Purpose</h5>
+                          <h5 className="text-sm font-semibold text-amber-800">Layer 2: Purpose</h5>
                           {chakraInput.purpose && <span className="text-xs text-green-600 ml-auto">✓ Done</span>}
                         </div>
                       </div>
@@ -1506,12 +1510,12 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                         value={chakraInput.purpose}
                         onChange={(e) => setChakraInput(prev => ({ ...prev, purpose: e.target.value }))}
                         placeholder="Describe the purpose of this Chakra..."
-                        className="border-indigo-200 focus:border-indigo-400 focus:ring-indigo-400 min-h-[80px]"
+                        className="border-amber-200 focus:border-amber-400 focus:ring-amber-400 min-h-[80px]"
                         maxLength={300}
                       />
                       <div className="flex justify-between text-xs mt-2">
-                        <span className="text-indigo-600">Define the overarching purpose and theme</span>
-                        <span className="text-indigo-500">{chakraInput.purpose.length}/300</span>
+                        <span className="text-amber-600">Define the overarching purpose and theme</span>
+                        <span className="text-amber-500">{chakraInput.purpose.length}/300</span>
                       </div>
                     </div>
 
@@ -1519,10 +1523,10 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                     <div className="space-y-4">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-700 to-pink-600 flex items-center justify-center">
+                          <div className="w-8 h-8 rounded-full bg-gradient-to-r from-orange-700 to-red-600 flex items-center justify-center">
                             <span className="text-white text-xs font-bold">3</span>
                           </div>
-                          <h5 className="text-sm font-semibold text-purple-700">Layer 3: Timeline</h5>
+                          <h5 className="text-sm font-semibold text-orange-700">Layer 3: Timeline</h5>
                           {chakraInput.timeline && <span className="text-xs text-green-600 ml-auto">✓ Done</span>}
                         </div>
                       </div>
@@ -1530,12 +1534,12 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                         value={chakraInput.timeline}
                         onChange={(e) => setChakraInput(prev => ({ ...prev, timeline: e.target.value }))}
                         placeholder="e.g., Ongoing, 5 years, Long-term..."
-                        className="border-purple-200 focus:border-purple-400 focus:ring-purple-400"
+                        className="border-orange-200 focus:border-orange-400 focus:ring-orange-400"
                         maxLength={50}
                       />
                       <div className="flex justify-between text-xs">
-                        <span className="text-purple-600">When will this Chakra be most relevant?</span>
-                        <span className="text-purple-500">{chakraInput.timeline.length}/50</span>
+                        <span className="text-orange-600">When will this Chakra be most relevant?</span>
+                        <span className="text-orange-500">{chakraInput.timeline.length}/50</span>
                       </div>
                     </div>
 
@@ -1543,7 +1547,7 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                       <Button 
                         onClick={handleCreateChakra}
                         disabled={isSaving}
-                        className="w-full h-12 text-white rounded-xl text-lg font-semibold shadow-lg bg-gradient-to-r from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700 disabled:opacity-50"
+                        className="w-full h-12 text-white rounded-xl text-lg font-semibold shadow-lg bg-gradient-to-r from-amber-600 to-orange-700 hover:from-amber-700 hover:to-orange-800 disabled:opacity-50"
                       >
                         {isSaving ? 'Creating...' : 'Create Chakra'}
                       </Button>
@@ -1574,8 +1578,8 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                   </div>
 
                   <div className="text-center mb-6">
-                    <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-purple-500 to-violet-600 flex items-center justify-center">
-                      <Brain className="w-8 h-8 text-white animate-pulse" />
+                    <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-amber-600 to-orange-700 flex items-center justify-center">
+                      <Settings className="w-8 h-8 text-white" />
                     </div>
                     <p className="text-gray-600">Record the three layers of your Chakra</p>
                   </div>
@@ -1585,14 +1589,14 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                     <div className="space-y-4">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-600 to-violet-600 flex items-center justify-center">
+                          <div className="w-8 h-8 rounded-full bg-gradient-to-r from-amber-600 to-orange-700 flex items-center justify-center">
                             <span className="text-white text-xs font-bold">1</span>
                           </div>
-                          <h5 className="text-sm font-semibold text-purple-800">Layer 1: Chakra Heading</h5>
+                          <h5 className="text-sm font-semibold text-amber-800">Layer 1: Chakra Heading</h5>
                           {chakraVoiceSteps.heading && <span className="text-xs text-green-600 ml-auto">✓ Done</span>}
                         </div>
                       </div>
-                      <p className="text-xs mb-3 text-purple-700">
+                      <p className="text-xs mb-3 text-amber-700">
                         "What would you like to name this Chakra?"
                       </p>
                       <Button
@@ -1605,13 +1609,13 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                             setChakraVoiceSteps(prev => ({ ...prev, heading: 'Personal Development Journey' }));
                           }, 2000);
                         }}
-                        className="w-full h-10 text-sm text-white bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700"
+                        className="w-full h-10 text-sm text-white bg-gradient-to-r from-amber-600 to-orange-700 hover:from-amber-700 hover:to-orange-800"
                       >
                         <Mic className="h-4 w-4 mr-2" />
                         Record Heading
                       </Button>
                       {chakraVoiceSteps.heading && (
-                        <div className="mt-3 p-3 bg-white/80 rounded-lg text-xs border border-purple-200">
+                        <div className="mt-3 p-3 bg-white/80 rounded-lg text-xs border border-amber-200">
                           {chakraVoiceSteps.heading.substring(0, 50)}... ({chakraVoiceSteps.heading.length}/100 charac)
                         </div>
                       )}
@@ -1621,14 +1625,14 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                     <div className="space-y-4">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 flex items-center justify-center">
+                          <div className="w-8 h-8 rounded-full bg-gradient-to-r from-amber-700 to-orange-800 flex items-center justify-center">
                             <span className="text-white text-xs font-bold">2</span>
                           </div>
-                          <h5 className="text-sm font-semibold text-indigo-800">Layer 2: Purpose</h5>
+                          <h5 className="text-sm font-semibold text-amber-800">Layer 2: Purpose</h5>
                           {chakraVoiceSteps.purpose && <span className="text-xs text-green-600 ml-auto">✓ Done</span>}
                         </div>
                       </div>
-                      <p className="text-xs mb-3 text-indigo-700">
+                      <p className="text-xs mb-3 text-amber-700">
                         "Describe the overarching purpose of this Chakra. What theme does it represent?"
                       </p>
                       <Button
@@ -1641,14 +1645,14 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                             setChakraVoiceSteps(prev => ({ ...prev, purpose: 'A comprehensive framework for continuous personal growth encompassing mindfulness, skill development, and life balance to achieve long-term fulfillment and success' }));
                           }, 3000);
                         }}
-                        className="w-full h-10 text-sm text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700"
+                        className="w-full h-10 text-sm text-white bg-gradient-to-r from-amber-700 to-orange-800 hover:from-amber-800 hover:to-orange-900"
                         disabled={!chakraVoiceSteps.heading}
                       >
                         <Mic className="h-4 w-4 mr-2" />
                         Record Purpose
                       </Button>
                       {chakraVoiceSteps.purpose && (
-                        <div className="mt-3 p-3 bg-white/80 rounded-lg text-xs border border-indigo-200">
+                        <div className="mt-3 p-3 bg-white/80 rounded-lg text-xs border border-amber-200">
                           {chakraVoiceSteps.purpose.substring(0, 80)}... ({chakraVoiceSteps.purpose.length}/300 charac)
                         </div>
                       )}
@@ -1658,14 +1662,14 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                     <div className="space-y-4">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-700 to-pink-600 flex items-center justify-center">
+                          <div className="w-8 h-8 rounded-full bg-gradient-to-r from-orange-700 to-red-600 flex items-center justify-center">
                             <span className="text-white text-xs font-bold">3</span>
                           </div>
-                          <h5 className="text-sm font-semibold text-purple-700">Layer 3: Timeline</h5>
+                          <h5 className="text-sm font-semibold text-orange-700">Layer 3: Timeline</h5>
                           {chakraVoiceSteps.timeline && <span className="text-xs text-green-600 ml-auto">✓ Done</span>}
                         </div>
                       </div>
-                      <p className="text-xs mb-3 text-purple-600">
+                      <p className="text-xs mb-3 text-orange-600">
                         "When will this Chakra be most relevant? Is it ongoing, or does it have a specific timeframe?"
                       </p>
                       <Button
@@ -1678,14 +1682,14 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                             setChakraVoiceSteps(prev => ({ ...prev, timeline: 'Ongoing - Lifelong journey' }));
                           }, 1500);
                         }}
-                        className="w-full h-10 text-sm text-white bg-gradient-to-r from-purple-700 to-pink-600 hover:from-purple-800 hover:to-pink-700"
+                        className="w-full h-10 text-sm text-white bg-gradient-to-r from-orange-700 to-red-600 hover:from-orange-800 hover:to-red-700"
                         disabled={!chakraVoiceSteps.purpose}
                       >
                         <Mic className="h-4 w-4 mr-2" />
                         Record Timeline
                       </Button>
                       {chakraVoiceSteps.timeline && (
-                        <div className="mt-3 p-3 bg-white/80 rounded-lg text-xs text-center font-medium border border-purple-200">
+                        <div className="mt-3 p-3 bg-white/80 rounded-lg text-xs text-center font-medium border border-orange-200">
                           Timeline: "{chakraVoiceSteps.timeline}"
                         </div>
                       )}
@@ -1700,7 +1704,7 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                           });
                           setIsSaved(true);
                         }}
-                        className="w-full h-12 text-white rounded-xl text-lg font-semibold shadow-lg bg-gradient-to-r from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700"
+                        className="w-full h-12 text-white rounded-xl text-lg font-semibold shadow-lg bg-gradient-to-r from-amber-600 to-orange-700 hover:from-amber-700 hover:to-orange-800"
                       >
                         Create Voice Chakra
                       </Button>
