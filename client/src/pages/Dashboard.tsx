@@ -332,7 +332,7 @@ const Dashboard: React.FC = () => {
         color: '#EA580C', // Orange theme for wheels
         dots: [],
         connections: ['preview-wheel-1'],
-        position: { x: 320, y: 260 }, // Position inside Chakra - left wheel with better spacing
+        position: { x: 300, y: 240 }, // Position inside Chakra - left wheel with wider spacing
         chakraId: 'preview-chakra-business',
         createdAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000) // 15 days ago
       };
@@ -377,7 +377,7 @@ const Dashboard: React.FC = () => {
         color: '#EA580C', // Orange theme for wheels
         dots: [],
         connections: ['preview-wheel-0', 'preview-wheel-2'],
-        position: { x: 480, y: 260 }, // Position inside Chakra - right wheel with better spacing
+        position: { x: 500, y: 240 }, // Position inside Chakra - right wheel with wider spacing
         chakraId: 'preview-chakra-business',
         createdAt: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000) // 20 days ago
       };
@@ -421,7 +421,7 @@ const Dashboard: React.FC = () => {
         color: '#EA580C', // Orange theme for wheels
         dots: [],
         connections: ['preview-wheel-1'],
-        position: { x: 400, y: 360 }, // Position inside Chakra - bottom wheel with better spacing
+        position: { x: 400, y: 380 }, // Position inside Chakra - bottom wheel with wider spacing
         chakraId: 'preview-chakra-business',
         createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000) // 10 days ago
       };
@@ -919,7 +919,7 @@ const Dashboard: React.FC = () => {
                     const wheelCenterX = wheel.position.x;
                     const wheelCenterY = wheel.position.y;
                     const wheelRadius = 60; // Wheel radius (120px diameter / 2)
-                    const dotRadius = 25; // Reduced radius to keep dots well within wheel boundaries
+                    const dotRadius = 18; // Further reduced radius to ensure dots stay within wheel boundaries
                     const angle = (dotIndexInWheel * 2 * Math.PI) / dotsInWheel.length;
                     
                     x = wheelCenterX + Math.cos(angle) * dotRadius;
@@ -960,7 +960,7 @@ const Dashboard: React.FC = () => {
                       wheelCenterX = wheel.position.x;
                       wheelCenterY = wheel.position.y;
                     }
-                    const dotRadius = 40; // Reduced radius to keep dots within wheel boundaries (wheels are larger in real mode)
+                    const dotRadius = 30; // Further reduced radius to ensure dots stay within wheel boundaries (wheels are larger in real mode)
                     const angle = (dotIndexInWheel * 2 * Math.PI) / dotsInWheel.length;
                     
                     x = wheelCenterX + Math.cos(angle) * dotRadius;
