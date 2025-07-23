@@ -2290,19 +2290,9 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
 
-          {/* Right side - Stats and controls */}
+          {/* Right side - Controls */}
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 text-sm">
-              <div className="px-3 py-1 bg-amber-100 text-amber-800 rounded-full font-medium">
-                Total Dots: {previewMode ? 27 : dots.length}
-              </div>
-              <div className="px-3 py-1 bg-orange-100 text-orange-800 rounded-full font-medium">
-                Total Wheels: {previewMode ? 4 : wheels.filter(w => w.chakraId !== null && w.chakraId !== undefined).length}
-              </div>
-              <div className="px-3 py-1 bg-amber-100 text-amber-800 rounded-full font-medium">
-                Total Chakras: {previewMode ? 1 : wheels.filter(w => w.chakraId === null || w.chakraId === undefined).length}
-              </div>
-            </div>
+            {/* Count buttons removed for cleaner interface */}
           </div>
         </div>
       </div>
