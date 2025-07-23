@@ -652,7 +652,7 @@ const Dashboard: React.FC = () => {
         color: '#EA580C', // Orange theme for wheels
         dots: [],
         connections: ['preview-wheel-1'],
-        position: { x: 300, y: 240 }, // Position inside Chakra - left wheel with wider spacing
+        position: { x: 250, y: 140 }, // Position inside Business Chakra - top-left wheel
         chakraId: 'preview-chakra-business',
         createdAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000) // 15 days ago
       };
@@ -697,7 +697,7 @@ const Dashboard: React.FC = () => {
         color: '#EA580C', // Orange theme for wheels
         dots: [],
         connections: ['preview-wheel-0', 'preview-wheel-2'],
-        position: { x: 500, y: 240 }, // Position inside Chakra - right wheel with wider spacing
+        position: { x: 350, y: 140 }, // Position inside Business Chakra - top-right wheel
         chakraId: 'preview-chakra-business',
         createdAt: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000) // 20 days ago
       };
@@ -741,7 +741,7 @@ const Dashboard: React.FC = () => {
         color: '#EA580C', // Orange theme for wheels
         dots: [],
         connections: ['preview-wheel-1'],
-        position: { x: 400, y: 400 }, // Position inside Chakra - bottom wheel with wider spacing
+        position: { x: 350, y: 360 }, // Position inside Business Chakra - bottom wheel
         chakraId: 'preview-chakra-business',
         createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000) // 10 days ago
       };
