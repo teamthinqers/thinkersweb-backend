@@ -773,70 +773,473 @@ const Dashboard: React.FC = () => {
       }
       previewWheels.push(thirdBusinessWheel);
 
-      // Personal wheel - standalone (not part of business hierarchy)
-      const personalWheel: Wheel = {
-        id: 'preview-wheel-personal',
-        name: 'Health & Wellness',
-        heading: 'Health & Wellness Mastery',
-        goals: 'Building sustainable health and wellness habits including consistent routines, regular exercise, balanced nutrition, quality sleep, and effective stress management for optimal life balance.',
+      // HEALTH & WELLNESS CHAKRA with 3 wheels
+      const healthChakra: Wheel = {
+        id: 'preview-chakra-health',
+        name: 'Leading a Healthier Life',
+        heading: 'Leading a Healthier Life',
+        purpose: 'Creating a balanced and sustainable approach to physical, mental, and emotional wellness through mindful practices, nutrition, and lifestyle choices.',
         timeline: 'Daily',
-        category: 'Personal',
-        color: '#EA580C', // Orange theme for wheels
+        category: 'Health',
+        color: '#B45309', // Dark amber for Chakras
         dots: [],
         connections: [],
-        position: { x: 750, y: 180 }, // Standalone position, separate from business hierarchy
-        chakraId: undefined, // This is a standalone wheel, not a chakra
-        createdAt: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000) // 25 days ago
+        position: { x: 900, y: 200 }, // Position to the right of business chakra
+        createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000) // 5 days ago
+      };
+      previewWheels.push(healthChakra);
+
+      // First health wheel - Physical Fitness
+      const fitnessWheel: Wheel = {
+        id: 'preview-wheel-health-1',
+        name: 'Physical Fitness',
+        heading: 'Physical Fitness Journey',
+        goals: 'Building strength, endurance, and flexibility through consistent exercise routines, proper form, and progressive training methods.',
+        timeline: 'Daily',
+        category: 'Health',
+        color: '#EA580C', // Orange theme for wheels
+        dots: [],
+        connections: ['preview-wheel-health-2'],
+        position: { x: 850, y: 120 }, // Top-left in health chakra
+        chakraId: 'preview-chakra-health',
+        createdAt: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000)
       };
 
-      const personalHeadings = [
-        'Morning Routine', 'Exercise', 'Nutrition', 'Sleep Quality', 'Stress Management'
+      const fitnessHeadings = ['Morning Workout', 'Strength Training', 'Cardio Sessions', 'Recovery'];
+      const fitnessSummaries = [
+        'Established consistent morning workout routine with bodyweight exercises',
+        'Progressive strength training focusing on compound movements and proper form',
+        'High-intensity cardio sessions alternating with steady-state endurance work',
+        'Active recovery with stretching, mobility work, and adequate sleep'
       ];
 
-      const personalSummaries = [
-        'Establishing consistent morning routines that set positive tone for entire day',
-        'Finding exercise routines that balance challenge with enjoyment and sustainability',
-        'Understanding nutrition patterns that boost energy and mental clarity',
-        'Optimizing sleep quality through environment and pre-sleep habits',
-        'Developing healthy stress management techniques for work-life balance'
-      ];
-
-      for (let i = 0; i < 5; i++) {
+      for (let i = 0; i < 4; i++) {
         const dot: Dot = {
-          id: `preview-dot-personal-${i}`,
-          oneWordSummary: personalHeadings[i],
-          summary: personalSummaries[i],
-          anchor: `Personal insights about ${personalHeadings[i].toLowerCase()} and well-being`,
+          id: `preview-dot-health-1-${i}`,
+          oneWordSummary: fitnessHeadings[i],
+          summary: fitnessSummaries[i],
+          anchor: `Personal observations about ${fitnessHeadings[i].toLowerCase()} and physical wellness`,
           pulse: emotions[Math.floor(Math.random() * emotions.length)],
-          wheelId: personalWheel.id,
+          wheelId: fitnessWheel.id,
           timestamp: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
           sourceType: Math.random() > 0.5 ? 'voice' : 'text',
           captureMode: Math.random() > 0.7 ? 'ai' : 'natural'
         };
         previewDots.push(dot);
-        personalWheel.dots.push(dot);
+        fitnessWheel.dots.push(dot);
       }
-      previewWheels.push(personalWheel);
+      previewWheels.push(fitnessWheel);
+
+      // Second health wheel - Nutrition & Diet
+      const nutritionWheel: Wheel = {
+        id: 'preview-wheel-health-2',
+        name: 'Nutrition & Diet',
+        heading: 'Mindful Nutrition',
+        goals: 'Developing sustainable eating habits focused on whole foods, proper hydration, and mindful consumption for optimal energy and health.',
+        timeline: 'Daily',
+        category: 'Health',
+        color: '#EA580C',
+        dots: [],
+        connections: ['preview-wheel-health-3'],
+        position: { x: 950, y: 160 }, // Top-right in health chakra
+        chakraId: 'preview-chakra-health',
+        createdAt: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000)
+      };
+
+      const nutritionHeadings = ['Meal Prep', 'Hydration', 'Mindful Eating'];
+      const nutritionSummaries = [
+        'Weekly meal preparation with balanced macronutrients and fresh ingredients',
+        'Consistent hydration tracking with filtered water and electrolyte balance',
+        'Practicing mindful eating habits and listening to hunger/satiety cues'
+      ];
+
+      for (let i = 0; i < 3; i++) {
+        const dot: Dot = {
+          id: `preview-dot-health-2-${i}`,
+          oneWordSummary: nutritionHeadings[i],
+          summary: nutritionSummaries[i],
+          anchor: `Insights about ${nutritionHeadings[i].toLowerCase()} and nutritional wellness`,
+          pulse: emotions[Math.floor(Math.random() * emotions.length)],
+          wheelId: nutritionWheel.id,
+          timestamp: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
+          sourceType: Math.random() > 0.5 ? 'voice' : 'text',
+          captureMode: Math.random() > 0.7 ? 'ai' : 'natural'
+        };
+        previewDots.push(dot);
+        nutritionWheel.dots.push(dot);
+      }
+      previewWheels.push(nutritionWheel);
+
+      // Third health wheel - Mental Wellness
+      const mentalWellnessWheel: Wheel = {
+        id: 'preview-wheel-health-3',
+        name: 'Mental Wellness',
+        heading: 'Mental & Emotional Balance',
+        goals: 'Cultivating mental resilience through meditation, stress management, and emotional intelligence practices for overall wellbeing.',
+        timeline: 'Daily',
+        category: 'Health',
+        color: '#EA580C',
+        dots: [],
+        connections: [],
+        position: { x: 900, y: 280 }, // Bottom center in health chakra
+        chakraId: 'preview-chakra-health',
+        createdAt: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000)
+      };
+
+      const mentalHeadings = ['Meditation Practice', 'Stress Management', 'Emotional Intelligence', 'Sleep Quality'];
+      const mentalSummaries = [
+        'Daily meditation practice with breathing exercises and mindfulness techniques',
+        'Stress management through time blocking, boundaries, and relaxation methods',
+        'Developing emotional intelligence and empathy in personal relationships',
+        'Optimizing sleep quality with consistent schedule and sleep hygiene'
+      ];
+
+      for (let i = 0; i < 4; i++) {
+        const dot: Dot = {
+          id: `preview-dot-health-3-${i}`,
+          oneWordSummary: mentalHeadings[i],
+          summary: mentalSummaries[i],
+          anchor: `Personal reflections on ${mentalHeadings[i].toLowerCase()} and mental health`,
+          pulse: emotions[Math.floor(Math.random() * emotions.length)],
+          wheelId: mentalWellnessWheel.id,
+          timestamp: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
+          sourceType: Math.random() > 0.5 ? 'voice' : 'text',
+          captureMode: Math.random() > 0.7 ? 'ai' : 'natural'
+        };
+        previewDots.push(dot);
+        mentalWellnessWheel.dots.push(dot);
+      }
+      previewWheels.push(mentalWellnessWheel);
+
+      // PERSONAL GROWTH CHAKRA with 4 wheels
+      const growthChakra: Wheel = {
+        id: 'preview-chakra-growth',
+        name: 'Personal Growth & Learning',
+        heading: 'Personal Growth & Learning',
+        purpose: 'Continuous self-improvement through skill development, knowledge acquisition, and personal reflection for lifelong growth.',
+        timeline: 'Monthly',
+        category: 'Personal',
+        color: '#B45309', // Dark amber for Chakras
+        dots: [],
+        connections: [],
+        position: { x: 500, y: 600 }, // Bottom center
+        createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000)
+      };
+      previewWheels.push(growthChakra);
+
+      // First growth wheel - Learning & Skills
+      const learningWheel: Wheel = {
+        id: 'preview-wheel-growth-1',
+        name: 'Learning & Skills',
+        heading: 'Continuous Learning',
+        goals: 'Acquiring new skills and knowledge through courses, books, and practical application in areas of personal and professional interest.',
+        timeline: 'Weekly',
+        category: 'Personal',
+        color: '#EA580C',
+        dots: [],
+        connections: ['preview-wheel-growth-2'],
+        position: { x: 420, y: 520 }, // Top-left in growth chakra
+        chakraId: 'preview-chakra-growth',
+        createdAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000)
+      };
+
+      const learningHeadings = ['Online Courses', 'Reading Books', 'Skill Practice'];
+      const learningSummaries = [
+        'Completing online courses in data science and machine learning fundamentals',
+        'Reading personal development and technical books for knowledge expansion',
+        'Practicing new programming languages and frameworks through projects'
+      ];
+
+      for (let i = 0; i < 3; i++) {
+        const dot: Dot = {
+          id: `preview-dot-growth-1-${i}`,
+          oneWordSummary: learningHeadings[i],
+          summary: learningSummaries[i],
+          anchor: `Learning experiences with ${learningHeadings[i].toLowerCase()} and knowledge building`,
+          pulse: emotions[Math.floor(Math.random() * emotions.length)],
+          wheelId: learningWheel.id,
+          timestamp: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
+          sourceType: Math.random() > 0.5 ? 'voice' : 'text',
+          captureMode: Math.random() > 0.7 ? 'ai' : 'natural'
+        };
+        previewDots.push(dot);
+        learningWheel.dots.push(dot);
+      }
+      previewWheels.push(learningWheel);
+
+      // Second growth wheel - Self-Reflection
+      const reflectionWheel: Wheel = {
+        id: 'preview-wheel-growth-2',
+        name: 'Self-Reflection',
+        heading: 'Self-Reflection & Awareness',
+        goals: 'Regular self-reflection through journaling, goal setting, and mindfulness to increase self-awareness and personal growth.',
+        timeline: 'Daily',
+        category: 'Personal',
+        color: '#EA580C',
+        dots: [],
+        connections: ['preview-wheel-growth-3'],
+        position: { x: 580, y: 520 }, // Top-right in growth chakra
+        chakraId: 'preview-chakra-growth',
+        createdAt: new Date(Date.now() - 11 * 24 * 60 * 60 * 1000)
+      };
+
+      const reflectionHeadings = ['Daily Journaling', 'Goal Review', 'Values Alignment', 'Gratitude Practice'];
+      const reflectionSummaries = [
+        'Daily journaling to process thoughts, emotions, and daily experiences',
+        'Weekly goal review and progress tracking for personal objectives',
+        'Reflecting on personal values and ensuring actions align with principles',
+        'Daily gratitude practice to cultivate positive mindset and appreciation'
+      ];
+
+      for (let i = 0; i < 4; i++) {
+        const dot: Dot = {
+          id: `preview-dot-growth-2-${i}`,
+          oneWordSummary: reflectionHeadings[i],
+          summary: reflectionSummaries[i],
+          anchor: `Personal insights about ${reflectionHeadings[i].toLowerCase()} and self-awareness`,
+          pulse: emotions[Math.floor(Math.random() * emotions.length)],
+          wheelId: reflectionWheel.id,
+          timestamp: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
+          sourceType: Math.random() > 0.5 ? 'voice' : 'text',
+          captureMode: Math.random() > 0.7 ? 'ai' : 'natural'
+        };
+        previewDots.push(dot);
+        reflectionWheel.dots.push(dot);
+      }
+      previewWheels.push(reflectionWheel);
+
+      // Third growth wheel - Creativity & Hobbies
+      const creativityWheel: Wheel = {
+        id: 'preview-wheel-growth-3',
+        name: 'Creativity & Hobbies',
+        heading: 'Creative Expression',
+        goals: 'Exploring creative outlets and hobbies for personal fulfillment, stress relief, and artistic expression.',
+        timeline: 'Weekly',
+        category: 'Personal',
+        color: '#EA580C',
+        dots: [],
+        connections: ['preview-wheel-growth-4'],
+        position: { x: 450, y: 660 }, // Bottom-left in growth chakra
+        chakraId: 'preview-chakra-growth',
+        createdAt: new Date(Date.now() - 9 * 24 * 60 * 60 * 1000)
+      };
+
+      const creativityHeadings = ['Music Practice', 'Photography', 'Writing'];
+      const creativitySummaries = [
+        'Learning guitar and practicing music composition for emotional expression',
+        'Exploring photography techniques and capturing meaningful moments',
+        'Creative writing and storytelling as forms of artistic expression'
+      ];
+
+      for (let i = 0; i < 3; i++) {
+        const dot: Dot = {
+          id: `preview-dot-growth-3-${i}`,
+          oneWordSummary: creativityHeadings[i],
+          summary: creativitySummaries[i],
+          anchor: `Creative experiences with ${creativityHeadings[i].toLowerCase()} and artistic development`,
+          pulse: emotions[Math.floor(Math.random() * emotions.length)],
+          wheelId: creativityWheel.id,
+          timestamp: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
+          sourceType: Math.random() > 0.5 ? 'voice' : 'text',
+          captureMode: Math.random() > 0.7 ? 'ai' : 'natural'
+        };
+        previewDots.push(dot);
+        creativityWheel.dots.push(dot);
+      }
+      previewWheels.push(creativityWheel);
+
+      // Fourth growth wheel - Relationships & Social
+      const relationshipsWheel: Wheel = {
+        id: 'preview-wheel-growth-4',
+        name: 'Relationships & Social',
+        heading: 'Building Meaningful Connections',
+        goals: 'Nurturing meaningful relationships, improving communication skills, and building a supportive social network.',
+        timeline: 'Weekly',
+        category: 'Personal',
+        color: '#EA580C',
+        dots: [],
+        connections: [],
+        position: { x: 550, y: 680 }, // Bottom-right in growth chakra
+        chakraId: 'preview-chakra-growth',
+        createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+      };
+
+      const relationshipHeadings = ['Family Time', 'Friend Connections', 'Community Involvement'];
+      const relationshipSummaries = [
+        'Quality time with family members through shared activities and conversations',
+        'Maintaining and deepening friendships through regular communication and support',
+        'Active involvement in community events and volunteer opportunities'
+      ];
+
+      for (let i = 0; i < 3; i++) {
+        const dot: Dot = {
+          id: `preview-dot-growth-4-${i}`,
+          oneWordSummary: relationshipHeadings[i],
+          summary: relationshipSummaries[i],
+          anchor: `Social experiences with ${relationshipHeadings[i].toLowerCase()} and relationship building`,
+          pulse: emotions[Math.floor(Math.random() * emotions.length)],
+          wheelId: relationshipsWheel.id,
+          timestamp: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
+          sourceType: Math.random() > 0.5 ? 'voice' : 'text',
+          captureMode: Math.random() > 0.7 ? 'ai' : 'natural'
+        };
+        previewDots.push(dot);
+        relationshipsWheel.dots.push(dot);
+      }
+      previewWheels.push(relationshipsWheel);
+
+      // FINANCIAL WISDOM CHAKRA with 3 wheels
+      const financeChakra: Wheel = {
+        id: 'preview-chakra-finance',
+        name: 'Financial Wisdom & Security',
+        heading: 'Financial Wisdom & Security',
+        purpose: 'Building long-term financial security through smart investments, budgeting, and financial literacy for peace of mind.',
+        timeline: 'Monthly',
+        category: 'Finance',
+        color: '#B45309', // Dark amber for Chakras
+        dots: [],
+        connections: [],
+        position: { x: 1200, y: 450 }, // Right side
+        createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000)
+      };
+      previewWheels.push(financeChakra);
+
+      // First finance wheel - Budgeting & Savings
+      const budgetingWheel: Wheel = {
+        id: 'preview-wheel-finance-1',
+        name: 'Budgeting & Savings',
+        heading: 'Smart Budgeting',
+        goals: 'Creating and maintaining a comprehensive budget with automated savings and expense tracking for financial discipline.',
+        timeline: 'Monthly',
+        category: 'Finance',
+        color: '#EA580C',
+        dots: [],
+        connections: ['preview-wheel-finance-2'],
+        position: { x: 1150, y: 370 }, // Top-left in finance chakra
+        chakraId: 'preview-chakra-finance',
+        createdAt: new Date(Date.now() - 16 * 24 * 60 * 60 * 1000)
+      };
+
+      const budgetHeadings = ['Monthly Budget', 'Emergency Fund', 'Expense Tracking', 'Automated Savings'];
+      const budgetSummaries = [
+        'Creating detailed monthly budget with income allocation and spending limits',
+        'Building emergency fund covering 6 months of essential expenses',
+        'Daily expense tracking using apps and spreadsheets for financial awareness',
+        'Setting up automated savings transfers for consistent wealth building'
+      ];
+
+      for (let i = 0; i < 4; i++) {
+        const dot: Dot = {
+          id: `preview-dot-finance-1-${i}`,
+          oneWordSummary: budgetHeadings[i],
+          summary: budgetSummaries[i],
+          anchor: `Financial insights about ${budgetHeadings[i].toLowerCase()} and money management`,
+          pulse: emotions[Math.floor(Math.random() * emotions.length)],
+          wheelId: budgetingWheel.id,
+          timestamp: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
+          sourceType: Math.random() > 0.5 ? 'voice' : 'text',
+          captureMode: Math.random() > 0.7 ? 'ai' : 'natural'
+        };
+        previewDots.push(dot);
+        budgetingWheel.dots.push(dot);
+      }
+      previewWheels.push(budgetingWheel);
+
+      // Second finance wheel - Investments
+      const investmentWheel: Wheel = {
+        id: 'preview-wheel-finance-2',
+        name: 'Investments',
+        heading: 'Investment Strategy',
+        goals: 'Building diversified investment portfolio through index funds, stocks, and retirement accounts for long-term wealth creation.',
+        timeline: 'Quarterly',
+        category: 'Finance',
+        color: '#EA580C',
+        dots: [],
+        connections: ['preview-wheel-finance-3'],
+        position: { x: 1250, y: 410 }, // Top-right in finance chakra
+        chakraId: 'preview-chakra-finance',
+        createdAt: new Date(Date.now() - 13 * 24 * 60 * 60 * 1000)
+      };
+
+      const investmentHeadings = ['Index Funds', 'Stock Research', 'Retirement Planning'];
+      const investmentSummaries = [
+        'Regular investments in low-cost index funds for market diversification',
+        'Research and analysis of individual stocks for potential investments',
+        'Maximizing 401k contributions and IRA investments for retirement security'
+      ];
+
+      for (let i = 0; i < 3; i++) {
+        const dot: Dot = {
+          id: `preview-dot-finance-2-${i}`,
+          oneWordSummary: investmentHeadings[i],
+          summary: investmentSummaries[i],
+          anchor: `Investment insights about ${investmentHeadings[i].toLowerCase()} and wealth building`,
+          pulse: emotions[Math.floor(Math.random() * emotions.length)],
+          wheelId: investmentWheel.id,
+          timestamp: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
+          sourceType: Math.random() > 0.5 ? 'voice' : 'text',
+          captureMode: Math.random() > 0.7 ? 'ai' : 'natural'
+        };
+        previewDots.push(dot);
+        investmentWheel.dots.push(dot);
+      }
+      previewWheels.push(investmentWheel);
+
+      // Third finance wheel - Financial Education
+      const educationWheel: Wheel = {
+        id: 'preview-wheel-finance-3',
+        name: 'Financial Education',
+        heading: 'Financial Literacy',
+        goals: 'Continuous learning about personal finance, taxes, and economic trends to make informed financial decisions.',
+        timeline: 'Weekly',
+        category: 'Finance',
+        color: '#EA580C',
+        dots: [],
+        connections: [],
+        position: { x: 1200, y: 530 }, // Bottom center in finance chakra
+        chakraId: 'preview-chakra-finance',
+        createdAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000)
+      };
+
+      const finEduHeadings = ['Finance Books', 'Tax Planning', 'Market Analysis'];
+      const finEduSummaries = [
+        'Reading personal finance books and following financial education podcasts',
+        'Learning tax optimization strategies and deduction opportunities',
+        'Following market trends and economic indicators for investment decisions'
+      ];
+
+      for (let i = 0; i < 3; i++) {
+        const dot: Dot = {
+          id: `preview-dot-finance-3-${i}`,
+          oneWordSummary: finEduHeadings[i],
+          summary: finEduSummaries[i],
+          anchor: `Educational insights about ${finEduHeadings[i].toLowerCase()} and financial knowledge`,
+          pulse: emotions[Math.floor(Math.random() * emotions.length)],
+          wheelId: educationWheel.id,
+          timestamp: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
+          sourceType: Math.random() > 0.5 ? 'voice' : 'text',
+          captureMode: Math.random() > 0.7 ? 'ai' : 'natural'
+        };
+        previewDots.push(dot);
+        educationWheel.dots.push(dot);
+      }
+      previewWheels.push(educationWheel);
 
       // Add Chakra after all child wheels are defined
       previewWheels.push(businessChakra);
 
       // Add some individual scattered dots showing not all dots need grouping
       const individualHeadings = [
-        'Coffee', 'Weather', 'Music', 'Reading', 'Travel', 'Technology', 'Art', 'Nature'
+        'Coffee', 'Weather', 'Music', 'Reading'
       ];
       const individualSummaries = [
         'Morning coffee ritual and its impact on daily productivity patterns',
         'Weather changes affecting mood and energy levels throughout day',
         'Music preferences enhancing focus and creative thinking processes',
-        'Reading habits revealing learning patterns and knowledge retention',
-        'Travel experiences broadening perspective and cultural understanding',
-        'Technology tools streamlining daily workflows and communication',
-        'Art appreciation inspiring creativity and aesthetic sensibilities',
-        'Nature observations providing mental clarity and stress relief'
+        'Reading habits revealing learning patterns and knowledge retention'
       ];
 
-      for (let i = 0; i < 8; i++) {
+      for (let i = 0; i < 4; i++) {
         const dot: Dot = {
           id: `individual-${i + 1}`,
           oneWordSummary: individualHeadings[i],
