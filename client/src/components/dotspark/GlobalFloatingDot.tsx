@@ -33,7 +33,7 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
   });
   const [isExpanded, setIsExpanded] = useState(false);
   const [captureMode, setCaptureMode] = useState<'voice' | 'text' | null>(null);
-  const [userCaptureMode, setUserCaptureMode] = useState<'voice' | 'text' | 'hybrid'>('hybrid');
+  const [userCaptureMode, setUserCaptureMode] = useState<'voice' | 'text' | 'hybrid' | 'natural' | 'ai'>('hybrid');
   const [isRecording, setIsRecording] = useState(false);
   const [currentStep, setCurrentStep] = useState<1 | 2 | 3>(1);
   const [textInput, setTextInput] = useState("");
