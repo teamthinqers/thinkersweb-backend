@@ -427,17 +427,16 @@ const Dashboard: React.FC = () => {
       };
 
       const thirdSparkHeadings = [
-        'User Research', 'Feature Priority', 'Tech Debt', 'Innovation Pipeline'
+        'User Research', 'Feature Priority', 'Tech Excellence'
       ];
 
       const thirdSparkSummaries = [
         'Conducting deep user research to uncover unmet needs and pain points',
         'Prioritizing features based on user impact and technical complexity',
-        'Managing technical debt while maintaining development velocity',
-        'Building innovation pipelines that balance risk with breakthrough potential'
+        'Managing technical debt while maintaining development velocity and innovation'
       ];
 
-      for (let i = 0; i < 4; i++) {
+      for (let i = 0; i < 3; i++) {
         const dot: Dot = {
           id: `preview-dot-2-${i}`,
           oneWordSummary: thirdSparkHeadings[i],
