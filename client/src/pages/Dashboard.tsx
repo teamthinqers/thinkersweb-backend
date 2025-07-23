@@ -1349,12 +1349,19 @@ const Dashboard: React.FC = () => {
         )}
 
         {/* Wheel Full View Modal */}
-        {selectedWheel && (
+        {viewFullWheel && (
           <WheelFullView 
-            wheelId={selectedWheel}
-            onClose={() => setSelectedWheel(null)}
-            wheels={wheels}
-            dots={dots}
+            wheel={viewFullWheel}
+            isOpen={!!viewFullWheel}
+            onClose={() => setViewFullWheel(null)}
+            onDelete={async (wheelId) => {
+              try {
+                await fetch(`/api/wheels/${wheelId}`, { method: 'DELETE' });
+                // Refresh wheels data if needed
+              } catch (error) {
+                console.error('Error deleting wheel:', error);
+              }
+            }}
           />
         )}
       </div>
@@ -1393,13 +1400,13 @@ const Dashboard: React.FC = () => {
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2 text-sm">
               <div className="px-3 py-1 bg-amber-100 text-amber-800 rounded-full font-medium">
-                Total Dots: {displayDots.length}
+                Total Dots: {previewMode ? 27 : dots.length}
               </div>
               <div className="px-3 py-1 bg-orange-100 text-orange-800 rounded-full font-medium">
-                Total Wheels: {displayWheels.filter(w => w.chakraId !== null && w.chakraId !== undefined).length}
+                Total Wheels: {previewMode ? 4 : wheels.filter(w => w.chakraId !== null && w.chakraId !== undefined).length}
               </div>
               <div className="px-3 py-1 bg-amber-100 text-amber-800 rounded-full font-medium">
-                Total Chakras: {displayWheels.filter(w => w.chakraId === null || w.chakraId === undefined).length}
+                Total Chakras: {previewMode ? 1 : wheels.filter(w => w.chakraId === null || w.chakraId === undefined).length}
               </div>
             </div>
           </div>
@@ -1526,7 +1533,6 @@ const Dashboard: React.FC = () => {
       {viewFullDot && (
         <DotFullView 
           dot={viewFullDot} 
-          isOpen={!!viewFullDot} 
           onClose={() => setViewFullDot(null)}
           onDelete={async (dotId) => {
             try {
