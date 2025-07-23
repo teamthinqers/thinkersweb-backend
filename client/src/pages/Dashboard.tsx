@@ -313,7 +313,7 @@ const Dashboard: React.FC = () => {
         purpose: 'Creating a sustainable, innovative business that delivers value to customers while maintaining long-term growth and meaningful impact in the market.',
         timeline: 'Long-term (5+ years)',
         category: 'Business',
-        color: '#D97706', // Amber theme for Chakras
+        color: '#8B5CF6', // Purple theme for Chakras
         dots: [],
         connections: ['preview-wheel-0', 'preview-wheel-1', 'preview-wheel-2'],
         position: { x: 400, y: 300 }, // Centered to encompass the three wheels below
