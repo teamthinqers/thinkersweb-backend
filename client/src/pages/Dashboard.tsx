@@ -1690,19 +1690,34 @@ const Dashboard: React.FC = () => {
                     // Find the wheel this dot belongs to
                     const wheel = displayWheels.find(w => w.id === dot.wheelId);
                     if (wheel) {
-                      // Find position within the wheel
+                      // Use algorithmic positioning fallback when API positions not available
+                      // This should match the backend grid-positioning algorithm
                       const dotsInWheel = displayDots.filter(d => d.wheelId === dot.wheelId);
                       const dotIndexInWheel = dotsInWheel.findIndex(d => d.id === dot.id);
                       
-                      // Position dots in a circle inside the wheel
+                      // Use consistent sizing with backend calculations
                       const wheelCenterX = wheel.position.x;
                       const wheelCenterY = wheel.position.y;
-                      const wheelRadius = 60;
-                      const dotRadius = calculateDynamicSizing('preview', dotsInWheel.length, 'dots');
-                      const angle = (dotIndexInWheel * 2 * Math.PI) / dotsInWheel.length;
+                      const dotRadius = 35; // Preview mode dot radius
+                      const minDotSpacing = 110; // Center-to-center (35+35+40)
                       
-                      x = wheelCenterX + Math.cos(angle) * dotRadius;
-                      y = wheelCenterY + Math.sin(angle) * dotRadius;
+                      if (dotsInWheel.length === 1) {
+                        x = wheelCenterX;
+                        y = wheelCenterY;
+                      } else if (dotsInWheel.length === 2) {
+                        const spacing = Math.max(minDotSpacing * 0.8, 80);
+                        x = wheelCenterX + (dotIndexInWheel === 0 ? -spacing/2 : spacing/2);
+                        y = wheelCenterY;
+                      } else {
+                        // Circular arrangement with proper spacing
+                        const angle = (2 * Math.PI) / dotsInWheel.length;
+                        const minRadiusForSpacing = (minDotSpacing + 1) / (2 * Math.sin(angle / 2));
+                        const arrangeRadius = Math.min(95, Math.max(minRadiusForSpacing, 70));
+                        const dotAngle = (dotIndexInWheel * 2 * Math.PI) / dotsInWheel.length - Math.PI/2;
+                        
+                        x = wheelCenterX + Math.cos(dotAngle) * arrangeRadius;
+                        y = wheelCenterY + Math.sin(dotAngle) * arrangeRadius;
+                      }
                     } else {
                       x = 100 + (seedX % 900) + (index * 67) % 400;
                       y = 100 + (seedY % 600) + (index * 83) % 300;
@@ -1744,10 +1759,12 @@ const Dashboard: React.FC = () => {
                 <div key={dot.id} className="relative">
                   {/* Dot */}
                   <div
-                    className="absolute w-12 h-12 rounded-full cursor-pointer transition-all duration-300 hover:scale-125 hover:shadow-lg group dot-element"
+                    className="absolute rounded-full cursor-pointer transition-all duration-300 hover:scale-125 hover:shadow-lg group dot-element"
                     style={{
-                      left: `${x}px`,
-                      top: `${y}px`,
+                      left: `${x - 35}px`, // Center the dot (35px radius)
+                      top: `${y - 35}px`,  // Center the dot (35px radius)
+                      width: '70px',       // 35px radius = 70px diameter
+                      height: '70px',      // 35px radius = 70px diameter
                       background: 'linear-gradient(135deg, #F59E0B, #D97706)', // Light amber gradient for all dots
                       pointerEvents: 'auto'
                     }}
@@ -1792,11 +1809,11 @@ const Dashboard: React.FC = () => {
                     
                     {/* Dot content */}
                     <div className="relative w-full h-full rounded-full flex items-center justify-center">
-                      <div className="w-8 h-8 rounded-full bg-white/20 backdrop-blur flex items-center justify-center">
+                      <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur flex items-center justify-center">
                         {dot.sourceType === 'voice' ? (
-                          <Mic className="w-4 h-4 text-white" />
+                          <Mic className="w-6 h-6 text-white" />
                         ) : (
-                          <Type className="w-4 h-4 text-white" />
+                          <Type className="w-6 h-6 text-white" />
                         )}
                       </div>
                     </div>
