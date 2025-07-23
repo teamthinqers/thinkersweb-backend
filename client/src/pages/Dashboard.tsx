@@ -919,10 +919,9 @@ const Dashboard: React.FC = () => {
                     const wheelCenterX = wheel.position.x;
                     const wheelCenterY = wheel.position.y;
                     const wheelRadius = 60; // Wheel radius (120px diameter / 2)
-                    const dotRadius = 18; // Further reduced radius to ensure dots stay within wheel boundaries
-                    // Add spacing between dots by using a larger angular step
-                    const spacingFactor = Math.min(dotsInWheel.length / 6, 1.2); // Reduce clustering for fewer dots
-                    const angle = (dotIndexInWheel * 2 * Math.PI * spacingFactor) / dotsInWheel.length;
+                    // Use larger radius and better spacing for dots
+                    const dotRadius = dotsInWheel.length <= 3 ? 35 : Math.max(25, 50 - dotsInWheel.length * 3); // Larger radius for fewer dots
+                    const angle = (dotIndexInWheel * 2 * Math.PI) / dotsInWheel.length;
                     
                     x = wheelCenterX + Math.cos(angle) * dotRadius;
                     y = wheelCenterY + Math.sin(angle) * dotRadius;
@@ -962,10 +961,9 @@ const Dashboard: React.FC = () => {
                       wheelCenterX = wheel.position.x;
                       wheelCenterY = wheel.position.y;
                     }
-                    const dotRadius = 30; // Further reduced radius to ensure dots stay within wheel boundaries (wheels are larger in real mode)
-                    // Add spacing between dots by using a larger angular step
-                    const spacingFactor = Math.min(dotsInWheel.length / 6, 1.2); // Reduce clustering for fewer dots
-                    const angle = (dotIndexInWheel * 2 * Math.PI * spacingFactor) / dotsInWheel.length;
+                    // Use larger radius and better spacing for dots in real mode
+                    const dotRadius = dotsInWheel.length <= 3 ? 50 : Math.max(35, 65 - dotsInWheel.length * 3); // Larger radius for fewer dots
+                    const angle = (dotIndexInWheel * 2 * Math.PI) / dotsInWheel.length;
                     
                     x = wheelCenterX + Math.cos(angle) * dotRadius;
                     y = wheelCenterY + Math.sin(angle) * dotRadius;
