@@ -495,14 +495,14 @@ const Dashboard: React.FC = () => {
     const baseConfig = {
       preview: {
         wheelRadius: { base: 60, min: 45, max: 90 }, // Adaptive wheel size
-        dotRadius: { base: 25, min: 20, max: 35 }, 
-        chakraRadius: { base: 210, min: 180, max: 280 }, // Adaptive chakra size
+        dotRadius: { base: 25, min: 20, max: 35 }, // Standard documented optimal dot radius
+        chakraRadius: { base: 420, min: 380, max: 480 }, // Standard documented optimal chakra size
         safetyBuffer: 35
       },
       real: {
         wheelRadius: { base: 75, min: 60, max: 110 }, // Adaptive wheel size
-        dotRadius: { base: 35, min: 28, max: 45 },
-        chakraRadius: { base: 285, min: 240, max: 360 }, // Adaptive chakra size  
+        dotRadius: { base: 35, min: 28, max: 45 }, // Standard documented optimal dot radius
+        chakraRadius: { base: 370, min: 320, max: 420 }, // Standard documented optimal chakra size  
         safetyBuffer: 40
       }
     };
@@ -539,8 +539,8 @@ const Dashboard: React.FC = () => {
   // Get dynamic chakra sizing based on wheels count
   const getChakraSize = (mode: 'preview' | 'real', wheelsCount: number) => {
     const baseConfig = {
-      preview: { base: 280, min: 250, max: 350 }, // Increased base size to properly enclose wheels
-      real: { base: 360, min: 320, max: 450 } // Increased base size to properly enclose wheels
+      preview: { base: 420, min: 380, max: 480 }, // Standard documented sizes for optimal wheel enclosure
+      real: { base: 370, min: 320, max: 420 } // Standard documented sizes for optimal wheel enclosure
     };
     
     const config = baseConfig[mode];
@@ -548,9 +548,9 @@ const Dashboard: React.FC = () => {
     if (wheelsCount <= 3) {
       return config.base;
     } else if (wheelsCount <= 5) {
-      return Math.min(config.max, config.base + 30);
+      return Math.min(config.max, config.base + 20);
     } else if (wheelsCount <= 8) {
-      return Math.min(config.max, config.base + 50);
+      return Math.min(config.max, config.base + 35);
     } else {
       return config.max;
     }
