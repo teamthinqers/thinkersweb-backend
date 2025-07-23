@@ -140,9 +140,10 @@ Changelog:
 - July 23, 2025. COMPLETED comprehensive color consistency and icon standardization throughout DotSpark application:
   * FINALIZED color enforcement: all chakra creation interfaces (text and voice modes) now use amber/orange theme exclusively
   * Purple color theme reserved ONLY for AI-related features as per design specifications
-  * COMPLETED icon standardization: Settings icon for chakras, Brain icon for wheels across all interfaces
+  * UPDATED icon standardization: Settings icon for chakras, double layered rotating circle for wheels across all interfaces
+  * Replaced Brain icon with custom double layered rotating circle design for wheels (outer ring rotates clockwise, inner ring counter-clockwise)
   * Updated StructuredFloatingDot.tsx with consistent amber/orange gradients across all chakra voice recording layers
-  * Fixed creation type selection buttons: Brain icon for wheels, Settings icon for chakras
+  * Fixed creation type selection buttons: double layered rotating circle for wheels, Settings icon for chakras
   * Updated center icons in creation mode display to match standardized icon usage
   * Removed purple/violet color references from chakra voice interfaces (Layer 2 Purpose, Layer 3 Timeline)
   * Applied consistent amber-to-orange gradient themes for all cognitive structure elements

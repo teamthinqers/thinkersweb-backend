@@ -717,7 +717,10 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                       className="h-28 bg-gradient-to-br from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white rounded-xl flex flex-col items-center justify-center space-y-2 shadow-lg transform transition-all duration-200 hover:scale-105"
                     >
                       <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
-                        <Brain className="w-6 h-6 text-white" />
+                        <div className="relative w-6 h-6">
+                          <div className="absolute inset-0 w-6 h-6 border-2 border-white rounded-full animate-spin"></div>
+                          <div className="absolute inset-1 w-4 h-4 border-2 border-white/70 rounded-full animate-spin" style={{ animationDirection: 'reverse', animationDuration: '3s' }}></div>
+                        </div>
                       </div>
                       <span className="text-sm font-semibold">Create Wheel</span>
                       <span className="text-xs opacity-80">Organize dots</span>
@@ -801,7 +804,10 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                         : 'bg-gradient-to-r from-amber-500 to-orange-600'
                     }`}>
                       {createType === 'wheel' ? (
-                        <Brain className="w-8 h-8 text-white" />
+                        <div className="relative w-8 h-8">
+                          <div className="absolute inset-0 w-8 h-8 border-3 border-white rounded-full animate-spin"></div>
+                          <div className="absolute inset-1.5 w-5 h-5 border-2 border-white/70 rounded-full animate-spin" style={{ animationDirection: 'reverse', animationDuration: '3s' }}></div>
+                        </div>
                       ) : createType === 'chakra' ? (
                         <Settings className="w-8 h-8 text-white" />
                       ) : (
