@@ -44,7 +44,7 @@ interface Wheel {
   dots: Dot[];
   connections: string[]; // IDs of connected wheels
   position: { x: number; y: number };
-  parentWheelId?: string;
+  chakraId?: string; // References the Chakra (larger wheel) this wheel belongs to
   createdAt?: Date;
 }
 
@@ -299,7 +299,7 @@ const Dashboard: React.FC = () => {
       const previewDots: Dot[] = [];
       const previewWheels: Wheel[] = [];
 
-      // Parent wheel for business hierarchy - bigger and encompassing
+      // Chakra for business hierarchy - bigger and encompassing
       const parentBusinessWheel: Wheel = {
         id: 'preview-wheel-parent',
         name: 'Build an Enduring Company',
@@ -310,11 +310,11 @@ const Dashboard: React.FC = () => {
         color: '#F59E0B', // Consistent amber theme
         dots: [],
         connections: ['preview-wheel-0', 'preview-wheel-1'],
-        position: { x: 400, y: 300 }, // Centered position for parent wheel
+        position: { x: 400, y: 300 }, // Centered position for Chakra
         createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) // 30 days ago
       };
 
-      // First business wheel - GTM (inside parent wheel)
+      // First business wheel - GTM (inside Chakra)
       const firstSparkGroup: Wheel = {
         id: 'preview-wheel-0',
         name: 'GTM (Go-To-Market)',
@@ -325,8 +325,8 @@ const Dashboard: React.FC = () => {
         color: '#F59E0B', // Consistent amber theme
         dots: [],
         connections: ['preview-wheel-1'],
-        position: { x: 280, y: 200 }, // Position inside parent wheel - left side with more spacing
-        parentWheelId: 'preview-wheel-parent',
+        position: { x: 280, y: 200 }, // Position inside Chakra - left side with more spacing
+        chakraId: 'preview-wheel-parent',
         createdAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000) // 15 days ago
       };
 
@@ -359,7 +359,7 @@ const Dashboard: React.FC = () => {
       }
       previewWheels.push(firstSparkGroup);
 
-      // Second business wheel - Leadership (inside parent wheel)
+      // Second business wheel - Leadership (inside Chakra)
       const secondSparkGroup: Wheel = {
         id: 'preview-wheel-1',
         name: 'Strengthen Leadership',
@@ -370,8 +370,8 @@ const Dashboard: React.FC = () => {
         color: '#F59E0B', // Consistent amber theme
         dots: [],
         connections: ['preview-wheel-0', 'preview-wheel-2'],
-        position: { x: 520, y: 200 }, // Position inside parent wheel - right side with more spacing
-        parentWheelId: 'preview-wheel-parent',
+        position: { x: 520, y: 200 }, // Position inside Chakra - right side with more spacing
+        chakraId: 'preview-wheel-parent',
         createdAt: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000) // 20 days ago
       };
 
@@ -403,7 +403,7 @@ const Dashboard: React.FC = () => {
       }
       previewWheels.push(secondSparkGroup);
 
-      // Third business wheel - Product Development (inside parent wheel)
+      // Third business wheel - Product Development (inside Chakra)
       const thirdBusinessWheel: Wheel = {
         id: 'preview-wheel-2',
         name: 'Product Innovation',
@@ -414,8 +414,8 @@ const Dashboard: React.FC = () => {
         color: '#F59E0B', // Consistent amber theme
         dots: [],
         connections: ['preview-wheel-1'],
-        position: { x: 400, y: 380 }, // Position inside parent wheel - bottom center with more spacing
-        parentWheelId: 'preview-wheel-parent',
+        position: { x: 400, y: 380 }, // Position inside Chakra - bottom center with more spacing
+        chakraId: 'preview-wheel-parent',
         createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000) // 10 days ago
       };
 
@@ -459,7 +459,7 @@ const Dashboard: React.FC = () => {
         dots: [],
         connections: [],
         position: { x: 750, y: 180 }, // Standalone position, separate from business hierarchy
-        // No parentWheelId - this is a standalone wheel
+        // No chakraId - this is a standalone wheel
         createdAt: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000) // 25 days ago
       };
 
@@ -492,7 +492,7 @@ const Dashboard: React.FC = () => {
       }
       previewWheels.push(personalWheel);
 
-      // Add parent wheel after all child wheels are defined
+      // Add Chakra after all child wheels are defined
       previewWheels.push(parentBusinessWheel);
 
       // Add some individual scattered dots showing not all dots need grouping
@@ -1110,20 +1110,20 @@ const Dashboard: React.FC = () => {
               
               // Determine wheel size based on type and hierarchy
               let wheelSize;
-              let isParentWheel;
+              let isChakra;
               
               if (previewMode) {
                 // In preview mode, use specific sizing logic
-                isParentWheel = wheel.id === 'preview-wheel-parent';
-                if (isParentWheel) {
-                  wheelSize = 500; // Parent wheel (Build an Enduring Company) is bigger - increased from 400px
+                isChakra = wheel.id === 'preview-wheel-parent';
+                if (isChakra) {
+                  wheelSize = 500; // Chakra (Build an Enduring Company) is bigger - increased from 400px
                 } else {
                   wheelSize = 180; // All child wheels (GTM, Strengthen Leadership, Product Innovation, Health & Wellness) are same 180px size
                 }
               } else {
                 // In real mode, use standard wheel sizes
-                isParentWheel = wheel.parentWheelId === undefined;
-                wheelSize = isParentWheel ? 300 : 150; // Smaller sizes for real mode
+                isChakra = wheel.chakraId === undefined;
+                wheelSize = isChakra ? 300 : 150; // Smaller sizes for real mode
               }
               
               const wheelRadius = wheelSize / 2;

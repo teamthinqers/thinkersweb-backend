@@ -13,7 +13,7 @@ interface Wheel {
   category?: string;
   color?: string;
   createdAt?: Date;
-  parentWheelId?: string;
+  chakraId?: string; // References the Chakra (larger wheel) this wheel belongs to
 }
 
 interface WheelFullViewProps {
@@ -135,9 +135,9 @@ const WheelFullView: React.FC<WheelFullViewProps> = ({ wheel, isOpen = true, onC
                 }
               </span>
             </div>
-            {wheel.parentWheelId && (
+            {wheel.chakraId && (
               <div className="mt-2 text-sm text-gray-600">
-                <span className="font-medium">Part of:</span> Parent Wheel
+                <span className="font-medium">Part of:</span> Chakra
               </div>
             )}
           </div>

@@ -52,7 +52,7 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
     heading: '',
     purpose: '',
     timeline: '',
-    parentWheelId: null as number | null
+    chakraId: null as number | null
   });
   const [audioRecordings, setAudioRecordings] = useState<{
     summary?: string;
@@ -75,10 +75,10 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
     heading: '',
     purpose: '',
     timeline: '',
-    parentWheelId: null as number | null
+    chakraId: null as number | null
   });
   
-  // Available wheels for parent selection
+  // Available wheels for Chakra selection
   const [availableWheels, setAvailableWheels] = useState<Array<{
     id: number;
     heading: string;
@@ -1102,14 +1102,14 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                         <div className="w-6 h-6 rounded-full bg-gradient-to-r from-slate-500 to-gray-600 flex items-center justify-center">
                           <span className="text-white text-xs font-bold">+</span>
                         </div>
-                        <h5 className="text-sm font-semibold text-slate-700">Parent Wheel (Optional)</h5>
-                        {wheelInput.parentWheelId && <span className="text-xs text-green-600 ml-auto">✓ Selected</span>}
+                        <h5 className="text-sm font-semibold text-slate-700">Chakra (Optional)</h5>
+                        {wheelInput.chakraId && <span className="text-xs text-green-600 ml-auto">✓ Selected</span>}
                       </div>
                       <select
-                        value={wheelInput.parentWheelId || ''}
+                        value={wheelInput.chakraId || ''}
                         onChange={(e) => setWheelInput(prev => ({ 
                           ...prev, 
-                          parentWheelId: e.target.value ? parseInt(e.target.value) : null 
+                          chakraId: e.target.value ? parseInt(e.target.value) : null 
                         }))}
                         className="w-full p-2 border-slate-200 rounded-lg focus:border-slate-400 focus:ring-slate-400"
                       >
@@ -1121,7 +1121,7 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                         ))}
                       </select>
                       <p className="text-xs text-slate-600 mt-2">
-                        Choose a parent wheel to create a hierarchical structure
+                        Choose a Chakra to create a hierarchical structure
                       </p>
                     </div>
 
@@ -1391,8 +1391,8 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                 setShowExitWarning(false);
                 setIsExpanded(false);
                 setStructuredInput({ summary: '', anchor: '', pulse: '', wheelId: null });
-                setWheelInput({ heading: '', purpose: '', timeline: '', parentWheelId: null });
-                setWheelVoiceSteps({ heading: '', purpose: '', timeline: '', parentWheelId: null });
+                setWheelInput({ heading: '', purpose: '', timeline: '', chakraId: null });
+                setWheelVoiceSteps({ heading: '', purpose: '', timeline: '', chakraId: null });
                 setCurrentStep(1);
                 setCaptureMode('select');
                 setIsSaved(false);

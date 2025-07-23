@@ -121,6 +121,14 @@ DotSpark is a full-stack web application that serves as a personalized learning 
 ## Changelog
 ```
 Changelog:
+- July 23, 2025. COMPLETED comprehensive terminology update: "parent wheel" → "Chakra":
+  * Updated database schema: parentWheelId → chakraId field in wheels table
+  * Updated backend routes and API endpoints to use chakraId consistently
+  * Updated all frontend components (Dashboard.tsx, WheelFullView.tsx, StructuredFloatingDot.tsx, WheelFlashCard.tsx)
+  * Updated all TypeScript interfaces and type definitions across the application
+  * Updated UI labels and text from "Parent Wheel" to "Chakra" throughout
+  * All LSP diagnostics resolved - no compilation errors remain
+  * Database migration successfully pushed to production
 - June 13, 2025. Initial setup
 - June 20, 2025. Completed intelligent chat workflow system:
   * Updated WhatsApp welcome message to approved version: "Hi ThinQer, please share what's on your mind and I'll organize it into a three-layer dot (Summary, Anchor, Pulse) for you"

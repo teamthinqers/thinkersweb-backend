@@ -11,7 +11,7 @@ interface Wheel {
   category?: string;
   color?: string;
   createdAt?: Date;
-  parentWheelId?: string;
+  chakraId?: string; // References the Chakra (larger wheel) this wheel belongs to
 }
 
 interface WheelFlashCardProps {
