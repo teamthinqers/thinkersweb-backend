@@ -649,12 +649,12 @@ export default function MyNeura() {
                 <div className="rounded-full bg-amber-900/40 p-4 backdrop-blur-sm mb-4 border border-amber-600/30">
                   <Shield className="h-12 w-12 text-amber-100" />
                 </div>
-                <h3 className="text-xl font-bold text-amber-50">CogniShield</h3>
+                <h3 className="text-xl font-bold text-amber-50">CogniShield (Coming Soon)</h3>
               </div>
             </div>
             <CardContent className="p-6 bg-gradient-to-b from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 flex flex-col justify-between min-h-[120px]">
               <p className="text-muted-foreground mb-4 flex-1">
-                Configure Cogni Shield (Coming Soon) to retain your natural cognitive identity while taking help of AI to save your Dot.
+                Configure Cogni Shield to retain your natural cognitive identity while taking help of AI to save your Dot.
               </p>
               <div className="flex justify-center mt-auto">
                 <Button 
