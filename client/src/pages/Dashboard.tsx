@@ -37,7 +37,7 @@ interface Wheel {
   id: string;
   name: string;
   heading?: string;
-  purpose?: string;
+  goals?: string; // Updated from 'purpose' to match database schema
   timeline?: string;
   category: string;
   color: string;
@@ -311,7 +311,7 @@ const Dashboard: React.FC = () => {
         dots: [],
         connections: ['preview-wheel-0', 'preview-wheel-1'],
         position: { x: 400, y: 300 }, // Centered position for Chakra
-        chakraId: null, // This makes it a Chakra (top-level)
+        chakraId: undefined, // This makes it a Chakra (top-level)
         createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) // 30 days ago
       };
 
@@ -526,6 +526,9 @@ const Dashboard: React.FC = () => {
         previewDots.push(dot);
       }
 
+      // Add the Chakra to the wheels array
+      previewWheels.push(businessChakra);
+      
       return { previewDots, previewWheels };
     };
 
@@ -1115,7 +1118,7 @@ const Dashboard: React.FC = () => {
               
               if (previewMode) {
                 // In preview mode, use specific sizing logic
-                isChakra = wheel.id === 'preview-wheel-parent';
+                isChakra = wheel.id === 'preview-chakra-business';
                 if (isChakra) {
                   wheelSize = 500; // Chakra (Build an Enduring Company) is bigger - increased from 400px
                 } else {
@@ -1390,13 +1393,13 @@ const Dashboard: React.FC = () => {
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2 text-sm">
               <div className="px-3 py-1 bg-amber-100 text-amber-800 rounded-full font-medium">
-                Total Dots: {dots.length}
+                Total Dots: {displayDots.length}
               </div>
               <div className="px-3 py-1 bg-orange-100 text-orange-800 rounded-full font-medium">
-                Total Wheels: {wheels.filter(w => w.dots && w.dots.length > 0 && w.chakraId !== null).length}
+                Total Wheels: {displayWheels.filter(w => w.chakraId !== null && w.chakraId !== undefined).length}
               </div>
               <div className="px-3 py-1 bg-amber-100 text-amber-800 rounded-full font-medium">
-                Total Chakras: {wheels.filter(w => w.chakraId === null).length}
+                Total Chakras: {displayWheels.filter(w => w.chakraId === null || w.chakraId === undefined).length}
               </div>
             </div>
           </div>
