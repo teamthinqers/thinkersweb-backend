@@ -130,6 +130,8 @@ Changelog:
   * Fixed all React duplicate key warnings for stable component rendering
   * Chakras now properly use "purpose" field while regular Wheels use "goals" field for middle layer content
   * Maintained strict color coding: Amber/orange for cognitive structure, Purple exclusively for AI features
+  * Simplified dot coloring to use theme colors with slight variations: voice dots use amber gradient (#F59E0B), text dots use orange gradient (#D97706)
+  * Removed AI/normal mode color differentiation in favor of consistent theme-based coloring throughout the application
 - July 23, 2025. CORRECTED preview data hierarchy to properly reflect three-tier architecture:
   * Fixed "Build an Enduring Company" to be displayed as a Chakra (top-level, chakraId = null) with purple color theme
   * Updated GTM Strategy, Leadership Development, and Product Innovation as wheels belonging to the business Chakra

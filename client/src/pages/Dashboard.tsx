@@ -995,11 +995,9 @@ const Dashboard: React.FC = () => {
                       left: `${x}px`,
                       top: `${y}px`,
                       background: `linear-gradient(135deg, ${
-                        dot.captureMode === 'ai' 
-                          ? '#A855F7, #7C3AED' // Purple gradient for AI mode
-                          : dot.sourceType === 'voice' 
-                            ? '#F59E0B, #EA580C' // Amber gradient for voice
-                            : '#D97706, #92400E' // Orange gradient for text
+                        dot.sourceType === 'voice' 
+                          ? '#F59E0B, #EA580C' // Amber gradient for voice
+                          : '#D97706, #92400E' // Orange gradient for text
                       })`,
                       pointerEvents: 'auto'
                     }}
