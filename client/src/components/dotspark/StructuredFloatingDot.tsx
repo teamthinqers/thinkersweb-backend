@@ -1470,9 +1470,6 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                   </div>
 
                   <div className="text-center mb-6">
-                    <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-purple-500 to-violet-600 flex items-center justify-center">
-                      <Brain className="w-8 h-8 text-white animate-pulse" />
-                    </div>
                     <p className="text-gray-600">Enter the three layers of your Chakra</p>
                   </div>
 
@@ -1584,9 +1581,6 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                   </div>
 
                   <div className="text-center mb-6">
-                    <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-amber-600 to-orange-700 flex items-center justify-center">
-                      <Settings className="w-8 h-8 text-white" />
-                    </div>
                     <p className="text-gray-600">Record the three layers of your Chakra</p>
                   </div>
 
