@@ -142,6 +142,7 @@ Changelog:
   * Purple color theme reserved ONLY for AI-related features as per design specifications
   * UPDATED icon standardization: Settings icon for chakras, double layered rotating circle for wheels across all interfaces
   * Replaced Brain icon with custom double layered rotating circle design for wheels (outer ring rotates clockwise, inner ring counter-clockwise)
+  * Added rotation animations to both wheel and chakra icons for enhanced visual engagement
   * Updated StructuredFloatingDot.tsx with consistent amber/orange gradients across all chakra voice recording layers
   * Fixed creation type selection buttons: double layered rotating circle for wheels, Settings icon for chakras
   * Updated center icons in creation mode display to match standardized icon usage
