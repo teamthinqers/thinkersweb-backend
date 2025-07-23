@@ -919,8 +919,8 @@ const Dashboard: React.FC = () => {
                     const wheelCenterX = wheel.position.x;
                     const wheelCenterY = wheel.position.y;
                     const wheelRadius = 60; // Wheel radius (120px diameter / 2)
-                    // Use larger radius and better spacing for dots
-                    const dotRadius = dotsInWheel.length <= 3 ? 35 : Math.max(25, 50 - dotsInWheel.length * 3); // Larger radius for fewer dots
+                    // Use smaller radius to ensure dots stay well within wheel boundaries
+                    const dotRadius = dotsInWheel.length <= 3 ? 22 : Math.max(15, 35 - dotsInWheel.length * 2); // Smaller radius for proper containment
                     const angle = (dotIndexInWheel * 2 * Math.PI) / dotsInWheel.length;
                     
                     x = wheelCenterX + Math.cos(angle) * dotRadius;
@@ -961,8 +961,8 @@ const Dashboard: React.FC = () => {
                       wheelCenterX = wheel.position.x;
                       wheelCenterY = wheel.position.y;
                     }
-                    // Use larger radius and better spacing for dots in real mode
-                    const dotRadius = dotsInWheel.length <= 3 ? 50 : Math.max(35, 65 - dotsInWheel.length * 3); // Larger radius for fewer dots
+                    // Use smaller radius to ensure dots stay well within wheel boundaries in real mode  
+                    const dotRadius = dotsInWheel.length <= 3 ? 32 : Math.max(25, 45 - dotsInWheel.length * 2); // Smaller radius for proper containment
                     const angle = (dotIndexInWheel * 2 * Math.PI) / dotsInWheel.length;
                     
                     x = wheelCenterX + Math.cos(angle) * dotRadius;
@@ -1244,7 +1244,7 @@ const Dashboard: React.FC = () => {
                     {/* Wheel label */}
                     <div 
                       data-wheel-label
-                      className={`relative font-bold rounded-full text-white shadow-lg cursor-pointer hover:shadow-xl transition-all duration-200 hover:scale-105 pointer-events-auto ${
+                      className={`relative font-bold rounded-full text-white shadow-lg cursor-pointer hover:shadow-xl transition-all duration-200 hover:scale-105 pointer-events-auto text-center whitespace-nowrap ${
                         isChakra ? 'text-base px-4 py-2' : 'text-sm px-3 py-1'
                       }`}
                       style={{ backgroundColor: wheel.color }}
