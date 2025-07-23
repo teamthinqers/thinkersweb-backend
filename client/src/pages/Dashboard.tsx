@@ -785,6 +785,7 @@ const Dashboard: React.FC = () => {
         dots: [],
         connections: [],
         position: { x: 900, y: 200 }, // Position to the right of business chakra
+        chakraId: undefined, // This marks it as a chakra (top-level container)
         createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000) // 5 days ago
       };
       previewWheels.push(healthChakra);
@@ -923,6 +924,7 @@ const Dashboard: React.FC = () => {
         dots: [],
         connections: [],
         position: { x: 500, y: 600 }, // Bottom center
+        chakraId: undefined, // This marks it as a chakra (top-level container)
         createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000)
       };
       previewWheels.push(growthChakra);
@@ -1100,6 +1102,7 @@ const Dashboard: React.FC = () => {
         dots: [],
         connections: [],
         position: { x: 1200, y: 450 }, // Right side
+        chakraId: undefined, // This marks it as a chakra (top-level container)
         createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000)
       };
       previewWheels.push(financeChakra);
@@ -1844,8 +1847,8 @@ const Dashboard: React.FC = () => {
               let isChakra;
               
               if (previewMode) {
-                // In preview mode, use dynamic sizing logic
-                isChakra = wheel.id === 'preview-chakra-business';
+                // In preview mode, use dynamic sizing logic - chakras are identified by having no chakraId
+                isChakra = wheel.chakraId === undefined;
                 if (isChakra) {
                   // Dynamic chakra sizing based on child wheels count
                   const childWheels = displayWheels.filter(w => w.chakraId === wheel.id);
