@@ -1087,17 +1087,7 @@ const Dashboard: React.FC = () => {
         </div>
         
         {/* Stats Buttons */}
-        <div className="absolute top-4 right-4 z-10 flex flex-col sm:flex-row gap-1 sm:gap-2">
-          <button className="bg-white/90 backdrop-blur rounded-lg px-2 py-1 border-2 border-amber-200 text-xs font-semibold text-amber-800 hover:bg-amber-50 transition-colors whitespace-nowrap">
-            Dots: {totalDots}
-          </button>
-          <button className="bg-white/90 backdrop-blur rounded-lg px-2 py-1 border-2 border-amber-200 text-xs font-semibold text-amber-800 hover:bg-amber-50 transition-colors whitespace-nowrap">
-            Wheels: {totalWheels}
-          </button>
-          <button className="bg-white/90 backdrop-blur rounded-lg px-2 py-1 border-2 border-amber-200 text-xs font-semibold text-amber-800 hover:bg-amber-50 transition-colors whitespace-nowrap">
-            Chakras: {totalChakras}
-          </button>
-        </div>
+
 
         {/* Fullscreen Toggle - Bottom right for both modes when not fullscreen */}
         {!isFullscreen && (
