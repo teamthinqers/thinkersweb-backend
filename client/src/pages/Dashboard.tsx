@@ -601,15 +601,8 @@ const Dashboard: React.FC = () => {
     const [offset, setOffset] = useState({ x: 0, y: 0 });
     const [isPWA, setIsPWA] = useState(false);
     
-    // Fetch grid positioning data from algorithmic backend
-    const { data: gridPositions, isLoading: isGridLoading } = useQuery({
-      queryKey: ['/api/grid/positions', previewMode],
-      queryFn: () => 
-        fetch(`/api/grid/positions?preview=${previewMode}`)
-          .then(res => res.json())
-          .then(data => data.success ? data.data : null),
-      refetchOnWindowFocus: false,
-    });
+    // Use grid positioning data from parent component (passed from main gridData query)
+    const gridPositions = gridData?.data;
     
 
 
@@ -1677,9 +1670,11 @@ const Dashboard: React.FC = () => {
                 const position = gridPositions.dotPositions[dot.id];
                 x = position.x;
                 y = position.y;
+                console.log(`Using backend position for ${dot.id}:`, position);
 
               } else {
                 // Fallback to manual positioning logic for dots not in API response
+                console.log(`No backend position found for ${dot.id}, using fallback`);
                 const dotId = String(dot.id || index);
                 const seedX = dotId.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
                 const seedY = dotId.split('').reverse().reduce((a, b) => a + b.charCodeAt(0), 0);
