@@ -380,6 +380,16 @@ export default function LandingPage() {
                   <span className="text-sm">Social</span>
                 </div>
               </Button>
+              {/* AI Chat button with purple theme */}
+              <Button 
+                size="sm"
+                onClick={() => setLocation("/chat")}
+                className="relative bg-gradient-to-r from-purple-500 to-purple-600 text-white shadow-md hover:bg-gradient-to-r hover:from-purple-600 hover:to-purple-700 transition-all duration-300"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="text-sm">AI Chat</span>
+                </div>
+              </Button>
             </div>
             <div className="flex items-center space-x-3">
               {/* PWA navigation with blinking brain icon and Social text */}
@@ -414,6 +424,15 @@ export default function LandingPage() {
                       </div>
                     </div>
                     <span className="text-xs">Social</span>
+                  </div>
+                </Button>
+                <Button
+                  size="sm"
+                  onClick={() => setLocation("/chat")}
+                  className="bg-gradient-to-r from-purple-500 to-purple-600 text-white shadow-md hover:bg-gradient-to-r hover:from-purple-600 hover:to-purple-700 transition-all duration-300"
+                >
+                  <div className="flex items-center gap-1">
+                    <span className="text-xs">AI Chat</span>
                   </div>
                 </Button>
               </div>
@@ -463,6 +482,12 @@ export default function LandingPage() {
                     <Link href="/social" className="cursor-pointer w-full">
                       <Users className="mr-2 h-4 w-4" />
                       DotSpark Social
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/chat" className="cursor-pointer w-full">
+                      <MessageSquare className="mr-2 h-4 w-4 text-purple-600" />
+                      <span className="text-purple-600">AI Chat</span>
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={handleLogout} className="text-red-600">
@@ -530,6 +555,13 @@ export default function LandingPage() {
                         <div onClick={() => setLocation("/social")} className="py-2 hover:text-primary transition-colors flex items-center gap-2 cursor-pointer">
                           <Users className="h-4 w-4 text-orange-600" />
                           <span>DotSpark Social</span>
+                        </div>
+                      </SheetClose>
+                      
+                      <SheetClose asChild>
+                        <div onClick={() => setLocation("/chat")} className="py-2 hover:text-primary transition-colors flex items-center gap-2 cursor-pointer">
+                          <MessageSquare className="h-4 w-4 text-purple-600" />
+                          <span className="text-purple-600">AI Chat</span>
                         </div>
                       </SheetClose>
                     </div>
