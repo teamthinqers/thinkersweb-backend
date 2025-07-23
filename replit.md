@@ -137,6 +137,7 @@ Changelog:
   * Enhanced Chakra visual effects with solid borders, enhanced shadows, gradient backgrounds, and prominent "CHAKRA" labels
   * Fixed flashcard and full view components to properly display "Chakra" instead of "Wheel" for top-level items
   * Updated delete button in full view to dynamically show "Delete Chakra" or "Delete Wheel" based on item type
+  * Standardized Health & Wellness wheel color from pink (#EC4899) to amber (#D97706) for consistent theme across all grid elements
 - July 23, 2025. CORRECTED preview data hierarchy to properly reflect three-tier architecture:
   * Fixed "Build an Enduring Company" to be displayed as a Chakra (top-level, chakraId = null) with purple color theme
   * Updated GTM Strategy, Leadership Development, and Product Innovation as wheels belonging to the business Chakra

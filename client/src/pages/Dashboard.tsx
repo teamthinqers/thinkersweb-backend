@@ -462,7 +462,7 @@ const Dashboard: React.FC = () => {
         goals: 'Building sustainable health and wellness habits including consistent routines, regular exercise, balanced nutrition, quality sleep, and effective stress management for optimal life balance.',
         timeline: 'Daily',
         category: 'Personal',
-        color: '#EC4899', // Pink theme
+        color: '#D97706', // Amber theme for consistency
         dots: [],
         connections: [],
         position: { x: 750, y: 180 }, // Standalone position, separate from business hierarchy
