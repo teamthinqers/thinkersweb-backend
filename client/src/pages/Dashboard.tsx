@@ -560,6 +560,16 @@ const Dashboard: React.FC = () => {
     const displayDots = baseDotsToDisplay;
     const totalDots = displayDots.length;
     
+    // Debug: Log dot counts in preview mode
+    if (previewMode) {
+      console.log('Preview mode dot counts:', {
+        totalDotsGenerated: previewDots.length,
+        totalDotsDisplayed: displayDots.length,
+        dotsInWheels: displayDots.filter(d => d.wheelId && d.wheelId !== '').length,
+        individualDots: displayDots.filter(d => !d.wheelId || d.wheelId === '').length
+      });
+    }
+    
     // Count Wheels and Chakras separately
     // Wheels: items with chakraId (belonging to a chakra) OR chakraId === null (standalone wheels)
     // Chakras: items with chakraId === undefined (top-level containers)
