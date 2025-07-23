@@ -1250,11 +1250,20 @@ const Dashboard: React.FC = () => {
         'Meaningful social interaction that shifted perspective on communication'
       ];
 
-      // Scatter 10 dots across different areas of the grid
+      // Scatter 10 dots across different areas of the grid, avoiding chakra zones
+      // Chakra positions: Business (400,300), Health (1100,300), Personal Growth (400,800), Financial (1100,800)
+      // Each chakra is ~420px diameter, so avoid 210px radius around each center
       const scatteredPositions = [
-        { x: 200, y: 150 }, { x: 700, y: 180 }, { x: 150, y: 450 }, { x: 850, y: 500 },
-        { x: 600, y: 120 }, { x: 250, y: 650 }, { x: 950, y: 180 }, { x: 750, y: 580 },
-        { x: 180, y: 350 }, { x: 820, y: 350 }
+        { x: 150, y: 150 },   // Top-left clear area
+        { x: 750, y: 120 },   // Between business and health chakras
+        { x: 100, y: 400 },   // Left side clear area
+        { x: 1350, y: 200 },  // Right of health chakra
+        { x: 650, y: 180 },   // Safe zone between chakras
+        { x: 200, y: 950 },   // Below personal growth chakra
+        { x: 1400, y: 450 },  // Far right clear area
+        { x: 750, y: 950 },   // Between bottom chakras
+        { x: 120, y: 650 },   // Left of personal growth chakra
+        { x: 1350, y: 950 }   // Right of financial chakra
       ];
 
       for (let i = 0; i < 10; i++) {
