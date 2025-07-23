@@ -1882,16 +1882,20 @@ const Dashboard: React.FC = () => {
               
               const isChakra = wheel.chakraId === undefined;
               
+              // Calculate the actual wheel label position (not wheel center)
+              const labelX = wheelPosition.x; // Label is centered horizontally
+              const labelY = wheelPosition.y - (isChakra ? 95 : 75); // Label offset from wheel center
+              
               return (
                 <div key={`flashcard-${wheel.id}`}>
-                  {/* Wheel Flash Card - positioned exactly like dot flashcards */}
+                  {/* Wheel Flash Card - positioned exactly like dot flashcards relative to label */}
                   {hoveredWheel?.id === wheel.id && (
                     <div 
                       className="absolute bg-white border-2 border-amber-200 rounded-lg p-3 shadow-xl z-[9999] w-64 cursor-pointer"
                       style={{
-                        // Position exactly like dot flashcards
-                        left: isPWA ? '60px' : `${wheelPosition.x + 60}px`,
-                        top: isPWA ? '-20px' : `${Math.max(0, wheelPosition.y - 20)}px`,
+                        // Position exactly like dot flashcards, relative to actual label position
+                        left: isPWA ? '60px' : `${labelX + 60}px`,
+                        top: isPWA ? '-20px' : `${Math.max(0, labelY - 20)}px`,
                         maxWidth: '280px'
                       }}
                       onClick={(e) => {
