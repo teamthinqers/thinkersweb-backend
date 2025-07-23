@@ -636,7 +636,7 @@ const Dashboard: React.FC = () => {
         color: '#B45309', // Dark amber theme for Chakras
         dots: [],
         connections: ['preview-wheel-0', 'preview-wheel-1', 'preview-wheel-2'],
-        position: { x: 400, y: 300 }, // Top-left chakra
+        position: { x: 350, y: 250 }, // Business chakra - slightly off-center
         chakraId: undefined, // This makes it a Chakra (top-level)
         createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) // 30 days ago
       };
@@ -784,7 +784,7 @@ const Dashboard: React.FC = () => {
         color: '#B45309', // Dark amber for Chakras
         dots: [],
         connections: [],
-        position: { x: 1100, y: 300 }, // Top-right chakra, well-spaced from business
+        position: { x: 950, y: 180 }, // Health chakra - higher and more left
         chakraId: undefined, // This marks it as a chakra (top-level container)
         createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000) // 5 days ago
       };
@@ -801,7 +801,7 @@ const Dashboard: React.FC = () => {
         color: '#EA580C', // Orange theme for wheels
         dots: [],
         connections: ['preview-wheel-health-2'],
-        position: { x: 1050, y: 220 }, // Top-left in health chakra
+        position: { x: 900, y: 100 }, // Top-left in health chakra
         chakraId: 'preview-chakra-health',
         createdAt: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000)
       };
@@ -842,7 +842,7 @@ const Dashboard: React.FC = () => {
         color: '#EA580C',
         dots: [],
         connections: ['preview-wheel-health-3'],
-        position: { x: 1150, y: 220 }, // Top-right in health chakra
+        position: { x: 1000, y: 100 }, // Top-right in health chakra
         chakraId: 'preview-chakra-health',
         createdAt: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000)
       };
@@ -882,7 +882,7 @@ const Dashboard: React.FC = () => {
         color: '#EA580C',
         dots: [],
         connections: [],
-        position: { x: 1100, y: 380 }, // Bottom center in health chakra
+        position: { x: 950, y: 260 }, // Bottom center in health chakra
         chakraId: 'preview-chakra-health',
         createdAt: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000)
       };
@@ -923,7 +923,7 @@ const Dashboard: React.FC = () => {
         color: '#B45309', // Dark amber for Chakras
         dots: [],
         connections: [],
-        position: { x: 400, y: 800 }, // Bottom-left chakra
+        position: { x: 550, y: 650 }, // Personal Growth chakra - more centered
         chakraId: undefined, // This marks it as a chakra (top-level container)
         createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000)
       };
@@ -940,7 +940,7 @@ const Dashboard: React.FC = () => {
         color: '#EA580C',
         dots: [],
         connections: ['preview-wheel-growth-2'],
-        position: { x: 320, y: 720 }, // Top-left in growth chakra
+        position: { x: 470, y: 570 }, // Top-left in growth chakra
         chakraId: 'preview-chakra-growth',
         createdAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000)
       };
@@ -980,7 +980,7 @@ const Dashboard: React.FC = () => {
         color: '#EA580C',
         dots: [],
         connections: ['preview-wheel-growth-3'],
-        position: { x: 480, y: 720 }, // Top-right in growth chakra
+        position: { x: 630, y: 570 }, // Top-right in growth chakra
         chakraId: 'preview-chakra-growth',
         createdAt: new Date(Date.now() - 11 * 24 * 60 * 60 * 1000)
       };
@@ -1021,7 +1021,7 @@ const Dashboard: React.FC = () => {
         color: '#EA580C',
         dots: [],
         connections: ['preview-wheel-growth-4'],
-        position: { x: 350, y: 880 }, // Bottom-left in growth chakra
+        position: { x: 470, y: 730 }, // Bottom-left in growth chakra
         chakraId: 'preview-chakra-growth',
         createdAt: new Date(Date.now() - 9 * 24 * 60 * 60 * 1000)
       };
@@ -1061,7 +1061,7 @@ const Dashboard: React.FC = () => {
         color: '#EA580C',
         dots: [],
         connections: [],
-        position: { x: 450, y: 880 }, // Bottom-right in growth chakra
+        position: { x: 630, y: 730 }, // Bottom-right in growth chakra
         chakraId: 'preview-chakra-growth',
         createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
       };
@@ -1101,7 +1101,7 @@ const Dashboard: React.FC = () => {
         color: '#B45309', // Dark amber for Chakras
         dots: [],
         connections: [],
-        position: { x: 1100, y: 800 }, // Bottom-right chakra
+        position: { x: 1200, y: 500 }, // Financial chakra - right side, middle height
         chakraId: undefined, // This marks it as a chakra (top-level container)
         createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000)
       };
@@ -1118,7 +1118,7 @@ const Dashboard: React.FC = () => {
         color: '#EA580C',
         dots: [],
         connections: ['preview-wheel-finance-2'],
-        position: { x: 1020, y: 720 }, // Top-left in finance chakra
+        position: { x: 1120, y: 420 }, // Top-left in finance chakra
         chakraId: 'preview-chakra-finance',
         createdAt: new Date(Date.now() - 16 * 24 * 60 * 60 * 1000)
       };
@@ -1159,7 +1159,7 @@ const Dashboard: React.FC = () => {
         color: '#EA580C',
         dots: [],
         connections: ['preview-wheel-finance-3'],
-        position: { x: 1180, y: 720 }, // Top-right in finance chakra
+        position: { x: 1280, y: 420 }, // Top-right in finance chakra
         chakraId: 'preview-chakra-finance',
         createdAt: new Date(Date.now() - 13 * 24 * 60 * 60 * 1000)
       };
@@ -1199,7 +1199,7 @@ const Dashboard: React.FC = () => {
         color: '#EA580C',
         dots: [],
         connections: [],
-        position: { x: 1100, y: 880 }, // Bottom center in finance chakra
+        position: { x: 1200, y: 580 }, // Bottom center in finance chakra
         chakraId: 'preview-chakra-finance',
         createdAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000)
       };
@@ -1251,19 +1251,19 @@ const Dashboard: React.FC = () => {
       ];
 
       // Scatter 10 dots across different areas of the grid, avoiding chakra zones
-      // Chakra positions: Business (400,300), Health (1100,300), Personal Growth (400,800), Financial (1100,800)
+      // NEW Chakra positions: Business (350,250), Health (950,180), Personal Growth (550,650), Financial (1200,500)
       // Each chakra is ~420px diameter, so avoid 210px radius around each center
       const scatteredPositions = [
-        { x: 150, y: 150 },   // Top-left clear area
-        { x: 750, y: 120 },   // Between business and health chakras
-        { x: 100, y: 400 },   // Left side clear area
-        { x: 1350, y: 200 },  // Right of health chakra
-        { x: 650, y: 180 },   // Safe zone between chakras
-        { x: 200, y: 950 },   // Below personal growth chakra
-        { x: 1400, y: 450 },  // Far right clear area
-        { x: 750, y: 950 },   // Between bottom chakras
-        { x: 120, y: 650 },   // Left of personal growth chakra
-        { x: 1350, y: 950 }   // Right of financial chakra
+        { x: 150, y: 120 },   // Top-left corner clear area
+        { x: 650, y: 100 },   // Between business and health chakras (top)
+        { x: 100, y: 350 },   // Left side clear area
+        { x: 1400, y: 180 },  // Far right of health chakra
+        { x: 200, y: 500 },   // Left mid area
+        { x: 850, y: 350 },   // Between health and finance chakras
+        { x: 300, y: 800 },   // Below and left of personal growth
+        { x: 800, y: 750 },   // Between personal growth and finance
+        { x: 150, y: 650 },   // Left of personal growth chakra
+        { x: 1450, y: 650 }   // Far right clear area
       ];
 
       for (let i = 0; i < 10; i++) {
