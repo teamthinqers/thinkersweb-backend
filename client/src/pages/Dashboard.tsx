@@ -299,7 +299,7 @@ const Dashboard: React.FC = () => {
       const previewDots: Dot[] = [];
       const previewWheels: Wheel[] = [];
 
-      // Chakra - top-level business theme (chakraId = null)
+      // Chakra - top-level business theme that encompasses the three wheels
       const businessChakra: Wheel = {
         id: 'preview-chakra-business',
         name: 'Build an Enduring Company',
@@ -309,8 +309,8 @@ const Dashboard: React.FC = () => {
         category: 'Business',
         color: '#D97706', // Amber theme for Chakras
         dots: [],
-        connections: ['preview-wheel-0', 'preview-wheel-1'],
-        position: { x: 400, y: 300 }, // Centered position for Chakra
+        connections: ['preview-wheel-0', 'preview-wheel-1', 'preview-wheel-2'],
+        position: { x: 400, y: 300 }, // Centered to encompass the three wheels below
         chakraId: undefined, // This makes it a Chakra (top-level)
         createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) // 30 days ago
       };
@@ -326,7 +326,7 @@ const Dashboard: React.FC = () => {
         color: '#F59E0B', // Consistent amber theme
         dots: [],
         connections: ['preview-wheel-1'],
-        position: { x: 280, y: 200 }, // Position inside Chakra - left side with more spacing
+        position: { x: 350, y: 260 }, // Position inside Chakra - left wheel
         chakraId: 'preview-chakra-business',
         createdAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000) // 15 days ago
       };
@@ -371,7 +371,7 @@ const Dashboard: React.FC = () => {
         color: '#F59E0B', // Consistent amber theme
         dots: [],
         connections: ['preview-wheel-0', 'preview-wheel-2'],
-        position: { x: 520, y: 200 }, // Position inside Chakra - right side with more spacing
+        position: { x: 450, y: 260 }, // Position inside Chakra - right wheel
         chakraId: 'preview-chakra-business',
         createdAt: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000) // 20 days ago
       };
@@ -415,7 +415,7 @@ const Dashboard: React.FC = () => {
         color: '#F59E0B', // Consistent amber theme
         dots: [],
         connections: ['preview-wheel-1'],
-        position: { x: 400, y: 380 }, // Position inside Chakra - bottom center with more spacing
+        position: { x: 400, y: 340 }, // Position inside Chakra - bottom wheel
         chakraId: 'preview-chakra-business',
         createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000) // 10 days ago
       };
@@ -1120,9 +1120,9 @@ const Dashboard: React.FC = () => {
                 // In preview mode, use specific sizing logic
                 isChakra = wheel.id === 'preview-chakra-business';
                 if (isChakra) {
-                  wheelSize = 600; // Chakra (Build an Enduring Company) is bigger - increased to 600px for better visibility
+                  wheelSize = 350; // Chakra circle that encompasses the three wheels
                 } else {
-                  wheelSize = 180; // All child wheels (GTM, Strengthen Leadership, Product Innovation, Health & Wellness) are same 180px size
+                  wheelSize = 120; // Smaller child wheels that fit inside the Chakra
                 }
               } else {
                 // In real mode, use standard wheel sizes
