@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spacing Test - Single Wheel</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+        }
+        
+        .container {
+            width: 800px;
+            height: 600px;
+            background: white;
+            border: 2px solid #ccc;
+            position: relative;
+            margin: 20px auto;
+        }
+        
+        .wheel {
+            position: absolute;
+            border: 2px dashed #EA580C;
+            border-radius: 50%;
+            background: rgba(234, 88, 12, 0.1);
+        }
+        
+        .dot {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #F59E0B, #D97706);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 12px;
+        }
+        
+        .controls {
+            text-align: center;
+            margin: 20px;
+        }
+        
+        button {
+            margin: 5px;
+            padding: 10px 20px;
+            background: #EA580C;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        button:hover {
+            background: #D97706;
+        }
+        
+        .info {
+            text-align: center;
+            margin: 20px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Single Wheel Spacing Test</h1>
+    <div class="info">
+        Testing dot positioning within a single wheel following spacing rules:
+        <br>• Dots should not touch each other (25px minimum spacing)
+        <br>• All dots must stay within the wheel's dotted circle boundary (20px safety buffer)
+    </div>
+    
+    <div class="controls">
+        <button onclick="testWith2Dots()">Test 2 Dots</button>
+        <button onclick="testWith3Dots()">Test 3 Dots</button>
+        <button onclick="testWith4Dots()">Test 4 Dots</button>
+        <button onclick="testWith6Dots()">Test 6 Dots</button>
+        <button onclick="testWith9Dots()">Test 9 Dots</button>
+    </div>
+    
+    <div class="container" id="container"></div>
+    
+    <script>
+        // Configuration matching our backend
+        const DOT_RADIUS = 35;
+        const WHEEL_RADIUS = 160;
+        const MIN_DOT_SPACING = 25;
+        const DOT_TO_WHEEL_EDGE = 20;
+        
+        function clearContainer() {
+            document.getElementById('container').innerHTML = '';
+        }
+        
+        function createWheel(centerX, centerY) {
+            const wheel = document.createElement('div');
+            wheel.className = 'wheel';
+            wheel.style.left = `${centerX - WHEEL_RADIUS}px`;
+            wheel.style.top = `${centerY - WHEEL_RADIUS}px`;
+            wheel.style.width = `${WHEEL_RADIUS * 2}px`;
+            wheel.style.height = `${WHEEL_RADIUS * 2}px`;
+            return wheel;
+        }
+        
+        function createDot(x, y, number) {
+            const dot = document.createElement('div');
+            dot.className = 'dot';
+            dot.style.left = `${x - DOT_RADIUS}px`;
+            dot.style.top = `${y - DOT_RADIUS}px`;
+            dot.style.width = `${DOT_RADIUS * 2}px`;
+            dot.style.height = `${DOT_RADIUS * 2}px`;
+            dot.textContent = number;
+            return dot;
+        }
+        
+        function positionDotsInWheel(dotCount, wheelCenterX, wheelCenterY) {
+            const positions = [];
+            const minDotSpacing = DOT_RADIUS * 2 + MIN_DOT_SPACING;
+            const maxDotDistance = WHEEL_RADIUS - DOT_RADIUS - DOT_TO_WHEEL_EDGE;
+            
+            if (dotCount === 1) {
+                positions.push({ x: wheelCenterX, y: wheelCenterY });
+            } else if (dotCount === 2) {
+                const spacing = Math.min(maxDotDistance * 1.4, minDotSpacing);
+                positions.push(
+                    { x: wheelCenterX - spacing/2, y: wheelCenterY },
+                    { x: wheelCenterX + spacing/2, y: wheelCenterY }
+                );
+            } else if (dotCount === 3) {
+                const radius = Math.min(maxDotDistance * 0.7, (minDotSpacing * Math.sqrt(3)) / 3);
+                const angles = [-Math.PI/2, Math.PI/6, 5*Math.PI/6];
+                angles.forEach(angle => {
+                    positions.push({
+                        x: wheelCenterX + Math.cos(angle) * radius,
+                        y: wheelCenterY + Math.sin(angle) * radius
+                    });
+                });
+            } else if (dotCount === 4) {
+                const diagonal = minDotSpacing * Math.sqrt(2);
+                const spacing = Math.min(maxDotDistance * 1.2, diagonal);
+                positions.push(
+                    { x: wheelCenterX - spacing/2, y: wheelCenterY - spacing/2 },
+                    { x: wheelCenterX + spacing/2, y: wheelCenterY - spacing/2 },
+                    { x: wheelCenterX - spacing/2, y: wheelCenterY + spacing/2 },
+                    { x: wheelCenterX + spacing/2, y: wheelCenterY + spacing/2 }
+                );
+            } else {
+                // Circular arrangement for 5+ dots
+                const circumference = 2 * Math.PI * maxDotDistance * 0.8;
+                const requiredSpacing = minDotSpacing * dotCount;
+                
+                let radius = maxDotDistance * 0.8;
+                if (circumference < requiredSpacing) {
+                    radius = maxDotDistance * 0.6; // Tighter packing if needed
+                }
+                
+                const angleStep = (2 * Math.PI) / dotCount;
+                const startAngle = -Math.PI/2;
+                
+                for (let i = 0; i < dotCount; i++) {
+                    const angle = startAngle + i * angleStep;
+                    positions.push({
+                        x: wheelCenterX + Math.cos(angle) * radius,
+                        y: wheelCenterY + Math.sin(angle) * radius
+                    });
+                }
+            }
+            
+            return positions;
+        }
+        
+        function testDots(count) {
+            clearContainer();
+            const container = document.getElementById('container');
+            
+            // Center the wheel in the container
+            const wheelCenterX = 400;
+            const wheelCenterY = 300;
+            
+            // Create wheel
+            const wheel = createWheel(wheelCenterX, wheelCenterY);
+            container.appendChild(wheel);
+            
+            // Position dots
+            const positions = positionDotsInWheel(count, wheelCenterX, wheelCenterY);
+            
+            // Create dots
+            positions.forEach((pos, index) => {
+                const dot = createDot(pos.x, pos.y, index + 1);
+                container.appendChild(dot);
+            });
+            
+            // Validate spacing
+            validateSpacing(positions, wheelCenterX, wheelCenterY);
+        }
+        
+        function validateSpacing(positions, wheelCenterX, wheelCenterY) {
+            let violations = [];
+            
+            // Check dot-to-dot spacing
+            for (let i = 0; i < positions.length; i++) {
+                for (let j = i + 1; j < positions.length; j++) {
+                    const distance = Math.sqrt(
+                        Math.pow(positions[i].x - positions[j].x, 2) + 
+                        Math.pow(positions[i].y - positions[j].y, 2)
+                    );
+                    const minDistance = DOT_RADIUS * 2 + MIN_DOT_SPACING;
+                    
+                    if (distance < minDistance) {
+                        violations.push(`Dots ${i+1} and ${j+1} too close: ${distance.toFixed(1)}px (min: ${minDistance}px)`);
+                    }
+                }
+            }
+            
+            // Check dot-to-wheel-edge spacing
+            positions.forEach((pos, index) => {
+                const distanceFromCenter = Math.sqrt(
+                    Math.pow(pos.x - wheelCenterX, 2) + 
+                    Math.pow(pos.y - wheelCenterY, 2)
+                );
+                const maxAllowedDistance = WHEEL_RADIUS - DOT_RADIUS - DOT_TO_WHEEL_EDGE;
+                
+                if (distanceFromCenter > maxAllowedDistance) {
+                    violations.push(`Dot ${index+1} outside wheel boundary: ${distanceFromCenter.toFixed(1)}px (max: ${maxAllowedDistance}px)`);
+                }
+            });
+            
+            // Display results
+            if (violations.length === 0) {
+                console.log(`✅ All spacing rules satisfied for ${positions.length} dots`);
+                document.title = `✅ ${positions.length} Dots - All Rules Satisfied`;
+            } else {
+                console.log(`❌ Spacing violations for ${positions.length} dots:`, violations);
+                document.title = `❌ ${positions.length} Dots - ${violations.length} Violations`;
+            }
+        }
+        
+        // Test functions
+        function testWith2Dots() { testDots(2); }
+        function testWith3Dots() { testDots(3); }
+        function testWith4Dots() { testDots(4); }
+        function testWith6Dots() { testDots(6); }
+        function testWith9Dots() { testDots(9); }
+        
+        // Start with 3 dots
+        testWith3Dots();
+    </script>
+</body>
+</html>
