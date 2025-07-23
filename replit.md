@@ -121,7 +121,12 @@ DotSpark is a full-stack web application that serves as a personalized learning 
 ## Changelog
 ```
 Changelog:
-- July 23, 2025. CORRECTED color coding and completed three-tier architecture implementation:
+- July 23, 2025. ENHANCED chakra visual design with sophisticated multi-layer energy system:
+  * Replaced solid chakra circle with advanced multi-layer energy effect featuring rotating energy rings
+  * Implemented three-layer energy system: outer rotating ring (20s rotation), middle pulsing ring with glow, inner core with steady glow
+  * Removed Om symbol and blinking energy nodes per user preference while maintaining elegant background energy effects
+  * Enhanced visual distinction between chakras and regular wheels through sophisticated energy animations
+  * Verified dot count accuracy: 26 dots properly displayed in preview mode (5+4+4+5+8 = GTM+Leadership+Product+Health+Individual)
   * Fixed duplicate rendering of preview-chakra-business by removing duplicate businessChakra addition to previewWheels array
   * Added purpose field to wheels table schema to support Chakras (wheels with chakraId === undefined use purpose field)
   * Completed comprehensive three-tier counting system: Total Dots, Total Wheels (chakraId !== undefined), Total Chakras (chakraId === undefined)
