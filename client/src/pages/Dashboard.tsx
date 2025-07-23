@@ -918,8 +918,8 @@ const Dashboard: React.FC = () => {
                     const wheelCenterX = wheel.position.x;
                     const wheelCenterY = wheel.position.y;
                     const wheelRadius = 60; // Wheel radius (120px diameter / 2)
-                    // Use smaller radius to ensure dots stay well within wheel boundaries
-                    const dotRadius = dotsInWheel.length <= 3 ? 22 : Math.max(15, 35 - dotsInWheel.length * 2); // Smaller radius for proper containment
+                    // Use much smaller radius to keep dots well inside wheel dotted circles
+                    const dotRadius = dotsInWheel.length <= 3 ? 18 : Math.max(12, 28 - dotsInWheel.length * 2); // Smaller radius for proper containment
                     const angle = (dotIndexInWheel * 2 * Math.PI) / dotsInWheel.length;
                     
                     x = wheelCenterX + Math.cos(angle) * dotRadius;
@@ -960,8 +960,8 @@ const Dashboard: React.FC = () => {
                       wheelCenterX = wheel.position.x;
                       wheelCenterY = wheel.position.y;
                     }
-                    // Use smaller radius to ensure dots stay well within wheel boundaries in real mode  
-                    const dotRadius = dotsInWheel.length <= 3 ? 32 : Math.max(25, 45 - dotsInWheel.length * 2); // Smaller radius for proper containment
+                    // Use much smaller radius to keep dots well inside wheel dotted circles in real mode
+                    const dotRadius = dotsInWheel.length <= 3 ? 26 : Math.max(20, 38 - dotsInWheel.length * 2); // Smaller radius for proper containment
                     const angle = (dotIndexInWheel * 2 * Math.PI) / dotsInWheel.length;
                     
                     x = wheelCenterX + Math.cos(angle) * dotRadius;
