@@ -1369,8 +1369,8 @@ const Dashboard: React.FC = () => {
           
           {/* Count buttons removed from grid for cleaner interface */}
           
-          <div className="flex items-center justify-center h-full relative">
-            <div className="text-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 mt-8">
+          <div className="flex items-center justify-center h-full">
+            <div className="text-center">
               <Brain className="w-16 h-16 mx-auto mb-4 text-amber-500" />
               <p className="text-lg font-semibold text-amber-800 mb-2">Start saving your Dots to get a similar map</p>
               <p className="text-sm text-amber-600">Your thought wheels will appear here as interactive circles</p>
