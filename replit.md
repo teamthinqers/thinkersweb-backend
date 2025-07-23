@@ -132,6 +132,11 @@ Changelog:
   * Maintained strict color coding: Amber/orange for cognitive structure, Purple exclusively for AI features
   * Simplified dot coloring to use theme colors with slight variations: voice dots use amber gradient (#F59E0B), text dots use orange gradient (#D97706)
   * Removed AI/normal mode color differentiation in favor of consistent theme-based coloring throughout the application
+  * Enhanced grid navigation with 60% default zoom for better overview when recenter button is clicked
+  * Increased Chakra size from 350px to 420px (preview) and 300px to 370px (real mode) to better accommodate child wheels
+  * Enhanced Chakra visual effects with solid borders, enhanced shadows, gradient backgrounds, and prominent "CHAKRA" labels
+  * Fixed flashcard and full view components to properly display "Chakra" instead of "Wheel" for top-level items
+  * Updated delete button in full view to dynamically show "Delete Chakra" or "Delete Wheel" based on item type
 - July 23, 2025. CORRECTED preview data hierarchy to properly reflect three-tier architecture:
   * Fixed "Build an Enduring Company" to be displayed as a Chakra (top-level, chakraId = null) with purple color theme
   * Updated GTM Strategy, Leadership Development, and Product Innovation as wheels belonging to the business Chakra

@@ -616,7 +616,7 @@ const Dashboard: React.FC = () => {
     // Reset view function for unified transform-based navigation
     const resetView = () => {
       setOffset({ x: 0, y: 0 });
-      setZoom(1);
+      setZoom(0.6); // Default zoom to 60%
     };
 
     // Unified drag handlers for both browser and PWA
@@ -677,7 +677,7 @@ const Dashboard: React.FC = () => {
         onFullscreenChange(!isFullscreen);
         if (!isFullscreen) {
           // Reset zoom and position when entering fullscreen
-          setZoom(1);
+          setZoom(0.6); // Default zoom to 60%
           setOffset({ x: 0, y: 0 });
         }
       }
@@ -1129,14 +1129,14 @@ const Dashboard: React.FC = () => {
                 // In preview mode, use specific sizing logic
                 isChakra = wheel.id === 'preview-chakra-business';
                 if (isChakra) {
-                  wheelSize = 350; // Chakra circle that encompasses the three wheels
+                  wheelSize = 420; // Chakra circle that encompasses the three wheels
                 } else {
                   wheelSize = 120; // Smaller child wheels that fit inside the Chakra
                 }
               } else {
                 // In real mode, use standard wheel sizes
                 isChakra = wheel.chakraId === undefined;
-                wheelSize = isChakra ? 300 : 150; // Smaller sizes for real mode
+                wheelSize = isChakra ? 370 : 150; // Smaller sizes for real mode
               }
               
               const wheelRadius = wheelSize / 2;
@@ -1152,16 +1152,40 @@ const Dashboard: React.FC = () => {
                     height: `${wheelSize}px`
                   }}
                 >
-                  {/* Dotted circle boundary */}
+                  {/* Enhanced Chakra/Wheel boundary */}
                   <div 
                     className={`w-full h-full rounded-full ${
-                      isChakra ? 'border-6 border-solid opacity-60' : 'border-4 border-dashed opacity-60'
+                      isChakra 
+                        ? 'border-8 border-solid opacity-80 shadow-2xl' 
+                        : 'border-4 border-dashed opacity-60'
                     }`}
                     style={{ 
                       borderColor: wheel.color,
-                      background: `linear-gradient(135deg, ${wheel.color}10, ${wheel.color}05)`
+                      background: isChakra 
+                        ? `linear-gradient(135deg, ${wheel.color}15, ${wheel.color}08)` 
+                        : `linear-gradient(135deg, ${wheel.color}10, ${wheel.color}05)`,
+                      ...(isChakra && {
+                        boxShadow: `0 0 40px ${wheel.color}40, inset 0 0 60px ${wheel.color}20`
+                      })
                     }}
                   />
+                  
+                  {/* Chakra label and enhancement */}
+                  {isChakra && (
+                    <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 pointer-events-auto">
+                      <div 
+                        className="bg-gradient-to-r from-amber-600 to-orange-600 text-white px-4 py-2 rounded-full shadow-lg border-2 border-amber-400"
+                        style={{
+                          background: `linear-gradient(135deg, ${wheel.color}, ${wheel.color}CC)`
+                        }}
+                      >
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 rounded-full bg-white animate-pulse" />
+                          <span className="text-sm font-bold">CHAKRA</span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                   
                   {/* Blinking Spark Symbol on top of wheel */}
                   <div 
