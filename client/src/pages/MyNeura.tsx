@@ -571,7 +571,7 @@ export default function MyNeura() {
             <img src="/dotspark-logo-icon.jpeg" alt="DotSpark" className="h-10 w-10 object-contain mr-4 opacity-60 rounded" />
             <div>
               <h3 className="text-lg font-medium">DotSpark is Inactive</h3>
-              <p className="text-sm text-muted-foreground">Activate your DotSpark to begin receiving personalized insights.</p>
+              <p className="text-sm text-muted-foreground">Activate your DotSpark to begin capturing your valuable thoughts.</p>
             </div>
           </div>
         </div>
