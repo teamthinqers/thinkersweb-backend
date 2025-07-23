@@ -725,31 +725,87 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const isPreview = req.query.preview === 'true';
       
       if (isPreview) {
-        // Return preview mode data with optimized positions
+        // Return preview mode data with proper hierarchical positioning
+        // Business chakra centered at (400, 300)
+        const chakraCenter = { x: 400, y: 300 };
+        const chakraRadius = 210; // Half of 420px diameter for preview mode
+        
+        // Position 3 wheels inside the chakra in triangular arrangement
+        const wheel1 = { x: chakraCenter.x - 80, y: chakraCenter.y - 60 }; // GTM Strategy (top-left)
+        const wheel2 = { x: chakraCenter.x + 80, y: chakraCenter.y - 60 }; // Leadership (top-right)  
+        const wheel3 = { x: chakraCenter.x, y: chakraCenter.y + 80 };     // Product (bottom)
+        
+        // Position dots inside each wheel (5 dots in GTM, 4 dots in each other wheel)
+        const wheelRadius = 50;
+        
+        // GTM Strategy wheel dots (5 dots)
+        const gtmDots = [
+          { id: 'preview-dot-1', x: wheel1.x + Math.cos(0) * 30, y: wheel1.y + Math.sin(0) * 30 },
+          { id: 'preview-dot-2', x: wheel1.x + Math.cos(1.26) * 30, y: wheel1.y + Math.sin(1.26) * 30 },
+          { id: 'preview-dot-3', x: wheel1.x + Math.cos(2.51) * 30, y: wheel1.y + Math.sin(2.51) * 30 },
+          { id: 'preview-dot-4', x: wheel1.x + Math.cos(3.77) * 30, y: wheel1.y + Math.sin(3.77) * 30 },
+          { id: 'preview-dot-5', x: wheel1.x + Math.cos(5.03) * 30, y: wheel1.y + Math.sin(5.03) * 30 }
+        ];
+        
+        // Leadership wheel dots (4 dots)
+        const leadershipDots = [
+          { id: 'preview-dot-6', x: wheel2.x + Math.cos(0) * 25, y: wheel2.y + Math.sin(0) * 25 },
+          { id: 'preview-dot-7', x: wheel2.x + Math.cos(1.57) * 25, y: wheel2.y + Math.sin(1.57) * 25 },
+          { id: 'preview-dot-8', x: wheel2.x + Math.cos(3.14) * 25, y: wheel2.y + Math.sin(3.14) * 25 },
+          { id: 'preview-dot-9', x: wheel2.x + Math.cos(4.71) * 25, y: wheel2.y + Math.sin(4.71) * 25 }
+        ];
+        
+        // Product wheel dots (4 dots)  
+        const productDots = [
+          { id: 'preview-dot-10', x: wheel3.x + Math.cos(0) * 25, y: wheel3.y + Math.sin(0) * 25 },
+          { id: 'preview-dot-11', x: wheel3.x + Math.cos(1.57) * 25, y: wheel3.y + Math.sin(1.57) * 25 },
+          { id: 'preview-dot-12', x: wheel3.x + Math.cos(3.14) * 25, y: wheel3.y + Math.sin(3.14) * 25 },
+          { id: 'preview-dot-13', x: wheel3.x + Math.cos(4.71) * 25, y: wheel3.y + Math.sin(4.71) * 25 }
+        ];
+        
+        // Health dots (scattered individual dots outside chakra)
+        const healthDots = [
+          { id: 'preview-dot-14', x: 150, y: 150 },
+          { id: 'preview-dot-15', x: 200, y: 180 },
+          { id: 'preview-dot-16', x: 180, y: 220 },
+          { id: 'preview-dot-17', x: 220, y: 250 },
+          { id: 'preview-dot-18', x: 160, y: 280 }
+        ];
+        
+        // Individual dots (scattered)
+        const individualDots = [
+          { id: 'preview-dot-19', x: 650, y: 150 },
+          { id: 'preview-dot-20', x: 680, y: 200 },
+          { id: 'preview-dot-21', x: 620, y: 240 },
+          { id: 'preview-dot-22', x: 700, y: 180 },
+          { id: 'preview-dot-23', x: 660, y: 280 },
+          { id: 'preview-dot-24', x: 720, y: 250 },
+          { id: 'preview-dot-25', x: 640, y: 320 },
+          { id: 'preview-dot-26', x: 690, y: 350 }
+        ];
+        
+        // Combine all dot positions
+        const allDots = [...gtmDots, ...leadershipDots, ...productDots, ...healthDots, ...individualDots];
+        const dotPositions = allDots.reduce((acc, dot) => {
+          acc[dot.id] = { x: dot.x, y: dot.y };
+          return acc;
+        }, {} as Record<string, { x: number; y: number }>);
+        
         const previewPositions = {
-          dotPositions: {
-            'preview-dot-1': { x: 250, y: 180 },
-            'preview-dot-2': { x: 310, y: 220 },
-            'preview-dot-3': { x: 290, y: 160 },
-            'preview-dot-4': { x: 350, y: 200 },
-            'preview-dot-5': { x: 270, y: 240 },
-            'preview-dot-6': { x: 450, y: 340 },
-            'preview-dot-7': { x: 510, y: 380 },
-            'preview-dot-8': { x: 490, y: 320 },
-            'preview-dot-9': { x: 530, y: 360 }
-          },
+          dotPositions,
           wheelPositions: {
-            'preview-wheel-1': { x: 300, y: 200 },
-            'preview-wheel-2': { x: 500, y: 360 }
+            'preview-wheel-0': wheel1, // GTM Strategy 
+            'preview-wheel-1': wheel2, // Leadership Development
+            'preview-wheel-2': wheel3  // Product Innovation
           },
           chakraPositions: {
-            'preview-chakra-business': { x: 400, y: 280 }
+            'preview-chakra-business': chakraCenter
           },
           statistics: {
-            totalDots: 9,
-            totalWheels: 2,
+            totalDots: 26,
+            totalWheels: 3,
             totalChakras: 1,
-            freeDots: 0
+            freeDots: 13 // Health + Individual dots
           }
         };
         
