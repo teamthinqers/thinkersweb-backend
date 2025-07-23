@@ -157,6 +157,9 @@ Changelog:
   * Enhanced user experience with "no results found" messaging and search suggestions
   * Fixed wheel heading visibility by adding high z-index (999) to override chakra energy effects
   * Enhanced wheel labels, spark symbols, and chakra labels with proper layering for clear readability
+  * Enhanced search functionality to work with preview mode data for comprehensive keyword searching
+  * Added preview data generation at Dashboard level for search compatibility across all modes
+  * Search now works seamlessly in both normal and preview modes with full three-tier architecture support
   * Updated StructuredFloatingDot.tsx with consistent amber/orange gradients across all chakra voice recording layers
   * Fixed creation type selection buttons: double layered rotating circle for wheels, Settings icon for chakras
   * Updated center icons in creation mode display to match standardized icon usage

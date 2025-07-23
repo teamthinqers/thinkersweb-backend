@@ -133,7 +133,7 @@ const Dashboard: React.FC = () => {
   }>({ dots: [], wheels: [], chakras: [] });
   const [showSearchResults, setShowSearchResults] = useState(false);
 
-  // Function to perform comprehensive keyword search
+  // Function to perform comprehensive keyword search including preview data
   const performSearch = (query: string) => {
     if (!query.trim()) {
       setSearchResults({ dots: [], wheels: [], chakras: [] });
@@ -143,8 +143,19 @@ const Dashboard: React.FC = () => {
 
     const keywords = query.toLowerCase().split(' ').filter(k => k.length > 0);
     
+    // Get current data source based on preview mode
+    let searchDots = dots;
+    let searchWheels = wheels;
+    
+    // If preview mode is enabled, include preview data
+    if (previewMode) {
+      const previewData = generatePreviewData();
+      searchDots = [...dots, ...previewData.previewDots];
+      searchWheels = [...wheels, ...previewData.previewWheels];
+    }
+    
     // Search dots
-    const filteredDots = dots.filter((dot: Dot) => {
+    const filteredDots = searchDots.filter((dot: Dot) => {
       const searchText = [
         dot.summary,
         dot.anchor,
@@ -156,7 +167,7 @@ const Dashboard: React.FC = () => {
     });
 
     // Search wheels and chakras
-    const filteredWheels = wheels.filter(wheel => {
+    const filteredWheels = searchWheels.filter(wheel => {
       const searchText = [
         wheel.name,
         wheel.heading || '',
@@ -184,10 +195,207 @@ const Dashboard: React.FC = () => {
   // Mock wheels data for visualization - moved before search function
   const [wheels] = useState<Wheel[]>([]);
 
+  // Generate preview data function moved to Dashboard level
+  const generatePreviewData = () => {
+    const emotions = ['excited', 'curious', 'focused', 'happy', 'calm', 'inspired', 'confident', 'grateful', 'motivated'];
+    
+    const previewDots: Dot[] = [];
+    const previewWheels: Wheel[] = [];
+
+    // Chakra - top-level business theme that encompasses the three wheels
+    const businessChakra: Wheel = {
+      id: 'preview-chakra-business',
+      name: 'Build an Enduring Company',
+      heading: 'Build an Enduring Company',
+      goals: 'Creating a sustainable, innovative business that delivers value to customers while maintaining long-term growth and meaningful impact in the market.',
+      purpose: 'Creating a sustainable, innovative business that delivers value to customers while maintaining long-term growth and meaningful impact in the market.',
+      timeline: 'Long-term (5+ years)',
+      category: 'Business',
+      color: '#B45309', // Dark amber theme for Chakras
+      dots: [],
+      connections: ['preview-wheel-0', 'preview-wheel-1', 'preview-wheel-2'],
+      position: { x: 400, y: 300 },
+      chakraId: undefined,
+      createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+    };
+
+    // GTM wheel
+    const gtmWheel: Wheel = {
+      id: 'preview-wheel-0',
+      name: 'GTM (Go-To-Market)',
+      heading: 'GTM (Go-To-Market) Strategy',
+      goals: 'Developing comprehensive go-to-market strategies including product positioning, customer acquisition, pricing models, and sales funnel optimization for successful product launches.',
+      timeline: 'Quarterly',
+      category: 'Business',
+      color: '#EA580C',
+      dots: [],
+      connections: ['preview-wheel-1'],
+      position: { x: 300, y: 240 },
+      chakraId: 'preview-chakra-business',
+      createdAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000)
+    };
+
+    // Leadership wheel
+    const leadershipWheel: Wheel = {
+      id: 'preview-wheel-1',
+      name: 'Leadership Development',
+      heading: 'Leadership Development',
+      goals: 'Building effective leadership skills including team management, strategic thinking, communication excellence, and organizational culture development for sustainable business growth.',
+      timeline: 'Ongoing',
+      category: 'Business',
+      color: '#EA580C',
+      dots: [],
+      connections: ['preview-wheel-0', 'preview-wheel-2'],
+      position: { x: 400, y: 180 },
+      chakraId: 'preview-chakra-business',
+      createdAt: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000)
+    };
+
+    // Product Innovation wheel
+    const productWheel: Wheel = {
+      id: 'preview-wheel-2',
+      name: 'Product Innovation',
+      heading: 'Product Innovation',
+      goals: 'Driving continuous innovation in product development through user research, emerging technology adoption, design thinking methodologies, and iterative development processes.',
+      timeline: 'Monthly',
+      category: 'Business',
+      color: '#EA580C',
+      dots: [],
+      connections: ['preview-wheel-1'],
+      position: { x: 500, y: 240 },
+      chakraId: 'preview-chakra-business',
+      createdAt: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000)
+    };
+
+    // Health & Wellness wheel (standalone)
+    const healthWheel: Wheel = {
+      id: 'preview-wheel-personal',
+      name: 'Health & Wellness',
+      heading: 'Health & Wellness Mastery',
+      goals: 'Building sustainable health and wellness habits including consistent routines, regular exercise, balanced nutrition, quality sleep, and effective stress management for optimal life balance.',
+      timeline: 'Daily',
+      category: 'Personal',
+      color: '#EA580C',
+      dots: [],
+      connections: [],
+      position: { x: 750, y: 180 },
+      chakraId: undefined,
+      createdAt: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000)
+    };
+
+    // Generate dots for each wheel
+    const gtmHeadings = ['Product-Market Fit', 'Customer Segments', 'Value Proposition', 'Sales Funnel', 'Pricing Strategy'];
+    const leadershipHeadings = ['Team Building', 'Strategic Vision', 'Communication', 'Decision Making'];
+    const productHeadings = ['User Research', 'Design Thinking', 'Technology', 'Iteration', 'Innovation'];
+    const healthHeadings = ['Morning Routine', 'Exercise', 'Nutrition', 'Sleep Quality', 'Stress Management'];
+
+    // Add dots to GTM wheel
+    gtmHeadings.forEach((heading, i) => {
+      const dot: Dot = {
+        id: `preview-dot-gtm-${i}`,
+        oneWordSummary: heading,
+        summary: `Strategic insights about ${heading.toLowerCase()} and business growth`,
+        anchor: `Key learnings about ${heading.toLowerCase()} implementation`,
+        pulse: emotions[Math.floor(Math.random() * emotions.length)],
+        wheelId: gtmWheel.id,
+        timestamp: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
+        sourceType: Math.random() > 0.5 ? 'voice' : 'text',
+        captureMode: Math.random() > 0.7 ? 'ai' : 'natural'
+      };
+      previewDots.push(dot);
+      gtmWheel.dots.push(dot);
+    });
+
+    // Add dots to Leadership wheel
+    leadershipHeadings.forEach((heading, i) => {
+      const dot: Dot = {
+        id: `preview-dot-leadership-${i}`,
+        oneWordSummary: heading,
+        summary: `Leadership insights about ${heading.toLowerCase()} and team excellence`,
+        anchor: `Key strategies for ${heading.toLowerCase()} development`,
+        pulse: emotions[Math.floor(Math.random() * emotions.length)],
+        wheelId: leadershipWheel.id,
+        timestamp: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
+        sourceType: Math.random() > 0.5 ? 'voice' : 'text',
+        captureMode: Math.random() > 0.7 ? 'ai' : 'natural'
+      };
+      previewDots.push(dot);
+      leadershipWheel.dots.push(dot);
+    });
+
+    // Add dots to Product wheel
+    productHeadings.forEach((heading, i) => {
+      const dot: Dot = {
+        id: `preview-dot-product-${i}`,
+        oneWordSummary: heading,
+        summary: `Product insights about ${heading.toLowerCase()} and innovation excellence`,
+        anchor: `Strategic approaches to ${heading.toLowerCase()} implementation`,
+        pulse: emotions[Math.floor(Math.random() * emotions.length)],
+        wheelId: productWheel.id,
+        timestamp: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
+        sourceType: Math.random() > 0.5 ? 'voice' : 'text',
+        captureMode: Math.random() > 0.7 ? 'ai' : 'natural'
+      };
+      previewDots.push(dot);
+      productWheel.dots.push(dot);
+    });
+
+    // Add dots to Health wheel
+    healthHeadings.forEach((heading, i) => {
+      const dot: Dot = {
+        id: `preview-dot-health-${i}`,
+        oneWordSummary: heading,
+        summary: `Health insights about ${heading.toLowerCase()} and wellness optimization`,
+        anchor: `Personal strategies for ${heading.toLowerCase()} improvement`,
+        pulse: emotions[Math.floor(Math.random() * emotions.length)],
+        wheelId: healthWheel.id,
+        timestamp: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
+        sourceType: Math.random() > 0.5 ? 'voice' : 'text',
+        captureMode: Math.random() > 0.7 ? 'ai' : 'natural'
+      };
+      previewDots.push(dot);
+      healthWheel.dots.push(dot);
+    });
+
+    // Add some individual scattered dots showing not all dots need grouping
+    const individualHeadings = [
+      'Coffee', 'Weather', 'Music', 'Reading', 'Travel', 'Technology', 'Art', 'Nature'
+    ];
+    const individualSummaries = [
+      'Morning coffee ritual and its impact on daily productivity patterns',
+      'Weather changes affecting mood and energy levels throughout day',
+      'Music preferences enhancing focus and creative thinking processes',
+      'Reading habits revealing learning patterns and knowledge retention',
+      'Travel experiences broadening perspective and cultural understanding',
+      'Technology tools streamlining daily workflows and communication',
+      'Art appreciation inspiring creativity and aesthetic sensibilities',
+      'Nature observations providing mental clarity and stress relief'
+    ];
+
+    individualHeadings.forEach((heading, i) => {
+      const dot: Dot = {
+        id: `individual-${i + 1}`,
+        oneWordSummary: heading,
+        summary: individualSummaries[i],
+        anchor: `Personal observation about ${heading.toLowerCase()} and its impact on daily life`,
+        pulse: emotions[Math.floor(Math.random() * emotions.length)],
+        wheelId: '', // No wheel - individual dot
+        timestamp: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
+        sourceType: Math.random() > 0.5 ? 'voice' : 'text',
+        captureMode: Math.random() > 0.7 ? 'ai' : 'natural'
+      };
+      previewDots.push(dot);
+    });
+
+    previewWheels.push(businessChakra, gtmWheel, leadershipWheel, productWheel, healthWheel);
+
+    return { previewDots, previewWheels };
+  };
+
   // Handle search functionality
   React.useEffect(() => {
     performSearch(searchTerm);
-  }, [searchTerm, dots, wheels]);
+  }, [searchTerm, dots, wheels, previewMode]);
 
   const DotCard: React.FC<{ dot: Dot; isPreview?: boolean; onClick?: () => void }> = ({ dot, isPreview = false, onClick }) => {
     const handleDotClick = () => {
