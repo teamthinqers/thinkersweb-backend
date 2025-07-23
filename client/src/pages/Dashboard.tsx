@@ -1120,7 +1120,7 @@ const Dashboard: React.FC = () => {
                 // In preview mode, use specific sizing logic
                 isChakra = wheel.id === 'preview-chakra-business';
                 if (isChakra) {
-                  wheelSize = 500; // Chakra (Build an Enduring Company) is bigger - increased from 400px
+                  wheelSize = 600; // Chakra (Build an Enduring Company) is bigger - increased to 600px for better visibility
                 } else {
                   wheelSize = 180; // All child wheels (GTM, Strengthen Leadership, Product Innovation, Health & Wellness) are same 180px size
                 }
@@ -1145,8 +1145,8 @@ const Dashboard: React.FC = () => {
                 >
                   {/* Dotted circle boundary */}
                   <div 
-                    className={`w-full h-full rounded-full border-4 border-dashed ${
-                      isChakra ? 'opacity-40' : 'opacity-60'
+                    className={`w-full h-full rounded-full ${
+                      isChakra ? 'border-6 border-solid opacity-60' : 'border-4 border-dashed opacity-60'
                     }`}
                     style={{ 
                       borderColor: wheel.color,
