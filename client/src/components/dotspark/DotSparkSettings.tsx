@@ -67,85 +67,64 @@ export function DotSparkSettings() {
 
   return (
     <div className="space-y-8">
-      {/* Stunning Header */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 dark:from-amber-950/50 dark:via-orange-950/50 dark:to-yellow-950/50 rounded-2xl p-6 border-2 border-amber-200/50 dark:border-amber-800/50 shadow-xl">
-        <div className="absolute inset-0 bg-gradient-to-r from-amber-500/10 to-orange-500/10 blur-xl"></div>
-        <div className="relative flex items-center gap-4">
-          <div className="p-3 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl shadow-lg">
-            <Settings className="h-6 w-6 text-white drop-shadow-sm" />
-          </div>
-          <div className="flex-1">
-            <h3 className="text-2xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
-              Choose your perfect capture experience
-            </h3>
-          </div>
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-amber-600 hover:text-amber-800 hover:bg-amber-100/50 dark:text-amber-400 dark:hover:text-amber-200 dark:hover:bg-amber-900/30 rounded-xl transition-all duration-300 hover:scale-110"
-              >
-                <Info className="h-5 w-5" />
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-2xl">
-              <DialogHeader>
-                <DialogTitle className="flex items-center gap-3 text-2xl text-amber-900">
-                  <div className="p-2 bg-gradient-to-br from-amber-400 to-orange-500 rounded-lg">
-                    <Info className="h-6 w-6 text-white" />
-                  </div>
-                  Capture Mode Guide
-                </DialogTitle>
-                <DialogDescription className="text-left space-y-6 pt-4">
-                  <div className="space-y-4">
-                    <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-4 rounded-xl border-2 border-green-200/50 shadow-sm">
-                      <h4 className="font-bold text-green-800 mb-3 flex items-center gap-2">
-                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                        Natural Mode
-                      </h4>
-                      <p className="text-sm text-green-700 leading-relaxed">
-                        Capture your thoughts directly using voice, text, or both. You create dots by speaking or typing your insights exactly as they come to you. Perfect for quick, spontaneous thought capture without any AI intervention.
-                      </p>
-                    </div>
-                    
-                    <div className="bg-gradient-to-r from-purple-50 to-violet-50 p-4 rounded-xl border-2 border-purple-200/50 shadow-sm">
-                      <h4 className="font-bold text-purple-800 mb-3 flex items-center gap-2">
-                        <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                        AI Mode
-                      </h4>
-                      <p className="text-sm text-purple-700 leading-relaxed">
-                        Chat with DotSpark AI to help structure your thoughts into perfect three-layer dots. The AI guides you through creating Summary, Anchor, and Pulse components through conversation or WhatsApp messaging. Perfect for complex thoughts that need organization.
-                      </p>
-                    </div>
-                    
-                    <div className="bg-gradient-to-r from-amber-50 to-orange-50 p-4 rounded-xl border-2 border-amber-200/50 shadow-sm">
-                      <h4 className="font-bold text-amber-800 mb-3 flex items-center gap-2">
-                        <Sparkles className="w-4 h-4 text-amber-600" />
-                        Visual Distinction
-                      </h4>
-                      <p className="text-sm text-amber-700 leading-relaxed">
-                        Natural mode dots appear in orange/amber colors, while AI mode dots appear in purple gradients. Voice and text icons still show the input method used, helping you understand your thinking patterns.
-                      </p>
-                    </div>
-                  </div>
-                </DialogDescription>
-              </DialogHeader>
-            </DialogContent>
-          </Dialog>
-        </div>
-      </div>
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-amber-600 hover:text-amber-800 hover:bg-amber-100/50 dark:text-amber-400 dark:hover:text-amber-200 dark:hover:bg-amber-900/30 rounded-xl transition-all duration-300 hover:scale-110 mb-4"
+          >
+            <Info className="h-5 w-5 mr-2" />
+            Mode Information
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-3 text-2xl text-amber-900">
+              <div className="p-2 bg-gradient-to-br from-amber-400 to-orange-500 rounded-lg">
+                <Info className="h-6 w-6 text-white" />
+              </div>
+              Capture Mode Guide
+            </DialogTitle>
+            <DialogDescription className="text-left space-y-6 pt-4">
+              <div className="space-y-4">
+                <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-4 rounded-xl border-2 border-green-200/50 shadow-sm">
+                  <h4 className="font-bold text-green-800 mb-3 flex items-center gap-2">
+                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                    Natural Mode
+                  </h4>
+                  <p className="text-sm text-green-700 leading-relaxed">
+                    Capture your thoughts directly using voice, text, or both. You create dots by speaking or typing your insights exactly as they come to you. Perfect for quick, spontaneous thought capture without any AI intervention.
+                  </p>
+                </div>
+                
+                <div className="bg-gradient-to-r from-purple-50 to-violet-50 p-4 rounded-xl border-2 border-purple-200/50 shadow-sm">
+                  <h4 className="font-bold text-purple-800 mb-3 flex items-center gap-2">
+                    <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                    AI Mode
+                  </h4>
+                  <p className="text-sm text-purple-700 leading-relaxed">
+                    Chat with DotSpark AI to help structure your thoughts into perfect three-layer dots. The AI guides you through creating Summary, Anchor, and Pulse components through conversation or WhatsApp messaging. Perfect for complex thoughts that need organization.
+                  </p>
+                </div>
+                
+                <div className="bg-gradient-to-r from-amber-50 to-orange-50 p-4 rounded-xl border-2 border-amber-200/50 shadow-sm">
+                  <h4 className="font-bold text-amber-800 mb-3 flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 text-amber-600" />
+                    Visual Distinction
+                  </h4>
+                  <p className="text-sm text-amber-700 leading-relaxed">
+                    Natural mode dots appear in orange/amber colors, while AI mode dots appear in purple gradients. Voice and text icons still show the input method used, helping you understand your thinking patterns.
+                  </p>
+                </div>
+              </div>
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
 
-      {/* Stunning Mode Selection */}
+      {/* Mode Selection */}
       <div className="space-y-6">
-        <div className="text-center space-y-2">
-          <h4 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-gray-100 dark:to-gray-300 bg-clip-text text-transparent">
-            Choose Your Experience
-          </h4>
-          <p className="text-lg text-gray-600 dark:text-gray-400 font-medium">
-            Select how you want to capture your brilliant thoughts
-          </p>
-        </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Natural Mode - Stunning Design */}
