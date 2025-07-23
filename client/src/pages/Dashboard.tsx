@@ -1367,17 +1367,7 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
           
-          <div className="absolute top-4 right-4 flex gap-2 z-10">
-            <button className="bg-white/90 backdrop-blur rounded-lg px-3 py-2 border-2 border-amber-200 text-sm font-semibold text-amber-800">
-              Total Dots: {totalDots}
-            </button>
-            <button className="bg-white/90 backdrop-blur rounded-lg px-3 py-2 border-2 border-amber-200 text-sm font-semibold text-amber-800">
-              Total Wheels: {totalWheels}
-            </button>
-            <button className="bg-white/90 backdrop-blur rounded-lg px-3 py-2 border-2 border-amber-200 text-sm font-semibold text-amber-800">
-              Total Chakras: {totalChakras}
-            </button>
-          </div>
+          {/* Count buttons removed from grid for cleaner interface */}
           
           <div className="flex items-center justify-center h-full">
             <div className="text-center">
@@ -2290,9 +2280,19 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
 
-          {/* Right side - Controls */}
+          {/* Right side - Stats and controls */}
           <div className="flex items-center gap-3">
-            {/* Count buttons removed for cleaner interface */}
+            <div className="flex items-center gap-2 text-sm">
+              <div className="px-3 py-1 bg-amber-100 text-amber-800 rounded-full font-medium">
+                Total Dots: {previewMode ? 27 : dots.length}
+              </div>
+              <div className="px-3 py-1 bg-orange-100 text-orange-800 rounded-full font-medium">
+                Total Wheels: {previewMode ? 4 : wheels.filter(w => w.chakraId !== null && w.chakraId !== undefined).length}
+              </div>
+              <div className="px-3 py-1 bg-amber-100 text-amber-800 rounded-full font-medium">
+                Total Chakras: {previewMode ? 1 : wheels.filter(w => w.chakraId === null || w.chakraId === undefined).length}
+              </div>
+            </div>
           </div>
         </div>
       </div>
