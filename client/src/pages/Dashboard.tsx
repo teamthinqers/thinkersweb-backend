@@ -1853,6 +1853,89 @@ const Dashboard: React.FC = () => {
               );
             })}
             
+            {/* Wheel Flashcards - positioned at grid level like dot flashcards */}
+            {(previewMode ? displayWheels : displayWheels.filter(w => w.dots && w.dots.length > 0)).map((wheel, wheelIndex) => {
+              // Use same positioning logic as wheels
+              let wheelPosition;
+              
+              if (gridPositions?.wheelPositions && gridPositions.wheelPositions[wheel.id]) {
+                wheelPosition = gridPositions.wheelPositions[wheel.id];
+              } else if (gridPositions?.chakraPositions && gridPositions.chakraPositions[wheel.id]) {
+                wheelPosition = gridPositions.chakraPositions[wheel.id];
+              } else {
+                wheelPosition = wheel.position;
+                
+                if (!previewMode && (!wheel.position || (wheel.position.x === 0 && wheel.position.y === 0))) {
+                  const wheelGridCols = 3;
+                  const totalWheelsCount = displayWheels.length;
+                  const baseSpacing = 250;
+                  const wheelSpacing = totalWheelsCount <= 6 ? baseSpacing : Math.max(200, baseSpacing - (totalWheelsCount - 6) * 10);
+                  const wheelBaseX = 200;
+                  const wheelBaseY = 200;
+                  
+                  const wheelGridX = (wheelIndex % wheelGridCols) * wheelSpacing + wheelBaseX;
+                  const wheelGridY = Math.floor(wheelIndex / wheelGridCols) * wheelSpacing + wheelBaseY;
+                  
+                  wheelPosition = { x: wheelGridX, y: wheelGridY };
+                }
+              }
+              
+              const isChakra = wheel.chakraId === undefined;
+              
+              return (
+                <div key={`flashcard-${wheel.id}`}>
+                  {/* Wheel Flash Card - positioned exactly like dot flashcards */}
+                  {hoveredWheel?.id === wheel.id && (
+                    <div 
+                      className="absolute bg-white border-2 border-amber-200 rounded-lg p-3 shadow-xl z-[9999] w-64 cursor-pointer"
+                      style={{
+                        // Position exactly like dot flashcards
+                        left: isPWA ? '60px' : `${wheelPosition.x + 60}px`,
+                        top: isPWA ? '-20px' : `${Math.max(0, wheelPosition.y - 20)}px`,
+                        maxWidth: '280px'
+                      }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setViewFullWheel(wheel);
+                        setHoveredWheel(null);
+                      }}
+                      onTouchStart={(e) => {
+                        e.stopPropagation();
+                        setViewFullWheel(wheel);
+                        setHoveredWheel(null);
+                      }}
+                    >
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <Badge className={`text-xs ${
+                            isChakra ? 'bg-orange-100 text-orange-800' : 'bg-amber-100 text-amber-800'
+                          }`}>
+                            {isChakra ? 'Chakra' : 'Wheel'}
+                          </Badge>
+                          {wheel.timeline && (
+                            <Badge className="bg-gray-100 text-gray-700 text-xs">
+                              {wheel.timeline}
+                            </Badge>
+                          )}
+                        </div>
+                        <h4 className="font-bold text-lg text-amber-800 border-b border-amber-200 pb-2 mb-3">
+                          {wheel.heading || wheel.name}
+                        </h4>
+                        {wheel.goals && (
+                          <p className="text-xs text-gray-600 line-clamp-3">
+                            {wheel.goals}
+                          </p>
+                        )}
+                        <div className="text-xs text-amber-600 mt-2 font-medium">
+                          Click for full view
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+            
             {/* Wheel Boundaries - Only show when wheels exist */}
             {(previewMode ? displayWheels : displayWheels.filter(w => w.dots && w.dots.length > 0)).map((wheel, wheelIndex) => {
               // Use algorithmic positioning from backend API when available, fallback to manual positioning
@@ -2046,61 +2129,6 @@ const Dashboard: React.FC = () => {
                       }}
                     >
                       {wheel.name}
-                      
-                      {/* Wheel Flash Card - positioned same as dot flashcards */}
-                      {hoveredWheel?.id === wheel.id && (
-                        <div 
-                          className="absolute bg-white border-2 border-amber-200 rounded-lg p-3 shadow-xl z-[9999] w-64 cursor-pointer pointer-events-auto"
-                          style={{
-                            // Position same as dot flashcards
-                            left: isPWA ? '60px' : `${wheelPosition.x + 60}px`,
-                            top: isPWA ? '-20px' : `${Math.max(0, wheelPosition.y - 20)}px`,
-                            maxWidth: '280px',
-                            zIndex: 9999
-                          }}
-                          onMouseEnter={(e) => {
-                            e.stopPropagation();
-                          }}
-                          onMouseLeave={(e) => {
-                            e.stopPropagation();
-                            setHoveredWheel(null);
-                          }}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setViewFullWheel(wheel);
-                            setHoveredWheel(null);
-                          }}
-                          onTouchStart={(e) => {
-                            e.stopPropagation();
-                            setViewFullWheel(wheel);
-                            setHoveredWheel(null);
-                          }}
-                        >
-                          <div className="space-y-2">
-                            <div className="flex items-center justify-between">
-                              <Badge className="bg-amber-100 text-amber-800 text-xs">
-                                Wheel
-                              </Badge>
-                              {wheel.timeline && (
-                                <Badge className="bg-gray-100 text-gray-700 text-xs">
-                                  {wheel.timeline}
-                                </Badge>
-                              )}
-                            </div>
-                            <h4 className="font-bold text-lg text-amber-800 border-b border-amber-200 pb-2 mb-3">
-                              {wheel.heading || wheel.name}
-                            </h4>
-                            {wheel.goals && (
-                              <p className="text-xs text-gray-600 line-clamp-3">
-                                {wheel.goals}
-                              </p>
-                            )}
-                            <div className="text-xs text-amber-600 mt-2 font-medium">
-                              Click for full view
-                            </div>
-                          </div>
-                        </div>
-                      )}
                     </div>
                   </div>
 
