@@ -23,6 +23,7 @@ import { neuraStorage } from "@/lib/neuraStorage";
 export function DotSparkSettings() {
   const [captureMode, setCaptureMode] = useState<'natural' | 'ai' | 'hybrid'>('hybrid');
   const [chatPreference, setChatPreference] = useState<'whatsapp' | 'direct' | 'both'>('both');
+  const [naturalPreference, setNaturalPreference] = useState<'voice' | 'text' | 'both'>('both');
   const { toast } = useToast();
 
   // Load settings from localStorage
@@ -32,6 +33,7 @@ export function DotSparkSettings() {
       const settings = JSON.parse(savedSettings);
       setCaptureMode(settings.captureMode ?? 'hybrid');
       setChatPreference(settings.chatPreference ?? 'both');
+      setNaturalPreference(settings.naturalPreference ?? 'both');
     }
   }, []);
 
@@ -40,6 +42,7 @@ export function DotSparkSettings() {
     const settings = {
       captureMode,
       chatPreference,
+      naturalPreference,
       ...newSettings
     };
     localStorage.setItem('dotspark-settings', JSON.stringify(settings));
@@ -73,6 +76,11 @@ export function DotSparkSettings() {
   const handleChatPreferenceChange = (preference: 'whatsapp' | 'direct' | 'both') => {
     setChatPreference(preference);
     saveSettings({ chatPreference: preference });
+  };
+
+  const handleNaturalPreferenceChange = (preference: 'voice' | 'text' | 'both') => {
+    setNaturalPreference(preference);
+    saveSettings({ naturalPreference: preference });
     
     const preferenceLabels = {
       whatsapp: "WhatsApp Only",
@@ -440,6 +448,116 @@ export function DotSparkSettings() {
                   </div>
                   <span className={`text-sm font-medium ${
                     chatPreference === 'both' 
+                      ? 'text-white' 
+                      : 'text-gray-900 dark:text-gray-100'
+                  }`}>
+                    Both Options
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Natural Input Preference Settings - Only show when Natural or Hybrid mode is selected */}
+        {(captureMode === 'natural' || captureMode === 'hybrid') && (
+          <div className="space-y-4">
+            <h4 className="text-lg font-semibold text-amber-900 dark:text-amber-100">
+              Natural Input Preferences
+            </h4>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* Voice Only */}
+              <div
+                onClick={() => handleNaturalPreferenceChange('voice')}
+                className={`cursor-pointer rounded-xl p-3 transition-all duration-300 transform hover:scale-102 ${
+                  naturalPreference === 'voice'
+                    ? 'bg-gradient-to-br from-amber-500 to-orange-600 text-white shadow-lg ring-2 ring-amber-300/50'
+                    : 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-amber-300'
+                }`}
+              >
+                <div className="flex flex-col items-center gap-2">
+                  <div className={`p-2 rounded-lg ${
+                    naturalPreference === 'voice' 
+                      ? 'bg-white/20' 
+                      : 'bg-amber-100 dark:bg-amber-900/30'
+                  }`}>
+                    <Mic className={`h-5 w-5 ${
+                      naturalPreference === 'voice' 
+                        ? 'text-white' 
+                        : 'text-amber-600'
+                    }`} />
+                  </div>
+                  <span className={`text-sm font-medium ${
+                    naturalPreference === 'voice' 
+                      ? 'text-white' 
+                      : 'text-gray-900 dark:text-gray-100'
+                  }`}>
+                    Voice Only
+                  </span>
+                </div>
+              </div>
+
+              {/* Text Only */}
+              <div
+                onClick={() => handleNaturalPreferenceChange('text')}
+                className={`cursor-pointer rounded-xl p-3 transition-all duration-300 transform hover:scale-102 ${
+                  naturalPreference === 'text'
+                    ? 'bg-gradient-to-br from-orange-500 to-red-600 text-white shadow-lg ring-2 ring-orange-300/50'
+                    : 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-orange-300'
+                }`}
+              >
+                <div className="flex flex-col items-center gap-2">
+                  <div className={`p-2 rounded-lg ${
+                    naturalPreference === 'text' 
+                      ? 'bg-white/20' 
+                      : 'bg-orange-100 dark:bg-orange-900/30'
+                  }`}>
+                    <Type className={`h-5 w-5 ${
+                      naturalPreference === 'text' 
+                        ? 'text-white' 
+                        : 'text-orange-600'
+                    }`} />
+                  </div>
+                  <span className={`text-sm font-medium ${
+                    naturalPreference === 'text' 
+                      ? 'text-white' 
+                      : 'text-gray-900 dark:text-gray-100'
+                  }`}>
+                    Text Only
+                  </span>
+                </div>
+              </div>
+
+              {/* Both Options */}
+              <div
+                onClick={() => handleNaturalPreferenceChange('both')}
+                className={`cursor-pointer rounded-xl p-3 transition-all duration-300 transform hover:scale-102 ${
+                  naturalPreference === 'both'
+                    ? 'bg-gradient-to-br from-amber-500 to-orange-600 text-white shadow-lg ring-2 ring-amber-300/50'
+                    : 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-amber-300'
+                }`}
+              >
+                <div className="flex flex-col items-center gap-2">
+                  <div className={`p-2 rounded-lg ${
+                    naturalPreference === 'both' 
+                      ? 'bg-white/20' 
+                      : 'bg-amber-100 dark:bg-amber-900/30'
+                  }`}>
+                    <div className="flex items-center gap-1">
+                      <Mic className={`h-4 w-4 ${
+                        naturalPreference === 'both' 
+                          ? 'text-white' 
+                          : 'text-amber-600'
+                      }`} />
+                      <Type className={`h-4 w-4 ${
+                        naturalPreference === 'both' 
+                          ? 'text-white' 
+                          : 'text-amber-600'
+                      }`} />
+                    </div>
+                  </div>
+                  <span className={`text-sm font-medium ${
+                    naturalPreference === 'both' 
                       ? 'text-white' 
                       : 'text-gray-900 dark:text-gray-100'
                   }`}>
