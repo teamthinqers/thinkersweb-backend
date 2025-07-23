@@ -145,6 +145,7 @@ Changelog:
   * Added rotation animations to both wheel and chakra icons for enhanced visual engagement
   * Removed chakra icons from text and voice input screens for cleaner interface design
   * Removed "Create or Save" heading from dot creation interface for streamlined user experience
+  * Enhanced "What would you like to create?" text with gradient styling and improved typography
   * Updated StructuredFloatingDot.tsx with consistent amber/orange gradients across all chakra voice recording layers
   * Fixed creation type selection buttons: double layered rotating circle for wheels, Settings icon for chakras
   * Updated center icons in creation mode display to match standardized icon usage

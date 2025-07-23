@@ -691,7 +691,9 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                     <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-amber-500 to-orange-600 flex items-center justify-center">
                       <div className="w-4 h-4 bg-white rounded-full"></div>
                     </div>
-                    <p className="text-gray-600">What would you like to create?</p>
+                    <h2 className="text-xl font-semibold bg-gradient-to-r from-amber-700 to-orange-700 bg-clip-text text-transparent">
+                      What would you like to create?
+                    </h2>
                   </div>
                   
                   {/* Creation Type Selection */}
