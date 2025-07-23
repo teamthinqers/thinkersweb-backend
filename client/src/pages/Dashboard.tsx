@@ -466,7 +466,7 @@ const Dashboard: React.FC = () => {
         dots: [],
         connections: [],
         position: { x: 750, y: 180 }, // Standalone position, separate from business hierarchy
-        // No chakraId - this is a standalone wheel
+        chakraId: null, // This is a standalone wheel, not a chakra
         createdAt: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000) // 25 days ago
       };
 
@@ -561,6 +561,8 @@ const Dashboard: React.FC = () => {
     const totalDots = displayDots.length;
     
     // Count Wheels and Chakras separately
+    // Wheels: items with chakraId (belonging to a chakra) OR chakraId === null (standalone wheels)
+    // Chakras: items with chakraId === undefined (top-level containers)
     const totalWheels = previewMode ? previewWheels.filter(w => w.chakraId !== undefined).length : wheels.filter(w => w.chakraId !== undefined).length;
     const totalChakras = previewMode ? previewWheels.filter(w => w.chakraId === undefined).length : wheels.filter(w => w.chakraId === undefined).length;
 
