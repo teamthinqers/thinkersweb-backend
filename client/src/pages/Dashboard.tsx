@@ -920,7 +920,9 @@ const Dashboard: React.FC = () => {
                     const wheelCenterY = wheel.position.y;
                     const wheelRadius = 60; // Wheel radius (120px diameter / 2)
                     const dotRadius = 18; // Further reduced radius to ensure dots stay within wheel boundaries
-                    const angle = (dotIndexInWheel * 2 * Math.PI) / dotsInWheel.length;
+                    // Add spacing between dots by using a larger angular step
+                    const spacingFactor = Math.min(dotsInWheel.length / 6, 1.2); // Reduce clustering for fewer dots
+                    const angle = (dotIndexInWheel * 2 * Math.PI * spacingFactor) / dotsInWheel.length;
                     
                     x = wheelCenterX + Math.cos(angle) * dotRadius;
                     y = wheelCenterY + Math.sin(angle) * dotRadius;
@@ -961,7 +963,9 @@ const Dashboard: React.FC = () => {
                       wheelCenterY = wheel.position.y;
                     }
                     const dotRadius = 30; // Further reduced radius to ensure dots stay within wheel boundaries (wheels are larger in real mode)
-                    const angle = (dotIndexInWheel * 2 * Math.PI) / dotsInWheel.length;
+                    // Add spacing between dots by using a larger angular step
+                    const spacingFactor = Math.min(dotsInWheel.length / 6, 1.2); // Reduce clustering for fewer dots
+                    const angle = (dotIndexInWheel * 2 * Math.PI * spacingFactor) / dotsInWheel.length;
                     
                     x = wheelCenterX + Math.cos(angle) * dotRadius;
                     y = wheelCenterY + Math.sin(angle) * dotRadius;
