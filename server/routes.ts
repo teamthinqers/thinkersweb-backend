@@ -726,66 +726,65 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       if (isPreview) {
         // Return preview mode data with proper hierarchical positioning
-        // Business chakra centered at (400, 300)
+        // Creative chakra centered at (400, 300)
         const chakraCenter = { x: 400, y: 300 };
         const chakraRadius = 210; // Half of 420px diameter for preview mode
         
         // Position 3 wheels inside the chakra in triangular arrangement
-        const wheel1 = { x: chakraCenter.x - 80, y: chakraCenter.y - 60 }; // GTM Strategy (top-left)
-        const wheel2 = { x: chakraCenter.x + 80, y: chakraCenter.y - 60 }; // Leadership (top-right)  
-        const wheel3 = { x: chakraCenter.x, y: chakraCenter.y + 80 };     // Product (bottom)
+        const wheel1 = { x: chakraCenter.x - 80, y: chakraCenter.y - 60 }; // Digital Art (top-left)
+        const wheel2 = { x: chakraCenter.x + 80, y: chakraCenter.y - 60 }; // Music Production (top-right)  
+        const wheel3 = { x: chakraCenter.x, y: chakraCenter.y + 80 };     // Creative Writing (bottom)
         
-        // Position dots inside each wheel (5 dots in GTM, 4 dots in each other wheel)
+        // Position dots inside each wheel with frontend naming convention
         const wheelRadius = 50;
         
-        // GTM Strategy wheel dots (5 dots)
-        const gtmDots = [
-          { id: 'preview-dot-1', x: wheel1.x + Math.cos(0) * 30, y: wheel1.y + Math.sin(0) * 30 },
-          { id: 'preview-dot-2', x: wheel1.x + Math.cos(1.26) * 30, y: wheel1.y + Math.sin(1.26) * 30 },
-          { id: 'preview-dot-3', x: wheel1.x + Math.cos(2.51) * 30, y: wheel1.y + Math.sin(2.51) * 30 },
-          { id: 'preview-dot-4', x: wheel1.x + Math.cos(3.77) * 30, y: wheel1.y + Math.sin(3.77) * 30 },
-          { id: 'preview-dot-5', x: wheel1.x + Math.cos(5.03) * 30, y: wheel1.y + Math.sin(5.03) * 30 }
+        // Digital Art wheel dots (5 dots) - using frontend naming pattern
+        const digitalArtDots = [
+          { id: 'preview-dot-0-0', x: wheel1.x + Math.cos(0) * 30, y: wheel1.y + Math.sin(0) * 30 },
+          { id: 'preview-dot-0-1', x: wheel1.x + Math.cos(1.26) * 30, y: wheel1.y + Math.sin(1.26) * 30 },
+          { id: 'preview-dot-0-2', x: wheel1.x + Math.cos(2.51) * 30, y: wheel1.y + Math.sin(2.51) * 30 },
+          { id: 'preview-dot-0-3', x: wheel1.x + Math.cos(3.77) * 30, y: wheel1.y + Math.sin(3.77) * 30 },
+          { id: 'preview-dot-0-4', x: wheel1.x + Math.cos(5.03) * 30, y: wheel1.y + Math.sin(5.03) * 30 }
         ];
         
-        // Leadership wheel dots (4 dots)
-        const leadershipDots = [
-          { id: 'preview-dot-6', x: wheel2.x + Math.cos(0) * 25, y: wheel2.y + Math.sin(0) * 25 },
-          { id: 'preview-dot-7', x: wheel2.x + Math.cos(1.57) * 25, y: wheel2.y + Math.sin(1.57) * 25 },
-          { id: 'preview-dot-8', x: wheel2.x + Math.cos(3.14) * 25, y: wheel2.y + Math.sin(3.14) * 25 },
-          { id: 'preview-dot-9', x: wheel2.x + Math.cos(4.71) * 25, y: wheel2.y + Math.sin(4.71) * 25 }
+        // Music Production wheel dots (4 dots)
+        const musicDots = [
+          { id: 'preview-dot-1-0', x: wheel2.x + Math.cos(0) * 25, y: wheel2.y + Math.sin(0) * 25 },
+          { id: 'preview-dot-1-1', x: wheel2.x + Math.cos(1.57) * 25, y: wheel2.y + Math.sin(1.57) * 25 },
+          { id: 'preview-dot-1-2', x: wheel2.x + Math.cos(3.14) * 25, y: wheel2.y + Math.sin(3.14) * 25 },
+          { id: 'preview-dot-1-3', x: wheel2.x + Math.cos(4.71) * 25, y: wheel2.y + Math.sin(4.71) * 25 }
         ];
         
-        // Product wheel dots (4 dots)  
-        const productDots = [
-          { id: 'preview-dot-10', x: wheel3.x + Math.cos(0) * 25, y: wheel3.y + Math.sin(0) * 25 },
-          { id: 'preview-dot-11', x: wheel3.x + Math.cos(1.57) * 25, y: wheel3.y + Math.sin(1.57) * 25 },
-          { id: 'preview-dot-12', x: wheel3.x + Math.cos(3.14) * 25, y: wheel3.y + Math.sin(3.14) * 25 },
-          { id: 'preview-dot-13', x: wheel3.x + Math.cos(4.71) * 25, y: wheel3.y + Math.sin(4.71) * 25 }
+        // Creative Writing wheel dots (3 dots)  
+        const writingDots = [
+          { id: 'preview-dot-2-0', x: wheel3.x + Math.cos(0) * 25, y: wheel3.y + Math.sin(0) * 25 },
+          { id: 'preview-dot-2-1', x: wheel3.x + Math.cos(2.09) * 25, y: wheel3.y + Math.sin(2.09) * 25 },
+          { id: 'preview-dot-2-2', x: wheel3.x + Math.cos(4.19) * 25, y: wheel3.y + Math.sin(4.19) * 25 }
         ];
         
         // Health dots (scattered individual dots outside chakra)
         const healthDots = [
-          { id: 'preview-dot-14', x: 150, y: 150 },
-          { id: 'preview-dot-15', x: 200, y: 180 },
-          { id: 'preview-dot-16', x: 180, y: 220 },
-          { id: 'preview-dot-17', x: 220, y: 250 },
-          { id: 'preview-dot-18', x: 160, y: 280 }
+          { id: 'preview-dot-health-1-0', x: 150, y: 150 },
+          { id: 'preview-dot-health-1-1', x: 200, y: 180 },
+          { id: 'preview-dot-health-1-2', x: 180, y: 220 },
+          { id: 'preview-dot-health-1-3', x: 220, y: 250 },
+          { id: 'preview-dot-health-2-0', x: 160, y: 280 }
         ];
         
-        // Individual dots (scattered)
-        const individualDots = [
-          { id: 'preview-dot-19', x: 650, y: 150 },
-          { id: 'preview-dot-20', x: 680, y: 200 },
-          { id: 'preview-dot-21', x: 620, y: 240 },
-          { id: 'preview-dot-22', x: 700, y: 180 },
-          { id: 'preview-dot-23', x: 660, y: 280 },
-          { id: 'preview-dot-24', x: 720, y: 250 },
-          { id: 'preview-dot-25', x: 640, y: 320 },
-          { id: 'preview-dot-26', x: 690, y: 350 }
+        // Individual scattered dots
+        const scatteredDots = [
+          { id: 'scattered-1', x: 650, y: 150 },
+          { id: 'scattered-2', x: 680, y: 200 },
+          { id: 'scattered-3', x: 620, y: 240 },
+          { id: 'scattered-4', x: 700, y: 180 },
+          { id: 'scattered-5', x: 660, y: 280 },
+          { id: 'scattered-6', x: 720, y: 250 },
+          { id: 'scattered-7', x: 640, y: 320 },
+          { id: 'scattered-8', x: 690, y: 350 }
         ];
         
         // Combine all dot positions
-        const allDots = [...gtmDots, ...leadershipDots, ...productDots, ...healthDots, ...individualDots];
+        const allDots = [...digitalArtDots, ...musicDots, ...writingDots, ...healthDots, ...scatteredDots];
         const dotPositions = allDots.reduce((acc, dot) => {
           acc[dot.id] = { x: dot.x, y: dot.y };
           return acc;
@@ -794,18 +793,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const previewPositions = {
           dotPositions,
           wheelPositions: {
-            'preview-wheel-0': wheel1, // GTM Strategy 
-            'preview-wheel-1': wheel2, // Leadership Development
-            'preview-wheel-2': wheel3  // Product Innovation
+            'preview-wheel-0': wheel1, // Digital Art & Design 
+            'preview-wheel-1': wheel2, // Music Production & Sound Design
+            'preview-wheel-2': wheel3  // Storytelling & Creative Writing
           },
           chakraPositions: {
-            'preview-chakra-business': chakraCenter
+            'preview-chakra-creative': chakraCenter
           },
           statistics: {
-            totalDots: 26,
+            totalDots: 20,
             totalWheels: 3,
             totalChakras: 1,
-            freeDots: 13 // Health + Individual dots
+            freeDots: 13 // Health + Scattered dots
           }
         };
         
