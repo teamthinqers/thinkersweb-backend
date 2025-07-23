@@ -2038,12 +2038,11 @@ const Dashboard: React.FC = () => {
                       {/* Wheel Flash Card - positioned directly relative to the label */}
                       {hoveredWheel?.id === wheel.id && (
                         <div 
-                          className="absolute bg-white border-2 border-amber-200 rounded-lg p-3 shadow-xl z-[99999] w-64 cursor-pointer"
+                          className="fixed bg-white border-2 border-amber-200 rounded-lg p-3 shadow-xl z-[99999] w-64 cursor-pointer pointer-events-auto"
                           style={{
-                            // Position directly next to the wheel label in browser mode
-                            left: isPWA ? '60px' : '100%',
-                            top: isPWA ? '-20px' : '0px',
-                            marginLeft: isPWA ? '0px' : '8px',
+                            // Position using viewport coordinates
+                            left: isPWA ? `${wheelPosition.x + 60}px` : `${wheelPosition.x + wheelSize + 8}px`,
+                            top: isPWA ? `${wheelPosition.y - 20}px` : `${wheelPosition.y}px`,
                             maxWidth: '280px',
                             zIndex: 99999
                           }}
