@@ -285,12 +285,42 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
       setIsExpanded(true);
       setIsFirstActivation(false);
       
-      // Show options based on user's capture mode preference
-      if (userCaptureMode === 'ai') {
-        setCaptureMode('select'); // Show AI mode options (Direct Chat & WhatsApp)
-      } else {
-        setCaptureMode('select'); // Show Natural mode options (Voice & Text)
+      // Auto-navigate based on user preferences
+      if (userCaptureMode === 'natural') {
+        if (naturalPreference === 'voice') {
+          setCaptureMode('voice');
+          return;
+        } else if (naturalPreference === 'text') {
+          setCaptureMode('text');
+          return;
+        }
+      } else if (userCaptureMode === 'ai') {
+        if (chatPreference === 'direct') {
+          setIsExpanded(false);
+          window.location.href = '/chat';
+          return;
+        } else if (chatPreference === 'whatsapp') {
+          setIsExpanded(false);
+          handleWhatsAppNavigation();
+          return;
+        }
       }
+      
+      // If no specific preference or 'both' is selected, show selection screen
+      setCaptureMode('select');
+    }
+  };
+
+  const handleWhatsAppNavigation = async () => {
+    try {
+      const response = await fetch('/api/whatsapp/contact');
+      const data = await response.json();
+      const defaultMessage = encodeURIComponent("Hi DotSpark, I would need your assistance in saving a dot");
+      const whatsappUrl = `https://wa.me/${data.phoneNumber}?text=${defaultMessage}`;
+      window.location.href = whatsappUrl;
+    } catch (error) {
+      console.error('Failed to get WhatsApp contact:', error);
+      window.location.href = 'https://web.whatsapp.com/';
     }
   };
 
@@ -822,50 +852,30 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                     >
                       <ArrowLeft className="w-4 h-4" />
                     </Button>
-                    <div className="flex items-center gap-2">
-                      {userCaptureMode === 'natural' ? (
-                        <button
-                          onClick={() => {
-                            setUserCaptureMode('ai');
-                            localStorage.setItem('dotCaptureMode', 'ai');
-                            window.dispatchEvent(new StorageEvent('storage', {
-                              key: 'dotCaptureMode',
-                              newValue: 'ai'
-                            }));
-                          }}
-                          className="px-4 py-2 text-sm font-semibold bg-gradient-to-r from-orange-100 to-amber-100 text-orange-700 rounded-full border border-orange-200 hover:from-orange-200 hover:to-amber-200 hover:shadow-md transition-all duration-200 cursor-pointer transform hover:scale-105"
-                        >
-                          Natural Mode ↻
-                        </button>
-                      ) : userCaptureMode === 'ai' ? (
-                        <button
-                          onClick={() => {
-                            setUserCaptureMode('hybrid');
-                            localStorage.setItem('dotCaptureMode', 'hybrid');
-                            window.dispatchEvent(new StorageEvent('storage', {
-                              key: 'dotCaptureMode',
-                              newValue: 'hybrid'
-                            }));
-                          }}
-                          className="px-4 py-2 text-sm font-semibold bg-gradient-to-r from-purple-100 to-violet-100 text-purple-700 rounded-full border border-purple-200 hover:from-purple-200 hover:to-violet-200 hover:shadow-md transition-all duration-200 cursor-pointer transform hover:scale-105"
-                        >
-                          AI Mode ↻
-                        </button>
-                      ) : (
-                        <button
-                          onClick={() => {
-                            setUserCaptureMode('natural');
-                            localStorage.setItem('dotCaptureMode', 'natural');
-                            window.dispatchEvent(new StorageEvent('storage', {
-                              key: 'dotCaptureMode',
-                              newValue: 'natural'
-                            }));
-                          }}
-                          className="px-4 py-2 text-sm font-semibold bg-gradient-to-r from-blue-100 to-teal-100 text-blue-700 rounded-full border border-blue-200 hover:from-blue-200 hover:to-teal-200 hover:shadow-md transition-all duration-200 cursor-pointer transform hover:scale-105"
-                        >
-                          Hybrid Mode ↻
-                        </button>
-                      )}
+                    <div className="flex items-center gap-3">
+                      <Button
+                        variant="ghost"
+                        onClick={() => {
+                          // Navigate to settings page to change preferences
+                          setIsExpanded(false);
+                          window.location.href = '/my-neura';
+                        }}
+                        className="h-8 w-8 p-0 rounded-full hover:bg-gray-100"
+                        title="Change capture preferences"
+                      >
+                        <Settings className="w-4 h-4 text-gray-600" />
+                      </Button>
+                      <div className="text-sm text-gray-600 font-medium">
+                        {userCaptureMode === 'natural' ? (
+                          naturalPreference === 'voice' ? 'Voice Only' :
+                          naturalPreference === 'text' ? 'Text Only' : 'Natural Mode'
+                        ) : userCaptureMode === 'ai' ? (
+                          chatPreference === 'direct' ? 'Direct Chat Only' :
+                          chatPreference === 'whatsapp' ? 'WhatsApp Only' : 'AI Mode'
+                        ) : (
+                          'Hybrid Mode'
+                        )}
+                      </div>
                     </div>
                     <h3 className="text-xl font-semibold text-gray-800">
                       {createType === 'wheel' ? 'Create a Wheel' : createType === 'chakra' ? 'Create a Chakra' : 'Save a Dot'}

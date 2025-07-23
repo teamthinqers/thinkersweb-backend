@@ -137,6 +137,14 @@ DotSpark is a full-stack web application that serves as a personalized learning 
 ## Changelog
 ```
 Changelog:
+- July 23, 2025. COMPLETED intelligent preference-based interface adaptation with settings icon integration:
+  * Enhanced Natural mode with voice, text, and both option preferences in DotSparkSettings component
+  * Implemented automatic interface adaptation - users with specific preferences (voice only/text only) get direct navigation
+  * Added settings icon to floating dot interface for easy preference changes
+  * Auto-navigation logic: voice-only users go directly to voice capture, text-only users go directly to text input
+  * Settings icon redirects to My Neura page for preference modification
+  * Both Natural and AI modes now respect user preferences for streamlined experience
+  * Interface shows current preference status (Voice Only, Text Only, Natural Mode, etc.) in floating dot header
 - July 23, 2025. COMPLETED comprehensive color consistency and icon standardization throughout DotSpark application:
   * FINALIZED color enforcement: all chakra creation interfaces (text and voice modes) now use amber/orange theme exclusively
   * Purple color theme reserved ONLY for AI-related features as per design specifications
