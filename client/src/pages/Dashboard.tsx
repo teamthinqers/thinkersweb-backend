@@ -2038,13 +2038,14 @@ const Dashboard: React.FC = () => {
                       {/* Wheel Flash Card - positioned directly relative to the label */}
                       {hoveredWheel?.id === wheel.id && (
                         <div 
-                          className="absolute bg-white border-2 border-amber-200 rounded-lg p-3 shadow-xl z-50 w-64 cursor-pointer"
+                          className="absolute bg-white border-2 border-amber-200 rounded-lg p-3 shadow-xl z-[99999] w-64 cursor-pointer"
                           style={{
                             // Position directly next to the wheel label in browser mode
                             left: isPWA ? '60px' : '100%',
                             top: isPWA ? '-20px' : '0px',
                             marginLeft: isPWA ? '0px' : '8px',
-                            maxWidth: '280px'
+                            maxWidth: '280px',
+                            zIndex: 99999
                           }}
                           onMouseEnter={(e) => {
                             e.stopPropagation();
