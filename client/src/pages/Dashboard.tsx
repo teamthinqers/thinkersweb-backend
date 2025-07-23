@@ -560,15 +560,7 @@ const Dashboard: React.FC = () => {
     const displayDots = baseDotsToDisplay;
     const totalDots = displayDots.length;
     
-    // Debug: Log dot counts in preview mode
-    if (previewMode) {
-      console.log('Preview mode dot counts:', {
-        totalDotsGenerated: previewDots.length,
-        totalDotsDisplayed: displayDots.length,
-        dotsInWheels: displayDots.filter(d => d.wheelId && d.wheelId !== '').length,
-        individualDots: displayDots.filter(d => !d.wheelId || d.wheelId === '').length
-      });
-    }
+
     
     // Count Wheels and Chakras separately
     // Wheels: items with chakraId (belonging to a chakra) OR chakraId === null (standalone wheels)
@@ -1191,43 +1183,7 @@ const Dashboard: React.FC = () => {
                         }}
                       />
                       
-                      {/* Dotted energy nodes around perimeter */}
-                      <div className="absolute inset-0">
-                        {[...Array(8)].map((_, i) => {
-                          const angle = (i * 45) * (Math.PI / 180);
-                          const radius = wheelRadius * 0.9;
-                          const x = wheelRadius + Math.cos(angle) * radius;
-                          const y = wheelRadius + Math.sin(angle) * radius;
-                          return (
-                            <div
-                              key={i}
-                              className="absolute w-3 h-3 rounded-full animate-ping"
-                              style={{
-                                left: `${x - 6}px`,
-                                top: `${y - 6}px`,
-                                background: wheel.color,
-                                animationDelay: `${i * 0.2}s`,
-                                animationDuration: '2s'
-                              }}
-                            />
-                          );
-                        })}
-                      </div>
-                      
-                      {/* Central chakra symbol */}
-                      <div 
-                        className="absolute inset-0 flex items-center justify-center"
-                      >
-                        <div 
-                          className="w-16 h-16 rounded-full flex items-center justify-center text-white font-bold text-lg animate-pulse"
-                          style={{ 
-                            background: `radial-gradient(circle, ${wheel.color}, ${wheel.color}CC)`,
-                            boxShadow: `0 0 20px ${wheel.color}`
-                          }}
-                        >
-                          ॐ
-                        </div>
-                      </div>
+
                     </div>
                   ) : (
                     /* Regular wheel boundary */
