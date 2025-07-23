@@ -11,6 +11,7 @@ import DotFullView from "@/components/DotFullView";
 import DotFlashCard from "@/components/DotFlashCard";
 import WheelFlashCard from "@/components/WheelFlashCard";
 import WheelFullView from "@/components/WheelFullView";
+import DraggableGrid from "@/components/DraggableGrid";
 import { isRunningAsStandalone } from "@/lib/pwaUtils";
 import { useLocation } from "wouter";
 
@@ -2564,16 +2565,12 @@ const Dashboard: React.FC = () => {
           )}
           
           <div className={`transition-all duration-200 ${showRecentFilter ? 'mt-4' : 'mt-0'}`}>
-            <DotWheelsMap 
-              wheels={wheels} 
-              actualDots={showRecentFilter ? dots.slice(0, recentDotsCount) : dots} 
+            <DraggableGrid 
               showingRecentFilter={showRecentFilter}
               recentCount={recentDotsCount}
               isFullscreen={isMapFullscreen}
               onFullscreenChange={setIsMapFullscreen}
-              setViewFullWheel={setViewFullWheel}
-              previewMode={previewMode}
-              setPreviewMode={setPreviewMode}
+              className="min-h-[500px]"
             />
           </div>
         </div>

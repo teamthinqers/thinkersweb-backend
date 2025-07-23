@@ -718,6 +718,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Drag grid system routes for manual positioning
+  app.use(`${apiPrefix}/drag`, (await import('./routes/drag')).default);
+
   // Grid positioning API endpoints - simplified version using existing entries
   app.get(`${apiPrefix}/grid/positions`, async (req: AuthenticatedRequest, res: Response) => {
     try {
