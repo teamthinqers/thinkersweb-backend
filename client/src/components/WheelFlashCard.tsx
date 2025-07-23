@@ -6,7 +6,7 @@ interface Wheel {
   id: string;
   name: string;
   heading?: string;
-  purpose?: string;
+  goals?: string;
   timeline?: string;
   category?: string;
   color?: string;
@@ -79,9 +79,9 @@ const WheelFlashCard: React.FC<WheelFlashCardProps> = ({ wheel, position, onClos
             {wheel.heading || wheel.name}
           </h3>
           
-          {wheel.purpose && (
+          {wheel.goals && (
             <p className="text-xs text-gray-700 leading-relaxed mb-2 line-clamp-2">
-              {wheel.purpose}
+              {wheel.goals}
             </p>
           )}
           

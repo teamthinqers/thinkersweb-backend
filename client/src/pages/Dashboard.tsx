@@ -222,7 +222,7 @@ const Dashboard: React.FC = () => {
           <h3 className="font-bold text-lg mb-3 text-indigo-800 border-b border-indigo-200 pb-2">
             {wheel.heading}
           </h3>
-          <p className="text-sm text-gray-700 leading-relaxed mb-2">{wheel.purpose}</p>
+          <p className="text-sm text-gray-700 leading-relaxed mb-2">{wheel.goals}</p>
           <div className="mt-2 text-xs text-indigo-700">
             {wheel.createdAt ? new Date(wheel.createdAt).toLocaleString() : 'Preview'}
           </div>
@@ -304,7 +304,7 @@ const Dashboard: React.FC = () => {
         id: 'preview-wheel-parent',
         name: 'Build an Enduring Company',
         heading: 'Build an Enduring Company',
-        purpose: 'Creating a sustainable, innovative business that delivers value to customers while maintaining long-term growth and meaningful impact in the market.',
+        goals: 'Creating a sustainable, innovative business that delivers value to customers while maintaining long-term growth and meaningful impact in the market.',
         timeline: 'Long-term (5+ years)',
         category: 'Business',
         color: '#F59E0B', // Consistent amber theme
@@ -319,7 +319,7 @@ const Dashboard: React.FC = () => {
         id: 'preview-wheel-0',
         name: 'GTM (Go-To-Market)',
         heading: 'GTM (Go-To-Market) Strategy',
-        purpose: 'Developing comprehensive go-to-market strategies including product positioning, customer acquisition, pricing models, and sales funnel optimization for successful product launches.',
+        goals: 'Developing comprehensive go-to-market strategies including product positioning, customer acquisition, pricing models, and sales funnel optimization for successful product launches.',
         timeline: 'Quarterly',
         category: 'Business',
         color: '#F59E0B', // Consistent amber theme
@@ -364,7 +364,7 @@ const Dashboard: React.FC = () => {
         id: 'preview-wheel-1',
         name: 'Strengthen Leadership',
         heading: 'Leadership Development',
-        purpose: 'Building strong leadership capabilities through team management, strategic communication, decision-making frameworks, and vision alignment to drive organizational success.',
+        goals: 'Building strong leadership capabilities through team management, strategic communication, decision-making frameworks, and vision alignment to drive organizational success.',
         timeline: 'Ongoing',
         category: 'Business',
         color: '#F59E0B', // Consistent amber theme
@@ -408,7 +408,7 @@ const Dashboard: React.FC = () => {
         id: 'preview-wheel-2',
         name: 'Product Innovation',
         heading: 'Product Innovation Excellence',
-        purpose: 'Driving continuous product innovation through user research, feature prioritization, technical excellence, and breakthrough development pipelines that deliver exceptional user value.',
+        goals: 'Driving continuous product innovation through user research, feature prioritization, technical excellence, and breakthrough development pipelines that deliver exceptional user value.',
         timeline: 'Monthly',
         category: 'Business',
         color: '#F59E0B', // Consistent amber theme
@@ -452,7 +452,7 @@ const Dashboard: React.FC = () => {
         id: 'preview-wheel-personal',
         name: 'Health & Wellness',
         heading: 'Health & Wellness Mastery',
-        purpose: 'Building sustainable health and wellness habits including consistent routines, regular exercise, balanced nutrition, quality sleep, and effective stress management for optimal life balance.',
+        goals: 'Building sustainable health and wellness habits including consistent routines, regular exercise, balanced nutrition, quality sleep, and effective stress management for optimal life balance.',
         timeline: 'Daily',
         category: 'Personal',
         color: '#EC4899', // Pink theme
@@ -1244,9 +1244,9 @@ const Dashboard: React.FC = () => {
                             <h4 className="font-bold text-lg text-amber-800 border-b border-amber-200 pb-2 mb-3">
                               {wheel.heading || wheel.name}
                             </h4>
-                            {wheel.purpose && (
+                            {wheel.goals && (
                               <p className="text-xs text-gray-600 line-clamp-3">
-                                {wheel.purpose}
+                                {wheel.goals}
                               </p>
                             )}
                             <div className="text-xs text-amber-600 mt-2 font-medium">

@@ -282,7 +282,7 @@ export const wheels = pgTable("wheels", {
   userId: integer("user_id").references(() => users.id).notNull(),
   chakraId: integer("chakra_id").references(() => wheels.id), // For hierarchical wheel structures - wheels belong to a Chakra
   heading: text("heading").notNull(), // Layer 1: Wheel title/name
-  purpose: text("purpose").notNull(), // Layer 2: Purpose description
+  goals: text("goals").notNull(), // Layer 2: Goals description
   timeline: text("timeline").notNull(), // Layer 3: Timeline/deadline
   color: text("color").notNull().default("#8B5CF6"),
   positionX: integer("position_x").default(100).notNull(),

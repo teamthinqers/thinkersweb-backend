@@ -50,7 +50,7 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
   // Voice recording states for wheels
   const [wheelVoiceSteps, setWheelVoiceSteps] = useState({
     heading: '',
-    purpose: '',
+    goals: '',
     timeline: '',
     chakraId: null as number | null
   });
@@ -73,7 +73,7 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
   // Text input states for wheels
   const [wheelInput, setWheelInput] = useState({
     heading: '',
-    purpose: '',
+    goals: '',
     timeline: '',
     chakraId: null as number | null
   });
@@ -82,7 +82,7 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
   const [availableWheels, setAvailableWheels] = useState<Array<{
     id: number;
     heading: string;
-    purpose: string;
+    goals: string;
   }>>([]);
   
   const [isDragging, setIsDragging] = useState(false);
@@ -149,7 +149,7 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
         setAvailableWheels(wheels.map((wheel: any) => ({
           id: wheel.id,
           heading: wheel.heading,
-          purpose: wheel.purpose
+          goals: wheel.goals
         })));
       }
     } catch (error) {
@@ -938,7 +938,7 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                         <option value="">Save as standalone dot</option>
                         {availableWheels.map(wheel => (
                           <option key={wheel.id} value={wheel.id}>
-                            {wheel.heading} - {wheel.purpose.substring(0, 30)}...
+                            {wheel.heading} - {wheel.goals.substring(0, 30)}...
                           </option>
                         ))}
                       </select>
@@ -1038,13 +1038,13 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                         </div>
                         <h5 className={`text-sm font-semibold ${
                           userCaptureMode === 'ai' ? 'text-purple-800' : 'text-amber-800'
-                        }`}>Layer 2: Purpose</h5>
-                        {wheelInput.purpose && <span className="text-xs text-green-600 ml-auto">✓ Done</span>}
+                        }`}>Layer 2: Goals</h5>
+                        {wheelInput.goals && <span className="text-xs text-green-600 ml-auto">✓ Done</span>}
                       </div>
                       <Textarea
-                        value={wheelInput.purpose}
-                        onChange={(e) => setWheelInput(prev => ({ ...prev, purpose: e.target.value }))}
-                        placeholder="Describe the purpose of this wheel..."
+                        value={wheelInput.goals}
+                        onChange={(e) => setWheelInput(prev => ({ ...prev, goals: e.target.value }))}
+                        placeholder="Describe the goals of this wheel..."
                         className={userCaptureMode === 'ai' 
                           ? 'border-purple-200 focus:border-purple-400 focus:ring-purple-400 min-h-[80px]'
                           : 'border-amber-200 focus:border-amber-400 focus:ring-amber-400 min-h-[80px]'
@@ -1056,7 +1056,7 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                           Define what this wheel is meant to organize
                         </span>
                         <span className={userCaptureMode === 'ai' ? 'text-purple-500' : 'text-amber-500'}>
-                          {wheelInput.purpose.length}/300
+                          {wheelInput.goals.length}/300
                         </span>
                       </div>
                     </div>
@@ -1116,7 +1116,7 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                         <option value="">Create as standalone wheel</option>
                         {availableWheels.map(wheel => (
                           <option key={wheel.id} value={wheel.id}>
-                            {wheel.heading} - {wheel.purpose.substring(0, 30)}...
+                            {wheel.heading} - {wheel.goals.substring(0, 30)}...
                           </option>
                         ))}
                       </select>
@@ -1125,7 +1125,7 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                       </p>
                     </div>
 
-                    {wheelInput.heading && wheelInput.purpose && wheelInput.timeline && (
+                    {wheelInput.heading && wheelInput.goals && wheelInput.timeline && (
                       <Button 
                         onClick={() => {
                           toast({
@@ -1237,22 +1237,22 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                         </div>
                         <h5 className={`text-sm font-semibold ${
                           userCaptureMode === 'ai' ? 'text-purple-800' : 'text-amber-800'
-                        }`}>Layer 2: Purpose</h5>
-                        {wheelVoiceSteps.purpose && <span className="text-xs text-green-600 ml-auto">✓ Done</span>}
+                        }`}>Layer 2: Goals</h5>
+                        {wheelVoiceSteps.goals && <span className="text-xs text-green-600 ml-auto">✓ Done</span>}
                       </div>
                       <p className={`text-xs mb-3 ${
                         userCaptureMode === 'ai' ? 'text-purple-700' : 'text-amber-700'
                       }`}>
-                        "Describe the purpose of this wheel. What will it organize?"
+                        "Describe the goals of this wheel. What will it organize?"
                       </p>
                       <Button
                         onClick={() => {
                           toast({
                             title: "Voice recording simulation",
-                            description: "Voice recording started for wheel purpose",
+                            description: "Voice recording started for wheel goals",
                           });
                           setTimeout(() => {
-                            setWheelVoiceSteps(prev => ({ ...prev, purpose: 'A collection of morning routines and thoughts to start the day with clarity and focus' }));
+                            setWheelVoiceSteps(prev => ({ ...prev, goals: 'A collection of morning routines and thoughts to start the day with clarity and focus' }));
                           }, 3000);
                         }}
                         className={`w-full h-10 text-sm text-white ${
@@ -1263,13 +1263,13 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                         disabled={!wheelVoiceSteps.heading}
                       >
                         <Mic className="h-4 w-4 mr-2" />
-                        Record Purpose
+                        Record Goals
                       </Button>
-                      {wheelVoiceSteps.purpose && (
+                      {wheelVoiceSteps.goals && (
                         <div className={`mt-3 p-3 bg-white/80 rounded-lg text-xs border ${
                           userCaptureMode === 'ai' ? 'border-purple-200' : 'border-amber-200'
                         }`}>
-                          {wheelVoiceSteps.purpose.substring(0, 80)}... ({wheelVoiceSteps.purpose.length}/300 charac)
+                          {wheelVoiceSteps.goals.substring(0, 80)}... ({wheelVoiceSteps.goals.length}/300 charac)
                         </div>
                       )}
                     </div>
@@ -1313,7 +1313,7 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                             ? 'bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700'
                             : 'bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700'
                         }`}
-                        disabled={!wheelVoiceSteps.purpose}
+                        disabled={!wheelVoiceSteps.goals}
                       >
                         <Mic className="h-4 w-4 mr-2" />
                         Record Timeline
@@ -1327,7 +1327,7 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                       )}
                     </div>
 
-                    {wheelVoiceSteps.heading && wheelVoiceSteps.purpose && wheelVoiceSteps.timeline && (
+                    {wheelVoiceSteps.heading && wheelVoiceSteps.goals && wheelVoiceSteps.timeline && (
                       <Button 
                         onClick={() => {
                           toast({

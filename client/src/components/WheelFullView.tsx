@@ -8,7 +8,7 @@ interface Wheel {
   id: string;
   name: string;
   heading?: string;
-  purpose?: string;
+  goals?: string;
   timeline?: string;
   category?: string;
   color?: string;
@@ -88,8 +88,8 @@ const WheelFullView: React.FC<WheelFullViewProps> = ({ wheel, isOpen = true, onC
             </p>
           </div>
 
-          {/* Layer 2: Purpose */}
-          {wheel.purpose && (
+          {/* Layer 2: Goals */}
+          {wheel.goals && (
             <div className="bg-gradient-to-br from-amber-50/60 to-orange-50/60 rounded-xl border-2 border-amber-400 p-4">
               <div className="flex items-center gap-2 mb-3">
                 <div className="w-6 h-6 rounded-full bg-gradient-to-r from-amber-600 to-orange-700 flex items-center justify-center">
@@ -97,11 +97,11 @@ const WheelFullView: React.FC<WheelFullViewProps> = ({ wheel, isOpen = true, onC
                 </div>
                 <h3 className="text-lg font-semibold text-amber-800 flex items-center gap-2">
                   <Target className="w-5 h-5 text-amber-600" />
-                  Purpose
+                  Goals
                 </h3>
               </div>
               <p className="text-amber-700 leading-relaxed pl-8">
-                {wheel.purpose}
+                {wheel.goals}
               </p>
             </div>
           )}

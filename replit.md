@@ -129,6 +129,15 @@ Changelog:
   * Updated UI labels and text from "Parent Wheel" to "Chakra" throughout
   * All LSP diagnostics resolved - no compilation errors remain
   * Database migration successfully pushed to production
+- July 23, 2025. COMPLETED comprehensive terminology update: "purpose" → "goals":
+  * Updated database schema: wheels.purpose field → wheels.goals with successful migration
+  * Systematically updated all frontend components (Dashboard.tsx, StructuredFloatingDot.tsx, WheelFullView.tsx, WheelFlashCard.tsx)
+  * Updated all wheel creation interfaces (text and voice capture modes) to use "goals" terminology
+  * Updated all wheel display interfaces, selection dropdowns, and hover cards to use "goals"
+  * Updated layer labels from "Layer 2: Purpose" to "Layer 2: Goals" across all interfaces
+  * Updated button text from "Record Purpose" to "Record Goals" in voice capture
+  * Updated placeholder text and validation messages to use "goals" terminology
+  * All LSP diagnostics resolved - no compilation errors remain
 - June 13, 2025. Initial setup
 - June 20, 2025. Completed intelligent chat workflow system:
   * Updated WhatsApp welcome message to approved version: "Hi ThinQer, please share what's on your mind and I'll organize it into a three-layer dot (Summary, Anchor, Pulse) for you"
