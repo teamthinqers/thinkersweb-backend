@@ -34,7 +34,7 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
   });
   const [isExpanded, setIsExpanded] = useState(false);
   const [captureMode, setCaptureMode] = useState<'select' | 'create-type' | 'text' | 'voice' | 'wheel-text' | 'wheel-voice' | 'chakra-text' | 'chakra-voice' | 'direct-chat' | 'whatsapp'>('select');
-  const [userCaptureMode, setUserCaptureMode] = useState<'natural' | 'ai'>('natural');
+  const [userCaptureMode, setUserCaptureMode] = useState<'natural' | 'ai' | 'hybrid'>('hybrid');
   const [createType, setCreateType] = useState<'dot' | 'wheel' | 'chakra' | null>(null);
   
   // Voice recording states
@@ -112,14 +112,14 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
     const loadCaptureMode = () => {
       const directMode = localStorage.getItem('dotCaptureMode');
       if (directMode) {
-        setUserCaptureMode(directMode as 'natural' | 'ai');
+        setUserCaptureMode(directMode as 'natural' | 'ai' | 'hybrid');
         return;
       }
       
       const savedSettings = localStorage.getItem('dotspark-settings');
       if (savedSettings) {
         const settings = JSON.parse(savedSettings);
-        setUserCaptureMode(settings.captureMode ?? 'natural');
+        setUserCaptureMode(settings.captureMode ?? 'hybrid');
       }
     };
 
@@ -137,7 +137,7 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
     const handleCustomStorageChange = (e: Event) => {
       const storageEvent = e as StorageEvent;
       if (storageEvent.key === 'dotCaptureMode') {
-        setUserCaptureMode(storageEvent.newValue as 'natural' | 'ai');
+        setUserCaptureMode(storageEvent.newValue as 'natural' | 'ai' | 'hybrid');
       }
     };
 
@@ -834,6 +834,20 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                         >
                           Natural Mode ↻
                         </button>
+                      ) : userCaptureMode === 'ai' ? (
+                        <button
+                          onClick={() => {
+                            setUserCaptureMode('hybrid');
+                            localStorage.setItem('dotCaptureMode', 'hybrid');
+                            window.dispatchEvent(new StorageEvent('storage', {
+                              key: 'dotCaptureMode',
+                              newValue: 'hybrid'
+                            }));
+                          }}
+                          className="px-4 py-2 text-sm font-semibold bg-gradient-to-r from-purple-100 to-violet-100 text-purple-700 rounded-full border border-purple-200 hover:from-purple-200 hover:to-violet-200 hover:shadow-md transition-all duration-200 cursor-pointer transform hover:scale-105"
+                        >
+                          AI Mode ↻
+                        </button>
                       ) : (
                         <button
                           onClick={() => {
@@ -844,9 +858,9 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                               newValue: 'natural'
                             }));
                           }}
-                          className="px-4 py-2 text-sm font-semibold bg-gradient-to-r from-purple-100 to-violet-100 text-purple-700 rounded-full border border-purple-200 hover:from-purple-200 hover:to-violet-200 hover:shadow-md transition-all duration-200 cursor-pointer transform hover:scale-105"
+                          className="px-4 py-2 text-sm font-semibold bg-gradient-to-r from-blue-100 to-teal-100 text-blue-700 rounded-full border border-blue-200 hover:from-blue-200 hover:to-teal-200 hover:shadow-md transition-all duration-200 cursor-pointer transform hover:scale-105"
                         >
-                          AI Mode ↻
+                          Hybrid Mode ↻
                         </button>
                       )}
                     </div>
@@ -886,7 +900,7 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                     </p>
                   </div>
                   
-                  {userCaptureMode === 'natural' ? (
+                  {userCaptureMode === 'natural' || userCaptureMode === 'hybrid' ? (
                     <div className="grid grid-cols-2 gap-4">
                       <Button
                         onClick={() => setCaptureMode(
@@ -921,7 +935,9 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                         <span className="text-xl font-semibold">Text</span>
                       </Button>
                     </div>
-                  ) : (
+                  ) : null}
+                  
+                  {userCaptureMode === 'ai' || userCaptureMode === 'hybrid' ? (
                     <div className="grid grid-cols-2 gap-4">
                       <Button
                         onClick={() => {
@@ -961,7 +977,7 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                         <span className="text-xl font-semibold">WhatsApp</span>
                       </Button>
                     </div>
-                  )}
+                  ) : null}
 
                   {isRunningAsStandalone() && (
                     <Button
