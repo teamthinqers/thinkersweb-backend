@@ -836,34 +836,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Simple single wheel test endpoint
-  app.get('/api/test-single-wheel/:dotCount', async (req, res) => {
-    try {
-      const dotCount = parseInt(req.params.dotCount) || 3;
-      const { positionDotsInSingleWheel, validateDotSpacing } = await import('./simple-positioning.js');
-      
-      const wheelCenterX = 400;
-      const wheelCenterY = 300;
-      
-      const positions = positionDotsInSingleWheel(dotCount, wheelCenterX, wheelCenterY);
-      const violations = validateDotSpacing(positions, wheelCenterX, wheelCenterY);
-      
-      return res.json({ 
-        success: true, 
-        data: {
-          dotCount,
-          wheelCenter: { x: wheelCenterX, y: wheelCenterY },
-          wheelRadius: 160,
-          dotPositions: positions,
-          violations,
-          isValid: violations.length === 0
-        }
-      });
-    } catch (error) {
-      console.error('Single wheel test error:', error);
-      return res.status(500).json({ success: false, error: 'Failed to test single wheel' });
-    }
-  });
+
 
   return httpServer;
 }

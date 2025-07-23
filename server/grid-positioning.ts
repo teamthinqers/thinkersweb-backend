@@ -182,7 +182,7 @@ export function positionDotsInWheel(
 ): Position[] {
   const dotRadius = isPreview ? GRID_CONFIG.DOT_RADIUS.PREVIEW : GRID_CONFIG.DOT_RADIUS.REAL;
   const wheelRadius = wheel.radius;
-  const minDotSpacing = dotRadius * 2 + GRID_CONFIG.MIN_SPACING.DOT_TO_DOT; // Ensure dots don't touch
+  const minDotSpacing = dotRadius * 2 + GRID_CONFIG.MIN_SPACING.DOT_TO_DOT; // Ensure dots never touch
   const maxDotDistance = wheelRadius - dotRadius - GRID_CONFIG.MIN_SPACING.DOT_TO_WHEEL_EDGE; // Stay within wheel boundary
   
   if (dots.length === 0) return [];
@@ -190,86 +190,119 @@ export function positionDotsInWheel(
   
   const positions: Position[] = [];
   
-  // Check if dots can fit without overlapping
-  if (maxDotDistance <= 0) {
-    return dots.map(() => ({ ...wheel.position })); // Fallback to center if wheel too small
+  // Validate wheel can accommodate dots
+  if (maxDotDistance <= dotRadius) {
+    return dots.map(() => ({ ...wheel.position })); // All at center if wheel too small
   }
   
   if (dots.length === 2) {
-    // Horizontal alignment with proper spacing
-    const spacing = Math.min(maxDotDistance * 1.4, minDotSpacing);
-    positions.push(
-      { x: wheel.position.x - spacing/2, y: wheel.position.y },
-      { x: wheel.position.x + spacing/2, y: wheel.position.y }
-    );
+    // Side by side with enforced minimum spacing
+    const spacing = Math.max(minDotSpacing, maxDotDistance * 0.8);
+    if (spacing <= maxDotDistance * 2) {
+      positions.push(
+        { x: wheel.position.x - spacing/2, y: wheel.position.y },
+        { x: wheel.position.x + spacing/2, y: wheel.position.y }
+      );
+    } else {
+      // Fallback: vertical alignment
+      positions.push(
+        { x: wheel.position.x, y: wheel.position.y - spacing/2 },
+        { x: wheel.position.x, y: wheel.position.y + spacing/2 }
+      );
+    }
   } else if (dots.length === 3) {
-    // Triangle with enforced spacing
-    const radius = Math.min(maxDotDistance * 0.7, (minDotSpacing * Math.sqrt(3)) / 3);
-    const angles = [-Math.PI/2, Math.PI/6, 5*Math.PI/6];
-    angles.forEach(angle => {
-      positions.push({
-        x: wheel.position.x + Math.cos(angle) * radius,
-        y: wheel.position.y + Math.sin(angle) * radius
-      });
-    });
-  } else if (dots.length === 4) {
-    // Square with diagonal spacing check
-    const diagonal = minDotSpacing * Math.sqrt(2);
-    const spacing = Math.min(maxDotDistance * 1.2, diagonal);
-    positions.push(
-      { x: wheel.position.x - spacing/2, y: wheel.position.y - spacing/2 },
-      { x: wheel.position.x + spacing/2, y: wheel.position.y - spacing/2 },
-      { x: wheel.position.x - spacing/2, y: wheel.position.y + spacing/2 },
-      { x: wheel.position.x + spacing/2, y: wheel.position.y + spacing/2 }
-    );
-  } else {
-    // Circular with collision detection
-    const circumference = 2 * Math.PI * maxDotDistance * 0.8;
-    const requiredSpacing = minDotSpacing * dots.length;
+    // Triangle with strict spacing validation
+    const minTriangleRadius = (minDotSpacing * Math.sqrt(3)) / 3;
+    const radius = Math.max(minTriangleRadius, Math.min(maxDotDistance * 0.6, minTriangleRadius * 1.5));
     
-    if (circumference >= requiredSpacing) {
-      // Safe circular arrangement
-      const angleStep = (2 * Math.PI) / dots.length;
-      const radius = maxDotDistance * 0.8;
-      const startAngle = -Math.PI/2;
-      
-      for (let i = 0; i < dots.length; i++) {
-        const angle = startAngle + i * angleStep;
+    if (radius <= maxDotDistance) {
+      const angles = [-Math.PI/2, Math.PI/6, 5*Math.PI/6];
+      angles.forEach(angle => {
         positions.push({
           x: wheel.position.x + Math.cos(angle) * radius,
           y: wheel.position.y + Math.sin(angle) * radius
         });
-      }
+      });
     } else {
-      // Tighter packing with validation
-      const radius = maxDotDistance * 0.6;
-      const angleStep = (2 * Math.PI) / dots.length;
-      
-      for (let i = 0; i < dots.length; i++) {
-        const angle = i * angleStep;
-        const pos = {
-          x: wheel.position.x + Math.cos(angle) * radius,
-          y: wheel.position.y + Math.sin(angle) * radius
-        };
-        
-        // Validate position doesn't collide with previous dots
-        const hasCollision = positions.some(existingPos => {
-          const distance = Math.sqrt(
-            Math.pow(pos.x - existingPos.x, 2) + 
-            Math.pow(pos.y - existingPos.y, 2)
-          );
-          return distance < minDotSpacing;
+      // Linear fallback if triangle too large
+      const linearSpacing = Math.min(minDotSpacing, maxDotDistance);
+      positions.push(
+        { x: wheel.position.x - linearSpacing, y: wheel.position.y },
+        { x: wheel.position.x, y: wheel.position.y },
+        { x: wheel.position.x + linearSpacing, y: wheel.position.y }
+      );
+    }
+  } else if (dots.length === 4) {
+    // Square with strict diagonal validation
+    const minSquareSpacing = minDotSpacing / Math.sqrt(2);
+    const spacing = Math.max(minSquareSpacing, Math.min(maxDotDistance * 0.7, minSquareSpacing * 2));
+    
+    if (spacing * Math.sqrt(2) <= maxDotDistance) {
+      positions.push(
+        { x: wheel.position.x - spacing/2, y: wheel.position.y - spacing/2 },
+        { x: wheel.position.x + spacing/2, y: wheel.position.y - spacing/2 },
+        { x: wheel.position.x - spacing/2, y: wheel.position.y + spacing/2 },
+        { x: wheel.position.x + spacing/2, y: wheel.position.y + spacing/2 }
+      );
+    } else {
+      // Linear fallback
+      const linearSpacing = Math.min(minDotSpacing, maxDotDistance * 0.8);
+      for (let i = 0; i < 4; i++) {
+        const angle = (i * Math.PI) / 2;
+        positions.push({
+          x: wheel.position.x + Math.cos(angle) * linearSpacing,
+          y: wheel.position.y + Math.sin(angle) * linearSpacing
         });
-        
-        if (!hasCollision) {
-          positions.push(pos);
-        } else {
-          // Push toward center if collision detected
-          positions.push({
-            x: wheel.position.x + Math.cos(angle) * radius * 0.5,
-            y: wheel.position.y + Math.sin(angle) * radius * 0.5
-          });
+      }
+    }
+  } else {
+    // Circular arrangement with strict spacing enforcement
+    const circumference = 2 * Math.PI * maxDotDistance * 0.7;
+    const requiredSpacing = minDotSpacing * dots.length;
+    
+    let radius = maxDotDistance * 0.7;
+    
+    // Check if circumference can accommodate all dots with proper spacing
+    if (circumference < requiredSpacing) {
+      // Try smaller radius
+      radius = requiredSpacing / (2 * Math.PI);
+      if (radius > maxDotDistance) {
+        radius = maxDotDistance * 0.9; // Maximum possible radius
+      }
+    }
+    
+    const angleStep = (2 * Math.PI) / dots.length;
+    const startAngle = -Math.PI/2;
+    
+    for (let i = 0; i < dots.length; i++) {
+      const angle = startAngle + i * angleStep;
+      const candidatePos = {
+        x: wheel.position.x + Math.cos(angle) * radius,
+        y: wheel.position.y + Math.sin(angle) * radius
+      };
+      
+      // Validate this position doesn't collide with existing positions
+      let hasCollision = false;
+      for (const existingPos of positions) {
+        const distance = Math.sqrt(
+          Math.pow(candidatePos.x - existingPos.x, 2) + 
+          Math.pow(candidatePos.y - existingPos.y, 2)
+        );
+        if (distance < minDotSpacing) {
+          hasCollision = true;
+          break;
         }
+      }
+      
+      if (!hasCollision) {
+        positions.push(candidatePos);
+      } else {
+        // Adjust position inward to avoid collision
+        const adjustedRadius = radius * 0.8;
+        positions.push({
+          x: wheel.position.x + Math.cos(angle) * adjustedRadius,
+          y: wheel.position.y + Math.sin(angle) * adjustedRadius
+        });
       }
     }
   }
