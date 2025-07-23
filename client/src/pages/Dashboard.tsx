@@ -1882,6 +1882,26 @@ const Dashboard: React.FC = () => {
               
               const isChakra = wheel.chakraId === undefined;
               
+              // Calculate wheel size for flashcard positioning (same logic as in wheel boundaries section)
+              let wheelSize;
+              if (previewMode) {
+                if (isChakra) {
+                  const childWheels = displayWheels.filter(w => w.chakraId === wheel.id);
+                  wheelSize = getChakraSize('preview', childWheels.length);
+                } else {
+                  const wheelDots = displayDots.filter(d => d.wheelId === wheel.id);
+                  wheelSize = calculateDynamicSizing('preview', wheelDots.length, 'wheels') * 2;
+                }
+              } else {
+                if (isChakra) {
+                  const childWheels = displayWheels.filter(w => w.chakraId === wheel.id);
+                  wheelSize = getChakraSize('real', childWheels.length);
+                } else {
+                  const wheelDots = displayDots.filter(d => d.wheelId === wheel.id);
+                  wheelSize = calculateDynamicSizing('real', wheelDots.length, 'wheels') * 2;
+                }
+              }
+              
               // Calculate the actual wheel label position (not wheel center)
               const labelX = wheelPosition.x; // Label is centered horizontally
               const wheelRadius = wheelSize / 2;
@@ -1889,15 +1909,7 @@ const Dashboard: React.FC = () => {
                 ? (wheelPosition.y - wheelRadius) - 95 // boundary top - 95px (chakra label position)
                 : wheelPosition.y - 75; // Regular wheel: center - 75px
               
-              // Debug logging for chakras
-              if (isChakra && hoveredWheel?.id === wheel.id) {
-                console.log('Chakra debug:', {
-                  wheelName: wheel.name,
-                  wheelCenterY: wheelPosition.y,
-                  calculatedLabelY: labelY,
-                  offset: isChakra ? 95 : 75
-                });
-              }
+
               
               return (
                 <div key={`flashcard-${wheel.id}`}>
