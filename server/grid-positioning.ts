@@ -48,13 +48,13 @@ export const GRID_CONFIG = {
     REAL: 320     // Moderate increase from 185
   },
   
-  // Spacing requirements - proportionally adjusted
+  // Spacing requirements - enforced minimums for collision avoidance
   MIN_SPACING: {
-    DOT_TO_DOT: 20,           // Moderate increase from 15
-    WHEEL_TO_WHEEL: 100,      // Moderate increase from 80
-    CHAKRA_TO_CHAKRA: 180,    // Moderate increase from 150
-    DOT_TO_WHEEL_EDGE: 15,    // Moderate increase from 10
-    WHEEL_TO_CHAKRA_EDGE: 30  // Moderate increase from 20
+    DOT_TO_DOT: 25,           // Ensure dots never touch
+    WHEEL_TO_WHEEL: 120,      // Ensure wheel boundaries never overlap
+    CHAKRA_TO_CHAKRA: 200,    // Ensure chakras never overlap  
+    DOT_TO_WHEEL_EDGE: 20,    // Keep dots well within wheel boundaries
+    WHEEL_TO_CHAKRA_EDGE: 40  // Keep wheels well within chakra boundaries
   },
   
   // Maximum dots per wheel before creating new wheel
@@ -173,7 +173,7 @@ export function generateRandomPosition(
 }
 
 /**
- * Position dots in optimal arrangement within a wheel
+ * Position dots with strict collision detection and wheel boundary enforcement
  */
 export function positionDotsInWheel(
   dots: any[],
@@ -182,29 +182,30 @@ export function positionDotsInWheel(
 ): Position[] {
   const dotRadius = isPreview ? GRID_CONFIG.DOT_RADIUS.PREVIEW : GRID_CONFIG.DOT_RADIUS.REAL;
   const wheelRadius = wheel.radius;
-  const safeRadius = wheelRadius - dotRadius - GRID_CONFIG.MIN_SPACING.DOT_TO_WHEEL_EDGE;
+  const minDotSpacing = dotRadius * 2 + GRID_CONFIG.MIN_SPACING.DOT_TO_DOT; // Ensure dots don't touch
+  const maxDotDistance = wheelRadius - dotRadius - GRID_CONFIG.MIN_SPACING.DOT_TO_WHEEL_EDGE; // Stay within wheel boundary
   
   if (dots.length === 0) return [];
   if (dots.length === 1) return [{ ...wheel.position }]; // Center for single dot
   
   const positions: Position[] = [];
   
-  if (safeRadius <= 0) {
-    // Wheel too small, stack dots at center
-    return dots.map(() => ({ ...wheel.position }));
+  // Check if dots can fit without overlapping
+  if (maxDotDistance <= 0) {
+    return dots.map(() => ({ ...wheel.position })); // Fallback to center if wheel too small
   }
   
   if (dots.length === 2) {
-    // Side by side for 2 dots
-    const spacing = Math.min(safeRadius * 1.2, dotRadius * 2 + GRID_CONFIG.MIN_SPACING.DOT_TO_DOT);
+    // Horizontal alignment with proper spacing
+    const spacing = Math.min(maxDotDistance * 1.4, minDotSpacing);
     positions.push(
       { x: wheel.position.x - spacing/2, y: wheel.position.y },
       { x: wheel.position.x + spacing/2, y: wheel.position.y }
     );
   } else if (dots.length === 3) {
-    // Triangle for 3 dots
-    const radius = safeRadius * 0.6;
-    const angles = [-Math.PI/2, Math.PI/6, 5*Math.PI/6]; // Top, bottom-right, bottom-left
+    // Triangle with enforced spacing
+    const radius = Math.min(maxDotDistance * 0.7, (minDotSpacing * Math.sqrt(3)) / 3);
+    const angles = [-Math.PI/2, Math.PI/6, 5*Math.PI/6];
     angles.forEach(angle => {
       positions.push({
         x: wheel.position.x + Math.cos(angle) * radius,
@@ -212,26 +213,64 @@ export function positionDotsInWheel(
       });
     });
   } else if (dots.length === 4) {
-    // Square arrangement for 4 dots
-    const spacing = safeRadius * 0.8;
+    // Square with diagonal spacing check
+    const diagonal = minDotSpacing * Math.sqrt(2);
+    const spacing = Math.min(maxDotDistance * 1.2, diagonal);
     positions.push(
-      { x: wheel.position.x - spacing/2, y: wheel.position.y - spacing/2 }, // Top-left
-      { x: wheel.position.x + spacing/2, y: wheel.position.y - spacing/2 }, // Top-right
-      { x: wheel.position.x - spacing/2, y: wheel.position.y + spacing/2 }, // Bottom-left
-      { x: wheel.position.x + spacing/2, y: wheel.position.y + spacing/2 }  // Bottom-right
+      { x: wheel.position.x - spacing/2, y: wheel.position.y - spacing/2 },
+      { x: wheel.position.x + spacing/2, y: wheel.position.y - spacing/2 },
+      { x: wheel.position.x - spacing/2, y: wheel.position.y + spacing/2 },
+      { x: wheel.position.x + spacing/2, y: wheel.position.y + spacing/2 }
     );
   } else {
-    // Circular arrangement for 5+ dots with better spacing
-    const angleStep = (2 * Math.PI) / dots.length;
-    const radius = safeRadius * 0.75; // Use more of the available space
-    const startAngle = -Math.PI/2; // Start from top
+    // Circular with collision detection
+    const circumference = 2 * Math.PI * maxDotDistance * 0.8;
+    const requiredSpacing = minDotSpacing * dots.length;
     
-    for (let i = 0; i < dots.length; i++) {
-      const angle = startAngle + i * angleStep;
-      positions.push({
-        x: wheel.position.x + Math.cos(angle) * radius,
-        y: wheel.position.y + Math.sin(angle) * radius
-      });
+    if (circumference >= requiredSpacing) {
+      // Safe circular arrangement
+      const angleStep = (2 * Math.PI) / dots.length;
+      const radius = maxDotDistance * 0.8;
+      const startAngle = -Math.PI/2;
+      
+      for (let i = 0; i < dots.length; i++) {
+        const angle = startAngle + i * angleStep;
+        positions.push({
+          x: wheel.position.x + Math.cos(angle) * radius,
+          y: wheel.position.y + Math.sin(angle) * radius
+        });
+      }
+    } else {
+      // Tighter packing with validation
+      const radius = maxDotDistance * 0.6;
+      const angleStep = (2 * Math.PI) / dots.length;
+      
+      for (let i = 0; i < dots.length; i++) {
+        const angle = i * angleStep;
+        const pos = {
+          x: wheel.position.x + Math.cos(angle) * radius,
+          y: wheel.position.y + Math.sin(angle) * radius
+        };
+        
+        // Validate position doesn't collide with previous dots
+        const hasCollision = positions.some(existingPos => {
+          const distance = Math.sqrt(
+            Math.pow(pos.x - existingPos.x, 2) + 
+            Math.pow(pos.y - existingPos.y, 2)
+          );
+          return distance < minDotSpacing;
+        });
+        
+        if (!hasCollision) {
+          positions.push(pos);
+        } else {
+          // Push toward center if collision detected
+          positions.push({
+            x: wheel.position.x + Math.cos(angle) * radius * 0.5,
+            y: wheel.position.y + Math.sin(angle) * radius * 0.5
+          });
+        }
+      }
     }
   }
   
@@ -239,7 +278,7 @@ export function positionDotsInWheel(
 }
 
 /**
- * Position wheels within a chakra with optimal spacing
+ * Position wheels within chakra with strict non-overlapping enforcement
  */
 export function positionWheelsInChakra(
   wheels: any[],
@@ -250,7 +289,8 @@ export function positionWheelsInChakra(
   
   const wheelRadius = GRID_CONFIG.WHEEL_RADIUS.BASE;
   const chakraRadius = chakra.radius;
-  const safeRadius = chakraRadius - wheelRadius - GRID_CONFIG.MIN_SPACING.WHEEL_TO_CHAKRA_EDGE;
+  const minWheelSpacing = wheelRadius * 2 + GRID_CONFIG.MIN_SPACING.WHEEL_TO_WHEEL; // Prevent wheel overlap
+  const maxWheelDistance = chakraRadius - wheelRadius - GRID_CONFIG.MIN_SPACING.WHEEL_TO_CHAKRA_EDGE; // Stay within chakra
   
   if (wheels.length === 1) {
     return [{ ...chakra.position }]; // Center for single wheel
@@ -258,23 +298,23 @@ export function positionWheelsInChakra(
   
   const positions: Position[] = [];
   
-  if (safeRadius <= 0) {
-    // Chakra too small, stack wheels at center
-    return wheels.map(() => ({ ...chakra.position }));
+  if (maxWheelDistance <= 0) {
+    return wheels.map(() => ({ ...chakra.position })); // Fallback if chakra too small
   }
   
-  // For multiple wheels, use strategic positioning with better spacing
   if (wheels.length === 2) {
-    // Side by side with generous spacing
-    const spacing = safeRadius * 1.2;
+    // Horizontal with enforced spacing
+    const spacing = Math.max(minWheelSpacing, maxWheelDistance * 1.0);
     positions.push(
       { x: chakra.position.x - spacing/2, y: chakra.position.y },
       { x: chakra.position.x + spacing/2, y: chakra.position.y }
     );
   } else if (wheels.length === 3) {
-    // Triangle arrangement with optimal spacing
-    const radius = safeRadius * 0.7;
-    const angles = [-Math.PI/2, Math.PI/6, 5*Math.PI/6]; // Top, bottom-right, bottom-left
+    // Triangle with collision avoidance
+    const minTriangleRadius = (minWheelSpacing * Math.sqrt(3)) / 3;
+    const radius = Math.max(minTriangleRadius, Math.min(maxWheelDistance * 0.6, minTriangleRadius * 1.5));
+    const angles = [-Math.PI/2, Math.PI/6, 5*Math.PI/6];
+    
     angles.forEach(angle => {
       positions.push({
         x: chakra.position.x + Math.cos(angle) * radius,
@@ -282,26 +322,58 @@ export function positionWheelsInChakra(
       });
     });
   } else if (wheels.length === 4) {
-    // Square arrangement for 4 wheels
-    const spacing = safeRadius * 1.0;
+    // Square with diagonal validation
+    const minSquareSpacing = minWheelSpacing / Math.sqrt(2);
+    const spacing = Math.max(minSquareSpacing, Math.min(maxWheelDistance * 0.8, minSquareSpacing * 1.5));
+    
     positions.push(
-      { x: chakra.position.x - spacing/2, y: chakra.position.y - spacing/2 }, // Top-left
-      { x: chakra.position.x + spacing/2, y: chakra.position.y - spacing/2 }, // Top-right
-      { x: chakra.position.x - spacing/2, y: chakra.position.y + spacing/2 }, // Bottom-left
-      { x: chakra.position.x + spacing/2, y: chakra.position.y + spacing/2 }  // Bottom-right
+      { x: chakra.position.x - spacing/2, y: chakra.position.y - spacing/2 },
+      { x: chakra.position.x + spacing/2, y: chakra.position.y - spacing/2 },
+      { x: chakra.position.x - spacing/2, y: chakra.position.y + spacing/2 },
+      { x: chakra.position.x + spacing/2, y: chakra.position.y + spacing/2 }
     );
   } else {
-    // Circular arrangement for 5+ wheels using more space
+    // Circular with strict collision detection
+    const circumference = 2 * Math.PI * maxWheelDistance * 0.7;
+    const requiredSpacing = minWheelSpacing * wheels.length;
+    
+    let radius = maxWheelDistance * 0.7;
+    
+    // Adjust radius if spacing is insufficient
+    if (circumference < requiredSpacing) {
+      radius = requiredSpacing / (2 * Math.PI);
+      // If still too large for chakra, use maximum possible
+      radius = Math.min(radius, maxWheelDistance * 0.9);
+    }
+    
     const angleStep = (2 * Math.PI) / wheels.length;
-    const radius = safeRadius * 0.8; // Use more of the available space
-    const startAngle = -Math.PI/2; // Start from top
+    const startAngle = -Math.PI/2;
     
     for (let i = 0; i < wheels.length; i++) {
       const angle = startAngle + i * angleStep;
-      positions.push({
+      const pos = {
         x: chakra.position.x + Math.cos(angle) * radius,
         y: chakra.position.y + Math.sin(angle) * radius
+      };
+      
+      // Validate no collision with previous wheels
+      const hasCollision = positions.some(existingPos => {
+        const distance = Math.sqrt(
+          Math.pow(pos.x - existingPos.x, 2) + 
+          Math.pow(pos.y - existingPos.y, 2)
+        );
+        return distance < minWheelSpacing;
       });
+      
+      if (!hasCollision) {
+        positions.push(pos);
+      } else {
+        // Adjust to safe position
+        positions.push({
+          x: chakra.position.x + Math.cos(angle) * radius * 0.8,
+          y: chakra.position.y + Math.sin(angle) * radius * 0.8
+        });
+      }
     }
   }
   
@@ -309,7 +381,7 @@ export function positionWheelsInChakra(
 }
 
 /**
- * Position chakras across the grid using quadrant distribution
+ * Position chakras with strict non-overlapping enforcement
  */
 export function positionChakrasInGrid(
   chakras: any[],
@@ -319,41 +391,82 @@ export function positionChakrasInGrid(
   if (chakras.length === 0) return [];
   
   const chakraRadius = isPreview ? GRID_CONFIG.CHAKRA_RADIUS.PREVIEW : GRID_CONFIG.CHAKRA_RADIUS.REAL;
+  const minChakraDistance = chakraRadius * 2 + GRID_CONFIG.MIN_SPACING.CHAKRA_TO_CHAKRA;
   const positions: Position[] = [];
-  const usedQuadrants: number[] = [];
   
   for (let i = 0; i < chakras.length; i++) {
-    let quadrantIndex: number;
+    let bestPosition: Position | null = null;
+    let attempts = 0;
+    const maxAttempts = 50;
     
-    // Select next available quadrant
-    if (usedQuadrants.length < GRID_CONFIG.CHAKRA_QUADRANTS.length) {
-      do {
-        quadrantIndex = Math.floor(Math.random() * GRID_CONFIG.CHAKRA_QUADRANTS.length);
-      } while (usedQuadrants.includes(quadrantIndex));
-      usedQuadrants.push(quadrantIndex);
-    } else {
-      // All quadrants used, distribute randomly
-      quadrantIndex = Math.floor(Math.random() * GRID_CONFIG.CHAKRA_QUADRANTS.length);
+    // Try to find a non-overlapping position
+    while (!bestPosition && attempts < maxAttempts) {
+      let candidatePos: Position;
+      
+      if (attempts < 20) {
+        // First try quadrant-based positioning
+        const quadrantIndex = attempts % GRID_CONFIG.CHAKRA_QUADRANTS.length;
+        const quadrant = GRID_CONFIG.CHAKRA_QUADRANTS[quadrantIndex];
+        
+        const quadrantWidth = (bounds.width - 2 * bounds.marginX) / 2;
+        const quadrantHeight = (bounds.height - 2 * bounds.marginY) / 2;
+        
+        const randomOffsetX = (Math.random() - 0.5) * quadrantWidth * 0.4;
+        const randomOffsetY = (Math.random() - 0.5) * quadrantHeight * 0.4;
+        
+        const baseX = bounds.marginX + quadrant.x * (bounds.width - 2 * bounds.marginX);
+        const baseY = bounds.marginY + quadrant.y * (bounds.height - 2 * bounds.marginY);
+        
+        candidatePos = {
+          x: Math.max(bounds.marginX + chakraRadius, 
+              Math.min(bounds.width - bounds.marginX - chakraRadius, baseX + randomOffsetX)),
+          y: Math.max(bounds.marginY + chakraRadius, 
+              Math.min(bounds.height - bounds.marginY - chakraRadius, baseY + randomOffsetY))
+        };
+      } else {
+        // Then try random positioning
+        candidatePos = {
+          x: bounds.marginX + chakraRadius + Math.random() * (bounds.width - 2 * bounds.marginX - 2 * chakraRadius),
+          y: bounds.marginY + chakraRadius + Math.random() * (bounds.height - 2 * bounds.marginY - 2 * chakraRadius)
+        };
+      }
+      
+      // Check for collisions with existing chakras
+      const hasCollision = positions.some(existingPos => {
+        const distance = Math.sqrt(
+          Math.pow(candidatePos.x - existingPos.x, 2) + 
+          Math.pow(candidatePos.y - existingPos.y, 2)
+        );
+        return distance < minChakraDistance;
+      });
+      
+      if (!hasCollision) {
+        bestPosition = candidatePos;
+      }
+      
+      attempts++;
     }
     
-    const quadrant = GRID_CONFIG.CHAKRA_QUADRANTS[quadrantIndex];
+    // If no position found, use grid fallback
+    if (!bestPosition) {
+      const cols = Math.ceil(Math.sqrt(chakras.length));
+      const row = Math.floor(i / cols);
+      const col = i % cols;
+      
+      const spacingX = Math.max((bounds.width - 2 * bounds.marginX) / Math.max(1, cols - 1), minChakraDistance);
+      const spacingY = Math.max((bounds.height - 2 * bounds.marginY) / Math.max(1, Math.ceil(chakras.length / cols) - 1), minChakraDistance);
+      
+      bestPosition = {
+        x: bounds.marginX + chakraRadius + (col * spacingX),
+        y: bounds.marginY + chakraRadius + (row * spacingY)
+      };
+      
+      // Ensure it's still within bounds
+      bestPosition.x = Math.min(bestPosition.x, bounds.width - bounds.marginX - chakraRadius);
+      bestPosition.y = Math.min(bestPosition.y, bounds.height - bounds.marginY - chakraRadius);
+    }
     
-    // Add randomization within quadrant
-    const quadrantWidth = (bounds.width - 2 * bounds.marginX) / 2;
-    const quadrantHeight = (bounds.height - 2 * bounds.marginY) / 2;
-    
-    const randomOffsetX = (Math.random() - 0.5) * quadrantWidth * 0.6;
-    const randomOffsetY = (Math.random() - 0.5) * quadrantHeight * 0.6;
-    
-    const baseX = bounds.marginX + quadrant.x * (bounds.width - 2 * bounds.marginX);
-    const baseY = bounds.marginY + quadrant.y * (bounds.height - 2 * bounds.marginY);
-    
-    positions.push({
-      x: Math.max(bounds.marginX + chakraRadius, 
-          Math.min(bounds.width - bounds.marginX - chakraRadius, baseX + randomOffsetX)),
-      y: Math.max(bounds.marginY + chakraRadius, 
-          Math.min(bounds.height - bounds.marginY - chakraRadius, baseY + randomOffsetY))
-    });
+    positions.push(bestPosition);
   }
   
   return positions;
