@@ -313,7 +313,7 @@ const Dashboard: React.FC = () => {
         purpose: 'Creating a sustainable, innovative business that delivers value to customers while maintaining long-term growth and meaningful impact in the market.',
         timeline: 'Long-term (5+ years)',
         category: 'Business',
-        color: '#D97706', // Amber theme for Chakras
+        color: '#B45309', // Dark amber theme for Chakras
         dots: [],
         connections: ['preview-wheel-0', 'preview-wheel-1', 'preview-wheel-2'],
         position: { x: 400, y: 300 }, // Centered to encompass the three wheels below
@@ -329,7 +329,7 @@ const Dashboard: React.FC = () => {
         goals: 'Developing comprehensive go-to-market strategies including product positioning, customer acquisition, pricing models, and sales funnel optimization for successful product launches.',
         timeline: 'Quarterly',
         category: 'Business',
-        color: '#F59E0B', // Consistent amber theme
+        color: '#EA580C', // Orange theme for wheels
         dots: [],
         connections: ['preview-wheel-1'],
         position: { x: 350, y: 260 }, // Position inside Chakra - left wheel
@@ -374,7 +374,7 @@ const Dashboard: React.FC = () => {
         goals: 'Building strong leadership capabilities through team management, strategic communication, decision-making frameworks, and vision alignment to drive organizational success.',
         timeline: 'Ongoing',
         category: 'Business',
-        color: '#F59E0B', // Consistent amber theme
+        color: '#EA580C', // Orange theme for wheels
         dots: [],
         connections: ['preview-wheel-0', 'preview-wheel-2'],
         position: { x: 450, y: 260 }, // Position inside Chakra - right wheel
@@ -418,7 +418,7 @@ const Dashboard: React.FC = () => {
         goals: 'Driving continuous product innovation through user research, feature prioritization, technical excellence, and breakthrough development pipelines that deliver exceptional user value.',
         timeline: 'Monthly',
         category: 'Business',
-        color: '#F59E0B', // Consistent amber theme
+        color: '#EA580C', // Orange theme for wheels
         dots: [],
         connections: ['preview-wheel-1'],
         position: { x: 400, y: 340 }, // Position inside Chakra - bottom wheel
@@ -462,7 +462,7 @@ const Dashboard: React.FC = () => {
         goals: 'Building sustainable health and wellness habits including consistent routines, regular exercise, balanced nutrition, quality sleep, and effective stress management for optimal life balance.',
         timeline: 'Daily',
         category: 'Personal',
-        color: '#D97706', // Amber theme for consistency
+        color: '#EA580C', // Orange theme for wheels
         dots: [],
         connections: [],
         position: { x: 750, y: 180 }, // Standalone position, separate from business hierarchy
@@ -996,8 +996,8 @@ const Dashboard: React.FC = () => {
                       top: `${y}px`,
                       background: `linear-gradient(135deg, ${
                         dot.sourceType === 'voice' 
-                          ? '#F59E0B, #EA580C' // Amber gradient for voice
-                          : '#D97706, #92400E' // Orange gradient for text
+                          ? '#F59E0B, #D97706' // Light amber gradient for voice dots
+                          : '#F59E0B, #D97706' // Light amber gradient for text dots
                       })`,
                       pointerEvents: 'auto'
                     }}
