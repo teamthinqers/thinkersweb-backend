@@ -25,36 +25,36 @@ export interface GridBounds {
   marginY: number;
 }
 
-// Enhanced grid configuration for better space utilization
+// Balanced grid configuration for optimal space utilization
 export const GRID_CONFIG = {
-  // Grid dimensions - larger to utilize available space
-  TOTAL_WIDTH: 2000,
-  TOTAL_HEIGHT: 1400,
-  MARGIN_X: 150,
-  MARGIN_Y: 150,
+  // Grid dimensions - moderately increased for better space usage
+  TOTAL_WIDTH: 1800,
+  TOTAL_HEIGHT: 1200,
+  MARGIN_X: 120,
+  MARGIN_Y: 120,
   
-  // Element sizes - significantly larger for better visibility and spacing
+  // Element sizes - moderately increased for better visibility
   DOT_RADIUS: {
-    PREVIEW: 45,  // Increased from 25
-    REAL: 60      // Increased from 35
+    PREVIEW: 35,  // Moderate increase from 25
+    REAL: 45      // Moderate increase from 35
   },
   WHEEL_RADIUS: {
-    BASE: 200,    // Increased from 120
-    MIN: 160,     // Increased from 100
-    MAX: 250      // Increased from 150
+    BASE: 160,    // Moderate increase from 120
+    MIN: 130,     // Moderate increase from 100
+    MAX: 200      // Moderate increase from 150
   },
   CHAKRA_RADIUS: {
-    PREVIEW: 350, // Increased from 210 (700px diameter)
-    REAL: 400     // Increased from 185 (800px diameter)
+    PREVIEW: 280, // Moderate increase from 210
+    REAL: 320     // Moderate increase from 185
   },
   
-  // Spacing requirements - proportionally increased
+  // Spacing requirements - proportionally adjusted
   MIN_SPACING: {
-    DOT_TO_DOT: 25,           // Increased from 15
-    WHEEL_TO_WHEEL: 120,      // Increased from 80
-    CHAKRA_TO_CHAKRA: 200,    // Increased from 150
-    DOT_TO_WHEEL_EDGE: 20,    // Increased from 10
-    WHEEL_TO_CHAKRA_EDGE: 40  // Increased from 20
+    DOT_TO_DOT: 20,           // Moderate increase from 15
+    WHEEL_TO_WHEEL: 100,      // Moderate increase from 80
+    CHAKRA_TO_CHAKRA: 180,    // Moderate increase from 150
+    DOT_TO_WHEEL_EDGE: 15,    // Moderate increase from 10
+    WHEEL_TO_CHAKRA_EDGE: 30  // Moderate increase from 20
   },
   
   // Maximum dots per wheel before creating new wheel

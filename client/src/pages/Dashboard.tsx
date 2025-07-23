@@ -511,20 +511,20 @@ const Dashboard: React.FC = () => {
     );
   };
 
-  // Enhanced Grid Configuration - Dramatically larger elements for better space utilization
+  // Balanced Grid Configuration - Moderate increases for better space utilization
   const calculateDynamicSizing = (mode: 'preview' | 'real', contentCount: number, contentType: 'dots' | 'wheels') => {
     const baseConfig = {
       preview: {
-        wheelRadius: { base: 200, min: 160, max: 250 }, // Significantly increased from 60
-        dotRadius: { base: 45, min: 35, max: 60 }, // Increased from 25
-        chakraRadius: { base: 700, min: 600, max: 800 }, // Increased from 420
-        safetyBuffer: 50
+        wheelRadius: { base: 120, min: 100, max: 150 }, // Moderate increase from 60
+        dotRadius: { base: 35, min: 28, max: 45 }, // Moderate increase from 25
+        chakraRadius: { base: 560, min: 500, max: 620 }, // Moderate increase from 420
+        safetyBuffer: 40
       },
       real: {
-        wheelRadius: { base: 250, min: 200, max: 300 }, // Significantly increased from 75
-        dotRadius: { base: 60, min: 45, max: 80 }, // Increased from 35
-        chakraRadius: { base: 800, min: 700, max: 900 }, // Increased from 370
-        safetyBuffer: 60
+        wheelRadius: { base: 150, min: 120, max: 180 }, // Moderate increase from 75
+        dotRadius: { base: 45, min: 35, max: 60 }, // Moderate increase from 35
+        chakraRadius: { base: 640, min: 580, max: 700 }, // Moderate increase from 370
+        safetyBuffer: 50
       }
     };
 
@@ -557,21 +557,21 @@ const Dashboard: React.FC = () => {
     return config.wheelRadius.base;
   };
 
-  // Enhanced chakra sizing for much better wheel accommodation
+  // Balanced chakra sizing for better wheel accommodation
   const getChakraSize = (mode: 'preview' | 'real', wheelsCount: number) => {
     const baseConfig = {
-      preview: { base: 700, min: 600, max: 800 }, // Dramatically increased from 420
-      real: { base: 800, min: 700, max: 900 } // Dramatically increased from 370
+      preview: { base: 560, min: 500, max: 620 }, // Moderate increase from 420
+      real: { base: 640, min: 580, max: 700 } // Moderate increase from 370
     };
     
     const config = baseConfig[mode];
     
     if (wheelsCount <= 1) {
-      return config.base - 100; // Smaller for single wheel
+      return config.base - 60; // Smaller for single wheel
     } else if (wheelsCount <= 3) {
       return config.base;
     } else if (wheelsCount <= 5) {
-      return Math.min(config.max, config.base + 50);
+      return Math.min(config.max, config.base + 30);
     } else {
       return config.max;
     }
@@ -595,7 +595,7 @@ const Dashboard: React.FC = () => {
     const [hoveredDot, setHoveredDot] = useState<Dot | null>(null);
     const [hoveredWheel, setHoveredWheel] = useState<Wheel | null>(null);
     // previewMode is now passed as props from parent component
-    const [zoom, setZoom] = useState(0.4); // Reduced default zoom to accommodate larger elements
+    const [zoom, setZoom] = useState(0.6); // Restored balanced zoom level
     const gridContainerRef = useRef<HTMLDivElement>(null);
     const [dragStart, setDragStart] = useState<{ x: number; y: number } | null>(null);
     const [offset, setOffset] = useState({ x: 0, y: 0 });
@@ -1401,7 +1401,7 @@ const Dashboard: React.FC = () => {
     // Reset view function for unified transform-based navigation
     const resetView = () => {
       setOffset({ x: 0, y: 0 });
-      setZoom(0.5); // Adjusted zoom for larger elements and better overview
+      setZoom(0.6); // Restored balanced zoom level
     };
 
     // Unified drag handlers for both browser and PWA
@@ -1659,10 +1659,10 @@ const Dashboard: React.FC = () => {
           <div 
             className="relative transition-transform duration-100 ease-out"
             style={{ 
-              width: isPWA ? '2000px' : `${2000 * zoom}px`, 
-              height: isPWA ? '1400px' : `${1400 * zoom}px`,
-              minWidth: isPWA ? '2000px' : 'auto',
-              minHeight: isPWA ? '1400px' : 'auto',
+              width: isPWA ? '1800px' : `${1800 * zoom}px`, 
+              height: isPWA ? '1200px' : `${1200 * zoom}px`,
+              minWidth: isPWA ? '1800px' : 'auto',
+              minHeight: isPWA ? '1200px' : 'auto',
               transform: `translate(${offset.x}px, ${offset.y}px) scale(${zoom})`,
               transformOrigin: 'center center'
             }}
