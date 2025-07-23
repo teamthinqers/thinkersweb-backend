@@ -940,7 +940,7 @@ const Dashboard: React.FC = () => {
         color: '#EA580C',
         dots: [],
         connections: ['preview-wheel-growth-2'],
-        position: { x: 320, y: 720 }, // Top-left in growth chakra
+        position: { x: 300, y: 720 }, // Top-left in growth chakra
         chakraId: 'preview-chakra-growth',
         createdAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000)
       };
@@ -980,7 +980,7 @@ const Dashboard: React.FC = () => {
         color: '#EA580C',
         dots: [],
         connections: ['preview-wheel-growth-3'],
-        position: { x: 480, y: 720 }, // Top-right in growth chakra
+        position: { x: 500, y: 720 }, // Top-right in growth chakra
         chakraId: 'preview-chakra-growth',
         createdAt: new Date(Date.now() - 11 * 24 * 60 * 60 * 1000)
       };
@@ -1021,7 +1021,7 @@ const Dashboard: React.FC = () => {
         color: '#EA580C',
         dots: [],
         connections: ['preview-wheel-growth-4'],
-        position: { x: 350, y: 880 }, // Bottom-left in growth chakra
+        position: { x: 300, y: 880 }, // Bottom-left in growth chakra
         chakraId: 'preview-chakra-growth',
         createdAt: new Date(Date.now() - 9 * 24 * 60 * 60 * 1000)
       };
@@ -1061,7 +1061,7 @@ const Dashboard: React.FC = () => {
         color: '#EA580C',
         dots: [],
         connections: [],
-        position: { x: 450, y: 880 }, // Bottom-right in growth chakra
+        position: { x: 500, y: 880 }, // Bottom-right in growth chakra
         chakraId: 'preview-chakra-growth',
         createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
       };
