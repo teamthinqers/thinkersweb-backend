@@ -1393,7 +1393,10 @@ const Dashboard: React.FC = () => {
                 Total Dots: {dots.length}
               </div>
               <div className="px-3 py-1 bg-orange-100 text-orange-800 rounded-full font-medium">
-                Total Wheels: {wheels.filter(w => w.dots && w.dots.length > 0).length}
+                Total Wheels: {wheels.filter(w => w.dots && w.dots.length > 0 && w.chakraId !== null).length}
+              </div>
+              <div className="px-3 py-1 bg-purple-100 text-purple-800 rounded-full font-medium">
+                Total Chakras: {wheels.filter(w => w.chakraId === null).length}
               </div>
             </div>
           </div>

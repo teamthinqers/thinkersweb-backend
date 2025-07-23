@@ -128,6 +128,8 @@ Changelog:
   * Maintained proper database architecture where Chakras are wheels with chakraId = null
   * Applied consistent purple color coding (#8B5CF6) for Chakras vs amber/orange for regular wheels
   * Preview now accurately demonstrates: individual dots → wheels (9 dots) → Chakras (multiple wheels)
+  * Added comprehensive three-tier counting system: Total Dots, Total Wheels (chakraId !== null), Total Chakras (chakraId === null)
+  * Chakra count displays with purple theme to match Chakra color coding throughout the application
 - July 23, 2025. COMPLETED comprehensive terminology update: "parent wheel" → "Chakra":
   * Updated database schema: parentWheelId → chakraId field in wheels table
   * Updated backend routes and API endpoints to use chakraId consistently
