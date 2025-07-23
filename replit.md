@@ -118,9 +118,31 @@ DotSpark is a full-stack web application that serves as a personalized learning 
 - **CDN**: Static asset optimization
 - **Monitoring**: Built-in health checks and logging
 
+## Standard Grid Configuration
+
+### Dot Positioning Standards
+- **Preview Mode (120px wheel diameter)**: 25px radius for ≤3 dots, minimum 20px for larger wheels
+- **Real Mode (150px wheel diameter)**: 35px radius for ≤3 dots, minimum 28px for larger wheels
+- **Wheel boundaries**: 60px radius (preview), 75px radius (real mode)
+- **Safety buffer**: 35-40px ensures dots stay within dotted wheel circles with proper spacing
+- **Dynamic scaling**: `Math.max(minRadius, baseRadius - dotsInWheel.length * 2)` for larger wheels
+
+### Visual Hierarchy Standards
+- **Dots**: Light amber gradient (#F59E0B to #D97706) - individual cognitive elements
+- **Wheels**: Orange (#EA580C) - mid-level groupings of 9+ dots
+- **Chakras**: Dark amber (#B45309) - top-level containers with multi-layer energy effects
+- **Energy effects**: Rotating outer ring (20s), pulsing middle ring, steady inner core
+- **AI features**: Purple theme (#A855F7, #7C3AED) reserved exclusively for AI-related functionality
+
 ## Changelog
 ```
 Changelog:
+- July 23, 2025. FINALIZED optimal dot positioning standards for consistent user grid experience:
+  * Established balanced dot radius: 25px (preview) and 35px (real mode) for ≤3 dots per wheel
+  * Implemented dynamic scaling for larger wheels: minimum 20px/28px with automatic reduction
+  * Achieved optimal spacing: dots properly spaced within wheel boundaries without clustering
+  * Created 35-40px safety buffer ensuring dots stay within dotted wheel circles
+  * Documented standard configuration for consistent grid experience across all user-generated content
 - July 23, 2025. ENHANCED chakra visual design with sophisticated multi-layer energy system:
   * Replaced solid chakra circle with advanced multi-layer energy effect featuring rotating energy rings
   * Implemented three-layer energy system: outer rotating ring (20s rotation), middle pulsing ring with glow, inner core with steady glow

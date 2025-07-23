@@ -236,6 +236,20 @@ const Dashboard: React.FC = () => {
     );
   };
 
+  // Standard Grid Configuration Constants
+  const GRID_CONFIG = {
+    preview: {
+      wheelRadius: 60, // 120px diameter
+      dotRadius: { base: 25, min: 20, reduction: 2 }, // For ≤3 dots: 25px, min 20px
+      safetyBuffer: 35 // 60 - 25 = 35px buffer
+    },
+    real: {
+      wheelRadius: 75, // 150px diameter  
+      dotRadius: { base: 35, min: 28, reduction: 2 }, // For ≤3 dots: 35px, min 28px
+      safetyBuffer: 40 // 75 - 35 = 40px buffer
+    }
+  };
+
   const DotWheelsMap: React.FC<{ 
     wheels: Wheel[], 
     actualDots: Dot[], 
@@ -918,8 +932,9 @@ const Dashboard: React.FC = () => {
                     const wheelCenterX = wheel.position.x;
                     const wheelCenterY = wheel.position.y;
                     const wheelRadius = 60; // Wheel radius (120px diameter / 2)
-                    // Balanced radius for proper spacing within wheel boundaries
-                    const dotRadius = dotsInWheel.length <= 3 ? 25 : Math.max(20, 35 - dotsInWheel.length * 2); // Balanced radius for spacing and containment
+                    // Use standard grid configuration for consistent user experience
+                    const config = GRID_CONFIG.preview;
+                    const dotRadius = dotsInWheel.length <= 3 ? config.dotRadius.base : Math.max(config.dotRadius.min, config.dotRadius.base + 10 - dotsInWheel.length * config.dotRadius.reduction);
                     const angle = (dotIndexInWheel * 2 * Math.PI) / dotsInWheel.length;
                     
                     x = wheelCenterX + Math.cos(angle) * dotRadius;
@@ -960,8 +975,9 @@ const Dashboard: React.FC = () => {
                       wheelCenterX = wheel.position.x;
                       wheelCenterY = wheel.position.y;
                     }
-                    // Balanced radius for proper spacing within wheel boundaries in real mode
-                    const dotRadius = dotsInWheel.length <= 3 ? 35 : Math.max(28, 50 - dotsInWheel.length * 2); // Balanced radius for spacing and containment
+                    // Use standard grid configuration for consistent user experience in real mode
+                    const config = GRID_CONFIG.real;
+                    const dotRadius = dotsInWheel.length <= 3 ? config.dotRadius.base : Math.max(config.dotRadius.min, config.dotRadius.base + 15 - dotsInWheel.length * config.dotRadius.reduction);
                     const angle = (dotIndexInWheel * 2 * Math.PI) / dotsInWheel.length;
                     
                     x = wheelCenterX + Math.cos(angle) * dotRadius;
