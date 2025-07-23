@@ -1884,7 +1884,20 @@ const Dashboard: React.FC = () => {
               
               // Calculate the actual wheel label position (not wheel center)
               const labelX = wheelPosition.x; // Label is centered horizontally
-              const labelY = wheelPosition.y - (isChakra ? 95 : 75); // Label offset from wheel center
+              const wheelRadius = wheelSize / 2;
+              const labelY = isChakra 
+                ? (wheelPosition.y - wheelRadius) - 95 // boundary top - 95px (chakra label position)
+                : wheelPosition.y - 75; // Regular wheel: center - 75px
+              
+              // Debug logging for chakras
+              if (isChakra && hoveredWheel?.id === wheel.id) {
+                console.log('Chakra debug:', {
+                  wheelName: wheel.name,
+                  wheelCenterY: wheelPosition.y,
+                  calculatedLabelY: labelY,
+                  offset: isChakra ? 95 : 75
+                });
+              }
               
               return (
                 <div key={`flashcard-${wheel.id}`}>
