@@ -726,20 +726,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       if (isPreview) {
         // Return preview mode data with proper hierarchical positioning
-        // Creative chakra centered at (400, 300)
+        // Business chakra centered at (400, 300)
         const chakraCenter = { x: 400, y: 300 };
         const chakraRadius = 210; // Half of 420px diameter for preview mode
         
         // Position 3 wheels inside the chakra in triangular arrangement
-        const wheel1 = { x: chakraCenter.x - 80, y: chakraCenter.y - 60 }; // Digital Art (top-left)
-        const wheel2 = { x: chakraCenter.x + 80, y: chakraCenter.y - 60 }; // Music Production (top-right)  
-        const wheel3 = { x: chakraCenter.x, y: chakraCenter.y + 80 };     // Creative Writing (bottom)
+        const wheel1 = { x: chakraCenter.x - 80, y: chakraCenter.y - 60 }; // GTM Strategy (top-left)
+        const wheel2 = { x: chakraCenter.x + 80, y: chakraCenter.y - 60 }; // Leadership (top-right)  
+        const wheel3 = { x: chakraCenter.x, y: chakraCenter.y + 80 };     // Product (bottom)
         
         // Position dots inside each wheel with frontend naming convention
         const wheelRadius = 50;
         
-        // Digital Art wheel dots (5 dots) - using frontend naming pattern
-        const digitalArtDots = [
+        // GTM Strategy wheel dots (5 dots) - using frontend naming pattern
+        const gtmDots = [
           { id: 'preview-dot-0-0', x: wheel1.x + Math.cos(0) * 30, y: wheel1.y + Math.sin(0) * 30 },
           { id: 'preview-dot-0-1', x: wheel1.x + Math.cos(1.26) * 30, y: wheel1.y + Math.sin(1.26) * 30 },
           { id: 'preview-dot-0-2', x: wheel1.x + Math.cos(2.51) * 30, y: wheel1.y + Math.sin(2.51) * 30 },
@@ -747,16 +747,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
           { id: 'preview-dot-0-4', x: wheel1.x + Math.cos(5.03) * 30, y: wheel1.y + Math.sin(5.03) * 30 }
         ];
         
-        // Music Production wheel dots (4 dots)
-        const musicDots = [
+        // Leadership wheel dots (4 dots)
+        const leadershipDots = [
           { id: 'preview-dot-1-0', x: wheel2.x + Math.cos(0) * 25, y: wheel2.y + Math.sin(0) * 25 },
           { id: 'preview-dot-1-1', x: wheel2.x + Math.cos(1.57) * 25, y: wheel2.y + Math.sin(1.57) * 25 },
           { id: 'preview-dot-1-2', x: wheel2.x + Math.cos(3.14) * 25, y: wheel2.y + Math.sin(3.14) * 25 },
           { id: 'preview-dot-1-3', x: wheel2.x + Math.cos(4.71) * 25, y: wheel2.y + Math.sin(4.71) * 25 }
         ];
         
-        // Creative Writing wheel dots (3 dots)  
-        const writingDots = [
+        // Product Innovation wheel dots (3 dots)  
+        const productDots = [
           { id: 'preview-dot-2-0', x: wheel3.x + Math.cos(0) * 25, y: wheel3.y + Math.sin(0) * 25 },
           { id: 'preview-dot-2-1', x: wheel3.x + Math.cos(2.09) * 25, y: wheel3.y + Math.sin(2.09) * 25 },
           { id: 'preview-dot-2-2', x: wheel3.x + Math.cos(4.19) * 25, y: wheel3.y + Math.sin(4.19) * 25 }
@@ -784,7 +784,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         ];
         
         // Combine all dot positions
-        const allDots = [...digitalArtDots, ...musicDots, ...writingDots, ...healthDots, ...scatteredDots];
+        const allDots = [...gtmDots, ...leadershipDots, ...productDots, ...healthDots, ...scatteredDots];
         const dotPositions = allDots.reduce((acc, dot) => {
           acc[dot.id] = { x: dot.x, y: dot.y };
           return acc;
@@ -793,12 +793,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const previewPositions = {
           dotPositions,
           wheelPositions: {
-            'preview-wheel-0': wheel1, // Digital Art & Design 
-            'preview-wheel-1': wheel2, // Music Production & Sound Design
-            'preview-wheel-2': wheel3  // Storytelling & Creative Writing
+            'preview-wheel-0': wheel1, // GTM Strategy 
+            'preview-wheel-1': wheel2, // Leadership Development
+            'preview-wheel-2': wheel3  // Product Innovation
           },
           chakraPositions: {
-            'preview-chakra-creative': chakraCenter
+            'preview-chakra-business': chakraCenter
           },
           statistics: {
             totalDots: 20,

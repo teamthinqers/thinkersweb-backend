@@ -648,49 +648,49 @@ const Dashboard: React.FC = () => {
       const previewDots: Dot[] = [];
       const previewWheels: Wheel[] = [];
 
-      // Chakra - top-level creative skills theme that encompasses the three wheels
-      const creativeChakra: Wheel = {
-        id: 'preview-chakra-creative',
-        name: 'Master Creative Skills',
-        heading: 'Master Creative Skills',
-        goals: 'Developing comprehensive creative abilities across multiple disciplines including digital art, music production, and storytelling to express ideas and build innovative projects.',
-        purpose: 'Developing comprehensive creative abilities across multiple disciplines including digital art, music production, and storytelling to express ideas and build innovative projects.',
-        timeline: 'Ongoing (2-3 years)',
-        category: 'Creative',
+      // Chakra - top-level business theme that encompasses the three wheels
+      const businessChakra: Wheel = {
+        id: 'preview-chakra-business',
+        name: 'Build an Enduring Company',
+        heading: 'Build an Enduring Company',
+        goals: 'Creating a sustainable, innovative business that delivers value to customers while maintaining long-term growth and meaningful impact in the market.',
+        purpose: 'Creating a sustainable, innovative business that delivers value to customers while maintaining long-term growth and meaningful impact in the market.',
+        timeline: 'Long-term (5+ years)',
+        category: 'Business',
         color: '#B45309', // Dark amber theme for Chakras
         dots: [],
         connections: ['preview-wheel-0', 'preview-wheel-1', 'preview-wheel-2'],
-        position: { x: 300, y: 200 }, // Creative chakra - top-left area
+        position: { x: 300, y: 200 }, // Business chakra - top-left area
         chakraId: undefined, // This makes it a Chakra (top-level)
         createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) // 30 days ago
       };
 
-      // First creative wheel - Digital Art (inside Chakra)
+      // First business wheel - GTM (inside Chakra)
       const firstSparkGroup: Wheel = {
         id: 'preview-wheel-0',
-        name: 'Digital Art Mastery',
-        heading: 'Digital Art & Design',
-        goals: 'Building comprehensive digital art skills including illustration, animation, UI/UX design, and visual storytelling using modern tools and techniques.',
-        timeline: 'Monthly',
-        category: 'Creative',
+        name: 'GTM (Go-To-Market)',
+        heading: 'GTM (Go-To-Market) Strategy',
+        goals: 'Developing comprehensive go-to-market strategies including product positioning, customer acquisition, pricing models, and sales funnel optimization for successful product launches.',
+        timeline: 'Quarterly',
+        category: 'Business',
         color: '#EA580C', // Orange theme for wheels
         dots: [],
         connections: ['preview-wheel-1'],
-        position: { x: 250, y: 140 }, // Position inside Creative Chakra - top-left wheel
-        chakraId: 'preview-chakra-creative',
+        position: { x: 250, y: 140 }, // Position inside Business Chakra - top-left wheel
+        chakraId: 'preview-chakra-business',
         createdAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000) // 15 days ago
       };
 
       const firstSparkHeadings = [
-        'Digital Illustration', 'Character Design', 'UI/UX Mastery', 'Animation Skills', 'Visual Storytelling'
+        'Product-Market Fit', 'Customer Segments', 'Value Proposition', 'Sales Funnel', 'Pricing Strategy'
       ];
 
       const firstSparkSummaries = [
-        'Learning digital illustration techniques with advanced brush work and composition',
-        'Developing unique character designs with personality and visual appeal',
-        'Mastering UI/UX principles for intuitive and beautiful interface design',
-        'Building animation skills for motion graphics and interactive experiences',
-        'Crafting compelling visual narratives that communicate ideas effectively'
+        'Validating product-market fit through customer interviews and usage metrics',
+        'Identifying and targeting high-value customer segments for focused growth',
+        'Crafting compelling value propositions that resonate with target markets',
+        'Building efficient sales funnels that convert prospects to customers',
+        'Developing competitive pricing strategies that maximize revenue and adoption'
       ];
 
       for (let i = 0; i < 5; i++) {
@@ -710,31 +710,31 @@ const Dashboard: React.FC = () => {
       }
       previewWheels.push(firstSparkGroup);
 
-      // Second creative wheel - Music Production (inside Chakra)
+      // Second business wheel - Leadership (inside Chakra)
       const secondSparkGroup: Wheel = {
         id: 'preview-wheel-1',
-        name: 'Music Production',
-        heading: 'Music Production & Sound Design',
-        goals: 'Developing music production skills including composition, mixing, sound design, and audio engineering to create original music and soundscapes.',
-        timeline: 'Weekly',
-        category: 'Creative',
+        name: 'Strengthen Leadership',
+        heading: 'Leadership Development',
+        goals: 'Building strong leadership capabilities through team management, strategic communication, decision-making frameworks, and vision alignment to drive organizational success.',
+        timeline: 'Ongoing',
+        category: 'Business',
         color: '#EA580C', // Orange theme for wheels
         dots: [],
         connections: ['preview-wheel-0', 'preview-wheel-2'],
-        position: { x: 350, y: 140 }, // Position inside Creative Chakra - top-right wheel
-        chakraId: 'preview-chakra-creative',
+        position: { x: 350, y: 140 }, // Position inside Business Chakra - top-right wheel
+        chakraId: 'preview-chakra-business',
         createdAt: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000) // 20 days ago
       };
 
       const secondSparkHeadings = [
-        'Beat Making', 'Melody Creation', 'Sound Design', 'Audio Mixing'
+        'Team Building', 'Communication', 'Decision Making', 'Vision Setting'
       ];
 
       const secondSparkSummaries = [
-        'Creating dynamic rhythms and drum patterns that drive musical energy',
-        'Composing memorable melodies that evoke emotion and capture attention',
-        'Designing unique sounds and textures using synthesizers and samplers',
-        'Balancing audio elements to achieve professional, polished recordings'
+        'Building high-performing teams through trust and clear role definition',
+        'Developing authentic communication styles that inspire and motivate teams',
+        'Making strategic decisions under uncertainty with confidence and clarity',
+        'Setting compelling visions that align team efforts toward common goals'
       ];
 
       for (let i = 0; i < 4; i++) {
@@ -754,30 +754,30 @@ const Dashboard: React.FC = () => {
       }
       previewWheels.push(secondSparkGroup);
 
-      // Third creative wheel - Storytelling & Writing (inside Chakra)
+      // Third business wheel - Product Development (inside Chakra)
       const thirdBusinessWheel: Wheel = {
         id: 'preview-wheel-2',
-        name: 'Creative Writing',
-        heading: 'Storytelling & Creative Writing',
-        goals: 'Mastering storytelling techniques including narrative structure, character development, dialogue writing, and world-building to create engaging content across different mediums.',
-        timeline: 'Bi-weekly',
-        category: 'Creative',
+        name: 'Product Innovation',
+        heading: 'Product Innovation Excellence',
+        goals: 'Driving continuous product innovation through user research, feature prioritization, technical excellence, and breakthrough development pipelines that deliver exceptional user value.',
+        timeline: 'Monthly',
+        category: 'Business',
         color: '#EA580C', // Orange theme for wheels
         dots: [],
         connections: ['preview-wheel-1'],
-        position: { x: 300, y: 280 }, // Position inside Creative Chakra - bottom center wheel
-        chakraId: 'preview-chakra-creative',
+        position: { x: 300, y: 280 }, // Position inside Business Chakra - bottom center wheel
+        chakraId: 'preview-chakra-business',
         createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000) // 10 days ago
       };
 
       const thirdSparkHeadings = [
-        'Story Structure', 'Character Development', 'World Building'
+        'User Research', 'Feature Priority', 'Tech Excellence'
       ];
 
       const thirdSparkSummaries = [
-        'Mastering narrative structure with compelling beginning, middle, and end arcs',
-        'Creating memorable characters with depth, motivation, and authentic dialogue',
-        'Building immersive fictional worlds with consistent rules and rich details'
+        'Understanding user needs through research methods and usability testing',
+        'Prioritizing features based on impact analysis and resource availability',
+        'Building technical excellence through code quality and architectural decisions'
       ];
 
       for (let i = 0; i < 3; i++) {
@@ -785,7 +785,7 @@ const Dashboard: React.FC = () => {
           id: `preview-dot-2-${i}`,
           oneWordSummary: thirdSparkHeadings[i],
           summary: thirdSparkSummaries[i],
-          anchor: `Creative insights about ${thirdSparkHeadings[i].toLowerCase()} and storytelling techniques`,
+          anchor: `Strategic insights about ${thirdSparkHeadings[i].toLowerCase()} and product excellence`,
           pulse: emotions[Math.floor(Math.random() * emotions.length)],
           wheelId: thirdBusinessWheel.id,
           timestamp: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
@@ -1253,7 +1253,7 @@ const Dashboard: React.FC = () => {
       previewWheels.push(educationWheel);
 
       // Add Chakra after all child wheels are defined
-      previewWheels.push(creativeChakra);
+      previewWheels.push(businessChakra);
 
       // Add scattered unorganized dots across the grid to show diverse thinking
       const scatteredHeadings = [
