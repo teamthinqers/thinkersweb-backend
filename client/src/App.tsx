@@ -10,6 +10,7 @@ import Insights from "@/pages/Insights";
 import Favorites from "@/pages/Favorites";
 import Network from "@/pages/Network";
 import LandingPage from "@/pages/LandingPage";
+import AboutPage from "@/pages/AboutPage";
 import LogoPage from "@/pages/LogoPage";
 import AuthPage from "@/pages/auth-page";
 import Settings from "@/pages/Settings";
@@ -171,7 +172,8 @@ function Router() {
   
   return (
     <Switch>
-      <Route path="/" component={LandingPage} />
+      <Route path="/" component={ChatPage} />
+      <Route path="/about" component={AboutPage} />
       <Route path="/auth" component={AuthPage} />
       
       {/* Dashboard route - allow anonymous viewing */}

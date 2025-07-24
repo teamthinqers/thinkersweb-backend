@@ -4,13 +4,19 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useToast } from '@/hooks/use-toast';
-import { Send, Loader2, ArrowLeft } from 'lucide-react';
+import { Send, Loader2, ArrowLeft, Menu, Brain, Users, Settings, BarChart2, User, MessageSquare, Home, Sparkles, Mic, MicOff } from 'lucide-react';
 import { Link } from 'wouter';
 import { useAuth } from '@/hooks/use-auth';
 import { UsageLimitMessage } from '@/components/ui/usage-limit-message';
 import { hasExceededLimit, getLimitMessage, incrementUsageCount, isFirstChat, markFirstChatDone } from '@/lib/usageLimits';
 import { neuraStorage } from '@/lib/neuraStorage';
 import axios from 'axios';
+import { 
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetClose 
+} from "@/components/ui/sheet";
 
 type Message = {
   id: string;
@@ -34,12 +40,13 @@ export default function ChatPage() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      content: 'Hey! I\'m DotSpark AI. I\'m here to help you capture your thoughts as structured dots. Share what\'s on your mind and I\'ll organize it into a three-layer dot (Summary, Anchor, Pulse) for you.',
+      content: 'Welcome to DotSpark! 🌟 I\'m your AI companion, ready to help you capture, organize, and transform your thoughts into powerful insights. What\'s on your mind today?',
       isUser: false,
       timestamp: new Date(),
     },
   ]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
   const [predictiveResponse, setPredictiveResponse] = useState<string>('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
@@ -255,34 +262,141 @@ export default function ChatPage() {
   };
 
   return (
-    <div className="flex h-[calc(100vh-4rem)] flex-col">
-      <Card className="flex-1 flex flex-col mx-auto w-full max-w-3xl border-none shadow-none">
-        <CardHeader className="pb-2 flex flex-row items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={() => window.history.back()} 
-              className="h-8 w-8 p-0"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              <span className="sr-only">Back</span>
-            </Button>
-            <CardTitle className="text-xl">DotSpark AI - Save Dots</CardTitle>
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 dark:from-slate-900 dark:to-slate-800">
+      {/* Enhanced Header with Hamburger Menu */}
+      <header className="sticky top-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-amber-200/50 dark:border-slate-700">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            {/* Left: Hamburger Menu */}
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="sm" className="hover:bg-amber-100 dark:hover:bg-slate-800">
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="w-80 bg-gradient-to-b from-amber-50 to-orange-50 dark:from-slate-900 dark:to-slate-800">
+                <div className="flex flex-col h-full">
+                  {/* Header */}
+                  <div className="flex items-center gap-3 pb-6 border-b border-amber-200 dark:border-slate-700">
+                    <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center">
+                      <Brain className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <h2 className="font-bold text-lg text-gray-900 dark:text-white">DotSpark</h2>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">AI Companion</p>
+                    </div>
+                  </div>
+                  
+                  {/* Navigation Menu */}
+                  <nav className="flex-1 pt-6">
+                    <div className="space-y-2">
+                      <Link href="/dashboard">
+                        <Button variant="ghost" className="w-full justify-start gap-3 hover:bg-amber-100 dark:hover:bg-slate-800">
+                          <BarChart2 className="w-5 h-5" />
+                          <span>Dashboard</span>
+                        </Button>
+                      </Link>
+                      <Link href="/my-neura">
+                        <Button variant="ghost" className="w-full justify-start gap-3 hover:bg-amber-100 dark:hover:bg-slate-800">
+                          <Brain className="w-5 h-5" />
+                          <span>My Neura</span>
+                        </Button>
+                      </Link>
+                      <Link href="/social">
+                        <Button variant="ghost" className="w-full justify-start gap-3 hover:bg-amber-100 dark:hover:bg-slate-800">
+                          <Users className="w-5 h-5" />
+                          <span>Social</span>
+                        </Button>
+                      </Link>
+                      <Link href="/profile">
+                        <Button variant="ghost" className="w-full justify-start gap-3 hover:bg-amber-100 dark:hover:bg-slate-800">
+                          <User className="w-5 h-5" />
+                          <span>Profile</span>
+                        </Button>
+                      </Link>
+                      <Link href="/settings">
+                        <Button variant="ghost" className="w-full justify-start gap-3 hover:bg-amber-100 dark:hover:bg-slate-800">
+                          <Settings className="w-5 h-5" />
+                          <span>Settings</span>
+                        </Button>
+                      </Link>
+                      <Link href="/about">
+                        <Button variant="ghost" className="w-full justify-start gap-3 hover:bg-amber-100 dark:hover:bg-slate-800">
+                          <Home className="w-5 h-5" />
+                          <span>About</span>
+                        </Button>
+                      </Link>
+                    </div>
+                  </nav>
+                  
+                  {/* User Info */}
+                  {user && (
+                    <div className="pt-6 border-t border-amber-200 dark:border-slate-700">
+                      <div className="flex items-center gap-3">
+                        <Avatar className="h-10 w-10">
+                          <AvatarImage src={user.photoURL || undefined} alt="User" />
+                          <AvatarFallback>
+                            {user.displayName?.[0]?.toUpperCase() || user.email?.[0]?.toUpperCase() || 'U'}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
+                            {user.displayName || 'User'}
+                          </p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                            {user.email}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </SheetContent>
+            </Sheet>
+
+            {/* Center: DotSpark Logo & Title */}
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center">
+                <Sparkles className="w-5 h-5 text-white animate-pulse" />
+              </div>
+              <h1 className="text-xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
+                DotSpark
+              </h1>
+            </div>
+
+            {/* Right: User Avatar */}
+            {user && (
+              <Avatar className="h-8 w-8">
+                <AvatarImage src={user.photoURL || undefined} alt="User" />
+                <AvatarFallback>
+                  {user.displayName?.[0]?.toUpperCase() || user.email?.[0]?.toUpperCase() || 'U'}
+                </AvatarFallback>
+              </Avatar>
+            )}
           </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            asChild
-            className="text-sm"
-          >
-            <Link href="/">Home</Link>
-          </Button>
-        </CardHeader>
+        </div>
+      </header>
+
+      {/* Main Chat Interface */}
+      <div className="max-w-4xl mx-auto px-4 py-6">
+        {limitExceeded && (
+          <UsageLimitMessage 
+            message={limitMessage}
+            className="mb-6"
+          />
+        )}
         
-        <UsageLimitMessage isLimitExceeded={limitExceeded} message={limitMessage} />
-        
-        <CardContent className="flex-1 overflow-y-auto pb-0">
+        <Card className="min-h-[calc(100vh-200px)] shadow-2xl border-0 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md">
+          <CardHeader className="pb-4 bg-gradient-to-r from-amber-500/10 to-orange-500/10 rounded-t-lg">
+            <CardTitle className="text-center text-2xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
+              Your AI Companion is Ready
+            </CardTitle>
+            <p className="text-center text-gray-600 dark:text-gray-300 mt-2">
+              Share your thoughts, and I'll help you organize them into powerful insights
+            </p>
+          </CardHeader>
+          
+          <CardContent className="flex-1 overflow-y-auto pb-0 max-h-[60vh]">
           <div className="space-y-4">
             {messages.map((message) => (
               <div
@@ -391,30 +505,65 @@ export default function ChatPage() {
           </div>
         </CardContent>
         
-        <CardFooter className="pt-4">
-          <div className="flex w-full items-center space-x-2">
-            <Input
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="Share your thoughts to save as a dot..."
-              disabled={isLoading || limitExceeded}
-              className="flex-1"
-            />
-            <Button
-              onClick={handleSendMessage}
-              disabled={!inputValue.trim() || isLoading || limitExceeded}
-              size="icon"
-            >
-              {isLoading ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <Send className="h-4 w-4" />
-              )}
-            </Button>
-          </div>
-        </CardFooter>
-      </Card>
+          <CardFooter className="pt-6 bg-gradient-to-r from-amber-50/50 to-orange-50/50 rounded-b-lg">
+            <div className="flex w-full items-center space-x-3">
+              {/* Voice Input Button */}
+              <Button
+                variant="outline"
+                size="icon"
+                disabled={isLoading || limitExceeded}
+                className="shrink-0 hover:bg-amber-100 dark:hover:bg-amber-900/20"
+                onClick={() => setIsRecording(!isRecording)}
+              >
+                {isRecording ? (
+                  <MicOff className="h-4 w-4 text-red-500" />
+                ) : (
+                  <Mic className="h-4 w-4" />
+                )}
+              </Button>
+              
+              {/* Text Input */}
+              <Input
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="Share your thoughts, ideas, or insights..."
+                disabled={isLoading || limitExceeded}
+                className="flex-1 bg-white/80 border-amber-200 focus:border-amber-400 focus:ring-amber-200"
+              />
+              
+              {/* Send Button */}
+              <Button
+                onClick={handleSendMessage}
+                disabled={!inputValue.trim() || isLoading || limitExceeded}
+                className="shrink-0 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white"
+              >
+                {isLoading ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Send className="h-4 w-4" />
+                )}
+              </Button>
+            </div>
+            
+            {/* Quick Actions */}
+            <div className="flex gap-2 mt-4 justify-center">
+              <Button variant="ghost" size="sm" className="text-xs text-gray-500 hover:text-amber-600">
+                💡 Ideas
+              </Button>
+              <Button variant="ghost" size="sm" className="text-xs text-gray-500 hover:text-amber-600">
+                📚 Learning
+              </Button>
+              <Button variant="ghost" size="sm" className="text-xs text-gray-500 hover:text-amber-600">
+                🎯 Goals
+              </Button>
+              <Button variant="ghost" size="sm" className="text-xs text-gray-500 hover:text-amber-600">
+                💼 Business
+              </Button>
+            </div>
+          </CardFooter>
+        </Card>
+      </div>
     </div>
   );
 }
