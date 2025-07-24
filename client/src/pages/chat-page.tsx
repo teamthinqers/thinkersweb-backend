@@ -514,7 +514,7 @@ export default function ChatPage() {
           </div>
           
           {/* Navigation Icons */}
-          <div className={`flex flex-col items-center ${isMobile ? 'space-y-2' : 'space-y-3'} flex-1`}>
+          <div className={`flex flex-col items-center ${isMobile ? 'space-y-2 justify-center' : 'space-y-3'} flex-1`}>
             {/* New Chat Icon */}
             {messages.length > 1 && (
               <Button 
