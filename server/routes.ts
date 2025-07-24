@@ -644,19 +644,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
           // Process each layer if audio data is provided
           if (headingAudio && !heading) {
             const audioBuffer = Buffer.from(headingAudio, 'base64');
-            const result = await processVoiceInput(audioBuffer, 'heading.wav', 'heading');
+            const result = await processVoiceInput(audioBuffer, 'heading.wav', 'summary');
             heading = result.processedText;
           }
           
           if (purposeAudio && !purpose) {
             const audioBuffer = Buffer.from(purposeAudio, 'base64');
-            const result = await processVoiceInput(audioBuffer, 'purpose.wav', 'purpose');
+            const result = await processVoiceInput(audioBuffer, 'purpose.wav', 'anchor');
             purpose = result.processedText;
           }
           
           if (timelineAudio && !timeline) {
             const audioBuffer = Buffer.from(timelineAudio, 'base64');
-            const result = await processVoiceInput(audioBuffer, 'timeline.wav', 'timeline');
+            const result = await processVoiceInput(audioBuffer, 'timeline.wav', 'pulse');
             timeline = result.processedText;
           }
         } catch (transcriptionError) {
@@ -696,7 +696,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         positionY: Math.floor(Math.random() * 400) + 100,
       };
       
-      const [newChakra] = await db.insert(wheels).values(chakraData).returning();
+      const newChakraResult = await db.insert(wheels).values(chakraData).returning();
+      const newChakra = Array.isArray(newChakraResult) ? newChakraResult[0] : newChakraResult;
       
       res.status(201).json({ 
         success: true, 

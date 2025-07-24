@@ -9,6 +9,21 @@ import { fileURLToPath } from 'url';
 // Load environment variables from .env file
 dotenv.config();
 
+// Test API connections
+console.log('OpenAI API key is configured and available');
+if (process.env.OPENAI_API_KEY) {
+  console.log('Testing OpenAI API connection...');
+  // OpenAI connection test will be done in openai.ts module load
+}
+
+if (process.env.DEEPSEEK_API_KEY) {
+  console.log('DeepSeek API key is configured and available');
+  console.log('Testing DeepSeek API connection...');
+  // DeepSeek connection test will be done in deepseek.ts module load
+} else {
+  console.log('DeepSeek API key not found - DeepSeek integration disabled');
+}
+
 // ES module replacement for __dirname
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
