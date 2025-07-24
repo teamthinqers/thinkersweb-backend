@@ -38,7 +38,7 @@ const DynamicWord = ({ words }: { words: string[] }) => {
   );
 };
 
-// ChatGPT-style typewriter effect component
+// ChatGPT-style typewriter effect component with fast typing and skip option
 const TypewriterText = ({ text, onComplete, onProgress }: { 
   text: string; 
   onComplete?: () => void; 
@@ -47,31 +47,48 @@ const TypewriterText = ({ text, onComplete, onProgress }: {
   const [displayedText, setDisplayedText] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
+  const [isSkipped, setIsSkipped] = useState(false);
 
   useEffect(() => {
-    if (currentIndex < text.length) {
-      const timer = setTimeout(() => {
-        setDisplayedText(text.slice(0, currentIndex + 1));
-        setCurrentIndex(currentIndex + 1);
-        onProgress?.(); // Trigger scroll on each character
-      }, 15); // Fast ChatGPT-like speed
-      
-      return () => clearTimeout(timer);
-    } else if (!isComplete) {
-      setIsComplete(true);
-      onComplete?.();
+    if (isSkipped || currentIndex >= text.length) {
+      if (!isComplete) {
+        setDisplayedText(text);
+        setIsComplete(true);
+        onComplete?.();
+      }
+      return;
     }
-  }, [currentIndex, text, isComplete, onComplete, onProgress]);
+
+    const timer = setTimeout(() => {
+      // Type multiple characters at once for speed, but maintain visual effect
+      const charsToAdd = Math.min(3, text.length - currentIndex);
+      setDisplayedText(text.slice(0, currentIndex + charsToAdd));
+      setCurrentIndex(currentIndex + charsToAdd);
+      onProgress?.(); // Trigger scroll
+    }, 8); // Super fast - just 8ms delay
+    
+    return () => clearTimeout(timer);
+  }, [currentIndex, text, isComplete, onComplete, onProgress, isSkipped]);
 
   // Reset when text changes
   useEffect(() => {
     setDisplayedText('');
     setCurrentIndex(0);
     setIsComplete(false);
+    setIsSkipped(false);
   }, [text]);
 
+  // Skip typing on click
+  const handleSkip = () => {
+    setIsSkipped(true);
+  };
+
   return (
-    <span className="whitespace-pre-wrap text-sm leading-7 text-gray-800 dark:text-gray-100">
+    <span 
+      className="whitespace-pre-wrap text-sm leading-7 text-gray-800 dark:text-gray-100 cursor-pointer"
+      onClick={handleSkip}
+      title="Click to show full message instantly"
+    >
       {displayedText}
       {!isComplete && <span className="inline-block w-2 h-5 bg-gray-800 dark:bg-gray-100 animate-pulse ml-0.5"></span>}
     </span>
