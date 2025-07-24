@@ -306,13 +306,13 @@ export default function ChatPage() {
                   <Link href="/dashboard">
                     <Button variant="ghost" className="w-full justify-start text-sm h-9">
                       <BarChart2 className="w-4 h-4 mr-3" />
-                      Dashboard
+                      My Neura
                     </Button>
                   </Link>
                   <Link href="/my-neura">
                     <Button variant="ghost" className="w-full justify-start text-sm h-9">
                       <Brain className="w-4 h-4 mr-3" />
-                      My Neura
+                      My DotSpark
                     </Button>
                   </Link>
                   <Link href="/social">
