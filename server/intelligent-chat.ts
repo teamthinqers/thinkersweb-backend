@@ -1,7 +1,7 @@
 import OpenAI from "openai";
 import { generateOneWordSummary } from "./openai";
 import { generateDeepSeekChatResponse } from "./deepseek";
-import { handleOrganizeThoughts } from "./thought-organizer";
+import { handleOrganizeThoughts } from "./thought-organizer-clean";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -195,9 +195,10 @@ export async function generateIntelligentChatResponse(
         // Handle the organize thoughts special prompt
         const organizeResult = await handleOrganizeThoughts(
           userInput,
+          [], // previousMessages
           userId || null,
           sessionId,
-          'initial'
+          'gpt-4o'
         );
         
         return {
@@ -207,12 +208,11 @@ export async function generateIntelligentChatResponse(
             conversationDepth: 1,
             lastUserSentiment: 'exploring'
           },
-          action: 'special_prompt',
+          action: 'special_prompt' as const,
           specialData: {
             type: 'organize_thoughts',
             sessionId,
-            nextStep: organizeResult.nextStep,
-            organizedSummary: organizeResult.organizedSummary
+            savedItems: organizeResult.savedItems || []
           }
         };
       } else {
