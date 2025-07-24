@@ -201,9 +201,14 @@ export default function ChatPage() {
     return () => clearInterval(interval);
   }, []);
 
-  // Check if mobile browser
+  // Check if mobile browser and set sidebar state accordingly
   useEffect(() => {
-    setIsMobile(isMobileBrowser());
+    const mobile = isMobileBrowser();
+    setIsMobile(mobile);
+    // Default to collapsed sidebar for mobile browsers
+    if (mobile) {
+      setIsSidebarOpen(false);
+    }
   }, []);
   const isRegistered = !!user;
   const isActivated = neuraStorage.isActivated();

@@ -144,6 +144,7 @@ Changelog:
   * Optimized 4 default prompt buttons for mobile - removed supportive text, showing only headings with compact styling (h-12 vs h-24)
   * Desktop browsers maintain original header structure and full prompt descriptions without changes
   * Full-width model selector styling implemented for mobile sidebar integration
+  * Mobile sidebar defaults to collapsed mode for better space utilization with user-controlled expansion option
   * Mobile interface now maximizes space efficiency while preserving desktop functionality
 - January 24, 2025. COMPLETED sophisticated enhanced chat system with advanced cognitive coaching:
   * Implemented comprehensive Anthropic-powered cognitive coaching API that analyzes thought structures with 85% confidence
