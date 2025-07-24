@@ -380,7 +380,7 @@ export default function ChatPage() {
       {/* Main Content Area */}
       <div className="flex flex-col flex-1 min-w-0">
         {/* Enhanced Header */}
-        <header className="flex items-center justify-between p-6 border-b border-amber-200/30 dark:border-amber-700/30 bg-gradient-to-r from-amber-50/80 via-orange-50/60 to-amber-50/80 dark:from-amber-950/30 dark:via-orange-950/20 dark:to-amber-950/30 backdrop-blur-sm shadow-lg">
+        <header className="flex items-center justify-between h-14 px-6 border-b border-amber-200/30 dark:border-amber-700/30 bg-gradient-to-r from-amber-50/80 via-orange-50/60 to-amber-50/80 dark:from-amber-950/30 dark:via-orange-950/20 dark:to-amber-950/30 backdrop-blur-sm shadow-lg">
           {/* Left: Sidebar Toggle, Back Button and Logo */}
           <div className="flex items-center gap-4">
             {/* Enhanced Sidebar Toggle Icon */}
