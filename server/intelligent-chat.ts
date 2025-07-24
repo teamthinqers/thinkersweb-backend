@@ -1,5 +1,6 @@
 import OpenAI from "openai";
 import { generateOneWordSummary } from "./openai";
+import { generateDeepSeekChatResponse } from "./deepseek";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -139,7 +140,8 @@ Respond with JSON:
  */
 export async function generateIntelligentChatResponse(
   userInput: string,
-  messages: ConversationMessage[] = []
+  messages: ConversationMessage[] = [],
+  model: 'gpt-4o' | 'deepseek-chat' = 'gpt-4o'
 ): Promise<{
   response: string;
   conversationState: ConversationState;
@@ -221,18 +223,50 @@ Your goals:
 
 Keep responses to 2-3 sentences maximum.`;
 
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o",
-      messages: [
+    let aiResponse: string;
+
+    if (model === 'deepseek-chat') {
+      // Use DeepSeek for response generation
+      const conversationHistory = [
         { role: "system", content: systemPrompt },
         ...updatedMessages.slice(-6).map(m => ({ role: m.role, content: m.content }))
-      ],
-      temperature: 0.7,
-      max_tokens: 150,
-    });
-
-    const aiResponse = response.choices[0].message.content || 
-      "That's interesting! Can you tell me more about what made this insight particularly meaningful to you?";
+      ];
+      
+      try {
+        aiResponse = await generateDeepSeekChatResponse(
+          userInput,
+          conversationHistory.slice(1), // Remove system prompt as it's handled internally
+          systemPrompt
+        );
+      } catch (error) {
+        console.error('DeepSeek API error, falling back to OpenAI:', error);
+        // Fallback to OpenAI if DeepSeek fails
+        const response = await openai.chat.completions.create({
+          model: "gpt-4o",
+          messages: [
+            { role: "system", content: systemPrompt },
+            ...updatedMessages.slice(-6).map(m => ({ role: m.role, content: m.content }))
+          ],
+          temperature: 0.7,
+          max_tokens: 150,
+        });
+        aiResponse = response.choices[0].message.content || 
+          "That's interesting! Can you tell me more about what made this insight particularly meaningful to you?";
+      }
+    } else {
+      // Use OpenAI (default)
+      const response = await openai.chat.completions.create({
+        model: "gpt-4o",
+        messages: [
+          { role: "system", content: systemPrompt },
+          ...updatedMessages.slice(-6).map(m => ({ role: m.role, content: m.content }))
+        ],
+        temperature: 0.7,
+        max_tokens: 150,
+      });
+      aiResponse = response.choices[0].message.content || 
+        "That's interesting! Can you tell me more about what made this insight particularly meaningful to you?";
+    }
 
     return {
       response: aiResponse,

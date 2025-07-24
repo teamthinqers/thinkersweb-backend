@@ -472,7 +472,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!userId) {
         return res.status(401).json({ error: 'Authentication required' });
       }
-      const { message, messages = [], action = 'chat' } = req.body;
+      const { message, messages = [], action = 'chat', model = 'gpt-4o' } = req.body;
 
       if (!message) {
         return res.status(400).json({ error: 'Message is required' });
@@ -519,7 +519,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Generate intelligent conversational response
-      const result = await generateIntelligentChatResponse(message, messages);
+      const result = await generateIntelligentChatResponse(message, messages, model);
 
       res.json({
         reply: result.response,

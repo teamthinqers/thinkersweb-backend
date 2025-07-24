@@ -11,6 +11,7 @@ import { useAuth } from '@/hooks/use-auth';
 import { UsageLimitMessage } from '@/components/ui/usage-limit-message';
 import { hasExceededLimit, getLimitMessage, incrementUsageCount, isFirstChat, markFirstChatDone } from '@/lib/usageLimits';
 import { neuraStorage } from '@/lib/neuraStorage';
+import { ModelSelector, type AIModel } from '@/components/chat/ModelSelector';
 import axios from 'axios';
 import { 
   Sheet,
@@ -132,6 +133,7 @@ export default function ChatPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [showBackButton, setShowBackButton] = useState(false);
   const [isNeuraActive, setIsNeuraActive] = useState(false);
+  const [selectedModel, setSelectedModel] = useState<AIModel>('gpt-4o');
   
   // Check if user has exceeded their limit
   const limitExceeded = hasExceededLimit(isRegistered, isActivated);
@@ -173,7 +175,7 @@ export default function ChatPage() {
 
     try {
       let apiEndpoint = '/api/chat/intelligent';
-      const requestBody = { message: inputValue };
+      const requestBody = { message: inputValue, model: selectedModel };
 
       const response = await axios.post(apiEndpoint, requestBody);
 
@@ -480,6 +482,13 @@ export default function ChatPage() {
               <SiWhatsapp className="h-5 w-5 text-white" />
             </Button>
 
+            {/* Model Selector */}
+            <ModelSelector 
+              selectedModel={selectedModel}
+              onModelChange={setSelectedModel}
+              className="ml-2"
+            />
+
             {user ? (
               <Sheet>
                 <SheetTrigger asChild>
@@ -604,7 +613,7 @@ export default function ChatPage() {
                       <span className="font-medium">Organize Thoughts</span>
                     </div>
                     <span className="text-xs text-gray-600 dark:text-gray-400 leading-tight mt-1">
-                      Structure my thoughts into dots, wheels and chakras
+                      Structure my thoughts into dots,<br />wheels and chakras
                     </span>
                   </Button>
                   
