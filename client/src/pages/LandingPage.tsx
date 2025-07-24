@@ -317,8 +317,8 @@ export default function LandingPage() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      {/* Enhanced Header with modern design */}
-      <header className="border-b border-gradient-to-r from-amber-300/20 via-orange-300/30 to-amber-300/20 bg-gradient-to-r from-white via-amber-50/90 to-orange-50/80 dark:from-slate-950 dark:via-slate-900/95 dark:to-slate-950 backdrop-blur-lg supports-[backdrop-filter]:bg-background/90 sticky top-0 z-50 shadow-xl shadow-amber-500/15 dark:shadow-amber-900/20">
+      {/* Enhanced Header with modern design - Mobile sticky */}
+      <header className="border-b border-gradient-to-r from-amber-300/20 via-orange-300/30 to-amber-300/20 bg-gradient-to-r from-white via-amber-50/90 to-orange-50/80 dark:from-slate-950 dark:via-slate-900/95 dark:to-slate-950 backdrop-blur-lg supports-[backdrop-filter]:bg-background/90 md:relative md:top-auto fixed top-0 z-50 shadow-xl shadow-amber-500/15 dark:shadow-amber-900/20 w-full">
         <div className="container flex h-20 items-center justify-between px-6 sm:px-8 md:px-10">
           {/* Logo section - enhanced with padding and subtle background */}
           <div className="flex items-center py-3">
@@ -623,8 +623,8 @@ export default function LandingPage() {
         </div>
       </header>
       
-      {/* Enhanced Hero Section with Visual Elements - Centered for all screens */}
-      <section className="relative pt-2 pb-4 md:py-12 lg:py-16 overflow-hidden">
+      {/* Enhanced Hero Section with Visual Elements - Mobile header offset */}
+      <section className="relative pt-20 pb-4 md:pt-12 md:pb-16 lg:py-16 overflow-hidden">
         {/* Background visual elements with simplified DotSpark patterns */}
         <div className="absolute inset-0 z-0">
           {/* Subtle gradient background effects using warm amber/orange color scheme */}
@@ -642,10 +642,10 @@ export default function LandingPage() {
               <span className="text-xs">Introducing DotSpark</span>
             </div>
             
-            {/* Heading */}
-            <div className="container px-4 max-w-4xl mx-auto text-center">
-              <div className="mx-auto text-lg sm:text-xl md:text-3xl lg:text-4xl font-bold tracking-tight">
-                <div className="relative text-center mx-auto h-[50px] sm:h-[90px] flex flex-col items-center justify-center">
+            {/* Heading - Mobile brought down */}
+            <div className="container px-4 max-w-4xl mx-auto text-center mt-4 md:mt-0">
+              <div className="mx-auto text-base sm:text-xl md:text-3xl lg:text-4xl font-bold tracking-tight">
+                <div className="relative text-center mx-auto h-[40px] sm:h-[90px] flex flex-col items-center justify-center">
                   <div className="flex items-center justify-center w-full px-4">
                     <div className="flex items-center justify-center w-full max-w-[480px] mx-auto">
                       <span className="font-sans tracking-normal text-center bg-clip-text text-transparent bg-gradient-to-r from-amber-700 via-amber-600 to-amber-500 dark:from-amber-400 dark:via-amber-300 dark:to-amber-200 whitespace-nowrap">

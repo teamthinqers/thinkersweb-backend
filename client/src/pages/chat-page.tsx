@@ -589,8 +589,8 @@ export default function ChatPage() {
 
       {/* Main Content Area */}
       <div className="flex flex-col flex-1 min-w-0">
-        {/* Enhanced Header */}
-        <header className="flex items-center justify-between h-14 px-6 border-b border-amber-200/30 dark:border-amber-700/30 bg-gradient-to-r from-amber-50/80 via-orange-50/60 to-amber-50/80 dark:from-amber-950/30 dark:via-orange-950/20 dark:to-amber-950/30 backdrop-blur-sm shadow-lg">
+        {/* Enhanced Header - Mobile sticky */}
+        <header className="flex items-center justify-between h-14 px-6 border-b border-amber-200/30 dark:border-amber-700/30 bg-gradient-to-r from-amber-50/80 via-orange-50/60 to-amber-50/80 dark:from-amber-950/30 dark:via-orange-950/20 dark:to-amber-950/30 backdrop-blur-sm shadow-lg md:relative md:top-0 fixed top-0 left-0 right-0 z-40">
           {/* Left: Sidebar Toggle, Back Button and Logo */}
           <div className="flex items-center gap-4">
             {/* Enhanced Sidebar Toggle Icon */}
@@ -773,8 +773,8 @@ export default function ChatPage() {
             </div>
           )}
           
-          {/* Messages Container */}
-          <div className={`${isMobile && messages.length === 1 ? 'flex-none' : 'flex-1'} overflow-y-auto`}>
+          {/* Messages Container - Mobile header offset */}
+          <div className={`${isMobile && messages.length === 1 ? 'flex-none' : 'flex-1'} overflow-y-auto ${isMobile ? 'pt-14' : ''}`}>
             {messages.length === 1 ? (
               /* Welcome Screen */
               <div className={`${isMobile ? 'flex flex-col items-center justify-start pt-6 pb-2 px-3' : 'h-full flex flex-col items-center justify-center p-8'} max-w-2xl mx-auto`}>
@@ -872,7 +872,7 @@ export default function ChatPage() {
                 </div>
               </div>
             ) : (
-              /* Chat Messages */
+              /* Chat Messages - Mobile header offset */
               <div className={`${isMobile ? 'space-y-2 p-2 pb-2' : 'space-y-3 p-3 pb-16'}`}>
                 {messages.map((message) => (
                   <div key={message.id} className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}>
