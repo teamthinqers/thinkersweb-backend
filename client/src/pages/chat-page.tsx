@@ -280,7 +280,7 @@ export default function ChatPage() {
         {/* Left: Sidebar Toggle */}
         <Sheet>
           <SheetTrigger asChild>
-            <Button variant="ghost" size="sm" className="lg:hidden">
+            <Button variant="ghost" size="sm" className="p-2">
               <Menu className="h-5 w-5" />
             </Button>
           </SheetTrigger>
@@ -371,12 +371,69 @@ export default function ChatPage() {
         {/* Right: User Actions */}
         <div className="flex items-center gap-2">
           {user ? (
-            <Avatar className="h-8 w-8">
-              <AvatarImage src={user.photoURL || undefined} />
-              <AvatarFallback className="text-xs">
-                {user.displayName?.[0]?.toUpperCase() || 'U'}
-              </AvatarFallback>
-            </Avatar>
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="sm" className="p-1">
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage src={user.photoURL || undefined} />
+                    <AvatarFallback className="text-xs">
+                      {user.displayName?.[0]?.toUpperCase() || 'U'}
+                    </AvatarFallback>
+                  </Avatar>
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-72 p-0">
+                <div className="flex flex-col h-full bg-gray-50 dark:bg-gray-800">
+                  {/* Profile Header */}
+                  <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+                    <div className="flex items-center gap-3">
+                      <Avatar className="h-12 w-12">
+                        <AvatarImage src={user.photoURL || undefined} />
+                        <AvatarFallback>
+                          {user.displayName?.[0]?.toUpperCase() || 'U'}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-semibold truncate">{user.displayName || 'User'}</p>
+                        <p className="text-sm text-gray-500 truncate">{user.email}</p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Profile Actions */}
+                  <nav className="flex-1 p-2">
+                    <div className="space-y-1">
+                      <Link href="/profile">
+                        <Button variant="ghost" className="w-full justify-start text-sm h-9">
+                          <User className="w-4 h-4 mr-3" />
+                          Profile
+                        </Button>
+                      </Link>
+                      <Link href="/settings">
+                        <Button variant="ghost" className="w-full justify-start text-sm h-9">
+                          <Settings className="w-4 h-4 mr-3" />
+                          Settings
+                        </Button>
+                      </Link>
+                    </div>
+                  </nav>
+                  
+                  {/* Sign Out */}
+                  <div className="p-4 border-t border-gray-200 dark:border-gray-700">
+                    <Button 
+                      variant="outline" 
+                      className="w-full text-sm"
+                      onClick={() => {
+                        // Add sign out logic here
+                        console.log('Sign out clicked');
+                      }}
+                    >
+                      Sign Out
+                    </Button>
+                  </div>
+                </div>
+              </SheetContent>
+            </Sheet>
           ) : (
             <Link href="/auth">
               <Button variant="outline" size="sm" className="text-sm">
@@ -391,7 +448,7 @@ export default function ChatPage() {
       <div className="flex-1 flex flex-col overflow-hidden">
         {limitExceeded && (
           <div className="p-4 bg-red-50 border-b border-red-200">
-            <UsageLimitMessage message={limitMessage} />
+            <UsageLimitMessage message={limitMessage} isLimitExceeded={limitExceeded} />
           </div>
         )}
         
