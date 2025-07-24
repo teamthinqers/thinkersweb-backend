@@ -18,6 +18,24 @@ import {
   SheetClose 
 } from "@/components/ui/sheet";
 
+// Dynamic word animation component
+const DynamicWord = ({ words }: { words: string[] }) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % words.length);
+    }, 2000);
+    return () => clearInterval(interval);
+  }, [words.length]);
+
+  return (
+    <span className="inline-block min-w-[120px] text-left bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent font-bold">
+      {words[currentIndex]}
+    </span>
+  );
+};
+
 type Message = {
   id: string;
   content: string;
@@ -461,12 +479,23 @@ export default function ChatPage() {
                 <img 
                   src="/dotspark-logo-header.png" 
                   alt="DotSpark" 
-                  className="w-16 h-16 mx-auto mb-4 rounded-2xl"
+                  className="w-16 h-16 mx-auto mb-6 rounded-2xl"
                 />
-                <h2 className="text-2xl font-semibold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent mb-2">
-                  For the OG ThinQers
-                </h2>
-                <p className="text-gray-600 dark:text-gray-400">
+                
+                {/* Dynamic heading like About page */}
+                <div className="mb-6">
+                  <div className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-2">
+                    <span className="font-sans tracking-normal text-center bg-clip-text text-transparent bg-gradient-to-r from-amber-700 via-amber-600 to-amber-500 dark:from-amber-400 dark:via-amber-300 dark:to-amber-200">
+                      For the OG Thin<span className="relative inline-block px-3 py-2 bg-gradient-to-br from-amber-600 to-amber-700 dark:from-amber-500 dark:to-amber-600 text-white font-bold rounded-lg shadow-lg border-2 border-amber-500/20">Q</span>ers
+                    </span>
+                  </div>
+                  
+                  <div className="text-lg md:text-xl font-bold tracking-tight text-foreground mb-4">
+                    Your Natural Intelligence. <DynamicWord words={['Preserved', 'Enhanced', 'Amplified', 'Protected']} />
+                  </div>
+                </div>
+                
+                <p className="text-gray-600 dark:text-gray-400 text-lg">
                   {user 
                     ? "I'll help you organize your thoughts into structured Dots, Wheels and Chakras for sparking actionable insights."
                     : "Start chatting to see how I can help organize your thoughts. No signup required!"
