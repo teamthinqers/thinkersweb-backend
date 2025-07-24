@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useToast } from '@/hooks/use-toast';
-import { Send, Loader2, ArrowLeft, Menu, Brain, Users, Settings, BarChart2, User, MessageSquare, Home, Sparkles, Mic, MicOff } from 'lucide-react';
+import { Send, Loader2, ArrowLeft, Menu, Brain, Users, Settings, BarChart2, User, MessageSquare, Home, Sparkles, Mic, MicOff, Info, Lightbulb, Target, Puzzle } from 'lucide-react';
 import { Link } from 'wouter';
 import { useAuth } from '@/hooks/use-auth';
 import { UsageLimitMessage } from '@/components/ui/usage-limit-message';
@@ -274,182 +274,233 @@ export default function ChatPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 dark:from-slate-900 dark:to-slate-800">
-      {/* Enhanced Header with Hamburger Menu */}
-      <header className="sticky top-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-amber-200/50 dark:border-slate-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            {/* Left: Hamburger Menu */}
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="sm" className="hover:bg-amber-100 dark:hover:bg-slate-800">
-                  <Menu className="h-5 w-5" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="left" className="w-80 bg-gradient-to-b from-amber-50 to-orange-50 dark:from-slate-900 dark:to-slate-800">
-                <div className="flex flex-col h-full">
-                  {/* Header */}
-                  <div className="flex items-center gap-3 pb-6 border-b border-amber-200 dark:border-slate-700">
-                    <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center">
-                      <Brain className="w-6 h-6 text-white" />
-                    </div>
-                    <div>
-                      <h2 className="font-bold text-lg text-gray-900 dark:text-white">DotSpark</h2>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">AI Companion</p>
-                    </div>
-                  </div>
-                  
-                  {/* Navigation Menu */}
-                  <nav className="flex-1 pt-6">
-                    <div className="space-y-2">
-                      <Link href="/dashboard">
-                        <Button variant="ghost" className="w-full justify-start gap-3 hover:bg-amber-100 dark:hover:bg-slate-800">
-                          <BarChart2 className="w-5 h-5" />
-                          <span>Dashboard</span>
-                        </Button>
-                      </Link>
-                      <Link href="/my-neura">
-                        <Button variant="ghost" className="w-full justify-start gap-3 hover:bg-amber-100 dark:hover:bg-slate-800">
-                          <Brain className="w-5 h-5" />
-                          <span>My Neura</span>
-                        </Button>
-                      </Link>
-                      <Link href="/social">
-                        <Button variant="ghost" className="w-full justify-start gap-3 hover:bg-amber-100 dark:hover:bg-slate-800">
-                          <Users className="w-5 h-5" />
-                          <span>Social</span>
-                        </Button>
-                      </Link>
-                      <Link href="/profile">
-                        <Button variant="ghost" className="w-full justify-start gap-3 hover:bg-amber-100 dark:hover:bg-slate-800">
-                          <User className="w-5 h-5" />
-                          <span>Profile</span>
-                        </Button>
-                      </Link>
-                      <Link href="/settings">
-                        <Button variant="ghost" className="w-full justify-start gap-3 hover:bg-amber-100 dark:hover:bg-slate-800">
-                          <Settings className="w-5 h-5" />
-                          <span>Settings</span>
-                        </Button>
-                      </Link>
-                      <Link href="/about">
-                        <Button variant="ghost" className="w-full justify-start gap-3 hover:bg-amber-100 dark:hover:bg-slate-800">
-                          <Home className="w-5 h-5" />
-                          <span>About</span>
-                        </Button>
-                      </Link>
-                    </div>
-                  </nav>
-                  
-                  {/* User Info or Sign In */}
-                  <div className="pt-6 border-t border-amber-200 dark:border-slate-700">
-                    {user ? (
-                      <div className="flex items-center gap-3">
-                        <Avatar className="h-10 w-10">
-                          <AvatarImage src={user.photoURL || undefined} alt="User" />
-                          <AvatarFallback>
-                            {user.displayName?.[0]?.toUpperCase() || user.email?.[0]?.toUpperCase() || 'U'}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
-                            {user.displayName || 'User'}
-                          </p>
-                          <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
-                            {user.email}
-                          </p>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="text-center">
-                        <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
-                          Sign in to save your conversations
-                        </p>
-                        <Link href="/auth">
-                          <Button className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white">
-                            Sign In / Sign Up
-                          </Button>
-                        </Link>
-                      </div>
-                    )}
+    <div className="h-screen flex flex-col bg-white dark:bg-gray-900">
+      {/* ChatGPT-style Header */}
+      <header className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
+        {/* Left: Sidebar Toggle */}
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button variant="ghost" size="sm" className="lg:hidden">
+              <Menu className="h-5 w-5" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left" className="w-80 p-0">
+            <div className="flex flex-col h-full bg-gray-50 dark:bg-gray-800">
+              {/* Sidebar Header */}
+              <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+                <div className="flex items-center gap-3">
+                  <img 
+                    src="/dotspark-logo-icon.jpeg" 
+                    alt="DotSpark" 
+                    className="w-8 h-8 rounded-full"
+                  />
+                  <div>
+                    <h2 className="font-semibold text-gray-900 dark:text-white">DotSpark</h2>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">AI Assistant</p>
                   </div>
                 </div>
-              </SheetContent>
-            </Sheet>
-
-            {/* Center: DotSpark Logo & Title */}
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center">
-                <Sparkles className="w-5 h-5 text-white animate-pulse" />
               </div>
-              <h1 className="text-xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
-                DotSpark
-              </h1>
+              
+              {/* Navigation */}
+              <nav className="flex-1 p-2">
+                <div className="space-y-1">
+                  <Link href="/dashboard">
+                    <Button variant="ghost" className="w-full justify-start text-sm h-9">
+                      <BarChart2 className="w-4 h-4 mr-3" />
+                      Dashboard
+                    </Button>
+                  </Link>
+                  <Link href="/my-neura">
+                    <Button variant="ghost" className="w-full justify-start text-sm h-9">
+                      <Brain className="w-4 h-4 mr-3" />
+                      My Neura
+                    </Button>
+                  </Link>
+                  <Link href="/social">
+                    <Button variant="ghost" className="w-full justify-start text-sm h-9">
+                      <Users className="w-4 h-4 mr-3" />
+                      Social
+                    </Button>
+                  </Link>
+                  <Link href="/about">
+                    <Button variant="ghost" className="w-full justify-start text-sm h-9">
+                      <Info className="w-4 h-4 mr-3" />
+                      About
+                    </Button>
+                  </Link>
+                </div>
+              </nav>
+              
+              {/* User Section */}
+              <div className="p-4 border-t border-gray-200 dark:border-gray-700">
+                {user ? (
+                  <div className="flex items-center gap-3">
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src={user.photoURL || undefined} />
+                      <AvatarFallback className="text-xs">
+                        {user.displayName?.[0]?.toUpperCase() || 'U'}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium truncate">{user.displayName || 'User'}</p>
+                      <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                    </div>
+                  </div>
+                ) : (
+                  <Link href="/auth">
+                    <Button className="w-full bg-orange-600 hover:bg-orange-700 text-white text-sm">
+                      Sign In
+                    </Button>
+                  </Link>
+                )}
+              </div>
             </div>
+          </SheetContent>
+        </Sheet>
 
-            {/* Right: User Avatar or Sign In */}
-            {user ? (
-              <Avatar className="h-8 w-8">
-                <AvatarImage src={user.photoURL || undefined} alt="User" />
-                <AvatarFallback>
-                  {user.displayName?.[0]?.toUpperCase() || user.email?.[0]?.toUpperCase() || 'U'}
-                </AvatarFallback>
-              </Avatar>
-            ) : (
-              <Link href="/auth">
-                <Button variant="outline" size="sm" className="border-amber-200 text-amber-600 hover:bg-amber-50">
-                  Sign In
-                </Button>
-              </Link>
-            )}
-          </div>
+        {/* Center: Logo and Title */}
+        <div className="flex items-center gap-3">
+          <img 
+            src="/dotspark-logo-icon.jpeg" 
+            alt="DotSpark" 
+            className="w-8 h-8 rounded-full"
+          />
+          <h1 className="text-xl font-semibold text-gray-900 dark:text-white">DotSpark</h1>
+        </div>
+
+        {/* Right: User Actions */}
+        <div className="flex items-center gap-2">
+          {user ? (
+            <Avatar className="h-8 w-8">
+              <AvatarImage src={user.photoURL || undefined} />
+              <AvatarFallback className="text-xs">
+                {user.displayName?.[0]?.toUpperCase() || 'U'}
+              </AvatarFallback>
+            </Avatar>
+          ) : (
+            <Link href="/auth">
+              <Button variant="outline" size="sm" className="text-sm">
+                Sign In
+              </Button>
+            </Link>
+          )}
         </div>
       </header>
 
-      {/* Main Chat Interface */}
-      <div className="max-w-4xl mx-auto px-4 py-6">
+      {/* Main Chat Area */}
+      <div className="flex-1 flex flex-col overflow-hidden">
         {limitExceeded && (
-          <UsageLimitMessage 
-            message={limitMessage}
-            className="mb-6"
-          />
+          <div className="p-4 bg-red-50 border-b border-red-200">
+            <UsageLimitMessage message={limitMessage} />
+          </div>
         )}
         
-        <Card className="min-h-[calc(100vh-200px)] shadow-2xl border-0 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md">
-          <CardHeader className="pb-4 bg-gradient-to-r from-amber-500/10 to-orange-500/10 rounded-t-lg">
-            <CardTitle className="text-center text-2xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
-              Your AI Companion is Ready
-            </CardTitle>
-            <p className="text-center text-gray-600 dark:text-gray-300 mt-2">
-              {user 
-                ? "Share your thoughts, and I'll help you organize them into powerful insights"
-                : "Try DotSpark instantly - no signup required. Just start chatting!"
-              }
-            </p>
-          </CardHeader>
-          
-          <CardContent className="flex-1 overflow-y-auto pb-0 max-h-[60vh]">
-          <div className="space-y-4">
-            {messages.map((message) => (
-              <div
-                key={message.id}
-                className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}
-              >
-                <div className="flex items-start gap-2 max-w-[80%]">
-                  {!message.isUser && (
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage src="/icons/ai-assistant.png" alt="AI" />
-                      <AvatarFallback>AI</AvatarFallback>
-                    </Avatar>
-                  )}
-                  <div
-                    className={`rounded-lg px-3 py-2 ${
-                      message.isUser 
-                        ? 'bg-primary text-primary-foreground' 
-                        : 'bg-muted'
-                    }`}
-                  >
-                    <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+        {/* Messages Container */}
+        <div className="flex-1 overflow-y-auto">
+          {messages.length === 1 ? (
+            /* Welcome Screen */
+            <div className="h-full flex flex-col items-center justify-center p-8 max-w-2xl mx-auto">
+              <div className="text-center mb-8">
+                <img 
+                  src="/dotspark-logo-header.png" 
+                  alt="DotSpark" 
+                  className="w-16 h-16 mx-auto mb-4 rounded-2xl"
+                />
+                <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">
+                  How can I help you today?
+                </h2>
+                <p className="text-gray-600 dark:text-gray-400">
+                  {user 
+                    ? "I'll help you organize your thoughts into structured insights and actionable knowledge."
+                    : "Start chatting to see how I can help organize your thoughts. No signup required!"
+                  }
+                </p>
+              </div>
+              
+              {/* Quick Action Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-2xl mb-8">
+                <Button 
+                  variant="outline" 
+                  className="h-20 p-4 flex flex-col items-start justify-start text-left hover:bg-gray-50 dark:hover:bg-gray-800"
+                  onClick={() => setInputValue("Help me organize my thoughts about ")}
+                >
+                  <div className="flex items-center gap-2 mb-1">
+                    <Brain className="w-4 h-4 text-orange-600" />
+                    <span className="font-medium">Organize thoughts</span>
+                  </div>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                    Structure ideas into clear insights
+                  </span>
+                </Button>
+                
+                <Button 
+                  variant="outline" 
+                  className="h-20 p-4 flex flex-col items-start justify-start text-left hover:bg-gray-50 dark:hover:bg-gray-800"
+                  onClick={() => setInputValue("I want to brainstorm ideas for ")}
+                >
+                  <div className="flex items-center gap-2 mb-1">
+                    <Lightbulb className="w-4 h-4 text-orange-600" />
+                    <span className="font-medium">Brainstorm ideas</span>
+                  </div>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                    Generate and explore new concepts
+                  </span>
+                </Button>
+                
+                <Button 
+                  variant="outline" 
+                  className="h-20 p-4 flex flex-col items-start justify-start text-left hover:bg-gray-50 dark:hover:bg-gray-800"
+                  onClick={() => setInputValue("Help me plan and set goals for ")}
+                >
+                  <div className="flex items-center gap-2 mb-1">
+                    <Target className="w-4 h-4 text-orange-600" />
+                    <span className="font-medium">Plan & Goals</span>
+                  </div>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                    Create actionable plans and objectives
+                  </span>
+                </Button>
+                
+                <Button 
+                  variant="outline" 
+                  className="h-20 p-4 flex flex-col items-start justify-start text-left hover:bg-gray-50 dark:hover:bg-gray-800"
+                  onClick={() => setInputValue("I need help with problem-solving for ")}
+                >
+                  <div className="flex items-center gap-2 mb-1">
+                    <Puzzle className="w-4 h-4 text-orange-600" />
+                    <span className="font-medium">Problem solving</span>
+                  </div>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                    Find solutions and overcome challenges
+                  </span>
+                </Button>
+              </div>
+            </div>
+          ) : (
+            /* Chat Messages */
+            <div className="max-w-4xl mx-auto p-4">
+              <div className="space-y-6">
+                {messages.slice(1).map((message) => (
+                  <div key={message.id} className="group">
+                    <div className={`flex gap-4 ${message.isUser ? 'justify-end' : 'justify-start'}`}>
+                      {!message.isUser && (
+                        <div className="flex-shrink-0">
+                          <img 
+                            src="/dotspark-logo-icon.jpeg" 
+                            alt="DotSpark AI" 
+                            className="w-8 h-8 rounded-full"
+                          />
+                        </div>
+                      )}
+                      
+                      <div className={`flex flex-col max-w-[70%] ${message.isUser ? 'items-end' : 'items-start'}`}>
+                        <div className={`rounded-2xl px-4 py-3 ${
+                          message.isUser 
+                            ? 'bg-orange-600 text-white' 
+                            : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white'
+                        }`}>
+                          <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.content}</p>
+                        </div>
                     
                     {/* Show dot proposal if available */}
                     {message.dotProposal && message.needsConfirmation && (
@@ -532,20 +583,24 @@ export default function ChatPage() {
                   )}
                 </div>
               </div>
-            ))}
-            <div ref={messagesEndRef} />
-          </div>
-        </CardContent>
-        
-          <CardFooter className="pt-6 bg-gradient-to-r from-amber-50/50 to-orange-50/50 rounded-b-lg">
-            <div className="flex w-full items-center space-x-3">
-              {/* Voice Input Button */}
+                ))}
+                <div ref={messagesEndRef} />
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Input Area */}
+        <div className="border-t border-gray-200 dark:border-gray-700 p-4 bg-white dark:bg-gray-900">
+          <div className="max-w-4xl mx-auto">
+            <div className="flex items-end gap-3">
+              {/* Voice Input */}
               <Button
                 variant="outline"
                 size="icon"
                 disabled={isLoading || limitExceeded}
-                className="shrink-0 hover:bg-amber-100 dark:hover:bg-amber-900/20"
                 onClick={() => setIsRecording(!isRecording)}
+                className="shrink-0"
               >
                 {isRecording ? (
                   <MicOff className="h-4 w-4 text-red-500" />
@@ -555,20 +610,23 @@ export default function ChatPage() {
               </Button>
               
               {/* Text Input */}
-              <Input
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder="Share your thoughts, ideas, or insights..."
-                disabled={isLoading || limitExceeded}
-                className="flex-1 bg-white/80 border-amber-200 focus:border-amber-400 focus:ring-amber-200"
-              />
+              <div className="flex-1 relative">
+                <Input
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  placeholder="Message DotSpark..."
+                  disabled={isLoading || limitExceeded}
+                  className="min-h-[44px] resize-none border-gray-300 dark:border-gray-600 focus:border-orange-500 focus:ring-orange-500"
+                />
+              </div>
               
               {/* Send Button */}
               <Button
                 onClick={handleSendMessage}
                 disabled={!inputValue.trim() || isLoading || limitExceeded}
-                className="shrink-0 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white"
+                size="icon"
+                className="shrink-0 bg-orange-600 hover:bg-orange-700 text-white"
               >
                 {isLoading ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
@@ -577,24 +635,8 @@ export default function ChatPage() {
                 )}
               </Button>
             </div>
-            
-            {/* Quick Actions */}
-            <div className="flex gap-2 mt-4 justify-center">
-              <Button variant="ghost" size="sm" className="text-xs text-gray-500 hover:text-amber-600">
-                💡 Ideas
-              </Button>
-              <Button variant="ghost" size="sm" className="text-xs text-gray-500 hover:text-amber-600">
-                📚 Learning
-              </Button>
-              <Button variant="ghost" size="sm" className="text-xs text-gray-500 hover:text-amber-600">
-                🎯 Goals
-              </Button>
-              <Button variant="ghost" size="sm" className="text-xs text-gray-500 hover:text-amber-600">
-                💼 Business
-              </Button>
-            </div>
-          </CardFooter>
-        </Card>
+          </div>
+        </div>
       </div>
     </div>
   );
