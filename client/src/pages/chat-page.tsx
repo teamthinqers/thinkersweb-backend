@@ -37,10 +37,13 @@ type DotProposal = {
 };
 
 export default function ChatPage() {
+  const { toast } = useToast();
+  const { user } = useAuth();
+  
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      content: 'Welcome to DotSpark! 🌟 I\'m your AI companion, ready to help you capture, organize, and transform your thoughts into powerful insights. What\'s on your mind today?',
+      content: 'Welcome to DotSpark! 🌟 I\'m your AI companion. Share your thoughts with me and I\'ll help you organize them into structured insights. Try me out - no signup required!',
       isUser: false,
       timestamp: new Date(),
     },
@@ -49,8 +52,17 @@ export default function ChatPage() {
   const [isRecording, setIsRecording] = useState(false);
   const [predictiveResponse, setPredictiveResponse] = useState<string>('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const { toast } = useToast();
-  const { user } = useAuth();
+
+  // Update welcome message based on authentication status
+  useEffect(() => {
+    const welcomeMessage = user 
+      ? 'Welcome back to DotSpark! 🌟 I\'m your AI companion, ready to help you capture, organize, and transform your thoughts into powerful insights. What\'s on your mind today?'
+      : 'Welcome to DotSpark! 🌟 I\'m your AI companion. Share your thoughts with me and I\'ll help you organize them into structured insights. Try me out - no signup required!';
+    
+    setMessages(prev => prev.map(msg => 
+      msg.id === '1' ? { ...msg, content: welcomeMessage } : msg
+    ));
+  }, [user]);
   const isRegistered = !!user;
   const isActivated = neuraStorage.isActivated();
   const isFirstTime = isFirstChat();
@@ -329,9 +341,9 @@ export default function ChatPage() {
                     </div>
                   </nav>
                   
-                  {/* User Info */}
-                  {user && (
-                    <div className="pt-6 border-t border-amber-200 dark:border-slate-700">
+                  {/* User Info or Sign In */}
+                  <div className="pt-6 border-t border-amber-200 dark:border-slate-700">
+                    {user ? (
                       <div className="flex items-center gap-3">
                         <Avatar className="h-10 w-10">
                           <AvatarImage src={user.photoURL || undefined} alt="User" />
@@ -348,8 +360,19 @@ export default function ChatPage() {
                           </p>
                         </div>
                       </div>
-                    </div>
-                  )}
+                    ) : (
+                      <div className="text-center">
+                        <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                          Sign in to save your conversations
+                        </p>
+                        <Link href="/auth">
+                          <Button className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white">
+                            Sign In / Sign Up
+                          </Button>
+                        </Link>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </SheetContent>
             </Sheet>
@@ -364,14 +387,20 @@ export default function ChatPage() {
               </h1>
             </div>
 
-            {/* Right: User Avatar */}
-            {user && (
+            {/* Right: User Avatar or Sign In */}
+            {user ? (
               <Avatar className="h-8 w-8">
                 <AvatarImage src={user.photoURL || undefined} alt="User" />
                 <AvatarFallback>
                   {user.displayName?.[0]?.toUpperCase() || user.email?.[0]?.toUpperCase() || 'U'}
                 </AvatarFallback>
               </Avatar>
+            ) : (
+              <Link href="/auth">
+                <Button variant="outline" size="sm" className="border-amber-200 text-amber-600 hover:bg-amber-50">
+                  Sign In
+                </Button>
+              </Link>
             )}
           </div>
         </div>
@@ -392,7 +421,10 @@ export default function ChatPage() {
               Your AI Companion is Ready
             </CardTitle>
             <p className="text-center text-gray-600 dark:text-gray-300 mt-2">
-              Share your thoughts, and I'll help you organize them into powerful insights
+              {user 
+                ? "Share your thoughts, and I'll help you organize them into powerful insights"
+                : "Try DotSpark instantly - no signup required. Just start chatting!"
+              }
             </p>
           </CardHeader>
           
