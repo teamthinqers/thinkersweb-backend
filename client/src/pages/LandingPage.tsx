@@ -359,8 +359,8 @@ export default function LandingPage() {
       {/* Enhanced Header with modern design */}
       <header className="border-b border-gradient-to-r from-amber-300/20 via-orange-300/30 to-amber-300/20 bg-gradient-to-r from-white via-amber-50/90 to-orange-50/80 dark:from-slate-950 dark:via-slate-900/95 dark:to-slate-950 backdrop-blur-lg supports-[backdrop-filter]:bg-background/90 sticky top-0 z-50 shadow-xl shadow-amber-500/15 dark:shadow-amber-900/20">
         <div className="container flex h-20 items-center justify-between px-6 sm:px-8 md:px-10">
-          {/* Logo section - enhanced with padding and subtle background */}
-          <div className="flex items-center py-3">
+          {/* Logo section - centered on mobile, left-aligned on desktop */}
+          <div className="flex items-center py-3 md:flex-none flex-1 justify-center md:justify-start">
             <div 
               className="flex items-center px-6 py-4 rounded-xl hover:bg-gradient-to-r hover:from-amber-100/60 hover:to-orange-100/60 dark:hover:from-amber-900/40 dark:hover:to-orange-900/40 cursor-pointer transition-all duration-300 ease-in-out hover:shadow-lg hover:scale-105 group" 
               onClick={() => setLocation("/about")}
@@ -369,7 +369,7 @@ export default function LandingPage() {
             </div>
           </div>
           
-          <div className="flex items-center gap-3 md:gap-4">
+          <div className="flex items-center gap-3 md:gap-4 md:flex-none">
             {/* Desktop navigation */}
             <div className="hidden md:flex items-center gap-4">
               <a 
@@ -460,9 +460,9 @@ export default function LandingPage() {
                 </div>
               </Button>
             </div>
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-3 md:flex-none">
               {/* PWA navigation with blinking brain icon and Social text - hide AI Chat for mobile */}
-              <div className="flex sm:hidden gap-1">
+              <div className="flex sm:hidden gap-1 absolute right-6">
                 <Button
                   size="sm"
                   onClick={(e) => {
