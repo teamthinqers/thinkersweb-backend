@@ -624,7 +624,7 @@ export default function LandingPage() {
       </header>
       
       {/* Enhanced Hero Section with Visual Elements - Centered for all screens */}
-      <section className="relative pt-6 pb-8 md:py-12 lg:py-16 overflow-hidden">
+      <section className="relative pt-2 pb-4 md:py-12 lg:py-16 overflow-hidden">
         {/* Background visual elements with simplified DotSpark patterns */}
         <div className="absolute inset-0 z-0">
           {/* Subtle gradient background effects using warm amber/orange color scheme */}
@@ -637,19 +637,19 @@ export default function LandingPage() {
         <div className="container mx-auto px-4 md:px-6 relative z-10">
           <div className="flex flex-col items-center max-w-3xl mx-auto">
             {/* Centered badge */}
-            <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-2 text-sm text-primary mb-2">
-              <img src="/dotspark-logo-icon.jpeg" alt="DotSpark" className="h-8 w-8 rounded" />
-              <span>Introducing DotSpark</span>
+            <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-sm text-primary mb-1">
+              <img src="/dotspark-logo-icon.jpeg" alt="DotSpark" className="h-6 w-6 rounded" />
+              <span className="text-xs">Introducing DotSpark</span>
             </div>
             
             {/* Heading */}
             <div className="container px-4 max-w-4xl mx-auto text-center">
-              <div className="mx-auto text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight">
-                <div className="relative text-center mx-auto h-[70px] sm:h-[90px] flex flex-col items-center justify-center">
+              <div className="mx-auto text-lg sm:text-xl md:text-3xl lg:text-4xl font-bold tracking-tight">
+                <div className="relative text-center mx-auto h-[50px] sm:h-[90px] flex flex-col items-center justify-center">
                   <div className="flex items-center justify-center w-full px-4">
                     <div className="flex items-center justify-center w-full max-w-[480px] mx-auto">
                       <span className="font-sans tracking-normal text-center bg-clip-text text-transparent bg-gradient-to-r from-amber-700 via-amber-600 to-amber-500 dark:from-amber-400 dark:via-amber-300 dark:to-amber-200 whitespace-nowrap">
-                        For the OG Thin<span className="relative inline-block px-3 py-2 bg-gradient-to-br from-amber-600 to-amber-700 dark:from-amber-500 dark:to-amber-600 text-white font-bold rounded-lg shadow-lg border-2 border-amber-500/20">Q</span>ers
+                        For the OG Thin<span className="relative inline-block px-2 py-1 bg-gradient-to-br from-amber-600 to-amber-700 dark:from-amber-500 dark:to-amber-600 text-white font-bold rounded-lg shadow-lg border-2 border-amber-500/20">Q</span>ers
                       </span>
                     </div>
                   </div>
@@ -659,7 +659,7 @@ export default function LandingPage() {
             
 
             {/* Subheadings */}
-            <div className="text-lg md:text-xl text-muted-foreground mt-4 md:mt-4 mb-4 max-w-2xl mx-auto text-center px-4">
+            <div className="text-sm md:text-xl text-muted-foreground mt-1 md:mt-4 mb-2 max-w-2xl mx-auto text-center px-4">
               <p className="leading-tight md:leading-normal max-w-2xl mx-auto">
                 Built on inspirations from <span className="font-semibold text-amber-700 dark:text-amber-400">ancient Indian wisdom</span>,<br className="hidden md:inline" /> 
                 to preserve and sharpen your <span className="font-semibold text-amber-700 dark:text-amber-400">Natural Intelligence</span> in an AI Driven World.
@@ -687,9 +687,9 @@ export default function LandingPage() {
                 </Button>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full mt-1">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 w-full mt-1">
                 {/* Button 1: Activate or View DotSpark */}
-                <div className="bg-gradient-to-br from-primary/5 to-indigo-500/5 dark:from-primary/10 dark:to-indigo-500/10 border border-primary/20 dark:border-primary/30 rounded-xl p-4 flex flex-col items-center shadow-lg shadow-primary/5 dark:shadow-primary/10 relative overflow-hidden group">
+                <div className="bg-gradient-to-br from-primary/5 to-indigo-500/5 dark:from-primary/10 dark:to-indigo-500/10 border border-primary/20 dark:border-primary/30 rounded-xl p-3 flex flex-col items-center shadow-lg shadow-primary/5 dark:shadow-primary/10 relative overflow-hidden group">
                   {/* Only show "Activated" status if the user is logged in AND WhatsApp is connected */}
                   {user && isWhatsAppConnected ? (
                     <Button size="lg" asChild className="w-full mb-3 relative overflow-hidden bg-gradient-to-r from-orange-600 to-red-500 hover:from-red-600 hover:to-orange-500 border-0 shadow-lg shadow-orange-500/20 hover:shadow-red-500/30 transition-all duration-300 transform hover:scale-105 group">
@@ -707,10 +707,10 @@ export default function LandingPage() {
                       </Link>
                     </Button>
                   ) : (
-                    <Button size="lg" asChild className="w-full mb-3 relative overflow-hidden bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-600 border-0 shadow-lg shadow-amber-600/20 hover:shadow-amber-700/30 transition-all duration-300 transform hover:scale-105 group">
+                    <Button size="sm" asChild className="w-full mb-2 relative overflow-hidden bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-600 border-0 shadow-lg shadow-amber-600/20 hover:shadow-amber-700/30 transition-all duration-300 transform hover:scale-105 group">
                       <Link href="/sectioned-dotspark-tuning" className="flex items-center justify-center relative z-10">
-                        <img src="/dotspark-logo-small.jpg" alt="DotSpark" className="mr-2 h-5 w-5 rounded-sm" />
-                        <span>Activate DotSpark</span>
+                        <img src="/dotspark-logo-small.jpg" alt="DotSpark" className="mr-2 h-4 w-4 rounded-sm" />
+                        <span className="text-sm">Activate DotSpark</span>
                         <div className="absolute top-0 left-0 w-full h-full overflow-hidden">
                           <div className="h-4 w-4 absolute top-1/2 left-3 transform -translate-y-1/2 text-white opacity-80 animate-pulse" />
                         </div>
@@ -718,9 +718,9 @@ export default function LandingPage() {
                     </Button>
                   )}
                   
-                  <div className="text-sm text-muted-foreground text-left relative z-10">
-                    <p className="mb-2 font-medium text-foreground">Get started in 3 easy steps:</p>
-                    <ol className="list-decimal list-inside space-y-1 text-xs">
+                  <div className="text-xs text-muted-foreground text-left relative z-10">
+                    <p className="mb-1 font-medium text-foreground text-xs">Get started in 3 easy steps:</p>
+                    <ol className="list-decimal list-inside space-y-0.5 text-xs">
                       <li>Sign up for an account</li>
                       <li>Activate the Dot to capture your valuable thoughts</li>
                       <li>Download the Web App for better experience</li>
@@ -729,24 +729,24 @@ export default function LandingPage() {
                 </div>
                 
                 {/* Button 2: Ask DotSpark */}
-                <div className="bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-950/30 dark:to-amber-950/30 border border-orange-200 dark:border-orange-900/50 rounded-xl p-4 flex flex-col items-center shadow-lg shadow-orange-500/5 dark:shadow-orange-900/10 relative overflow-hidden group">
+                <div className="bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-950/30 dark:to-amber-950/30 border border-orange-200 dark:border-orange-900/50 rounded-xl p-3 flex flex-col items-center shadow-lg shadow-orange-500/5 dark:shadow-orange-900/10 relative overflow-hidden group">
                   {/* Blinking dots around WhatsApp section */}
                   <div className="absolute top-2 right-2 w-0.5 h-0.5 bg-orange-400/40 rounded-full animate-pulse" style={{animationDelay: '10s'}}></div>
                   <div className="absolute bottom-2 left-2 w-0.5 h-0.5 bg-amber-500/30 rounded-full animate-pulse" style={{animationDelay: '10.5s'}}></div>
                   <div className="absolute top-1/2 right-1 w-0.5 h-0.5 bg-orange-500/20 rounded-full animate-pulse" style={{animationDelay: '11s'}}></div>
                   <Button
-                    size="lg"
+                    size="sm"
                     asChild
-                    className="w-full mb-3 relative overflow-hidden bg-gradient-to-r from-orange-500 to-red-500 hover:from-red-500 hover:to-orange-500 text-white border-0 shadow-lg shadow-orange-500/20 hover:shadow-red-500/30 transition-all duration-300 transform hover:scale-105"
+                    className="w-full mb-2 relative overflow-hidden bg-gradient-to-r from-orange-500 to-red-500 hover:from-red-500 hover:to-orange-500 text-white border-0 shadow-lg shadow-orange-500/20 hover:shadow-red-500/30 transition-all duration-300 transform hover:scale-105"
                   >
                     <Link href="/social" className="flex items-center justify-center">
-                      <Users className="h-5 w-5 mr-2 animate-pulse" />
-                      <span>Social Neura</span>
+                      <Users className="h-4 w-4 mr-2 animate-pulse" />
+                      <span className="text-sm">Social Neura</span>
                     </Link>
                   </Button>
 
-                  <div className="text-sm text-muted-foreground text-left relative z-10">
-                    <p className="mb-2 font-medium text-orange-700 dark:text-orange-500">Connect with fellow ThinQers:</p>
+                  <div className="text-xs text-muted-foreground text-left relative z-10">
+                    <p className="mb-1 font-medium text-orange-700 dark:text-orange-500 text-xs">Connect with fellow ThinQers:</p>
                     <p className="text-xs">Share insights, discover patterns, and build meaningful connections with other deep thinkers in our community.</p>
                   </div>
                 </div>
@@ -756,8 +756,8 @@ export default function LandingPage() {
         </div>
       </section>
       
-      {/* Setup DotSpark 3-step process section */}
-      <section id="setup-dotspark" className="py-16 bg-gradient-to-b from-amber-50/30 to-orange-50/20 dark:from-amber-950/20 dark:to-orange-950/10 relative overflow-hidden">
+      {/* Setup DotSpark 3-step process section - Hidden on mobile to save space */}
+      <section id="setup-dotspark" className="hidden md:block py-16 bg-gradient-to-b from-amber-50/30 to-orange-50/20 dark:from-amber-950/20 dark:to-orange-950/10 relative overflow-hidden">
         <div className="container mx-auto px-4 md:px-6">
           <div className="text-center mb-10">
             <h2 className="text-2xl md:text-3xl font-bold">
