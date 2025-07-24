@@ -575,43 +575,43 @@ export default function ChatPage() {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-9 w-9 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg md:hidden"
+                    className="h-8 w-8 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg md:hidden"
                   >
                     <Menu className="h-5 w-5" />
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="left" className="w-72 p-0 max-w-[85vw]">
+                <SheetContent side="left" className="w-64 p-0 max-w-[75vw]">
                   <div className="flex flex-col h-full bg-white dark:bg-gray-900">
-                    {/* Compact Menu Header */}
-                    <div className="p-3 border-b border-gray-200 dark:border-gray-700">
+                    {/* Ultra-Compact Menu Header */}
+                    <div className="p-2 border-b border-gray-200 dark:border-gray-700">
                       <div className="flex items-center gap-2">
                         <img 
                           src="/dotspark-logo-icon.jpeg" 
                           alt="DotSpark" 
-                          className="w-6 h-6 rounded-full"
+                          className="w-5 h-5 rounded-full"
                         />
-                        <h2 className="text-base font-semibold text-gray-900 dark:text-white">DotSpark</h2>
+                        <h2 className="text-sm font-medium text-gray-900 dark:text-white">DotSpark</h2>
                       </div>
                     </div>
                     
-                    {/* Compact AI Model Selector */}
-                    <div className="p-3 border-b border-gray-200 dark:border-gray-700">
+                    {/* Ultra-Compact AI Model Selector */}
+                    <div className="p-2 border-b border-gray-200 dark:border-gray-700">
                       <ModelSelector
                         selectedModel={selectedModel}
                         onModelChange={setSelectedModel}
-                        className="w-full text-sm bg-purple-50 hover:bg-purple-100 dark:bg-purple-950/50 dark:hover:bg-purple-900/70 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-700"
+                        className="w-full text-xs bg-purple-50 hover:bg-purple-100 dark:bg-purple-950/50 dark:hover:bg-purple-900/70 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-700 h-8"
                       />
                     </div>
                     
-                    {/* Compact Navigation */}
-                    <nav className="flex-1 p-2">
-                      <div className="space-y-1">
+                    {/* Ultra-Compact Navigation */}
+                    <nav className="flex-1 p-1">
+                      <div className="space-y-0.5">
                         {messages.length > 1 && (
                           <SheetClose asChild>
                             <Button 
                               onClick={handleRefreshChat}
                               variant="ghost" 
-                              className="w-full justify-start h-10 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg"
+                              className="w-full justify-start h-9 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg"
                             >
                               <RefreshCw className="w-4 h-4 mr-2" />
                               New Chat
@@ -620,7 +620,7 @@ export default function ChatPage() {
                         )}
                         <SheetClose asChild>
                           <Link href="/dashboard" className="block">
-                            <Button variant="ghost" className="w-full justify-start h-10 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg">
+                            <Button variant="ghost" className="w-full justify-start h-9 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg">
                               <Brain className="w-4 h-4 mr-2" />
                               My Neura
                             </Button>
@@ -628,7 +628,7 @@ export default function ChatPage() {
                         </SheetClose>
                         <SheetClose asChild>
                           <Link href="/social" className="block">
-                            <Button variant="ghost" className="w-full justify-start h-10 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg">
+                            <Button variant="ghost" className="w-full justify-start h-9 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg">
                               <Users className="w-4 h-4 mr-2" />
                               Social
                             </Button>
@@ -637,7 +637,7 @@ export default function ChatPage() {
                         {user ? (
                           <SheetClose asChild>
                             <Link href="/profile" className="block">
-                              <Button variant="ghost" className="w-full justify-start h-10 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg">
+                              <Button variant="ghost" className="w-full justify-start h-9 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg">
                                 <User className="w-4 h-4 mr-2" />
                                 Profile
                               </Button>
@@ -646,7 +646,7 @@ export default function ChatPage() {
                         ) : (
                           <SheetClose asChild>
                             <Link href="/auth" className="block">
-                              <Button variant="ghost" className="w-full justify-start h-10 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg">
+                              <Button variant="ghost" className="w-full justify-start h-9 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg">
                                 <User className="w-4 h-4 mr-2" />
                                 Sign In
                               </Button>
