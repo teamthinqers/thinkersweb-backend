@@ -54,9 +54,9 @@ export default function AuthPage() {
     if (typeof window !== 'undefined') {
       const urlParams = new URLSearchParams(window.location.search);
       const redirect = urlParams.get('redirect');
-      return redirect ? `/${redirect}` : '/dashboard';
+      return redirect ? `/${redirect}` : '/';
     }
-    return '/dashboard';
+    return '/';
   };
 
   // Redirect if already logged in
@@ -100,7 +100,7 @@ export default function AuthPage() {
 
       if (response.ok) {
         toast({
-          title: "Login successful",
+          title: "Login successful", 
           description: "Welcome back to DotSpark!",
         });
         const redirectPath = getRedirectPath();
