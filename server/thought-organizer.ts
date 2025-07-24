@@ -17,11 +17,14 @@ export interface ThoughtClassification {
   type: 'dot' | 'wheel' | 'chakra' | 'exploring';
   confidence: number;
   reasoning: string;
+  keyIndicators?: string[];
+  alternativeConsideration?: string;
   suggestedStructure?: {
     title?: string;
-    timeline?: string;
+    complexity?: 'simple' | 'moderate' | 'complex';
+    scope?: 'individual' | 'project' | 'life';
+    timeframe?: 'immediate' | 'short-term' | 'long-term';
     relatedTopics?: string[];
-    potentialConnections?: string[];
   };
 }
 
@@ -122,39 +125,67 @@ async function classifyThoughts(
     .map(m => `${m.role}: ${m.content}`)
     .join('\n');
 
-  const classificationPrompt = `You are an expert thought organizer. Analyze this conversation and classify the user's thoughts into one of these categories:
+  const classificationPrompt = `You are an expert cognitive architecture analyst. Analyze this conversation and classify the user's thoughts using these STRICT criteria:
 
-**DOT**: Random insights, individual learnings, standalone thoughts that don't require complex structure
-**WHEEL**: Goal-oriented thoughts that could cluster with other related thoughts, have actionable steps or timelines
-**CHAKRA**: High-level, purpose-driven thoughts that encompass multiple areas or strategic vision
+**DOT** (Individual Insight) - ONLY if ALL these conditions are met:
+- Single, specific insight or learning
+- No mention of multiple steps, goals, or timelines
+- Focused on one clear realization or idea
+- Can be captured in 1-2 sentences
+- Examples: "I learned that teaching helps me learn", "Meditation clears my mind", "Exercise boosts my energy"
 
-User's Previous Patterns:
-- Recent thought patterns: ${userPatterns.patterns.map(p => p.thoughtPattern).join(', ')}
-- Recent topics: ${userPatterns.patterns.flatMap(p => p.preferredTopics).join(', ')}
-- Recent dots: ${userPatterns.recentDots.map(d => d.summary).slice(0, 3).join('; ')}
-- Recent wheels: ${userPatterns.recentWheels.map(w => w.name).join('; ')}
-- Recent chakras: ${userPatterns.recentChakras.map(c => c.name).join('; ')}
+**WHEEL** (Goal-Oriented System) - ONLY if MOST these conditions are met:
+- Discusses specific goals, objectives, or desired outcomes
+- Mentions steps, processes, timelines, or actionable elements
+- Has measurable components or progress indicators
+- Involves multiple related activities or tasks
+- Time-bound or has progression elements
+- Examples: "Building my startup", "Learning Spanish in 6 months", "Improving my fitness routine"
 
-Current Conversation:
+**CHAKRA** (Life-Level Purpose) - ONLY if MOST these conditions are met:
+- Discusses fundamental life purpose, identity, or values
+- Encompasses multiple life areas or domains
+- Strategic, philosophical, or existential in nature
+- Long-term life direction or major life changes
+- Involves deep personal transformation or awakening
+- Examples: "Becoming a better leader", "Living authentically", "Creating a legacy"
+
+**EXPLORING** - Use when:
+- User is still developing their thoughts
+- Conversation lacks depth for clear classification
+- User hasn't reached a conclusion or insight
+- Multiple topics without clear focus
+
+User's Historical Context:
+${userPatterns.recentDots.length > 0 ? `Recent dots: ${userPatterns.recentDots.map(d => d.summary).slice(0, 3).join('; ')}` : 'No recent dots'}
+${userPatterns.recentWheels.length > 0 ? `Recent wheels: ${userPatterns.recentWheels.map(w => w.name).join('; ')}` : 'No recent wheels'}
+${userPatterns.recentChakras.length > 0 ? `Recent chakras: ${userPatterns.recentChakras.map(c => c.name).join('; ')}` : 'No recent chakras'}
+
+Conversation to Analyze:
 ${conversationContext}
 
-Analyze the user's thoughts and classify them. Consider:
-1. Complexity and scope of the thoughts
-2. Whether they mention goals, timelines, or action items (suggests WHEEL)
-3. Whether they discuss high-level purpose, life direction, or strategic vision (suggests CHAKRA)
-4. Whether they're sharing individual insights or learnings (suggests DOT)
-5. How this fits with their historical patterns
+CRITICAL ANALYSIS STEPS:
+1. Count how many distinct topics/ideas the user discusses
+2. Look for goal/timeline/action language (suggests WHEEL)
+3. Look for purpose/identity/values language (suggests CHAKRA)
+4. Check if it's a single clear insight (suggests DOT)
+5. Assess conversation depth and completeness
+
+Be VERY conservative in classification. If uncertain between two types, choose the simpler one (DOT over WHEEL, WHEEL over CHAKRA).
 
 Respond with JSON:
 {
   "type": "dot" | "wheel" | "chakra" | "exploring",
   "confidence": number (0-1),
-  "reasoning": "detailed explanation of classification",
+  "reasoning": "detailed step-by-step analysis explaining why this classification was chosen",
+  "keyIndicators": ["specific phrases or concepts that led to this classification"],
+  "alternativeConsideration": "what other type was considered and why it was rejected",
   "suggestedStructure": {
-    "title": "suggested title for the structure",
-    "timeline": "suggested timeline if applicable",
-    "relatedTopics": ["topic1", "topic2"],
-    "potentialConnections": ["connection to existing dots/wheels/chakras"]
+    "title": "suggested title",
+    "complexity": "simple|moderate|complex",
+    "scope": "individual|project|life",
+    "timeframe": "immediate|short-term|long-term",
+    "relatedTopics": ["topic1", "topic2"]
   }
 }`;
 
@@ -173,6 +204,8 @@ Respond with JSON:
       type: classification.type || 'exploring',
       confidence: classification.confidence || 0.5,
       reasoning: classification.reasoning || "Unable to classify",
+      keyIndicators: classification.keyIndicators || [],
+      alternativeConsideration: classification.alternativeConsideration || "",
       suggestedStructure: classification.suggestedStructure || {}
     };
   } catch (error) {
@@ -214,43 +247,66 @@ Your Response Guidelines:
 
   if (classification.type === 'dot') {
     guidancePrompt += `
-Since this appears to be a DOT (individual insight), help them:
-1. Clarify the core insight
-2. Understand why it's meaningful to them
-3. Identify the emotional connection
-4. Capture it in a structured way
+This appears to be a DOT (individual insight). Guide them to:
+1. Sharpen the core insight - what exactly did they learn or realize?
+2. Explore why this insight matters to them personally
+3. Help them identify how they'll remember or apply this
+4. Capture the emotional response to this realization
 
-Ask questions that help them distill their insight into a clear, memorable format.`;
+Ask focused questions like:
+- "What specifically made this insight click for you?"
+- "How does this change how you think about [topic]?"
+- "What feeling does this realization give you?"
+
+Keep the conversation focused on this single insight rather than expanding to related topics.`;
 
   } else if (classification.type === 'wheel') {
     guidancePrompt += `
-Since this appears to be a WHEEL (goal-oriented thoughts), help them:
-1. Identify the central goal or theme
-2. Explore related sub-goals or action items
-3. Discuss timelines and milestones
-4. Connect to their broader objectives
+This appears to be a WHEEL (goal-oriented system). Guide them to:
+1. Clarify their specific goal or objective
+2. Understand the timeline and measurable outcomes
+3. Identify the key components or steps involved
+4. Explore what success looks like
 
-Ask questions that help them structure this as an actionable goal system.`;
+Ask strategic questions like:
+- "What does success look like for this goal?"
+- "What timeline are you working with?"
+- "What are the main components or steps involved?"
+- "How will you measure progress?"
+
+Help them structure their goal into actionable elements.`;
 
   } else if (classification.type === 'chakra') {
     guidancePrompt += `
-Since this appears to be a CHAKRA (purpose-driven vision), help them:
-1. Clarify the overarching purpose or vision
-2. Identify the key areas or domains it encompasses
-3. Explore how different aspects connect
-4. Consider the strategic importance
+This appears to be a CHAKRA (life-level purpose). Guide them to:
+1. Explore the deeper purpose or meaning behind their thoughts
+2. Understand how this connects to their identity and values
+3. Identify which life areas this encompasses
+4. Help them articulate their vision or transformation
 
-Ask questions that help them structure this as a comprehensive life/work area.`;
+Ask profound questions like:
+- "What deeper purpose is calling to you here?"
+- "How does this align with who you want to become?"
+- "What areas of your life would this transformation touch?"
+- "What would living this purpose look like?"
 
-  } else {
+Help them connect to the fundamental change or direction they're seeking.`;
+
+  } else { // exploring
     guidancePrompt += `
-The user is still exploring their thoughts. Help them:
-1. Clarify what they're thinking about
-2. Understand the significance to them
-3. Identify patterns or themes
-4. Determine the appropriate structure
+The user is still exploring their thoughts. Guide them to:
+1. Clarify what they're really thinking about
+2. Understand why this matters to them
+3. Identify the scope and complexity of their thoughts
+4. Help them discover the appropriate structure naturally
 
-Ask open-ended questions that help them organize their thinking.`;
+Ask open questions like:
+- "What's really on your mind about this?"
+- "Why does this feel important to you right now?"
+- "Are you thinking about a specific goal, or is this more of a general insight?"
+- "How does this connect to other things you're working on?"
+
+Help them explore until their thoughts become clear enough to structure.`;
   }
 
   guidancePrompt += `\n\nProvide a helpful, conversational response (max 150 words) that guides them forward in organizing their thoughts.`;
@@ -313,54 +369,59 @@ Respond with JSON:
 
   } else if (classification.type === 'wheel') {
     structurePrompt += `
-Create a WHEEL structure with:
-- Name: Clear goal/theme name
-- Goals: Specific objectives or focus areas
-- Timeline: Realistic timeframe
-- Related dots: Supporting insights/actions
+Create a WHEEL structure based ONLY on what the user discussed:
+- Name: The goal/project name from their conversation
+- Goals: Their specific objectives (extracted from their words)
+- Timeline: The timeframe they mentioned (or reasonable estimate)
+- Supporting dots: Key insights/steps they discussed (3-9 dots)
+
+IMPORTANT: Only use information they actually shared. Do not invent details.
 
 Respond with JSON:
 {
   "structuredData": {
     "wheels": [{
-      "name": "clear wheel name",
-      "goals": "specific goals and objectives",
-      "timeline": "realistic timeframe",
+      "name": "goal name from their discussion",
+      "goals": "their stated objectives and outcomes",
+      "timeline": "timeframe they mentioned or implied",
       "dots": [
         {
-          "summary": "supporting insight 1",
-          "anchor": "how this supports the goal",
-          "pulse": "emotion_word"
+          "summary": "specific insight/step they mentioned",
+          "anchor": "context from their conversation",
+          "pulse": "emotion that matches their tone"
         }
       ]
     }]
   },
-  "visualSummary": "Beautiful text summary of how this goal system is organized"
+  "visualSummary": "Summary of the goal system created from their discussion"
 }`;
 
   } else if (classification.type === 'chakra') {
     structurePrompt += `
-Create a CHAKRA structure with:
-- Name: High-level purpose/vision name
-- Purpose: Core purpose or strategic direction
-- Related wheels: Supporting goal areas
+Create a CHAKRA structure based ONLY on what the user discussed:
+- Name: The life purpose/transformation name from their words
+- Purpose: The deeper meaning they expressed (max 300 chars)
+- Supporting wheels: Key areas/domains they mentioned (2-5 wheels)
+
+CRITICAL: This is for fundamental life purposes and identity changes only.
+Only use information they explicitly shared about their transformation/purpose.
 
 Respond with JSON:
 {
   "structuredData": {
     "chakras": [{
-      "name": "chakra name",
-      "purpose": "overarching purpose/vision",
+      "name": "purpose/transformation name from their discussion",
+      "purpose": "the deeper meaning and vision they expressed",
       "wheels": [
         {
-          "name": "supporting area 1",
-          "goals": "specific goals for this area",
-          "timeline": "timeframe"
+          "name": "life area they mentioned",
+          "goals": "objectives they stated for this area",
+          "timeline": "timeframe they discussed"
         }
       ]
     }]
   },
-  "visualSummary": "Beautiful text summary of how this strategic vision is organized"
+  "visualSummary": "Summary of the life purpose system created from their discussion"
 }`;
   }
 
