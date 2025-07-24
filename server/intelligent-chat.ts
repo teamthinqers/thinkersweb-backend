@@ -136,6 +136,19 @@ Respond with JSON:
 }
 
 /**
+ * Check if user input matches one of the 4 special prompts
+ */
+function isSpecialPrompt(userInput: string): boolean {
+  // These will be the 4 specific prompts that require special handling
+  const specialPrompts: string[] = [
+    // To be defined when user provides the specific prompts
+  ];
+  
+  const normalizedInput = userInput.toLowerCase().trim();
+  return specialPrompts.some(prompt => normalizedInput.includes(prompt.toLowerCase()));
+}
+
+/**
  * Generate smart conversational response that guides toward dot creation
  */
 export async function generateIntelligentChatResponse(
@@ -146,9 +159,22 @@ export async function generateIntelligentChatResponse(
   response: string;
   conversationState: ConversationState;
   dotProposal?: DotProposal;
-  action?: 'continue' | 'propose_dot' | 'save_dot';
+  action?: 'continue' | 'propose_dot' | 'save_dot' | 'special_prompt';
 }> {
   try {
+    // Check for special prompts first
+    if (isSpecialPrompt(userInput)) {
+      // Special handling will be implemented when user provides specific prompts
+      return {
+        response: "This is a special prompt that will receive customized handling.",
+        conversationState: {
+          isReadyForDot: false,
+          conversationDepth: 1,
+          lastUserSentiment: 'exploring'
+        },
+        action: 'special_prompt'
+      };
+    }
     // Add user message to conversation
     const updatedMessages = [...messages, {
       role: "user" as const,
@@ -199,30 +225,31 @@ Does this capture your insight well? I can save this as your dot or adjust anyth
       };
     }
 
-    // Generate conversational response that guides toward insights
-    const systemPrompt = `You are DotSpark AI, a direct and helpful AI companion who provides valuable insights and actionable responses.
+    // Generate conversational response for maximum AI potential
+    const systemPrompt = `You are DotSpark AI, an exceptional AI companion that delivers maximum value through intelligent, insightful conversations.
 
-Your conversation style:
-- Provide direct, helpful answers rather than asking excessive questions
-- Share practical insights, knowledge, and solutions
-- Be conversational but focus on delivering value
-- Only ask follow-up questions when genuinely needed for clarification
-- Provide actionable advice and concrete next steps when relevant
-- Match the user's communication style - be direct if they're direct
+Your core principles:
+- Demonstrate the full potential of advanced AI by providing thoughtful, nuanced responses
+- Share deep insights, practical frameworks, and actionable solutions
+- Be comprehensive yet concise - every sentence should add genuine value
+- Draw from vast knowledge to offer unique perspectives and connections
+- Provide specific, concrete advice rather than generic suggestions
+- Match user's intellectual level and adapt communication style dynamically
 
-Current conversation context:
+Response optimization:
+- Lead with direct answers to user questions
+- Expand with relevant insights, examples, or frameworks when valuable
+- Offer practical next steps or applications when relevant
+- Connect ideas across domains to provide unique value
+- Only ask questions when they genuinely advance the conversation
+- Demonstrate sophisticated reasoning and pattern recognition
+
+Current context:
 - Conversation depth: ${conversationState.conversationDepth}/10
 - User sentiment: ${conversationState.lastUserSentiment}
-- Ready for dot: ${conversationState.isReadyForDot}
+- Ready for insight capture: ${conversationState.isReadyForDot}
 
-Your approach:
-1. Answer questions directly and comprehensively first
-2. Provide insights, frameworks, or practical guidance
-3. Share relevant knowledge that adds real value
-4. Only ask questions if you need clarification or to help them think through something specific
-5. Focus on being genuinely helpful rather than just conversational
-
-Keep responses helpful and substantive (2-4 sentences). Prioritize delivering value over asking questions.`;
+Deliver exceptional AI assistance that showcases the full potential of your capabilities. Be substantive, insightful, and genuinely helpful.`;
 
     let aiResponse: string;
 

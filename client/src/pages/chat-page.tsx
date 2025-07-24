@@ -103,6 +103,7 @@ type Message = {
   needsConfirmation?: boolean;
   action?: string;
   isTyping?: boolean;
+  isNewMessage?: boolean; // Flag to control typewriter effect
 };
 
 type DotProposal = {
@@ -250,6 +251,7 @@ export default function ChatPage() {
         timestamp: new Date(),
         dotProposal: response.data.dotProposal,
         needsConfirmation: response.data.needsConfirmation,
+        isNewMessage: true, // Enable typewriter for new AI messages
       };
 
       setMessages((prev) => [...prev, aiMessage]);
@@ -329,7 +331,8 @@ export default function ChatPage() {
         content: response.data.reply,
         isUser: false,
         timestamp: new Date(),
-        action: 'dot_saved'
+        action: 'dot_saved',
+        isNewMessage: true
       };
 
       setMessages(prev => [...prev, confirmationMessage]);
@@ -340,7 +343,8 @@ export default function ChatPage() {
         id: Date.now().toString(),
         content: "I had trouble saving your dot. Please try again.",
         isUser: false,
-        timestamp: new Date()
+        timestamp: new Date(),
+        isNewMessage: true
       };
       setMessages(prev => [...prev, errorMessage]);
     } finally {
@@ -814,10 +818,17 @@ export default function ChatPage() {
                               {message.isUser ? (
                                 <div className="whitespace-pre-wrap text-sm leading-7 text-white">{message.content}</div>
                               ) : (
-                                <TypewriterText 
-                                  text={message.content} 
-                                  onProgress={() => scrollToBottom()}
-                                />
+                                // Only use typewriter for new messages
+                                message.isNewMessage ? (
+                                  <TypewriterText 
+                                    text={message.content} 
+                                    onProgress={() => scrollToBottom()}
+                                  />
+                                ) : (
+                                  <div className="whitespace-pre-wrap text-sm leading-7 text-gray-800 dark:text-gray-100">
+                                    {message.content}
+                                  </div>
+                                )
                               )}
                             </div>
                             {message.dotProposal && message.needsConfirmation && (
@@ -875,7 +886,7 @@ export default function ChatPage() {
                     value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)}
                     onKeyDown={handleKeyDown}
-                    placeholder="Message DotSpark..."
+                    placeholder="Ask Anything to DotSpark"
                     disabled={isLoading || limitExceeded}
                     rows={1}
                     className="w-full resize-none rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-4 py-3 pr-12 text-sm placeholder:text-gray-500 focus:border-orange-500 focus:ring-1 focus:ring-orange-500 focus:outline-none disabled:opacity-50 min-h-[52px] max-h-[200px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600"
