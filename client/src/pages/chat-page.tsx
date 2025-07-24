@@ -145,7 +145,7 @@ export default function ChatPage() {
     return [
       {
         id: '1',
-        content: 'Welcome to DotSpark! 🌟 I\'m your AI companion. Share your thoughts with me and I\'ll help you organize them into structured insights. Try me out - no signup required!',
+        content: 'Welcome to DotSpark! 🌟 I\'m your AI companion. Share your thoughts with me and I\'ll help you organize them into structured insights. Try "Organize Thoughts" to get started - no signup required!',
         isUser: false,
         timestamp: new Date(),
       },
@@ -750,15 +750,15 @@ export default function ChatPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-2xl mb-8">
                   <Button 
                     variant="outline" 
-                    className="h-24 p-4 flex flex-col items-start justify-between text-left hover:bg-amber-50 dark:hover:bg-amber-950/20 hover:text-amber-800 dark:hover:text-amber-200 hover:border-amber-300 dark:hover:border-amber-700 active:bg-amber-100 dark:active:bg-amber-900/30 active:text-amber-900 dark:active:text-amber-100 transition-all duration-200"
-                    onClick={() => setInputValue("Help me organize my thoughts into dots, wheels and chakras: ")}
+                    className="h-24 p-4 flex flex-col items-start justify-between text-left hover:bg-amber-50 dark:hover:bg-amber-950/20 hover:text-amber-800 dark:hover:text-amber-200 hover:border-amber-300 dark:hover:border-amber-700 active:bg-amber-100 dark:active:bg-amber-900/30 active:text-amber-900 dark:active:text-amber-100 transition-all duration-200 border-2 border-amber-300 dark:border-amber-700 bg-amber-50/50 dark:bg-amber-950/30 ring-2 ring-amber-200 dark:ring-amber-800"
+                    onClick={() => setInputValue("Organize Thoughts")}
                   >
                     <div className="flex items-center gap-2">
-                      <Brain className="w-4 h-4 text-orange-600" />
-                      <span className="font-medium">Organize Thoughts</span>
+                      <Brain className="w-5 h-5 text-orange-600" />
+                      <span className="font-semibold text-amber-800 dark:text-amber-200">🌟 Organize Thoughts</span>
                     </div>
                     <span className="text-xs text-gray-600 dark:text-gray-400 leading-tight mt-1">
-                      Structure my thoughts into dots,<br />wheels and chakras
+                      Transform insights into structured dots,<br />wheels & chakras automatically
                     </span>
                   </Button>
                   
