@@ -317,41 +317,41 @@ export default function LandingPage() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      {/* Header with navigation - fixed at top */}
-      <header className="border-b border-amber-200/40 dark:border-amber-700/40 bg-gradient-to-r from-white via-amber-50/80 to-amber-100/90 dark:from-slate-900 dark:via-amber-950/20 dark:to-slate-900 backdrop-blur-sm supports-[backdrop-filter]:bg-background/95 sticky top-0 z-50 shadow-lg">
-        <div className="container flex h-16 items-center justify-between px-4 sm:px-6 md:px-8">
+      {/* Enhanced Header with modern design */}
+      <header className="border-b border-gradient-to-r from-amber-300/20 via-orange-300/30 to-amber-300/20 bg-gradient-to-r from-white via-amber-50/90 to-orange-50/80 dark:from-slate-950 dark:via-slate-900/95 dark:to-slate-950 backdrop-blur-lg supports-[backdrop-filter]:bg-background/90 sticky top-0 z-50 shadow-xl shadow-amber-500/15 dark:shadow-amber-900/20">
+        <div className="container flex h-20 items-center justify-between px-6 sm:px-8 md:px-10">
           {/* Logo section - enhanced with padding and subtle background */}
-          <div className="flex items-center py-2">
+          <div className="flex items-center py-3">
             <div 
-              className="flex items-center px-4 py-3 rounded-md hover:bg-amber-100/50 dark:hover:bg-amber-900/30 cursor-pointer transition-all duration-200 ease-in-out" 
+              className="flex items-center px-6 py-4 rounded-xl hover:bg-gradient-to-r hover:from-amber-100/60 hover:to-orange-100/60 dark:hover:from-amber-900/40 dark:hover:to-orange-900/40 cursor-pointer transition-all duration-300 ease-in-out hover:shadow-lg hover:scale-105 group" 
               onClick={() => setLocation("/about")}
             >
-              <img src="/dotspark-logo-homepage-header.png?v=1" alt="DotSpark" className="h-16 w-56 object-contain rounded-sm" />
+              <img src="/dotspark-logo-homepage-header.png?v=1" alt="DotSpark" className="h-16 w-56 object-contain rounded-sm group-hover:brightness-110 transition-all duration-300" />
             </div>
           </div>
           
           <div className="flex items-center gap-3 md:gap-4">
             {/* Desktop navigation */}
             <div className="hidden md:flex items-center gap-4">
-              <Link href="/about" className="text-sm font-medium text-slate-700 hover:text-amber-700 dark:text-slate-300 dark:hover:text-amber-300 transition-colors px-2 py-1 rounded">
+              <Link href="/about" className="text-sm font-semibold text-slate-600 hover:text-amber-700 dark:text-slate-400 dark:hover:text-amber-400 transition-all duration-300 px-4 py-2 rounded-xl hover:bg-amber-100/50 dark:hover:bg-amber-900/30 hover:shadow-md">
                 Home
               </Link>
-              {/* My DotSpark button */}
+              {/* My DotSpark button - enhanced */}
               <Button 
                 size="sm"
                 onClick={() => setLocation("/my-neura")}
-                className="relative"
+                className="relative bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 rounded-xl px-4 py-2"
               >
                 <div className="flex items-center gap-2">
-                  <img src="/dotspark-logo-icon.jpeg" alt="DotSpark" className="h-4 w-4 object-contain rounded" />
-                  <span className="text-sm">My DotSpark</span>
+                  <img src="/dotspark-logo-icon.jpeg" alt="DotSpark" className="h-4 w-4 object-contain rounded ring-1 ring-white/30" />
+                  <span className="text-sm font-medium">My DotSpark</span>
                 </div>
               </Button>
-              {/* Blinking Neura button */}
+              {/* Enhanced Neura button */}
               <Button 
                 size="sm"
                 onClick={() => setLocation("/dashboard")}
-                className="relative"
+                className="relative bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 rounded-xl px-4 py-2"
               >
                 <div className="flex items-center gap-2">
                   <div className="relative">
@@ -359,16 +359,16 @@ export default function LandingPage() {
                     <div className="absolute inset-0 animate-ping opacity-30">
                       <Brain className="h-4 w-4" />
                     </div>
-                    {isNeuraActivated && <div className="absolute -top-1 -right-1 h-2 w-2 bg-green-500 rounded-full animate-pulse"></div>}
+                    {isNeuraActivated && <div className="absolute -top-1 -right-1 h-2 w-2 bg-green-400 rounded-full animate-pulse shadow-lg"></div>}
                   </div>
-                  <span className="text-sm">My Neura</span>
+                  <span className="text-sm font-medium">My Neura</span>
                 </div>
               </Button>
-              {/* Social button with blinking users icon */}
+              {/* Enhanced Social button */}
               <Button 
                 size="sm"
                 onClick={() => setLocation("/social")}
-                className="relative bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-md hover:bg-gradient-to-r hover:from-orange-600 hover:to-red-600 transition-all duration-300"
+                className="relative bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 rounded-xl px-4 py-2"
               >
                 <div className="flex items-center gap-2">
                   <div className="relative">
@@ -377,17 +377,18 @@ export default function LandingPage() {
                       <Users className="h-4 w-4" />
                     </div>
                   </div>
-                  <span className="text-sm">Social</span>
+                  <span className="text-sm font-medium">Social</span>
                 </div>
               </Button>
-              {/* AI Chat button with purple theme */}
+              {/* Enhanced AI Chat button */}
               <Button 
                 size="sm"
                 onClick={() => setLocation("/chat")}
-                className="relative bg-gradient-to-r from-purple-500 to-purple-600 text-white shadow-md hover:bg-gradient-to-r hover:from-purple-600 hover:to-purple-700 transition-all duration-300"
+                className="relative bg-gradient-to-r from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 rounded-xl px-4 py-2"
               >
                 <div className="flex items-center gap-2">
-                  <span className="text-sm">AI Chat</span>
+                  <MessageSquare className="h-4 w-4" />
+                  <span className="text-sm font-medium">AI Chat</span>
                 </div>
               </Button>
             </div>
@@ -508,60 +509,64 @@ export default function LandingPage() {
               </Button>
             )}
             
-            {/* Mobile menu button - always visible */}
+            {/* Enhanced Mobile menu button */}
             <div className="md:hidden ml-1">
               <Sheet>
                 <SheetTrigger asChild>
-                  <Button variant="ghost" size="lg" className="p-2">
-                    <Menu className="h-6 w-6" />
+                  <Button variant="ghost" size="lg" className="p-3 hover:bg-amber-100/70 dark:hover:bg-amber-900/30 rounded-xl transition-all duration-300 hover:scale-105">
+                    <Menu className="h-6 w-6 text-amber-700 dark:text-amber-400" />
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="right">
-                  <div className="flex flex-col h-full">
-                    <div className="mb-6 pb-2 border-b flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <img src="/dotspark-logo-white-bg.jpg" alt="DotSpark" className="h-10 w-auto rounded-sm" />
+                <SheetContent side="right" className="w-80">
+                  <div className="flex flex-col h-full bg-gradient-to-b from-amber-50/90 via-white to-orange-50/80 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+                    <div className="mb-8 pb-4 border-b border-amber-200/50 dark:border-amber-700/50 flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="relative">
+                          <img src="/dotspark-logo-icon.jpeg" alt="DotSpark" className="h-12 w-12 rounded-full shadow-lg ring-2 ring-amber-300/50" />
+                          <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-amber-400/20 to-orange-400/20 animate-pulse"></div>
+                        </div>
+                        <h3 className="text-xl font-bold bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent">DotSpark</h3>
                       </div>
                     </div>
                     
-                    <div className="flex flex-col gap-4">
+                    <div className="flex flex-col gap-3">
                       <SheetClose asChild>
-                        <Link href="/about" className="py-2 hover:text-primary transition-colors flex items-center gap-2">
-                          <HomeIcon className="h-4 w-4 text-amber-600" />
-                          <span>Home</span>
+                        <Link href="/about" className="py-3 px-4 hover:bg-amber-100/70 dark:hover:bg-amber-900/30 transition-all duration-300 flex items-center gap-3 rounded-xl font-medium">
+                          <HomeIcon className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+                          <span className="text-gray-800 dark:text-gray-200">Home</span>
                         </Link>
                       </SheetClose>
                       
                       <SheetClose asChild>
-                        <div onClick={() => setLocation("/my-neura")} className="py-2 hover:text-primary transition-colors flex items-center gap-2 cursor-pointer">
-                          <img src="/dotspark-logo-icon.jpeg" alt="DotSpark" className="h-4 w-4 rounded-sm object-contain" />
-                          <span>My DotSpark</span>
+                        <div onClick={() => setLocation("/my-neura")} className="py-3 px-4 hover:bg-amber-100/70 dark:hover:bg-amber-900/30 transition-all duration-300 flex items-center gap-3 rounded-xl font-medium cursor-pointer">
+                          <img src="/dotspark-logo-icon.jpeg" alt="DotSpark" className="h-5 w-5 rounded-sm object-contain" />
+                          <span className="text-gray-800 dark:text-gray-200">My DotSpark</span>
                         </div>
                       </SheetClose>
                       
                       <SheetClose asChild>
-                        <div onClick={() => setLocation("/dashboard")} className="py-2 hover:text-primary transition-colors flex items-center gap-2 cursor-pointer">
+                        <div onClick={() => setLocation("/dashboard")} className="py-3 px-4 hover:bg-blue-100/70 dark:hover:bg-blue-900/30 transition-all duration-300 flex items-center gap-3 rounded-xl font-medium cursor-pointer">
                           <div className="relative">
-                            <Brain className="h-4 w-4" />
+                            <Brain className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                             {isNeuraActivated && (
-                              <div className="absolute -top-1 -right-1 h-2 w-2 bg-green-500 rounded-full"></div>
+                              <div className="absolute -top-1 -right-1 h-2.5 w-2.5 bg-green-500 rounded-full animate-pulse"></div>
                             )}
                           </div>
-                          <span>My Neura</span>
+                          <span className="text-gray-800 dark:text-gray-200">My Neura</span>
                         </div>
                       </SheetClose>
                       
                       <SheetClose asChild>
-                        <div onClick={() => setLocation("/social")} className="py-2 hover:text-primary transition-colors flex items-center gap-2 cursor-pointer">
-                          <Users className="h-4 w-4 text-orange-600" />
-                          <span>DotSpark Social</span>
+                        <div onClick={() => setLocation("/social")} className="py-3 px-4 hover:bg-rose-100/70 dark:hover:bg-rose-900/30 transition-all duration-300 flex items-center gap-3 rounded-xl font-medium cursor-pointer">
+                          <Users className="h-5 w-5 text-rose-600 dark:text-rose-400" />
+                          <span className="text-gray-800 dark:text-gray-200">DotSpark Social</span>
                         </div>
                       </SheetClose>
                       
                       <SheetClose asChild>
-                        <div onClick={() => setLocation("/chat")} className="py-2 hover:text-primary transition-colors flex items-center gap-2 cursor-pointer">
-                          <MessageSquare className="h-4 w-4 text-purple-600" />
-                          <span className="text-purple-600">AI Chat</span>
+                        <div onClick={() => setLocation("/chat")} className="py-3 px-4 hover:bg-purple-100/70 dark:hover:bg-purple-900/30 transition-all duration-300 flex items-center gap-3 rounded-xl font-medium cursor-pointer">
+                          <MessageSquare className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+                          <span className="text-purple-600 dark:text-purple-400 font-semibold">AI Chat</span>
                         </div>
                       </SheetClose>
                     </div>

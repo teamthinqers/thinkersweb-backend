@@ -93,86 +93,96 @@ export default function AboutPage() {
   
   return (
     <div className="flex flex-col min-h-screen">
-      {/* Header with back button */}
-      <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
-        <div className="container flex h-16 items-center justify-between px-4 md:px-6">
+      {/* Header with enhanced design */}
+      <header className="border-b border-gradient-to-r from-amber-200/30 via-orange-200/40 to-amber-200/30 bg-gradient-to-r from-white via-amber-50/70 to-white dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 backdrop-blur-md supports-[backdrop-filter]:bg-background/80 sticky top-0 z-50 shadow-lg shadow-amber-500/10">
+        <div className="container flex h-18 items-center justify-between px-6 md:px-8">
           <Link href="/">
-            <Button variant="ghost" size="sm" className="gap-2">
+            <Button variant="ghost" size="sm" className="gap-2 text-slate-600 hover:text-amber-700 hover:bg-amber-100/70 dark:text-slate-400 dark:hover:text-amber-400 dark:hover:bg-amber-900/30 transition-all duration-300 rounded-xl px-4 py-2">
               <ArrowLeft className="h-4 w-4" />
-              Back to Chat
+              <span className="font-medium">Back to Chat</span>
             </Button>
           </Link>
           
-          <Link href="/about" className="flex items-center gap-3 hover:opacity-80 transition-opacity cursor-pointer">
-            <img src="/dotspark-logo-icon.jpeg" alt="DotSpark" className="h-8 w-8 rounded-full" />
-            <span className="text-xl font-bold bg-gradient-to-r from-amber-700 to-amber-600 bg-clip-text text-transparent">DotSpark</span>
+          <Link href="/about" className="flex items-center gap-3 hover:scale-105 transition-all duration-300 cursor-pointer group">
+            <div className="relative">
+              <img src="/dotspark-logo-icon.jpeg" alt="DotSpark" className="h-10 w-10 rounded-full shadow-lg ring-2 ring-amber-200 group-hover:ring-amber-400 transition-all duration-300" />
+              <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-amber-400/20 to-orange-400/20 group-hover:from-amber-400/40 group-hover:to-orange-400/40 transition-all duration-300"></div>
+            </div>
+            <span className="text-2xl font-bold bg-gradient-to-r from-amber-700 via-orange-600 to-amber-600 dark:from-amber-400 dark:via-orange-400 dark:to-amber-300 bg-clip-text text-transparent tracking-tight">DotSpark</span>
           </Link>
           
-          <div className="w-20"></div> {/* Spacer for centering */}
+          <div className="w-24"></div> {/* Spacer for centering */}
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-background via-muted/20 to-primary/5">
-        <div className="absolute inset-0 bg-grid-white/[0.02] bg-[size:50px_50px]" />
-        <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-background/60" />
+      {/* Enhanced Hero Section */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-amber-50/50 via-orange-50/30 to-amber-100/40 dark:from-slate-950 dark:via-slate-900/90 dark:to-slate-950">
+        <div className="absolute inset-0 bg-grid-amber-200/[0.03] dark:bg-grid-amber-800/[0.02] bg-[size:60px_60px]" />
+        <div className="absolute inset-0 bg-gradient-to-t from-white/80 via-transparent to-white/60 dark:from-slate-950/80 dark:via-transparent dark:to-slate-950/60" />
         
-        <div className="container mx-auto px-4 md:px-6 relative z-10">
-          <div className="flex flex-col items-center max-w-3xl mx-auto py-24">
-            {/* Centered badge */}
-            <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-2 text-sm text-primary mb-6">
-              <img src="/dotspark-logo-icon.jpeg" alt="DotSpark" className="h-8 w-8 rounded" />
-              <span>Introducing DotSpark</span>
+        {/* Floating orbs for visual interest */}
+        <div className="absolute top-20 left-1/4 w-72 h-72 bg-gradient-to-br from-amber-400/20 to-orange-400/20 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-20 right-1/4 w-96 h-96 bg-gradient-to-br from-orange-400/15 to-amber-400/15 rounded-full blur-3xl animate-pulse" style={{animationDelay: '2s'}}></div>
+        
+        <div className="container mx-auto px-6 md:px-8 relative z-10">
+          <div className="flex flex-col items-center max-w-4xl mx-auto py-32">
+            {/* Enhanced badge */}
+            <div className="inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-amber-100 via-orange-50 to-amber-100 dark:from-amber-900/30 dark:via-orange-900/20 dark:to-amber-900/30 border border-amber-200 dark:border-amber-700/50 px-6 py-3 text-sm font-medium text-amber-800 dark:text-amber-300 mb-8 shadow-lg backdrop-blur-sm">
+              <div className="relative">
+                <img src="/dotspark-logo-icon.jpeg" alt="DotSpark" className="h-8 w-8 rounded-full ring-2 ring-amber-300/50" />
+                <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-amber-400/30 to-orange-400/30 animate-pulse"></div>
+              </div>
+              <span className="font-semibold tracking-wide">Introducing DotSpark</span>
             </div>
             
             {/* Heading */}
             <div className="text-center mb-8">
-              <div className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4">
-                <span className="font-sans tracking-normal text-center bg-clip-text text-transparent bg-gradient-to-r from-amber-700 via-amber-600 to-amber-500 dark:from-amber-400 dark:via-amber-300 dark:to-amber-200">
-                  For the OG Thin<span className="relative inline-block px-3 py-2 bg-gradient-to-br from-amber-600 to-amber-700 dark:from-amber-500 dark:to-amber-600 text-white font-bold rounded-lg shadow-lg border-2 border-amber-500/20">Q</span>ers
+              <div className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
+                <span className="font-sans tracking-normal text-center bg-clip-text text-transparent bg-gradient-to-r from-amber-700 via-orange-600 to-amber-500 dark:from-amber-400 dark:via-orange-400 dark:to-amber-200 drop-shadow-lg">
+                  For the OG Thin<span className="relative inline-block px-4 py-3 bg-gradient-to-br from-amber-600 to-orange-700 dark:from-amber-500 dark:to-orange-600 text-white font-bold rounded-xl shadow-2xl border-2 border-amber-500/20 hover:scale-105 transition-transform duration-300">Q</span>ers
                 </span>
               </div>
               
-              <div className="text-lg sm:text-xl md:text-2xl font-bold tracking-tight text-foreground mb-4">
+              <div className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-foreground/90 dark:text-foreground/95 mb-6 leading-relaxed">
                 Your Natural Intelligence. <DynamicWord words={['Preserved', 'Enhanced', 'Amplified', 'Protected']} />
               </div>
             </div>
             
-            {/* Subtitle */}
-            <p className="text-lg md:text-xl text-muted-foreground text-center max-w-2xl mb-8">
+            {/* Enhanced Subtitle */}
+            <p className="text-xl md:text-2xl text-muted-foreground/80 dark:text-muted-foreground/90 text-center max-w-3xl mb-12 leading-relaxed font-medium">
               Built to preserve your way of thinking, protect your cognitive identity, and sharpen your clarity — without surrendering it to AI.
             </p>
             
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 w-full max-w-md">
+            {/* Enhanced CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-6 w-full max-w-lg">
               {hasActiveChat ? (
                 <Link href="/" className="flex-1">
-                  <Button className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white">
+                  <Button className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-green-500 via-emerald-500 to-green-600 hover:from-green-600 hover:via-emerald-600 hover:to-green-700 text-white shadow-2xl hover:shadow-green-500/25 transform hover:scale-105 transition-all duration-300 rounded-xl border-2 border-green-400/20">
                     Continue Chat
-                    <MessageSquare className="ml-2 h-4 w-4" />
+                    <MessageSquare className="ml-3 h-5 w-5" />
                   </Button>
                 </Link>
               ) : (
                 <Link href="/" className="flex-1">
-                  <Button className="w-full bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white">
+                  <Button className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-600 hover:via-orange-600 hover:to-amber-700 text-white shadow-2xl hover:shadow-amber-500/25 transform hover:scale-105 transition-all duration-300 rounded-xl border-2 border-amber-400/20">
                     Start Chatting
-                    <ArrowRight className="ml-2 h-4 w-4" />
+                    <ArrowRight className="ml-3 h-5 w-5" />
                   </Button>
                 </Link>
               )}
               
               {user ? (
                 <Link href="/dashboard" className="flex-1">
-                  <Button variant="outline" className="w-full">
+                  <Button variant="outline" className="w-full h-14 text-lg font-semibold border-2 border-amber-300 dark:border-amber-700 hover:bg-gradient-to-r hover:from-amber-50 hover:to-orange-50 dark:hover:from-amber-950/30 dark:hover:to-orange-950/30 hover:border-amber-400 dark:hover:border-amber-600 transform hover:scale-105 transition-all duration-300 rounded-xl shadow-lg hover:shadow-xl">
                     Go to Dashboard
-                    <BarChart2 className="ml-2 h-4 w-4" />
+                    <BarChart2 className="ml-3 h-5 w-5" />
                   </Button>
                 </Link>
               ) : (
                 <Link href="/auth" className="flex-1">
-                  <Button variant="outline" className="w-full">
+                  <Button variant="outline" className="w-full h-14 text-lg font-semibold border-2 border-amber-300 dark:border-amber-700 hover:bg-gradient-to-r hover:from-amber-50 hover:to-orange-50 dark:hover:from-amber-950/30 dark:hover:to-orange-950/30 hover:border-amber-400 dark:hover:border-amber-600 transform hover:scale-105 transition-all duration-300 rounded-xl shadow-lg hover:shadow-xl">
                     Sign Up
-                    <User className="ml-2 h-4 w-4" />
+                    <User className="ml-3 h-5 w-5" />
                   </Button>
                 </Link>
               )}
@@ -181,11 +191,16 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Why DotSpark Section */}
-      <section className="py-24 relative overflow-hidden bg-gradient-to-b from-background to-muted/30">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-8">Why <span className="bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">DotSpark</span>?</h2>
+      {/* Enhanced Why DotSpark Section */}
+      <section className="py-32 relative overflow-hidden bg-gradient-to-b from-white via-slate-50/50 to-amber-50/30 dark:from-slate-950 dark:via-slate-900/80 dark:to-slate-950">
+        {/* Subtle background elements */}
+        <div className="absolute inset-0 bg-grid-slate-200/[0.02] dark:bg-grid-slate-800/[0.02] bg-[size:40px_40px]" />
+        <div className="absolute top-10 left-10 w-64 h-64 bg-gradient-to-br from-amber-400/10 to-orange-400/10 rounded-full blur-3xl animate-pulse" style={{animationDelay: '1s'}}></div>
+        <div className="absolute bottom-10 right-10 w-80 h-80 bg-gradient-to-br from-orange-400/8 to-amber-400/8 rounded-full blur-3xl animate-pulse" style={{animationDelay: '3s'}}></div>
+        
+        <div className="container mx-auto px-6 md:px-8 relative z-10">
+          <div className="text-center mb-20">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-10">Why <span className="bg-gradient-to-r from-amber-600 via-orange-600 to-amber-500 dark:from-amber-400 dark:via-orange-400 dark:to-amber-300 bg-clip-text text-transparent">DotSpark</span>?</h2>
             
             <div className="max-w-4xl mx-auto space-y-8 text-lg leading-relaxed text-foreground">
               <p className="font-medium">

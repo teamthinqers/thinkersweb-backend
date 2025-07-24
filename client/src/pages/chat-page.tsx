@@ -275,67 +275,70 @@ export default function ChatPage() {
   };
 
   return (
-    <div className="h-screen flex bg-white dark:bg-gray-900">
-      {/* ChatGPT-style Collapsible Sidebar */}
-      <div className={`${isSidebarOpen ? 'w-64' : 'w-0'} transition-all duration-300 ease-in-out overflow-hidden bg-gray-50 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700`}>
+    <div className="h-screen flex bg-gradient-to-br from-white via-amber-50/30 to-orange-50/40 dark:from-slate-950 dark:via-slate-900/95 dark:to-slate-950">
+      {/* Enhanced ChatGPT-style Collapsible Sidebar */}
+      <div className={`${isSidebarOpen ? 'w-64' : 'w-0'} transition-all duration-300 ease-in-out overflow-hidden bg-gradient-to-b from-slate-50 via-white to-slate-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 border-r border-amber-200/40 dark:border-amber-700/40 shadow-xl`}>
         <div className="flex flex-col h-full w-64">
-          {/* Sidebar Header */}
-          <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+          {/* Enhanced Sidebar Header */}
+          <div className="p-6 border-b border-amber-200/30 dark:border-amber-700/30 bg-gradient-to-r from-amber-50/50 to-orange-50/50 dark:from-amber-950/30 dark:to-orange-950/30">
             <div className="flex items-center gap-3">
-              <img 
-                src="/dotspark-logo-icon.jpeg" 
-                alt="DotSpark" 
-                className="w-8 h-8 rounded-full"
-              />
-              <h2 className="font-semibold bg-gradient-to-r from-amber-700 to-amber-600 bg-clip-text text-transparent">DotSpark</h2>
+              <div className="relative">
+                <img 
+                  src="/dotspark-logo-icon.jpeg" 
+                  alt="DotSpark" 
+                  className="w-10 h-10 rounded-full shadow-lg ring-2 ring-amber-200 dark:ring-amber-700"
+                />
+                <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-amber-400/20 to-orange-400/20 animate-pulse"></div>
+              </div>
+              <h2 className="text-xl font-bold bg-gradient-to-r from-amber-700 via-orange-600 to-amber-600 dark:from-amber-400 dark:via-orange-400 dark:to-amber-300 bg-clip-text text-transparent tracking-tight">DotSpark</h2>
             </div>
           </div>
           
-          {/* Navigation */}
-          <nav className="flex-1 p-2">
-            <div className="space-y-1">
+          {/* Enhanced Navigation */}
+          <nav className="flex-1 p-4">
+            <div className="space-y-2">
               <Link href="/">
-                <Button variant="ghost" className="w-full justify-start text-sm h-9 bg-amber-50 dark:bg-amber-950/20">
+                <Button variant="ghost" className="w-full justify-start text-sm h-10 bg-gradient-to-r from-amber-100/80 to-orange-100/80 dark:from-amber-950/30 dark:to-orange-950/30 text-amber-800 dark:text-amber-300 hover:from-amber-200 hover:to-orange-200 dark:hover:from-amber-900/50 dark:hover:to-orange-900/50 shadow-sm rounded-xl transition-all duration-300">
                   <MessageSquare className="w-4 h-4 mr-3" />
-                  Chat
+                  <span className="font-medium">Chat</span>
                 </Button>
               </Link>
               <Link href="/dashboard">
-                <Button variant="ghost" className="w-full justify-start text-sm h-9">
+                <Button variant="ghost" className="w-full justify-start text-sm h-10 hover:bg-blue-50 dark:hover:bg-blue-950/30 hover:text-blue-700 dark:hover:text-blue-300 rounded-xl transition-all duration-300">
                   <BarChart2 className="w-4 h-4 mr-3" />
-                  My Neura
+                  <span className="font-medium">My Neura</span>
                 </Button>
               </Link>
               <Link href="/my-neura">
-                <Button variant="ghost" className="w-full justify-start text-sm h-9">
+                <Button variant="ghost" className="w-full justify-start text-sm h-10 hover:bg-gradient-to-r hover:from-amber-50 hover:to-orange-50 dark:hover:from-amber-950/20 dark:hover:to-orange-950/20 hover:text-amber-700 dark:hover:text-amber-300 rounded-xl transition-all duration-300">
                   <Brain className="w-4 h-4 mr-3" />
-                  My DotSpark
+                  <span className="font-medium">My DotSpark</span>
                 </Button>
               </Link>
               <Link href="/social">
-                <Button variant="ghost" className="w-full justify-start text-sm h-9">
+                <Button variant="ghost" className="w-full justify-start text-sm h-10 hover:bg-rose-50 dark:hover:bg-rose-950/30 hover:text-rose-700 dark:hover:text-rose-300 rounded-xl transition-all duration-300">
                   <Users className="w-4 h-4 mr-3" />
-                  Social
+                  <span className="font-medium">Social</span>
                 </Button>
               </Link>
               <Link href="/about">
-                <Button variant="ghost" className="w-full justify-start text-sm h-9">
+                <Button variant="ghost" className="w-full justify-start text-sm h-10 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-700 dark:hover:text-slate-300 rounded-xl transition-all duration-300">
                   <Info className="w-4 h-4 mr-3" />
-                  About DotSpark
+                  <span className="font-medium">About DotSpark</span>
                 </Button>
               </Link>
               {user ? (
                 <Link href="/profile">
-                  <Button variant="ghost" className="w-full justify-start text-sm h-9">
+                  <Button variant="ghost" className="w-full justify-start text-sm h-10 hover:bg-indigo-50 dark:hover:bg-indigo-950/30 hover:text-indigo-700 dark:hover:text-indigo-300 rounded-xl transition-all duration-300">
                     <User className="w-4 h-4 mr-3" />
-                    Profile
+                    <span className="font-medium">Profile</span>
                   </Button>
                 </Link>
               ) : (
                 <Link href="/auth">
-                  <Button variant="ghost" className="w-full justify-start text-sm h-9">
+                  <Button variant="ghost" className="w-full justify-start text-sm h-10 hover:bg-green-50 dark:hover:bg-green-950/30 hover:text-green-700 dark:hover:text-green-300 rounded-xl transition-all duration-300">
                     <User className="w-4 h-4 mr-3" />
-                    Sign In
+                    <span className="font-medium">Sign In</span>
                   </Button>
                 </Link>
               )}
@@ -368,56 +371,60 @@ export default function ChatPage() {
 
       {/* Main Content Area */}
       <div className="flex flex-col flex-1 min-w-0">
-        {/* Header */}
-        <header className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20">
+        {/* Enhanced Header */}
+        <header className="flex items-center justify-between p-6 border-b border-amber-200/30 dark:border-amber-700/30 bg-gradient-to-r from-amber-50/80 via-orange-50/60 to-amber-50/80 dark:from-amber-950/30 dark:via-orange-950/20 dark:to-amber-950/30 backdrop-blur-sm shadow-lg">
           {/* Left: Sidebar Toggle, Back Button and Logo */}
-          <div className="flex items-center gap-3">
-            {/* Sidebar Toggle Icon */}
+          <div className="flex items-center gap-4">
+            {/* Enhanced Sidebar Toggle Icon */}
             <Button 
               variant="ghost" 
               size="sm" 
-              className="p-2 hover:bg-amber-100 dark:hover:bg-amber-900/20"
+              className="p-3 hover:bg-amber-100/70 dark:hover:bg-amber-900/30 rounded-xl transition-all duration-300 hover:scale-105"
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
             >
-              <Menu className="h-5 w-5" />
+              <Menu className="h-5 w-5 text-amber-700 dark:text-amber-400" />
             </Button>
 
-            {/* Back Button - only show when conversation has started */}
+            {/* Enhanced Back Button */}
             {showBackButton && (
               <Link href="/about">
                 <Button 
                   variant="ghost" 
                   size="sm" 
-                  className="p-2 hover:bg-amber-100 dark:hover:bg-amber-900/20"
+                  className="p-3 hover:bg-amber-100/70 dark:hover:bg-amber-900/30 rounded-xl transition-all duration-300 hover:scale-105"
                   title="Back to Landing Page"
                 >
-                  <ArrowLeft className="h-5 w-5" />
+                  <ArrowLeft className="h-5 w-5 text-amber-700 dark:text-amber-400" />
                 </Button>
               </Link>
             )}
 
-            {/* Logo - clickable to go to landing page */}
-            <Link href="/about" className="flex items-center gap-3">
-              <img 
-                src="/dotspark-logo-icon.jpeg" 
-                alt="DotSpark" 
-                className="w-8 h-8 rounded-full hover:shadow-lg transition-shadow cursor-pointer"
-              />
-              <h1 className="text-xl font-semibold bg-gradient-to-r from-amber-700 to-amber-600 bg-clip-text text-transparent hover:from-amber-800 hover:to-amber-700 transition-colors cursor-pointer">DotSpark</h1>
+            {/* Enhanced Logo */}
+            <Link href="/about" className="flex items-center gap-3 hover:scale-105 transition-all duration-300 group">
+              <div className="relative">
+                <img 
+                  src="/dotspark-logo-icon.jpeg" 
+                  alt="DotSpark" 
+                  className="w-10 h-10 rounded-full shadow-lg ring-2 ring-amber-200 group-hover:ring-amber-400 dark:ring-amber-700 dark:group-hover:ring-amber-500 transition-all duration-300"
+                />
+                <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-amber-400/20 to-orange-400/20 group-hover:from-amber-400/40 group-hover:to-orange-400/40 transition-all duration-300"></div>
+              </div>
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-amber-700 via-orange-600 to-amber-600 dark:from-amber-400 dark:via-orange-400 dark:to-amber-300 bg-clip-text text-transparent tracking-tight">DotSpark</h1>
             </Link>
           </div>
           
-          {/* Center: Chat Controls */}
+          {/* Enhanced Center: Chat Controls */}
           <div className="flex-1 flex items-center justify-center">
             {messages.length > 1 && (
               <Button 
                 variant="ghost" 
                 size="sm" 
-                className="p-2 hover:bg-amber-100 dark:hover:bg-amber-900/20 text-amber-700 hover:text-amber-800"
+                className="p-3 hover:bg-amber-100/70 dark:hover:bg-amber-900/30 text-amber-700 hover:text-amber-800 dark:text-amber-400 dark:hover:text-amber-300 rounded-xl transition-all duration-300 hover:scale-105 shadow-sm"
                 onClick={handleRefreshChat}
                 title="Refresh Chat"
               >
                 <RotateCcw className="h-4 w-4" />
+                <span className="ml-2 text-sm font-medium hidden sm:inline">New Chat</span>
               </Button>
             )}
           </div>
