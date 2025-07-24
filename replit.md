@@ -145,6 +145,7 @@ Changelog:
   * Brought down "For the OG ThinQers" text and 4 default prompts on chat page with enhanced mobile spacing
   * Enhanced landing page hero section with mobile header offset (pt-20) and proper text positioning
   * Added DotSpark logo component above "For the OG ThinQers" text in chat page hero section for mobile browsers only
+  * Enhanced mobile spacing between descriptive text and default prompts with mb-6 for better visual hierarchy
   * All header optimizations are mobile browser-specific only, desktop maintains original relative positioning
 - January 24, 2025. COMPLETED mobile browser chat spacing optimization with proportional footer spacing:
   * Implemented 3X proportional spacing between last prompt button and chat footer on mobile browsers only

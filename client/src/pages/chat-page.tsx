@@ -805,7 +805,7 @@ export default function ChatPage() {
 
                   </div>
                   
-                  <p className={`text-gray-600 dark:text-gray-400 ${isMobile ? 'text-sm' : 'text-lg'}`}>
+                  <p className={`text-gray-600 dark:text-gray-400 ${isMobile ? 'text-sm mb-6' : 'text-lg'}`}>
                     I'll help you organize your thoughts into structured Dots, Wheels and Chakras for sparking actionable insights.
                   </p>
                 </div>
