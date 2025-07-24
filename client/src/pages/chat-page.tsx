@@ -290,7 +290,7 @@ export default function ChatPage() {
                 />
                 <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-amber-400/20 to-orange-400/20 animate-pulse"></div>
               </div>
-              <h2 className="text-xl font-bold text-gray-800 dark:text-gray-200 tracking-tight">DotSpark</h2>
+              <h2 className="text-xl font-bold text-amber-700 dark:text-amber-400 tracking-tight">DotSpark</h2>
             </div>
           </div>
           
@@ -416,11 +416,11 @@ export default function ChatPage() {
                 <img 
                   src="/dotspark-logo-icon.jpeg" 
                   alt="DotSpark" 
-                  className="w-10 h-10 rounded-full shadow-lg ring-2 ring-amber-200 group-hover:ring-amber-400 dark:ring-amber-700 dark:group-hover:ring-amber-500 transition-all duration-300"
+                  className="w-10 h-10 rounded-full shadow-lg ring-2 ring-amber-200 group-hover:ring-amber-400 dark:ring-amber-700 dark:group-hover:ring-amber-500 transition-all duration-300 filter brightness-110 saturate-125"
                 />
                 <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-amber-400/20 to-orange-400/20 group-hover:from-amber-400/40 group-hover:to-orange-400/40 transition-all duration-300"></div>
               </div>
-              <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-200 tracking-tight">DotSpark</h1>
+              <h1 className="text-2xl font-bold text-amber-700 dark:text-amber-400 tracking-tight">DotSpark</h1>
             </Link>
           </div>
           
