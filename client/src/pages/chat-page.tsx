@@ -251,7 +251,7 @@ export default function ChatPage() {
     });
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter') {
       handleSendMessage();
     }
@@ -398,6 +398,92 @@ export default function ChatPage() {
         </div>
       </div>
 
+      {/* Collapsed Icon Sidebar - ChatGPT Style */}
+      <div className={`${!isSidebarOpen ? 'w-16' : 'w-0'} transition-all duration-300 ease-in-out overflow-hidden bg-gradient-to-b from-slate-50 via-white to-slate-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 border-r border-amber-200/40 dark:border-amber-700/40 shadow-xl`}>
+        <div className="flex flex-col h-full w-16 items-center py-4">
+          {/* Brand Logo at Top */}
+          <div className="mb-6">
+            <img 
+              src="/dotspark-logo-icon.jpeg" 
+              alt="DotSpark" 
+              className="w-8 h-8 rounded-full"
+            />
+          </div>
+          
+          {/* Navigation Icons */}
+          <div className="flex flex-col items-center space-y-3 flex-1">
+            {/* New Chat Icon */}
+            {messages.length > 1 && (
+              <Button 
+                onClick={handleRefreshChat}
+                variant="ghost" 
+                size="icon"
+                title="New Chat"
+                className="h-10 w-10 bg-gradient-to-r from-amber-100/80 to-orange-100/80 dark:from-amber-950/50 dark:to-orange-950/50 text-amber-800 dark:text-amber-300 hover:from-amber-200 hover:to-orange-200 dark:hover:from-amber-900/70 dark:hover:to-orange-900/70 shadow-sm rounded-xl transition-all duration-300 border border-amber-200/50 dark:border-amber-700/50"
+              >
+                <RefreshCw className="w-4 h-4" />
+              </Button>
+            )}
+            
+            <Link href="/" title="Chat">
+              <Button variant="ghost" size="icon" className="h-10 w-10 bg-gradient-to-r from-amber-100/80 to-orange-100/80 dark:from-amber-950/30 dark:to-orange-950/30 text-amber-800 dark:text-amber-300 hover:from-amber-200 hover:to-orange-200 dark:hover:from-amber-900/50 dark:hover:to-orange-900/50 shadow-sm rounded-xl transition-all duration-300">
+                <MessageSquare className="w-4 h-4" />
+              </Button>
+            </Link>
+            
+            <Link href="/dashboard" title="My Neura">
+              <Button variant="ghost" size="icon" className="h-10 w-10 hover:bg-gradient-to-r hover:from-amber-50 hover:to-orange-50 dark:hover:from-amber-950/20 dark:hover:to-orange-950/20 hover:text-amber-700 dark:hover:text-amber-300 rounded-xl transition-all duration-300">
+                <Brain className="w-4 h-4" />
+              </Button>
+            </Link>
+            
+            <Link href="/my-neura" title="My DotSpark">
+              <Button variant="ghost" size="icon" className="h-10 w-10 hover:bg-gradient-to-r hover:from-amber-50 hover:to-orange-50 dark:hover:from-amber-950/20 dark:hover:to-orange-950/20 hover:text-amber-700 dark:hover:text-amber-300 rounded-xl transition-all duration-300">
+                <img 
+                  src="/dotspark-logo-icon.jpeg" 
+                  alt="DotSpark" 
+                  className="w-4 h-4 rounded-sm"
+                />
+              </Button>
+            </Link>
+            
+            <Link href="/social" title="Social">
+              <Button variant="ghost" size="icon" className="h-10 w-10 hover:bg-rose-50 dark:hover:bg-rose-950/30 hover:text-rose-700 dark:hover:text-rose-300 rounded-xl transition-all duration-300">
+                <Users className="w-4 h-4" />
+              </Button>
+            </Link>
+            
+            <Link href="/about" title="About DotSpark">
+              <Button variant="ghost" size="icon" className="h-10 w-10 hover:bg-gradient-to-r hover:from-amber-50 hover:to-orange-50 dark:hover:from-amber-950/20 dark:hover:to-orange-950/20 hover:text-amber-700 dark:hover:text-amber-300 rounded-xl transition-all duration-300">
+                <Info className="w-4 h-4" />
+              </Button>
+            </Link>
+          </div>
+
+          {/* User Avatar at Bottom */}
+          {user ? (
+            <div className="mt-auto">
+              <Link href="/profile" title={user.displayName || 'Profile'}>
+                <Avatar className="h-8 w-8 hover:ring-2 hover:ring-amber-400 transition-all duration-300">
+                  <AvatarImage src={user.photoURL || undefined} />
+                  <AvatarFallback className="text-xs">
+                    {user.displayName?.charAt(0) || user.email?.charAt(0) || 'U'}
+                  </AvatarFallback>
+                </Avatar>
+              </Link>
+            </div>
+          ) : (
+            <div className="mt-auto">
+              <Link href="/auth" title="Sign In">
+                <Button variant="ghost" size="icon" className="h-10 w-10 hover:bg-gradient-to-r hover:from-amber-50 hover:to-orange-50 dark:hover:from-amber-950/20 dark:hover:to-orange-950/20 hover:text-amber-700 dark:hover:text-amber-300 rounded-xl transition-all duration-300">
+                  <User className="w-4 h-4" />
+                </Button>
+              </Link>
+            </div>
+          )}
+        </div>
+      </div>
+
       {/* Main Content Area */}
       <div className="flex flex-col flex-1 min-w-0">
         {/* Enhanced Header */}
@@ -428,15 +514,11 @@ export default function ChatPage() {
               </Link>
             )}
 
-            {/* Enhanced Logo */}
-            <Link href="/about" className="flex items-center gap-3 hover:scale-105 transition-all duration-300 group">
-              <img 
-                src="/dotspark-logo-icon.jpeg" 
-                alt="DotSpark" 
-                className="w-10 h-10 rounded-full transition-all duration-300"
-              />
-              <h1 className="text-2xl font-bold text-amber-700 dark:text-amber-400 tracking-tight">DotSpark</h1>
-            </Link>
+            {/* Model Selector */}
+            <ModelSelector 
+              selectedModel={selectedModel} 
+              onModelChange={setSelectedModel} 
+            />
           </div>
           
           {/* Enhanced Center: Empty space for centered logo */}
@@ -481,13 +563,6 @@ export default function ChatPage() {
             >
               <SiWhatsapp className="h-5 w-5 text-white" />
             </Button>
-
-            {/* Model Selector */}
-            <ModelSelector 
-              selectedModel={selectedModel}
-              onModelChange={setSelectedModel}
-              className="ml-2"
-            />
 
             {user ? (
               <Sheet>
