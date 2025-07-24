@@ -180,6 +180,24 @@ export default function ChatPage() {
     setShowBackButton(messages.length > 1);
   }, [messages]);
 
+  // State declarations first
+  const [inputValue, setInputValue] = useState("");
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [showBackButton, setShowBackButton] = useState(false);
+  const [isNeuraActive, setIsNeuraActive] = useState(false);
+  const [selectedModel, setSelectedModel] = useState<AIModel>('gpt-4o');
+  const [isMobile, setIsMobile] = useState(() => {
+    // Initialize with correct mobile detection to avoid re-render delay
+    if (typeof window !== 'undefined') {
+      return isMobileBrowser();
+    }
+    return false;
+  });
+
+  const isRegistered = !!user;
+  const isActivated = neuraStorage.isActivated();
+  const isFirstTime = isFirstChat();
+
   // Check Neura activation status
   useEffect(() => {
     const checkActivation = () => {
@@ -193,26 +211,13 @@ export default function ChatPage() {
     return () => clearInterval(interval);
   }, []);
 
-  // Check if mobile browser and set sidebar state accordingly
+  // Set sidebar state for mobile browsers
   useEffect(() => {
-    const mobile = isMobileBrowser();
-    setIsMobile(mobile);
     // Default to collapsed sidebar for mobile browsers
-    if (mobile) {
+    if (isMobile) {
       setIsSidebarOpen(false);
     }
-  }, []);
-  const isRegistered = !!user;
-  const isActivated = neuraStorage.isActivated();
-  const isFirstTime = isFirstChat();
-  
-  // Set default message only for first-time users
-  const [inputValue, setInputValue] = useState("");
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [showBackButton, setShowBackButton] = useState(false);
-  const [isNeuraActive, setIsNeuraActive] = useState(false);
-  const [selectedModel, setSelectedModel] = useState<AIModel>('gpt-4o');
-  const [isMobile, setIsMobile] = useState(false);
+  }, [isMobile]);
   
   // Check if user has exceeded their limit
   const limitExceeded = hasExceededLimit(isRegistered, isActivated);
