@@ -615,7 +615,7 @@ export default function ChatPage() {
                     <div className={`max-w-2xl ${message.isUser ? 'ml-8' : 'mr-8'}`}>
                       <div className={`rounded-3xl px-5 py-4 ${
                         message.isUser 
-                          ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg' 
+                          ? 'bg-gradient-to-r from-amber-400/90 to-orange-400/90 text-white shadow-lg' 
                           : 'bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm border border-gray-200/50 dark:border-gray-600/50'
                       }`}>
                         {message.id === 'typing' ? (
