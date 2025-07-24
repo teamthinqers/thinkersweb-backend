@@ -1,70 +1,60 @@
-import { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Monitor, Smartphone } from 'lucide-react';
+import { Monitor, Smartphone, X } from 'lucide-react';
 
 interface MobileExperienceDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  onDesktopMode: () => void;
-  onInstallApp: () => void;
 }
 
 export function MobileExperienceDialog({ 
   isOpen, 
-  onClose, 
-  onDesktopMode, 
-  onInstallApp 
+  onClose
 }: MobileExperienceDialogProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md mx-4">
         <DialogHeader>
           <DialogTitle className="text-center text-xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
-            Choose Your Experience
+            Better Experience Available
           </DialogTitle>
         </DialogHeader>
         
-        <div className="space-y-4 pt-4">
-          <p className="text-center text-gray-600 text-sm">
-            Please choose Desktop mode or Install Web App for better experience:
-          </p>
-          
-          <div className="space-y-3">
-            <Button
-              onClick={onDesktopMode}
-              className="w-full h-16 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
-            >
-              <div className="flex items-center space-x-3">
-                <Monitor className="h-6 w-6" />
-                <div className="text-left">
-                  <div className="font-semibold">Desktop Mode</div>
-                  <div className="text-xs opacity-90">Switch to desktop view</div>
-                </div>
-              </div>
-            </Button>
+        <div className="space-y-6 pt-4">
+          <div className="text-center space-y-4">
+            <p className="text-gray-700 text-base font-medium">
+              For the best DotSpark experience, please choose:
+            </p>
             
-            <Button
-              onClick={onInstallApp}
-              className="w-full h-16 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
-            >
-              <div className="flex items-center space-x-3">
-                <Smartphone className="h-6 w-6" />
+            <div className="space-y-4">
+              <div className="flex items-center space-x-4 p-4 bg-blue-50 rounded-xl border border-blue-200">
+                <Monitor className="h-8 w-8 text-blue-600 flex-shrink-0" />
                 <div className="text-left">
-                  <div className="font-semibold">Install Web App</div>
-                  <div className="text-xs opacity-90">Get the mobile app experience</div>
+                  <div className="font-semibold text-blue-900">Desktop Mode</div>
+                  <div className="text-sm text-blue-700">Access DotSpark on your computer browser for full features</div>
                 </div>
               </div>
-            </Button>
+              
+              <div className="text-center text-gray-500 font-medium">OR</div>
+              
+              <div className="flex items-center space-x-4 p-4 bg-amber-50 rounded-xl border border-amber-200">
+                <Smartphone className="h-8 w-8 text-amber-600 flex-shrink-0" />
+                <div className="text-left">
+                  <div className="font-semibold text-amber-900">Install Web App</div>
+                  <div className="text-sm text-amber-700">Add DotSpark to your home screen for mobile app experience</div>
+                </div>
+              </div>
+            </div>
           </div>
           
-          <div className="pt-2">
+          <div className="pt-4 border-t">
             <Button
               onClick={onClose}
-              variant="ghost"
-              className="w-full text-gray-500 hover:text-gray-700"
+              variant="outline"
+              className="w-full text-gray-600 hover:text-gray-800 border-gray-300"
             >
-              Continue with mobile browser
+              <X className="h-4 w-4 mr-2" />
+              Got it, thanks!
             </Button>
           </div>
         </div>

@@ -325,15 +325,7 @@ export default function LandingPage() {
     }
   };
 
-  const handleDesktopMode = () => {
-    switchToDesktopMode();
-    setIsMobileDialogOpen(false);
-  };
-
-  const handleInstallApp = () => {
-    triggerPWAInstall();
-    setIsMobileDialogOpen(false);
-  };
+  // Removed handleDesktopMode and handleInstallApp - dialog is now informational only
   
   const handleLogout = async () => {
     try {
@@ -1499,8 +1491,6 @@ export default function LandingPage() {
       <MobileExperienceDialog 
         isOpen={isMobileDialogOpen}
         onClose={() => setIsMobileDialogOpen(false)}
-        onDesktopMode={handleDesktopMode}
-        onInstallApp={handleInstallApp}
       />
 
     </div>
