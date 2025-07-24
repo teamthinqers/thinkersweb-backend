@@ -7,6 +7,8 @@ import {
   Smartphone, Monitor, Share, Plus, Home as HomeIcon
 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
+import { useMobileDetection } from "@/hooks/useMobileDetection";
+import { MobileExperienceDialog } from "@/components/MobileExperienceDialog";
 
 
 
@@ -94,9 +96,11 @@ import {
 
 export default function LandingPage() {
   const { user, logout } = useAuth();
+  const { isMobile, isPWA, switchToDesktopMode, triggerPWAInstall } = useMobileDetection();
   const [location, setLocation] = useLocation();
   const [contactDialogOpen, setContactDialogOpen] = useState(false);
   const [installDialogOpen, setInstallDialogOpen] = useState(false);
+  const [isMobileDialogOpen, setIsMobileDialogOpen] = useState(false);
   const [whatsAppNumber, setWhatsAppNumber] = useState<string | null>(null);
   const { 
     isWhatsAppConnected, 
@@ -306,6 +310,24 @@ export default function LandingPage() {
     // Force a status refresh when component mounts
     forceStatusRefresh();
   }, [forceStatusRefresh]);
+
+  // Mobile experience handlers
+  const handleMobileButtonClick = (e: React.MouseEvent) => {
+    if (isMobile && !isPWA) {
+      e.preventDefault();
+      setIsMobileDialogOpen(true);
+    }
+  };
+
+  const handleDesktopMode = () => {
+    switchToDesktopMode();
+    setIsMobileDialogOpen(false);
+  };
+
+  const handleInstallApp = () => {
+    triggerPWAInstall();
+    setIsMobileDialogOpen(false);
+  };
   
   const handleLogout = async () => {
     try {
@@ -339,7 +361,13 @@ export default function LandingPage() {
               {/* My DotSpark button - enhanced */}
               <Button 
                 size="sm"
-                onClick={() => setLocation("/my-neura")}
+                onClick={(e) => {
+                  if (isMobile && !isPWA) {
+                    handleMobileButtonClick(e);
+                  } else {
+                    setLocation("/my-neura");
+                  }
+                }}
                 className="relative bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 rounded-xl px-4 py-2"
               >
                 <div className="flex items-center gap-2">
@@ -350,7 +378,13 @@ export default function LandingPage() {
               {/* Enhanced Neura button */}
               <Button 
                 size="sm"
-                onClick={() => setLocation("/dashboard")}
+                onClick={(e) => {
+                  if (isMobile && !isPWA) {
+                    handleMobileButtonClick(e);
+                  } else {
+                    setLocation("/dashboard");
+                  }
+                }}
                 className="relative bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 rounded-xl px-4 py-2"
               >
                 <div className="flex items-center gap-2">
@@ -1190,12 +1224,23 @@ export default function LandingPage() {
             <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center mobile-stack">
               {!user ? (
                 /* Show "Get Started Now" button for non-signed users */
-                <Button size="lg" variant="default" className="bg-white text-primary font-bold shadow-lg btn-bounce group relative overflow-hidden border-2 border-white hover:bg-white/90 w-full sm:w-auto" asChild>
-                  <Link href="/auth" className="px-4 md:px-8 flex items-center justify-center">
+                <Button 
+                  size="lg" 
+                  variant="default" 
+                  className="bg-white text-primary font-bold shadow-lg btn-bounce group relative overflow-hidden border-2 border-white hover:bg-white/90 w-full sm:w-auto" 
+                  onClick={(e) => {
+                    if (isMobile && !isPWA) {
+                      handleMobileButtonClick(e);
+                    } else {
+                      setLocation("/auth");
+                    }
+                  }}
+                >
+                  <span className="px-4 md:px-8 flex items-center justify-center">
                     <span className="relative z-10">Get Started Now</span>
                     <ArrowRight className="ml-2 h-5 w-5 relative z-10 group-hover:translate-x-1 transition-transform" />
                     <span className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity"></span>
-                  </Link>
+                  </span>
                 </Button>
               ) : (
                 /* Show "Explore DotSpark Neura" button for signed-in users */
@@ -1203,7 +1248,13 @@ export default function LandingPage() {
                   size="lg" 
                   variant="default" 
                   className="bg-white text-primary font-bold shadow-lg btn-bounce group relative overflow-hidden border-2 border-white hover:bg-white/90 w-full sm:w-auto"
-                  onClick={() => window.open("https://www.dotspark.in/dashboard", "_blank")}
+                  onClick={(e) => {
+                    if (isMobile && !isPWA) {
+                      handleMobileButtonClick(e);
+                    } else {
+                      window.open("https://www.dotspark.in/dashboard", "_blank");
+                    }
+                  }}
                 >
                   <span className="px-4 md:px-8 flex items-center justify-center">
                     <span className="relative z-10">Explore DotSpark Neura</span>
@@ -1360,6 +1411,13 @@ export default function LandingPage() {
         </DialogContent>
       </Dialog>
 
+      {/* Mobile Experience Dialog */}
+      <MobileExperienceDialog 
+        isOpen={isMobileDialogOpen}
+        onClose={() => setIsMobileDialogOpen(false)}
+        onDesktopMode={handleDesktopMode}
+        onInstallApp={handleInstallApp}
+      />
 
     </div>
   );
