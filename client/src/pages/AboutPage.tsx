@@ -76,6 +76,20 @@ import {
 
 export default function AboutPage() {
   const { user } = useAuth();
+  const [hasActiveChat, setHasActiveChat] = useState(false);
+
+  // Check if there's an active chat conversation
+  useEffect(() => {
+    const savedMessages = localStorage.getItem('dotspark-chat-messages');
+    if (savedMessages) {
+      try {
+        const messages = JSON.parse(savedMessages);
+        setHasActiveChat(messages.length > 1); // More than just welcome message
+      } catch (error) {
+        console.error('Error checking chat messages:', error);
+      }
+    }
+  }, []);
   
   return (
     <div className="flex flex-col min-h-screen">
@@ -131,12 +145,21 @@ export default function AboutPage() {
             
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 w-full max-w-md">
-              <Link href="/" className="flex-1">
-                <Button className="w-full bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white">
-                  Start Chatting
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </Link>
+              {hasActiveChat ? (
+                <Link href="/" className="flex-1">
+                  <Button className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white">
+                    Continue Chat
+                    <MessageSquare className="ml-2 h-4 w-4" />
+                  </Button>
+                </Link>
+              ) : (
+                <Link href="/" className="flex-1">
+                  <Button className="w-full bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white">
+                    Start Chatting
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </Link>
+              )}
               
               {user ? (
                 <Link href="/dashboard" className="flex-1">

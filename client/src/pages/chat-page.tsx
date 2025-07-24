@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useToast } from '@/hooks/use-toast';
-import { Send, Loader2, ArrowLeft, Menu, Brain, Users, Settings, BarChart2, User, MessageSquare, Home, Sparkles, Mic, MicOff, Info, Lightbulb, Target, Puzzle } from 'lucide-react';
+import { Send, Loader2, ArrowLeft, Menu, Brain, Users, Settings, BarChart2, User, MessageSquare, Home, Sparkles, Mic, MicOff, Info, Lightbulb, Target, Puzzle, RotateCcw } from 'lucide-react';
 import { Link } from 'wouter';
 import { useAuth } from '@/hooks/use-auth';
 import { UsageLimitMessage } from '@/components/ui/usage-limit-message';
@@ -58,18 +58,41 @@ export default function ChatPage() {
   const { toast } = useToast();
   const { user } = useAuth();
   
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: '1',
-      content: 'Welcome to DotSpark! 🌟 I\'m your AI companion. Share your thoughts with me and I\'ll help you organize them into structured insights. Try me out - no signup required!',
-      isUser: false,
-      timestamp: new Date(),
-    },
-  ]);
+  // Load messages from localStorage or use default welcome message
+  const loadMessages = (): Message[] => {
+    const savedMessages = localStorage.getItem('dotspark-chat-messages');
+    if (savedMessages) {
+      try {
+        const parsed = JSON.parse(savedMessages);
+        return parsed.map((msg: any) => ({
+          ...msg,
+          timestamp: new Date(msg.timestamp)
+        }));
+      } catch (error) {
+        console.error('Error parsing saved messages:', error);
+      }
+    }
+    
+    return [
+      {
+        id: '1',
+        content: 'Welcome to DotSpark! 🌟 I\'m your AI companion. Share your thoughts with me and I\'ll help you organize them into structured insights. Try me out - no signup required!',
+        isUser: false,
+        timestamp: new Date(),
+      },
+    ];
+  };
+  
+  const [messages, setMessages] = useState<Message[]>(loadMessages());
   const [isLoading, setIsLoading] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [predictiveResponse, setPredictiveResponse] = useState<string>('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Save messages to localStorage whenever messages change
+  useEffect(() => {
+    localStorage.setItem('dotspark-chat-messages', JSON.stringify(messages));
+  }, [messages]);
 
   // Update welcome message based on authentication status
   useEffect(() => {
@@ -81,6 +104,11 @@ export default function ChatPage() {
       msg.id === '1' ? { ...msg, content: welcomeMessage } : msg
     ));
   }, [user]);
+
+  // Show back button when user has started a conversation
+  useEffect(() => {
+    setShowBackButton(messages.length > 1);
+  }, [messages]);
   const isRegistered = !!user;
   const isActivated = neuraStorage.isActivated();
   const isFirstTime = isFirstChat();
@@ -88,6 +116,7 @@ export default function ChatPage() {
   // Set default message only for first-time users
   const [inputValue, setInputValue] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [showBackButton, setShowBackButton] = useState(false);
   
   // Check if user has exceeded their limit
   const limitExceeded = hasExceededLimit(isRegistered, isActivated);
@@ -183,6 +212,28 @@ export default function ChatPage() {
     }
   };
 
+  const handleRefreshChat = () => {
+    const defaultMessage = {
+      id: '1',
+      content: user 
+        ? 'Welcome back to DotSpark! 🌟 I\'m your AI companion, ready to help you capture, organize, and transform your thoughts into powerful insights. What\'s on your mind today?'
+        : 'Welcome to DotSpark! 🌟 I\'m your AI companion. Share your thoughts with me and I\'ll help you organize them into structured insights. Try me out - no signup required!',
+      isUser: false,
+      timestamp: new Date(),
+    };
+    
+    setMessages([defaultMessage]);
+    setInputValue('');
+    setIsLoading(false);
+    localStorage.removeItem('dotspark-chat-messages');
+    
+    toast({
+      title: 'Chat Refreshed',
+      description: 'Starting a new conversation',
+      duration: 2000,
+    });
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       handleSendMessage();
@@ -244,7 +295,7 @@ export default function ChatPage() {
           <nav className="flex-1 p-2">
             <div className="space-y-1">
               <Link href="/">
-                <Button variant="ghost" className="w-full justify-start text-sm h-9">
+                <Button variant="ghost" className="w-full justify-start text-sm h-9 bg-amber-50 dark:bg-amber-950/20">
                   <MessageSquare className="w-4 h-4 mr-3" />
                   Chat
                 </Button>
@@ -270,7 +321,7 @@ export default function ChatPage() {
               <Link href="/about">
                 <Button variant="ghost" className="w-full justify-start text-sm h-9">
                   <Info className="w-4 h-4 mr-3" />
-                  About
+                  About DotSpark
                 </Button>
               </Link>
               {user ? (
@@ -319,7 +370,7 @@ export default function ChatPage() {
       <div className="flex flex-col flex-1 min-w-0">
         {/* Header */}
         <header className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20">
-          {/* Left: Sidebar Toggle and Logo */}
+          {/* Left: Sidebar Toggle, Back Button and Logo */}
           <div className="flex items-center gap-3">
             {/* Sidebar Toggle Icon */}
             <Button 
@@ -331,16 +382,45 @@ export default function ChatPage() {
               <Menu className="h-5 w-5" />
             </Button>
 
-            <img 
-              src="/dotspark-logo-icon.jpeg" 
-              alt="DotSpark" 
-              className="w-8 h-8 rounded-full"
-            />
-            <h1 className="text-xl font-semibold bg-gradient-to-r from-amber-700 to-amber-600 bg-clip-text text-transparent">DotSpark</h1>
+            {/* Back Button - only show when conversation has started */}
+            {showBackButton && (
+              <Link href="/about">
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="p-2 hover:bg-amber-100 dark:hover:bg-amber-900/20"
+                  title="Back to DotSpark Landing"
+                >
+                  <ArrowLeft className="h-5 w-5" />
+                </Button>
+              </Link>
+            )}
+
+            {/* Logo - clickable to go to about page (landing) */}
+            <Link href="/about" className="flex items-center gap-3">
+              <img 
+                src="/dotspark-logo-icon.jpeg" 
+                alt="DotSpark" 
+                className="w-8 h-8 rounded-full hover:shadow-lg transition-shadow cursor-pointer"
+              />
+              <h1 className="text-xl font-semibold bg-gradient-to-r from-amber-700 to-amber-600 bg-clip-text text-transparent hover:from-amber-800 hover:to-amber-700 transition-colors cursor-pointer">DotSpark</h1>
+            </Link>
           </div>
           
-          {/* Center: Spacer */}
-          <div className="flex-1"></div>
+          {/* Center: Chat Controls */}
+          <div className="flex-1 flex items-center justify-center">
+            {messages.length > 1 && (
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="p-2 hover:bg-amber-100 dark:hover:bg-amber-900/20 text-amber-700 hover:text-amber-800"
+                onClick={handleRefreshChat}
+                title="Refresh Chat"
+              >
+                <RotateCcw className="h-4 w-4" />
+              </Button>
+            )}
+          </div>
 
           {/* Right: User Actions */}
           <div className="flex items-center gap-2">
