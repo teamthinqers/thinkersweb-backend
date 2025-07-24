@@ -444,7 +444,19 @@ export default function ChatPage() {
                 </Button>
               </Link>
 
-              {/* Profile/Sign In - positioned right after About DotSpark */}
+              {/* Mobile-only AI Model Selector in Sidebar */}
+              {isMobile && (
+                <div className="mt-4 pt-4 border-t border-amber-200/30 dark:border-amber-700/30">
+                  <div className="px-2 mb-3">
+                    <h3 className="text-sm font-semibold text-amber-700 dark:text-amber-400">AI Model</h3>
+                  </div>
+                  <ModelSelector 
+                    selectedModel={selectedModel} 
+                    onModelChange={setSelectedModel}
+                    className="w-full"
+                  />
+                </div>
+              )}
               {user ? (
                 <Link href="/profile">
                   <Button variant="ghost" className="w-full justify-start text-sm h-10 hover:bg-gradient-to-r hover:from-amber-50 hover:to-orange-50 dark:hover:from-amber-950/20 dark:hover:to-orange-950/20 hover:text-amber-700 dark:hover:text-amber-300 rounded-xl transition-all duration-300">
@@ -459,20 +471,6 @@ export default function ChatPage() {
                     <span className="font-medium">Sign In</span>
                   </Button>
                 </Link>
-              )}
-
-              {/* Mobile-only AI Model Selector in Sidebar */}
-              {isMobile && (
-                <div className="mt-4 pt-4 border-t border-amber-200/30 dark:border-amber-700/30">
-                  <div className="px-2 mb-3">
-                    <h3 className="text-sm font-semibold text-amber-700 dark:text-amber-400">AI Model</h3>
-                  </div>
-                  <ModelSelector 
-                    selectedModel={selectedModel} 
-                    onModelChange={setSelectedModel}
-                    className="w-full"
-                  />
-                </div>
               )}
             </div>
           </nav>
@@ -873,7 +871,7 @@ export default function ChatPage() {
               </div>
             ) : (
               /* Chat Messages */
-              <div className={`${isMobile ? 'space-y-1 px-2 py-1 pb-1' : 'space-y-3 p-3 pb-3'}`}>
+              <div className={`${isMobile ? 'space-y-2 p-2 pb-12' : 'space-y-3 p-3 pb-16'}`}>
                 {messages.map((message) => (
                   <div key={message.id} className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}>
                     <div className={`max-w-2xl ${message.isUser ? (isMobile ? 'ml-4' : 'ml-8') : (isMobile ? 'mr-4' : 'mr-8')}`}>
