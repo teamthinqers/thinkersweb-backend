@@ -158,7 +158,7 @@ export default function ChatPage() {
   const [messages, setMessages] = useState<Message[]>(loadMessages());
   const [sessionId] = useState<string>(() => Date.now().toString());
   const [isChatLoading, setIsChatLoading] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isChatInputLoading, setIsChatInputLoading] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [predictiveResponse, setPredictiveResponse] = useState<string>('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -227,7 +227,7 @@ export default function ChatPage() {
   }, [messages]);
 
   const handleSendMessage = async () => {
-    if (!inputValue.trim() || isLoading) return;
+    if (!inputValue.trim() || isChatInputLoading) return;
 
     // Increment usage count
     incrementUsageCount();
@@ -241,7 +241,7 @@ export default function ChatPage() {
 
     setMessages((prev) => [...prev, newMessage]);
     setInputValue('');
-    setIsLoading(true);
+    setIsChatInputLoading(true);
 
     // Show typing indicator with faster feedback
     const typingMessage: Message = {
@@ -305,7 +305,7 @@ export default function ChatPage() {
         });
       }
     } finally {
-      setIsChatLoading(false);
+      setIsChatInputLoading(false);
     }
   };
 
@@ -793,10 +793,7 @@ export default function ChatPage() {
                   </div>
                   
                   <p className={`text-gray-600 dark:text-gray-400 ${isMobile ? 'text-base' : 'text-lg'}`}>
-                    {isLoading 
-                      ? "Loading..."
-                      : "I'll help you organize your thoughts into structured Dots, Wheels and Chakras for sparking actionable insights."
-                    }
+                    I'll help you organize your thoughts into structured Dots, Wheels and Chakras for sparking actionable insights.
                   </p>
                 </div>
                 
@@ -914,7 +911,7 @@ export default function ChatPage() {
                                   <Button 
                                     size="sm" 
                                     onClick={() => handleConfirmDot(message.dotProposal!)}
-                                    disabled={isLoading}
+                                    disabled={isChatInputLoading}
                                     className="bg-green-600 hover:bg-green-700 text-white text-xs h-7"
                                   >
                                     Save Dot
@@ -958,7 +955,7 @@ export default function ChatPage() {
                     onChange={(e) => setInputValue(e.target.value)}
                     onKeyDown={handleKeyDown}
                     placeholder="Ask Anything to DotSpark"
-                    disabled={isLoading || limitExceeded}
+                    disabled={isChatInputLoading || limitExceeded}
                     rows={1}
                     className="w-full resize-none rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-4 py-3 pr-12 text-sm placeholder:text-gray-500 focus:border-orange-500 focus:ring-1 focus:ring-orange-500 focus:outline-none disabled:opacity-50 min-h-[52px] max-h-[200px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600"
                     style={{
@@ -991,11 +988,11 @@ export default function ChatPage() {
                 {/* Send Button */}
                 <Button
                   onClick={handleSendMessage}
-                  disabled={!inputValue.trim() || isLoading || limitExceeded}
+                  disabled={!inputValue.trim() || isChatInputLoading || limitExceeded}
                   size="icon"
                   className="shrink-0 h-[52px] w-[52px] bg-orange-600 hover:bg-orange-700 text-white disabled:opacity-50 rounded-xl"
                 >
-                  {isLoading ? (
+                  {isChatInputLoading ? (
                     <Loader2 className="h-5 w-5 animate-spin" />
                   ) : (
                     <Send className="h-5 w-5" />
