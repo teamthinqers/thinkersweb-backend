@@ -101,7 +101,7 @@ Only when they approve, respond with this JSON format:
       messages: messages as any,
       response_format: { type: "json_object" },
       temperature: 0.3,
-      max_tokens: 300, // Reduced for faster processing
+      max_tokens: 4000, // Increased for complete responses
     });
 
     // Get the response content
@@ -181,8 +181,8 @@ export async function generateChatResponse(
     const response = await openai.chat.completions.create({
       model: "gpt-4o-mini", // Faster model for quicker responses
       messages: messages.slice(-6) as any, // Keep only recent context for speed
-      temperature: 0.5,
-      max_tokens: 150, // Reduced for faster processing
+      temperature: 0.7,
+      max_tokens: 4000, // Increased for complete, detailed responses
     });
 
     const aiResponse = response.choices[0].message.content || "I didn't quite catch that. Can you tell me more about what you learned?";

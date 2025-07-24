@@ -21,7 +21,7 @@ async function testOpenAIConnection() {
     const response = await openai.chat.completions.create({
       model: "gpt-4o",
       messages: [{ role: "user", content: "Hello, are you working?" }],
-      max_tokens: 5
+      max_tokens: 50
     });
     console.log("OpenAI connection successful:", response.choices[0]?.message?.content);
     return true;
@@ -55,7 +55,7 @@ Context: ${anchor}
 Return only ONE specific word from the content itself or directly related to the topic discussed.`
         }
       ],
-      max_tokens: 5,
+      max_tokens: 50,
       temperature: 0.1
     });
 
@@ -164,7 +164,7 @@ export async function processVoiceInput(audioBuffer: Buffer, filename: string, l
           role: "user", 
           content: transcription
         }],
-        max_tokens: 5
+        max_tokens: 20
       });
       processedText = response.choices[0]?.message?.content?.trim().split(' ')[0] || 'captured';
     }

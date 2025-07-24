@@ -280,7 +280,7 @@ Respond with JSON:
         messages: [{ role: "user", content: proposalPrompt }],
         response_format: { type: "json_object" },
         temperature: 0.4,
-        max_tokens: 400,
+        max_tokens: 4000,
       });
       proposal = JSON.parse(completion.choices[0].message.content || '{}');
     }

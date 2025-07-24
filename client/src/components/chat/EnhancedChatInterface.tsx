@@ -1,528 +1,467 @@
-import React, { useState, useRef, useEffect } from "react";
-import { Send, Loader2, Bot, Mic, MicOff, Brain, BarChart3 } from "lucide-react";
-import { useQueryClient } from "@tanstack/react-query";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
-import { useToast } from "@/hooks/use-toast";
-import { apiRequest } from "@/lib/queryClient";
+import React, { useState, useRef, useEffect } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Progress } from '@/components/ui/progress';
+import { Separator } from '@/components/ui/separator';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { 
+  Send, 
+  Brain, 
+  Lightbulb, 
+  Target, 
+  TrendingUp,
+  Sparkles,
+  MessageSquare,
+  BarChart3,
+  Eye,
+  Zap
+} from 'lucide-react';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { apiRequest } from '@/lib/queryClient';
 
-// Define enhanced message types
-interface EnhancedMessage {
+interface Message {
   id: string;
-  role: "system" | "user" | "assistant";
+  role: 'user' | 'assistant';
   content: string;
   timestamp: Date;
-  metadata?: {
-    emotionalTone?: string;
-    cognitiveDepth?: number;
-    structureHints?: string[];
-  };
+  analysis?: any;
+  metadata?: any;
 }
 
 interface ConversationAnalysis {
-  structure: {
-    type: 'dot' | 'wheel' | 'chakra';
-    confidence: number;
-    reasoning: string;
-    keyIndicators: string[];
-  };
-  readiness: number;
-  nextStep: 'continue_exploring' | 'deepen_insight' | 'structure_ready' | 'guide_to_structure';
-  guidanceMessage: string;
-  conversationDepth: number;
-  userIntentClarity: number;
+  cognitiveComplexity: number;
+  emotionalIntelligence: number;
+  contextualRelevance: number;
+  creativityIndex: number;
+  logicalCoherence: number;
+  conversationStrategy: string;
+  userEngagementPrediction: number;
+  topicTransitionReadiness: number;
 }
 
-interface StructureProposal {
-  type: 'dot' | 'wheel' | 'chakra';
-  heading: string;
-  content: any;
+interface SmartSuggestion {
+  type: 'question' | 'clarification' | 'expansion' | 'action';
+  content: string;
   confidence: number;
-  needsConfirmation: boolean;
+  reasoning: string;
 }
 
-// Create a unique ID for messages
-const generateId = () => Math.random().toString(36).substring(2, 9);
-
-const EnhancedChatInterface: React.FC = () => {
-  const [input, setInput] = useState("");
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [isRecording, setIsRecording] = useState(false);
-  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
-  const [sessionId, setSessionId] = useState<string>("");
+export default function EnhancedChatInterface() {
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [inputValue, setInputValue] = useState('');
+  const [sessionId] = useState(() => `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
   const [currentAnalysis, setCurrentAnalysis] = useState<ConversationAnalysis | null>(null);
-  const [currentProposal, setCurrentProposal] = useState<StructureProposal | null>(null);
-  const [conversationQuality, setConversationQuality] = useState<number>(0);
-  
-  // Initialize messages from localStorage or default welcome message
-  const initializeMessages = (): EnhancedMessage[] => {
-    try {
-      const savedMessages = localStorage.getItem('dotspark-enhanced-chat-messages');
-      const savedSessionId = localStorage.getItem('dotspark-enhanced-chat-session-id');
-      
-      if (savedMessages && savedSessionId) {
-        const parsed = JSON.parse(savedMessages);
-        const messages = parsed.map((msg: any) => ({
-          ...msg,
-          timestamp: new Date(msg.timestamp)
-        }));
-        setSessionId(savedSessionId);
-        return messages;
-      }
-    } catch (error) {
-      console.error('Error loading saved enhanced chat messages:', error);
-    }
-    
-    const newSessionId = `enhanced-chat-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
-    setSessionId(newSessionId);
-    localStorage.setItem('dotspark-enhanced-chat-session-id', newSessionId);
-    
-    return [
-      {
-        id: generateId(),
-        role: "assistant",
-        content: "Hi! I'm your enhanced DotSpark cognitive coach. I'm trained to help you develop dots, wheels, and chakras through intelligent conversation. Share what's on your mind, and I'll guide you naturally toward structured insights.",
-        timestamp: new Date(),
-      },
-    ];
-  };
-  
-  const [messages, setMessages] = useState<EnhancedMessage[]>(initializeMessages);
-  
+  const [suggestions, setSuggestions] = useState<SmartSuggestion[]>([]);
+  const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const queryClient = useQueryClient();
-  const { toast } = useToast();
-  
-  // Save messages to localStorage whenever they change
-  useEffect(() => {
-    if (messages.length > 0) {
-      localStorage.setItem('dotspark-enhanced-chat-messages', JSON.stringify(messages));
-    }
-  }, [messages]);
-  
-  // Auto-scroll to bottom of messages
-  useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [messages]);
-  
-  // Function to start a new chat session
-  const startNewChat = () => {
-    const newSessionId = `enhanced-chat-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
-    setSessionId(newSessionId);
-    localStorage.setItem('dotspark-enhanced-chat-session-id', newSessionId);
-    
-    const welcomeMessage: EnhancedMessage = {
-      id: generateId(),
-      role: "assistant",
-      content: "Hi! I'm your enhanced DotSpark cognitive coach. I'm trained to help you develop dots, wheels, and chakras through intelligent conversation. Share what's on your mind, and I'll guide you naturally toward structured insights.",
-      timestamp: new Date(),
-    };
-    
-    setMessages([welcomeMessage]);
-    setCurrentAnalysis(null);
-    setCurrentProposal(null);
-    setConversationQuality(0);
-    localStorage.setItem('dotspark-enhanced-chat-messages', JSON.stringify([welcomeMessage]));
-  };
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  // Voice recording functions
-  const startRecording = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const recorder = new MediaRecorder(stream);
-      const chunks: Blob[] = [];
-
-      recorder.ondataavailable = (event) => {
-        if (event.data.size > 0) {
-          chunks.push(event.data);
-        }
-      };
-
-      recorder.onstop = async () => {
-        const audioBlob = new Blob(chunks, { type: 'audio/webm' });
-        await processVoiceInput(audioBlob);
-      };
-
-      recorder.start();
-      setMediaRecorder(recorder);
-      setIsRecording(true);
-    } catch (error) {
-      console.error('Error accessing microphone:', error);
-      toast({
-        title: "Microphone Error",
-        description: "Could not access microphone. Please check permissions.",
-        variant: "destructive",
+  // Advanced chat mutation
+  const chatMutation = useMutation({
+    mutationFn: async (data: { 
+      message: string; 
+      sessionId: string; 
+      previousMessages: any[];
+      model?: string;
+    }) => {
+      return apiRequest(`/api/chat/advanced`, {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: { 'Content-Type': 'application/json' }
       });
-    }
-  };
-
-  const stopRecording = () => {
-    if (mediaRecorder && mediaRecorder.state === 'recording') {
-      mediaRecorder.stop();
-      setIsRecording(false);
-    }
-  };
-
-  const processVoiceInput = async (audioBlob: Blob) => {
-    try {
-      setIsProcessing(true);
+    },
+    onSuccess: (data) => {
+      const response = data.data;
       
-      // Convert audio to base64
-      const reader = new FileReader();
-      const base64Audio = await new Promise<string>((resolve, reject) => {
-        reader.onload = () => {
-          const result = reader.result as string;
-          resolve(result.split(',')[1]);
-        };
-        reader.onerror = reject;
-        reader.readAsDataURL(audioBlob);
-      });
-      
-      // Send to transcription API
-      const transcriptionResponse = await apiRequest("POST", "/api/transcribe-voice", {
-        audio: base64Audio,
-        mimeType: audioBlob.type
-      });
-      
-      if (transcriptionResponse.text) {
-        setInput(String(transcriptionResponse.text));
-        toast({
-          title: "Voice transcribed",
-          description: "Your voice message has been converted to text",
-        });
-      }
-    } catch (error) {
-      console.error('Error processing voice input:', error);
-      toast({
-        title: "Transcription Error", 
-        description: "Could not transcribe your voice message",
-        variant: "destructive",
-      });
-    } finally {
-      setIsProcessing(false);
-    }
-  };
-  
-  // Handle sending a message with enhanced cognitive coaching
-  const handleSendMessage = async () => {
-    if (!input.trim()) return;
-    
-    const userMessage: EnhancedMessage = {
-      id: generateId(),
-      role: "user",
-      content: input,
-      timestamp: new Date(),
-    };
-    
-    const updatedMessages = [...messages, userMessage];
-    setMessages(updatedMessages);
-    setInput("");
-    setIsProcessing(true);
-    
-    try {
-      // Prepare messages for API (exclude metadata for compatibility)
-      const apiMessages = updatedMessages.slice(1).map(msg => ({
-        role: msg.role,
-        content: msg.content,
-        timestamp: msg.timestamp
-      }));
-
-      // Call enhanced chat API
-      const response = await apiRequest("POST", "/api/chat/enhanced", {
-        message: userMessage.content,
-        messages: apiMessages,
-        sessionId: sessionId,
-        model: "gpt-4o"
-      });
-
-      // Update analysis and quality metrics
-      setCurrentAnalysis(response.analysis);
-      setConversationQuality(response.conversationQuality || 0);
-      
-      // Handle structure proposals
-      if (response.structureProposal) {
-        setCurrentProposal(response.structureProposal);
-      }
-
-      // Add assistant response
-      const assistantMessage: EnhancedMessage = {
-        id: generateId(),
-        role: "assistant",
-        content: response.response,
+      // Add assistant message
+      const assistantMessage: Message = {
+        id: `msg_${Date.now()}_assistant`,
+        role: 'assistant',
+        content: response.response.content,
         timestamp: new Date(),
+        analysis: response.analysis,
+        metadata: response.metadata
       };
-
+      
       setMessages(prev => [...prev, assistantMessage]);
-
-    } catch (error) {
-      console.error('Error sending enhanced message:', error);
-      toast({
-        title: "Error",
-        description: "Failed to send message. Please try again.",
-        variant: "destructive",
-      });
+      setCurrentAnalysis(response.analysis);
+      setIsTyping(false);
       
-      // Add error message
-      const errorMessage: EnhancedMessage = {
-        id: generateId(),
-        role: "assistant",
-        content: "I apologize, but I encountered an error. Please try rephrasing your message.",
-        timestamp: new Date(),
-      };
-      setMessages(prev => [...prev, errorMessage]);
-    } finally {
-      setIsProcessing(false);
+      // Generate suggestions for next interaction
+      generateSuggestions(response.response.content);
+    },
+    onError: (error) => {
+      console.error('Chat error:', error);
+      setIsTyping(false);
     }
+  });
+
+  // Generate smart suggestions
+  const suggestionsMutation = useMutation({
+    mutationFn: async (data: {
+      message: string;
+      conversationHistory: any[];
+      context: any;
+    }) => {
+      return apiRequest(`/api/chat/suggestions`, {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: { 'Content-Type': 'application/json' }
+      });
+    },
+    onSuccess: (data) => {
+      setSuggestions(data.data.suggestions || []);
+    }
+  });
+
+  const generateSuggestions = (lastMessage: string) => {
+    suggestionsMutation.mutate({
+      message: lastMessage,
+      conversationHistory: messages.slice(-5),
+      context: { sessionId, analysis: currentAnalysis }
+    });
   };
 
-  // Handle structure confirmation
-  const handleConfirmStructure = async () => {
-    if (!currentProposal) return;
-    
-    try {
-      setIsProcessing(true);
-      
-      // Here you would save the structure to the backend
-      toast({
-        title: "Structure Saved",
-        description: `Your ${currentProposal.type} has been saved successfully!`,
-      });
-      
-      setCurrentProposal(null);
-      
-      const confirmationMessage: EnhancedMessage = {
-        id: generateId(),
-        role: "assistant",
-        content: `Perfect! Your ${currentProposal.type} has been saved. You can find it in your DotSpark collection. Is there anything else you'd like to explore?`,
-        timestamp: new Date(),
-      };
-      
-      setMessages(prev => [...prev, confirmationMessage]);
-      
-    } catch (error) {
-      console.error('Error saving structure:', error);
-      toast({
-        title: "Save Error",
-        description: "Could not save structure. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsProcessing(false);
-    }
+  const handleSendMessage = async () => {
+    if (!inputValue.trim() || chatMutation.isPending) return;
+
+    const userMessage: Message = {
+      id: `msg_${Date.now()}_user`,
+      role: 'user',
+      content: inputValue.trim(),
+      timestamp: new Date()
+    };
+
+    setMessages(prev => [...prev, userMessage]);
+    setIsTyping(true);
+    setInputValue('');
+
+    // Prepare conversation history
+    const conversationHistory = messages.map(msg => ({
+      role: msg.role,
+      content: msg.content
+    }));
+
+    chatMutation.mutate({
+      message: userMessage.content,
+      sessionId,
+      previousMessages: conversationHistory,
+      model: 'claude-sonnet-4'
+    });
   };
 
-  // Handle Enter key press
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey && !isProcessing) {
+  const handleSuggestionClick = (suggestion: SmartSuggestion) => {
+    setInputValue(suggestion.content);
+    inputRef.current?.focus();
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSendMessage();
     }
   };
 
-  // Get structure icon and color
-  const getStructureDisplay = (type: string) => {
-    switch (type) {
-      case 'dot':
-        return { icon: '•', color: 'text-amber-600', bg: 'bg-amber-100' };
-      case 'wheel':
-        return { icon: '⚙', color: 'text-orange-600', bg: 'bg-orange-100' };
-      case 'chakra':
-        return { icon: '◉', color: 'text-amber-800', bg: 'bg-amber-200' };
-      default:
-        return { icon: '•', color: 'text-gray-600', bg: 'bg-gray-100' };
-    }
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+  // Calculate overall conversation quality score
+  const getQualityScore = (): number => {
+    if (!currentAnalysis) return 0;
+    const {
+      cognitiveComplexity,
+      emotionalIntelligence,
+      contextualRelevance,
+      creativityIndex,
+      logicalCoherence
+    } = currentAnalysis;
+    
+    return Math.round((cognitiveComplexity + emotionalIntelligence + contextualRelevance + creativityIndex + logicalCoherence) / 5);
+  };
+
+  const getEngagementLevel = (): string => {
+    const score = currentAnalysis?.userEngagementPrediction || 0;
+    if (score >= 80) return 'Highly Engaged';
+    if (score >= 60) return 'Engaged';
+    if (score >= 40) return 'Moderately Engaged';
+    return 'Low Engagement';
+  };
+
+  const getStrategyDescription = (strategy: string): string => {
+    const strategies: Record<string, string> = {
+      exploration: 'Exploring new ideas and concepts',
+      clarification: 'Seeking clarity and understanding',
+      deepening: 'Diving deeper into topics',
+      synthesis: 'Connecting and synthesizing ideas',
+      action: 'Focusing on actionable outcomes'
+    };
+    return strategies[strategy] || 'Adaptive conversation flow';
   };
 
   return (
-    <div className="flex flex-col h-full max-w-4xl mx-auto">
-      {/* Header with Analysis Panel */}
-      <div className="bg-white border-b border-gray-200 p-4 space-y-4">
-        <div className="flex justify-between items-center">
-          <div className="flex items-center space-x-2">
-            <Brain className="w-6 h-6 text-purple-600" />
-            <h2 className="text-xl font-semibold">Enhanced Cognitive Chat</h2>
-            <Button onClick={startNewChat} variant="outline" size="sm">
-              New Chat
-            </Button>
-          </div>
-          {conversationQuality > 0 && (
-            <div className="flex items-center space-x-2">
-              <BarChart3 className="w-4 h-4 text-blue-600" />
-              <span className="text-sm text-gray-600">Quality: {conversationQuality}%</span>
+    <div className="flex h-screen bg-gradient-to-br from-slate-50 to-amber-50 dark:from-slate-900 dark:to-slate-800">
+      {/* Main Chat Area */}
+      <div className="flex-1 flex flex-col">
+        {/* Header */}
+        <div className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 p-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-2">
+                <Brain className="h-6 w-6 text-amber-600" />
+                <h1 className="text-xl font-semibold text-slate-900 dark:text-white">
+                  Enhanced DotSpark AI
+                </h1>
+              </div>
+              <Badge variant="secondary" className="bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200">
+                ChatGPT-Level Intelligence
+              </Badge>
             </div>
-          )}
+            
+            {currentAnalysis && (
+              <div className="flex items-center space-x-4">
+                <div className="text-sm">
+                  <span className="text-slate-600 dark:text-slate-400">Quality Score: </span>
+                  <span className="font-semibold text-amber-600">{getQualityScore()}%</span>
+                </div>
+                <div className="text-sm">
+                  <span className="text-slate-600 dark:text-slate-400">Engagement: </span>
+                  <span className="font-semibold text-green-600">{getEngagementLevel()}</span>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
-        
-        {/* Analysis Panel */}
-        {currentAnalysis && (
-          <Card className="border-purple-200">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm flex items-center space-x-2">
-                <span>Conversation Analysis</span>
-                {(() => {
-                  const display = getStructureDisplay(currentAnalysis.structure.type);
-                  return (
-                    <Badge className={`${display.bg} ${display.color} border-0`}>
-                      {display.icon} {currentAnalysis.structure.type.toUpperCase()}
-                    </Badge>
-                  );
-                })()}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-                <div>
-                  <span className="font-medium">Readiness:</span>
-                  <Progress value={currentAnalysis.readiness} className="mt-1 h-2" />
-                  <span className="text-gray-500">{currentAnalysis.readiness}%</span>
-                </div>
-                <div>
-                  <span className="font-medium">Intent Clarity:</span>
-                  <Progress value={currentAnalysis.userIntentClarity} className="mt-1 h-2" />
-                  <span className="text-gray-500">{currentAnalysis.userIntentClarity}%</span>
-                </div>
-                <div>
-                  <span className="font-medium">Confidence:</span>
-                  <Progress value={currentAnalysis.structure.confidence} className="mt-1 h-2" />
-                  <span className="text-gray-500">{currentAnalysis.structure.confidence}%</span>
+
+        {/* Messages Area */}
+        <ScrollArea className="flex-1 p-4">
+          <div className="space-y-4 max-w-4xl mx-auto">
+            {messages.length === 0 && (
+              <div className="text-center py-12">
+                <Brain className="h-16 w-16 text-amber-400 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">
+                  Welcome to Enhanced DotSpark AI
+                </h3>
+                <p className="text-slate-600 dark:text-slate-400 mb-6">
+                  Experience ChatGPT-level intelligence with sophisticated conversation analysis and cognitive insights.
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto">
+                  <Button
+                    variant="outline"
+                    className="h-auto p-4 text-left"
+                    onClick={() => setInputValue("Help me organize my thoughts about a complex project I'm working on")}
+                  >
+                    <div>
+                      <div className="font-medium">Organize Complex Thoughts</div>
+                      <div className="text-sm text-slate-500 mt-1">Get structured insights for complex topics</div>
+                    </div>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="h-auto p-4 text-left"
+                    onClick={() => setInputValue("I need help making a difficult decision between multiple options")}
+                  >
+                    <div>
+                      <div className="font-medium">Decision Support</div>
+                      <div className="text-sm text-slate-500 mt-1">Receive analytical guidance for choices</div>
+                    </div>
+                  </Button>
                 </div>
               </div>
-              
-              <div className="text-xs space-y-1">
-                <div><span className="font-medium">Next Step:</span> {currentAnalysis.nextStep.replace(/_/g, ' ')}</div>
-                <div><span className="font-medium">Depth:</span> {currentAnalysis.conversationDepth}/10</div>
+            )}
+
+            {messages.map((message) => (
+              <div
+                key={message.id}
+                className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+              >
+                <div
+                  className={`max-w-3xl px-4 py-3 rounded-lg ${
+                    message.role === 'user'
+                      ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white'
+                      : 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700'
+                  }`}
+                >
+                  <div className="text-sm leading-relaxed">{message.content}</div>
+                  {message.analysis && (
+                    <div className="mt-3 pt-3 border-t border-slate-200 dark:border-slate-600">
+                      <div className="flex items-center space-x-4 text-xs">
+                        <div className="flex items-center space-x-1">
+                          <BarChart3 className="h-3 w-3 text-blue-500" />
+                          <span>Complexity: {message.analysis.cognitiveComplexity}%</span>
+                        </div>
+                        <div className="flex items-center space-x-1">
+                          <TrendingUp className="h-3 w-3 text-green-500" />
+                          <span>Engagement: {message.analysis.userEngagementPrediction}%</span>
+                        </div>
+                        <div className="flex items-center space-x-1">
+                          <Target className="h-3 w-3 text-purple-500" />
+                          <span>{getStrategyDescription(message.analysis.conversationStrategy)}</span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
-              
-              {currentAnalysis.structure.keyIndicators.length > 0 && (
-                <div className="text-xs">
-                  <span className="font-medium">Key Indicators:</span>
-                  <div className="flex flex-wrap gap-1 mt-1">
-                    {currentAnalysis.structure.keyIndicators.map((indicator, idx) => (
-                      <Badge key={idx} variant="secondary" className="text-xs px-2 py-0">
-                        "{indicator}"
-                      </Badge>
-                    ))}
+            ))}
+
+            {isTyping && (
+              <div className="flex justify-start">
+                <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-3">
+                  <div className="flex items-center space-x-2">
+                    <div className="flex space-x-1">
+                      <div className="w-2 h-2 bg-amber-500 rounded-full animate-bounce"></div>
+                      <div className="w-2 h-2 bg-amber-500 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                      <div className="w-2 h-2 bg-amber-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                    </div>
+                    <span className="text-sm text-slate-600 dark:text-slate-400">AI is thinking...</span>
                   </div>
                 </div>
-              )}
-            </CardContent>
-          </Card>
-        )}
-      </div>
-
-      {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        {messages.map((message) => (
-          <div
-            key={message.id}
-            className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
-          >
-            <div
-              className={`max-w-2xl p-3 rounded-lg ${
-                message.role === "user"
-                  ? "bg-gradient-to-br from-amber-500 to-orange-600 text-white"
-                  : "bg-gray-100 text-gray-900"
-              }`}
-            >
-              {message.role === "assistant" && (
-                <div className="flex items-center space-x-2 mb-2">
-                  <Bot className="w-4 h-4" />
-                  <span className="text-xs font-medium">DotSpark Coach</span>
-                </div>
-              )}
-              <div className="text-sm leading-relaxed whitespace-pre-wrap">
-                {message.content}
               </div>
-              <div className="text-xs opacity-70 mt-2">
-                {message.timestamp.toLocaleTimeString()}
+            )}
+            <div ref={messagesEndRef} />
+          </div>
+        </ScrollArea>
+
+        {/* Smart Suggestions */}
+        {suggestions.length > 0 && (
+          <div className="border-t border-slate-200 dark:border-slate-700 p-4 bg-white dark:bg-slate-800">
+            <div className="max-w-4xl mx-auto">
+              <div className="flex items-center space-x-2 mb-3">
+                <Lightbulb className="h-4 w-4 text-amber-500" />
+                <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                  Smart Suggestions
+                </span>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {suggestions.slice(0, 3).map((suggestion, index) => (
+                  <Button
+                    key={index}
+                    variant="outline"
+                    size="sm"
+                    className="text-xs h-auto py-2 px-3 hover:bg-amber-50 hover:border-amber-200"
+                    onClick={() => handleSuggestionClick(suggestion)}
+                  >
+                    <div className="flex items-center space-x-1">
+                      <span>{suggestion.content}</span>
+                      <Badge variant="secondary" className="text-xs ml-1">
+                        {suggestion.confidence}%
+                      </Badge>
+                    </div>
+                  </Button>
+                ))}
               </div>
             </div>
           </div>
-        ))}
-        
-        {/* Structure Proposal */}
-        {currentProposal && (
-          <Card className="border-green-200 bg-green-50">
-            <CardHeader>
-              <CardTitle className="text-sm text-green-800">
-                Structure Proposal: {currentProposal.type.toUpperCase()}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="bg-white p-3 rounded border">
-                <h4 className="font-medium">{currentProposal.heading}</h4>
-                <pre className="text-xs mt-2 whitespace-pre-wrap">
-                  {JSON.stringify(currentProposal.content, null, 2)}
-                </pre>
-              </div>
-              <div className="flex space-x-2">
-                <Button 
-                  onClick={handleConfirmStructure}
-                  disabled={isProcessing}
-                  className="bg-green-600 hover:bg-green-700"
-                  size="sm"
-                >
-                  Save {currentProposal.type}
-                </Button>
-                <Button 
-                  onClick={() => setCurrentProposal(null)}
-                  variant="outline"
-                  size="sm"
-                >
-                  Modify
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
         )}
-        
-        <div ref={messagesEndRef} />
-      </div>
 
-      {/* Input Area */}
-      <div className="border-t border-gray-200 p-4">
-        <div className="flex space-x-3">
-          <div className="flex-1">
-            <Textarea
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={handleKeyPress}
-              placeholder="Share your thoughts for cognitive coaching..."
-              className="min-h-[52px] max-h-[200px] resize-none"
-              disabled={isProcessing}
-            />
-          </div>
-          <div className="flex flex-col space-y-2">
-            <Button
-              onClick={isRecording ? stopRecording : startRecording}
-              variant="outline"
-              size="sm"
-              disabled={isProcessing}
-              className={isRecording ? "bg-red-100 border-red-300" : ""}
-            >
-              {isRecording ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
-            </Button>
-            <Button
-              onClick={handleSendMessage}
-              disabled={isProcessing || !input.trim()}
-              size="sm"
-            >
-              {isProcessing ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : (
-                <Send className="w-4 h-4" />
-              )}
-            </Button>
+        {/* Input Area */}
+        <div className="border-t border-slate-200 dark:border-slate-700 p-4 bg-white dark:bg-slate-800">
+          <div className="max-w-4xl mx-auto">
+            <div className="flex space-x-3">
+              <Input
+                ref={inputRef}
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                onKeyPress={handleKeyPress}
+                placeholder="Ask anything to DotSpark AI..."
+                className="flex-1 h-12 text-base"
+                disabled={chatMutation.isPending}
+              />
+              <Button
+                onClick={handleSendMessage}
+                disabled={!inputValue.trim() || chatMutation.isPending}
+                className="h-12 px-6 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
+              >
+                <Send className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
         </div>
       </div>
+
+      {/* Analysis Sidebar */}
+      {currentAnalysis && (
+        <div className="w-80 bg-white dark:bg-slate-800 border-l border-slate-200 dark:border-slate-700 p-4">
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg flex items-center space-x-2">
+                <Eye className="h-5 w-5 text-amber-600" />
+                <span>Conversation Analysis</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {/* Quality Metrics */}
+              <div>
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm font-medium">Cognitive Complexity</span>
+                  <span className="text-sm text-slate-600">{currentAnalysis.cognitiveComplexity}%</span>
+                </div>
+                <Progress value={currentAnalysis.cognitiveComplexity} className="h-2" />
+              </div>
+
+              <div>
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm font-medium">Emotional Intelligence</span>
+                  <span className="text-sm text-slate-600">{currentAnalysis.emotionalIntelligence}%</span>
+                </div>
+                <Progress value={currentAnalysis.emotionalIntelligence} className="h-2" />
+              </div>
+
+              <div>
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm font-medium">Contextual Relevance</span>
+                  <span className="text-sm text-slate-600">{currentAnalysis.contextualRelevance}%</span>
+                </div>
+                <Progress value={currentAnalysis.contextualRelevance} className="h-2" />
+              </div>
+
+              <div>
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm font-medium">Creativity Index</span>
+                  <span className="text-sm text-slate-600">{currentAnalysis.creativityIndex}%</span>
+                </div>
+                <Progress value={currentAnalysis.creativityIndex} className="h-2" />
+              </div>
+
+              <Separator />
+
+              {/* Conversation Insights */}
+              <div>
+                <h4 className="font-medium mb-2 flex items-center space-x-1">
+                  <Zap className="h-4 w-4 text-purple-500" />
+                  <span>Current Strategy</span>
+                </h4>
+                <Badge variant="outline" className="text-xs">
+                  {getStrategyDescription(currentAnalysis.conversationStrategy)}
+                </Badge>
+              </div>
+
+              <div>
+                <h4 className="font-medium mb-2">Engagement Level</h4>
+                <div className="flex items-center space-x-2">
+                  <Progress value={currentAnalysis.userEngagementPrediction} className="h-2 flex-1" />
+                  <span className="text-sm font-medium text-green-600">
+                    {getEngagementLevel()}
+                  </span>
+                </div>
+              </div>
+
+              <div>
+                <h4 className="font-medium mb-2">Topic Transition</h4>
+                <div className="flex items-center space-x-2">
+                  <Progress value={currentAnalysis.topicTransitionReadiness} className="h-2 flex-1" />
+                  <span className="text-xs text-slate-600">
+                    {currentAnalysis.topicTransitionReadiness}% Ready
+                  </span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </div>
   );
-};
-
-export default EnhancedChatInterface;
+}

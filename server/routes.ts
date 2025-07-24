@@ -33,6 +33,8 @@ import { eq, inArray, and, lt, desc } from "drizzle-orm";
 import twilio from "twilio";
 import whatsappWebhookRouter from "./whatsapp-webhook";
 import { calculateGridPositions } from "./grid-positioning";
+import { advancedChatEngine } from './advanced-chat';
+import { intelligentFeatures } from './intelligent-features';
 
 // Interface for authenticated requests
 interface AuthenticatedRequest extends Request {
@@ -986,6 +988,319 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Advanced "Organize Thoughts" API route
   app.post(`${apiPrefix}/organize-thoughts/continue`, continueOrganizeThoughts);
+
+  // Import advanced chat modules for full functionality
+  const { advancedChatEngine } = require('./advanced-chat');
+  const { intelligentFeatures } = require('./intelligent-features');
+
+  // ==========================================
+  // ADVANCED CHAT SYSTEM - ChatGPT Level Intelligence
+  // ==========================================
+
+  // Advanced chat processing with sophisticated AI capabilities
+  app.post(`${apiPrefix}/chat/advanced`, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const { 
+        message, 
+        sessionId, 
+        previousMessages = [], 
+        model = 'claude-sonnet-4',
+        context = {} 
+      } = req.body;
+
+      if (!message || !sessionId) {
+        return res.status(400).json({ 
+          error: 'Message and sessionId are required' 
+        });
+      }
+
+      const userId = req.user?.id;
+      
+      // Process message with advanced chat engine
+      const result = await advancedChatEngine.processAdvancedMessage(
+        message,
+        sessionId,
+        userId,
+        previousMessages,
+        model
+      );
+
+      res.json({
+        success: true,
+        data: {
+          response: result.response,
+          analysis: result.analysis,
+          metadata: result.metadata,
+          sessionId,
+          userId
+        }
+      });
+
+    } catch (error) {
+      console.error('Advanced chat error:', error);
+      res.status(500).json({ 
+        error: 'Failed to process advanced chat message',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
+  // Get intelligent conversation suggestions
+  app.post(`${apiPrefix}/chat/suggestions`, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const { message, conversationHistory = [], context = {} } = req.body;
+
+      if (!message) {
+        return res.status(400).json({ error: 'Message is required' });
+      }
+
+      const suggestions = await intelligentFeatures.generateSmartSuggestions(
+        message,
+        conversationHistory,
+        context
+      );
+
+      res.json({
+        success: true,
+        data: { suggestions }
+      });
+
+    } catch (error) {
+      console.error('Suggestions error:', error);
+      res.status(500).json({ 
+        error: 'Failed to generate suggestions' 
+      });
+    }
+  });
+
+  // Analyze conversation patterns and user insights
+  app.post(`${apiPrefix}/chat/analyze-patterns`, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const { conversationHistory = [], sessionId } = req.body;
+
+      if (!sessionId) {
+        return res.status(400).json({ error: 'SessionId is required' });
+      }
+
+      const insights = await intelligentFeatures.analyzeConversationPatterns(
+        conversationHistory,
+        sessionId
+      );
+
+      res.json({
+        success: true,
+        data: { insights }
+      });
+
+    } catch (error) {
+      console.error('Pattern analysis error:', error);
+      res.status(500).json({ 
+        error: 'Failed to analyze conversation patterns' 
+      });
+    }
+  });
+
+  // Generate adaptive responses based on user profile
+  app.post(`${apiPrefix}/chat/adaptive-response`, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const { message, userInsight, context = {} } = req.body;
+
+      if (!message || !userInsight) {
+        return res.status(400).json({ 
+          error: 'Message and userInsight are required' 
+        });
+      }
+
+      const adaptiveResponse = await intelligentFeatures.generateAdaptiveResponse(
+        message,
+        userInsight,
+        context
+      );
+
+      res.json({
+        success: true,
+        data: { adaptiveResponse }
+      });
+
+    } catch (error) {
+      console.error('Adaptive response error:', error);
+      res.status(500).json({ 
+        error: 'Failed to generate adaptive response' 
+      });
+    }
+  });
+
+  // Predict conversation flow and engagement
+  app.post(`${apiPrefix}/chat/predict-flow`, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const { currentMessage, conversationHistory = [], userInsight } = req.body;
+
+      if (!currentMessage || !userInsight) {
+        return res.status(400).json({ 
+          error: 'currentMessage and userInsight are required' 
+        });
+      }
+
+      const prediction = await intelligentFeatures.predictConversationFlow(
+        currentMessage,
+        conversationHistory,
+        userInsight
+      );
+
+      res.json({
+        success: true,
+        data: { prediction }
+      });
+
+    } catch (error) {
+      console.error('Flow prediction error:', error);
+      res.status(500).json({ 
+        error: 'Failed to predict conversation flow' 
+      });
+    }
+  });
+
+  // Real-time sentiment analysis
+  app.post(`${apiPrefix}/chat/sentiment-analysis`, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const { messages = [] } = req.body;
+
+      if (!Array.isArray(messages) || messages.length === 0) {
+        return res.status(400).json({ 
+          error: 'Messages array is required' 
+        });
+      }
+
+      const sentimentAnalysis = await intelligentFeatures.analyzeSentimentFlow(messages);
+
+      res.json({
+        success: true,
+        data: { sentimentAnalysis }
+      });
+
+    } catch (error) {
+      console.error('Sentiment analysis error:', error);
+      res.status(500).json({ 
+        error: 'Failed to analyze sentiment' 
+      });
+    }
+  });
+
+  // Enhance conversation memory with context awareness
+  app.post(`${apiPrefix}/chat/enhance-memory`, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const { sessionId, newMessage, existingContext = [] } = req.body;
+
+      if (!sessionId || !newMessage) {
+        return res.status(400).json({ 
+          error: 'SessionId and newMessage are required' 
+        });
+      }
+
+      const enhancedMemory = await intelligentFeatures.enhanceContextMemory(
+        sessionId,
+        newMessage,
+        existingContext
+      );
+
+      res.json({
+        success: true,
+        data: { enhancedMemory }
+      });
+
+    } catch (error) {
+      console.error('Memory enhancement error:', error);
+      res.status(500).json({ 
+        error: 'Failed to enhance conversation memory' 
+      });
+    }
+  });
+
+  // Multi-modal context analysis
+  app.post(`${apiPrefix}/chat/multimodal-analysis`, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const { textContent, voiceData, visualContext } = req.body;
+
+      if (!textContent) {
+        return res.status(400).json({ 
+          error: 'textContent is required' 
+        });
+      }
+
+      const analysis = await intelligentFeatures.analyzeMultiModalContext(
+        textContent,
+        voiceData,
+        visualContext
+      );
+
+      res.json({
+        success: true,
+        data: { analysis }
+      });
+
+    } catch (error) {
+      console.error('Multi-modal analysis error:', error);
+      res.status(500).json({ 
+        error: 'Failed to analyze multi-modal context' 
+      });
+    }
+  });
+
+  // Intelligent error recovery
+  app.post(`${apiPrefix}/chat/error-recovery`, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const { errorContext, userMessage, conversationHistory = [] } = req.body;
+
+      if (!errorContext || !userMessage) {
+        return res.status(400).json({ 
+          error: 'errorContext and userMessage are required' 
+        });
+      }
+
+      const recovery = await intelligentFeatures.handleIntelligentErrorRecovery(
+        errorContext,
+        userMessage,
+        conversationHistory
+      );
+
+      res.json({
+        success: true,
+        data: { recovery }
+      });
+
+    } catch (error) {
+      console.error('Error recovery error:', error);
+      res.status(500).json({ 
+        error: 'Failed to handle error recovery' 
+      });
+    }
+  });
+
+  // Generate personalized conversation summary
+  app.get(`${apiPrefix}/chat/summary/:sessionId`, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const { sessionId } = req.params;
+
+      if (!sessionId) {
+        return res.status(400).json({ 
+          error: 'SessionId is required' 
+        });
+      }
+
+      const summary = await advancedChatEngine.generatePersonalizedSummary(sessionId);
+
+      res.json({
+        success: true,
+        data: { summary, sessionId }
+      });
+
+    } catch (error) {
+      console.error('Summary generation error:', error);
+      res.status(500).json({ 
+        error: 'Failed to generate conversation summary' 
+      });
+    }
+  });
 
   return httpServer;
 }

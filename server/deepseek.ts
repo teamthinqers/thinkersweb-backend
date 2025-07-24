@@ -40,7 +40,7 @@ export async function generateDeepSeekResponse(
         model: options.model || 'deepseek-chat',
         messages,
         temperature: options.temperature || 0.5,
-        max_tokens: options.max_tokens || 200,
+        max_tokens: options.max_tokens || 4000,
         stream: false
       },
       {
@@ -48,7 +48,7 @@ export async function generateDeepSeekResponse(
           'Authorization': `Bearer ${apiKey}`,
           'Content-Type': 'application/json',
         },
-        timeout: 15000, // 15 second timeout for faster responses
+        timeout: 30000, // 30 second timeout for complete responses
       }
     );
 
@@ -79,7 +79,7 @@ export async function testDeepSeekConnection(): Promise<boolean> {
     
     const response = await generateDeepSeekResponse([
       { role: 'user', content: 'Hello, are you working?' }
-    ], { max_tokens: 10 });
+    ], { max_tokens: 50 });
     
     console.log('DeepSeek connection successful:', response);
     return true;
@@ -123,8 +123,8 @@ Always provide thorough, accurate responses while maintaining helpfulness and pr
   ];
 
   return await generateDeepSeekResponse(messages, {
-    temperature: 0.5, // Faster, more focused responses
-    max_tokens: 200   // Concise responses for better speed
+    temperature: 0.7, // More natural responses
+    max_tokens: 4000  // Complete, detailed responses
   });
 }
 

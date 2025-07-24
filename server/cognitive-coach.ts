@@ -103,7 +103,7 @@ Respond with JSON:
         messages: [{ role: "user", content: classificationPrompt }],
         response_format: { type: "json_object" },
         temperature: 0.1,
-        max_tokens: 400,
+        max_tokens: 4000,
       });
       response = JSON.parse(completion.choices[0].message.content || '{}');
     }
@@ -190,7 +190,7 @@ Respond with JSON:
         messages: [{ role: "user", content: analysisPrompt }],
         response_format: { type: "json_object" },
         temperature: 0.3,
-        max_tokens: 500,
+        max_tokens: 4000,
       });
       analysis = JSON.parse(completion.choices[0].message.content || '{}');
     }
@@ -315,7 +315,7 @@ Generate a coaching response that feels natural, insightful, and advances their 
           { role: "user", content: userInput }
         ],
         temperature: 0.7,
-        max_tokens: 300,
+        max_tokens: 4000,
       });
       response = completion.choices[0].message.content || "I'd love to hear more about what you're thinking.";
     }
