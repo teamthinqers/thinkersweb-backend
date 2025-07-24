@@ -158,6 +158,7 @@ export default function ChatPage() {
   const [messages, setMessages] = useState<Message[]>(loadMessages());
   const [sessionId] = useState<string>(() => Date.now().toString());
   const [isChatLoading, setIsChatLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [predictiveResponse, setPredictiveResponse] = useState<string>('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
