@@ -145,6 +145,7 @@ Changelog:
   * Desktop browsers maintain original header structure and full prompt descriptions without changes
   * Full-width model selector styling implemented for mobile sidebar integration
   * Mobile sidebar defaults to collapsed mode for better space utilization with user-controlled expansion option
+  * Fixed WhatsApp header icon to use consistent phone number across all WhatsApp integrations via API endpoint
   * Mobile interface now maximizes space efficiency while preserving desktop functionality
 - January 24, 2025. COMPLETED sophisticated enhanced chat system with advanced cognitive coaching:
   * Implemented comprehensive Anthropic-powered cognitive coaching API that analyzes thought structures with 85% confidence

@@ -665,7 +665,18 @@ export default function ChatPage() {
               size="sm" 
               className="p-3 bg-[#25D366] hover:bg-[#20BA5A] dark:bg-[#25D366] dark:hover:bg-[#20BA5A] rounded-xl transition-all duration-300 hover:scale-105 shadow-sm"
               title="WhatsApp Contact"
-              onClick={() => window.open('https://wa.me/+917208061002?text=Hi%20DotSpark%2C%20I%20would%20need%20your%20assistance%20in%20saving%20a%20dot', '_blank')}
+              onClick={async () => {
+                try {
+                  const response = await fetch('/api/whatsapp/contact');
+                  const data = await response.json();
+                  const message = 'Hi DotSpark, I would need your assistance in saving a dot';
+                  const url = `https://wa.me/${data.phoneNumber}?text=${encodeURIComponent(message)}`;
+                  window.open(url, '_blank');
+                } catch (error) {
+                  // Fallback to existing number if API fails
+                  window.open('https://wa.me/16067157733?text=Hi%20DotSpark%2C%20I%20would%20need%20your%20assistance%20in%20saving%20a%20dot', '_blank');
+                }
+              }}
             >
               <SiWhatsapp className="h-5 w-5 text-white" />
             </Button>
