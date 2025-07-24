@@ -172,14 +172,14 @@ Changelog:
   * Set sidebar to open by default for better accessibility while allowing users to close if needed
   * Added automatic "New Chat" option in left menu when chat is active for seamless conversation management
   * Enhanced New Chat button legibility with improved amber/orange gradient background and better contrast while maintaining brand consistency
-- January 24, 2025. ENHANCED chat responses with ChatGPT-style typewriter effect for improved user experience:
-  * Implemented smooth character-by-character typing animation with 25ms delay matching ChatGPT experience
-  * Added realistic blinking cursor effect during AI response typing
-  * Single character typing for natural reading flow without distraction
-  * Auto-scroll functionality follows typing progress for seamless reading experience
-  * Click-to-skip feature allows users to instantly show full message if desired
+- January 24, 2025. ENHANCED chat responses with optimized typewriter effect and improved AI responses:
+  * Optimized typewriter speed to 15ms per character for better user experience
+  * Improved thinking indicator timing for faster response feel
+  * Enhanced GPT-4 system prompts to provide direct, actionable responses like DeepSeek
+  * Updated GPT-4 to focus on delivering value rather than asking excessive questions
   * Improved user message legibility with darker amber/orange gradient background
   * Professional ChatGPT-quality typing animation maintains DotSpark brand consistency
+  * Click-to-skip feature allows users to instantly show full message if desired
 - January 24, 2025. COMPLETED transformation to chat-first experience:
   * Made ChatPage the new primary homepage (/) - fully accessible without authentication
   * Renamed original LandingPage to AboutPage accessible at /about route

@@ -64,7 +64,7 @@ const TypewriterText = ({ text, onComplete, onProgress }: {
       setDisplayedText(text.slice(0, currentIndex + 1));
       setCurrentIndex(currentIndex + 1);
       onProgress?.(); // Trigger scroll
-    }, 25); // ChatGPT-like timing - 25ms per character
+    }, 15); // Optimized timing - 15ms per character
     
     return () => clearTimeout(timer);
   }, [currentIndex, text, isComplete, onComplete, onProgress, isSkipped]);
