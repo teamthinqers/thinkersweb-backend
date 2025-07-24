@@ -566,10 +566,10 @@ export default function ChatPage() {
       <div className="flex flex-col flex-1 min-w-0">
         {/* Mobile-First ChatGPT Style Header */}
         <header className="sticky top-0 z-50 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 shadow-sm">
-          <div className="flex items-center justify-between h-14 px-3 md:px-6">
+          <div className="flex items-center justify-between h-12 px-3 md:px-6">
             {/* Left: Menu + Model (Mobile: Sheet Menu, Desktop: Sidebar Toggle) */}
             <div className="flex items-center gap-2">
-              {/* Mobile Menu Sheet */}
+              {/* Compact Mobile Menu Sheet */}
               <Sheet>
                 <SheetTrigger asChild>
                   <Button
@@ -580,57 +580,56 @@ export default function ChatPage() {
                     <Menu className="h-5 w-5" />
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="left" className="w-80 p-0">
-                  <div className="flex flex-col h-full">
-                    {/* Mobile Menu Header */}
-                    <div className="p-4 border-b border-gray-200 dark:border-gray-700">
-                      <div className="flex items-center gap-3">
+                <SheetContent side="left" className="w-72 p-0 max-w-[85vw]">
+                  <div className="flex flex-col h-full bg-white dark:bg-gray-900">
+                    {/* Compact Menu Header */}
+                    <div className="p-3 border-b border-gray-200 dark:border-gray-700">
+                      <div className="flex items-center gap-2">
                         <img 
                           src="/dotspark-logo-icon.jpeg" 
                           alt="DotSpark" 
-                          className="w-8 h-8 rounded-full"
+                          className="w-6 h-6 rounded-full"
                         />
-                        <h2 className="text-lg font-semibold text-gray-900 dark:text-white">DotSpark</h2>
+                        <h2 className="text-base font-semibold text-gray-900 dark:text-white">DotSpark</h2>
                       </div>
                     </div>
                     
-                    {/* AI Model Selector in Mobile Menu */}
-                    <div className="p-4 border-b border-gray-200 dark:border-gray-700">
-                      <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">AI Model</label>
+                    {/* Compact AI Model Selector */}
+                    <div className="p-3 border-b border-gray-200 dark:border-gray-700">
                       <ModelSelector
                         selectedModel={selectedModel}
                         onModelChange={setSelectedModel}
-                        className="w-full bg-purple-50 hover:bg-purple-100 dark:bg-purple-950/50 dark:hover:bg-purple-900/70 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-700"
+                        className="w-full text-sm bg-purple-50 hover:bg-purple-100 dark:bg-purple-950/50 dark:hover:bg-purple-900/70 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-700"
                       />
                     </div>
                     
-                    {/* Mobile Navigation */}
-                    <nav className="flex-1 p-4">
-                      <div className="space-y-2">
+                    {/* Compact Navigation */}
+                    <nav className="flex-1 p-2">
+                      <div className="space-y-1">
                         {messages.length > 1 && (
                           <SheetClose asChild>
                             <Button 
                               onClick={handleRefreshChat}
                               variant="ghost" 
-                              className="w-full justify-start h-12 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                              className="w-full justify-start h-10 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg"
                             >
-                              <RefreshCw className="w-5 h-5 mr-3" />
+                              <RefreshCw className="w-4 h-4 mr-2" />
                               New Chat
                             </Button>
                           </SheetClose>
                         )}
                         <SheetClose asChild>
                           <Link href="/dashboard" className="block">
-                            <Button variant="ghost" className="w-full justify-start h-12 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
-                              <Brain className="w-5 h-5 mr-3" />
+                            <Button variant="ghost" className="w-full justify-start h-10 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg">
+                              <Brain className="w-4 h-4 mr-2" />
                               My Neura
                             </Button>
                           </Link>
                         </SheetClose>
                         <SheetClose asChild>
                           <Link href="/social" className="block">
-                            <Button variant="ghost" className="w-full justify-start h-12 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
-                              <Users className="w-5 h-5 mr-3" />
+                            <Button variant="ghost" className="w-full justify-start h-10 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg">
+                              <Users className="w-4 h-4 mr-2" />
                               Social
                             </Button>
                           </Link>
@@ -638,8 +637,8 @@ export default function ChatPage() {
                         {user ? (
                           <SheetClose asChild>
                             <Link href="/profile" className="block">
-                              <Button variant="ghost" className="w-full justify-start h-12 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
-                                <User className="w-5 h-5 mr-3" />
+                              <Button variant="ghost" className="w-full justify-start h-10 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg">
+                                <User className="w-4 h-4 mr-2" />
                                 Profile
                               </Button>
                             </Link>
@@ -647,8 +646,8 @@ export default function ChatPage() {
                         ) : (
                           <SheetClose asChild>
                             <Link href="/auth" className="block">
-                              <Button variant="ghost" className="w-full justify-start h-12 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
-                                <User className="w-5 h-5 mr-3" />
+                              <Button variant="ghost" className="w-full justify-start h-10 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg">
+                                <User className="w-4 h-4 mr-2" />
                                 Sign In
                               </Button>
                             </Link>
@@ -685,9 +684,9 @@ export default function ChatPage() {
               <img 
                 src="/dotspark-logo-icon.jpeg" 
                 alt="DotSpark" 
-                className="w-6 h-6 rounded-full"
+                className="w-5 h-5 rounded-full"
               />
-              <span className="text-lg font-semibold text-gray-900 dark:text-white">DotSpark</span>
+              <span className="text-base font-medium text-gray-900 dark:text-white">DotSpark</span>
             </div>
 
             {/* Right: User Actions (Desktop Only) */}
