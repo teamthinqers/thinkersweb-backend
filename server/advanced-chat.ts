@@ -433,4 +433,39 @@ Respond with sophisticated intelligence that demonstrates deep understanding, cr
   }
 }
 
+// Export the main function for ChatGPT-level intelligent responses
+export async function generateAdvancedChatResponse(
+  message: string,
+  conversationHistory: any[] = [],
+  model: string = 'gpt-4o',
+  userId?: string,
+  sessionId?: string
+): Promise<{
+  response: string;
+  analysis: any;
+  cognitiveDepth: number;
+  conversationFlow: string;
+  metadata: any;
+}> {
+  const engine = new AdvancedChatEngine();
+  const result = await engine.generateIntelligentResponse(message, conversationHistory, model, userId, sessionId);
+  
+  return {
+    response: result.content,
+    analysis: {
+      confidence: result.confidenceScore,
+      reasoning: result.reasoning,
+      alternatives: result.alternativeResponses,
+      followUps: result.suggestedFollowUps
+    },
+    cognitiveDepth: Math.round(result.confidenceScore * 10),
+    conversationFlow: result.adaptationStrategy,
+    metadata: {
+      emotionalTone: result.emotionalTone,
+      responseQuality: "ChatGPT-level",
+      guidanceLevel: "sophisticated"
+    }
+  };
+}
+
 export const advancedChatEngine = new AdvancedChatEngine();

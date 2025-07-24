@@ -989,9 +989,80 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Advanced "Organize Thoughts" API route
   app.post(`${apiPrefix}/organize-thoughts/continue`, continueOrganizeThoughts);
 
-  // Import advanced chat modules for full functionality
-  const { advancedChatEngine } = require('./advanced-chat');
-  const { intelligentFeatures } = require('./intelligent-features');
+  // Advanced Chat API with Multi-Model Support
+  app.post(`${apiPrefix}/advanced-chat`, async (req, res) => {
+    try {
+      const { message, model = 'gpt-4o', conversationHistory = [], userId, sessionId } = req.body;
+      
+      if (!message) {
+        return res.status(400).json({ error: 'Message is required' });
+      }
+
+      const { generateAdvancedChatResponse } = await import('./advanced-chat');
+      
+      const response = await generateAdvancedChatResponse(
+        message,
+        conversationHistory,
+        model,
+        userId?.toString(),
+        sessionId
+      );
+
+      res.json({
+        success: true,
+        response: response.response,
+        analysis: response.analysis,
+        cognitiveDepth: response.cognitiveDepth,
+        conversationFlow: response.conversationFlow,
+        metadata: response.metadata
+      });
+    } catch (error) {
+      console.error('Advanced chat error:', error);
+      res.status(500).json({ 
+        error: 'Failed to generate advanced chat response',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
+  // Enhanced Chat API with Cognitive Coaching
+  app.post(`${apiPrefix}/enhanced-chat`, async (req, res) => {
+    try {
+      const { message, model = 'gpt-4o', sessionId, userId } = req.body;
+      
+      if (!message) {
+        return res.status(400).json({ error: 'Message is required' });
+      }
+
+      const { generateEnhancedChatResponse } = await import('./enhanced-chat');
+      
+      // Get conversation history from session if available  
+      const conversationHistory: Array<{role: string, content: string}> = [];
+      
+      const response = await generateEnhancedChatResponse(
+        message,
+        conversationHistory,
+        model,
+        userId,
+        sessionId
+      );
+
+      res.json({
+        success: true,
+        response: response.response,
+        analysis: response.analysis,
+        structureProposal: response.structureProposal,
+        action: response.action,
+        metadata: response.metadata
+      });
+    } catch (error) {
+      console.error('Enhanced chat error:', error);
+      res.status(500).json({ 
+        error: 'Failed to generate enhanced chat response',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
 
   // ==========================================
   // ADVANCED CHAT SYSTEM - ChatGPT Level Intelligence
