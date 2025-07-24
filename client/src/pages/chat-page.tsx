@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useToast } from '@/hooks/use-toast';
-import { Send, Loader2, ArrowLeft, Menu, Brain, Users, Settings, BarChart2, User, MessageSquare, Home, Sparkles, Mic, MicOff, Info, Lightbulb, Target, Puzzle, RotateCcw, Plus, RefreshCw } from 'lucide-react';
+import { Send, Loader2, ArrowLeft, Menu, Brain, Users, Settings, BarChart2, User, MessageSquare, Home, Sparkles, Mic, MicOff, Info, Lightbulb, Target, Puzzle, RotateCcw, Plus, RefreshCw, Phone } from 'lucide-react';
 import { Link } from 'wouter';
 import { useAuth } from '@/hooks/use-auth';
 import { UsageLimitMessage } from '@/components/ui/usage-limit-message';
@@ -109,6 +109,19 @@ export default function ChatPage() {
   useEffect(() => {
     setShowBackButton(messages.length > 1);
   }, [messages]);
+
+  // Check Neura activation status
+  useEffect(() => {
+    const checkActivation = () => {
+      const activated = neuraStorage.isActivated();
+      setIsNeuraActive(activated);
+    };
+
+    checkActivation();
+    const interval = setInterval(checkActivation, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
   const isRegistered = !!user;
   const isActivated = neuraStorage.isActivated();
   const isFirstTime = isFirstChat();
@@ -117,6 +130,7 @@ export default function ChatPage() {
   const [inputValue, setInputValue] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [showBackButton, setShowBackButton] = useState(false);
+  const [isNeuraActive, setIsNeuraActive] = useState(false);
   
   // Check if user has exceeded their limit
   const limitExceeded = hasExceededLimit(isRegistered, isActivated);
@@ -425,8 +439,51 @@ export default function ChatPage() {
           {/* Enhanced Center: Empty space for centered logo */}
           <div className="flex-1"></div>
 
-          {/* Right: User Actions */}
-          <div className="flex items-center gap-2">
+          {/* Right: Header Icons and User Actions */}
+          <div className="flex items-center gap-3">
+            {/* Brain Icon - Navigate to Dashboard with Active Status */}
+            <Link href="/dashboard">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className={`p-3 rounded-xl transition-all duration-300 hover:scale-105 ${
+                  isNeuraActive 
+                    ? 'bg-green-100/80 dark:bg-green-900/30 hover:bg-green-200/70 dark:hover:bg-green-800/40' 
+                    : 'hover:bg-amber-100/70 dark:hover:bg-amber-900/30'
+                }`}
+                title="My Neura"
+              >
+                <Brain className={`h-5 w-5 transition-all duration-300 ${
+                  isNeuraActive 
+                    ? 'text-green-700 dark:text-green-400 animate-pulse' 
+                    : 'text-amber-700 dark:text-amber-400'
+                }`} />
+              </Button>
+            </Link>
+
+            {/* Social Icon */}
+            <Link href="/social">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="p-3 hover:bg-orange-100/70 dark:hover:bg-orange-900/30 rounded-xl transition-all duration-300 hover:scale-105"
+                title="DotSpark Social"
+              >
+                <Users className="h-5 w-5 text-orange-600 dark:text-orange-400" />
+              </Button>
+            </Link>
+
+            {/* WhatsApp Icon */}
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="p-3 hover:bg-green-100/70 dark:hover:bg-green-900/30 rounded-xl transition-all duration-300 hover:scale-105"
+              title="WhatsApp Contact"
+              onClick={() => window.open('https://wa.me/+917208061002?text=Hi%20DotSpark%2C%20I%20would%20need%20your%20assistance%20in%20saving%20a%20dot', '_blank')}
+            >
+              <Phone className="h-5 w-5 text-green-600 dark:text-green-400" />
+            </Button>
+
             {user ? (
               <Sheet>
                 <SheetTrigger asChild>
