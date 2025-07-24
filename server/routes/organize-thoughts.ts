@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { handleOrganizeThoughts } from "../thought-organizer";
+import { handleOrganizeThoughts } from "../thought-organizer-clean";
 
 /**
  * Handle continuing an "Organize Thoughts" conversation
@@ -19,9 +19,10 @@ export async function continueOrganizeThoughts(req: Request, res: Response) {
 
     const result = await handleOrganizeThoughts(
       userInput,
+      [], // previousMessages - empty for this route
       userId,
       sessionId,
-      conversationStep || 'exploring'
+      'gpt-4o'
     );
 
     return res.json({

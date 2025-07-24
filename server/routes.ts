@@ -523,7 +523,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Handle organize thoughts with session persistence
       if (action === 'organize_thoughts') {
-        const { handleOrganizeThoughts } = await import('./thought-organizer.js');
+        const { handleOrganizeThoughts } = await import('./thought-organizer-clean.js');
         const result = await handleOrganizeThoughts(
           message,
           messages,
