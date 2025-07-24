@@ -54,7 +54,7 @@ export function ModelSelector({ selectedModel, onModelChange, className = '' }: 
         variant="outline"
         size="sm"
         onClick={() => setIsExpanded(!isExpanded)}
-        className="flex items-center gap-2 h-8 px-3 bg-purple-100 dark:bg-purple-900/30 border-purple-200 dark:border-purple-700 hover:bg-purple-200 dark:hover:bg-purple-800/40 text-purple-700 dark:text-purple-300"
+        className={`flex items-center gap-2 h-8 px-3 bg-purple-100 dark:bg-purple-900/30 border-purple-200 dark:border-purple-700 hover:bg-purple-200 dark:hover:bg-purple-800/40 text-purple-700 dark:text-purple-300 ${className.includes('w-full') ? 'justify-start w-full' : ''}`}
       >
         <span className="text-xs font-medium">AI</span>
         <div className={`w-2 h-2 rounded-full ${currentModelInfo.color}`} />

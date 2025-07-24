@@ -12,6 +12,7 @@ import { UsageLimitMessage } from '@/components/ui/usage-limit-message';
 import { hasExceededLimit, getLimitMessage, incrementUsageCount, isFirstChat, markFirstChatDone } from '@/lib/usageLimits';
 import { neuraStorage } from '@/lib/neuraStorage';
 import { ModelSelector, type AIModel } from '@/components/chat/ModelSelector';
+import { isMobileBrowser } from '@/lib/mobileDetection';
 import axios from 'axios';
 import { 
   Sheet,
@@ -199,6 +200,11 @@ export default function ChatPage() {
 
     return () => clearInterval(interval);
   }, []);
+
+  // Check if mobile browser
+  useEffect(() => {
+    setIsMobile(isMobileBrowser());
+  }, []);
   const isRegistered = !!user;
   const isActivated = neuraStorage.isActivated();
   const isFirstTime = isFirstChat();
@@ -209,6 +215,7 @@ export default function ChatPage() {
   const [showBackButton, setShowBackButton] = useState(false);
   const [isNeuraActive, setIsNeuraActive] = useState(false);
   const [selectedModel, setSelectedModel] = useState<AIModel>('gpt-4o');
+  const [isMobile, setIsMobile] = useState(false);
   
   // Check if user has exceeded their limit
   const limitExceeded = hasExceededLimit(isRegistered, isActivated);
@@ -434,6 +441,20 @@ export default function ChatPage() {
                   <span className="font-medium">About DotSpark</span>
                 </Button>
               </Link>
+
+              {/* Mobile-only AI Model Selector in Sidebar */}
+              {isMobile && (
+                <div className="mt-4 pt-4 border-t border-amber-200/30 dark:border-amber-700/30">
+                  <div className="px-2 mb-3">
+                    <h3 className="text-sm font-semibold text-amber-700 dark:text-amber-400">AI Model</h3>
+                  </div>
+                  <ModelSelector 
+                    selectedModel={selectedModel} 
+                    onModelChange={setSelectedModel}
+                    className="w-full"
+                  />
+                </div>
+              )}
               {user ? (
                 <Link href="/profile">
                   <Button variant="ghost" className="w-full justify-start text-sm h-10 hover:bg-gradient-to-r hover:from-amber-50 hover:to-orange-50 dark:hover:from-amber-950/20 dark:hover:to-orange-950/20 hover:text-amber-700 dark:hover:text-amber-300 rounded-xl transition-all duration-300">
@@ -592,11 +613,13 @@ export default function ChatPage() {
               </Link>
             )}
 
-            {/* Model Selector */}
-            <ModelSelector 
-              selectedModel={selectedModel} 
-              onModelChange={setSelectedModel} 
-            />
+            {/* Model Selector - Desktop only */}
+            {!isMobile && (
+              <ModelSelector 
+                selectedModel={selectedModel} 
+                onModelChange={setSelectedModel} 
+              />
+            )}
           </div>
           
           {/* Enhanced Center: Empty space for centered logo */}
