@@ -313,9 +313,13 @@ export default function LandingPage() {
 
   // Mobile experience handlers
   const handleMobileButtonClick = (e: React.MouseEvent) => {
+    console.log('Button clicked - Mobile detection:', { isMobile, isPWA });
     if (isMobile && !isPWA) {
       e.preventDefault();
       setIsMobileDialogOpen(true);
+      console.log('Mobile dialog should open');
+    } else {
+      console.log('Not mobile or is PWA, proceeding normally');
     }
   };
 
@@ -337,8 +341,19 @@ export default function LandingPage() {
     }
   };
 
+  // Debug: Log mobile detection status
+  useEffect(() => {
+    console.log('LandingPage mobile status:', { isMobile, isPWA });
+  }, [isMobile, isPWA]);
+
   return (
     <div className="flex flex-col min-h-screen">
+      {/* Debug info - remove in production */}
+      {process.env.NODE_ENV === 'development' && (
+        <div className="fixed top-0 right-0 z-50 bg-red-500 text-white p-2 text-xs">
+          Debug: Mobile={isMobile.toString()} PWA={isPWA.toString()}
+        </div>
+      )}
       {/* Enhanced Header with modern design */}
       <header className="border-b border-gradient-to-r from-amber-300/20 via-orange-300/30 to-amber-300/20 bg-gradient-to-r from-white via-amber-50/90 to-orange-50/80 dark:from-slate-950 dark:via-slate-900/95 dark:to-slate-950 backdrop-blur-lg supports-[backdrop-filter]:bg-background/90 sticky top-0 z-50 shadow-xl shadow-amber-500/15 dark:shadow-amber-900/20">
         <div className="container flex h-20 items-center justify-between px-6 sm:px-8 md:px-10">

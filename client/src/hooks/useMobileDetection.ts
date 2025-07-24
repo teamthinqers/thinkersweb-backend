@@ -9,6 +9,15 @@ export function useMobileDetection() {
       const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
       const mobileRegex = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
       const isMobileDevice = mobileRegex.test(userAgent) || window.innerWidth < 768;
+      
+      console.log('Mobile Detection Debug:', {
+        userAgent,
+        mobileRegex: mobileRegex.test(userAgent),
+        windowWidth: window.innerWidth,
+        isMobileDevice,
+        isIOS: /iPad|iPhone|iPod/.test(userAgent)
+      });
+      
       setIsMobile(isMobileDevice);
     };
 
@@ -16,6 +25,14 @@ export function useMobileDetection() {
       const isPWAMode = window.matchMedia('(display-mode: standalone)').matches || 
                        (window.navigator as any).standalone === true ||
                        document.referrer.includes('android-app://');
+      
+      console.log('PWA Detection Debug:', {
+        displayModeStandalone: window.matchMedia('(display-mode: standalone)').matches,
+        navigatorStandalone: (window.navigator as any).standalone,
+        referrer: document.referrer,
+        isPWAMode
+      });
+      
       setIsPWA(isPWAMode);
     };
 
