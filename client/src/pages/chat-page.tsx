@@ -313,13 +313,17 @@ export default function ChatPage() {
               </Link>
               <Link href="/dashboard">
                 <Button variant="ghost" className="w-full justify-start text-sm h-10 hover:bg-gradient-to-r hover:from-amber-50 hover:to-orange-50 dark:hover:from-amber-950/20 dark:hover:to-orange-950/20 hover:text-amber-700 dark:hover:text-amber-300 rounded-xl transition-all duration-300">
-                  <BarChart2 className="w-4 h-4 mr-3" />
+                  <Brain className="w-4 h-4 mr-3" />
                   <span className="font-medium">My Neura</span>
                 </Button>
               </Link>
               <Link href="/my-neura">
                 <Button variant="ghost" className="w-full justify-start text-sm h-10 hover:bg-gradient-to-r hover:from-amber-50 hover:to-orange-50 dark:hover:from-amber-950/20 dark:hover:to-orange-950/20 hover:text-amber-700 dark:hover:text-amber-300 rounded-xl transition-all duration-300">
-                  <Brain className="w-4 h-4 mr-3" />
+                  <img 
+                    src="/dotspark-logo-icon.jpeg" 
+                    alt="DotSpark" 
+                    className="w-4 h-4 mr-3 rounded-sm"
+                  />
                   <span className="font-medium">My DotSpark</span>
                 </Button>
               </Link>
