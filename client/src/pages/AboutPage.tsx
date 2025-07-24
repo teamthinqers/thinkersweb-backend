@@ -95,7 +95,7 @@ export default function AboutPage() {
     <div className="flex flex-col min-h-screen">
       {/* Header with enhanced design */}
       <header className="border-b border-gradient-to-r from-amber-200/30 via-orange-200/40 to-amber-200/30 bg-gradient-to-r from-white via-amber-50/70 to-white dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 backdrop-blur-md supports-[backdrop-filter]:bg-background/80 sticky top-0 z-50 shadow-lg shadow-amber-500/10">
-        <div className="container flex h-24 items-center justify-between px-6 md:px-8">
+        <div className="container flex h-20 items-center justify-between px-6 md:px-8">
           <Link href="/">
             <Button variant="ghost" size="sm" className="gap-2 text-slate-600 hover:text-amber-700 hover:bg-amber-100/70 dark:text-slate-400 dark:hover:text-amber-400 dark:hover:bg-amber-900/30 transition-all duration-300 rounded-xl px-4 py-2">
               <ArrowLeft className="h-4 w-4" />
@@ -103,12 +103,9 @@ export default function AboutPage() {
             </Button>
           </Link>
           
-          <Link href="/about" className="flex items-center gap-4 hover:scale-105 transition-all duration-300 cursor-pointer group">
-            <div className="relative">
-              <img src="/dotspark-logo-icon.jpeg" alt="DotSpark" className="h-14 w-14 rounded-full shadow-lg ring-2 ring-amber-200 group-hover:ring-amber-400 dark:ring-amber-700 dark:group-hover:ring-amber-500 transition-all duration-300 filter brightness-110 saturate-125" />
-              <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-amber-400/20 to-orange-400/20 group-hover:from-amber-400/40 group-hover:to-orange-400/40 transition-all duration-300"></div>
-            </div>
-            <span className="text-3xl font-bold text-amber-700 dark:text-amber-400 tracking-tight">DotSpark</span>
+          <Link href="/about" className="flex items-center gap-3 hover:scale-105 transition-all duration-300 cursor-pointer group">
+            <img src="/dotspark-logo-icon.jpeg" alt="DotSpark" className="h-12 w-12 rounded-full transition-all duration-300" />
+            <span className="text-2xl font-bold text-amber-700 dark:text-amber-400 tracking-tight">DotSpark</span>
           </Link>
           
           <div className="w-24"></div> {/* Spacer for centering */}

@@ -282,14 +282,11 @@ export default function ChatPage() {
           {/* Enhanced Sidebar Header */}
           <div className="p-6 border-b border-amber-200/30 dark:border-amber-700/30 bg-gradient-to-r from-amber-50/50 to-orange-50/50 dark:from-amber-950/30 dark:to-orange-950/30">
             <div className="flex items-center gap-3">
-              <div className="relative">
-                <img 
-                  src="/dotspark-logo-icon.jpeg" 
-                  alt="DotSpark" 
-                  className="w-10 h-10 rounded-full shadow-lg ring-2 ring-amber-200 dark:ring-amber-700"
-                />
-                <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-amber-400/20 to-orange-400/20 animate-pulse"></div>
-              </div>
+              <img 
+                src="/dotspark-logo-icon.jpeg" 
+                alt="DotSpark" 
+                className="w-10 h-10 rounded-full"
+              />
               <h2 className="text-xl font-bold text-amber-700 dark:text-amber-400 tracking-tight">DotSpark</h2>
             </div>
           </div>
@@ -412,14 +409,11 @@ export default function ChatPage() {
 
             {/* Enhanced Logo */}
             <Link href="/about" className="flex items-center gap-3 hover:scale-105 transition-all duration-300 group">
-              <div className="relative">
-                <img 
-                  src="/dotspark-logo-icon.jpeg" 
-                  alt="DotSpark" 
-                  className="w-10 h-10 rounded-full shadow-lg ring-2 ring-amber-200 group-hover:ring-amber-400 dark:ring-amber-700 dark:group-hover:ring-amber-500 transition-all duration-300 filter brightness-110 saturate-125"
-                />
-                <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-amber-400/20 to-orange-400/20 group-hover:from-amber-400/40 group-hover:to-orange-400/40 transition-all duration-300"></div>
-              </div>
+              <img 
+                src="/dotspark-logo-icon.jpeg" 
+                alt="DotSpark" 
+                className="w-10 h-10 rounded-full transition-all duration-300"
+              />
               <h1 className="text-2xl font-bold text-amber-700 dark:text-amber-400 tracking-tight">DotSpark</h1>
             </Link>
           </div>
