@@ -38,6 +38,46 @@ const DynamicWord = ({ words }: { words: string[] }) => {
   );
 };
 
+// ChatGPT-style typewriter effect component
+const TypewriterText = ({ text, onComplete, onProgress }: { 
+  text: string; 
+  onComplete?: () => void; 
+  onProgress?: () => void;
+}) => {
+  const [displayedText, setDisplayedText] = useState('');
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isComplete, setIsComplete] = useState(false);
+
+  useEffect(() => {
+    if (currentIndex < text.length) {
+      const timer = setTimeout(() => {
+        setDisplayedText(text.slice(0, currentIndex + 1));
+        setCurrentIndex(currentIndex + 1);
+        onProgress?.(); // Trigger scroll on each character
+      }, 15); // Fast ChatGPT-like speed
+      
+      return () => clearTimeout(timer);
+    } else if (!isComplete) {
+      setIsComplete(true);
+      onComplete?.();
+    }
+  }, [currentIndex, text, isComplete, onComplete, onProgress]);
+
+  // Reset when text changes
+  useEffect(() => {
+    setDisplayedText('');
+    setCurrentIndex(0);
+    setIsComplete(false);
+  }, [text]);
+
+  return (
+    <span className="whitespace-pre-wrap text-sm leading-7 text-gray-800 dark:text-gray-100">
+      {displayedText}
+      {!isComplete && <span className="inline-block w-2 h-5 bg-gray-800 dark:bg-gray-100 animate-pulse ml-0.5"></span>}
+    </span>
+  );
+};
+
 type Message = {
   id: string;
   content: string;
@@ -46,6 +86,7 @@ type Message = {
   dotProposal?: DotProposal;
   needsConfirmation?: boolean;
   action?: string;
+  isTyping?: boolean;
 };
 
 type DotProposal = {
@@ -754,7 +795,14 @@ export default function ChatPage() {
                         ) : (
                           <>
                             <div className="prose prose-sm max-w-none dark:prose-invert [&_p]:leading-7 [&_p]:mb-3 [&_p:last-child]:mb-0">
-                              <div className="whitespace-pre-wrap text-sm leading-7 text-gray-800 dark:text-gray-100">{message.content}</div>
+                              {message.isUser ? (
+                                <div className="whitespace-pre-wrap text-sm leading-7 text-white">{message.content}</div>
+                              ) : (
+                                <TypewriterText 
+                                  text={message.content} 
+                                  onProgress={() => scrollToBottom()}
+                                />
+                              )}
                             </div>
                             {message.dotProposal && message.needsConfirmation && (
                               <div className="mt-3 p-3 bg-white/10 rounded-xl border border-white/20">
