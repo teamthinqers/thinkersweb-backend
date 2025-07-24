@@ -326,7 +326,7 @@ export default function LandingPage() {
               className="flex items-center px-6 py-4 rounded-xl hover:bg-gradient-to-r hover:from-amber-100/60 hover:to-orange-100/60 dark:hover:from-amber-900/40 dark:hover:to-orange-900/40 cursor-pointer transition-all duration-300 ease-in-out hover:shadow-lg hover:scale-105 group" 
               onClick={() => setLocation("/about")}
             >
-              <img src="/dotspark-logo-homepage-header.png?v=1" alt="DotSpark" className="h-16 w-56 object-contain rounded-sm group-hover:brightness-110 transition-all duration-300" />
+              <img src="/dotspark-logo-homepage-header.png?v=1" alt="DotSpark" className="h-16 w-56 object-contain rounded-sm transition-all duration-300" />
             </div>
           </div>
           
@@ -525,7 +525,7 @@ export default function LandingPage() {
                           <img src="/dotspark-logo-icon.jpeg" alt="DotSpark" className="h-12 w-12 rounded-full shadow-lg ring-2 ring-amber-300/50" />
                           <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-amber-400/20 to-orange-400/20 animate-pulse"></div>
                         </div>
-                        <h3 className="text-xl font-bold bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent">DotSpark</h3>
+                        <h3 className="text-xl font-bold text-gray-800 dark:text-gray-200">DotSpark</h3>
                       </div>
                     </div>
                     

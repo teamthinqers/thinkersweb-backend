@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useToast } from '@/hooks/use-toast';
-import { Send, Loader2, ArrowLeft, Menu, Brain, Users, Settings, BarChart2, User, MessageSquare, Home, Sparkles, Mic, MicOff, Info, Lightbulb, Target, Puzzle, RotateCcw } from 'lucide-react';
+import { Send, Loader2, ArrowLeft, Menu, Brain, Users, Settings, BarChart2, User, MessageSquare, Home, Sparkles, Mic, MicOff, Info, Lightbulb, Target, Puzzle, RotateCcw, Plus } from 'lucide-react';
 import { Link } from 'wouter';
 import { useAuth } from '@/hooks/use-auth';
 import { UsageLimitMessage } from '@/components/ui/usage-limit-message';
@@ -115,7 +115,7 @@ export default function ChatPage() {
   
   // Set default message only for first-time users
   const [inputValue, setInputValue] = useState("");
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [showBackButton, setShowBackButton] = useState(false);
   
   // Check if user has exceeded their limit
@@ -290,13 +290,24 @@ export default function ChatPage() {
                 />
                 <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-amber-400/20 to-orange-400/20 animate-pulse"></div>
               </div>
-              <h2 className="text-xl font-bold bg-gradient-to-r from-amber-700 via-orange-600 to-amber-600 dark:from-amber-400 dark:via-orange-400 dark:to-amber-300 bg-clip-text text-transparent tracking-tight">DotSpark</h2>
+              <h2 className="text-xl font-bold text-gray-800 dark:text-gray-200 tracking-tight">DotSpark</h2>
             </div>
           </div>
           
           {/* Enhanced Navigation */}
           <nav className="flex-1 p-4">
             <div className="space-y-2">
+              {/* New Chat button - visible when messages exist */}
+              {messages.length > 1 && (
+                <Button 
+                  onClick={handleRefreshChat}
+                  variant="ghost" 
+                  className="w-full justify-start text-sm h-10 bg-gradient-to-r from-purple-100/80 to-violet-100/80 dark:from-purple-950/50 dark:to-violet-950/50 text-purple-800 dark:text-purple-300 hover:from-purple-200 hover:to-violet-200 dark:hover:from-purple-900/70 dark:hover:to-violet-900/70 shadow-sm rounded-xl transition-all duration-300 border border-purple-200/50 dark:border-purple-700/50"
+                >
+                  <Plus className="w-4 h-4 mr-3" />
+                  <span className="font-medium">New Chat</span>
+                </Button>
+              )}
               <Link href="/">
                 <Button variant="ghost" className="w-full justify-start text-sm h-10 bg-gradient-to-r from-amber-100/80 to-orange-100/80 dark:from-amber-950/30 dark:to-orange-950/30 text-amber-800 dark:text-amber-300 hover:from-amber-200 hover:to-orange-200 dark:hover:from-amber-900/50 dark:hover:to-orange-900/50 shadow-sm rounded-xl transition-all duration-300">
                   <MessageSquare className="w-4 h-4 mr-3" />
@@ -409,7 +420,7 @@ export default function ChatPage() {
                 />
                 <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-amber-400/20 to-orange-400/20 group-hover:from-amber-400/40 group-hover:to-orange-400/40 transition-all duration-300"></div>
               </div>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-amber-700 via-orange-600 to-amber-600 dark:from-amber-400 dark:via-orange-400 dark:to-amber-300 bg-clip-text text-transparent tracking-tight">DotSpark</h1>
+              <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-200 tracking-tight">DotSpark</h1>
             </Link>
           </div>
           
@@ -417,14 +428,12 @@ export default function ChatPage() {
           <div className="flex-1 flex items-center justify-center">
             {messages.length > 1 && (
               <Button 
-                variant="ghost" 
-                size="sm" 
-                className="p-3 hover:bg-amber-100/70 dark:hover:bg-amber-900/30 text-amber-700 hover:text-amber-800 dark:text-amber-400 dark:hover:text-amber-300 rounded-xl transition-all duration-300 hover:scale-105 shadow-sm"
                 onClick={handleRefreshChat}
-                title="Refresh Chat"
+                className="bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white shadow-lg hover:shadow-xl border border-purple-500/30 dark:border-purple-400/40 px-4 py-2 rounded-xl transition-all duration-300 hover:scale-105 font-medium"
+                title="Start New Chat"
               >
-                <RotateCcw className="h-4 w-4" />
-                <span className="ml-2 text-sm font-medium hidden sm:inline">New Chat</span>
+                <Plus className="h-4 w-4 mr-2" />
+                <span className="text-sm">New Chat</span>
               </Button>
             )}
           </div>

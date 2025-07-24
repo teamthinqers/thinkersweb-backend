@@ -147,6 +147,10 @@ Changelog:
   * Maintained strict DotSpark brand color consistency - amber/orange for all elements except social (rose/orange-red)
   * Added professional header styling with improved logo positioning and enhanced navigation elements
   * Implemented modern button designs with proper shadows, scaling effects, and smooth transitions
+  * Ensured logo and brand names retain actual colors without gradient effects in headers and menus
+  * Set sidebar to open by default for better accessibility while allowing users to close if needed
+  * Added automatic "New Chat" option in left menu when chat is active for seamless conversation management
+  * Enhanced New Chat button legibility with improved purple gradient background and better contrast
 - January 24, 2025. COMPLETED transformation to chat-first experience:
   * Made ChatPage the new primary homepage (/) - fully accessible without authentication
   * Renamed original LandingPage to AboutPage accessible at /about route
