@@ -27,7 +27,7 @@ export function MobileExperienceDialog({
         
         <div className="space-y-4 pt-4">
           <p className="text-center text-gray-600 text-sm">
-            For the best DotSpark experience, please choose one of the following options:
+            Please choose Desktop mode or Install Web App for better experience:
           </p>
           
           <div className="space-y-3">

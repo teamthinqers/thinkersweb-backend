@@ -311,15 +311,17 @@ export default function LandingPage() {
     forceStatusRefresh();
   }, [forceStatusRefresh]);
 
-  // Mobile experience handlers
-  const handleMobileButtonClick = (e: React.MouseEvent) => {
-    console.log('Button clicked - Mobile detection:', { isMobile, isPWA });
-    if (isMobile && !isPWA) {
+  // Mobile experience handlers - simplified
+  const handleAnyNavigation = (e: React.MouseEvent) => {
+    // Simple check: if mobile browser (not PWA), show popup
+    const isMobileBrowser = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone === true;
+    
+    if (isMobileBrowser && !isStandalone) {
       e.preventDefault();
+      e.stopPropagation();
       setIsMobileDialogOpen(true);
-      console.log('Mobile dialog should open');
-    } else {
-      console.log('Not mobile or is PWA, proceeding normally');
+      return false;
     }
   };
 
@@ -351,7 +353,7 @@ export default function LandingPage() {
       {/* Debug info - remove in production */}
       {process.env.NODE_ENV === 'development' && (
         <div className="fixed top-0 right-0 z-50 bg-red-500 text-white p-2 text-xs">
-          Debug: Mobile={isMobile.toString()} PWA={isPWA.toString()}
+          Mobile: {/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent).toString()}
         </div>
       )}
       {/* Enhanced Header with modern design */}
@@ -370,16 +372,24 @@ export default function LandingPage() {
           <div className="flex items-center gap-3 md:gap-4">
             {/* Desktop navigation */}
             <div className="hidden md:flex items-center gap-4">
-              <Link href="/about" className="text-sm font-semibold text-slate-600 hover:text-amber-700 dark:text-slate-400 dark:hover:text-amber-400 transition-all duration-300 px-4 py-2 rounded-xl hover:bg-amber-100/50 dark:hover:bg-amber-900/30 hover:shadow-md">
+              <a 
+                href="/about" 
+                className="text-sm font-semibold text-slate-600 hover:text-amber-700 dark:text-slate-400 dark:hover:text-amber-400 transition-all duration-300 px-4 py-2 rounded-xl hover:bg-amber-100/50 dark:hover:bg-amber-900/30 hover:shadow-md cursor-pointer"
+                onClick={(e) => {
+                  handleAnyNavigation(e);
+                  if (!e.defaultPrevented) {
+                    setLocation("/about");
+                  }
+                }}
+              >
                 Home
-              </Link>
+              </a>
               {/* My DotSpark button - enhanced */}
               <Button 
                 size="sm"
                 onClick={(e) => {
-                  if (isMobile && !isPWA) {
-                    handleMobileButtonClick(e);
-                  } else {
+                  handleAnyNavigation(e);
+                  if (!e.defaultPrevented) {
                     setLocation("/my-neura");
                   }
                 }}
@@ -394,9 +404,8 @@ export default function LandingPage() {
               <Button 
                 size="sm"
                 onClick={(e) => {
-                  if (isMobile && !isPWA) {
-                    handleMobileButtonClick(e);
-                  } else {
+                  handleAnyNavigation(e);
+                  if (!e.defaultPrevented) {
                     setLocation("/dashboard");
                   }
                 }}
@@ -416,7 +425,12 @@ export default function LandingPage() {
               {/* Enhanced Social button */}
               <Button 
                 size="sm"
-                onClick={() => setLocation("/social")}
+                onClick={(e) => {
+                  handleAnyNavigation(e);
+                  if (!e.defaultPrevented) {
+                    setLocation("/social");
+                  }
+                }}
                 className="relative bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 rounded-xl px-4 py-2"
               >
                 <div className="flex items-center gap-2">
@@ -1244,9 +1258,8 @@ export default function LandingPage() {
                   variant="default" 
                   className="bg-white text-primary font-bold shadow-lg btn-bounce group relative overflow-hidden border-2 border-white hover:bg-white/90 w-full sm:w-auto" 
                   onClick={(e) => {
-                    if (isMobile && !isPWA) {
-                      handleMobileButtonClick(e);
-                    } else {
+                    handleAnyNavigation(e);
+                    if (!e.defaultPrevented) {
                       setLocation("/auth");
                     }
                   }}
@@ -1264,9 +1277,8 @@ export default function LandingPage() {
                   variant="default" 
                   className="bg-white text-primary font-bold shadow-lg btn-bounce group relative overflow-hidden border-2 border-white hover:bg-white/90 w-full sm:w-auto"
                   onClick={(e) => {
-                    if (isMobile && !isPWA) {
-                      handleMobileButtonClick(e);
-                    } else {
+                    handleAnyNavigation(e);
+                    if (!e.defaultPrevented) {
                       window.open("https://www.dotspark.in/dashboard", "_blank");
                     }
                   }}

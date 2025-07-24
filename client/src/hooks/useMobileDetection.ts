@@ -1,50 +1,11 @@
 import { useState, useEffect } from 'react';
 
 export function useMobileDetection() {
-  const [isMobile, setIsMobile] = useState(false);
-  const [isPWA, setIsPWA] = useState(false);
+  // Simple mobile detection - check immediately
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
+  const isPWA = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone === true;
 
-  useEffect(() => {
-    const checkMobile = () => {
-      const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
-      const mobileRegex = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
-      const isMobileDevice = mobileRegex.test(userAgent) || window.innerWidth < 768;
-      
-      console.log('Mobile Detection Debug:', {
-        userAgent,
-        mobileRegex: mobileRegex.test(userAgent),
-        windowWidth: window.innerWidth,
-        isMobileDevice,
-        isIOS: /iPad|iPhone|iPod/.test(userAgent)
-      });
-      
-      setIsMobile(isMobileDevice);
-    };
-
-    const checkPWA = () => {
-      const isPWAMode = window.matchMedia('(display-mode: standalone)').matches || 
-                       (window.navigator as any).standalone === true ||
-                       document.referrer.includes('android-app://');
-      
-      console.log('PWA Detection Debug:', {
-        displayModeStandalone: window.matchMedia('(display-mode: standalone)').matches,
-        navigatorStandalone: (window.navigator as any).standalone,
-        referrer: document.referrer,
-        isPWAMode
-      });
-      
-      setIsPWA(isPWAMode);
-    };
-
-    checkMobile();
-    checkPWA();
-
-    window.addEventListener('resize', checkMobile);
-    
-    return () => {
-      window.removeEventListener('resize', checkMobile);
-    };
-  }, []);
+  console.log('Simple Mobile Detection:', { isMobile, isPWA, userAgent: navigator.userAgent });
 
   const switchToDesktopMode = () => {
     // Add desktop mode viewport meta tag
