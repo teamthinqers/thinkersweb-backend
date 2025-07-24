@@ -173,14 +173,14 @@ export default function AboutPage() {
               
               {user ? (
                 <Link href="/dashboard" className="flex-1">
-                  <Button variant="outline" className="w-full h-14 text-lg font-semibold border-2 border-amber-300 dark:border-amber-700 hover:bg-gradient-to-r hover:from-amber-50 hover:to-orange-50 dark:hover:from-amber-950/30 dark:hover:to-orange-950/30 hover:border-amber-400 dark:hover:border-amber-600 transform hover:scale-105 transition-all duration-300 rounded-xl shadow-lg hover:shadow-xl">
+                  <Button variant="outline" className="w-full h-14 text-lg font-semibold border-2 border-amber-300 dark:border-amber-700 hover:bg-gradient-to-r hover:from-amber-50 hover:to-orange-50 dark:hover:from-amber-950/30 dark:hover:to-orange-950/30 hover:border-amber-400 dark:hover:border-amber-600 transform hover:scale-105 transition-all duration-300 rounded-xl shadow-lg hover:shadow-xl text-amber-700 dark:text-amber-300 hover:text-amber-800 dark:hover:text-amber-200">
                     Go to Dashboard
                     <BarChart2 className="ml-3 h-5 w-5" />
                   </Button>
                 </Link>
               ) : (
                 <Link href="/auth" className="flex-1">
-                  <Button variant="outline" className="w-full h-14 text-lg font-semibold border-2 border-amber-300 dark:border-amber-700 hover:bg-gradient-to-r hover:from-amber-50 hover:to-orange-50 dark:hover:from-amber-950/30 dark:hover:to-orange-950/30 hover:border-amber-400 dark:hover:border-amber-600 transform hover:scale-105 transition-all duration-300 rounded-xl shadow-lg hover:shadow-xl">
+                  <Button variant="outline" className="w-full h-14 text-lg font-semibold border-2 border-amber-300 dark:border-amber-700 hover:bg-gradient-to-r hover:from-amber-50 hover:to-orange-50 dark:hover:from-amber-950/30 dark:hover:to-orange-950/30 hover:border-amber-400 dark:hover:border-amber-600 transform hover:scale-105 transition-all duration-300 rounded-xl shadow-lg hover:shadow-xl text-amber-700 dark:text-amber-300 hover:text-amber-800 dark:hover:text-amber-200">
                     Sign Up
                     <User className="ml-3 h-5 w-5" />
                   </Button>

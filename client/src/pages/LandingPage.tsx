@@ -545,9 +545,9 @@ export default function LandingPage() {
                       </SheetClose>
                       
                       <SheetClose asChild>
-                        <div onClick={() => setLocation("/dashboard")} className="py-3 px-4 hover:bg-blue-100/70 dark:hover:bg-blue-900/30 transition-all duration-300 flex items-center gap-3 rounded-xl font-medium cursor-pointer">
+                        <div onClick={() => setLocation("/dashboard")} className="py-3 px-4 hover:bg-amber-100/70 dark:hover:bg-amber-900/30 transition-all duration-300 flex items-center gap-3 rounded-xl font-medium cursor-pointer">
                           <div className="relative">
-                            <Brain className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                            <Brain className="h-5 w-5 text-amber-600 dark:text-amber-400" />
                             {isNeuraActivated && (
                               <div className="absolute -top-1 -right-1 h-2.5 w-2.5 bg-green-500 rounded-full animate-pulse"></div>
                             )}

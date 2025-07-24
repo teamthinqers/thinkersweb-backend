@@ -304,7 +304,7 @@ export default function ChatPage() {
                 </Button>
               </Link>
               <Link href="/dashboard">
-                <Button variant="ghost" className="w-full justify-start text-sm h-10 hover:bg-blue-50 dark:hover:bg-blue-950/30 hover:text-blue-700 dark:hover:text-blue-300 rounded-xl transition-all duration-300">
+                <Button variant="ghost" className="w-full justify-start text-sm h-10 hover:bg-gradient-to-r hover:from-amber-50 hover:to-orange-50 dark:hover:from-amber-950/20 dark:hover:to-orange-950/20 hover:text-amber-700 dark:hover:text-amber-300 rounded-xl transition-all duration-300">
                   <BarChart2 className="w-4 h-4 mr-3" />
                   <span className="font-medium">My Neura</span>
                 </Button>
@@ -322,21 +322,21 @@ export default function ChatPage() {
                 </Button>
               </Link>
               <Link href="/about">
-                <Button variant="ghost" className="w-full justify-start text-sm h-10 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-700 dark:hover:text-slate-300 rounded-xl transition-all duration-300">
+                <Button variant="ghost" className="w-full justify-start text-sm h-10 hover:bg-gradient-to-r hover:from-amber-50 hover:to-orange-50 dark:hover:from-amber-950/20 dark:hover:to-orange-950/20 hover:text-amber-700 dark:hover:text-amber-300 rounded-xl transition-all duration-300">
                   <Info className="w-4 h-4 mr-3" />
                   <span className="font-medium">About DotSpark</span>
                 </Button>
               </Link>
               {user ? (
                 <Link href="/profile">
-                  <Button variant="ghost" className="w-full justify-start text-sm h-10 hover:bg-indigo-50 dark:hover:bg-indigo-950/30 hover:text-indigo-700 dark:hover:text-indigo-300 rounded-xl transition-all duration-300">
+                  <Button variant="ghost" className="w-full justify-start text-sm h-10 hover:bg-gradient-to-r hover:from-amber-50 hover:to-orange-50 dark:hover:from-amber-950/20 dark:hover:to-orange-950/20 hover:text-amber-700 dark:hover:text-amber-300 rounded-xl transition-all duration-300">
                     <User className="w-4 h-4 mr-3" />
                     <span className="font-medium">Profile</span>
                   </Button>
                 </Link>
               ) : (
                 <Link href="/auth">
-                  <Button variant="ghost" className="w-full justify-start text-sm h-10 hover:bg-green-50 dark:hover:bg-green-950/30 hover:text-green-700 dark:hover:text-green-300 rounded-xl transition-all duration-300">
+                  <Button variant="ghost" className="w-full justify-start text-sm h-10 hover:bg-gradient-to-r hover:from-amber-50 hover:to-orange-50 dark:hover:from-amber-950/20 dark:hover:to-orange-950/20 hover:text-amber-700 dark:hover:text-amber-300 rounded-xl transition-all duration-300">
                     <User className="w-4 h-4 mr-3" />
                     <span className="font-medium">Sign In</span>
                   </Button>
