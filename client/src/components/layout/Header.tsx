@@ -311,7 +311,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 className="mr-4 text-gray-600 hover:text-primary"
                 onClick={() => setLocation("/my-neura")}
               >
-                <img src="/dotspark-logo-icon.jpeg" alt="DotSpark" className="h-5 w-5 mr-1 object-contain rounded" />
+                <img src="/dotspark-logo-icon.jpeg" alt="DotSpark" className="h-5 w-5 mr-1 object-cover rounded-full flex-shrink-0" />
                 <span className="hidden sm:inline">My DotSpark</span>
               </Button>
 
