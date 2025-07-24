@@ -781,58 +781,66 @@ export default function ChatPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-2xl mb-8">
                   <Button 
                     variant="outline" 
-                    className="h-24 p-4 flex flex-col items-start justify-between text-left hover:bg-amber-50 dark:hover:bg-amber-950/20 hover:text-amber-800 dark:hover:text-amber-200 hover:border-amber-300 dark:hover:border-amber-700 active:bg-amber-100 dark:active:bg-amber-900/30 active:text-amber-900 dark:active:text-amber-100 transition-all duration-200"
+                    className={`${isMobile ? 'h-12 p-3 justify-center' : 'h-24 p-4 flex flex-col items-start justify-between text-left'} hover:bg-amber-50 dark:hover:bg-amber-950/20 hover:text-amber-800 dark:hover:text-amber-200 hover:border-amber-300 dark:hover:border-amber-700 active:bg-amber-100 dark:active:bg-amber-900/30 active:text-amber-900 dark:active:text-amber-100 transition-all duration-200`}
                     onClick={() => setInputValue("Organize Thoughts")}
                   >
                     <div className="flex items-center gap-2">
-                      <Brain className="w-5 h-5 text-orange-600" />
-                      <span className="font-semibold">Organize Thoughts</span>
+                      <Brain className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'} text-orange-600`} />
+                      <span className={`${isMobile ? 'font-medium' : 'font-semibold'}`}>Organize Thoughts</span>
                     </div>
-                    <span className="text-xs text-gray-600 dark:text-gray-400 leading-tight mt-1">
-                      Transform insights into structured dots,<br />wheels & chakras automatically
-                    </span>
+                    {!isMobile && (
+                      <span className="text-xs text-gray-600 dark:text-gray-400 leading-tight mt-1">
+                        Transform insights into structured dots,<br />wheels & chakras automatically
+                      </span>
+                    )}
                   </Button>
                   
                   <Button 
                     variant="outline" 
-                    className="h-24 p-4 flex flex-col items-start justify-between text-left hover:bg-amber-50 dark:hover:bg-amber-950/20 hover:text-amber-800 dark:hover:text-amber-200 hover:border-amber-300 dark:hover:border-amber-700 active:bg-amber-100 dark:active:bg-amber-900/30 active:text-amber-900 dark:active:text-amber-100 transition-all duration-200"
+                    className={`${isMobile ? 'h-12 p-3 justify-center' : 'h-24 p-4 flex flex-col items-start justify-between text-left'} hover:bg-amber-50 dark:hover:bg-amber-950/20 hover:text-amber-800 dark:hover:text-amber-200 hover:border-amber-300 dark:hover:border-amber-700 active:bg-amber-100 dark:active:bg-amber-900/30 active:text-amber-900 dark:active:text-amber-100 transition-all duration-200`}
                     onClick={() => setInputValue("Generate and spark ideas using my thoughts about: ")}
                   >
                     <div className="flex items-center gap-2">
                       <Sparkles className="w-4 h-4 text-orange-600" />
                       <span className="font-medium">Spark Ideas</span>
                     </div>
-                    <span className="text-xs text-gray-600 dark:text-gray-400 leading-tight mt-1">
-                      Generate and spark ideas using my thoughts
-                    </span>
+                    {!isMobile && (
+                      <span className="text-xs text-gray-600 dark:text-gray-400 leading-tight mt-1">
+                        Generate and spark ideas using my thoughts
+                      </span>
+                    )}
                   </Button>
                   
                   <Button 
                     variant="outline" 
-                    className="h-24 p-4 flex flex-col items-start justify-between text-left hover:bg-amber-50 dark:hover:bg-amber-950/20 hover:text-amber-800 dark:hover:text-amber-200 hover:border-amber-300 dark:hover:border-amber-700 active:bg-amber-100 dark:active:bg-amber-900/30 active:text-amber-900 dark:active:text-amber-100 transition-all duration-200"
+                    className={`${isMobile ? 'h-12 p-3 justify-center' : 'h-24 p-4 flex flex-col items-start justify-between text-left'} hover:bg-amber-50 dark:hover:bg-amber-950/20 hover:text-amber-800 dark:hover:text-amber-200 hover:border-amber-300 dark:hover:border-amber-700 active:bg-amber-100 dark:active:bg-amber-900/30 active:text-amber-900 dark:active:text-amber-100 transition-all duration-200`}
                     onClick={() => setInputValue("Visualize this summary for me: ")}
                   >
                     <div className="flex items-center gap-2">
                       <Target className="w-4 h-4 text-orange-600" />
                       <span className="font-medium">Visualize Anything</span>
                     </div>
-                    <span className="text-xs text-gray-600 dark:text-gray-400 leading-tight mt-1">
-                      Share any summary to visualize
-                    </span>
+                    {!isMobile && (
+                      <span className="text-xs text-gray-600 dark:text-gray-400 leading-tight mt-1">
+                        Share any summary to visualize
+                      </span>
+                    )}
                   </Button>
                   
                   <Button 
                     variant="outline" 
-                    className="h-24 p-4 flex flex-col items-start justify-between text-left hover:bg-amber-50 dark:hover:bg-amber-950/20 hover:text-amber-800 dark:hover:text-amber-200 hover:border-amber-300 dark:hover:border-amber-700 active:bg-amber-100 dark:active:bg-amber-900/30 active:text-amber-900 dark:active:text-amber-100 transition-all duration-200"
+                    className={`${isMobile ? 'h-12 p-3 justify-center' : 'h-24 p-4 flex flex-col items-start justify-between text-left'} hover:bg-amber-50 dark:hover:bg-amber-950/20 hover:text-amber-800 dark:hover:text-amber-200 hover:border-amber-300 dark:hover:border-amber-700 active:bg-amber-100 dark:active:bg-amber-900/30 active:text-amber-900 dark:active:text-amber-100 transition-all duration-200`}
                     onClick={() => setInputValue("Seek wisdom from ancient Indian knowledge about: ")}
                   >
                     <div className="flex items-center gap-2">
                       <Brain className="w-4 h-4 text-orange-600" />
                       <span className="font-medium">Ancient Wisdom</span>
                     </div>
-                    <span className="text-xs text-gray-600 dark:text-gray-400 leading-tight mt-1">
-                      Seek answers from ancient Indian wisdom
-                    </span>
+                    {!isMobile && (
+                      <span className="text-xs text-gray-600 dark:text-gray-400 leading-tight mt-1">
+                        Seek answers from ancient Indian wisdom
+                      </span>
+                    )}
                   </Button>
                 </div>
               </div>
