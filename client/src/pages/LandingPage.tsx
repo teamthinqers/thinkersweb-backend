@@ -469,7 +469,7 @@ export default function LandingPage() {
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link href="/my-neura" className="cursor-pointer w-full">
-                      <img src="/dotspark-logo-icon.jpeg" alt="DotSpark" className="mr-2 h-4 w-4 object-contain rounded" />
+                      <img src="/dotspark-logo-icon.jpeg" alt="DotSpark" className="mr-2 h-4 w-4 object-cover rounded-full flex-shrink-0" />
                       My DotSpark
                     </Link>
                   </DropdownMenuItem>
@@ -539,7 +539,7 @@ export default function LandingPage() {
                       
                       <SheetClose asChild>
                         <div onClick={() => setLocation("/my-neura")} className="py-3 px-4 hover:bg-amber-100/70 dark:hover:bg-amber-900/30 transition-all duration-300 flex items-center gap-3 rounded-xl font-medium cursor-pointer">
-                          <img src="/dotspark-logo-icon.jpeg" alt="DotSpark" className="h-5 w-5 rounded-sm object-contain" />
+                          <img src="/dotspark-logo-icon.jpeg" alt="DotSpark" className="h-5 w-5 rounded-full object-cover flex-shrink-0" />
                           <span className="text-gray-800 dark:text-gray-200">My DotSpark</span>
                         </div>
                       </SheetClose>
