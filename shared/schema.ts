@@ -319,7 +319,7 @@ export type InsertDot = z.infer<typeof insertDotSchema>;
 export type Dot = typeof dots.$inferSelect;
 
 // Wheels table for wheel system (includes chakras)
-export const wheels = pgTable("wheels", {
+export const wheels: any = pgTable("wheels", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").references(() => users.id).notNull(),
   name: text("name").notNull(),
@@ -337,7 +337,7 @@ export const wheels = pgTable("wheels", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
-export const wheelsRelations = relations(wheels, ({ one, many }) => ({
+export const wheelsRelations = relations(wheels, ({ one, many }): any => ({
   user: one(users, {
     fields: [wheels.userId],
     references: [users.id],
@@ -354,17 +354,17 @@ export const wheelsRelations = relations(wheels, ({ one, many }) => ({
 }));
 
 export const insertWheelSchema = createInsertSchema(wheels, {
-  name: (schema) => schema.min(1, "Name is required").max(100, "Name must be 100 characters or less"),
-  heading: (schema) => schema.optional(),
-  goals: (schema) => schema.optional(),
-  purpose: (schema) => schema.optional(),
-  timeline: (schema) => schema.optional(),
-  category: (schema) => schema.min(1, "Category is required"),
-  color: (schema) => schema.optional(),
-  chakraId: (schema) => schema.optional(),
-  positionX: (schema) => schema.optional(),
-  positionY: (schema) => schema.optional(),
-  radius: (schema) => schema.optional(),
+  name: (schema) => schema.name?.min(1, "Name is required").max(100, "Name must be 100 characters or less") || schema,
+  heading: (schema) => schema.heading?.optional() || schema,
+  goals: (schema) => schema.goals?.optional() || schema,
+  purpose: (schema) => schema.purpose?.optional() || schema,
+  timeline: (schema) => schema.timeline?.optional() || schema,
+  category: (schema) => schema.category?.min(1, "Category is required") || schema,
+  color: (schema) => schema.color?.optional() || schema,
+  chakraId: (schema) => schema.chakraId?.optional() || schema,
+  positionX: (schema) => schema.positionX?.optional() || schema,
+  positionY: (schema) => schema.positionY?.optional() || schema, 
+  radius: (schema) => schema.radius?.optional() || schema,
 });
 
 export type InsertWheel = z.infer<typeof insertWheelSchema>;

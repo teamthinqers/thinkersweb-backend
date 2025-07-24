@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Send, Loader2, Bot, Mic, MicOff, RefreshCw } from "lucide-react";
+import { Send, Loader2, Bot, Mic, MicOff } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -331,19 +331,6 @@ const ChatInterface: React.FC = () => {
       </div>
       
       <div className="border-t pt-4 pb-2">
-        {/* New Chat Button */}
-        <div className="flex justify-end mb-3">
-          <Button 
-            variant="outline" 
-            size="sm"
-            onClick={startNewChat}
-            className="text-xs gap-1.5 bg-gradient-to-r from-amber-50 to-orange-50 hover:from-amber-100 hover:to-orange-100 border-amber-200 text-amber-700 hover:text-amber-800"
-          >
-            <RefreshCw className="h-3 w-3" />
-            New Chat
-          </Button>
-        </div>
-        
         {isProcessing ? (
           <div className="flex items-center justify-center py-2 text-muted-foreground">
             <Loader2 className="h-4 w-4 animate-spin mr-2" />
