@@ -2282,7 +2282,7 @@ const Dashboard: React.FC = () => {
 
           {/* Right side - Stats and controls */}
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 text-sm">
+            <div className="flex items-center gap-2 text-sm hidden md:flex">
               <div className="px-3 py-1 bg-amber-100 text-amber-800 rounded-full font-medium">
                 Total Dots: {previewMode ? 27 : dots.length}
               </div>

@@ -138,6 +138,11 @@ DotSpark is a full-stack web application that serves as a personalized learning 
 ## Changelog
 ```
 Changelog:
+- January 24, 2025. COMPLETED mobile browser dashboard header optimization:
+  * Hidden Total Dots, Total Wheels, and Total Chakras count badges on mobile browsers using `hidden md:flex` classes
+  * Desktop browsers maintain full visibility of all statistics in dashboard header
+  * Mobile browsers now have cleaner, space-efficient header layout without statistical clutter
+  * Preserved desktop functionality while optimizing mobile experience for better space utilization
 - January 24, 2025. COMPLETED mobile browser-specific interface optimizations for space efficiency:
   * Implemented mobile-specific model selector placement - GPT-4 and DeepSeek options moved to hamburger sidebar for mobile browsers only
   * Created mobile detection utility (mobileDetection.ts) to conditionally render UI elements based on device type
