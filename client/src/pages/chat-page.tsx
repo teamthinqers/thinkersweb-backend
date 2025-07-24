@@ -564,154 +564,209 @@ export default function ChatPage() {
 
       {/* Main Content Area */}
       <div className="flex flex-col flex-1 min-w-0">
-        {/* Enhanced Header */}
-        <header className="flex items-center justify-between h-14 px-6 border-b border-amber-200/30 dark:border-amber-700/30 bg-gradient-to-r from-amber-50/80 via-orange-50/60 to-amber-50/80 dark:from-amber-950/30 dark:via-orange-950/20 dark:to-amber-950/30 backdrop-blur-sm shadow-lg">
-          {/* Left: Sidebar Toggle, Back Button and Logo */}
-          <div className="flex items-center gap-4">
-            {/* Enhanced Sidebar Toggle Icon */}
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="p-3 hover:bg-amber-100/70 dark:hover:bg-amber-900/30 rounded-xl transition-all duration-300 hover:scale-105"
-              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            >
-              <Menu className="h-5 w-5 text-amber-700 dark:text-amber-400" />
-            </Button>
-
-            {/* Enhanced Back Button */}
-            {showBackButton && (
-              <Link href="/about">
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  className="p-3 hover:bg-amber-100/70 dark:hover:bg-amber-900/30 rounded-xl transition-all duration-300 hover:scale-105"
-                  title="Back to Landing Page"
-                >
-                  <ArrowLeft className="h-5 w-5 text-amber-700 dark:text-amber-400" />
-                </Button>
-              </Link>
-            )}
-
-            {/* Model Selector */}
-            <ModelSelector 
-              selectedModel={selectedModel} 
-              onModelChange={setSelectedModel} 
-            />
-          </div>
-          
-          {/* Enhanced Center: Empty space for centered logo */}
-          <div className="flex-1"></div>
-
-          {/* Right: Header Icons and User Actions */}
-          <div className="flex items-center gap-3">
-            {/* Brain Icon - Navigate to Dashboard with Active Status */}
-            <Link href="/dashboard">
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className="relative p-3 bg-amber-500 hover:bg-amber-600 dark:bg-amber-600 dark:hover:bg-amber-700 rounded-xl transition-all duration-300 hover:scale-105 shadow-sm"
-                title="My Neura"
-              >
-                <Brain className="h-5 w-5 text-white transition-all duration-300" />
-                {isNeuraActive && (
-                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full animate-pulse shadow-lg border-2 border-white"></div>
-                )}
-              </Button>
-            </Link>
-
-            {/* Social Icon */}
-            <Link href="/social">
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className="p-3 bg-red-500 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700 rounded-xl transition-all duration-300 hover:scale-105 shadow-sm"
-                title="DotSpark Social"
-              >
-                <Users className="h-5 w-5 text-white" />
-              </Button>
-            </Link>
-
-            {/* WhatsApp Icon */}
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="p-3 bg-[#25D366] hover:bg-[#20BA5A] dark:bg-[#25D366] dark:hover:bg-[#20BA5A] rounded-xl transition-all duration-300 hover:scale-105 shadow-sm"
-              title="WhatsApp Contact"
-              onClick={() => window.open('https://wa.me/+917208061002?text=Hi%20DotSpark%2C%20I%20would%20need%20your%20assistance%20in%20saving%20a%20dot', '_blank')}
-            >
-              <SiWhatsapp className="h-5 w-5 text-white" />
-            </Button>
-
-            {user ? (
+        {/* Mobile-First ChatGPT Style Header */}
+        <header className="sticky top-0 z-50 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 shadow-sm">
+          <div className="flex items-center justify-between h-14 px-3 md:px-6">
+            {/* Left: Menu + Model (Mobile: Sheet Menu, Desktop: Sidebar Toggle) */}
+            <div className="flex items-center gap-2">
+              {/* Mobile Menu Sheet */}
               <Sheet>
                 <SheetTrigger asChild>
-                  <Button variant="ghost" size="sm" className="p-1">
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage src={user.photoURL || undefined} />
-                      <AvatarFallback className="text-xs">
-                        {user.displayName?.[0]?.toUpperCase() || 'U'}
-                      </AvatarFallback>
-                    </Avatar>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-9 w-9 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg md:hidden"
+                  >
+                    <Menu className="h-5 w-5" />
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="w-72 p-0">
-                  <div className="flex flex-col h-full bg-gray-50 dark:bg-gray-800">
-                    {/* Profile Header */}
+                <SheetContent side="left" className="w-80 p-0">
+                  <div className="flex flex-col h-full">
+                    {/* Mobile Menu Header */}
                     <div className="p-4 border-b border-gray-200 dark:border-gray-700">
                       <div className="flex items-center gap-3">
-                        <Avatar className="h-12 w-12">
-                          <AvatarImage src={user.photoURL || undefined} />
-                          <AvatarFallback>
-                            {user.displayName?.[0]?.toUpperCase() || 'U'}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className="flex-1 min-w-0">
-                          <p className="font-semibold truncate">{user.displayName || 'User'}</p>
-                          <p className="text-sm text-gray-500 truncate">{user.email}</p>
-                        </div>
+                        <img 
+                          src="/dotspark-logo-icon.jpeg" 
+                          alt="DotSpark" 
+                          className="w-8 h-8 rounded-full"
+                        />
+                        <h2 className="text-lg font-semibold text-gray-900 dark:text-white">DotSpark</h2>
                       </div>
                     </div>
                     
-                    {/* Profile Actions */}
-                    <nav className="flex-1 p-2">
-                      <div className="space-y-1">
-                        <Link href="/profile">
-                          <Button variant="ghost" className="w-full justify-start text-sm h-9">
-                            <User className="w-4 h-4 mr-3" />
-                            Profile
-                          </Button>
-                        </Link>
-                        <Link href="/settings">
-                          <Button variant="ghost" className="w-full justify-start text-sm h-9">
-                            <Settings className="w-4 h-4 mr-3" />
-                            Settings
-                          </Button>
-                        </Link>
+                    {/* AI Model Selector in Mobile Menu */}
+                    <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+                      <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">AI Model</label>
+                      <ModelSelector
+                        selectedModel={selectedModel}
+                        onModelChange={setSelectedModel}
+                        className="w-full bg-purple-50 hover:bg-purple-100 dark:bg-purple-950/50 dark:hover:bg-purple-900/70 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-700"
+                      />
+                    </div>
+                    
+                    {/* Mobile Navigation */}
+                    <nav className="flex-1 p-4">
+                      <div className="space-y-2">
+                        {messages.length > 1 && (
+                          <SheetClose asChild>
+                            <Button 
+                              onClick={handleRefreshChat}
+                              variant="ghost" 
+                              className="w-full justify-start h-12 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                            >
+                              <RefreshCw className="w-5 h-5 mr-3" />
+                              New Chat
+                            </Button>
+                          </SheetClose>
+                        )}
+                        <SheetClose asChild>
+                          <Link href="/dashboard" className="block">
+                            <Button variant="ghost" className="w-full justify-start h-12 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
+                              <Brain className="w-5 h-5 mr-3" />
+                              My Neura
+                            </Button>
+                          </Link>
+                        </SheetClose>
+                        <SheetClose asChild>
+                          <Link href="/social" className="block">
+                            <Button variant="ghost" className="w-full justify-start h-12 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
+                              <Users className="w-5 h-5 mr-3" />
+                              Social
+                            </Button>
+                          </Link>
+                        </SheetClose>
+                        {user ? (
+                          <SheetClose asChild>
+                            <Link href="/profile" className="block">
+                              <Button variant="ghost" className="w-full justify-start h-12 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
+                                <User className="w-5 h-5 mr-3" />
+                                Profile
+                              </Button>
+                            </Link>
+                          </SheetClose>
+                        ) : (
+                          <SheetClose asChild>
+                            <Link href="/auth" className="block">
+                              <Button variant="ghost" className="w-full justify-start h-12 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
+                                <User className="w-5 h-5 mr-3" />
+                                Sign In
+                              </Button>
+                            </Link>
+                          </SheetClose>
+                        )}
                       </div>
                     </nav>
-                    
-                    {/* Sign Out */}
-                    <div className="p-4 border-t border-gray-200 dark:border-gray-700">
-                      <Button 
-                        variant="outline" 
-                        className="w-full text-sm"
-                        onClick={() => {
-                          // Sign out logic
-                        }}
-                      >
-                        Sign Out
-                      </Button>
-                    </div>
                   </div>
                 </SheetContent>
               </Sheet>
-            ) : (
-              <Link href="/auth">
-                <Button variant="outline" size="sm" className="text-sm">
-                  Sign In
-                </Button>
-              </Link>
-            )}
+
+              {/* Desktop Sidebar Toggle */}
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                className="h-9 w-9 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg hidden md:flex"
+              >
+                <Menu className="h-5 w-5" />
+              </Button>
+
+              {/* Desktop Model Selector */}
+              <div className="hidden md:block">
+                <ModelSelector
+                  selectedModel={selectedModel}
+                  onModelChange={setSelectedModel}
+                  className="bg-purple-50 hover:bg-purple-100 dark:bg-purple-950/50 dark:hover:bg-purple-900/70 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-700"
+                />
+              </div>
+            </div>
+          
+            {/* Center: Logo/Title (Mobile) */}
+            <div className="flex items-center gap-2 md:hidden">
+              <img 
+                src="/dotspark-logo-icon.jpeg" 
+                alt="DotSpark" 
+                className="w-6 h-6 rounded-full"
+              />
+              <span className="text-lg font-semibold text-gray-900 dark:text-white">DotSpark</span>
+            </div>
+
+            {/* Right: User Actions (Desktop Only) */}
+            <div className="hidden md:flex items-center gap-2">
+              {user ? (
+                <Sheet>
+                  <SheetTrigger asChild>
+                    <Button variant="ghost" size="sm" className="p-1">
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage src={user.photoURL || undefined} />
+                        <AvatarFallback className="text-xs">
+                          {user.displayName?.[0]?.toUpperCase() || 'U'}
+                        </AvatarFallback>
+                      </Avatar>
+                    </Button>
+                  </SheetTrigger>
+                  <SheetContent side="right" className="w-72 p-0">
+                    <div className="flex flex-col h-full bg-gray-50 dark:bg-gray-800">
+                      {/* Profile Header */}
+                      <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+                        <div className="flex items-center gap-3">
+                          <Avatar className="h-12 w-12">
+                            <AvatarImage src={user.photoURL || undefined} />
+                            <AvatarFallback>
+                              {user.displayName?.[0]?.toUpperCase() || 'U'}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-semibold truncate">{user.displayName || 'User'}</p>
+                            <p className="text-sm text-gray-500 truncate">{user.email}</p>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {/* Profile Actions */}
+                      <nav className="flex-1 p-2">
+                        <div className="space-y-1">
+                          <SheetClose asChild>
+                            <Link href="/profile" className="block">
+                              <Button variant="ghost" className="w-full justify-start text-sm h-9">
+                                <User className="w-4 h-4 mr-3" />
+                                Profile
+                              </Button>
+                            </Link>
+                          </SheetClose>
+                          <SheetClose asChild>
+                            <Link href="/dashboard" className="block">
+                              <Button variant="ghost" className="w-full justify-start text-sm h-9">
+                                <Brain className="w-4 h-4 mr-3" />
+                                My Neura
+                              </Button>
+                            </Link>
+                          </SheetClose>
+                        </div>
+                      </nav>
+                      
+                      {/* Sign Out */}
+                      <div className="p-4 border-t border-gray-200 dark:border-gray-700">
+                        <Button 
+                          variant="outline" 
+                          className="w-full text-sm"
+                          onClick={() => {
+                            // Sign out logic
+                          }}
+                        >
+                          Sign Out
+                        </Button>
+                      </div>
+                    </div>
+                  </SheetContent>
+                </Sheet>
+              ) : (
+                <Link href="/auth">
+                  <Button variant="outline" size="sm" className="text-sm">
+                    Sign In
+                  </Button>
+                </Link>
+              )}
+            </div>
           </div>
         </header>
 
@@ -754,62 +809,42 @@ export default function ChatPage() {
                   </p>
                 </div>
                 
-                {/* Quick Action Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-2xl mb-8">
+                {/* Mobile-First Compact Quick Actions */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3 w-full max-w-2xl mb-8">
                   <Button 
                     variant="outline" 
-                    className="h-24 p-4 flex flex-col items-start justify-between text-left hover:bg-amber-50 dark:hover:bg-amber-950/20 hover:text-amber-800 dark:hover:text-amber-200 hover:border-amber-300 dark:hover:border-amber-700 active:bg-amber-100 dark:active:bg-amber-900/30 active:text-amber-900 dark:active:text-amber-100 transition-all duration-200"
-                    onClick={() => setInputValue("Organize Thoughts")}
+                    className="h-16 md:h-20 p-3 flex flex-col items-center justify-center text-center hover:bg-amber-50 dark:hover:bg-amber-950/20 hover:text-amber-800 dark:hover:text-amber-200 hover:border-amber-300 dark:hover:border-amber-700 transition-all duration-200"
+                    onClick={() => setInputValue("Organize Thoughts: Help me structure my thoughts on the following topic: ")}
                   >
-                    <div className="flex items-center gap-2">
-                      <Brain className="w-5 h-5 text-orange-600" />
-                      <span className="font-semibold">Organize Thoughts</span>
-                    </div>
-                    <span className="text-xs text-gray-600 dark:text-gray-400 leading-tight mt-1">
-                      Transform insights into structured dots,<br />wheels & chakras automatically
-                    </span>
+                    <Brain className="w-4 h-4 text-orange-600 mb-1" />
+                    <span className="font-medium text-xs md:text-sm">Organize</span>
                   </Button>
                   
                   <Button 
                     variant="outline" 
-                    className="h-24 p-4 flex flex-col items-start justify-between text-left hover:bg-amber-50 dark:hover:bg-amber-950/20 hover:text-amber-800 dark:hover:text-amber-200 hover:border-amber-300 dark:hover:border-amber-700 active:bg-amber-100 dark:active:bg-amber-900/30 active:text-amber-900 dark:active:text-amber-100 transition-all duration-200"
+                    className="h-16 md:h-20 p-3 flex flex-col items-center justify-center text-center hover:bg-amber-50 dark:hover:bg-amber-950/20 hover:text-amber-800 dark:hover:text-amber-200 hover:border-amber-300 dark:hover:border-amber-700 transition-all duration-200"
                     onClick={() => setInputValue("Generate and spark ideas using my thoughts about: ")}
                   >
-                    <div className="flex items-center gap-2">
-                      <Sparkles className="w-4 h-4 text-orange-600" />
-                      <span className="font-medium">Spark Ideas</span>
-                    </div>
-                    <span className="text-xs text-gray-600 dark:text-gray-400 leading-tight mt-1">
-                      Generate and spark ideas using my thoughts
-                    </span>
+                    <Sparkles className="w-4 h-4 text-orange-600 mb-1" />
+                    <span className="font-medium text-xs md:text-sm">Ideas</span>
                   </Button>
                   
                   <Button 
                     variant="outline" 
-                    className="h-24 p-4 flex flex-col items-start justify-between text-left hover:bg-amber-50 dark:hover:bg-amber-950/20 hover:text-amber-800 dark:hover:text-amber-200 hover:border-amber-300 dark:hover:border-amber-700 active:bg-amber-100 dark:active:bg-amber-900/30 active:text-amber-900 dark:active:text-amber-100 transition-all duration-200"
+                    className="h-16 md:h-20 p-3 flex flex-col items-center justify-center text-center hover:bg-amber-50 dark:hover:bg-amber-950/20 hover:text-amber-800 dark:hover:text-amber-200 hover:border-amber-300 dark:hover:border-amber-700 transition-all duration-200"
                     onClick={() => setInputValue("Visualize this summary for me: ")}
                   >
-                    <div className="flex items-center gap-2">
-                      <Target className="w-4 h-4 text-orange-600" />
-                      <span className="font-medium">Visualize Anything</span>
-                    </div>
-                    <span className="text-xs text-gray-600 dark:text-gray-400 leading-tight mt-1">
-                      Share any summary to visualize
-                    </span>
+                    <Target className="w-4 h-4 text-orange-600 mb-1" />
+                    <span className="font-medium text-xs md:text-sm">Visualize</span>
                   </Button>
                   
                   <Button 
                     variant="outline" 
-                    className="h-24 p-4 flex flex-col items-start justify-between text-left hover:bg-amber-50 dark:hover:bg-amber-950/20 hover:text-amber-800 dark:hover:text-amber-200 hover:border-amber-300 dark:hover:border-amber-700 active:bg-amber-100 dark:active:bg-amber-900/30 active:text-amber-900 dark:active:text-amber-100 transition-all duration-200"
+                    className="h-16 md:h-20 p-3 flex flex-col items-center justify-center text-center hover:bg-amber-50 dark:hover:bg-amber-950/20 hover:text-amber-800 dark:hover:text-amber-200 hover:border-amber-300 dark:hover:border-amber-700 transition-all duration-200"
                     onClick={() => setInputValue("Seek wisdom from ancient Indian knowledge about: ")}
                   >
-                    <div className="flex items-center gap-2">
-                      <Brain className="w-4 h-4 text-orange-600" />
-                      <span className="font-medium">Ancient Wisdom</span>
-                    </div>
-                    <span className="text-xs text-gray-600 dark:text-gray-400 leading-tight mt-1">
-                      Seek answers from ancient Indian wisdom
-                    </span>
+                    <Brain className="w-4 h-4 text-orange-600 mb-1" />
+                    <span className="font-medium text-xs md:text-sm">Wisdom</span>
                   </Button>
                 </div>
               </div>
@@ -893,60 +928,62 @@ export default function ChatPage() {
             )}
           </div>
 
-          {/* Input Area */}
-          <div className="border-t bg-white dark:bg-gray-900 p-4">
+          {/* Mobile-Optimized Input Area */}
+          <div className="border-t bg-white dark:bg-gray-900 p-3 md:p-4">
             <div className="max-w-4xl mx-auto">
-              <div className="flex items-end gap-3">
+              <div className="flex items-end gap-2 md:gap-3">
                 {/* Input Field */}
                 <div className="flex-1 relative">
                   <textarea
                     value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)}
                     onKeyDown={handleKeyDown}
-                    placeholder="Ask Anything to DotSpark"
+                    placeholder="Message DotSpark"
                     disabled={isLoading || limitExceeded}
                     rows={1}
-                    className="w-full resize-none rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-4 py-3 pr-12 text-sm placeholder:text-gray-500 focus:border-orange-500 focus:ring-1 focus:ring-orange-500 focus:outline-none disabled:opacity-50 min-h-[52px] max-h-[200px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600"
+                    className="w-full resize-none rounded-2xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-4 py-3 pr-12 text-sm placeholder:text-gray-500 focus:border-gray-400 focus:ring-1 focus:ring-gray-400 focus:outline-none disabled:opacity-50 min-h-[48px] max-h-[150px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600"
                     style={{
-                      lineHeight: '1.5',
+                      lineHeight: '1.4',
                       height: 'auto',
                     }}
                     onInput={(e) => {
                       const target = e.target as HTMLTextAreaElement;
-                      target.style.height = '52px';
-                      target.style.height = Math.min(target.scrollHeight, 200) + 'px';
+                      target.style.height = '48px';
+                      target.style.height = Math.min(target.scrollHeight, 150) + 'px';
                     }}
                   />
                   
-                  {/* Voice Button inside input */}
-                  {!inputValue.trim() && (
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 w-8 text-gray-500 hover:text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-900/20 rounded-lg"
-                      onClick={() => {
-                        // Voice functionality to be implemented
-                        console.log('Voice recording clicked');
-                      }}
-                    >
-                      <Mic className="h-4 w-4" />
-                    </Button>
-                  )}
+                  {/* Voice/Send Button inside input */}
+                  <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
+                    {!inputValue.trim() ? (
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        className="h-8 w-8 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 rounded-full"
+                        onClick={() => {
+                          // Voice functionality to be implemented
+                          console.log('Voice recording clicked');
+                        }}
+                        disabled={isLoading || limitExceeded}
+                      >
+                        <Mic className="h-4 w-4" />
+                      </Button>
+                    ) : (
+                      <Button
+                        size="icon"
+                        className="h-8 w-8 bg-gray-700 hover:bg-gray-800 dark:bg-gray-300 dark:hover:bg-gray-200 text-white dark:text-gray-900 rounded-full disabled:opacity-50"
+                        onClick={handleSendMessage}
+                        disabled={isLoading || limitExceeded}
+                      >
+                        {isLoading ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <Send className="h-4 w-4" />
+                        )}
+                      </Button>
+                    )}
+                  </div>
                 </div>
-                
-                {/* Send Button */}
-                <Button
-                  onClick={handleSendMessage}
-                  disabled={!inputValue.trim() || isLoading || limitExceeded}
-                  size="icon"
-                  className="shrink-0 h-[52px] w-[52px] bg-orange-600 hover:bg-orange-700 text-white disabled:opacity-50 rounded-xl"
-                >
-                  {isLoading ? (
-                    <Loader2 className="h-5 w-5 animate-spin" />
-                  ) : (
-                    <Send className="h-5 w-5" />
-                  )}
-                </Button>
               </div>
             </div>
           </div>
