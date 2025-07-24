@@ -324,7 +324,7 @@ export default function LandingPage() {
           <div className="flex items-center py-2">
             <div 
               className="flex items-center px-4 py-3 rounded-md hover:bg-amber-100/50 dark:hover:bg-amber-900/30 cursor-pointer transition-all duration-200 ease-in-out" 
-              onClick={() => setLocation("/dotspark-tuning")}
+              onClick={() => setLocation("/about")}
             >
               <img src="/dotspark-logo-homepage-header.png?v=1" alt="DotSpark" className="h-16 w-56 object-contain rounded-sm" />
             </div>
@@ -333,7 +333,7 @@ export default function LandingPage() {
           <div className="flex items-center gap-3 md:gap-4">
             {/* Desktop navigation */}
             <div className="hidden md:flex items-center gap-4">
-              <Link href="/" className="text-sm font-medium text-slate-700 hover:text-amber-700 dark:text-slate-300 dark:hover:text-amber-300 transition-colors px-2 py-1 rounded">
+              <Link href="/about" className="text-sm font-medium text-slate-700 hover:text-amber-700 dark:text-slate-300 dark:hover:text-amber-300 transition-colors px-2 py-1 rounded">
                 Home
               </Link>
               {/* My DotSpark button */}
@@ -526,7 +526,7 @@ export default function LandingPage() {
                     
                     <div className="flex flex-col gap-4">
                       <SheetClose asChild>
-                        <Link href="/" className="py-2 hover:text-primary transition-colors flex items-center gap-2">
+                        <Link href="/about" className="py-2 hover:text-primary transition-colors flex items-center gap-2">
                           <HomeIcon className="h-4 w-4 text-amber-600" />
                           <span>Home</span>
                         </Link>

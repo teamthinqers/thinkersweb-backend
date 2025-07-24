@@ -389,14 +389,14 @@ export default function ChatPage() {
                   variant="ghost" 
                   size="sm" 
                   className="p-2 hover:bg-amber-100 dark:hover:bg-amber-900/20"
-                  title="Back to DotSpark Landing"
+                  title="Back to Landing Page"
                 >
                   <ArrowLeft className="h-5 w-5" />
                 </Button>
               </Link>
             )}
 
-            {/* Logo - clickable to go to about page (landing) */}
+            {/* Logo - clickable to go to landing page */}
             <Link href="/about" className="flex items-center gap-3">
               <img 
                 src="/dotspark-logo-icon.jpeg" 

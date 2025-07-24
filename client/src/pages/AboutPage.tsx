@@ -103,10 +103,10 @@ export default function AboutPage() {
             </Button>
           </Link>
           
-          <div className="flex items-center gap-3">
+          <Link href="/about" className="flex items-center gap-3 hover:opacity-80 transition-opacity cursor-pointer">
             <img src="/dotspark-logo-icon.jpeg" alt="DotSpark" className="h-8 w-8 rounded-full" />
-            <span className="text-xl font-bold">DotSpark</span>
-          </div>
+            <span className="text-xl font-bold bg-gradient-to-r from-amber-700 to-amber-600 bg-clip-text text-transparent">DotSpark</span>
+          </Link>
           
           <div className="w-20"></div> {/* Spacer for centering */}
         </div>
