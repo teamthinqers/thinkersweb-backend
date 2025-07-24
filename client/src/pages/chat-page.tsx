@@ -805,7 +805,7 @@ export default function ChatPage() {
                 </div>
                 
                 {/* Quick Action Cards */}
-                <div className={`grid grid-cols-1 md:grid-cols-2 ${isMobile ? 'gap-1.5' : 'gap-4'} w-full max-w-2xl ${isMobile ? 'mb-2' : 'mb-8'}`}>
+                <div className={`grid grid-cols-1 md:grid-cols-2 ${isMobile ? 'gap-1.5' : 'gap-4'} w-full max-w-2xl ${isMobile ? 'mb-6' : 'mb-8'}`}>
                   <Button 
                     variant="outline" 
                     className={`${isMobile ? 'h-8 p-1.5 justify-center' : 'h-24 p-4 flex flex-col items-start justify-between text-left'} hover:bg-amber-50 dark:hover:bg-amber-950/20 hover:text-amber-800 dark:hover:text-amber-200 hover:border-amber-300 dark:hover:border-amber-700 active:bg-amber-100 dark:active:bg-amber-900/30 active:text-amber-900 dark:active:text-amber-100 transition-all duration-200`}
