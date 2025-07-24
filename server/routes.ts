@@ -465,6 +465,49 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Enhanced Intelligent Chat API with cognitive structure training
+  app.post(`${apiPrefix}/chat/enhanced`, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      let userId = req.user?.id || req.session?.userId;
+      if (!userId) {
+        console.log('No authenticated user found, using test userId for demo');
+        userId = 1; // Use a test user ID for demonstration
+      }
+      const { message, messages = [], model = 'gpt-4o', sessionId = null } = req.body;
+
+      if (!message) {
+        return res.status(400).json({ error: 'Message is required' });
+      }
+
+      // Import enhanced chat functions
+      const { generateEnhancedChatResponse } = await import('./enhanced-chat.js');
+
+      // Convert messages to enhanced format
+      const enhancedMessages = messages.map((msg: any) => ({
+        role: msg.role,
+        content: msg.content,
+        timestamp: new Date(msg.timestamp || Date.now()),
+        metadata: msg.metadata || {}
+      }));
+
+      // Generate enhanced response with cognitive coaching
+      const result = await generateEnhancedChatResponse(message, enhancedMessages, model, userId, sessionId);
+
+      res.json({
+        response: result.response,
+        analysis: result.analysis,
+        structureProposal: result.structureProposal,
+        action: result.action,
+        metadata: result.metadata,
+        conversationQuality: result.metadata.conversationQuality
+      });
+
+    } catch (error) {
+      console.error('Error in enhanced chat:', error);
+      res.status(500).json({ error: 'Failed to process enhanced chat message' });
+    }
+  });
+
   // Enhanced intelligent chat endpoint for conversational dot creation
   app.post(`${apiPrefix}/chat/intelligent`, async (req: AuthenticatedRequest, res: Response) => {
     try {

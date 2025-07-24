@@ -46,6 +46,7 @@ import SparkTest from "@/pages/SparkTest";
 import AppLayout from "@/components/layout/AppLayout";
 import EntryDetail from "@/components/entries/EntryDetail";
 import ChatEntryForm from "@/components/chat/ChatEntryForm";
+import EnhancedChatInterface from "@/components/chat/EnhancedChatInterface";
 
 import { StructuredFloatingDot } from "@/components/dotspark/StructuredFloatingDot";
 import { neuraStorage } from "@/lib/neuraStorage";
@@ -234,6 +235,7 @@ function Router() {
       <Route path="/testing" component={Testing} />
       <Route path="/test-auth" component={TestGoogleAuth} />
       <Route path="/chat" component={ChatPage} />
+      <Route path="/enhanced-chat" component={() => <div className="h-screen"><EnhancedChatInterface /></div>} />
       <Route component={NotFound} />
     </Switch>
   );

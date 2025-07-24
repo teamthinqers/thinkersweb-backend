@@ -169,7 +169,7 @@ const ChatInterface: React.FC = () => {
       });
       
       if (transcriptionResponse.text) {
-        setInput(transcriptionResponse.text as string);
+        setInput(String(transcriptionResponse.text));
         toast({
           title: "Voice transcribed",
           description: "Your voice message has been converted to text",
