@@ -766,26 +766,29 @@ export default function ChatPage() {
           <div className="flex-1 overflow-y-auto">
             {messages.length === 1 ? (
               /* Welcome Screen */
-              <div className="h-full flex flex-col items-center justify-center p-8 max-w-2xl mx-auto">
-                <div className="text-center mb-8">
-                  <img 
-                    src="/dotspark-logo-header.png" 
-                    alt="DotSpark" 
-                    className="w-16 h-16 mx-auto mb-6 rounded-2xl"
-                  />
+              <div className={`h-full flex flex-col items-center justify-center ${isMobile ? 'p-4' : 'p-8'} max-w-2xl mx-auto`}>
+                <div className={`text-center ${isMobile ? 'mb-4' : 'mb-8'}`}>
+                  {/* Logo - Hidden on mobile for space */}
+                  {!isMobile && (
+                    <img 
+                      src="/dotspark-logo-header.png" 
+                      alt="DotSpark" 
+                      className="w-16 h-16 mx-auto mb-6 rounded-2xl"
+                    />
+                  )}
                   
                   {/* Dynamic heading like About page */}
-                  <div className="mb-6">
-                    <div className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-2">
+                  <div className={`${isMobile ? 'mb-4' : 'mb-6'}`}>
+                    <div className={`${isMobile ? 'text-2xl' : 'text-3xl md:text-4xl lg:text-5xl'} font-bold tracking-tight mb-2`}>
                       <span className="font-sans tracking-normal text-center bg-clip-text text-transparent bg-gradient-to-r from-amber-700 via-amber-600 to-amber-500 dark:from-amber-400 dark:via-amber-300 dark:to-amber-200">
-                        For the OG Thin<span className="relative inline-block px-3 py-2 bg-gradient-to-br from-amber-600 to-amber-700 dark:from-amber-500 dark:to-amber-600 text-white font-bold rounded-lg shadow-lg border-2 border-amber-500/20">Q</span>ers
+                        For the OG Thin<span className={`relative inline-block ${isMobile ? 'px-2 py-1' : 'px-3 py-2'} bg-gradient-to-br from-amber-600 to-amber-700 dark:from-amber-500 dark:to-amber-600 text-white font-bold rounded-lg shadow-lg border-2 border-amber-500/20`}>Q</span>ers
                       </span>
                     </div>
                     
 
                   </div>
                   
-                  <p className="text-gray-600 dark:text-gray-400 text-lg">
+                  <p className={`text-gray-600 dark:text-gray-400 ${isMobile ? 'text-base' : 'text-lg'}`}>
                     {isLoading 
                       ? "Loading..."
                       : user 
@@ -796,7 +799,7 @@ export default function ChatPage() {
                 </div>
                 
                 {/* Quick Action Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-2xl mb-8">
+                <div className={`grid grid-cols-1 md:grid-cols-2 ${isMobile ? 'gap-3' : 'gap-4'} w-full max-w-2xl ${isMobile ? 'mb-4' : 'mb-8'}`}>
                   <Button 
                     variant="outline" 
                     className={`${isMobile ? 'h-12 p-3 justify-center' : 'h-24 p-4 flex flex-col items-start justify-between text-left'} hover:bg-amber-50 dark:hover:bg-amber-950/20 hover:text-amber-800 dark:hover:text-amber-200 hover:border-amber-300 dark:hover:border-amber-700 active:bg-amber-100 dark:active:bg-amber-900/30 active:text-amber-900 dark:active:text-amber-100 transition-all duration-200`}
@@ -804,7 +807,7 @@ export default function ChatPage() {
                   >
                     <div className="flex items-center gap-2">
                       <Brain className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'} text-orange-600`} />
-                      <span className={`${isMobile ? 'font-medium' : 'font-semibold'}`}>Organize Thoughts</span>
+                      <span className={`${isMobile ? 'font-medium text-sm' : 'font-semibold'}`}>Organize Thoughts</span>
                     </div>
                     {!isMobile && (
                       <span className="text-xs text-gray-600 dark:text-gray-400 leading-tight mt-1">
@@ -820,7 +823,7 @@ export default function ChatPage() {
                   >
                     <div className="flex items-center gap-2">
                       <Sparkles className="w-4 h-4 text-orange-600" />
-                      <span className="font-medium">Spark Ideas</span>
+                      <span className={`${isMobile ? 'font-medium text-sm' : 'font-medium'}`}>Spark Ideas</span>
                     </div>
                     {!isMobile && (
                       <span className="text-xs text-gray-600 dark:text-gray-400 leading-tight mt-1">
@@ -836,7 +839,7 @@ export default function ChatPage() {
                   >
                     <div className="flex items-center gap-2">
                       <Target className="w-4 h-4 text-orange-600" />
-                      <span className="font-medium">Visualize Anything</span>
+                      <span className={`${isMobile ? 'font-medium text-sm' : 'font-medium'}`}>Visualize Anything</span>
                     </div>
                     {!isMobile && (
                       <span className="text-xs text-gray-600 dark:text-gray-400 leading-tight mt-1">
@@ -852,7 +855,7 @@ export default function ChatPage() {
                   >
                     <div className="flex items-center gap-2">
                       <Brain className="w-4 h-4 text-orange-600" />
-                      <span className="font-medium">Ancient Wisdom</span>
+                      <span className={`${isMobile ? 'font-medium text-sm' : 'font-medium'}`}>Ancient Wisdom</span>
                     </div>
                     {!isMobile && (
                       <span className="text-xs text-gray-600 dark:text-gray-400 leading-tight mt-1">
