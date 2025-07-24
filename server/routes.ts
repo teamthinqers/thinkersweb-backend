@@ -475,7 +475,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.log('No authenticated user found, using test userId for demo');
         userId = 1; // Use a test user ID for demonstration
       }
-      const { message, messages = [], action = 'chat', model = 'gpt-4o' } = req.body;
+      const { message, messages = [], action = 'chat', model = 'gpt-4o', sessionId = null } = req.body;
 
       if (!message) {
         return res.status(400).json({ error: 'Message is required' });
@@ -521,11 +521,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
+      // Handle organize thoughts with session persistence
+      if (action === 'organize_thoughts') {
+        const { handleOrganizeThoughts } = await import('./thought-organizer.js');
+        const result = await handleOrganizeThoughts(
+          message,
+          messages,
+          userId,
+          sessionId,
+          model
+        );
+        
+        return res.json({
+          response: result.response,
+          action: result.action || 'organize_thoughts',
+          savedItems: result.savedItems || [],
+          conversationState: result.conversationState
+        });
+      }
+
       // Generate intelligent conversational response
       const result = await generateIntelligentChatResponse(message, messages, model);
 
       res.json({
-        reply: result.response,
+        response: result.response,
+        reply: result.response, // Keep backward compatibility
         action: result.action || 'continue',
         conversationState: result.conversationState,
         dotProposal: result.dotProposal,

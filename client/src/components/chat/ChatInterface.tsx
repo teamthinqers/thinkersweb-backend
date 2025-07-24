@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Send, Loader2, Bot, Mic, MicOff } from "lucide-react";
+import { Send, Loader2, Bot, Mic, MicOff, RefreshCw } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -33,18 +33,55 @@ const ChatInterface: React.FC = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
   const [audioChunks, setAudioChunks] = useState<Blob[]>([]);
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: generateId(),
-      role: "assistant",
-      content: "Hi! I'm here to help you create structured dots. Tell me what you've learned or want to capture, and I'll guide you through creating a three-layer dot with Summary, Anchor, and Pulse components.",
-      timestamp: new Date(),
-    },
-  ]);
+  const [sessionId, setSessionId] = useState<string>("");
+  
+  // Initialize messages from localStorage or default welcome message
+  const initializeMessages = (): Message[] => {
+    try {
+      const savedMessages = localStorage.getItem('dotspark-chat-messages');
+      const savedSessionId = localStorage.getItem('dotspark-chat-session-id');
+      
+      if (savedMessages && savedSessionId) {
+        const parsed = JSON.parse(savedMessages);
+        // Restore timestamps as Date objects
+        const messages = parsed.map((msg: any) => ({
+          ...msg,
+          timestamp: new Date(msg.timestamp)
+        }));
+        setSessionId(savedSessionId);
+        return messages;
+      }
+    } catch (error) {
+      console.error('Error loading saved chat messages:', error);
+    }
+    
+    // Generate new session ID if no existing session
+    const newSessionId = `chat-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+    setSessionId(newSessionId);
+    localStorage.setItem('dotspark-chat-session-id', newSessionId);
+    
+    return [
+      {
+        id: generateId(),
+        role: "assistant",
+        content: "Hi! I'm DotSpark, your thinking companion. I can help you organize your thoughts into structured insights. Just tell me what's on your mind, or say 'Organize thoughts' to start a guided conversation.",
+        timestamp: new Date(),
+      },
+    ];
+  };
+  
+  const [messages, setMessages] = useState<Message[]>(initializeMessages);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  
+  // Save messages to localStorage whenever they change
+  useEffect(() => {
+    if (messages.length > 0) {
+      localStorage.setItem('dotspark-chat-messages', JSON.stringify(messages));
+    }
+  }, [messages]);
   
   // Auto-scroll to bottom of messages
   useEffect(() => {
@@ -52,6 +89,23 @@ const ChatInterface: React.FC = () => {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [messages]);
+  
+  // Function to start a new chat session
+  const startNewChat = () => {
+    const newSessionId = `chat-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+    setSessionId(newSessionId);
+    localStorage.setItem('dotspark-chat-session-id', newSessionId);
+    
+    const welcomeMessage: Message = {
+      id: generateId(),
+      role: "assistant",
+      content: "Hi! I'm DotSpark, your thinking companion. I can help you organize your thoughts into structured insights. Just tell me what's on your mind, or say 'Organize thoughts' to start a guided conversation.",
+      timestamp: new Date(),
+    };
+    
+    setMessages([welcomeMessage]);
+    localStorage.setItem('dotspark-chat-messages', JSON.stringify([welcomeMessage]));
+  };
 
   // Voice recording functions
   const startRecording = async () => {
@@ -115,7 +169,7 @@ const ChatInterface: React.FC = () => {
       });
       
       if (transcriptionResponse.text) {
-        setInput(transcriptionResponse.text);
+        setInput(transcriptionResponse.text as string);
         toast({
           title: "Voice transcribed",
           description: "Your voice message has been converted to text",
@@ -144,67 +198,45 @@ const ChatInterface: React.FC = () => {
       timestamp: new Date(),
     };
     
-    setMessages((prev) => [...prev, userMessage]);
+    const updatedMessages = [...messages, userMessage];
+    setMessages(updatedMessages);
     setInput("");
     setIsProcessing(true);
     
     try {
-      // Process the message to create a structured dot
-      const apiMessages = messages
+      // Use the intelligent chat endpoint with session persistence
+      const apiMessages = updatedMessages
         .filter(m => m.role === "user" || m.role === "assistant")
         .map(m => ({ role: m.role, content: m.content }));
         
       const processResponse = await apiRequest(
         "POST",
-        "/api/chat/create-dot",
+        "/api/chat/intelligent",
         {
           message: input,
           messages: apiMessages,
+          sessionId: sessionId,
+          action: input.toLowerCase().includes('organize') && input.toLowerCase().includes('thought') ? 'organize_thoughts' : 'chat'
         }
-      ) as any; // Type assertion for API response
+      ) as any;
       
-      if (processResponse?.success) {
-        // Add success message with entry details
-        const entryMessage: Message = {
-          id: generateId(),
-          role: "entry",
-          content: "I've saved this to your learning repository:",
-          timestamp: new Date(),
-          entry: {
-            id: processResponse.entry?.id,
-            title: processResponse.entry?.title,
-            content: processResponse.entry?.content,
-            category: processResponse.entry?.category?.name,
-            tags: processResponse.entry?.tags || [],
-          },
-        };
-        
-        setMessages((prev) => [...prev, entryMessage]);
-        
-        // Invalidate queries to refresh data
-        queryClient.invalidateQueries({ queryKey: ['/api/entries'] });
-        queryClient.invalidateQueries({ queryKey: ['/api/analytics/frequency'] });
-        queryClient.invalidateQueries({ queryKey: ['/api/analytics/categories'] });
-        queryClient.invalidateQueries({ queryKey: ['/api/insights'] });
-        
-        // Get a follow-up response from the assistant
-        const chatResponse = await apiRequest(
-          "POST",
-          "/api/chat/respond",
-          {
-            message: input,
-            messages: [...apiMessages, { role: "user", content: input }],
-          }
-        ) as any; // Type assertion for API response
-        
+      // Handle the intelligent response
+      if (processResponse?.response) {
         const assistantMessage: Message = {
           id: generateId(),
           role: "assistant",
-          content: chatResponse?.response || "I've saved your learning. Anything else you'd like to add?",
+          content: processResponse.response,
           timestamp: new Date(),
         };
         
         setMessages((prev) => [...prev, assistantMessage]);
+      }
+      
+      // If there was a successful dot creation, invalidate queries
+      if (processResponse?.savedItems && processResponse.savedItems.length > 0) {
+        queryClient.invalidateQueries({ queryKey: ['/api/entries'] });
+        queryClient.invalidateQueries({ queryKey: ['/api/dots'] });
+        queryClient.invalidateQueries({ queryKey: ['/api/wheels'] });
       }
     } catch (error) {
       console.error("Error processing message:", error);
@@ -299,10 +331,23 @@ const ChatInterface: React.FC = () => {
       </div>
       
       <div className="border-t pt-4 pb-2">
+        {/* New Chat Button */}
+        <div className="flex justify-end mb-3">
+          <Button 
+            variant="outline" 
+            size="sm"
+            onClick={startNewChat}
+            className="text-xs gap-1.5 bg-gradient-to-r from-amber-50 to-orange-50 hover:from-amber-100 hover:to-orange-100 border-amber-200 text-amber-700 hover:text-amber-800"
+          >
+            <RefreshCw className="h-3 w-3" />
+            New Chat
+          </Button>
+        </div>
+        
         {isProcessing ? (
           <div className="flex items-center justify-center py-2 text-muted-foreground">
             <Loader2 className="h-4 w-4 animate-spin mr-2" />
-            <span>Processing your learning...</span>
+            <span>Processing your thoughts...</span>
           </div>
         ) : (
           <div className="flex space-x-2">
@@ -310,12 +355,23 @@ const ChatInterface: React.FC = () => {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Share what you've learned..."
+              placeholder="Tell me what's on your mind, or say 'Organize thoughts' to start..."
               className="min-h-[60px] flex-1 resize-none"
             />
-            <Button onClick={handleSendMessage} className="h-auto" disabled={!input.trim()}>
-              <Send className="h-4 w-4" />
-            </Button>
+            <div className="flex flex-col space-y-2">
+              <Button onClick={handleSendMessage} className="h-auto" disabled={!input.trim()}>
+                <Send className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={isRecording ? stopRecording : startRecording}
+                disabled={isProcessing}
+                className={isRecording ? "bg-red-50 border-red-200 text-red-700" : ""}
+              >
+                {isRecording ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+              </Button>
+            </div>
           </div>
         )}
       </div>
