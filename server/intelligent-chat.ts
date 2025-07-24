@@ -1,6 +1,7 @@
 import OpenAI from "openai";
 import { generateOneWordSummary } from "./openai";
 import { generateDeepSeekChatResponse } from "./deepseek";
+import { handleOrganizeThoughts } from "./thought-organizer";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -138,14 +139,33 @@ Respond with JSON:
 /**
  * Check if user input matches one of the 4 special prompts
  */
-function isSpecialPrompt(userInput: string): boolean {
-  // These will be the 4 specific prompts that require special handling
-  const specialPrompts: string[] = [
-    // To be defined when user provides the specific prompts
-  ];
-  
+function isSpecialPrompt(userInput: string): string | null {
   const normalizedInput = userInput.toLowerCase().trim();
-  return specialPrompts.some(prompt => normalizedInput.includes(prompt.toLowerCase()));
+  
+  // Check for "Organize Thoughts" special prompt
+  if (normalizedInput.includes('help me organize my thoughts') || 
+      normalizedInput.includes('organize my thoughts') ||
+      (normalizedInput.includes('organize') && normalizedInput.includes('thoughts'))) {
+    return 'organize_thoughts';
+  }
+  
+  // Check for other special prompts
+  if (normalizedInput.includes('generate and spark ideas') || 
+      normalizedInput.includes('spark ideas')) {
+    return 'spark_ideas';
+  }
+  
+  if (normalizedInput.includes('visualize this summary') || 
+      normalizedInput.includes('visualize anything')) {
+    return 'visualize_anything';
+  }
+  
+  if (normalizedInput.includes('seek wisdom from ancient indian') || 
+      normalizedInput.includes('ancient wisdom')) {
+    return 'ancient_wisdom';
+  }
+  
+  return null;
 }
 
 /**
@@ -154,26 +174,59 @@ function isSpecialPrompt(userInput: string): boolean {
 export async function generateIntelligentChatResponse(
   userInput: string,
   messages: ConversationMessage[] = [],
-  model: 'gpt-4o' | 'deepseek-chat' = 'gpt-4o'
+  model: 'gpt-4o' | 'deepseek-chat' = 'gpt-4o',
+  userId?: number | null
 ): Promise<{
   response: string;
   conversationState: ConversationState;
   dotProposal?: DotProposal;
   action?: 'continue' | 'propose_dot' | 'save_dot' | 'special_prompt';
+  specialData?: any;
 }> {
   try {
     // Check for special prompts first
-    if (isSpecialPrompt(userInput)) {
-      // Special handling will be implemented when user provides specific prompts
-      return {
-        response: "This is a special prompt that will receive customized handling.",
-        conversationState: {
-          isReadyForDot: false,
-          conversationDepth: 1,
-          lastUserSentiment: 'exploring'
-        },
-        action: 'special_prompt'
-      };
+    const specialPromptType = isSpecialPrompt(userInput);
+    if (specialPromptType) {
+      
+      if (specialPromptType === 'organize_thoughts') {
+        // Generate a unique session ID for this conversation
+        const sessionId = `organize_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        
+        // Handle the organize thoughts special prompt
+        const organizeResult = await handleOrganizeThoughts(
+          userInput,
+          userId || null,
+          sessionId,
+          'initial'
+        );
+        
+        return {
+          response: organizeResult.response,
+          conversationState: {
+            isReadyForDot: false,
+            conversationDepth: 1,
+            lastUserSentiment: 'exploring'
+          },
+          action: 'special_prompt',
+          specialData: {
+            type: 'organize_thoughts',
+            sessionId,
+            nextStep: organizeResult.nextStep,
+            organizedSummary: organizeResult.organizedSummary
+          }
+        };
+      } else {
+        // Handle other special prompts (to be implemented)
+        return {
+          response: `This is the ${specialPromptType} special prompt. Advanced handling for this prompt is coming soon!`,
+          conversationState: {
+            isReadyForDot: false,
+            conversationDepth: 1,
+            lastUserSentiment: 'exploring'
+          },
+          action: 'special_prompt'
+        };
+      }
     }
     // Add user message to conversation
     const updatedMessages = [...messages, {

@@ -21,6 +21,7 @@ import { processEntryFromChat, generateChatResponse, type Message } from "./chat
 import { connectionsService } from "./connections";
 import { db } from "@db";
 import { setupAuth, isAuthenticated } from "./auth";
+import { continueOrganizeThoughts } from "./routes/organize-thoughts";
 import { 
   extractWhatsAppMessage, 
   processWhatsAppMessage, 
@@ -917,6 +918,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     }
   });
+
+  // Advanced "Organize Thoughts" API route
+  app.post(`${apiPrefix}/organize-thoughts/continue`, continueOrganizeThoughts);
 
   return httpServer;
 }

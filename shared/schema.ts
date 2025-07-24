@@ -399,6 +399,66 @@ export const insertDotVoiceRecordingSchema = createInsertSchema(dotVoiceRecordin
 export type InsertDotVoiceRecording = z.infer<typeof insertDotVoiceRecordingSchema>;
 export type DotVoiceRecording = typeof dotVoiceRecordings.$inferSelect;
 
+// User conversation memory and pattern recognition
+export const userPatternMemory = pgTable("user_pattern_memory", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  thoughtPattern: text("thought_pattern").notNull(), // 'dot', 'wheel', 'chakra'
+  keywords: text("keywords").notNull(), // JSON array of frequently used keywords
+  conversationStyle: text("conversation_style"), // 'brief', 'detailed', 'analytical', etc.
+  preferredTopics: text("preferred_topics"), // JSON array of topics user discusses
+  lastUpdated: timestamp("last_updated").defaultNow().notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const userPatternMemoryRelations = relations(userPatternMemory, ({ one }) => ({
+  user: one(users, {
+    fields: [userPatternMemory.userId],
+    references: [users.id],
+  }),
+}));
+
+// Conversation sessions for thought organization
+export const conversationSessions = pgTable("conversation_sessions", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id),
+  sessionId: text("session_id").notNull().unique(),
+  thoughtType: text("thought_type"), // 'dot', 'wheel', 'chakra', 'exploring'
+  conversationData: text("conversation_data").notNull(), // JSON of conversation messages
+  organizationSummary: text("organization_summary"), // AI-generated summary of organized thoughts
+  status: text("status").notNull().default("active"), // 'active', 'completed', 'saved'
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const conversationSessionsRelations = relations(conversationSessions, ({ one }) => ({
+  user: one(users, {
+    fields: [conversationSessions.userId],
+    references: [users.id],
+  }),
+}));
+
+export const insertUserPatternMemorySchema = createInsertSchema(userPatternMemory, {
+  userId: (schema) => schema.positive("User ID must be positive"),
+  thoughtPattern: (schema) => schema.refine(val => ['dot', 'wheel', 'chakra'].includes(val), "Must be dot, wheel, or chakra"),
+  keywords: (schema) => schema.min(1, "Keywords required"),
+  conversationStyle: (schema) => schema.optional(),
+  preferredTopics: (schema) => schema.optional(),
+});
+
+export const insertConversationSessionSchema = createInsertSchema(conversationSessions, {
+  sessionId: (schema) => schema.min(1, "Session ID required"),
+  thoughtType: (schema) => schema.optional(),
+  conversationData: (schema) => schema.min(1, "Conversation data required"),
+  organizationSummary: (schema) => schema.optional(),
+  status: (schema) => schema.optional(),
+});
+
+export type InsertUserPatternMemory = z.infer<typeof insertUserPatternMemorySchema>;
+export type UserPatternMemory = typeof userPatternMemory.$inferSelect;
+export type InsertConversationSession = z.infer<typeof insertConversationSessionSchema>;
+export type ConversationSession = typeof conversationSessions.$inferSelect;
+
 // WhatsApp OTP verification schema
 export const whatsappOtpVerifications = pgTable("whatsapp_otp_verifications", {
   id: serial("id").primaryKey(),
