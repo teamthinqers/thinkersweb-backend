@@ -68,9 +68,7 @@ export default function ChatPage() {
   const isFirstTime = isFirstChat();
   
   // Set default message only for first-time users
-  const [inputValue, setInputValue] = useState(
-    isFirstTime ? "Hi DotSpark, I would need your assistance in saving a dot" : ""
-  );
+  const [inputValue, setInputValue] = useState("");
   
   // Check if user has exceeded their limit
   const limitExceeded = hasExceededLimit(isRegistered, isActivated);
@@ -276,14 +274,15 @@ export default function ChatPage() {
   return (
     <div className="h-screen flex flex-col bg-white dark:bg-gray-900">
       {/* ChatGPT-style Header */}
-      <header className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
-        {/* Left: Sidebar Toggle */}
-        <Sheet>
-          <SheetTrigger asChild>
-            <Button variant="ghost" size="sm" className="p-2">
-              <Menu className="h-5 w-5" />
-            </Button>
-          </SheetTrigger>
+      <header className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20">
+        {/* Left: Sidebar Toggle and Logo */}
+        <div className="flex items-center gap-3">
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="sm" className="p-2">
+                <Menu className="h-6 w-6" />
+              </Button>
+            </SheetTrigger>
           <SheetContent side="left" className="w-80 p-0">
             <div className="flex flex-col h-full bg-gray-50 dark:bg-gray-800">
               {/* Sidebar Header */}
@@ -357,16 +356,17 @@ export default function ChatPage() {
             </div>
           </SheetContent>
         </Sheet>
-
-        {/* Center: Logo and Title */}
-        <div className="flex items-center gap-3">
-          <img 
-            src="/dotspark-logo-icon.jpeg" 
-            alt="DotSpark" 
-            className="w-8 h-8 rounded-full"
-          />
-          <h1 className="text-xl font-semibold text-gray-900 dark:text-white">DotSpark</h1>
+        
+        <img 
+          src="/dotspark-logo-icon.jpeg" 
+          alt="DotSpark" 
+          className="w-8 h-8 rounded-full"
+        />
+        <h1 className="text-xl font-semibold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">DotSpark</h1>
         </div>
+        
+        {/* Center: Spacer */}
+        <div className="flex-1"></div>
 
         {/* Right: User Actions */}
         <div className="flex items-center gap-2">
@@ -463,12 +463,12 @@ export default function ChatPage() {
                   alt="DotSpark" 
                   className="w-16 h-16 mx-auto mb-4 rounded-2xl"
                 />
-                <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">
-                  How can I help you today?
+                <h2 className="text-2xl font-semibold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent mb-2">
+                  For the OG ThinQers
                 </h2>
                 <p className="text-gray-600 dark:text-gray-400">
                   {user 
-                    ? "I'll help you organize your thoughts into structured insights and actionable knowledge."
+                    ? "I'll help you organize your thoughts into structured Dots, Wheels and Chakras for sparking actionable insights."
                     : "Start chatting to see how I can help organize your thoughts. No signup required!"
                   }
                 </p>
