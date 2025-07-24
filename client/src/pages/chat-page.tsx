@@ -597,56 +597,56 @@ export default function ChatPage() {
                   <Button 
                     variant="outline" 
                     className="h-20 p-4 flex flex-col items-start justify-start text-left hover:bg-gray-50 dark:hover:bg-gray-800"
-                    onClick={() => setInputValue("Help me organize my thoughts about ")}
+                    onClick={() => setInputValue("Help me organize my thoughts into dots, wheels and chakras: ")}
                   >
                     <div className="flex items-center gap-2 mb-1">
                       <Brain className="w-4 h-4 text-orange-600" />
-                      <span className="font-medium">Organize thoughts</span>
+                      <span className="font-medium">Organize Thoughts</span>
                     </div>
                     <span className="text-sm text-gray-600 dark:text-gray-400">
-                      Structure ideas into clear insights
+                      Structure my thoughts into dots, wheels and chakras
                     </span>
                   </Button>
                   
                   <Button 
                     variant="outline" 
                     className="h-20 p-4 flex flex-col items-start justify-start text-left hover:bg-gray-50 dark:hover:bg-gray-800"
-                    onClick={() => setInputValue("I want to brainstorm ideas for ")}
+                    onClick={() => setInputValue("Generate and spark ideas using my thoughts about: ")}
                   >
                     <div className="flex items-center gap-2 mb-1">
-                      <Lightbulb className="w-4 h-4 text-orange-600" />
-                      <span className="font-medium">Brainstorm ideas</span>
+                      <Sparkles className="w-4 h-4 text-orange-600" />
+                      <span className="font-medium">Spark Ideas</span>
                     </div>
                     <span className="text-sm text-gray-600 dark:text-gray-400">
-                      Generate and explore new concepts
+                      Generate and Spark ideas using my thoughts
                     </span>
                   </Button>
                   
                   <Button 
                     variant="outline" 
                     className="h-20 p-4 flex flex-col items-start justify-start text-left hover:bg-gray-50 dark:hover:bg-gray-800"
-                    onClick={() => setInputValue("Help me set clear goals for ")}
+                    onClick={() => setInputValue("I have a question for DotSpark AI: ")}
                   >
                     <div className="flex items-center gap-2 mb-1">
-                      <Target className="w-4 h-4 text-orange-600" />
-                      <span className="font-medium">Set goals</span>
+                      <MessageSquare className="w-4 h-4 text-orange-600" />
+                      <span className="font-medium">Ask Anything</span>
                     </div>
                     <span className="text-sm text-gray-600 dark:text-gray-400">
-                      Define clear objectives and milestones
+                      Ask anything to DotSpark AI
                     </span>
                   </Button>
                   
                   <Button 
                     variant="outline" 
                     className="h-20 p-4 flex flex-col items-start justify-start text-left hover:bg-gray-50 dark:hover:bg-gray-800"
-                    onClick={() => setInputValue("I need help solving the problem of ")}
+                    onClick={() => setInputValue("Seek wisdom from ancient Indian knowledge about: ")}
                   >
                     <div className="flex items-center gap-2 mb-1">
-                      <Puzzle className="w-4 h-4 text-orange-600" />
-                      <span className="font-medium">Solve problems</span>
+                      <Brain className="w-4 h-4 text-orange-600" />
+                      <span className="font-medium">Ancient Wisdom</span>
                     </div>
                     <span className="text-sm text-gray-600 dark:text-gray-400">
-                      Break down challenges systematically
+                      Seek answers from ancient Indian wisdom
                     </span>
                   </Button>
                 </div>
