@@ -596,56 +596,56 @@ export default function ChatPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-2xl mb-8">
                   <Button 
                     variant="outline" 
-                    className="h-20 p-4 flex flex-col items-start justify-start text-left hover:bg-gray-50 dark:hover:bg-gray-800"
+                    className="h-24 p-4 flex flex-col items-start justify-between text-left hover:bg-gray-50 dark:hover:bg-gray-800"
                     onClick={() => setInputValue("Help me organize my thoughts into dots, wheels and chakras: ")}
                   >
-                    <div className="flex items-center gap-2 mb-1">
+                    <div className="flex items-center gap-2">
                       <Brain className="w-4 h-4 text-orange-600" />
                       <span className="font-medium">Organize Thoughts</span>
                     </div>
-                    <span className="text-sm text-gray-600 dark:text-gray-400">
+                    <span className="text-xs text-gray-600 dark:text-gray-400 leading-tight mt-1">
                       Structure my thoughts into dots, wheels and chakras
                     </span>
                   </Button>
                   
                   <Button 
                     variant="outline" 
-                    className="h-20 p-4 flex flex-col items-start justify-start text-left hover:bg-gray-50 dark:hover:bg-gray-800"
+                    className="h-24 p-4 flex flex-col items-start justify-between text-left hover:bg-gray-50 dark:hover:bg-gray-800"
                     onClick={() => setInputValue("Generate and spark ideas using my thoughts about: ")}
                   >
-                    <div className="flex items-center gap-2 mb-1">
+                    <div className="flex items-center gap-2">
                       <Sparkles className="w-4 h-4 text-orange-600" />
                       <span className="font-medium">Spark Ideas</span>
                     </div>
-                    <span className="text-sm text-gray-600 dark:text-gray-400">
-                      Generate and Spark ideas using my thoughts
+                    <span className="text-xs text-gray-600 dark:text-gray-400 leading-tight mt-1">
+                      Generate and spark ideas using my thoughts
                     </span>
                   </Button>
                   
                   <Button 
                     variant="outline" 
-                    className="h-20 p-4 flex flex-col items-start justify-start text-left hover:bg-gray-50 dark:hover:bg-gray-800"
+                    className="h-24 p-4 flex flex-col items-start justify-between text-left hover:bg-gray-50 dark:hover:bg-gray-800"
                     onClick={() => setInputValue("I have a question for DotSpark AI: ")}
                   >
-                    <div className="flex items-center gap-2 mb-1">
+                    <div className="flex items-center gap-2">
                       <MessageSquare className="w-4 h-4 text-orange-600" />
                       <span className="font-medium">Ask Anything</span>
                     </div>
-                    <span className="text-sm text-gray-600 dark:text-gray-400">
+                    <span className="text-xs text-gray-600 dark:text-gray-400 leading-tight mt-1">
                       Ask anything to DotSpark AI
                     </span>
                   </Button>
                   
                   <Button 
                     variant="outline" 
-                    className="h-20 p-4 flex flex-col items-start justify-start text-left hover:bg-gray-50 dark:hover:bg-gray-800"
+                    className="h-24 p-4 flex flex-col items-start justify-between text-left hover:bg-gray-50 dark:hover:bg-gray-800"
                     onClick={() => setInputValue("Seek wisdom from ancient Indian knowledge about: ")}
                   >
-                    <div className="flex items-center gap-2 mb-1">
+                    <div className="flex items-center gap-2">
                       <Brain className="w-4 h-4 text-orange-600" />
                       <span className="font-medium">Ancient Wisdom</span>
                     </div>
-                    <span className="text-sm text-gray-600 dark:text-gray-400">
+                    <span className="text-xs text-gray-600 dark:text-gray-400 leading-tight mt-1">
                       Seek answers from ancient Indian wisdom
                     </span>
                   </Button>
