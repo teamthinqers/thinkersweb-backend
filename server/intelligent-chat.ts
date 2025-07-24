@@ -175,7 +175,8 @@ export async function generateIntelligentChatResponse(
   userInput: string,
   messages: ConversationMessage[] = [],
   model: 'gpt-4o' | 'deepseek-chat' = 'gpt-4o',
-  userId?: number | null
+  userId?: number | null,
+  sessionId?: string | null
 ): Promise<{
   response: string;
   conversationState: ConversationState;
@@ -279,7 +280,14 @@ Does this capture your insight well? I can save this as your dot or adjust anyth
     }
 
     // Generate conversational response for maximum AI potential
-    const systemPrompt = `You are DotSpark AI, an exceptional AI companion that delivers maximum value through intelligent, insightful conversations.
+    const systemPrompt = `You are DotSpark AI, an exceptional AI companion that maintains conversation memory and delivers intelligent, insightful responses.
+
+CRITICAL - CONVERSATION CONTINUITY:
+${sessionId ? `- Session ID: ${sessionId} - Remember this ongoing conversation` : '- New conversation starting'}
+- You MUST maintain context from previous messages in this conversation
+- Reference earlier topics, insights, and themes naturally when relevant
+- Build upon previously discussed concepts rather than starting fresh
+- If user returns to an ongoing topic, acknowledge the connection to earlier discussion
 
 Your core principles:
 - Demonstrate the full potential of advanced AI by providing thoughtful, nuanced responses
@@ -301,8 +309,11 @@ Current context:
 - Conversation depth: ${conversationState.conversationDepth}/10
 - User sentiment: ${conversationState.lastUserSentiment}
 - Ready for insight capture: ${conversationState.isReadyForDot}
+- Message history length: ${messages.length} messages
 
-Deliver exceptional AI assistance that showcases the full potential of your capabilities. Be substantive, insightful, and genuinely helpful.`;
+MAINTAIN CONTINUITY: Reference and build upon the conversation history provided. Act as if this is one continuous conversation, not separate interactions.
+
+Deliver exceptional AI assistance that showcases the full potential of your capabilities. Be substantive, insightful, and genuinely helpful while maintaining conversation memory.`;
 
     let aiResponse: string;
 
@@ -310,7 +321,7 @@ Deliver exceptional AI assistance that showcases the full potential of your capa
       // Use DeepSeek for response generation
       const conversationHistory = [
         { role: "system", content: systemPrompt },
-        ...updatedMessages.slice(-6).map(m => ({ role: m.role, content: m.content }))
+        ...updatedMessages.slice(-12).map(m => ({ role: m.role, content: m.content }))
       ];
       
       try {
@@ -326,7 +337,7 @@ Deliver exceptional AI assistance that showcases the full potential of your capa
           model: "gpt-4o",
           messages: [
             { role: "system", content: systemPrompt },
-            ...updatedMessages.slice(-6).map(m => ({ role: m.role, content: m.content }))
+            ...updatedMessages.slice(-12).map(m => ({ role: m.role, content: m.content }))
           ],
           temperature: 0.5, // Faster, more focused responses
           max_tokens: 200,  // Allow slightly longer but still concise responses
@@ -340,7 +351,7 @@ Deliver exceptional AI assistance that showcases the full potential of your capa
         model: "gpt-4o",
         messages: [
           { role: "system", content: systemPrompt },
-          ...updatedMessages.slice(-6).map(m => ({ role: m.role, content: m.content }))
+          ...updatedMessages.slice(-12).map(m => ({ role: m.role, content: m.content }))
         ],
         temperature: 0.5, // Faster, more focused responses
         max_tokens: 200,  // Allow slightly longer but still concise responses

@@ -540,8 +540,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // Generate intelligent conversational response
-      const result = await generateIntelligentChatResponse(message, messages, model);
+      // Generate intelligent conversational response with session context
+      const result = await generateIntelligentChatResponse(message, messages, model, userId, sessionId);
 
       res.json({
         response: result.response,
