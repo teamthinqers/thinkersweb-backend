@@ -779,8 +779,14 @@ export default function ChatPage() {
               /* Welcome Screen */
               <div className={`${isMobile ? 'flex flex-col items-center justify-start pt-6 pb-2 px-3' : 'h-full flex flex-col items-center justify-center p-8'} max-w-2xl mx-auto`}>
                 <div className={`text-center ${isMobile ? 'mb-2' : 'mb-8'}`}>
-                  {/* Logo - Hidden on mobile for space */}
-                  {!isMobile && (
+                  {/* Logo - Mobile specific above heading, Desktop original position */}
+                  {isMobile ? (
+                    <img 
+                      src="/dotspark-logo-header.png" 
+                      alt="DotSpark" 
+                      className="w-12 h-12 mx-auto mb-4 rounded-2xl"
+                    />
+                  ) : (
                     <img 
                       src="/dotspark-logo-header.png" 
                       alt="DotSpark" 
