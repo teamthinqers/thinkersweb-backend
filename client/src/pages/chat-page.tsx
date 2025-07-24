@@ -524,9 +524,7 @@ export default function ChatPage() {
                       </span>
                     </div>
                     
-                    <div className="text-lg md:text-xl font-bold tracking-tight text-foreground mb-4">
-                      Your Natural Intelligence. <DynamicWord words={['Preserved', 'Enhanced', 'Amplified', 'Protected']} />
-                    </div>
+
                   </div>
                   
                   <p className="text-gray-600 dark:text-gray-400 text-lg">
