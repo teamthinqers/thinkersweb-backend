@@ -446,7 +446,12 @@ export default function LandingPage() {
               {/* Enhanced AI Chat button */}
               <Button 
                 size="sm"
-                onClick={() => setLocation("/chat")}
+                onClick={(e) => {
+                  handleAnyNavigation(e);
+                  if (!e.defaultPrevented) {
+                    setLocation("/chat");
+                  }
+                }}
                 className="relative bg-gradient-to-r from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 rounded-xl px-4 py-2"
               >
                 <div className="flex items-center gap-2">
@@ -456,11 +461,16 @@ export default function LandingPage() {
               </Button>
             </div>
             <div className="flex items-center space-x-3">
-              {/* PWA navigation with blinking brain icon and Social text */}
+              {/* PWA navigation with blinking brain icon and Social text - hide AI Chat for mobile */}
               <div className="flex sm:hidden gap-1">
                 <Button
                   size="sm"
-                  onClick={() => setLocation("/dashboard")}
+                  onClick={(e) => {
+                    handleAnyNavigation(e);
+                    if (!e.defaultPrevented) {
+                      setLocation("/dashboard");
+                    }
+                  }}
                 >
                   <div className="flex items-center gap-1">
                     <div className="relative">
@@ -477,7 +487,12 @@ export default function LandingPage() {
                 </Button>
                 <Button
                   size="sm"
-                  onClick={() => setLocation("/social")}
+                  onClick={(e) => {
+                    handleAnyNavigation(e);
+                    if (!e.defaultPrevented) {
+                      setLocation("/social");
+                    }
+                  }}
                   className="bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-md hover:bg-gradient-to-r hover:from-orange-600 hover:to-red-600 transition-all duration-300"
                 >
                   <div className="flex items-center gap-1">
@@ -488,15 +503,6 @@ export default function LandingPage() {
                       </div>
                     </div>
                     <span className="text-xs">Social</span>
-                  </div>
-                </Button>
-                <Button
-                  size="sm"
-                  onClick={() => setLocation("/chat")}
-                  className="bg-gradient-to-r from-purple-500 to-purple-600 text-white shadow-md hover:bg-gradient-to-r hover:from-purple-600 hover:to-purple-700 transition-all duration-300"
-                >
-                  <div className="flex items-center gap-1">
-                    <span className="text-xs">AI Chat</span>
                   </div>
                 </Button>
               </div>
@@ -734,19 +740,33 @@ export default function LandingPage() {
             {/* Action buttons with explanation boxes - Centered */}
             {user ? (
               <div className="flex flex-col gap-3 w-full md:w-2/3">
-                <Button size="lg" asChild className="w-full relative overflow-hidden group">
-                  <Link href="/dashboard" className="flex items-center justify-center">
-                    <Brain className="mr-2 h-5 w-5 relative z-10 animate-pulse" />
-                    <span className="relative z-10">Access my Neura</span>
-                    <ArrowRight className="ml-2 h-5 w-5 relative z-10 group-hover:translate-x-1 transition-transform" />
-                    <div className="absolute inset-0 bg-gradient-to-r from-primary to-primary/80 opacity-90 group-hover:opacity-100 transition-opacity"></div>
-                  </Link>
+                <Button 
+                  size="lg" 
+                  className="w-full relative overflow-hidden group"
+                  onClick={(e) => {
+                    handleAnyNavigation(e);
+                    if (!e.defaultPrevented) {
+                      setLocation("/dashboard");
+                    }
+                  }}
+                >
+                  <Brain className="mr-2 h-5 w-5 relative z-10 animate-pulse" />
+                  <span className="relative z-10">Access my Neura</span>
+                  <ArrowRight className="ml-2 h-5 w-5 relative z-10 group-hover:translate-x-1 transition-transform" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary to-primary/80 opacity-90 group-hover:opacity-100 transition-opacity"></div>
                 </Button>
-                <Button size="lg" asChild className="w-full relative overflow-hidden bg-gradient-to-r from-orange-500 to-red-500 hover:from-red-500 hover:to-orange-500 text-white border-0 shadow-lg shadow-orange-500/20 hover:shadow-red-500/30 transition-all duration-300 transform hover:scale-105">
-                  <Link href="/social" className="flex items-center justify-center">
-                    <Users className="mr-2 h-5 w-5 animate-pulse" />
-                    <span>Access DotSpark Social</span>
-                  </Link>
+                <Button 
+                  size="lg" 
+                  className="w-full relative overflow-hidden bg-gradient-to-r from-orange-500 to-red-500 hover:from-red-500 hover:to-orange-500 text-white border-0 shadow-lg shadow-orange-500/20 hover:shadow-red-500/30 transition-all duration-300 transform hover:scale-105"
+                  onClick={(e) => {
+                    handleAnyNavigation(e);
+                    if (!e.defaultPrevented) {
+                      setLocation("/social");
+                    }
+                  }}
+                >
+                  <Users className="mr-2 h-5 w-5 animate-pulse" />
+                  <span>Access DotSpark Social</span>
                 </Button>
               </div>
             ) : (
@@ -770,14 +790,21 @@ export default function LandingPage() {
                       </Link>
                     </Button>
                   ) : (
-                    <Button size="lg" asChild className="w-full mb-3 relative overflow-hidden bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-600 border-0 shadow-lg shadow-amber-600/20 hover:shadow-amber-700/30 transition-all duration-300 transform hover:scale-105 group">
-                      <Link href="/sectioned-dotspark-tuning" className="flex items-center justify-center relative z-10">
-                        <img src="/dotspark-logo-small.jpg" alt="DotSpark" className="mr-2 h-5 w-5 rounded-sm" />
-                        <span>Activate DotSpark</span>
-                        <div className="absolute top-0 left-0 w-full h-full overflow-hidden">
-                          <div className="h-4 w-4 absolute top-1/2 left-3 transform -translate-y-1/2 text-white opacity-80 animate-pulse" />
-                        </div>
-                      </Link>
+                    <Button 
+                      size="lg" 
+                      className="w-full mb-3 relative overflow-hidden bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-600 border-0 shadow-lg shadow-amber-600/20 hover:shadow-amber-700/30 transition-all duration-300 transform hover:scale-105 group"
+                      onClick={(e) => {
+                        handleAnyNavigation(e);
+                        if (!e.defaultPrevented) {
+                          setLocation("/sectioned-dotspark-tuning");
+                        }
+                      }}
+                    >
+                      <img src="/dotspark-logo-small.jpg" alt="DotSpark" className="mr-2 h-5 w-5 rounded-sm" />
+                      <span>Activate DotSpark</span>
+                      <div className="absolute top-0 left-0 w-full h-full overflow-hidden">
+                        <div className="h-4 w-4 absolute top-1/2 left-3 transform -translate-y-1/2 text-white opacity-80 animate-pulse" />
+                      </div>
                     </Button>
                   )}
                   
@@ -802,10 +829,18 @@ export default function LandingPage() {
                     asChild
                     className="w-full mb-3 relative overflow-hidden bg-gradient-to-r from-orange-500 to-red-500 hover:from-red-500 hover:to-orange-500 text-white border-0 shadow-lg shadow-orange-500/20 hover:shadow-red-500/30 transition-all duration-300 transform hover:scale-105"
                   >
-                    <Link href="/social" className="flex items-center justify-center">
+                    <div 
+                      className="flex items-center justify-center cursor-pointer"
+                      onClick={(e) => {
+                        handleAnyNavigation(e);
+                        if (!e.defaultPrevented) {
+                          setLocation("/social");
+                        }
+                      }}
+                    >
                       <Users className="h-5 w-5 mr-2 animate-pulse" />
                       <span>Social Neura</span>
-                    </Link>
+                    </div>
                   </Button>
 
                   <div className="text-sm text-muted-foreground text-left relative z-10">
@@ -843,10 +878,16 @@ export default function LandingPage() {
                 <h3 className="text-xl font-semibold mb-2">Sign In or Register</h3>
                 <p className="text-muted-foreground text-sm">Create your account to personalize your DotSpark experience.</p>
                 <div className="mt-auto pt-4">
-                  <Button asChild className="w-full !bg-gradient-to-r !from-amber-500 !to-orange-600 hover:!from-orange-600 hover:!to-amber-500 text-white border-0 shadow-md hover:shadow-lg transition-all duration-300">
-                    <Link href="/auth">
-                      Get Started
-                    </Link>
+                  <Button 
+                    className="w-full !bg-gradient-to-r !from-amber-500 !to-orange-600 hover:!from-orange-600 hover:!to-amber-500 text-white border-0 shadow-md hover:shadow-lg transition-all duration-300"
+                    onClick={(e) => {
+                      handleAnyNavigation(e);
+                      if (!e.defaultPrevented) {
+                        setLocation("/auth");
+                      }
+                    }}
+                  >
+                    Get Started
                   </Button>
                 </div>
               </div>
@@ -865,7 +906,12 @@ export default function LandingPage() {
                 <div className="mt-auto pt-4">
                   <Button 
                     className="w-full !bg-gradient-to-r !from-amber-500 !to-orange-600 hover:!from-orange-600 hover:!to-amber-500 text-white border-0 shadow-md hover:shadow-lg transition-all duration-300"
-                    onClick={() => setLocation("/sectioned-dotspark-tuning")}
+                    onClick={(e) => {
+                      handleAnyNavigation(e);
+                      if (!e.defaultPrevented) {
+                        setLocation("/sectioned-dotspark-tuning");
+                      }
+                    }}
                   >
                     Activate Dot
                   </Button>
@@ -885,7 +931,12 @@ export default function LandingPage() {
                 <p className="text-muted-foreground text-sm">Download the Web App on your mobile for a better experience.</p>
                 <div className="mt-auto pt-4">
                   <Button 
-                    onClick={() => setInstallDialogOpen(true)}
+                    onClick={(e) => {
+                      handleAnyNavigation(e);
+                      if (!e.defaultPrevented) {
+                        setInstallDialogOpen(true);
+                      }
+                    }}
                     className="w-full !bg-gradient-to-r !from-amber-500 !to-orange-600 hover:!from-orange-600 hover:!to-amber-500 text-white border-0 shadow-md hover:shadow-lg transition-all duration-300"
                   >
                     <Download className="h-5 w-5 mr-2" />
@@ -939,11 +990,17 @@ export default function LandingPage() {
                   </div>
                 </div>
                 
-                <Button asChild className="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white border-0 shadow-md hover:shadow-lg transition-all duration-300">
-                  <Link href="/my-neura">
-                    <Sparkles className="h-4 w-4 mr-2" />
-                    Start Your DotSpark Journey
-                  </Link>
+                <Button 
+                  className="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white border-0 shadow-md hover:shadow-lg transition-all duration-300"
+                  onClick={(e) => {
+                    handleAnyNavigation(e);
+                    if (!e.defaultPrevented) {
+                      setLocation("/my-neura");
+                    }
+                  }}
+                >
+                  <Sparkles className="h-4 w-4 mr-2" />
+                  Start Your DotSpark Journey
                 </Button>
               </div>
             </div>
