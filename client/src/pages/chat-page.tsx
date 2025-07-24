@@ -803,9 +803,7 @@ export default function ChatPage() {
                   <p className={`text-gray-600 dark:text-gray-400 ${isMobile ? 'text-base' : 'text-lg'}`}>
                     {isLoading 
                       ? "Loading..."
-                      : user 
-                        ? "I'll help you organize your thoughts into structured Dots, Wheels and Chakras for sparking actionable insights."
-                        : "Start chatting to see how I can help organize your thoughts. No signup required!"
+                      : "I'll help you organize your thoughts into structured Dots, Wheels and Chakras for sparking actionable insights."
                     }
                   </p>
                 </div>
