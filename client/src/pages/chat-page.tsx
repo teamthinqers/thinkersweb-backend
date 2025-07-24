@@ -763,7 +763,7 @@ export default function ChatPage() {
                   >
                     <div className="flex items-center gap-2">
                       <Brain className="w-5 h-5 text-orange-600" />
-                      <span className="font-semibold">🌟 Organize Thoughts</span>
+                      <span className="font-semibold">Organize Thoughts</span>
                     </div>
                     <span className="text-xs text-gray-600 dark:text-gray-400 leading-tight mt-1">
                       Transform insights into structured dots,<br />wheels & chakras automatically
