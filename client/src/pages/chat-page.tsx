@@ -371,8 +371,8 @@ export default function ChatPage() {
 
   return (
     <div className="h-screen flex bg-gradient-to-br from-white via-amber-50/30 to-orange-50/40 dark:from-slate-950 dark:via-slate-900/95 dark:to-slate-950">
-      {/* Enhanced ChatGPT-style Collapsible Sidebar */}
-      <div className={`${isSidebarOpen ? 'w-64' : 'w-0'} transition-all duration-300 ease-in-out overflow-hidden bg-gradient-to-b from-slate-50 via-white to-slate-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 border-r border-amber-200/40 dark:border-amber-700/40 shadow-xl`}>
+      {/* Enhanced ChatGPT-style Collapsible Sidebar - Hidden for mobile testing */}
+      <div className="w-0 transition-all duration-300 ease-in-out overflow-hidden bg-gradient-to-b from-slate-50 via-white to-slate-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 border-r border-amber-200/40 dark:border-amber-700/40 shadow-xl hidden">
         <div className="flex flex-col h-full w-64">
           {/* Enhanced Sidebar Header */}
           <div className="p-6 border-b border-amber-200/30 dark:border-amber-700/30 bg-gradient-to-r from-amber-50/50 to-orange-50/50 dark:from-amber-950/30 dark:to-orange-950/30">
@@ -476,8 +476,8 @@ export default function ChatPage() {
         </div>
       </div>
 
-      {/* Collapsed Icon Sidebar - ChatGPT Style */}
-      <div className={`${!isSidebarOpen ? 'w-16' : 'w-0'} transition-all duration-300 ease-in-out overflow-hidden bg-gradient-to-b from-slate-50 via-white to-slate-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 border-r border-amber-200/40 dark:border-amber-700/40 shadow-xl`}>
+      {/* Collapsed Icon Sidebar - Hidden for mobile testing */}
+      <div className="w-0 transition-all duration-300 ease-in-out overflow-hidden bg-gradient-to-b from-slate-50 via-white to-slate-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 border-r border-amber-200/40 dark:border-amber-700/40 shadow-xl hidden">
         <div className="flex flex-col h-full w-16 items-center py-4">
           {/* Brand Logo at Top */}
           <div className="mb-6">
@@ -569,15 +569,16 @@ export default function ChatPage() {
           <div className="flex items-center justify-between h-12 px-3 md:px-6">
             {/* Left: Menu + Model (Mobile: Sheet Menu, Desktop: Sidebar Toggle) */}
             <div className="flex items-center gap-2">
-              {/* Compact Mobile Menu Sheet */}
+              {/* Compact Mobile Menu Sheet - Always visible for testing */}
               <Sheet>
                 <SheetTrigger asChild>
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-8 w-8 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg md:hidden"
+                    className="h-8 w-8 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg"
+                    title="Open Menu"
                   >
-                    <Menu className="h-5 w-5" />
+                    <Menu className="h-4 w-4" />
                   </Button>
                 </SheetTrigger>
                 <SheetContent side="left" className="w-64 p-0 max-w-[75vw]">
@@ -659,18 +660,18 @@ export default function ChatPage() {
                 </SheetContent>
               </Sheet>
 
-              {/* Desktop Sidebar Toggle */}
+              {/* Desktop Sidebar Toggle - Hidden for now */}
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                className="h-9 w-9 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg hidden md:flex"
+                className="h-9 w-9 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg hidden"
               >
                 <Menu className="h-5 w-5" />
               </Button>
 
-              {/* Desktop Model Selector */}
-              <div className="hidden md:block">
+              {/* Desktop Model Selector - Hidden for mobile testing */}
+              <div className="hidden">
                 <ModelSelector
                   selectedModel={selectedModel}
                   onModelChange={setSelectedModel}
@@ -679,8 +680,8 @@ export default function ChatPage() {
               </div>
             </div>
           
-            {/* Center: Logo/Title (Mobile) */}
-            <div className="flex items-center gap-2 md:hidden">
+            {/* Center: Logo/Title (Always visible) */}
+            <div className="flex items-center gap-2">
               <img 
                 src="/dotspark-logo-icon.jpeg" 
                 alt="DotSpark" 
@@ -689,8 +690,8 @@ export default function ChatPage() {
               <span className="text-base font-medium text-gray-900 dark:text-white">DotSpark</span>
             </div>
 
-            {/* Right: User Actions (Desktop Only) */}
-            <div className="hidden md:flex items-center gap-2">
+            {/* Right: User Actions (Hidden for mobile testing) */}
+            <div className="hidden items-center gap-2">
               {user ? (
                 <Sheet>
                   <SheetTrigger asChild>
