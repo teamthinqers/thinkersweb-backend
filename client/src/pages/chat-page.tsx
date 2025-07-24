@@ -770,14 +770,14 @@ export default function ChatPage() {
                   <Button 
                     variant="outline" 
                     className="h-24 p-4 flex flex-col items-start justify-between text-left hover:bg-gray-50 dark:hover:bg-gray-800"
-                    onClick={() => setInputValue("I have a question for DotSpark AI: ")}
+                    onClick={() => setInputValue("Visualize this summary for me: ")}
                   >
                     <div className="flex items-center gap-2">
-                      <MessageSquare className="w-4 h-4 text-orange-600" />
-                      <span className="font-medium">Ask Anything</span>
+                      <Target className="w-4 h-4 text-orange-600" />
+                      <span className="font-medium">Visualize Anything</span>
                     </div>
                     <span className="text-xs text-gray-600 dark:text-gray-400 leading-tight mt-1">
-                      Ask anything to DotSpark AI
+                      Share any summary to visualize
                     </span>
                   </Button>
                   
