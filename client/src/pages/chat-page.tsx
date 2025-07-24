@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useToast } from '@/hooks/use-toast';
-import { Send, Loader2, ArrowLeft, Menu, Brain, Users, Settings, BarChart2, User, MessageSquare, Home, Sparkles, Mic, MicOff, Info, Lightbulb, Target, Puzzle, RotateCcw, Plus } from 'lucide-react';
+import { Send, Loader2, ArrowLeft, Menu, Brain, Users, Settings, BarChart2, User, MessageSquare, Home, Sparkles, Mic, MicOff, Info, Lightbulb, Target, Puzzle, RotateCcw, Plus, RefreshCw } from 'lucide-react';
 import { Link } from 'wouter';
 import { useAuth } from '@/hooks/use-auth';
 import { UsageLimitMessage } from '@/components/ui/usage-limit-message';
@@ -301,7 +301,7 @@ export default function ChatPage() {
                   variant="ghost" 
                   className="w-full justify-start text-sm h-10 bg-gradient-to-r from-amber-100/80 to-orange-100/80 dark:from-amber-950/50 dark:to-orange-950/50 text-amber-800 dark:text-amber-300 hover:from-amber-200 hover:to-orange-200 dark:hover:from-amber-900/70 dark:hover:to-orange-900/70 shadow-sm rounded-xl transition-all duration-300 border border-amber-200/50 dark:border-amber-700/50"
                 >
-                  <Plus className="w-4 h-4 mr-3" />
+                  <RefreshCw className="w-4 h-4 mr-3" />
                   <span className="font-medium">New Chat</span>
                 </Button>
               )}
@@ -426,7 +426,7 @@ export default function ChatPage() {
                 className="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white shadow-lg hover:shadow-xl border border-amber-500/30 dark:border-amber-400/40 px-4 py-2 rounded-xl transition-all duration-300 hover:scale-105 font-medium"
                 title="Start New Chat"
               >
-                <Plus className="h-4 w-4 mr-2" />
+                <RefreshCw className="h-4 w-4 mr-2" />
                 <span className="text-sm">New Chat</span>
               </Button>
             )}
