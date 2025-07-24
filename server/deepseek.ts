@@ -39,8 +39,8 @@ export async function generateDeepSeekResponse(
       {
         model: options.model || 'deepseek-chat',
         messages,
-        temperature: options.temperature || 0.7,
-        max_tokens: options.max_tokens || 2000,
+        temperature: options.temperature || 0.5,
+        max_tokens: options.max_tokens || 200,
         stream: false
       },
       {
@@ -48,7 +48,7 @@ export async function generateDeepSeekResponse(
           'Authorization': `Bearer ${apiKey}`,
           'Content-Type': 'application/json',
         },
-        timeout: 30000, // 30 second timeout
+        timeout: 15000, // 15 second timeout for faster responses
       }
     );
 
@@ -123,8 +123,8 @@ Always provide thorough, accurate responses while maintaining helpfulness and pr
   ];
 
   return await generateDeepSeekResponse(messages, {
-    temperature: 0.7,
-    max_tokens: 2000
+    temperature: 0.5, // Faster, more focused responses
+    max_tokens: 200   // Concise responses for better speed
   });
 }
 

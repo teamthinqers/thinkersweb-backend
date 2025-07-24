@@ -275,8 +275,8 @@ Deliver exceptional AI assistance that showcases the full potential of your capa
             { role: "system", content: systemPrompt },
             ...updatedMessages.slice(-6).map(m => ({ role: m.role, content: m.content }))
           ],
-          temperature: 0.7,
-          max_tokens: 150,
+          temperature: 0.5, // Faster, more focused responses
+          max_tokens: 200,  // Allow slightly longer but still concise responses
         });
         aiResponse = response.choices[0].message.content || 
           "That's interesting! Can you tell me more about what made this insight particularly meaningful to you?";
@@ -289,8 +289,8 @@ Deliver exceptional AI assistance that showcases the full potential of your capa
           { role: "system", content: systemPrompt },
           ...updatedMessages.slice(-6).map(m => ({ role: m.role, content: m.content }))
         ],
-        temperature: 0.7,
-        max_tokens: 150,
+        temperature: 0.5, // Faster, more focused responses
+        max_tokens: 200,  // Allow slightly longer but still concise responses
       });
       aiResponse = response.choices[0].message.content || 
         "That's interesting! Can you tell me more about what made this insight particularly meaningful to you?";

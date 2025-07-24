@@ -48,6 +48,7 @@ const TypewriterText = ({ text, onComplete, onProgress }: {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
   const [isSkipped, setIsSkipped] = useState(false);
+  const [chunkSize, setChunkSize] = useState(1);
 
   useEffect(() => {
     if (isSkipped || currentIndex >= text.length) {
@@ -60,14 +61,21 @@ const TypewriterText = ({ text, onComplete, onProgress }: {
     }
 
     const timer = setTimeout(() => {
-      // Single character typing like ChatGPT
-      setDisplayedText(text.slice(0, currentIndex + 1));
-      setCurrentIndex(currentIndex + 1);
+      // Start with single characters, then accelerate to chunks for faster completion
+      const nextIndex = Math.min(currentIndex + chunkSize, text.length);
+      setDisplayedText(text.slice(0, nextIndex));
+      setCurrentIndex(nextIndex);
+      
+      // Accelerate after initial characters for faster completion
+      if (currentIndex > 20) {
+        setChunkSize(Math.min(5, Math.ceil(text.length / 50))); // Adaptive chunk size
+      }
+      
       onProgress?.(); // Trigger scroll
-    }, 15); // Optimized timing - 15ms per character
+    }, chunkSize === 1 ? 8 : 3); // Faster timing for chunks
     
     return () => clearTimeout(timer);
-  }, [currentIndex, text, isComplete, onComplete, onProgress, isSkipped]);
+  }, [currentIndex, text, isComplete, onComplete, onProgress, isSkipped, chunkSize]);
 
   // Reset when text changes
   useEffect(() => {
@@ -75,6 +83,7 @@ const TypewriterText = ({ text, onComplete, onProgress }: {
     setCurrentIndex(0);
     setIsComplete(false);
     setIsSkipped(false);
+    setChunkSize(1);
   }, [text]);
 
   // Skip typing on click
@@ -222,10 +231,10 @@ export default function ChatPage() {
     setInputValue('');
     setIsLoading(true);
 
-    // Show typing indicator
+    // Show typing indicator with faster feedback
     const typingMessage: Message = {
       id: 'typing',
-      content: 'AI is thinking...',
+      content: 'DotSpark is thinking...',
       isUser: false,
       timestamp: new Date(),
     };
