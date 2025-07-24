@@ -180,6 +180,7 @@ Changelog:
   * ENHANCED chat response time - reduced AI model temperature to 0.5, optimized max_tokens to 200, reduced timeout to 15s
   * Improved both GPT-4 and DeepSeek response speed with focused, concise outputs
   * Enhanced system prompts to demonstrate maximum AI potential with faster delivery
+  * FIXED quick action button highlight states - replaced white unreadable text with amber-themed readable colors
   * Added infrastructure for 4 special prompts with customized handling (awaiting specific prompts)
   * Professional ChatGPT-quality typing animation with click-to-skip feature
   * Improved user message legibility with darker amber/orange gradient background

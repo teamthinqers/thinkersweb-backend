@@ -750,7 +750,7 @@ export default function ChatPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-2xl mb-8">
                   <Button 
                     variant="outline" 
-                    className="h-24 p-4 flex flex-col items-start justify-between text-left hover:bg-gray-50 dark:hover:bg-gray-800"
+                    className="h-24 p-4 flex flex-col items-start justify-between text-left hover:bg-amber-50 dark:hover:bg-amber-950/20 hover:text-amber-800 dark:hover:text-amber-200 hover:border-amber-300 dark:hover:border-amber-700 active:bg-amber-100 dark:active:bg-amber-900/30 active:text-amber-900 dark:active:text-amber-100 transition-all duration-200"
                     onClick={() => setInputValue("Help me organize my thoughts into dots, wheels and chakras: ")}
                   >
                     <div className="flex items-center gap-2">
@@ -764,7 +764,7 @@ export default function ChatPage() {
                   
                   <Button 
                     variant="outline" 
-                    className="h-24 p-4 flex flex-col items-start justify-between text-left hover:bg-gray-50 dark:hover:bg-gray-800"
+                    className="h-24 p-4 flex flex-col items-start justify-between text-left hover:bg-amber-50 dark:hover:bg-amber-950/20 hover:text-amber-800 dark:hover:text-amber-200 hover:border-amber-300 dark:hover:border-amber-700 active:bg-amber-100 dark:active:bg-amber-900/30 active:text-amber-900 dark:active:text-amber-100 transition-all duration-200"
                     onClick={() => setInputValue("Generate and spark ideas using my thoughts about: ")}
                   >
                     <div className="flex items-center gap-2">
@@ -778,7 +778,7 @@ export default function ChatPage() {
                   
                   <Button 
                     variant="outline" 
-                    className="h-24 p-4 flex flex-col items-start justify-between text-left hover:bg-gray-50 dark:hover:bg-gray-800"
+                    className="h-24 p-4 flex flex-col items-start justify-between text-left hover:bg-amber-50 dark:hover:bg-amber-950/20 hover:text-amber-800 dark:hover:text-amber-200 hover:border-amber-300 dark:hover:border-amber-700 active:bg-amber-100 dark:active:bg-amber-900/30 active:text-amber-900 dark:active:text-amber-100 transition-all duration-200"
                     onClick={() => setInputValue("Visualize this summary for me: ")}
                   >
                     <div className="flex items-center gap-2">
@@ -792,7 +792,7 @@ export default function ChatPage() {
                   
                   <Button 
                     variant="outline" 
-                    className="h-24 p-4 flex flex-col items-start justify-between text-left hover:bg-gray-50 dark:hover:bg-gray-800"
+                    className="h-24 p-4 flex flex-col items-start justify-between text-left hover:bg-amber-50 dark:hover:bg-amber-950/20 hover:text-amber-800 dark:hover:text-amber-200 hover:border-amber-300 dark:hover:border-amber-700 active:bg-amber-100 dark:active:bg-amber-900/30 active:text-amber-900 dark:active:text-amber-100 transition-all duration-200"
                     onClick={() => setInputValue("Seek wisdom from ancient Indian knowledge about: ")}
                   >
                     <div className="flex items-center gap-2">
