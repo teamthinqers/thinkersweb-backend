@@ -149,6 +149,7 @@ Changelog:
   * Fixed mobile browser welcome message display issue - resolved authentication state loading timing to properly show personalized message instead of default signup text
   * Enhanced mobile space optimization - removed logo, reduced "For the OG ThinQers" font size for single-line fit, smaller explanatory text and prompt buttons for no-scroll experience
   * Mobile interface now maximizes space efficiency while preserving desktop functionality
+  * Fixed sign-out functionality bug - empty onClick handler now properly connected to logout function
 - January 24, 2025. COMPLETED sophisticated enhanced chat system with advanced cognitive coaching:
   * Implemented comprehensive Anthropic-powered cognitive coaching API that analyzes thought structures with 85% confidence
   * Created advanced conversation assessment system that tracks readiness, intent clarity, and conversation depth

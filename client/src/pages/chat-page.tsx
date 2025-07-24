@@ -126,7 +126,7 @@ type DotProposal = {
 
 export default function ChatPage() {
   const { toast } = useToast();
-  const { user, isLoading } = useAuth();
+  const { user, isLoading, logout } = useAuth();
   
   // Load messages from localStorage or use default welcome message
   const loadMessages = (): Message[] => {
@@ -734,8 +734,20 @@ export default function ChatPage() {
                       <Button 
                         variant="outline" 
                         className="w-full text-sm"
-                        onClick={() => {
-                          // Sign out logic
+                        onClick={async () => {
+                          try {
+                            await logout();
+                            toast({
+                              title: "Signed Out",
+                              description: "You have been successfully signed out.",
+                            });
+                          } catch (error) {
+                            toast({
+                              title: "Sign Out Error",
+                              description: "There was an issue signing you out. Please try again.",
+                              variant: "destructive",
+                            });
+                          }
                         }}
                       >
                         Sign Out
