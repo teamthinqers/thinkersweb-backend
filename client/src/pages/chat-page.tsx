@@ -380,7 +380,7 @@ export default function ChatPage() {
           alt="DotSpark" 
           className="w-8 h-8 rounded-full"
         />
-        <h1 className="text-xl font-semibold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">DotSpark</h1>
+        <h1 className="text-xl font-semibold bg-gradient-to-r from-amber-700 to-amber-600 bg-clip-text text-transparent">DotSpark</h1>
         </div>
         
         {/* Center: Spacer */}
