@@ -138,12 +138,11 @@ DotSpark is a full-stack web application that serves as a personalized learning 
 ## Changelog
 ```
 Changelog:
-- January 24, 2025. COMPLETED sidebar logo compression fix:
-  * Fixed compressed DotSpark logo icons in mobile hamburger menu "My DotSpark" item
-  * Fixed compressed DotSpark logo icons in desktop dropdown menu "My DotSpark" item  
-  * Changed logo styling from object-contain to object-cover with rounded-full and flex-shrink-0
-  * Logos now display properly without compression across all sidebar navigation menus
-  * Header component logos were already properly configured and unchanged
+- January 24, 2025. COMPLETED mobile sidebar logo compression fix:
+  * Fixed compressed DotSpark logo icon specifically in mobile hamburger sidebar "My DotSpark" menu item
+  * Changed mobile sidebar logo styling from object-contain to object-cover with rounded-full and flex-shrink-0
+  * Mobile sidebar logo now displays properly without compression
+  * All other logo instances (header, desktop dropdown) remain unchanged from original working state
 - January 24, 2025. COMPLETED mobile browser dashboard header optimization:
   * Hidden Total Dots, Total Wheels, and Total Chakras count badges on mobile browsers using `hidden md:flex` classes
   * Desktop browsers maintain full visibility of all statistics in dashboard header

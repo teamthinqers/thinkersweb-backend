@@ -198,7 +198,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
               className="flex items-center gap-2 cursor-pointer active:opacity-80 transition-opacity"
               onClick={() => setLocation("/my-neura")}
             >
-              <img src="/dotspark-logo-icon.jpeg" alt="DotSpark" className="h-8 w-8 object-cover rounded-full flex-shrink-0" />
+              <img src="/dotspark-logo-icon.jpeg" alt="DotSpark" className="h-8 w-8 object-contain rounded" />
               <span className="text-lg font-semibold text-amber-700 dark:text-amber-300">DotSpark</span>
             </div>
             
@@ -311,7 +311,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 className="mr-4 text-gray-600 hover:text-primary"
                 onClick={() => setLocation("/my-neura")}
               >
-                <img src="/dotspark-logo-icon.jpeg" alt="DotSpark" className="h-5 w-5 mr-1 object-cover rounded-full flex-shrink-0" />
+                <img src="/dotspark-logo-icon.jpeg" alt="DotSpark" className="h-5 w-5 mr-1 object-contain rounded" />
                 <span className="hidden sm:inline">My DotSpark</span>
               </Button>
 

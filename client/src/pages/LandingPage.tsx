@@ -469,7 +469,7 @@ export default function LandingPage() {
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link href="/my-neura" className="cursor-pointer w-full">
-                      <img src="/dotspark-logo-icon.jpeg" alt="DotSpark" className="mr-2 h-4 w-4 object-cover rounded-full flex-shrink-0" />
+                      <img src="/dotspark-logo-icon.jpeg" alt="DotSpark" className="mr-2 h-4 w-4 object-contain rounded" />
                       My DotSpark
                     </Link>
                   </DropdownMenuItem>
