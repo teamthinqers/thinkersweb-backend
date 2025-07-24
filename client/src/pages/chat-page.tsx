@@ -381,22 +381,22 @@ export default function ChatPage() {
   return (
     <div className="h-screen flex bg-gradient-to-br from-white via-amber-50/30 to-orange-50/40 dark:from-slate-950 dark:via-slate-900/95 dark:to-slate-950">
       {/* Enhanced ChatGPT-style Collapsible Sidebar */}
-      <div className={`${isSidebarOpen ? 'w-64' : 'w-0'} transition-all duration-300 ease-in-out overflow-hidden bg-gradient-to-b from-slate-50 via-white to-slate-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 border-r border-amber-200/40 dark:border-amber-700/40 shadow-xl`}>
-        <div className="flex flex-col h-full w-64">
+      <div className={`${isSidebarOpen ? (isMobile ? 'w-48' : 'w-64') : 'w-0'} transition-all duration-300 ease-in-out overflow-hidden bg-gradient-to-b from-slate-50 via-white to-slate-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 border-r border-amber-200/40 dark:border-amber-700/40 shadow-xl`}>
+        <div className={`flex flex-col h-full ${isMobile ? 'w-48' : 'w-64'}`}>
           {/* Enhanced Sidebar Header */}
-          <div className="p-6 border-b border-amber-200/30 dark:border-amber-700/30 bg-gradient-to-r from-amber-50/50 to-orange-50/50 dark:from-amber-950/30 dark:to-orange-950/30">
-            <div className="flex items-center gap-3">
+          <div className={`${isMobile ? 'p-4' : 'p-6'} border-b border-amber-200/30 dark:border-amber-700/30 bg-gradient-to-r from-amber-50/50 to-orange-50/50 dark:from-amber-950/30 dark:to-orange-950/30`}>
+            <div className={`flex items-center ${isMobile ? 'gap-2' : 'gap-3'}`}>
               <img 
                 src="/dotspark-logo-icon.jpeg" 
                 alt="DotSpark" 
-                className="w-10 h-10 rounded-full"
+                className={`${isMobile ? 'w-8 h-8' : 'w-10 h-10'} rounded-full`}
               />
-              <h2 className="text-xl font-bold text-amber-700 dark:text-amber-400 tracking-tight">DotSpark</h2>
+              <h2 className={`${isMobile ? 'text-lg' : 'text-xl'} font-bold text-amber-700 dark:text-amber-400 tracking-tight`}>DotSpark</h2>
             </div>
           </div>
           
           {/* Enhanced Navigation */}
-          <nav className="flex-1 p-4">
+          <nav className={`flex-1 ${isMobile ? 'p-3' : 'p-4'}`}>
             <div className="space-y-2">
               {/* New Chat button - visible when messages exist */}
               {messages.length > 1 && (
@@ -500,19 +500,19 @@ export default function ChatPage() {
       </div>
 
       {/* Collapsed Icon Sidebar - ChatGPT Style */}
-      <div className={`${!isSidebarOpen ? 'w-16' : 'w-0'} transition-all duration-300 ease-in-out overflow-hidden bg-gradient-to-b from-slate-50 via-white to-slate-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 border-r border-amber-200/40 dark:border-amber-700/40 shadow-xl`}>
-        <div className="flex flex-col h-full w-16 items-center py-4">
+      <div className={`${!isSidebarOpen ? (isMobile ? 'w-12' : 'w-16') : 'w-0'} transition-all duration-300 ease-in-out overflow-hidden bg-gradient-to-b from-slate-50 via-white to-slate-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 border-r border-amber-200/40 dark:border-amber-700/40 shadow-xl`}>
+        <div className={`flex flex-col h-full ${isMobile ? 'w-12' : 'w-16'} items-center ${isMobile ? 'py-3' : 'py-4'}`}>
           {/* Brand Logo at Top */}
-          <div className="mb-6">
+          <div className={`${isMobile ? 'mb-4' : 'mb-6'}`}>
             <img 
               src="/dotspark-logo-icon.jpeg" 
               alt="DotSpark" 
-              className="w-8 h-8 rounded-full"
+              className={`${isMobile ? 'w-6 h-6' : 'w-8 h-8'} rounded-full`}
             />
           </div>
           
           {/* Navigation Icons */}
-          <div className="flex flex-col items-center space-y-3 flex-1">
+          <div className={`flex flex-col items-center ${isMobile ? 'space-y-2' : 'space-y-3'} flex-1`}>
             {/* New Chat Icon */}
             {messages.length > 1 && (
               <Button 
@@ -520,9 +520,9 @@ export default function ChatPage() {
                 variant="ghost" 
                 size="icon"
                 title="New Chat"
-                className="h-10 w-10 bg-gradient-to-r from-amber-100/80 to-orange-100/80 dark:from-amber-950/50 dark:to-orange-950/50 text-amber-800 dark:text-amber-300 hover:from-amber-200 hover:to-orange-200 dark:hover:from-amber-900/70 dark:hover:to-orange-900/70 shadow-sm rounded-xl transition-all duration-300 border border-amber-200/50 dark:border-amber-700/50"
+                className={`${isMobile ? 'h-8 w-8' : 'h-10 w-10'} bg-gradient-to-r from-amber-100/80 to-orange-100/80 dark:from-amber-950/50 dark:to-orange-950/50 text-amber-800 dark:text-amber-300 hover:from-amber-200 hover:to-orange-200 dark:hover:from-amber-900/70 dark:hover:to-orange-900/70 shadow-sm rounded-xl transition-all duration-300 border border-amber-200/50 dark:border-amber-700/50`}
               >
-                <RefreshCw className="w-4 h-4" />
+                <RefreshCw className={`${isMobile ? 'w-3 h-3' : 'w-4 h-4'}`} />
               </Button>
             )}
             
@@ -775,8 +775,8 @@ export default function ChatPage() {
           <div className="flex-1 overflow-y-auto">
             {messages.length === 1 ? (
               /* Welcome Screen */
-              <div className={`h-full flex flex-col items-center justify-center ${isMobile ? 'p-4' : 'p-8'} max-w-2xl mx-auto`}>
-                <div className={`text-center ${isMobile ? 'mb-4' : 'mb-8'}`}>
+              <div className={`h-full flex flex-col items-center justify-center ${isMobile ? 'p-3 pb-2' : 'p-8'} max-w-2xl mx-auto`}>
+                <div className={`text-center ${isMobile ? 'mb-3' : 'mb-8'}`}>
                   {/* Logo - Hidden on mobile for space */}
                   {!isMobile && (
                     <img 
@@ -787,7 +787,7 @@ export default function ChatPage() {
                   )}
                   
                   {/* Dynamic heading like About page */}
-                  <div className={`${isMobile ? 'mb-4' : 'mb-6'}`}>
+                  <div className={`${isMobile ? 'mb-3' : 'mb-6'}`}>
                     <div className={`${isMobile ? 'text-2xl' : 'text-3xl md:text-4xl lg:text-5xl'} font-bold tracking-tight mb-2`}>
                       <span className="font-sans tracking-normal text-center bg-clip-text text-transparent bg-gradient-to-r from-amber-700 via-amber-600 to-amber-500 dark:from-amber-400 dark:via-amber-300 dark:to-amber-200">
                         For the OG Thin<span className={`relative inline-block ${isMobile ? 'px-2 py-1' : 'px-3 py-2'} bg-gradient-to-br from-amber-600 to-amber-700 dark:from-amber-500 dark:to-amber-600 text-white font-bold rounded-lg shadow-lg border-2 border-amber-500/20`}>Q</span>ers
@@ -803,15 +803,15 @@ export default function ChatPage() {
                 </div>
                 
                 {/* Quick Action Cards */}
-                <div className={`grid grid-cols-1 md:grid-cols-2 ${isMobile ? 'gap-3' : 'gap-4'} w-full max-w-2xl ${isMobile ? 'mb-4' : 'mb-8'}`}>
+                <div className={`grid grid-cols-1 md:grid-cols-2 ${isMobile ? 'gap-2' : 'gap-4'} w-full max-w-2xl ${isMobile ? 'mb-3' : 'mb-8'}`}>
                   <Button 
                     variant="outline" 
-                    className={`${isMobile ? 'h-12 p-3 justify-center' : 'h-24 p-4 flex flex-col items-start justify-between text-left'} hover:bg-amber-50 dark:hover:bg-amber-950/20 hover:text-amber-800 dark:hover:text-amber-200 hover:border-amber-300 dark:hover:border-amber-700 active:bg-amber-100 dark:active:bg-amber-900/30 active:text-amber-900 dark:active:text-amber-100 transition-all duration-200`}
+                    className={`${isMobile ? 'h-10 p-2 justify-center' : 'h-24 p-4 flex flex-col items-start justify-between text-left'} hover:bg-amber-50 dark:hover:bg-amber-950/20 hover:text-amber-800 dark:hover:text-amber-200 hover:border-amber-300 dark:hover:border-amber-700 active:bg-amber-100 dark:active:bg-amber-900/30 active:text-amber-900 dark:active:text-amber-100 transition-all duration-200`}
                     onClick={() => setInputValue("Organize Thoughts")}
                   >
                     <div className="flex items-center gap-2">
                       <Brain className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'} text-orange-600`} />
-                      <span className={`${isMobile ? 'font-medium text-sm' : 'font-semibold'}`}>Organize Thoughts</span>
+                      <span className={`${isMobile ? 'font-medium text-xs' : 'font-semibold'}`}>Organize Thoughts</span>
                     </div>
                     {!isMobile && (
                       <span className="text-xs text-gray-600 dark:text-gray-400 leading-tight mt-1">
@@ -822,12 +822,12 @@ export default function ChatPage() {
                   
                   <Button 
                     variant="outline" 
-                    className={`${isMobile ? 'h-12 p-3 justify-center' : 'h-24 p-4 flex flex-col items-start justify-between text-left'} hover:bg-amber-50 dark:hover:bg-amber-950/20 hover:text-amber-800 dark:hover:text-amber-200 hover:border-amber-300 dark:hover:border-amber-700 active:bg-amber-100 dark:active:bg-amber-900/30 active:text-amber-900 dark:active:text-amber-100 transition-all duration-200`}
+                    className={`${isMobile ? 'h-10 p-2 justify-center' : 'h-24 p-4 flex flex-col items-start justify-between text-left'} hover:bg-amber-50 dark:hover:bg-amber-950/20 hover:text-amber-800 dark:hover:text-amber-200 hover:border-amber-300 dark:hover:border-amber-700 active:bg-amber-100 dark:active:bg-amber-900/30 active:text-amber-900 dark:active:text-amber-100 transition-all duration-200`}
                     onClick={() => setInputValue("Generate and spark ideas using my thoughts about: ")}
                   >
                     <div className="flex items-center gap-2">
                       <Sparkles className="w-4 h-4 text-orange-600" />
-                      <span className={`${isMobile ? 'font-medium text-sm' : 'font-medium'}`}>Spark Ideas</span>
+                      <span className={`${isMobile ? 'font-medium text-xs' : 'font-medium'}`}>Spark Ideas</span>
                     </div>
                     {!isMobile && (
                       <span className="text-xs text-gray-600 dark:text-gray-400 leading-tight mt-1">
@@ -838,12 +838,12 @@ export default function ChatPage() {
                   
                   <Button 
                     variant="outline" 
-                    className={`${isMobile ? 'h-12 p-3 justify-center' : 'h-24 p-4 flex flex-col items-start justify-between text-left'} hover:bg-amber-50 dark:hover:bg-amber-950/20 hover:text-amber-800 dark:hover:text-amber-200 hover:border-amber-300 dark:hover:border-amber-700 active:bg-amber-100 dark:active:bg-amber-900/30 active:text-amber-900 dark:active:text-amber-100 transition-all duration-200`}
+                    className={`${isMobile ? 'h-10 p-2 justify-center' : 'h-24 p-4 flex flex-col items-start justify-between text-left'} hover:bg-amber-50 dark:hover:bg-amber-950/20 hover:text-amber-800 dark:hover:text-amber-200 hover:border-amber-300 dark:hover:border-amber-700 active:bg-amber-100 dark:active:bg-amber-900/30 active:text-amber-900 dark:active:text-amber-100 transition-all duration-200`}
                     onClick={() => setInputValue("Visualize this summary for me: ")}
                   >
                     <div className="flex items-center gap-2">
                       <Target className="w-4 h-4 text-orange-600" />
-                      <span className={`${isMobile ? 'font-medium text-sm' : 'font-medium'}`}>Visualize Anything</span>
+                      <span className={`${isMobile ? 'font-medium text-xs' : 'font-medium'}`}>Visualize Anything</span>
                     </div>
                     {!isMobile && (
                       <span className="text-xs text-gray-600 dark:text-gray-400 leading-tight mt-1">
@@ -854,12 +854,12 @@ export default function ChatPage() {
                   
                   <Button 
                     variant="outline" 
-                    className={`${isMobile ? 'h-12 p-3 justify-center' : 'h-24 p-4 flex flex-col items-start justify-between text-left'} hover:bg-amber-50 dark:hover:bg-amber-950/20 hover:text-amber-800 dark:hover:text-amber-200 hover:border-amber-300 dark:hover:border-amber-700 active:bg-amber-100 dark:active:bg-amber-900/30 active:text-amber-900 dark:active:text-amber-100 transition-all duration-200`}
+                    className={`${isMobile ? 'h-10 p-2 justify-center' : 'h-24 p-4 flex flex-col items-start justify-between text-left'} hover:bg-amber-50 dark:hover:bg-amber-950/20 hover:text-amber-800 dark:hover:text-amber-200 hover:border-amber-300 dark:hover:border-amber-700 active:bg-amber-100 dark:active:bg-amber-900/30 active:text-amber-900 dark:active:text-amber-100 transition-all duration-200`}
                     onClick={() => setInputValue("Seek wisdom from ancient Indian knowledge about: ")}
                   >
                     <div className="flex items-center gap-2">
                       <Brain className="w-4 h-4 text-orange-600" />
-                      <span className={`${isMobile ? 'font-medium text-sm' : 'font-medium'}`}>Ancient Wisdom</span>
+                      <span className={`${isMobile ? 'font-medium text-xs' : 'font-medium'}`}>Ancient Wisdom</span>
                     </div>
                     {!isMobile && (
                       <span className="text-xs text-gray-600 dark:text-gray-400 leading-tight mt-1">
@@ -871,14 +871,14 @@ export default function ChatPage() {
               </div>
             ) : (
               /* Chat Messages */
-              <div className="space-y-3 p-3 pb-16">
+              <div className={`${isMobile ? 'space-y-2 p-2 pb-12' : 'space-y-3 p-3 pb-16'}`}>
                 {messages.map((message) => (
                   <div key={message.id} className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}>
-                    <div className={`max-w-2xl ${message.isUser ? 'ml-8' : 'mr-8'}`}>
+                    <div className={`max-w-2xl ${message.isUser ? (isMobile ? 'ml-4' : 'ml-8') : (isMobile ? 'mr-4' : 'mr-8')}`}>
                       <div className={`rounded-3xl ${
                         message.isUser 
-                          ? 'px-4 py-3 bg-orange-600 text-white shadow-lg' 
-                          : 'px-5 py-4 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm border border-gray-200/50 dark:border-gray-600/50'
+                          ? `${isMobile ? 'px-3 py-2' : 'px-4 py-3'} bg-orange-600 text-white shadow-lg` 
+                          : `${isMobile ? 'px-4 py-3' : 'px-5 py-4'} bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm border border-gray-200/50 dark:border-gray-600/50`
                       }`}>
                         {message.id === 'typing' ? (
                           <div className="flex items-center gap-2">
@@ -950,9 +950,9 @@ export default function ChatPage() {
           </div>
 
           {/* Input Area */}
-          <div className="border-t bg-white dark:bg-gray-900 p-4">
+          <div className={`border-t bg-white dark:bg-gray-900 ${isMobile ? 'p-3' : 'p-4'}`}>
             <div className="max-w-4xl mx-auto">
-              <div className="flex items-end gap-3">
+              <div className={`flex items-end ${isMobile ? 'gap-2' : 'gap-3'}`}>
                 {/* Input Field */}
                 <div className="flex-1 relative">
                   <textarea
@@ -962,15 +962,17 @@ export default function ChatPage() {
                     placeholder="Ask Anything to DotSpark"
                     disabled={isChatInputLoading || limitExceeded}
                     rows={1}
-                    className="w-full resize-none rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-4 py-3 pr-12 text-sm placeholder:text-gray-500 focus:border-orange-500 focus:ring-1 focus:ring-orange-500 focus:outline-none disabled:opacity-50 min-h-[52px] max-h-[200px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600"
+                    className={`w-full resize-none rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 ${isMobile ? 'px-3 py-2 pr-10' : 'px-4 py-3 pr-12'} text-sm placeholder:text-gray-500 focus:border-orange-500 focus:ring-1 focus:ring-orange-500 focus:outline-none disabled:opacity-50 ${isMobile ? 'min-h-[44px] max-h-[120px]' : 'min-h-[52px] max-h-[200px]'} overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600`}
                     style={{
                       lineHeight: '1.5',
                       height: 'auto',
                     }}
                     onInput={(e) => {
                       const target = e.target as HTMLTextAreaElement;
-                      target.style.height = '52px';
-                      target.style.height = Math.min(target.scrollHeight, 200) + 'px';
+                      const minHeight = isMobile ? 44 : 52;
+                      const maxHeight = isMobile ? 120 : 200;
+                      target.style.height = minHeight + 'px';
+                      target.style.height = Math.min(target.scrollHeight, maxHeight) + 'px';
                     }}
                   />
                   
@@ -995,7 +997,7 @@ export default function ChatPage() {
                   onClick={handleSendMessage}
                   disabled={!inputValue.trim() || isChatInputLoading || limitExceeded}
                   size="icon"
-                  className="shrink-0 h-[52px] w-[52px] bg-orange-600 hover:bg-orange-700 text-white disabled:opacity-50 rounded-xl"
+                  className={`shrink-0 ${isMobile ? 'h-[44px] w-[44px]' : 'h-[52px] w-[52px]'} bg-orange-600 hover:bg-orange-700 text-white disabled:opacity-50 rounded-xl`}
                 >
                   {isChatInputLoading ? (
                     <Loader2 className="h-5 w-5 animate-spin" />
