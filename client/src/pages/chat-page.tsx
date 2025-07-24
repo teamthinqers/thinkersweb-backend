@@ -5,6 +5,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useToast } from '@/hooks/use-toast';
 import { Send, Loader2, ArrowLeft, Menu, Brain, Users, Settings, BarChart2, User, MessageSquare, Home, Sparkles, Mic, MicOff, Info, Lightbulb, Target, Puzzle, RotateCcw, Plus, RefreshCw, Phone } from 'lucide-react';
+import { SiWhatsapp } from 'react-icons/si';
 import { Link } from 'wouter';
 import { useAuth } from '@/hooks/use-auth';
 import { UsageLimitMessage } from '@/components/ui/usage-limit-message';
@@ -446,18 +447,13 @@ export default function ChatPage() {
               <Button 
                 variant="ghost" 
                 size="sm" 
-                className={`p-3 rounded-xl transition-all duration-300 hover:scale-105 ${
-                  isNeuraActive 
-                    ? 'bg-green-100/80 dark:bg-green-900/30 hover:bg-green-200/70 dark:hover:bg-green-800/40' 
-                    : 'hover:bg-amber-100/70 dark:hover:bg-amber-900/30'
-                }`}
+                className="relative p-3 bg-gradient-to-r from-amber-100 to-orange-100 dark:from-amber-900/50 dark:to-orange-900/50 hover:from-amber-200 hover:to-orange-200 dark:hover:from-amber-800/60 dark:hover:to-orange-800/60 rounded-xl transition-all duration-300 hover:scale-105 shadow-sm border border-amber-200/50 dark:border-amber-700/50"
                 title="My Neura"
               >
-                <Brain className={`h-5 w-5 transition-all duration-300 ${
-                  isNeuraActive 
-                    ? 'text-green-700 dark:text-green-400 animate-pulse' 
-                    : 'text-amber-700 dark:text-amber-400'
-                }`} />
+                <Brain className="h-5 w-5 text-amber-700 dark:text-amber-300 transition-all duration-300" />
+                {isNeuraActive && (
+                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full animate-pulse shadow-lg border-2 border-white dark:border-gray-800"></div>
+                )}
               </Button>
             </Link>
 
@@ -466,10 +462,10 @@ export default function ChatPage() {
               <Button 
                 variant="ghost" 
                 size="sm" 
-                className="p-3 hover:bg-orange-100/70 dark:hover:bg-orange-900/30 rounded-xl transition-all duration-300 hover:scale-105"
+                className="p-3 bg-gradient-to-r from-orange-100 to-red-100 dark:from-orange-900/50 dark:to-red-900/50 hover:from-orange-200 hover:to-red-200 dark:hover:from-orange-800/60 dark:hover:to-red-800/60 rounded-xl transition-all duration-300 hover:scale-105 shadow-sm border border-orange-200/50 dark:border-orange-700/50"
                 title="DotSpark Social"
               >
-                <Users className="h-5 w-5 text-orange-600 dark:text-orange-400" />
+                <Users className="h-5 w-5 text-orange-600 dark:text-orange-300" />
               </Button>
             </Link>
 
@@ -477,11 +473,11 @@ export default function ChatPage() {
             <Button 
               variant="ghost" 
               size="sm" 
-              className="p-3 hover:bg-green-100/70 dark:hover:bg-green-900/30 rounded-xl transition-all duration-300 hover:scale-105"
+              className="p-3 bg-gradient-to-r from-green-100 to-emerald-100 dark:from-green-900/50 dark:to-emerald-900/50 hover:from-green-200 hover:to-emerald-200 dark:hover:from-green-800/60 dark:hover:to-emerald-800/60 rounded-xl transition-all duration-300 hover:scale-105 shadow-sm border border-green-200/50 dark:border-green-700/50"
               title="WhatsApp Contact"
               onClick={() => window.open('https://wa.me/+917208061002?text=Hi%20DotSpark%2C%20I%20would%20need%20your%20assistance%20in%20saving%20a%20dot', '_blank')}
             >
-              <Phone className="h-5 w-5 text-green-600 dark:text-green-400" />
+              <SiWhatsapp className="h-5 w-5 text-green-600 dark:text-green-300" />
             </Button>
 
             {user ? (
