@@ -302,7 +302,7 @@ export default function ChatPage() {
                 <Button 
                   onClick={handleRefreshChat}
                   variant="ghost" 
-                  className="w-full justify-start text-sm h-10 bg-gradient-to-r from-purple-100/80 to-violet-100/80 dark:from-purple-950/50 dark:to-violet-950/50 text-purple-800 dark:text-purple-300 hover:from-purple-200 hover:to-violet-200 dark:hover:from-purple-900/70 dark:hover:to-violet-900/70 shadow-sm rounded-xl transition-all duration-300 border border-purple-200/50 dark:border-purple-700/50"
+                  className="w-full justify-start text-sm h-10 bg-gradient-to-r from-amber-100/80 to-orange-100/80 dark:from-amber-950/50 dark:to-orange-950/50 text-amber-800 dark:text-amber-300 hover:from-amber-200 hover:to-orange-200 dark:hover:from-amber-900/70 dark:hover:to-orange-900/70 shadow-sm rounded-xl transition-all duration-300 border border-amber-200/50 dark:border-amber-700/50"
                 >
                   <Plus className="w-4 h-4 mr-3" />
                   <span className="font-medium">New Chat</span>
@@ -429,7 +429,7 @@ export default function ChatPage() {
             {messages.length > 1 && (
               <Button 
                 onClick={handleRefreshChat}
-                className="bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white shadow-lg hover:shadow-xl border border-purple-500/30 dark:border-purple-400/40 px-4 py-2 rounded-xl transition-all duration-300 hover:scale-105 font-medium"
+                className="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white shadow-lg hover:shadow-xl border border-amber-500/30 dark:border-amber-400/40 px-4 py-2 rounded-xl transition-all duration-300 hover:scale-105 font-medium"
                 title="Start New Chat"
               >
                 <Plus className="h-4 w-4 mr-2" />
