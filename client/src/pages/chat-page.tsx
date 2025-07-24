@@ -135,7 +135,8 @@ export default function ChatPage() {
         const parsed = JSON.parse(savedMessages);
         return parsed.map((msg: any) => ({
           ...msg,
-          timestamp: new Date(msg.timestamp)
+          timestamp: new Date(msg.timestamp),
+          isNewMessage: false // Prevent typewriter effect for saved messages
         }));
       } catch (error) {
         console.error('Error parsing saved messages:', error);
@@ -148,11 +149,13 @@ export default function ChatPage() {
         content: 'Welcome to DotSpark! 🌟 I\'m your AI companion. Share your thoughts with me and I\'ll help you organize them into structured insights. Try "Organize Thoughts" to get started - no signup required!',
         isUser: false,
         timestamp: new Date(),
+        isNewMessage: false, // Welcome message should not use typewriter
       },
     ];
   };
   
   const [messages, setMessages] = useState<Message[]>(loadMessages());
+  const [sessionId] = useState<string>(() => Date.now().toString());
   const [isLoading, setIsLoading] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [predictiveResponse, setPredictiveResponse] = useState<string>('');
@@ -160,7 +163,12 @@ export default function ChatPage() {
 
   // Save messages to localStorage whenever messages change
   useEffect(() => {
-    localStorage.setItem('dotspark-chat-messages', JSON.stringify(messages));
+    // Remove isNewMessage flag before saving to prevent typewriter on reload
+    const messagesToSave = messages.map(msg => ({
+      ...msg,
+      isNewMessage: false
+    }));
+    localStorage.setItem('dotspark-chat-messages', JSON.stringify(messagesToSave));
   }, [messages]);
 
   // Update welcome message based on authentication status
@@ -750,12 +758,12 @@ export default function ChatPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-2xl mb-8">
                   <Button 
                     variant="outline" 
-                    className="h-24 p-4 flex flex-col items-start justify-between text-left hover:bg-amber-50 dark:hover:bg-amber-950/20 hover:text-amber-800 dark:hover:text-amber-200 hover:border-amber-300 dark:hover:border-amber-700 active:bg-amber-100 dark:active:bg-amber-900/30 active:text-amber-900 dark:active:text-amber-100 transition-all duration-200 border-2 border-amber-300 dark:border-amber-700 bg-amber-50/50 dark:bg-amber-950/30 ring-2 ring-amber-200 dark:ring-amber-800"
+                    className="h-24 p-4 flex flex-col items-start justify-between text-left hover:bg-amber-50 dark:hover:bg-amber-950/20 hover:text-amber-800 dark:hover:text-amber-200 hover:border-amber-300 dark:hover:border-amber-700 active:bg-amber-100 dark:active:bg-amber-900/30 active:text-amber-900 dark:active:text-amber-100 transition-all duration-200"
                     onClick={() => setInputValue("Organize Thoughts")}
                   >
                     <div className="flex items-center gap-2">
                       <Brain className="w-5 h-5 text-orange-600" />
-                      <span className="font-semibold text-amber-800 dark:text-amber-200">🌟 Organize Thoughts</span>
+                      <span className="font-semibold">🌟 Organize Thoughts</span>
                     </div>
                     <span className="text-xs text-gray-600 dark:text-gray-400 leading-tight mt-1">
                       Transform insights into structured dots,<br />wheels & chakras automatically
@@ -813,7 +821,7 @@ export default function ChatPage() {
                     <div className={`max-w-2xl ${message.isUser ? 'ml-8' : 'mr-8'}`}>
                       <div className={`rounded-3xl ${
                         message.isUser 
-                          ? 'px-4 py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg' 
+                          ? 'px-4 py-3 bg-orange-600 text-white shadow-lg' 
                           : 'px-5 py-4 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm border border-gray-200/50 dark:border-gray-600/50'
                       }`}>
                         {message.id === 'typing' ? (
