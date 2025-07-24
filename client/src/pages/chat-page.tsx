@@ -613,10 +613,10 @@ export default function ChatPage() {
                 {messages.map((message) => (
                   <div key={message.id} className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}>
                     <div className={`max-w-2xl ${message.isUser ? 'ml-8' : 'mr-8'}`}>
-                      <div className={`rounded-2xl px-4 py-3 ${
+                      <div className={`rounded-3xl px-5 py-4 ${
                         message.isUser 
                           ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg' 
-                          : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm border border-gray-200 dark:border-gray-700'
+                          : 'bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm border border-gray-200/50 dark:border-gray-600/50'
                       }`}>
                         {message.id === 'typing' ? (
                           <div className="flex items-center gap-2">
@@ -625,7 +625,9 @@ export default function ChatPage() {
                           </div>
                         ) : (
                           <>
-                            <p className="whitespace-pre-wrap text-sm leading-relaxed">{message.content}</p>
+                            <div className="prose prose-sm max-w-none dark:prose-invert [&_p]:leading-7 [&_p]:mb-3 [&_p:last-child]:mb-0">
+                              <div className="whitespace-pre-wrap text-sm leading-7 text-gray-800 dark:text-gray-100">{message.content}</div>
+                            </div>
                             {message.dotProposal && message.needsConfirmation && (
                               <div className="mt-3 p-3 bg-white/10 rounded-xl border border-white/20">
                                 <h4 className="font-semibold mb-2 text-sm">{message.dotProposal.heading}</h4>
