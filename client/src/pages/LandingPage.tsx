@@ -7,8 +7,6 @@ import {
   Smartphone, Monitor, Share, Plus, Home as HomeIcon
 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
-import { useMobileDetection } from "@/hooks/useMobileDetection";
-import { MobileExperienceDialog } from "@/components/MobileExperienceDialog";
 
 
 
@@ -96,11 +94,9 @@ import {
 
 export default function LandingPage() {
   const { user, logout } = useAuth();
-  const { isMobile, isPWA, switchToDesktopMode, triggerPWAInstall } = useMobileDetection();
   const [location, setLocation] = useLocation();
   const [contactDialogOpen, setContactDialogOpen] = useState(false);
   const [installDialogOpen, setInstallDialogOpen] = useState(false);
-  const [isMobileDialogOpen, setIsMobileDialogOpen] = useState(false);
   const [whatsAppNumber, setWhatsAppNumber] = useState<string | null>(null);
   const { 
     isWhatsAppConnected, 
@@ -310,22 +306,6 @@ export default function LandingPage() {
     // Force a status refresh when component mounts
     forceStatusRefresh();
   }, [forceStatusRefresh]);
-
-  // Mobile experience handlers - simplified
-  const handleAnyNavigation = (e: React.MouseEvent) => {
-    // Simple check: if mobile browser (not PWA), show popup
-    const isMobileBrowser = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone === true;
-    
-    if (isMobileBrowser && !isStandalone) {
-      e.preventDefault();
-      e.stopPropagation();
-      setIsMobileDialogOpen(true);
-      return false;
-    }
-  };
-
-  // Removed handleDesktopMode and handleInstallApp - dialog is now informational only
   
   const handleLogout = async () => {
     try {
@@ -335,24 +315,13 @@ export default function LandingPage() {
     }
   };
 
-  // Debug: Log mobile detection status
-  useEffect(() => {
-    console.log('LandingPage mobile status:', { isMobile, isPWA });
-  }, [isMobile, isPWA]);
-
   return (
     <div className="flex flex-col min-h-screen">
-      {/* Debug info - remove in production */}
-      {process.env.NODE_ENV === 'development' && (
-        <div className="fixed top-0 right-0 z-50 bg-red-500 text-white p-2 text-xs">
-          Mobile: {/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent).toString()}
-        </div>
-      )}
       {/* Enhanced Header with modern design */}
       <header className="border-b border-gradient-to-r from-amber-300/20 via-orange-300/30 to-amber-300/20 bg-gradient-to-r from-white via-amber-50/90 to-orange-50/80 dark:from-slate-950 dark:via-slate-900/95 dark:to-slate-950 backdrop-blur-lg supports-[backdrop-filter]:bg-background/90 sticky top-0 z-50 shadow-xl shadow-amber-500/15 dark:shadow-amber-900/20">
         <div className="container flex h-20 items-center justify-between px-6 sm:px-8 md:px-10">
-          {/* Logo section - centered on mobile, left-aligned on desktop */}
-          <div className="flex items-center py-3 md:flex-none flex-1 justify-center md:justify-start">
+          {/* Logo section - enhanced with padding and subtle background */}
+          <div className="flex items-center py-3">
             <div 
               className="flex items-center px-6 py-4 rounded-xl hover:bg-gradient-to-r hover:from-amber-100/60 hover:to-orange-100/60 dark:hover:from-amber-900/40 dark:hover:to-orange-900/40 cursor-pointer transition-all duration-300 ease-in-out hover:shadow-lg hover:scale-105 group" 
               onClick={() => setLocation("/about")}
@@ -361,30 +330,16 @@ export default function LandingPage() {
             </div>
           </div>
           
-          <div className="flex items-center gap-3 md:gap-4 md:flex-none">
+          <div className="flex items-center gap-3 md:gap-4">
             {/* Desktop navigation */}
             <div className="hidden md:flex items-center gap-4">
-              <a 
-                href="/about" 
-                className="text-sm font-semibold text-slate-600 hover:text-amber-700 dark:text-slate-400 dark:hover:text-amber-400 transition-all duration-300 px-4 py-2 rounded-xl hover:bg-amber-100/50 dark:hover:bg-amber-900/30 hover:shadow-md cursor-pointer"
-                onClick={(e) => {
-                  handleAnyNavigation(e);
-                  if (!e.defaultPrevented) {
-                    setLocation("/about");
-                  }
-                }}
-              >
+              <Link href="/about" className="text-sm font-semibold text-slate-600 hover:text-amber-700 dark:text-slate-400 dark:hover:text-amber-400 transition-all duration-300 px-4 py-2 rounded-xl hover:bg-amber-100/50 dark:hover:bg-amber-900/30 hover:shadow-md">
                 Home
-              </a>
+              </Link>
               {/* My DotSpark button - enhanced */}
               <Button 
                 size="sm"
-                onClick={(e) => {
-                  handleAnyNavigation(e);
-                  if (!e.defaultPrevented) {
-                    setLocation("/my-neura");
-                  }
-                }}
+                onClick={() => setLocation("/my-neura")}
                 className="relative bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 rounded-xl px-4 py-2"
               >
                 <div className="flex items-center gap-2">
@@ -395,12 +350,7 @@ export default function LandingPage() {
               {/* Enhanced Neura button */}
               <Button 
                 size="sm"
-                onClick={(e) => {
-                  handleAnyNavigation(e);
-                  if (!e.defaultPrevented) {
-                    setLocation("/dashboard");
-                  }
-                }}
+                onClick={() => setLocation("/dashboard")}
                 className="relative bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 rounded-xl px-4 py-2"
               >
                 <div className="flex items-center gap-2">
@@ -417,12 +367,7 @@ export default function LandingPage() {
               {/* Enhanced Social button */}
               <Button 
                 size="sm"
-                onClick={(e) => {
-                  handleAnyNavigation(e);
-                  if (!e.defaultPrevented) {
-                    setLocation("/social");
-                  }
-                }}
+                onClick={() => setLocation("/social")}
                 className="relative bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 rounded-xl px-4 py-2"
               >
                 <div className="flex items-center gap-2">
@@ -438,12 +383,7 @@ export default function LandingPage() {
               {/* Enhanced AI Chat button */}
               <Button 
                 size="sm"
-                onClick={(e) => {
-                  handleAnyNavigation(e);
-                  if (!e.defaultPrevented) {
-                    setLocation("/chat");
-                  }
-                }}
+                onClick={() => setLocation("/chat")}
                 className="relative bg-gradient-to-r from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 rounded-xl px-4 py-2"
               >
                 <div className="flex items-center gap-2">
@@ -452,17 +392,12 @@ export default function LandingPage() {
                 </div>
               </Button>
             </div>
-            <div className="flex items-center space-x-3 md:flex-none">
-              {/* PWA navigation with blinking brain icon and Social text - hide AI Chat for mobile */}
-              <div className="flex sm:hidden gap-1 absolute right-6">
+            <div className="flex items-center space-x-3">
+              {/* PWA navigation with blinking brain icon and Social text */}
+              <div className="flex sm:hidden gap-1">
                 <Button
                   size="sm"
-                  onClick={(e) => {
-                    handleAnyNavigation(e);
-                    if (!e.defaultPrevented) {
-                      setLocation("/dashboard");
-                    }
-                  }}
+                  onClick={() => setLocation("/dashboard")}
                 >
                   <div className="flex items-center gap-1">
                     <div className="relative">
@@ -479,12 +414,7 @@ export default function LandingPage() {
                 </Button>
                 <Button
                   size="sm"
-                  onClick={(e) => {
-                    handleAnyNavigation(e);
-                    if (!e.defaultPrevented) {
-                      setLocation("/social");
-                    }
-                  }}
+                  onClick={() => setLocation("/social")}
                   className="bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-md hover:bg-gradient-to-r hover:from-orange-600 hover:to-red-600 transition-all duration-300"
                 >
                   <div className="flex items-center gap-1">
@@ -495,6 +425,15 @@ export default function LandingPage() {
                       </div>
                     </div>
                     <span className="text-xs">Social</span>
+                  </div>
+                </Button>
+                <Button
+                  size="sm"
+                  onClick={() => setLocation("/chat")}
+                  className="bg-gradient-to-r from-purple-500 to-purple-600 text-white shadow-md hover:bg-gradient-to-r hover:from-purple-600 hover:to-purple-700 transition-all duration-300"
+                >
+                  <div className="flex items-center gap-1">
+                    <span className="text-xs">AI Chat</span>
                   </div>
                 </Button>
               </div>
@@ -732,33 +671,19 @@ export default function LandingPage() {
             {/* Action buttons with explanation boxes - Centered */}
             {user ? (
               <div className="flex flex-col gap-3 w-full md:w-2/3">
-                <Button 
-                  size="lg" 
-                  className="w-full relative overflow-hidden group"
-                  onClick={(e) => {
-                    handleAnyNavigation(e);
-                    if (!e.defaultPrevented) {
-                      setLocation("/dashboard");
-                    }
-                  }}
-                >
-                  <Brain className="mr-2 h-5 w-5 relative z-10 animate-pulse" />
-                  <span className="relative z-10">Access my Neura</span>
-                  <ArrowRight className="ml-2 h-5 w-5 relative z-10 group-hover:translate-x-1 transition-transform" />
-                  <div className="absolute inset-0 bg-gradient-to-r from-primary to-primary/80 opacity-90 group-hover:opacity-100 transition-opacity"></div>
+                <Button size="lg" asChild className="w-full relative overflow-hidden group">
+                  <Link href="/dashboard" className="flex items-center justify-center">
+                    <Brain className="mr-2 h-5 w-5 relative z-10 animate-pulse" />
+                    <span className="relative z-10">Access my Neura</span>
+                    <ArrowRight className="ml-2 h-5 w-5 relative z-10 group-hover:translate-x-1 transition-transform" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-primary to-primary/80 opacity-90 group-hover:opacity-100 transition-opacity"></div>
+                  </Link>
                 </Button>
-                <Button 
-                  size="lg" 
-                  className="w-full relative overflow-hidden bg-gradient-to-r from-orange-500 to-red-500 hover:from-red-500 hover:to-orange-500 text-white border-0 shadow-lg shadow-orange-500/20 hover:shadow-red-500/30 transition-all duration-300 transform hover:scale-105"
-                  onClick={(e) => {
-                    handleAnyNavigation(e);
-                    if (!e.defaultPrevented) {
-                      setLocation("/social");
-                    }
-                  }}
-                >
-                  <Users className="mr-2 h-5 w-5 animate-pulse" />
-                  <span>Access DotSpark Social</span>
+                <Button size="lg" asChild className="w-full relative overflow-hidden bg-gradient-to-r from-orange-500 to-red-500 hover:from-red-500 hover:to-orange-500 text-white border-0 shadow-lg shadow-orange-500/20 hover:shadow-red-500/30 transition-all duration-300 transform hover:scale-105">
+                  <Link href="/social" className="flex items-center justify-center">
+                    <Users className="mr-2 h-5 w-5 animate-pulse" />
+                    <span>Access DotSpark Social</span>
+                  </Link>
                 </Button>
               </div>
             ) : (
@@ -782,21 +707,14 @@ export default function LandingPage() {
                       </Link>
                     </Button>
                   ) : (
-                    <Button 
-                      size="lg" 
-                      className="w-full mb-3 relative overflow-hidden bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-600 border-0 shadow-lg shadow-amber-600/20 hover:shadow-amber-700/30 transition-all duration-300 transform hover:scale-105 group"
-                      onClick={(e) => {
-                        handleAnyNavigation(e);
-                        if (!e.defaultPrevented) {
-                          setLocation("/sectioned-dotspark-tuning");
-                        }
-                      }}
-                    >
-                      <img src="/dotspark-logo-small.jpg" alt="DotSpark" className="mr-2 h-5 w-5 rounded-sm" />
-                      <span>Activate DotSpark</span>
-                      <div className="absolute top-0 left-0 w-full h-full overflow-hidden">
-                        <div className="h-4 w-4 absolute top-1/2 left-3 transform -translate-y-1/2 text-white opacity-80 animate-pulse" />
-                      </div>
+                    <Button size="lg" asChild className="w-full mb-3 relative overflow-hidden bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-600 border-0 shadow-lg shadow-amber-600/20 hover:shadow-amber-700/30 transition-all duration-300 transform hover:scale-105 group">
+                      <Link href="/sectioned-dotspark-tuning" className="flex items-center justify-center relative z-10">
+                        <img src="/dotspark-logo-small.jpg" alt="DotSpark" className="mr-2 h-5 w-5 rounded-sm" />
+                        <span>Activate DotSpark</span>
+                        <div className="absolute top-0 left-0 w-full h-full overflow-hidden">
+                          <div className="h-4 w-4 absolute top-1/2 left-3 transform -translate-y-1/2 text-white opacity-80 animate-pulse" />
+                        </div>
+                      </Link>
                     </Button>
                   )}
                   
@@ -821,18 +739,10 @@ export default function LandingPage() {
                     asChild
                     className="w-full mb-3 relative overflow-hidden bg-gradient-to-r from-orange-500 to-red-500 hover:from-red-500 hover:to-orange-500 text-white border-0 shadow-lg shadow-orange-500/20 hover:shadow-red-500/30 transition-all duration-300 transform hover:scale-105"
                   >
-                    <div 
-                      className="flex items-center justify-center cursor-pointer"
-                      onClick={(e) => {
-                        handleAnyNavigation(e);
-                        if (!e.defaultPrevented) {
-                          setLocation("/social");
-                        }
-                      }}
-                    >
+                    <Link href="/social" className="flex items-center justify-center">
                       <Users className="h-5 w-5 mr-2 animate-pulse" />
                       <span>Social Neura</span>
-                    </div>
+                    </Link>
                   </Button>
 
                   <div className="text-sm text-muted-foreground text-left relative z-10">
@@ -870,16 +780,10 @@ export default function LandingPage() {
                 <h3 className="text-xl font-semibold mb-2">Sign In or Register</h3>
                 <p className="text-muted-foreground text-sm">Create your account to personalize your DotSpark experience.</p>
                 <div className="mt-auto pt-4">
-                  <Button 
-                    className="w-full !bg-gradient-to-r !from-amber-500 !to-orange-600 hover:!from-orange-600 hover:!to-amber-500 text-white border-0 shadow-md hover:shadow-lg transition-all duration-300"
-                    onClick={(e) => {
-                      handleAnyNavigation(e);
-                      if (!e.defaultPrevented) {
-                        setLocation("/auth");
-                      }
-                    }}
-                  >
-                    Get Started
+                  <Button asChild className="w-full !bg-gradient-to-r !from-amber-500 !to-orange-600 hover:!from-orange-600 hover:!to-amber-500 text-white border-0 shadow-md hover:shadow-lg transition-all duration-300">
+                    <Link href="/auth">
+                      Get Started
+                    </Link>
                   </Button>
                 </div>
               </div>
@@ -898,12 +802,7 @@ export default function LandingPage() {
                 <div className="mt-auto pt-4">
                   <Button 
                     className="w-full !bg-gradient-to-r !from-amber-500 !to-orange-600 hover:!from-orange-600 hover:!to-amber-500 text-white border-0 shadow-md hover:shadow-lg transition-all duration-300"
-                    onClick={(e) => {
-                      handleAnyNavigation(e);
-                      if (!e.defaultPrevented) {
-                        setLocation("/sectioned-dotspark-tuning");
-                      }
-                    }}
+                    onClick={() => setLocation("/sectioned-dotspark-tuning")}
                   >
                     Activate Dot
                   </Button>
@@ -923,12 +822,7 @@ export default function LandingPage() {
                 <p className="text-muted-foreground text-sm">Download the Web App on your mobile for a better experience.</p>
                 <div className="mt-auto pt-4">
                   <Button 
-                    onClick={(e) => {
-                      handleAnyNavigation(e);
-                      if (!e.defaultPrevented) {
-                        setInstallDialogOpen(true);
-                      }
-                    }}
+                    onClick={() => setInstallDialogOpen(true)}
                     className="w-full !bg-gradient-to-r !from-amber-500 !to-orange-600 hover:!from-orange-600 hover:!to-amber-500 text-white border-0 shadow-md hover:shadow-lg transition-all duration-300"
                   >
                     <Download className="h-5 w-5 mr-2" />
@@ -982,17 +876,11 @@ export default function LandingPage() {
                   </div>
                 </div>
                 
-                <Button 
-                  className="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white border-0 shadow-md hover:shadow-lg transition-all duration-300"
-                  onClick={(e) => {
-                    handleAnyNavigation(e);
-                    if (!e.defaultPrevented) {
-                      setLocation("/my-neura");
-                    }
-                  }}
-                >
-                  <Sparkles className="h-4 w-4 mr-2" />
-                  Start Your DotSpark Journey
+                <Button asChild className="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white border-0 shadow-md hover:shadow-lg transition-all duration-300">
+                  <Link href="/my-neura">
+                    <Sparkles className="h-4 w-4 mr-2" />
+                    Start Your DotSpark Journey
+                  </Link>
                 </Button>
               </div>
             </div>
@@ -1302,22 +1190,12 @@ export default function LandingPage() {
             <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center mobile-stack">
               {!user ? (
                 /* Show "Get Started Now" button for non-signed users */
-                <Button 
-                  size="lg" 
-                  variant="default" 
-                  className="bg-white text-primary font-bold shadow-lg btn-bounce group relative overflow-hidden border-2 border-white hover:bg-white/90 w-full sm:w-auto" 
-                  onClick={(e) => {
-                    handleAnyNavigation(e);
-                    if (!e.defaultPrevented) {
-                      setLocation("/auth");
-                    }
-                  }}
-                >
-                  <span className="px-4 md:px-8 flex items-center justify-center">
+                <Button size="lg" variant="default" className="bg-white text-primary font-bold shadow-lg btn-bounce group relative overflow-hidden border-2 border-white hover:bg-white/90 w-full sm:w-auto" asChild>
+                  <Link href="/auth" className="px-4 md:px-8 flex items-center justify-center">
                     <span className="relative z-10">Get Started Now</span>
                     <ArrowRight className="ml-2 h-5 w-5 relative z-10 group-hover:translate-x-1 transition-transform" />
                     <span className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity"></span>
-                  </span>
+                  </Link>
                 </Button>
               ) : (
                 /* Show "Explore DotSpark Neura" button for signed-in users */
@@ -1325,12 +1203,7 @@ export default function LandingPage() {
                   size="lg" 
                   variant="default" 
                   className="bg-white text-primary font-bold shadow-lg btn-bounce group relative overflow-hidden border-2 border-white hover:bg-white/90 w-full sm:w-auto"
-                  onClick={(e) => {
-                    handleAnyNavigation(e);
-                    if (!e.defaultPrevented) {
-                      window.open("https://www.dotspark.in/dashboard", "_blank");
-                    }
-                  }}
+                  onClick={() => window.open("https://www.dotspark.in/dashboard", "_blank")}
                 >
                   <span className="px-4 md:px-8 flex items-center justify-center">
                     <span className="relative z-10">Explore DotSpark Neura</span>
@@ -1487,11 +1360,6 @@ export default function LandingPage() {
         </DialogContent>
       </Dialog>
 
-      {/* Mobile Experience Dialog */}
-      <MobileExperienceDialog 
-        isOpen={isMobileDialogOpen}
-        onClose={() => setIsMobileDialogOpen(false)}
-      />
 
     </div>
   );

@@ -56,7 +56,6 @@ import { useAuth } from "@/hooks/use-auth";
 import { PWAInstallButton } from "@/components/ui/pwa-install-button";
 import { IosPwaInstallPrompt } from "@/components/ui/ios-pwa-install-prompt";
 import { isRunningAsStandalone } from "@/lib/pwaUtils";
-import { MobileRedirect } from "@/components/MobileRedirect";
 
 
 // Protected route component - requires authentication
@@ -343,7 +342,6 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-        <MobileRedirect />
         {showNetworkWarning && (
           <div className="fixed top-0 left-0 right-0 p-2 bg-amber-500 text-black z-50 text-center text-sm">
             <p>

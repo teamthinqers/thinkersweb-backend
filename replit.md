@@ -138,15 +138,6 @@ DotSpark is a full-stack web application that serves as a personalized learning 
 ## Changelog
 ```
 Changelog:
-- January 24, 2025. COMPLETED simple mobile experience with navigation popup system:
-  * Implemented direct mobile detection using navigator.userAgent regex for iOS/Android devices
-  * Created mobile popup dialog that appears when mobile users try to navigate away from info page
-  * Added "Desktop mode or Install Web App for better experience" popup message as requested
-  * Applied mobile navigation detection to all buttons and links (header nav, CTA buttons, main actions)
-  * Simplified mobile detection logic to work immediately without complex state management
-  * Mobile users now see the home/info page normally but get popup on any navigation attempt
-  * System works specifically for mobile browsers (excludes PWA standalone mode)
-  * Added debug indicator showing mobile detection status for testing purposes
 - January 24, 2025. COMPLETED sophisticated enhanced chat system with advanced cognitive coaching:
   * Implemented comprehensive Anthropic-powered cognitive coaching API that analyzes thought structures with 85% confidence
   * Created advanced conversation assessment system that tracks readiness, intent clarity, and conversation depth
