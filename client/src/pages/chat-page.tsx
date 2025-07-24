@@ -146,7 +146,7 @@ export default function ChatPage() {
     return [
       {
         id: '1',
-        content: 'Welcome to DotSpark! 🌟 I\'m your AI companion. Share your thoughts with me and I\'ll help you organize them into structured insights. Try "Organize Thoughts" to get started - no signup required!',
+        content: 'Welcome to DotSpark! 🌟 I\'m your thinking companion. Share your thoughts with me and I\'ll help you organize them into structured insights. Try "Organize Thoughts" to get started - no signup required!',
         isUser: false,
         timestamp: new Date(),
         isNewMessage: false, // Welcome message should not use typewriter
@@ -174,8 +174,8 @@ export default function ChatPage() {
   // Update welcome message based on authentication status
   useEffect(() => {
     const welcomeMessage = user 
-      ? 'Welcome back to DotSpark! 🌟 I\'m your AI companion, ready to help you capture, organize, and transform your thoughts into powerful insights. What\'s on your mind today?'
-      : 'Welcome to DotSpark! 🌟 I\'m your AI companion. Share your thoughts with me and I\'ll help you organize them into structured insights. Try me out - no signup required!';
+      ? 'Welcome back to DotSpark! 🌟 I\'m your thinking companion, ready to help you capture, organize, and transform your thoughts into powerful insights. What\'s on your mind today?'
+      : 'Welcome to DotSpark! 🌟 I\'m your thinking companion. Share your thoughts with me and I\'ll help you organize them into structured insights. Try me out - no signup required!';
     
     setMessages(prev => prev.map(msg => 
       msg.id === '1' ? { ...msg, content: welcomeMessage } : msg
