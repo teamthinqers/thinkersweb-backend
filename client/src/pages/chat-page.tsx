@@ -206,6 +206,7 @@ export default function ChatPage() {
   // Set default message only for first-time users
   const [inputValue, setInputValue] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showBackButton, setShowBackButton] = useState(false);
   const [isNeuraActive, setIsNeuraActive] = useState(false);
   const [selectedModel, setSelectedModel] = useState<AIModel>('gpt-4o');
