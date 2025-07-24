@@ -173,12 +173,12 @@ Changelog:
   * Added automatic "New Chat" option in left menu when chat is active for seamless conversation management
   * Enhanced New Chat button legibility with improved amber/orange gradient background and better contrast while maintaining brand consistency
 - January 24, 2025. ENHANCED chat responses with ChatGPT-style typewriter effect for improved user experience:
-  * Implemented smooth character-by-character typing animation with 8ms delay for super-fast display
+  * Implemented smooth character-by-character typing animation with 25ms delay matching ChatGPT experience
   * Added realistic blinking cursor effect during AI response typing
-  * Multiple characters typed simultaneously (3 chars per cycle) to maintain speed while preserving visual appeal
+  * Single character typing for natural reading flow without distraction
   * Auto-scroll functionality follows typing progress for seamless reading experience
   * Click-to-skip feature allows users to instantly show full message if desired
-  * Optimized for performance - enhances experience without slowing down interaction
+  * Improved user message legibility with darker amber/orange gradient background
   * Professional ChatGPT-quality typing animation maintains DotSpark brand consistency
 - January 24, 2025. COMPLETED transformation to chat-first experience:
   * Made ChatPage the new primary homepage (/) - fully accessible without authentication

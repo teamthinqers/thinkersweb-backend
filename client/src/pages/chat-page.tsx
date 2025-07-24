@@ -60,12 +60,11 @@ const TypewriterText = ({ text, onComplete, onProgress }: {
     }
 
     const timer = setTimeout(() => {
-      // Type multiple characters at once for speed, but maintain visual effect
-      const charsToAdd = Math.min(3, text.length - currentIndex);
-      setDisplayedText(text.slice(0, currentIndex + charsToAdd));
-      setCurrentIndex(currentIndex + charsToAdd);
+      // Single character typing like ChatGPT
+      setDisplayedText(text.slice(0, currentIndex + 1));
+      setCurrentIndex(currentIndex + 1);
       onProgress?.(); // Trigger scroll
-    }, 8); // Super fast - just 8ms delay
+    }, 25); // ChatGPT-like timing - 25ms per character
     
     return () => clearTimeout(timer);
   }, [currentIndex, text, isComplete, onComplete, onProgress, isSkipped]);
@@ -801,7 +800,7 @@ export default function ChatPage() {
                     <div className={`max-w-2xl ${message.isUser ? 'ml-8' : 'mr-8'}`}>
                       <div className={`rounded-3xl ${
                         message.isUser 
-                          ? 'px-4 py-3 bg-gradient-to-r from-amber-400/90 to-orange-400/90 text-white shadow-lg' 
+                          ? 'px-4 py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg' 
                           : 'px-5 py-4 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm border border-gray-200/50 dark:border-gray-600/50'
                       }`}>
                         {message.id === 'typing' ? (
