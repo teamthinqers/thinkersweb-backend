@@ -817,8 +817,8 @@ export default function ChatPage() {
                     className={`${isMobile ? 'h-8 p-1.5 justify-center' : 'h-24 p-4 flex flex-col items-start justify-between text-left'} hover:bg-amber-50 dark:hover:bg-amber-950/20 hover:text-amber-800 dark:hover:text-amber-200 hover:border-amber-300 dark:hover:border-amber-700 active:bg-amber-100 dark:active:bg-amber-900/30 active:text-amber-900 dark:active:text-amber-100 transition-all duration-200`}
                     onClick={() => setInputValue("Organize Thoughts")}
                   >
-                    <div className="flex items-center gap-2">
-                      <Brain className={`${isMobile ? 'w-3 h-3' : 'w-5 h-5'} text-orange-600`} />
+                    <div className="flex items-center justify-center gap-2">
+                      <Brain className={`${isMobile ? 'w-3 h-3' : 'w-4 h-4'} text-orange-600 flex-shrink-0`} />
                       <span className={`${isMobile ? 'font-medium text-xs' : 'font-semibold'}`}>Organize Thoughts</span>
                     </div>
                     {!isMobile && (
@@ -833,8 +833,8 @@ export default function ChatPage() {
                     className={`${isMobile ? 'h-8 p-1.5 justify-center' : 'h-24 p-4 flex flex-col items-start justify-between text-left'} hover:bg-amber-50 dark:hover:bg-amber-950/20 hover:text-amber-800 dark:hover:text-amber-200 hover:border-amber-300 dark:hover:border-amber-700 active:bg-amber-100 dark:active:bg-amber-900/30 active:text-amber-900 dark:active:text-amber-100 transition-all duration-200`}
                     onClick={() => setInputValue("Generate and spark ideas using my thoughts about: ")}
                   >
-                    <div className="flex items-center gap-2">
-                      <Sparkles className={`${isMobile ? 'w-3 h-3' : 'w-4 h-4'} text-orange-600`} />
+                    <div className="flex items-center justify-center gap-2">
+                      <Sparkles className={`${isMobile ? 'w-3 h-3' : 'w-4 h-4'} text-orange-600 flex-shrink-0`} />
                       <span className={`${isMobile ? 'font-medium text-xs' : 'font-medium'}`}>Spark Ideas</span>
                     </div>
                     {!isMobile && (
@@ -849,8 +849,8 @@ export default function ChatPage() {
                     className={`${isMobile ? 'h-8 p-1.5 justify-center' : 'h-24 p-4 flex flex-col items-start justify-between text-left'} hover:bg-amber-50 dark:hover:bg-amber-950/20 hover:text-amber-800 dark:hover:text-amber-200 hover:border-amber-300 dark:hover:border-amber-700 active:bg-amber-100 dark:active:bg-amber-900/30 active:text-amber-900 dark:active:text-amber-100 transition-all duration-200`}
                     onClick={() => setInputValue("Visualize this summary for me: ")}
                   >
-                    <div className="flex items-center gap-2">
-                      <Target className={`${isMobile ? 'w-3 h-3' : 'w-4 h-4'} text-orange-600`} />
+                    <div className="flex items-center justify-center gap-2">
+                      <Target className={`${isMobile ? 'w-3 h-3' : 'w-4 h-4'} text-orange-600 flex-shrink-0`} />
                       <span className={`${isMobile ? 'font-medium text-xs' : 'font-medium'}`}>Visualize Anything</span>
                     </div>
                     {!isMobile && (
@@ -865,8 +865,8 @@ export default function ChatPage() {
                     className={`${isMobile ? 'h-8 p-1.5 justify-center' : 'h-24 p-4 flex flex-col items-start justify-between text-left'} hover:bg-amber-50 dark:hover:bg-amber-950/20 hover:text-amber-800 dark:hover:text-amber-200 hover:border-amber-300 dark:hover:border-amber-700 active:bg-amber-100 dark:active:bg-amber-900/30 active:text-amber-900 dark:active:text-amber-100 transition-all duration-200`}
                     onClick={() => setInputValue("Seek wisdom from ancient Indian knowledge about: ")}
                   >
-                    <div className="flex items-center gap-2">
-                      <Brain className={`${isMobile ? 'w-3 h-3' : 'w-4 h-4'} text-orange-600`} />
+                    <div className="flex items-center justify-center gap-2">
+                      <Brain className={`${isMobile ? 'w-3 h-3' : 'w-4 h-4'} text-orange-600 flex-shrink-0`} />
                       <span className={`${isMobile ? 'font-medium text-xs' : 'font-medium'}`}>Ancient Wisdom</span>
                     </div>
                     {!isMobile && (
