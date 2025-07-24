@@ -151,7 +151,7 @@ Changelog:
   * Mobile interface now maximizes space efficiency while preserving desktop functionality
   * Fixed sign-out functionality bug - empty onClick handler now properly connected to logout function
   * Simplified welcome message to show consistent personalized text for all users regardless of authentication status
-  * Fixed authentication redirect issue - users now redirect to homepage (/) instead of getting stuck on dashboard page after sign-in
+  * Fixed authentication redirect issue - users now redirect to https://www.dotspark.in after successful sign-in
 - January 24, 2025. COMPLETED sophisticated enhanced chat system with advanced cognitive coaching:
   * Implemented comprehensive Anthropic-powered cognitive coaching API that analyzes thought structures with 85% confidence
   * Created advanced conversation assessment system that tracks readiness, intent clarity, and conversation depth

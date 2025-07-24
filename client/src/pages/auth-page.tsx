@@ -54,18 +54,22 @@ export default function AuthPage() {
     if (typeof window !== 'undefined') {
       const urlParams = new URLSearchParams(window.location.search);
       const redirect = urlParams.get('redirect');
-      return redirect ? `/${redirect}` : '/';
+      if (redirect) {
+        return `/${redirect}`;
+      }
+      // Redirect to the main DotSpark domain
+      window.location.href = 'https://www.dotspark.in';
+      return;
     }
-    return '/';
+    window.location.href = 'https://www.dotspark.in';
   };
 
   // Redirect if already logged in
   useEffect(() => {
     if (user) {
-      const redirectPath = getRedirectPath();
-      setLocation(redirectPath);
+      getRedirectPath();
     }
-  }, [user, setLocation]);
+  }, [user]);
   
   // Login form
   const loginForm = useForm<z.infer<typeof loginSchema>>({
@@ -103,8 +107,7 @@ export default function AuthPage() {
           title: "Login successful", 
           description: "Welcome back to DotSpark!",
         });
-        const redirectPath = getRedirectPath();
-        setLocation(redirectPath);
+        getRedirectPath();
       } else {
         const error = await response.text();
         toast({
@@ -176,9 +179,8 @@ export default function AuthPage() {
       
       console.log("Google login completed successfully");
       
-      // Navigate to the redirect path after successful login
-      const redirectPath = getRedirectPath();
-      setLocation(redirectPath);
+      // Navigate to the main DotSpark domain after successful login
+      getRedirectPath();
       
     } catch (error) {
       console.error("Google sign in error:", error);
