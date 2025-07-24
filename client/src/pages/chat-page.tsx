@@ -311,10 +311,7 @@ export default function ChatPage() {
                     alt="DotSpark" 
                     className="w-8 h-8 rounded-full"
                   />
-                  <div>
-                    <h2 className="font-semibold text-gray-900 dark:text-white">DotSpark</h2>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">AI Assistant</p>
-                  </div>
+                  <h2 className="font-semibold bg-gradient-to-r from-amber-700 to-amber-600 bg-clip-text text-transparent">DotSpark</h2>
                 </div>
               </div>
               
