@@ -873,7 +873,7 @@ export default function ChatPage() {
               </div>
             ) : (
               /* Chat Messages */
-              <div className={`${isMobile ? 'space-y-2 p-2 pb-2' : 'space-y-3 p-3 pb-3'}`}>
+              <div className={`${isMobile ? 'space-y-1 px-2 py-1 pb-1' : 'space-y-3 p-3 pb-3'}`}>
                 {messages.map((message) => (
                   <div key={message.id} className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}>
                     <div className={`max-w-2xl ${message.isUser ? (isMobile ? 'ml-4' : 'ml-8') : (isMobile ? 'mr-4' : 'mr-8')}`}>
