@@ -729,8 +729,23 @@ export default function ChatPage() {
                     onKeyDown={handleKeyDown}
                     placeholder="Message DotSpark..."
                     disabled={isLoading || limitExceeded}
-                    className="min-h-[44px] resize-none border-gray-300 dark:border-gray-600 focus:border-orange-500 focus:ring-orange-500"
+                    className="min-h-[44px] resize-none border-gray-300 dark:border-gray-600 focus:border-orange-500 focus:ring-orange-500 pr-12"
                   />
+                  
+                  {/* Voice Button inside input */}
+                  {!inputValue.trim() && (
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 w-8 text-gray-500 hover:text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-900/20"
+                      onClick={() => {
+                        // Voice functionality to be implemented
+                        console.log('Voice recording clicked');
+                      }}
+                    >
+                      <Mic className="h-4 w-4" />
+                    </Button>
+                  )}
                 </div>
                 
                 {/* Send Button */}
@@ -738,7 +753,7 @@ export default function ChatPage() {
                   onClick={handleSendMessage}
                   disabled={!inputValue.trim() || isLoading || limitExceeded}
                   size="icon"
-                  className="shrink-0 bg-orange-600 hover:bg-orange-700 text-white"
+                  className="shrink-0 bg-orange-600 hover:bg-orange-700 text-white disabled:opacity-50"
                 >
                   {isLoading ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
