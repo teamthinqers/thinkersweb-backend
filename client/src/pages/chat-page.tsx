@@ -799,10 +799,10 @@ export default function ChatPage() {
                 {messages.map((message) => (
                   <div key={message.id} className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}>
                     <div className={`max-w-2xl ${message.isUser ? 'ml-8' : 'mr-8'}`}>
-                      <div className={`rounded-3xl px-5 py-4 ${
+                      <div className={`rounded-3xl ${
                         message.isUser 
-                          ? 'bg-gradient-to-r from-amber-400/90 to-orange-400/90 text-white shadow-lg' 
-                          : 'bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm border border-gray-200/50 dark:border-gray-600/50'
+                          ? 'px-4 py-3 bg-gradient-to-r from-amber-400/90 to-orange-400/90 text-white shadow-lg' 
+                          : 'px-5 py-4 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm border border-gray-200/50 dark:border-gray-600/50'
                       }`}>
                         {message.id === 'typing' ? (
                           <div className="flex items-center gap-2">
