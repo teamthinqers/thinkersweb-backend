@@ -1,0 +1,12 @@
+{
+  "name": "good_to_have_1",
+  "date": "2025-07-24T09:38:33.181Z",
+  "files": [
+    "server/whatsapp.ts",
+    "server/openai.ts",
+    "client/src/components/landing/WhatsAppPromo.tsx",
+    "client/src/components/landing/WhatsAppContactButton.tsx",
+    "client/src/components/landing/CompactWhatsAppButton.tsx"
+  ],
+  "description": "Neural extension with interactive WhatsApp chat capabilities"
+}
