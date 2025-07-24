@@ -447,12 +447,12 @@ export default function ChatPage() {
               <Button 
                 variant="ghost" 
                 size="sm" 
-                className="relative p-3 bg-gradient-to-r from-amber-100 to-orange-100 dark:from-amber-900/50 dark:to-orange-900/50 hover:from-amber-200 hover:to-orange-200 dark:hover:from-amber-800/60 dark:hover:to-orange-800/60 rounded-xl transition-all duration-300 hover:scale-105 shadow-sm border border-amber-200/50 dark:border-amber-700/50"
+                className="relative p-3 bg-amber-500 hover:bg-amber-600 dark:bg-amber-600 dark:hover:bg-amber-700 rounded-xl transition-all duration-300 hover:scale-105 shadow-sm"
                 title="My Neura"
               >
-                <Brain className="h-5 w-5 text-amber-700 dark:text-amber-300 transition-all duration-300" />
+                <Brain className="h-5 w-5 text-white transition-all duration-300" />
                 {isNeuraActive && (
-                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full animate-pulse shadow-lg border-2 border-white dark:border-gray-800"></div>
+                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full animate-pulse shadow-lg border-2 border-white"></div>
                 )}
               </Button>
             </Link>
@@ -462,10 +462,10 @@ export default function ChatPage() {
               <Button 
                 variant="ghost" 
                 size="sm" 
-                className="p-3 bg-gradient-to-r from-orange-100 to-red-100 dark:from-orange-900/50 dark:to-red-900/50 hover:from-orange-200 hover:to-red-200 dark:hover:from-orange-800/60 dark:hover:to-red-800/60 rounded-xl transition-all duration-300 hover:scale-105 shadow-sm border border-orange-200/50 dark:border-orange-700/50"
+                className="p-3 bg-red-500 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700 rounded-xl transition-all duration-300 hover:scale-105 shadow-sm"
                 title="DotSpark Social"
               >
-                <Users className="h-5 w-5 text-orange-600 dark:text-orange-300" />
+                <Users className="h-5 w-5 text-white" />
               </Button>
             </Link>
 
@@ -473,11 +473,11 @@ export default function ChatPage() {
             <Button 
               variant="ghost" 
               size="sm" 
-              className="p-3 bg-gradient-to-r from-green-100 to-emerald-100 dark:from-green-900/50 dark:to-emerald-900/50 hover:from-green-200 hover:to-emerald-200 dark:hover:from-green-800/60 dark:hover:to-emerald-800/60 rounded-xl transition-all duration-300 hover:scale-105 shadow-sm border border-green-200/50 dark:border-green-700/50"
+              className="p-3 bg-[#25D366] hover:bg-[#20BA5A] dark:bg-[#25D366] dark:hover:bg-[#20BA5A] rounded-xl transition-all duration-300 hover:scale-105 shadow-sm"
               title="WhatsApp Contact"
               onClick={() => window.open('https://wa.me/+917208061002?text=Hi%20DotSpark%2C%20I%20would%20need%20your%20assistance%20in%20saving%20a%20dot', '_blank')}
             >
-              <SiWhatsapp className="h-5 w-5 text-green-600 dark:text-green-300" />
+              <SiWhatsapp className="h-5 w-5 text-white" />
             </Button>
 
             {user ? (
