@@ -126,7 +126,7 @@ type DotProposal = {
 
 export default function ChatPage() {
   const { toast } = useToast();
-  const { user } = useAuth();
+  const { user, isLoading } = useAuth();
   
   // Load messages from localStorage or use default welcome message
   const loadMessages = (): Message[] => {
@@ -157,7 +157,7 @@ export default function ChatPage() {
   
   const [messages, setMessages] = useState<Message[]>(loadMessages());
   const [sessionId] = useState<string>(() => Date.now().toString());
-  const [isLoading, setIsLoading] = useState(false);
+  const [isChatLoading, setIsChatLoading] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [predictiveResponse, setPredictiveResponse] = useState<string>('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -313,7 +313,7 @@ export default function ChatPage() {
         });
       }
     } finally {
-      setIsLoading(false);
+      setIsChatLoading(false);
     }
   };
 
@@ -329,7 +329,7 @@ export default function ChatPage() {
     
     setMessages([defaultMessage]);
     setInputValue('');
-    setIsLoading(false);
+    setIsChatLoading(false);
     localStorage.removeItem('dotspark-chat-messages');
     
     toast({
@@ -346,7 +346,7 @@ export default function ChatPage() {
   };
 
   const handleConfirmDot = async (dotProposal: DotProposal) => {
-    setIsLoading(true);
+    setIsChatLoading(true);
     
     try {
       const response = await axios.post('/api/chat/intelligent', {
@@ -377,7 +377,7 @@ export default function ChatPage() {
       };
       setMessages(prev => [...prev, errorMessage]);
     } finally {
-      setIsLoading(false);
+      setIsChatLoading(false);
     }
   };
 
@@ -786,9 +786,11 @@ export default function ChatPage() {
                   </div>
                   
                   <p className="text-gray-600 dark:text-gray-400 text-lg">
-                    {user 
-                      ? "I'll help you organize your thoughts into structured Dots, Wheels and Chakras for sparking actionable insights."
-                      : "Start chatting to see how I can help organize your thoughts. No signup required!"
+                    {isLoading 
+                      ? "Loading..."
+                      : user 
+                        ? "I'll help you organize your thoughts into structured Dots, Wheels and Chakras for sparking actionable insights."
+                        : "Start chatting to see how I can help organize your thoughts. No signup required!"
                     }
                   </p>
                 </div>
