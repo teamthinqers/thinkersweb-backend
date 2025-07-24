@@ -564,73 +564,71 @@ export default function ChatPage() {
 
       {/* Main Content Area */}
       <div className="flex flex-col flex-1 min-w-0">
-        {/* Mobile-First ChatGPT Style Header */}
+        {/* ChatGPT-Style Mobile Header */}
         <header className="sticky top-0 z-50 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 shadow-sm">
-          <div className="flex items-center justify-between h-12 px-3 md:px-6">
-            {/* Left: Menu + Model (Mobile: Sheet Menu, Desktop: Sidebar Toggle) */}
-            <div className="flex items-center gap-2">
-              {/* Compact Mobile Menu Sheet - Always visible for testing */}
-              <Sheet>
-                <SheetTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg"
-                    title="Open Menu"
-                  >
-                    <Menu className="h-4 w-4" />
-                  </Button>
-                </SheetTrigger>
-                <SheetContent side="left" className="w-64 p-0 max-w-[75vw]">
+          <div className="flex items-center justify-between h-14 px-4">
+            {/* Left: Hamburger Menu */}
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-10 w-10 p-0 hover:bg-gray-100 dark:hover:bg-gray-800"
+                >
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </SheetTrigger>
+                <SheetContent side="left" className="w-80 p-0 max-w-[85vw]">
                   <div className="flex flex-col h-full bg-white dark:bg-gray-900">
-                    {/* Ultra-Compact Menu Header */}
-                    <div className="p-2 border-b border-gray-200 dark:border-gray-700">
-                      <div className="flex items-center gap-2">
+                    {/* Menu Header */}
+                    <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+                      <div className="flex items-center gap-3">
                         <img 
                           src="/dotspark-logo-icon.jpeg" 
                           alt="DotSpark" 
-                          className="w-5 h-5 rounded-full"
+                          className="w-8 h-8 rounded-full"
                         />
-                        <h2 className="text-sm font-medium text-gray-900 dark:text-white">DotSpark</h2>
+                        <h2 className="text-lg font-semibold text-gray-900 dark:text-white">DotSpark</h2>
                       </div>
                     </div>
                     
-                    {/* Ultra-Compact AI Model Selector */}
-                    <div className="p-2 border-b border-gray-200 dark:border-gray-700">
+                    {/* AI Model Selector */}
+                    <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+                      <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">AI Model</label>
                       <ModelSelector
                         selectedModel={selectedModel}
                         onModelChange={setSelectedModel}
-                        className="w-full text-xs bg-purple-50 hover:bg-purple-100 dark:bg-purple-950/50 dark:hover:bg-purple-900/70 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-700 h-8"
+                        className="w-full bg-purple-50 hover:bg-purple-100 dark:bg-purple-950/50 dark:hover:bg-purple-900/70 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-700"
                       />
                     </div>
                     
-                    {/* Ultra-Compact Navigation */}
-                    <nav className="flex-1 p-1">
-                      <div className="space-y-0.5">
+                    {/* Navigation Menu */}
+                    <nav className="flex-1 p-4">
+                      <div className="space-y-2">
                         {messages.length > 1 && (
                           <SheetClose asChild>
                             <Button 
                               onClick={handleRefreshChat}
                               variant="ghost" 
-                              className="w-full justify-start h-9 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg"
+                              className="w-full justify-start h-11 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
                             >
-                              <RefreshCw className="w-4 h-4 mr-2" />
+                              <RefreshCw className="w-5 h-5 mr-3" />
                               New Chat
                             </Button>
                           </SheetClose>
                         )}
                         <SheetClose asChild>
                           <Link href="/dashboard" className="block">
-                            <Button variant="ghost" className="w-full justify-start h-9 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg">
-                              <Brain className="w-4 h-4 mr-2" />
+                            <Button variant="ghost" className="w-full justify-start h-11 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
+                              <Brain className="w-5 h-5 mr-3" />
                               My Neura
                             </Button>
                           </Link>
                         </SheetClose>
                         <SheetClose asChild>
                           <Link href="/social" className="block">
-                            <Button variant="ghost" className="w-full justify-start h-9 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg">
-                              <Users className="w-4 h-4 mr-2" />
+                            <Button variant="ghost" className="w-full justify-start h-11 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
+                              <Users className="w-5 h-5 mr-3" />
                               Social
                             </Button>
                           </Link>
@@ -638,8 +636,8 @@ export default function ChatPage() {
                         {user ? (
                           <SheetClose asChild>
                             <Link href="/profile" className="block">
-                              <Button variant="ghost" className="w-full justify-start h-9 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg">
-                                <User className="w-4 h-4 mr-2" />
+                              <Button variant="ghost" className="w-full justify-start h-11 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
+                                <User className="w-5 h-5 mr-3" />
                                 Profile
                               </Button>
                             </Link>
@@ -647,8 +645,8 @@ export default function ChatPage() {
                         ) : (
                           <SheetClose asChild>
                             <Link href="/auth" className="block">
-                              <Button variant="ghost" className="w-full justify-start h-9 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg">
-                                <User className="w-4 h-4 mr-2" />
+                              <Button variant="ghost" className="w-full justify-start h-11 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
+                                <User className="w-5 h-5 mr-3" />
                                 Sign In
                               </Button>
                             </Link>
@@ -658,115 +656,20 @@ export default function ChatPage() {
                     </nav>
                   </div>
                 </SheetContent>
-              </Sheet>
+            </Sheet>
 
-              {/* Desktop Sidebar Toggle - Hidden for now */}
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                className="h-9 w-9 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg hidden"
-              >
-                <Menu className="h-5 w-5" />
-              </Button>
-
-              {/* Desktop Model Selector - Hidden for mobile testing */}
-              <div className="hidden">
-                <ModelSelector
-                  selectedModel={selectedModel}
-                  onModelChange={setSelectedModel}
-                  className="bg-purple-50 hover:bg-purple-100 dark:bg-purple-950/50 dark:hover:bg-purple-900/70 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-700"
-                />
-              </div>
-            </div>
-          
-            {/* Center: Logo/Title (Always visible) */}
+            {/* Center: Logo/Title */}
             <div className="flex items-center gap-2">
               <img 
                 src="/dotspark-logo-icon.jpeg" 
                 alt="DotSpark" 
-                className="w-5 h-5 rounded-full"
+                className="w-6 h-6 rounded-full"
               />
-              <span className="text-base font-medium text-gray-900 dark:text-white">DotSpark</span>
+              <span className="text-lg font-semibold text-gray-900 dark:text-white">DotSpark</span>
             </div>
 
-            {/* Right: User Actions (Hidden for mobile testing) */}
-            <div className="hidden items-center gap-2">
-              {user ? (
-                <Sheet>
-                  <SheetTrigger asChild>
-                    <Button variant="ghost" size="sm" className="p-1">
-                      <Avatar className="h-8 w-8">
-                        <AvatarImage src={user.photoURL || undefined} />
-                        <AvatarFallback className="text-xs">
-                          {user.displayName?.[0]?.toUpperCase() || 'U'}
-                        </AvatarFallback>
-                      </Avatar>
-                    </Button>
-                  </SheetTrigger>
-                  <SheetContent side="right" className="w-72 p-0">
-                    <div className="flex flex-col h-full bg-gray-50 dark:bg-gray-800">
-                      {/* Profile Header */}
-                      <div className="p-4 border-b border-gray-200 dark:border-gray-700">
-                        <div className="flex items-center gap-3">
-                          <Avatar className="h-12 w-12">
-                            <AvatarImage src={user.photoURL || undefined} />
-                            <AvatarFallback>
-                              {user.displayName?.[0]?.toUpperCase() || 'U'}
-                            </AvatarFallback>
-                          </Avatar>
-                          <div className="flex-1 min-w-0">
-                            <p className="font-semibold truncate">{user.displayName || 'User'}</p>
-                            <p className="text-sm text-gray-500 truncate">{user.email}</p>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      {/* Profile Actions */}
-                      <nav className="flex-1 p-2">
-                        <div className="space-y-1">
-                          <SheetClose asChild>
-                            <Link href="/profile" className="block">
-                              <Button variant="ghost" className="w-full justify-start text-sm h-9">
-                                <User className="w-4 h-4 mr-3" />
-                                Profile
-                              </Button>
-                            </Link>
-                          </SheetClose>
-                          <SheetClose asChild>
-                            <Link href="/dashboard" className="block">
-                              <Button variant="ghost" className="w-full justify-start text-sm h-9">
-                                <Brain className="w-4 h-4 mr-3" />
-                                My Neura
-                              </Button>
-                            </Link>
-                          </SheetClose>
-                        </div>
-                      </nav>
-                      
-                      {/* Sign Out */}
-                      <div className="p-4 border-t border-gray-200 dark:border-gray-700">
-                        <Button 
-                          variant="outline" 
-                          className="w-full text-sm"
-                          onClick={() => {
-                            // Sign out logic
-                          }}
-                        >
-                          Sign Out
-                        </Button>
-                      </div>
-                    </div>
-                  </SheetContent>
-                </Sheet>
-              ) : (
-                <Link href="/auth">
-                  <Button variant="outline" size="sm" className="text-sm">
-                    Sign In
-                  </Button>
-                </Link>
-              )}
-            </div>
+            {/* Right: Empty space for balance */}
+            <div className="w-10"></div>
           </div>
         </header>
 
