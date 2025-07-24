@@ -727,18 +727,28 @@ export default function ChatPage() {
           </div>
 
           {/* Input Area */}
-          <div className="border-t bg-white dark:bg-gray-900 p-3">
+          <div className="border-t bg-white dark:bg-gray-900 p-4">
             <div className="max-w-4xl mx-auto">
-              <div className="flex items-end gap-2">
+              <div className="flex items-end gap-3">
                 {/* Input Field */}
                 <div className="flex-1 relative">
-                  <Input
+                  <textarea
                     value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)}
                     onKeyDown={handleKeyDown}
                     placeholder="Message DotSpark..."
                     disabled={isLoading || limitExceeded}
-                    className="min-h-[44px] resize-none border-gray-300 dark:border-gray-600 focus:border-orange-500 focus:ring-orange-500 pr-12"
+                    rows={1}
+                    className="w-full resize-none rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-4 py-3 pr-12 text-sm placeholder:text-gray-500 focus:border-orange-500 focus:ring-1 focus:ring-orange-500 focus:outline-none disabled:opacity-50 min-h-[52px] max-h-[200px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600"
+                    style={{
+                      lineHeight: '1.5',
+                      height: 'auto',
+                    }}
+                    onInput={(e) => {
+                      const target = e.target as HTMLTextAreaElement;
+                      target.style.height = '52px';
+                      target.style.height = Math.min(target.scrollHeight, 200) + 'px';
+                    }}
                   />
                   
                   {/* Voice Button inside input */}
@@ -746,7 +756,7 @@ export default function ChatPage() {
                     <Button
                       size="icon"
                       variant="ghost"
-                      className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 w-8 text-gray-500 hover:text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-900/20"
+                      className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 w-8 text-gray-500 hover:text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-900/20 rounded-lg"
                       onClick={() => {
                         // Voice functionality to be implemented
                         console.log('Voice recording clicked');
@@ -762,12 +772,12 @@ export default function ChatPage() {
                   onClick={handleSendMessage}
                   disabled={!inputValue.trim() || isLoading || limitExceeded}
                   size="icon"
-                  className="shrink-0 bg-orange-600 hover:bg-orange-700 text-white disabled:opacity-50"
+                  className="shrink-0 h-[52px] w-[52px] bg-orange-600 hover:bg-orange-700 text-white disabled:opacity-50 rounded-xl"
                 >
                   {isLoading ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <Loader2 className="h-5 w-5 animate-spin" />
                   ) : (
-                    <Send className="h-4 w-4" />
+                    <Send className="h-5 w-5" />
                   )}
                 </Button>
               </div>
