@@ -418,19 +418,8 @@ export default function ChatPage() {
             </Link>
           </div>
           
-          {/* Enhanced Center: Chat Controls */}
-          <div className="flex-1 flex items-center justify-center">
-            {messages.length > 1 && (
-              <Button 
-                onClick={handleRefreshChat}
-                className="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white shadow-lg hover:shadow-xl border border-amber-500/30 dark:border-amber-400/40 px-4 py-2 rounded-xl transition-all duration-300 hover:scale-105 font-medium"
-                title="Start New Chat"
-              >
-                <RefreshCw className="h-4 w-4 mr-2" />
-                <span className="text-sm">New Chat</span>
-              </Button>
-            )}
-          </div>
+          {/* Enhanced Center: Empty space for centered logo */}
+          <div className="flex-1"></div>
 
           {/* Right: User Actions */}
           <div className="flex items-center gap-2">
