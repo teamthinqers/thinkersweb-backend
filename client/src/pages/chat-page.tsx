@@ -839,7 +839,7 @@ export default function ChatPage() {
                     </div>
                     {!isMobile && (
                       <span className="text-xs text-gray-600 dark:text-gray-400 leading-tight mt-1">
-                        Generate and spark ideas using my thoughts
+                        Generate and spark ideas using my<br />thoughts or social thoughts
                       </span>
                     )}
                   </Button>
