@@ -855,7 +855,7 @@ export default function ChatPage() {
                     </div>
                     {!isMobile && (
                       <span className="text-xs text-gray-600 dark:text-gray-400 leading-tight mt-1">
-                        Share any summary to visualize
+                        Ask anything and I'll help you visualize
                       </span>
                     )}
                   </Button>
