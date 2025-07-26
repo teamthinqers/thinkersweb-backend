@@ -140,15 +140,16 @@ DotSpark is a full-stack web application that serves as a personalized learning 
 ## Changelog
 ```
 Changelog:
-- January 26, 2025. COMPLETED proper real mode vs preview mode separation:
-  * REAL MODE (default): Shows ONLY user-generated dots, wheels, and chakras from database
-  * PREVIEW MODE (toggle): Shows demonstrative examples for visualization purposes only
-  * Dashboard defaults to real mode - empty for new users with "Create Your First Dot" guidance
-  * Preview mode toggle allows users to see example data (7 wheels, 21 dots) for inspiration
-  * Natural mode creation system properly connected to store user-specific content in database
-  * API endpoints confirmed working: POST /api/dots, POST /api/wheels for authenticated users
-  * Empty state provides clear path to content creation through floating dot interface
-  * System prepared for intelligence layer to automatically save structured content from conversations
+- January 26, 2025. COMPLETED authentication-gated real mode with proper user isolation:
+  * REAL MODE (default): Shows ONLY authenticated user's personal dots, wheels, chakras from database
+  * PREVIEW MODE (toggle): Shows static demonstrative examples for visualization purposes only
+  * Dashboard requires authentication for real mode - shows sign-in prompt for unauthenticated users
+  * Preview mode available to all users (authenticated and anonymous) for demonstration
+  * Database storage is user-specific and requires valid authentication for all CRUD operations
+  * API endpoints enforce authentication and user verification for dots/wheels creation
+  * Added proper user validation checks in all creation endpoints
+  * Empty state guides authenticated users to create content through floating dot interface
+  * System prepared for DotSpark activation requirements once activation system is implemented
 - January 26, 2025. COMPLETED model selector restoration and landing page simplification:
   * Restored GPT-4 and DeepSeek model selection functionality that was accidentally removed
   * Desktop users see model selector in header, mobile users see it in sidebar menu

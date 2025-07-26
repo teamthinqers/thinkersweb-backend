@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Mic, Type, Eye, Brain, Network, Zap, Search, Clock, Info, Database, Cpu, Sparkles, Users, Maximize, Minimize, RotateCcw, X, ArrowLeft } from "lucide-react";
+import { Mic, Type, Eye, Brain, Network, Zap, Search, Clock, Info, Database, Cpu, Sparkles, Users, Maximize, Minimize, RotateCcw, X, ArrowLeft, User, Plus } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import DotFullView from "@/components/DotFullView";
 import DotFlashCard from "@/components/DotFlashCard";
@@ -1359,8 +1359,60 @@ const Dashboard: React.FC = () => {
     const totalWheels = displayWheels.filter((w: any) => w.chakraId !== undefined).length;
     const totalChakras = displayWheels.filter((w: any) => w.chakraId === undefined).length;
 
-    // Show empty state when in real mode and user has no content
-    if (!previewMode && userWheels.length === 0 && actualDots.length === 0) {
+    // Show different states based on authentication and content
+    if (!previewMode && (!user || userWheels.length === 0 && actualDots.length === 0)) {
+      // Check if user is authenticated
+      if (!user) {
+        // Show authentication required state
+        return (
+          <div className="relative bg-gradient-to-br from-amber-50/50 to-orange-50/50 rounded-xl p-4 min-h-[500px] border-2 border-amber-200 shadow-lg overflow-hidden">
+            <div className="absolute top-4 left-4 z-10 flex items-center gap-3">
+              <span className="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-medium">
+                Authentication Required
+              </span>
+              <div className="flex items-center gap-2 bg-white/90 backdrop-blur rounded-lg px-3 py-2 border-2 border-amber-200">
+                <label className="text-sm font-medium text-amber-800">Preview Mode</label>
+                <button
+                  onClick={() => setPreviewMode(!previewMode)}
+                  className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
+                    previewMode ? 'bg-amber-500' : 'bg-gray-300'
+                  }`}
+                >
+                  <span
+                    className={`inline-block h-3 w-3 transform rounded-full bg-white transition-transform ${
+                      previewMode ? 'translate-x-5' : 'translate-x-1'
+                    }`}
+                  />
+                </button>
+              </div>
+            </div>
+            
+            <div className="flex items-center justify-center h-full">
+              <div className="text-center">
+                <Brain className="w-16 h-16 mx-auto mb-4 text-red-500" />
+                <h3 className="text-2xl font-bold text-red-800 mb-2">Sign In Required</h3>
+                <p className="text-red-600 mb-6 max-w-md mx-auto">
+                  Please sign in to create and save your personal Dots, Wheels, and Chakras.
+                </p>
+                
+                <div className="flex flex-col gap-3 max-w-xs mx-auto">
+                  <button
+                    onClick={() => window.location.href = '/auth'}
+                    className="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
+                  >
+                    <User className="w-5 h-5" />
+                    Sign In to DotSpark
+                  </button>
+                  
+                  <p className="text-xs text-red-600">
+                    Or try Preview Mode to see examples
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      }
       // Show empty state with preview toggle
       return (
         <div className="relative bg-gradient-to-br from-amber-50/50 to-orange-50/50 rounded-xl p-4 min-h-[500px] border-2 border-amber-200 shadow-lg overflow-hidden">

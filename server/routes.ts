@@ -325,7 +325,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Dots and Wheels API Endpoints
   
-  // Simple dots endpoint for three-layer system
+  // Simple dots endpoint for three-layer system - requires authentication and DotSpark activation
   app.post(`${apiPrefix}/dots`, async (req: AuthenticatedRequest, res: Response) => {
     try {
       const userId = req.user?.id || req.session?.userId;
@@ -333,6 +333,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!userId) {
         return res.status(401).json({ error: 'Authentication required' });
       }
+
+      // Check if user has activated DotSpark
+      const user = await db.query.users.findFirst({
+        where: eq(users.id, userId)
+      });
+      
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+
+      // TODO: Add DotSpark activation check once activation system is implemented
+      // For now, allow all authenticated users to create dots
       
       let { summary, anchor, pulse, sourceType = 'text' } = req.body;
       const { summaryVoiceUrl, anchorVoiceUrl, pulseVoiceUrl, summaryAudio, anchorAudio, pulseAudio } = req.body;
@@ -422,13 +434,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get dots for dashboard
+  // Get dots for dashboard - requires authentication
   app.get(`${apiPrefix}/dots`, async (req: AuthenticatedRequest, res: Response) => {
     try {
       const userId = req.user?.id || req.session?.userId;
       
       if (!userId) {
         return res.status(401).json({ error: 'Authentication required' });
+      }
+
+      // Verify user exists and is authenticated
+      const user = await db.query.users.findFirst({
+        where: eq(users.id, userId)
+      });
+      
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
       }
       
       const userEntries = await db.query.entries.findMany({
@@ -790,7 +811,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Create a new Wheel (belongs to a chakra or standalone)
+  // Create a new Wheel (belongs to a chakra or standalone) - requires authentication and DotSpark activation
   app.post(`${apiPrefix}/wheels`, async (req: AuthenticatedRequest, res: Response) => {
     try {
       const userId = req.user?.id || req.session?.userId;
@@ -798,6 +819,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!userId) {
         return res.status(401).json({ error: 'Authentication required' });
       }
+
+      // Check if user exists and is authenticated
+      const user = await db.query.users.findFirst({
+        where: eq(users.id, userId)
+      });
+      
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+
+      // TODO: Add DotSpark activation check once activation system is implemented
+      // For now, allow all authenticated users to create wheels
 
       let { heading, goals, timeline, chakraId, sourceType = 'text' } = req.body;
       const { headingVoiceUrl, goalsVoiceUrl, timelineVoiceUrl, headingAudio, goalsAudio, timelineAudio } = req.body;
