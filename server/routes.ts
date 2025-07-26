@@ -36,6 +36,7 @@ import { calculateGridPositions } from "./grid-positioning";
 import { advancedChatEngine } from './advanced-chat';
 import { intelligentFeatures } from './intelligent-features';
 import vectorSearchRouter from './routes/vector-search';
+import indexingRouter from './routes/indexing';
 import { initializeVectorDB } from './vector-db';
 
 // Interface for authenticated requests
@@ -1381,6 +1382,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Mount vector search routes
   app.use(`${apiPrefix}/vector`, vectorSearchRouter);
+  
+  // Mount indexing routes for comprehensive cognitive structure indexing
+  app.use(`${apiPrefix}/indexing`, indexingRouter);
+  
+  // Mount indexing demo routes
+  const indexingDemoRouter = await import('./routes/indexing-demo');
+  app.use(`${apiPrefix}/indexing`, indexingDemoRouter.default);
 
   // ==========================================
   // COGNITIVE ANALYSIS & INTELLIGENT RETRIEVAL

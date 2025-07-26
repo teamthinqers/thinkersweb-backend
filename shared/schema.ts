@@ -385,17 +385,17 @@ export const wheelsRelations = relations(wheels, ({ one, many }): any => ({
 }));
 
 export const insertWheelSchema = createInsertSchema(wheels, {
-  name: (schema) => schema.name?.min(1, "Name is required").max(100, "Name must be 100 characters or less") || schema,
-  heading: (schema) => schema.heading?.optional() || schema,
-  goals: (schema) => schema.goals?.optional() || schema,
-  purpose: (schema) => schema.purpose?.optional() || schema,
-  timeline: (schema) => schema.timeline?.optional() || schema,
-  category: (schema) => schema.category?.min(1, "Category is required") || schema,
-  color: (schema) => schema.color?.optional() || schema,
-  chakraId: (schema) => schema.chakraId?.optional() || schema,
-  positionX: (schema) => schema.positionX?.optional() || schema,
-  positionY: (schema) => schema.positionY?.optional() || schema, 
-  radius: (schema) => schema.radius?.optional() || schema,
+  name: (schema) => schema.min(1, "Name is required").max(100, "Name must be 100 characters or less"),
+  heading: (schema) => schema.optional(),
+  goals: (schema) => schema.optional(),
+  purpose: (schema) => schema.optional(),
+  timeline: (schema) => schema.optional(),
+  category: (schema) => schema.min(1, "Category is required"),
+  color: (schema) => schema.optional(),
+  chakraId: (schema) => schema.optional(),
+  positionX: (schema) => schema.optional(),
+  positionY: (schema) => schema.optional(), 
+  radius: (schema) => schema.optional(),
 });
 
 export type InsertWheel = z.infer<typeof insertWheelSchema>;
