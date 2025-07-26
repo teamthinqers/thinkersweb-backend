@@ -1376,7 +1376,7 @@ const Dashboard: React.FC = () => {
         return (
           <div className="relative bg-gradient-to-br from-amber-50/50 to-orange-50/50 rounded-xl p-4 min-h-[500px] border-2 border-amber-200 shadow-lg overflow-hidden">
             <div className="absolute top-4 left-4 z-10 flex items-center gap-3">
-              <span className="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-medium">
+              <span className="bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-sm font-medium">
                 Authentication Required
               </span>
               <div className="flex items-center gap-2 bg-white/90 backdrop-blur rounded-lg px-3 py-2 border-2 border-amber-200">
@@ -1398,16 +1398,16 @@ const Dashboard: React.FC = () => {
             
             <div className="flex items-center justify-center h-full">
               <div className="text-center">
-                <Brain className="w-16 h-16 mx-auto mb-4 text-red-500" />
-                <h3 className="text-2xl font-bold text-red-800 mb-2">Sign In Required</h3>
-                <p className="text-red-600 mb-6 max-w-md mx-auto">
+                <Brain className="w-16 h-16 mx-auto mb-4 text-amber-500" />
+                <h3 className="text-2xl font-bold text-amber-800 mb-2">Sign In Required</h3>
+                <p className="text-amber-600 mb-6 max-w-md mx-auto">
                   Please sign in to create and save your personal Dots, Wheels, and Chakras.
                 </p>
                 
                 <div className="flex flex-col gap-3 max-w-xs mx-auto">
                   <button
                     onClick={() => window.location.href = '/auth'}
-                    className="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
+                    className="bg-amber-500 hover:bg-amber-600 text-white px-6 py-3 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
                   >
                     <User className="w-5 h-5" />
                     Sign In to DotSpark
