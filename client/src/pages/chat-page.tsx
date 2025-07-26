@@ -898,10 +898,10 @@ export default function ChatPage() {
                 </div>
                 
                 {/* Quick Action Cards */}
-                <div className={`grid grid-cols-1 md:grid-cols-2 ${isMobile ? 'gap-1.5' : 'gap-4'} w-full max-w-2xl ${isMobile ? 'mb-6' : 'mb-8'}`}>
+                <div className={`grid grid-cols-1 md:grid-cols-2 ${isMobile ? 'gap-3' : 'gap-4'} w-full max-w-2xl ${isMobile ? 'mb-6' : 'mb-8'}`}>
                   <Button 
                     variant="outline" 
-                    className={`${isMobile ? 'h-16 p-3 flex flex-col items-start justify-between text-left' : 'h-24 p-4 flex flex-col items-start justify-between text-left'} hover:bg-amber-50 dark:hover:bg-amber-950/20 hover:text-amber-800 dark:hover:text-amber-200 hover:border-amber-300 dark:hover:border-amber-700 active:bg-amber-100 dark:active:bg-amber-900/30 active:text-amber-900 dark:active:text-amber-100 transition-all duration-200`}
+                    className={`${isMobile ? 'h-20 p-4 flex flex-col items-start justify-between text-left' : 'h-24 p-4 flex flex-col items-start justify-between text-left'} hover:bg-amber-50 dark:hover:bg-amber-950/20 hover:text-amber-800 dark:hover:text-amber-200 hover:border-amber-300 dark:hover:border-amber-700 active:bg-amber-100 dark:active:bg-amber-900/30 active:text-amber-900 dark:active:text-amber-100 transition-all duration-200`}
                     onClick={() => setInputValue("Organize Thoughts")}
                   >
                     <div className="flex items-center gap-2">
@@ -915,7 +915,7 @@ export default function ChatPage() {
                   
                   <Button 
                     variant="outline" 
-                    className={`${isMobile ? 'h-16 p-3 flex flex-col items-start justify-between text-left' : 'h-24 p-4 flex flex-col items-start justify-between text-left'} hover:bg-amber-50 dark:hover:bg-amber-950/20 hover:text-amber-800 dark:hover:text-amber-200 hover:border-amber-300 dark:hover:border-amber-700 active:bg-amber-100 dark:active:bg-amber-900/30 active:text-amber-900 dark:active:text-amber-100 transition-all duration-200`}
+                    className={`${isMobile ? 'h-20 p-4 flex flex-col items-start justify-between text-left' : 'h-24 p-4 flex flex-col items-start justify-between text-left'} hover:bg-amber-50 dark:hover:bg-amber-950/20 hover:text-amber-800 dark:hover:text-amber-200 hover:border-amber-300 dark:hover:border-amber-700 active:bg-amber-100 dark:active:bg-amber-900/30 active:text-amber-900 dark:active:text-amber-100 transition-all duration-200`}
                     onClick={() => setInputValue("Generate and spark ideas using my thoughts or social thoughts")}
                   >
                     <div className="flex items-center gap-2">
