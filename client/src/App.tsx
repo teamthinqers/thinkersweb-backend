@@ -47,6 +47,7 @@ import AppLayout from "@/components/layout/AppLayout";
 import EntryDetail from "@/components/entries/EntryDetail";
 import ChatEntryForm from "@/components/chat/ChatEntryForm";
 import EnhancedChatInterface from "@/components/chat/EnhancedChatInterface";
+import IntelligentVectorChat from "@/components/IntelligentVectorChat";
 
 import { StructuredFloatingDot } from "@/components/dotspark/StructuredFloatingDot";
 import { neuraStorage } from "@/lib/neuraStorage";
@@ -236,6 +237,7 @@ function Router() {
       <Route path="/test-auth" component={TestGoogleAuth} />
       <Route path="/chat" component={ChatPage} />
       <Route path="/enhanced-chat" component={() => <div className="h-screen"><EnhancedChatInterface /></div>} />
+      <Route path="/vector-chat" component={() => <div className="min-h-screen bg-gray-50"><IntelligentVectorChat /></div>} />
       <Route component={NotFound} />
     </Switch>
   );

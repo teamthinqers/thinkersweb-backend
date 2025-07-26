@@ -145,6 +145,37 @@ export const insertVoiceRecordingSchema = createInsertSchema(voiceRecordings, {
 export type InsertVoiceRecording = z.infer<typeof insertVoiceRecordingSchema>;
 export type VoiceRecording = typeof voiceRecordings.$inferSelect;
 
+// Vector embeddings for semantic search and similarity matching
+export const vectorEmbeddings = pgTable("vector_embeddings", {
+  id: serial("id").primaryKey(),
+  contentType: text("content_type").notNull(), // 'entry', 'wheel', 'chakra', 'conversation', 'dot'
+  contentId: integer("content_id").notNull(), // ID of the content item
+  userId: integer("user_id").references(() => users.id),
+  vectorId: text("vector_id").notNull().unique(), // Pinecone vector ID
+  content: text("content").notNull(), // Original text content
+  metadata: text("metadata"), // JSON metadata for filtering and context
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const vectorEmbeddingsRelations = relations(vectorEmbeddings, ({ one }) => ({
+  user: one(users, {
+    fields: [vectorEmbeddings.userId],
+    references: [users.id],
+  }),
+}));
+
+export const insertVectorEmbeddingSchema = createInsertSchema(vectorEmbeddings, {
+  contentType: (schema) => schema.refine(val => ['entry', 'wheel', 'chakra', 'conversation', 'dot'].includes(val), "Content type must be entry, wheel, chakra, conversation, or dot"),
+  contentId: (schema) => schema.positive("Content ID must be positive"),
+  vectorId: (schema) => schema.min(1, "Vector ID is required"),
+  content: (schema) => schema.min(10, "Content must be at least 10 characters"),
+  metadata: (schema) => schema.optional(),
+});
+
+export type InsertVectorEmbedding = z.infer<typeof insertVectorEmbeddingSchema>;
+export type VectorEmbedding = typeof vectorEmbeddings.$inferSelect;
+
 // Junction table for entries and tags (many-to-many)
 export const entryTags = pgTable("entry_tags", {
   id: serial("id").primaryKey(),

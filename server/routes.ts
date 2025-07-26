@@ -35,6 +35,8 @@ import whatsappWebhookRouter from "./whatsapp-webhook";
 import { calculateGridPositions } from "./grid-positioning";
 import { advancedChatEngine } from './advanced-chat';
 import { intelligentFeatures } from './intelligent-features';
+import vectorSearchRouter from './routes/vector-search';
+import { initializeVectorDB } from './vector-db';
 
 // Interface for authenticated requests
 interface AuthenticatedRequest extends Request {
@@ -1369,6 +1371,182 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('Summary generation error:', error);
       res.status(500).json({ 
         error: 'Failed to generate conversation summary' 
+      });
+    }
+  });
+
+  // ==========================================
+  // VECTOR DATABASE INTEGRATION
+  // ==========================================
+
+  // Mount vector search routes
+  app.use(`${apiPrefix}/vector`, vectorSearchRouter);
+
+  // Initialize vector database on startup
+  try {
+    await initializeVectorDB();
+    console.log('Vector database initialization completed');
+  } catch (error) {
+    console.error('Vector database initialization failed:', error);
+    // Continue without vector DB for now - can be initialized manually via API
+  }
+
+  // ==========================================
+  // INTELLIGENT VECTOR-ENHANCED CHAT
+  // ==========================================
+
+  // Enhanced chat with vector context and intelligence
+  app.post(`${apiPrefix}/chat/intelligent`, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const { message, conversationHistory = [], sessionId } = req.body;
+      const userId = req.user?.id || req.session?.userId;
+
+      if (!message) {
+        return res.status(400).json({ error: 'Message is required' });
+      }
+
+      if (!userId) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+
+      const { generateIntelligentVectorResponse } = await import('./intelligent-vector-chat');
+      
+      const result = await generateIntelligentVectorResponse(
+        message,
+        userId,
+        conversationHistory,
+        sessionId
+      );
+
+      res.json({
+        success: true,
+        data: result
+      });
+
+    } catch (error) {
+      console.error('Intelligent chat error:', error);
+      res.status(500).json({ 
+        error: 'Failed to generate intelligent response',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
+  // Enhanced content creation with vector intelligence
+  app.post(`${apiPrefix}/content/enhance`, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const { contentType, contentText } = req.body;
+      const userId = req.user?.id || req.session?.userId;
+
+      if (!contentText || !contentType) {
+        return res.status(400).json({ error: 'Content text and type are required' });
+      }
+
+      if (!userId) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+
+      const { enhanceContentWithVectorIntelligence } = await import('./intelligent-vector-chat');
+      
+      const result = await enhanceContentWithVectorIntelligence(
+        contentType as 'dot' | 'wheel' | 'chakra',
+        contentText,
+        userId
+      );
+
+      res.json({
+        success: true,
+        data: result
+      });
+
+    } catch (error) {
+      console.error('Content enhancement error:', error);
+      res.status(500).json({ 
+        error: 'Failed to enhance content',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
+  // Get intelligent search suggestions
+  app.get(`${apiPrefix}/search/suggestions`, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const userId = req.user?.id || req.session?.userId;
+      const { limit = 6 } = req.query;
+
+      if (!userId) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+
+      const { getIntelligentSearchSuggestions } = await import('./intelligent-vector-chat');
+      
+      const suggestions = await getIntelligentSearchSuggestions(
+        userId,
+        parseInt(limit as string)
+      );
+
+      res.json({
+        success: true,
+        data: { suggestions }
+      });
+
+    } catch (error) {
+      console.error('Search suggestions error:', error);
+      res.status(500).json({ 
+        error: 'Failed to generate search suggestions',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
+  // Test vector database functionality
+  app.get(`${apiPrefix}/vector/test`, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const userId = req.user?.id || req.session?.userId;
+
+      if (!userId) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+
+      const { storeVectorEmbedding, searchSimilarContent } = await import('./vector-db');
+
+      // Test data
+      const testContent = "I'm learning about personal productivity and goal setting";
+      const testId = Date.now();
+
+      // Store test embedding
+      const vectorId = await storeVectorEmbedding(
+        'test',
+        testId,
+        testContent,
+        userId,
+        { purpose: 'system_test' }
+      );
+
+      // Search for similar content
+      const results = await searchSimilarContent(testContent, {
+        topK: 3,
+        threshold: 0.5,
+        userId,
+        includeContent: true
+      });
+
+      res.json({
+        success: true,
+        data: {
+          message: 'Vector database test completed successfully',
+          testVectorId: vectorId,
+          searchResults: results.length,
+          systemStatus: 'operational'
+        }
+      });
+
+    } catch (error) {
+      console.error('Vector database test error:', error);
+      res.status(500).json({ 
+        error: 'Vector database test failed',
+        details: error instanceof Error ? error.message : 'Unknown error',
+        systemStatus: 'error'
       });
     }
   });
