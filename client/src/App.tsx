@@ -36,6 +36,7 @@ import PwaDebugger from "@/pages/PwaDebugger";
 import PwaInstallGuide from "@/pages/PwaInstallGuide";
 import Testing from "@/pages/Testing";
 import TestCreation from "@/pages/TestCreation";
+import IntelligenceClassification from "@/components/IntelligenceClassification";
 import ChatPage from "@/pages/chat-page";
 import QuickCapture from "@/pages/QuickCapture";
 import DotInstall from "@/pages/DotInstall";
@@ -242,6 +243,7 @@ function Router() {
       <Route path="/install-guide" component={PwaInstallGuide} />
       <Route path="/testing" component={Testing} />
       <Route path="/test-creation" component={TestCreation} />
+      <Route path="/intelligence-test" component={() => <div className="min-h-screen bg-gray-50 py-8"><IntelligenceClassification /></div>} />
       <Route path="/test-auth" component={TestGoogleAuth} />
       <Route path="/chat" component={ChatPage} />
       <Route path="/enhanced-chat" component={() => <div className="h-screen"><EnhancedChatInterface /></div>} />

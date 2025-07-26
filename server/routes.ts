@@ -1580,6 +1580,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
   const activationRoutes = await import('./routes/activation');
   app.use(`${apiPrefix}/activation`, activationRoutes.default);
 
+  // ==========================================
+  // ADVANCED CORE INTELLIGENCE CLASSIFICATION
+  // ==========================================
+
+  // Import intelligent classification routes
+  const {
+    classifyContent,
+    confirmAndSave,
+    getContextualSuggestions
+  } = await import('./routes/intelligent-classification');
+
+  // Advanced core intelligence content classification
+  app.post(`${apiPrefix}/intelligence/classify`, classifyContent);
+  
+  // Confirm classification and save to grid
+  app.post(`${apiPrefix}/intelligence/confirm-and-save`, confirmAndSave);
+  
+  // Get contextual suggestions based on user content
+  app.get(`${apiPrefix}/intelligence/suggestions`, getContextualSuggestions);
+
   // Initialize vector database on startup
   try {
     await initializeVectorDB();
