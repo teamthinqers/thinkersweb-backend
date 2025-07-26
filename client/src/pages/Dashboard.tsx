@@ -60,7 +60,7 @@ const Dashboard: React.FC = () => {
   const [recentDotsCount, setRecentDotsCount] = useState(4);
   const [showPreview, setShowPreview] = useState(false);
   const [isMapFullscreen, setIsMapFullscreen] = useState(false);
-  const [previewMode, setPreviewMode] = useState(true); // Enable preview mode by default to show demo wheels // Lifted up to prevent resets
+  const [previewMode, setPreviewMode] = useState(false); // Start with real user data instead of preview
   
   // PWA detection for smaller button sizing
   const isPWA = isRunningAsStandalone();
@@ -105,6 +105,27 @@ const Dashboard: React.FC = () => {
       }
     },
     enabled: !gridData?.data?.statistics?.totalDots, // Only fetch if grid has no data
+    refetchOnWindowFocus: false,
+    staleTime: 5 * 60 * 1000 // 5 minutes
+  });
+
+  // Fetch user wheels and chakras
+  const { data: userWheels = [], isLoading: wheelsLoading, refetch: refetchWheels } = useQuery({
+    queryKey: ['/api/wheels'],
+    queryFn: async () => {
+      try {
+        const response = await fetch('/api/wheels');
+        if (!response.ok) {
+          return [];
+        }
+        const data = await response.json();
+        return data;
+      } catch (err) {
+        console.error('Error fetching wheels:', err);
+        return [];
+      }
+    },
+    enabled: !previewMode, // Only fetch when not in preview mode
     refetchOnWindowFocus: false,
     staleTime: 5 * 60 * 1000 // 5 minutes
   });
@@ -1313,8 +1334,8 @@ const Dashboard: React.FC = () => {
 
     const { previewDots, previewWheels } = generatePreviewData();
     
-    // Base wheels to display
-    let baseWheelsToDisplay = previewMode ? previewWheels : wheels;
+    // Base wheels to display - combine userWheels (from API) and fallback wheels
+    let baseWheelsToDisplay = previewMode ? previewWheels : (userWheels.length > 0 ? userWheels : wheels);
     
     const displayWheels = baseWheelsToDisplay;
     
@@ -1342,7 +1363,7 @@ const Dashboard: React.FC = () => {
     const totalWheels = previewMode ? previewWheels.filter(w => w.chakraId !== undefined).length : wheels.filter(w => w.chakraId !== undefined).length;
     const totalChakras = previewMode ? previewWheels.filter(w => w.chakraId === undefined).length : wheels.filter(w => w.chakraId === undefined).length;
 
-    if (!previewMode && wheels.length === 0 && actualDots.length === 0) {
+    if (!previewMode && userWheels.length === 0 && wheels.length === 0 && actualDots.length === 0) {
       // Show empty state with preview toggle
       return (
         <div className="relative bg-gradient-to-br from-amber-50/50 to-orange-50/50 rounded-xl p-4 min-h-[500px] border-2 border-amber-200 shadow-lg overflow-hidden">

@@ -900,6 +900,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // GET wheels endpoint - fetch user's wheels
+  app.get(`${apiPrefix}/wheels`, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const userId = req.user?.id || req.session?.userId || 1;
+      
+      const userWheels = await db.query.wheels.findMany({
+        where: eq(wheels.userId, userId),
+        orderBy: desc(wheels.createdAt)
+      });
+      
+      // Transform to frontend format
+      const formattedWheels = userWheels.map(wheel => ({
+        id: wheel.id.toString(),
+        name: wheel.heading,
+        heading: wheel.heading,
+        goals: wheel.goals,
+        timeline: wheel.timeline,
+        category: 'User Created',
+        color: wheel.color,
+        dots: [], // Dots will be loaded separately
+        connections: [],
+        position: { x: wheel.positionX || 400, y: wheel.positionY || 300 },
+        chakraId: wheel.chakraId ? wheel.chakraId.toString() : undefined,
+        createdAt: wheel.createdAt
+      }));
+      
+      res.json(formattedWheels);
+    } catch (error) {
+      console.error('Error fetching wheels:', error);
+      res.status(500).json({ error: 'Failed to fetch wheels' });
+    }
+  });
+
   // Grid positioning API endpoints - simplified version using existing entries
   app.get(`${apiPrefix}/grid/positions`, async (req: AuthenticatedRequest, res: Response) => {
     try {
