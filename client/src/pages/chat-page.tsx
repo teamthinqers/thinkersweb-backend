@@ -289,6 +289,16 @@ export default function ChatPage() {
 
       setMessages((prev) => [...prev, aiMessage]);
 
+      // Show success toast if something was saved
+      if (response.data.data?.metadata?.savedItem) {
+        const item = response.data.data.metadata.savedItem;
+        toast({
+          title: `${item.type.charAt(0).toUpperCase() + item.type.slice(1)} Saved!`,
+          description: `"${item.name}" has been added to your DotSpark grid.`,
+          duration: 4000,
+        });
+      }
+
       // Mark first chat as done if this was the first chat
       if (isFirstTime) {
         markFirstChatDone();
@@ -382,6 +392,50 @@ export default function ChatPage() {
       setMessages(prev => [...prev, errorMessage]);
     } finally {
       setIsChatLoading(false);
+    }
+  };
+
+  const handleSaveStructure = async (structuredOutput: any) => {
+    setIsChatInputLoading(true);
+    
+    try {
+      const response = await axios.post('/api/dotspark/chat', {
+        message: 'save this structured insight',
+        action: 'save_structure',
+        structuredOutput
+      });
+
+      if (response.data.success && response.data.data?.metadata?.savedItem) {
+        const item = response.data.data.metadata.savedItem;
+        toast({
+          title: `${item.type.charAt(0).toUpperCase() + item.type.slice(1)} Saved!`,
+          description: `"${item.name}" has been added to your DotSpark grid.`,
+          duration: 4000,
+        });
+
+        // Add a confirmation message to chat
+        const confirmationMessage: Message = {
+          id: Date.now().toString(),
+          content: `✅ **Saved Successfully!** Your ${item.type} "${item.name}" has been saved to your DotSpark grid. You can find it in your dashboard.`,
+          isUser: false,
+          timestamp: new Date(),
+          isNewMessage: true
+        };
+
+        setMessages(prev => [...prev, confirmationMessage]);
+      } else {
+        throw new Error('Failed to save structure');
+      }
+    } catch (error) {
+      console.error('Error saving structure:', error);
+      toast({
+        title: 'Save Failed',
+        description: 'There was an issue saving your insights. Please try again.',
+        variant: 'destructive',
+        duration: 4000,
+      });
+    } finally {
+      setIsChatInputLoading(false);
     }
   };
 
@@ -929,6 +983,74 @@ export default function ChatPage() {
                                 )
                               )}
                             </div>
+                            
+                            {/* Display structured output from DotSpark intelligence */}
+                            {message.metadata?.structuredOutput && (
+                              <div className="mt-4 space-y-3">
+                                <div className="text-sm font-semibold text-amber-600 dark:text-amber-400 mb-2">
+                                  🧠 Structured Insights Ready
+                                </div>
+                                
+                                {/* Dot */}
+                                {message.metadata.structuredOutput.dot && (
+                                  <div className="p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800">
+                                    <div className="flex items-center gap-2 mb-2">
+                                      <div className="w-3 h-3 rounded-full bg-amber-500"></div>
+                                      <span className="text-sm font-semibold text-amber-700 dark:text-amber-300">Dot</span>
+                                    </div>
+                                    <p className="text-sm text-gray-700 dark:text-gray-300">{message.metadata.structuredOutput.dot.summary}</p>
+                                    <p className="text-xs text-amber-600 dark:text-amber-400 mt-1 italic">{message.metadata.structuredOutput.dot.pulse}</p>
+                                  </div>
+                                )}
+                                
+                                {/* Wheel */}
+                                {message.metadata.structuredOutput.wheel && (
+                                  <div className="p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-200 dark:border-orange-800">
+                                    <div className="flex items-center gap-2 mb-2">
+                                      <div className="w-3 h-3 rounded-full bg-orange-500"></div>
+                                      <span className="text-sm font-semibold text-orange-700 dark:text-orange-300">Wheel</span>
+                                      <span className="text-xs bg-orange-200 dark:bg-orange-800 text-orange-700 dark:text-orange-300 px-2 py-1 rounded">{message.metadata.structuredOutput.wheel.timeline}</span>
+                                    </div>
+                                    <p className="text-sm font-medium text-gray-800 dark:text-gray-200">{message.metadata.structuredOutput.wheel.heading}</p>
+                                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">{message.metadata.structuredOutput.wheel.summary}</p>
+                                  </div>
+                                )}
+                                
+                                {/* Chakra */}
+                                {message.metadata.structuredOutput.chakra && (
+                                  <div className="p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg border border-purple-200 dark:border-purple-800">
+                                    <div className="flex items-center gap-2 mb-2">
+                                      <div className="w-3 h-3 rounded-full bg-purple-500"></div>
+                                      <span className="text-sm font-semibold text-purple-700 dark:text-purple-300">Chakra</span>
+                                      <span className="text-xs bg-purple-200 dark:bg-purple-800 text-purple-700 dark:text-purple-300 px-2 py-1 rounded">{message.metadata.structuredOutput.chakra.timeline}</span>
+                                    </div>
+                                    <p className="text-sm font-medium text-gray-800 dark:text-gray-200">{message.metadata.structuredOutput.chakra.heading}</p>
+                                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">{message.metadata.structuredOutput.chakra.purpose}</p>
+                                  </div>
+                                )}
+                                
+                                {/* Save Button */}
+                                <div className="flex gap-2 pt-2">
+                                  <Button 
+                                    size="sm" 
+                                    onClick={() => handleSaveStructure(message.metadata.structuredOutput)}
+                                    disabled={isChatInputLoading}
+                                    className="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white text-sm font-medium px-4 py-2 rounded-lg shadow-md hover:shadow-lg transition-all duration-200"
+                                  >
+                                    💾 Save to Grid
+                                  </Button>
+                                  <Button 
+                                    size="sm" 
+                                    variant="outline" 
+                                    onClick={() => setInputValue("Please revise these insights: ")}
+                                    className="border-amber-300 text-amber-700 hover:bg-amber-50 dark:border-amber-600 dark:text-amber-300 dark:hover:bg-amber-900/20 text-sm px-4 py-2"
+                                  >
+                                    ✏️ Revise
+                                  </Button>
+                                </div>
+                              </div>
+                            )}
+                            
                             {message.dotProposal && message.needsConfirmation && (
                               <div className="mt-3 p-3 bg-white/10 rounded-xl border border-white/20">
                                 <h4 className="font-semibold mb-2 text-sm">{message.dotProposal.heading}</h4>

@@ -11,31 +11,115 @@ interface AuthenticatedRequest extends Request {
 /**
  * Advanced DotSpark conversational interface
  * Uses Python backend logic for sophisticated cognitive processing
+ * Enhanced with dot/wheel/chakra saving functionality
  */
 export async function advancedDotSparkChat(req: AuthenticatedRequest, res: Response) {
   try {
-    const { message, model = 'gpt-4', sessionId } = req.body;
+    const { message, model = 'gpt-4', sessionId, action } = req.body;
     const userId = req.user?.id || req.session?.userId || 'anonymous';
 
     if (!message) {
       return res.status(400).json({ error: 'Message is required' });
     }
 
+    // Check if user wants to save a dot/wheel/chakra
+    const saveKeywords = ['save this', 'save it', 'create this', 'yes save', 'confirm', 'looks good'];
+    const wantsSave = saveKeywords.some(keyword => 
+      message.toLowerCase().includes(keyword)
+    ) || action === 'save_structure';
+
     // Use Python DotSpark core for advanced processing
     const result = await runDotSparkCore(message, userId, model);
+
+    // If user wants to save and we have structured output, save to database
+    let savedItem = null;
+    if (wantsSave && result.structuredOutput && userId !== 'anonymous') {
+      try {
+        const { db } = await import('@db');
+        const { entries, wheels } = await import('@shared/schema');
+        
+        const structuredOutput = result.structuredOutput;
+        
+        // Determine what to save based on structured output
+        if (structuredOutput.dot && structuredOutput.dot.summary) {
+          // Save as a dot (entry)
+          const entryData = {
+            userId,
+            title: structuredOutput.dot.summary.substring(0, 50) + (structuredOutput.dot.summary.length > 50 ? '...' : ''),
+            content: JSON.stringify({
+              oneWordSummary: structuredOutput.dot.pulse || 'insight',
+              summary: structuredOutput.dot.summary,
+              anchor: structuredOutput.dot.context || '',
+              pulse: structuredOutput.dot.pulse || 'inspired',
+              sourceType: 'text',
+              dotType: 'three-layer',
+              captureMode: 'ai_intelligence'
+            }),
+            visibility: 'private' as const
+          };
+          
+          const [newDot] = await db.insert(entries).values(entryData).returning();
+          savedItem = { type: 'dot', id: newDot.id, name: structuredOutput.dot.summary };
+          
+        } else if (structuredOutput.wheel && structuredOutput.wheel.heading) {
+          // Save as a wheel
+          const wheelData = {
+            userId,
+            name: structuredOutput.wheel.heading,
+            goals: structuredOutput.wheel.summary || '',
+            timeline: structuredOutput.wheel.timeline || 'medium-term',
+            progress: 0,
+            chakraId: null // Independent wheel for now
+          };
+          
+          const [newWheel] = await db.insert(wheels).values(wheelData).returning();
+          savedItem = { type: 'wheel', id: newWheel.id, name: structuredOutput.wheel.heading };
+          
+        } else if (structuredOutput.chakra && structuredOutput.chakra.heading) {
+          // Save as a chakra (wheel without parent)
+          const chakraData = {
+            userId,
+            name: structuredOutput.chakra.heading,
+            goals: structuredOutput.chakra.purpose || '',
+            timeline: structuredOutput.chakra.timeline || 'long-term',
+            progress: 0,
+            chakraId: null // Chakras have no parent
+          };
+          
+          const [newChakra] = await db.insert(wheels).values(chakraData).returning();
+          savedItem = { type: 'chakra', id: newChakra.id, name: structuredOutput.chakra.heading };
+        }
+        
+      } catch (saveError) {
+        console.error('Error saving structured content:', saveError);
+        // Continue with response even if save fails
+      }
+    }
+
+    // Enhanced response with save confirmation
+    let responseText = result.response;
+    if (savedItem) {
+      responseText += `\n\n✅ **Saved Successfully!** Your ${savedItem.type} "${savedItem.name}" has been saved to your DotSpark grid. You can find it in your dashboard.`;
+    } else if (wantsSave && userId === 'anonymous') {
+      responseText += `\n\n💡 **Sign in to save:** I can organize your thoughts, but you'll need to sign in to save them to your personal DotSpark grid.`;
+    }
 
     res.json({
       success: true,
       data: {
-        response: result.response,
+        response: responseText,
         structuredOutput: result.structuredOutput,
         sessionId: sessionId || `dotspark_${Date.now()}`,
-        metadata: result.metadata,
+        metadata: {
+          ...result.metadata,
+          savedItem: savedItem
+        },
         features: {
           vectorMemory: true,
           cognitiveMapping: true,
           patternRecognition: true,
-          contextAwareness: true
+          contextAwareness: true,
+          gridSaving: true
         }
       }
     });
