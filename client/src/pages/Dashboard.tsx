@@ -1318,7 +1318,7 @@ const Dashboard: React.FC = () => {
           summary: scatteredSummaries[i],
           anchor: `Personal insight about ${scatteredHeadings[i].toLowerCase()} and individual growth`,
           pulse: emotions[Math.floor(Math.random() * emotions.length)],
-          wheelId: null, // No wheel - scattered/unorganized dot
+          wheelId: undefined, // No wheel - scattered/unorganized dot
           timestamp: new Date(Date.now() - Math.random() * 15 * 24 * 60 * 60 * 1000),
           sourceType: Math.random() > 0.5 ? 'voice' : 'text',
           captureMode: Math.random() > 0.7 ? 'ai' : 'natural',
@@ -1357,11 +1357,11 @@ const Dashboard: React.FC = () => {
     
 
     
-    // Count Wheels and Chakras separately
-    // Wheels: items with chakraId (belonging to a chakra) OR chakraId === null (standalone wheels)
-    // Chakras: items with chakraId === undefined (top-level containers)
-    const totalWheels = previewMode ? previewWheels.filter(w => w.chakraId !== undefined).length : wheels.filter(w => w.chakraId !== undefined).length;
-    const totalChakras = previewMode ? previewWheels.filter(w => w.chakraId === undefined).length : wheels.filter(w => w.chakraId === undefined).length;
+    // Count Wheels and Chakras separately from the actual displayed data
+    // Wheels: items with chakraId (belonging to a chakra) 
+    // Chakras: items without chakraId (top-level containers)
+    const totalWheels = previewMode ? previewWheels.filter(w => w.chakraId !== undefined).length : displayWheels.filter(w => w.chakraId !== undefined).length;
+    const totalChakras = previewMode ? previewWheels.filter(w => w.chakraId === undefined).length : displayWheels.filter(w => w.chakraId === undefined).length;
 
     if (!previewMode && userWheels.length === 0 && wheels.length === 0 && actualDots.length === 0) {
       // Show empty state with preview toggle
@@ -1694,7 +1694,7 @@ const Dashboard: React.FC = () => {
                   // Check if this dot belongs to a wheel
                   if (dot.wheelId && dot.wheelId !== '') {
                     // Find the wheel this dot belongs to
-                    const wheel = displayWheels.find(w => w.id === dot.wheelId);
+                    const wheel = displayWheels.find((w: any) => w.id === dot.wheelId);
                     if (wheel) {
                       // Find position within the wheel
                       const dotsInWheel = displayDots.filter(d => d.wheelId === dot.wheelId);
@@ -1721,14 +1721,14 @@ const Dashboard: React.FC = () => {
                 } else {
                   // Real mode fallback
                   if (dot.wheelId && dot.wheelId !== '') {
-                    const wheel = displayWheels.find(w => w.id === dot.wheelId);
+                    const wheel = displayWheels.find((w: any) => w.id === dot.wheelId);
                     if (wheel) {
                       const dotsInWheel = displayDots.filter(d => d.wheelId === dot.wheelId);
                       const dotIndexInWheel = dotsInWheel.findIndex(d => d.id === dot.id);
                       
                       // Fallback wheel positioning for real mode
-                      const wheelCenterX = wheel.position?.x || (300 + (wheelIndex % 3) * 200);
-                      const wheelCenterY = wheel.position?.y || (250 + Math.floor(wheelIndex / 3) * 180);
+                      const wheelCenterX = wheel.position?.x || (300 + (index % 3) * 200);
+                      const wheelCenterY = wheel.position?.y || (250 + Math.floor(index / 3) * 180);
                       const dotRadius = calculateDynamicSizing('real', dotsInWheel.length, 'dots');
                       const angle = (dotIndexInWheel * 2 * Math.PI) / dotsInWheel.length;
                       
@@ -1860,7 +1860,7 @@ const Dashboard: React.FC = () => {
             })}
             
             {/* Wheel Flashcards - positioned at grid level like dot flashcards */}
-            {(previewMode ? displayWheels : displayWheels.filter(w => w.dots && w.dots.length > 0)).map((wheel, wheelIndex) => {
+            {(previewMode ? displayWheels : displayWheels.filter((w: any) => w.dots && w.dots.length > 0)).map((wheel: any, wheelIndex: number) => {
               // Use same positioning logic as wheels
               let wheelPosition;
               
@@ -1892,18 +1892,18 @@ const Dashboard: React.FC = () => {
               let wheelSize;
               if (previewMode) {
                 if (isChakra) {
-                  const childWheels = displayWheels.filter(w => w.chakraId === wheel.id);
+                  const childWheels = displayWheels.filter((w: any) => w.chakraId === wheel.id);
                   wheelSize = getChakraSize('preview', childWheels.length);
                 } else {
-                  const wheelDots = displayDots.filter(d => d.wheelId === wheel.id);
+                  const wheelDots = displayDots.filter((d: any) => d.wheelId === wheel.id);
                   wheelSize = calculateDynamicSizing('preview', wheelDots.length, 'wheels') * 2;
                 }
               } else {
                 if (isChakra) {
-                  const childWheels = displayWheels.filter(w => w.chakraId === wheel.id);
+                  const childWheels = displayWheels.filter((w: any) => w.chakraId === wheel.id);
                   wheelSize = getChakraSize('real', childWheels.length);
                 } else {
-                  const wheelDots = displayDots.filter(d => d.wheelId === wheel.id);
+                  const wheelDots = displayDots.filter((d: any) => d.wheelId === wheel.id);
                   wheelSize = calculateDynamicSizing('real', wheelDots.length, 'wheels') * 2;
                 }
               }
@@ -1972,7 +1972,7 @@ const Dashboard: React.FC = () => {
             })}
             
             {/* Wheel Boundaries - Only show when wheels exist */}
-            {(previewMode ? displayWheels : displayWheels.filter(w => w.dots && w.dots.length > 0)).map((wheel, wheelIndex) => {
+            {(previewMode ? displayWheels : displayWheels).map((wheel: any, wheelIndex: number) => {
               // Use algorithmic positioning from backend API when available, fallback to manual positioning
               let wheelPosition;
               
@@ -2013,7 +2013,7 @@ const Dashboard: React.FC = () => {
                 isChakra = wheel.chakraId === undefined;
                 if (isChakra) {
                   // Dynamic chakra sizing based on child wheels count
-                  const childWheels = displayWheels.filter(w => w.chakraId === wheel.id);
+                  const childWheels = displayWheels.filter((w: any) => w.chakraId === wheel.id);
                   wheelSize = getChakraSize('preview', childWheels.length);
 
                 } else {
@@ -2026,12 +2026,12 @@ const Dashboard: React.FC = () => {
                 isChakra = wheel.chakraId === undefined;
                 if (isChakra) {
                   // Dynamic chakra sizing based on child wheels count
-                  const childWheels = displayWheels.filter(w => w.chakraId === wheel.id);
+                  const childWheels = displayWheels.filter((w: any) => w.chakraId === wheel.id);
                   wheelSize = getChakraSize('real', childWheels.length);
 
                 } else {
                   // Dynamic wheel sizing based on dots count
-                  const wheelDots = displayDots.filter(d => d.wheelId === wheel.id);
+                  const wheelDots = displayDots.filter((d: any) => d.wheelId === wheel.id);
                   wheelSize = calculateDynamicSizing('real', wheelDots.length, 'wheels') * 2; // Convert radius to diameter
                 }
               }
