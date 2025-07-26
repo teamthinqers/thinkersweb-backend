@@ -242,7 +242,6 @@ function Router() {
       <Route path="/pwa-debug" component={PwaDebugger} />
       <Route path="/install-guide" component={PwaInstallGuide} />
       <Route path="/testing" component={Testing} />
-      <Route path="/test-creation" component={TestCreation} />
       <Route path="/intelligence-test" component={() => <div className="min-h-screen bg-gray-50 py-8"><IntelligenceClassification /></div>} />
       <Route path="/test-auth" component={TestGoogleAuth} />
       <Route path="/chat" component={ChatPage} />
