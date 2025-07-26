@@ -38,6 +38,7 @@ import { intelligentFeatures } from './intelligent-features';
 import vectorSearchRouter from './routes/vector-search';
 import indexingRouter from './routes/indexing';
 import { initializeVectorDB } from './vector-db';
+import { storeDotInVector, storeWheelInVector, storeChakraInVector } from './vector-storage';
 
 // Interface for authenticated requests
 interface AuthenticatedRequest extends Request {
@@ -427,6 +428,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
       };
       
       const [newDot] = await db.insert(entries).values(entryData).returning();
+
+      // Store in vector database for intelligent features
+      try {
+        await storeDotInVector({
+          id: newDot.id.toString(),
+          userId: userId.toString(),
+          summary,
+          anchor,
+          pulse,
+          sourceType,
+          captureMode: 'natural',
+          category: 'General',
+          createdAt: newDot.createdAt || new Date()
+        });
+      } catch (vectorError) {
+        console.error('Failed to store dot in vector database:', vectorError);
+        // Don't fail the main operation if vector storage fails
+      }
+
       res.status(201).json(newDot);
     } catch (error) {
       console.error('Error creating dot:', error);
@@ -582,6 +602,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         const [newDot] = await db.insert(entries).values(entryData).returning();
         
+        // Store in vector database for intelligent features
+        try {
+          await storeDotInVector({
+            id: newDot.id.toString(),
+            userId: userId.toString(),
+            summary: dotProposal.summary,
+            anchor: dotProposal.anchor,
+            pulse: dotProposal.pulse,
+            sourceType: 'text',
+            captureMode: 'ai',
+            category: 'General',
+            createdAt: newDot.createdAt || new Date()
+          });
+        } catch (vectorError) {
+          console.error('Failed to store AI dot in vector database:', vectorError);
+          // Don't fail the main operation if vector storage fails
+        }
+        
         return res.json({
           reply: "Hey ThinQer, your dot is saved. You can find your dot in DotSpark Map in the Neura section for reference. Thank you!",
           action: 'dot_saved',
@@ -661,6 +699,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
         content: JSON.stringify(entryContent),
         categoryId: structuredDot.categoryId || 1
       }).returning();
+
+      // Store in vector database for intelligent features
+      try {
+        await storeDotInVector({
+          id: newEntry.id.toString(),
+          userId: userId.toString(),
+          summary: entryContent.summary,
+          anchor: entryContent.anchor,
+          pulse: entryContent.pulse,
+          sourceType: 'text',
+          captureMode: 'ai',
+          category: 'General',
+          createdAt: newEntry.createdAt || new Date()
+        });
+      } catch (vectorError) {
+        console.error('Failed to store legacy AI dot in vector database:', vectorError);
+        // Don't fail the main operation if vector storage fails
+      }
 
       res.status(201).json({ 
         success: true, 
@@ -791,6 +847,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const newChakraResult = await db.insert(wheels).values(chakraData).returning();
       const newChakra = Array.isArray(newChakraResult) ? newChakraResult[0] : newChakraResult;
       
+      // Store in vector database for intelligent features
+      try {
+        await storeChakraInVector({
+          id: newChakra.id.toString(),
+          userId: userId.toString(),
+          title: heading,
+          purpose: purpose,
+          vision: timeline,
+          category: 'General',
+          createdAt: newChakra.createdAt || new Date()
+        });
+      } catch (vectorError) {
+        console.error('Failed to store chakra in vector database:', vectorError);
+        // Don't fail the main operation if vector storage fails
+      }
+      
       res.status(201).json({ 
         success: true, 
         message: 'Chakra created successfully',
@@ -911,6 +983,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const newWheelResult = await db.insert(wheels).values(wheelData).returning();
       const newWheel = Array.isArray(newWheelResult) ? newWheelResult[0] : newWheelResult;
+      
+      // Store in vector database for intelligent features
+      try {
+        await storeWheelInVector({
+          id: newWheel.id.toString(),
+          userId: userId.toString(),
+          title: heading,
+          goals: goals,
+          timeline: timeline,
+          chakraId: newWheel.chakraId?.toString(),
+          category: 'General',
+          createdAt: newWheel.createdAt || new Date()
+        });
+      } catch (vectorError) {
+        console.error('Failed to store wheel in vector database:', vectorError);
+        // Don't fail the main operation if vector storage fails
+      }
       
       res.status(201).json({ 
         success: true, 
