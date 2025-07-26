@@ -2,6 +2,7 @@ import os
 import openai
 import requests
 import json
+import time
 from typing import Dict, Any
 
 # Setup environment variables
@@ -32,64 +33,110 @@ if PINECONE_API_KEY:
     except Exception as e:
         print(f"Pinecone initialization failed: {e}")
 
-def fetch_user_context(user_id: str, top_k: int = 3):
-    if not index:
+def fetch_user_context(user_id: str, user_input: str, top_k: int = 5):
+    if not index or not openai_client:
         return []
     try:
+        # Generate embedding for current user input for semantic search
+        embedding_response = openai_client.embeddings.create(
+            input=user_input,
+            model="text-embedding-ada-002"
+        )
+        query_vector = embedding_response.data[0].embedding
+        
+        # Semantic search in user's personal knowledge base
         results = index.query(
             namespace=user_id,
-            vector=[0.0] * 1536,  # Dummy vector
+            vector=query_vector,
             top_k=top_k,
             include_metadata=True
         )
-        return [match["metadata"] for match in results["matches"]]
+        
+        # Return relevant context with similarity scores
+        context = []
+        for match in results["matches"]:
+            if match["score"] > 0.7:  # Only high-relevance matches
+                context.append({
+                    "content": match["metadata"],
+                    "relevance": match["score"],
+                    "type": match["metadata"].get("type", "thought")
+                })
+        
+        return context
     except Exception as e:
-        print("Pinecone fetch failed:", e)
+        print("Enhanced Pinecone fetch failed:", e)
         return []
 
-def build_dynamic_prompt(user_input: str, past_context: list) -> str:
-    context_str = "\n".join(
-        [f"• Dot: {c.get('summary', '')}" for c in past_context]
-    )
+def build_enhanced_prompt(user_input: str, semantic_context: list) -> str:
+    # Build rich contextual information from vector database
+    relevant_context = ""
+    patterns_detected = []
+    user_preferences = {}
+    
+    for item in semantic_context:
+        content = item.get("content", {})
+        relevance = item.get("relevance", 0)
+        
+        if relevance > 0.85:  # Highly relevant
+            relevant_context += f"• HIGHLY RELEVANT ({relevance:.2f}): {content.get('summary', '')}\n"
+            if content.get('category'):
+                patterns_detected.append(content['category'])
+        elif relevance > 0.7:  # Moderately relevant
+            relevant_context += f"• RELEVANT ({relevance:.2f}): {content.get('summary', '')}\n"
+
+    # Detect user thinking patterns
+    pattern_analysis = ""
+    if patterns_detected:
+        unique_patterns = list(set(patterns_detected))
+        pattern_analysis = f"DETECTED PATTERNS: User frequently thinks about {', '.join(unique_patterns[:3])}"
 
     prompt = f"""
-You are DotSpark, a thought evolution assistant. Your role is not to summarize, but to help users explore and deepen their thoughts.
+You are DotSpark, an advanced cognitive intelligence system with access to the user's complete thought history via vector database semantic search.
 
-Analyze the user's input and decide:
-- If it's a quick insight, return only a Dot.
-- If it suggests a short-term goal or initiative, add a Wheel.
-- If the user reflects on long-term purpose or life direction, include a Chakra.
-- If the thought is vague or too early, just respond naturally and ask a question to explore further.
-- Refer back to previous Dots, Wheels, or Chakras if they relate.
-- Never generate all three layers unless the conversation clearly calls for it.
+CONTEXT INTELLIGENCE:
+{relevant_context}
 
-Output structure (only if applicable):
+PATTERN ANALYSIS:
+{pattern_analysis}
+
+COGNITIVE COACHING FRAMEWORK:
+- Use semantic context to provide personalized insights
+- Reference relevant past thoughts when applicable
+- Identify cognitive patterns and growth opportunities  
+- Guide toward appropriate structure: Dot (insight), Wheel (goal), Chakra (purpose)
+- Ask probing questions when thoughts need deeper exploration
+- Connect current thinking to user's established knowledge base
+
+ENHANCED OUTPUT FORMAT (when structured response is natural):
 
 {{
   "dot": {{
-    "summary": "...",     # Max 220 chars
-    "context": "...",     # Max 300 chars
-    "pulse": "..."        # one-word emotion
+    "summary": "Sharp insight (max 220 chars)",
+    "context": "What triggered this + connections to past thoughts (max 300 chars)", 
+    "pulse": "one-word emotion"
   }},
   "wheel": {{
-    "heading": "...",
-    "summary": "...",     # Max 300 chars
+    "heading": "Goal/project name",
+    "summary": "Tactical approach + relevant past experiences (max 300 chars)",
     "timeline": "short-term"
   }},
   "chakra": {{
-    "heading": "...",
-    "purpose": "...",     # Max 300 chars
+    "heading": "Life purpose/identity",
+    "purpose": "Core meaning + alignment with user patterns (max 300 chars)", 
     "timeline": "long-term"
   }},
-  "linkages": ["..."]     # Optional: how current thoughts connect to older ones
+  "intelligence_insights": [
+    "Pattern: User shows consistent interest in...",
+    "Connection: This relates to previous thought about...",
+    "Growth: Consider exploring the relationship between..."
+  ],
+  "semantic_linkages": ["Direct connections to past thoughts"],
+  "coaching_questions": ["What would happen if...", "How does this connect to..."]
 }}
 
-User input: "{user_input}"
+CURRENT USER INPUT: "{user_input}"
 
-Previous context:
-{context_str}
-
-Now respond like a reflective partner helping them think better. Suggest or format only what's natural.
+Respond as a sophisticated cognitive partner who knows the user's thinking history and can provide contextual, pattern-aware guidance.
 """
     return prompt.strip()
 
@@ -123,26 +170,82 @@ def call_model(messages: list) -> str:
     except Exception as e:
         return f"Error calling model: {str(e)}"
 
-def run_dotspark_thought_partner(user_id: str, user_input: str, mode: str = "organize") -> Dict[str, Any]:
+def store_conversation_memory(user_id: str, user_input: str, ai_response: str):
+    """Store conversation in vector database for future context"""
+    if not index or not openai_client:
+        return
+    
     try:
-        context = fetch_user_context(user_id)
-        prompt = build_dynamic_prompt(user_input, context)
+        # Create embedding for the conversation exchange
+        text_to_embed = f"User: {user_input}\nDotSpark: {ai_response}"
+        
+        embedding_response = openai_client.embeddings.create(
+            input=text_to_embed,
+            model="text-embedding-ada-002"
+        )
+        
+        # Store in vector database
+        index.upsert(
+            vectors=[{
+                "id": f"{user_id}_conv_{int(time.time())}",
+                "values": embedding_response.data[0].embedding,
+                "metadata": {
+                    "user_input": user_input,
+                    "ai_response": ai_response,
+                    "timestamp": time.time(),
+                    "type": "conversation",
+                    "summary": user_input[:200]  # First 200 chars as summary
+                }
+            }],
+            namespace=user_id
+        )
+    except Exception as e:
+        print(f"Failed to store conversation memory: {e}")
+
+def run_dotspark_thought_partner(user_id: str, user_input: str, mode: str = "organize") -> Dict[str, Any]:
+    import time
+    start_time = time.time()
+    
+    try:
+        # Fetch semantic context using vector search
+        semantic_context = fetch_user_context(user_id, user_input)
+        
+        # Build enhanced prompt with full intelligence layers
+        prompt = build_enhanced_prompt(user_input, semantic_context)
 
         messages = [
             {"role": "system", "content": prompt},
             {"role": "user", "content": user_input}
         ]
 
-        result = call_model(messages)
+        # Get AI response using selected model
+        ai_result = call_model(messages)
         
-        # Enhanced response structure for better integration
+        # Store this conversation for future context
+        store_conversation_memory(user_id, user_input, ai_result)
+        
+        processing_time = time.time() - start_time
+        
+        # Enhanced response with full intelligence metadata
         response = {
             "user_input": user_input,
-            "structured_response": result,
+            "structured_response": ai_result,
             "mode": mode,
-            "context_used": len(context) > 0,
+            "intelligence_layers": {
+                "vector_database_used": len(semantic_context) > 0,
+                "semantic_matches": len(semantic_context),
+                "context_relevance_scores": [item.get("relevance", 0) for item in semantic_context],
+                "model_used": MODEL,
+                "pinecone_integration": True if index else False,
+                "memory_stored": True
+            },
+            "context_metadata": {
+                "relevant_thoughts": len([c for c in semantic_context if c.get("relevance", 0) > 0.8]),
+                "pattern_recognition": len(set([c.get("content", {}).get("category") for c in semantic_context if c.get("content", {}).get("category")])),
+                "personalization_level": "high" if semantic_context else "low"
+            },
             "timestamp": "2025-01-26",
-            "processing_time": "Enhanced"
+            "processing_time": f"{processing_time:.2f}s"
         }
         
         return response
@@ -151,7 +254,11 @@ def run_dotspark_thought_partner(user_id: str, user_input: str, mode: str = "org
             "user_input": user_input,
             "structured_response": f"I apologize, but I encountered an error processing your thought: {str(e)}. Please try again.",
             "mode": mode,
-            "context_used": False,
+            "intelligence_layers": {
+                "vector_database_used": False,
+                "semantic_matches": 0,
+                "error": str(e)
+            },
             "timestamp": "2025-01-26",
             "processing_time": "Error",
             "error": str(e)

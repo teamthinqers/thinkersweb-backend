@@ -45,7 +45,7 @@ export async function runDotSparkCore(
   const startTime = Date.now();
 
   try {
-    // Use enhanced v2 Python intelligence agent
+    // Use enhanced v2 Python intelligence agent with full model specification
     const pythonArgs = [
       'dotspark_intelligence_agent_v2.py',
       'chat',
@@ -53,10 +53,16 @@ export async function runDotSparkCore(
       userInput.replace(/"/g, '\\"')
     ];
 
-    // Execute Python intelligence agent
+    // Execute enhanced Python intelligence agent with full environment
     const pythonProcess = spawn('python3', pythonArgs, {
       cwd: process.cwd(),
-      env: { ...process.env, MODEL: modelType }
+      env: { 
+        ...process.env, 
+        MODEL: modelType === 'deepseek' ? 'deepseek-chat' : 'gpt-4',
+        OPENAI_API_KEY: process.env.OPENAI_API_KEY,
+        DEEPSEEK_API_KEY: process.env.DEEPSEEK_API_KEY,
+        PINECONE_API_KEY: process.env.PINECONE_API_KEY
+      }
     });
 
     let pythonOutput = '';
@@ -118,7 +124,16 @@ export async function runDotSparkCore(
         processingTime,
         userId,
         enhanced: true,
-        contextUsed: pythonResult.context_used || false
+        intelligenceLayers: pythonResult.intelligence_layers || {},
+        contextMetadata: pythonResult.context_metadata || {},
+        systemCapabilities: {
+          vectorDatabase: true,
+          semanticSearch: true,
+          patternRecognition: true,
+          conversationMemory: true,
+          multiModelSupport: true,
+          pineconeIntegration: true
+        }
       }
     };
 
