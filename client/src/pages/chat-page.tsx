@@ -914,38 +914,6 @@ export default function ChatPage() {
                       </span>
                     )}
                   </Button>
-                  
-                  <Button 
-                    variant="outline" 
-                    className={`${isMobile ? 'h-8 p-1.5 justify-center' : 'h-24 p-4 flex flex-col items-start justify-between text-left'} hover:bg-amber-50 dark:hover:bg-amber-950/20 hover:text-amber-800 dark:hover:text-amber-200 hover:border-amber-300 dark:hover:border-amber-700 active:bg-amber-100 dark:active:bg-amber-900/30 active:text-amber-900 dark:active:text-amber-100 transition-all duration-200`}
-                    onClick={() => setInputValue("Visualize this summary for me: ")}
-                  >
-                    <div className={`flex items-center gap-2 ${isMobile ? 'justify-center' : ''}`}>
-                      <Target className={`${isMobile ? 'w-3 h-3 flex-shrink-0' : 'w-4 h-4'} text-orange-600`} />
-                      <span className={`${isMobile ? 'font-medium text-xs' : 'font-medium'}`}>Visualize Anything</span>
-                    </div>
-                    {!isMobile && (
-                      <span className="text-xs text-gray-600 dark:text-gray-400 leading-tight mt-1">
-                        Ask anything and I'll help you visualize
-                      </span>
-                    )}
-                  </Button>
-                  
-                  <Button 
-                    variant="outline" 
-                    className={`${isMobile ? 'h-8 p-1.5 justify-center' : 'h-24 p-4 flex flex-col items-start justify-between text-left'} hover:bg-amber-50 dark:hover:bg-amber-950/20 hover:text-amber-800 dark:hover:text-amber-200 hover:border-amber-300 dark:hover:border-amber-700 active:bg-amber-100 dark:active:bg-amber-900/30 active:text-amber-900 dark:active:text-amber-100 transition-all duration-200`}
-                    onClick={() => setInputValue("Seek wisdom from ancient Indian knowledge about: ")}
-                  >
-                    <div className={`flex items-center gap-2 ${isMobile ? 'justify-center' : ''}`}>
-                      <Brain className={`${isMobile ? 'w-3 h-3 flex-shrink-0' : 'w-4 h-4'} text-orange-600`} />
-                      <span className={`${isMobile ? 'font-medium text-xs' : 'font-medium'}`}>Ancient Wisdom</span>
-                    </div>
-                    {!isMobile && (
-                      <span className="text-xs text-gray-600 dark:text-gray-400 leading-tight mt-1">
-                        Seek answers from ancient Indian wisdom
-                      </span>
-                    )}
-                  </Button>
                 </div>
               </div>
             ) : (

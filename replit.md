@@ -140,6 +140,12 @@ DotSpark is a full-stack web application that serves as a personalized learning 
 ## Changelog
 ```
 Changelog:
+- January 26, 2025. COMPLETED landing page simplification with focused prompt selection:
+  * Reduced quick action prompts from 4 to 2 on chat landing page for cleaner user experience
+  * Kept "Organize Thoughts" (Brain icon) and "Spark Ideas" (Sparkles icon) as core functionality
+  * Removed "Visualize Anything" and "Ancient Wisdom" prompts to reduce cognitive load
+  * Landing page now provides focused entry points for primary DotSpark capabilities
+  * Grid layout automatically adapts to display two prompts optimally on desktop and mobile
 - January 26, 2025. COMPLETED conversation-to-grid saving functionality with enhanced UI:
   * Enhanced `/api/dotspark/chat` endpoint to save structured insights (dots, wheels, chakras) to database when users request saving
   * Added intelligent keyword detection for save requests ('save this', 'create this', 'confirm', etc.)
