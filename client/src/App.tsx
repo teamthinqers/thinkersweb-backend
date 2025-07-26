@@ -48,6 +48,7 @@ import EntryDetail from "@/components/entries/EntryDetail";
 import ChatEntryForm from "@/components/chat/ChatEntryForm";
 import EnhancedChatInterface from "@/components/chat/EnhancedChatInterface";
 import IntelligentVectorChat from "@/components/IntelligentVectorChat";
+import CognitiveAnalysisInterface from "@/components/CognitiveAnalysisInterface";
 
 import { StructuredFloatingDot } from "@/components/dotspark/StructuredFloatingDot";
 import { neuraStorage } from "@/lib/neuraStorage";
@@ -238,6 +239,7 @@ function Router() {
       <Route path="/chat" component={ChatPage} />
       <Route path="/enhanced-chat" component={() => <div className="h-screen"><EnhancedChatInterface /></div>} />
       <Route path="/vector-chat" component={() => <div className="min-h-screen bg-gray-50"><IntelligentVectorChat /></div>} />
+      <Route path="/cognitive-analysis" component={() => <CognitiveAnalysisInterface />} />
       <Route component={NotFound} />
     </Switch>
   );

@@ -1382,6 +1382,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Mount vector search routes
   app.use(`${apiPrefix}/vector`, vectorSearchRouter);
 
+  // ==========================================
+  // COGNITIVE ANALYSIS & INTELLIGENT RETRIEVAL
+  // ==========================================
+
+  // Import cognitive analysis routes
+  const {
+    analyzeCognitiveStructure,
+    performIntelligentQuery,
+    performAdvancedSearch,
+    getContextualInsights,
+    batchAnalyzeContent
+  } = await import('./routes/cognitive-analysis');
+
+  // Cognitive structure analysis
+  app.post(`${apiPrefix}/cognitive/analyze`, analyzeCognitiveStructure);
+  
+  // Intelligent retrieval
+  app.post(`${apiPrefix}/cognitive/query`, performIntelligentQuery);
+  
+  // Advanced search with filters
+  app.post(`${apiPrefix}/cognitive/search`, performAdvancedSearch);
+  
+  // Get contextual insights
+  app.post(`${apiPrefix}/cognitive/insights`, getContextualInsights);
+  
+  // Batch content analysis
+  app.post(`${apiPrefix}/cognitive/batch`, batchAnalyzeContent);
+
   // Initialize vector database on startup
   try {
     await initializeVectorDB();
