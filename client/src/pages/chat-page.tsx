@@ -522,7 +522,16 @@ export default function ChatPage() {
                 </Link>
               )}
 
-              {/* Removed mobile model selector - intelligence works seamlessly in backend */}
+              {/* Model Selector for Mobile */}
+              {isMobile && (
+                <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                  <ModelSelector 
+                    selectedModel={selectedModel} 
+                    onModelChange={setSelectedModel}
+                    className="w-full"
+                  />
+                </div>
+              )}
             </div>
           </nav>
 
@@ -666,7 +675,14 @@ export default function ChatPage() {
               </Link>
             )}
 
-            {/* Removed model selector - intelligence works seamlessly in backend */}
+            {/* Model Selector for Desktop */}
+            {!isMobile && (
+              <ModelSelector 
+                selectedModel={selectedModel} 
+                onModelChange={setSelectedModel}
+                className="ml-2"
+              />
+            )}
           </div>
           
           {/* Enhanced Center: Empty space for centered logo */}

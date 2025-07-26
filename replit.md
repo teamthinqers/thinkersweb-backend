@@ -140,7 +140,9 @@ DotSpark is a full-stack web application that serves as a personalized learning 
 ## Changelog
 ```
 Changelog:
-- January 26, 2025. COMPLETED landing page simplification with focused prompt selection:
+- January 26, 2025. COMPLETED model selector restoration and landing page simplification:
+  * Restored GPT-4 and DeepSeek model selection functionality that was accidentally removed
+  * Desktop users see model selector in header, mobile users see it in sidebar menu
   * Reduced quick action prompts from 4 to 2 on chat landing page for cleaner user experience
   * Kept "Organize Thoughts" (Brain icon) and "Spark Ideas" (Sparkles icon) as core functionality
   * Removed "Visualize Anything" and "Ancient Wisdom" prompts to reduce cognitive load
