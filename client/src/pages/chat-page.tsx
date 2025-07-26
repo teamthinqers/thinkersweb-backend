@@ -620,7 +620,22 @@ export default function ChatPage() {
 
           {/* Right: Header Icons and User Actions */}
           <div className="flex items-center gap-3">
-            {/* Enhanced Golden Sparkling Intelligence Icon */}
+            {/* Brain Icon - Navigate to Dashboard with Active Status - FIRST POSITION */}
+            <Link href="/dashboard">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="relative p-3 bg-gradient-to-br from-amber-500 via-amber-600 to-orange-600 hover:from-amber-600 hover:via-amber-700 hover:to-orange-700 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg"
+                title="My Neura"
+              >
+                <Brain className="h-5 w-5 text-white transition-all duration-300" />
+                {isNeuraActive && (
+                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full animate-pulse shadow-lg border-2 border-white"></div>
+                )}
+              </Button>
+            </Link>
+
+            {/* Enhanced Golden Sparkling Intelligence Icon - SECOND POSITION */}
             <Button 
               variant="ghost" 
               size="sm" 
@@ -647,21 +662,6 @@ export default function ChatPage() {
               {/* Golden rim glow */}
               <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-yellow-300/20 via-amber-400/20 to-orange-500/20 group-hover:from-yellow-200/30 group-hover:via-amber-300/30 group-hover:to-orange-400/30 transition-all duration-300"></div>
             </Button>
-
-            {/* Brain Icon - Navigate to Dashboard with Active Status */}
-            <Link href="/dashboard">
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className="relative p-3 bg-gradient-to-br from-amber-500 via-amber-600 to-orange-600 hover:from-amber-600 hover:via-amber-700 hover:to-orange-700 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg"
-                title="My Neura"
-              >
-                <Brain className="h-5 w-5 text-white transition-all duration-300" />
-                {isNeuraActive && (
-                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full animate-pulse shadow-lg border-2 border-white"></div>
-                )}
-              </Button>
-            </Link>
 
             {/* Social Icon */}
             <Link href="/social">
