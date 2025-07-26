@@ -45,52 +45,18 @@ export async function runDotSparkCore(
   const startTime = Date.now();
 
   try {
-    // Use Python script for advanced DotSpark processing
-    const pythonScript = `
-import sys
-import os
-import json
-sys.path.append('${process.cwd()}')
+    // Use new optimized Python intelligence agent
+    const pythonArgs = [
+      'dotspark_intelligence_agent.py',
+      'chat',
+      userId,
+      userInput.replace(/"/g, '\\"')
+    ];
 
-from dotspark_core_fixed import get_response_from_model
-
-try:
-    user_input = """${userInput.replace(/"/g, '\\"')}"""
-    user_id = "${userId}"
-    model_type = "${modelType}"
-    
-    response = get_response_from_model(user_input, user_id, model_type)
-    
-    result = {
-        "success": True,
-        "response": response,
-        "metadata": {
-            "model": model_type,
-            "timestamp": "${new Date().toISOString()}",
-            "user_id": user_id
-        }
-    }
-    
-    print(json.dumps(result))
-    
-except Exception as e:
-    error_result = {
-        "success": False,
-        "error": str(e),
-        "fallback_response": "I'm processing your thought. Let me help you organize it into a structured format.",
-        "metadata": {
-            "model": "fallback",
-            "timestamp": "${new Date().toISOString()}",
-            "user_id": "${userId}"
-        }
-    }
-    print(json.dumps(error_result))
-`;
-
-    // Execute Python script
-    const pythonProcess = spawn('python3', ['-c', pythonScript], {
+    // Execute Python intelligence agent
+    const pythonProcess = spawn('python3', pythonArgs, {
       cwd: process.cwd(),
-      env: { ...process.env }
+      env: { ...process.env, MODEL: modelType }
     });
 
     let pythonOutput = '';
