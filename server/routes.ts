@@ -790,6 +790,116 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Create a new Wheel (belongs to a chakra or standalone)
+  app.post(`${apiPrefix}/wheels`, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const userId = req.user?.id || req.session?.userId;
+      
+      if (!userId) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+
+      let { heading, goals, timeline, chakraId, sourceType = 'text' } = req.body;
+      const { headingVoiceUrl, goalsVoiceUrl, timelineVoiceUrl, headingAudio, goalsAudio, timelineAudio } = req.body;
+      
+      // If this is a voice wheel with audio data, transcribe it using OpenAI
+      if (sourceType === 'voice') {
+        try {
+          // Import the OpenAI transcription function
+          const { processVoiceInput } = await import('./openai.js');
+          
+          // Process each layer if audio data is provided
+          if (headingAudio && !heading) {
+            const audioBuffer = Buffer.from(headingAudio, 'base64');
+            const result = await processVoiceInput(audioBuffer, 'heading.wav', 'summary');
+            heading = result.processedText;
+          }
+          
+          if (goalsAudio && !goals) {
+            const audioBuffer = Buffer.from(goalsAudio, 'base64');
+            const result = await processVoiceInput(audioBuffer, 'goals.wav', 'anchor');
+            goals = result.processedText;
+          }
+          
+          if (timelineAudio && !timeline) {
+            const audioBuffer = Buffer.from(timelineAudio, 'base64');
+            const result = await processVoiceInput(audioBuffer, 'timeline.wav', 'pulse');
+            timeline = result.processedText;
+          }
+        } catch (transcriptionError) {
+          console.error('Voice transcription error:', transcriptionError);
+          // Continue with provided text if transcription fails
+        }
+      }
+      
+      // Validate required fields
+      if (!heading || heading.length > 100) {
+        return res.status(400).json({ 
+          error: 'Heading must be between 1 and 100 characters' 
+        });
+      }
+      
+      if (!goals || goals.length > 500) {
+        return res.status(400).json({ 
+          error: 'Goals must be between 1 and 500 characters' 
+        });
+      }
+      
+      if (!timeline || timeline.length > 200) {
+        return res.status(400).json({ 
+          error: 'Timeline must be between 1 and 200 characters' 
+        });
+      }
+      
+      // Validate chakraId if provided
+      if (chakraId) {
+        const parentChakra = await db.query.wheels.findFirst({
+          where: and(eq(wheels.id, parseInt(chakraId)), eq(wheels.userId, userId))
+        });
+        
+        if (!parentChakra) {
+          return res.status(400).json({ 
+            error: 'Invalid chakra ID or access denied' 
+          });
+        }
+      }
+      
+      // Create the Wheel
+      const wheelData = {
+        userId,
+        chakraId: chakraId ? parseInt(chakraId) : null,
+        heading,
+        goals,
+        timeline,
+        color: '#EA580C', // Default orange color for Wheels
+        positionX: Math.floor(Math.random() * 400) + 100,
+        positionY: Math.floor(Math.random() * 400) + 100,
+      };
+      
+      const newWheelResult = await db.insert(wheels).values(wheelData).returning();
+      const newWheel = Array.isArray(newWheelResult) ? newWheelResult[0] : newWheelResult;
+      
+      res.status(201).json({ 
+        success: true, 
+        message: 'Wheel created successfully',
+        wheel: {
+          id: newWheel.id,
+          heading: newWheel.heading,
+          goals: newWheel.goals,
+          timeline: newWheel.timeline,
+          chakraId: newWheel.chakraId,
+          sourceType,
+          color: newWheel.color,
+          position: { x: newWheel.positionX, y: newWheel.positionY },
+          createdAt: newWheel.createdAt
+        }
+      });
+    } catch (error) {
+      console.error('Error creating Wheel:', error);
+      res.status(500).json({ error: 'Failed to create Wheel' });
+    }
+  });
+
   // Grid positioning API endpoints - simplified version using existing entries
   app.get(`${apiPrefix}/grid/positions`, async (req: AuthenticatedRequest, res: Response) => {
     try {

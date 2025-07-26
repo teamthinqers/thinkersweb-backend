@@ -35,6 +35,7 @@ import DotSparkTuningUnified from "@/pages/DotSparkTuningUnified";
 import PwaDebugger from "@/pages/PwaDebugger";
 import PwaInstallGuide from "@/pages/PwaInstallGuide";
 import Testing from "@/pages/Testing";
+import TestCreation from "@/pages/TestCreation";
 import ChatPage from "@/pages/chat-page";
 import QuickCapture from "@/pages/QuickCapture";
 import DotInstall from "@/pages/DotInstall";
@@ -240,6 +241,7 @@ function Router() {
       <Route path="/pwa-debug" component={PwaDebugger} />
       <Route path="/install-guide" component={PwaInstallGuide} />
       <Route path="/testing" component={Testing} />
+      <Route path="/test-creation" component={TestCreation} />
       <Route path="/test-auth" component={TestGoogleAuth} />
       <Route path="/chat" component={ChatPage} />
       <Route path="/enhanced-chat" component={() => <div className="h-screen"><EnhancedChatInterface /></div>} />
