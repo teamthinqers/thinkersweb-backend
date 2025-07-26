@@ -148,6 +148,7 @@ Changelog:
   * Removed "Visualize Anything" and "Ancient Wisdom" prompts to reduce cognitive load
   * Landing page now provides focused entry points for primary DotSpark capabilities
   * Grid layout automatically adapts to display two prompts optimally on desktop and mobile
+  * Enhanced mobile browser experience by adding explanatory text to the two remaining prompts instead of showing buttons only
 - January 26, 2025. COMPLETED conversation-to-grid saving functionality with enhanced UI:
   * Enhanced `/api/dotspark/chat` endpoint to save structured insights (dots, wheels, chakras) to database when users request saving
   * Added intelligent keyword detection for save requests ('save this', 'create this', 'confirm', etc.)
