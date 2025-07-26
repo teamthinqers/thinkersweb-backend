@@ -620,19 +620,32 @@ export default function ChatPage() {
 
           {/* Right: Header Icons and User Actions */}
           <div className="flex items-center gap-3">
-            {/* Sparkling Intelligence Icon - Placeholder */}
+            {/* Enhanced Golden Sparkling Intelligence Icon */}
             <Button 
               variant="ghost" 
               size="sm" 
-              className="relative p-3 bg-gradient-to-br from-amber-600 via-orange-600 to-yellow-600 hover:from-amber-700 hover:via-orange-700 hover:to-yellow-700 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg group"
+              className="relative p-3 bg-gradient-to-br from-yellow-400 via-amber-500 to-orange-600 hover:from-yellow-300 hover:via-amber-400 hover:to-orange-500 rounded-xl transition-all duration-300 hover:scale-110 shadow-xl shadow-amber-500/40 group overflow-hidden"
               title="DotSpark Intelligence (Coming Soon)"
               disabled
             >
-              <Zap className="h-5 w-5 text-white animate-pulse drop-shadow-lg" />
-              {/* Sparkling effect */}
-              <div className="absolute inset-0 animate-ping opacity-30">
-                <Zap className="h-5 w-5 text-yellow-200 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
+              {/* Animated golden background */}
+              <div className="absolute inset-0 bg-gradient-to-br from-yellow-300 via-amber-400 to-orange-500 opacity-90 animate-pulse"></div>
+              
+              {/* Main spark icon */}
+              <Zap className="h-5 w-5 text-white relative z-10 drop-shadow-xl filter brightness-110" />
+              
+              {/* Multiple sparkling effects */}
+              <div className="absolute inset-0 animate-ping opacity-40">
+                <Zap className="h-5 w-5 text-yellow-100 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
               </div>
+              
+              {/* Additional golden sparkles */}
+              <div className="absolute top-1 right-1 w-1 h-1 bg-yellow-200 rounded-full animate-bounce opacity-80"></div>
+              <div className="absolute bottom-1 left-1 w-1 h-1 bg-amber-200 rounded-full animate-bounce opacity-80" style={{animationDelay: '0.3s'}}></div>
+              <div className="absolute top-2 left-2 w-0.5 h-0.5 bg-white rounded-full animate-ping opacity-60" style={{animationDelay: '0.6s'}}></div>
+              
+              {/* Golden rim glow */}
+              <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-yellow-300/20 via-amber-400/20 to-orange-500/20 group-hover:from-yellow-200/30 group-hover:via-amber-300/30 group-hover:to-orange-400/30 transition-all duration-300"></div>
             </Button>
 
             {/* Brain Icon - Navigate to Dashboard with Active Status */}
