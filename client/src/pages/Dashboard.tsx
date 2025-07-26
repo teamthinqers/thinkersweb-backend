@@ -1369,12 +1369,9 @@ const Dashboard: React.FC = () => {
     }, [user, userWheels.length, actualDots.length]);
 
     // Show different states based on authentication and content
-    // Temporarily disable authentication checks to prevent errors
-    const userAuthenticated = user && !isLoading;
-    
-    if (!previewMode && (!userAuthenticated || userWheels.length === 0 && actualDots.length === 0)) {
+    if (!previewMode && (!user || userWheels.length === 0 && actualDots.length === 0)) {
       // Check if user is authenticated
-      if (!userAuthenticated) {
+      if (!user) {
         // Show authentication required state
         return (
           <div className="relative bg-gradient-to-br from-amber-50/50 to-orange-50/50 rounded-xl p-4 min-h-[500px] border-2 border-amber-200 shadow-lg overflow-hidden">
