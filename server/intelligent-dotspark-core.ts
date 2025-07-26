@@ -45,9 +45,9 @@ export async function runDotSparkCore(
   const startTime = Date.now();
 
   try {
-    // Use new optimized Python intelligence agent
+    // Use enhanced v2 Python intelligence agent
     const pythonArgs = [
-      'dotspark_intelligence_agent.py',
+      'dotspark_intelligence_agent_v2.py',
       'chat',
       userId,
       userInput.replace(/"/g, '\\"')
@@ -87,20 +87,40 @@ export async function runDotSparkCore(
 
     const processingTime = Date.now() - startTime;
 
-    if (pythonResult.success) {
-      return {
-        response: pythonResult.response,
-        metadata: {
-          model: modelType,
-          timestamp: new Date().toISOString(),
-          processingTime,
-          userId
+    // Process enhanced v2 response format
+    let structuredData;
+    let responseText = '';
+    
+    try {
+      if (pythonResult.structured_response) {
+        try {
+          structuredData = JSON.parse(pythonResult.structured_response);
+          // Generate enhanced natural language response
+          responseText = await generateEnhancedDotSparkResponse(structuredData, userInput);
+        } catch (innerParseError) {
+          // If structured_response is already a string, use it directly
+          responseText = pythonResult.structured_response;
         }
-      };
-    } else {
-      // Fallback to direct OpenAI call if Python fails
-      return await fallbackDotSparkProcessing(userInput, userId, modelType, processingTime);
+      } else {
+        responseText = "I've processed your thought and I'm here to help you explore it further.";
+      }
+    } catch (error) {
+      console.error('Error processing enhanced response:', error);
+      responseText = "I encountered an issue processing your thought. Could you try rephrasing it?";
     }
+
+    return {
+      response: responseText,
+      structuredOutput: structuredData,
+      metadata: {
+        model: modelType,
+        timestamp: new Date().toISOString(),
+        processingTime,
+        userId,
+        enhanced: true,
+        contextUsed: pythonResult.context_used || false
+      }
+    };
 
   } catch (error) {
     console.error('DotSpark Core processing error:', error);
