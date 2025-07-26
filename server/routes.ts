@@ -1410,6 +1410,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Batch content analysis
   app.post(`${apiPrefix}/cognitive/batch`, batchAnalyzeContent);
 
+  // ==========================================
+  // CONVERSATIONAL INTELLIGENCE
+  // ==========================================
+
+  // Import conversational chat routes
+  const {
+    intelligentConversationalChat,
+    getConversationContext,
+    continueWithPoint
+  } = await import('./routes/conversational-chat');
+
+  // Intelligent conversational chat with context memory
+  app.post(`${apiPrefix}/chat/conversational`, intelligentConversationalChat);
+  
+  // Get conversation context and summary
+  app.get(`${apiPrefix}/chat/context/:sessionId`, getConversationContext);
+  
+  // Continue conversation with specific point reference
+  app.post(`${apiPrefix}/chat/continue-point`, continueWithPoint);
+
   // Initialize vector database on startup
   try {
     await initializeVectorDB();
