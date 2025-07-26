@@ -624,16 +624,15 @@ export default function ChatPage() {
             <Button 
               variant="ghost" 
               size="sm" 
-              className="relative p-3 bg-gradient-to-br from-yellow-400 via-amber-500 to-orange-500 hover:from-yellow-500 hover:via-amber-600 hover:to-orange-600 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg group"
+              className="relative p-3 bg-gradient-to-br from-amber-600 via-orange-600 to-yellow-600 hover:from-amber-700 hover:via-orange-700 hover:to-yellow-700 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg group"
               title="DotSpark Intelligence (Coming Soon)"
               disabled
             >
-              <Zap className="h-5 w-5 text-white animate-pulse drop-shadow-sm" />
+              <Zap className="h-5 w-5 text-white animate-pulse drop-shadow-lg" />
               {/* Sparkling effect */}
-              <div className="absolute inset-0 animate-ping opacity-20">
-                <Zap className="h-5 w-5 text-yellow-300 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
+              <div className="absolute inset-0 animate-ping opacity-30">
+                <Zap className="h-5 w-5 text-yellow-200 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
               </div>
-              <div className="absolute -top-1 -right-1 w-2 h-2 bg-yellow-300 rounded-full animate-bounce"></div>
             </Button>
 
             {/* Brain Icon - Navigate to Dashboard with Active Status */}
