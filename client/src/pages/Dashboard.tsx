@@ -1318,7 +1318,7 @@ const Dashboard: React.FC = () => {
           summary: scatteredSummaries[i],
           anchor: `Personal insight about ${scatteredHeadings[i].toLowerCase()} and individual growth`,
           pulse: emotions[Math.floor(Math.random() * emotions.length)],
-          wheelId: undefined, // No wheel - scattered/unorganized dot
+          wheelId: undefined as any, // No wheel - scattered/unorganized dot
           timestamp: new Date(Date.now() - Math.random() * 15 * 24 * 60 * 60 * 1000),
           sourceType: Math.random() > 0.5 ? 'voice' : 'text',
           captureMode: Math.random() > 0.7 ? 'ai' : 'natural',
@@ -1334,12 +1334,10 @@ const Dashboard: React.FC = () => {
 
     const { previewDots, previewWheels } = generatePreviewData();
     
-    // Base wheels to display - combine userWheels (from API) and fallback wheels
-    let baseWheelsToDisplay = previewMode ? previewWheels : (userWheels.length > 0 ? userWheels : wheels);
+    // Base wheels to display - ONLY user data in real mode, preview data in preview mode
+    const displayWheels = previewMode ? previewWheels : userWheels;
     
-    const displayWheels = baseWheelsToDisplay;
-    
-    // Start with the appropriate base data source
+    // ONLY user data in real mode, preview data in preview mode
     let baseDotsToDisplay = previewMode ? previewDots : actualDots;
     
     // Apply recent filter if enabled (only in normal mode)
@@ -1350,8 +1348,6 @@ const Dashboard: React.FC = () => {
         .slice(0, recentCount);
     }
     
-    // Base dots to display (no spark filtering)
-    
     const displayDots = baseDotsToDisplay;
     const totalDots = displayDots.length;
     
@@ -1360,10 +1356,10 @@ const Dashboard: React.FC = () => {
     // Count Wheels and Chakras separately from the actual displayed data
     // Wheels: items with chakraId (belonging to a chakra) 
     // Chakras: items without chakraId (top-level containers)
-    const totalWheels = previewMode ? previewWheels.filter(w => w.chakraId !== undefined).length : displayWheels.filter(w => w.chakraId !== undefined).length;
-    const totalChakras = previewMode ? previewWheels.filter(w => w.chakraId === undefined).length : displayWheels.filter(w => w.chakraId === undefined).length;
+    const totalWheels = previewMode ? previewWheels.filter((w: any) => w.chakraId !== undefined).length : displayWheels.filter((w: any) => w.chakraId !== undefined).length;
+    const totalChakras = previewMode ? previewWheels.filter((w: any) => w.chakraId === undefined).length : displayWheels.filter((w: any) => w.chakraId === undefined).length;
 
-    if (!previewMode && userWheels.length === 0 && wheels.length === 0 && actualDots.length === 0) {
+    if (!previewMode && userWheels.length === 0 && actualDots.length === 0) {
       // Show empty state with preview toggle
       return (
         <div className="relative bg-gradient-to-br from-amber-50/50 to-orange-50/50 rounded-xl p-4 min-h-[500px] border-2 border-amber-200 shadow-lg overflow-hidden">
