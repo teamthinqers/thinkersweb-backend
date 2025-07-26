@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useToast } from '@/hooks/use-toast';
-import { Send, Loader2, ArrowLeft, Menu, Brain, Users, Settings, BarChart2, User, MessageSquare, Home, Sparkles, Mic, MicOff, Info, Lightbulb, Target, Puzzle, RotateCcw, Plus, RefreshCw, Phone } from 'lucide-react';
+import { Send, Loader2, ArrowLeft, Menu, Brain, Users, Settings, BarChart2, User, MessageSquare, Home, Sparkles, Mic, MicOff, Info, Lightbulb, Target, Puzzle, RotateCcw, Plus, RefreshCw, Phone, Zap } from 'lucide-react';
 import { SiWhatsapp } from 'react-icons/si';
 import { Link } from 'wouter';
 import { useAuth } from '@/hooks/use-auth';
@@ -631,6 +631,18 @@ export default function ChatPage() {
 
           {/* Right: Header Icons and User Actions */}
           <div className="flex items-center gap-3">
+            {/* Intelligence Selector */}
+            <Link href="/intelligence">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="p-3 bg-purple-500 hover:bg-purple-600 dark:bg-purple-600 dark:hover:bg-purple-700 rounded-xl transition-all duration-300 hover:scale-105 shadow-sm"
+                title="AI Intelligence Levels"
+              >
+                <Zap className="h-5 w-5 text-white" />
+              </Button>
+            </Link>
+
             {/* Brain Icon - Navigate to Dashboard with Active Status */}
             <Link href="/dashboard">
               <Button 

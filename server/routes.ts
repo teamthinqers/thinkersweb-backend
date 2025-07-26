@@ -1419,6 +1419,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post(`${apiPrefix}/cognitive/batch`, batchAnalyzeContent);
 
   // ==========================================
+  // ADVANCED DOTSPARK INTELLIGENCE
+  // ==========================================
+
+  // Import advanced DotSpark routes with Python backend integration
+  const {
+    advancedDotSparkChat,
+    organizeUserThoughts,
+    multiModelDotSpark,
+    getDotSparkStatus
+  } = await import('./routes/advanced-dotspark');
+
+  // Advanced DotSpark chat with Python backend logic
+  app.post(`${apiPrefix}/dotspark/chat`, advancedDotSparkChat as any);
+  
+  // Organize thoughts into Dot/Wheel/Chakra structure
+  app.post(`${apiPrefix}/dotspark/organize`, organizeUserThoughts as any);
+  
+  // Multi-model processing (GPT-4 + DeepSeek)
+  app.post(`${apiPrefix}/dotspark/multi-model`, multiModelDotSpark as any);
+  
+  // DotSpark intelligence status and capabilities
+  app.get(`${apiPrefix}/dotspark/status`, getDotSparkStatus as any);
+
+  // ==========================================
   // CONVERSATIONAL INTELLIGENCE
   // ==========================================
 

@@ -50,6 +50,8 @@ import EnhancedChatInterface from "@/components/chat/EnhancedChatInterface";
 import IntelligentVectorChat from "@/components/IntelligentVectorChat";
 import CognitiveAnalysisInterface from "@/components/CognitiveAnalysisInterface";
 import IntelligentConversationalChat from "@/components/IntelligentConversationalChat";
+import AdvancedDotSparkChat from "@/components/AdvancedDotSparkChat";
+import IntelligenceSelector from "@/components/IntelligenceSelector";
 import IndexingDemo from "@/pages/IndexingDemo";
 import ActivationPage from "@/pages/ActivationPage";
 
@@ -244,6 +246,8 @@ function Router() {
       <Route path="/vector-chat" component={() => <div className="min-h-screen bg-gray-50"><IntelligentVectorChat /></div>} />
       <Route path="/cognitive-analysis" component={() => <CognitiveAnalysisInterface />} />
       <Route path="/intelligent-chat" component={() => <IntelligentConversationalChat />} />
+      <Route path="/advanced-chat" component={() => <div className="min-h-screen bg-gray-50 p-4"><AdvancedDotSparkChat /></div>} />
+      <Route path="/intelligence" component={IntelligenceSelector} />
       <Route path="/indexing-demo" component={IndexingDemo} />
       <Route path="/activation" component={ActivationPage} />
       <Route component={NotFound} />
