@@ -162,7 +162,7 @@ export class ConversationalIntelligence {
         model: 'gpt-4o',
         messages: [{ role: 'user', content: prompt }],
         temperature: 0.2,
-        max_tokens: 200
+        max_tokens: 1000 // Increased for detailed intent analysis
       });
 
       const result = JSON.parse(response.choices[0].message.content || '{}');
@@ -322,7 +322,7 @@ export class ConversationalIntelligence {
         model: 'gpt-4o',
         messages: [{ role: 'user', content: prompt }],
         temperature: 0.4,
-        max_tokens: 500
+        max_tokens: 1500 // Increased for comprehensive contextual responses
       });
 
       const result = JSON.parse(response.choices[0].message.content || '{}');
@@ -380,7 +380,7 @@ export class ConversationalIntelligence {
       );
 
       // Update current topics
-      context.currentTopics = [...new Set([...context.currentTopics, ...analysis.topics])].slice(-10);
+      context.currentTopics = Array.from(new Set([...context.currentTopics, ...analysis.topics])).slice(-10);
 
       // Extract and store new points discussed in AI response
       const newPoints = await this.extractPointsFromResponse(aiResponse.response);

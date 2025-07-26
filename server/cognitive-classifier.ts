@@ -81,7 +81,7 @@ export async function classifyCognitiveStructure(content: string): Promise<Cogni
       model: 'gpt-4o',
       messages: [{ role: 'user', content: prompt }],
       temperature: 0.3,
-      max_tokens: 500
+      max_tokens: 1200 // Increased for comprehensive classification
     });
 
     const result = JSON.parse(response.choices[0].message.content || '{}');
@@ -163,7 +163,7 @@ export async function performSemanticAnalysis(content: string): Promise<Semantic
       model: 'gpt-4o',
       messages: [{ role: 'user', content: prompt }],
       temperature: 0.2,
-      max_tokens: 300
+      max_tokens: 1000 // Increased for detailed queries
     });
 
     const result = JSON.parse(response.choices[0].message.content || '{}');
@@ -235,7 +235,7 @@ export async function generateContextualInsights(
       model: 'gpt-4o',
       messages: [{ role: 'user', content: prompt }],
       temperature: 0.4,
-      max_tokens: 400
+      max_tokens: 1200 // Increased for comprehensive insights
     });
 
     const result = JSON.parse(response.choices[0].message.content || '{}');
@@ -293,7 +293,7 @@ export async function extractKeyEntities(content: string): Promise<{
       model: 'gpt-4o',
       messages: [{ role: 'user', content: prompt }],
       temperature: 0.1,
-      max_tokens: 200
+      max_tokens: 1000 // Increased for complete structural analysis
     });
 
     const result = JSON.parse(response.choices[0].message.content || '{}');

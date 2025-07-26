@@ -58,7 +58,7 @@ Respond with JSON:
       messages: [{ role: "user", content: analysisPrompt }],
       response_format: { type: "json_object" },
       temperature: 0.2,
-      max_tokens: 200,
+      max_tokens: 1000, // Increased for detailed analysis
     });
 
     const analysis = JSON.parse(response.choices[0].message.content || '{}');
@@ -118,7 +118,7 @@ Respond with JSON:
       messages: [{ role: "user", content: proposalPrompt }],
       response_format: { type: "json_object" },
       temperature: 0.3,
-      max_tokens: 400,
+      max_tokens: 1000, // Increased for detailed dot proposals
     });
 
     const proposal = JSON.parse(response.choices[0].message.content || '{}');
@@ -340,7 +340,7 @@ Deliver exceptional AI assistance that showcases the full potential of your capa
             ...updatedMessages.slice(-12).map(m => ({ role: m.role, content: m.content }))
           ],
           temperature: 0.5, // Faster, more focused responses
-          max_tokens: 200,  // Allow slightly longer but still concise responses
+          max_tokens: 1500,  // Increased for complete, detailed responses
         });
         aiResponse = response.choices[0].message.content || 
           "That's interesting! Can you tell me more about what made this insight particularly meaningful to you?";
@@ -354,7 +354,7 @@ Deliver exceptional AI assistance that showcases the full potential of your capa
           ...updatedMessages.slice(-12).map(m => ({ role: m.role, content: m.content }))
         ],
         temperature: 0.5, // Faster, more focused responses
-        max_tokens: 200,  // Allow slightly longer but still concise responses
+        max_tokens: 1500,  // Increased for complete, detailed responses
       });
       aiResponse = response.choices[0].message.content || 
         "That's interesting! Can you tell me more about what made this insight particularly meaningful to you?";

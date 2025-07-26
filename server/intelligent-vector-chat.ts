@@ -142,7 +142,7 @@ Analyze and respond with JSON:
       messages: [{ role: "user", content: analysisPrompt }],
       response_format: { type: "json_object" },
       temperature: 0.3,
-      max_tokens: 300,
+      max_tokens: 1200, // Increased for comprehensive analysis
     });
 
     return JSON.parse(response.choices[0].message.content || '{}');
@@ -203,7 +203,7 @@ Generate a thoughtful, contextually intelligent response (150-300 words):`;
         { role: "user", content: contextualPrompt }
       ],
       temperature: 0.7,
-      max_tokens: 400,
+      max_tokens: 1500, // Increased for complete contextual responses
     });
 
     return response.choices[0].message.content || "I'm here to help you explore your thoughts further.";
@@ -412,7 +412,7 @@ Generate ${limit} specific, thoughtful search suggestions that would help them d
       messages: [{ role: "user", content: suggestionPrompt }],
       response_format: { type: "json_object" },
       temperature: 0.7,
-      max_tokens: 300,
+      max_tokens: 1000, // Increased for comprehensive suggestions
     });
 
     const result = JSON.parse(response.choices[0].message.content || '{}');

@@ -70,7 +70,7 @@ export class IntelligentFeatures {
     try {
       const response = await anthropic.messages.create({
         model: DEFAULT_MODEL_STR,
-        max_tokens: 500,
+        max_tokens: 1500, // Increased for complete analysis
         system: `Generate intelligent conversation suggestions. Return a JSON array of suggestions with:
         {
           "type": "question|clarification|expansion|action",

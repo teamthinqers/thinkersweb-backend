@@ -387,7 +387,7 @@ export async function generateAdvancedResponse(
       model: needsRealTimeData ? "gpt-4o" : "gpt-4o-mini",
       messages: contextWindow,
       temperature: needsRealTimeData ? 0.3 : 0.1,
-      max_tokens: needsRealTimeData ? 500 : 300,
+      max_tokens: needsRealTimeData ? 2000 : 1500, // Increased for complete, detailed responses like ChatGPT
       top_p: 0.7,
       frequency_penalty: 0,
       presence_penalty: 0,
@@ -437,7 +437,7 @@ export async function generateAdvancedResponse(
               }
             ],
             temperature: 0.3,
-            max_tokens: 400
+            max_tokens: 1500 // Increased for complete follow-up responses
           });
           
           responseText = followupResponse.choices[0]?.message?.content?.trim() || responseText;
@@ -529,7 +529,7 @@ export async function processLearningEntry(text: string): Promise<{
       ],
       response_format: { type: "json_object" },
       temperature: 0.1,
-      max_tokens: 300
+      max_tokens: 1500 // Increased for complete chat responses
     });
 
     const result = JSON.parse(response.choices[0].message.content || '{}');

@@ -248,7 +248,7 @@ Respond with sophisticated intelligence that demonstrates deep understanding, cr
     try {
       const response = await anthropic.messages.create({
         model: DEFAULT_MODEL_STR,
-        max_tokens: 400,
+        max_tokens: 1500, // Increased for complete conversational responses
         system: "Generate 2 alternative responses to the user's message that take different approaches or perspectives while maintaining quality and relevance.",
         messages: [
           { role: 'user', content: `Original message: "${message}"\nPrimary response: "${primaryResponse}"\n\nProvide 2 alternative responses with different styles or approaches.` }
@@ -270,7 +270,7 @@ Respond with sophisticated intelligence that demonstrates deep understanding, cr
     try {
       const followUpResponse = await anthropic.messages.create({
         model: DEFAULT_MODEL_STR,
-        max_tokens: 200,
+        max_tokens: 1200, // Increased for detailed analysis
         system: "Generate 3 intelligent follow-up questions or suggestions that would naturally continue this conversation in meaningful directions.",
         messages: [
           { role: 'user', content: `User said: "${message}"\nI responded: "${response}"\n\nSuggest 3 thoughtful follow-up questions or topics.` }
@@ -419,7 +419,7 @@ Respond with sophisticated intelligence that demonstrates deep understanding, cr
     try {
       const response = await anthropic.messages.create({
         model: DEFAULT_MODEL_STR,
-        max_tokens: 300,
+        max_tokens: 1200, // Increased for detailed structure analysis
         system: "Create a personalized conversation summary highlighting key insights, user preferences, and next steps.",
         messages: [
           { role: 'user', content: `Summarize this conversation: ${JSON.stringify(context.conversationHistory.slice(-5))}` }
@@ -448,7 +448,7 @@ export async function generateAdvancedChatResponse(
   metadata: any;
 }> {
   const engine = new AdvancedChatEngine();
-  const result = await engine.generateIntelligentResponse(message, conversationHistory, model, userId, sessionId);
+  const result = await engine.generateResponse(message, conversationHistory, model, userId, sessionId);
   
   return {
     response: result.content,
