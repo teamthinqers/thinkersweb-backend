@@ -1438,6 +1438,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Continue conversation with specific point reference
   app.post(`${apiPrefix}/chat/continue-point`, continueWithPoint);
 
+  // ==========================================
+  // DOTSPARK ACTIVATION SYSTEM
+  // ==========================================
+
+  // Import activation routes
+  const activationRoutes = await import('./routes/activation');
+  app.use(`${apiPrefix}/activation`, activationRoutes.default);
+
   // Initialize vector database on startup
   try {
     await initializeVectorDB();

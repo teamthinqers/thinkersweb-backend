@@ -51,6 +51,7 @@ import IntelligentVectorChat from "@/components/IntelligentVectorChat";
 import CognitiveAnalysisInterface from "@/components/CognitiveAnalysisInterface";
 import IntelligentConversationalChat from "@/components/IntelligentConversationalChat";
 import IndexingDemo from "@/pages/IndexingDemo";
+import ActivationPage from "@/pages/ActivationPage";
 
 import { StructuredFloatingDot } from "@/components/dotspark/StructuredFloatingDot";
 import { neuraStorage } from "@/lib/neuraStorage";
@@ -244,6 +245,7 @@ function Router() {
       <Route path="/cognitive-analysis" component={() => <CognitiveAnalysisInterface />} />
       <Route path="/intelligent-chat" component={() => <IntelligentConversationalChat />} />
       <Route path="/indexing-demo" component={IndexingDemo} />
+      <Route path="/activation" component={ActivationPage} />
       <Route component={NotFound} />
     </Switch>
   );

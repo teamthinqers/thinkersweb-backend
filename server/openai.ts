@@ -1,6 +1,7 @@
 import OpenAI from "openai";
 import { randomUUID } from "crypto";
 import axios from "axios";
+import { canMakeRequest, recordUsage, isDotSparkActivated } from './usage-tracker';
 
 // Initialize the OpenAI client with the API key
 const openai = new OpenAI({
@@ -325,14 +326,38 @@ function addMessageToHistory(conversationKey: string, message: Message): void {
  */
 export async function generateAdvancedResponse(
   input: string,
-  userId: number,
+  userId?: number,
   phoneNumber: string = '',
-  systemPrompt?: string
+  systemPrompt?: string,
+  sessionId?: string
 ): Promise<{
   text: string;
   isLearning: boolean;
+  usageInfo?: {
+    tokensUsed: number;
+    tokensRemaining: number;
+    isActivated: boolean;
+    limitReached?: boolean;
+  };
 }> {
   try {
+    // Check usage limits for non-activated users
+    const estimatedTokens = Math.min(input.length * 2, 200); // Rough estimate
+    const usageCheck = canMakeRequest(userId, sessionId, estimatedTokens);
+    
+    if (!usageCheck.allowed) {
+      return {
+        text: `${usageCheck.reason} ${userId ? 'Sign in and activate DotSpark for unlimited AI assistance.' : 'Please sign in to activate DotSpark for unlimited access.'}`,
+        isLearning: false,
+        usageInfo: {
+          tokensUsed: 0,
+          tokensRemaining: usageCheck.tokensRemaining || 0,
+          isActivated: false,
+          limitReached: true
+        }
+      };
+    }
+
     const trimmedInput = input.trim().toLowerCase();
     
     // Check for instant pattern-based responses first (0ms response time)
@@ -383,11 +408,17 @@ export async function generateAdvancedResponse(
     // Use optimized conversation context 
     const contextWindow = needsRealTimeData ? fullHistory.slice(-8) : fullHistory.slice(-4);
     
+    // Determine token limits based on activation status
+    const isActivated = isDotSparkActivated(userId);
+    const maxTokens = isActivated 
+      ? (needsRealTimeData ? 2000 : 1500) // Full tokens for activated users
+      : (needsRealTimeData ? 300 : 200);   // Limited tokens for general users
+    
     const response = await openai.chat.completions.create({
       model: needsRealTimeData ? "gpt-4o" : "gpt-4o-mini",
       messages: contextWindow,
       temperature: needsRealTimeData ? 0.3 : 0.1,
-      max_tokens: needsRealTimeData ? 2000 : 1500, // Increased for complete, detailed responses like ChatGPT
+      max_tokens: maxTokens,
       top_p: 0.7,
       frequency_penalty: 0,
       presence_penalty: 0,
@@ -469,9 +500,19 @@ export async function generateAdvancedResponse(
       !input.includes('?') && 
       !/^(what|how|why|when|where|who|which|whose|whom|can you|could you)/i.test(input);
     
+    // Record usage for non-activated users
+    const actualTokensUsed = Math.min(responseText.length / 3, estimatedTokens * 2);
+    recordUsage(userId, sessionId, actualTokensUsed);
+
     return {
       text: responseText,
-      isLearning
+      isLearning,
+      usageInfo: {
+        tokensUsed: actualTokensUsed,
+        tokensRemaining: isActivated ? -1 : Math.max(0, (usageCheck.tokensRemaining || 0) - actualTokensUsed),
+        isActivated: isActivated,
+        limitReached: false
+      }
     };
   } catch (error) {
     console.error("Error generating response with OpenAI:", error);

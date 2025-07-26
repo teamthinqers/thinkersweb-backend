@@ -138,6 +138,19 @@ DotSpark is a full-stack web application that serves as a personalized learning 
 ## Changelog
 ```
 Changelog:
+- January 26, 2025. COMPLETED comprehensive tiered access system with usage-based AI limits:
+  * Implemented comprehensive usage tracking system (usage-tracker.ts) with token limits for general users and unlimited access for activated DotSpark users
+  * Created DotSpark activation system with code generation, redemption, and status tracking API routes (/api/activation/*)
+  * Built activation code system with unique DS-XXXXXX-X format codes that activate unlimited AI access and vector storage
+  * Enhanced OpenAI chat system to enforce token limits (200-300 tokens for general users, 1500-2000 for activated users)
+  * Added usage checking before AI requests with detailed limit enforcement and graceful degradation
+  * Created DotSparkActivation component with code generation, redemption interface, and usage statistics display
+  * Built UsageLimitBanner component showing real-time token usage, progress bars, and activation prompts
+  * Added ActivationPage with comprehensive activation management and benefits overview
+  * Implemented tiered business model: general users get 1000 daily tokens + 10 requests, activated users get unlimited access
+  * System tracks actual token usage from AI responses and enforces limits across all chat interfaces
+  * All chat endpoints now include usage information in responses with activation status and remaining tokens
+  * Built comprehensive activation status checking and cross-platform activation management system
 - January 24, 2025. COMPLETED mobile browser sticky headers and positioning optimization:
   * Implemented sticky/frozen headers for mobile browsers - landing page header stays fixed during scroll
   * Made chat page header sticky with proper mobile positioning (fixed top-0 left-0 right-0 z-40)
