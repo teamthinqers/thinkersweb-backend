@@ -1334,14 +1334,14 @@ const Dashboard: React.FC = () => {
 
     const { previewDots, previewWheels } = generatePreviewData();
     
-    // Base wheels to display - Always show preview data as foundation, add user data on top
-    const displayWheels = [...previewWheels, ...userWheels];
+    // Base wheels to display - Real mode shows ONLY user data, Preview mode shows ONLY demo data
+    const displayWheels = previewMode ? previewWheels : userWheels;
     
-    // Always show preview data as foundation, add user data on top
-    let baseDotsToDisplay = [...previewDots, ...actualDots];
+    // Real mode shows ONLY user data, Preview mode shows ONLY demo data
+    let baseDotsToDisplay = previewMode ? previewDots : actualDots;
     
-    // Apply recent filter if enabled
-    if (showingRecentFilter) {
+    // Apply recent filter if enabled (only in real mode)
+    if (showingRecentFilter && !previewMode) {
       // Sort by timestamp (most recent first) and take the specified number
       baseDotsToDisplay = [...baseDotsToDisplay]
         .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
@@ -1353,13 +1353,68 @@ const Dashboard: React.FC = () => {
     
 
     
-    // Count Wheels and Chakras from combined data (preview + user data)
+    // Count Wheels and Chakras from displayed data (real mode = user data, preview mode = demo data)
     // Wheels: items with chakraId (belonging to a chakra) 
     // Chakras: items without chakraId (top-level containers)
     const totalWheels = displayWheels.filter((w: any) => w.chakraId !== undefined).length;
     const totalChakras = displayWheels.filter((w: any) => w.chakraId === undefined).length;
 
-    // Always show content (preview + user data combined)
+    // Show empty state when in real mode and user has no content
+    if (!previewMode && userWheels.length === 0 && actualDots.length === 0) {
+      // Show empty state with preview toggle
+      return (
+        <div className="relative bg-gradient-to-br from-amber-50/50 to-orange-50/50 rounded-xl p-4 min-h-[500px] border-2 border-amber-200 shadow-lg overflow-hidden">
+          <div className="absolute top-4 left-4 z-10 flex items-center gap-3">
+            <span className="bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-sm font-medium">
+              Empty
+            </span>
+            <div className="flex items-center gap-2 bg-white/90 backdrop-blur rounded-lg px-3 py-2 border-2 border-amber-200">
+              <label className="text-sm font-medium text-amber-800">Preview Mode</label>
+              <button
+                onClick={() => setPreviewMode(!previewMode)}
+                className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
+                  previewMode ? 'bg-amber-500' : 'bg-gray-300'
+                }`}
+              >
+                <span
+                  className={`inline-block h-3 w-3 transform rounded-full bg-white transition-transform ${
+                    previewMode ? 'translate-x-5' : 'translate-x-1'
+                  }`}
+                />
+              </button>
+            </div>
+          </div>
+          
+          <div className="flex items-center justify-center h-full">
+            <div className="text-center">
+              <Brain className="w-16 h-16 mx-auto mb-4 text-amber-500" />
+              <h3 className="text-2xl font-bold text-amber-800 mb-2">Start Creating Your DotSpark</h3>
+              <p className="text-amber-600 mb-6 max-w-md mx-auto">
+                Begin organizing your thoughts into structured Dots, Wheels, and Chakras for actionable insights.
+              </p>
+              
+              <div className="flex flex-col gap-3 max-w-xs mx-auto">
+                <button
+                  onClick={() => {
+                    // Navigate to floating dot interface for creation
+                    const event = new CustomEvent('triggerFloatingDot');
+                    window.dispatchEvent(event);
+                  }}
+                  className="bg-amber-500 hover:bg-amber-600 text-white px-6 py-3 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
+                >
+                  <Plus className="w-5 h-5" />
+                  Create Your First Dot
+                </button>
+                
+                <p className="text-xs text-amber-600">
+                  Or try Preview Mode to see examples
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
     
     // Reset view function for unified transform-based navigation
     const resetView = () => {

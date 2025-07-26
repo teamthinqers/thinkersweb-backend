@@ -140,14 +140,14 @@ DotSpark is a full-stack web application that serves as a personalized learning 
 ## Changelog
 ```
 Changelog:
-- January 26, 2025. COMPLETED baseline preview data strategy implementation:
-  * Established preview data as permanent baseline visible to all users (signed in or anonymous)
-  * Preview data (7 wheels, 21 dots from user_id=1) now serves as foundation content for everyone
-  * User-generated content layers on top of preview baseline instead of replacing it
-  * Dashboard always shows combined view: preview wheels + user wheels, preview dots + user dots
-  * Removed empty state checks since baseline content always provides rich examples
-  * Natural mode creation system ready to store user-specific dots, wheels, chakras in database
+- January 26, 2025. COMPLETED proper real mode vs preview mode separation:
+  * REAL MODE (default): Shows ONLY user-generated dots, wheels, and chakras from database
+  * PREVIEW MODE (toggle): Shows demonstrative examples for visualization purposes only
+  * Dashboard defaults to real mode - empty for new users with "Create Your First Dot" guidance
+  * Preview mode toggle allows users to see example data (7 wheels, 21 dots) for inspiration
+  * Natural mode creation system properly connected to store user-specific content in database
   * API endpoints confirmed working: POST /api/dots, POST /api/wheels for authenticated users
+  * Empty state provides clear path to content creation through floating dot interface
   * System prepared for intelligence layer to automatically save structured content from conversations
 - January 26, 2025. COMPLETED model selector restoration and landing page simplification:
   * Restored GPT-4 and DeepSeek model selection functionality that was accidentally removed
