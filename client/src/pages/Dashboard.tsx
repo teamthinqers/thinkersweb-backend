@@ -1334,14 +1334,14 @@ const Dashboard: React.FC = () => {
 
     const { previewDots, previewWheels } = generatePreviewData();
     
-    // Base wheels to display - ONLY user data in real mode, preview data in preview mode
-    const displayWheels = previewMode ? previewWheels : userWheels;
+    // Base wheels to display - Always show preview data as foundation, add user data on top
+    const displayWheels = [...previewWheels, ...userWheels];
     
-    // ONLY user data in real mode, preview data in preview mode
-    let baseDotsToDisplay = previewMode ? previewDots : actualDots;
+    // Always show preview data as foundation, add user data on top
+    let baseDotsToDisplay = [...previewDots, ...actualDots];
     
-    // Apply recent filter if enabled (only in normal mode)
-    if (showingRecentFilter && !previewMode) {
+    // Apply recent filter if enabled
+    if (showingRecentFilter) {
       // Sort by timestamp (most recent first) and take the specified number
       baseDotsToDisplay = [...baseDotsToDisplay]
         .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
@@ -1353,50 +1353,13 @@ const Dashboard: React.FC = () => {
     
 
     
-    // Count Wheels and Chakras separately from the actual displayed data
+    // Count Wheels and Chakras from combined data (preview + user data)
     // Wheels: items with chakraId (belonging to a chakra) 
     // Chakras: items without chakraId (top-level containers)
-    const totalWheels = previewMode ? previewWheels.filter((w: any) => w.chakraId !== undefined).length : displayWheels.filter((w: any) => w.chakraId !== undefined).length;
-    const totalChakras = previewMode ? previewWheels.filter((w: any) => w.chakraId === undefined).length : displayWheels.filter((w: any) => w.chakraId === undefined).length;
+    const totalWheels = displayWheels.filter((w: any) => w.chakraId !== undefined).length;
+    const totalChakras = displayWheels.filter((w: any) => w.chakraId === undefined).length;
 
-    if (!previewMode && userWheels.length === 0 && actualDots.length === 0) {
-      // Show empty state with preview toggle
-      return (
-        <div className="relative bg-gradient-to-br from-amber-50/50 to-orange-50/50 rounded-xl p-4 min-h-[500px] border-2 border-amber-200 shadow-lg overflow-hidden">
-          <div className="absolute top-4 left-4 z-10 flex items-center gap-3">
-            <span className="bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-sm font-medium">
-              Empty
-            </span>
-            <div className="flex items-center gap-2 bg-white/90 backdrop-blur rounded-lg px-3 py-2 border-2 border-amber-200">
-              <label className="text-sm font-medium text-amber-800">Preview Mode</label>
-              <button
-                onClick={() => setPreviewMode(!previewMode)}
-                className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
-                  previewMode ? 'bg-amber-500' : 'bg-gray-300'
-                }`}
-              >
-                <span
-                  className={`inline-block h-3 w-3 transform rounded-full bg-white transition-transform ${
-                    previewMode ? 'translate-x-5' : 'translate-x-1'
-                  }`}
-                />
-              </button>
-            </div>
-          </div>
-          
-          {/* Count buttons removed from grid for cleaner interface */}
-          
-          <div className="flex items-center justify-center h-full">
-            <div className="text-center">
-              <Brain className="w-16 h-16 mx-auto mb-4 text-amber-500" />
-              <p className="text-lg font-semibold text-amber-800 mb-2">Start saving your Dots to get a similar map</p>
-              <p className="text-sm text-amber-600">Your thought wheels will appear here as interactive circles</p>
-              <p className="text-xs text-amber-500 mt-2">Toggle Preview Mode to see how it works!</p>
-            </div>
-          </div>
-        </div>
-      );
-    }
+    // Always show content (preview + user data combined)
     
     // Reset view function for unified transform-based navigation
     const resetView = () => {
