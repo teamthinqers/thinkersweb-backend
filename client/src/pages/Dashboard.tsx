@@ -62,7 +62,7 @@ const Dashboard: React.FC = () => {
   const [recentDotsCount, setRecentDotsCount] = useState(4);
   const [showPreview, setShowPreview] = useState(false);
   const [isMapFullscreen, setIsMapFullscreen] = useState(false);
-  const [previewMode, setPreviewMode] = useState(true); // Start with preview mode for anonymous users, switch to real mode when authenticated
+  const [previewMode, setPreviewMode] = useState(false); // Start with real mode by default
   
   // PWA detection for smaller button sizing
   const isPWA = isRunningAsStandalone();
@@ -1464,7 +1464,7 @@ const Dashboard: React.FC = () => {
                   className="bg-amber-500 hover:bg-amber-600 text-white px-6 py-3 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
                 >
                   <Plus className="w-5 h-5" />
-                  Create Your First Dot
+                  Create Your First Dot/Wheel/Chakra
                 </button>
                 
                 <p className="text-xs text-amber-600">

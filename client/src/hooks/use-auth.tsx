@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, createContext, useContext } from "react";
 import { auth, signInWithGoogle, signOut, onAuthStateChanged, User } from "@/lib/auth-simple";
 
 type UserInfo = {
@@ -15,8 +15,11 @@ type AuthContextType = {
   logout: () => Promise<void>;
 };
 
-// Enhanced Firebase auth hook with persistence
-export function useAuth(): AuthContextType {
+// Create proper AuthProvider using React Context
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+// Internal hook with the actual implementation
+function useAuthInternal(): AuthContextType {
   const [user, setUser] = useState<UserInfo | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -82,7 +85,16 @@ export function useAuth(): AuthContextType {
   };
 }
 
-// Export AuthProvider for backward compatibility (even though we're not using a provider pattern)
+// Updated useAuth to use context
+export function useAuth(): AuthContextType {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+}
+
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  return <>{children}</>;
+  const auth = useAuthInternal();
+  return <AuthContext.Provider value={auth}>{children}</AuthContext.Provider>;
 };
