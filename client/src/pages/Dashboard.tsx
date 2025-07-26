@@ -62,7 +62,7 @@ const Dashboard: React.FC = () => {
   const [recentDotsCount, setRecentDotsCount] = useState(4);
   const [showPreview, setShowPreview] = useState(false);
   const [isMapFullscreen, setIsMapFullscreen] = useState(false);
-  const [previewMode, setPreviewMode] = useState(false); // Start with real user data instead of preview
+  const [previewMode, setPreviewMode] = useState(true); // Start with preview mode for anonymous users, switch to real mode when authenticated
   
   // PWA detection for smaller button sizing
   const isPWA = isRunningAsStandalone();
@@ -1360,6 +1360,13 @@ const Dashboard: React.FC = () => {
     // Chakras: items without chakraId (top-level containers)
     const totalWheels = displayWheels.filter((w: any) => w.chakraId !== undefined).length;
     const totalChakras = displayWheels.filter((w: any) => w.chakraId === undefined).length;
+
+    // Auto-switch to real mode if user is authenticated and has content
+    useEffect(() => {
+      if (user && (userWheels.length > 0 || actualDots.length > 0)) {
+        setPreviewMode(false); // Switch to real mode when user has content
+      }
+    }, [user, userWheels.length, actualDots.length]);
 
     // Show different states based on authentication and content
     if (!previewMode && (!user || userWheels.length === 0 && actualDots.length === 0)) {
