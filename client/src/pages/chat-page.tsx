@@ -114,6 +114,7 @@ type Message = {
   action?: string;
   isTyping?: boolean;
   isNewMessage?: boolean; // Flag to control typewriter effect
+  metadata?: any; // For advanced intelligence metadata
 };
 
 type DotProposal = {
@@ -284,7 +285,6 @@ export default function ChatPage() {
         needsConfirmation: response.data.needsConfirmation,
         isNewMessage: true, // Enable typewriter for new AI messages
         metadata: response.data.data?.metadata,
-        features: response.data.data?.features
       };
 
       setMessages((prev) => [...prev, aiMessage]);
@@ -468,19 +468,7 @@ export default function ChatPage() {
                 </Link>
               )}
 
-              {/* Mobile-only AI Model Selector in Sidebar */}
-              {isMobile && (
-                <div className="mt-4 pt-4 border-t border-amber-200/30 dark:border-amber-700/30">
-                  <div className="px-2 mb-3">
-                    <h3 className="text-sm font-semibold text-amber-700 dark:text-amber-400">AI Model</h3>
-                  </div>
-                  <ModelSelector 
-                    selectedModel={selectedModel} 
-                    onModelChange={setSelectedModel}
-                    className="w-full"
-                  />
-                </div>
-              )}
+              {/* Removed mobile model selector - intelligence works seamlessly in backend */}
             </div>
           </nav>
 
@@ -624,13 +612,7 @@ export default function ChatPage() {
               </Link>
             )}
 
-            {/* Model Selector - Desktop only */}
-            {!isMobile && (
-              <ModelSelector 
-                selectedModel={selectedModel} 
-                onModelChange={setSelectedModel} 
-              />
-            )}
+            {/* Removed model selector - intelligence works seamlessly in backend */}
           </div>
           
           {/* Enhanced Center: Empty space for centered logo */}
@@ -638,29 +620,33 @@ export default function ChatPage() {
 
           {/* Right: Header Icons and User Actions */}
           <div className="flex items-center gap-3">
-            {/* Intelligence Selector */}
-            <Link href="/intelligence">
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className="p-3 bg-purple-500 hover:bg-purple-600 dark:bg-purple-600 dark:hover:bg-purple-700 rounded-xl transition-all duration-300 hover:scale-105 shadow-sm"
-                title="AI Intelligence Levels"
-              >
-                <Zap className="h-5 w-5 text-white" />
-              </Button>
-            </Link>
+            {/* Sparkling Intelligence Icon - Placeholder */}
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="relative p-3 bg-gradient-to-br from-yellow-400 via-amber-500 to-orange-500 hover:from-yellow-500 hover:via-amber-600 hover:to-orange-600 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg group"
+              title="DotSpark Intelligence (Coming Soon)"
+              disabled
+            >
+              <Zap className="h-5 w-5 text-white animate-pulse drop-shadow-sm" />
+              {/* Sparkling effect */}
+              <div className="absolute inset-0 animate-ping opacity-20">
+                <Zap className="h-5 w-5 text-yellow-300 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
+              </div>
+              <div className="absolute -top-1 -right-1 w-2 h-2 bg-yellow-300 rounded-full animate-bounce"></div>
+            </Button>
 
             {/* Brain Icon - Navigate to Dashboard with Active Status */}
             <Link href="/dashboard">
               <Button 
                 variant="ghost" 
                 size="sm" 
-                className="relative p-3 bg-amber-500 hover:bg-amber-600 dark:bg-amber-600 dark:hover:bg-amber-700 rounded-xl transition-all duration-300 hover:scale-105 shadow-sm"
+                className="relative p-3 bg-gradient-to-br from-amber-500 via-amber-600 to-orange-600 hover:from-amber-600 hover:via-amber-700 hover:to-orange-700 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg"
                 title="My Neura"
               >
                 <Brain className="h-5 w-5 text-white transition-all duration-300" />
                 {isNeuraActive && (
-                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full animate-pulse shadow-lg border-2 border-white"></div>
+                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full animate-pulse shadow-lg border-2 border-white"></div>
                 )}
               </Button>
             </Link>
