@@ -147,7 +147,7 @@ export default function ChatPage() {
     return [
       {
         id: '1',
-        content: 'I\'ll help you organize your thoughts into structured Dots, Wheels and Chakras for sparking actionable insights.',
+        content: 'Welcome to DotSpark Advanced Intelligence! 🧠⚡ I\'m powered by sophisticated Python cognitive processing that transforms your thoughts into actionable insights using the Dot-Wheel-Chakra framework. Share any thought and experience the advanced intelligence.',
         isUser: false,
         timestamp: new Date(),
         isNewMessage: false, // Welcome message should not use typewriter
@@ -258,8 +258,13 @@ export default function ChatPage() {
     setMessages((prev) => [...prev, typingMessage]);
 
     try {
-      let apiEndpoint = '/api/chat/intelligent';
-      const requestBody = { message: inputValue, model: selectedModel };
+      // Use advanced DotSpark intelligence with Python backend
+      let apiEndpoint = '/api/dotspark/chat';
+      const requestBody = { 
+        message: inputValue, 
+        model: selectedModel === 'gpt-4o' ? 'gpt-4' : selectedModel,
+        sessionId: `chat_${Date.now()}`
+      };
 
       const response = await axios.post(apiEndpoint, requestBody);
 
@@ -272,12 +277,14 @@ export default function ChatPage() {
 
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
-        content: response.data.reply,
+        content: response.data.data?.response || response.data.reply || 'I understand your thought. Let me help you explore it further.',
         isUser: false,
         timestamp: new Date(),
         dotProposal: response.data.dotProposal,
         needsConfirmation: response.data.needsConfirmation,
         isNewMessage: true, // Enable typewriter for new AI messages
+        metadata: response.data.data?.metadata,
+        features: response.data.data?.features
       };
 
       setMessages((prev) => [...prev, aiMessage]);
@@ -318,8 +325,8 @@ export default function ChatPage() {
     const defaultMessage = {
       id: '1',
       content: user 
-        ? 'Welcome back to DotSpark! 🌟 I\'m your AI companion, ready to help you capture, organize, and transform your thoughts into powerful insights. What\'s on your mind today?'
-        : 'Welcome to DotSpark! 🌟 I\'m your AI companion. Share your thoughts with me and I\'ll help you organize them into structured insights. Try me out - no signup required!',
+        ? 'Welcome back to DotSpark Advanced Intelligence! 🧠⚡ I\'m powered by cutting-edge Python cognitive processing that organizes your thoughts into Dots, Wheels, and Chakras. Share any thought and I\'ll provide deep insights with structured frameworks. What\'s on your mind?'
+        : 'Welcome to DotSpark Advanced Intelligence! 🧠⚡ I\'m your AI companion powered by sophisticated cognitive processing. I can help you transform any thought into actionable insights using the Dot-Wheel-Chakra framework. Try me out - no signup required!',
       isUser: false,
       timestamp: new Date(),
     };
