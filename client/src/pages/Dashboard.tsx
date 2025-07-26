@@ -13,6 +13,7 @@ import WheelFlashCard from "@/components/WheelFlashCard";
 import WheelFullView from "@/components/WheelFullView";
 import { isRunningAsStandalone } from "@/lib/pwaUtils";
 import { useLocation } from "wouter";
+import { useAuth } from "@/hooks/use-auth";
 
 
 // Data structure for dots
@@ -51,6 +52,7 @@ interface Wheel {
 
 const Dashboard: React.FC = () => {
   const [, setLocation] = useLocation();
+  const { user, isLoading } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedWheel, setSelectedWheel] = useState<string | null>(null);
   const [viewFullDot, setViewFullDot] = useState<Dot | null>(null);
@@ -89,7 +91,7 @@ const Dashboard: React.FC = () => {
   });
 
   // Fallback for dots - use old API if new grid API has no data
-  const { data: dots = [], isLoading, refetch } = useQuery({
+  const { data: dots = [], isLoading: dotsLoading, refetch } = useQuery({
     queryKey: ['/api/dots'],
     queryFn: async () => {
       try {
