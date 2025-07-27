@@ -301,10 +301,11 @@ const Dashboard: React.FC = () => {
         .slice(0, recentCount);
     }
     
-    const displayDots = baseDotsToDisplay;
+    const displayDots = baseDotsToDisplay || [];
+    const safeWheels = displayWheels || [];
     const totalDots = displayDots.length;
-    const totalWheels = displayWheels.filter((w: any) => w.chakraId !== undefined).length;
-    const totalChakras = displayWheels.filter((w: any) => w.chakraId === undefined).length;
+    const totalWheels = safeWheels.filter((w: any) => w.chakraId !== undefined && w.chakraId !== null).length;
+    const totalChakras = safeWheels.filter((w: any) => w.chakraId === undefined || w.chakraId === null).length;
 
     // Auto-switch to real mode if user has content
     useEffect(() => {
@@ -376,32 +377,43 @@ const Dashboard: React.FC = () => {
           </div>
           
           <div className="min-h-96 bg-gradient-to-br from-amber-50 to-orange-50 rounded-lg border border-amber-100 p-4 relative overflow-hidden">
-            {displayWheels.length === 0 && displayDots.length === 0 ? (
+            {(safeWheels.length === 0 && displayDots.length === 0) || gridLoading ? (
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="text-center">
                   <div className="w-16 h-16 bg-amber-200 rounded-full flex items-center justify-center mx-auto mb-4">
                     <Brain className="w-8 h-8 text-amber-600" />
                   </div>
                   <h4 className="text-lg font-semibold text-amber-800 mb-2">
-                    {previewMode ? 'Preview Data Loading...' : 'Start Your Journey'}
+                    {gridLoading ? 'Loading Grid...' : previewMode ? 'Preview Data Loading...' : 'Start Your Journey'}
                   </h4>
                   <p className="text-amber-600 text-sm">
-                    {previewMode 
-                      ? 'Demonstrating the DotSpark cognitive mapping system'
-                      : 'Create your first dot to see it here!'
+                    {gridLoading 
+                      ? 'Preparing your cognitive map visualization...'
+                      : previewMode 
+                        ? 'Demonstrating the DotSpark cognitive mapping system'
+                        : 'Create your first dot to see it here!'
                     }
                   </p>
                 </div>
               </div>
             ) : (
               <div className="space-y-4">
+                {/* Grid Status Indicator */}
+                <div className="text-center text-sm text-amber-700 bg-amber-50 rounded-lg p-2 border border-amber-200">
+                  <span className="font-medium">
+                    Grid Status: {totalDots} Dots • {totalWheels} Wheels • {totalChakras} Chakras
+                    {previewMode && <span className="ml-2 text-orange-600">(Preview Mode)</span>}
+                    {!previewMode && user && <span className="ml-2 text-green-600">(Your Data)</span>}
+                  </span>
+                </div>
+                
                 {/* Chakras Section */}
-                {displayWheels.filter(w => w.chakraId === undefined).length > 0 && (
+                {safeWheels.filter(w => w.chakraId === undefined || w.chakraId === null).length > 0 && (
                   <div>
                     <h4 className="text-md font-semibold text-purple-800 mb-2">Chakras ({totalChakras})</h4>
                     <div className="grid gap-3">
-                      {displayWheels
-                        .filter(w => w.chakraId === undefined)
+                      {safeWheels
+                        .filter(w => w.chakraId === undefined || w.chakraId === null)
                         .map((chakra) => (
                           <Card 
                             key={chakra.id} 
@@ -427,12 +439,12 @@ const Dashboard: React.FC = () => {
                 )}
 
                 {/* Wheels Section */}
-                {displayWheels.filter(w => w.chakraId !== undefined).length > 0 && (
+                {safeWheels.filter(w => w.chakraId !== undefined && w.chakraId !== null).length > 0 && (
                   <div>
                     <h4 className="text-md font-semibold text-orange-800 mb-2">Wheels ({totalWheels})</h4>
                     <div className="grid gap-3">
-                      {displayWheels
-                        .filter(w => w.chakraId !== undefined)
+                      {safeWheels
+                        .filter(w => w.chakraId !== undefined && w.chakraId !== null)
                         .map((wheel) => (
                           <Card 
                             key={wheel.id} 
