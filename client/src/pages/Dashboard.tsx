@@ -62,7 +62,7 @@ const Dashboard: React.FC = () => {
   const [recentDotsCount, setRecentDotsCount] = useState(4);
   const [showPreview, setShowPreview] = useState(false);
   const [isMapFullscreen, setIsMapFullscreen] = useState(false);
-  const [previewMode, setPreviewMode] = useState(false); // Start with real mode by default
+  const [previewMode, setPreviewMode] = useState(true); // Start with preview mode by default
   
   // PWA detection for smaller button sizing
   const isPWA = isRunningAsStandalone();

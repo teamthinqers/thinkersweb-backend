@@ -38,6 +38,7 @@ import { intelligentFeatures } from './intelligent-features';
 import vectorSearchRouter from './routes/vector-search';
 import indexingRouter from './routes/indexing';
 import { initializeVectorDB } from './vector-db';
+import { saveCurrentDataAsPreview, getPreviewData, clearPreviewData } from './routes/preview-data';
 
 // Interface for authenticated requests
 interface AuthenticatedRequest extends Request {
@@ -973,6 +974,50 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const isPreview = req.query.preview === 'true';
       
       if (isPreview) {
+        // For preview mode, fetch from preview_dots and preview_wheels tables
+        const previewDots = await db.query.previewDots.findMany({
+          orderBy: (previewDots, { asc }) => [asc(previewDots.id)],
+        });
+        const previewWheels = await db.query.previewWheels.findMany({
+          orderBy: (previewWheels, { asc }) => [asc(previewWheels.id)],
+        });
+        
+        // Transform preview data to expected format
+        const dotPositions: Record<string, { x: number; y: number }> = {};
+        const wheelPositions: Record<string, { x: number; y: number; radius: number }> = {};
+        const chakraPositions: Record<string, { x: number; y: number; radius: number }> = {};
+        
+        previewDots.forEach((dot) => {
+          dotPositions[dot.id] = { x: dot.positionX, y: dot.positionY };
+        });
+        
+        previewWheels.forEach((wheel) => {
+          if (wheel.chakraId === null) {
+            // This is a chakra (top-level)
+            chakraPositions[wheel.id] = { x: wheel.positionX, y: wheel.positionY, radius: wheel.radius };
+          } else {
+            // This is a regular wheel
+            wheelPositions[wheel.id] = { x: wheel.positionX, y: wheel.positionY, radius: wheel.radius };
+          }
+        });
+        
+        const totalChakras = previewWheels.filter(w => w.chakraId === null).length;
+        const totalWheels = previewWheels.filter(w => w.chakraId !== null).length;
+        
+        return res.json({
+          data: {
+            dotPositions,
+            wheelPositions,
+            chakraPositions,
+            statistics: {
+              totalDots: previewDots.length,
+              totalWheels,
+              totalChakras,
+              freeDots: 0
+            }
+          }
+        });
+      } else if (isPreview) {
         // Return preview mode data with proper hierarchical positioning
         // Business chakra centered at (400, 300)
         const chakraCenter = { x: 400, y: 300 };
@@ -1834,6 +1879,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     }
   });
+
+  // Preview Data Management Routes
+  app.post(`${apiPrefix}/preview-data/save-current`, saveCurrentDataAsPreview);
+  app.get(`${apiPrefix}/preview-data`, getPreviewData);
+  app.delete(`${apiPrefix}/preview-data`, clearPreviewData);
 
   return httpServer;
 }

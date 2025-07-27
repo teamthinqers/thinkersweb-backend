@@ -515,3 +515,84 @@ export const insertWhatsappOtpVerificationSchema = createInsertSchema(whatsappOt
 
 export type InsertWhatsappOtpVerification = z.infer<typeof insertWhatsappOtpVerificationSchema>;
 export type WhatsappOtpVerification = typeof whatsappOtpVerifications.$inferSelect;
+
+// Preview Data Tables - Static demonstrative examples for visualization purposes
+export const previewDots = pgTable("preview_dots", {
+  id: text("id").primaryKey(), // Using text IDs for preview data (e.g., "preview-dot-1")
+  summary: text("summary").notNull(),
+  anchor: text("anchor").notNull(),
+  pulse: text("pulse").notNull(),
+  wheelId: text("wheel_id"), // References preview_wheels.id
+  sourceType: text("source_type").notNull(),
+  captureMode: text("capture_mode").notNull(),
+  positionX: integer("position_x").default(0).notNull(),
+  positionY: integer("position_y").default(0).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const previewWheels = pgTable("preview_wheels", {
+  id: text("id").primaryKey(), // Using text IDs for preview data (e.g., "preview-wheel-1")
+  name: text("name").notNull(),
+  heading: text("heading"),
+  goals: text("goals"),
+  purpose: text("purpose"),
+  timeline: text("timeline"),
+  category: text("category").notNull(),
+  color: text("color").notNull().default("#EA580C"),
+  chakraId: text("chakra_id"), // References preview_wheels.id for chakra hierarchy
+  positionX: integer("position_x").default(0).notNull(),
+  positionY: integer("position_y").default(0).notNull(),
+  radius: integer("radius").default(120).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const previewDotsRelations = relations(previewDots, ({ one }) => ({
+  wheel: one(previewWheels, {
+    fields: [previewDots.wheelId],
+    references: [previewWheels.id],
+  }),
+}));
+
+export const previewWheelsRelations = relations(previewWheels, ({ one, many }) => ({
+  chakra: one(previewWheels, {
+    fields: [previewWheels.chakraId],
+    references: [previewWheels.id],
+    relationName: "previewWheelChakra",
+  }),
+  childWheels: many(previewWheels, {
+    relationName: "previewWheelChakra",
+  }),
+  dots: many(previewDots),
+}));
+
+export const insertPreviewDotSchema = createInsertSchema(previewDots, {
+  id: (schema) => schema.min(1, "ID is required"),
+  summary: (schema) => schema.min(1, "Summary is required").max(220, "Summary must be 220 characters or less"),
+  anchor: (schema) => schema.min(1, "Anchor is required").max(300, "Anchor must be 300 characters or less"),
+  pulse: (schema) => schema.min(1, "Pulse is required").max(50, "Pulse must be 50 characters or less"),
+  sourceType: (schema) => schema.refine(val => ['voice', 'text'].includes(val), "Source type must be voice or text"),
+  captureMode: (schema) => schema.refine(val => ['natural', 'ai'].includes(val), "Capture mode must be natural or ai"),
+  wheelId: (schema) => schema.optional(),
+  positionX: (schema) => schema.optional(),
+  positionY: (schema) => schema.optional(),
+});
+
+export const insertPreviewWheelSchema = createInsertSchema(previewWheels, {
+  id: (schema) => schema.min(1, "ID is required"),
+  name: (schema) => schema.min(1, "Name is required").max(100, "Name must be 100 characters or less"),
+  heading: (schema) => schema.optional(),
+  goals: (schema) => schema.optional(),
+  purpose: (schema) => schema.optional(),
+  timeline: (schema) => schema.optional(),
+  category: (schema) => schema.min(1, "Category is required"),
+  color: (schema) => schema.optional(),
+  chakraId: (schema) => schema.optional(),
+  positionX: (schema) => schema.optional(),
+  positionY: (schema) => schema.optional(),
+  radius: (schema) => schema.optional(),
+});
+
+export type InsertPreviewDot = z.infer<typeof insertPreviewDotSchema>;
+export type PreviewDot = typeof previewDots.$inferSelect;
+export type InsertPreviewWheel = z.infer<typeof insertPreviewWheelSchema>;
+export type PreviewWheel = typeof previewWheels.$inferSelect;
