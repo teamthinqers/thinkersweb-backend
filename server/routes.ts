@@ -15,6 +15,9 @@ import {
   whatsappOtpVerifications,
   whatsappUsers,
   wheels,
+  dots,
+  previewDots,
+  previewWheels,
   type User 
 } from "@shared/schema";
 import { processEntryFromChat, generateChatResponse, type Message } from "./chat";
@@ -1017,7 +1020,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             }
           }
         });
-      } else if (isPreview) {
+      } else {
         // Return preview mode data with proper hierarchical positioning
         // Business chakra centered at (400, 300)
         const chakraCenter = { x: 400, y: 300 };
@@ -1884,6 +1887,130 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post(`${apiPrefix}/preview-data/save-current`, saveCurrentDataAsPreview);
   app.get(`${apiPrefix}/preview-data`, getPreviewData);
   app.delete(`${apiPrefix}/preview-data`, clearPreviewData);
+
+  // PREVIEW DATA API ENDPOINTS - Completely separate from user data
+  
+  // Get preview dots - used only for demo visualization
+  app.get(`${apiPrefix}/preview/dots`, async (req: Request, res: Response) => {
+    try {
+      const dots = await db.query.previewDots.findMany({
+        orderBy: (previewDots, { asc }) => [asc(previewDots.id)],
+      });
+      
+      // Transform to frontend format
+      const formattedDots = dots.map(dot => ({
+        id: dot.id,
+        oneWordSummary: dot.summary.split(' ').slice(0, 2).join(' '), // First 2 words for summary
+        summary: dot.summary,
+        anchor: dot.anchor,
+        pulse: dot.pulse,
+        wheelId: dot.wheelId,
+        timestamp: dot.createdAt || new Date(),
+        sourceType: dot.sourceType,
+        captureMode: dot.captureMode,
+        voiceData: null
+      }));
+      
+      res.json(formattedDots);
+    } catch (error) {
+      console.error('Error fetching preview dots:', error);
+      res.status(500).json({ error: 'Failed to fetch preview dots' });
+    }
+  });
+
+  // Get preview wheels - used only for demo visualization
+  app.get(`${apiPrefix}/preview/wheels`, async (req: Request, res: Response) => {
+    try {
+      const wheels = await db.query.previewWheels.findMany({
+        orderBy: (previewWheels, { asc }) => [asc(previewWheels.id)],
+      });
+      
+      // Transform to frontend format
+      const formattedWheels = wheels.map(wheel => ({
+        id: wheel.id,
+        name: wheel.name,
+        heading: wheel.heading,
+        goals: wheel.goals,
+        purpose: wheel.purpose,
+        timeline: wheel.timeline,
+        category: wheel.category,
+        color: wheel.color,
+        dots: [], // Dots will be loaded separately
+        connections: [],
+        position: { x: wheel.positionX, y: wheel.positionY },
+        chakraId: wheel.chakraId,
+        createdAt: wheel.createdAt
+      }));
+      
+      res.json(formattedWheels);
+    } catch (error) {
+      console.error('Error fetching preview wheels:', error);
+      res.status(500).json({ error: 'Failed to fetch preview wheels' });
+    }
+  });
+
+  // Get preview grid positions - used only for demo visualization
+  app.get(`${apiPrefix}/preview/grid-positions`, async (req: Request, res: Response) => {
+    try {
+      const [dots, wheels] = await Promise.all([
+        db.query.previewDots.findMany({
+          orderBy: (previewDots, { asc }) => [asc(previewDots.id)],
+        }),
+        db.query.previewWheels.findMany({
+          orderBy: (previewWheels, { asc }) => [asc(previewWheels.id)],
+        })
+      ]);
+      
+      // Transform to expected format
+      const dotPositions: Record<string, { x: number; y: number }> = {};
+      const wheelPositions: Record<string, { x: number; y: number; radius: number }> = {};
+      const chakraPositions: Record<string, { x: number; y: number; radius: number }> = {};
+      
+      dots.forEach((dot) => {
+        dotPositions[dot.id] = { x: dot.positionX, y: dot.positionY };
+      });
+      
+      wheels.forEach((wheel) => {
+        if (wheel.chakraId === null) {
+          // This is a chakra (top-level)
+          chakraPositions[wheel.id] = { x: wheel.positionX, y: wheel.positionY, radius: wheel.radius };
+        } else {
+          // This is a regular wheel
+          wheelPositions[wheel.id] = { x: wheel.positionX, y: wheel.positionY, radius: wheel.radius };
+        }
+      });
+      
+      const totalChakras = wheels.filter(w => w.chakraId === null).length;
+      const totalWheels = wheels.filter(w => w.chakraId !== null).length;
+      
+      res.json({
+        data: {
+          dotPositions,
+          wheelPositions,
+          chakraPositions,
+          statistics: {
+            totalDots: dots.length,
+            totalWheels,
+            totalChakras,
+            freeDots: 0
+          }
+        }
+      });
+    } catch (error) {
+      console.error('Error fetching preview grid positions:', error);
+      res.status(500).json({ error: 'Failed to fetch preview grid positions' });
+    }
+  });
+
+  // API Health Check - keep this as final endpoint
+  app.get(`${apiPrefix}/health`, (req: Request, res: Response) => {
+    try {
+      res.status(200).json({ status: 'ok', time: new Date().toISOString() });
+    } catch (error) {
+      console.error('Health check failed:', error);
+      res.status(500).json({ status: 'error', error: 'Health check failed' });
+    }
+  });
 
   return httpServer;
 }

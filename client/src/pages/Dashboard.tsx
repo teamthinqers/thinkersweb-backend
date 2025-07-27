@@ -67,18 +67,19 @@ const Dashboard: React.FC = () => {
   // PWA detection for smaller button sizing
   const isPWA = isRunningAsStandalone();
 
-  // Fetch optimized grid positions from new API
+  // Fetch optimized grid positions - completely separate endpoints for preview vs real data
   const { data: gridData, isLoading: gridLoading, refetch: refetchGrid } = useQuery({
-    queryKey: ['/api/grid/positions', { preview: previewMode }],
+    queryKey: previewMode ? ['/api/preview/grid-positions'] : ['/api/grid/positions'],
     queryFn: async () => {
       try {
-        const response = await fetch(`/api/grid/positions?preview=${previewMode}`);
+        const endpoint = previewMode ? '/api/preview/grid-positions' : '/api/grid/positions';
+        const response = await fetch(endpoint);
         if (!response.ok) {
           return { data: { dotPositions: {}, wheelPositions: {}, chakraPositions: {}, statistics: { totalDots: 0, totalWheels: 0, totalChakras: 0, freeDots: 0 } } };
         }
         return response.json();
       } catch (error) {
-        return [];
+        return { data: { dotPositions: {}, wheelPositions: {}, chakraPositions: {}, statistics: { totalDots: 0, totalWheels: 0, totalChakras: 0, freeDots: 0 } } };
       }
     },
     retry: false,
@@ -90,12 +91,13 @@ const Dashboard: React.FC = () => {
     gcTime: 5 * 60 * 1000 // Keep data in cache for 5 minutes
   });
 
-  // Fallback for dots - use old API if new grid API has no data
+  // Fetch dots - completely separate endpoints for preview vs real data
   const { data: dots = [], isLoading: dotsLoading, refetch } = useQuery({
-    queryKey: ['/api/dots'],
+    queryKey: previewMode ? ['/api/preview/dots'] : ['/api/dots'],
     queryFn: async () => {
       try {
-        const response = await fetch('/api/dots');
+        const endpoint = previewMode ? '/api/preview/dots' : '/api/dots';
+        const response = await fetch(endpoint);
         if (!response.ok) {
           return [];
         }
@@ -106,17 +108,18 @@ const Dashboard: React.FC = () => {
         return [];
       }
     },
-    enabled: !gridData?.data?.statistics?.totalDots, // Only fetch if grid has no data
+    enabled: !gridData?.data?.statistics?.totalDots || previewMode, // Always fetch for preview mode
     refetchOnWindowFocus: false,
     staleTime: 5 * 60 * 1000 // 5 minutes
   });
 
-  // Fetch user wheels and chakras
+  // Fetch wheels - completely separate endpoints for preview vs real data  
   const { data: userWheels = [], isLoading: wheelsLoading, refetch: refetchWheels } = useQuery({
-    queryKey: ['/api/wheels'],
+    queryKey: previewMode ? ['/api/preview/wheels'] : ['/api/wheels'],
     queryFn: async () => {
       try {
-        const response = await fetch('/api/wheels');
+        const endpoint = previewMode ? '/api/preview/wheels' : '/api/wheels';
+        const response = await fetch(endpoint);
         if (!response.ok) {
           return [];
         }
@@ -127,7 +130,6 @@ const Dashboard: React.FC = () => {
         return [];
       }
     },
-    enabled: !previewMode, // Only fetch when not in preview mode
     refetchOnWindowFocus: false,
     staleTime: 5 * 60 * 1000 // 5 minutes
   });
