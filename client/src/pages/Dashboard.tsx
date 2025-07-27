@@ -90,7 +90,7 @@ const Dashboard: React.FC = () => {
     gcTime: 5 * 60 * 1000 // Keep data in cache for 5 minutes
   });
 
-  // Fetch user dots (stored in entries table)
+  // Fallback for dots - use old API if new grid API has no data
   const { data: dots = [], isLoading: dotsLoading, refetch } = useQuery({
     queryKey: ['/api/dots'],
     queryFn: async () => {
@@ -100,29 +100,13 @@ const Dashboard: React.FC = () => {
           return [];
         }
         const data = await response.json();
-        // Transform entries to dot format expected by Dashboard
-        return data.map((entry: any) => {
-          const content = typeof entry.content === 'string' ? JSON.parse(entry.content) : entry.content;
-          return {
-            id: entry.id,
-            oneWordSummary: content.oneWordSummary || content.summary?.substring(0, 15) || 'Dot',
-            summary: content.summary || entry.title || '',
-            anchor: content.anchor || '',
-            pulse: content.pulse || 'neutral',
-            timestamp: new Date(entry.createdAt),
-            sourceType: content.sourceType || 'text',
-            captureMode: content.captureMode || 'natural',
-            category: content.category || 'General',
-            wheelId: content.wheelId || null,
-            userId: entry.userId
-          };
-        });
+        return data;
       } catch (err) {
         console.error('Error fetching dots:', err);
         return [];
       }
     },
-    enabled: !!user, // Only fetch when user is authenticated
+    enabled: !gridData?.data?.statistics?.totalDots, // Only fetch if grid has no data
     refetchOnWindowFocus: false,
     staleTime: 5 * 60 * 1000 // 5 minutes
   });
@@ -143,7 +127,7 @@ const Dashboard: React.FC = () => {
         return [];
       }
     },
-    enabled: !!user, // Only fetch when user is authenticated
+    enabled: !previewMode, // Only fetch when not in preview mode
     refetchOnWindowFocus: false,
     staleTime: 5 * 60 * 1000 // 5 minutes
   });
@@ -1340,7 +1324,7 @@ const Dashboard: React.FC = () => {
           timestamp: new Date(Date.now() - Math.random() * 15 * 24 * 60 * 60 * 1000),
           sourceType: Math.random() > 0.5 ? 'voice' : 'text',
           captureMode: Math.random() > 0.7 ? 'ai' : 'natural',
-          // Position will be calculated by grid positioning logic
+          position: scatteredPositions[i] // Direct position for scattered dots
         };
         previewDots.push(dot);
       }
