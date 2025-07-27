@@ -42,6 +42,7 @@ import vectorSearchRouter from './routes/vector-search';
 import indexingRouter from './routes/indexing';
 import { initializeVectorDB } from './vector-db';
 import { saveCurrentDataAsPreview, getPreviewData, clearPreviewData } from './routes/preview-data';
+import { setupUserDataRoutes } from './routes/user-data';
 
 // Interface for authenticated requests
 interface AuthenticatedRequest extends Request {
@@ -2001,6 +2002,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ error: 'Failed to fetch preview grid positions' });
     }
   });
+
+  // Setup user data routes for authenticated users
+  setupUserDataRoutes(app, apiPrefix);
 
   // API Health Check - keep this as final endpoint
   app.get(`${apiPrefix}/health`, (req: Request, res: Response) => {

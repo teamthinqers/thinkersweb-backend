@@ -55,6 +55,12 @@ const Dashboard: React.FC = () => {
   const [showingRecentFilter, setShowingRecentFilter] = useState(false);
   const [recentCount, setRecentCount] = useState(10);
 
+  // Check DotSpark activation status for real mode
+  const { data: activationStatus, isLoading: activationLoading } = useQuery({
+    queryKey: ['/api/activation/status'],
+    enabled: !!user && !previewMode, // Only check when user is authenticated and not in preview mode
+  });
+
   // Fetch dots - routes to correct endpoint based on preview mode
   const { data: dots = [], isLoading: dotsLoading, refetch: refetchDots } = useQuery({
     queryKey: previewMode ? ['/api/preview/dots'] : ['/api/dots'],
@@ -215,8 +221,74 @@ const Dashboard: React.FC = () => {
     );
   };
 
+  // Toggle between preview and real mode
+  const togglePreviewMode = () => {
+    // Only allow switching to real mode if user is authenticated
+    if (!previewMode && !user) {
+      alert('Please sign in to access your personal DotSpark data');
+      return;
+    }
+    setPreviewMode(!previewMode);
+    setSearchTerm('');
+    setShowSearchResults(false);
+  };
+
+  // Activate DotSpark for user
+  const activateDotSpark = async () => {
+    try {
+      const response = await fetch('/api/activation/activate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      if (response.ok) {
+        window.location.reload(); // Refresh to update activation status
+      }
+    } catch (error) {
+      console.error('Error activating DotSpark:', error);
+    }
+  };
+
   // Component to handle actual data display
   const DataDisplayComponent = () => {
+    // Check if user needs to sign in for real mode
+    if (!previewMode && !user) {
+      return (
+        <div className="text-center py-12">
+          <div className="max-w-md mx-auto">
+            <Brain className="h-16 w-16 text-amber-500 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-amber-800 mb-2">Sign In Required</h3>
+            <p className="text-gray-600 mb-4">
+              Please sign in to access your personal DotSpark data and create your cognitive map.
+            </p>
+            <Button onClick={() => window.location.href = '/auth'} className="bg-amber-600 hover:bg-amber-700">
+              Sign In to DotSpark
+            </Button>
+          </div>
+        </div>
+      );
+    }
+
+    // Check DotSpark activation status for real mode
+    if (!previewMode && user && activationStatus && !activationStatus.isActivated) {
+      return (
+        <div className="text-center py-12">
+          <div className="max-w-md mx-auto">
+            <Settings className="h-16 w-16 text-amber-500 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-amber-800 mb-2">DotSpark Activation Required</h3>
+            <p className="text-gray-600 mb-4">
+              Activate DotSpark to start creating and storing your personal cognitive maps with AI-powered insights.
+            </p>
+            <Button onClick={activateDotSpark} className="bg-amber-600 hover:bg-amber-700">
+              Activate DotSpark
+            </Button>
+            <p className="text-xs text-gray-500 mt-2">
+              Switch to Preview mode to explore the demonstration
+            </p>
+          </div>
+        </div>
+      );
+    }
+
     // Use data from API calls which already route to correct endpoints
     const actualDots = dots;
     const displayWheels = userWheels;
