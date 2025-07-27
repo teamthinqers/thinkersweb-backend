@@ -710,8 +710,8 @@ export default function ChatPage() {
               variant="ghost" 
               size="sm" 
               className="relative p-3 bg-gradient-to-br from-yellow-400 via-amber-500 to-orange-600 hover:from-yellow-300 hover:via-amber-400 hover:to-orange-500 rounded-xl transition-all duration-300 hover:scale-110 shadow-xl shadow-amber-500/40 group overflow-hidden"
-              title="DotSpark Intelligence (Coming Soon)"
-              disabled
+              title="DotSpark Intelligence"
+              onClick={() => setLocation('/spark')}
             >
               {/* Animated golden background */}
               <div className="absolute inset-0 bg-gradient-to-br from-yellow-300 via-amber-400 to-orange-500 opacity-90 animate-pulse"></div>
