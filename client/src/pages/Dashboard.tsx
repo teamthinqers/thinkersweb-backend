@@ -1398,9 +1398,9 @@ const Dashboard: React.FC = () => {
             
             <div className="flex items-center justify-center h-full">
               <div className="text-center">
-                <Brain className="w-16 h-16 mx-auto mb-4 text-amber-500" />
+                <Brain className="w-16 h-16 mx-auto mb-4 text-amber-600" />
                 <h3 className="text-2xl font-bold text-amber-800 mb-2">Sign In Required</h3>
-                <p className="text-amber-600 mb-6 max-w-md mx-auto">
+                <p className="text-amber-700 mb-6 max-w-md mx-auto">
                   Please sign in to create and save your personal Dots, Wheels, and Chakras.
                 </p>
                 
@@ -1413,7 +1413,7 @@ const Dashboard: React.FC = () => {
                     Sign In to DotSpark
                   </button>
                   
-                  <p className="text-xs text-red-600">
+                  <p className="text-xs text-amber-600">
                     Or try Preview Mode to see examples
                   </p>
                 </div>
