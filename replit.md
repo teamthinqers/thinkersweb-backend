@@ -159,18 +159,6 @@ DotSpark is a full-stack web application that serves as a personalized learning 
 ## Changelog
 ```
 Changelog:
-- July 27, 2025. COMPLETED comprehensive user data system with Pinecone vector integration and authentication-gated real mode:
-  * Created complete user data API endpoints (/api/dots, /api/wheels, /api/grid/positions) with CRUD operations
-  * Integrated Pinecone vector database for semantic search and AI-powered content retrieval
-  * Added DotSpark activation system with dotspark_activations table for premium feature access
-  * Implemented vector embeddings storage with automatic content vectorization using OpenAI embeddings
-  * Created comprehensive authentication checks - users must sign in and activate DotSpark to access real mode
-  * Enhanced Dashboard with authentication state management and activation status checking
-  * Built semantic search functionality (/api/search/semantic) for intelligent content discovery
-  * System now provides complete data isolation: Preview mode (static demo) vs Real mode (user data + vector search)
-  * Real mode requires authentication + DotSpark activation, provides full Pinecone integration for cognitive insights
-  * Vector database stores user content with metadata for contextual AI responses and pattern recognition
-  * Added automatic activation API endpoints (/api/activation/*) for seamless user onboarding
 - July 27, 2025. COMPLETED comprehensive preview data isolation with dedicated API infrastructure:
   * Created completely separate database tables (preview_dots, preview_wheels) for demo visualization content
   * Implemented dedicated preview API endpoints (/api/preview/dots, /api/preview/wheels, /api/preview/grid-positions)

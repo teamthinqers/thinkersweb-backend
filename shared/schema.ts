@@ -596,33 +596,3 @@ export type InsertPreviewDot = z.infer<typeof insertPreviewDotSchema>;
 export type PreviewDot = typeof previewDots.$inferSelect;
 export type InsertPreviewWheel = z.infer<typeof insertPreviewWheelSchema>;
 export type PreviewWheel = typeof previewWheels.$inferSelect;
-
-
-
-// DotSpark activation table for premium features
-export const dotsparkActivations = pgTable("dotspark_activations", {
-  id: serial("id").primaryKey(),
-  userId: integer("user_id").references(() => users.id).notNull().unique(),
-  isActivated: boolean("is_activated").default(false).notNull(),
-  activationCode: text("activation_code"),
-  activatedAt: timestamp("activated_at"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
-});
-
-export const dotsparkActivationsRelations = relations(dotsparkActivations, ({ one }) => ({
-  user: one(users, {
-    fields: [dotsparkActivations.userId],
-    references: [users.id],
-  }),
-}));
-
-export const insertDotsparkActivationSchema = createInsertSchema(dotsparkActivations, {
-  userId: (schema) => schema.positive("User ID must be positive"),
-  isActivated: (schema) => schema.optional(),
-  activationCode: (schema) => schema.optional(),
-  activatedAt: (schema) => schema.optional(),
-});
-
-export type InsertDotsparkActivation = z.infer<typeof insertDotsparkActivationSchema>;
-export type DotsparkActivation = typeof dotsparkActivations.$inferSelect;
