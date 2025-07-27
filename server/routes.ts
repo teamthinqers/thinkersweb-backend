@@ -15,7 +15,6 @@ import {
   whatsappOtpVerifications,
   whatsappUsers,
   wheels,
-  dots,
   type User 
 } from "@shared/schema";
 import { processEntryFromChat, generateChatResponse, type Message } from "./chat";
@@ -399,20 +398,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
       
-      // Create dot in the proper dots table
-      const dotData = {
+      // Generate one-word summary using OpenAI
+      let oneWordSummary = 'Insight'; // Default fallback
+      try {
+        const { generateOneWordSummary } = await import('./openai.js');
+        oneWordSummary = await generateOneWordSummary(summary, anchor);
+      } catch (error) {
+        console.error('Error generating one-word summary:', error);
+      }
+      
+      const entryData = {
         userId,
-        summary,
-        anchor, 
-        pulse,
-        sourceType,
-        captureMode: 'natural', // Default to natural mode
-        wheelId: null, // Start as free dot
-        positionX: Math.floor(Math.random() * 800) + 100, // Random position for now
-        positionY: Math.floor(Math.random() * 600) + 100
+        title: summary.substring(0, 50) + (summary.length > 50 ? '...' : ''),
+        content: JSON.stringify({
+          oneWordSummary,
+          summary,
+          anchor, 
+          pulse,
+          sourceType,
+          dotType: 'three-layer',
+          voiceData: sourceType === 'voice' ? {
+            summaryVoiceUrl: summaryVoiceUrl || null,
+            anchorVoiceUrl: anchorVoiceUrl || null,
+            pulseVoiceUrl: pulseVoiceUrl || null
+          } : null
+        }),
+        visibility: 'private'
       };
       
-      const [newDot] = await db.insert(dots).values(dotData).returning();
+      const [newDot] = await db.insert(entries).values(entryData).returning();
       res.status(201).json(newDot);
     } catch (error) {
       console.error('Error creating dot:', error);
@@ -438,28 +452,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ error: 'User not found' });
       }
       
-      // Fetch dots from the proper dots table
-      const userDots = await db.query.dots.findMany({
-        where: eq(dots.userId, userId),
-        orderBy: desc(dots.createdAt),
+      const userEntries = await db.query.entries.findMany({
+        where: eq(entries.userId, userId),
+        orderBy: desc(entries.createdAt),
         limit: 50
       });
 
-      // Transform dots to match frontend interface
-      const dotsData = userDots.map(dot => ({
-        id: dot.id.toString(),
-        oneWordSummary: dot.summary.split(' ')[0] || 'Insight', // Generate from summary
-        summary: dot.summary,
-        anchor: dot.anchor,
-        pulse: dot.pulse,
-        sourceType: dot.sourceType,
-        captureMode: dot.captureMode,
-        timestamp: dot.createdAt,
-        wheelId: dot.wheelId?.toString() || null,
-        voiceData: null // TODO: Add voice data if needed
-      }));
+      // Filter and parse three-layer dots
+      const dots = userEntries
+        .filter(entry => {
+          try {
+            const parsed = JSON.parse(entry.content);
+            return parsed.dotType === 'three-layer';
+          } catch {
+            return false;
+          }
+        })
+        .map(entry => {
+          const parsed = JSON.parse(entry.content);
+          return {
+            id: entry.id,
+            oneWordSummary: parsed.oneWordSummary || 'Insight',
+            summary: parsed.summary,
+            anchor: parsed.anchor,
+            pulse: parsed.pulse,
+            sourceType: parsed.sourceType || 'text',
+            captureMode: parsed.captureMode || 'natural',
+            timestamp: entry.createdAt,
+            wheelId: 'general', // Default wheel for now
+            voiceData: parsed.voiceData || null
+          };
+        });
 
-      res.json(dotsData);
+      res.json(dots);
     } catch (error) {
       console.error('Error fetching dots:', error);
       res.status(500).json({ error: 'Failed to fetch dots' });
