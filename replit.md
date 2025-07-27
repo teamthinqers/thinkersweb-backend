@@ -137,36 +137,9 @@ DotSpark is a full-stack web application that serves as a personalized learning 
 - **Energy effects**: Rotating outer ring (20s), pulsing middle ring, steady inner core
 - **AI features**: Purple theme (#A855F7, #7C3AED) reserved exclusively for AI-related functionality
 
-## Preview Data System
-
-### Complete Data Isolation
-- **Preview Data**: Stored in separate database tables (`preview_dots`, `preview_wheels`) with dedicated API endpoints (`/api/preview/*`)
-- **User Data**: Stored in standard tables (`dots`, `wheels`) with user-authenticated API endpoints (`/api/dots`, `/api/wheels`)
-- **Zero Interference**: Preview content never affects or mixes with user-generated content
-- **Mode-Based Routing**: Frontend automatically routes to appropriate endpoints based on preview/real mode toggle
-
-### Preview Content
-- **21 Demo Dots**: Covering business strategy, leadership development, product innovation, health & wellness, and skill development
-- **7 Demo Wheels**: 2 chakras (Business Growth, Personal Development) + 5 regular wheels (GTM Strategy, Leadership, Product Innovation, Health & Wellness, Skill Development)
-- **Comprehensive Examples**: Real-world scenarios demonstrating the full three-tier cognitive structure system
-
-### Architecture Benefits
-- **Clean Separation**: Preview data remains static and unaffected by user actions
-- **Performance**: Separate caching and optimization strategies for demo vs. user data
-- **Security**: User authentication only required for real mode, preview accessible to all
-- **Scalability**: Preview data can be updated independently without affecting user experience
-
 ## Changelog
 ```
 Changelog:
-- July 27, 2025. COMPLETED comprehensive preview data isolation with dedicated API infrastructure:
-  * Created completely separate database tables (preview_dots, preview_wheels) for demo visualization content
-  * Implemented dedicated preview API endpoints (/api/preview/dots, /api/preview/wheels, /api/preview/grid-positions)
-  * Updated frontend to route to appropriate endpoints based on preview/real mode toggle
-  * Ensured zero interference between preview content and user-generated data
-  * Preview data includes 21 comprehensive demo dots across 7 wheels (2 chakras + 5 regular wheels)
-  * System maintains complete data isolation while providing seamless mode switching experience
-  * Dashboard defaults to preview mode for better user onboarding and demonstration
 - January 26, 2025. COMPLETED authentication-gated real mode with proper user isolation:
   * REAL MODE (default): Shows ONLY authenticated user's personal dots, wheels, chakras from database
   * PREVIEW MODE (toggle): Shows static demonstrative examples for visualization purposes only
