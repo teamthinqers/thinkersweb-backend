@@ -1375,21 +1375,21 @@ const Dashboard: React.FC = () => {
         // Show authentication required state
         return (
           <div className="relative bg-gradient-to-br from-amber-50/50 to-orange-50/50 rounded-xl p-4 min-h-[500px] border-2 border-amber-200 shadow-lg overflow-hidden">
-            <div className="absolute top-4 left-4 z-10 flex items-center gap-3">
-              <span className="bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-sm font-medium">
+            <div className="absolute top-2 left-2 md:top-4 md:left-4 z-10 flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-3">
+              <span className="bg-amber-100 text-amber-800 px-2 py-1 md:px-3 md:py-1 rounded-full text-xs md:text-sm font-medium">
                 Authentication Required
               </span>
-              <div className="flex items-center gap-2 bg-white/90 backdrop-blur rounded-lg px-3 py-2 border-2 border-amber-200">
-                <label className="text-sm font-medium text-amber-800">Preview Mode</label>
+              <div className="flex items-center gap-1 md:gap-2 bg-white/90 backdrop-blur rounded-lg px-2 py-1 md:px-3 md:py-2 border-2 border-amber-200">
+                <label className="text-xs md:text-sm font-medium text-amber-800">Preview Mode</label>
                 <button
                   onClick={() => setPreviewMode(!previewMode)}
-                  className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
+                  className={`relative inline-flex h-4 w-7 md:h-5 md:w-9 items-center rounded-full transition-colors ${
                     previewMode ? 'bg-amber-500' : 'bg-gray-300'
                   }`}
                 >
                   <span
-                    className={`inline-block h-3 w-3 transform rounded-full bg-white transition-transform ${
-                      previewMode ? 'translate-x-5' : 'translate-x-1'
+                    className={`inline-block h-2 w-2 md:h-3 md:w-3 transform rounded-full bg-white transition-transform ${
+                      previewMode ? 'translate-x-4 md:translate-x-5' : 'translate-x-1'
                     }`}
                   />
                 </button>
@@ -1407,9 +1407,9 @@ const Dashboard: React.FC = () => {
                 <div className="flex flex-col gap-3 max-w-xs mx-auto">
                   <button
                     onClick={() => window.location.href = '/auth'}
-                    className="bg-amber-500 hover:bg-amber-600 text-white px-6 py-3 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
+                    className="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 md:px-6 md:py-3 rounded-lg font-medium transition-colors flex items-center justify-center gap-2 text-sm md:text-base"
                   >
-                    <User className="w-5 h-5" />
+                    <User className="w-4 h-4 md:w-5 md:h-5" />
                     Sign In to DotSpark
                   </button>
                   
@@ -1425,21 +1425,21 @@ const Dashboard: React.FC = () => {
       // Show empty state with preview toggle
       return (
         <div className="relative bg-gradient-to-br from-amber-50/50 to-orange-50/50 rounded-xl p-4 min-h-[500px] border-2 border-amber-200 shadow-lg overflow-hidden">
-          <div className="absolute top-4 left-4 z-10 flex items-center gap-3">
-            <span className="bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-sm font-medium">
+          <div className="absolute top-2 left-2 md:top-4 md:left-4 z-10 flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-3">
+            <span className="bg-amber-100 text-amber-800 px-2 py-1 md:px-3 md:py-1 rounded-full text-xs md:text-sm font-medium">
               Empty
             </span>
-            <div className="flex items-center gap-2 bg-white/90 backdrop-blur rounded-lg px-3 py-2 border-2 border-amber-200">
-              <label className="text-sm font-medium text-amber-800">Preview Mode</label>
+            <div className="flex items-center gap-1 md:gap-2 bg-white/90 backdrop-blur rounded-lg px-2 py-1 md:px-3 md:py-2 border-2 border-amber-200">
+              <label className="text-xs md:text-sm font-medium text-amber-800">Preview Mode</label>
               <button
                 onClick={() => setPreviewMode(!previewMode)}
-                className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
+                className={`relative inline-flex h-4 w-7 md:h-5 md:w-9 items-center rounded-full transition-colors ${
                   previewMode ? 'bg-amber-500' : 'bg-gray-300'
                 }`}
               >
                 <span
-                  className={`inline-block h-3 w-3 transform rounded-full bg-white transition-transform ${
-                    previewMode ? 'translate-x-5' : 'translate-x-1'
+                  className={`inline-block h-2 w-2 md:h-3 md:w-3 transform rounded-full bg-white transition-transform ${
+                    previewMode ? 'translate-x-4 md:translate-x-5' : 'translate-x-1'
                   }`}
                 />
               </button>
@@ -1461,9 +1461,9 @@ const Dashboard: React.FC = () => {
                     const event = new CustomEvent('triggerFloatingDot');
                     window.dispatchEvent(event);
                   }}
-                  className="bg-amber-500 hover:bg-amber-600 text-white px-6 py-3 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
+                  className="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 md:px-6 md:py-3 rounded-lg font-medium transition-colors flex items-center justify-center gap-2 text-sm md:text-base"
                 >
-                  <Plus className="w-5 h-5" />
+                  <Plus className="w-4 h-4 md:w-5 md:h-5" />
                   Create Your First Dot/Wheel/Chakra
                 </button>
                 
