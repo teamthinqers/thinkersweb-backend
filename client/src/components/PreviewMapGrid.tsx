@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { RotateCcw, Maximize, Minimize, Mic, Type, ZoomIn, ZoomOut } from "lucide-react";
+import { RotateCcw, Maximize, Minimize, Mic, Type, ZoomIn, ZoomOut, X } from "lucide-react";
 
 // Same interfaces as Dashboard
 interface Dot {
@@ -424,8 +424,8 @@ export const PreviewMapGrid: React.FC<PreviewMapGridProps> = ({
                           // Single click on mobile - do nothing
                         },
                         () => {
-                          // Double-click on mobile shows flashcard
-                          setViewFlashCard(dot);
+                          // Double-click on mobile shows compact flashcard next to dot
+                          setHoveredDot(dot);
                         }
                       );
                     } else {
@@ -449,8 +449,8 @@ export const PreviewMapGrid: React.FC<PreviewMapGridProps> = ({
                           // Single touch on mobile - do nothing
                         },
                         () => {
-                          // Double-touch shows flashcard
-                          setViewFlashCard(dot);
+                          // Double-touch shows compact flashcard next to dot
+                          setHoveredDot(dot);
                         }
                       );
                     } else {
@@ -568,20 +568,31 @@ export const PreviewMapGrid: React.FC<PreviewMapGridProps> = ({
                     }}
                     onClick={(e) => {
                       e.stopPropagation();
-                      setViewFlashCard(dot);
-                      setHoveredDot(null);
+                      // Don't auto-open full view, let user click "View Full" button
                     }}
                   >
                     <div className="space-y-2">
+                      {/* Header with close button */}
                       <div className="flex items-center justify-between">
-                        <Badge className={`text-xs ${
-                          dot.sourceType === 'voice' ? 'bg-amber-100 text-amber-800' : 'bg-orange-100 text-orange-800'
-                        }`}>
-                          {dot.sourceType}
-                        </Badge>
-                        <Badge className="bg-gray-100 text-gray-700 text-xs">
-                          {dot.pulse}
-                        </Badge>
+                        <div className="flex items-center gap-2">
+                          <Badge className={`text-xs ${
+                            dot.sourceType === 'voice' ? 'bg-amber-100 text-amber-800' : 'bg-orange-100 text-orange-800'
+                          }`}>
+                            {dot.sourceType}
+                          </Badge>
+                          <Badge className="bg-gray-100 text-gray-700 text-xs">
+                            {dot.pulse}
+                          </Badge>
+                        </div>
+                        <button 
+                          className="text-gray-400 hover:text-gray-600 p-1"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setHoveredDot(null);
+                          }}
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
                       </div>
                       <h4 className="font-bold text-lg text-amber-800 border-b border-amber-200 pb-2 mb-3">
                         {dot.oneWordSummary}
@@ -589,9 +600,16 @@ export const PreviewMapGrid: React.FC<PreviewMapGridProps> = ({
                       <p className="text-xs text-gray-600 line-clamp-3">
                         {dot.summary}
                       </p>
-                      <div className="text-xs text-amber-600 mt-2 font-medium">
-                        Click for flashcard
-                      </div>
+                      <button 
+                        className="w-full mt-2 px-3 py-1.5 bg-amber-600 text-white text-xs font-medium rounded hover:bg-amber-700 transition-colors"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setViewFlashCard(dot);
+                          setHoveredDot(null);
+                        }}
+                      >
+                        View Full
+                      </button>
                     </div>
                   </div>
                 )}
