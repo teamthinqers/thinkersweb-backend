@@ -405,14 +405,51 @@ export const PreviewMapGrid: React.FC<PreviewMapGridProps> = ({
           })}
           
           {/* Dot Flashcards - Rendered separately to overlay everything */}
-          {displayDots.map((dot: any) => {
-            // Get dot position from grid positions or fallback
-            let dotPosition;
+          {displayDots.map((dot: any, index: number) => {
+            // Use the exact same positioning logic as the actual dots for consistency
+            let x, y;
+            
             if (gridPositions?.dotPositions && gridPositions.dotPositions[dot.id]) {
-              dotPosition = gridPositions.dotPositions[dot.id];
+              // Use backend algorithmic positioning
+              const position = gridPositions.dotPositions[dot.id];
+              x = position.x;
+              y = position.y;
             } else {
-              dotPosition = dot.position || { x: 0, y: 0 };
+              // Use the same fallback logic as actual dots
+              const dotId = String(dot.id || index);
+              const seedX = dotId.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
+              const seedY = dotId.split('').reverse().reduce((a, b) => a + b.charCodeAt(0), 0);
+              
+              // Preview mode positioning (same logic as actual dots)
+              if (dot.wheelId && dot.wheelId !== '') {
+                // Find the wheel this dot belongs to
+                const wheel = displayWheels.find((w: any) => w.id === dot.wheelId);
+                if (wheel) {
+                  // Find position within the wheel
+                  const dotsInWheel = displayDots.filter((d: any) => d.wheelId === dot.wheelId);
+                  const dotIndexInWheel = dotsInWheel.findIndex((d: any) => d.id === dot.id);
+                  
+                  // Position dots in a circle inside the wheel
+                  const wheelCenterX = wheel.position.x;
+                  const wheelCenterY = wheel.position.y;
+                  const wheelRadius = 60;
+                  const dotRadius = calculateDynamicSizing('preview', dotsInWheel.length, 'dots');
+                  const angle = (dotIndexInWheel * 2 * Math.PI) / dotsInWheel.length;
+                  
+                  x = wheelCenterX + Math.cos(angle) * dotRadius;
+                  y = wheelCenterY + Math.sin(angle) * dotRadius;
+                } else {
+                  x = 100 + (seedX % 900) + (index * 67) % 400;
+                  y = 100 + (seedY % 600) + (index * 83) % 300;
+                }
+              } else {
+                // Individual scattered dots - same logic as actual dots
+                x = 80 + (seedX % 1000) + (index * 137) % 800;
+                y = 80 + (seedY % 600) + (index * 97) % 500;
+              }
             }
+            
+            const dotPosition = { x, y };
             
             return (
               <div key={`dot-flashcard-${dot.id}`}>
