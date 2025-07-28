@@ -2455,7 +2455,85 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
 
-          {/* Center - Toggle Buttons */}
+          {/* Center - Search Bar, Recent Dots, and Social Button */}
+          <div className="flex items-center gap-3">
+            {/* Enhanced Search Bar */}
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-amber-500" />
+              <Input
+                type="text"
+                placeholder="Search dots, wheels, or chakras by keywords..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 h-10 w-80 text-sm border-2 border-amber-200 bg-white/90 backdrop-blur focus:border-amber-500 focus:ring-amber-500/20 rounded-xl placeholder:text-gray-500 text-gray-800 shadow-sm"
+              />
+              {showSearchResults && searchTerm && (
+                <button
+                  onClick={() => {
+                    setSearchTerm('');
+                    setShowSearchResults(false);
+                  }}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 p-1 rounded-full hover:bg-gray-100 transition-colors"
+                >
+                  <X className="h-3 w-3 text-gray-400" />
+                </button>
+              )}
+            </div>
+            
+            {/* Recent Dots Button with Dropdown Container */}
+            <div className="relative">
+              <button
+                onClick={() => setShowRecentFilter(!showRecentFilter)}
+                className={`flex items-center gap-2 px-3 py-2 text-sm rounded-lg font-medium transition-all duration-200 ${
+                  showRecentFilter 
+                    ? 'bg-orange-600 hover:bg-orange-700 text-white shadow-lg hover:shadow-xl transform hover:scale-105' 
+                    : 'bg-orange-500 hover:bg-orange-600 text-white shadow-md hover:shadow-lg'
+                }`}
+              >
+                <Clock className="w-4 h-4" />
+                <span className="font-semibold whitespace-nowrap">Recent Dots</span>
+                {dots.length > 0 && (
+                  <Badge className={`border-0 ml-1 text-xs ${
+                    showRecentFilter 
+                      ? 'bg-white/30 text-white' 
+                      : 'bg-white/20 text-white'
+                  }`}>
+                    {Math.min(dots.length, recentDotsCount)}
+                  </Badge>
+                )}
+              </button>
+              
+              {/* Recent Dots Count Dropdown - positioned relative to Recent Dots button */}
+              {showRecentFilter && (
+                <div className="absolute left-0 mt-2 p-2 bg-white/90 backdrop-blur border-2 border-amber-200 rounded-lg shadow-lg z-10">
+                  <div className="flex items-center gap-2 text-xs">
+                    <span className="text-gray-600 whitespace-nowrap">Show:</span>
+                    <select
+                      value={recentDotsCount}
+                      onChange={(e) => setRecentDotsCount(parseInt(e.target.value))}
+                      className="px-2 py-1 text-xs border border-amber-300 rounded focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white min-w-[60px]"
+                    >
+                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 20].map(num => (
+                        <option key={num} value={num}>{num}</option>
+                      ))}
+                    </select>
+                    <span className="text-gray-600 whitespace-nowrap">dots</span>
+                  </div>
+                </div>
+              )}
+            </div>
+            
+            {/* Social Button */}
+            <button
+              onClick={() => window.open('/social-neura', '_blank')}
+              className="flex items-center gap-2 px-3 py-2 text-sm rounded-lg font-medium transition-all duration-200 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white shadow-md hover:shadow-lg hover:scale-105"
+            >
+              <Users className="w-4 h-4" />
+              <span className="font-semibold whitespace-nowrap">Social</span>
+            </button>
+          </div>
+
+          {/* Right side - Mode Toggle */}
           <div className="flex items-center gap-2 bg-white/90 backdrop-blur border-2 border-amber-200 rounded-lg px-3 py-2 shadow-sm">
             <div className="flex items-center gap-1">
               <Button
@@ -2484,10 +2562,6 @@ const Dashboard: React.FC = () => {
               </Button>
             </div>
           </div>
-
-          {/* Right side - Empty for cleaner header */}
-          <div className="flex items-center gap-3">
-          </div>
         </div>
       </div>
 
@@ -2498,108 +2572,24 @@ const Dashboard: React.FC = () => {
         {/* DotSpark Map Section */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4 flex-wrap gap-4">
-            <div className="flex items-center gap-4 flex-wrap">
-              <h2 className="text-lg sm:text-xl font-semibold flex items-center gap-2">
-                <Network className="w-4 h-4 sm:w-5 sm:h-5 text-amber-500" />
-                <span className="bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent">
-                  DotSpark Map
-                </span>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <button className="ml-2 p-1 rounded-full hover:bg-amber-100 transition-colors">
-                      <Info className="w-4 h-4 text-amber-600" />
-                    </button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-80 p-3 text-sm" side="bottom" align="start">
-                    <p className="text-gray-700">
-                      You can see the dots and sparks you saved in this grid. The dots saved in Natural mode will have orange and amber color codes while the ones saved using AI mode will have a purple color code.
-                    </p>
-                  </PopoverContent>
-                </Popover>
-              </h2>
-              
-              {/* Enhanced Search Bar */}
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-amber-500" />
-                <Input
-                  type="text"
-                  placeholder="Search dots, wheels, or chakras by keywords..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 h-10 w-80 text-sm border-2 border-amber-200 bg-white/90 backdrop-blur focus:border-amber-500 focus:ring-amber-500/20 rounded-xl placeholder:text-gray-500 text-gray-800 shadow-sm"
-                />
-                {showSearchResults && searchTerm && (
-                  <button
-                    onClick={() => {
-                      setSearchTerm('');
-                      setShowSearchResults(false);
-                    }}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 p-1 rounded-full hover:bg-gray-100 transition-colors"
-                  >
-                    <X className="h-3 w-3 text-gray-400" />
+            <h2 className="text-lg sm:text-xl font-semibold flex items-center gap-2">
+              <Network className="w-4 h-4 sm:w-5 sm:h-5 text-amber-500" />
+              <span className="bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent">
+                DotSpark Map
+              </span>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button className="ml-2 p-1 rounded-full hover:bg-amber-100 transition-colors">
+                    <Info className="w-4 h-4 text-amber-600" />
                   </button>
-                )}
-              </div>
-              
-              {/* Recent Dots Filter and Social Button */}
-              <div className="relative">
-                <div className={`flex gap-2 ${isPWA ? 'flex-col' : 'flex-row items-center'}`}>
-                  {/* Recent Dots Button with Dropdown Container */}
-                  <div className="relative">
-                    <button
-                      onClick={() => setShowRecentFilter(!showRecentFilter)}
-                      className={`flex items-center gap-2 ${isPWA ? 'px-2 py-1.5 text-xs' : 'px-3 sm:px-4 py-2 text-sm sm:text-base'} rounded-lg font-medium transition-all duration-200 ${
-                        showRecentFilter 
-                          ? 'bg-orange-600 hover:bg-orange-700 text-white shadow-lg hover:shadow-xl transform hover:scale-105' 
-                          : 'bg-orange-500 hover:bg-orange-600 text-white shadow-md hover:shadow-lg'
-                      }`}
-                    >
-                      <Clock className={`${isPWA ? 'w-3 h-3' : 'w-3 h-3 sm:w-4 sm:h-4'}`} />
-                      <span className="font-semibold whitespace-nowrap">Recent Dots</span>
-                      {dots.length > 0 && (
-                        <Badge className={`border-0 ml-1 text-xs ${
-                          showRecentFilter 
-                            ? 'bg-white/30 text-white' 
-                            : 'bg-white/20 text-white'
-                        }`}>
-                          {Math.min(dots.length, recentDotsCount)}
-                        </Badge>
-                      )}
-                    </button>
-                    
-                    {/* Recent Dots Count Dropdown - positioned relative to Recent Dots button */}
-                    {showRecentFilter && (
-                      <div className={`${isPWA ? 'mt-2' : 'absolute left-0 mt-2'} p-2 bg-white/90 backdrop-blur border-2 border-amber-200 rounded-lg shadow-lg z-10`}>
-                        <div className="flex items-center gap-2 text-xs">
-                          <span className="text-gray-600 whitespace-nowrap">Show:</span>
-                          <select
-                            value={recentDotsCount}
-                            onChange={(e) => setRecentDotsCount(parseInt(e.target.value))}
-                            className="px-2 py-1 text-xs border border-amber-300 rounded focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white min-w-[60px]"
-                          >
-                            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 20].map(num => (
-                              <option key={num} value={num}>{num}</option>
-                            ))}
-                          </select>
-                          <span className="text-gray-600 whitespace-nowrap">dots</span>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                  
-                  {/* Social Button */}
-                  <button
-                    onClick={() => window.open('/social-neura', '_blank')}
-                    className={`flex items-center gap-2 ${isPWA ? 'px-2 py-1.5 text-xs' : 'px-3 sm:px-4 py-2 text-sm sm:text-base'} rounded-lg font-medium transition-all duration-200 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white shadow-md hover:shadow-lg hover:scale-105 ${showRecentFilter && isPWA ? 'mt-6' : ''}`}
-                  >
-                    <Brain className={`${isPWA ? 'w-3 h-3' : 'w-3 h-3 sm:w-4 sm:h-4'} animate-pulse`} />
-                    <span className="font-semibold whitespace-nowrap">Social</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-            
-
+                </PopoverTrigger>
+                <PopoverContent className="w-80 p-3 text-sm" side="bottom" align="start">
+                  <p className="text-gray-700">
+                    You can see the dots and sparks you saved in this grid. The dots saved in Natural mode will have orange and amber color codes while the ones saved using AI mode will have a purple color code.
+                  </p>
+                </PopoverContent>
+              </Popover>
+            </h2>
           </div>
           
 
