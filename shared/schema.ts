@@ -515,3 +515,88 @@ export const insertWhatsappOtpVerificationSchema = createInsertSchema(whatsappOt
 
 export type InsertWhatsappOtpVerification = z.infer<typeof insertWhatsappOtpVerificationSchema>;
 export type WhatsappOtpVerification = typeof whatsappOtpVerifications.$inferSelect;
+
+// Preview mode tables - identical structure to real tables but for demonstration data
+// Preview dots table - locked positions for consistent demonstration experience
+export const previewDots = pgTable("preview_dots", {
+  id: serial("id").primaryKey(),
+  summary: text("summary").notNull(), // 220 chars max
+  anchor: text("anchor").notNull(), // 300 chars max
+  pulse: text("pulse").notNull(), // Single emotion word
+  wheelId: integer("wheel_id").references(() => previewWheels.id), // References preview wheels
+  sourceType: text("source_type").notNull(), // 'voice' or 'text'
+  captureMode: text("capture_mode").notNull(), // 'natural' or 'ai'
+  positionX: integer("position_x").default(0).notNull(), // Locked position
+  positionY: integer("position_y").default(0).notNull(), // Locked position
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Preview wheels table - identical to wheels but for demonstration
+export const previewWheels: any = pgTable("preview_wheels", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  heading: text("heading"),
+  goals: text("goals"), // For regular wheels
+  purpose: text("purpose"), // For Chakras (top-level)
+  timeline: text("timeline"),
+  category: text("category").notNull(),
+  color: text("color").notNull().default("#EA580C"),
+  chakraId: integer("chakra_id").references(() => previewWheels.id), // Self-reference for chakra hierarchy
+  positionX: integer("position_x").default(0).notNull(), // Locked position
+  positionY: integer("position_y").default(0).notNull(), // Locked position
+  radius: integer("radius").default(120).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Relations for preview tables
+export const previewDotsRelations = relations(previewDots, ({ one, many }) => ({
+  wheel: one(previewWheels, {
+    fields: [previewDots.wheelId], 
+    references: [previewWheels.id],
+  }),
+}));
+
+export const previewWheelsRelations = relations(previewWheels, ({ one, many }): any => ({
+  chakra: one(previewWheels, {
+    fields: [previewWheels.chakraId],
+    references: [previewWheels.id],
+    relationName: "previewWheelChakra",
+  }),
+  childWheels: many(previewWheels, {
+    relationName: "previewWheelChakra",
+  }),
+  dots: many(previewDots),
+}));
+
+// Schemas for preview tables
+export const insertPreviewDotSchema = createInsertSchema(previewDots, {
+  summary: (schema) => schema.min(1, "Summary is required").max(220, "Summary must be 220 characters or less"),
+  anchor: (schema) => schema.min(1, "Anchor is required").max(300, "Anchor must be 300 characters or less"),
+  pulse: (schema) => schema.min(1, "Pulse is required").max(50, "Pulse must be 50 characters or less"),
+  sourceType: (schema) => schema.refine(val => ['voice', 'text'].includes(val), "Source type must be voice or text"),
+  captureMode: (schema) => schema.refine(val => ['natural', 'ai'].includes(val), "Capture mode must be natural or ai"),
+  wheelId: (schema) => schema.optional(),
+  positionX: (schema) => schema.optional(),
+  positionY: (schema) => schema.optional(),
+});
+
+export const insertPreviewWheelSchema = createInsertSchema(previewWheels, {
+  name: (schema) => schema.min(1, "Name is required").max(100, "Name must be 100 characters or less"),
+  heading: (schema) => schema.optional(),
+  goals: (schema) => schema.optional(),
+  purpose: (schema) => schema.optional(),
+  timeline: (schema) => schema.optional(),
+  category: (schema) => schema.min(1, "Category is required"),
+  color: (schema) => schema.optional(),
+  chakraId: (schema) => schema.optional(),
+  positionX: (schema) => schema.optional(),
+  positionY: (schema) => schema.optional(), 
+  radius: (schema) => schema.optional(),
+});
+
+export type InsertPreviewDot = z.infer<typeof insertPreviewDotSchema>;
+export type PreviewDot = typeof previewDots.$inferSelect;
+export type InsertPreviewWheel = z.infer<typeof insertPreviewWheelSchema>;
+export type PreviewWheel = typeof previewWheels.$inferSelect;

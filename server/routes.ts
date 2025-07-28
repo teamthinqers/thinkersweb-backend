@@ -29,7 +29,7 @@ import {
   unregisterWhatsAppUser,
   getWhatsAppStatus,
 } from "./whatsapp";
-import { eq, inArray, and, lt, desc } from "drizzle-orm";
+import { eq, inArray, and, lt, desc, sql } from "drizzle-orm";
 import twilio from "twilio";
 import whatsappWebhookRouter from "./whatsapp-webhook";
 import { calculateGridPositions } from "./grid-positioning";
@@ -434,9 +434,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get dots for dashboard - requires authentication
+  // Get dots for dashboard - supports both real and preview modes
   app.get(`${apiPrefix}/dots`, async (req: AuthenticatedRequest, res: Response) => {
     try {
+      const isPreview = req.query.preview === 'true';
+      
+      if (isPreview) {
+        // Return preview dots from preview_dots table
+        const previewDotsData = await db.execute(sql`
+          SELECT id, summary, anchor, pulse, wheel_id, source_type, capture_mode, position_x, position_y, created_at
+          FROM preview_dots 
+          ORDER BY created_at DESC
+        `);
+        
+        const previewDots = previewDotsData.rows.map((dot: any) => ({
+          id: dot.id.toString(),
+          oneWordSummary: dot.summary.split(' ')[0] || 'Insight',
+          summary: dot.summary,
+          anchor: dot.anchor,
+          pulse: dot.pulse,
+          sourceType: dot.source_type,
+          captureMode: dot.capture_mode,
+          timestamp: dot.created_at,
+          wheelId: dot.wheel_id?.toString() || undefined,
+          position: { x: dot.position_x, y: dot.position_y },
+          voiceData: null
+        }));
+        
+        return res.json(previewDots);
+      }
+      
+      // Real mode - requires authentication
       const userId = req.user?.id || req.session?.userId;
       
       if (!userId) {
@@ -933,9 +961,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // GET wheels endpoint - fetch user's wheels
+  // GET wheels endpoint - supports both real and preview modes
   app.get(`${apiPrefix}/wheels`, async (req: AuthenticatedRequest, res: Response) => {
     try {
+      const isPreview = req.query.preview === 'true';
+      
+      if (isPreview) {
+        // Return preview wheels from preview_wheels table
+        const previewWheelsData = await db.execute(sql`
+          SELECT id, name, heading, goals, purpose, timeline, category, color, chakra_id, position_x, position_y, radius, created_at
+          FROM preview_wheels 
+          ORDER BY created_at DESC
+        `);
+        
+        const previewWheels = previewWheelsData.rows.map((wheel: any) => ({
+          id: wheel.id.toString(),
+          name: wheel.name,
+          heading: wheel.heading,
+          goals: wheel.goals,
+          purpose: wheel.purpose, // For chakras (top-level wheels)
+          timeline: wheel.timeline,
+          category: wheel.category,
+          color: wheel.color,
+          dots: [], // Dots will be loaded separately
+          connections: [],
+          position: { x: wheel.position_x, y: wheel.position_y },
+          radius: wheel.radius,
+          chakraId: wheel.chakra_id?.toString() || undefined,
+          createdAt: wheel.created_at
+        }));
+        
+        return res.json(previewWheels);
+      }
+      
+      // Real mode - requires authentication for user-specific data
       const userId = req.user?.id || req.session?.userId || 1;
       
       const userWheels = await db.query.wheels.findMany({

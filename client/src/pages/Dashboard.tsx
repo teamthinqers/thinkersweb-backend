@@ -92,10 +92,11 @@ const Dashboard: React.FC = () => {
 
   // Fallback for dots - use old API if new grid API has no data
   const { data: dots = [], isLoading: dotsLoading, refetch } = useQuery({
-    queryKey: ['/api/dots'],
+    queryKey: ['/api/dots', previewMode ? 'preview' : 'real'],
     queryFn: async () => {
       try {
-        const response = await fetch('/api/dots');
+        const url = previewMode ? '/api/dots?preview=true' : '/api/dots';
+        const response = await fetch(url);
         if (!response.ok) {
           return [];
         }
@@ -113,10 +114,11 @@ const Dashboard: React.FC = () => {
 
   // Fetch user wheels and chakras
   const { data: userWheels = [], isLoading: wheelsLoading, refetch: refetchWheels } = useQuery({
-    queryKey: ['/api/wheels'],
+    queryKey: ['/api/wheels', previewMode ? 'preview' : 'real'],
     queryFn: async () => {
       try {
-        const response = await fetch('/api/wheels');
+        const url = previewMode ? '/api/wheels?preview=true' : '/api/wheels';
+        const response = await fetch(url);
         if (!response.ok) {
           return [];
         }
@@ -127,7 +129,6 @@ const Dashboard: React.FC = () => {
         return [];
       }
     },
-    enabled: !previewMode, // Only fetch when not in preview mode
     refetchOnWindowFocus: false,
     staleTime: 5 * 60 * 1000 // 5 minutes
   });
@@ -191,11 +192,10 @@ const Dashboard: React.FC = () => {
     let searchDots = dots;
     let searchWheels: Wheel[] = [];
     
-    // If preview mode is enabled, include preview data
+    // In preview mode, dots and userWheels already contain preview data from database
     if (previewMode) {
-      const previewData = generatePreviewData();
-      searchDots = [...dots, ...previewData.previewDots];
-      searchWheels = [...previewData.previewWheels];
+      searchDots = dots; // Already contains preview data from database
+      searchWheels = userWheels; // Already contains preview data from database  
     }
     
     // Search dots
@@ -1334,13 +1334,11 @@ const Dashboard: React.FC = () => {
       return { previewDots, previewWheels };
     };
 
-    const { previewDots, previewWheels } = generatePreviewData();
+    // Base wheels to display - Real mode shows user data, Preview mode shows database preview data
+    const displayWheels = userWheels; // userWheels now contains correct data for both modes
     
-    // Base wheels to display - Real mode shows ONLY user data, Preview mode shows ONLY demo data
-    const displayWheels = previewMode ? previewWheels : userWheels;
-    
-    // Real mode shows ONLY user data, Preview mode shows ONLY demo data
-    let baseDotsToDisplay = previewMode ? previewDots : actualDots;
+    // Real mode shows user data, Preview mode shows database preview data  
+    let baseDotsToDisplay = previewMode ? dots : actualDots; // dots now contains correct data for both modes
     
     // Apply recent filter if enabled (only in real mode)
     if (showingRecentFilter && !previewMode) {
