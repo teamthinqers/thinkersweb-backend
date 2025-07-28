@@ -1356,8 +1356,8 @@ const Dashboard: React.FC = () => {
     // Count Wheels and Chakras from displayed data (real mode = user data, preview mode = demo data)
     // Wheels: items with chakraId (belonging to a chakra) 
     // Chakras: items without chakraId (top-level containers)
-    const totalWheels = displayWheels.filter((w: any) => w.chakraId !== undefined).length;
-    const totalChakras = displayWheels.filter((w: any) => w.chakraId === undefined).length;
+    const totalWheels = displayWheels.filter((w: any) => w.chakraId !== null && w.chakraId !== undefined).length;
+    const totalChakras = displayWheels.filter((w: any) => w.chakraId === null || w.chakraId === undefined).length;
 
     // Auto-switch to real mode if user is authenticated and has content
     useEffect(() => {
