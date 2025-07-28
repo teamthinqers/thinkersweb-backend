@@ -641,8 +641,59 @@ const Dashboard: React.FC = () => {
     const [offset, setOffset] = useState({ x: 0, y: 0 });
     const [isPWA, setIsPWA] = useState(false);
     
+    // Mobile double-click detection states
+    const [lastClickTime, setLastClickTime] = useState<number>(0);
+    const [lastClickedElement, setLastClickedElement] = useState<string | null>(null);
+    const [clickTimeout, setClickTimeout] = useState<NodeJS.Timeout | null>(null);
+    
     // Use grid positioning data from parent component (passed from main gridData query)
     const gridPositions = gridData?.data;
+    
+    // Mobile double-click detection helper
+    const handleMobileClick = (elementId: string, onSingleClick: () => void, onDoubleClick: () => void) => {
+      const isMobile = window.innerWidth < 768;
+      if (!isMobile) {
+        // Desktop behavior - direct full view
+        onDoubleClick();
+        return;
+      }
+      
+      const now = Date.now();
+      const isDoubleClick = 
+        lastClickedElement === elementId && 
+        now - lastClickTime < 300; // 300ms double-click threshold
+      
+      if (isDoubleClick) {
+        // Clear any pending timeout
+        if (clickTimeout) {
+          clearTimeout(clickTimeout);
+          setClickTimeout(null);
+        }
+        // Execute double-click action (flashcard)
+        onDoubleClick();
+        // Reset state
+        setLastClickTime(0);
+        setLastClickedElement(null);
+      } else {
+        // First click - set timer for single click action
+        setLastClickTime(now);
+        setLastClickedElement(elementId);
+        
+        // Clear any existing timeout
+        if (clickTimeout) {
+          clearTimeout(clickTimeout);
+        }
+        
+        // Set timeout for single click (do nothing on mobile for first click)
+        const timeout = setTimeout(() => {
+          // Single click on mobile does nothing for dots/wheel labels
+          setLastClickTime(0);
+          setLastClickedElement(null);
+          setClickTimeout(null);
+        }, 300);
+        setClickTimeout(timeout);
+      }
+    };
     
 
 
@@ -659,6 +710,15 @@ const Dashboard: React.FC = () => {
       
       return () => mediaQuery.removeListener(checkPWA);
     }, []);
+    
+    // Cleanup timeout on unmount
+    useEffect(() => {
+      return () => {
+        if (clickTimeout) {
+          clearTimeout(clickTimeout);
+        }
+      };
+    }, [clickTimeout]);
 
     // Add keyboard escape to exit fullscreen
     useEffect(() => {
@@ -1821,13 +1881,22 @@ const Dashboard: React.FC = () => {
                       e.stopPropagation();
                       e.preventDefault();
                       console.log('Dot clicked:', dot.id);
-                      // Check if mobile (screen width < 768px) or PWA mode for flash card view
-                      const isMobile = window.innerWidth < 768;
-                      if (isPWA || isMobile) {
-                        setSelectedDot(dot);
-                      } else {
-                        setViewFullDot(dot);
-                      }
+                      
+                      handleMobileClick(
+                        `dot-${dot.id}`,
+                        () => {
+                          // Single click on mobile - do nothing
+                        },
+                        () => {
+                          // Double-click on mobile shows flashcard, desktop shows flashcard
+                          const isMobile = window.innerWidth < 768;
+                          if (isPWA || isMobile) {
+                            setSelectedDot(dot);
+                          } else {
+                            setViewFullDot(dot);
+                          }
+                        }
+                      );
                       setHoveredDot(null);
                     }}
                     onMouseDown={(e) => e.stopPropagation()}
@@ -1835,13 +1904,22 @@ const Dashboard: React.FC = () => {
                       e.stopPropagation();
                       e.preventDefault();
                       console.log('Dot touched:', dot.id);
-                      // Check if mobile (screen width < 768px) or PWA mode for flash card view
-                      const isMobile = window.innerWidth < 768;
-                      if (isPWA || isMobile) {
-                        setSelectedDot(dot);
-                      } else {
-                        setViewFullDot(dot);
-                      }
+                      
+                      handleMobileClick(
+                        `dot-${dot.id}`,
+                        () => {
+                          // Single touch on mobile - do nothing
+                        },
+                        () => {
+                          // Double-touch on mobile shows flashcard
+                          const isMobile = window.innerWidth < 768;
+                          if (isPWA || isMobile) {
+                            setSelectedDot(dot);
+                          } else {
+                            setViewFullDot(dot);
+                          }
+                        }
+                      );
                       setHoveredDot(null);
                     }}
                     onTouchEnd={(e) => {
@@ -2222,8 +2300,18 @@ const Dashboard: React.FC = () => {
                       }}
                       onClick={(e) => {
                         e.stopPropagation();
-                        setHoveredWheel(null);
-                        setViewFullWheel(wheel);
+                        
+                        handleMobileClick(
+                          `wheel-${wheel.id}`,
+                          () => {
+                            // Single click on mobile - do nothing
+                          },
+                          () => {
+                            // Double-click on mobile or desktop shows full view
+                            setHoveredWheel(null);
+                            setViewFullWheel(wheel);
+                          }
+                        );
                       }}
                     >
                       {wheel.name}
@@ -2347,7 +2435,7 @@ const Dashboard: React.FC = () => {
               <div>
                 <h1 className="text-xl font-bold bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent flex items-center gap-2">
                   <Brain className="w-5 h-5 text-amber-500" />
-                  My Neura
+                  <span className="hidden md:inline">My Neura</span>
                 </h1>
               </div>
             </div>

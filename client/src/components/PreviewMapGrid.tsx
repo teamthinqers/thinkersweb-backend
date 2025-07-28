@@ -684,6 +684,7 @@ export const PreviewMapGrid: React.FC<PreviewMapGridProps> = ({
                   data-wheel-label="true"
                   onClick={(e) => {
                     e.stopPropagation();
+                    // For preview mode, always show full view immediately regardless of mobile
                     setViewFullWheel(wheel);
                   }}
                   onMouseEnter={(e) => {
