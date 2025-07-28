@@ -332,13 +332,14 @@ export const PreviewMapGrid: React.FC<PreviewMapGridProps> = ({
             
             return (
               <div key={dot.id} className="relative">
-                {/* Dot */}
+                {/* Dot with enhanced hover area */}
                 <div
-                  className="absolute w-12 h-12 rounded-full cursor-pointer transition-all duration-300 hover:scale-125 hover:shadow-lg group dot-element"
+                  className="absolute rounded-full cursor-pointer transition-all duration-300 hover:scale-125 hover:shadow-lg group dot-element"
                   style={{
-                    left: `${x}px`,
-                    top: `${y}px`,
-                    background: 'linear-gradient(135deg, #F59E0B, #D97706)', // Light amber gradient for all dots
+                    left: `${x - 8}px`, // Expand hover area
+                    top: `${y - 8}px`, // Expand hover area
+                    width: '64px', // Larger hover area (was 48px)
+                    height: '64px', // Larger hover area (was 48px)
                     pointerEvents: 'auto'
                   }}
                   onClick={(e) => {
@@ -361,32 +362,43 @@ export const PreviewMapGrid: React.FC<PreviewMapGridProps> = ({
                   onMouseEnter={() => setHoveredDot(dot)}
                   onMouseLeave={() => setHoveredDot(null)}
                 >
-                  {/* Pulse animation for voice dots */}
-                  {dot.sourceType === 'voice' && (
-                    <div className="absolute inset-0 rounded-full bg-amber-400 opacity-50 animate-ping" />
-                  )}
-                  
-                  {/* Dot content */}
-                  <div className="relative w-full h-full rounded-full flex items-center justify-center">
-                    <div className="w-8 h-8 rounded-full bg-white/20 backdrop-blur flex items-center justify-center">
-                      {dot.sourceType === 'voice' ? (
-                        <Mic className="w-4 h-4 text-white" />
-                      ) : (
-                        <Type className="w-4 h-4 text-white" />
-                      )}
+                  {/* Actual dot visual (centered within hover area) */}
+                  <div
+                    className="absolute w-12 h-12 rounded-full"
+                    style={{
+                      left: '50%',
+                      top: '50%',
+                      transform: 'translate(-50%, -50%)',
+                      background: 'linear-gradient(135deg, #F59E0B, #D97706)', // Light amber gradient for all dots
+                    }}
+                  >
+                    {/* Pulse animation for voice dots */}
+                    {dot.sourceType === 'voice' && (
+                      <div className="absolute inset-0 rounded-full bg-amber-400 opacity-50 animate-ping" />
+                    )}
+                    
+                    {/* Dot content */}
+                    <div className="relative w-full h-full rounded-full flex items-center justify-center">
+                      <div className="w-8 h-8 rounded-full bg-white/20 backdrop-blur flex items-center justify-center">
+                        {dot.sourceType === 'voice' ? (
+                          <Mic className="w-4 h-4 text-white" />
+                        ) : (
+                          <Type className="w-4 h-4 text-white" />
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
                 
-                {/* Summary hover card */}
+                {/* Summary hover card - enhanced visibility */}
                 {hoveredDot?.id === dot.id && (
                   <div 
                     className="absolute bg-white border-2 border-amber-200 rounded-lg p-3 shadow-xl z-[9999] w-64 cursor-pointer"
                     style={{
-                      left: `${x + 60}px`,
-                      top: `${Math.max(0, y - 20)}px`,
+                      left: `${x + 40}px`, // Closer to dot
+                      top: `${Math.max(0, y - 40)}px`, // Better positioning above dot
                       maxWidth: '280px',
-                      zIndex: 9999
+                      zIndex: 10000 // Higher z-index for better visibility
                     }}
                     onClick={(e) => {
                       e.stopPropagation();
@@ -446,22 +458,22 @@ export const PreviewMapGrid: React.FC<PreviewMapGridProps> = ({
               wheelSize = calculateDynamicSizing('preview', wheelDots.length, 'wheels') * 2;
             }
             
-            // Calculate the actual wheel label position
+            // Calculate the actual wheel label position - closer to wheels
             const labelX = wheelPosition.x;
             const wheelRadius = wheelSize / 2;
             const labelY = isChakra 
-              ? (wheelPosition.y - wheelRadius) - 95
-              : wheelPosition.y - 75;
+              ? (wheelPosition.y - wheelRadius) - 60  // Closer to chakra (was -95)
+              : wheelPosition.y - 45; // Closer to wheel (was -75)
             
             return (
               <div key={`flashcard-${wheel.id}`}>
-                {/* Wheel Flash Card */}
+                {/* Wheel Flash Card - positioned closer to labels */}
                 {hoveredWheel?.id === wheel.id && (
                   <div 
                     className="absolute bg-white border-2 border-amber-200 rounded-lg p-3 shadow-xl z-[9999] w-64 cursor-pointer"
                     style={{
-                      left: `${labelX + 60}px`,
-                      top: `${Math.max(0, labelY - 20)}px`,
+                      left: `${labelX + 40}px`, // Closer to label (was +60)
+                      top: `${Math.max(0, labelY - 10)}px`, // Closer to label (was -20)
                       maxWidth: '280px'
                     }}
                     onClick={(e) => {
@@ -526,7 +538,7 @@ export const PreviewMapGrid: React.FC<PreviewMapGridProps> = ({
               wheelSize = getChakraSize('preview', childWheels.length);
             } else {
               // Dynamic wheel sizing based on dots count
-              const wheelDots = displayDots.filter(d => d.wheelId === wheel.id);
+              const wheelDots = displayDots.filter((d: any) => d.wheelId === wheel.id);
               wheelSize = calculateDynamicSizing('preview', wheelDots.length, 'wheels') * 2;
             }
             
@@ -603,12 +615,12 @@ export const PreviewMapGrid: React.FC<PreviewMapGridProps> = ({
                   />
                 )}
                 
-                {/* Wheel/Chakra Label */}
+                {/* Wheel/Chakra Label - positioned closer */}
                 <div
                   className="absolute pointer-events-auto cursor-pointer z-50"
                   style={{
                     left: '50%',
-                    top: isChakra ? '-95px' : '-75px',
+                    top: isChakra ? '-60px' : '-45px', // Closer to wheels/chakras
                     transform: 'translateX(-50%)',
                     zIndex: 999
                   }}
