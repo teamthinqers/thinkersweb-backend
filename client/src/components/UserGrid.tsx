@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, Plus, Eye, Settings, RotateCcw, Mic, Type } from 'lucide-react';
+import { Loader2, Plus, Eye, Settings, RotateCcw } from 'lucide-react';
 import UserContentCreation from './UserContentCreation';
 // Types will be inferred from API responses
 
@@ -40,269 +40,13 @@ const UserGrid: React.FC<UserGridProps> = ({ userId, mode }) => {
   const regularWheels = userWheels.filter((w: any) => w.chakraId !== null);
   const chakras = userWheels.filter((w: any) => w.chakraId === null);
 
-  // Generate preview data for demonstration
-  const generatePreviewData = () => {
-    const previewDots = [
-      {
-        id: 'preview-dot-1',
-        summary: 'Product-market fit validation through customer interviews',
-        anchor: 'Personal insights about product-market fit and daily routines',
-        pulse: 'excited',
-        sourceType: 'voice' as const,
-        captureMode: 'natural' as const,
-        wheel: { name: 'GTM Strategy' }
-      },
-      {
-        id: 'preview-dot-2', 
-        summary: 'Building high-performing teams through trust',
-        anchor: 'Random observations about team building in everyday experiences',
-        pulse: 'confident',
-        sourceType: 'text' as const,
-        captureMode: 'ai' as const,
-        wheel: { name: 'Leadership Development' }
-      },
-      {
-        id: 'preview-dot-3',
-        summary: 'Understanding user needs through research methods',
-        anchor: 'Personal insight about user research and individual growth', 
-        pulse: 'curious',
-        sourceType: 'voice' as const,
-        captureMode: 'natural' as const,
-        wheel: { name: 'Product Innovation' }
-      }
-    ];
-
-    const previewWheels = [
-      {
-        id: 'preview-wheel-1',
-        name: 'GTM Strategy',
-        heading: 'Go-To-Market Strategy',
-        goals: 'Developing comprehensive go-to-market strategies including product positioning and customer acquisition',
-        timeline: '21 months',
-        category: 'Business',
-        chakraId: 'preview-chakra-1',
-        dots: [previewDots[0]]
-      },
-      {
-        id: 'preview-wheel-2', 
-        name: 'Leadership Development',
-        heading: 'Strengthen Leadership',
-        goals: 'Building strong leadership capabilities through team management and strategic communication',
-        timeline: '3 years',
-        category: 'Business', 
-        chakraId: 'preview-chakra-1',
-        dots: [previewDots[1]]
-      },
-      {
-        id: 'preview-wheel-3',
-        name: 'Product Innovation',
-        heading: 'Product Innovation Excellence', 
-        goals: 'Driving continuous product innovation through user research and feature prioritization',
-        timeline: '15 months',
-        category: 'Business',
-        chakraId: 'preview-chakra-1',
-        dots: [previewDots[2]]
-      }
-    ];
-
-    const previewChakras = [
-      {
-        id: 'preview-chakra-1',
-        name: 'Build an Enduring Company',
-        heading: 'Build an Enduring Company',
-        purpose: 'Creating a sustainable, innovative business that delivers value to customers while maintaining long-term growth',
-        timeline: '15 years',
-        category: 'Business',
-        chakraId: null
-      }
-    ];
-
-    return { previewDots, previewWheels, previewChakras };
-  };
-
   if (mode === 'preview') {
-    const { previewDots, previewWheels, previewChakras } = generatePreviewData();
-    
-    // Convert preview data to format compatible with grid visualization
-    const displayDots = previewDots.map((dot: any, index: number) => ({
-      ...dot,
-      id: dot.id,
-      oneWordSummary: dot.summary.split(' ').slice(0, 3).join(' '),
-      timestamp: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000),
-      wheelId: dot.wheel.name === 'GTM Strategy' ? 'preview-wheel-1' :
-               dot.wheel.name === 'Leadership Development' ? 'preview-wheel-2' :
-               dot.wheel.name === 'Product Innovation' ? 'preview-wheel-3' :
-               null
-    }));
-
-    const displayWheels = [...previewWheels, ...previewChakras].map((item: any) => ({
-      ...item,
-      position: item.id === 'preview-chakra-1' ? { x: 500, y: 300 } :
-                item.id === 'preview-wheel-1' ? { x: 300, y: 200 } :
-                item.id === 'preview-wheel-2' ? { x: 700, y: 200 } :
-                { x: 500, y: 150 }
-    }));
-
     return (
-      <div className="relative bg-gradient-to-br from-amber-50/30 to-orange-50/30 rounded-xl border-2 border-amber-200 shadow-lg overflow-hidden min-h-[600px]">
-        {/* Preview Header */}
-        <div className="absolute top-4 left-4 z-10">
-          <Badge className="bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-sm font-medium">
-            Preview Mode - Sample Data
-          </Badge>
-        </div>
-
-        {/* Interactive Grid Visualization */}
-        <div 
-          className="relative w-full h-full cursor-move select-none"
-          style={{ 
-            minHeight: '600px',
-            backgroundImage: 'radial-gradient(circle at 25% 25%, rgba(251, 191, 36, 0.1) 0%, transparent 50%), radial-gradient(circle at 75% 75%, rgba(249, 115, 22, 0.1) 0%, transparent 50%)'
-          }}
-        >
-          {/* Render Dots */}
-          {displayDots.map((dot: any, index: number) => {
-            let x, y;
-            
-            // Position dots based on their wheel assignment
-            if (dot.wheelId === 'preview-wheel-1') {
-              x = 300 + Math.cos(index * 2.1) * 50;
-              y = 200 + Math.sin(index * 2.1) * 50;
-            } else if (dot.wheelId === 'preview-wheel-2') {
-              x = 700 + Math.cos(index * 2.1) * 50;
-              y = 200 + Math.sin(index * 2.1) * 50;
-            } else if (dot.wheelId === 'preview-wheel-3') {
-              x = 500 + Math.cos(index * 2.1) * 50;
-              y = 150 + Math.sin(index * 2.1) * 50;
-            } else {
-              x = 200 + (index * 150) % 600;
-              y = 400 + Math.floor(index / 4) * 80;
-            }
-
-            return (
-              <div key={dot.id} className="absolute">
-                <div
-                  className="w-12 h-12 rounded-full cursor-pointer transition-all duration-300 hover:scale-125 hover:shadow-lg group"
-                  style={{
-                    left: `${x}px`,
-                    top: `${y}px`,
-                    background: 'linear-gradient(135deg, #F59E0B, #D97706)',
-                    pointerEvents: 'auto'
-                  }}
-                >
-                  {/* Pulse animation for voice dots */}
-                  {dot.sourceType === 'voice' && (
-                    <div className="absolute inset-0 rounded-full bg-amber-400 opacity-50 animate-ping" />
-                  )}
-                  
-                  {/* Dot content */}
-                  <div className="relative w-full h-full rounded-full flex items-center justify-center">
-                    <div className="w-8 h-8 rounded-full bg-white/20 backdrop-blur flex items-center justify-center">
-                      {dot.sourceType === 'voice' ? (
-                        <Mic className="w-4 h-4 text-white" />
-                      ) : (
-                        <Type className="w-4 h-4 text-white" />
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-
-          {/* Render Wheels */}
-          {displayWheels.map((wheel: any) => {
-            const isChakra = wheel.chakraId === null;
-            const wheelSize = isChakra ? 300 : 150;
-            
-            return (
-              <div key={wheel.id} className="absolute">
-                {/* Wheel boundary */}
-                <div
-                  className="absolute rounded-full border-2 border-dashed transition-all duration-300 hover:border-solid"
-                  style={{
-                    left: `${wheel.position.x - wheelSize/2}px`,
-                    top: `${wheel.position.y - wheelSize/2}px`,
-                    width: `${wheelSize}px`,
-                    height: `${wheelSize}px`,
-                    borderColor: isChakra ? '#B45309' : '#EA580C',
-                    backgroundColor: isChakra ? 'rgba(180, 83, 9, 0.05)' : 'rgba(234, 88, 12, 0.05)'
-                  }}
-                >
-                  {/* Chakra energy effects */}
-                  {isChakra && (
-                    <>
-                      <div className="absolute inset-2 rounded-full border border-amber-300 opacity-60 animate-spin" style={{ animationDuration: '20s' }} />
-                      <div className="absolute inset-4 rounded-full border border-amber-400 opacity-40 animate-pulse" />
-                      <div className="absolute inset-6 rounded-full bg-gradient-to-r from-amber-400/20 to-orange-400/20" />
-                    </>
-                  )}
-                </div>
-
-                {/* Wheel label */}
-                <div
-                  className="absolute text-center cursor-pointer hover:scale-105 transition-transform z-10"
-                  style={{
-                    left: `${wheel.position.x - 80}px`,
-                    top: `${wheel.position.y - (isChakra ? 180 : 100)}px`,
-                    width: '160px'
-                  }}
-                >
-                  <div className="bg-white/95 backdrop-blur rounded-lg px-3 py-2 shadow-lg border border-amber-200">
-                    <Badge 
-                      className={`text-xs mb-1 ${
-                        isChakra ? 'bg-amber-200 text-amber-900' : 'bg-orange-100 text-orange-800'
-                      }`}
-                    >
-                      {isChakra ? 'CHAKRA' : 'WHEEL'}
-                    </Badge>
-                    <h4 className={`font-bold text-sm ${
-                      isChakra ? 'text-amber-900' : 'text-orange-800'
-                    }`}>
-                      {wheel.name}
-                    </h4>
-                    <p className="text-xs text-gray-600 mt-1">
-                      {wheel.timeline}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-
-          {/* Connection lines between wheels and chakras */}
-          {displayWheels.filter(w => w.chakraId).map((wheel: any) => {
-            const chakra = displayWheels.find(c => c.id === wheel.chakraId);
-            if (!chakra) return null;
-
-            return (
-              <svg key={`line-${wheel.id}`} className="absolute inset-0 pointer-events-none" style={{ zIndex: 1 }}>
-                <line
-                  x1={wheel.position.x}
-                  y1={wheel.position.y}
-                  x2={chakra.position.x}
-                  y2={chakra.position.y}
-                  stroke="#F59E0B"
-                  strokeWidth="2"
-                  strokeDasharray="5,5"
-                  opacity="0.6"
-                />
-              </svg>
-            );
-          })}
-        </div>
-
-        {/* Bottom CTA */}
-        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-10">
-          <Button 
-            onClick={() => window.location.href = '/auth'}
-            className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 shadow-lg"
-            size="lg"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Create Your Own Grid
-          </Button>
-        </div>
+      <div className="text-center py-8">
+        <h3 className="text-lg font-semibold text-amber-800 mb-2">Preview Mode Active</h3>
+        <p className="text-gray-600">
+          This is demonstration data. Sign in and activate DotSpark to create your own content.
+        </p>
       </div>
     );
   }
@@ -341,21 +85,21 @@ const UserGrid: React.FC<UserGridProps> = ({ userId, mode }) => {
 
   if (isEmpty) {
     return (
-      <div className="text-center py-12 bg-gradient-to-r from-amber-50 to-orange-50 rounded-lg border border-amber-200">
+      <div className="text-center py-12">
         <div className="max-w-md mx-auto">
-          <div className="w-16 h-16 bg-gradient-to-r from-amber-400 to-orange-500 rounded-full mx-auto mb-6 flex items-center justify-center">
+          <div className="w-16 h-16 bg-gradient-to-r from-amber-400 to-orange-500 rounded-full mx-auto mb-4 flex items-center justify-center">
             <Plus className="w-8 h-8 text-white" />
           </div>
-          <h3 className="text-xl font-semibold text-amber-800 mb-2">Ready to Create Your Own?</h3>
+          <h3 className="text-xl font-semibold text-amber-800 mb-2">Start Your DotSpark Journey</h3>
           <p className="text-gray-600 mb-6">
-            Sign in and activate DotSpark to start organizing your thoughts with our AI-powered system
+            Create your first dot, wheel, or chakra to begin organizing your thoughts and insights.
           </p>
           <Button 
             onClick={() => setShowCreation(true)}
             className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
           >
             <Plus className="w-4 h-4 mr-2" />
-            Get Started
+            Create Your First Content
           </Button>
         </div>
       </div>
