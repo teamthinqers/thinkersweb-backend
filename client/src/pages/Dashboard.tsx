@@ -2377,7 +2377,7 @@ const Dashboard: React.FC = () => {
                 }
               >
                 <Eye className="w-4 h-4 mr-1" />
-                User Content
+                User Mode
               </Button>
               <Button
                 variant={viewMode === 'map' ? 'default' : 'ghost'}
@@ -2389,7 +2389,7 @@ const Dashboard: React.FC = () => {
                 }
               >
                 <Network className="w-4 h-4 mr-1" />
-                Preview Map
+                Preview Mode
               </Button>
             </div>
           </div>
