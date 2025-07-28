@@ -1324,7 +1324,7 @@ const Dashboard: React.FC = () => {
           timestamp: new Date(Date.now() - Math.random() * 15 * 24 * 60 * 60 * 1000),
           sourceType: Math.random() > 0.5 ? 'voice' : 'text',
           captureMode: Math.random() > 0.7 ? 'ai' : 'natural',
-          position: scatteredPositions[i] // Direct position for scattered dots
+          // position: scatteredPositions[i] // Direct position for scattered dots (removed - using database positions)
         };
         previewDots.push(dot);
       }
@@ -1745,7 +1745,7 @@ const Dashboard: React.FC = () => {
             }}
           >
             {/* Individual Dots Random Grid */}
-            {displayDots.map((dot, index) => {
+            {displayDots.map((dot: any, index: number) => {
               // Use algorithmic positioning from backend API when available, fallback to manual calculation
               let x, y;
               
@@ -1770,8 +1770,8 @@ const Dashboard: React.FC = () => {
                     const wheel = displayWheels.find((w: any) => w.id === dot.wheelId);
                     if (wheel) {
                       // Find position within the wheel
-                      const dotsInWheel = displayDots.filter(d => d.wheelId === dot.wheelId);
-                      const dotIndexInWheel = dotsInWheel.findIndex(d => d.id === dot.id);
+                      const dotsInWheel = displayDots.filter((d: any) => d.wheelId === dot.wheelId);
+                      const dotIndexInWheel = dotsInWheel.findIndex((d: any) => d.id === dot.id);
                       
                       // Position dots in a circle inside the wheel
                       const wheelCenterX = wheel.position.x;
@@ -1796,8 +1796,8 @@ const Dashboard: React.FC = () => {
                   if (dot.wheelId && dot.wheelId !== '') {
                     const wheel = displayWheels.find((w: any) => w.id === dot.wheelId);
                     if (wheel) {
-                      const dotsInWheel = displayDots.filter(d => d.wheelId === dot.wheelId);
-                      const dotIndexInWheel = dotsInWheel.findIndex(d => d.id === dot.id);
+                      const dotsInWheel = displayDots.filter((d: any) => d.wheelId === dot.wheelId);
+                      const dotIndexInWheel = dotsInWheel.findIndex((d: any) => d.id === dot.id);
                       
                       // Fallback wheel positioning for real mode
                       const wheelCenterX = wheel.position?.x || (300 + (index % 3) * 200);
