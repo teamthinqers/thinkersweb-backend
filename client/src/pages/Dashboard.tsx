@@ -1896,21 +1896,24 @@ const Dashboard: React.FC = () => {
                       e.preventDefault();
                       console.log('Dot clicked:', dot.id);
                       
-                      handleMobileClick(
-                        `dot-${dot.id}`,
-                        () => {
-                          // Single click on mobile - do nothing
-                        },
-                        () => {
-                          // Double-click on mobile shows flashcard, desktop shows flashcard
-                          const isMobile = window.innerWidth < 768;
-                          if (isPWA || isMobile) {
+                      const isMobile = window.innerWidth < 768;
+                      
+                      if (isPWA || isMobile) {
+                        // Mobile: Use double-click for compact flashcard
+                        handleMobileClick(
+                          `dot-${dot.id}`,
+                          () => {
+                            // Single click on mobile - do nothing
+                          },
+                          () => {
+                            // Double-click on mobile shows compact flashcard
                             setSelectedDot(dot);
-                          } else {
-                            setViewFullDot(dot);
                           }
-                        }
-                      );
+                        );
+                      } else {
+                        // Desktop: Single click opens full view directly
+                        setViewFullDot(dot);
+                      }
                       setHoveredDot(null);
                     }}
                     onMouseDown={(e) => e.stopPropagation()}
@@ -1919,19 +1922,15 @@ const Dashboard: React.FC = () => {
                       e.preventDefault();
                       console.log('Dot touched:', dot.id);
                       
+                      // Mobile: Use double-tap for compact flashcard
                       handleMobileClick(
                         `dot-${dot.id}`,
                         () => {
                           // Single touch on mobile - do nothing
                         },
                         () => {
-                          // Double-touch on mobile shows flashcard
-                          const isMobile = window.innerWidth < 768;
-                          if (isPWA || isMobile) {
-                            setSelectedDot(dot);
-                          } else {
-                            setViewFullDot(dot);
-                          }
+                          // Double-touch on mobile shows compact flashcard
+                          setSelectedDot(dot);
                         }
                       );
                       setHoveredDot(null);
@@ -2315,17 +2314,26 @@ const Dashboard: React.FC = () => {
                       onClick={(e) => {
                         e.stopPropagation();
                         
-                        handleMobileClick(
-                          `wheel-${wheel.id}`,
-                          () => {
-                            // Single click on mobile - do nothing
-                          },
-                          () => {
-                            // Double-click on mobile or desktop shows full view
-                            setHoveredWheel(null);
-                            setViewFullWheel(wheel);
-                          }
-                        );
+                        const isMobile = window.innerWidth < 768;
+                        
+                        if (isPWA || isMobile) {
+                          // Mobile: Use double-click for full view
+                          handleMobileClick(
+                            `wheel-${wheel.id}`,
+                            () => {
+                              // Single click on mobile - do nothing
+                            },
+                            () => {
+                              // Double-click on mobile shows full view
+                              setHoveredWheel(null);
+                              setViewFullWheel(wheel);
+                            }
+                          );
+                        } else {
+                          // Desktop: Single click opens full view directly
+                          setHoveredWheel(null);
+                          setViewFullWheel(wheel);
+                        }
                       }}
                     >
                       {wheel.name}
