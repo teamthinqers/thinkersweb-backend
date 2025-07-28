@@ -421,8 +421,8 @@ export const PreviewMapGrid: React.FC<PreviewMapGridProps> = ({
                   <div 
                     className="absolute bg-white/95 backdrop-blur border-2 border-amber-200 rounded-lg p-3 shadow-2xl w-72 cursor-pointer"
                     style={{
-                      left: `${dotPosition.x + 70}px`, // Well positioned to side of dot
-                      top: `${Math.max(10, dotPosition.y - 60)}px`, // Above dot with margin
+                      left: `${dotPosition.x + 40}px`, // Closer to dot (reduced from 70px to 40px)
+                      top: `${Math.max(10, dotPosition.y - 20)}px`, // Closer to dot (reduced from 60px to 20px)
                       maxWidth: '320px',
                       zIndex: 999999, // Higher than wheel flashcards (999998) to display over everything
                       boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 4px 6px -1px rgba(0, 0, 0, 0.1)',
