@@ -2,7 +2,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuth } from "@/hooks/use-auth-mock";
 import { getRemainingPrompts } from "@/lib/usageLimits";
 
 interface UsageLimitMessageProps {

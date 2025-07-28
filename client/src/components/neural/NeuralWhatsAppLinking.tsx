@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuth } from "@/hooks/use-auth-mock";
 import { useLocation } from "wouter";
 import { Loader2, Smartphone, MessageCircle, SendHorizonal, Check } from "lucide-react";
 import { useWhatsAppStatus } from "@/hooks/useWhatsAppStatus";
