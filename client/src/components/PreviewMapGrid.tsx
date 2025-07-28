@@ -401,12 +401,12 @@ export const PreviewMapGrid: React.FC<PreviewMapGridProps> = ({
                 {/* Summary hover card - positioned to overlay everything */}
                 {hoveredDot?.id === dot.id && (
                   <div 
-                    className="absolute bg-white border-2 border-amber-200 rounded-lg p-3 shadow-2xl w-72 cursor-pointer"
+                    className="absolute bg-white/95 backdrop-blur border-2 border-amber-200 rounded-lg p-3 shadow-2xl w-72 cursor-pointer"
                     style={{
                       left: `${x + 70}px`, // Well positioned to side of dot
                       top: `${Math.max(10, y - 60)}px`, // Above dot with margin
                       maxWidth: '320px',
-                      zIndex: 999999, // Extremely high z-index to override everything
+                      zIndex: 99999999, // Maximum z-index to override everything including chakras, wheels, and any other elements
                       boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 4px 6px -1px rgba(0, 0, 0, 0.1)',
                       pointerEvents: 'auto'
                     }}

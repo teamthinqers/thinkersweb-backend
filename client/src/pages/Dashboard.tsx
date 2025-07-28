@@ -1872,14 +1872,14 @@ const Dashboard: React.FC = () => {
                   {/* Summary hover card - different positioning for PWA vs Browser */}
                   {hoveredDot?.id === dot.id && (
                     <div 
-                      className="absolute bg-white/95 backdrop-blur border-2 border-amber-200 rounded-lg p-3 shadow-2xl z-[99999] w-64 cursor-pointer"
+                      className="absolute bg-white/95 backdrop-blur border-2 border-amber-200 rounded-lg p-3 shadow-2xl w-64 cursor-pointer"
                       style={{
                         // PWA: Position relative to dot to scroll with grid
                         // Browser: Position in grid coordinates for mouse hover
                         left: isPWA ? '60px' : `${x + 60}px`,
                         top: isPWA ? '-20px' : `${Math.max(0, y - 20)}px`,
                         maxWidth: '280px',
-                        zIndex: 99999,
+                        zIndex: 99999999, // Maximum z-index to override everything including chakras, wheels, and any other elements
                         boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.05)'
                       }}
                       onClick={(e) => {
