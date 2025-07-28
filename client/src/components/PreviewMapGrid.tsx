@@ -331,7 +331,7 @@ export const PreviewMapGrid: React.FC<PreviewMapGridProps> = ({
             }
             
             return (
-              <div key={dot.id} className="relative" style={{ zIndex: 10 }}>
+              <div key={dot.id} className="relative" style={{ zIndex: hoveredDot?.id === dot.id ? 99999998 : 10 }}>
                 {/* Dot with enhanced hover area */}
                 <div
                   className="absolute rounded-full cursor-pointer transition-all duration-300 hover:scale-125 hover:shadow-lg group dot-element"
@@ -341,7 +341,7 @@ export const PreviewMapGrid: React.FC<PreviewMapGridProps> = ({
                     width: '64px', // Larger hover area (was 48px)
                     height: '64px', // Larger hover area (was 48px)
                     pointerEvents: 'auto',
-                    zIndex: 10 // Higher z-index than wheels/chakras
+                    zIndex: hoveredDot?.id === dot.id ? 99999998 : 10 // Elevate hovered dot above all other dots
                   }}
                   onClick={(e) => {
                     e.stopPropagation();
