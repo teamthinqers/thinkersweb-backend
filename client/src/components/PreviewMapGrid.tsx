@@ -414,21 +414,24 @@ export const PreviewMapGrid: React.FC<PreviewMapGridProps> = ({
                     e.stopPropagation();
                     e.preventDefault();
                     
-                    handleMobileClick(
-                      `preview-dot-${dot.id}`,
-                      () => {
-                        // Single click on mobile - do nothing
-                      },
-                      () => {
-                        // Double-click on mobile shows flashcard, desktop shows full view
-                        const isMobile = window.innerWidth < 768;
-                        if (isMobile) {
+                    const isMobile = window.innerWidth < 768;
+                    
+                    if (isMobile) {
+                      // Mobile behavior - use double-click detection
+                      handleMobileClick(
+                        `preview-dot-${dot.id}`,
+                        () => {
+                          // Single click on mobile - do nothing
+                        },
+                        () => {
+                          // Double-click on mobile shows flashcard
                           setViewFlashCard(dot);
-                        } else {
-                          setViewFullDot(dot);
                         }
-                      }
-                    );
+                      );
+                    } else {
+                      // Desktop behavior - direct full view (unchanged)
+                      setViewFullDot(dot);
+                    }
                     setHoveredDot(null);
                   }}
                   onMouseDown={(e) => e.stopPropagation()}
@@ -436,16 +439,24 @@ export const PreviewMapGrid: React.FC<PreviewMapGridProps> = ({
                     e.stopPropagation();
                     e.preventDefault();
                     
-                    handleMobileClick(
-                      `preview-dot-touch-${dot.id}`,
-                      () => {
-                        // Single touch on mobile - do nothing
-                      },
-                      () => {
-                        // Double-touch shows flashcard
-                        setViewFlashCard(dot);
-                      }
-                    );
+                    const isMobile = window.innerWidth < 768;
+                    
+                    if (isMobile) {
+                      // Mobile touch behavior - use double-touch detection
+                      handleMobileClick(
+                        `preview-dot-touch-${dot.id}`,
+                        () => {
+                          // Single touch on mobile - do nothing
+                        },
+                        () => {
+                          // Double-touch shows flashcard
+                          setViewFlashCard(dot);
+                        }
+                      );
+                    } else {
+                      // Desktop touch behavior - direct full view (unchanged)
+                      setViewFullDot(dot);
+                    }
                     setHoveredDot(null);
                   }}
                   onTouchEnd={(e) => {
