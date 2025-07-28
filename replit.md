@@ -151,6 +151,9 @@ Changelog:
   * Dashboard now switches between user's personal content (real mode) and preview demonstration (preview mode)
   * Content creation cards validate activation status and show activation dialog for non-activated users
   * System maintains clear separation between user-generated data and static demonstration content
+  * FIXED unsigned user access - unsigned and non-activated users can now view preview mode without restrictions
+  * Auto-switches unsigned users to preview mode while maintaining creation restrictions for authenticated users only
+  * Rebuilt Dashboard component with clean architecture to resolve syntax errors and broken return statements
 - January 28, 2025. COMPLETED static counting system with corrected preview mode values:
   * Fixed React hooks error caused by complex authentication-dependent counting logic during dashboard rendering
   * Implemented static counts for preview mode: 26 dots, 5 wheels, 2 chakras (corrected from previous documentation)
