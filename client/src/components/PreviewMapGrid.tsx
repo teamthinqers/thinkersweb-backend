@@ -665,10 +665,13 @@ export const PreviewMapGrid: React.FC<PreviewMapGridProps> = ({
       {/* Statistics */}
       <div className="absolute bottom-2 right-2 md:bottom-4 md:right-4 z-10 flex gap-2">
         <Badge className="bg-white/90 backdrop-blur text-amber-800 border-amber-200">
-          {displayDots.length} Dots
+          26 Dots
         </Badge>
         <Badge className="bg-white/90 backdrop-blur text-orange-800 border-orange-200">
-          {displayWheels.length} Wheels
+          5 Wheels
+        </Badge>
+        <Badge className="bg-white/90 backdrop-blur text-amber-800 border-amber-200">
+          2 Chakras
         </Badge>
       </div>
     </div>
