@@ -398,15 +398,17 @@ export const PreviewMapGrid: React.FC<PreviewMapGridProps> = ({
                   </div>
                 </div>
                 
-                {/* Summary hover card - enhanced visibility */}
+                {/* Summary hover card - positioned to overlay everything */}
                 {hoveredDot?.id === dot.id && (
                   <div 
-                    className="absolute bg-white border-2 border-amber-200 rounded-lg p-3 shadow-xl z-[9999] w-64 cursor-pointer"
+                    className="absolute bg-white border-2 border-amber-200 rounded-lg p-3 shadow-2xl w-72 cursor-pointer"
                     style={{
-                      left: `${x + 40}px`, // Closer to dot
-                      top: `${Math.max(0, y - 40)}px`, // Better positioning above dot
-                      maxWidth: '280px',
-                      zIndex: 10000 // Higher z-index for better visibility
+                      left: `${x + 70}px`, // Well positioned to side of dot
+                      top: `${Math.max(10, y - 60)}px`, // Above dot with margin
+                      maxWidth: '320px',
+                      zIndex: 999999, // Extremely high z-index to override everything
+                      boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                      pointerEvents: 'auto'
                     }}
                     onClick={(e) => {
                       e.stopPropagation();
@@ -475,14 +477,17 @@ export const PreviewMapGrid: React.FC<PreviewMapGridProps> = ({
             
             return (
               <div key={`flashcard-${wheel.id}`}>
-                {/* Wheel Flash Card - positioned closer to labels */}
+                {/* Wheel Flash Card - positioned to overlay everything */}
                 {hoveredWheel?.id === wheel.id && (
                   <div 
-                    className="absolute bg-white border-2 border-amber-200 rounded-lg p-3 shadow-xl z-[9999] w-64 cursor-pointer"
+                    className="absolute bg-white border-2 border-amber-200 rounded-lg p-3 shadow-2xl w-72 cursor-pointer"
                     style={{
-                      left: `${labelX + 40}px`, // Closer to label (was +60)
-                      top: `${Math.max(0, labelY - 10)}px`, // Closer to label (was -20)
-                      maxWidth: '280px'
+                      left: `${labelX + 80}px`, // Well positioned to side of label
+                      top: `${Math.max(10, labelY - 20)}px`, // Above label with margin
+                      maxWidth: '320px',
+                      zIndex: 999998, // High z-index, but below dots
+                      boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                      pointerEvents: 'auto'
                     }}
                     onClick={(e) => {
                       e.stopPropagation();
