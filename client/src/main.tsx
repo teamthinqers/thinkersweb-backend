@@ -1,11 +1,7 @@
+import React from "react";
 import { createRoot } from "react-dom/client";
-import App from "./App";
+import TestMinimal from "./test-minimal";
 import "./index.css";
-import { queryClient } from "./lib/queryClient";
-import { initViteConnectionGuard } from "./lib/viteConnectionGuard";
-import { Component, ErrorInfo, ReactNode, useEffect } from "react";
-import { addResetButton, resetApplicationState } from "./lib/appReset";
-import { initPWA } from "./lib/pwaUtils";
 
 // Global polyfill for the Network object to fix the "Can't find variable: Network" error
 // This is a workaround for the Vite plugin error without modifying vite.config.ts
@@ -227,7 +223,5 @@ function AppWithReset() {
 
 // Create the application root element
 createRoot(document.getElementById("root")!).render(
-  <ErrorBoundary>
-    <AppWithReset />
-  </ErrorBoundary>
+  <TestMinimal />
 );

@@ -6,7 +6,7 @@ import {
   MessageCircle, MessageSquare, User, Menu, X, Check, CheckCircle, Download,
   Smartphone, Monitor, Share, Plus, Home as HomeIcon
 } from "lucide-react";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuth } from "@/hooks/use-auth-mock";
 
 // Dynamic Word component for cycling through words with animation
 const DynamicWord = ({ words, interval = 2000 }: { words: string[], interval?: number }) => {
