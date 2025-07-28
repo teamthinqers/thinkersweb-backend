@@ -429,8 +429,8 @@ export const PreviewMapGrid: React.FC<PreviewMapGridProps> = ({
                         }
                       );
                     } else {
-                      // Desktop behavior - direct full view (unchanged)
-                      setViewFullDot(dot);
+                      // Desktop behavior - show flashcard on hover, full view on click
+                      setViewFlashCard(dot);
                     }
                     setHoveredDot(null);
                   }}
@@ -454,8 +454,8 @@ export const PreviewMapGrid: React.FC<PreviewMapGridProps> = ({
                         }
                       );
                     } else {
-                      // Desktop touch behavior - direct full view (unchanged)
-                      setViewFullDot(dot);
+                      // Desktop touch behavior - show flashcard
+                      setViewFlashCard(dot);
                     }
                     setHoveredDot(null);
                   }}
