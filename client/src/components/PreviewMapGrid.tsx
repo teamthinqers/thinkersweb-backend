@@ -331,7 +331,7 @@ export const PreviewMapGrid: React.FC<PreviewMapGridProps> = ({
             }
             
             return (
-              <div key={dot.id} className="relative">
+              <div key={dot.id} className="relative" style={{ zIndex: 10 }}>
                 {/* Dot with enhanced hover area */}
                 <div
                   className="absolute rounded-full cursor-pointer transition-all duration-300 hover:scale-125 hover:shadow-lg group dot-element"
@@ -340,7 +340,8 @@ export const PreviewMapGrid: React.FC<PreviewMapGridProps> = ({
                     top: `${y - 8}px`, // Expand hover area
                     width: '64px', // Larger hover area (was 48px)
                     height: '64px', // Larger hover area (was 48px)
-                    pointerEvents: 'auto'
+                    pointerEvents: 'auto',
+                    zIndex: 10 // Higher z-index than wheels/chakras
                   }}
                   onClick={(e) => {
                     e.stopPropagation();
@@ -359,8 +360,15 @@ export const PreviewMapGrid: React.FC<PreviewMapGridProps> = ({
                     e.stopPropagation();
                     e.preventDefault();
                   }}
-                  onMouseEnter={() => setHoveredDot(dot)}
-                  onMouseLeave={() => setHoveredDot(null)}
+                  onMouseEnter={(e) => {
+                    e.stopPropagation(); // Prevent chakra hover
+                    setHoveredDot(dot);
+                    setHoveredWheel(null); // Clear any wheel hover
+                  }}
+                  onMouseLeave={(e) => {
+                    e.stopPropagation();
+                    setHoveredDot(null);
+                  }}
                 >
                   {/* Actual dot visual (centered within hover area) */}
                   <div
@@ -552,10 +560,11 @@ export const PreviewMapGrid: React.FC<PreviewMapGridProps> = ({
                   left: `${wheelPosition.x - wheelRadius}px`,
                   top: `${wheelPosition.y - wheelRadius}px`,
                   width: `${wheelSize}px`,
-                  height: `${wheelSize}px`
+                  height: `${wheelSize}px`,
+                  zIndex: 1 // Lower z-index so dots can appear above
                 }}
               >
-                {/* Enhanced Chakra/Wheel boundary */}
+                {/* Enhanced Chakra/Wheel boundary - NO HOVER EVENTS */}
                 {isChakra ? (
                   /* Advanced Chakra Effect with Multiple Energy Rings */
                   <div className="relative w-full h-full">
@@ -586,36 +595,24 @@ export const PreviewMapGrid: React.FC<PreviewMapGridProps> = ({
                       }}
                     />
                     
-                    {/* Chakra boundary circle */}
+                    {/* Chakra boundary circle - VISUAL ONLY, NO HOVER */}
                     <div 
-                      className="absolute inset-0 rounded-full border-4 border-dashed pointer-events-auto hover:border-solid transition-all duration-300"
+                      className="absolute inset-0 rounded-full border-4 border-dashed pointer-events-none transition-all duration-300"
                       style={{ 
                         borderColor: wheel.color || '#B45309',
                         backgroundColor: 'rgba(180, 83, 9, 0.05)'
                       }}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setViewFullWheel(wheel);
-                      }}
-                      onMouseEnter={() => setHoveredWheel(wheel)}
-                      onMouseLeave={() => setHoveredWheel(null)}
                     />
                   </div>
                 ) : (
-                  /* Regular Wheel boundary */
+                  /* Regular Wheel boundary - VISUAL ONLY, NO HOVER */
                   <div 
-                    className="absolute inset-0 rounded-full border-2 border-dashed transition-all duration-300 hover:border-solid pointer-events-auto hover:bg-orange-50/30"
+                    className="absolute inset-0 rounded-full border-2 border-dashed transition-all duration-300 pointer-events-none"
                     style={{ borderColor: wheel.color || '#EA580C' }}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setViewFullWheel(wheel);
-                    }}
-                    onMouseEnter={() => setHoveredWheel(wheel)}
-                    onMouseLeave={() => setHoveredWheel(null)}
                   />
                 )}
                 
-                {/* Wheel/Chakra Label - positioned closer */}
+                {/* Wheel/Chakra Label - positioned closer with enhanced hover */}
                 <div
                   className="absolute pointer-events-auto cursor-pointer z-50"
                   style={{
@@ -629,8 +626,15 @@ export const PreviewMapGrid: React.FC<PreviewMapGridProps> = ({
                     e.stopPropagation();
                     setViewFullWheel(wheel);
                   }}
-                  onMouseEnter={() => setHoveredWheel(wheel)}
-                  onMouseLeave={() => setHoveredWheel(null)}
+                  onMouseEnter={(e) => {
+                    e.stopPropagation();
+                    setHoveredWheel(wheel);
+                    setHoveredDot(null); // Clear any dot hover
+                  }}
+                  onMouseLeave={(e) => {
+                    e.stopPropagation();
+                    setHoveredWheel(null);
+                  }}
                 >
                   <div className={`px-4 py-2 rounded-lg text-center shadow-lg border-2 transition-all duration-300 hover:scale-105 ${
                     isChakra 
