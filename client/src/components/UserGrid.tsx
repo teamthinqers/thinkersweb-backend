@@ -42,70 +42,11 @@ const UserGrid: React.FC<UserGridProps> = ({ userId, mode }) => {
 
   if (mode === 'preview') {
     return (
-      <div className="space-y-6">
-        {/* Preview explanation */}
-        <div className="text-center py-4">
-          <h3 className="text-lg font-semibold text-amber-800 mb-2">Preview Mode - Demonstration Data</h3>
-          <p className="text-gray-600 text-sm">
-            Explore how DotSpark organizes thoughts into structured insights
-          </p>
-        </div>
-        
-        {/* Show preview stats */}
-        <div className="grid grid-cols-3 gap-4 mb-6">
-          <Card>
-            <CardContent className="p-3 text-center">
-              <div className="text-2xl font-bold text-amber-600">26</div>
-              <div className="text-sm text-gray-600">Preview Dots</div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-3 text-center">
-              <div className="text-2xl font-bold text-orange-600">5</div>
-              <div className="text-sm text-gray-600">Preview Wheels</div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-3 text-center">
-              <div className="text-2xl font-bold text-amber-700">2</div>
-              <div className="text-sm text-gray-600">Preview Chakras</div>
-            </CardContent>
-          </Card>
-        </div>
-        
-        {/* Show sample dots */}
-        <div>
-          <h4 className="text-lg font-semibold text-amber-800 mb-3">Sample Dots</h4>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {[
-              { title: "Microservices", summary: "Architecture patterns for distributed systems", pulse: "curious" },
-              { title: "React Patterns", summary: "Advanced component composition techniques", pulse: "focused" },
-              { title: "Team Leadership", summary: "Effective communication strategies", pulse: "confident" }
-            ].map((dot, index) => (
-              <Card key={index} className="hover:shadow-md transition-shadow">
-                <CardHeader className="pb-2">
-                  <Badge variant="outline" className="w-fit text-xs">{dot.pulse}</Badge>
-                  <CardTitle className="text-sm">{dot.title}</CardTitle>
-                </CardHeader>
-                <CardContent className="pt-0">
-                  <p className="text-xs text-gray-600">{dot.summary}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-        
-        <div className="text-center py-4 bg-amber-50 rounded-lg border border-amber-200">
-          <p className="text-sm text-amber-700 mb-2">
-            Ready to create your own structured insights?
-          </p>
-          <Button 
-            onClick={() => window.location.href = '/auth'}
-            className="bg-amber-500 hover:bg-amber-600 text-white"
-          >
-            Sign In to Start Creating
-          </Button>
-        </div>
+      <div className="text-center py-8">
+        <h3 className="text-lg font-semibold text-amber-800 mb-2">Preview Mode Active</h3>
+        <p className="text-gray-600">
+          This is demonstration data. Sign in and activate DotSpark to create your own content.
+        </p>
       </div>
     );
   }
