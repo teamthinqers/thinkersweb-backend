@@ -11,6 +11,7 @@ import DotFullView from "@/components/DotFullView";
 import DotFlashCard from "@/components/DotFlashCard";
 import WheelFlashCard from "@/components/WheelFlashCard";
 import WheelFullView from "@/components/WheelFullView";
+import UserGrid from "@/components/UserGrid";
 import { isRunningAsStandalone } from "@/lib/pwaUtils";
 import { useLocation } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
@@ -73,6 +74,7 @@ const Dashboard: React.FC = () => {
   const [recentDotsCount, setRecentDotsCount] = useState(4);
   const [showPreview, setShowPreview] = useState(false);
   const [isMapFullscreen, setIsMapFullscreen] = useState(false);
+  const [viewMode, setViewMode] = useState<'grid' | 'map'>('grid'); // Add view mode toggle
   const [previewMode, setPreviewMode] = useState(false); // Start with real mode by default
   
   // PWA detection for smaller button sizing
@@ -2627,19 +2629,57 @@ const Dashboard: React.FC = () => {
             </div>
           )}
           
-          <div className={`transition-all duration-200 ${showRecentFilter ? 'mt-4' : 'mt-0'}`}>
-            <DotWheelsMap 
-              wheels={wheels} 
-              dots={showRecentFilter ? dots.slice(0, recentDotsCount) : dots} 
-              showingRecentFilter={showRecentFilter}
-              recentCount={recentDotsCount}
-              isFullscreen={isMapFullscreen}
-              onFullscreenChange={setIsMapFullscreen}
-              setViewFullWheel={setViewFullWheel}
-              previewMode={previewMode}
-              setPreviewMode={setPreviewMode}
-            />
+          {/* View Mode Toggle */}
+          <div className="flex items-center justify-center mb-6">
+            <div className="flex items-center bg-white border border-amber-200 rounded-lg p-1">
+              <Button
+                variant={viewMode === 'grid' ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => setViewMode('grid')}
+                className={viewMode === 'grid' ? 
+                  'bg-gradient-to-r from-amber-500 to-orange-500 text-white' : 
+                  'text-amber-700 hover:bg-amber-50'
+                }
+              >
+                <Plus className="w-4 h-4 mr-1" />
+                User Content
+              </Button>
+              <Button
+                variant={viewMode === 'map' ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => setViewMode('map')}
+                className={viewMode === 'map' ? 
+                  'bg-gradient-to-r from-amber-500 to-orange-500 text-white' : 
+                  'text-amber-700 hover:bg-amber-50'
+                }
+              >
+                <Network className="w-4 h-4 mr-1" />
+                Preview Map
+              </Button>
+            </div>
           </div>
+
+          {/* Content based on view mode */}
+          {viewMode === 'grid' ? (
+            <UserGrid 
+              userId={user?.id} 
+              mode={previewMode ? 'preview' : 'real'} 
+            />
+          ) : (
+            <div className={`transition-all duration-200 ${showRecentFilter ? 'mt-4' : 'mt-0'}`}>
+              <DotWheelsMap 
+                wheels={wheels} 
+                dots={showRecentFilter ? dots.slice(0, recentDotsCount) : dots} 
+                showingRecentFilter={showRecentFilter}
+                recentCount={recentDotsCount}
+                isFullscreen={isMapFullscreen}
+                onFullscreenChange={setIsMapFullscreen}
+                setViewFullWheel={setViewFullWheel}
+                previewMode={previewMode}
+                setPreviewMode={setPreviewMode}
+              />
+            </div>
+          )}
         </div>
       </div>
 

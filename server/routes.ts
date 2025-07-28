@@ -37,6 +37,7 @@ import { advancedChatEngine } from './advanced-chat';
 import { intelligentFeatures } from './intelligent-features';
 import vectorSearchRouter from './routes/vector-search';
 import indexingRouter from './routes/indexing';
+import userContentRouter from './routes/user-content';
 import { initializeVectorDB } from './vector-db';
 
 // Interface for authenticated requests
@@ -1617,6 +1618,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Mount vector search routes
   app.use(`${apiPrefix}/vector`, vectorSearchRouter);
+  
+  // Use the user content router for authenticated user-generated content
+  app.use(`${apiPrefix}/user-content`, userContentRouter);
   
   // Mount indexing routes for comprehensive cognitive structure indexing
   app.use(`${apiPrefix}/indexing`, indexingRouter);
