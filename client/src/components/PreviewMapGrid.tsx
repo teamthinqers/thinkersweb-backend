@@ -399,16 +399,32 @@ export const PreviewMapGrid: React.FC<PreviewMapGridProps> = ({
                     </div>
                   </div>
                 </div>
-                
-                {/* Summary hover card - positioned to overlay everything with maximum z-index */}
+
+              </div>
+            );
+          })}
+          
+          {/* Dot Flashcards - Rendered separately to overlay everything */}
+          {displayDots.map((dot: any) => {
+            // Get dot position from grid positions or fallback
+            let dotPosition;
+            if (gridPositions?.dotPositions && gridPositions.dotPositions[dot.id]) {
+              dotPosition = gridPositions.dotPositions[dot.id];
+            } else {
+              dotPosition = dot.position || { x: 0, y: 0 };
+            }
+            
+            return (
+              <div key={`dot-flashcard-${dot.id}`}>
+                {/* Dot Flash Card - positioned to overlay everything */}
                 {hoveredDot?.id === dot.id && (
                   <div 
                     className="absolute bg-white/95 backdrop-blur border-2 border-amber-200 rounded-lg p-3 shadow-2xl w-72 cursor-pointer"
                     style={{
-                      left: `${x + 70}px`, // Well positioned to side of dot
-                      top: `${Math.max(10, y - 60)}px`, // Above dot with margin
+                      left: `${dotPosition.x + 70}px`, // Well positioned to side of dot
+                      top: `${Math.max(10, dotPosition.y - 60)}px`, // Above dot with margin
                       maxWidth: '320px',
-                      zIndex: 999999999, // Absolute maximum z-index to display over all other dots
+                      zIndex: 999999, // Higher than wheel flashcards (999998) to display over everything
                       boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 4px 6px -1px rgba(0, 0, 0, 0.1)',
                       pointerEvents: 'auto'
                     }}
@@ -441,11 +457,10 @@ export const PreviewMapGrid: React.FC<PreviewMapGridProps> = ({
                     </div>
                   </div>
                 )}
-
               </div>
             );
           })}
-          
+
           {/* Wheel Flashcards */}
           {displayWheels.map((wheel: any, wheelIndex: number) => {
             // Use same positioning logic as wheels
