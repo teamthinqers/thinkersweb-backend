@@ -58,6 +58,71 @@ export const PreviewMapGrid: React.FC<PreviewMapGridProps> = ({
   const [hoveredDot, setHoveredDot] = useState<Dot | null>(null);
   const [hoveredWheel, setHoveredWheel] = useState<Wheel | null>(null);
   const gridContainerRef = useRef<HTMLDivElement>(null);
+  
+  // Mobile double-click detection states
+  const [lastClickTime, setLastClickTime] = useState<number>(0);
+  const [lastClickedElement, setLastClickedElement] = useState<string | null>(null);
+  const [clickTimeout, setClickTimeout] = useState<NodeJS.Timeout | null>(null);
+  
+  // Mobile double-click detection helper
+  const handleMobileClick = (elementId: string, onSingleClick: () => void, onDoubleClick: () => void) => {
+    const isMobile = window.innerWidth < 768;
+    console.log('PreviewMapGrid handleMobileClick:', { elementId, isMobile, windowWidth: window.innerWidth });
+    
+    if (!isMobile) {
+      // Desktop behavior - direct full view
+      console.log('Desktop detected - executing double-click action immediately');
+      onDoubleClick();
+      return;
+    }
+    
+    const now = Date.now();
+    const isDoubleClick = 
+      lastClickedElement === elementId && 
+      now - lastClickTime < 300; // 300ms double-click threshold
+    
+    console.log('Preview mobile click detection:', { 
+      lastClickedElement, 
+      elementId, 
+      lastClickTime, 
+      now, 
+      timeDiff: now - lastClickTime, 
+      isDoubleClick 
+    });
+    
+    if (isDoubleClick) {
+      // Clear any pending timeout
+      if (clickTimeout) {
+        clearTimeout(clickTimeout);
+        setClickTimeout(null);
+      }
+      // Execute double-click action (flashcard)
+      console.log('Preview double-click detected - showing flashcard');
+      onDoubleClick();
+      // Reset state
+      setLastClickTime(0);
+      setLastClickedElement(null);
+    } else {
+      // First click - set timer for single click action
+      console.log('Preview first click detected - waiting for potential second click');
+      setLastClickTime(now);
+      setLastClickedElement(elementId);
+      
+      // Clear any existing timeout
+      if (clickTimeout) {
+        clearTimeout(clickTimeout);
+      }
+      
+      // Set timeout for single click (do nothing on mobile for first click)
+      const timeout = setTimeout(() => {
+        console.log('Preview single click timeout - no second click detected');
+        setLastClickTime(0);
+        setLastClickedElement(null);
+        setClickTimeout(null);
+      }, 300);
+      setClickTimeout(timeout);
+    }
+  };
 
   // Fetch preview data
   const { data: previewDots = [], isLoading: dotsLoading } = useQuery({
@@ -348,14 +413,39 @@ export const PreviewMapGrid: React.FC<PreviewMapGridProps> = ({
                   onClick={(e) => {
                     e.stopPropagation();
                     e.preventDefault();
-                    setViewFullDot(dot);
+                    
+                    handleMobileClick(
+                      `preview-dot-${dot.id}`,
+                      () => {
+                        // Single click on mobile - do nothing
+                      },
+                      () => {
+                        // Double-click on mobile shows flashcard, desktop shows full view
+                        const isMobile = window.innerWidth < 768;
+                        if (isMobile) {
+                          setViewFlashCard(dot);
+                        } else {
+                          setViewFullDot(dot);
+                        }
+                      }
+                    );
                     setHoveredDot(null);
                   }}
                   onMouseDown={(e) => e.stopPropagation()}
                   onTouchStart={(e) => {
                     e.stopPropagation();
                     e.preventDefault();
-                    setViewFullDot(dot);
+                    
+                    handleMobileClick(
+                      `preview-dot-touch-${dot.id}`,
+                      () => {
+                        // Single touch on mobile - do nothing
+                      },
+                      () => {
+                        // Double-touch shows flashcard
+                        setViewFlashCard(dot);
+                      }
+                    );
                     setHoveredDot(null);
                   }}
                   onTouchEnd={(e) => {
