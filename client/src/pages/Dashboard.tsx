@@ -2303,18 +2303,7 @@ const Dashboard: React.FC = () => {
 
 
 
-        {/* Dot Full View Modal */}
-        {viewFullDot && (
-          <DotFullView 
-            dot={viewFullDot} 
-            onClose={() => setViewFullDot(null)}
-            onDelete={(dotId) => {
-              setViewFullDot(null);
-              // Trigger a refetch of dots data
-              window.location.reload();
-            }}
-          />
-        )}
+
 
         {/* Wheel Full View Modal */}
         {viewFullWheel && (

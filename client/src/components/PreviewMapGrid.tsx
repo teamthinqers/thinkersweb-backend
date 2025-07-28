@@ -431,7 +431,7 @@ export const PreviewMapGrid: React.FC<PreviewMapGridProps> = ({
                     onClick={(e) => {
                       e.stopPropagation();
                       console.log('Dot flashcard clicked:', dot);
-                      console.log('Setting viewFullDot with:', dot);
+                      alert('Dot flashcard clicked! Check if modal opens.');
                       setViewFullDot(dot);
                       setHoveredDot(null);
                     }}
