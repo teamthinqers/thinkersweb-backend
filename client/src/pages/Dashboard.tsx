@@ -2361,7 +2361,37 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
 
-          {/* Right side - Stats and controls */}
+          {/* Center - Toggle Buttons */}
+          <div className="flex items-center gap-2 bg-white/90 backdrop-blur border-2 border-amber-200 rounded-lg px-3 py-2 shadow-sm">
+            <div className="flex items-center gap-1">
+              <Button
+                variant={viewMode === 'grid' ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => setViewMode('grid')}
+                className={viewMode === 'grid' ? 
+                  'bg-gradient-to-r from-amber-500 to-orange-500 text-white' : 
+                  'text-amber-700 hover:bg-amber-50'
+                }
+              >
+                <Eye className="w-4 h-4 mr-1" />
+                User Content
+              </Button>
+              <Button
+                variant={viewMode === 'map' ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => setViewMode('map')}
+                className={viewMode === 'map' ? 
+                  'bg-gradient-to-r from-amber-500 to-orange-500 text-white' : 
+                  'text-amber-700 hover:bg-amber-50'
+                }
+              >
+                <Network className="w-4 h-4 mr-1" />
+                Preview Map
+              </Button>
+            </div>
+          </div>
+
+          {/* Right side - Stats */}
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2 text-sm hidden md:flex">
               <div className="px-3 py-1 bg-amber-100 text-amber-800 rounded-full font-medium">
@@ -2608,35 +2638,7 @@ const Dashboard: React.FC = () => {
             </div>
           )}
           
-          {/* View Mode Toggle */}
-          <div className="flex items-center justify-center mb-6">
-            <div className="flex items-center bg-white border border-amber-200 rounded-lg p-1">
-              <Button
-                variant={viewMode === 'grid' ? 'default' : 'ghost'}
-                size="sm"
-                onClick={() => setViewMode('grid')}
-                className={viewMode === 'grid' ? 
-                  'bg-gradient-to-r from-amber-500 to-orange-500 text-white' : 
-                  'text-amber-700 hover:bg-amber-50'
-                }
-              >
-                <Plus className="w-4 h-4 mr-1" />
-                User Content
-              </Button>
-              <Button
-                variant={viewMode === 'map' ? 'default' : 'ghost'}
-                size="sm"
-                onClick={() => setViewMode('map')}
-                className={viewMode === 'map' ? 
-                  'bg-gradient-to-r from-amber-500 to-orange-500 text-white' : 
-                  'text-amber-700 hover:bg-amber-50'
-                }
-              >
-                <Network className="w-4 h-4 mr-1" />
-                Preview Map
-              </Button>
-            </div>
-          </div>
+
 
           {/* Content based on view mode */}
           {viewMode === 'grid' ? (
