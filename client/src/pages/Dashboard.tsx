@@ -191,11 +191,10 @@ const Dashboard: React.FC = () => {
     let searchDots = dots;
     let searchWheels: Wheel[] = [];
     
-    // If preview mode is enabled, include preview data
-    if (previewMode) {
-      const previewData = generatePreviewData();
-      searchDots = [...dots, ...previewData.previewDots];
-      searchWheels = [...previewData.previewWheels];
+    // If preview mode is enabled, use API preview data
+    if (previewMode && gridData?.data?.wheels) {
+      searchDots = [...dots, ...gridData.data.wheels.flatMap((wheel: any) => wheel.dots || [])];
+      searchWheels = [...gridData.data.wheels];
     }
     
     // Search dots
@@ -1334,13 +1333,12 @@ const Dashboard: React.FC = () => {
       return { previewDots, previewWheels };
     };
 
-    const { previewDots, previewWheels } = generatePreviewData();
+    // Base wheels to display - Real mode shows ONLY user data, Preview mode shows API data
+    const displayWheels = previewMode && gridData?.data?.wheels ? gridData.data.wheels : userWheels;
     
-    // Base wheels to display - Real mode shows ONLY user data, Preview mode shows ONLY demo data
-    const displayWheels = previewMode ? previewWheels : userWheels;
-    
-    // Real mode shows ONLY user data, Preview mode shows ONLY demo data
-    let baseDotsToDisplay = previewMode ? previewDots : actualDots;
+    // Real mode shows ONLY user data, Preview mode shows API data
+    let baseDotsToDisplay = previewMode && gridData?.data?.wheels ? 
+      gridData.data.wheels.flatMap((wheel: any) => wheel.dots || []) : actualDots;
     
     // Apply recent filter if enabled (only in real mode)
     if (showingRecentFilter && !previewMode) {
@@ -2380,13 +2378,13 @@ const Dashboard: React.FC = () => {
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2 text-sm hidden md:flex">
               <div className="px-3 py-1 bg-amber-100 text-amber-800 rounded-full font-medium">
-                Total Dots: {previewMode ? 27 : dots.length}
+                Total Dots: {previewMode ? (gridData?.data?.totalDots || 0) : dots.length}
               </div>
               <div className="px-3 py-1 bg-orange-100 text-orange-800 rounded-full font-medium">
-                Total Wheels: {previewMode ? 4 : wheels.filter(w => w.chakraId !== null && w.chakraId !== undefined).length}
+                Total Wheels: {previewMode ? (gridData?.data?.totalWheels || 0) : userWheels.filter(w => w.chakraId !== null && w.chakraId !== undefined).length}
               </div>
               <div className="px-3 py-1 bg-amber-100 text-amber-800 rounded-full font-medium">
-                Total Chakras: {previewMode ? 1 : wheels.filter(w => w.chakraId === null || w.chakraId === undefined).length}
+                Total Chakras: {previewMode ? (gridData?.data?.totalChakras || 0) : userWheels.filter(w => w.chakraId === null || w.chakraId === undefined).length}
               </div>
             </div>
           </div>
