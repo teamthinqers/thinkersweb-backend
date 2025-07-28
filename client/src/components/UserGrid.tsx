@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, Plus, Eye, Settings, RotateCcw } from 'lucide-react';
+import { Loader2, Plus, Eye, Settings, RotateCcw, Mic, Type } from 'lucide-react';
 import UserContentCreation from './UserContentCreation';
 // Types will be inferred from API responses
 
@@ -123,157 +123,184 @@ const UserGrid: React.FC<UserGridProps> = ({ userId, mode }) => {
   if (mode === 'preview') {
     const { previewDots, previewWheels, previewChakras } = generatePreviewData();
     
+    // Convert preview data to format compatible with grid visualization
+    const displayDots = previewDots.map((dot: any, index: number) => ({
+      ...dot,
+      id: dot.id,
+      oneWordSummary: dot.summary.split(' ').slice(0, 3).join(' '),
+      timestamp: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000),
+      wheelId: dot.wheel.name === 'GTM Strategy' ? 'preview-wheel-1' :
+               dot.wheel.name === 'Leadership Development' ? 'preview-wheel-2' :
+               dot.wheel.name === 'Product Innovation' ? 'preview-wheel-3' :
+               null
+    }));
+
+    const displayWheels = [...previewWheels, ...previewChakras].map((item: any) => ({
+      ...item,
+      position: item.id === 'preview-chakra-1' ? { x: 500, y: 300 } :
+                item.id === 'preview-wheel-1' ? { x: 300, y: 200 } :
+                item.id === 'preview-wheel-2' ? { x: 700, y: 200 } :
+                { x: 500, y: 150 }
+    }));
+
     return (
-      <div className="space-y-6">
+      <div className="relative bg-gradient-to-br from-amber-50/30 to-orange-50/30 rounded-xl border-2 border-amber-200 shadow-lg overflow-hidden min-h-[600px]">
         {/* Preview Header */}
-        <div className="text-center py-4">
-          <h2 className="text-2xl font-bold text-amber-800 mb-2">DotSpark Preview</h2>
-          <p className="text-gray-600">
-            Demonstration of how your thoughts organize into Dots, Wheels, and Chakras
-          </p>
+        <div className="absolute top-4 left-4 z-10">
+          <Badge className="bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-sm font-medium">
+            Preview Mode - Sample Data
+          </Badge>
         </div>
 
-        {/* Chakras Section */}
-        <div>
-          <h3 className="text-lg font-semibold text-amber-900 mb-4 flex items-center">
-            <Settings className="w-5 h-5 mr-2" />
-            Sample Chakras ({previewChakras.length})
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {previewChakras.map((chakra) => (
-              <Card key={chakra.id} className="hover:shadow-lg transition-shadow border-amber-200">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-amber-900 text-base">{chakra.name}</CardTitle>
-                  <p className="text-sm text-gray-600">{chakra.heading}</p>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-gray-700 mb-2">{chakra.purpose}</p>
-                  <Badge variant="outline" className="text-xs">
-                    {chakra.timeline}
-                  </Badge>
-                  <div className="mt-3 flex justify-between items-center">
-                    <Badge className="bg-amber-100 text-amber-800">
-                      {chakra.category}
-                    </Badge>
-                    <Badge variant="secondary" className="text-xs">
-                      Preview
-                    </Badge>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
+        {/* Interactive Grid Visualization */}
+        <div 
+          className="relative w-full h-full cursor-move select-none"
+          style={{ 
+            minHeight: '600px',
+            backgroundImage: 'radial-gradient(circle at 25% 25%, rgba(251, 191, 36, 0.1) 0%, transparent 50%), radial-gradient(circle at 75% 75%, rgba(249, 115, 22, 0.1) 0%, transparent 50%)'
+          }}
+        >
+          {/* Render Dots */}
+          {displayDots.map((dot: any, index: number) => {
+            let x, y;
+            
+            // Position dots based on their wheel assignment
+            if (dot.wheelId === 'preview-wheel-1') {
+              x = 300 + Math.cos(index * 2.1) * 50;
+              y = 200 + Math.sin(index * 2.1) * 50;
+            } else if (dot.wheelId === 'preview-wheel-2') {
+              x = 700 + Math.cos(index * 2.1) * 50;
+              y = 200 + Math.sin(index * 2.1) * 50;
+            } else if (dot.wheelId === 'preview-wheel-3') {
+              x = 500 + Math.cos(index * 2.1) * 50;
+              y = 150 + Math.sin(index * 2.1) * 50;
+            } else {
+              x = 200 + (index * 150) % 600;
+              y = 400 + Math.floor(index / 4) * 80;
+            }
 
-        {/* Wheels Section */}
-        <div>
-          <h3 className="text-lg font-semibold text-orange-800 mb-4 flex items-center">
-            <RotateCcw className="w-5 h-5 mr-2" />
-            Sample Wheels ({previewWheels.length})
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {previewWheels.map((wheel) => (
-              <Card key={wheel.id} className="hover:shadow-lg transition-shadow border-orange-200">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-orange-800 text-base">{wheel.name}</CardTitle>
-                  <p className="text-sm text-gray-600">{wheel.heading}</p>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-gray-700 mb-2">{wheel.goals}</p>
-                  <Badge variant="outline" className="text-xs">
-                    {wheel.timeline}
-                  </Badge>
-                  <div className="mt-3 flex justify-between items-center">
-                    <Badge className="bg-orange-100 text-orange-800">
-                      {wheel.category}
-                    </Badge>
-                    <Badge variant="secondary" className="text-xs">
-                      Preview
-                    </Badge>
+            return (
+              <div key={dot.id} className="absolute">
+                <div
+                  className="w-12 h-12 rounded-full cursor-pointer transition-all duration-300 hover:scale-125 hover:shadow-lg group"
+                  style={{
+                    left: `${x}px`,
+                    top: `${y}px`,
+                    background: 'linear-gradient(135deg, #F59E0B, #D97706)',
+                    pointerEvents: 'auto'
+                  }}
+                >
+                  {/* Pulse animation for voice dots */}
+                  {dot.sourceType === 'voice' && (
+                    <div className="absolute inset-0 rounded-full bg-amber-400 opacity-50 animate-ping" />
+                  )}
+                  
+                  {/* Dot content */}
+                  <div className="relative w-full h-full rounded-full flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-full bg-white/20 backdrop-blur flex items-center justify-center">
+                      {dot.sourceType === 'voice' ? (
+                        <Mic className="w-4 h-4 text-white" />
+                      ) : (
+                        <Type className="w-4 h-4 text-white" />
+                      )}
+                    </div>
                   </div>
-                  <div className="mt-2">
-                    <Badge variant="secondary" className="text-xs">
-                      {wheel.dots.length} dots
-                    </Badge>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
+                </div>
+              </div>
+            );
+          })}
 
-        {/* Dots Section */}
-        <div>
-          <h3 className="text-lg font-semibold text-amber-700 mb-4 flex items-center">
-            <div className="w-5 h-5 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 mr-2"></div>
-            Sample Dots ({previewDots.length})
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {previewDots.map((dot: any) => (
-              <Card key={dot.id} className="hover:shadow-lg transition-shadow border-amber-100">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-amber-800 text-sm leading-relaxed">
-                    {dot.summary}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-xs text-gray-600 mb-2">{dot.anchor}</p>
-                  <div className="flex items-center justify-between">
+          {/* Render Wheels */}
+          {displayWheels.map((wheel: any) => {
+            const isChakra = wheel.chakraId === null;
+            const wheelSize = isChakra ? 300 : 150;
+            
+            return (
+              <div key={wheel.id} className="absolute">
+                {/* Wheel boundary */}
+                <div
+                  className="absolute rounded-full border-2 border-dashed transition-all duration-300 hover:border-solid"
+                  style={{
+                    left: `${wheel.position.x - wheelSize/2}px`,
+                    top: `${wheel.position.y - wheelSize/2}px`,
+                    width: `${wheelSize}px`,
+                    height: `${wheelSize}px`,
+                    borderColor: isChakra ? '#B45309' : '#EA580C',
+                    backgroundColor: isChakra ? 'rgba(180, 83, 9, 0.05)' : 'rgba(234, 88, 12, 0.05)'
+                  }}
+                >
+                  {/* Chakra energy effects */}
+                  {isChakra && (
+                    <>
+                      <div className="absolute inset-2 rounded-full border border-amber-300 opacity-60 animate-spin" style={{ animationDuration: '20s' }} />
+                      <div className="absolute inset-4 rounded-full border border-amber-400 opacity-40 animate-pulse" />
+                      <div className="absolute inset-6 rounded-full bg-gradient-to-r from-amber-400/20 to-orange-400/20" />
+                    </>
+                  )}
+                </div>
+
+                {/* Wheel label */}
+                <div
+                  className="absolute text-center cursor-pointer hover:scale-105 transition-transform z-10"
+                  style={{
+                    left: `${wheel.position.x - 80}px`,
+                    top: `${wheel.position.y - (isChakra ? 180 : 100)}px`,
+                    width: '160px'
+                  }}
+                >
+                  <div className="bg-white/95 backdrop-blur rounded-lg px-3 py-2 shadow-lg border border-amber-200">
                     <Badge 
-                      variant="outline" 
-                      className="text-xs bg-gradient-to-r from-purple-50 to-pink-50 text-purple-700"
-                    >
-                      {dot.pulse}
-                    </Badge>
-                    <Badge variant="secondary" className="text-xs">
-                      Preview
-                    </Badge>
-                  </div>
-                  <div className="mt-2 flex items-center gap-2">
-                    <Badge 
-                      variant="secondary" 
-                      className={`text-xs ${
-                        dot.sourceType === 'voice' 
-                          ? 'bg-blue-50 text-blue-700' 
-                          : 'bg-green-50 text-green-700'
+                      className={`text-xs mb-1 ${
+                        isChakra ? 'bg-amber-200 text-amber-900' : 'bg-orange-100 text-orange-800'
                       }`}
                     >
-                      {dot.sourceType}
+                      {isChakra ? 'CHAKRA' : 'WHEEL'}
                     </Badge>
-                    <Badge 
-                      variant="secondary" 
-                      className={`text-xs ${
-                        dot.captureMode === 'ai' 
-                          ? 'bg-purple-50 text-purple-700' 
-                          : 'bg-amber-50 text-amber-700'
-                      }`}
-                    >
-                      {dot.captureMode}
-                    </Badge>
+                    <h4 className={`font-bold text-sm ${
+                      isChakra ? 'text-amber-900' : 'text-orange-800'
+                    }`}>
+                      {wheel.name}
+                    </h4>
+                    <p className="text-xs text-gray-600 mt-1">
+                      {wheel.timeline}
+                    </p>
                   </div>
-                  <div className="mt-2">
-                    <Badge variant="outline" className="text-xs">
-                      in {dot.wheel.name}
-                    </Badge>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                </div>
+              </div>
+            );
+          })}
+
+          {/* Connection lines between wheels and chakras */}
+          {displayWheels.filter(w => w.chakraId).map((wheel: any) => {
+            const chakra = displayWheels.find(c => c.id === wheel.chakraId);
+            if (!chakra) return null;
+
+            return (
+              <svg key={`line-${wheel.id}`} className="absolute inset-0 pointer-events-none" style={{ zIndex: 1 }}>
+                <line
+                  x1={wheel.position.x}
+                  y1={wheel.position.y}
+                  x2={chakra.position.x}
+                  y2={chakra.position.y}
+                  stroke="#F59E0B"
+                  strokeWidth="2"
+                  strokeDasharray="5,5"
+                  opacity="0.6"
+                />
+              </svg>
+            );
+          })}
         </div>
 
-        {/* Call to Action */}
-        <div className="text-center py-8 bg-gradient-to-r from-amber-50 to-orange-50 rounded-lg border border-amber-200">
-          <h3 className="text-xl font-semibold text-amber-800 mb-2">Ready to Create Your Own?</h3>
-          <p className="text-gray-600 mb-4">
-            Sign in and activate DotSpark to start organizing your thoughts with our AI-powered system
-          </p>
+        {/* Bottom CTA */}
+        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-10">
           <Button 
             onClick={() => window.location.href = '/auth'}
-            className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
+            className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 shadow-lg"
+            size="lg"
           >
             <Plus className="w-4 h-4 mr-2" />
-            Get Started
+            Create Your Own Grid
           </Button>
         </div>
       </div>
