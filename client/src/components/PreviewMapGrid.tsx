@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { RotateCcw, Maximize, Minimize, Mic, Type, ZoomIn, ZoomOut, X } from "lucide-react";
+import { RotateCcw, Maximize, Minimize, Mic, Type, ZoomIn, ZoomOut } from "lucide-react";
 
 // Same interfaces as Dashboard
 interface Dot {
@@ -58,71 +58,6 @@ export const PreviewMapGrid: React.FC<PreviewMapGridProps> = ({
   const [hoveredDot, setHoveredDot] = useState<Dot | null>(null);
   const [hoveredWheel, setHoveredWheel] = useState<Wheel | null>(null);
   const gridContainerRef = useRef<HTMLDivElement>(null);
-  
-  // Mobile double-click detection states
-  const [lastClickTime, setLastClickTime] = useState<number>(0);
-  const [lastClickedElement, setLastClickedElement] = useState<string | null>(null);
-  const [clickTimeout, setClickTimeout] = useState<NodeJS.Timeout | null>(null);
-  
-  // Mobile double-click detection helper
-  const handleMobileClick = (elementId: string, onSingleClick: () => void, onDoubleClick: () => void) => {
-    const isMobile = window.innerWidth < 768;
-    console.log('PreviewMapGrid handleMobileClick:', { elementId, isMobile, windowWidth: window.innerWidth });
-    
-    if (!isMobile) {
-      // Desktop behavior - direct full view
-      console.log('Desktop detected - executing double-click action immediately');
-      onDoubleClick();
-      return;
-    }
-    
-    const now = Date.now();
-    const isDoubleClick = 
-      lastClickedElement === elementId && 
-      now - lastClickTime < 300; // 300ms double-click threshold
-    
-    console.log('Preview mobile click detection:', { 
-      lastClickedElement, 
-      elementId, 
-      lastClickTime, 
-      now, 
-      timeDiff: now - lastClickTime, 
-      isDoubleClick 
-    });
-    
-    if (isDoubleClick) {
-      // Clear any pending timeout
-      if (clickTimeout) {
-        clearTimeout(clickTimeout);
-        setClickTimeout(null);
-      }
-      // Execute double-click action (flashcard)
-      console.log('Preview double-click detected - showing flashcard');
-      onDoubleClick();
-      // Reset state
-      setLastClickTime(0);
-      setLastClickedElement(null);
-    } else {
-      // First click - set timer for single click action
-      console.log('Preview first click detected - waiting for potential second click');
-      setLastClickTime(now);
-      setLastClickedElement(elementId);
-      
-      // Clear any existing timeout
-      if (clickTimeout) {
-        clearTimeout(clickTimeout);
-      }
-      
-      // Set timeout for single click (do nothing on mobile for first click)
-      const timeout = setTimeout(() => {
-        console.log('Preview single click timeout - no second click detected');
-        setLastClickTime(0);
-        setLastClickedElement(null);
-        setClickTimeout(null);
-      }, 300);
-      setClickTimeout(timeout);
-    }
-  };
 
   // Fetch preview data
   const { data: previewDots = [], isLoading: dotsLoading } = useQuery({
@@ -413,50 +348,14 @@ export const PreviewMapGrid: React.FC<PreviewMapGridProps> = ({
                   onClick={(e) => {
                     e.stopPropagation();
                     e.preventDefault();
-                    
-                    const isMobile = window.innerWidth < 768;
-                    
-                    if (isMobile) {
-                      // Mobile behavior - use double-click detection
-                      handleMobileClick(
-                        `preview-dot-${dot.id}`,
-                        () => {
-                          // Single click on mobile - do nothing
-                        },
-                        () => {
-                          // Double-click on mobile shows compact flashcard next to dot
-                          setHoveredDot(dot);
-                        }
-                      );
-                    } else {
-                      // Desktop behavior - show flashcard on hover, full view on click
-                      setViewFlashCard(dot);
-                    }
+                    setViewFullDot(dot);
                     setHoveredDot(null);
                   }}
                   onMouseDown={(e) => e.stopPropagation()}
                   onTouchStart={(e) => {
                     e.stopPropagation();
                     e.preventDefault();
-                    
-                    const isMobile = window.innerWidth < 768;
-                    
-                    if (isMobile) {
-                      // Mobile touch behavior - use double-touch detection
-                      handleMobileClick(
-                        `preview-dot-touch-${dot.id}`,
-                        () => {
-                          // Single touch on mobile - do nothing
-                        },
-                        () => {
-                          // Double-touch shows compact flashcard next to dot
-                          setHoveredDot(dot);
-                        }
-                      );
-                    } else {
-                      // Desktop touch behavior - show flashcard
-                      setViewFlashCard(dot);
-                    }
+                    setViewFullDot(dot);
                     setHoveredDot(null);
                   }}
                   onTouchEnd={(e) => {
@@ -505,7 +404,7 @@ export const PreviewMapGrid: React.FC<PreviewMapGridProps> = ({
             );
           })}
           
-          {/* Dot Hover Flashcards for Desktop */}
+          {/* Dot Flashcards - Rendered separately to overlay everything */}
           {displayDots.map((dot: any, index: number) => {
             // Use the exact same positioning logic as the actual dots for consistency
             let x, y;
@@ -553,46 +452,35 @@ export const PreviewMapGrid: React.FC<PreviewMapGridProps> = ({
             const dotPosition = { x, y };
             
             return (
-              <div key={`dot-hover-flashcard-${dot.id}`}>
-                {/* Dot Hover Flash Card - positioned to overlay everything */}
+              <div key={`dot-flashcard-${dot.id}`}>
+                {/* Dot Flash Card - positioned to overlay everything */}
                 {hoveredDot?.id === dot.id && (
                   <div 
                     className="absolute bg-white/95 backdrop-blur border-2 border-amber-200 rounded-lg p-3 shadow-2xl w-72 cursor-pointer"
                     style={{
-                      left: `${dotPosition.x + 40}px`, // Closer to dot
-                      top: `${Math.max(10, dotPosition.y - 20)}px`, // Closer to dot
+                      left: `${dotPosition.x + 40}px`, // Closer to dot (reduced from 70px to 40px)
+                      top: `${Math.max(10, dotPosition.y - 20)}px`, // Closer to dot (reduced from 60px to 20px)
                       maxWidth: '320px',
-                      zIndex: 999999, // Higher than wheel flashcards to display over everything
+                      zIndex: 999999, // Higher than wheel flashcards (999998) to display over everything
                       boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 4px 6px -1px rgba(0, 0, 0, 0.1)',
                       pointerEvents: 'auto'
                     }}
                     onClick={(e) => {
                       e.stopPropagation();
-                      // Don't auto-open full view, let user click "View Full" button
+                      setViewFullDot(dot);
+                      setHoveredDot(null);
                     }}
                   >
                     <div className="space-y-2">
-                      {/* Header with close button */}
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <Badge className={`text-xs ${
-                            dot.sourceType === 'voice' ? 'bg-amber-100 text-amber-800' : 'bg-orange-100 text-orange-800'
-                          }`}>
-                            {dot.sourceType}
-                          </Badge>
-                          <Badge className="bg-gray-100 text-gray-700 text-xs">
-                            {dot.pulse}
-                          </Badge>
-                        </div>
-                        <button 
-                          className="text-gray-400 hover:text-gray-600 p-1"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setHoveredDot(null);
-                          }}
-                        >
-                          <X className="w-3 h-3" />
-                        </button>
+                        <Badge className={`text-xs ${
+                          dot.sourceType === 'voice' ? 'bg-amber-100 text-amber-800' : 'bg-orange-100 text-orange-800'
+                        }`}>
+                          {dot.sourceType}
+                        </Badge>
+                        <Badge className="bg-gray-100 text-gray-700 text-xs">
+                          {dot.pulse}
+                        </Badge>
                       </div>
                       <h4 className="font-bold text-lg text-amber-800 border-b border-amber-200 pb-2 mb-3">
                         {dot.oneWordSummary}
@@ -600,16 +488,9 @@ export const PreviewMapGrid: React.FC<PreviewMapGridProps> = ({
                       <p className="text-xs text-gray-600 line-clamp-3">
                         {dot.summary}
                       </p>
-                      <button 
-                        className="w-full mt-2 px-3 py-1.5 bg-amber-600 text-white text-xs font-medium rounded hover:bg-amber-700 transition-colors"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setViewFlashCard(dot);
-                          setHoveredDot(null);
-                        }}
-                      >
-                        View Full
-                      </button>
+                      <div className="text-xs text-amber-600 mt-2 font-medium">
+                        Click for full view
+                      </div>
                     </div>
                   </div>
                 )}
@@ -803,7 +684,6 @@ export const PreviewMapGrid: React.FC<PreviewMapGridProps> = ({
                   data-wheel-label="true"
                   onClick={(e) => {
                     e.stopPropagation();
-                    // For preview mode, always show full view immediately regardless of mobile
                     setViewFullWheel(wheel);
                   }}
                   onMouseEnter={(e) => {
