@@ -348,14 +348,14 @@ export const PreviewMapGrid: React.FC<PreviewMapGridProps> = ({
                   onClick={(e) => {
                     e.stopPropagation();
                     e.preventDefault();
-                    setViewFlashCard(dot);
+                    setViewFullDot(dot);
                     setHoveredDot(null);
                   }}
                   onMouseDown={(e) => e.stopPropagation()}
                   onTouchStart={(e) => {
                     e.stopPropagation();
                     e.preventDefault();
-                    setViewFlashCard(dot);
+                    setViewFullDot(dot);
                     setHoveredDot(null);
                   }}
                   onTouchEnd={(e) => {
@@ -430,8 +430,6 @@ export const PreviewMapGrid: React.FC<PreviewMapGridProps> = ({
                     }}
                     onClick={(e) => {
                       e.stopPropagation();
-                      console.log('Dot flashcard clicked:', dot);
-                      alert('Dot flashcard clicked! Check if modal opens.');
                       setViewFullDot(dot);
                       setHoveredDot(null);
                     }}
