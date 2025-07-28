@@ -140,6 +140,13 @@ DotSpark is a full-stack web application that serves as a personalized learning 
 ## Changelog
 ```
 Changelog:
+- January 28, 2025. COMPLETED static counting system with corrected preview mode values:
+  * Fixed React hooks error caused by complex authentication-dependent counting logic during dashboard rendering
+  * Implemented static counts for preview mode: 26 dots, 5 wheels, 2 chakras (corrected from previous documentation)
+  * Removed problematic dynamic counting that was causing "Cannot read properties of null (reading 'useState')" errors
+  * Simplified counting system with inline calculations for better performance and stability
+  * Real mode uses dynamic counting for actual user data, preview mode uses static demonstration values
+  * System now loads without React hooks violations and provides stable user experience
 - January 26, 2025. COMPLETED authentication-gated real mode with proper user isolation:
   * REAL MODE (default): Shows ONLY authenticated user's personal dots, wheels, chakras from database
   * PREVIEW MODE (toggle): Shows static demonstrative examples for visualization purposes only

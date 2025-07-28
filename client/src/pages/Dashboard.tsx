@@ -2387,10 +2387,10 @@ const Dashboard: React.FC = () => {
                 Total Dots: {previewMode ? 26 : dots.length}
               </div>
               <div className="px-3 py-1 bg-orange-100 text-orange-800 rounded-full font-medium">
-                Total Wheels: {previewMode ? 3 : userWheels.filter((w: any) => w.chakraId !== null && w.chakraId !== undefined).length}
+                Total Wheels: {previewMode ? 5 : userWheels.filter((w: any) => w.chakraId !== null && w.chakraId !== undefined).length}
               </div>
               <div className="px-3 py-1 bg-amber-100 text-amber-800 rounded-full font-medium">
-                Total Chakras: {previewMode ? 1 : userWheels.filter((w: any) => w.chakraId === null || w.chakraId === undefined).length}
+                Total Chakras: {previewMode ? 2 : userWheels.filter((w: any) => w.chakraId === null || w.chakraId === undefined).length}
               </div>
             </div>
           </div>
