@@ -1810,7 +1810,7 @@ const Dashboard: React.FC = () => {
                 <div key={dot.id} className="relative">
                   {/* Dot */}
                   <div
-                    className="absolute w-12 h-12 rounded-full cursor-pointer transition-all duration-300 hover:scale-125 hover:shadow-lg group dot-element"
+                    className="absolute w-12 h-12 rounded-full cursor-pointer transition-all duration-300 hover:scale-125 hover:shadow-lg group dot-element z-[5]"
                     style={{
                       left: `${x}px`,
                       top: `${y}px`,
@@ -1872,14 +1872,15 @@ const Dashboard: React.FC = () => {
                   {/* Summary hover card - different positioning for PWA vs Browser */}
                   {hoveredDot?.id === dot.id && (
                     <div 
-                      className="absolute bg-white border-2 border-amber-200 rounded-lg p-3 shadow-xl z-[9999] w-64 cursor-pointer"
+                      className="absolute bg-white/95 backdrop-blur border-2 border-amber-200 rounded-lg p-3 shadow-2xl z-[99999] w-64 cursor-pointer"
                       style={{
                         // PWA: Position relative to dot to scroll with grid
                         // Browser: Position in grid coordinates for mouse hover
                         left: isPWA ? '60px' : `${x + 60}px`,
                         top: isPWA ? '-20px' : `${Math.max(0, y - 20)}px`,
                         maxWidth: '280px',
-                        zIndex: 9999
+                        zIndex: 99999,
+                        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.05)'
                       }}
                       onClick={(e) => {
                         e.stopPropagation();
@@ -1982,12 +1983,14 @@ const Dashboard: React.FC = () => {
                   {/* Wheel Flash Card - positioned exactly like dot flashcards relative to label */}
                   {hoveredWheel?.id === wheel.id && (
                     <div 
-                      className="absolute bg-white border-2 border-amber-200 rounded-lg p-3 shadow-xl z-[9999] w-64 cursor-pointer"
+                      className="absolute bg-white border-2 border-amber-200 rounded-lg p-3 shadow-2xl z-[99999] w-64 cursor-pointer"
                       style={{
                         // Position exactly like dot flashcards, relative to actual label position
                         left: isPWA ? '60px' : `${labelX + 60}px`,
                         top: isPWA ? '-20px' : `${Math.max(0, labelY - 20)}px`,
-                        maxWidth: '280px'
+                        maxWidth: '280px',
+                        zIndex: 99999,
+                        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.05)'
                       }}
                       onClick={(e) => {
                         e.stopPropagation();
@@ -2101,7 +2104,7 @@ const Dashboard: React.FC = () => {
               return (
                 <div
                   key={wheel.id}
-                  className="absolute pointer-events-none"
+                  className="absolute pointer-events-none z-[1]"
                   style={{
                     left: `${wheelPosition.x - wheelRadius}px`,
                     top: `${wheelPosition.y - wheelRadius}px`,
@@ -2155,7 +2158,7 @@ const Dashboard: React.FC = () => {
                   
                   {/* Chakra label and enhancement */}
                   {isChakra && (
-                    <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 pointer-events-auto z-10">
+                    <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 pointer-events-auto z-[15]">
                       <div 
                         className="bg-gradient-to-r from-amber-600 to-orange-600 text-white px-4 py-2 rounded-full shadow-lg border-2 border-amber-400"
                         style={{
@@ -2172,7 +2175,7 @@ const Dashboard: React.FC = () => {
                   
                   {/* Blinking Spark Symbol on top of wheel */}
                   <div 
-                    className={`absolute left-1/2 transform -translate-x-1/2 flex flex-col items-center z-10 ${
+                    className={`absolute left-1/2 transform -translate-x-1/2 flex flex-col items-center z-[15] ${
                       isChakra ? 'top-[-95px]' : 'top-[-75px]'
                     }`}
                   >
@@ -2198,13 +2201,13 @@ const Dashboard: React.FC = () => {
                     {/* Wheel label */}
                     <div 
                       data-wheel-label
-                      className={`relative font-bold rounded-full text-white shadow-lg cursor-pointer hover:shadow-xl transition-all duration-200 hover:scale-105 pointer-events-auto text-center whitespace-nowrap z-10 ${
+                      className={`relative font-bold rounded-full text-white shadow-lg cursor-pointer hover:shadow-xl transition-all duration-200 hover:scale-105 pointer-events-auto text-center whitespace-nowrap z-[15] ${
                         isChakra ? 'text-base px-4 py-2' : 'text-sm px-3 py-1'
                       }`}
                       style={{ 
                         backgroundColor: wheel.color,
                         position: 'relative',
-                        zIndex: 10
+                        zIndex: 15
                       }}
                       onMouseEnter={(e) => {
                         e.stopPropagation();
