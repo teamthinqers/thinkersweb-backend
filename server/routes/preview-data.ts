@@ -1,28 +1,30 @@
-import express from 'express';
+import { Request, Response } from 'express';
 import { db } from '@db';
-import { previewDots, previewWheels } from '@shared/schema.ts';
+import { dots, wheels, previewDots, previewWheels } from '@shared/schema';
 import { eq } from 'drizzle-orm';
 
-const router = express.Router();
-
-// Get all preview data for the grid
-router.get('/grid/positions', async (req, res) => {
+export async function saveCurrentDataAsPreview(req: Request, res: Response) {
   try {
-    // Fetch all preview wheels with their dots
-    const wheels = await db.query.previewWheels.findMany({
-      with: {
-        dots: true,
-        childWheels: {
-          with: {
-            dots: true
-          }
-        }
-      },
+    console.log('Starting to save current data as preview data...');
+
+    // Clear existing preview data
+    await db.delete(previewDots);
+    await db.delete(previewWheels);
+
+    // Get all current wheels and dots
+    const currentWheels = await db.query.wheels.findMany({
+      orderBy: (wheels, { asc }) => [asc(wheels.id)],
     });
 
-    // Transform data to match the expected format
-    const transformedWheels = wheels.map(wheel => ({
-      id: wheel.id,
+    const currentDots = await db.query.dots.findMany({
+      orderBy: (dots, { asc }) => [asc(dots.id)],
+    });
+
+    console.log(`Found ${currentWheels.length} wheels and ${currentDots.length} dots to convert to preview data`);
+
+    // Convert wheels to preview wheels
+    const previewWheelsData = currentWheels.map((wheel) => ({
+      id: `preview-wheel-${wheel.id}`,
       name: wheel.name,
       heading: wheel.heading,
       goals: wheel.goals,
@@ -30,170 +32,124 @@ router.get('/grid/positions', async (req, res) => {
       timeline: wheel.timeline,
       category: wheel.category,
       color: wheel.color,
-      chakraId: wheel.chakraId,
-      position: {
-        x: wheel.positionX,
-        y: wheel.positionY
-      },
+      chakraId: wheel.chakraId ? `preview-wheel-${wheel.chakraId}` : null,
+      positionX: wheel.positionX,
+      positionY: wheel.positionY,
       radius: wheel.radius,
-      dots: wheel.dots.map(dot => ({
-        id: dot.id,
-        oneWordSummary: dot.oneWordSummary,
-        summary: dot.summary,
-        anchor: dot.anchor,
-        pulse: dot.pulse,
-        wheelId: dot.wheelId,
-        sourceType: dot.sourceType,
-        captureMode: dot.captureMode,
-        timestamp: dot.createdAt,
-        voiceData: null
-      })),
-      connections: [], // Preview data doesn't need connections
-      createdAt: wheel.createdAt
     }));
 
-    // Separate chakras from regular wheels
-    const chakras = transformedWheels.filter(w => !w.chakraId);
-    const regularWheels = transformedWheels.filter(w => w.chakraId);
+    // Convert dots to preview dots
+    const previewDotsData = currentDots.map((dot) => ({
+      id: `preview-dot-${dot.id}`,
+      summary: dot.summary,
+      anchor: dot.anchor,
+      pulse: dot.pulse,
+      wheelId: dot.wheelId ? `preview-wheel-${dot.wheelId}` : null,
+      sourceType: dot.sourceType,
+      captureMode: dot.captureMode,
+      positionX: dot.positionX,
+      positionY: dot.positionY,
+    }));
 
-    // Calculate total counts
-    const totalDots = transformedWheels.reduce((sum, wheel) => sum + wheel.dots.length, 0);
-    const totalWheels = regularWheels.length;
-    const totalChakras = chakras.length;
+    // Insert preview wheels first (for foreign key constraints)
+    if (previewWheelsData.length > 0) {
+      await db.insert(previewWheels).values(previewWheelsData);
+      console.log(`Inserted ${previewWheelsData.length} preview wheels`);
+    }
+
+    // Insert preview dots
+    if (previewDotsData.length > 0) {
+      await db.insert(previewDots).values(previewDotsData);
+      console.log(`Inserted ${previewDotsData.length} preview dots`);
+    }
+
+    // Get counts for response
+    const chakraCount = currentWheels.filter(w => w.chakraId === null).length;
+    const wheelCount = currentWheels.filter(w => w.chakraId !== null).length;
+    const dotCount = currentDots.length;
+
+    console.log('Preview data save completed successfully');
+
+    res.json({
+      success: true,
+      message: 'Current data successfully saved as preview data',
+      saved: {
+        chakras: chakraCount,
+        wheels: wheelCount,
+        dots: dotCount,
+        total: chakraCount + wheelCount + dotCount
+      }
+    });
+
+  } catch (error) {
+    console.error('Error saving current data as preview:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to save current data as preview data',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+}
+
+export async function getPreviewData(req: Request, res: Response) {
+  try {
+    const wheels = await db.query.previewWheels.findMany({
+      with: {
+        dots: true,
+        childWheels: true,
+      },
+      orderBy: (previewWheels, { asc }) => [asc(previewWheels.id)],
+    });
+
+    const dots = await db.query.previewDots.findMany({
+      orderBy: (previewDots, { asc }) => [asc(previewDots.id)],
+    });
+
+    // Separate chakras (no chakraId) and regular wheels (have chakraId)
+    const chakras = wheels.filter(w => w.chakraId === null);
+    const regularWheels = wheels.filter(w => w.chakraId !== null);
 
     res.json({
       success: true,
       data: {
-        wheels: transformedWheels,
         chakras,
-        regularWheels,
-        totalDots,
-        totalWheels,
-        totalChakras,
-        gridPositions: transformedWheels.map(wheel => ({
-          id: wheel.id,
-          position: wheel.position,
-          radius: wheel.radius
-        }))
+        wheels: regularWheels,
+        dots,
+        counts: {
+          chakras: chakras.length,
+          wheels: regularWheels.length,
+          dots: dots.length,
+          total: chakras.length + regularWheels.length + dots.length
+        }
       }
     });
 
   } catch (error) {
-    console.error('Error fetching preview grid data:', error);
+    console.error('Error getting preview data:', error);
     res.status(500).json({
       success: false,
-      error: 'Failed to fetch preview grid data'
+      error: 'Failed to get preview data',
+      details: error instanceof Error ? error.message : 'Unknown error'
     });
   }
-});
+}
 
-// Get preview dots with search functionality
-router.get('/dots/search', async (req, res) => {
+export async function clearPreviewData(req: Request, res: Response) {
   try {
-    const { q } = req.query;
-    const searchTerm = q as string;
-
-    let query = db.query.previewDots.findMany({
-      with: {
-        wheel: true
-      }
-    });
-
-    let dots = await query;
-
-    // Filter by search term if provided
-    if (searchTerm && searchTerm.length > 0) {
-      const searchLower = searchTerm.toLowerCase();
-      dots = dots.filter(dot => 
-        dot.summary.toLowerCase().includes(searchLower) ||
-        dot.anchor.toLowerCase().includes(searchLower) ||
-        dot.pulse.toLowerCase().includes(searchLower) ||
-        dot.oneWordSummary.toLowerCase().includes(searchLower) ||
-        (dot.wheel?.name.toLowerCase().includes(searchLower))
-      );
-    }
-
-    // Transform to expected format
-    const transformedDots = dots.map(dot => ({
-      id: dot.id,
-      oneWordSummary: dot.oneWordSummary,
-      summary: dot.summary,
-      anchor: dot.anchor,
-      pulse: dot.pulse,
-      wheelId: dot.wheelId,
-      sourceType: dot.sourceType,
-      captureMode: dot.captureMode,
-      timestamp: dot.createdAt,
-      voiceData: null,
-      wheel: dot.wheel ? {
-        id: dot.wheel.id,
-        name: dot.wheel.name,
-        category: dot.wheel.category,
-        color: dot.wheel.color
-      } : null
-    }));
+    await db.delete(previewDots);
+    await db.delete(previewWheels);
 
     res.json({
       success: true,
-      data: transformedDots,
-      total: transformedDots.length
+      message: 'Preview data cleared successfully'
     });
 
   } catch (error) {
-    console.error('Error searching preview dots:', error);
+    console.error('Error clearing preview data:', error);
     res.status(500).json({
       success: false,
-      error: 'Failed to search preview dots'
+      error: 'Failed to clear preview data',
+      details: error instanceof Error ? error.message : 'Unknown error'
     });
   }
-});
-
-// Get recent preview dots
-router.get('/dots/recent', async (req, res) => {
-  try {
-    const { limit = 4 } = req.query;
-    const limitNum = parseInt(limit as string, 10);
-
-    const dots = await db.query.previewDots.findMany({
-      limit: limitNum,
-      orderBy: (previewDots, { desc }) => [desc(previewDots.createdAt)],
-      with: {
-        wheel: true
-      }
-    });
-
-    // Transform to expected format
-    const transformedDots = dots.map(dot => ({
-      id: dot.id,
-      oneWordSummary: dot.oneWordSummary,
-      summary: dot.summary,
-      anchor: dot.anchor,
-      pulse: dot.pulse,
-      wheelId: dot.wheelId,
-      sourceType: dot.sourceType,
-      captureMode: dot.captureMode,
-      timestamp: dot.createdAt,
-      voiceData: null,
-      wheel: dot.wheel ? {
-        id: dot.wheel.id,
-        name: dot.wheel.name,
-        category: dot.wheel.category,
-        color: dot.wheel.color
-      } : null
-    }));
-
-    res.json({
-      success: true,
-      data: transformedDots
-    });
-
-  } catch (error) {
-    console.error('Error fetching recent preview dots:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to fetch recent preview dots'
-    });
-  }
-});
-
-export default router;
+}
