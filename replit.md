@@ -140,6 +140,11 @@ DotSpark is a full-stack web application that serves as a personalized learning 
 ## Changelog
 ```
 Changelog:
+- January 28, 2025. CORRECTED floating dot brain icon display logic:
+  * Brain icon with green indication now only appears for users who have activated DotSpark (not just signed-in users)
+  * All non-activated users (signed-in or anonymous) see standard white dot instead of brain icon
+  * Maintains proper visual hierarchy: white dot → brain icon (signed + activated) with green indicator
+  * Ensures brain icon accurately represents DotSpark activation status rather than just authentication status
 - January 28, 2025. FIXED preview mode toggle switching issue by removing automatic preview->real mode logic:
   * Eliminated useEffect that automatically switched preview mode off when user had content
   * Preview toggle now works properly - users can manually switch between real and preview modes

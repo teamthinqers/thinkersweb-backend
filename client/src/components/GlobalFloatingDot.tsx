@@ -343,7 +343,7 @@ export function GlobalFloatingDot() {
         <div className="absolute inset-0 rounded-full bg-orange-400 opacity-30 animate-ping" style={{ animationDelay: '0.5s' }} />
         <div className="absolute inset-0 rounded-full bg-yellow-400 opacity-20 animate-ping" style={{ animationDelay: '1s' }} />
         
-        {/* Main dot with brain icon for signed-in users */}
+        {/* Main dot with brain icon only for DotSpark activated users */}
         <div className="relative w-full h-full rounded-full flex items-center justify-center">
           <div className="w-8 h-8 rounded-full bg-white/20 backdrop-blur flex items-center justify-center">
             {user && isDotSparkActivated ? (
@@ -351,8 +351,6 @@ export function GlobalFloatingDot() {
                 <Brain className="w-4 h-4 text-white" />
                 <div className="absolute -top-1 -right-1 w-2 h-2 bg-green-500 rounded-full" />
               </div>
-            ) : user ? (
-              <Brain className="w-4 h-4 text-white" />
             ) : (
               <div className="w-3 h-3 rounded-full bg-white" />
             )}
