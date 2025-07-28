@@ -53,7 +53,7 @@ export const PreviewMapGrid: React.FC<PreviewMapGridProps> = ({
   const [zoom, setZoom] = useState(0.6);
   const [dragStart, setDragStart] = useState<{ x: number; y: number } | null>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [hoveredDot, setHoveredDot] = useState<(Dot & { x: number; y: number }) | null>(null);
+  const [hoveredDot, setHoveredDot] = useState<Dot | null>(null);
   const [hoveredWheel, setHoveredWheel] = useState<Wheel | null>(null);
   const gridContainerRef = useRef<HTMLDivElement>(null);
 
@@ -362,7 +362,7 @@ export const PreviewMapGrid: React.FC<PreviewMapGridProps> = ({
                   }}
                   onMouseEnter={(e) => {
                     e.stopPropagation(); // Prevent chakra hover
-                    setHoveredDot({ ...dot, x, y });
+                    setHoveredDot(dot);
                     setHoveredWheel(null); // Clear any wheel hover
                   }}
                   onMouseLeave={(e) => {
@@ -397,6 +397,48 @@ export const PreviewMapGrid: React.FC<PreviewMapGridProps> = ({
                     </div>
                   </div>
                 </div>
+                
+                {/* Summary hover card - positioned to overlay everything with maximum z-index */}
+                {hoveredDot?.id === dot.id && (
+                  <div 
+                    className="absolute bg-white/95 backdrop-blur border-2 border-amber-200 rounded-lg p-3 shadow-2xl w-72 cursor-pointer"
+                    style={{
+                      left: `${x + 70}px`, // Well positioned to side of dot
+                      top: `${Math.max(10, y - 60)}px`, // Above dot with margin
+                      maxWidth: '320px',
+                      zIndex: 999999999, // Absolute maximum z-index to display over all other dots
+                      boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                      pointerEvents: 'auto'
+                    }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setViewFlashCard(dot);
+                      setHoveredDot(null);
+                    }}
+                  >
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <Badge className={`text-xs ${
+                          dot.sourceType === 'voice' ? 'bg-amber-100 text-amber-800' : 'bg-orange-100 text-orange-800'
+                        }`}>
+                          {dot.sourceType}
+                        </Badge>
+                        <Badge className="bg-gray-100 text-gray-700 text-xs">
+                          {dot.pulse}
+                        </Badge>
+                      </div>
+                      <h4 className="font-bold text-lg text-amber-800 border-b border-amber-200 pb-2 mb-3">
+                        {dot.oneWordSummary}
+                      </h4>
+                      <p className="text-xs text-gray-600 line-clamp-3">
+                        {dot.summary}
+                      </p>
+                      <div className="text-xs text-amber-600 mt-2 font-medium">
+                        Click for full view
+                      </div>
+                    </div>
+                  </div>
+                )}
 
               </div>
             );
@@ -634,46 +676,7 @@ export const PreviewMapGrid: React.FC<PreviewMapGridProps> = ({
         </Badge>
       </div>
 
-      {/* Dot Flashcard Overlay - Positioned outside grid flow to override everything */}
-      {hoveredDot && (
-        <div 
-          className="absolute bg-white/95 backdrop-blur border-2 border-amber-200 rounded-lg p-3 shadow-2xl w-72 cursor-pointer pointer-events-auto"
-          style={{
-            left: `${Math.max(10, Math.min(window.innerWidth - 320, (hoveredDot.x * zoom) + offset.x + 70))}px`,
-            top: `${Math.max(10, (hoveredDot.y * zoom) + offset.y - 60)}px`,
-            maxWidth: '320px',
-            zIndex: 999999999, // Absolute maximum z-index to override all dots, wheels, and chakras
-            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-          }}
-          onClick={(e) => {
-            e.stopPropagation();
-            setViewFlashCard(hoveredDot);
-            setHoveredDot(null);
-          }}
-        >
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <Badge className={`text-xs ${
-                hoveredDot.sourceType === 'voice' ? 'bg-amber-100 text-amber-800' : 'bg-orange-100 text-orange-800'
-              }`}>
-                {hoveredDot.sourceType}
-              </Badge>
-              <Badge className="bg-gray-100 text-gray-700 text-xs">
-                {hoveredDot.pulse}
-              </Badge>
-            </div>
-            <h4 className="font-bold text-lg text-amber-800 border-b border-amber-200 pb-2 mb-3">
-              {hoveredDot.oneWordSummary}
-            </h4>
-            <p className="text-xs text-gray-600 line-clamp-3">
-              {hoveredDot.summary}
-            </p>
-            <div className="text-xs text-amber-600 mt-2 font-medium">
-              Click for full view
-            </div>
-          </div>
-        </div>
-      )}
+
     </div>
   );
 };
