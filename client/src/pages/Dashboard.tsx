@@ -1369,8 +1369,37 @@ const Dashboard: React.FC = () => {
 
     // Removed auto-switch logic - users can manually toggle between modes
 
-    // Show different states based on authentication and content
-    if (!previewMode && (!user || userWheels.length === 0 && dots.length === 0)) {
+    // Preview mode always shows grid with toggle enabled
+    if (previewMode) {
+      return (
+        <div className="relative bg-gradient-to-br from-amber-50/50 to-orange-50/50 rounded-xl p-4 min-h-[500px] border-2 border-amber-200 shadow-lg overflow-hidden">
+          <div className="absolute top-2 left-2 md:top-4 md:left-4 z-10 flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-3">
+            <span className="bg-amber-100 text-amber-800 px-2 py-1 md:px-3 md:py-1 rounded-full text-xs md:text-sm font-medium">
+              Preview Mode
+            </span>
+            <div className="flex items-center gap-1 md:gap-2 bg-white/90 backdrop-blur rounded-lg px-2 py-1 md:px-3 md:py-2 border-2 border-amber-200">
+              <label className="text-xs md:text-sm font-medium text-amber-800">Preview Mode</label>
+              <button
+                onClick={() => setPreviewMode(!previewMode)}
+                className="relative inline-flex h-4 w-7 md:h-5 md:w-9 items-center rounded-full transition-colors bg-amber-500"
+              >
+                <span className="inline-block h-2 w-2 md:h-3 md:w-3 transform rounded-full bg-white transition-transform translate-x-4 md:translate-x-5" />
+              </button>
+            </div>
+          </div>
+          
+          {/* Always show grid in preview mode */}
+          <div className="pt-16">
+            <UserGrid 
+              userId={user?.id} 
+              mode="preview" 
+            />
+          </div>
+        </div>
+      );
+    }
+
+    if (!user || (userWheels.length === 0 && dots.length === 0)) {
       // Check if user is authenticated
       if (!user) {
         // Show authentication required state

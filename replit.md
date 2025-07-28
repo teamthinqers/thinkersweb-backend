@@ -140,6 +140,12 @@ DotSpark is a full-stack web application that serves as a personalized learning 
 ## Changelog
 ```
 Changelog:
+- January 28, 2025. COMPLETED UI reorganization - moved creation functionality to user content mode, enhanced preview mode:
+  * Moved "Start Creating Your DotSpark" section and creation functionality to user content mode only
+  * Preview mode now always shows grid view with toggle permanently enabled
+  * Enhanced preview mode with demonstration statistics and sample dots display
+  * Preview mode includes call-to-action for user sign-in and creation
+  * Clear separation between demonstration mode (preview) and actual user content creation (real mode)
 - January 28, 2025. FIXED preview mode toggle switching issue by removing automatic preview->real mode logic:
   * Eliminated useEffect that automatically switched preview mode off when user had content
   * Preview toggle now works properly - users can manually switch between real and preview modes
