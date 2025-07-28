@@ -2776,6 +2776,18 @@ const Dashboard: React.FC = () => {
           }}
         />
       )}
+
+      {/* Flash Card Dialog */}
+      {viewFlashCard && (
+        <DotFlashCard 
+          dot={viewFlashCard} 
+          onClose={() => setViewFlashCard(null)}
+          onViewFull={() => {
+            setViewFullDot(viewFlashCard);
+            setViewFlashCard(null);
+          }}
+        />
+      )}
     </div>
   );
 };
