@@ -2347,7 +2347,7 @@ const Dashboard: React.FC = () => {
               <div>
                 <h1 className="text-xl font-bold bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent flex items-center gap-2">
                   <Brain className="w-5 h-5 text-amber-500" />
-                  My Neura
+                  <span className="hidden md:inline">My Neura</span>
                 </h1>
               </div>
             </div>
