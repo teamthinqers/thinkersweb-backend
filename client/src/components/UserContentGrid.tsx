@@ -1,6 +1,7 @@
 import React from 'react';
 import { Brain, Plus, User } from 'lucide-react';
 import UserGrid from './UserGrid';
+import { neuraStorage } from '@/lib/neuraStorage';
 // Using local interfaces that match Dashboard component types
 interface DashboardUser {
   id: number;
@@ -118,9 +119,17 @@ export const UserContentGrid: React.FC<UserContentGridProps> = ({
             <div className="flex flex-col gap-3 max-w-xs mx-auto">
               <button
                 onClick={() => {
-                  // Trigger the floating dot - same as clicking the floating dot
-                  const event = new CustomEvent('triggerFloatingDot');
-                  window.dispatchEvent(event);
+                  // Check if DotSpark is activated
+                  const isDotSparkActivated = neuraStorage.isActivated();
+                  
+                  if (isDotSparkActivated) {
+                    // User has activated DotSpark - trigger floating dot
+                    const event = new CustomEvent('triggerFloatingDot');
+                    window.dispatchEvent(event);
+                  } else {
+                    // User hasn't activated DotSpark - redirect to My Neura activation section
+                    window.location.href = '/my-neura';
+                  }
                 }}
                 className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg hover:scale-105"
               >
