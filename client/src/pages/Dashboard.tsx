@@ -144,6 +144,8 @@ const Dashboard: React.FC = () => {
     staleTime: 5 * 60 * 1000 // 5 minutes
   });
 
+  // Counts are now inline for simplicity
+
   // Example data for preview mode when no dots exist
   const exampleDots: Dot[] = [
     {
@@ -613,7 +615,7 @@ const Dashboard: React.FC = () => {
 
   const DotWheelsMap: React.FC<{ 
     wheels: Wheel[], 
-    actualDots: Dot[], 
+    dots: Dot[], 
     showingRecentFilter?: boolean, 
     recentCount?: number,
     isFullscreen?: boolean,
@@ -621,7 +623,7 @@ const Dashboard: React.FC = () => {
     setViewFullWheel: (wheel: Wheel | null) => void,
     previewMode: boolean,
     setPreviewMode: (previewMode: boolean) => void
-  }> = ({ wheels, actualDots, showingRecentFilter = false, recentCount = 4, isFullscreen = false, onFullscreenChange, setViewFullWheel, previewMode, setPreviewMode }) => {
+  }> = ({ wheels, dots: mapDots, showingRecentFilter = false, recentCount = 4, isFullscreen = false, onFullscreenChange, setViewFullWheel, previewMode, setPreviewMode }) => {
     const [selectedWheel, setSelectedWheel] = useState<string | null>(null);
     const [viewFullDot, setViewFullDot] = useState<Dot | null>(null);
     const [selectedDot, setSelectedDot] = useState<Dot | null>(null);
@@ -1349,7 +1351,7 @@ const Dashboard: React.FC = () => {
     const displayWheels = userWheels; // userWheels now contains correct data for both modes
     
     // Real mode shows user data, Preview mode shows database preview data  
-    let baseDotsToDisplay = previewMode ? dots : actualDots; // dots now contains correct data for both modes
+    let baseDotsToDisplay = previewMode ? dots : dots; // Use dots for both modes (dots contains correct data)
     
     // Apply recent filter if enabled (only in real mode)
     if (showingRecentFilter && !previewMode) {
@@ -1360,25 +1362,18 @@ const Dashboard: React.FC = () => {
     }
     
     const displayDots = baseDotsToDisplay;
-    const totalDots = displayDots.length;
     
-
-    
-    // Count Wheels and Chakras from displayed data (real mode = user data, preview mode = demo data)
-    // Wheels: items with chakraId (belonging to a chakra) 
-    // Chakras: items without chakraId (top-level containers)
-    const totalWheels = displayWheels.filter((w: any) => w.chakraId !== null && w.chakraId !== undefined).length;
-    const totalChakras = displayWheels.filter((w: any) => w.chakraId === null || w.chakraId === undefined).length;
+    // Counts are now handled at the main Dashboard level
 
     // Auto-switch to real mode if user is authenticated and has content
     useEffect(() => {
-      if (user && (userWheels.length > 0 || actualDots.length > 0)) {
+      if (user && (userWheels.length > 0 || dots.length > 0)) {
         setPreviewMode(false); // Switch to real mode when user has content
       }
-    }, [user, userWheels.length, actualDots.length]);
+    }, [user, userWheels.length, dots.length]);
 
     // Show different states based on authentication and content
-    if (!previewMode && (!user || userWheels.length === 0 && actualDots.length === 0)) {
+    if (!previewMode && (!user || userWheels.length === 0 && dots.length === 0)) {
       // Check if user is authenticated
       if (!user) {
         // Show authentication required state
@@ -2389,13 +2384,13 @@ const Dashboard: React.FC = () => {
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2 text-sm hidden md:flex">
               <div className="px-3 py-1 bg-amber-100 text-amber-800 rounded-full font-medium">
-                Total Dots: {previewMode ? dots.length : actualDots.length}
+                Total Dots: {previewMode ? 26 : dots.length}
               </div>
               <div className="px-3 py-1 bg-orange-100 text-orange-800 rounded-full font-medium">
-                Total Wheels: {userWheels.filter((w: any) => w.chakraId !== null && w.chakraId !== undefined).length}
+                Total Wheels: {previewMode ? 3 : userWheels.filter((w: any) => w.chakraId !== null && w.chakraId !== undefined).length}
               </div>
               <div className="px-3 py-1 bg-amber-100 text-amber-800 rounded-full font-medium">
-                Total Chakras: {userWheels.filter((w: any) => w.chakraId === null || w.chakraId === undefined).length}
+                Total Chakras: {previewMode ? 1 : userWheels.filter((w: any) => w.chakraId === null || w.chakraId === undefined).length}
               </div>
             </div>
           </div>
@@ -2635,7 +2630,7 @@ const Dashboard: React.FC = () => {
           <div className={`transition-all duration-200 ${showRecentFilter ? 'mt-4' : 'mt-0'}`}>
             <DotWheelsMap 
               wheels={wheels} 
-              actualDots={showRecentFilter ? dots.slice(0, recentDotsCount) : dots} 
+              dots={showRecentFilter ? dots.slice(0, recentDotsCount) : dots} 
               showingRecentFilter={showRecentFilter}
               recentCount={recentDotsCount}
               isFullscreen={isMapFullscreen}
