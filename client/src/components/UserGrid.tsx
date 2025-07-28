@@ -68,7 +68,6 @@ const UserGrid: React.FC<UserGridProps> = ({ userId, mode }) => {
         availableWheels={regularWheels}
         availableChakras={chakras}
         onSuccess={() => setShowCreation(false)}
-        userId={userId}
       />
     );
   }

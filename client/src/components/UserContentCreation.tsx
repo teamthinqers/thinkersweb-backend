@@ -8,7 +8,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Plus, Loader2, Settings, RotateCcw } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import DotSparkActivationDialog from './DotSparkActivationDialog';
 
 interface DotCreationFormData {
   summary: string;
@@ -34,22 +33,16 @@ interface UserContentCreationProps {
   availableWheels?: any[];
   availableChakras?: any[];
   onSuccess?: () => void;
-  userId?: number;
 }
 
 const UserContentCreation: React.FC<UserContentCreationProps> = ({ 
   availableWheels = [], 
   availableChakras = [],
-  onSuccess,
-  userId
+  onSuccess 
 }) => {
   const [creationType, setCreationType] = useState<'dot' | 'wheel' | 'chakra' | null>(null);
-  const [showActivationDialog, setShowActivationDialog] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
-
-  // Check if user has DotSpark activated (placeholder - implement actual check)
-  const isDotSparkActivated = false; // TODO: Implement actual activation check - set to false to test dialog
 
   // Dot creation form state
   const [dotForm, setDotForm] = useState<DotCreationFormData>({
@@ -221,76 +214,51 @@ const UserContentCreation: React.FC<UserContentCreationProps> = ({
     createChakraMutation.mutate(chakraForm);
   };
 
-  const handleCreateClick = (type: 'dot' | 'wheel' | 'chakra') => {
-    if (!userId) {
-      toast({
-        title: "Authentication Required",
-        description: "Please sign in to create content",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    if (!isDotSparkActivated) {
-      setShowActivationDialog(true);
-      return;
-    }
-
-    setCreationType(type);
-  };
-
   if (!creationType) {
     return (
-      <>
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold mb-4">Create New Content</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* Dot Creation */}
-            <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => handleCreateClick('dot')}>
-              <CardHeader className="text-center">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 mx-auto mb-2 flex items-center justify-center">
-                  <Plus className="w-6 h-6 text-white" />
-                </div>
-                <CardTitle className="text-amber-800">Create Dot</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-gray-600">Capture a single insight with three layers: summary, anchor, and pulse</p>
-              </CardContent>
-            </Card>
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold mb-4">Create New Content</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Dot Creation */}
+          <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => setCreationType('dot')}>
+            <CardHeader className="text-center">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 mx-auto mb-2 flex items-center justify-center">
+                <Plus className="w-6 h-6 text-white" />
+              </div>
+              <CardTitle className="text-amber-800">Create Dot</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-gray-600">Capture a single insight with three layers: summary, anchor, and pulse</p>
+            </CardContent>
+          </Card>
 
-            {/* Wheel Creation */}
-            <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => handleCreateClick('wheel')}>
-              <CardHeader className="text-center">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-r from-orange-500 to-orange-600 mx-auto mb-2 flex items-center justify-center">
-                  <RotateCcw className="w-6 h-6 text-white" />
-                </div>
-                <CardTitle className="text-orange-800">Create Wheel</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-gray-600">Organize multiple dots around a goal or project</p>
-              </CardContent>
-            </Card>
+          {/* Wheel Creation */}
+          <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => setCreationType('wheel')}>
+            <CardHeader className="text-center">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-r from-orange-500 to-orange-600 mx-auto mb-2 flex items-center justify-center">
+                <RotateCcw className="w-6 h-6 text-white" />
+              </div>
+              <CardTitle className="text-orange-800">Create Wheel</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-gray-600">Organize multiple dots around a goal or project</p>
+            </CardContent>
+          </Card>
 
-            {/* Chakra Creation */}
-            <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => handleCreateClick('chakra')}>
-              <CardHeader className="text-center">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-r from-amber-700 to-amber-800 mx-auto mb-2 flex items-center justify-center">
-                  <Settings className="w-6 h-6 text-white" />
-                </div>
-                <CardTitle className="text-amber-900">Create Chakra</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-gray-600">Define a top-level purpose that contains multiple wheels</p>
-              </CardContent>
-            </Card>
-          </div>
+          {/* Chakra Creation */}
+          <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => setCreationType('chakra')}>
+            <CardHeader className="text-center">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-r from-amber-700 to-amber-800 mx-auto mb-2 flex items-center justify-center">
+                <Settings className="w-6 h-6 text-white" />
+              </div>
+              <CardTitle className="text-amber-900">Create Chakra</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-gray-600">Define a top-level purpose that contains multiple wheels</p>
+            </CardContent>
+          </Card>
         </div>
-
-        <DotSparkActivationDialog 
-          isOpen={showActivationDialog}
-          onClose={() => setShowActivationDialog(false)}
-        />
-      </>
+      </div>
     );
   }
 
