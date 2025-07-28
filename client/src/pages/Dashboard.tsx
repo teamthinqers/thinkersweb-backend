@@ -74,7 +74,6 @@ const Dashboard: React.FC = () => {
   const [recentDotsCount, setRecentDotsCount] = useState(4);
   const [showPreview, setShowPreview] = useState(false);
   const [isMapFullscreen, setIsMapFullscreen] = useState(false);
-  const [viewMode, setViewMode] = useState<'grid' | 'map'>('grid'); // Add view mode toggle
   const [previewMode, setPreviewMode] = useState(false); // Start with real mode by default
   
   // PWA detection for smaller button sizing
@@ -2099,7 +2098,7 @@ const Dashboard: React.FC = () => {
 
                 } else {
                   // Dynamic wheel sizing based on dots count
-                  const wheelDots = displayDots.filter(d => d.wheelId === wheel.id);
+                  const wheelDots = displayDots.filter((d: any) => d.wheelId === wheel.id);
                   wheelSize = calculateDynamicSizing('preview', wheelDots.length, 'wheels') * 2; // Convert radius to diameter
                 }
               } else {
@@ -2629,44 +2628,13 @@ const Dashboard: React.FC = () => {
             </div>
           )}
           
-          {/* View Mode Toggle */}
-          <div className="flex items-center justify-center mb-6">
-            <div className="flex items-center bg-white border border-amber-200 rounded-lg p-1">
-              <Button
-                variant={viewMode === 'grid' ? 'default' : 'ghost'}
-                size="sm"
-                onClick={() => setViewMode('grid')}
-                className={viewMode === 'grid' ? 
-                  'bg-gradient-to-r from-amber-500 to-orange-500 text-white' : 
-                  'text-amber-700 hover:bg-amber-50'
-                }
-              >
-                <Plus className="w-4 h-4 mr-1" />
-                User Content
-              </Button>
-              <Button
-                variant={viewMode === 'map' ? 'default' : 'ghost'}
-                size="sm"
-                onClick={() => setViewMode('map')}
-                className={viewMode === 'map' ? 
-                  'bg-gradient-to-r from-amber-500 to-orange-500 text-white' : 
-                  'text-amber-700 hover:bg-amber-50'
-                }
-              >
-                <Network className="w-4 h-4 mr-1" />
-                Preview Map
-              </Button>
-            </div>
-          </div>
-
-          {/* Content based on view mode */}
-          {viewMode === 'grid' ? (
-            <UserGrid 
-              userId={user?.id} 
-              mode={previewMode ? 'preview' : 'real'} 
-            />
-          ) : (
-            <div className={`transition-all duration-200 ${showRecentFilter ? 'mt-4' : 'mt-0'}`}>
+          <div className={`transition-all duration-200 ${showRecentFilter ? 'mt-4' : 'mt-0'}`}>
+            {!previewMode ? (
+              <UserGrid 
+                userId={user?.id as number | undefined} 
+                mode="real" 
+              />
+            ) : (
               <DotWheelsMap 
                 wheels={wheels} 
                 dots={showRecentFilter ? dots.slice(0, recentDotsCount) : dots} 
@@ -2678,8 +2646,8 @@ const Dashboard: React.FC = () => {
                 previewMode={previewMode}
                 setPreviewMode={setPreviewMode}
               />
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
 

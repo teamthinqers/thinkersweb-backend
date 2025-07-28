@@ -6,13 +6,23 @@ import { z } from 'zod';
 
 const router = express.Router();
 
-// Check if user has DotSpark activated (placeholder for now)
+// Check if user has DotSpark activated
 const checkDotSparkActivation = (req: any, res: any, next: any) => {
-  // TODO: Implement actual DotSpark activation check
-  // For now, allow all authenticated users
   if (!req.user?.id) {
     return res.status(401).json({ error: 'Authentication required' });
   }
+  
+  // TODO: Implement actual DotSpark activation check
+  // For now, check if user has attempted to activate (placeholder)
+  const isDotSparkActivated = true; // This should check actual activation status
+  
+  if (!isDotSparkActivated) {
+    return res.status(403).json({ 
+      error: 'DotSpark activation required',
+      message: 'Please activate DotSpark to create content'
+    });
+  }
+  
   next();
 };
 
