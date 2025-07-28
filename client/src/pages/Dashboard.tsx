@@ -2378,13 +2378,13 @@ const Dashboard: React.FC = () => {
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2 text-sm hidden md:flex">
               <div className="px-3 py-1 bg-amber-100 text-amber-800 rounded-full font-medium">
-                Total Dots: {previewMode ? 27 : dots.length}
+                Total Dots: {totalDots}
               </div>
               <div className="px-3 py-1 bg-orange-100 text-orange-800 rounded-full font-medium">
-                Total Wheels: {previewMode ? 4 : wheels.filter(w => w.chakraId !== null && w.chakraId !== undefined).length}
+                Total Wheels: {totalWheels}
               </div>
               <div className="px-3 py-1 bg-amber-100 text-amber-800 rounded-full font-medium">
-                Total Chakras: {previewMode ? 1 : wheels.filter(w => w.chakraId === null || w.chakraId === undefined).length}
+                Total Chakras: {totalChakras}
               </div>
             </div>
           </div>
