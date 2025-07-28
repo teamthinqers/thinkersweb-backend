@@ -43,11 +43,13 @@ interface Wheel {
 interface PreviewMapGridProps {
   setViewFullWheel: (wheel: Wheel | null) => void;
   setViewFlashCard: (dot: Dot | null) => void;
+  setViewFullDot: (dot: Dot | null) => void;
 }
 
 export const PreviewMapGrid: React.FC<PreviewMapGridProps> = ({
   setViewFullWheel,
-  setViewFlashCard
+  setViewFlashCard,
+  setViewFullDot
 }) => {
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(0.6);
@@ -412,7 +414,7 @@ export const PreviewMapGrid: React.FC<PreviewMapGridProps> = ({
                     }}
                     onClick={(e) => {
                       e.stopPropagation();
-                      setViewFlashCard(dot);
+                      setViewFullDot(dot);
                       setHoveredDot(null);
                     }}
                   >

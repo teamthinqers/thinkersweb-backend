@@ -2658,6 +2658,7 @@ const Dashboard: React.FC = () => {
             <PreviewMapGrid 
               setViewFullWheel={setViewFullWheel}
               setViewFlashCard={setViewFlashCard}
+              setViewFullDot={setViewFullDot}
             />
           )}
         </div>
