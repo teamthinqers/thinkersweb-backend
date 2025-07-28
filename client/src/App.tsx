@@ -58,7 +58,7 @@ import IntelligenceSelector from "@/components/IntelligenceSelector";
 import IndexingDemo from "@/pages/IndexingDemo";
 import ActivationPage from "@/pages/ActivationPage";
 
-import { StructuredFloatingDot } from "@/components/dotspark/StructuredFloatingDot";
+import { GlobalFloatingDot } from "@/components/GlobalFloatingDot";
 import { neuraStorage } from "@/lib/neuraStorage";
 import { Loader2 } from "lucide-react";
 import { useAuth, AuthProvider } from "@/hooks/use-auth";
@@ -376,8 +376,8 @@ function App() {
         )}
         <Router />
         <Toaster />
-        {/* Global Floating Dot for All Modes */}
-        <StructuredFloatingDot isActive={isDotSparkActive || neuraStorage.isActivated()} />
+        {/* Global Floating Dot for Everyone */}
+        <GlobalFloatingDot />
         {/* iOS PWA Install Prompt */}
         <IosPwaInstallPrompt />
         {/* PWA Install Floating Button (only visible when installable) */}
