@@ -2383,19 +2383,8 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
 
-          {/* Right side - Stats */}
+          {/* Right side - Empty for cleaner header */}
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 text-sm hidden md:flex">
-              <div className="px-3 py-1 bg-amber-100 text-amber-800 rounded-full font-medium">
-                Total Dots: {viewMode === 'map' ? 26 : dots.length}
-              </div>
-              <div className="px-3 py-1 bg-orange-100 text-orange-800 rounded-full font-medium">
-                Total Wheels: {viewMode === 'map' ? 5 : userWheels.filter((w: any) => w.chakraId !== null && w.chakraId !== undefined).length}
-              </div>
-              <div className="px-3 py-1 bg-amber-100 text-amber-800 rounded-full font-medium">
-                Total Chakras: {viewMode === 'map' ? 2 : userWheels.filter((w: any) => w.chakraId === null || w.chakraId === undefined).length}
-              </div>
-            </div>
           </div>
         </div>
       </div>
