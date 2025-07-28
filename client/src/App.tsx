@@ -61,7 +61,7 @@ import ActivationPage from "@/pages/ActivationPage";
 import { StructuredFloatingDot } from "@/components/dotspark/StructuredFloatingDot";
 import { neuraStorage } from "@/lib/neuraStorage";
 import { Loader2 } from "lucide-react";
-import { useAuth, AuthProvider } from "@/hooks/use-auth-mock";
+import { useAuth, AuthProvider } from "@/hooks/use-auth";
 
 import { PWAInstallButton } from "@/components/ui/pwa-install-button";
 import { IosPwaInstallPrompt } from "@/components/ui/ios-pwa-install-prompt";
