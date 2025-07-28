@@ -12,6 +12,8 @@ import DotFlashCard from "@/components/DotFlashCard";
 import WheelFlashCard from "@/components/WheelFlashCard";
 import WheelFullView from "@/components/WheelFullView";
 import UserGrid from "@/components/UserGrid";
+import { UserContentGrid } from "@/components/UserContentGrid";
+import { PreviewMapGrid } from "@/components/PreviewMapGrid";
 import { isRunningAsStandalone } from "@/lib/pwaUtils";
 import { useLocation } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
@@ -2624,10 +2626,7 @@ const Dashboard: React.FC = () => {
               <Button
                 variant={viewMode === 'map' ? 'default' : 'ghost'}
                 size="sm"
-                onClick={() => {
-                  setViewMode('map');
-                  setPreviewMode(true); // Auto-enable preview mode when Preview Map is clicked
-                }}
+                onClick={() => setViewMode('map')}
                 className={viewMode === 'map' ? 
                   'bg-gradient-to-r from-amber-500 to-orange-500 text-white' : 
                   'text-amber-700 hover:bg-amber-50'
@@ -2641,24 +2640,20 @@ const Dashboard: React.FC = () => {
 
           {/* Content based on view mode */}
           {viewMode === 'grid' ? (
-            <UserGrid 
-              userId={user?.id} 
-              mode={previewMode ? 'preview' : 'real'} 
+            // User Content Mode - shows user's actual content or empty state with creation prompts
+            <UserContentGrid 
+              user={user}
+              userWheels={userWheels}
+              dots={dots}
+              setViewFullWheel={setViewFullWheel}
+              setViewFlashCard={setViewFlashCard}
             />
           ) : (
-            <div className={`transition-all duration-200 ${showRecentFilter ? 'mt-4' : 'mt-0'}`}>
-              <DotWheelsMap 
-                wheels={wheels} 
-                dots={showRecentFilter ? dots.slice(0, recentDotsCount) : dots} 
-                showingRecentFilter={showRecentFilter}
-                recentCount={recentDotsCount}
-                isFullscreen={isMapFullscreen}
-                onFullscreenChange={setIsMapFullscreen}
-                setViewFullWheel={setViewFullWheel}
-                previewMode={previewMode}
-                setPreviewMode={setPreviewMode}
-              />
-            </div>
+            // Preview Map Mode - shows demo data grid experience without creation functions
+            <PreviewMapGrid 
+              setViewFullWheel={setViewFullWheel}
+              setViewFlashCard={setViewFlashCard}
+            />
           )}
         </div>
       </div>
