@@ -1450,28 +1450,10 @@ const Dashboard: React.FC = () => {
           <div className="flex items-center justify-center h-full">
             <div className="text-center">
               <Brain className="w-16 h-16 mx-auto mb-4 text-amber-500" />
-              <h3 className="text-2xl font-bold text-amber-800 mb-2">Start Creating Your DotSpark</h3>
+              <h3 className="text-2xl font-bold text-amber-800 mb-2">Your DotSpark Grid is Empty</h3>
               <p className="text-amber-600 mb-6 max-w-md mx-auto">
-                Begin organizing your thoughts into structured Dots, Wheels, and Chakras for actionable insights.
+                Create your first dot, wheel, or chakra to start organizing your thoughts, or toggle Preview Mode to see examples.
               </p>
-              
-              <div className="flex flex-col gap-3 max-w-xs mx-auto">
-                <button
-                  onClick={() => {
-                    // Navigate to floating dot interface for creation
-                    const event = new CustomEvent('triggerFloatingDot');
-                    window.dispatchEvent(event);
-                  }}
-                  className="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 md:px-6 md:py-3 rounded-lg font-medium transition-colors flex items-center justify-center gap-2 text-sm md:text-base"
-                >
-                  <Plus className="w-4 h-4 md:w-5 md:h-5" />
-                  Create Your First Dot/Wheel/Chakra
-                </button>
-                
-                <p className="text-xs text-amber-600">
-                  Or try Preview Mode to see examples
-                </p>
-              </div>
             </div>
           </div>
         </div>
@@ -2642,7 +2624,10 @@ const Dashboard: React.FC = () => {
               <Button
                 variant={viewMode === 'map' ? 'default' : 'ghost'}
                 size="sm"
-                onClick={() => setViewMode('map')}
+                onClick={() => {
+                  setViewMode('map');
+                  setPreviewMode(true); // Auto-enable preview mode when Preview Map is clicked
+                }}
                 className={viewMode === 'map' ? 
                   'bg-gradient-to-r from-amber-500 to-orange-500 text-white' : 
                   'text-amber-700 hover:bg-amber-50'
