@@ -652,8 +652,11 @@ const Dashboard: React.FC = () => {
     // Mobile double-click detection helper
     const handleMobileClick = (elementId: string, onSingleClick: () => void, onDoubleClick: () => void) => {
       const isMobile = window.innerWidth < 768;
+      console.log('handleMobileClick:', { elementId, isMobile, windowWidth: window.innerWidth });
+      
       if (!isMobile) {
         // Desktop behavior - direct full view
+        console.log('Desktop detected - executing double-click action immediately');
         onDoubleClick();
         return;
       }
@@ -663,6 +666,15 @@ const Dashboard: React.FC = () => {
         lastClickedElement === elementId && 
         now - lastClickTime < 300; // 300ms double-click threshold
       
+      console.log('Mobile click detection:', { 
+        lastClickedElement, 
+        elementId, 
+        lastClickTime, 
+        now, 
+        timeDiff: now - lastClickTime, 
+        isDoubleClick 
+      });
+      
       if (isDoubleClick) {
         // Clear any pending timeout
         if (clickTimeout) {
@@ -670,12 +682,14 @@ const Dashboard: React.FC = () => {
           setClickTimeout(null);
         }
         // Execute double-click action (flashcard)
+        console.log('Double-click detected - showing flashcard');
         onDoubleClick();
         // Reset state
         setLastClickTime(0);
         setLastClickedElement(null);
       } else {
         // First click - set timer for single click action
+        console.log('First click detected - waiting for potential second click');
         setLastClickTime(now);
         setLastClickedElement(elementId);
         
@@ -686,7 +700,7 @@ const Dashboard: React.FC = () => {
         
         // Set timeout for single click (do nothing on mobile for first click)
         const timeout = setTimeout(() => {
-          // Single click on mobile does nothing for dots/wheel labels
+          console.log('Single click timeout - no second click detected');
           setLastClickTime(0);
           setLastClickedElement(null);
           setClickTimeout(null);
