@@ -341,21 +341,21 @@ const UserGrid: React.FC<UserGridProps> = ({ userId, mode }) => {
 
   if (isEmpty) {
     return (
-      <div className="text-center py-12">
+      <div className="text-center py-12 bg-gradient-to-r from-amber-50 to-orange-50 rounded-lg border border-amber-200">
         <div className="max-w-md mx-auto">
-          <div className="w-16 h-16 bg-gradient-to-r from-amber-400 to-orange-500 rounded-full mx-auto mb-4 flex items-center justify-center">
+          <div className="w-16 h-16 bg-gradient-to-r from-amber-400 to-orange-500 rounded-full mx-auto mb-6 flex items-center justify-center">
             <Plus className="w-8 h-8 text-white" />
           </div>
-          <h3 className="text-xl font-semibold text-amber-800 mb-2">Start Your DotSpark Journey</h3>
+          <h3 className="text-xl font-semibold text-amber-800 mb-2">Ready to Create Your Own?</h3>
           <p className="text-gray-600 mb-6">
-            Create your first dot, wheel, or chakra to begin organizing your thoughts and insights.
+            Sign in and activate DotSpark to start organizing your thoughts with our AI-powered system
           </p>
           <Button 
             onClick={() => setShowCreation(true)}
             className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
           >
             <Plus className="w-4 h-4 mr-2" />
-            Create Your First Content
+            Get Started
           </Button>
         </div>
       </div>
