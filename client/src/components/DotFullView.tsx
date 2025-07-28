@@ -129,7 +129,7 @@ const DotFullView: React.FC<DotFullViewProps> = ({ dot, onClose, onDelete }) => 
               {dot.sourceType}
             </Badge>
             <span className="text-sm text-gray-500">
-              {dot.timestamp.toLocaleString()}
+              {dot.timestamp instanceof Date ? dot.timestamp.toLocaleString() : new Date(dot.timestamp).toLocaleString()}
             </span>
           </div>
 
