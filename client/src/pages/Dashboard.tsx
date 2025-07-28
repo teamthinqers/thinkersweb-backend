@@ -52,7 +52,18 @@ interface Wheel {
 
 const Dashboard: React.FC = () => {
   const [, setLocation] = useLocation();
-  const { user, isLoading } = useAuth() || { user: null, isLoading: false };
+  
+  // Safe authentication hook usage with error boundary
+  let user = null;
+  let isLoading = false;
+  
+  try {
+    const authResult = useAuth();
+    user = authResult?.user || null;
+    isLoading = authResult?.isLoading || false;
+  } catch (error) {
+    console.warn('Authentication hook error, using default values:', error);
+  }
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedWheel, setSelectedWheel] = useState<string | null>(null);
   const [viewFullDot, setViewFullDot] = useState<Dot | null>(null);
