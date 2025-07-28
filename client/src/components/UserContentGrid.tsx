@@ -115,23 +115,9 @@ export const UserContentGrid: React.FC<UserContentGridProps> = ({
               Create your first dot, wheel, or chakra to start organizing your thoughts.
             </p>
             
-            <div className="flex flex-col gap-3 max-w-xs mx-auto">
-              <button
-                onClick={() => {
-                  // Navigate to floating dot interface for creation
-                  const event = new CustomEvent('triggerFloatingDot');
-                  window.dispatchEvent(event);
-                }}
-                className="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 md:px-6 md:py-3 rounded-lg font-medium transition-colors flex items-center justify-center gap-2 text-sm md:text-base"
-              >
-                <Plus className="w-4 h-4 md:w-5 md:h-5" />
-                Create Your First Dot/Wheel/Chakra
-              </button>
-              
-              <p className="text-xs text-amber-600">
-                Or try Preview Map to see examples
-              </p>
-            </div>
+            <p className="text-xs text-amber-600 max-w-xs mx-auto text-center">
+              Use the floating dot to create content, or try Preview Map to see examples
+            </p>
           </div>
         </div>
       </div>
