@@ -2666,19 +2666,10 @@ const Dashboard: React.FC = () => {
               mode={previewMode ? 'preview' : 'real'} 
             />
           ) : (
-            <div className={`transition-all duration-200 ${showRecentFilter ? 'mt-4' : 'mt-0'}`}>
-              <DotWheelsMap 
-                wheels={wheels} 
-                dots={showRecentFilter ? dots.slice(0, recentDotsCount) : dots} 
-                showingRecentFilter={showRecentFilter}
-                recentCount={recentDotsCount}
-                isFullscreen={isMapFullscreen}
-                onFullscreenChange={setIsMapFullscreen}
-                setViewFullWheel={setViewFullWheel}
-                previewMode={previewMode}
-                setPreviewMode={setPreviewMode}
-              />
-            </div>
+            <UserGrid 
+              userId={null} 
+              mode="preview" 
+            />
           )}
         </div>
       </div>

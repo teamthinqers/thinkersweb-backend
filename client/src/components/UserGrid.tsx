@@ -40,13 +40,242 @@ const UserGrid: React.FC<UserGridProps> = ({ userId, mode }) => {
   const regularWheels = userWheels.filter((w: any) => w.chakraId !== null);
   const chakras = userWheels.filter((w: any) => w.chakraId === null);
 
+  // Generate preview data for demonstration
+  const generatePreviewData = () => {
+    const previewDots = [
+      {
+        id: 'preview-dot-1',
+        summary: 'Product-market fit validation through customer interviews',
+        anchor: 'Personal insights about product-market fit and daily routines',
+        pulse: 'excited',
+        sourceType: 'voice' as const,
+        captureMode: 'natural' as const,
+        wheel: { name: 'GTM Strategy' }
+      },
+      {
+        id: 'preview-dot-2', 
+        summary: 'Building high-performing teams through trust',
+        anchor: 'Random observations about team building in everyday experiences',
+        pulse: 'confident',
+        sourceType: 'text' as const,
+        captureMode: 'ai' as const,
+        wheel: { name: 'Leadership Development' }
+      },
+      {
+        id: 'preview-dot-3',
+        summary: 'Understanding user needs through research methods',
+        anchor: 'Personal insight about user research and individual growth', 
+        pulse: 'curious',
+        sourceType: 'voice' as const,
+        captureMode: 'natural' as const,
+        wheel: { name: 'Product Innovation' }
+      }
+    ];
+
+    const previewWheels = [
+      {
+        id: 'preview-wheel-1',
+        name: 'GTM Strategy',
+        heading: 'Go-To-Market Strategy',
+        goals: 'Developing comprehensive go-to-market strategies including product positioning and customer acquisition',
+        timeline: '21 months',
+        category: 'Business',
+        chakraId: 'preview-chakra-1',
+        dots: [previewDots[0]]
+      },
+      {
+        id: 'preview-wheel-2', 
+        name: 'Leadership Development',
+        heading: 'Strengthen Leadership',
+        goals: 'Building strong leadership capabilities through team management and strategic communication',
+        timeline: '3 years',
+        category: 'Business', 
+        chakraId: 'preview-chakra-1',
+        dots: [previewDots[1]]
+      },
+      {
+        id: 'preview-wheel-3',
+        name: 'Product Innovation',
+        heading: 'Product Innovation Excellence', 
+        goals: 'Driving continuous product innovation through user research and feature prioritization',
+        timeline: '15 months',
+        category: 'Business',
+        chakraId: 'preview-chakra-1',
+        dots: [previewDots[2]]
+      }
+    ];
+
+    const previewChakras = [
+      {
+        id: 'preview-chakra-1',
+        name: 'Build an Enduring Company',
+        heading: 'Build an Enduring Company',
+        purpose: 'Creating a sustainable, innovative business that delivers value to customers while maintaining long-term growth',
+        timeline: '15 years',
+        category: 'Business',
+        chakraId: null
+      }
+    ];
+
+    return { previewDots, previewWheels, previewChakras };
+  };
+
   if (mode === 'preview') {
+    const { previewDots, previewWheels, previewChakras } = generatePreviewData();
+    
     return (
-      <div className="text-center py-8">
-        <h3 className="text-lg font-semibold text-amber-800 mb-2">Preview Mode Active</h3>
-        <p className="text-gray-600">
-          This is demonstration data. Sign in and activate DotSpark to create your own content.
-        </p>
+      <div className="space-y-6">
+        {/* Preview Header */}
+        <div className="text-center py-4">
+          <h2 className="text-2xl font-bold text-amber-800 mb-2">DotSpark Preview</h2>
+          <p className="text-gray-600">
+            Demonstration of how your thoughts organize into Dots, Wheels, and Chakras
+          </p>
+        </div>
+
+        {/* Chakras Section */}
+        <div>
+          <h3 className="text-lg font-semibold text-amber-900 mb-4 flex items-center">
+            <Settings className="w-5 h-5 mr-2" />
+            Sample Chakras ({previewChakras.length})
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {previewChakras.map((chakra) => (
+              <Card key={chakra.id} className="hover:shadow-lg transition-shadow border-amber-200">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-amber-900 text-base">{chakra.name}</CardTitle>
+                  <p className="text-sm text-gray-600">{chakra.heading}</p>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-gray-700 mb-2">{chakra.purpose}</p>
+                  <Badge variant="outline" className="text-xs">
+                    {chakra.timeline}
+                  </Badge>
+                  <div className="mt-3 flex justify-between items-center">
+                    <Badge className="bg-amber-100 text-amber-800">
+                      {chakra.category}
+                    </Badge>
+                    <Badge variant="secondary" className="text-xs">
+                      Preview
+                    </Badge>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+
+        {/* Wheels Section */}
+        <div>
+          <h3 className="text-lg font-semibold text-orange-800 mb-4 flex items-center">
+            <RotateCcw className="w-5 h-5 mr-2" />
+            Sample Wheels ({previewWheels.length})
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {previewWheels.map((wheel) => (
+              <Card key={wheel.id} className="hover:shadow-lg transition-shadow border-orange-200">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-orange-800 text-base">{wheel.name}</CardTitle>
+                  <p className="text-sm text-gray-600">{wheel.heading}</p>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-gray-700 mb-2">{wheel.goals}</p>
+                  <Badge variant="outline" className="text-xs">
+                    {wheel.timeline}
+                  </Badge>
+                  <div className="mt-3 flex justify-between items-center">
+                    <Badge className="bg-orange-100 text-orange-800">
+                      {wheel.category}
+                    </Badge>
+                    <Badge variant="secondary" className="text-xs">
+                      Preview
+                    </Badge>
+                  </div>
+                  <div className="mt-2">
+                    <Badge variant="secondary" className="text-xs">
+                      {wheel.dots.length} dots
+                    </Badge>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+
+        {/* Dots Section */}
+        <div>
+          <h3 className="text-lg font-semibold text-amber-700 mb-4 flex items-center">
+            <div className="w-5 h-5 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 mr-2"></div>
+            Sample Dots ({previewDots.length})
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {previewDots.map((dot: any) => (
+              <Card key={dot.id} className="hover:shadow-lg transition-shadow border-amber-100">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-amber-800 text-sm leading-relaxed">
+                    {dot.summary}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-xs text-gray-600 mb-2">{dot.anchor}</p>
+                  <div className="flex items-center justify-between">
+                    <Badge 
+                      variant="outline" 
+                      className="text-xs bg-gradient-to-r from-purple-50 to-pink-50 text-purple-700"
+                    >
+                      {dot.pulse}
+                    </Badge>
+                    <Badge variant="secondary" className="text-xs">
+                      Preview
+                    </Badge>
+                  </div>
+                  <div className="mt-2 flex items-center gap-2">
+                    <Badge 
+                      variant="secondary" 
+                      className={`text-xs ${
+                        dot.sourceType === 'voice' 
+                          ? 'bg-blue-50 text-blue-700' 
+                          : 'bg-green-50 text-green-700'
+                      }`}
+                    >
+                      {dot.sourceType}
+                    </Badge>
+                    <Badge 
+                      variant="secondary" 
+                      className={`text-xs ${
+                        dot.captureMode === 'ai' 
+                          ? 'bg-purple-50 text-purple-700' 
+                          : 'bg-amber-50 text-amber-700'
+                      }`}
+                    >
+                      {dot.captureMode}
+                    </Badge>
+                  </div>
+                  <div className="mt-2">
+                    <Badge variant="outline" className="text-xs">
+                      in {dot.wheel.name}
+                    </Badge>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+
+        {/* Call to Action */}
+        <div className="text-center py-8 bg-gradient-to-r from-amber-50 to-orange-50 rounded-lg border border-amber-200">
+          <h3 className="text-xl font-semibold text-amber-800 mb-2">Ready to Create Your Own?</h3>
+          <p className="text-gray-600 mb-4">
+            Sign in and activate DotSpark to start organizing your thoughts with our AI-powered system
+          </p>
+          <Button 
+            onClick={() => window.location.href = '/auth'}
+            className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Get Started
+          </Button>
+        </div>
       </div>
     );
   }
