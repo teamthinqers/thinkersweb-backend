@@ -140,6 +140,12 @@ DotSpark is a full-stack web application that serves as a personalized learning 
 ## Changelog
 ```
 Changelog:
+- January 28, 2025. FIXED preview mode toggle switching issue by removing automatic preview->real mode logic:
+  * Eliminated useEffect that automatically switched preview mode off when user had content
+  * Preview toggle now works properly - users can manually switch between real and preview modes
+  * Removed unused showPreview state duplicate that was causing confusion
+  * Preview mode now stays active when toggled on, allowing proper demonstration of preview data
+  * Desktop browser users can now properly toggle between their real content and preview examples
 - January 28, 2025. COMPLETED static counting system with corrected preview mode values:
   * Fixed React hooks error caused by complex authentication-dependent counting logic during dashboard rendering
   * Implemented static counts for preview mode: 26 dots, 5 wheels, 2 chakras (corrected from previous documentation)

@@ -72,7 +72,7 @@ const Dashboard: React.FC = () => {
   const [viewFullWheel, setViewFullWheel] = useState<Wheel | null>(null);
   const [showRecentFilter, setShowRecentFilter] = useState(false);
   const [recentDotsCount, setRecentDotsCount] = useState(4);
-  const [showPreview, setShowPreview] = useState(false);
+  // Removed unused showPreview state - using previewMode instead
   const [isMapFullscreen, setIsMapFullscreen] = useState(false);
   const [viewMode, setViewMode] = useState<'grid' | 'map'>('grid'); // Add view mode toggle
   const [previewMode, setPreviewMode] = useState(false); // Start with real mode by default
@@ -1367,12 +1367,7 @@ const Dashboard: React.FC = () => {
     
     // Counts are now handled at the main Dashboard level
 
-    // Auto-switch to real mode if user is authenticated and has content
-    useEffect(() => {
-      if (user && (userWheels.length > 0 || dots.length > 0)) {
-        setPreviewMode(false); // Switch to real mode when user has content
-      }
-    }, [user, userWheels.length, dots.length]);
+    // Removed auto-switch logic - users can manually toggle between modes
 
     // Show different states based on authentication and content
     if (!previewMode && (!user || userWheels.length === 0 && dots.length === 0)) {
