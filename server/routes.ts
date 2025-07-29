@@ -472,13 +472,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ error: 'Authentication required' });
       }
 
-      // Verify user exists and is authenticated
+      // Additional security: check if user is trying to access bypass data in production
       const user = await db.query.users.findFirst({
         where: eq(users.id, userId)
       });
       
       if (!user) {
         return res.status(404).json({ error: 'User not found' });
+      }
+
+      // Security: Separate demo and production users
+      const isDemoRequest = req.headers['x-demo-mode'] === 'true' || 
+                           user.email?.includes('demo.com') ||
+                           user.firebaseUid?.includes('bypass');
+      
+      if (user.firebaseUid?.includes('bypass') && !isDemoRequest) {
+        return res.status(403).json({ error: 'Demo users cannot access production data' });
+      }
+      
+      if (!user.firebaseUid?.includes('bypass') && isDemoRequest) {
+        return res.status(403).json({ error: 'Production users cannot access demo mode' });
       }
       
       const userEntries = await db.query.entries.findMany({

@@ -42,6 +42,7 @@ import { QuickAuthTest } from "@/pages/QuickAuthTest";
 import { SimpleAuthTest } from "@/pages/SimpleAuthTest";
 import WorkingDot from "@/pages/working-dot";
 import TestComplete from "@/pages/TestComplete";
+import { AuthModeSelector } from "@/components/AuthModeSelector";
 import { WorkingDotTest } from "@/pages/WorkingDotTest";
 import IntelligenceClassification from "@/components/IntelligenceClassification";
 import ChatPage from "@/pages/chat-page";
@@ -261,6 +262,17 @@ function Router() {
       <Route path="/working-dot" component={WorkingDot} />
       <Route path="/working-dot-test" component={WorkingDotTest} />
       <Route path="/test-complete" component={TestComplete} />
+      <Route path="/auth-mode" component={() => (
+        <AuthModeSelector onSelectMode={(mode) => {
+          if (mode === 'demo') {
+            localStorage.setItem('dotspark_demo_mode', 'true');
+            window.location.href = '/test-complete?demo=true';
+          } else {
+            localStorage.removeItem('dotspark_demo_mode');
+            window.location.href = '/dashboard';
+          }
+        }} />
+      )} />
       <Route path="/chat" component={ChatPage} />
       <Route path="/enhanced-chat" component={() => <div className="h-screen"><EnhancedChatInterface /></div>} />
       <Route path="/vector-chat" component={() => <div className="min-h-screen bg-gray-50"><IntelligentVectorChat /></div>} />

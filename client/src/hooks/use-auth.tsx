@@ -27,34 +27,34 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     let firebaseUnsubscribe: (() => void) | null = null;
     let bypassUnsubscribe: (() => void) | null = null;
 
-    // Initialize auth bypass first
-    authBypass.initialize().then(() => {
-      // Listen for bypass auth changes
-      bypassUnsubscribe = authBypass.onAuthStateChanged((bypassUser) => {
-        if (bypassUser) {
-          console.log('Auth bypass state changed:', `User ${bypassUser.email} signed in`);
+    // Check if we're in demo/development mode
+    const isDemoMode = window.location.search.includes('demo=true') || 
+                      window.location.pathname.includes('/test-') ||
+                      localStorage.getItem('dotspark_demo_mode') === 'true';
+
+    if (isDemoMode) {
+      console.log('Demo mode detected - using authentication bypass');
+      // Initialize auth bypass for demo mode
+      authBypass.initialize().then(() => {
+        bypassUnsubscribe = authBypass.onAuthStateChanged((bypassUser) => {
           setUser(bypassUser);
           setIsLoading(false);
-        } else if (!user) {
-          // Only set to null if no Firebase user exists
-          setUser(null);
-          setIsLoading(false);
-        }
+        });
       });
-
-      // Listen for Firebase authentication state changes
+    } else {
+      console.log('Production mode detected - using Firebase authentication');
+      // Use Firebase authentication for production
       firebaseUnsubscribe = auth.onAuthStateChanged((firebaseUser) => {
         if (firebaseUser) {
           console.log('Firebase auth state changed:', `User ${firebaseUser.email} signed in`);
           setUser(firebaseUser);
-        } else if (!authBypass.getCurrentUser()) {
-          // Only set to null if no bypass user exists
+        } else {
           console.log('Firebase auth state changed: User signed out');
           setUser(null);
         }
         setIsLoading(false);
       });
-    });
+    }
 
     return () => {
       firebaseUnsubscribe?.();
@@ -75,6 +75,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const loginWithBypass = async () => {
+    // Only allow bypass login in demo mode
+    const isDemoMode = window.location.search.includes('demo=true') || 
+                      window.location.pathname.includes('/test-') ||
+                      localStorage.getItem('dotspark_demo_mode') === 'true';
+    
+    if (!isDemoMode) {
+      throw new Error('Bypass authentication only available in demo mode');
+    }
+
     setIsLoading(true);
     try {
       await authBypass.signIn();
