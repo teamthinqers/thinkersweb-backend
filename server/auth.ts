@@ -160,11 +160,21 @@ export function setupAuth(app: Express) {
       try {
         const user = await getUserByUsername(username);
         
-        if (!user || !(await comparePasswords(password, user.password))) {
+        if (!user || !user.hashedPassword || !(await comparePasswords(password, user.hashedPassword))) {
           return done(null, false);
         } else {
-          // Remove password from the user object before returning
-          const { password: _, ...secureUser } = user;
+          // Convert to Express User type
+          const secureUser: Express.User = {
+            id: user.id,
+            username: user.username || '',
+            email: user.email,
+            firebaseUid: user.firebaseUid,
+            fullName: user.username,
+            bio: user.bio,
+            avatarUrl: user.avatar,
+            createdAt: user.createdAt,
+            updatedAt: user.updatedAt
+          };
           return done(null, secureUser);
         }
       } catch (error) {
@@ -182,8 +192,18 @@ export function setupAuth(app: Express) {
         return done(null, false);
       }
       
-      // Remove password from the user object
-      const { password: _, ...secureUser } = user;
+      // Convert to Express User type
+      const secureUser: Express.User = {
+        id: user.id,
+        username: user.username || '',
+        email: user.email,
+        firebaseUid: user.firebaseUid,
+        fullName: user.username,
+        bio: user.bio,
+        avatarUrl: user.avatar,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt
+      };
       done(null, secureUser);
     } catch (error) {
       done(error);
@@ -205,13 +225,24 @@ export function setupAuth(app: Express) {
       // Create user
       const [user] = await db.insert(users)
         .values({
-          ...req.body,
-          password: hashedPassword,
+          username: req.body.username,
+          email: req.body.email,
+          hashedPassword: hashedPassword,
         })
         .returning();
 
-      // Remove password from response
-      const { password: _, ...secureUser } = user;
+      // Convert to Express User type
+      const secureUser: Express.User = {
+        id: user.id,
+        username: user.username || '',
+        email: user.email,
+        firebaseUid: user.firebaseUid,
+        fullName: user.username,
+        bio: user.bio,
+        avatarUrl: user.avatar,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt
+      };
 
       // Log user in
       req.login(secureUser, (err) => {
@@ -376,8 +407,7 @@ export function setupAuth(app: Express) {
           const [updatedUser] = await db.update(users)
             .set({ 
               firebaseUid: uid,
-              avatarUrl: photoURL || user.avatarUrl,
-              fullName: displayName || user.fullName
+              avatar: photoURL || user.avatar
             })
             .where(eq(users.id, user.id))
             .returning();
@@ -398,10 +428,9 @@ export function setupAuth(app: Express) {
               .values({
                 username,
                 email: email || `${username}@firebase.user`,
-                password: hashedPassword,
+                hashedPassword: hashedPassword,
                 firebaseUid: uid,
-                fullName: displayName,
-                avatarUrl: photoURL,
+                avatar: photoURL,
               })
               .returning();
               
@@ -419,14 +448,22 @@ export function setupAuth(app: Express) {
         console.log(`Found existing user by UID: ${user.username || user.email}`);
       }
       
-      // Remove password from response
-      const { password: _, ...secureUser } = user;
-      
-      // Add flag to indicate if this is a new user
-      const userWithNewFlag = { ...secureUser, isNewUser };
+      // Convert to Express User type and add new user flag
+      const secureUser: Express.User & { isNewUser?: boolean } = {
+        id: user.id,
+        username: user.username || '',
+        email: user.email,
+        firebaseUid: user.firebaseUid,
+        fullName: user.username,
+        bio: user.bio,
+        avatarUrl: user.avatar,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+        isNewUser
+      };
       
       // Log user in
-      req.login(userWithNewFlag, (err) => {
+      req.login(secureUser, (err) => {
         if (err) {
           console.error("Failed to login user after authentication:", err);
           return next(err);
@@ -444,7 +481,7 @@ export function setupAuth(app: Express) {
         };
         console.log("Session info:", sessionInfo);
         
-        res.status(isNewUser ? 201 : 200).json(userWithNewFlag);
+        res.status(isNewUser ? 201 : 200).json(secureUser);
       });
     } catch (error) {
       console.error("Firebase auth error:", error);
@@ -544,8 +581,18 @@ export function setupAuth(app: Express) {
             return res.status(404).json({ message: "User not found" });
           }
           
-          // Log the user in if found
-          const { password: _, ...secureUser } = user;
+          // Convert to Express User type
+          const secureUser: Express.User = {
+            id: user.id,
+            username: user.username || '',
+            email: user.email,
+            firebaseUid: user.firebaseUid,
+            fullName: user.username,
+            bio: user.bio,
+            avatarUrl: user.avatar,
+            createdAt: user.createdAt,
+            updatedAt: user.updatedAt
+          };
           
           // Use promisified login 
           await new Promise<void>((resolve, reject) => {
