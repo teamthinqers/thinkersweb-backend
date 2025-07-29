@@ -7,6 +7,7 @@ import { Mic, Type, X, ArrowLeft, Minimize2, AlertTriangle, BrainCircuit, Settin
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { isRunningAsStandalone } from "@/lib/pwaUtils";
+import { useAuth } from '@/hooks/use-auth';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -28,6 +29,7 @@ interface StructuredFloatingDotProps {
 }
 
 export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) {
+  const { user, loginWithGoogle } = useAuth();
   const [position, setPosition] = useState<Position>(() => {
     const saved = localStorage.getItem('structured-floating-dot-position');
     return saved ? JSON.parse(saved) : { x: 320, y: 180 };
@@ -497,17 +499,45 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
         };
       }
       
+      // Check authentication first
+      if (!user) {
+        toast({
+          title: "Authentication Required",
+          description: "Please sign in to save your dots.",
+          variant: "destructive",
+        });
+        try {
+          await loginWithGoogle();
+          toast({
+            title: "Please Try Again",
+            description: "You're now signed in. Please try saving your dot again.",
+          });
+        } catch (error) {
+          console.error('Authentication failed:', error);
+        }
+        return;
+      }
+      
       // Submit to API endpoint
+      console.log('Creating dot with data:', dotData);
+      console.log('User authenticated as:', user.email);
       const response = await fetch('/api/dots', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify(dotData)
       });
       
+      console.log('Dot creation response status:', response.status);
+      
       if (!response.ok) {
         const error = await response.json();
+        console.error('Dot creation error:', error);
         throw new Error(error.error || 'Failed to create dot');
       }
+      
+      const result = await response.json();
+      console.log('Dot created successfully:', result);
       
       toast({
         title: "Dot Saved Successfully!",
@@ -1398,16 +1428,43 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                               wheelId: voiceSteps.wheelId
                             };
                             
+                            // Check authentication first
+                            if (!user) {
+                              toast({
+                                title: "Authentication Required",
+                                description: "Please sign in to save your dots.",
+                                variant: "destructive",
+                              });
+                              try {
+                                await loginWithGoogle();
+                                toast({
+                                  title: "Please Try Again",
+                                  description: "You're now signed in. Please try saving your dot again.",
+                                });
+                              } catch (error) {
+                                console.error('Authentication failed:', error);
+                              }
+                              return;
+                            }
+                            
+                            console.log('Creating dot with data:', dotData);
+                            console.log('User authenticated as:', user.email);
                             const response = await fetch('/api/dots', {
                               method: 'POST',
                               headers: { 'Content-Type': 'application/json' },
+                              credentials: 'include',
                               body: JSON.stringify(dotData)
                             });
                             
+                            console.log('Dot creation response status:', response.status);
                             if (!response.ok) {
                               const error = await response.json();
+                              console.error('Dot creation error:', error);
                               throw new Error(error.error || 'Failed to create dot');
                             }
+                            
+                            const result = await response.json();
+                            console.log('Dot created successfully:', result);
                             
                             toast({
                               title: "Voice Dot Saved!",

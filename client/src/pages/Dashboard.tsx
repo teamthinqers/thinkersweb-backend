@@ -111,11 +111,17 @@ const Dashboard: React.FC = () => {
     queryFn: async () => {
       try {
         const url = previewMode ? '/api/dots?preview=true' : '/api/dots';
-        const response = await fetch(url);
+        console.log('Fetching dots from:', url);
+        const response = await fetch(url, {
+          credentials: 'include' // Include cookies for authentication
+        });
+        console.log('Dots fetch response status:', response.status);
         if (!response.ok) {
+          console.warn('Dots fetch failed:', response.status, response.statusText);
           return [];
         }
         const data = await response.json();
+        console.log('Dots fetched successfully:', data.length, 'dots');
         return data;
       } catch (err) {
         console.error('Error fetching dots:', err);

@@ -6,6 +6,7 @@ import { Mic, MicOff, Type, X, ArrowLeft, Minimize2, AlertTriangle } from "lucid
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { isRunningAsStandalone } from "@/lib/pwaUtils";
+import { useAuth } from '@/hooks/use-auth';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -27,6 +28,8 @@ interface GlobalFloatingDotProps {
 }
 
 export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
+  const { user, loginWithGoogle } = useAuth();
+  const { toast } = useToast();
   const [position, setPosition] = useState<Position>(() => {
     const saved = localStorage.getItem('global-floating-dot-position');
     return saved ? JSON.parse(saved) : { x: 320, y: 180 };
@@ -58,7 +61,6 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
   const dotRef = useRef<HTMLDivElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
-  const { toast } = useToast();
 
   // Load user's capture mode preference and listen for real-time changes
   useEffect(() => {
@@ -361,10 +363,32 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
         };
       }
       
+      // Check authentication first
+      if (!user) {
+        toast({
+          title: "Authentication Required",
+          description: "Please sign in to save your dots.",
+          variant: "destructive",
+        });
+        try {
+          await loginWithGoogle();
+          toast({
+            title: "Please Try Again",
+            description: "You're now signed in. Please try saving your dot again.",
+          });
+        } catch (error) {
+          console.error('Authentication failed:', error);
+        }
+        return;
+      }
+      
       // Submit to real API endpoint
+      console.log('Creating dot with data:', dotData);
+      console.log('User authenticated as:', user.email);
       const response = await fetch('/api/dots', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify(dotData)
       });
       
