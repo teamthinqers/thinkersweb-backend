@@ -129,8 +129,8 @@ export function setupAuth(app: Express) {
   
   console.log("Setting up authentication with session support");
   
-  // Temporarily use memory store to avoid database connection issues
-  console.log("Using memory session store (temporary fix for database connectivity)");
+  // Use memory store with longer session duration for now
+  console.log("Using memory session store with persistent cookies");
 
   const sessionSettings: session.SessionOptions = {
     secret: sessionSecret,
@@ -138,9 +138,8 @@ export function setupAuth(app: Express) {
     saveUninitialized: false,
     // store: undefined, // Use default memory store
     cookie: {
-      secure: process.env.NODE_ENV === "production",
-      // Set to 365 days by default for persistent sessions
-      maxAge: 365 * 24 * 60 * 60 * 1000, 
+      secure: false, // Allow HTTP for development
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       httpOnly: true, // Prevent JavaScript access to the cookie
       sameSite: 'lax', // Allow cross-site navigation while protecting against CSRF
       path: '/',
