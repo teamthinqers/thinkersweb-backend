@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { isRunningAsStandalone } from "@/lib/pwaUtils";
 import { useAuth } from '@/hooks/use-auth';
+import { SignInPrompt } from '@/components/auth/SignInPrompt';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -58,6 +59,7 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [isFirstActivation, setIsFirstActivation] = useState(false);
   const [showExitWarning, setShowExitWarning] = useState(false);
+  const [showSignInPrompt, setShowSignInPrompt] = useState(false);
   const dotRef = useRef<HTMLDivElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
@@ -718,6 +720,15 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+      
+      {/* Sign-in prompt for unauthenticated users */}
+      {showSignInPrompt && (
+        <SignInPrompt 
+          onClose={() => setShowSignInPrompt(false)}
+          title="Sign In to Save Your Dot"
+          description="Your dot is ready! Please sign in to save it to your personal DotSpark grid."
+        />
+      )}
     </div>
   );
 }

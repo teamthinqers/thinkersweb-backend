@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { isRunningAsStandalone } from "@/lib/pwaUtils";
 import { useAuth } from '@/hooks/use-auth';
+import { SignInPrompt } from '@/components/auth/SignInPrompt';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -29,7 +30,7 @@ interface StructuredFloatingDotProps {
 }
 
 export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) {
-  const { user, loginWithGoogle } = useAuth();
+  const { user, loginWithGoogle, loginWithBypass } = useAuth();
   const [position, setPosition] = useState<Position>(() => {
     const saved = localStorage.getItem('structured-floating-dot-position');
     return saved ? JSON.parse(saved) : { x: 320, y: 180 };
@@ -44,6 +45,7 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
   // Voice recording states
   const [isRecording, setIsRecording] = useState(false);
   const [currentStep, setCurrentStep] = useState<1 | 2 | 3>(1);
+  const [showSignInPrompt, setShowSignInPrompt] = useState(false);
   const [voiceSteps, setVoiceSteps] = useState({
     summary: '',
     anchor: '',
