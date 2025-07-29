@@ -1,130 +1,110 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
+import { useAuth } from '@/hooks/use-auth';
 
-export function SimpleAuthTest() {
-  const [authStatus, setAuthStatus] = useState<string>('Not checked');
-  const [dotResult, setDotResult] = useState<string>('');
-  const [summary, setSummary] = useState('Test dot from simple auth');
-  const [anchor, setAnchor] = useState('This is a test anchor');
-  const [pulse, setPulse] = useState('excited');
+const SimpleAuthTest: React.FC = () => {
+  const { user, isLoading } = useAuth();
+  const [dots, setDots] = useState<any[]>([]);
+  const [authStatus, setAuthStatus] = useState<any>(null);
+  const [fetchingDots, setFetchingDots] = useState(false);
 
-  const authenticateUser = async () => {
+  const checkAuthStatus = async () => {
     try {
-      setAuthStatus('Authenticating...');
-      
-      // Use the same mock data that worked in QuickAuthTest
-      const mockFirebaseUser = {
-        uid: 'test_user_123',
-        email: 'test@example.com',
-        displayName: 'Test User',
-        photoURL: null
-      };
-      
-      const response = await fetch('/api/auth/firebase', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify(mockFirebaseUser)
-      });
+      const response = await fetch('/api/auth/status', { credentials: 'include' });
+      const data = await response.json();
+      setAuthStatus(data);
+      console.log('Auth status check:', data);
+    } catch (error) {
+      console.error('Auth status check failed:', error);
+    }
+  };
+
+  const fetchDots = async () => {
+    setFetchingDots(true);
+    try {
+      const response = await fetch('/api/dots', { credentials: 'include' });
+      console.log('Dots fetch response:', response.status);
       
       if (response.ok) {
         const data = await response.json();
-        setAuthStatus(`✅ Authenticated as ${data.user?.username || 'user'}`);
+        setDots(data);
+        console.log('Dots fetched:', data);
       } else {
-        setAuthStatus('❌ Authentication failed');
+        const errorData = await response.text();
+        console.error('Dots fetch failed:', response.status, errorData);
+        setDots([]);
       }
     } catch (error) {
-      setAuthStatus(`❌ Error: ${error instanceof Error ? error.message : 'Unknown'}`);
+      console.error('Dots fetch error:', error);
+      setDots([]);
     }
+    setFetchingDots(false);
   };
 
-  const createDot = async () => {
-    try {
-      setDotResult('Creating dot...');
-      
-      const dotData = {
-        summary: summary.substring(0, 220),
-        anchor: anchor.substring(0, 300),
-        pulse: pulse.split(' ')[0],
-        sourceType: 'text'
-      };
-      
-      const response = await fetch('/api/dots', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify(dotData)
-      });
-      
-      if (response.ok) {
-        const result = await response.json();
-        setDotResult(`✅ Dot created! ID: ${result.id}`);
-      } else {
-        const error = await response.json();
-        setDotResult(`❌ Failed: ${error.error}`);
+  // Auto-check auth status and fetch dots when user changes
+  useEffect(() => {
+    if (!isLoading) {
+      checkAuthStatus();
+      if (user) {
+        fetchDots();
       }
-    } catch (error) {
-      setDotResult(`❌ Error: ${error instanceof Error ? error.message : 'Unknown'}`);
     }
-  };
-
-  const doFullTest = async () => {
-    await authenticateUser();
-    // Wait a moment for session to be established
-    setTimeout(createDot, 1000);
-  };
+  }, [user, isLoading]);
 
   return (
-    <div className="p-8 max-w-2xl mx-auto">
+    <div className="p-6 max-w-4xl mx-auto space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>Simple Authentication & Dot Creation Test</CardTitle>
+          <CardTitle>Simple Authentication Test</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div>
-            <h3 className="font-semibold">Authentication Status:</h3>
-            <p className="text-sm">{authStatus}</p>
-            <Button onClick={authenticateUser} className="mt-2">
-              Authenticate
-            </Button>
-          </div>
-          
-          <div className="space-y-2">
-            <h3 className="font-semibold">Dot Data:</h3>
-            <Input 
-              placeholder="Summary" 
-              value={summary}
-              onChange={(e) => setSummary(e.target.value)}
-            />
-            <Textarea 
-              placeholder="Anchor" 
-              value={anchor}
-              onChange={(e) => setAnchor(e.target.value)}
-            />
-            <Input 
-              placeholder="Pulse (one word)" 
-              value={pulse}
-              onChange={(e) => setPulse(e.target.value)}
-            />
-          </div>
-          
-          <div>
-            <h3 className="font-semibold">Dot Creation Result:</h3>
-            <p className="text-sm">{dotResult}</p>
-            <div className="space-x-2 mt-2">
-              <Button onClick={createDot}>
-                Create Dot
-              </Button>
-              <Button onClick={doFullTest} variant="secondary">
-                Full Test (Auth + Create)
-              </Button>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <h3 className="font-semibold">Auth Hook State</h3>
+              <p>Loading: {isLoading ? 'Yes' : 'No'}</p>
+              <p>User: {user ? user.email || user.displayName || 'Authenticated' : 'None'}</p>
+            </div>
+            
+            <div>
+              <h3 className="font-semibold">Backend Auth Status</h3>
+              <p>Authenticated: {authStatus?.authenticated ? 'Yes' : 'No'}</p>
+              <p>Backend User: {authStatus?.user?.email || 'None'}</p>
+            </div>
+            
+            <div>
+              <h3 className="font-semibold">Data Access</h3>
+              <p>Dots Count: {dots.length}</p>
+              <p>Fetching: {fetchingDots ? 'Yes' : 'No'}</p>
             </div>
           </div>
+
+          <div className="flex gap-4">
+            <Button onClick={checkAuthStatus}>Check Auth Status</Button>
+            <Button onClick={fetchDots} disabled={fetchingDots}>
+              {fetchingDots ? 'Fetching...' : 'Fetch Dots'}
+            </Button>
+          </div>
+
+          {dots.length > 0 && (
+            <div>
+              <h3 className="font-semibold">User's Dots</h3>
+              <div className="space-y-2">
+                {dots.map((dot, index) => (
+                  <div key={dot.id || index} className="p-2 bg-gray-100 rounded">
+                    <p><strong>Summary:</strong> {dot.summary}</p>
+                    <p><strong>Anchor:</strong> {dot.anchor}</p>
+                    <p><strong>Pulse:</strong> {dot.pulse}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
   );
-}
+};
+
+export default SimpleAuthTest;
+export { SimpleAuthTest };

@@ -56,57 +56,63 @@ const Dashboard: React.FC = () => {
 
   // Fetch optimized grid positions from new API
   const { data: gridData, isLoading: gridLoading, refetch: refetchGrid } = useQuery({
-    queryKey: ['/api/grid/positions', { preview: previewMode }],
+    queryKey: ['/api/grid/positions', { preview: previewMode }, user?.id || 'anonymous'],
     queryFn: async () => {
       try {
+        console.log('Fetching grid positions for user:', user?.email || 'anonymous', 'preview:', previewMode);
         const response = await fetch(`/api/grid/positions?preview=${previewMode}`, {
           credentials: 'include' // Include cookies for authentication
         });
         if (!response.ok) {
+          console.log('Grid positions fetch failed:', response.status);
           return { data: { dotPositions: {}, wheelPositions: {}, chakraPositions: {}, statistics: { totalDots: 0, totalWheels: 0, totalChakras: 0, freeDots: 0 } } };
         }
-        return response.json();
+        const result = await response.json();
+        console.log('Grid positions fetched successfully for user:', user?.email || 'anonymous');
+        return result;
       } catch (error) {
-        return [];
+        console.error('Grid positions fetch error:', error);
+        return { data: { dotPositions: {}, wheelPositions: {}, chakraPositions: {}, statistics: { totalDots: 0, totalWheels: 0, totalChakras: 0, freeDots: 0 } } };
       }
     },
     retry: false,
     staleTime: 60000, // Cache for 1 minute
     refetchOnWindowFocus: false,
     refetchOnMount: false, // Don't refetch on component mount if cached
-    enabled: true, // Always enabled but with aggressive caching
+    enabled: !isLoading && (!!user || previewMode), // Only fetch when not loading auth and have user OR in preview mode
     refetchInterval: false, // Disable automatic refetching
     gcTime: 5 * 60 * 1000 // Keep data in cache for 5 minutes
   });
 
   // Fallback for dots - use old API if new grid API has no data
   const { data: dots = [], isLoading: dotsLoading, refetch } = useQuery({
-    queryKey: ['/api/dots', previewMode ? 'preview' : 'real'],
+    queryKey: ['/api/dots', previewMode ? 'preview' : 'real', user?.id || 'anonymous'],
     queryFn: async () => {
       try {
         const url = previewMode ? '/api/dots?preview=true' : '/api/dots';
-        console.log('Fetching dots from:', url);
+        console.log('Fetching dots from:', url, 'for user:', user?.email || 'anonymous');
         const response = await fetch(url, {
           credentials: 'include' // Include cookies for authentication
         });
         console.log('Dots fetch response status:', response.status);
         if (!response.ok) {
           console.warn('Dots fetch failed:', response.status, response.statusText);
-          // If authentication failed, show the data anyway in preview mode
+          // If authentication failed and we're not in preview mode, return empty
           if (response.status === 401 && !previewMode) {
-            console.log('Authentication failed, but continuing anyway to show dots');
+            console.log('Authentication required but not provided');
+            return [];
           }
           return [];
         }
         const data = await response.json();
-        console.log('Dots fetched successfully:', data.length, 'dots');
+        console.log('Dots fetched successfully:', data.length, 'dots for user:', user?.email || 'anonymous');
         return data;
       } catch (err) {
         console.error('Error fetching dots:', err);
         return [];
       }
     },
-    enabled: true, // Always enabled to try fetching
+    enabled: !isLoading && (!!user || previewMode), // Only fetch when not loading auth and have user OR in preview mode
     retry: 1, // Retry once on failure
     refetchOnWindowFocus: false,
     staleTime: 5 * 60 * 1000 // 5 minutes

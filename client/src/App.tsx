@@ -38,7 +38,7 @@ import Testing from "@/pages/Testing";
 import TestCreation from "@/pages/TestCreation";
 import { AuthDebug } from "@/pages/AuthDebug";
 import { QuickAuthTest } from "@/pages/QuickAuthTest";
-import { SimpleAuthTest } from "@/pages/SimpleAuthTest";
+
 import WorkingDot from "@/pages/working-dot";
 import TestComplete from "@/pages/TestComplete";
 import { AuthModeSelector } from "@/components/AuthModeSelector";
@@ -53,6 +53,7 @@ import Social from "@/pages/Social";
 import SocialNeura from "@/pages/SocialNeura";
 import SparkTest from "@/pages/SparkTest";
 import Spark from "@/pages/Spark";
+import SimpleAuthTest from "@/pages/SimpleAuthTest";
 import AppLayout from "@/components/layout/AppLayout";
 import EntryDetail from "@/components/entries/EntryDetail";
 import ChatEntryForm from "@/components/chat/ChatEntryForm";
@@ -213,7 +214,7 @@ function Router() {
       <Route path="/production-test" component={ProductionTest} />
       <Route path="/vector-migration-test" component={VectorMigrationTest} />
       <Route path="/auth-test" component={AuthTest} />
-      <Route path="/auth-test" component={AuthTest} />
+      <Route path="/simple-auth-test" component={SimpleAuthTest} />
       <Route path="/whatsapp-admin" component={WhatsAppAdmin} />
       <Route path="/whatsapp-test" component={WhatsAppTest} />
       <Route path="/whatsapp-entries" component={WhatsAppEntries} />

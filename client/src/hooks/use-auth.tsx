@@ -54,6 +54,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         console.log('No backend session found:', error);
       }
       console.log('No valid backend session');
+      setIsLoading(false); // Ensure loading is false even when no session
       return false; // No session
     };
 
