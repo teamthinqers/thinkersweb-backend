@@ -213,6 +213,7 @@ function Router() {
       <Route path="/production-test" component={ProductionTest} />
       <Route path="/vector-migration-test" component={VectorMigrationTest} />
       <Route path="/auth-test" component={AuthTest} />
+      <Route path="/auth-test" component={AuthTest} />
       <Route path="/whatsapp-admin" component={WhatsAppAdmin} />
       <Route path="/whatsapp-test" component={WhatsAppTest} />
       <Route path="/whatsapp-entries" component={WhatsAppEntries} />

@@ -35,11 +35,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     // First check backend session status to recover existing sessions
     const checkBackendSession = async () => {
       try {
+        console.log('Checking backend session...');
         const response = await fetch('/api/auth/status', {
           credentials: 'include'
         });
+        console.log('Backend session response:', response.status);
         if (response.ok) {
           const { authenticated, user } = await response.json();
+          console.log('Backend session data:', { authenticated, user: user?.email });
           if (authenticated && user) {
             console.log('Backend session found, setting user:', user.email);
             setUser(user);
@@ -50,6 +53,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       } catch (error) {
         console.log('No backend session found:', error);
       }
+      console.log('No valid backend session');
       return false; // No session
     };
 

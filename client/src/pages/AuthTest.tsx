@@ -1,115 +1,185 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { useLocation } from 'wouter';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-export default function AuthTest() {
-  const [, setLocation] = useLocation();
-  const [testResult, setTestResult] = useState<string>('');
-  const [isLoading, setIsLoading] = useState(false);
+const AuthTest: React.FC = () => {
+  const [email, setEmail] = useState('test@dotspark.com');
+  const [uid, setUid] = useState('test_user_browser');
+  const [displayName, setDisplayName] = useState('Browser Test User');
+  const [result, setResult] = useState<any>(null);
+  const [authStatus, setAuthStatus] = useState<any>(null);
+  const [dots, setDots] = useState<any>(null);
 
   const testAuthentication = async () => {
-    setIsLoading(true);
-    setTestResult('');
-
     try {
-      // Test Firebase authentication sync
-      const authResponse = await fetch('/api/auth/firebase', {
+      console.log('Testing authentication...');
+      const response = await fetch('/api/auth/firebase', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
         body: JSON.stringify({
-          firebaseToken: 'test_token_123',
-          email: 'test@example.com',
-          uid: `test_user_${Date.now()}`,
-          displayName: 'Test User'
+          firebaseToken: `test_token_${Date.now()}`,
+          email,
+          uid,
+          displayName
         })
       });
-
-      if (authResponse.ok) {
-        const authData = await authResponse.json();
-        setTestResult(`✅ Authentication successful: ${JSON.stringify(authData, null, 2)}`);
-        
-        // Test dots creation
-        const dotResponse = await fetch('/api/dots', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-          body: JSON.stringify({
-            summary: 'Test authentication dot',
-            anchor: 'Testing if user can create dots after authentication',
-            pulse: 'focused'
-          })
-        });
-
-        if (dotResponse.ok) {
-          const dotData = await dotResponse.json();
-          setTestResult(prev => prev + `\n\n✅ Dot creation successful: ${JSON.stringify(dotData, null, 2)}`);
-          
-          // Test fetching dots
-          const fetchResponse = await fetch('/api/dots', {
-            credentials: 'include'
-          });
-          
-          if (fetchResponse.ok) {
-            const fetchedDots = await fetchResponse.json();
-            setTestResult(prev => prev + `\n\n✅ Dots fetch successful: Found ${fetchedDots.length} dots`);
-          } else {
-            setTestResult(prev => prev + `\n\n❌ Dots fetch failed: ${fetchResponse.status}`);
-          }
-        } else {
-          setTestResult(prev => prev + `\n\n❌ Dot creation failed: ${dotResponse.status}`);
-        }
-      } else {
-        setTestResult(`❌ Authentication failed: ${authResponse.status}`);
-      }
+      
+      const data = await response.json();
+      setResult(data);
+      console.log('Auth result:', data);
+      
+      // Check auth status immediately after
+      setTimeout(checkAuthStatus, 100);
     } catch (error) {
-      setTestResult(`❌ Error: ${error}`);
-    } finally {
-      setIsLoading(false);
+      console.error('Auth test failed:', error);
+      setResult({ error: error.message });
+    }
+  };
+
+  const checkAuthStatus = async () => {
+    try {
+      const response = await fetch('/api/auth/status', {
+        credentials: 'include'
+      });
+      const data = await response.json();
+      setAuthStatus(data);
+      console.log('Auth status:', data);
+    } catch (error) {
+      console.error('Status check failed:', error);
+      setAuthStatus({ error: error.message });
+    }
+  };
+
+  const fetchDots = async () => {
+    try {
+      const response = await fetch('/api/dots', {
+        credentials: 'include'
+      });
+      const data = await response.json();
+      setDots(data);
+      console.log('Dots result:', data);
+    } catch (error) {
+      console.error('Dots fetch failed:', error);
+      setDots({ error: error.message });
+    }
+  };
+
+  const createTestDot = async () => {
+    try {
+      const response = await fetch('/api/dots', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          summary: 'Browser test dot',
+          anchor: 'Testing from browser',
+          pulse: 'excited',
+          sourceType: 'text'
+        })
+      });
+      const data = await response.json();
+      console.log('Dot creation result:', data);
+      
+      // Refresh dots after creation
+      setTimeout(fetchDots, 100);
+    } catch (error) {
+      console.error('Dot creation failed:', error);
     }
   };
 
   return (
-    <div className="container mx-auto p-6 max-w-4xl">
-      <Card className="mb-6">
+    <div className="p-6 max-w-4xl mx-auto space-y-6">
+      <Card>
         <CardHeader>
           <CardTitle>Authentication Test</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Button 
-            onClick={testAuthentication} 
-            disabled={isLoading}
-            className="w-full"
-          >
-            {isLoading ? 'Testing Authentication...' : 'Test Auth & Dot Creation'}
-          </Button>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label className="text-sm font-medium">Email</label>
+              <Input 
+                value={email} 
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Email"
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium">UID</label>
+              <Input 
+                value={uid} 
+                onChange={(e) => setUid(e.target.value)}
+                placeholder="User ID"
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Display Name</label>
+              <Input 
+                value={displayName} 
+                onChange={(e) => setDisplayName(e.target.value)}
+                placeholder="Display Name"
+              />
+            </div>
+          </div>
           
-          <Button 
-            variant="outline"
-            onClick={() => setLocation('/dashboard')}
-            className="w-full"
-          >
-            Go to Dashboard
-          </Button>
+          <div className="flex gap-4 flex-wrap">
+            <Button onClick={testAuthentication}>
+              Test Authentication
+            </Button>
+            <Button onClick={checkAuthStatus} variant="outline">
+              Check Auth Status
+            </Button>
+            <Button onClick={fetchDots} variant="outline">
+              Fetch Dots
+            </Button>
+            <Button onClick={createTestDot} variant="outline">
+              Create Test Dot
+            </Button>
+          </div>
         </CardContent>
       </Card>
 
-      {testResult && (
+      {result && (
         <Card>
           <CardHeader>
-            <CardTitle>Test Results</CardTitle>
+            <CardTitle>Authentication Result</CardTitle>
           </CardHeader>
           <CardContent>
-            <pre className="text-xs bg-gray-100 p-4 rounded overflow-auto whitespace-pre-wrap">
-              {testResult}
+            <pre className="bg-gray-100 p-4 rounded text-sm overflow-auto">
+              {JSON.stringify(result, null, 2)}
+            </pre>
+          </CardContent>
+        </Card>
+      )}
+
+      {authStatus && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Auth Status</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <pre className="bg-gray-100 p-4 rounded text-sm overflow-auto">
+              {JSON.stringify(authStatus, null, 2)}
+            </pre>
+          </CardContent>
+        </Card>
+      )}
+
+      {dots && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Dots Data</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <pre className="bg-gray-100 p-4 rounded text-sm overflow-auto">
+              {JSON.stringify(dots, null, 2)}
             </pre>
           </CardContent>
         </Card>
       )}
     </div>
   );
-}
+};
 
-export { AuthTest };
+export default AuthTest;
