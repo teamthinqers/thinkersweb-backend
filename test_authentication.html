@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test DotSpark Authentication</title>
+</head>
+<body>
+    <h1>DotSpark Authentication Test</h1>
+    <button onclick="testAuth()">Test Authentication</button>
+    <button onclick="testDotCreation()">Test Dot Creation</button>
+    <button onclick="checkSession()">Check Session</button>
+    <div id="results"></div>
+
+    <script>
+        async function testAuth() {
+            try {
+                const response = await fetch('/api/auth/firebase', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        firebaseToken: 'bypass_token_demo',
+                        email: 'test@demo.com',
+                        uid: 'bypass_demo_user_web'
+                    })
+                });
+                
+                const result = await response.json();
+                document.getElementById('results').innerHTML = `
+                    <h3>Authentication Result:</h3>
+                    <pre>${JSON.stringify(result, null, 2)}</pre>
+                `;
+            } catch (error) {
+                document.getElementById('results').innerHTML = `Error: ${error.message}`;
+            }
+        }
+
+        async function testDotCreation() {
+            try {
+                const response = await fetch('/api/dots', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        summary: 'test dot from web',
+                        anchor: 'testing browser authentication',
+                        pulse: 'focused'
+                    })
+                });
+                
+                const result = await response.json();
+                document.getElementById('results').innerHTML = `
+                    <h3>Dot Creation Result:</h3>
+                    <pre>${JSON.stringify(result, null, 2)}</pre>
+                `;
+            } catch (error) {
+                document.getElementById('results').innerHTML = `Error: ${error.message}`;
+            }
+        }
+
+        async function checkSession() {
+            try {
+                const response = await fetch('/api/user', {
+                    credentials: 'include'
+                });
+                
+                const result = await response.json();
+                document.getElementById('results').innerHTML = `
+                    <h3>Session Check Result:</h3>
+                    <pre>${JSON.stringify(result, null, 2)}</pre>
+                `;
+            } catch (error) {
+                document.getElementById('results').innerHTML = `Error: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>

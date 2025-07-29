@@ -41,6 +41,7 @@ import { AuthDebug } from "@/pages/AuthDebug";
 import { QuickAuthTest } from "@/pages/QuickAuthTest";
 import { SimpleAuthTest } from "@/pages/SimpleAuthTest";
 import WorkingDot from "@/pages/working-dot";
+import TestComplete from "@/pages/TestComplete";
 import { WorkingDotTest } from "@/pages/WorkingDotTest";
 import IntelligenceClassification from "@/components/IntelligenceClassification";
 import ChatPage from "@/pages/chat-page";
@@ -259,6 +260,7 @@ function Router() {
       <Route path="/simple-auth" component={SimpleAuthTest} />
       <Route path="/working-dot" component={WorkingDot} />
       <Route path="/working-dot-test" component={WorkingDotTest} />
+      <Route path="/test-complete" component={TestComplete} />
       <Route path="/chat" component={ChatPage} />
       <Route path="/enhanced-chat" component={() => <div className="h-screen"><EnhancedChatInterface /></div>} />
       <Route path="/vector-chat" component={() => <div className="min-h-screen bg-gray-50"><IntelligentVectorChat /></div>} />
