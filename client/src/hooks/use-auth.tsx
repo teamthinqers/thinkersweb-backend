@@ -43,13 +43,48 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       });
     } else {
       console.log('Production mode detected - using Firebase authentication');
-      // Use Firebase authentication for production
-      firebaseUnsubscribe = auth.onAuthStateChanged((firebaseUser) => {
+      // Use Firebase authentication for production with backend sync
+      firebaseUnsubscribe = auth.onAuthStateChanged(async (firebaseUser) => {
         if (firebaseUser) {
           console.log('Firebase auth state changed:', `User ${firebaseUser.email} signed in`);
+          
+          // Sync with backend to establish session
+          try {
+            const token = await firebaseUser.getIdToken();
+            const response = await fetch('/api/auth/firebase', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              credentials: 'include',
+              body: JSON.stringify({
+                firebaseToken: token,
+                email: firebaseUser.email,
+                uid: firebaseUser.uid,
+                displayName: firebaseUser.displayName,
+                photoURL: firebaseUser.photoURL
+              })
+            });
+            
+            if (response.ok) {
+              console.log('Backend session established successfully');
+            } else {
+              console.error('Failed to establish backend session');
+            }
+          } catch (error) {
+            console.error('Error syncing with backend:', error);
+          }
+          
           setUser(firebaseUser);
         } else {
           console.log('Firebase auth state changed: User signed out');
+          // Also logout from backend
+          try {
+            await fetch('/api/logout', { 
+              method: 'POST', 
+              credentials: 'include' 
+            });
+          } catch (error) {
+            console.log('Backend logout failed:', error);
+          }
           setUser(null);
         }
         setIsLoading(false);
@@ -65,8 +100,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const loginWithGoogle = async () => {
     setIsLoading(true);
     try {
-      await signInWithGoogle();
-      // User state will be updated by onAuthStateChanged
+      const userCredential = await signInWithGoogle();
+      // The onAuthStateChanged handler will sync with backend automatically
     } catch (error) {
       console.error('Login failed:', error);
       setIsLoading(false);
