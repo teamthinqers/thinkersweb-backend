@@ -44,6 +44,8 @@ import vectorSearchRouter from './routes/vector-search';
 import indexingRouter from './routes/indexing';
 import userContentRouter from './routes/user-content';
 import { initializeVectorDB } from './vector-db';
+import { vectorIntegration } from './vector-integration';
+import { setupVectorAPI } from './routes/vector-api';
 
 // Interface for authenticated requests
 interface AuthenticatedRequest extends Request {
@@ -625,6 +627,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         const [newDot] = await db.insert(dots).values(dotData).returning();
         
+        // Store in vector database for intelligent retrieval
+        try {
+          await vectorIntegration.storeDotInVector(newDot.id, userId);
+        } catch (error) {
+          console.error('Failed to store dot in vector database:', error);
+        }
+        
         return res.json({
           reply: "Hey ThinQer, your dot is saved. You can find your dot in DotSpark Map in the Neura section for reference. Thank you!",
           action: 'dot_saved',
@@ -834,6 +843,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const newChakraResult = await db.insert(chakras).values(chakraData).returning();
       const newChakra = Array.isArray(newChakraResult) ? newChakraResult[0] : newChakraResult;
       
+      // Store in vector database for intelligent retrieval
+      try {
+        await vectorIntegration.storeChakraInVector(newChakra.id, userId);
+      } catch (error) {
+        console.error('Failed to store chakra in vector database:', error);
+      }
+      
       res.status(201).json({ 
         success: true, 
         message: 'Chakra created successfully',
@@ -954,6 +970,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const newWheelResult = await db.insert(wheels).values(wheelData).returning();
       const newWheel = Array.isArray(newWheelResult) ? newWheelResult[0] : newWheelResult;
+      
+      // Store in vector database for intelligent retrieval
+      try {
+        await vectorIntegration.storeWheelInVector(newWheel.id, userId);
+      } catch (error) {
+        console.error('Failed to store wheel in vector database:', error);
+      }
       
       res.status(201).json({ 
         success: true, 
@@ -1642,6 +1665,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Mount indexing demo routes
   const indexingDemoRouter = await import('./routes/indexing-demo');
   app.use(`${apiPrefix}/indexing`, indexingDemoRouter.default);
+  
+  // Register vector integration API
+  setupVectorAPI(app, apiPrefix);
 
   // ==========================================
   // COGNITIVE ANALYSIS & INTELLIGENT RETRIEVAL

@@ -123,12 +123,65 @@ export default function VectorMigrationTest() {
         addResult('❌ Separate Table Queries', false, 'Failed to query one or more tables');
       }
 
-      // Test 6: Vector DB Migration Readiness
+      // Test 6: Vector Database Migration Test
+      const vectorMigrationResponse = await fetch('/api/vector/migrate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({})
+      });
+
+      if (vectorMigrationResponse.ok) {
+        const vectorData = await vectorMigrationResponse.json();
+        addResult('✅ Vector Migration', true, `Stored ${vectorData.results?.totalItems || 0} items in Pinecone`);
+      } else {
+        addResult('⚠️ Vector Migration', false, 'Pinecone not configured or migration failed');
+      }
+
+      // Test 7: Vector Search Test
+      const vectorSearchResponse = await fetch('/api/vector/search', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          query: 'migration test productivity',
+          topK: 3
+        })
+      });
+
+      if (vectorSearchResponse.ok) {
+        const searchData = await vectorSearchResponse.json();
+        addResult('✅ Vector Search', true, `Found ${searchData.results?.length || 0} relevant items`);
+      } else {
+        addResult('⚠️ Vector Search', false, 'Vector search not available');
+      }
+
+      // Test 8: Intelligence Retrieval Test
+      const intelligenceResponse = await fetch('/api/vector/intelligence', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          query: 'personal development goals',
+          context: 'User is asking about their progress',
+          maxResults: 3
+        })
+      });
+
+      if (intelligenceResponse.ok) {
+        const intelligenceData = await intelligenceResponse.json();
+        addResult('✅ Intelligence Context', true, `Generated ${intelligenceData.intelligenceContext?.length || 0} contextual insights`);
+      } else {
+        addResult('⚠️ Intelligence Context', false, 'Intelligence retrieval not available');
+      }
+
+      // Test 9: Vector DB Migration Ready
       addResult('🚀 Vector DB Ready', true, {
-        architecture: 'Separate tables implemented',
-        migration: 'Ready for vector database integration',
+        architecture: 'Separate tables implemented with vector storage',
+        migration: 'Ready for automatic vector database integration',
         tables: ['dots', 'wheels', 'chakras'],
-        benefits: ['Clean data separation', 'Easier vector migration', 'Better scalability']
+        vectorFeatures: ['Automatic storage', 'Semantic search', 'Intelligence retrieval'],
+        benefits: ['Clean data separation', 'Intelligent conversation context', 'Better user insights']
       });
 
     } catch (error) {
