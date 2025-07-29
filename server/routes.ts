@@ -15,6 +15,11 @@ import {
   whatsappOtpVerifications,
   whatsappUsers,
   wheels,
+  dots,
+  chakras,
+  categories,
+  vectorEmbeddings,
+  conversationSessions,
   type User 
 } from "@shared/schema";
 import { processEntryFromChat, generateChatResponse, type Message } from "./chat";
@@ -608,22 +613,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const { generateOneWordSummary } = await import('./openai.js');
         const oneWordSummary = await generateOneWordSummary(dotProposal.summary, dotProposal.anchor);
         
-        const entryData = {
+        const dotData = {
           userId,
-          title: dotProposal.summary.substring(0, 50) + (dotProposal.summary.length > 50 ? '...' : ''),
-          content: JSON.stringify({
-            oneWordSummary,
-            summary: dotProposal.summary,
-            anchor: dotProposal.anchor,
-            pulse: dotProposal.pulse,
-            sourceType: 'text',
-            captureMode: 'ai',
-            dotType: 'three-layer'
-          }),
-          visibility: 'private'
+          oneWordSummary,
+          summary: dotProposal.summary,
+          anchor: dotProposal.anchor,
+          pulse: dotProposal.pulse,
+          sourceType: 'text',
+          captureMode: 'ai',
         };
         
-        const [newDot] = await db.insert(entries).values(entryData).returning();
+        const [newDot] = await db.insert(dots).values(dotData).returning();
         
         return res.json({
           reply: "Hey ThinQer, your dot is saved. You can find your dot in DotSpark Map in the Neura section for reference. Thank you!",
@@ -819,19 +819,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
       
-      // Create the Chakra (wheel with chakraId = null)
+      // Create the Chakra in the dedicated chakras table
       const chakraData = {
         userId,
-        chakraId: null, // This makes it a top-level Chakra
         heading,
-        goals: purpose, // Maps to the 'goals' field in the wheels table
+        purpose, // Maps to the 'purpose' field in the chakras table
         timeline,
-        color: '#8B5CF6', // Default purple color for Chakras
+        sourceType,
+        color: '#B45309', // Dark amber color for Chakras
         positionX: Math.floor(Math.random() * 400) + 100,
         positionY: Math.floor(Math.random() * 400) + 100,
       };
       
-      const newChakraResult = await db.insert(wheels).values(chakraData).returning();
+      const newChakraResult = await db.insert(chakras).values(chakraData).returning();
       const newChakra = Array.isArray(newChakraResult) ? newChakraResult[0] : newChakraResult;
       
       res.status(201).json({ 
@@ -840,7 +840,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         chakra: {
           id: newChakra.id,
           heading: newChakra.heading,
-          purpose: newChakra.goals, // Return as 'purpose' for consistency with frontend
+          purpose: newChakra.purpose,
           timeline: newChakra.timeline,
           sourceType,
           color: newChakra.color,

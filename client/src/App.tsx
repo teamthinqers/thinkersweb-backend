@@ -65,6 +65,8 @@ import AdvancedDotSparkChat from "@/components/AdvancedDotSparkChat";
 import IntelligenceSelector from "@/components/IntelligenceSelector";
 import IndexingDemo from "@/pages/IndexingDemo";
 import ActivationPage from "@/pages/ActivationPage";
+import ProductionTest from "@/pages/ProductionTest";
+import VectorMigrationTest from "@/pages/VectorMigrationTest";
 
 import { StructuredFloatingDot } from "@/components/dotspark/StructuredFloatingDot";
 import { neuraStorage } from "@/lib/neuraStorage";
@@ -208,6 +210,8 @@ function Router() {
       <Route path="/social-neura" component={SocialNeura} />
       <Route path="/sparktest" component={SparkTest} />
       <Route path="/spark" component={Spark} />
+      <Route path="/production-test" component={ProductionTest} />
+      <Route path="/vector-migration-test" component={VectorMigrationTest} />
       <Route path="/whatsapp-admin" component={WhatsAppAdmin} />
       <Route path="/whatsapp-test" component={WhatsAppTest} />
       <Route path="/whatsapp-entries" component={WhatsAppEntries} />

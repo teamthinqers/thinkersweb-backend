@@ -193,77 +193,6 @@ export const insertVectorEmbeddingSchema = createInsertSchema(vectorEmbeddings, 
   content: (schema) => schema.min(10, "Content must be at least 10 characters"),
 });
 
-// Legacy tables for backward compatibility (keeping minimal structure)
-export const entries = pgTable("entries", {
-  id: serial("id").primaryKey(),
-  title: text("title"),
-  content: text("content"),
-  categoryId: integer("category_id").references(() => categories.id),
-  isFavorite: boolean("is_favorite").default(false),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
-  userId: integer("user_id").references(() => users.id),
-  visibility: text("visibility").default("private"),
-});
-
-export const conversationSessions = pgTable("conversation_sessions", {
-  id: serial("id").primaryKey(),
-  userId: integer("user_id").references(() => users.id).notNull(),
-  sessionId: text("session_id").notNull().unique(),
-  conversationData: text("conversation_data"),
-  lastActivity: timestamp("last_activity").defaultNow().notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
-
-export const session = pgTable("session", {
-  id: text("id").primaryKey(),
-  userId: integer("user_id").references(() => users.id),
-  expiresAt: timestamp("expires_at").notNull(),
-  data: text("data"),
-});
-
-export const whatsappUsers = pgTable("whatsapp_users", {
-  id: serial("id").primaryKey(),
-  userId: integer("user_id").references(() => users.id).notNull(),
-  phoneNumber: text("phone_number").notNull().unique(),
-  active: boolean("active").default(true).notNull(),
-  lastMessageSentAt: timestamp("last_message_sent_at"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
-});
-
-export const whatsappOtpVerifications = pgTable("whatsapp_otp_verifications", {
-  id: serial("id").primaryKey(),
-  phoneNumber: text("phone_number").notNull(),
-  otp: text("otp").notNull(),
-  expiresAt: timestamp("expires_at").notNull(),
-  verified: boolean("verified").default(false),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
-
-// Legacy relations
-export const entriesRelations = relations(entries, ({ one }) => ({
-  user: one(users, { fields: [entries.userId], references: [users.id] }),
-  category: one(categories, { fields: [entries.categoryId], references: [categories.id] }),
-}));
-
-export const conversationSessionsRelations = relations(conversationSessions, ({ one }) => ({
-  user: one(users, { fields: [conversationSessions.userId], references: [users.id] }),
-}));
-
-export const whatsappUsersRelations = relations(whatsappUsers, ({ one }) => ({
-  user: one(users, { fields: [whatsappUsers.userId], references: [users.id] }),
-}));
-
-export const usersRelations = relations(users, ({ many }) => ({
-  dots: many(dots),
-  wheels: many(wheels),
-  chakras: many(chakras),
-  entries: many(entries),
-  whatsappUsers: many(whatsappUsers),
-  conversationSessions: many(conversationSessions),
-}));
-
 // === TYPE EXPORTS ===
 
 export type InsertDot = z.infer<typeof insertDotSchema>;
@@ -280,7 +209,3 @@ export type VoiceRecording = typeof voiceRecordings.$inferSelect;
 
 export type InsertVectorEmbedding = z.infer<typeof insertVectorEmbeddingSchema>;
 export type VectorEmbedding = typeof vectorEmbeddings.$inferSelect;
-
-// Legacy types
-export type Entry = typeof entries.$inferSelect;
-export type ConversationSession = typeof conversationSessions.$inferSelect;
