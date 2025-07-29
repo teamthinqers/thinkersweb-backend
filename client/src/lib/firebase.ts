@@ -43,7 +43,7 @@ setPersistence(auth, browserLocalPersistence)
   })
   .catch(err => console.error("Firebase auth persistence failed:", err));
 
-// Configure Google provider
+// Configure Google provider with localhost support
 const googleProvider = new GoogleAuthProvider();
 googleProvider.setCustomParameters({
   prompt: 'select_account'

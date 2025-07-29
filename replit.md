@@ -140,6 +140,15 @@ DotSpark is a full-stack web application that serves as a personalized learning 
 ## Changelog
 ```
 Changelog:
+- January 29, 2025. FIXED authentication flow and dot creation system:
+  * Resolved root cause of dots not appearing - authentication sync between Firebase and Express sessions
+  * Enhanced /api/auth/firebase endpoint to properly create/link users and establish sessions
+  * Fixed authentication verification in floating dot components to check backend session validity
+  * Created comprehensive debugging tools (QuickAuthTest, SimpleAuthTest, AuthDebug) for authentication troubleshooting
+  * Verified end-to-end dot creation flow: Firebase auth → backend sync → session creation → dot creation → database storage
+  * Authentication system now working: users can authenticate and create dots that persist in database
+  * System creates proper user accounts, maintains sessions, and enforces authentication for dot creation
+  * Next step: Fix Firebase domain authorization for Google sign-in and update floating dot components
 - January 28, 2025. FIXED preview mode toggle switching issue by removing automatic preview->real mode logic:
   * Eliminated useEffect that automatically switched preview mode off when user had content
   * Preview toggle now works properly - users can manually switch between real and preview modes
