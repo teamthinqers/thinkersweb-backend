@@ -76,10 +76,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       
       // First try to recover backend session, then setup Firebase
       checkBackendSession().then((sessionRecovered) => {
-        if (!sessionRecovered) {
-          // No backend session, setup Firebase authentication
-          firebaseUnsubscribe = auth.onAuthStateChanged(async (firebaseUser) => {
-            if (firebaseUser) {
+        // Always setup Firebase authentication regardless of session recovery
+        firebaseUnsubscribe = auth.onAuthStateChanged(async (firebaseUser) => {
+          if (firebaseUser) {
               console.log('Firebase auth state changed:', `User ${firebaseUser.email} signed in`);
               
               // Sync with backend to establish session
@@ -133,25 +132,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             }
             setIsLoading(false);
           });
-        } else {
-          // Session was recovered, just setup Firebase listener for future changes
-          firebaseUnsubscribe = auth.onAuthStateChanged(async (firebaseUser) => {
-            if (!firebaseUser) {
-              // User signed out from Firebase, clear backend session too
-              console.log('Firebase auth state changed: User signed out');
-              try {
-                await fetch('/api/logout', { 
-                  method: 'POST', 
-                  credentials: 'include' 
-                });
-              } catch (error) {
-                console.log('Backend logout failed:', error);
-              }
-              setUser(null);
-            }
-            setIsLoading(false);
-          });
-        }
       });
     }
 

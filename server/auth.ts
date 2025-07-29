@@ -606,7 +606,7 @@ export function setupAuth(app: Express) {
             username: user.username || '',
             email: user.email,
             firebaseUid: user.firebaseUid,
-            fullName: user.username,
+            fullName: user.fullName || user.username || 'User',
             bio: user.bio,
             avatarUrl: user.avatar,
             createdAt: user.createdAt,
