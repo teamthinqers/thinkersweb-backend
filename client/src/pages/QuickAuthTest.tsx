@@ -68,6 +68,57 @@ export function QuickAuthTest() {
     setTestResults(results);
   };
 
+  const testDirectAuth = async () => {
+    const results: string[] = [];
+    
+    try {
+      results.push('🔧 Testing direct authentication bypass...');
+      
+      // Create a mock Firebase user data to test backend sync
+      const mockFirebaseUser = {
+        uid: 'test_user_123',
+        email: 'test@example.com',
+        displayName: 'Test User',
+        photoURL: null
+      };
+      
+      results.push('📤 Sending authentication sync to backend...');
+      
+      const response = await fetch('/api/auth/firebase', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(mockFirebaseUser)
+      });
+      
+      results.push(`📊 Response status: ${response.status}`);
+      
+      if (response.ok) {
+        const data = await response.json();
+        results.push('✅ Backend authentication sync successful!');
+        results.push(`Created/found user: ${data.user?.username || 'unknown'}`);
+        results.push(`Session ID: ${data.sessionId}`);
+        
+        // Test if we can now access protected routes
+        const userResponse = await fetch('/api/user', { credentials: 'include' });
+        if (userResponse.ok) {
+          const userData = await userResponse.json();
+          results.push('✅ Protected route access confirmed!');
+          results.push(`User ID: ${userData.id}`);
+        } else {
+          results.push('❌ Still cannot access protected routes');
+        }
+      } else {
+        const error = await response.json();
+        results.push(`❌ Backend sync failed: ${error.message || 'Unknown error'}`);
+      }
+    } catch (error) {
+      results.push(`❌ Test failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+    
+    setTestResults(results);
+  };
+
   useEffect(() => {
     checkBackend();
   }, [user]);
@@ -99,12 +150,15 @@ export function QuickAuthTest() {
             </Button>
           </div>
 
-          <div className="space-x-2">
+          <div className="space-x-2 space-y-2">
             <Button onClick={testDotCreation}>
-              Test Dot Creation (No Auth Required)
+              Test Dot Creation
             </Button>
             <Button onClick={testFirebaseDomain} variant="outline">
               Check Firebase Setup
+            </Button>
+            <Button onClick={testDirectAuth} variant="secondary">
+              Test Direct Auth (Bypass Firebase)
             </Button>
           </div>
 
