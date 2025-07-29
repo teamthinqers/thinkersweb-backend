@@ -58,7 +58,9 @@ const Dashboard: React.FC = () => {
     queryKey: ['/api/grid/positions', { preview: previewMode }],
     queryFn: async () => {
       try {
-        const response = await fetch(`/api/grid/positions?preview=${previewMode}`);
+        const response = await fetch(`/api/grid/positions?preview=${previewMode}`, {
+          credentials: 'include' // Include cookies for authentication
+        });
         if (!response.ok) {
           return { data: { dotPositions: {}, wheelPositions: {}, chakraPositions: {}, statistics: { totalDots: 0, totalWheels: 0, totalChakras: 0, freeDots: 0 } } };
         }
@@ -115,7 +117,9 @@ const Dashboard: React.FC = () => {
     queryFn: async () => {
       try {
         const url = previewMode ? '/api/wheels?preview=true' : '/api/wheels';
-        const response = await fetch(url);
+        const response = await fetch(url, {
+          credentials: 'include' // Include cookies for authentication
+        });
         if (!response.ok) {
           return [];
         }

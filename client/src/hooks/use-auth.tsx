@@ -32,6 +32,27 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                       window.location.pathname.includes('/test-') ||
                       localStorage.getItem('dotspark_demo_mode') === 'true';
 
+    // First check backend session status to recover existing sessions
+    const checkBackendSession = async () => {
+      try {
+        const response = await fetch('/api/auth/status', {
+          credentials: 'include'
+        });
+        if (response.ok) {
+          const { authenticated, user } = await response.json();
+          if (authenticated && user) {
+            console.log('Backend session found, setting user:', user.email);
+            setUser(user);
+            setIsLoading(false);
+            return true; // Session recovered
+          }
+        }
+      } catch (error) {
+        console.log('No backend session found:', error);
+      }
+      return false; // No session
+    };
+
     if (isDemoMode) {
       console.log('Demo mode detected - using authentication bypass');
       // Initialize auth bypass for demo mode
@@ -43,8 +64,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       });
     } else {
       console.log('Production mode detected - using Firebase authentication');
-      // Use Firebase authentication for production with backend sync
-      firebaseUnsubscribe = auth.onAuthStateChanged(async (firebaseUser) => {
+      
+      // First try to recover backend session, then setup Firebase
+      checkBackendSession().then((sessionRecovered) => {
+        if (!sessionRecovered) {
+          // No backend session, setup Firebase authentication
+          firebaseUnsubscribe = auth.onAuthStateChanged(async (firebaseUser) => {
         if (firebaseUser) {
           console.log('Firebase auth state changed:', `User ${firebaseUser.email} signed in`);
           
@@ -88,6 +113,26 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           setUser(null);
         }
         setIsLoading(false);
+          });
+        } else {
+          // Session was recovered, just setup Firebase listener for future changes
+          firebaseUnsubscribe = auth.onAuthStateChanged(async (firebaseUser) => {
+            if (!firebaseUser) {
+              // User signed out from Firebase, clear backend session too
+              console.log('Firebase auth state changed: User signed out');
+              try {
+                await fetch('/api/logout', { 
+                  method: 'POST', 
+                  credentials: 'include' 
+                });
+              } catch (error) {
+                console.log('Backend logout failed:', error);
+              }
+              setUser(null);
+            }
+            setIsLoading(false);
+          });
+        }
       });
     }
 

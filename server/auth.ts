@@ -525,6 +525,21 @@ export function setupAuth(app: Express) {
     });
   });
 
+  // Auth status endpoint for frontend to check authentication state
+  app.get("/api/auth/status", (req, res) => {
+    if (req.isAuthenticated() && req.user) {
+      res.json({
+        authenticated: true,
+        user: req.user
+      });
+    } else {
+      res.json({
+        authenticated: false,
+        user: null
+      });
+    }
+  });
+
   // Enhanced session refresh endpoint with async/await for proper error handling
   app.post("/api/auth/refresh", async (req, res) => {
     try {
