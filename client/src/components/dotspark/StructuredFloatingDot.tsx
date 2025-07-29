@@ -1143,35 +1143,35 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                       </div>
                     </div>
 
-                    {/* Layer 3: Anchor */}
-                    <div className="p-4 bg-gradient-to-br from-blue-50/50 to-indigo-50/50 rounded-xl border-2 border-blue-300 shadow-sm hover:shadow-md transition-all duration-300">
+                    {/* Layer 2: Anchor */}
+                    <div className="p-4 bg-gradient-to-br from-amber-50/70 to-orange-50/70 rounded-xl border-2 border-amber-500 shadow-sm hover:shadow-md transition-all duration-300">
                       <div className="flex items-center gap-2 mb-3">
-                        <div className="w-6 h-6 rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 flex items-center justify-center">
+                        <div className="w-6 h-6 rounded-full bg-gradient-to-r from-amber-700 to-orange-800 flex items-center justify-center">
                           <span className="text-white text-xs font-bold">2</span>
                         </div>
-                        <h5 className="text-sm font-semibold text-blue-700">Layer 2: Anchor</h5>
+                        <h5 className="text-sm font-semibold text-amber-900">Layer 2: Anchor</h5>
                         {structuredInput.anchor && <span className="text-xs text-green-600 ml-auto">✓ Done</span>}
                       </div>
                       <Textarea
                         value={structuredInput.anchor}
                         onChange={(e) => setStructuredInput(prev => ({ ...prev, anchor: e.target.value }))}
                         placeholder="Memory anchor - what helps you remember this..."
-                        className="border-blue-200 focus:border-blue-400 focus:ring-blue-400 min-h-[80px]"
+                        className="border-amber-300 focus:border-amber-500 focus:ring-amber-500 min-h-[80px]"
                         maxLength={300}
                       />
                       <div className="flex justify-between text-xs mt-2">
-                        <span className="text-blue-600">Context that makes this memorable</span>
-                        <span className="text-blue-500">{structuredInput.anchor.length}/300</span>
+                        <span className="text-amber-700">Context that makes this memorable</span>
+                        <span className="text-amber-600">{structuredInput.anchor.length}/300</span>
                       </div>
                     </div>
 
-                    {/* Layer 4: Pulse */}
-                    <div className="p-4 bg-gradient-to-br from-purple-50/30 to-pink-50/30 rounded-xl border-2 border-purple-200 shadow-sm hover:shadow-md transition-all duration-300">
+                    {/* Layer 3: Pulse */}
+                    <div className="p-4 bg-gradient-to-br from-amber-50/80 to-orange-50/80 rounded-xl border-2 border-amber-600 shadow-sm hover:shadow-md transition-all duration-300">
                       <div className="flex items-center gap-2 mb-3">
-                        <div className="w-6 h-6 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 flex items-center justify-center">
+                        <div className="w-6 h-6 rounded-full bg-gradient-to-r from-amber-800 to-orange-900 flex items-center justify-center">
                           <span className="text-white text-xs font-bold">3</span>
                         </div>
-                        <h5 className="text-sm font-semibold text-purple-700">Layer 3: Pulse</h5>
+                        <h5 className="text-sm font-semibold text-amber-900">Layer 3: Pulse</h5>
                         {structuredInput.pulse && <span className="text-xs text-green-600 ml-auto">✓ Done</span>}
                       </div>
                       <div className="grid grid-cols-3 gap-2 mb-4">
@@ -1181,8 +1181,8 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                             onClick={() => setStructuredInput(prev => ({ ...prev, pulse: emotion }))}
                             className={`p-2 text-xs rounded-lg transition-all duration-200 ${
                               structuredInput.pulse === emotion
-                                ? 'bg-purple-200 text-purple-800 ring-2 ring-purple-400'
-                                : 'bg-purple-50 text-purple-600 hover:bg-purple-100'
+                                ? 'bg-amber-200 text-amber-900 ring-2 ring-amber-500'
+                                : 'bg-amber-50 text-amber-700 hover:bg-amber-100'
                             }`}
                           >
                             {emotion}
@@ -1193,9 +1193,9 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                         value={structuredInput.pulse}
                         onChange={(e) => setStructuredInput(prev => ({ ...prev, pulse: e.target.value }))}
                         placeholder="One word emotion"
-                        className="border-purple-200 focus:border-purple-400 focus:ring-purple-400 text-center"
+                        className="border-amber-300 focus:border-amber-500 focus:ring-amber-500 text-center"
                       />
-                      <p className="text-xs text-purple-600 mt-2 text-center">
+                      <p className="text-xs text-amber-700 mt-2 text-center">
                         The emotion driving this thought
                       </p>
                     </div>
@@ -1300,12 +1300,12 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                     </div>
 
                     {/* Layer 2: Anchor */}
-                    <div className="p-4 bg-gradient-to-br from-blue-50/50 to-indigo-50/50 rounded-xl border-2 border-blue-300 shadow-sm">
+                    <div className="p-4 bg-gradient-to-br from-amber-50/70 to-orange-50/70 rounded-xl border-2 border-amber-500 shadow-sm">
                       <div className="flex items-center gap-2 mb-3">
-                        <div className="w-6 h-6 rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 flex items-center justify-center">
+                        <div className="w-6 h-6 rounded-full bg-gradient-to-r from-amber-700 to-orange-800 flex items-center justify-center">
                           <span className="text-white text-xs font-bold">2</span>
                         </div>
-                        <h5 className="text-sm font-semibold text-blue-700">Layer 2: Anchor</h5>
+                        <h5 className="text-sm font-semibold text-amber-900">Layer 2: Anchor</h5>
                         {voiceSteps.anchor && <span className="text-xs text-green-600 ml-auto">✓ Done</span>}
                       </div>
                       <Button
@@ -1317,27 +1317,27 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                             await startRecording();
                           }
                         }}
-                        className="w-full h-12 text-white bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 rounded-lg"
+                        className="w-full h-12 text-white bg-gradient-to-r from-amber-600 to-orange-700 hover:from-amber-700 hover:to-orange-800 rounded-lg"
                         disabled={!voiceSteps.summary || (isRecording && currentStep !== 2)}
                       >
                         <Mic className="h-5 w-5 mr-2" />
                         {isRecording && currentStep === 2 ? 'Stop Recording' : 'Record Anchor'}
                       </Button>
                       {voiceSteps.anchor && (
-                        <div className="mt-3 p-3 bg-white/80 rounded-lg text-sm border border-blue-200">
+                        <div className="mt-3 p-3 bg-white/80 rounded-lg text-sm border border-amber-300">
                           {voiceSteps.anchor.substring(0, 300)}
-                          <span className="text-blue-500 text-xs ml-2">({voiceSteps.anchor.length}/300 chars)</span>
+                          <span className="text-amber-600 text-xs ml-2">({voiceSteps.anchor.length}/300 chars)</span>
                         </div>
                       )}
                     </div>
 
                     {/* Layer 3: Pulse */}
-                    <div className="p-4 bg-gradient-to-br from-purple-50/30 to-pink-50/30 rounded-xl border-2 border-purple-200 shadow-sm">
+                    <div className="p-4 bg-gradient-to-br from-amber-50/80 to-orange-50/80 rounded-xl border-2 border-amber-600 shadow-sm">
                       <div className="flex items-center gap-2 mb-3">
-                        <div className="w-6 h-6 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 flex items-center justify-center">
+                        <div className="w-6 h-6 rounded-full bg-gradient-to-r from-amber-800 to-orange-900 flex items-center justify-center">
                           <span className="text-white text-xs font-bold">3</span>
                         </div>
-                        <h5 className="text-sm font-semibold text-purple-700">Layer 3: Pulse</h5>
+                        <h5 className="text-sm font-semibold text-amber-900">Layer 3: Pulse</h5>
                         {voiceSteps.pulse && <span className="text-xs text-green-600 ml-auto">✓ Done</span>}
                       </div>
                       <Button
@@ -1349,14 +1349,14 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                             await startRecording();
                           }
                         }}
-                        className="w-full h-12 text-white bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 rounded-lg"
+                        className="w-full h-12 text-white bg-gradient-to-r from-amber-700 to-orange-800 hover:from-amber-800 hover:to-orange-900 rounded-lg"
                         disabled={!voiceSteps.anchor || (isRecording && currentStep !== 3)}
                       >
                         <Mic className="h-5 w-5 mr-2" />
                         {isRecording && currentStep === 3 ? 'Stop Recording' : 'Record Pulse'}
                       </Button>
                       {voiceSteps.pulse && (
-                        <div className="mt-3 p-3 bg-white/80 rounded-lg text-sm border border-purple-200 text-center">
+                        <div className="mt-3 p-3 bg-white/80 rounded-lg text-sm border border-amber-300 text-center">
                           Emotion: "{voiceSteps.pulse.split(' ')[0]}"
                         </div>
                       )}
