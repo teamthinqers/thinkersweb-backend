@@ -19,39 +19,10 @@ import { useLocation } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
 
 
-// Data structure for dots
-interface Dot {
-  id: string;
-  oneWordSummary: string; // Auto-generated one-word summary for flash card heading
-  summary: string; // 220 chars max
-  anchor: string; // 300 chars max  
-  pulse: string; // 1 word emotion
-  wheelId: string;
-  timestamp: Date;
-  sourceType: 'voice' | 'text';
-  captureMode: 'natural' | 'ai'; // Natural mode vs AI mode
-  voiceData?: {
-    summaryVoiceUrl?: string;
-    anchorVoiceUrl?: string;
-    pulseVoiceUrl?: string;
-  } | null;
-}
+// Import types from schema instead of duplicating
+import type { Dot, Wheel, Chakra } from '@shared/schema';
 
-interface Wheel {
-  id: string;
-  name: string;
-  heading?: string;
-  goals?: string; // For regular wheels
-  purpose?: string; // For Chakras (top-level)
-  timeline?: string;
-  category: string;
-  color: string;
-  dots: Dot[];
-  connections: string[]; // IDs of connected wheels
-  position: { x: number; y: number };
-  chakraId?: string; // References the Chakra (larger wheel) this wheel belongs to
-  createdAt?: Date;
-}
+// Wheel and Chakra types are imported from schema
 
 const Dashboard: React.FC = () => {
   const [, setLocation] = useLocation();

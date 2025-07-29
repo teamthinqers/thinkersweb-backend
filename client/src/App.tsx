@@ -36,7 +36,6 @@ import PwaDebugger from "@/pages/PwaDebugger";
 import PwaInstallGuide from "@/pages/PwaInstallGuide";
 import Testing from "@/pages/Testing";
 import TestCreation from "@/pages/TestCreation";
-import { AuthTest } from "@/pages/AuthTest";
 import { AuthDebug } from "@/pages/AuthDebug";
 import { QuickAuthTest } from "@/pages/QuickAuthTest";
 import { SimpleAuthTest } from "@/pages/SimpleAuthTest";
@@ -67,6 +66,7 @@ import IndexingDemo from "@/pages/IndexingDemo";
 import ActivationPage from "@/pages/ActivationPage";
 import ProductionTest from "@/pages/ProductionTest";
 import VectorMigrationTest from "@/pages/VectorMigrationTest";
+import AuthTest from "@/pages/AuthTest";
 
 import { StructuredFloatingDot } from "@/components/dotspark/StructuredFloatingDot";
 import { neuraStorage } from "@/lib/neuraStorage";
@@ -212,6 +212,7 @@ function Router() {
       <Route path="/spark" component={Spark} />
       <Route path="/production-test" component={ProductionTest} />
       <Route path="/vector-migration-test" component={VectorMigrationTest} />
+      <Route path="/auth-test" component={AuthTest} />
       <Route path="/whatsapp-admin" component={WhatsAppAdmin} />
       <Route path="/whatsapp-test" component={WhatsAppTest} />
       <Route path="/whatsapp-entries" component={WhatsAppEntries} />
