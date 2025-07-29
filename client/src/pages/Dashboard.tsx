@@ -35,7 +35,16 @@ const Dashboard: React.FC = () => {
     const authResult = useAuth();
     user = authResult?.user || null;
     isLoading = authResult?.isLoading || false;
-    console.log('Dashboard auth state:', { user: user?.email || 'none', isLoading });
+    console.log('Dashboard auth state:', { 
+      user: user ? {
+        email: user.email, 
+        fullName: user.fullName, 
+        displayName: user.displayName,
+        avatarUrl: user.avatarUrl,
+        id: user.id
+      } : 'none', 
+      isLoading 
+    });
   } catch (error) {
     console.warn('Authentication hook error, using default values:', error);
   }

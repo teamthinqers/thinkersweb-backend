@@ -42,13 +42,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         console.log('Backend session response:', response.status);
         if (response.ok) {
           const { authenticated, user } = await response.json();
-          console.log('Backend session data:', { authenticated, user: user?.email });
+          console.log('Backend session data:', { authenticated, user: user?.email, fullName: user?.fullName });
           if (authenticated && user) {
-            console.log('Backend session found, setting user:', user.email);
+            console.log('Backend session found, setting user:', user.email, 'with name:', user.fullName);
             setUser(user);
             setIsLoading(false);
             return true; // Session recovered
+          } else {
+            console.log('Backend session response not authenticated or missing user data');
           }
+        } else {
+          console.log('Backend session check failed with status:', response.status);
         }
       } catch (error) {
         console.log('No backend session found:', error);

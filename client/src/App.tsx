@@ -54,6 +54,7 @@ import SocialNeura from "@/pages/SocialNeura";
 import SparkTest from "@/pages/SparkTest";
 import Spark from "@/pages/Spark";
 import SimpleAuthTest from "@/pages/SimpleAuthTest";
+import AuthVerificationTest from "@/pages/AuthVerificationTest";
 import AppLayout from "@/components/layout/AppLayout";
 import EntryDetail from "@/components/entries/EntryDetail";
 import ChatEntryForm from "@/components/chat/ChatEntryForm";
@@ -215,6 +216,7 @@ function Router() {
       <Route path="/vector-migration-test" component={VectorMigrationTest} />
       <Route path="/auth-test" component={AuthTest} />
       <Route path="/simple-auth-test" component={SimpleAuthTest} />
+      <Route path="/auth-verification-test" component={AuthVerificationTest} />
       <Route path="/whatsapp-admin" component={WhatsAppAdmin} />
       <Route path="/whatsapp-test" component={WhatsAppTest} />
       <Route path="/whatsapp-entries" component={WhatsAppEntries} />

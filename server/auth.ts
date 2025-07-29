@@ -406,7 +406,9 @@ export function setupAuth(app: Express) {
           const [updatedUser] = await db.update(users)
             .set({ 
               firebaseUid: uid,
-              avatar: photoURL || user.avatar
+              fullName: displayName || user.fullName,
+              avatar: photoURL || user.avatar,
+              updatedAt: new Date()
             })
             .where(eq(users.id, user.id))
             .returning();
@@ -429,7 +431,10 @@ export function setupAuth(app: Express) {
                 email: email || `${username}@firebase.user`,
                 hashedPassword: hashedPassword,
                 firebaseUid: uid,
+                fullName: displayName || (email ? email.split('@')[0] : username),
                 avatar: photoURL,
+                createdAt: new Date(),
+                updatedAt: new Date()
               })
               .returning();
               
@@ -453,7 +458,7 @@ export function setupAuth(app: Express) {
         username: user.username || '',
         email: user.email,
         firebaseUid: user.firebaseUid,
-        fullName: user.username,
+        fullName: user.fullName || user.username || 'User',
         bio: user.bio,
         avatarUrl: user.avatar,
         createdAt: user.createdAt,
