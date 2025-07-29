@@ -101,7 +101,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 
                 if (response.ok) {
                   const userData = await response.json();
-                  console.log('Backend session established successfully for:', userData.email);
+                  console.log('Backend session established successfully for:', userData.email, 'with fullName:', userData.fullName);
                   // Set the backend user data instead of Firebase user
                   setUser(userData);
                   
