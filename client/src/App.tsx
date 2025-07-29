@@ -38,6 +38,7 @@ import Testing from "@/pages/Testing";
 import TestCreation from "@/pages/TestCreation";
 import { AuthTest } from "@/pages/AuthTest";
 import { AuthDebug } from "@/pages/AuthDebug";
+import { QuickAuthTest } from "@/pages/QuickAuthTest";
 import IntelligenceClassification from "@/components/IntelligenceClassification";
 import ChatPage from "@/pages/chat-page";
 import QuickCapture from "@/pages/QuickCapture";
@@ -249,6 +250,9 @@ function Router() {
       <Route path="/test-auth" component={TestGoogleAuth} />
       <Route path="/auth-test" component={AuthTest} />
       <Route path="/auth-debug" component={AuthDebug} />
+      <Route path="/debug-auth" component={AuthDebug} />
+      <Route path="/simple-debug" component={() => <div className="p-8"><h1>Debug Route Test</h1><p>If you can see this, routing is working!</p></div>} />
+      <Route path="/quick-auth" component={QuickAuthTest} />
       <Route path="/chat" component={ChatPage} />
       <Route path="/enhanced-chat" component={() => <div className="h-screen"><EnhancedChatInterface /></div>} />
       <Route path="/vector-chat" component={() => <div className="min-h-screen bg-gray-50"><IntelligentVectorChat /></div>} />
