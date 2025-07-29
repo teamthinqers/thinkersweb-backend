@@ -134,13 +134,13 @@ export function setupAuth(app: Express) {
 
   const sessionSettings: session.SessionOptions = {
     secret: sessionSecret,
-    resave: false,
-    saveUninitialized: false,
+    resave: false, // Do not force save unchanged sessions
+    saveUninitialized: false, // Do not save uninitialized sessions
     // store: undefined, // Use default memory store
     cookie: {
       secure: false, // Allow HTTP for development
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-      httpOnly: true, // Prevent JavaScript access to the cookie
+      httpOnly: true, // Secure the cookie
       sameSite: 'lax', // Allow cross-site navigation while protecting against CSRF
       path: '/',
     },
@@ -485,6 +485,20 @@ export function setupAuth(app: Express) {
         };
         console.log("Session info:", sessionInfo);
         
+        // Set additional session properties for persistence
+        if (req.session) {
+          req.session.lastActivity = Date.now();
+          req.session.firebaseUid = uid;
+        }
+        
+        // Check authentication status immediately after login
+        console.log('✅ Authentication status after login:', {
+          authenticated: req.isAuthenticated(),
+          userId: req.user?.id,
+          sessionId: req.sessionID
+        });
+        
+        // Return response - session should be auto-saved
         res.status(isNewUser ? 201 : 200).json(secureUser);
       });
     } catch (error) {
@@ -531,12 +545,21 @@ export function setupAuth(app: Express) {
 
   // Auth status endpoint for frontend to check authentication state
   app.get("/api/auth/status", (req, res) => {
+    console.log('🔍 Auth status check:', {
+      isAuthenticated: req.isAuthenticated(),
+      hasUser: !!req.user,
+      sessionId: req.sessionID,
+      userEmail: req.user?.email
+    });
+    
     if (req.isAuthenticated() && req.user) {
+      console.log('✅ User is authenticated:', req.user.email);
       res.json({
         authenticated: true,
         user: req.user
       });
     } else {
+      console.log('❌ User is not authenticated');
       res.json({
         authenticated: false,
         user: null

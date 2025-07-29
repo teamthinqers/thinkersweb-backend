@@ -32,8 +32,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                       window.location.pathname.includes('/test-') ||
                       localStorage.getItem('dotspark_demo_mode') === 'true';
 
+    console.log('Auth initialization - isDemoMode:', isDemoMode);
+
     // First check backend session status to recover existing sessions
-    const checkBackendSession = async () => {
+    const checkBackendSession = async (): Promise<boolean> => {
       try {
         console.log('Checking backend session...');
         const response = await fetch('/api/auth/status', {
@@ -44,7 +46,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           const { authenticated, user } = await response.json();
           console.log('Backend session data:', { authenticated, user: user?.email, fullName: user?.fullName });
           if (authenticated && user) {
-            console.log('Backend session found, setting user:', user.email, 'with name:', user.fullName);
+            console.log('✓ Backend session recovered for:', user.fullName || user.email);
             setUser(user);
             setIsLoading(false);
             return true; // Session recovered
@@ -57,8 +59,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       } catch (error) {
         console.log('No backend session found:', error);
       }
-      console.log('No valid backend session');
-      setIsLoading(false); // Ensure loading is false even when no session
+      console.log('No valid backend session - proceeding with fresh auth setup');
       return false; // No session
     };
 
