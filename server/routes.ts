@@ -1682,6 +1682,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get(`${apiPrefix}/dotspark/status`, getDotSparkStatus as any);
 
   // ==========================================
+  // VOICE TRANSCRIPTION
+  // ==========================================
+
+  // Voice transcription endpoint using OpenAI Whisper
+  app.post(`${apiPrefix}/transcribe-voice`, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const { audio, layer } = req.body;
+      
+      if (!audio) {
+        return res.status(400).json({ error: 'Audio data is required' });
+      }
+      
+      // Convert base64 audio to buffer
+      const audioBuffer = Buffer.from(audio, 'base64');
+      
+      // Import the OpenAI voice processing function
+      const { processVoiceInput } = await import('./openai.js');
+      
+      // Process the voice input with appropriate layer context
+      const result = await processVoiceInput(audioBuffer, 'voice.wav', layer || 'summary');
+      
+      res.json({
+        success: true,
+        transcription: result.processedText,
+        rawTranscription: result.transcription
+      });
+      
+    } catch (error) {
+      console.error('Voice transcription error:', error);
+      res.status(500).json({ 
+        error: 'Failed to transcribe voice recording' 
+      });
+    }
+  });
+
+  // ==========================================
   // CONVERSATIONAL INTELLIGENCE
   // ==========================================
 
