@@ -54,10 +54,9 @@ export default function ProductionTest() {
     setTestResults([]);
 
     try {
-      // Step 1: Login with Google (or bypass for test)
+      // Step 1: Authentication
       addResult('Starting Authentication', true, 'Attempting login...');
       
-      // For demo, we'll use bypass authentication
       const authResponse = await fetch('/api/auth/firebase', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -71,42 +70,102 @@ export default function ProductionTest() {
 
       if (authResponse.ok) {
         const authData = await authResponse.json();
-        addResult('Authentication', true, authData);
+        addResult('✅ Authentication', true, authData);
       } else {
-        addResult('Authentication', false, `Status: ${authResponse.status}`);
+        addResult('❌ Authentication', false, `Status: ${authResponse.status}`);
         return;
       }
 
-      // Step 2: Create a test dot
+      // Step 2: Create a Dot
       const dotResponse = await fetch('/api/dots', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
         body: JSON.stringify({
-          summary: 'Production test dot created',
-          anchor: 'Testing the complete production authentication and dot creation flow',
+          summary: 'Production test dot - comprehensive three-tier system',
+          anchor: 'Testing complete Dots, Wheels, and Chakras creation and retrieval flow',
           pulse: 'confident'
         })
       });
 
       if (dotResponse.ok) {
         const dotData = await dotResponse.json();
-        addResult('Create Dot', true, dotData);
+        addResult('✅ Create Dot', true, dotData);
       } else {
-        addResult('Create Dot', false, `Status: ${dotResponse.status}`);
+        addResult('❌ Create Dot', false, `Status: ${dotResponse.status}`);
       }
 
-      // Step 3: Fetch dots to verify
-      const fetchResponse = await fetch('/api/dots', { credentials: 'include' });
-      if (fetchResponse.ok) {
-        const fetchData = await fetchResponse.json();
-        addResult('Fetch Dots After Creation', true, `Found ${fetchData.length} dots`);
+      // Step 3: Create a Wheel
+      const wheelResponse = await fetch('/api/wheels', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          heading: 'Production Testing Wheel',
+          goals: 'Test wheel creation and ensure it appears in the grid visualization',
+          timeline: '1-2 weeks for complete testing validation',
+          chakraId: null, // Standalone wheel
+          sourceType: 'text'
+        })
+      });
+
+      if (wheelResponse.ok) {
+        const wheelData = await wheelResponse.json();
+        addResult('✅ Create Wheel', true, wheelData);
       } else {
-        addResult('Fetch Dots After Creation', false, `Status: ${fetchResponse.status}`);
+        addResult('❌ Create Wheel', false, `Status: ${wheelResponse.status}`);
+      }
+
+      // Step 4: Create a Chakra
+      const chakraResponse = await fetch('/api/chakras', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          heading: 'Production Testing Chakra',
+          purpose: 'Ensure complete three-tier system works: users can create dots, wheels, and chakras and see them in the grid',
+          timeline: 'Ongoing system verification and quality assurance',
+          sourceType: 'text'
+        })
+      });
+
+      if (chakraResponse.ok) {
+        const chakraData = await chakraResponse.json();
+        addResult('✅ Create Chakra', true, chakraData);
+      } else {
+        addResult('❌ Create Chakra', false, `Status: ${chakraResponse.status}`);
+      }
+
+      // Step 5: Fetch all content to verify grid display
+      const [dotsRes, wheelsRes, gridRes] = await Promise.all([
+        fetch('/api/dots', { credentials: 'include' }),
+        fetch('/api/wheels', { credentials: 'include' }),
+        fetch('/api/grid/positions', { credentials: 'include' })
+      ]);
+
+      if (dotsRes.ok) {
+        const dotsData = await dotsRes.json();
+        addResult('✅ Fetch Dots', true, `Found ${dotsData.length} dots`);
+      } else {
+        addResult('❌ Fetch Dots', false, `Status: ${dotsRes.status}`);
+      }
+
+      if (wheelsRes.ok) {
+        const wheelsData = await wheelsRes.json();
+        addResult('✅ Fetch Wheels & Chakras', true, `Found ${wheelsData.length} wheels/chakras`);
+      } else {
+        addResult('❌ Fetch Wheels & Chakras', false, `Status: ${wheelsRes.status}`);
+      }
+
+      if (gridRes.ok) {
+        const gridData = await gridRes.json();
+        addResult('✅ Grid Visualization Ready', true, `Statistics: ${JSON.stringify(gridData.data?.statistics || {})}`);
+      } else {
+        addResult('❌ Grid Visualization', false, `Status: ${gridRes.status}`);
       }
 
     } catch (error) {
-      addResult('Complete Flow Error', false, error);
+      addResult('❌ System Error', false, error);
     } finally {
       setIsRunning(false);
     }
