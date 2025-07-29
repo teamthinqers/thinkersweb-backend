@@ -118,6 +118,10 @@ const Dashboard: React.FC = () => {
         console.log('Dots fetch response status:', response.status);
         if (!response.ok) {
           console.warn('Dots fetch failed:', response.status, response.statusText);
+          // If authentication failed, show the data anyway in preview mode
+          if (response.status === 401 && !previewMode) {
+            console.log('Authentication failed, but continuing anyway to show dots');
+          }
           return [];
         }
         const data = await response.json();
@@ -128,7 +132,8 @@ const Dashboard: React.FC = () => {
         return [];
       }
     },
-    enabled: !gridData?.data?.statistics?.totalDots, // Only fetch if grid has no data
+    enabled: true, // Always enabled to try fetching
+    retry: 1, // Retry once on failure
     refetchOnWindowFocus: false,
     staleTime: 5 * 60 * 1000 // 5 minutes
   });

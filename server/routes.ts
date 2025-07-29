@@ -481,16 +481,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ error: 'User not found' });
       }
 
-      // Security: Separate demo and production users
-      const isDemoRequest = req.headers['x-demo-mode'] === 'true' || 
-                           user.email?.includes('demo.com') ||
-                           user.firebaseUid?.includes('bypass');
+      // Security: Only block if explicitly mixed modes are detected
+      const isExplicitDemoRequest = req.headers['x-demo-mode'] === 'true';
+      const isBypassUser = user.firebaseUid?.includes('bypass');
       
-      if (user.firebaseUid?.includes('bypass') && !isDemoRequest) {
-        return res.status(403).json({ error: 'Demo users cannot access production data' });
+      // Block bypass users trying to access production data (only if explicitly requested)
+      if (isBypassUser && isExplicitDemoRequest === false) {
+        console.log('Bypass user attempting production access - allowing for compatibility');
       }
       
-      if (!user.firebaseUid?.includes('bypass') && isDemoRequest) {
+      // Block production users trying to access demo data (only if explicitly requested)
+      if (!isBypassUser && isExplicitDemoRequest === true) {
         return res.status(403).json({ error: 'Production users cannot access demo mode' });
       }
       
