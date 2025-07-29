@@ -80,6 +80,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
               // Sync with backend to establish session
               try {
                 const token = await firebaseUser.getIdToken();
+                console.log('Syncing Firebase user with backend:', firebaseUser.email);
                 const response = await fetch('/api/auth/firebase', {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
@@ -94,15 +95,24 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 });
                 
                 if (response.ok) {
-                  console.log('Backend session established successfully');
+                  const userData = await response.json();
+                  console.log('Backend session established successfully for:', userData.email);
+                  // Set the backend user data instead of Firebase user
+                  setUser(userData);
+                  
+                  // Verify session was established
+                  const statusCheck = await fetch('/api/auth/status', { credentials: 'include' });
+                  const status = await statusCheck.json();
+                  console.log('Session verification after sync:', status);
                 } else {
-                  console.error('Failed to establish backend session');
+                  const errorData = await response.json();
+                  console.error('Failed to establish backend session:', response.status, errorData);
+                  setUser(null);
                 }
               } catch (error) {
                 console.error('Error syncing with backend:', error);
+                setUser(null);
               }
-              
-              setUser(firebaseUser);
             } else {
               console.log('Firebase auth state changed: User signed out');
               // Also logout from backend
