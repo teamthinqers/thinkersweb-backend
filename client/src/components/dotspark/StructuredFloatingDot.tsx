@@ -1245,6 +1245,196 @@ export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) 
                 </div>
               )}
 
+              {captureMode === 'voice' && (
+                <div className="p-6 space-y-4">
+                  <div className="flex items-center justify-between mb-4">
+                    <Button
+                      variant="ghost"
+                      onClick={() => setCaptureMode('create-type')}
+                      className="h-8 w-8 p-0 rounded-full"
+                    >
+                      <ArrowLeft className="w-4 h-4" />
+                    </Button>
+                    <h3 className="font-medium">Save Dot - Voice</h3>
+                    <Button
+                      variant="ghost"
+                      onClick={handleClose}
+                      className="h-8 w-8 p-0 rounded-full"
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
+                  </div>
+
+                  {/* Three Layer Voice Dot Input */}
+                  <div className="space-y-4">
+                    {/* Layer 1: Summary */}
+                    <div className="p-4 bg-gradient-to-br from-amber-50/60 to-orange-50/60 rounded-xl border-2 border-amber-400 shadow-sm">
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="w-6 h-6 rounded-full bg-gradient-to-r from-amber-600 to-orange-700 flex items-center justify-center">
+                          <span className="text-white text-xs font-bold">1</span>
+                        </div>
+                        <h5 className="text-sm font-semibold text-amber-800">Layer 1: Summary</h5>
+                        {voiceSteps.summary && <span className="text-xs text-green-600 ml-auto">✓ Done</span>}
+                      </div>
+                      <Button
+                        onClick={async () => {
+                          if (isRecording && currentStep === 1) {
+                            stopRecording();
+                          } else {
+                            setCurrentStep(1);
+                            await startRecording();
+                          }
+                        }}
+                        className="w-full h-12 text-white bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 rounded-lg"
+                        disabled={isRecording && currentStep !== 1}
+                      >
+                        <Mic className="h-5 w-5 mr-2" />
+                        {isRecording && currentStep === 1 ? 'Stop Recording' : 'Record Summary'}
+                      </Button>
+                      {voiceSteps.summary && (
+                        <div className="mt-3 p-3 bg-white/80 rounded-lg text-sm border border-amber-200">
+                          {voiceSteps.summary.substring(0, 220)}
+                          <span className="text-amber-500 text-xs ml-2">({voiceSteps.summary.length}/220 chars)</span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Layer 2: Anchor */}
+                    <div className="p-4 bg-gradient-to-br from-blue-50/50 to-indigo-50/50 rounded-xl border-2 border-blue-300 shadow-sm">
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="w-6 h-6 rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 flex items-center justify-center">
+                          <span className="text-white text-xs font-bold">2</span>
+                        </div>
+                        <h5 className="text-sm font-semibold text-blue-700">Layer 2: Anchor</h5>
+                        {voiceSteps.anchor && <span className="text-xs text-green-600 ml-auto">✓ Done</span>}
+                      </div>
+                      <Button
+                        onClick={async () => {
+                          if (isRecording && currentStep === 2) {
+                            stopRecording();
+                          } else {
+                            setCurrentStep(2);
+                            await startRecording();
+                          }
+                        }}
+                        className="w-full h-12 text-white bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 rounded-lg"
+                        disabled={!voiceSteps.summary || (isRecording && currentStep !== 2)}
+                      >
+                        <Mic className="h-5 w-5 mr-2" />
+                        {isRecording && currentStep === 2 ? 'Stop Recording' : 'Record Anchor'}
+                      </Button>
+                      {voiceSteps.anchor && (
+                        <div className="mt-3 p-3 bg-white/80 rounded-lg text-sm border border-blue-200">
+                          {voiceSteps.anchor.substring(0, 300)}
+                          <span className="text-blue-500 text-xs ml-2">({voiceSteps.anchor.length}/300 chars)</span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Layer 3: Pulse */}
+                    <div className="p-4 bg-gradient-to-br from-purple-50/30 to-pink-50/30 rounded-xl border-2 border-purple-200 shadow-sm">
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="w-6 h-6 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 flex items-center justify-center">
+                          <span className="text-white text-xs font-bold">3</span>
+                        </div>
+                        <h5 className="text-sm font-semibold text-purple-700">Layer 3: Pulse</h5>
+                        {voiceSteps.pulse && <span className="text-xs text-green-600 ml-auto">✓ Done</span>}
+                      </div>
+                      <Button
+                        onClick={async () => {
+                          if (isRecording && currentStep === 3) {
+                            stopRecording();
+                          } else {
+                            setCurrentStep(3);
+                            await startRecording();
+                          }
+                        }}
+                        className="w-full h-12 text-white bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 rounded-lg"
+                        disabled={!voiceSteps.anchor || (isRecording && currentStep !== 3)}
+                      >
+                        <Mic className="h-5 w-5 mr-2" />
+                        {isRecording && currentStep === 3 ? 'Stop Recording' : 'Record Pulse'}
+                      </Button>
+                      {voiceSteps.pulse && (
+                        <div className="mt-3 p-3 bg-white/80 rounded-lg text-sm border border-purple-200 text-center">
+                          Emotion: "{voiceSteps.pulse.split(' ')[0]}"
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Wheel Selection (Optional) */}
+                    <div className="p-4 bg-gradient-to-br from-slate-50/30 to-gray-50/30 rounded-xl border-2 border-slate-200 shadow-sm">
+                      <div className="flex items-center gap-2 mb-3">
+                        <Settings className="w-5 h-5 text-slate-600" />
+                        <h5 className="text-sm font-semibold text-slate-700">Wheel (Optional)</h5>
+                        {voiceSteps.wheelId && <span className="text-xs text-green-600 ml-auto">✓ Selected</span>}
+                      </div>
+                      <select
+                        value={voiceSteps.wheelId || ''}
+                        onChange={(e) => setVoiceSteps(prev => ({ 
+                          ...prev, 
+                          wheelId: e.target.value ? parseInt(e.target.value) : null 
+                        }))}
+                        className="w-full p-2 border-slate-200 rounded-lg focus:border-slate-400 focus:ring-slate-400"
+                      >
+                        <option value="">Save as standalone dot</option>
+                        {availableWheels.map(wheel => (
+                          <option key={wheel.id} value={wheel.id}>
+                            {wheel.heading} - {wheel.goals.substring(0, 30)}...
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {voiceSteps.summary && voiceSteps.anchor && voiceSteps.pulse && (
+                      <Button 
+                        onClick={async () => {
+                          try {
+                            const dotData = {
+                              summary: voiceSteps.summary.substring(0, 220),
+                              anchor: voiceSteps.anchor.substring(0, 300),
+                              pulse: voiceSteps.pulse.split(' ')[0] || 'captured',
+                              sourceType: 'voice',
+                              wheelId: voiceSteps.wheelId
+                            };
+                            
+                            const response = await fetch('/api/dots', {
+                              method: 'POST',
+                              headers: { 'Content-Type': 'application/json' },
+                              body: JSON.stringify(dotData)
+                            });
+                            
+                            if (!response.ok) {
+                              const error = await response.json();
+                              throw new Error(error.error || 'Failed to create dot');
+                            }
+                            
+                            toast({
+                              title: "Voice Dot Saved!",
+                              description: "Your voice dot has been successfully saved.",
+                            });
+                            
+                            // Reset form
+                            setVoiceSteps({ summary: '', anchor: '', pulse: '', wheelId: null });
+                            setIsExpanded(false);
+                          } catch (error) {
+                            console.error('Error saving voice dot:', error);
+                            toast({
+                              title: "Save Error",
+                              description: error instanceof Error ? error.message : "Failed to save voice dot",
+                              variant: "destructive"
+                            });
+                          }
+                        }}
+                        className="w-full h-12 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl text-lg font-semibold shadow-lg"
+                      >
+                        Save Voice Dot
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              )}
+
               {captureMode === 'wheel-text' && (
                 <div className="p-6 space-y-4">
                   <div className="flex items-center justify-between mb-4">
