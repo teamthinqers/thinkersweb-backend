@@ -517,7 +517,7 @@ const UserGrid: React.FC<UserGridProps> = ({ userId, mode }) => {
   // Fetch user's dots with proper typing and retry logic
   const { data: userDots = [], isLoading: dotsLoading } = useQuery({
     queryKey: ['/api/user-content/dots'],
-    enabled: mode === 'real',
+    enabled: mode === 'real' && !!userId, // Only fetch when authenticated
     retry: 3, // Retry up to 3 times on failure
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
     staleTime: 60000, // Cache for 1 minute 
@@ -528,7 +528,7 @@ const UserGrid: React.FC<UserGridProps> = ({ userId, mode }) => {
   // Fetch user's wheels and chakras with proper typing and retry logic  
   const { data: userWheels = [], isLoading: wheelsLoading } = useQuery({
     queryKey: ['/api/user-content/wheels'],
-    enabled: mode === 'real',
+    enabled: mode === 'real' && !!userId, // Only fetch when authenticated
     retry: 3, // Retry up to 3 times on failure
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
     staleTime: 60000, // Cache for 1 minute
@@ -539,7 +539,7 @@ const UserGrid: React.FC<UserGridProps> = ({ userId, mode }) => {
   // Fetch user's statistics with retry logic
   const { data: userStats, isLoading: statsLoading } = useQuery({
     queryKey: ['/api/user-content/stats'],
-    enabled: mode === 'real',
+    enabled: mode === 'real' && !!userId, // Only fetch when authenticated
     retry: 3,
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
     staleTime: 60000,
