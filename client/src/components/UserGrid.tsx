@@ -58,7 +58,7 @@ const getChakraSize = (mode: 'preview' | 'real', wheelsCount: number) => {
   }
 };
 
-// Exact DotWheelsMap component from Dashboard
+// Complete UserGrid DotWheelsMap exactly like PreviewMapGrid
 const DotWheelsMap: React.FC<DotWheelsMapProps> = ({ 
   wheels, 
   dots, 
@@ -95,13 +95,52 @@ const DotWheelsMap: React.FC<DotWheelsMapProps> = ({
     return () => mediaQuery.removeListener(checkPWA);
   }, []);
 
+  // Add keyboard escape for fullscreen
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isFullscreen && onFullscreenChange) {
+        onFullscreenChange(false);
+      }
+    };
+
+    if (isFullscreen) {
+      document.addEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'auto';
+    };
+  }, [isFullscreen]);
+
   // Stats data
   const totalDots = dots.length;
   const totalWheels = wheels.length;
-  const totalChakras = wheels.filter((w: any) => !w.chakraId).length;
+  const totalChakras = 0; // wheels.filter((w: any) => w.chakraId).length;
   
   const displayDots = dots;
   const displayWheels = wheels;
+
+  // Mouse handlers for dragging
+  const handleMouseDown = (e: React.MouseEvent) => {
+    setDragStart({ x: e.clientX - offset.x, y: e.clientY - offset.y });
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (dragStart) {
+      setOffset({
+        x: e.clientX - dragStart.x,
+        y: e.clientY - dragStart.y
+      });
+    }
+  };
+
+  const handleMouseUp = () => {
+    setDragStart(null);
+  };
 
   return (
     <div className="space-y-4">
@@ -110,7 +149,7 @@ const DotWheelsMap: React.FC<DotWheelsMapProps> = ({
           isFullscreen ? 'fixed inset-4 z-50' : 'h-[600px]'
         }`}
       >
-        {/* Stats badges - positioned like preview mode */}
+        {/* Stats badges - top left exactly like preview mode */}
         <div className="absolute top-4 left-4 flex items-center gap-2 z-20">
           <Badge variant="secondary" className="bg-amber-100 text-amber-800 text-xs">
             {totalDots} Dots
@@ -123,43 +162,52 @@ const DotWheelsMap: React.FC<DotWheelsMapProps> = ({
           </Badge>
         </div>
 
-        {/* Controls - positioned like preview mode */}
-        <div className="absolute top-4 right-4 z-20 flex items-center gap-2">
-          {/* Fullscreen toggle */}
+        {/* Maximize button - top right exactly like preview mode */}
+        <div className="absolute top-4 right-4 z-20">
           <Button 
             onClick={() => onFullscreenChange && onFullscreenChange(!isFullscreen)}
             size="sm"
             variant="outline"
-            className="h-7 w-7 p-0"
+            className="h-8 w-8 p-0 bg-white/80 backdrop-blur border-amber-200 hover:bg-amber-50"
           >
-            {isFullscreen ? <Minimize className="w-3 h-3" /> : <Maximize className="w-3 h-3" />}
+            {isFullscreen ? <Minimize className="w-4 h-4" /> : <Maximize className="w-4 h-4" />}
           </Button>
         </div>
 
-        {/* Zoom controls */}
-        <div className="absolute bottom-4 left-4 z-20 flex items-center gap-2 bg-white/80 rounded-lg p-2">
+        {/* Zoom and navigation controls - bottom left exactly like preview mode */}
+        <div className="absolute bottom-4 left-4 z-20 flex items-center gap-2 bg-white/80 backdrop-blur rounded-lg p-2 border border-amber-200">
           <Button 
             onClick={() => setZoom(Math.max(0.2, zoom - 0.1))}
             size="sm"
             variant="outline"
-            className="h-6 w-6 p-0"
+            className="h-8 w-8 p-0 text-xs"
           >
             -
           </Button>
-          <span className="text-xs font-medium min-w-[40px] text-center">
+          <span className="text-xs font-medium min-w-[50px] text-center px-2">
             {Math.round(zoom * 100)}%
           </span>
           <Button 
             onClick={() => setZoom(Math.min(2, zoom + 0.1))}
             size="sm"
             variant="outline"
-            className="h-6 w-6 p-0"
+            className="h-8 w-8 p-0 text-xs"
           >
             +
           </Button>
+          <div className="w-px h-6 bg-gray-300 mx-1"></div>
+          <Button 
+            onClick={() => setOffset({ x: 0, y: 0 })}
+            size="sm"
+            variant="outline"
+            className="h-8 w-8 p-0"
+            title="Reset Position"
+          >
+            <RotateCcw className="w-3 h-3" />
+          </Button>
         </div>
 
-        {/* Interactive grid container */}
+        {/* Interactive grid container with drag support */}
         <div 
           ref={gridContainerRef}
           className="relative w-full h-full overflow-hidden cursor-grab active:cursor-grabbing"
@@ -167,13 +215,17 @@ const DotWheelsMap: React.FC<DotWheelsMapProps> = ({
             transform: `scale(${zoom}) translate(${offset.x}px, ${offset.y}px)`,
             transformOrigin: 'center center'
           }}
+          onMouseDown={handleMouseDown}
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseUp}
         >
-          {/* Render dots exactly like Dashboard */}
+          {/* Render dots exactly like PreviewMapGrid */}
           {displayDots.map((dot: any, index: number) => {
-            // Position dots in grid pattern for real mode
+            // Position dots in grid pattern
             let x, y;
             
-            if (dot.wheelId && dot.wheelId !== '') {
+            if (dot.wheelId && dot.wheelId !== '' && dot.wheelId !== 'general') {
               const wheel = displayWheels.find((w: any) => w.id === dot.wheelId);
               if (wheel) {
                 const dotsInWheel = displayDots.filter((d: any) => d.wheelId === dot.wheelId);
@@ -187,6 +239,7 @@ const DotWheelsMap: React.FC<DotWheelsMapProps> = ({
                 x = wheelCenterX + Math.cos(angle) * dotRadius;
                 y = wheelCenterY + Math.sin(angle) * dotRadius;
               } else {
+                // Fallback positioning
                 const gridCols = Math.ceil(Math.sqrt(displayDots.length));
                 const row = Math.floor(index / gridCols);
                 const col = index % gridCols;
@@ -194,7 +247,7 @@ const DotWheelsMap: React.FC<DotWheelsMapProps> = ({
                 y = 120 + (row * 150);
               }
             } else {
-              // Individual scattered dots
+              // Individual scattered dots or general wheel dots
               const gridCols = Math.ceil(Math.sqrt(displayDots.length));
               const row = Math.floor(index / gridCols);
               const col = index % gridCols;
@@ -204,13 +257,15 @@ const DotWheelsMap: React.FC<DotWheelsMapProps> = ({
             
             return (
               <div key={dot.id} className="relative">
-                {/* Dot */}
+                {/* Dot with exact styling from preview mode */}
                 <div
                   className="absolute w-12 h-12 rounded-full cursor-pointer transition-all duration-300 hover:scale-125 hover:shadow-lg group dot-element z-[5]"
                   style={{
                     left: `${x}px`,
                     top: `${y}px`,
-                    background: 'linear-gradient(135deg, #F59E0B, #D97706)',
+                    background: dot.captureMode === 'ai' 
+                      ? 'linear-gradient(135deg, #8B5CF6, #7C3AED)' // Purple for AI mode
+                      : 'linear-gradient(135deg, #F59E0B, #D97706)', // Amber for natural mode
                     pointerEvents: 'auto'
                   }}
                   onClick={(e) => {
@@ -224,6 +279,7 @@ const DotWheelsMap: React.FC<DotWheelsMapProps> = ({
                     }
                     setHoveredDot(null);
                   }}
+                  onMouseDown={(e) => e.stopPropagation()}
                   onMouseEnter={() => setHoveredDot(dot)}
                   onMouseLeave={() => setHoveredDot(null)}
                 >
@@ -244,7 +300,7 @@ const DotWheelsMap: React.FC<DotWheelsMapProps> = ({
                   </div>
                 </div>
                 
-                {/* Summary hover card */}
+                {/* Hover card exactly like preview mode */}
                 {hoveredDot?.id === dot.id && (
                   <div 
                     className="absolute bg-white/95 backdrop-blur border-2 border-amber-200 rounded-lg p-3 shadow-2xl w-64 cursor-pointer"
@@ -268,6 +324,9 @@ const DotWheelsMap: React.FC<DotWheelsMapProps> = ({
                         }`}>
                           {dot.sourceType}
                         </Badge>
+                        {dot.captureMode === 'ai' && (
+                          <Badge className="bg-purple-100 text-purple-700 text-xs">AI</Badge>
+                        )}
                         <Badge className="bg-gray-100 text-gray-700 text-xs">
                           {dot.pulse}
                         </Badge>
@@ -287,9 +346,88 @@ const DotWheelsMap: React.FC<DotWheelsMapProps> = ({
               </div>
             );
           })}
+          
+          {/* Render wheels exactly like preview mode */}
+          {displayWheels.map((wheel: any) => {
+            const wheelDots = displayDots.filter((d: any) => d.wheelId === wheel.id);
+            const wheelRadius = calculateDynamicSizing('real', wheelDots.length, 'wheels');
+            
+            return (
+              <div key={wheel.id} className="relative">
+                {/* Wheel circle */}
+                <div
+                  className="absolute rounded-full border-2 border-orange-400/60 bg-orange-50/30 cursor-pointer transition-all duration-300 hover:scale-105 hover:border-orange-500"
+                  style={{
+                    left: `${(wheel.position?.x || 300) - wheelRadius}px`,
+                    top: `${(wheel.position?.y || 250) - wheelRadius}px`,
+                    width: `${wheelRadius * 2}px`,
+                    height: `${wheelRadius * 2}px`,
+                    pointerEvents: 'auto'
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setViewFullWheel && setViewFullWheel(wheel);
+                  }}
+                  onMouseDown={(e) => e.stopPropagation()}
+                  onMouseEnter={() => setHoveredWheel(wheel)}
+                  onMouseLeave={() => setHoveredWheel(null)}
+                >
+                  {/* Wheel label */}
+                  <div className="absolute inset-0 flex items-center justify-center p-2">
+                    <div className="text-center">
+                      <div className="text-xs font-bold text-orange-800 line-clamp-2">
+                        {wheel.name}
+                      </div>
+                      <div className="text-xs text-orange-600 mt-1">
+                        {wheelDots.length} dots
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Wheel hover card */}
+                {hoveredWheel?.id === wheel.id && (
+                  <div 
+                    className="absolute bg-white/95 backdrop-blur border-2 border-orange-200 rounded-lg p-3 shadow-2xl w-64 cursor-pointer z-[99999998]"
+                    style={{
+                      left: `${(wheel.position?.x || 300) + wheelRadius + 20}px`,
+                      top: `${Math.max(0, (wheel.position?.y || 250) - 50)}px`,
+                      maxWidth: '280px',
+                      boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.05)'
+                    }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setViewFullWheel && setViewFullWheel(wheel);
+                      setHoveredWheel(null);
+                    }}
+                  >
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <Badge className="bg-orange-100 text-orange-800 text-xs">
+                          Wheel
+                        </Badge>
+                        <Badge className="bg-gray-100 text-gray-700 text-xs">
+                          {wheelDots.length} dots
+                        </Badge>
+                      </div>
+                      <h4 className="font-bold text-lg text-orange-800 border-b border-orange-200 pb-2 mb-3">
+                        {wheel.name}
+                      </h4>
+                      <p className="text-xs text-gray-600 line-clamp-3">
+                        {wheel.goals || wheel.purpose}
+                      </p>
+                      <div className="text-xs text-orange-600 mt-2 font-medium">
+                        Click for full view
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
 
-        {/* Flash card view for mobile/PWA */}
+        {/* Flash card view for mobile/PWA exactly like preview mode */}
         {selectedDot && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-[100]">
             <div className="bg-white rounded-xl p-6 max-w-md w-full max-h-[80vh] overflow-y-auto">
@@ -318,7 +456,7 @@ const DotWheelsMap: React.FC<DotWheelsMapProps> = ({
           </div>
         )}
 
-        {/* Full dot view modal */}
+        {/* Full dot view modal exactly like preview mode */}
         {viewFullDot && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-[100]">
             <Card className="max-w-2xl w-full max-h-[80vh] overflow-y-auto">
@@ -341,6 +479,9 @@ const DotWheelsMap: React.FC<DotWheelsMapProps> = ({
                     }`}>
                       {viewFullDot.sourceType}
                     </Badge>
+                    {viewFullDot.captureMode === 'ai' && (
+                      <Badge className="bg-purple-100 text-purple-700">AI</Badge>
+                    )}
                     <Badge variant="outline">{viewFullDot.pulse}</Badge>
                   </div>
                   <p className="text-gray-700">{viewFullDot.summary}</p>
@@ -465,10 +606,10 @@ const UserGrid: React.FC<UserGridProps> = ({ userId, mode }) => {
 
   return (
     <div className="space-y-6">
-      {/* Use exact DotWheelsMap component from Dashboard */}
+      {/* Use exact DotWheelsMap component from Dashboard with user data */}
       <DotWheelsMap 
-        wheels={regularWheels}
-        dots={userDots}
+        wheels={userWheels}
+        dots={userDots.slice(0, showingRecentFilter ? recentCount : userDots.length)}
         showingRecentFilter={false}
         recentCount={4}
         isFullscreen={false}

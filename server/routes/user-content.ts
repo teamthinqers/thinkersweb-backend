@@ -1,15 +1,43 @@
 import express from 'express';
 import { db } from '@db';
-import { entries, users } from '@shared/schema';
+import { entries, users, dots, wheels, vectorEmbeddings, entriesInsertSchema } from '@shared/schema';
 import { eq, and, desc } from 'drizzle-orm';
 import { z } from 'zod';
+
+// Define schema for dots since it's used in the routes
+const insertDotSchema = z.object({
+  oneWordSummary: z.string(),
+  summary: z.string(),
+  anchor: z.string().optional(),
+  pulse: z.string(),
+  sourceType: z.enum(['voice', 'text']),
+  captureMode: z.enum(['natural', 'ai']),
+  wheelId: z.string().optional(),
+  userId: z.number(),
+  voiceData: z.any().optional()
+});
+
+const insertWheelSchema = z.object({
+  name: z.string(),
+  heading: z.string().optional(),
+  goals: z.string().optional(),
+  purpose: z.string().optional(),
+  timeline: z.string().optional(),
+  category: z.string(),
+  color: z.string(),
+  chakraId: z.string().optional(),
+  userId: z.number()
+});
 
 const router = express.Router();
 
 // Check if user has DotSpark activated
 const checkDotSparkActivation = async (req: any, res: any, next: any) => {
   try {
+    console.log(`🔍 Auth check - req.user:`, req.user);
+    
     if (!req.user?.id) {
+      console.log('❌ No user ID in request');
       return res.status(401).json({ error: 'Authentication required' });
     }
     
@@ -17,7 +45,10 @@ const checkDotSparkActivation = async (req: any, res: any, next: any) => {
       where: eq(users.id, req.user.id)
     });
     
-    if (!user || !user.dotSparkActivated) {
+    console.log(`👤 Found user:`, user ? { id: user.id, email: user.email, activated: user.dotsparkActivated } : 'null');
+    
+    if (!user || !user.dotsparkActivated) {
+      console.log('❌ User not found or not activated');
       return res.status(403).json({
         error: 'DotSpark activation required',
         message: 'You need to activate DotSpark to access this content',
@@ -25,6 +56,7 @@ const checkDotSparkActivation = async (req: any, res: any, next: any) => {
       });
     }
     
+    console.log('✅ User authenticated and activated');
     next();
   } catch (error) {
     console.error('Error checking DotSpark activation:', error);
@@ -153,8 +185,10 @@ router.post('/wheels', checkDotSparkActivation, async (req, res) => {
 router.get('/dots', checkDotSparkActivation, async (req, res) => {
   try {
     const userId = req.user.id;
+    console.log(`🔍 Fetching dots for user ID: ${userId}`);
     
     const userEntries = await db.select().from(entries).where(eq(entries.userId, userId)).orderBy(desc(entries.createdAt));
+    console.log(`📊 Found ${userEntries.length} entries for user ${userId}`);
     
     // Transform entries to dots format for frontend compatibility
     const userDots = userEntries.map(entry => {
@@ -179,6 +213,7 @@ router.get('/dots', checkDotSparkActivation, async (req, res) => {
       };
     });
     
+    console.log(`✅ Returning ${userDots.length} transformed dots`);
     res.json(userDots);
     
   } catch (error) {
