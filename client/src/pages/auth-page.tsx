@@ -167,23 +167,49 @@ export default function AuthPage() {
     }
   }
 
-  // Handle Google sign in
+  // Handle Google sign in with comprehensive debugging
   const handleGoogleSignIn = async () => {
     try {
       setIsLoading(true);
       
-      console.log("Starting Google Sign In process from auth page");
+      console.log("🚀 [AUTH-PAGE] Starting Google Sign In process from auth page");
+      console.log("🔍 [AUTH-PAGE] Current user state:", user ? 'AUTHENTICATED' : 'NOT AUTHENTICATED');
       
       // Wait for login to complete before navigation
+      console.log("🔄 [AUTH-PAGE] Calling loginWithGoogle from useAuth hook...");
       await loginWithGoogle();
       
-      console.log("Google login completed successfully");
+      console.log("✅ [AUTH-PAGE] Google login completed successfully");
+      
+      // Check if user was set correctly after login
+      console.log("👤 [AUTH-PAGE] Post-login user check:", user ? {
+        email: user.email,
+        fullName: (user as any)?.fullName,
+        avatarUrl: (user as any)?.avatarUrl
+      } : 'STILL NO USER');
+      
+      // Test backend session immediately after login
+      setTimeout(async () => {
+        try {
+          const response = await fetch('/api/auth/status', { credentials: 'include' });
+          const data = await response.json();
+          console.log("🔍 [AUTH-PAGE] Post-login backend session check:", {
+            authenticated: data.authenticated,
+            hasUser: !!data.user,
+            userEmail: data.user?.email,
+            fullName: data.user?.fullName,
+            avatarUrl: data.user?.avatarUrl
+          });
+        } catch (error) {
+          console.error("❌ [AUTH-PAGE] Post-login session check failed:", error);
+        }
+      }, 1000);
       
       // Navigate to the main DotSpark domain after successful login
       getRedirectPath();
       
     } catch (error) {
-      console.error("Google sign in error:", error);
+      console.error("❌ [AUTH-PAGE] Google sign in error:", error);
       setIsLoading(false);
       
       const errorMessage = error instanceof Error ? error.message : "Could not sign in with Google. Please try again.";

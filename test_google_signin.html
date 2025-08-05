@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Google Sign-In Test</title>
+</head>
+<body>
+    <h2>Google Sign-In Debug Test</h2>
+    <button id="signInBtn">Sign In with Google</button>
+    <button id="testBackendBtn">Test Backend Session</button>
+    <div id="output"></div>
+    
+    <script type="module">
+        // Firebase config - using the same config as your app
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { 
+            getAuth, 
+            GoogleAuthProvider,
+            signInWithPopup 
+        } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyA8FIrQQJcq3_fYqoKMmMKOzGRQXgF7eYk",
+            authDomain: "dotspark-1bd59.firebaseapp.com",
+            projectId: "dotspark-1bd59",
+            storageBucket: "dotspark-1bd59.appspot.com",
+            appId: "1:123456789012:web:abcdef123456"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+        provider.setCustomParameters({ prompt: 'select_account' });
+
+        const output = document.getElementById('output');
+        
+        function log(message) {
+            output.innerHTML += `<p>${message}</p>`;
+            console.log(message);
+        }
+
+        document.getElementById('signInBtn').addEventListener('click', async () => {
+            try {
+                log('🔥 Starting Firebase Google sign-in...');
+                const result = await signInWithPopup(auth, provider);
+                const user = result.user;
+                
+                log(`✅ Firebase sign-in successful: ${user.displayName} (${user.email})`);
+                log(`🖼️ Photo URL: ${user.photoURL}`);
+                
+                // Get Firebase token and sync with backend
+                const token = await user.getIdToken();
+                log('🔑 Got Firebase token, syncing with backend...');
+                
+                const response = await fetch('/api/auth/firebase', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        firebaseToken: token,
+                        email: user.email,
+                        uid: user.uid,
+                        displayName: user.displayName,
+                        photoURL: user.photoURL
+                    })
+                });
+                
+                if (response.ok) {
+                    const userData = await response.json();
+                    log(`✅ Backend sync successful: ${userData.fullName} (${userData.email})`);
+                    log(`🖼️ Backend avatar: ${userData.avatarUrl}`);
+                } else {
+                    const error = await response.text();
+                    log(`❌ Backend sync failed: ${response.status} - ${error}`);
+                }
+                
+            } catch (error) {
+                log(`❌ Sign-in failed: ${error.message}`);
+                console.error('Sign-in error:', error);
+            }
+        });
+
+        document.getElementById('testBackendBtn').addEventListener('click', async () => {
+            try {
+                log('🔍 Testing backend session...');
+                const response = await fetch('/api/auth/status', {
+                    credentials: 'include'
+                });
+                
+                const data = await response.json();
+                log(`📊 Backend session: authenticated=${data.authenticated}`);
+                if (data.user) {
+                    log(`👤 User: ${data.user.fullName} (${data.user.email})`);
+                    log(`🖼️ Avatar: ${data.user.avatarUrl}`);
+                } else {
+                    log('❌ No user data in session');
+                }
+            } catch (error) {
+                log(`❌ Backend test failed: ${error.message}`);
+            }
+        });
+    </script>
+</body>
+</html>
