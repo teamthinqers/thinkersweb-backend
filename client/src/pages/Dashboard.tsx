@@ -94,12 +94,12 @@ const Dashboard: React.FC = () => {
     gcTime: 2 * 60 * 1000 // Keep data in cache for 2 minutes
   });
 
-  // Fallback for dots - use old API if new grid API has no data
+  // Fetch user dots from the correct API endpoint
   const { data: dots = [], isLoading: dotsLoading, refetch } = useQuery({
-    queryKey: ['/api/dots', previewMode ? 'preview' : 'real', user?.id || 'anonymous'],
+    queryKey: ['/api/user-content/dots', previewMode ? 'preview' : 'real', user?.id || 'anonymous'],
     queryFn: async () => {
       try {
-        const url = previewMode ? '/api/dots?preview=true' : '/api/dots';
+        const url = previewMode ? '/api/dots?preview=true' : '/api/user-content/dots';
         console.log('Fetching dots from:', url, 'for user:', user?.email || 'anonymous');
         const response = await fetch(url, {
           credentials: 'include' // Include cookies for authentication
@@ -130,12 +130,12 @@ const Dashboard: React.FC = () => {
     staleTime: 30 * 1000 // Reduce stale time to 30 seconds for more frequent updates
   });
 
-  // Fetch user wheels and chakras
+  // Fetch user wheels and chakras from the correct API endpoint
   const { data: userWheels = [], isLoading: wheelsLoading, refetch: refetchWheels } = useQuery({
-    queryKey: ['/api/wheels', previewMode ? 'preview' : 'real'],
+    queryKey: ['/api/user-content/wheels', previewMode ? 'preview' : 'real'],
     queryFn: async () => {
       try {
-        const url = previewMode ? '/api/wheels?preview=true' : '/api/wheels';
+        const url = previewMode ? '/api/wheels?preview=true' : '/api/user-content/wheels';
         const response = await fetch(url, {
           credentials: 'include' // Include cookies for authentication
         });

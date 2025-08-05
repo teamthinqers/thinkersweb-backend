@@ -4,18 +4,7 @@ import { entries, users, dots, wheels, vectorEmbeddings } from '@shared/schema';
 import { eq, and, desc } from 'drizzle-orm';
 import { z } from 'zod';
 
-// Define schema for dots since it's used in the routes
-const insertDotSchema = z.object({
-  oneWordSummary: z.string(),
-  summary: z.string(),
-  anchor: z.string().optional(),
-  pulse: z.string(),
-  sourceType: z.enum(['voice', 'text']),
-  captureMode: z.enum(['natural', 'ai']),
-  wheelId: z.string().optional(),
-  userId: z.number(),
-  voiceData: z.any().optional()
-});
+// Schema removed - using direct validation for entries table format
 
 const insertWheelSchema = z.object({
   name: z.string(),
@@ -71,61 +60,92 @@ const checkDotSparkActivation = async (req: any, res: any, next: any) => {
   }
 };
 
-// Create a new dot with Pinecone storage
+// Create a new dot and store in entries table (consistent with existing data)
 router.post('/dots', checkDotSparkActivation, async (req, res) => {
   try {
     const userId = req.user!.id;
     
-    // Validate input data
-    const dotData = insertDotSchema.parse({
-      ...req.body,
-      userId
-    });
+    // Validate input data using simplified validation for entries format
+    const dotData = {
+      oneWordSummary: req.body.oneWordSummary,
+      summary: req.body.summary,
+      anchor: req.body.anchor || '',
+      pulse: req.body.pulse,
+      sourceType: req.body.sourceType || 'text',
+      captureMode: req.body.captureMode || 'natural',
+      wheelId: req.body.wheelId || '',
+      voiceData: req.body.voiceData || null
+    };
     
-    // Create dot in database  
-    const [newDot] = await db.insert(dots).values([dotData]).returning();
+    // Basic validation
+    if (!dotData.oneWordSummary || !dotData.summary || !dotData.pulse) {
+      return res.status(400).json({ 
+        error: 'Missing required fields: oneWordSummary, summary, and pulse are required' 
+      });
+    }
+    
+    // Create entry in entries table (consistent with existing data format)
+    const [newEntry] = await db.insert(entries).values({
+      userId: userId,
+      title: dotData.oneWordSummary,
+      content: JSON.stringify(dotData), // Store dot data as JSON in content field
+      categoryId: 1 // Default category
+    }).returning();
     
     // Store in Pinecone for intelligence
     try {
-      const vectorId = `dot_${userId}_${newDot.id}_${Date.now()}`;
-      const content = `${newDot.summary} ${newDot.anchor} ${newDot.pulse}`;
+      const vectorId = `dot_${userId}_${newEntry.id}_${Date.now()}`;
+      const content = `${dotData.summary} ${dotData.anchor} ${dotData.pulse}`;
       
       // Store vector embedding reference
       await db.insert(vectorEmbeddings).values({
         contentType: 'dot',
-        contentId: newDot.id,
+        contentId: newEntry.id,
         userId: userId,
         vectorId: vectorId,
         content: content,
         metadata: JSON.stringify({
-          sourceType: newDot.sourceType,
-          captureMode: newDot.captureMode,
-          wheelId: newDot.wheelId,
-          createdAt: newDot.createdAt
+          sourceType: dotData.sourceType,
+          captureMode: dotData.captureMode,
+          wheelId: dotData.wheelId,
+          createdAt: newEntry.createdAt
         })
       });
       
-      console.log(`Stored dot ${newDot.id} in vector database with ID: ${vectorId}`);
+      console.log(`Stored dot entry ${newEntry.id} in vector database with ID: ${vectorId}`);
     } catch (vectorError) {
       console.warn('Failed to store in vector database:', vectorError);
       // Continue without vector storage - dot is still created
     }
     
+    // Return formatted response matching the fetch format
+    const responseData = {
+      id: `entry_${newEntry.id}`,
+      oneWordSummary: dotData.oneWordSummary,
+      summary: dotData.summary,
+      anchor: dotData.anchor,
+      pulse: dotData.pulse,
+      sourceType: dotData.sourceType,
+      captureMode: dotData.captureMode,
+      wheelId: dotData.wheelId,
+      timestamp: newEntry.createdAt,
+      createdAt: newEntry.createdAt,
+      updatedAt: newEntry.updatedAt,
+      voiceData: dotData.voiceData
+    };
+    
     res.status(201).json({
       success: true,
-      dot: newDot,
+      dot: responseData,
       message: 'Dot created successfully'
     });
     
   } catch (error) {
     console.error('Error creating dot:', error);
-    if (error instanceof z.ZodError) {
-      return res.status(400).json({ 
-        error: 'Validation failed', 
-        details: error.errors 
-      });
-    }
-    res.status(500).json({ error: 'Failed to create dot' });
+    res.status(500).json({ 
+      error: 'Failed to create dot',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
   }
 });
 
