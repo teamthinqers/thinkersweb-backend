@@ -54,7 +54,7 @@ router.post('/redeem-code', async (req, res) => {
     if (success) {
       res.json({
         success: true,
-        message: 'Your DotSpark is now active and ready to capture your thoughts',
+        message: 'Your DotSpark is now active and ready to assist you',
         activated: true
       });
     } else {
@@ -130,7 +130,7 @@ router.post('/activate', async (req, res) => {
     
     res.json({
       success: true,
-      message: 'Your DotSpark is now active and ready to capture your thoughts',
+      message: 'Your DotSpark is now active and ready to assist you',
       activated: true
     });
   } catch (error) {

@@ -83,7 +83,7 @@ export async function activateDotSpark(userId: number, subscriptionTier: string 
 
     return {
       success: true,
-      message: 'Your DotSpark is now active and ready to capture your thoughts',
+      message: 'Your DotSpark is now active and ready to assist you',
       user: updatedUser
     };
   } catch (error) {
