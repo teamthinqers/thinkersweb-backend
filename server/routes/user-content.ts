@@ -31,21 +31,26 @@ const insertWheelSchema = z.object({
 
 const router = express.Router();
 
-// Check if user has DotSpark activated
+// Optimized check - use cached activation status from session
 const checkDotSparkActivation = async (req: any, res: any, next: any) => {
   try {
-    console.log(`🔍 Auth check - req.user:`, req.user);
-    
     if (!req.user?.id) {
       console.log('❌ No user ID in request');
       return res.status(401).json({ error: 'Authentication required' });
     }
     
+    // Check if activation status is already cached in session
+    if (req.session?.dotSparkActivated === true) {
+      console.log('✅ Using cached DotSpark activation status');
+      next();
+      return;
+    }
+    
+    // If not cached, check database and cache the result
+    console.log(`🔍 Checking DotSpark activation for user:`, req.user.id);
     const user = await db.query.users.findFirst({
       where: eq(users.id, req.user.id)
     });
-    
-    console.log(`👤 Found user:`, user ? { id: user.id, email: user.email, activated: user.dotSparkActivated } : 'null');
     
     if (!user || !user.dotSparkActivated) {
       console.log('❌ User not found or not activated');
@@ -56,7 +61,9 @@ const checkDotSparkActivation = async (req: any, res: any, next: any) => {
       });
     }
     
-    console.log('✅ User authenticated and activated');
+    // Cache activation status in session for future requests
+    req.session.dotSparkActivated = true;
+    console.log('✅ User activated - cached in session for future requests');
     next();
   } catch (error) {
     console.error('Error checking DotSpark activation:', error);

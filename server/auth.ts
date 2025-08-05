@@ -16,6 +16,7 @@ declare module "express-session" {
     firebaseUid?: string;
     lastActivity?: number;
     persistent?: boolean;
+    dotSparkActivated?: boolean;
   }
 }
 
@@ -237,9 +238,15 @@ export function setupAuth(app: Express) {
         updatedAt: user.updatedAt
       };
 
-      // Log user in
+      // Log user in and cache DotSpark activation status
       req.login(secureUser, (err) => {
         if (err) return next(err);
+        
+        // Cache DotSpark activation status in session for performance
+        if (req.session) {
+          req.session.dotSparkActivated = user.dotSparkActivated || false;
+        }
+        
         res.status(201).json(secureUser);
       });
     } catch (error) {
@@ -257,6 +264,12 @@ export function setupAuth(app: Express) {
       
       req.login(user, (err) => {
         if (err) return next(err);
+        
+        // Cache DotSpark activation status in session for performance  
+        if (req.session) {
+          req.session.dotSparkActivated = user.dotSparkActivated || false;
+        }
+        
         return res.status(200).json(user);
       });
     })(req, res, next);
@@ -323,6 +336,9 @@ export function setupAuth(app: Express) {
       // Set additional session properties for better persistence
       if (req.session) {
         req.session.lastActivity = Date.now();
+        
+        // Cache DotSpark activation status in session for performance
+        req.session.dotSparkActivated = user.dotSparkActivated || false;
         req.session.firebaseUid = uid;
         req.session.persistent = persistent; // Store persistence preference
         
@@ -465,6 +481,11 @@ export function setupAuth(app: Express) {
         if (err) {
           console.error("Failed to login user after authentication:", err);
           return next(err);
+        }
+        
+        // Cache DotSpark activation status in session for performance
+        if (req.session) {
+          req.session.dotSparkActivated = user.dotSparkActivated || false;
         }
         
         // Force save session to ensure persistence
