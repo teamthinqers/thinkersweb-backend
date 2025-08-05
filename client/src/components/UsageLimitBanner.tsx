@@ -27,7 +27,7 @@ export default function UsageLimitBanner({
       <Alert className="bg-green-50 border-green-200 mb-4">
         <Zap className="h-4 w-4 text-green-600" />
         <AlertDescription className="text-green-700">
-          DotSpark activated - Unlimited AI conversations enabled
+          Your DotSpark is now active and ready to capture your thoughts
         </AlertDescription>
       </Alert>
     );

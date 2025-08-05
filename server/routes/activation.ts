@@ -54,7 +54,7 @@ router.post('/redeem-code', async (req, res) => {
     if (success) {
       res.json({
         success: true,
-        message: 'DotSpark activated successfully! Unlimited AI access enabled.',
+        message: 'Your DotSpark is now active and ready to capture your thoughts',
         activated: true
       });
     } else {
@@ -130,7 +130,7 @@ router.post('/activate', async (req, res) => {
     
     res.json({
       success: true,
-      message: 'DotSpark activated successfully',
+      message: 'Your DotSpark is now active and ready to capture your thoughts',
       activated: true
     });
   } catch (error) {
