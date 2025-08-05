@@ -514,17 +514,17 @@ const UserGrid: React.FC<UserGridProps> = ({ userId, mode }) => {
   // Add refs for grid controls
   const gridContainerRef = useRef<HTMLDivElement>(null);
 
-  // Fetch user's dots
+  // Fetch user's dots with proper typing
   const { data: userDots = [], isLoading: dotsLoading } = useQuery({
     queryKey: ['/api/user-content/dots'],
     enabled: mode === 'real' && !!userId
-  });
+  }) as { data: any[], isLoading: boolean };
 
-  // Fetch user's wheels and chakras
+  // Fetch user's wheels and chakras with proper typing
   const { data: userWheels = [], isLoading: wheelsLoading } = useQuery({
     queryKey: ['/api/user-content/wheels'],
     enabled: mode === 'real' && !!userId
-  });
+  }) as { data: any[], isLoading: boolean };
 
   // Fetch user's statistics
   const { data: userStats, isLoading: statsLoading } = useQuery({
@@ -535,8 +535,8 @@ const UserGrid: React.FC<UserGridProps> = ({ userId, mode }) => {
   const isLoading = dotsLoading || wheelsLoading || statsLoading;
 
   // Separate wheels and chakras
-  const regularWheels = userWheels.filter((w: any) => w.chakraId !== null);
-  const chakras = userWheels.filter((w: any) => w.chakraId === null);
+  const regularWheels = Array.isArray(userWheels) ? userWheels.filter((w: any) => w.chakraId !== null) : [];
+  const chakras = Array.isArray(userWheels) ? userWheels.filter((w: any) => w.chakraId === null) : [];
 
   if (mode === 'preview') {
     return (
@@ -579,7 +579,7 @@ const UserGrid: React.FC<UserGridProps> = ({ userId, mode }) => {
     );
   }
 
-  const isEmpty = userDots.length === 0 && userWheels.length === 0;
+  const isEmpty = Array.isArray(userDots) && Array.isArray(userWheels) && userDots.length === 0 && userWheels.length === 0;
 
   if (isEmpty) {
     return (
@@ -609,7 +609,7 @@ const UserGrid: React.FC<UserGridProps> = ({ userId, mode }) => {
       {/* Use exact DotWheelsMap component from Dashboard with user data */}
       <DotWheelsMap 
         wheels={userWheels}
-        dots={userDots.slice(0, showingRecentFilter ? recentCount : userDots.length)}
+        dots={userDots}
         showingRecentFilter={false}
         recentCount={4}
         isFullscreen={false}

@@ -45,9 +45,9 @@ const checkDotSparkActivation = async (req: any, res: any, next: any) => {
       where: eq(users.id, req.user.id)
     });
     
-    console.log(`👤 Found user:`, user ? { id: user.id, email: user.email, activated: user.dotsparkActivated } : 'null');
+    console.log(`👤 Found user:`, user ? { id: user.id, email: user.email, activated: user.dotSparkActivated } : 'null');
     
-    if (!user || !user.dotsparkActivated) {
+    if (!user || !user.dotSparkActivated) {
       console.log('❌ User not found or not activated');
       return res.status(403).json({
         error: 'DotSpark activation required',
