@@ -26,6 +26,19 @@ import { processEntryFromChat, generateChatResponse, type Message } from "./chat
 import { connectionsService } from "./connections";
 import { db } from "@db";
 import { setupAuth, isAuthenticated } from "./auth";
+import { 
+  setupDotSparkRoutes, 
+  requireDotSparkActivation, 
+  trackUserBehavior,
+  checkDotSparkActivation 
+} from "./dotspark-activation";
+import { 
+  initializeIntelligentContext,
+  storeInVectorDB,
+  getIntelligentContext,
+  generateIntelligentChatResponse,
+  getUserContextSummary
+} from "./intelligent-context";
 import { continueOrganizeThoughts } from "./routes/organize-thoughts";
 import { 
   extractWhatsAppMessage, 
@@ -65,6 +78,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Setup authentication middleware
   setupAuth(app);
+  
+  // Setup DotSpark activation routes
+  setupDotSparkRoutes(app);
+  
+  // Initialize intelligent context system
+  initializeIntelligentContext();
 
   // DotSpark WhatsApp Chatbot Endpoints
   
@@ -268,6 +287,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
           Math.round((1 - chatResult.alignmentAnalysis.deviationScore) * 100) : undefined;
       }
       
+      // Add DotSpark activation status to response
+      let dotSparkActivated = false;
+      let subscriptionTier = 'free';
+      if (req.session?.userId) {
+        const activation = await checkDotSparkActivation(req.session.userId);
+        dotSparkActivated = activation.activated;
+        subscriptionTier = activation.subscriptionTier || 'free';
+      }
+      
+      response.dotSparkActivated = dotSparkActivated;
+      response.subscriptionTier = subscriptionTier;
+      
       res.status(200).json(response);
     } catch (error) {
       console.error('Chat processing error:', error);
@@ -303,6 +334,90 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Enhanced Intelligent Chat Context API - Requires DotSpark activation
+  app.post(`${apiPrefix}/chat/intelligent`, requireDotSparkActivation, async (req: AuthenticatedRequest, res: Response) => {
+    const startTime = Date.now();
+    
+    try {
+      const userId = req.user?.id;
+      const { message, conversationHistory = [], sessionId } = req.body;
+      
+      if (!userId) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+      
+      if (!message) {
+        return res.status(400).json({ error: 'Message is required' });
+      }
+
+      // Use intelligent context system for enhanced chat
+      const response = await generateIntelligentChatResponse(
+        userId,
+        message,
+        conversationHistory,
+        sessionId
+      );
+
+      // Store conversation in vector database for future context
+      await storeInVectorDB(userId, 'conversation', Date.now(), message, {
+        sessionId,
+        responseLength: response.response.length,
+        contextUsed: {
+          dotsCount: response.relatedContent.dots.length,
+          wheelsCount: response.relatedContent.wheels.length,
+          chakrasCount: response.relatedContent.chakras.length
+        }
+      });
+      
+      const responseTime = Date.now() - startTime;
+      console.log(`Intelligent chat response generated in ${responseTime}ms for user ${userId}`);
+      
+      res.status(200).json({
+        reply: response.response,
+        responseTime,
+        dotSparkActivated: true,
+        context: response.context,
+        suggestedActions: response.suggestedActions,
+        relatedContent: {
+          dotsCount: response.relatedContent.dots.length,
+          wheelsCount: response.relatedContent.wheels.length,
+          chakrasCount: response.relatedContent.chakras.length,
+          relevantDots: response.relatedContent.dots.slice(0, 3),
+          relevantWheels: response.relatedContent.wheels.slice(0, 2),
+          relevantChakras: response.relatedContent.chakras.slice(0, 2)
+        }
+      });
+    } catch (error) {
+      console.error('Error in intelligent chat endpoint:', error);
+      res.status(500).json({ 
+        error: 'Failed to generate intelligent response',
+        fallback: 'Please try the regular chat endpoint'
+      });
+    }
+  });
+
+  // Get user context summary for intelligent features
+  app.get(`${apiPrefix}/context/summary`, requireDotSparkActivation, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const userId = req.user?.id;
+      
+      if (!userId) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+
+      const summary = await getUserContextSummary(userId);
+      
+      res.json({
+        userId,
+        ...summary,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Error getting user context summary:', error);
+      res.status(500).json({ error: 'Failed to retrieve user context' });
+    }
+  });
+
   // Voice transcription endpoint
   app.post(`${apiPrefix}/transcribe-voice`, async (req: Request, res: Response) => {
     try {
@@ -333,26 +448,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Dots and Wheels API Endpoints
   
-  // Simple dots endpoint for three-layer system - requires authentication and DotSpark activation
-  app.post(`${apiPrefix}/dots`, async (req: AuthenticatedRequest, res: Response) => {
+  // Enhanced dots endpoint with DotSpark activation and intelligent tracking
+  app.post(`${apiPrefix}/dots`, requireDotSparkActivation, async (req: AuthenticatedRequest, res: Response) => {
     try {
-      const userId = req.user?.id || req.session?.userId;
+      const userId = req.user?.id;
       
       if (!userId) {
         return res.status(401).json({ error: 'Authentication required' });
       }
-
-      // Check if user has activated DotSpark
-      const user = await db.query.users.findFirst({
-        where: eq(users.id, userId)
-      });
-      
-      if (!user) {
-        return res.status(404).json({ error: 'User not found' });
-      }
-
-      // TODO: Add DotSpark activation check once activation system is implemented
-      // For now, allow all authenticated users to create dots
       
       let { summary, anchor, pulse, sourceType = 'text' } = req.body;
       const { summaryVoiceUrl, anchorVoiceUrl, pulseVoiceUrl, summaryAudio, anchorAudio, pulseAudio } = req.body;
@@ -435,6 +538,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
       };
       
       const [newDot] = await db.insert(entries).values(entryData).returning();
+
+      // Store in vector database for intelligent retrieval
+      const vectorContent = `${summary} ${anchor} ${pulse}`;
+      await storeInVectorDB(userId, 'dot', newDot.id, vectorContent, {
+        oneWordSummary,
+        sourceType,
+        dotType: 'three-layer'
+      });
+
+      // Track dot creation behavior
+      await trackUserBehavior(userId, 'dot_created', 'dot', newDot.id, {
+        oneWordSummary,
+        sourceType,
+        dotType: 'three-layer',
+        hasVoiceData: sourceType === 'voice'
+      });
+
+      console.log(`✅ Dot created successfully: ID ${newDot.id} for user ${userId} with DotSpark activation`);
+
       res.status(201).json(newDot);
     } catch (error) {
       console.error('Error creating dot:', error);

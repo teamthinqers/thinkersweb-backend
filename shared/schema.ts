@@ -3,7 +3,7 @@ import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 import { relations } from 'drizzle-orm';
 import { z } from 'zod';
 
-// Users table
+// Users table with DotSpark activation tracking
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   firebaseUid: text("firebase_uid").unique(),
@@ -12,6 +12,9 @@ export const users = pgTable("users", {
   hashedPassword: text("hashed_password"),
   bio: text("bio"),
   avatar: text("avatar"),
+  dotSparkActivated: boolean("dotspark_activated").default(false).notNull(),
+  dotSparkActivatedAt: timestamp("dotspark_activated_at"),
+  subscriptionTier: text("subscription_tier").default("free"), // 'free', 'pro', 'premium'
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
@@ -101,17 +104,31 @@ export const voiceRecordings = pgTable("voice_recordings", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
-// Vector embeddings for semantic search
+// Vector embeddings for semantic search and intelligent retrieval
 export const vectorEmbeddings = pgTable("vector_embeddings", {
   id: serial("id").primaryKey(),
-  contentType: text("content_type").notNull(), // 'dot', 'wheel', 'chakra', 'conversation'
+  contentType: text("content_type").notNull(), // 'dot', 'wheel', 'chakra', 'conversation', 'user_behavior'
   contentId: integer("content_id").notNull(), // ID of the content item
-  userId: integer("user_id").references(() => users.id),
+  userId: integer("user_id").references(() => users.id).notNull(),
   vectorId: text("vector_id").notNull().unique(), // Pinecone vector ID
   content: text("content").notNull(), // Original text content
+  embedding: text("embedding"), // JSON array of embedding values for local storage
   metadata: text("metadata"), // JSON metadata for filtering and context
+  relevanceScore: decimal("relevance_score", { precision: 10, scale: 8 }), // For ranking results
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// User behavior tracking for intelligent insights
+export const userBehavior = pgTable("user_behavior", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  actionType: text("action_type").notNull(), // 'dot_created', 'wheel_created', 'chakra_created', 'chat_interaction', 'search_query'
+  entityType: text("entity_type"), // 'dot', 'wheel', 'chakra', 'chat', 'search'
+  entityId: integer("entity_id"), // ID of the related entity
+  actionData: text("action_data"), // JSON data about the action
+  sessionId: text("session_id"), // For grouping related actions
+  timestamp: timestamp("timestamp").defaultNow().notNull(),
 });
 
 // === RELATIONS ===
@@ -154,6 +171,13 @@ export const vectorEmbeddingsRelations = relations(vectorEmbeddings, ({ one }) =
   }),
 }));
 
+export const userBehaviorRelations = relations(userBehavior, ({ one }) => ({
+  user: one(users, {
+    fields: [userBehavior.userId],
+    references: [users.id],
+  }),
+}));
+
 // === VALIDATION SCHEMAS ===
 
 export const insertDotSchema = createInsertSchema(dots, {
@@ -187,10 +211,16 @@ export const insertVoiceRecordingSchema = createInsertSchema(voiceRecordings, {
 });
 
 export const insertVectorEmbeddingSchema = createInsertSchema(vectorEmbeddings, {
-  contentType: (schema) => schema.refine(val => ['dot', 'wheel', 'chakra', 'conversation'].includes(val), "Content type must be dot, wheel, chakra, or conversation"),
+  contentType: (schema) => schema.refine(val => ['dot', 'wheel', 'chakra', 'conversation', 'user_behavior'].includes(val), "Invalid content type"),
   contentId: (schema) => schema.positive("Content ID must be positive"),
   vectorId: (schema) => schema.min(1, "Vector ID is required"),
   content: (schema) => schema.min(10, "Content must be at least 10 characters"),
+});
+
+export const insertUserBehaviorSchema = createInsertSchema(userBehavior, {
+  actionType: (schema) => schema.refine(val => ['dot_created', 'wheel_created', 'chakra_created', 'chat_interaction', 'search_query'].includes(val), "Invalid action type"),
+  entityType: (schema) => schema.refine(val => !val || ['dot', 'wheel', 'chakra', 'chat', 'search'].includes(val), "Invalid entity type").optional(),
+  actionData: (schema) => schema.optional(),
 });
 
 // Legacy tables for backward compatibility (keeping minimal structure)
@@ -259,9 +289,11 @@ export const usersRelations = relations(users, ({ many }) => ({
   dots: many(dots),
   wheels: many(wheels),
   chakras: many(chakras),
-  entries: many(entries),
-  whatsappUsers: many(whatsappUsers),
+  vectorEmbeddings: many(vectorEmbeddings),
+  userBehavior: many(userBehavior),
   conversationSessions: many(conversationSessions),
+  whatsappUsers: many(whatsappUsers),
+  entries: many(entries),
 }));
 
 // === TYPE EXPORTS ===
