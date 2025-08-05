@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Loader2, Plus, Eye, Settings, RotateCcw } from 'lucide-react';
 import UserContentCreation from './UserContentCreation';
+import { GlobalFloatingDot } from '@/components/dotspark/GlobalFloatingDot';
 // Types will be inferred from API responses
 
 interface UserGridProps {
@@ -15,6 +16,7 @@ interface UserGridProps {
 const UserGrid: React.FC<UserGridProps> = ({ userId, mode }) => {
   const [showCreation, setShowCreation] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>(null);
+  const [showFloatingDot, setShowFloatingDot] = useState(false);
 
   // Fetch user's dots
   const { data: userDots = [], isLoading: dotsLoading } = useQuery({
@@ -108,37 +110,6 @@ const UserGrid: React.FC<UserGridProps> = ({ userId, mode }) => {
 
   return (
     <div className="space-y-6">
-      {/* Header with Statistics */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div>
-          <h2 className="text-2xl font-bold text-amber-800">Your DotSpark Grid</h2>
-          <p className="text-gray-600">Personal content stored with intelligence analysis</p>
-        </div>
-        
-        <div className="flex items-center gap-4">
-          {userStats && (
-            <div className="flex items-center gap-3">
-              <Badge variant="secondary" className="bg-amber-100 text-amber-800">
-                {userStats.totalDots} Dots
-              </Badge>
-              <Badge variant="secondary" className="bg-orange-100 text-orange-800">
-                {userStats.totalWheels} Wheels
-              </Badge>
-              <Badge variant="secondary" className="bg-amber-200 text-amber-900">
-                {userStats.totalChakras} Chakras
-              </Badge>
-            </div>
-          )}
-          
-          <Button 
-            onClick={() => setShowCreation(true)}
-            className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Create
-          </Button>
-        </div>
-      </div>
 
       {/* Chakras Section */}
       {chakras.length > 0 && (
@@ -243,6 +214,32 @@ const UserGrid: React.FC<UserGridProps> = ({ userId, mode }) => {
             Your Dots ({userDots.length})
           </h3>
           <div className="relative bg-gradient-to-br from-amber-50/30 to-orange-50/30 rounded-xl border-2 border-amber-200 shadow-lg overflow-hidden min-h-[500px]">
+            {/* Stats badges inside grid like preview mode */}
+            {userStats && (
+              <div className="absolute top-4 left-4 flex items-center gap-2 z-10">
+                <Badge variant="secondary" className="bg-amber-100 text-amber-800 text-xs">
+                  {userStats.totalDots} Dots
+                </Badge>
+                <Badge variant="secondary" className="bg-orange-100 text-orange-800 text-xs">
+                  {userStats.totalWheels} Wheels
+                </Badge>
+                <Badge variant="secondary" className="bg-amber-200 text-amber-900 text-xs">
+                  {userStats.totalChakras} Chakras
+                </Badge>
+              </div>
+            )}
+            
+            {/* Create button in top right like preview mode */}
+            <div className="absolute top-4 right-4 z-10">
+              <Button 
+                onClick={() => setShowFloatingDot(true)}
+                className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-xs px-3 py-1 h-7"
+              >
+                <Plus className="w-3 h-3 mr-1" />
+                Create
+              </Button>
+            </div>
+            
             {/* Visual Grid Display */}
             <div className="relative w-full h-full p-8">
               {userDots.map((dot: any, index: number) => {
@@ -323,6 +320,17 @@ const UserGrid: React.FC<UserGridProps> = ({ userId, mode }) => {
             </CardContent>
           </Card>
         </div>
+      )}
+
+      {/* Global Floating Dot Interface */}
+      {showFloatingDot && (
+        <>
+          <GlobalFloatingDot isActive={showFloatingDot} />
+          <div 
+            className="fixed inset-0 bg-transparent z-40" 
+            onClick={() => setShowFloatingDot(false)} 
+          />
+        </>
       )}
     </div>
   );
