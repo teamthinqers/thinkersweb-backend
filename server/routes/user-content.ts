@@ -188,37 +188,58 @@ router.post('/wheels', checkDotSparkActivation, async (req, res) => {
   }
 });
 
-// Get user's dots from the actual dots table  
+// Get user's dots from the entries table (where actual data is stored)
 router.get('/dots', checkDotSparkActivation, async (req, res) => {
   try {
     const userId = req.user!.id;
     console.log(`🔍 Fetching dots for user ID: ${userId}`);
     
-    // Query actual dots table, not entries table
-    const userDots = await db.query.dots.findMany({
-      where: eq(dots.userId, userId),
-      orderBy: desc(dots.createdAt)
+    // Query entries table where dots are actually stored as JSON
+    const userEntries = await db.query.entries.findMany({
+      where: eq(entries.userId, userId),
+      orderBy: desc(entries.createdAt)
     });
     
-    console.log(`📊 Found ${userDots.length} dots for user ${userId}`);
+    console.log(`📊 Found ${userEntries.length} entries for user ${userId}`);
     
-    // Return dots with proper formatting
-    const formattedDots = userDots.map(dot => ({
-      id: dot.id,
-      oneWordSummary: dot.oneWordSummary,
-      summary: dot.summary,
-      anchor: dot.anchor || '',
-      pulse: dot.pulse,
-      sourceType: dot.sourceType,
-      captureMode: dot.captureMode,
-      wheelId: dot.wheelId,
-      userId: dot.userId,
-      createdAt: dot.createdAt,
-      updatedAt: dot.updatedAt,
-      voiceData: dot.voiceData
-    }));
+    // Parse JSON content and format as dots
+    const formattedDots = userEntries.map(entry => {
+      try {
+        const content = typeof entry.content === 'string' ? JSON.parse(entry.content) : entry.content;
+        return {
+          id: `entry_${entry.id}`,
+          oneWordSummary: content.oneWordSummary || entry.title || 'Untitled',
+          summary: content.summary || entry.title || 'No summary',
+          anchor: content.anchor || '',
+          pulse: content.pulse || 'neutral',
+          sourceType: content.sourceType || 'text',
+          captureMode: content.captureMode || 'natural',
+          wheelId: content.wheelId || '',
+          timestamp: entry.createdAt,
+          createdAt: entry.createdAt,
+          updatedAt: entry.updatedAt,
+          voiceData: content.voiceData || null
+        };
+      } catch (parseError) {
+        console.warn(`Failed to parse entry ${entry.id}:`, parseError);
+        return {
+          id: `entry_${entry.id}`,
+          oneWordSummary: entry.title || 'Untitled',
+          summary: entry.title || 'No summary',
+          anchor: '',
+          pulse: 'neutral',
+          sourceType: 'text',
+          captureMode: 'natural',
+          wheelId: '',
+          timestamp: entry.createdAt,
+          createdAt: entry.createdAt,
+          updatedAt: entry.updatedAt,
+          voiceData: null
+        };
+      }
+    });
     
-    console.log(`✅ Returning ${formattedDots.length} formatted dots`);
+    console.log(`✅ Returning ${formattedDots.length} formatted dots from entries`);
     res.json(formattedDots);
     
   } catch (error) {
