@@ -1606,80 +1606,67 @@ const Dashboard: React.FC = () => {
           )}
         </div>
         
-        {/* Zoom Controls */}
+        {/* Zoom Controls - exact styling from preview mode */}
         <div className={`${isFullscreen ? 'fixed' : 'absolute'} z-10 flex items-center bg-white/90 backdrop-blur rounded-lg border-2 border-amber-200 shadow-lg ${
-          isFullscreen 
-            ? (isPWA ? 'bottom-6 left-6 gap-1 p-1.5' : 'bottom-6 left-6 gap-2 p-2')
-            : (isPWA ? 'bottom-4 left-4 gap-1 p-1.5' : 'bottom-4 left-4 gap-2 p-2')
+          isFullscreen ? 'bottom-6 left-6 gap-2 p-2' : 'bottom-4 left-4 gap-2 p-2'
         }`}>
-          {/* Zoom Out */}
           <button
             onClick={() => setZoom(Math.max(0.5, zoom - 0.1))}
-            className={`bg-amber-500 hover:bg-amber-600 text-white rounded transition-colors touch-manipulation ${
-              isPWA ? 'p-1.5' : 'p-2'
-            }`}
+            className="bg-amber-500 hover:bg-amber-600 text-white rounded transition-colors p-2"
             title="Zoom Out"
           >
-            <svg className={`fill="none" stroke="currentColor" viewBox="0 0 24 24" ${
-              isPWA ? 'w-3 h-3' : 'w-3 h-3'
-            }`}>
+            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
             </svg>
           </button>
-          
-          {/* Zoom Level Display */}
-          <span className={`font-semibold text-amber-800 text-center ${
-            isPWA ? 'text-[10px] min-w-[35px]' : 'text-xs min-w-[45px]'
-          }`}>
+          <span className="text-xs text-amber-800 px-2 font-medium min-w-[3rem] text-center">
             {Math.round(zoom * 100)}%
           </span>
-          
-          {/* Zoom In */}
           <button
-            onClick={() => setZoom(Math.min(2, zoom + 0.1))}
-            className={`bg-amber-500 hover:bg-amber-600 text-white rounded transition-colors touch-manipulation ${
-              isPWA ? 'p-1.5' : 'p-2'
-            }`}
+            onClick={() => setZoom(Math.min(1.5, zoom + 0.1))}
+            className="bg-amber-500 hover:bg-amber-600 text-white rounded transition-colors p-2"
             title="Zoom In"
           >
-            <svg className={`fill="none" stroke="currentColor" viewBox="0 0 24 24" ${
-              isPWA ? 'w-3 h-3' : 'w-3 h-3'
-            }`}>
+            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
             </svg>
           </button>
+          <div className="w-px h-6 bg-amber-200 mx-1"></div>
+          <button
+            onClick={resetView}
+            className="bg-orange-500 hover:bg-orange-600 text-white rounded transition-colors p-2"
+            title="Reset View"
+          >
+            <RotateCcw className="w-3 h-3" />
+          </button>
         </div>
 
-        {/* Navigation Icon - Clean arrow without button styling */}
-        <div className={`absolute z-10 ${
-          isPWA 
-            ? 'top-4 left-1/2 transform -translate-x-1/2' // PWA: Top center
-            : 'top-16 sm:top-4 left-1/2 transform -translate-x-1/2' // Browser: Original position
-        }`}>
-          {/* Reset View Arrow Icon */}
-          <div
-            onClick={resetView}
-            className="cursor-pointer hover:scale-110 transition-transform"
-            title={isPWA ? "Reset Scroll Position" : "Reset Drag Position"}
-          >
-            <RotateCcw className="w-6 h-6 text-amber-600 hover:text-amber-700 drop-shadow-lg" />
+
+        
+        {/* Stats badges - bottom right exactly like preview mode */}
+        <div className={`absolute bottom-4 right-4 z-10 flex items-center gap-2 ${isFullscreen ? 'fixed bottom-6 right-6' : ''}`}>
+          <div className="flex items-center gap-2">
+            <Badge variant="secondary" className="bg-amber-100 text-amber-800 text-xs">
+              {gridPositions?.statistics?.totalDots || dots.length || 0} Dots
+            </Badge>
+            <Badge variant="secondary" className="bg-orange-100 text-orange-800 text-xs">  
+              {gridPositions?.statistics?.totalWheels || wheels.length || 0} Wheels
+            </Badge>
+            <Badge variant="secondary" className="bg-amber-200 text-amber-900 text-xs">
+              {gridPositions?.statistics?.totalChakras || 0} Chakras
+            </Badge>
           </div>
         </div>
-        
-        {/* Stats Buttons */}
 
-
-        {/* Fullscreen Toggle - Bottom right for both modes when not fullscreen */}
+        {/* Fullscreen Toggle - top right to match preview mode exactly */}
         {!isFullscreen && (
-          <div className="absolute bottom-4 right-4 z-10">
+          <div className="absolute top-2 right-2 md:top-4 md:right-4 z-10">
             <button 
               onClick={toggleFullscreen}
-              className={`bg-amber-500 hover:bg-amber-600 text-white rounded-lg transition-colors shadow-lg ${
-                isPWA ? 'p-3 touch-manipulation' : 'p-2'
-              }`}
+              className="bg-amber-500 hover:bg-amber-600 text-white rounded-lg transition-colors shadow-lg p-2"
               title="Enter Fullscreen"
             >
-              <Maximize className={isPWA ? "w-7 h-7" : "w-5 h-5"} />
+              <Maximize className="w-5 h-5" />
             </button>
           </div>
         )}
@@ -1707,7 +1694,7 @@ const Dashboard: React.FC = () => {
             userSelect: 'none'
           }}
         >
-          {/* Fullscreen exit button - bottom right */}
+          {/* Fullscreen exit button - matches preview mode styling */}
           {isFullscreen && (
             <button
               onClick={(e) => {
