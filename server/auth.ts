@@ -4,11 +4,10 @@ import { Express, Request, Response, NextFunction } from "express";
 import session from "express-session";
 import { scrypt, randomBytes, timingSafeEqual } from "crypto";
 import { promisify } from "util";
-import { db } from "@db";
+import { db, pool } from "@db";
 import { users } from "@shared/schema";
 import { and, eq, or } from "drizzle-orm";
 import connectPg from "connect-pg-simple";
-import { pool } from "@db";
 
 // Add session data type definition
 declare module "express-session" {
@@ -129,18 +128,23 @@ export function setupAuth(app: Express) {
   
   console.log("Setting up authentication with session support");
   
-  // Use memory store with longer session duration for now
-  console.log("Using memory session store with persistent cookies");
-
   const sessionSettings: session.SessionOptions = {
     secret: sessionSecret,
-    resave: false, // Do not force save unchanged sessions
-    saveUninitialized: false, // Do not save uninitialized sessions
-    // store: undefined, // Use default memory store
+    resave: true, // Keep true to ensure session is saved on each request
+    saveUninitialized: true, // Keep true to create session for all users
+    store: new PostgresSessionStore({ 
+      pool,
+      createTableIfMissing: true,
+      tableName: 'session',
+      disableTouch: false, // Make sure session expiration is updated on activity
+      // Check for expired sessions every 15 minutes instead of every minute to reduce DB load
+      pruneSessionInterval: 15 * 60, 
+    }),
     cookie: {
-      secure: false, // Allow HTTP for development
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-      httpOnly: true, // Secure the cookie
+      secure: process.env.NODE_ENV === "production",
+      // Set to 365 days by default for persistent sessions
+      maxAge: 365 * 24 * 60 * 60 * 1000, 
+      httpOnly: true, // Prevent JavaScript access to the cookie
       sameSite: 'lax', // Allow cross-site navigation while protecting against CSRF
       path: '/',
     },
@@ -159,21 +163,11 @@ export function setupAuth(app: Express) {
       try {
         const user = await getUserByUsername(username);
         
-        if (!user || !user.hashedPassword || !(await comparePasswords(password, user.hashedPassword))) {
+        if (!user || !(await comparePasswords(password, user.password))) {
           return done(null, false);
         } else {
-          // Convert to Express User type
-          const secureUser: Express.User = {
-            id: user.id,
-            username: user.username || '',
-            email: user.email,
-            firebaseUid: user.firebaseUid,
-            fullName: user.fullName || user.username || 'User',
-            bio: user.bio,
-            avatarUrl: user.avatar,
-            createdAt: user.createdAt,
-            updatedAt: user.updatedAt
-          };
+          // Remove password from the user object before returning
+          const { password: _, ...secureUser } = user;
           return done(null, secureUser);
         }
       } catch (error) {
