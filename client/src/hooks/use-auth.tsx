@@ -37,29 +37,44 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     // First check backend session status to recover existing sessions
     const checkBackendSession = async (): Promise<boolean> => {
       try {
-        console.log('Checking backend session...');
+        console.log('🔍 Checking backend session...');
+        console.log('🍪 Including cookies in request for session recovery');
         const response = await fetch('/api/auth/status', {
-          credentials: 'include'
+          credentials: 'include',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          }
         });
-        console.log('Backend session response:', response.status);
+        console.log('🔄 Backend session response status:', response.status);
+        
         if (response.ok) {
           const { authenticated, user } = await response.json();
-          console.log('Backend session data:', { authenticated, user: user?.email, fullName: user?.fullName });
+          console.log('📊 Backend session data:', { 
+            authenticated, 
+            hasUser: !!user,
+            userEmail: user?.email, 
+            fullName: user?.fullName,
+            avatarUrl: user?.avatarUrl 
+          });
+          
           if (authenticated && user) {
-            console.log('✓ Backend session recovered for:', user.fullName || user.email);
+            console.log('✅ Backend session recovered successfully!');
+            console.log('👤 Recovered user:', user.fullName || user.email);
+            console.log('🖼️ Recovered avatar:', user.avatarUrl);
             setUser(user);
             setIsLoading(false);
             return true; // Session recovered
           } else {
-            console.log('Backend session response not authenticated or missing user data');
+            console.log('❌ Backend session response not authenticated or missing user data');
           }
         } else {
-          console.log('Backend session check failed with status:', response.status);
+          console.log('❌ Backend session check failed with status:', response.status);
         }
       } catch (error) {
-        console.log('No backend session found:', error);
+        console.log('❌ No backend session found:', error);
       }
-      console.log('No valid backend session - proceeding with fresh auth setup');
+      console.log('🔄 No valid backend session - proceeding with fresh auth setup');
       return false; // No session
     };
 
@@ -101,17 +116,39 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 
                 if (response.ok) {
                   const userData = await response.json();
-                  console.log('Backend session established successfully for:', userData.email, 'with fullName:', userData.fullName);
+                  console.log('✅ Backend session established successfully!');
+                  console.log('📧 User email:', userData.email);
+                  console.log('👤 Full name:', userData.fullName);
+                  console.log('🖼️ Avatar URL:', userData.avatarUrl);
+                  
                   // Set the backend user data instead of Firebase user
                   setUser(userData);
                   
-                  // Verify session was established
-                  const statusCheck = await fetch('/api/auth/status', { credentials: 'include' });
-                  const status = await statusCheck.json();
-                  console.log('Session verification after sync:', status);
+                  // Force immediate verification with a small delay
+                  setTimeout(async () => {
+                    try {
+                      const statusCheck = await fetch('/api/auth/status', { credentials: 'include' });
+                      const status = await statusCheck.json();
+                      console.log('🔍 Session verification after sync:', {
+                        authenticated: status.authenticated,
+                        userEmail: status.user?.email,
+                        fullName: status.user?.fullName,
+                        avatarUrl: status.user?.avatarUrl
+                      });
+                      
+                      // If backend shows authenticated but we don't have user, sync again
+                      if (status.authenticated && status.user && !user) {
+                        console.log('⚡ Re-syncing user data from backend session...');
+                        setUser(status.user);
+                      }
+                    } catch (error) {
+                      console.error('Status check failed:', error);
+                    }
+                  }, 500);
+                  
                 } else {
                   const errorData = await response.json();
-                  console.error('Failed to establish backend session:', response.status, errorData);
+                  console.error('❌ Failed to establish backend session:', response.status, errorData);
                   setUser(null);
                 }
               } catch (error) {
