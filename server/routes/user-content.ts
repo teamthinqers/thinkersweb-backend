@@ -1,6 +1,6 @@
 import express from 'express';
 import { db } from '@db';
-import { entries, users, dots, wheels, vectorEmbeddings, entriesInsertSchema } from '@shared/schema';
+import { entries, users, dots, wheels, vectorEmbeddings } from '@shared/schema';
 import { eq, and, desc } from 'drizzle-orm';
 import { z } from 'zod';
 
@@ -67,7 +67,7 @@ const checkDotSparkActivation = async (req: any, res: any, next: any) => {
 // Create a new dot with Pinecone storage
 router.post('/dots', checkDotSparkActivation, async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user!.id;
     
     // Validate input data
     const dotData = insertDotSchema.parse({
@@ -75,8 +75,8 @@ router.post('/dots', checkDotSparkActivation, async (req, res) => {
       userId
     });
     
-    // Create dot in database
-    const [newDot] = await db.insert(dots).values(dotData).returning();
+    // Create dot in database  
+    const [newDot] = await db.insert(dots).values([dotData]).returning();
     
     // Store in Pinecone for intelligence
     try {
@@ -125,7 +125,7 @@ router.post('/dots', checkDotSparkActivation, async (req, res) => {
 // Create a new wheel with Pinecone storage
 router.post('/wheels', checkDotSparkActivation, async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user!.id;
     
     // Validate input data
     const wheelData = insertWheelSchema.parse({
@@ -134,12 +134,12 @@ router.post('/wheels', checkDotSparkActivation, async (req, res) => {
     });
     
     // Create wheel in database
-    const [newWheel] = await db.insert(wheels).values(wheelData).returning();
+    const [newWheel] = await db.insert(wheels).values([wheelData]).returning();
     
     // Store in Pinecone for intelligence
     try {
       const vectorId = `wheel_${userId}_${newWheel.id}_${Date.now()}`;
-      const content = `${newWheel.name} ${newWheel.heading || ''} ${newWheel.goals || newWheel.purpose || ''} ${newWheel.timeline || ''}`;
+      const content = `${newWheel.heading} ${newWheel.goals || ''} ${newWheel.timeline || ''}`;
       
       // Store vector embedding reference
       await db.insert(vectorEmbeddings).values({
@@ -181,72 +181,113 @@ router.post('/wheels', checkDotSparkActivation, async (req, res) => {
   }
 });
 
-// Get user's dots from entries table (where /api/dots saves them)
+// Get user's dots from the actual dots table  
 router.get('/dots', checkDotSparkActivation, async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user!.id;
     console.log(`🔍 Fetching dots for user ID: ${userId}`);
     
-    const userEntries = await db.select().from(entries).where(eq(entries.userId, userId)).orderBy(desc(entries.createdAt));
-    console.log(`📊 Found ${userEntries.length} entries for user ${userId}`);
-    
-    // Transform entries to dots format for frontend compatibility
-    const userDots = userEntries.map(entry => {
-      let parsedContent: any = {};
-      try {
-        parsedContent = JSON.parse(entry.content || '{}');
-      } catch {
-        parsedContent = { summary: entry.title || 'Untitled' };
-      }
-      
-      return {
-        id: entry.id,
-        oneWordSummary: parsedContent.oneWordSummary || 'Note',
-        summary: parsedContent.summary || entry.title || 'Untitled',
-        anchor: parsedContent.anchor || '',
-        pulse: parsedContent.pulse || 'neutral',
-        sourceType: parsedContent.sourceType || 'text',
-        captureMode: parsedContent.captureMode || 'natural',
-        wheelId: 'general',
-        timestamp: entry.createdAt,
-        voiceData: parsedContent.voiceData || null
-      };
+    // Query actual dots table, not entries table
+    const userDots = await db.query.dots.findMany({
+      where: eq(dots.userId, userId),
+      orderBy: desc(dots.createdAt)
     });
     
-    console.log(`✅ Returning ${userDots.length} transformed dots`);
-    res.json(userDots);
+    console.log(`📊 Found ${userDots.length} dots for user ${userId}`);
+    
+    // Return dots with proper formatting
+    const formattedDots = userDots.map(dot => ({
+      id: dot.id,
+      oneWordSummary: dot.oneWordSummary,
+      summary: dot.summary,
+      anchor: dot.anchor || '',
+      pulse: dot.pulse,
+      sourceType: dot.sourceType,
+      captureMode: dot.captureMode,
+      wheelId: dot.wheelId,
+      userId: dot.userId,
+      createdAt: dot.createdAt,
+      updatedAt: dot.updatedAt,
+      voiceData: dot.voiceData
+    }));
+    
+    console.log(`✅ Returning ${formattedDots.length} formatted dots`);
+    res.json(formattedDots);
     
   } catch (error) {
-    console.error('Error fetching user dots:', error);
-    res.status(500).json({ error: 'Failed to fetch dots' });
+    console.error('❌ Error fetching user dots:', error);
+    res.status(500).json({ 
+      error: 'Failed to fetch dots',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
   }
 });
 
-// Get user's wheels (placeholder - wheels system not implemented yet)
+// Get user's wheels from the actual wheels table
 router.get('/wheels', checkDotSparkActivation, async (req, res) => {
   try {
-    // Return empty array for now since wheels are not fully implemented
-    res.json([]);
+    const userId = req.user!.id;
+    console.log(`🔍 Fetching wheels for user ID: ${userId}`);
+    
+    // Query actual wheels table
+    const userWheels = await db.query.wheels.findMany({
+      where: eq(wheels.userId, userId),
+      orderBy: desc(wheels.createdAt)
+    });
+    
+    console.log(`📊 Found ${userWheels.length} wheels for user ${userId}`);
+    
+    // Return wheels with proper formatting
+    const formattedWheels = userWheels.map(wheel => ({
+      id: wheel.id,
+      heading: wheel.heading,
+      goals: wheel.goals,
+      timeline: wheel.timeline,
+      category: wheel.category,
+      color: wheel.color,
+      chakraId: wheel.chakraId,
+      userId: wheel.userId,
+      sourceType: wheel.sourceType,
+      positionX: wheel.positionX,
+      positionY: wheel.positionY,
+      radius: wheel.radius,
+      createdAt: wheel.createdAt,
+      updatedAt: wheel.updatedAt,
+      voiceData: wheel.voiceData
+    }));
+    
+    console.log(`✅ Returning ${formattedWheels.length} formatted wheels`);
+    res.json(formattedWheels);
     
   } catch (error) {
-    console.error('Error fetching user wheels:', error);
-    res.status(500).json({ error: 'Failed to fetch wheels' });
+    console.error('❌ Error fetching user wheels:', error);
+    res.status(500).json({ 
+      error: 'Failed to fetch wheels',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
   }
 });
 
 // Get user's content statistics
 router.get('/stats', checkDotSparkActivation, async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user!.id;
     
-    // Count entries (dots) for this user
-    const userEntries = await db.select().from(entries).where(eq(entries.userId, userId));
+    // Count dots for this user
+    const userDots = await db.query.dots.findMany({
+      where: eq(dots.userId, userId)
+    });
+    
+    // Count wheels for this user
+    const userWheels = await db.query.wheels.findMany({
+      where: eq(wheels.userId, userId)
+    });
     
     res.json({
-      totalDots: userEntries.length,
-      totalWheels: 0, // Wheels not implemented yet
-      totalChakras: 0, // Chakras not implemented yet
-      lastActivity: userEntries.length > 0 ? userEntries[0]?.createdAt : null
+      totalDots: userDots.length,
+      totalWheels: userWheels.length,
+      totalChakras: userWheels.filter(w => !w.chakraId).length, // Wheels without a parent chakra are chakras themselves
+      lastActivity: userDots.length > 0 ? userDots[0]?.createdAt : (userWheels.length > 0 ? userWheels[0]?.createdAt : null)
     });
     
   } catch (error) {
@@ -258,7 +299,7 @@ router.get('/stats', checkDotSparkActivation, async (req, res) => {
 // Delete user's dot
 router.delete('/dots/:id', checkDotSparkActivation, async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user!.id;
     const dotId = parseInt(req.params.id);
     
     // Verify ownership

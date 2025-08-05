@@ -84,13 +84,14 @@ const Dashboard: React.FC = () => {
         return { data: { dotPositions: {}, wheelPositions: {}, chakraPositions: {}, statistics: { totalDots: 0, totalWheels: 0, totalChakras: 0, freeDots: 0 } } };
       }
     },
-    retry: false,
-    staleTime: 60000, // Cache for 1 minute
+    retry: 3, // Retry up to 3 times on failure
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
+    staleTime: 30000, // Cache for 30 seconds
     refetchOnWindowFocus: false,
-    refetchOnMount: false, // Don't refetch on component mount if cached
+    refetchOnMount: true, // Always refetch on component mount for fresh data
     enabled: !isLoading && (!!user || previewMode), // Only fetch when not loading auth and have user OR in preview mode
     refetchInterval: false, // Disable automatic refetching
-    gcTime: 5 * 60 * 1000 // Keep data in cache for 5 minutes
+    gcTime: 2 * 60 * 1000 // Keep data in cache for 2 minutes
   });
 
   // Fallback for dots - use old API if new grid API has no data
@@ -122,9 +123,11 @@ const Dashboard: React.FC = () => {
       }
     },
     enabled: !isLoading && (!!user || previewMode), // Only fetch when not loading auth and have user OR in preview mode
-    retry: 1, // Retry once on failure
+    retry: 3, // Retry up to 3 times on failure 
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
     refetchOnWindowFocus: false,
-    staleTime: 5 * 60 * 1000 // 5 minutes
+    refetchOnMount: true, // Always refetch on component mount to ensure fresh data
+    staleTime: 30 * 1000 // Reduce stale time to 30 seconds for more frequent updates
   });
 
   // Fetch user wheels and chakras
@@ -146,8 +149,12 @@ const Dashboard: React.FC = () => {
         return [];
       }
     },
+    enabled: !isLoading && (!!user || previewMode), // Same condition as dots
+    retry: 3, // Retry up to 3 times on failure
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff  
     refetchOnWindowFocus: false,
-    staleTime: 5 * 60 * 1000 // 5 minutes
+    refetchOnMount: true, // Always refetch on component mount
+    staleTime: 30 * 1000 // Reduce stale time to 30 seconds
   });
 
   // Counts are now inline for simplicity
