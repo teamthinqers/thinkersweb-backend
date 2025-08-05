@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -7,6 +7,144 @@ import { Loader2, Plus, Eye, Settings, RotateCcw } from 'lucide-react';
 import UserContentCreation from './UserContentCreation';
 import { GlobalFloatingDot } from '@/components/dotspark/GlobalFloatingDot';
 // Types will be inferred from API responses
+
+// Import DotWheelsMap type to match Dashboard usage
+interface DotWheelsMapProps {
+  wheels: any[];
+  dots: any[];
+  showingRecentFilter?: boolean;
+  recentCount?: number;
+  isFullscreen?: boolean;
+  onFullscreenChange?: (isFullscreen: boolean) => void;
+  setViewFullWheel: (wheel: any | null) => void;
+  previewMode: boolean;
+  setPreviewMode: (previewMode: boolean) => void;
+}
+
+// Create a simplified DotWheelsMap component that matches preview mode behavior
+const DotWheelsMap: React.FC<DotWheelsMapProps & { onCreateDot?: () => void }> = ({ 
+  wheels, 
+  dots, 
+  showingRecentFilter = false, 
+  recentCount = 4,
+  isFullscreen = false,
+  onFullscreenChange,
+  setViewFullWheel,
+  previewMode,
+  setPreviewMode,
+  onCreateDot
+}) => {
+  const [zoom, setZoom] = useState(0.6);
+  const [offset, setOffset] = useState({ x: 0, y: 0 });
+  const gridContainerRef = useRef<HTMLDivElement>(null);
+  
+  return (
+    <div className="space-y-4">
+      {/* Grid Controls exactly like preview mode */}
+      <div className="relative bg-gradient-to-br from-amber-50/30 to-orange-50/30 rounded-xl border-2 border-amber-200 shadow-lg overflow-hidden">
+        {/* Stats badges */}
+        <div className="absolute top-4 left-4 flex items-center gap-2 z-20">
+          <Badge variant="secondary" className="bg-amber-100 text-amber-800 text-xs">
+            {dots.length} Dots
+          </Badge>
+          <Badge variant="secondary" className="bg-orange-100 text-orange-800 text-xs">
+            {wheels.length} Wheels  
+          </Badge>
+          <Badge variant="secondary" className="bg-amber-200 text-amber-900 text-xs">
+            0 Chakras
+          </Badge>
+        </div>
+
+        {/* Create button */}
+        {onCreateDot && (
+          <div className="absolute top-4 right-4 z-20">
+            <Button 
+              onClick={onCreateDot}
+              className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-xs px-3 py-1 h-7"
+            >
+              <Plus className="w-3 h-3 mr-1" />
+              Create
+            </Button>
+          </div>
+        )}
+
+        {/* Zoom controls */}
+        <div className="absolute bottom-4 left-4 z-20 flex items-center gap-2 bg-white/80 rounded-lg p-2">
+          <Button 
+            onClick={() => setZoom(Math.max(0.2, zoom - 0.1))}
+            size="sm"
+            variant="outline"
+            className="h-6 w-6 p-0"
+          >
+            -
+          </Button>
+          <span className="text-xs font-medium min-w-[40px] text-center">
+            {Math.round(zoom * 100)}%
+          </span>
+          <Button 
+            onClick={() => setZoom(Math.min(2, zoom + 0.1))}
+            size="sm"
+            variant="outline"
+            className="h-6 w-6 p-0"
+          >
+            +
+          </Button>
+        </div>
+
+        {/* Interactive grid container */}
+        <div 
+          ref={gridContainerRef}
+          className="relative h-[500px] w-full overflow-hidden cursor-grab active:cursor-grabbing"
+          style={{ transform: `scale(${zoom}) translate(${offset.x}px, ${offset.y}px)` }}
+        >
+          {/* Render dots */}
+          {dots.map((dot: any, index: number) => {
+            const gridCols = Math.ceil(Math.sqrt(dots.length));
+            const row = Math.floor(index / gridCols);
+            const col = index % gridCols;
+            const x = 120 + (col * 150);
+            const y = 120 + (row * 150);
+            
+            return (
+              <div
+                key={dot.id}
+                className="absolute transition-all duration-300 hover:scale-110 cursor-pointer"
+                style={{ 
+                  left: `${x}px`, 
+                  top: `${y}px`,
+                  transform: 'translate(-50%, -50%)'
+                }}
+              >
+                <div className="relative">
+                  <div 
+                    className="w-16 h-16 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 shadow-lg flex items-center justify-center border-2 border-white hover:shadow-xl transition-all duration-300"
+                    title={`${dot.summary} - ${dot.pulse}`}
+                  >
+                    <span className="text-white font-bold text-xs text-center px-1">
+                      {dot.oneWordSummary?.slice(0, 6) || dot.summary?.slice(0, 6) || 'Dot'}
+                    </span>
+                  </div>
+                  
+                  {/* Pulse indicator */}
+                  <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-white border-2 border-amber-300 flex items-center justify-center">
+                    <div className={`w-2 h-2 rounded-full ${
+                      dot.pulse === 'excited' ? 'bg-red-400' :
+                      dot.pulse === 'curious' ? 'bg-blue-400' :
+                      dot.pulse === 'focused' ? 'bg-purple-400' :
+                      dot.pulse === 'happy' ? 'bg-yellow-400' :
+                      dot.pulse === 'calm' ? 'bg-green-400' :
+                      'bg-gray-400'
+                    }`}></div>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+};
 
 interface UserGridProps {
   userId?: number;
@@ -17,6 +155,9 @@ const UserGrid: React.FC<UserGridProps> = ({ userId, mode }) => {
   const [showCreation, setShowCreation] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [showFloatingDot, setShowFloatingDot] = useState(false);
+  
+  // Add refs for grid controls
+  const gridContainerRef = useRef<HTMLDivElement>(null);
 
   // Fetch user's dots
   const { data: userDots = [], isLoading: dotsLoading } = useQuery({
@@ -206,96 +347,19 @@ const UserGrid: React.FC<UserGridProps> = ({ userId, mode }) => {
         </div>
       )}
 
-      {/* Visual Dots Grid - Same as Preview Mode */}
-      {userDots.length > 0 && (
-        <div>
-          <h3 className="text-lg font-semibold text-amber-800 mb-4 flex items-center">
-            <div className="w-3 h-3 bg-amber-500 rounded-full mr-2"></div>
-            Your Dots ({userDots.length})
-          </h3>
-          <div className="relative bg-gradient-to-br from-amber-50/30 to-orange-50/30 rounded-xl border-2 border-amber-200 shadow-lg overflow-hidden min-h-[500px]">
-            {/* Stats badges inside grid like preview mode */}
-            {userStats && (
-              <div className="absolute top-4 left-4 flex items-center gap-2 z-10">
-                <Badge variant="secondary" className="bg-amber-100 text-amber-800 text-xs">
-                  {userStats.totalDots} Dots
-                </Badge>
-                <Badge variant="secondary" className="bg-orange-100 text-orange-800 text-xs">
-                  {userStats.totalWheels} Wheels
-                </Badge>
-                <Badge variant="secondary" className="bg-amber-200 text-amber-900 text-xs">
-                  {userStats.totalChakras} Chakras
-                </Badge>
-              </div>
-            )}
-            
-            {/* Create button in top right like preview mode */}
-            <div className="absolute top-4 right-4 z-10">
-              <Button 
-                onClick={() => setShowFloatingDot(true)}
-                className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-xs px-3 py-1 h-7"
-              >
-                <Plus className="w-3 h-3 mr-1" />
-                Create
-              </Button>
-            </div>
-            
-            {/* Visual Grid Display */}
-            <div className="relative w-full h-full p-8">
-              {userDots.map((dot: any, index: number) => {
-                // Calculate position for dots in a grid pattern
-                const gridCols = Math.ceil(Math.sqrt(userDots.length));
-                const row = Math.floor(index / gridCols);
-                const col = index % gridCols;
-                const x = 120 + (col * 150);
-                const y = 120 + (row * 150);
-                
-                return (
-                  <div
-                    key={dot.id}
-                    className="absolute transition-all duration-300 hover:scale-110 cursor-pointer"
-                    style={{ 
-                      left: `${x}px`, 
-                      top: `${y}px`,
-                      transform: 'translate(-50%, -50%)'
-                    }}
-                    onClick={() => setSelectedItem(dot)}
-                  >
-                    {/* Dot Circle */}
-                    <div className="relative">
-                      <div 
-                        className="w-16 h-16 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 shadow-lg flex items-center justify-center border-2 border-white hover:shadow-xl transition-all duration-300"
-                        title={`${dot.summary} - ${dot.pulse}`}
-                      >
-                        <span className="text-white font-bold text-xs text-center px-1">
-                          {dot.oneWordSummary?.slice(0, 6) || dot.summary?.slice(0, 6) || 'Dot'}
-                        </span>
-                      </div>
-                      
-                      {/* Pulse indicator */}
-                      <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-white border-2 border-amber-300 flex items-center justify-center">
-                        <div className={`w-2 h-2 rounded-full ${
-                          dot.pulse === 'excited' ? 'bg-red-400' :
-                          dot.pulse === 'curious' ? 'bg-blue-400' :
-                          dot.pulse === 'focused' ? 'bg-purple-400' :
-                          dot.pulse === 'happy' ? 'bg-yellow-400' :
-                          dot.pulse === 'calm' ? 'bg-green-400' :
-                          'bg-gray-400'
-                        }`}></div>
-                      </div>
-                    </div>
-                    
-                    {/* Hover tooltip */}
-                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-black text-white text-xs rounded opacity-0 hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
-                      {dot.summary}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Use DotWheelsMap component exactly like preview mode */}
+      <DotWheelsMap 
+        wheels={regularWheels}
+        dots={userDots}
+        showingRecentFilter={false}
+        recentCount={4}
+        isFullscreen={false}
+        onFullscreenChange={() => {}}
+        setViewFullWheel={() => {}}
+        previewMode={false}
+        setPreviewMode={() => {}}
+        onCreateDot={() => setShowFloatingDot(true)}
+      />
 
       {/* Item Detail Modal would go here */}
       {selectedItem && (
@@ -322,14 +386,26 @@ const UserGrid: React.FC<UserGridProps> = ({ userId, mode }) => {
         </div>
       )}
 
-      {/* Global Floating Dot Interface */}
+      {/* Global Floating Dot Interface - Directly open expanded mode */}
       {showFloatingDot && (
         <>
-          <GlobalFloatingDot isActive={showFloatingDot} />
-          <div 
-            className="fixed inset-0 bg-transparent z-40" 
-            onClick={() => setShowFloatingDot(false)} 
-          />
+          <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+            <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+              <div className="p-6">
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-xl font-semibold text-amber-800">Create New Dot</h2>
+                  <Button 
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowFloatingDot(false)}
+                  >
+                    ✕
+                  </Button>
+                </div>
+                <GlobalFloatingDot isActive={true} />
+              </div>
+            </div>
+          </div>
         </>
       )}
     </div>
