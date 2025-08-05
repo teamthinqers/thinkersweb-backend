@@ -1,19 +1,35 @@
 import express from 'express';
 import { db } from '@db';
-import { dots, wheels, vectorEmbeddings, insertDotSchema, insertWheelSchema, insertVectorEmbeddingSchema } from '@shared/schema';
+import { entries, users } from '@shared/schema';
 import { eq, and, desc } from 'drizzle-orm';
 import { z } from 'zod';
 
 const router = express.Router();
 
-// Check if user has DotSpark activated (placeholder for now)
-const checkDotSparkActivation = (req: any, res: any, next: any) => {
-  // TODO: Implement actual DotSpark activation check
-  // For now, allow all authenticated users
-  if (!req.user?.id) {
-    return res.status(401).json({ error: 'Authentication required' });
+// Check if user has DotSpark activated
+const checkDotSparkActivation = async (req: any, res: any, next: any) => {
+  try {
+    if (!req.user?.id) {
+      return res.status(401).json({ error: 'Authentication required' });
+    }
+    
+    const user = await db.query.users.findFirst({
+      where: eq(users.id, req.user.id)
+    });
+    
+    if (!user || !user.dotSparkActivated) {
+      return res.status(403).json({
+        error: 'DotSpark activation required',
+        message: 'You need to activate DotSpark to access this content',
+        code: 'DOTSPARK_NOT_ACTIVATED'
+      });
+    }
+    
+    next();
+  } catch (error) {
+    console.error('Error checking DotSpark activation:', error);
+    res.status(500).json({ error: 'Failed to verify activation status' });
   }
-  next();
 };
 
 // Create a new dot with Pinecone storage
@@ -133,17 +149,34 @@ router.post('/wheels', checkDotSparkActivation, async (req, res) => {
   }
 });
 
-// Get user's dots (excluding preview data)
+// Get user's dots from entries table (where /api/dots saves them)
 router.get('/dots', checkDotSparkActivation, async (req, res) => {
   try {
     const userId = req.user.id;
     
-    const userDots = await db.query.dots.findMany({
-      where: eq(dots.userId, userId),
-      orderBy: desc(dots.createdAt),
-      with: {
-        wheel: true
+    const userEntries = await db.select().from(entries).where(eq(entries.userId, userId)).orderBy(desc(entries.createdAt));
+    
+    // Transform entries to dots format for frontend compatibility
+    const userDots = userEntries.map(entry => {
+      let parsedContent: any = {};
+      try {
+        parsedContent = JSON.parse(entry.content || '{}');
+      } catch {
+        parsedContent = { summary: entry.title || 'Untitled' };
       }
+      
+      return {
+        id: entry.id,
+        oneWordSummary: parsedContent.oneWordSummary || 'Note',
+        summary: parsedContent.summary || entry.title || 'Untitled',
+        anchor: parsedContent.anchor || '',
+        pulse: parsedContent.pulse || 'neutral',
+        sourceType: parsedContent.sourceType || 'text',
+        captureMode: parsedContent.captureMode || 'natural',
+        wheelId: 'general',
+        timestamp: entry.createdAt,
+        voiceData: parsedContent.voiceData || null
+      };
     });
     
     res.json(userDots);
@@ -154,22 +187,11 @@ router.get('/dots', checkDotSparkActivation, async (req, res) => {
   }
 });
 
-// Get user's wheels and chakras (excluding preview data)
+// Get user's wheels (placeholder - wheels system not implemented yet)
 router.get('/wheels', checkDotSparkActivation, async (req, res) => {
   try {
-    const userId = req.user.id;
-    
-    const userWheels = await db.query.wheels.findMany({
-      where: eq(wheels.userId, userId),
-      orderBy: desc(wheels.createdAt),
-      with: {
-        dots: true,
-        chakra: true,
-        childWheels: true
-      }
-    });
-    
-    res.json(userWheels);
+    // Return empty array for now since wheels are not fully implemented
+    res.json([]);
     
   } catch (error) {
     console.error('Error fetching user wheels:', error);
@@ -182,24 +204,14 @@ router.get('/stats', checkDotSparkActivation, async (req, res) => {
   try {
     const userId = req.user.id;
     
-    // Get counts
-    const userDots = await db.query.dots.findMany({
-      where: eq(dots.userId, userId)
-    });
-    
-    const userWheels = await db.query.wheels.findMany({
-      where: eq(wheels.userId, userId)
-    });
-    
-    const regularWheels = userWheels.filter(w => w.chakraId !== null);
-    const chakras = userWheels.filter(w => w.chakraId === null);
+    // Count entries (dots) for this user
+    const userEntries = await db.select().from(entries).where(eq(entries.userId, userId));
     
     res.json({
-      totalDots: userDots.length,
-      totalWheels: regularWheels.length,
-      totalChakras: chakras.length,
-      freeDots: userDots.filter(d => !d.wheelId).length,
-      lastActivity: userDots.length > 0 ? userDots[0]?.createdAt : null
+      totalDots: userEntries.length,
+      totalWheels: 0, // Wheels not implemented yet
+      totalChakras: 0, // Chakras not implemented yet
+      lastActivity: userEntries.length > 0 ? userEntries[0]?.createdAt : null
     });
     
   } catch (error) {
