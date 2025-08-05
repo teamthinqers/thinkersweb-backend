@@ -466,40 +466,48 @@ export function setupAuth(app: Express) {
         isNewUser
       };
       
-      // Log user in
+      // Log user in with explicit session saving
       req.login(secureUser, (err) => {
         if (err) {
           console.error("Failed to login user after authentication:", err);
           return next(err);
         }
         
-        console.log(`User ${user.id} successfully logged in`);
-        
-        // Add session info for debugging
-        const sessionInfo = {
-          id: req.sessionID,
-          cookie: req.session?.cookie ? {
-            maxAge: req.session.cookie.maxAge,
-            expires: req.session.cookie.expires
-          } : null
-        };
-        console.log("Session info:", sessionInfo);
-        
-        // Set additional session properties for persistence
-        if (req.session) {
-          req.session.lastActivity = Date.now();
-          req.session.firebaseUid = uid;
-        }
-        
-        // Check authentication status immediately after login
-        console.log('✅ Authentication status after login:', {
-          authenticated: req.isAuthenticated(),
-          userId: req.user?.id,
-          sessionId: req.sessionID
+        // Force save session to ensure persistence
+        req.session.save((saveErr) => {
+          if (saveErr) {
+            console.error('Session save error:', saveErr);
+            return next(saveErr);
+          }
+          
+          console.log(`User ${user.id} successfully logged in`);
+          
+          // Add session info for debugging
+          const sessionInfo = {
+            id: req.sessionID,
+            cookie: req.session?.cookie ? {
+              maxAge: req.session.cookie.maxAge,
+              expires: req.session.cookie.expires
+            } : null
+          };
+          console.log("Session info:", sessionInfo);
+          
+          // Set additional session properties for persistence
+          if (req.session) {
+            req.session.lastActivity = Date.now();
+            req.session.firebaseUid = uid;
+          }
+          
+          // Check authentication status immediately after login
+          console.log('✅ Authentication status after login:', {
+            authenticated: req.isAuthenticated(),
+            userId: req.user?.id,
+            sessionId: req.sessionID
+          });
+          
+          // Return response - session should be auto-saved
+          res.status(isNewUser ? 201 : 200).json(secureUser);
         });
-        
-        // Return response - session should be auto-saved
-        res.status(isNewUser ? 201 : 200).json(secureUser);
       });
     } catch (error) {
       console.error("Firebase auth error:", error);

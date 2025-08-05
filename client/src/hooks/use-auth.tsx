@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { auth, signInWithGoogle, signOut } from '@/lib/firebase';
+import { auth, signInWithGoogle, signOut } from '@/lib/auth-simple';
 import { User } from 'firebase/auth';
 import { authBypass, type BypassUser } from '@/lib/authBypass';
 
