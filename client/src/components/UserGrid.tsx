@@ -251,103 +251,7 @@ const UserGrid: React.FC<UserGridProps> = ({ userId, mode }) => {
 
   return (
     <div className="space-y-6">
-
-      {/* Chakras Section */}
-      {chakras.length > 0 && (
-        <div>
-          <h3 className="text-lg font-semibold text-amber-900 mb-4 flex items-center">
-            <Settings className="w-5 h-5 mr-2" />
-            Your Chakras ({chakras.length})
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {chakras.map((chakra) => (
-              <Card key={chakra.id} className="hover:shadow-lg transition-shadow border-amber-200">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-amber-900 text-base">{chakra.name}</CardTitle>
-                  {chakra.heading && (
-                    <p className="text-sm text-gray-600">{chakra.heading}</p>
-                  )}
-                </CardHeader>
-                <CardContent>
-                  {chakra.purpose && (
-                    <p className="text-sm text-gray-700 mb-2">{chakra.purpose}</p>
-                  )}
-                  {chakra.timeline && (
-                    <Badge variant="outline" className="text-xs">
-                      {chakra.timeline}
-                    </Badge>
-                  )}
-                  <div className="mt-3 flex justify-between items-center">
-                    <Badge className="bg-amber-100 text-amber-800">
-                      {chakra.category}
-                    </Badge>
-                    <Button 
-                      size="sm" 
-                      variant="outline"
-                      onClick={() => setSelectedItem(chakra)}
-                    >
-                      <Eye className="w-4 h-4" />
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Wheels Section */}
-      {regularWheels.length > 0 && (
-        <div>
-          <h3 className="text-lg font-semibold text-orange-800 mb-4 flex items-center">
-            <RotateCcw className="w-5 h-5 mr-2" />
-            Your Wheels ({regularWheels.length})
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {regularWheels.map((wheel) => (
-              <Card key={wheel.id} className="hover:shadow-lg transition-shadow border-orange-200">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-orange-800 text-base">{wheel.name}</CardTitle>
-                  {wheel.heading && (
-                    <p className="text-sm text-gray-600">{wheel.heading}</p>
-                  )}
-                </CardHeader>
-                <CardContent>
-                  {wheel.goals && (
-                    <p className="text-sm text-gray-700 mb-2">{wheel.goals}</p>
-                  )}
-                  {wheel.timeline && (
-                    <Badge variant="outline" className="text-xs">
-                      {wheel.timeline}
-                    </Badge>
-                  )}
-                  <div className="mt-3 flex justify-between items-center">
-                    <Badge className="bg-orange-100 text-orange-800">
-                      {wheel.category}
-                    </Badge>
-                    <Button 
-                      size="sm" 
-                      variant="outline"
-                      onClick={() => setSelectedItem(wheel)}
-                    >
-                      <Eye className="w-4 h-4" />
-                    </Button>
-                  </div>
-                  {wheel.dots && wheel.dots.length > 0 && (
-                    <div className="mt-2">
-                      <Badge variant="secondary" className="text-xs">
-                        {wheel.dots.length} dots
-                      </Badge>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Use DotWheelsMap component exactly like preview mode */}
+      {/* Use DotWheelsMap component exactly like preview mode - no section headers needed */}
       <DotWheelsMap 
         wheels={regularWheels}
         dots={userDots}
@@ -361,7 +265,7 @@ const UserGrid: React.FC<UserGridProps> = ({ userId, mode }) => {
         onCreateDot={() => setShowFloatingDot(true)}
       />
 
-      {/* Item Detail Modal would go here */}
+      {/* Keep detail modal for individual items */}
       {selectedItem && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <Card className="max-w-2xl w-full max-h-[80vh] overflow-y-auto">
@@ -377,7 +281,6 @@ const UserGrid: React.FC<UserGridProps> = ({ userId, mode }) => {
               </Button>
             </CardHeader>
             <CardContent>
-              {/* Display full details based on type */}
               <pre className="whitespace-pre-wrap text-sm">
                 {JSON.stringify(selectedItem, null, 2)}
               </pre>
