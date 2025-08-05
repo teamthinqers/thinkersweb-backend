@@ -465,18 +465,6 @@ const UserGrid: React.FC<UserGridProps> = ({ userId, mode }) => {
 
   return (
     <div className="space-y-6">
-      {/* Create button above the grid */}
-      <div className="flex justify-between items-center">
-        <div></div>
-        <Button 
-          onClick={() => setShowFloatingDot(true)}
-          className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
-        >
-          <Plus className="w-4 h-4 mr-2" />
-          Create
-        </Button>
-      </div>
-
       {/* Use exact DotWheelsMap component from Dashboard */}
       <DotWheelsMap 
         wheels={regularWheels}

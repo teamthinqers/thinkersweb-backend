@@ -2487,14 +2487,16 @@ const Dashboard: React.FC = () => {
                     )}
                   </div>
                   
-                  {/* Social Button */}
-                  <button
-                    onClick={() => window.open('/social-neura', '_blank')}
-                    className={`flex items-center gap-2 ${isPWA ? 'px-2 py-1.5 text-xs' : 'px-3 sm:px-4 py-2 text-sm sm:text-base'} rounded-lg font-medium transition-all duration-200 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white shadow-md hover:shadow-lg hover:scale-105 ${showRecentFilter && isPWA ? 'mt-6' : ''}`}
-                  >
-                    <Brain className={`${isPWA ? 'w-3 h-3' : 'w-3 h-3 sm:w-4 sm:h-4'} animate-pulse`} />
-                    <span className="font-semibold whitespace-nowrap">Social</span>
-                  </button>
+                  {/* Create button for grid mode only */}
+                  {viewMode === 'grid' && (
+                    <button
+                      onClick={() => setShowFloatingDot(true)}
+                      className={`flex items-center gap-2 ${isPWA ? 'px-2 py-1.5 text-xs' : 'px-3 sm:px-4 py-2 text-sm sm:text-base'} rounded-lg font-medium transition-all duration-200 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-md hover:shadow-lg hover:scale-105`}
+                    >
+                      <Plus className={`${isPWA ? 'w-3 h-3' : 'w-3 h-3 sm:w-4 sm:h-4'}`} />
+                      <span className="font-semibold whitespace-nowrap">Create</span>
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
