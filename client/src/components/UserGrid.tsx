@@ -235,70 +235,67 @@ const UserGrid: React.FC<UserGridProps> = ({ userId, mode }) => {
         </div>
       )}
 
-      {/* Dots Section */}
+      {/* Visual Dots Grid - Same as Preview Mode */}
       {userDots.length > 0 && (
         <div>
-          <h3 className="text-lg font-semibold text-amber-700 mb-4 flex items-center">
-            <div className="w-5 h-5 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 mr-2"></div>
+          <h3 className="text-lg font-semibold text-amber-800 mb-4 flex items-center">
+            <div className="w-3 h-3 bg-amber-500 rounded-full mr-2"></div>
             Your Dots ({userDots.length})
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {userDots.map((dot: any) => (
-              <Card key={dot.id} className="hover:shadow-lg transition-shadow border-amber-100">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-amber-800 text-sm leading-relaxed">
-                    {dot.summary}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-xs text-gray-600 mb-2">{dot.anchor}</p>
-                  <div className="flex items-center justify-between">
-                    <Badge 
-                      variant="outline" 
-                      className="text-xs bg-gradient-to-r from-purple-50 to-pink-50 text-purple-700"
-                    >
-                      {dot.pulse}
-                    </Badge>
-                    <Button 
-                      size="sm" 
-                      variant="outline"
-                      onClick={() => setSelectedItem(dot)}
-                    >
-                      <Eye className="w-4 h-4" />
-                    </Button>
-                  </div>
-                  <div className="mt-2 flex items-center gap-2">
-                    <Badge 
-                      variant="secondary" 
-                      className={`text-xs ${
-                        dot.sourceType === 'voice' 
-                          ? 'bg-blue-50 text-blue-700' 
-                          : 'bg-green-50 text-green-700'
-                      }`}
-                    >
-                      {dot.sourceType}
-                    </Badge>
-                    <Badge 
-                      variant="secondary" 
-                      className={`text-xs ${
-                        dot.captureMode === 'ai' 
-                          ? 'bg-purple-50 text-purple-700' 
-                          : 'bg-amber-50 text-amber-700'
-                      }`}
-                    >
-                      {dot.captureMode}
-                    </Badge>
-                  </div>
-                  {dot.wheel && (
-                    <div className="mt-2">
-                      <Badge variant="outline" className="text-xs">
-                        in {dot.wheel.name}
-                      </Badge>
+          <div className="relative bg-gradient-to-br from-amber-50/30 to-orange-50/30 rounded-xl border-2 border-amber-200 shadow-lg overflow-hidden min-h-[500px]">
+            {/* Visual Grid Display */}
+            <div className="relative w-full h-full p-8">
+              {userDots.map((dot: any, index: number) => {
+                // Calculate position for dots in a grid pattern
+                const gridCols = Math.ceil(Math.sqrt(userDots.length));
+                const row = Math.floor(index / gridCols);
+                const col = index % gridCols;
+                const x = 120 + (col * 150);
+                const y = 120 + (row * 150);
+                
+                return (
+                  <div
+                    key={dot.id}
+                    className="absolute transition-all duration-300 hover:scale-110 cursor-pointer"
+                    style={{ 
+                      left: `${x}px`, 
+                      top: `${y}px`,
+                      transform: 'translate(-50%, -50%)'
+                    }}
+                    onClick={() => setSelectedItem(dot)}
+                  >
+                    {/* Dot Circle */}
+                    <div className="relative">
+                      <div 
+                        className="w-16 h-16 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 shadow-lg flex items-center justify-center border-2 border-white hover:shadow-xl transition-all duration-300"
+                        title={`${dot.summary} - ${dot.pulse}`}
+                      >
+                        <span className="text-white font-bold text-xs text-center px-1">
+                          {dot.oneWordSummary?.slice(0, 6) || dot.summary?.slice(0, 6) || 'Dot'}
+                        </span>
+                      </div>
+                      
+                      {/* Pulse indicator */}
+                      <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-white border-2 border-amber-300 flex items-center justify-center">
+                        <div className={`w-2 h-2 rounded-full ${
+                          dot.pulse === 'excited' ? 'bg-red-400' :
+                          dot.pulse === 'curious' ? 'bg-blue-400' :
+                          dot.pulse === 'focused' ? 'bg-purple-400' :
+                          dot.pulse === 'happy' ? 'bg-yellow-400' :
+                          dot.pulse === 'calm' ? 'bg-green-400' :
+                          'bg-gray-400'
+                        }`}></div>
+                      </div>
                     </div>
-                  )}
-                </CardContent>
-              </Card>
-            ))}
+                    
+                    {/* Hover tooltip */}
+                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-black text-white text-xs rounded opacity-0 hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
+                      {dot.summary}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       )}
