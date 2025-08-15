@@ -3,8 +3,9 @@ import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, Plus, Eye, Settings, RotateCcw, Mic, Type, Maximize, Minimize } from 'lucide-react';
+import { Loader2, Plus, Eye, Settings, RotateCcw, Mic, Type, Maximize, Minimize, ZoomIn, ZoomOut } from 'lucide-react';
 import UserContentCreation from './UserContentCreation';
+import DotFullView from './DotFullView';
 import { GlobalFloatingDot } from '@/components/dotspark/GlobalFloatingDot';
 // Types will be inferred from API responses
 
@@ -19,6 +20,8 @@ interface DotWheelsMapProps {
   setViewFullWheel: (wheel: any | null) => void;
   previewMode: boolean;
   setPreviewMode: (previewMode: boolean) => void;
+  viewFullDot?: any;
+  setViewFullDot?: (dot: any | null) => void;
 }
 
 // Dynamic sizing functions exactly like Dashboard
@@ -68,10 +71,11 @@ const DotWheelsMap: React.FC<DotWheelsMapProps> = ({
   onFullscreenChange,
   setViewFullWheel,
   previewMode,
-  setPreviewMode
+  setPreviewMode,
+  viewFullDot,
+  setViewFullDot
 }) => {
   const [selectedWheel, setSelectedWheel] = useState<string | null>(null);
-  const [viewFullDot, setViewFullDot] = useState<any | null>(null);
   const [selectedDot, setSelectedDot] = useState<any | null>(null);
   const [hoveredDot, setHoveredDot] = useState<any | null>(null);
   const [hoveredWheel, setHoveredWheel] = useState<any | null>(null);
@@ -428,7 +432,7 @@ const DotWheelsMap: React.FC<DotWheelsMapProps> = ({
             );
           })}
         </div>
-
+      </div>
         {/* Flash card view for mobile/PWA exactly like preview mode */}
         {selectedDot && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-[100]">
@@ -499,9 +503,8 @@ const DotWheelsMap: React.FC<DotWheelsMapProps> = ({
           </div>
         )}
       </div>
-    </div>
-  );
-};
+    );
+  };
 
 interface UserGridProps {
   userId?: number;
@@ -512,6 +515,7 @@ const UserGrid: React.FC<UserGridProps> = ({ userId, mode }) => {
   const [showCreation, setShowCreation] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [showFloatingDot, setShowFloatingDot] = useState(false);
+  const [viewFullDot, setViewFullDot] = useState<any>(null);
   
   // Add refs for grid controls
   const gridContainerRef = useRef<HTMLDivElement>(null);
@@ -738,6 +742,8 @@ const UserGrid: React.FC<UserGridProps> = ({ userId, mode }) => {
         setViewFullWheel={() => {}}
         previewMode={false}
         setPreviewMode={() => {}}
+        viewFullDot={viewFullDot}
+        setViewFullDot={setViewFullDot}
       />
       
       {/* Debug: Show raw dots count */}
@@ -790,6 +796,14 @@ const UserGrid: React.FC<UserGridProps> = ({ userId, mode }) => {
             </div>
           </div>
         </>
+      )}
+
+      {/* Full View Mode for Dots - Same as Preview */}
+      {viewFullDot && (
+        <DotFullView
+          dot={viewFullDot}
+          onClose={() => setViewFullDot(null)}
+        />
       )}
     </div>
   );
