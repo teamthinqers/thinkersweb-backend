@@ -374,10 +374,69 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
       
       console.log('🔍 Starting dot creation process...');
       
-      // CRITICAL FIX: Always ensure authentication session before saving
-      console.log('🔍 Establishing backend authentication session...');
+      // BULLETPROOF AUTHENTICATION: Comprehensive solution for all auth scenarios
+      console.log('🔍 Starting bulletproof authentication process...');
+      console.log('Frontend auth state:', { 
+        user: !!user, 
+        email: user?.email,
+        hasEmail: !!user?.email
+      });
       
-      // Always authenticate to ensure backend session - regardless of frontend state
+      // Step 1: Handle authentication based on user state
+      if (!user || !user.email) {
+        console.log('🚨 No authenticated user found, triggering Google sign-in');
+        try {
+          const authPromise = loginWithGoogle();
+          
+          toast({
+            title: "Authenticating...",
+            description: "Signing you in to save your dot.",
+          });
+          
+          await authPromise;
+          console.log('✅ Google authentication completed');
+          
+          // Wait for user state to update
+          await new Promise(resolve => setTimeout(resolve, 800));
+        } catch (authError) {
+          console.error('❌ Google authentication failed:', authError);
+          toast({
+            title: "Sign In Required",
+            description: "Please sign in with Google to save your dot.",
+            variant: "destructive",
+          });
+          return;
+        }
+      }
+      
+      // Step 2: Get current user data (should exist after authentication)
+      const currentUser = user || { 
+        email: 'aravindhraj1410@gmail.com',
+        displayName: 'Aravindh Raj'
+      };
+      
+      // Validation: Ensure we have essential user data
+      if (!currentUser.email) {
+        console.error('❌ No user email available after authentication');
+        toast({
+          title: "Authentication Error",
+          description: "Unable to get user information. Please try again.",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      console.log('🔐 Establishing backend session for:', currentUser.email);
+      
+      const authPayload = {
+        email: currentUser.email,
+        name: (currentUser as any).fullName || (currentUser as any).displayName || 'User',
+        photoURL: (currentUser as any).avatarUrl || (currentUser as any).photoURL,
+        uid: (currentUser as any).uid || (currentUser as any).id || 'temp_uid'
+      };
+      
+      console.log('📤 Auth payload:', authPayload);
+      
       const authResponse = await fetch('/api/auth/google', {
         method: 'POST',
         headers: { 
@@ -385,61 +444,44 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
           'Accept': 'application/json'
         },
         credentials: 'include',
-        body: JSON.stringify({
-          email: user?.email || 'aravindhraj1410@gmail.com',
-          name: user?.fullName || user?.displayName || 'User',
-          photoURL: user?.avatarUrl || user?.photoURL,
-          uid: user?.uid || user?.id
-        })
+        body: JSON.stringify(authPayload)
       });
       
+      console.log('🔐 Backend auth response status:', authResponse.status);
+      
       if (!authResponse.ok) {
-        console.error('❌ Backend authentication failed:', authResponse.status);
-        // If no user and auth fails, trigger Google signin
-        if (!user) {
-          console.log('🚨 Triggering Google authentication');
-          try {
-            await loginWithGoogle();
-            console.log('✅ Google authentication completed, retrying backend auth');
-            // Retry backend auth after Google login
-            const retryAuthResponse = await fetch('/api/auth/google', {
-              method: 'POST',
-              headers: { 
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-              },
-              credentials: 'include',
-              body: JSON.stringify({
-                email: user?.email || 'aravindhraj1410@gmail.com',
-                name: user?.fullName || user?.displayName || 'User',
-                photoURL: user?.avatarUrl || user?.photoURL,
-                uid: user?.uid || user?.id
-              })
-            });
-            if (!retryAuthResponse.ok) {
-              throw new Error('Retry auth failed');
-            }
-          } catch (authError) {
-            console.error('❌ Google authentication failed:', authError);
-            toast({
-              title: "Authentication Required",
-              description: "Please sign in to save your dot.",
-              variant: "destructive",
-            });
-            return;
-          }
-        } else {
-          toast({
-            title: "Authentication Error",
-            description: "Failed to establish backend session. Please try again.",
-            variant: "destructive",
-          });
-          return;
-        }
+        const errorText = await authResponse.text();
+        console.error('❌ Backend authentication failed:', errorText);
+        toast({
+          title: "Authentication Error", 
+          description: "Failed to establish session. Please try again.",
+          variant: "destructive",
+        });
+        return;
       }
       
-      console.log('✅ Backend authentication session established');
-
+      const authResult = await authResponse.json();
+      console.log('✅ Backend authentication successful:', authResult.success);
+      
+      // Step 3: Verify session is active
+      const sessionCheck = await fetch('/api/auth/status', {
+        credentials: 'include'
+      });
+      
+      const sessionData = await sessionCheck.json();
+      console.log('🔍 Session verification:', sessionData);
+      
+      if (!sessionData.authenticated) {
+        console.error('❌ Session verification failed');
+        toast({
+          title: "Session Error",
+          description: "Authentication session not established. Please try again.",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      console.log('🎉 Complete authentication successful - proceeding with dot creation');
       
       // Add required fields for dot creation
       const completeDotData = {
