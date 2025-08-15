@@ -697,6 +697,98 @@ export function setupAuth(app: Express) {
     });
   });
 
+  // Firebase sync endpoint to establish backend session from Firebase authentication
+  app.post("/api/auth/firebase-sync", async (req, res, next) => {
+    try {
+      const { firebaseToken, email, uid, displayName, photoURL } = req.body;
+      
+      console.log(`🔥 Firebase sync attempt for ${email} (UID: ${uid})`);
+      
+      if (!uid || !email) {
+        return res.status(400).json({ message: "Firebase UID and email are required" });
+      }
+      
+      // Check if user already exists
+      let user = await getUserByFirebaseUid(uid);
+      
+      if (!user) {
+        // Try to find by email as backup
+        user = await getUserByEmail(email);
+        
+        if (user && !user.firebaseUid) {
+          // Update existing user with Firebase UID
+          console.log(`🔄 Updating existing user ${user.email} with Firebase UID`);
+          await db.update(users)
+            .set({ 
+              firebaseUid: uid,
+              fullName: displayName || user.fullName,
+              avatar: photoURL || user.avatar,
+              updatedAt: new Date()
+            })
+            .where(eq(users.id, user.id));
+          
+          // Refetch updated user
+          user = await getUserByFirebaseUid(uid);
+        }
+      }
+      
+      if (!user) {
+        // Create new user from Firebase data
+        console.log(`🆕 Creating new user from Firebase: ${email}`);
+        const [newUser] = await db.insert(users)
+          .values({
+            email: email,
+            username: email.split('@')[0] + '_' + Math.random().toString(36).substr(2, 5),
+            firebaseUid: uid,
+            fullName: displayName || email.split('@')[0],
+            avatar: photoURL,
+            dotSparkActivated: true, // Auto-activate new Firebase users
+            createdAt: new Date(),
+            updatedAt: new Date()
+          })
+          .returning();
+        
+        user = newUser;
+        console.log(`✅ New Firebase user created with ID: ${user.id}`);
+      }
+      
+      // Convert to Express User type
+      const secureUser: Express.User = {
+        id: user.id,
+        username: user.username || '',
+        email: user.email,
+        firebaseUid: user.firebaseUid,
+        fullName: user.fullName || displayName || 'User',
+        bio: user.bio,
+        avatarUrl: user.avatar || photoURL,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt
+      };
+      
+      // Log user in to establish backend session
+      req.login(secureUser, (err) => {
+        if (err) {
+          console.error('❌ Login error during Firebase sync:', err);
+          return next(err);
+        }
+        
+        // Cache DotSpark activation status in session
+        if (req.session) {
+          req.session.dotSparkActivated = user.dotSparkActivated || true;
+          req.session.firebaseUid = uid;
+          req.session.persistent = true; // Mark as persistent session
+        }
+        
+        console.log(`✅ Firebase user ${secureUser.email} successfully synced and logged in`);
+        res.status(200).json(secureUser);
+      });
+      
+    } catch (error) {
+      console.error('💥 Firebase sync error:', error);
+      next(error);
+    }
+  });
+
   // Auth status endpoint for frontend to check authentication state
   app.get("/api/auth/status", (req, res) => {
     console.log('🔍 Auth status check:', {
