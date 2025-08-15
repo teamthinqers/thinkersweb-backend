@@ -100,7 +100,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
               try {
                 const token = await firebaseUser.getIdToken();
                 console.log('Syncing Firebase user with backend:', firebaseUser.email);
-                const response = await fetch('/api/auth/firebase', {
+                const response = await fetch('/api/auth/firebase-sync', {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
                   credentials: 'include',
