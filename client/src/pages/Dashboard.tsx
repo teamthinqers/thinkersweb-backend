@@ -89,7 +89,7 @@ const Dashboard: React.FC = () => {
     staleTime: 30000, // Cache for 30 seconds
     refetchOnWindowFocus: false,
     refetchOnMount: true, // Always refetch on component mount for fresh data
-    enabled: !isLoading && (!!user || previewMode), // Only fetch when not loading auth and have user OR in preview mode
+    enabled: !isLoading, // Fetch regardless of user state - backend will handle auth
     refetchInterval: false, // Disable automatic refetching
     gcTime: 2 * 60 * 1000 // Keep data in cache for 2 minutes
   });
@@ -122,7 +122,7 @@ const Dashboard: React.FC = () => {
         return [];
       }
     },
-    enabled: !isLoading && (!!user || previewMode), // Only fetch when not loading auth and have user OR in preview mode
+    enabled: !isLoading, // Fetch regardless of user state - backend will handle auth
     retry: 3, // Retry up to 3 times on failure 
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
     refetchOnWindowFocus: false,
@@ -149,7 +149,7 @@ const Dashboard: React.FC = () => {
         return [];
       }
     },
-    enabled: !isLoading && (!!user || previewMode), // Same condition as dots
+    enabled: !isLoading, // Fetch regardless of user state - backend will handle auth
     retry: 3, // Retry up to 3 times on failure
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff  
     refetchOnWindowFocus: false,
