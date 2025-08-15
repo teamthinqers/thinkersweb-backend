@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { isRunningAsStandalone } from "@/lib/pwaUtils";
 import { useAuth } from '@/hooks/use-auth';
 import { SignInPrompt } from '@/components/auth/SignInPrompt';
+import { useQueryClient } from '@tanstack/react-query';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -31,6 +32,7 @@ interface GlobalFloatingDotProps {
 export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
   const { user, loginWithGoogle } = useAuth();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [position, setPosition] = useState<Position>(() => {
     const saved = localStorage.getItem('global-floating-dot-position');
     return saved ? JSON.parse(saved) : { x: 320, y: 180 };
@@ -384,10 +386,10 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
         return;
       }
       
-      // Submit to real API endpoint
+      // Submit to correct API endpoint
       console.log('Creating dot with data:', dotData);
       console.log('User authenticated as:', user.email);
-      const response = await fetch('/api/dots', {
+      const response = await fetch('/api/user-content/dots', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -403,6 +405,10 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
         title: "Dot Saved",
         description: "Your thought has been captured as a three-layer dot!",
       });
+      
+      // Invalidate cache to refresh the dashboard dots
+      queryClient.invalidateQueries({ queryKey: ['/api/user-content/dots'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/user-content/stats'] });
       
       // Reset all states
       setTextInput("");
