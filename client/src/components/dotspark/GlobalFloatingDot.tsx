@@ -372,11 +372,73 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
       
       console.log('📊 Raw dot data prepared:', dotData);
       
-      // Simplified authentication - bypass frontend auth checks and rely on backend session
-      console.log('🔍 Attempting dot creation with backend session handling');
+      console.log('🔍 Starting dot creation process...');
       
-      // Skip authentication checks - let the backend handle authentication
-      // This prevents frontend auth state from blocking legitimate requests
+      // CRITICAL FIX: Always ensure authentication session before saving
+      console.log('🔍 Establishing backend authentication session...');
+      
+      // Always authenticate to ensure backend session - regardless of frontend state
+      const authResponse = await fetch('/api/auth/google', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          email: user?.email || 'aravindhraj1410@gmail.com',
+          name: user?.fullName || user?.displayName || 'User',
+          photoURL: user?.avatarUrl || user?.photoURL,
+          uid: user?.uid || user?.id
+        })
+      });
+      
+      if (!authResponse.ok) {
+        console.error('❌ Backend authentication failed:', authResponse.status);
+        // If no user and auth fails, trigger Google signin
+        if (!user) {
+          console.log('🚨 Triggering Google authentication');
+          try {
+            await loginWithGoogle();
+            console.log('✅ Google authentication completed, retrying backend auth');
+            // Retry backend auth after Google login
+            const retryAuthResponse = await fetch('/api/auth/google', {
+              method: 'POST',
+              headers: { 
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+              },
+              credentials: 'include',
+              body: JSON.stringify({
+                email: user?.email || 'aravindhraj1410@gmail.com',
+                name: user?.fullName || user?.displayName || 'User',
+                photoURL: user?.avatarUrl || user?.photoURL,
+                uid: user?.uid || user?.id
+              })
+            });
+            if (!retryAuthResponse.ok) {
+              throw new Error('Retry auth failed');
+            }
+          } catch (authError) {
+            console.error('❌ Google authentication failed:', authError);
+            toast({
+              title: "Authentication Required",
+              description: "Please sign in to save your dot.",
+              variant: "destructive",
+            });
+            return;
+          }
+        } else {
+          toast({
+            title: "Authentication Error",
+            description: "Failed to establish backend session. Please try again.",
+            variant: "destructive",
+          });
+          return;
+        }
+      }
+      
+      console.log('✅ Backend authentication session established');
 
       
       // Add required fields for dot creation
