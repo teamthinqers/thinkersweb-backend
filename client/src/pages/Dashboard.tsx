@@ -135,6 +135,7 @@ const Dashboard: React.FC = () => {
           const data = await response.json();
           console.log('✅ Dots fetched successfully:', data.length, 'dots');
           console.log('📝 Recent dots:', data.slice(0, 3).map(d => d.oneWordSummary));
+          console.log('🎯 Full dot structure sample:', data[0]);
           return data;
         } else if (response.status === 401) {
           console.log('🔒 Authentication required - checking if we should show preview mode');
