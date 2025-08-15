@@ -27,10 +27,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     let firebaseUnsubscribe: (() => void) | null = null;
     let bypassUnsubscribe: (() => void) | null = null;
 
-    // Check if we're in demo/development mode
-    const isDemoMode = window.location.search.includes('demo=true') || 
-                      window.location.pathname.includes('/test-') ||
-                      localStorage.getItem('dotspark_demo_mode') === 'true';
+    // Check if we're in demo/development mode - DISABLED for production
+    const isDemoMode = false; // Force production mode for all users
+    
+    // Clear any lingering demo mode settings
+    if (localStorage.getItem('dotspark_demo_mode')) {
+      localStorage.removeItem('dotspark_demo_mode');
+      console.log('🧹 Cleared demo mode setting from localStorage');
+    }
 
     console.log('Auth initialization - isDemoMode:', isDemoMode);
 

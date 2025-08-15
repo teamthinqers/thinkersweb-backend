@@ -9,10 +9,8 @@ export function SecureSignIn() {
   const { loginWithGoogle, loginWithBypass, isLoading } = useAuth();
   const [authMode, setAuthMode] = useState<'production' | 'demo' | null>(null);
 
-  // Check if we're in demo mode
-  const isDemoMode = window.location.search.includes('demo=true') || 
-                    window.location.pathname.includes('/test-') ||
-                    localStorage.getItem('dotspark_demo_mode') === 'true';
+  // Force production mode - demo mode disabled for all users
+  const isDemoMode = false;
 
   const handleGoogleSignIn = async () => {
     try {
