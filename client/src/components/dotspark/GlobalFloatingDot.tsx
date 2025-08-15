@@ -379,17 +379,22 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
       
       console.log('🔐 Backend auth status:', authStatus);
       
-      // Handle authentication states
+      // Handle authentication states with automatic retry
       if (!authStatus.authenticated) {
-        console.log('❌ Backend not authenticated - initiating login flow');
+        console.log('❌ Backend not authenticated - attempting automatic login');
+        
+        // Show initial sign in message
         toast({
-          title: "Sign In Required",
-          description: "Please sign in to save your dots.",
-          variant: "destructive",
+          title: "Signing You In",
+          description: "Please wait while we authenticate...",
         });
         
         try {
+          // Attempt Google login
           await loginWithGoogle();
+          
+          // Wait a moment for session to establish
+          await new Promise(resolve => setTimeout(resolve, 1000));
           
           // Verify login worked by checking backend again
           const reCheckResponse = await fetch('/api/auth/status', {
@@ -399,23 +404,28 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
           const reCheckStatus = await reCheckResponse.json();
           
           if (reCheckStatus.authenticated) {
-            toast({
-              title: "Authentication Successful",
-              description: "You can now create your dot. Please try again.",
-            });
+            console.log('✅ Authentication successful, proceeding with dot creation');
+            // Don't return - continue with dot creation
           } else {
-            throw new Error('Authentication verification failed');
+            console.log('❌ Authentication verification failed');
+            toast({
+              title: "Authentication Required",
+              description: "Please sign in manually and try creating your dot again.",
+              variant: "destructive",
+            });
+            return;
           }
-          return;
         } catch (error) {
           console.error('Authentication failed:', error);
           toast({
-            title: "Authentication Error",
-            description: "Unable to sign in. Please refresh and try again.",
+            title: "Sign In Needed",
+            description: "Please sign in using the header button and try again.",
             variant: "destructive",
           });
           return;
         }
+      } else {
+        console.log('✅ Already authenticated, proceeding with dot creation');
       }
       
       console.log('✅ Backend session authenticated, proceeding with dot creation');
