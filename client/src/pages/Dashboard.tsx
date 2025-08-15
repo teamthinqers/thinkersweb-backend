@@ -96,7 +96,7 @@ const Dashboard: React.FC = () => {
 
   // Fetch user dots from the correct API endpoint
   const { data: dots = [], isLoading: dotsLoading, refetch } = useQuery({
-    queryKey: ['/api/user-content/dots', previewMode ? 'preview' : 'real', user?.id || 'anonymous'],
+    queryKey: ['/api/user-content/dots', user?.id],
     queryFn: async () => {
       try {
         const url = previewMode ? '/api/dots?preview=true' : '/api/user-content/dots';

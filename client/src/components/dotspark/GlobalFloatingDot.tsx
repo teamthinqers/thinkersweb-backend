@@ -406,13 +406,21 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
         description: "Your thought has been captured as a three-layer dot!",
       });
       
-      // Invalidate cache to refresh the dashboard dots - invalidate all relevant queries
-      queryClient.invalidateQueries({ queryKey: ['/api/user-content/dots'] });
+      // Invalidate cache with exact query key match  
+      console.log('🔄 Invalidating dots cache after dot creation for user:', user?.id);
+      
+      // Use exact query key that matches both Dashboard and UserGrid components
+      const dotsQueryKey = ['/api/user-content/dots', user?.id];
+      
+      // Remove from cache completely and refetch immediately
+      queryClient.removeQueries({ queryKey: dotsQueryKey });
+      queryClient.invalidateQueries({ queryKey: dotsQueryKey });
+      
+      // Also invalidate related queries
       queryClient.invalidateQueries({ queryKey: ['/api/user-content/stats'] });
       queryClient.invalidateQueries({ queryKey: ['/api/grid/positions'] });
       
-      // Force refetch to ensure immediate display
-      queryClient.refetchQueries({ queryKey: ['/api/user-content/dots'] });
+      console.log('✅ Cache invalidated with key:', dotsQueryKey);
       
       // Reset all states
       setTextInput("");
