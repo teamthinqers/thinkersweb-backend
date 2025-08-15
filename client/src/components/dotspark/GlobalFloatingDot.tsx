@@ -367,23 +367,34 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
         };
       }
       
-      // Check authentication first
+      // Check authentication - but don't block if backend might have valid session
       if (!user) {
-        toast({
-          title: "Authentication Required",
-          description: "Please sign in to save your dots.",
-          variant: "destructive",
+        console.log('🔍 Frontend user not found, checking backend session...');
+        // Try the request anyway - backend might have valid session even if frontend auth is out of sync
+        const testResponse = await fetch('/api/auth/status', {
+          credentials: 'include'
         });
-        try {
-          await loginWithGoogle();
+        const authStatus = await testResponse.json();
+        
+        if (!authStatus.authenticated) {
           toast({
-            title: "Please Try Again",
-            description: "You're now signed in. Please try saving your dot again.",
+            title: "Authentication Required",
+            description: "Please sign in to save your dots.",
+            variant: "destructive",
           });
-        } catch (error) {
-          console.error('Authentication failed:', error);
+          try {
+            await loginWithGoogle();
+            toast({
+              title: "Please Try Again", 
+              description: "You're now signed in. Please try saving your dot again.",
+            });
+          } catch (error) {
+            console.error('Authentication failed:', error);
+          }
+          return;
+        } else {
+          console.log('✅ Backend session is valid, proceeding with dot creation');
         }
-        return;
       }
       
       // Submit to correct API endpoint
