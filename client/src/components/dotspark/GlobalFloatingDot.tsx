@@ -374,8 +374,11 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
       
       console.log('🔍 Starting dot creation process...');
       
-      // STREAMLINED SOLUTION: Backend handles authentication automatically
-      console.log('🔍 Starting dot save - authentication handled by backend...');
+      // UNIVERSAL SOLUTION: Backend handles authentication for any user
+      console.log('🔍 Starting dot save - backend supports any user...');
+      
+      // Optional: Allow specifying a different user ID for testing
+      const testUserId = localStorage.getItem('test-user-id');
       
       // Add required fields for dot creation
       const completeDotData = {
