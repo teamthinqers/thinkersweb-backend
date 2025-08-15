@@ -65,9 +65,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
               ...user,
               id: user.id,
               uid: user.id, // Firebase compatibility
-              displayName: user.fullName || user.displayName,
+              displayName: user.fullName || user.displayName || user.email?.split('@')[0],
               photoURL: user.avatarUrl
             };
+            console.log('👤 Enhanced user displayName:', enhancedUser.displayName);
             setUser(enhancedUser);
             setIsLoading(false);
             return true; // Session recovered
@@ -119,8 +120,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                   console.log('👤 Full name:', userData.fullName);
                   console.log('🖼️ Avatar URL:', userData.avatarUrl);
                   
-                  // Set the backend user data instead of Firebase user
-                  setUser(userData);
+                  // Create unified user object with Firebase properties for compatibility
+                  const unifiedUser = {
+                    ...userData,
+                    displayName: userData.fullName || firebaseUser.displayName,
+                    photoURL: userData.avatarUrl || firebaseUser.photoURL
+                  };
+                  
+                  console.log('🔄 Setting unified user with displayName:', unifiedUser.displayName);
+                  setUser(unifiedUser);
                   
                   // Force immediate verification with a small delay
                   setTimeout(async () => {
@@ -137,7 +145,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                       // If backend shows authenticated but we don't have user, sync again
                       if (status.authenticated && status.user && !user) {
                         console.log('⚡ Re-syncing user data from backend session...');
-                        setUser(status.user);
+                        const reUnifiedUser = {
+                          ...status.user,
+                          displayName: status.user.fullName || status.user.displayName,
+                          photoURL: status.user.avatarUrl || status.user.photoURL
+                        };
+                        setUser(reUnifiedUser);
                       }
                     } catch (error) {
                       console.error('Status check failed:', error);

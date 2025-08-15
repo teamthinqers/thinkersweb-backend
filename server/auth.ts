@@ -416,7 +416,7 @@ export function setupAuth(app: Express) {
           const [updatedUser] = await db.update(users)
             .set({ 
               firebaseUid: uid,
-              fullName: displayName || user.fullName,
+              fullName: displayName || user.fullName || user.username,
               avatar: photoURL || user.avatar,
               updatedAt: new Date()
             })
@@ -468,9 +468,9 @@ export function setupAuth(app: Express) {
         username: user.username || '',
         email: user.email,
         firebaseUid: user.firebaseUid,
-        fullName: user.fullName || user.username || 'User',
+        fullName: user.fullName || displayName || user.username || user.email?.split('@')[0] || 'User',
         bio: user.bio,
-        avatarUrl: user.avatar,
+        avatarUrl: user.avatar || photoURL,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
         isNewUser

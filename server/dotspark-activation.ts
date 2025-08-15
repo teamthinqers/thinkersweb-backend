@@ -108,20 +108,29 @@ export function requireDotSparkActivation(req: AuthenticatedRequest, res: Respon
     });
   }
 
-  // Check DotSpark activation
-  checkDotSparkActivation(userId).then(({ activated, subscriptionTier }) => {
+  // Check DotSpark activation and auto-activate if needed
+  checkDotSparkActivation(userId).then(async ({ activated, subscriptionTier }) => {
     if (!activated) {
-      return res.status(403).json({
-        error: 'DotSpark activation required',
-        message: 'You need to activate DotSpark to save dots, wheels, and chakras',
-        code: 'DOTSPARK_NOT_ACTIVATED',
-        userId: userId,
-        subscriptionTier: subscriptionTier || 'free'
-      });
+      console.log(`🔧 Auto-activating DotSpark for user ${userId} on first use`);
+      
+      // Auto-activate DotSpark for new users
+      const activationResult = await activateDotSpark(userId, 'free');
+      
+      if (!activationResult.success) {
+        return res.status(403).json({
+          error: 'DotSpark activation failed',
+          message: 'Unable to activate DotSpark. Please try again.',
+          code: 'DOTSPARK_ACTIVATION_FAILED',
+          userId: userId
+        });
+      }
+      
+      console.log(`✅ DotSpark automatically activated for user ${userId}`);
+      subscriptionTier = 'free';
     }
 
     // Add activation info to request
-    (req as any).dotSparkActivation = { activated, subscriptionTier };
+    (req as any).dotSparkActivation = { activated: true, subscriptionTier };
     next();
   }).catch(error => {
     console.error('Error checking DotSpark activation in middleware:', error);
