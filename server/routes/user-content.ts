@@ -20,20 +20,24 @@ const insertWheelSchema = z.object({
 
 const router = express.Router();
 
-// SIMPLIFIED AUTHENTICATION: Always allow access for authenticated Firebase users
+// AUTOMATIC DOTSPARK ACTIVATION: All authenticated users get DotSpark access by default
 const checkDotSparkActivation = async (req: any, res: any, next: any) => {
   try {
-    // Always use default user for simplicity - Firebase handles frontend auth
-    req.user = { 
-      id: 5, 
-      email: 'aravindhraj1410@gmail.com',
-      fullName: 'Aravindh Raj',
-      dotSparkActivated: true
-    };
+    // For any authenticated user, automatically grant DotSpark access
+    // Default to user 5 if no specific user is authenticated
+    if (!req.user) {
+      req.user = { 
+        id: 5, 
+        email: 'aravindhraj1410@gmail.com',
+        fullName: 'Aravindh Raj'
+      };
+    }
     
-    console.log('✅ User 5 authenticated with DotSpark activation');
+    // Always enable DotSpark activation for any user
+    req.user.dotSparkActivated = true;
+    
+    console.log(`✅ User ${req.user.id} automatically activated for DotSpark`);
     next();
-    return;
   } catch (error) {
     console.error('Error in authentication:', error);
     res.status(500).json({ error: 'Authentication failed' });

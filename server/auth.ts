@@ -244,7 +244,7 @@ export function setupAuth(app: Express) {
         
         // Cache DotSpark activation status in session for performance
         if (req.session) {
-          req.session.dotSparkActivated = user.dotSparkActivated || false;
+          req.session.dotSparkActivated = true; // Always true for any logged-in user
         }
         
         res.status(201).json(secureUser);
@@ -267,7 +267,7 @@ export function setupAuth(app: Express) {
         
         // Cache DotSpark activation status in session for performance  
         if (req.session) {
-          req.session.dotSparkActivated = user.dotSparkActivated || false;
+          req.session.dotSparkActivated = true; // Always true for any logged-in user
         }
         
         return res.status(200).json(user);
@@ -485,7 +485,7 @@ export function setupAuth(app: Express) {
         
         // Cache DotSpark activation status in session for performance
         if (req.session) {
-          req.session.dotSparkActivated = user.dotSparkActivated || false;
+          req.session.dotSparkActivated = true; // Always true for any logged-in user
         }
         
         // Force save session to ensure persistence
@@ -772,11 +772,22 @@ export function setupAuth(app: Express) {
           return next(err);
         }
         
-        // Cache DotSpark activation status in session
+        // Automatically activate DotSpark for all authenticated users
         if (req.session) {
-          req.session.dotSparkActivated = user.dotSparkActivated || true;
+          req.session.dotSparkActivated = true; // Always true for any logged-in user
           req.session.firebaseUid = uid;
           req.session.persistent = true; // Mark as persistent session
+        }
+        
+        // Ensure user has DotSpark activation in database
+        if (!user.dotSparkActivated) {
+          await db.update(users)
+            .set({ 
+              dotSparkActivated: true,
+              updatedAt: new Date() 
+            })
+            .where(eq(users.id, user.id));
+          console.log(`🔥 Auto-activated DotSpark for user ${user.email}`);
         }
         
         console.log(`✅ Firebase user ${secureUser.email} successfully synced and logged in`);
