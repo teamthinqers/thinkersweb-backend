@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { AuthBypassButton } from '@/components/dotspark/AuthBypassButton';
+// Bypass authentication removed
 import { useAuth } from '@/hooks/use-auth';
 import { AlertTriangle, LogIn } from 'lucide-react';
 
@@ -28,9 +28,7 @@ export function SignInPrompt({
     }
   };
 
-  const handleBypassSuccess = () => {
-    onClose?.();
-  };
+  // Bypass authentication removed
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
@@ -54,24 +52,6 @@ export function SignInPrompt({
             Sign in with Google
           </Button>
           
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-2 text-muted-foreground">
-                Or try the demo
-              </span>
-            </div>
-          </div>
-          
-          <AuthBypassButton 
-            onAuthSuccess={handleBypassSuccess}
-            className="w-full"
-          >
-            Continue with Demo Account
-          </AuthBypassButton>
-          
           {onClose && (
             <Button 
               onClick={onClose}
@@ -83,8 +63,7 @@ export function SignInPrompt({
           )}
           
           <p className="text-xs text-gray-500 text-center">
-            Demo account creates working dots but data won't persist permanently. 
-            Sign in with Google for full access.
+            Sign in with Google to access your personal DotSpark grid.
           </p>
         </CardContent>
       </Card>

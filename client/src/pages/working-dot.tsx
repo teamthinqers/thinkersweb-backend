@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { AuthBypassButton } from '@/components/dotspark/AuthBypassButton';
+// Bypass authentication removed
 import { useAuth } from '@/hooks/use-auth';
 import { LogIn, CheckCircle } from 'lucide-react';
 
@@ -123,9 +123,9 @@ export default function WorkingDotPage() {
                     </div>
                   </div>
                   {!user && (
-                    <AuthBypassButton onAuthSuccess={handleAuthSuccess}>
-                      Authenticate
-                    </AuthBypassButton>
+                    <p className="text-sm text-gray-600">
+                      Demo mode removed. Please sign in with Google.
+                    </p>
                   )}
                 </div>
               </CardContent>

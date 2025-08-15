@@ -30,7 +30,7 @@ interface StructuredFloatingDotProps {
 }
 
 export function StructuredFloatingDot({ isActive }: StructuredFloatingDotProps) {
-  const { user, loginWithGoogle, loginWithBypass } = useAuth();
+  const { user, loginWithGoogle } = useAuth();
   const [position, setPosition] = useState<Position>(() => {
     const saved = localStorage.getItem('structured-floating-dot-position');
     return saved ? JSON.parse(saved) : { x: 320, y: 180 };

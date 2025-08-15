@@ -1,13 +1,12 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { auth, signInWithGoogle, signOut } from '@/lib/auth-simple';
 import { User } from 'firebase/auth';
-import { authBypass, type BypassUser } from '@/lib/authBypass';
+// Bypass authentication completely removed
 
 interface AuthContextType {
-  user: User | BypassUser | null;
+  user: User | null;
   isLoading: boolean;
   loginWithGoogle: () => Promise<void>;
-  loginWithBypass: () => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -15,12 +14,11 @@ const AuthContext = createContext<AuthContextType>({
   user: null,
   isLoading: true,
   loginWithGoogle: async () => {},
-  loginWithBypass: async () => {},
   logout: async () => {},
 });
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<User | BypassUser | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -30,11 +28,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     // Check if we're in demo/development mode - DISABLED for production
     const isDemoMode = false; // Force production mode for all users
     
-    // Clear any lingering demo mode settings
-    if (localStorage.getItem('dotspark_demo_mode')) {
-      localStorage.removeItem('dotspark_demo_mode');
-      console.log('🧹 Cleared demo mode setting from localStorage');
-    }
+    // Demo mode completely removed
 
     console.log('Auth initialization - isDemoMode:', isDemoMode);
 
@@ -90,16 +84,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       return false; // No session
     };
 
-    if (isDemoMode) {
-      console.log('Demo mode detected - using authentication bypass');
-      // Initialize auth bypass for demo mode
-      authBypass.initialize().then(() => {
-        bypassUnsubscribe = authBypass.onAuthStateChanged((bypassUser) => {
-          setUser(bypassUser);
-          setIsLoading(false);
-        });
-      });
-    } else {
+    // Always use Firebase authentication - no demo mode
+    {
       console.log('Production mode detected - using Firebase authentication');
       
       // First try to recover backend session, then setup Firebase
@@ -187,7 +173,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     return () => {
       firebaseUnsubscribe?.();
-      bypassUnsubscribe?.();
     };
   }, []);
 
@@ -203,35 +188,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const loginWithBypass = async () => {
-    // Only allow bypass login in demo mode
-    const isDemoMode = window.location.search.includes('demo=true') || 
-                      window.location.pathname.includes('/test-') ||
-                      localStorage.getItem('dotspark_demo_mode') === 'true';
-    
-    if (!isDemoMode) {
-      throw new Error('Bypass authentication only available in demo mode');
-    }
-
-    setIsLoading(true);
-    try {
-      await authBypass.signIn();
-      // User state will be updated by onAuthStateChanged
-    } catch (error) {
-      console.error('Bypass login failed:', error);
-      setIsLoading(false);
-      throw error;
-    }
-  };
+  // Bypass login completely removed - Firebase only
 
   const logout = async () => {
     setIsLoading(true);
     try {
-      // Sign out from both Firebase and bypass
-      await Promise.all([
-        signOut().catch(() => {}), // Don't fail if Firebase signout fails
-        authBypass.signOut().catch(() => {}) // Don't fail if bypass signout fails
-      ]);
+      // Firebase logout only
+      await signOut();
       // User state will be updated by onAuthStateChanged
     } catch (error) {
       console.error('Logout failed:', error);
@@ -244,7 +207,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     user,
     isLoading,
     loginWithGoogle,
-    loginWithBypass,
     logout,
   };
 

@@ -272,15 +272,11 @@ function Router() {
       <Route path="/working-dot-test" component={WorkingDotTest} />
       <Route path="/test-complete" component={TestComplete} />
       <Route path="/auth-mode" component={() => (
-        <AuthModeSelector onSelectMode={(mode) => {
-          if (mode === 'demo') {
-            localStorage.setItem('dotspark_demo_mode', 'true');
-            window.location.href = '/test-complete?demo=true';
-          } else {
-            localStorage.removeItem('dotspark_demo_mode');
-            window.location.href = '/dashboard';
-          }
-        }} />
+        <div className="p-8 text-center">
+          <h1 className="text-2xl mb-4">Authentication</h1>
+          <p>Demo mode has been removed. Please use Google authentication.</p>
+          <a href="/dashboard" className="text-blue-600 underline">Go to Dashboard</a>
+        </div>
       )} />
       <Route path="/chat" component={ChatPage} />
       <Route path="/enhanced-chat" component={() => <div className="h-screen"><EnhancedChatInterface /></div>} />
