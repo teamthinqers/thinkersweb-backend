@@ -1399,6 +1399,7 @@ const Dashboard: React.FC = () => {
     
     console.log('📝 All fetched dots:', dots.map(d => ({ id: d.id, summary: d.oneWordSummary, created: d.createdAt || d.timestamp })));
     console.log('📊 Dots to display after filtering:', baseDotsToDisplay.length, 'of', dots.length);
+    console.log('🔍 Recent filter enabled:', showRecentFilter, 'Preview mode:', previewMode);
 
     // Show different states based on authentication and content
     // Only show auth required state if NOT loading and no user

@@ -406,9 +406,13 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
         description: "Your thought has been captured as a three-layer dot!",
       });
       
-      // Invalidate cache to refresh the dashboard dots
+      // Invalidate cache to refresh the dashboard dots - invalidate all relevant queries
       queryClient.invalidateQueries({ queryKey: ['/api/user-content/dots'] });
       queryClient.invalidateQueries({ queryKey: ['/api/user-content/stats'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/grid/positions'] });
+      
+      // Force refetch to ensure immediate display
+      queryClient.refetchQueries({ queryKey: ['/api/user-content/dots'] });
       
       // Reset all states
       setTextInput("");
