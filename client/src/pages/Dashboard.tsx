@@ -170,9 +170,9 @@ const Dashboard: React.FC = () => {
       return true;
     },
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 5000),
-    refetchOnWindowFocus: false,
+    refetchOnWindowFocus: true, // Refetch when user returns to tab to show new dots
     refetchOnMount: true, // Always refetch on mount to get latest data
-    staleTime: 5 * 60 * 1000, // Cache for 5 minutes only
+    staleTime: 10 * 1000, // Cache for only 10 seconds to show new dots quickly
     gcTime: 30 * 60 * 1000, // Keep in cache for 30 minutes
     refetchInterval: false
   });
