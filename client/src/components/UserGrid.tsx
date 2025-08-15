@@ -146,7 +146,7 @@ const DotWheelsMap: React.FC<DotWheelsMapProps> = ({
     <div className="space-y-4">
       <div 
         className={`relative bg-gradient-to-br from-amber-50/30 to-orange-50/30 rounded-xl border-2 border-amber-200 shadow-lg overflow-hidden transition-all duration-300 ${
-          isFullscreen ? 'fixed inset-4 z-50' : 'h-[600px]'
+          isFullscreen ? 'fixed inset-4 z-50' : 'h-[700px] min-h-[700px]'
         }`}
       >
         {/* Stats badges - top left exactly like preview mode */}
@@ -207,13 +207,15 @@ const DotWheelsMap: React.FC<DotWheelsMapProps> = ({
           </Button>
         </div>
 
-        {/* Interactive grid container with drag support */}
+        {/* Interactive grid container with drag support and proper padding */}
         <div 
           ref={gridContainerRef}
           className="relative w-full h-full overflow-hidden cursor-grab active:cursor-grabbing"
           style={{ 
             transform: `scale(${zoom}) translate(${offset.x}px, ${offset.y}px)`,
-            transformOrigin: 'center center'
+            transformOrigin: 'center center',
+            minHeight: '800px', // Ensure enough space for all content
+            paddingBottom: '100px' // Add bottom padding to prevent cutoff
           }}
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
@@ -239,20 +241,20 @@ const DotWheelsMap: React.FC<DotWheelsMapProps> = ({
                 x = wheelCenterX + Math.cos(angle) * dotRadius;
                 y = wheelCenterY + Math.sin(angle) * dotRadius;
               } else {
-                // Fallback positioning
+                // Fallback positioning with better spacing
                 const gridCols = Math.ceil(Math.sqrt(displayDots.length));
                 const row = Math.floor(index / gridCols);
                 const col = index % gridCols;
                 x = 120 + (col * 150);
-                y = 120 + (row * 150);
+                y = 120 + (row * 120); // Reduced vertical spacing
               }
             } else {
-              // Individual scattered dots or general wheel dots
+              // Individual scattered dots or general wheel dots with better spacing
               const gridCols = Math.ceil(Math.sqrt(displayDots.length));
               const row = Math.floor(index / gridCols);
               const col = index % gridCols;
               x = 120 + (col * 150);
-              y = 120 + (row * 150);
+              y = 120 + (row * 120); // Reduced vertical spacing to fit more dots
             }
             
             return (
