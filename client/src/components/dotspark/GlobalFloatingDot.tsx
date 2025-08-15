@@ -9,6 +9,7 @@ import { isRunningAsStandalone } from "@/lib/pwaUtils";
 import { useAuth } from '@/hooks/use-auth';
 import { SignInPrompt } from '@/components/auth/SignInPrompt';
 import { useQueryClient } from '@tanstack/react-query';
+import { PersistentActivationManager } from '@/lib/persistent-activation';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -33,6 +34,16 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
   const { user, loginWithGoogle } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  
+  // Initialize with persistent activation
+  const [persistentUser, setPersistentUser] = useState(() => {
+    const activated = PersistentActivationManager.getCurrentUser();
+    if (activated) {
+      console.log('🎯 Found persistently activated user:', activated.email);
+      return activated;
+    }
+    return null;
+  });
   const [position, setPosition] = useState<Position>(() => {
     const saved = localStorage.getItem('global-floating-dot-position');
     return saved ? JSON.parse(saved) : { x: 320, y: 180 };
@@ -374,11 +385,32 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
       
       console.log('🔍 Starting dot creation process...');
       
-      // UNIVERSAL SOLUTION: Backend handles authentication for any user
-      console.log('🔍 Starting dot save - backend supports any user...');
+      // PERSISTENT ACTIVATION: Use saved user or authenticate
+      console.log('🔍 Starting dot save with persistent activation...');
+      
+      // Check for persistently activated user first
+      let activeUser = persistentUser || PersistentActivationManager.getCurrentUser();
       
       // Optional: Allow specifying a different user ID for testing
       const testUserId = localStorage.getItem('test-user-id');
+      
+      if (!activeUser && !user) {
+        console.log('🔑 No persistent user found - checking for authentication...');
+        // Only try Firebase auth if no persistent user exists
+        if (!testUserId) {
+          try {
+            await loginWithGoogle();
+            await new Promise(resolve => setTimeout(resolve, 800));
+            // After auth, the user should be available
+          } catch (authError) {
+            console.log('🔄 Auth failed - proceeding with anonymous activation');
+          }
+        }
+      }
+      
+      // Determine final user for this session
+      const finalUser = activeUser || user || PersistentActivationManager.getDefaultUser();
+      console.log('👤 Using user for dot save:', finalUser.email || `ID: ${finalUser.id}`);
       
       // Add required fields for dot creation
       const completeDotData = {
@@ -395,14 +427,21 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
       console.log('🌐 Making API request to /api/user-content/dots');
       console.log('📤 Request body:', JSON.stringify(completeDotData, null, 2));
       
+      const headers: Record<string, string> = { 
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      };
+      
+      // Add user ID header - prioritize testUserId, then persistent user, then default
+      const userIdForRequest = testUserId || finalUser.id.toString();
+      headers['x-user-id'] = userIdForRequest;
+      console.log('🎯 Sending request with user ID:', userIdForRequest);
+      
       const response = await fetch('/api/user-content/dots', {
         method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
+        headers,
         credentials: 'include',
-        body: JSON.stringify(completeDotData)
+        body: JSON.stringify(completeDotData),
       });
       
       console.log('📥 Response received - Status:', response.status);
@@ -429,6 +468,18 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
       const result = await response.json();
       console.log('✅ Dot created successfully:', result);
       
+      // PERSISTENT ACTIVATION: Save user as permanently activated after successful dot creation
+      const userId = Number(userIdForRequest);
+      const activatedUser = PersistentActivationManager.handleFirstDotCreation(
+        userId, 
+        finalUser.email, 
+        (finalUser as any).name || (finalUser as any).displayName
+      );
+      
+      // Update local state
+      setPersistentUser(activatedUser);
+      console.log('🎉 User permanently activated in frontend:', activatedUser.email);
+      
       toast({
         title: "Dot Saved Successfully",
         description: `Your "${completeDotData.oneWordSummary}" dot has been captured!`,
@@ -438,11 +489,11 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
       console.log('🔄 Invalidating all dots cache after successful creation');
       
       // Clear all possible query variations to ensure refresh
-      const userId = (user as any)?.id;
+      const cacheUserId = (user as any)?.id;
       const queryKeys = [
         ['/api/user-content/dots'],
-        ['/api/user-content/dots', userId],
-        ['/api/user-content/dots', 'real', userId],
+        ['/api/user-content/dots', cacheUserId],
+        ['/api/user-content/dots', 'real', cacheUserId],
         ['/api/user-content/stats'],
         ['/api/grid/positions']
       ];
@@ -454,9 +505,9 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
       }));
       
       // Force immediate refetch of dots
-      if (userId) {
+      if (cacheUserId) {
         await queryClient.refetchQueries({ 
-          queryKey: ['/api/user-content/dots', userId]
+          queryKey: ['/api/user-content/dots', cacheUserId]
         });
       }
       
