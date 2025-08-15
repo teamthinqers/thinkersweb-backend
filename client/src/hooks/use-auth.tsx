@@ -32,57 +32,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     console.log('Auth initialization - isDemoMode:', isDemoMode);
 
-    // First check backend session status to recover existing sessions
+    // Simplified auth - always trust Firebase authentication
     const checkBackendSession = async (): Promise<boolean> => {
-      try {
-        console.log('🔍 Checking backend session...');
-        console.log('🍪 Including cookies in request for session recovery');
-        const response = await fetch('/api/auth/status', {
-          credentials: 'include',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-          }
-        });
-        console.log('🔄 Backend session response status:', response.status);
-        
-        if (response.ok) {
-          const { authenticated, user } = await response.json();
-          console.log('📊 Backend session data:', { 
-            authenticated, 
-            hasUser: !!user,
-            userEmail: user?.email, 
-            fullName: user?.fullName,
-            avatarUrl: user?.avatarUrl 
-          });
-          
-          if (authenticated && user) {
-            console.log('✅ Backend session recovered successfully!');
-            console.log('👤 Recovered user:', user.fullName || user.email);
-            console.log('🖼️ Recovered avatar:', user.avatarUrl);
-            // Ensure user has required properties for frontend compatibility
-            const enhancedUser = {
-              ...user,
-              id: user.id,
-              uid: user.id, // Firebase compatibility
-              displayName: user.fullName || user.displayName || user.email?.split('@')[0],
-              photoURL: user.avatarUrl
-            };
-            console.log('👤 Enhanced user displayName:', enhancedUser.displayName);
-            setUser(enhancedUser);
-            setIsLoading(false);
-            return true; // Session recovered
-          } else {
-            console.log('❌ Backend session response not authenticated or missing user data');
-          }
-        } else {
-          console.log('❌ Backend session check failed with status:', response.status);
-        }
-      } catch (error) {
-        console.log('❌ No backend session found:', error);
-      }
-      console.log('🔄 No valid backend session - proceeding with fresh auth setup');
-      return false; // No session
+      // Skip backend session checks - Firebase handles authentication
+      return false;
     };
 
     // Always use Firebase authentication - no demo mode
@@ -91,96 +44,30 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       
       // First try to recover backend session, then setup Firebase
       checkBackendSession().then((sessionRecovered) => {
-        // Always setup Firebase authentication regardless of session recovery
+        // Firebase authentication only - no backend session dependency
         firebaseUnsubscribe = auth.onAuthStateChanged(async (firebaseUser) => {
           if (firebaseUser) {
-              console.log('Firebase auth state changed:', `User ${firebaseUser.email} signed in`);
-              
-              // Sync with backend to establish session
-              try {
-                const token = await firebaseUser.getIdToken();
-                console.log('Syncing Firebase user with backend:', firebaseUser.email);
-                const response = await fetch('/api/auth/firebase-sync', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  credentials: 'include',
-                  body: JSON.stringify({
-                    firebaseToken: token,
-                    email: firebaseUser.email,
-                    uid: firebaseUser.uid,
-                    displayName: firebaseUser.displayName,
-                    photoURL: firebaseUser.photoURL
-                  })
-                });
-                
-                if (response.ok) {
-                  const userData = await response.json();
-                  console.log('✅ Backend session established successfully!');
-                  console.log('📧 User email:', userData.email);
-                  console.log('👤 Full name:', userData.fullName);
-                  console.log('🖼️ Avatar URL:', userData.avatarUrl);
-                  
-                  // Create unified user object with Firebase properties for compatibility
-                  const unifiedUser = {
-                    ...userData,
-                    displayName: userData.fullName || firebaseUser.displayName,
-                    photoURL: userData.avatarUrl || firebaseUser.photoURL
-                  };
-                  
-                  console.log('🔄 Setting unified user with displayName:', unifiedUser.displayName);
-                  setUser(unifiedUser);
-                  
-                  // Force immediate verification with a small delay
-                  setTimeout(async () => {
-                    try {
-                      const statusCheck = await fetch('/api/auth/status', { credentials: 'include' });
-                      const status = await statusCheck.json();
-                      console.log('🔍 Session verification after sync:', {
-                        authenticated: status.authenticated,
-                        userEmail: status.user?.email,
-                        fullName: status.user?.fullName,
-                        avatarUrl: status.user?.avatarUrl
-                      });
-                      
-                      // If backend shows authenticated but we don't have user, sync again
-                      if (status.authenticated && status.user && !user) {
-                        console.log('⚡ Re-syncing user data from backend session...');
-                        const reUnifiedUser = {
-                          ...status.user,
-                          displayName: status.user.fullName || status.user.displayName,
-                          photoURL: status.user.avatarUrl || status.user.photoURL
-                        };
-                        setUser(reUnifiedUser);
-                      }
-                    } catch (error) {
-                      console.error('Status check failed:', error);
-                    }
-                  }, 500);
-                  
-                } else {
-                  const errorData = await response.json();
-                  console.error('❌ Failed to establish backend session:', response.status, errorData);
-                  setUser(null);
-                }
-              } catch (error) {
-                console.error('Error syncing with backend:', error);
-                setUser(null);
-              }
-            } else {
-              console.log('Firebase auth state changed: User signed out');
-              // Also logout from backend
-              try {
-                await fetch('/api/logout', { 
-                  method: 'POST', 
-                  credentials: 'include' 
-                });
-              } catch (error) {
-                console.log('Backend logout failed:', error);
-              }
-              setUser(null);
-            }
+            console.log('Firebase auth state changed:', `User ${firebaseUser.email} signed in`);
+            
+            // Create user object directly from Firebase - no backend sync needed
+            const unifiedUser = {
+              id: firebaseUser.uid,
+              uid: firebaseUser.uid,
+              email: firebaseUser.email,
+              displayName: firebaseUser.displayName || firebaseUser.email?.split('@')[0],
+              photoURL: firebaseUser.photoURL,
+              fullName: firebaseUser.displayName
+            };
+            
+            console.log('✅ Firebase user authenticated:', unifiedUser.email);
+            setUser(unifiedUser);
             setIsLoading(false);
-          });
+          } else {
+            console.log('Firebase auth state changed: User signed out');
+            setUser(null);
+            setIsLoading(false);
+          }
+        });
       });
     }
 
