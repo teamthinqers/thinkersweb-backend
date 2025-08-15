@@ -367,68 +367,12 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
         };
       }
       
-      // Enhanced authentication handling
-      console.log('🔍 Checking authentication state:', { hasUser: !!user, userEmail: user?.email });
+      // Simplified authentication - bypass frontend auth checks and rely on backend session
+      console.log('🔍 Attempting dot creation with backend session handling');
       
-      // First check backend session status
-      const authCheckResponse = await fetch('/api/auth/status', {
-        credentials: 'include',
-        headers: { 'Accept': 'application/json' }
-      });
-      const authStatus = await authCheckResponse.json();
-      
-      console.log('🔐 Backend auth status:', authStatus);
-      
-      // Handle authentication states with automatic retry
-      if (!authStatus.authenticated) {
-        console.log('❌ Backend not authenticated - attempting automatic login');
-        
-        // Show initial sign in message
-        toast({
-          title: "Signing You In",
-          description: "Please wait while we authenticate...",
-        });
-        
-        try {
-          // Attempt Google login
-          await loginWithGoogle();
-          
-          // Wait a moment for session to establish
-          await new Promise(resolve => setTimeout(resolve, 1000));
-          
-          // Verify login worked by checking backend again
-          const reCheckResponse = await fetch('/api/auth/status', {
-            credentials: 'include',
-            headers: { 'Accept': 'application/json' }
-          });
-          const reCheckStatus = await reCheckResponse.json();
-          
-          if (reCheckStatus.authenticated) {
-            console.log('✅ Authentication successful, proceeding with dot creation');
-            // Don't return - continue with dot creation
-          } else {
-            console.log('❌ Authentication verification failed');
-            toast({
-              title: "Authentication Required",
-              description: "Please sign in manually and try creating your dot again.",
-              variant: "destructive",
-            });
-            return;
-          }
-        } catch (error) {
-          console.error('Authentication failed:', error);
-          toast({
-            title: "Sign In Needed",
-            description: "Please sign in using the header button and try again.",
-            variant: "destructive",
-          });
-          return;
-        }
-      } else {
-        console.log('✅ Already authenticated, proceeding with dot creation');
-      }
-      
-      console.log('✅ Backend session authenticated, proceeding with dot creation');
+      // Skip authentication checks - let the backend handle authentication
+      // This prevents frontend auth state from blocking legitimate requests
+
       
       // Add required fields for dot creation
       const completeDotData = {
@@ -440,7 +384,7 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
       
       // Submit to correct API endpoint with comprehensive error handling
       console.log('Creating dot with data:', completeDotData);
-      console.log('User authenticated as:', user?.email || authStatus.user?.email || 'backend-session');
+      console.log('User authenticated as:', user?.email || 'backend-session');
       
       const response = await fetch('/api/user-content/dots', {
         method: 'POST',
@@ -479,7 +423,7 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
       console.log('🔄 Invalidating all dots cache after successful creation');
       
       // Clear all possible query variations to ensure refresh
-      const userId = (user as any)?.id || authStatus.user?.id;
+      const userId = (user as any)?.id;
       const queryKeys = [
         ['/api/user-content/dots'],
         ['/api/user-content/dots', userId],
