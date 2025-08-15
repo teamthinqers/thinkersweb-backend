@@ -100,25 +100,27 @@ const Dashboard: React.FC = () => {
     queryFn: async () => {
       try {
         const url = previewMode ? '/api/dots?preview=true' : '/api/user-content/dots';
-        console.log('Fetching dots from:', url, 'for user:', user?.email || 'anonymous');
+        console.log('🔍 Fetching dots from:', url, 'for user:', user?.email || 'anonymous');
+        console.log('🔐 Authentication state:', { hasUser: !!user, userId: user?.id, isLoading });
         const response = await fetch(url, {
           credentials: 'include' // Include cookies for authentication
         });
-        console.log('Dots fetch response status:', response.status);
+        console.log('📊 Dots fetch response status:', response.status);
         if (!response.ok) {
-          console.warn('Dots fetch failed:', response.status, response.statusText);
+          console.warn('❌ Dots fetch failed:', response.status, response.statusText);
           // If authentication failed and we're not in preview mode, return empty
           if (response.status === 401 && !previewMode) {
-            console.log('Authentication required but not provided');
+            console.log('🔒 Authentication required but not provided');
             return [];
           }
           return [];
         }
         const data = await response.json();
-        console.log('Dots fetched successfully:', data.length, 'dots for user:', user?.email || 'anonymous');
+        console.log('✅ Dots fetched successfully:', data.length, 'dots for user:', user?.email || 'anonymous');
+        console.log('📝 First dot preview:', data[0] ? { id: data[0].id, summary: data[0].oneWordSummary } : 'No dots');
         return data;
       } catch (err) {
-        console.error('Error fetching dots:', err);
+        console.error('💥 Error fetching dots:', err);
         return [];
       }
     },
@@ -127,7 +129,8 @@ const Dashboard: React.FC = () => {
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
     refetchOnWindowFocus: false,
     refetchOnMount: true, // Always refetch on component mount to ensure fresh data
-    staleTime: 30 * 1000 // Reduce stale time to 30 seconds for more frequent updates
+    staleTime: 10 * 1000, // Reduce stale time to 10 seconds for immediate updates
+    refetchInterval: 30000 // Refetch every 30 seconds to ensure fresh data
   });
 
   // Fetch user wheels and chakras from the correct API endpoint
@@ -1380,10 +1383,21 @@ const Dashboard: React.FC = () => {
 
     // Removed auto-switch logic - users can manually toggle between modes
 
+    // Enhanced logging for debugging authentication and content display
+    console.log('🎯 Dashboard render state:', {
+      hasUser: !!user,
+      userEmail: user?.email,
+      isLoading,
+      dotsLoading,
+      dotsCount: dots.length,
+      previewMode,
+      wheelsLoading,
+      gridLoading
+    });
+
     // Show different states based on authentication and content
-    if (!previewMode && (!user || userWheels.length === 0 && dots.length === 0)) {
-      // Check if user is authenticated
-      if (!user) {
+    // Only show auth required state if NOT loading and no user
+    if (!previewMode && !user && !isLoading && !dotsLoading) {
         // Show authentication required state
         return (
           <div className="relative bg-gradient-to-br from-amber-50/50 to-orange-50/50 rounded-xl p-4 min-h-[500px] border-2 border-amber-200 shadow-lg overflow-hidden">
@@ -1433,8 +1447,10 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
         );
-      }
-      // Show empty state with preview toggle
+    }
+    
+    // Show empty state only if user is authenticated and has no data and not loading  
+    if (!previewMode && user && userWheels.length === 0 && dots.length === 0 && !dotsLoading && !wheelsLoading) {
       return (
         <div className="relative bg-gradient-to-br from-amber-50/50 to-orange-50/50 rounded-xl p-4 min-h-[500px] border-2 border-amber-200 shadow-lg overflow-hidden">
           <div className="absolute top-2 left-2 md:top-4 md:left-4 z-10 flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-3">
