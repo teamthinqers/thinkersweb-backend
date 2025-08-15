@@ -346,10 +346,12 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
   };
 
   const handleSubmit = async () => {
+    console.log('🚀 Starting dot submission process...');
     try {
       let dotData;
       
       if (captureMode === 'text') {
+        console.log('📝 Processing text input:', structuredInput);
         // Use structured input for text mode
         dotData = {
           summary: structuredInput.summary.substring(0, 220),
@@ -358,6 +360,7 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
           sourceType: 'text'
         };
       } else {
+        console.log('🎤 Processing voice input:', voiceSteps);
         // Use voice steps for voice mode
         dotData = {
           summary: voiceSteps.summary.substring(0, 220),
@@ -366,6 +369,8 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
           sourceType: 'voice'
         };
       }
+      
+      console.log('📊 Raw dot data prepared:', dotData);
       
       // Simplified authentication - bypass frontend auth checks and rely on backend session
       console.log('🔍 Attempting dot creation with backend session handling');
@@ -386,6 +391,9 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
       console.log('Creating dot with data:', completeDotData);
       console.log('User authenticated as:', user?.email || 'backend-session');
       
+      console.log('🌐 Making API request to /api/user-content/dots');
+      console.log('📤 Request body:', JSON.stringify(completeDotData, null, 2));
+      
       const response = await fetch('/api/user-content/dots', {
         method: 'POST',
         headers: { 
@@ -396,10 +404,16 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
         body: JSON.stringify(completeDotData)
       });
       
+      console.log('📥 Response received - Status:', response.status);
+      console.log('📥 Response headers:', Object.fromEntries(response.headers.entries()));
+      
       console.log('🌐 Dot creation response status:', response.status);
       
       if (!response.ok) {
         const errorText = await response.text();
+        console.error('❌ Response not OK - Status:', response.status);
+        console.error('❌ Error response body:', errorText);
+        
         let errorMessage;
         try {
           const errorData = JSON.parse(errorText);
@@ -408,7 +422,7 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
           errorMessage = errorText || 'Failed to create dot';
         }
         console.error('❌ Dot creation failed:', response.status, errorMessage);
-        throw new Error(errorMessage);
+        throw new Error(`${response.status}: ${errorMessage}`);
       }
       
       const result = await response.json();
@@ -454,19 +468,24 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
       setCurrentStep(1);
       handleClose();
     } catch (error) {
-      console.error('Failed to submit dot capture:', error);
+      console.error('💥 CRITICAL: Dot submission completely failed:', error);
+      console.error('💥 Error stack:', error instanceof Error ? error.stack : 'No stack trace');
       
       // Provide specific error messages based on error type
       let errorTitle = "Save Failed";
       let errorDescription = "Please try again.";
       
       if (error instanceof Error) {
-        if (error.message.includes('Authentication')) {
+        console.error('💥 Error message:', error.message);
+        if (error.message.includes('Authentication') || error.message.includes('401')) {
           errorTitle = "Authentication Error";
           errorDescription = "Please sign in and try again.";
-        } else if (error.message.includes('Network')) {
+        } else if (error.message.includes('Network') || error.message.includes('Failed to fetch')) {
           errorTitle = "Network Error";  
           errorDescription = "Please check your connection and try again.";
+        } else if (error.message.includes('500')) {
+          errorTitle = "Server Error";
+          errorDescription = "Server error occurred. Please try again.";
         } else {
           errorDescription = error.message;
         }
@@ -474,7 +493,7 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
       
       toast({
         title: errorTitle,
-        description: errorDescription,
+        description: `ERROR: ${errorDescription}`,
         variant: "destructive",
       });
     }

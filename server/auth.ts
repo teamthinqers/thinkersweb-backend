@@ -533,6 +533,137 @@ export function setupAuth(app: Express) {
     }
   });
 
+  // Google auth endpoint for UI authentication
+  app.post("/api/auth/google", async (req, res, next) => {
+    try {
+      console.log("Google auth attempt with body:", req.body);
+      
+      const { email, name, photoURL, uid } = req.body;
+      
+      if (!email) {
+        console.warn("Google auth rejected: Missing email");
+        return res.status(400).json({ message: "Email is required" });
+      }
+      
+      // Check if user exists by email
+      let user = await getUserByEmail(email);
+      let isNewUser = false;
+      
+      if (!user) {
+        console.log(`Creating new user with email: ${email}`);
+        isNewUser = true;
+        const username = await generateUniqueUsername(name, email);
+        
+        // Generate a random password for Google users
+        const randomPassword = randomBytes(16).toString('hex');
+        const hashedPassword = await hashPassword(randomPassword);
+        
+        try {
+          const [newUser] = await db.insert(users)
+            .values({
+              username,
+              email: email,
+              hashedPassword: hashedPassword,
+              firebaseUid: uid || null,
+              fullName: name || (email ? email.split('@')[0] : username),
+              avatar: photoURL,
+              dotSparkActivated: true, // Auto-activate for Google users
+              createdAt: new Date(),
+              updatedAt: new Date()
+            })
+            .returning();
+            
+          user = newUser;
+          console.log(`New user created with ID: ${user.id}`);
+        } catch (err) {
+          console.error("Failed to create new user:", err);
+          return res.status(500).json({
+            message: "Failed to create user account",
+            details: err instanceof Error ? err.message : String(err)
+          });
+        }
+      } else {
+        console.log(`Found existing user: ${user.username || user.email}`);
+        // Update user info if needed
+        if (photoURL || name) {
+          const [updatedUser] = await db.update(users)
+            .set({ 
+              fullName: name || user.fullName,
+              avatar: photoURL || user.avatar,
+              dotSparkActivated: true, // Ensure activation for existing users
+              updatedAt: new Date()
+            })
+            .where(eq(users.id, user.id))
+            .returning();
+          user = updatedUser;
+        }
+      }
+      
+      // Convert to Express User type
+      const secureUser: Express.User = {
+        id: user.id,
+        username: user.username || '',
+        email: user.email,
+        firebaseUid: user.firebaseUid,
+        fullName: user.fullName || user.username || 'User',
+        bio: user.bio,
+        avatarUrl: user.avatar,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt
+      };
+      
+      // Log user in with proper session establishment
+      await new Promise<void>((resolve, reject) => {
+        req.login(secureUser, (err) => {
+          if (err) {
+            console.error("Failed to login user after Google auth:", err);
+            reject(err);
+          } else {
+            resolve();
+          }
+        });
+      });
+      
+      // Cache DotSpark activation status in session
+      if (req.session) {
+        req.session.dotSparkActivated = user.dotSparkActivated || false;
+        req.session.lastActivity = Date.now();
+      }
+      
+      // Force save session explicitly
+      await new Promise<void>((resolve, reject) => {
+        req.session.save((saveErr) => {
+          if (saveErr) {
+            console.error('Session save error:', saveErr);
+            reject(saveErr);
+          } else {
+            resolve();
+          }
+        });
+      });
+      
+      console.log(`✅ User ${user.id} successfully authenticated via Google`);
+      console.log('✅ Session established:', {
+        authenticated: req.isAuthenticated(),
+        userId: req.user?.id,
+        sessionId: req.sessionID,
+        dotSparkActivated: req.session.dotSparkActivated
+      });
+      
+      res.status(isNewUser ? 201 : 200).json({
+        success: true,
+        user: secureUser,
+        isNewUser
+      });
+    } catch (error) {
+      console.error("Google auth error:", error);
+      res.status(500).json({
+        message: "Authentication failed",
+        details: error instanceof Error ? error.message : String(error)
+      });
+    }
+  });
+
   // Logout endpoint with session destruction
   app.post("/api/logout", (req, res, next) => {
     // Log the session info before logout
