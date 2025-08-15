@@ -518,31 +518,44 @@ const UserGrid: React.FC<UserGridProps> = ({ userId, mode }) => {
 
   // Enhanced user dots fetching with backend session support
   const { data: userDots = [], isLoading: dotsLoading } = useQuery({
-    queryKey: ['/api/user-content/dots', 'user-grid', mode],
+    queryKey: ['/api/user-content/dots', userId, mode],
     queryFn: async () => {
       try {
-        console.log('🔍 UserGrid fetching dots for mode:', mode, 'userId:', userId);
+        console.log('🔍 UserGrid fetching dots for user:', userId, 'mode:', mode);
         
-        // Always try real endpoint first, regardless of frontend auth state
-        const response = await fetch('/api/user-content/dots', {
-          credentials: 'include',
-          headers: { 'Accept': 'application/json' }
-        });
-        
-        console.log('📊 UserGrid dots response:', response.status);
-        
-        if (response.ok) {
-          const data = await response.json();
-          console.log('✅ UserGrid dots fetched:', data.length);
-          return data;
-        } else if (mode === 'preview') {
-          // Fall back to preview mode if needed
+        if (mode === 'preview') {
+          // Preview mode - use preview endpoint
           const previewResponse = await fetch('/api/dots?preview=true', {
             credentials: 'include'
           });
           if (previewResponse.ok) {
             return await previewResponse.json();
           }
+          return [];
+        }
+        
+        // Real mode - fetch user-specific dots
+        const headers: Record<string, string> = {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        };
+        
+        // Add user ID header for user-specific filtering
+        if (userId) {
+          headers['x-user-id'] = userId.toString();
+        }
+        
+        const response = await fetch('/api/user-content/dots', {
+          credentials: 'include',
+          headers
+        });
+        
+        console.log('📊 UserGrid dots response:', response.status);
+        
+        if (response.ok) {
+          const data = await response.json();
+          console.log('✅ UserGrid dots fetched for user', userId, ':', data.length, 'dots');
+          return data;
         }
         
         return [];
@@ -564,6 +577,29 @@ const UserGrid: React.FC<UserGridProps> = ({ userId, mode }) => {
   // Fetch user's wheels and chakras with aggressive caching  
   const { data: userWheels = [], isLoading: wheelsLoading } = useQuery({
     queryKey: ['/api/user-content/wheels', userId],
+    queryFn: async () => {
+      if (!userId) return [];
+      
+      try {
+        const response = await fetch('/api/user-content/wheels', {
+          credentials: 'include',
+          headers: {
+            'Accept': 'application/json',
+            'x-user-id': userId.toString()
+          }
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          console.log('✅ UserGrid wheels fetched for user', userId, ':', data.length, 'wheels');
+          return data;
+        }
+        return [];
+      } catch (error) {
+        console.error('UserGrid wheels fetch error:', error);
+        return [];
+      }
+    },
     enabled: mode === 'real' && !!userId, // Only fetch when authenticated
     retry: 3, // Retry up to 3 times on failure
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
@@ -576,7 +612,30 @@ const UserGrid: React.FC<UserGridProps> = ({ userId, mode }) => {
 
   // Fetch user's statistics with retry logic
   const { data: userStats, isLoading: statsLoading } = useQuery({
-    queryKey: ['/api/user-content/stats'],
+    queryKey: ['/api/user-content/stats', userId],
+    queryFn: async () => {
+      if (!userId) return {};
+      
+      try {
+        const response = await fetch('/api/user-content/stats', {
+          credentials: 'include',
+          headers: {
+            'Accept': 'application/json',
+            'x-user-id': userId.toString()
+          }
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          console.log('✅ UserGrid stats fetched for user', userId, ':', data);
+          return data;
+        }
+        return {};
+      } catch (error) {
+        console.error('UserGrid stats fetch error:', error);
+        return {};
+      }
+    },
     enabled: mode === 'real' && !!userId, // Only fetch when authenticated
     retry: 3,
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),

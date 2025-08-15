@@ -17,6 +17,7 @@ import { PreviewMapGrid } from "@/components/PreviewMapGrid";
 import { isRunningAsStandalone } from "@/lib/pwaUtils";
 import { useLocation } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
+import { PersistentActivationManager } from "@/lib/persistent-activation";
 
 
 // Import types from schema instead of duplicating
@@ -27,7 +28,7 @@ import type { Dot, Wheel, Chakra } from '@shared/schema';
 const Dashboard: React.FC = () => {
   const [, setLocation] = useLocation();
   
-  // Safe authentication hook usage with error boundary
+  // Safe authentication with persistent activation support
   let user = null;
   let isLoading = false;
   
@@ -35,6 +36,22 @@ const Dashboard: React.FC = () => {
     const authResult = useAuth();
     user = authResult?.user || null;
     isLoading = authResult?.isLoading || false;
+    
+    // If no Firebase user, check for persistent activation
+    if (!user && !isLoading) {
+      const persistentUser = PersistentActivationManager.getCurrentUser();
+      if (persistentUser) {
+        user = {
+          id: persistentUser.id,
+          email: persistentUser.email,
+          fullName: persistentUser.name,
+          displayName: persistentUser.name,
+          uid: persistentUser.id.toString()
+        } as any;
+        console.log('Dashboard using persistent user:', user.email);
+      }
+    }
+    
     console.log('Dashboard auth state:', { 
       user: user ? {
         email: user.email, 
@@ -43,7 +60,8 @@ const Dashboard: React.FC = () => {
         avatarUrl: user.avatarUrl,
         id: user.id
       } : 'none', 
-      isLoading 
+      isLoading,
+      persistentActivation: !!PersistentActivationManager.getCurrentUser()
     });
   } catch (error) {
     console.warn('Authentication hook error, using default values:', error);

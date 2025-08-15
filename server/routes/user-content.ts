@@ -86,7 +86,6 @@ const checkDotSparkActivation = async (req: any, res: any, next: any) => {
         // Create new user with activation if needed
         console.log(`🆕 Creating new user ${userId} with DotSpark activation`);
         const newUser = await db.insert(users).values({
-          id: userId,
           username: `user${userId}`,
           email: req.user.email,
           hashedPassword: 'bypass', // Placeholder for bypass users
@@ -217,7 +216,13 @@ router.post('/wheels', checkDotSparkActivation, async (req, res) => {
     });
     
     // Create wheel in database
-    const [newWheel] = await db.insert(wheels).values([wheelData]).returning();
+    const [newWheel] = await db.insert(wheels).values({
+      ...wheelData,
+      heading: wheelData.heading || '',
+      goals: wheelData.goals || '',
+      timeline: wheelData.timeline || '',
+      purpose: wheelData.purpose || '',
+    }).returning();
     
     // Store in Pinecone for intelligence
     try {
@@ -425,6 +430,118 @@ router.delete('/dots/:id', checkDotSparkActivation, async (req, res) => {
   } catch (error) {
     console.error('Error deleting dot:', error);
     res.status(500).json({ error: 'Failed to delete dot' });
+  }
+});
+
+// Get user-specific dots - properly filtered by authenticated user
+router.get('/dots', checkDotSparkActivation, async (req, res) => {
+  try {
+    const userId = req.user!.id;
+    console.log(`🔍 Fetching dots for authenticated user: ${userId}`);
+    
+    // Fetch dots from entries table filtered by user ID
+    const userEntries = await db.query.entries.findMany({
+      where: eq(entries.userId, userId),
+      orderBy: desc(entries.createdAt)
+    });
+    
+    console.log(`✅ Found ${userEntries.length} dots for user ${userId}`);
+    
+    // Transform entries to dot format
+    const userDots = userEntries.map(entry => {
+      let dotData;
+      try {
+        dotData = JSON.parse(entry.content);
+      } catch (error) {
+        console.warn(`Failed to parse dot data for entry ${entry.id}:`, error);
+        return null;
+      }
+      
+      return {
+        id: `entry_${entry.id}`,
+        oneWordSummary: dotData.oneWordSummary || entry.title,
+        summary: dotData.summary || entry.content.substring(0, 100),
+        anchor: dotData.anchor || '',
+        pulse: dotData.pulse || 'neutral',
+        sourceType: dotData.sourceType || 'text',
+        captureMode: dotData.captureMode || 'natural',
+        wheelId: dotData.wheelId || null,
+        timestamp: entry.createdAt,
+        createdAt: entry.createdAt,
+        updatedAt: entry.updatedAt,
+        voiceData: dotData.voiceData || null,
+        userId: entry.userId
+      };
+    }).filter(dot => dot !== null);
+    
+    console.log(`📊 Returning ${userDots.length} formatted dots for user ${userId}`);
+    res.json(userDots);
+    
+  } catch (error) {
+    console.error('Error fetching user dots:', error);
+    res.status(500).json({ 
+      error: 'Failed to fetch dots',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
+// Get user-specific wheels - properly filtered by authenticated user
+router.get('/wheels', checkDotSparkActivation, async (req, res) => {
+  try {
+    const userId = req.user!.id;
+    console.log(`🔍 Fetching wheels for authenticated user: ${userId}`);
+    
+    // Fetch wheels from wheels table filtered by user ID
+    const userWheels = await db.query.wheels.findMany({
+      where: eq(wheels.userId, userId),
+      orderBy: desc(wheels.createdAt)
+    });
+    
+    console.log(`✅ Found ${userWheels.length} wheels for user ${userId}`);
+    res.json(userWheels);
+    
+  } catch (error) {
+    console.error('Error fetching user wheels:', error);
+    res.status(500).json({ 
+      error: 'Failed to fetch wheels',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
+// Get user-specific statistics
+router.get('/stats', checkDotSparkActivation, async (req, res) => {
+  try {
+    const userId = req.user!.id;
+    console.log(`🔍 Fetching stats for authenticated user: ${userId}`);
+    
+    // Count dots and wheels for this user
+    const userEntries = await db.query.entries.findMany({
+      where: eq(entries.userId, userId),
+      columns: { id: true }
+    });
+    
+    const userWheels = await db.query.wheels.findMany({
+      where: eq(wheels.userId, userId),
+      columns: { id: true }
+    });
+    
+    const stats = {
+      totalDots: userEntries.length,
+      totalWheels: userWheels.length,
+      totalChakras: userWheels.filter(w => !w.chakraId).length // Wheels without chakraId are chakras
+    };
+    
+    console.log(`📊 Stats for user ${userId}:`, stats);
+    res.json(stats);
+    
+  } catch (error) {
+    console.error('Error fetching user stats:', error);
+    res.status(500).json({ 
+      error: 'Failed to fetch stats',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
   }
 });
 
