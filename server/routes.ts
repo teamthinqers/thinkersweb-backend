@@ -3,13 +3,6 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { z } from "zod";
 import { 
-  insertCategorySchema, 
-  insertEntrySchema, 
-  insertTagSchema, 
-  insertConnectionSchema, 
-  insertSharedEntrySchema, 
-  sharedEntries, 
-  entryTags, 
   entries,
   users, 
   whatsappOtpVerifications,
@@ -20,7 +13,9 @@ import {
   categories,
   vectorEmbeddings,
   conversationSessions,
-  type User 
+  insertDotSchema,
+  insertWheelSchema,
+  insertChakraSchema
 } from "@shared/schema";
 import { processEntryFromChat, generateChatResponse, type Message } from "./chat";
 import { connectionsService } from "./connections";
@@ -634,6 +629,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const dots = userEntries
         .filter(entry => {
           try {
+            if (!entry.content) return false;
             const parsed = JSON.parse(entry.content);
             return parsed.dotType === 'three-layer';
           } catch {
@@ -641,7 +637,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           }
         })
         .map(entry => {
-          const parsed = JSON.parse(entry.content);
+          const parsed = JSON.parse(entry.content || '{}');
           return {
             id: entry.id,
             oneWordSummary: parsed.oneWordSummary || 'Insight',
@@ -1318,6 +1314,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userDots = userEntries
         .filter(entry => {
           try {
+            if (!entry.content) return false;
             const parsed = JSON.parse(entry.content);
             return parsed.dotType === 'three-layer';
           } catch {
@@ -1435,7 +1432,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { generateEnhancedChatResponse } = await import('./enhanced-chat');
       
       // Get conversation history from session if available  
-      const conversationHistory: Array<{role: string, content: string}> = [];
+      const conversationHistory: Array<{role: "user" | "system" | "assistant", content: string, timestamp: Date}> = [];
       
       const response = await generateEnhancedChatResponse(
         message,
@@ -1489,7 +1486,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const result = await advancedChatEngine.processAdvancedMessage(
         message,
         sessionId,
-        userId,
+        userId ? String(userId) : undefined,
         previousMessages,
         model
       );
@@ -1919,13 +1916,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
   } = await import('./routes/intelligent-classification');
 
   // Advanced core intelligence content classification
-  app.post(`${apiPrefix}/intelligence/classify`, classifyContent);
+  app.post(`${apiPrefix}/intelligence/classify`, async (req: AuthenticatedRequest, res: Response) => {
+    return await classifyContent(req, res);
+  });
   
   // Confirm classification and save to grid
-  app.post(`${apiPrefix}/intelligence/confirm-and-save`, confirmAndSave);
+  app.post(`${apiPrefix}/intelligence/confirm-and-save`, async (req: AuthenticatedRequest, res: Response) => {
+    return await confirmAndSave(req, res);
+  });
   
   // Get contextual suggestions based on user content
-  app.get(`${apiPrefix}/intelligence/suggestions`, getContextualSuggestions);
+  app.get(`${apiPrefix}/intelligence/suggestions`, async (req: AuthenticatedRequest, res: Response) => {
+    return await getContextualSuggestions(req, res);
+  });
 
   // Initialize vector database on startup
   try {

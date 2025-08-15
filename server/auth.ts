@@ -164,11 +164,15 @@ export function setupAuth(app: Express) {
       try {
         const user = await getUserByUsername(username);
         
-        if (!user || !(await comparePasswords(password, user.password))) {
+        if (!user || !user.hashedPassword || !(await comparePasswords(password, user.hashedPassword))) {
           return done(null, false);
         } else {
-          // Remove password from the user object before returning
-          const { password: _, ...secureUser } = user;
+          // Remove password from the user object before returning and ensure compatible types
+          const { hashedPassword: _, ...dbUser } = user;
+          const secureUser = {
+            ...dbUser,
+            username: dbUser.username || ''
+          };
           return done(null, secureUser);
         }
       } catch (error) {
@@ -318,8 +322,12 @@ export function setupAuth(app: Express) {
         return res.status(404).json({ message: "User not found" });
       }
       
-      // Remove password from response
-      const { password: _, ...secureUser } = user;
+      // Remove password from response and ensure compatible types
+      const { hashedPassword: _, ...dbUser } = user;
+      const secureUser = {
+        ...dbUser,
+        username: dbUser.username || ''
+      };
       
       // Log user in with promisified login to handle errors properly
       await new Promise<void>((resolve, reject) => {
