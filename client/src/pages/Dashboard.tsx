@@ -1370,11 +1370,11 @@ const Dashboard: React.FC = () => {
     let baseDotsToDisplay = previewMode ? dots : dots; // Use dots for both modes (dots contains correct data)
     
     // Apply recent filter if enabled (only in real mode)
-    if (showingRecentFilter && !previewMode) {
+    if (showRecentFilter && !previewMode) {
       // Sort by timestamp (most recent first) and take the specified number
       baseDotsToDisplay = [...baseDotsToDisplay]
-        .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
-        .slice(0, recentCount);
+        .sort((a, b) => new Date(b.timestamp || b.createdAt).getTime() - new Date(a.timestamp || a.createdAt).getTime())
+        .slice(0, recentDotsCount);
     }
     
     const displayDots = baseDotsToDisplay;
@@ -1392,8 +1392,13 @@ const Dashboard: React.FC = () => {
       dotsCount: dots.length,
       previewMode,
       wheelsLoading,
-      gridLoading
+      gridLoading,
+      showRecentFilter,
+      recentDotsCount
     });
+    
+    console.log('📝 All fetched dots:', dots.map(d => ({ id: d.id, summary: d.oneWordSummary, created: d.createdAt || d.timestamp })));
+    console.log('📊 Dots to display after filtering:', baseDotsToDisplay.length, 'of', dots.length);
 
     // Show different states based on authentication and content
     // Only show auth required state if NOT loading and no user
@@ -1619,11 +1624,11 @@ const Dashboard: React.FC = () => {
 
           
           {/* Recent Filter Indicator */}
-          {showingRecentFilter && !previewMode && (
+          {showRecentFilter && !previewMode && (
             <div className="bg-gradient-to-r from-amber-600 to-orange-600 text-white rounded-lg px-3 py-2 border-2 border-amber-400 shadow-lg">
               <div className="flex items-center gap-2">
                 <Clock className="w-3 h-3" />
-                <span className="text-xs font-medium">Showing {recentCount} Recent Dots</span>
+                <span className="text-xs font-medium">Showing {recentDotsCount} Recent Dots</span>
               </div>
             </div>
           )}
