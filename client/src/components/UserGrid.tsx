@@ -594,6 +594,15 @@ const UserGrid: React.FC<UserGridProps> = ({ userId, mode }) => {
     );
   }
 
+  // Debug logging for dots display issue
+  console.log('UserGrid dots debugging:', {
+    userDotsLength: userDots.length,
+    userWheelsLength: userWheels.length,
+    userDots: userDots.map(d => ({ id: d.id, summary: d.oneWordSummary })),
+    isLoading,
+    userId
+  });
+
   const isEmpty = Array.isArray(userDots) && Array.isArray(userWheels) && userDots.length === 0 && userWheels.length === 0;
 
   if (isEmpty) {
@@ -633,6 +642,11 @@ const UserGrid: React.FC<UserGridProps> = ({ userId, mode }) => {
         previewMode={false}
         setPreviewMode={() => {}}
       />
+      
+      {/* Debug: Show raw dots count */}
+      <div className="text-xs text-gray-500 p-2 bg-gray-100 rounded">
+        Debug: UserGrid has {userDots.length} dots fetched from API
+      </div>
 
       {/* Keep detail modal for individual items */}
       {selectedItem && (
