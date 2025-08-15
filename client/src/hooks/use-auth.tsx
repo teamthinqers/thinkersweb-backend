@@ -62,7 +62,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             console.log('✅ Backend session recovered successfully!');
             console.log('👤 Recovered user:', user.fullName || user.email);
             console.log('🖼️ Recovered avatar:', user.avatarUrl);
-            setUser(user);
+            // Ensure user has required properties for frontend compatibility
+            const enhancedUser = {
+              ...user,
+              id: user.id,
+              uid: user.id, // Firebase compatibility
+              displayName: user.fullName || user.displayName,
+              photoURL: user.avatarUrl
+            };
+            setUser(enhancedUser);
             setIsLoading(false);
             return true; // Session recovered
           } else {

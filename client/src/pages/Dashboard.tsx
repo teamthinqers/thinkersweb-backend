@@ -94,44 +94,68 @@ const Dashboard: React.FC = () => {
     gcTime: 2 * 60 * 1000 // Keep data in cache for 2 minutes
   });
 
-  // Fetch user dots from the correct API endpoint
+  // Enhanced dots fetching with backend session fallback
   const { data: dots = [], isLoading: dotsLoading, refetch } = useQuery({
-    queryKey: ['/api/user-content/dots', user?.id],
+    queryKey: ['/api/user-content/dots', 'enhanced'],
     queryFn: async () => {
       try {
-        const url = previewMode ? '/api/dots?preview=true' : '/api/user-content/dots';
-        console.log('🔍 Fetching dots from:', url, 'for user:', user?.email || 'anonymous');
-        console.log('🔐 Authentication state:', { hasUser: !!user, userId: user?.id, isLoading });
-        const response = await fetch(url, {
-          credentials: 'include' // Include cookies for authentication
-        });
-        console.log('📊 Dots fetch response status:', response.status);
-        if (!response.ok) {
-          console.warn('❌ Dots fetch failed:', response.status, response.statusText);
-          // If authentication failed and we're not in preview mode, return empty
-          if (response.status === 401 && !previewMode) {
-            console.log('🔒 Authentication required but not provided');
-            return [];
+        // Always try to fetch from the user-content endpoint first
+        console.log('🔍 Fetching user dots with backend session fallback');
+        console.log('🔐 Frontend auth state:', { hasUser: !!user, userEmail: user?.email, isLoading });
+        
+        const response = await fetch('/api/user-content/dots', {
+          credentials: 'include',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
           }
+        });
+        
+        console.log('📊 Dots fetch response status:', response.status);
+        
+        if (response.ok) {
+          const data = await response.json();
+          console.log('✅ Dots fetched successfully:', data.length, 'dots');
+          console.log('📝 Recent dots:', data.slice(0, 3).map(d => d.oneWordSummary));
+          return data;
+        } else if (response.status === 401) {
+          console.log('🔒 Authentication required - checking if we should show preview mode');
+          // Fall back to preview mode if available
+          if (previewMode) {
+            const previewResponse = await fetch('/api/dots?preview=true', {
+              credentials: 'include'
+            });
+            if (previewResponse.ok) {
+              const previewData = await previewResponse.json();
+              console.log('✅ Preview dots fetched:', previewData.length);
+              return previewData;
+            }
+          }
+          console.log('❌ No dots available - authentication required');
+          return [];
+        } else {
+          console.warn('❌ Dots fetch failed:', response.status, response.statusText);
           return [];
         }
-        const data = await response.json();
-        console.log('✅ Dots fetched successfully:', data.length, 'dots for user:', user?.email || 'anonymous');
-        console.log('📝 First dot preview:', data[0] ? { id: data[0].id, summary: data[0].oneWordSummary } : 'No dots');
-        return data;
       } catch (err) {
         console.error('💥 Error fetching dots:', err);
         return [];
       }
     },
-    enabled: !isLoading, // Fetch regardless of user state - backend will handle auth
-    retry: 3, // Retry up to 3 times on failure 
-    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
+    enabled: true, // Always try to fetch - backend will handle auth
+    retry: (failureCount, error) => {
+      // Retry up to 2 times, but not for auth failures
+      if (failureCount >= 2) return false;
+      // Don't retry on 401 errors  
+      if (error && error.message?.includes('401')) return false;
+      return true;
+    },
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 5000),
     refetchOnWindowFocus: false,
-    refetchOnMount: false, // Don't refetch if we have cached data
-    staleTime: 30 * 60 * 1000, // Cache for 30 minutes - load once and keep
-    gcTime: 60 * 60 * 1000, // Keep in cache for 1 hour even when navigating away
-    refetchInterval: false // Disable automatic refetching
+    refetchOnMount: true, // Always refetch on mount to get latest data
+    staleTime: 5 * 60 * 1000, // Cache for 5 minutes only
+    gcTime: 30 * 60 * 1000, // Keep in cache for 30 minutes
+    refetchInterval: false
   });
 
   // Fetch user wheels and chakras from the correct API endpoint

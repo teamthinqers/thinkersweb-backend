@@ -514,15 +514,47 @@ const UserGrid: React.FC<UserGridProps> = ({ userId, mode }) => {
   // Add refs for grid controls
   const gridContainerRef = useRef<HTMLDivElement>(null);
 
-  // Fetch user's dots with aggressive caching to prevent reloading
+  // Enhanced user dots fetching with backend session support
   const { data: userDots = [], isLoading: dotsLoading } = useQuery({
-    queryKey: ['/api/user-content/dots', userId],
-    enabled: mode === 'real' && !!userId, // Only fetch when authenticated
-    retry: 3, // Retry up to 3 times on failure
-    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
-    staleTime: 30 * 60 * 1000, // Cache for 30 minutes - don't refetch unless data is really stale
-    gcTime: 60 * 60 * 1000, // Keep in cache for 1 hour even when component unmounts
-    refetchOnWindowFocus: false, // Don't refetch when user returns to tab
+    queryKey: ['/api/user-content/dots', 'user-grid', mode],
+    queryFn: async () => {
+      try {
+        console.log('🔍 UserGrid fetching dots for mode:', mode, 'userId:', userId);
+        
+        // Always try real endpoint first, regardless of frontend auth state
+        const response = await fetch('/api/user-content/dots', {
+          credentials: 'include',
+          headers: { 'Accept': 'application/json' }
+        });
+        
+        console.log('📊 UserGrid dots response:', response.status);
+        
+        if (response.ok) {
+          const data = await response.json();
+          console.log('✅ UserGrid dots fetched:', data.length);
+          return data;
+        } else if (mode === 'preview') {
+          // Fall back to preview mode if needed
+          const previewResponse = await fetch('/api/dots?preview=true', {
+            credentials: 'include'
+          });
+          if (previewResponse.ok) {
+            return await previewResponse.json();
+          }
+        }
+        
+        return [];
+      } catch (error) {
+        console.error('UserGrid dots fetch error:', error);
+        return [];
+      }
+    },
+    enabled: true, // Always try to fetch
+    retry: 2,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 5000),
+    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
+    gcTime: 30 * 60 * 1000, // Keep in cache for 30 minutes
+    refetchOnWindowFocus: false,
     refetchOnMount: false, // Don't refetch on component mount if we have cached data
     refetchOnReconnect: false, // Don't refetch on network reconnection
   }) as { data: any[], isLoading: boolean };
