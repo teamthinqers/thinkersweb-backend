@@ -504,20 +504,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
       
-      // Generate one-word summary using OpenAI (only if not in raw mode)
+      // Generate one-word summary using OpenAI
       let oneWordSummary = 'Insight'; // Default fallback
-      const rawMode = req.body.rawMode === true || req.body.captureMode === 'raw';
-      
-      if (!rawMode) {
-        try {
-          const { generateOneWordSummary } = await import('./openai.js');
-          oneWordSummary = await generateOneWordSummary(summary, anchor);
-        } catch (error) {
-          console.error('Error generating one-word summary:', error);
-        }
-      } else {
-        // In raw mode, use the first word of summary as heading to preserve user intent
-        oneWordSummary = req.body.oneWordSummary || summary.split(' ')[0] || 'Insight';
+      try {
+        const { generateOneWordSummary } = await import('./openai.js');
+        oneWordSummary = await generateOneWordSummary(summary, anchor);
+      } catch (error) {
+        console.error('Error generating one-word summary:', error);
       }
       
       const entryData = {

@@ -80,19 +80,13 @@ router.post('/dots', checkDotSparkActivation, async (req, res) => {
     }
     // In raw mode, preserve user input exactly as provided
     
-    // Generate oneWordSummary if not provided (only if not in raw mode)
+    // Generate oneWordSummary if not provided
     if (!dotData.oneWordSummary) {
-      if (!rawMode) {
-        // Use AI to generate heading
-        try {
-          const { generateOneWordSummary } = await import('../openai.js');
-          dotData.oneWordSummary = await generateOneWordSummary(dotData.summary, dotData.anchor);
-        } catch (error) {
-          console.error('Error generating one-word summary:', error);
-          dotData.oneWordSummary = dotData.summary.split(' ')[0] || 'Insight';
-        }
-      } else {
-        // In raw mode, use first word of summary or user preference
+      try {
+        const { generateOneWordSummary } = await import('../openai.js');
+        dotData.oneWordSummary = await generateOneWordSummary(dotData.summary, dotData.anchor);
+      } catch (error) {
+        console.error('Error generating one-word summary:', error);
         dotData.oneWordSummary = dotData.summary.split(' ')[0] || 'Insight';
       }
     }
