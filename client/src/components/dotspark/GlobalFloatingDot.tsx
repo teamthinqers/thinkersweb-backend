@@ -367,71 +367,131 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
         };
       }
       
-      // Check authentication - but don't block if backend might have valid session
-      if (!user) {
-        console.log('🔍 Frontend user not found, checking backend session...');
-        // Try the request anyway - backend might have valid session even if frontend auth is out of sync
-        const testResponse = await fetch('/api/auth/status', {
-          credentials: 'include'
+      // Enhanced authentication handling
+      console.log('🔍 Checking authentication state:', { hasUser: !!user, userEmail: user?.email });
+      
+      // First check backend session status
+      const authCheckResponse = await fetch('/api/auth/status', {
+        credentials: 'include',
+        headers: { 'Accept': 'application/json' }
+      });
+      const authStatus = await authCheckResponse.json();
+      
+      console.log('🔐 Backend auth status:', authStatus);
+      
+      // Handle authentication states
+      if (!authStatus.authenticated) {
+        console.log('❌ Backend not authenticated - initiating login flow');
+        toast({
+          title: "Sign In Required",
+          description: "Please sign in to save your dots.",
+          variant: "destructive",
         });
-        const authStatus = await testResponse.json();
         
-        if (!authStatus.authenticated) {
-          toast({
-            title: "Authentication Required",
-            description: "Please sign in to save your dots.",
-            variant: "destructive",
+        try {
+          await loginWithGoogle();
+          
+          // Verify login worked by checking backend again
+          const reCheckResponse = await fetch('/api/auth/status', {
+            credentials: 'include',
+            headers: { 'Accept': 'application/json' }
           });
-          try {
-            await loginWithGoogle();
+          const reCheckStatus = await reCheckResponse.json();
+          
+          if (reCheckStatus.authenticated) {
             toast({
-              title: "Please Try Again", 
-              description: "You're now signed in. Please try saving your dot again.",
+              title: "Authentication Successful",
+              description: "You can now create your dot. Please try again.",
             });
-          } catch (error) {
-            console.error('Authentication failed:', error);
+          } else {
+            throw new Error('Authentication verification failed');
           }
           return;
-        } else {
-          console.log('✅ Backend session is valid, proceeding with dot creation');
+        } catch (error) {
+          console.error('Authentication failed:', error);
+          toast({
+            title: "Authentication Error",
+            description: "Unable to sign in. Please refresh and try again.",
+            variant: "destructive",
+          });
+          return;
         }
       }
       
-      // Submit to correct API endpoint
-      console.log('Creating dot with data:', dotData);
-      console.log('User authenticated as:', user.email);
+      console.log('✅ Backend session authenticated, proceeding with dot creation');
+      
+      // Add required fields for dot creation
+      const completeDotData = {
+        ...dotData,
+        oneWordSummary: dotData.summary.split(' ')[0] || 'Untitled',
+        captureMode: 'natural',
+        wheelId: ''
+      };
+      
+      // Submit to correct API endpoint with comprehensive error handling
+      console.log('Creating dot with data:', completeDotData);
+      console.log('User authenticated as:', user?.email || authStatus.user?.email || 'backend-session');
+      
       const response = await fetch('/api/user-content/dots', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
         credentials: 'include',
-        body: JSON.stringify(dotData)
+        body: JSON.stringify(completeDotData)
       });
+      
+      console.log('🌐 Dot creation response status:', response.status);
       
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'Failed to create dot');
+        const errorText = await response.text();
+        let errorMessage;
+        try {
+          const errorData = JSON.parse(errorText);
+          errorMessage = errorData.error || errorData.message || 'Failed to create dot';
+        } catch {
+          errorMessage = errorText || 'Failed to create dot';
+        }
+        console.error('❌ Dot creation failed:', response.status, errorMessage);
+        throw new Error(errorMessage);
       }
       
+      const result = await response.json();
+      console.log('✅ Dot created successfully:', result);
+      
       toast({
-        title: "Dot Saved",
-        description: "Your thought has been captured as a three-layer dot!",
+        title: "Dot Saved Successfully",
+        description: `Your "${completeDotData.oneWordSummary}" dot has been captured!`,
       });
       
-      // Invalidate cache with exact query key match  
-      console.log('🔄 Invalidating dots cache after dot creation for user:', user?.id);
+      // Comprehensive cache invalidation
+      console.log('🔄 Invalidating all dots cache after successful creation');
       
-      // Use exact query key that matches both Dashboard and UserGrid components
-      const dotsQueryKey = ['/api/user-content/dots', user?.id];
+      // Clear all possible query variations to ensure refresh
+      const userId = (user as any)?.id || authStatus.user?.id;
+      const queryKeys = [
+        ['/api/user-content/dots'],
+        ['/api/user-content/dots', userId],
+        ['/api/user-content/dots', 'real', userId],
+        ['/api/user-content/stats'],
+        ['/api/grid/positions']
+      ];
       
-      // Remove from cache completely and refetch immediately
-      queryClient.removeQueries({ queryKey: dotsQueryKey });
-      queryClient.invalidateQueries({ queryKey: dotsQueryKey });
+      // Remove all variations from cache and invalidate
+      await Promise.all(queryKeys.map(async (key) => {
+        queryClient.removeQueries({ queryKey: key });
+        queryClient.invalidateQueries({ queryKey: key });
+      }));
       
-      // Also invalidate related queries
-      queryClient.invalidateQueries({ queryKey: ['/api/user-content/stats'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/grid/positions'] });
+      // Force immediate refetch of dots
+      if (userId) {
+        await queryClient.refetchQueries({ 
+          queryKey: ['/api/user-content/dots', userId]
+        });
+      }
       
-      console.log('✅ Cache invalidated with key:', dotsQueryKey);
+      console.log('✅ All cache invalidated and refetched');
       
       // Reset all states
       setTextInput("");
@@ -441,9 +501,26 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
       handleClose();
     } catch (error) {
       console.error('Failed to submit dot capture:', error);
+      
+      // Provide specific error messages based on error type
+      let errorTitle = "Save Failed";
+      let errorDescription = "Please try again.";
+      
+      if (error instanceof Error) {
+        if (error.message.includes('Authentication')) {
+          errorTitle = "Authentication Error";
+          errorDescription = "Please sign in and try again.";
+        } else if (error.message.includes('Network')) {
+          errorTitle = "Network Error";  
+          errorDescription = "Please check your connection and try again.";
+        } else {
+          errorDescription = error.message;
+        }
+      }
+      
       toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "Failed to save your dot. Please try again.",
+        title: errorTitle,
+        description: errorDescription,
         variant: "destructive",
       });
     }
