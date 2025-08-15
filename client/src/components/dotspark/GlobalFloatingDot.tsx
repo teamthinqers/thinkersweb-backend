@@ -408,9 +408,21 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
         }
       }
       
-      // Determine final user for this session
-      const finalUser = activeUser || user || PersistentActivationManager.getDefaultUser();
-      console.log('👤 Using user for dot save:', finalUser.email || `ID: ${finalUser.id}`);
+      // Determine final user for this session - prioritize authenticated user
+      let finalUser;
+      if (user && user.id) {
+        // Use authenticated Firebase user
+        finalUser = user;
+        console.log('👤 Using authenticated Firebase user:', user.email, 'ID:', user.id);
+      } else if (activeUser) {
+        // Use persistent user
+        finalUser = activeUser;
+        console.log('👤 Using persistent user:', activeUser.email, 'ID:', activeUser.id);
+      } else {
+        // Fallback to default
+        finalUser = PersistentActivationManager.getDefaultUser();
+        console.log('👤 Using fallback default user:', finalUser.email, 'ID:', finalUser.id);
+      }
       
       // Add required fields for dot creation
       const completeDotData = {
