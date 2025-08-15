@@ -142,7 +142,7 @@ export function setupAuth(app: Express) {
       pruneSessionInterval: 15 * 60, 
     }),
     cookie: {
-      secure: process.env.NODE_ENV === "production",
+      secure: false, // Always false in development to ensure cookies work
       // Set to 365 days by default for persistent sessions
       maxAge: 365 * 24 * 60 * 60 * 1000, 
       httpOnly: true, // Prevent JavaScript access to the cookie
