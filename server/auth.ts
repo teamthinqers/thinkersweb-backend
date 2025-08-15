@@ -766,7 +766,7 @@ export function setupAuth(app: Express) {
       };
       
       // Log user in to establish backend session
-      req.login(secureUser, (err) => {
+      req.login(secureUser, async (err) => {
         if (err) {
           console.error('❌ Login error during Firebase sync:', err);
           return next(err);
