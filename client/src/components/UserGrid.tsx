@@ -514,26 +514,30 @@ const UserGrid: React.FC<UserGridProps> = ({ userId, mode }) => {
   // Add refs for grid controls
   const gridContainerRef = useRef<HTMLDivElement>(null);
 
-  // Fetch user's dots with proper typing and retry logic
+  // Fetch user's dots with aggressive caching to prevent reloading
   const { data: userDots = [], isLoading: dotsLoading } = useQuery({
-    queryKey: ['/api/user-content/dots'],
+    queryKey: ['/api/user-content/dots', userId],
     enabled: mode === 'real' && !!userId, // Only fetch when authenticated
     retry: 3, // Retry up to 3 times on failure
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
-    staleTime: 60000, // Cache for 1 minute 
-    refetchOnWindowFocus: false,
-    refetchOnMount: true // Always refetch on component mount
+    staleTime: 30 * 60 * 1000, // Cache for 30 minutes - don't refetch unless data is really stale
+    gcTime: 60 * 60 * 1000, // Keep in cache for 1 hour even when component unmounts
+    refetchOnWindowFocus: false, // Don't refetch when user returns to tab
+    refetchOnMount: false, // Don't refetch on component mount if we have cached data
+    refetchOnReconnect: false, // Don't refetch on network reconnection
   }) as { data: any[], isLoading: boolean };
 
-  // Fetch user's wheels and chakras with proper typing and retry logic  
+  // Fetch user's wheels and chakras with aggressive caching  
   const { data: userWheels = [], isLoading: wheelsLoading } = useQuery({
-    queryKey: ['/api/user-content/wheels'],
+    queryKey: ['/api/user-content/wheels', userId],
     enabled: mode === 'real' && !!userId, // Only fetch when authenticated
     retry: 3, // Retry up to 3 times on failure
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
-    staleTime: 60000, // Cache for 1 minute
+    staleTime: 30 * 60 * 1000, // Cache for 30 minutes
+    gcTime: 60 * 60 * 1000, // Keep in cache for 1 hour
     refetchOnWindowFocus: false, 
-    refetchOnMount: true // Always refetch on component mount
+    refetchOnMount: false, // Don't refetch on component mount if we have cached data
+    refetchOnReconnect: false,
   }) as { data: any[], isLoading: boolean };
 
   // Fetch user's statistics with retry logic

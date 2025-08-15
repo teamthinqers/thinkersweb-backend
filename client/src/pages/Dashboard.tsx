@@ -88,7 +88,7 @@ const Dashboard: React.FC = () => {
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
     staleTime: 30000, // Cache for 30 seconds
     refetchOnWindowFocus: false,
-    refetchOnMount: true, // Always refetch on component mount for fresh data
+    refetchOnMount: false, // Don't refetch if we have cached data
     enabled: !isLoading, // Fetch regardless of user state - backend will handle auth
     refetchInterval: false, // Disable automatic refetching
     gcTime: 2 * 60 * 1000 // Keep data in cache for 2 minutes
@@ -128,9 +128,10 @@ const Dashboard: React.FC = () => {
     retry: 3, // Retry up to 3 times on failure 
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
     refetchOnWindowFocus: false,
-    refetchOnMount: true, // Always refetch on component mount to ensure fresh data
-    staleTime: 10 * 1000, // Reduce stale time to 10 seconds for immediate updates
-    refetchInterval: 30000 // Refetch every 30 seconds to ensure fresh data
+    refetchOnMount: false, // Don't refetch if we have cached data
+    staleTime: 30 * 60 * 1000, // Cache for 30 minutes - load once and keep
+    gcTime: 60 * 60 * 1000, // Keep in cache for 1 hour even when navigating away
+    refetchInterval: false // Disable automatic refetching
   });
 
   // Fetch user wheels and chakras from the correct API endpoint
