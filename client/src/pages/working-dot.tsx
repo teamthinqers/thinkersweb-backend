@@ -49,10 +49,12 @@ export default function WorkingDotPage() {
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
         body: JSON.stringify({
-          summary: dot.summary.substring(0, 220),
-          anchor: dot.anchor.substring(0, 300),
-          pulse: dot.pulse.split(' ')[0] || dot.pulse,
-          sourceType: 'text'
+          oneWordSummary: dot.summary.split(' ')[0] || 'Insight',
+          summary: dot.summary,
+          anchor: dot.anchor,
+          pulse: dot.pulse,
+          sourceType: 'text',
+          rawMode: true // Preserve user input exactly as provided
         })
       });
 

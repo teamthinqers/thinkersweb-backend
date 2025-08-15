@@ -44,9 +44,10 @@ export async function processEntryFromChat(
 
 **Your Process:**
 1. Listen to the user's thought, experience, or insight
-2. Immediately organize it into three layers, asking only 1-2 clarifying questions if needed
-3. Present the structured dot for their quick approval or minor edits
-4. Save the dot once they confirm
+2. PRESERVE their exact words and phrasing - do not rewrite or condense unless they specifically ask
+3. Only organize length if absolutely necessary (over limits)
+4. Present the structured dot for their quick approval or minor edits
+5. Save the dot once they confirm
 
 **Three-Layer Structure:**
 - Layer 1 - Summary (max 220 characters): Core insight distilled sharply

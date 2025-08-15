@@ -17,7 +17,8 @@ export default function TestCreation() {
   const [dotData, setDotData] = useState({
     summary: '',
     anchor: '',
-    pulse: ''
+    pulse: '',
+    rawMode: false
   });
   
   // Wheel creation state
@@ -52,10 +53,12 @@ export default function TestCreation() {
       const response = await apiRequest('/api/dots', {
         method: 'POST',
         body: JSON.stringify({
+          oneWordSummary: dotData.summary.split(' ')[0] || 'Insight',
           summary: dotData.summary,
           anchor: dotData.anchor,
           pulse: dotData.pulse,
-          sourceType: 'text'
+          sourceType: 'text',
+          rawMode: dotData.rawMode
         }),
         headers: {
           'Content-Type': 'application/json'
@@ -67,7 +70,7 @@ export default function TestCreation() {
           title: "Dot Created!",
           description: "Your dot has been saved successfully",
         });
-        setDotData({ summary: '', anchor: '', pulse: '' });
+        setDotData({ summary: '', anchor: '', pulse: '', rawMode: false });
       } else {
         throw new Error('Failed to create dot');
       }
@@ -258,6 +261,19 @@ export default function TestCreation() {
                   value={dotData.pulse}
                   onChange={(e) => setDotData(prev => ({ ...prev, pulse: e.target.value }))}
                 />
+              </div>
+              
+              <div className="flex items-center space-x-2 p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800">
+                <input
+                  type="checkbox"
+                  id="rawMode"
+                  checked={dotData.rawMode || false}
+                  onChange={(e) => setDotData(prev => ({ ...prev, rawMode: e.target.checked }))}
+                  className="rounded border-amber-300"
+                />
+                <label htmlFor="rawMode" className="text-sm font-medium text-amber-700 dark:text-amber-300">
+                  Raw Mode - Preserve my exact input (no AI processing)
+                </label>
               </div>
               
               <Button 

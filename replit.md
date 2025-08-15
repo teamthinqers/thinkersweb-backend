@@ -5,6 +5,7 @@ DotSpark is a full-stack web application serving as a personalized learning mana
 
 ## User Preferences
 Preferred communication style: Simple, everyday language.
+Dot creation: User prefers no automatic AI processing of their inputs - preserve exact text as provided.
 
 ## System Architecture
 

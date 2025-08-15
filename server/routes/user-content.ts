@@ -49,17 +49,36 @@ router.post('/dots', checkDotSparkActivation, async (req, res) => {
   try {
     const userId = req.user!.id;
     
+    // Check if user wants raw mode (no AI processing)
+    const rawMode = req.body.rawMode === true || req.body.captureMode === 'raw';
+    
     // Validate input data using simplified validation for entries format
-    const dotData = {
+    let dotData = {
       oneWordSummary: req.body.oneWordSummary,
       summary: req.body.summary,
       anchor: req.body.anchor || '',
       pulse: req.body.pulse,
       sourceType: req.body.sourceType || 'text',
-      captureMode: req.body.captureMode || 'natural',
+      captureMode: rawMode ? 'raw' : (req.body.captureMode || 'natural'),
       wheelId: req.body.wheelId || '',
-      voiceData: req.body.voiceData || null
+      voiceData: req.body.voiceData || null,
+      rawMode: rawMode
     };
+    
+    // If NOT in raw mode, apply automatic processing (current behavior)
+    if (!rawMode) {
+      // Apply character limits and processing as before
+      if (dotData.summary && dotData.summary.length > 220) {
+        dotData.summary = dotData.summary.substring(0, 220);
+      }
+      if (dotData.anchor && dotData.anchor.length > 300) {
+        dotData.anchor = dotData.anchor.substring(0, 300);
+      }
+      if (dotData.pulse && dotData.pulse.includes(' ')) {
+        dotData.pulse = dotData.pulse.split(' ')[0];
+      }
+    }
+    // In raw mode, preserve user input exactly as provided
     
     // Basic validation
     if (!dotData.oneWordSummary || !dotData.summary || !dotData.pulse) {
@@ -359,118 +378,6 @@ router.delete('/dots/:id', checkDotSparkActivation, async (req, res) => {
   } catch (error) {
     console.error('Error deleting dot:', error);
     res.status(500).json({ error: 'Failed to delete dot' });
-  }
-});
-
-// Get user-specific dots - properly filtered by authenticated user
-router.get('/dots', checkDotSparkActivation, async (req, res) => {
-  try {
-    const userId = req.user!.id;
-    console.log(`🔍 Fetching dots for authenticated user: ${userId}`);
-    
-    // Fetch dots from entries table filtered by user ID
-    const userEntries = await db.query.entries.findMany({
-      where: eq(entries.userId, userId),
-      orderBy: desc(entries.createdAt)
-    });
-    
-    console.log(`✅ Found ${userEntries.length} dots for user ${userId}`);
-    
-    // Transform entries to dot format
-    const userDots = userEntries.map(entry => {
-      let dotData;
-      try {
-        dotData = JSON.parse(entry.content);
-      } catch (error) {
-        console.warn(`Failed to parse dot data for entry ${entry.id}:`, error);
-        return null;
-      }
-      
-      return {
-        id: `entry_${entry.id}`,
-        oneWordSummary: dotData.oneWordSummary || entry.title,
-        summary: dotData.summary || entry.content.substring(0, 100),
-        anchor: dotData.anchor || '',
-        pulse: dotData.pulse || 'neutral',
-        sourceType: dotData.sourceType || 'text',
-        captureMode: dotData.captureMode || 'natural',
-        wheelId: dotData.wheelId || null,
-        timestamp: entry.createdAt,
-        createdAt: entry.createdAt,
-        updatedAt: entry.updatedAt,
-        voiceData: dotData.voiceData || null,
-        userId: entry.userId
-      };
-    }).filter(dot => dot !== null);
-    
-    console.log(`📊 Returning ${userDots.length} formatted dots for user ${userId}`);
-    res.json(userDots);
-    
-  } catch (error) {
-    console.error('Error fetching user dots:', error);
-    res.status(500).json({ 
-      error: 'Failed to fetch dots',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    });
-  }
-});
-
-// Get user-specific wheels - properly filtered by authenticated user
-router.get('/wheels', checkDotSparkActivation, async (req, res) => {
-  try {
-    const userId = req.user!.id;
-    console.log(`🔍 Fetching wheels for authenticated user: ${userId}`);
-    
-    // Fetch wheels from wheels table filtered by user ID
-    const userWheels = await db.query.wheels.findMany({
-      where: eq(wheels.userId, userId),
-      orderBy: desc(wheels.createdAt)
-    });
-    
-    console.log(`✅ Found ${userWheels.length} wheels for user ${userId}`);
-    res.json(userWheels);
-    
-  } catch (error) {
-    console.error('Error fetching user wheels:', error);
-    res.status(500).json({ 
-      error: 'Failed to fetch wheels',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    });
-  }
-});
-
-// Get user-specific statistics
-router.get('/stats', checkDotSparkActivation, async (req, res) => {
-  try {
-    const userId = req.user!.id;
-    console.log(`🔍 Fetching stats for authenticated user: ${userId}`);
-    
-    // Count dots and wheels for this user
-    const userEntries = await db.query.entries.findMany({
-      where: eq(entries.userId, userId),
-      columns: { id: true }
-    });
-    
-    const userWheels = await db.query.wheels.findMany({
-      where: eq(wheels.userId, userId),
-      columns: { id: true }
-    });
-    
-    const stats = {
-      totalDots: userEntries.length,
-      totalWheels: userWheels.length,
-      totalChakras: userWheels.filter(w => !w.chakraId).length // Wheels without chakraId are chakras
-    };
-    
-    console.log(`📊 Stats for user ${userId}:`, stats);
-    res.json(stats);
-    
-  } catch (error) {
-    console.error('Error fetching user stats:', error);
-    res.status(500).json({ 
-      error: 'Failed to fetch stats',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    });
   }
 });
 
