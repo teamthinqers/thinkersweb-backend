@@ -1381,8 +1381,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Advanced "Organize Thoughts" API route
+  // ==========================================
+  // ADVANCED THOUGHT ORGANIZATION SYSTEM  
+  // ==========================================
+
+  // Import advanced organize thoughts routes
+  const { getConversationContext: getThoughtConversationContext } = await import('./routes/organize-thoughts');
+  
+  // Continue organize thoughts conversation with advanced intelligence
   app.post(`${apiPrefix}/organize-thoughts/continue`, continueOrganizeThoughts);
+  
+  // Get conversation context and history
+  app.get(`${apiPrefix}/organize-thoughts/context/:sessionId`, getThoughtConversationContext);
 
   // Advanced Chat API with Multi-Model Support
   app.post(`${apiPrefix}/advanced-chat`, async (req, res) => {

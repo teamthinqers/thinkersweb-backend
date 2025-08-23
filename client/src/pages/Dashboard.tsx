@@ -19,6 +19,7 @@ import { isRunningAsStandalone } from "@/lib/pwaUtils";
 import { useLocation } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
 import { PersistentActivationManager } from "@/lib/persistent-activation";
+import IntelligentChatInterface from "@/components/IntelligentChatInterface";
 
 
 // Import types from schema instead of duplicating
@@ -78,7 +79,7 @@ const Dashboard: React.FC = () => {
   const [isMapFullscreen, setIsMapFullscreen] = useState(false);
   const [viewMode, setViewMode] = useState<'grid' | 'map'>('grid'); // Add view mode toggle
   const [previewMode, setPreviewMode] = useState(false); // Start with real mode by default
- // Add missing floating dot state
+  const [showOrganizeThoughts, setShowOrganizeThoughts] = useState(false);
   
   // PWA detection for smaller button sizing
   const isPWA = isRunningAsStandalone();
@@ -2447,8 +2448,15 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
 
-          {/* Right side - Empty for cleaner header */}
+          {/* Right side - Organize Thoughts Button */}
           <div className="flex items-center gap-3">
+            <Button
+              onClick={() => setShowOrganizeThoughts(true)}
+              className="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white shadow-md"
+            >
+              <Brain className="w-4 h-4 mr-2" />
+              Organize Thoughts
+            </Button>
           </div>
         </div>
       </div>
@@ -2732,7 +2740,17 @@ const Dashboard: React.FC = () => {
         />
       )}
 
-
+      {/* Intelligent Chat Interface Modal */}
+      {showOrganizeThoughts && (
+        <Dialog open={showOrganizeThoughts} onOpenChange={setShowOrganizeThoughts}>
+          <DialogContent className="max-w-6xl h-[80vh] p-0">
+            <IntelligentChatInterface 
+              onClose={() => setShowOrganizeThoughts(false)}
+              userId={user?.id || '5'}
+            />
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 };
