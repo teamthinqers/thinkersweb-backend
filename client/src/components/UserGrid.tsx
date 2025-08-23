@@ -20,6 +20,7 @@ interface DotWheelsMapProps {
   setViewFullWheel: (wheel: any | null) => void;
   previewMode: boolean;
   setPreviewMode: (previewMode: boolean) => void;
+  setViewFullDot: (dot: any | null) => void;
 
 }
 
@@ -71,6 +72,7 @@ const DotWheelsMap: React.FC<DotWheelsMapProps> = ({
   setViewFullWheel,
   previewMode,
   setPreviewMode,
+  setViewFullDot,
 
 }) => {
   const [selectedWheel, setSelectedWheel] = useState<string | null>(null);
@@ -279,7 +281,7 @@ const DotWheelsMap: React.FC<DotWheelsMapProps> = ({
                     if (isPWA || isMobile) {
                       setSelectedDot(dot);
                     } else {
-                      // View dot functionality handled by parent component
+                      setViewFullDot(dot);
                     }
                     setHoveredDot(null);
                   }}
@@ -317,7 +319,7 @@ const DotWheelsMap: React.FC<DotWheelsMapProps> = ({
                     }}
                     onClick={(e) => {
                       e.stopPropagation();
-                      // View dot functionality handled by parent component
+                      setViewFullDot(dot);
                       setHoveredDot(null);
                     }}
                   >

@@ -52,6 +52,7 @@ interface UserContentGridProps {
   dots: Dot[];
   setViewFullWheel: (wheel: Wheel | null) => void;
   setViewFlashCard: (dot: Dot | null) => void;
+  setViewFullDot: (dot: Dot | null) => void;
 }
 
 export const UserContentGrid: React.FC<UserContentGridProps> = ({
@@ -59,7 +60,8 @@ export const UserContentGrid: React.FC<UserContentGridProps> = ({
   userWheels,
   dots,
   setViewFullWheel,
-  setViewFlashCard
+  setViewFlashCard,
+  setViewFullDot
 }) => {
   // If user is not authenticated, show sign-in prompt
   if (!user) {
@@ -152,6 +154,12 @@ export const UserContentGrid: React.FC<UserContentGridProps> = ({
     <UserGrid 
       userId={user?.id} 
       mode="real"
+      wheels={userWheels}
+      dots={dots}
+      setViewFullWheel={setViewFullWheel}
+      setViewFullDot={setViewFullDot}
+      previewMode={false}
+      setPreviewMode={() => {}}
     />
   );
 };

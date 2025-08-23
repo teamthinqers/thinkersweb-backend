@@ -2687,6 +2687,7 @@ const Dashboard: React.FC = () => {
               dots={dots}
               setViewFullWheel={setViewFullWheel}
               setViewFlashCard={setViewFlashCard}
+              setViewFullDot={setViewFullDot}
             />
           ) : (
             // Preview Map Mode - shows demo data grid experience without creation functions
