@@ -242,11 +242,8 @@ export const conversationSessions = pgTable("conversation_sessions", {
   userId: integer("user_id").references(() => users.id).notNull(),
   sessionId: text("session_id").notNull().unique(),
   conversationData: text("conversation_data"),
-  thoughtType: text("thought_type").default("unknown"),
-  organizationSummary: text("organization_summary"),
-  status: text("status").default("in_progress"),
+  lastActivity: timestamp("last_activity").defaultNow().notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
 export const session = pgTable("session", {

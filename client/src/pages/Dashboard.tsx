@@ -14,12 +14,10 @@ import WheelFullView from "@/components/WheelFullView";
 import UserGrid from "@/components/UserGrid";
 import { UserContentGrid } from "@/components/UserContentGrid";
 import { PreviewMapGrid } from "@/components/PreviewMapGrid";
-
 import { isRunningAsStandalone } from "@/lib/pwaUtils";
 import { useLocation } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
 import { PersistentActivationManager } from "@/lib/persistent-activation";
-import IntelligentChatInterface from "@/components/IntelligentChatInterface";
 
 
 // Import types from schema instead of duplicating
@@ -79,7 +77,6 @@ const Dashboard: React.FC = () => {
   const [isMapFullscreen, setIsMapFullscreen] = useState(false);
   const [viewMode, setViewMode] = useState<'grid' | 'map'>('grid'); // Add view mode toggle
   const [previewMode, setPreviewMode] = useState(false); // Start with real mode by default
-  const [showOrganizeThoughts, setShowOrganizeThoughts] = useState(false);
   
   // PWA detection for smaller button sizing
   const isPWA = isRunningAsStandalone();
@@ -2448,15 +2445,8 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
 
-          {/* Right side - Organize Thoughts Button */}
+          {/* Right side - Empty for cleaner header */}
           <div className="flex items-center gap-3">
-            <Button
-              onClick={() => setShowOrganizeThoughts(true)}
-              className="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white shadow-md"
-            >
-              <Brain className="w-4 h-4 mr-2" />
-              Organize Thoughts
-            </Button>
           </div>
         </div>
       </div>
@@ -2557,7 +2547,16 @@ const Dashboard: React.FC = () => {
                     )}
                   </div>
                   
-
+                  {/* Create button for grid mode only */}
+                  {viewMode === 'grid' && (
+                    <button
+                      onClick={() => setShowFloatingDot(true)}
+                      className={`flex items-center gap-2 ${isPWA ? 'px-2 py-1.5 text-xs' : 'px-3 sm:px-4 py-2 text-sm sm:text-base'} rounded-lg font-medium transition-all duration-200 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-md hover:shadow-lg hover:scale-105`}
+                    >
+                      <Plus className={`${isPWA ? 'w-3 h-3' : 'w-3 h-3 sm:w-4 sm:h-4'}`} />
+                      <span className="font-semibold whitespace-nowrap">Create</span>
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
@@ -2738,21 +2737,6 @@ const Dashboard: React.FC = () => {
             }
           }}
         />
-      )}
-
-      {/* Intelligent Chat Interface Modal */}
-      {showOrganizeThoughts && (
-        <Dialog open={showOrganizeThoughts} onOpenChange={setShowOrganizeThoughts}>
-          <DialogContent className="max-w-6xl h-[80vh] p-0">
-            <DialogHeader className="sr-only">
-              <DialogTitle>Intelligent Thought Organization</DialogTitle>
-            </DialogHeader>
-            <IntelligentChatInterface 
-              onClose={() => setShowOrganizeThoughts(false)}
-              userId={user?.id || '5'}
-            />
-          </DialogContent>
-        </Dialog>
       )}
     </div>
   );

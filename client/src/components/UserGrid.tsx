@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Loader2, Plus, Eye, Settings, RotateCcw, Mic, Type, Maximize, Minimize, ZoomIn, ZoomOut } from 'lucide-react';
 import UserContentCreation from './UserContentCreation';
 import DotFullView from './DotFullView';
-
+import { GlobalFloatingDot } from '@/components/dotspark/GlobalFloatingDot';
 // Types will be inferred from API responses
 
 // Import DotWheelsMap type to match Dashboard usage
@@ -791,7 +791,7 @@ const UserGrid: React.FC<UserGridProps> = ({ userId, mode }) => {
                     ✕
                   </Button>
                 </div>
-
+                <GlobalFloatingDot isActive={true} />
               </div>
             </div>
           </div>
