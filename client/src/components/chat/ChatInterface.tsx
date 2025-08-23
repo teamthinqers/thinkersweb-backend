@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Send, Loader2, Bot, Mic, MicOff } from "lucide-react";
+import { Send, Loader2, Bot, Mic, MicOff, Brain } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -64,7 +64,7 @@ const ChatInterface: React.FC = () => {
       {
         id: generateId(),
         role: "assistant",
-        content: "Hi! I'm DotSpark, your thinking companion. I can help you organize your thoughts into structured insights. Just tell me what's on your mind, or say 'Organize thoughts' to start a guided conversation.",
+        content: "Hello! I'm your advanced AI assistant with ChatGPT-level intelligence and perfect memory. I remember our conversations, understand your patterns, and provide exceptional contextual responses. What's on your mind today?",
         timestamp: new Date(),
       },
     ];
@@ -99,7 +99,7 @@ const ChatInterface: React.FC = () => {
     const welcomeMessage: Message = {
       id: generateId(),
       role: "assistant",
-      content: "Hi! I'm DotSpark, your thinking companion. I can help you organize your thoughts into structured insights. Just tell me what's on your mind, or say 'Organize thoughts' to start a guided conversation.",
+      content: "Hello! I'm your advanced AI assistant with ChatGPT-level intelligence and perfect memory. I remember our conversations, understand your patterns, and provide exceptional contextual responses. What's on your mind today?",
       timestamp: new Date(),
     };
     
@@ -204,19 +204,14 @@ const ChatInterface: React.FC = () => {
     setIsProcessing(true);
     
     try {
-      // Use the intelligent chat endpoint with session persistence
-      const apiMessages = updatedMessages
-        .filter(m => m.role === "user" || m.role === "assistant")
-        .map(m => ({ role: m.role, content: m.content }));
-        
+      // Use the advanced intelligent conversation system with memory
       const processResponse = await apiRequest(
         "POST",
-        "/api/chat/intelligent",
+        "/api/organize-thoughts/continue",
         {
-          message: input,
-          messages: apiMessages,
+          userInput: input,
           sessionId: sessionId,
-          action: input.toLowerCase().includes('organize') && input.toLowerCase().includes('thought') ? 'organize_thoughts' : 'chat'
+          action: "continue"
         }
       ) as any;
       
@@ -316,8 +311,8 @@ const ChatInterface: React.FC = () => {
                 </Card>
               ) : (
                 <div className="flex">
-                  <div className="bg-muted p-2 rounded-full h-8 w-8 flex items-center justify-center mr-2 mt-1">
-                    <Bot size={16} className="text-muted-foreground" />
+                  <div className="bg-gradient-to-br from-amber-500 to-orange-600 p-2 rounded-full h-8 w-8 flex items-center justify-center mr-2 mt-1">
+                    <Brain size={16} className="text-white" />
                   </div>
                   <div className="bg-muted text-foreground rounded-lg p-3 max-w-[80%]">
                     <p>{message.content}</p>
@@ -342,7 +337,7 @@ const ChatInterface: React.FC = () => {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Tell me what's on your mind, or say 'Organize thoughts' to start..."
+              placeholder="Share your thoughts - I'll provide intelligent, contextual responses..."
               className="min-h-[60px] flex-1 resize-none"
             />
             <div className="flex flex-col space-y-2">
