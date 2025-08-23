@@ -515,7 +515,7 @@ const UserGrid: React.FC<UserGridProps> = ({ userId, mode }) => {
   const [showCreation, setShowCreation] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [showFloatingDot, setShowFloatingDot] = useState(false);
-  const [viewFullDot, setViewFullDot] = useState<any>(null);
+
   
   // Add refs for grid controls
   const gridContainerRef = useRef<HTMLDivElement>(null);
@@ -739,10 +739,9 @@ const UserGrid: React.FC<UserGridProps> = ({ userId, mode }) => {
         recentCount={4}
         isFullscreen={false}
         onFullscreenChange={() => {}}
-        setViewFullWheel={() => {}}
+        setViewFullWheel={setViewFullWheel}
         previewMode={false}
         setPreviewMode={() => {}}
-        viewFullDot={viewFullDot}
         setViewFullDot={setViewFullDot}
       />
       
