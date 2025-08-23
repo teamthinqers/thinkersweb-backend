@@ -168,20 +168,26 @@ router.post('/wheels', checkDotSparkActivation, async (req, res) => {
   try {
     const userId = req.user!.id;
     
-    // Validate input data
-    const wheelData = insertWheelSchema.parse({
-      ...req.body,
-      userId
-    });
+    // Prepare wheel data with proper defaults for database schema
+    const wheelCreateData = {
+      userId: userId,
+      heading: req.body.heading || req.body.name || '',
+      goals: req.body.goals || '',
+      timeline: req.body.timeline || '',
+      category: req.body.category || 'Personal',
+      color: req.body.color || '#F59E0B', // Default amber color
+      chakraId: req.body.chakraId ? parseInt(req.body.chakraId) : null,
+      positionX: req.body.positionX || Math.floor(Math.random() * 400) + 100,
+      positionY: req.body.positionY || Math.floor(Math.random() * 300) + 100,
+      radius: req.body.radius || 95,
+      sourceType: req.body.sourceType || 'text',
+      voiceData: req.body.voiceData || null
+    };
     
-    // Create wheel in database
-    const [newWheel] = await db.insert(wheels).values({
-      ...wheelData,
-      heading: wheelData.heading || '',
-      goals: wheelData.goals || '',
-      timeline: wheelData.timeline || '',
-      purpose: wheelData.purpose || '',
-    }).returning();
+    console.log('Creating wheel with data:', wheelCreateData);
+    
+    // Create wheel in database using raw insert
+    const [newWheel] = await db.insert(wheels).values(wheelCreateData).returning();
     
     // Store in Pinecone for intelligence
     try {
@@ -341,9 +347,9 @@ router.get('/stats', checkDotSparkActivation, async (req, res) => {
   try {
     const userId = req.user!.id;
     
-    // Count dots for this user
-    const userDots = await db.query.dots.findMany({
-      where: eq(dots.userId, userId)
+    // Count dots for this user (stored in entries table as JSON)
+    const userEntries = await db.query.entries.findMany({
+      where: eq(entries.userId, userId)
     });
     
     // Count wheels for this user
@@ -352,10 +358,10 @@ router.get('/stats', checkDotSparkActivation, async (req, res) => {
     });
     
     res.json({
-      totalDots: userDots.length,
-      totalWheels: userWheels.length,
-      totalChakras: userWheels.filter(w => !w.chakraId).length, // Wheels without a parent chakra are chakras themselves
-      lastActivity: userDots.length > 0 ? userDots[0]?.createdAt : (userWheels.length > 0 ? userWheels[0]?.createdAt : null)
+      totalDots: userEntries.length,
+      totalWheels: userWheels.filter(w => w.chakraId !== null).length, // Wheels that belong to chakras  
+      totalChakras: userWheels.filter(w => w.chakraId === null).length, // Wheels without a parent chakra are chakras themselves
+      lastActivity: userEntries.length > 0 ? userEntries[0]?.createdAt : (userWheels.length > 0 ? userWheels[0]?.createdAt : null)
     });
     
   } catch (error) {
