@@ -2552,7 +2552,12 @@ const Dashboard: React.FC = () => {
                   {/* Create button for grid mode only */}
                   {viewMode === 'grid' && (
                     <button
-                      onClick={() => setShowFloatingDot(true)}
+                      onClick={() => {
+                        console.log('🔵 Create button clicked!');
+                        console.log('🔵 Current showFloatingDot state:', showFloatingDot);
+                        setShowFloatingDot(true);
+                        console.log('🔵 Set showFloatingDot to true');
+                      }}
                       className={`flex items-center gap-2 ${isPWA ? 'px-2 py-1.5 text-xs' : 'px-3 sm:px-4 py-2 text-sm sm:text-base'} rounded-lg font-medium transition-all duration-200 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-md hover:shadow-lg hover:scale-105`}
                     >
                       <Plus className={`${isPWA ? 'w-3 h-3' : 'w-3 h-3 sm:w-4 sm:h-4'}`} />
@@ -2743,14 +2748,21 @@ const Dashboard: React.FC = () => {
 
       {/* Global Floating Dot for Creation */}
       {showFloatingDot && (
-        <GlobalFloatingDot
-          isExpanded={showFloatingDot}
-          onClose={() => setShowFloatingDot(false)}
-          onSuccess={() => {
-            setShowFloatingDot(false);
-            refetch(); // Refresh dots data after creation
-          }}
-        />
+        <div>
+          {console.log('🔵 Rendering GlobalFloatingDot, showFloatingDot:', showFloatingDot)}
+          <GlobalFloatingDot
+            isExpanded={showFloatingDot}
+            onClose={() => {
+              console.log('🔵 Closing floating dot');
+              setShowFloatingDot(false);
+            }}
+            onSuccess={() => {
+              console.log('🔵 Floating dot success, refreshing data');
+              setShowFloatingDot(false);
+              refetch(); // Refresh dots data after creation
+            }}
+          />
+        </div>
       )}
     </div>
   );
