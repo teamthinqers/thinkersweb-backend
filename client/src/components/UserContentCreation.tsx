@@ -43,6 +43,10 @@ const UserContentCreation: React.FC<UserContentCreationProps> = ({
   const createContentMutation = useMutation({
     mutationFn: async (data: any) => {
       const endpoint = contentType === 'dot' ? '/api/user-content/dots' : '/api/user-content/wheels';
+      
+      console.log(`🚀 Starting ${contentType} creation to ${endpoint}`);
+      console.log(`🚀 Payload data:`, data);
+      
       const response = await fetch(endpoint, {
         method: 'POST',
         headers: { 
@@ -52,13 +56,12 @@ const UserContentCreation: React.FC<UserContentCreationProps> = ({
         body: JSON.stringify(data)
       });
       
-      console.log(`🔄 Creating ${contentType}:`, data);
-      console.log(`📊 Response status:`, response.status);
+      console.log(`📊 Response status: ${response.status} ${response.statusText}`);
       
       if (!response.ok) {
         const errorText = await response.text();
         console.error(`❌ Failed to create ${contentType}:`, errorText);
-        throw new Error(`Failed to create ${contentType}: ${response.status}`);
+        throw new Error(`Failed to create ${contentType}: ${response.status} - ${errorText}`);
       }
       
       const result = await response.json();
@@ -125,24 +128,33 @@ const UserContentCreation: React.FC<UserContentCreationProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
+    console.log('🔵 Form submitted, contentType:', contentType);
+    console.log('🔵 Form data:', formData);
+    
     if (contentType === 'dot') {
-      createContentMutation.mutate({
+      const dotPayload = {
         summary: formData.summary,
         anchor: formData.anchor,
         pulse: formData.pulse,
         wheelId: formData.wheelId || null,
         sourceType: 'text',
         captureMode: 'natural'
-      });
+      };
+      
+      console.log('🔵 Submitting dot with payload:', dotPayload);
+      createContentMutation.mutate(dotPayload);
     } else {
-      createContentMutation.mutate({
+      const wheelPayload = {
         name: formData.name,
         heading: formData.heading,
         goals: formData.goals,
         timeline: formData.timeline,
         category: formData.category,
         chakraId: contentType === 'wheel' && formData.chakraId ? formData.chakraId : null
-      });
+      };
+      
+      console.log('🔵 Submitting wheel/chakra with payload:', wheelPayload);
+      createContentMutation.mutate(wheelPayload);
     }
   };
 
