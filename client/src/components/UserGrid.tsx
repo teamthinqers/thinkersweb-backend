@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Loader2, Plus, Eye, Settings, RotateCcw, Mic, Type, Maximize, Minimize, ZoomIn, ZoomOut } from 'lucide-react';
 import UserContentCreation from './UserContentCreation';
-
+import DotFullView from './DotFullView';
 
 // Types will be inferred from API responses
 
@@ -20,8 +20,8 @@ interface DotWheelsMapProps {
   setViewFullWheel: (wheel: any | null) => void;
   previewMode: boolean;
   setPreviewMode: (previewMode: boolean) => void;
-  setViewFullDot: (dot: any | null) => void;
-
+  viewFullDot?: any;
+  setViewFullDot?: (dot: any | null) => void;
 }
 
 // Dynamic sizing functions exactly like Dashboard
@@ -72,8 +72,8 @@ const DotWheelsMap: React.FC<DotWheelsMapProps> = ({
   setViewFullWheel,
   previewMode,
   setPreviewMode,
-  setViewFullDot,
-
+  viewFullDot,
+  setViewFullDot
 }) => {
   const [selectedWheel, setSelectedWheel] = useState<string | null>(null);
   const [selectedDot, setSelectedDot] = useState<any | null>(null);
@@ -462,7 +462,46 @@ const DotWheelsMap: React.FC<DotWheelsMapProps> = ({
           </div>
         )}
 
-
+        {/* Full dot view modal exactly like preview mode */}
+        {viewFullDot && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-[100]">
+            <Card className="max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+              <CardHeader>
+                <CardTitle>{viewFullDot.oneWordSummary}</CardTitle>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => setViewFullDot(null)}
+                  className="absolute top-4 right-4"
+                >
+                  ✕
+                </Button>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex gap-2">
+                    <Badge className={`${
+                      viewFullDot.sourceType === 'voice' ? 'bg-amber-100 text-amber-800' : 'bg-orange-100 text-orange-800'
+                    }`}>
+                      {viewFullDot.sourceType}
+                    </Badge>
+                    {viewFullDot.captureMode === 'ai' && (
+                      <Badge className="bg-purple-100 text-purple-700">AI</Badge>
+                    )}
+                    <Badge variant="outline">{viewFullDot.pulse}</Badge>
+                  </div>
+                  <p className="text-gray-700">{viewFullDot.summary}</p>
+                  {viewFullDot.anchor && (
+                    <div>
+                      <h4 className="font-semibold mb-2">Context:</h4>
+                      <p className="text-gray-600">{viewFullDot.anchor}</p>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
       </div>
     );
   };
@@ -470,28 +509,13 @@ const DotWheelsMap: React.FC<DotWheelsMapProps> = ({
 interface UserGridProps {
   userId?: number;
   mode: 'real' | 'preview';
-  wheels?: any[];
-  dots?: any[];
-  setViewFullWheel?: (wheel: any | null) => void;
-  setViewFullDot?: (dot: any | null) => void;
-  previewMode?: boolean;
-  setPreviewMode?: (previewMode: boolean) => void;
 }
 
-const UserGrid: React.FC<UserGridProps> = ({ 
-  userId, 
-  mode, 
-  wheels: propsWheels, 
-  dots: propsDots, 
-  setViewFullWheel = () => {}, 
-  setViewFullDot = () => {}, 
-  previewMode = false, 
-  setPreviewMode = () => {} 
-}) => {
+const UserGrid: React.FC<UserGridProps> = ({ userId, mode }) => {
   const [showCreation, setShowCreation] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [showFloatingDot, setShowFloatingDot] = useState(false);
-
+  const [viewFullDot, setViewFullDot] = useState<any>(null);
   
   // Add refs for grid controls
   const gridContainerRef = useRef<HTMLDivElement>(null);
@@ -715,9 +739,10 @@ const UserGrid: React.FC<UserGridProps> = ({
         recentCount={4}
         isFullscreen={false}
         onFullscreenChange={() => {}}
-        setViewFullWheel={setViewFullWheel}
+        setViewFullWheel={() => {}}
         previewMode={false}
         setPreviewMode={() => {}}
+        viewFullDot={viewFullDot}
         setViewFullDot={setViewFullDot}
       />
       
@@ -773,7 +798,13 @@ const UserGrid: React.FC<UserGridProps> = ({
         </>
       )}
 
-
+      {/* Full View Mode for Dots - Same as Preview */}
+      {viewFullDot && (
+        <DotFullView
+          dot={viewFullDot}
+          onClose={() => setViewFullDot(null)}
+        />
+      )}
     </div>
   );
 };
