@@ -28,9 +28,10 @@ interface Position {
 
 interface GlobalFloatingDotProps {
   isActive: boolean;
+  forceExpanded?: boolean;
 }
 
-export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
+export function GlobalFloatingDot({ isActive, forceExpanded = false }: GlobalFloatingDotProps) {
   const { user, loginWithGoogle } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -48,7 +49,14 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
     const saved = localStorage.getItem('global-floating-dot-position');
     return saved ? JSON.parse(saved) : { x: 320, y: 180 };
   });
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(forceExpanded);
+  
+  // Automatically expand when forceExpanded is true
+  useEffect(() => {
+    if (forceExpanded) {
+      setIsExpanded(true);
+    }
+  }, [forceExpanded]);
   const [captureMode, setCaptureMode] = useState<'voice' | 'text' | null>(null);
   const [userCaptureMode, setUserCaptureMode] = useState<'voice' | 'text' | 'hybrid' | 'natural' | 'ai'>('hybrid');
   const [isRecording, setIsRecording] = useState(false);

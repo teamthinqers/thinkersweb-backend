@@ -2744,14 +2744,19 @@ const Dashboard: React.FC = () => {
 
       {/* Global Floating Dot for Creation */}
       {showFloatingDot && (
-        <div className="fixed inset-0 z-50">
-          <GlobalFloatingDot isActive={showFloatingDot} />
-          <button
-            onClick={() => setShowFloatingDot(false)}
-            className="fixed top-4 right-4 z-50 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-600"
-          >
-            ×
-          </button>
+        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center">
+          <div className="relative w-full h-full">
+            <GlobalFloatingDot 
+              isActive={showFloatingDot} 
+              forceExpanded={true}
+            />
+            <button
+              onClick={() => setShowFloatingDot(false)}
+              className="absolute top-4 right-4 z-50 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-600"
+            >
+              ×
+            </button>
+          </div>
         </div>
       )}
     </div>
