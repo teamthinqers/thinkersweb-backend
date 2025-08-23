@@ -443,10 +443,10 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
         console.log('👤 Using fallback default user:', finalUser.email, 'ID:', finalUser.id);
       }
       
-      // Add required fields for dot creation
+      // Add required fields for dot creation - let backend generate oneWordSummary automatically
       const completeDotData = {
         ...dotData,
-        oneWordSummary: dotData.summary.split(' ')[0] || 'Untitled',
+        // Remove oneWordSummary to let backend generate it using AI
         captureMode: 'natural',
         wheelId: ''
       };
@@ -513,7 +513,7 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
       
       toast({
         title: "Dot Saved Successfully",
-        description: `Your "${completeDotData.oneWordSummary}" dot has been captured!`,
+        description: `Your "${result.dot?.oneWordSummary || 'new'}" dot has been captured!`,
       });
       
       // CRITICAL: Cache invalidation to match UserGrid fetch patterns exactly
