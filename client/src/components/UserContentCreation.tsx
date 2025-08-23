@@ -45,26 +45,71 @@ const UserContentCreation: React.FC<UserContentCreationProps> = ({
       const endpoint = contentType === 'dot' ? '/api/user-content/dots' : '/api/user-content/wheels';
       const response = await fetch(endpoint, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json'
+        },
+        credentials: 'include', // CRITICAL: Include session cookies
         body: JSON.stringify(data)
       });
       
+      console.log(`🔄 Creating ${contentType}:`, data);
+      console.log(`📊 Response status:`, response.status);
+      
       if (!response.ok) {
-        throw new Error(`Failed to create ${contentType}`);
+        const errorText = await response.text();
+        console.error(`❌ Failed to create ${contentType}:`, errorText);
+        throw new Error(`Failed to create ${contentType}: ${response.status}`);
       }
       
-      return response.json();
+      const result = await response.json();
+      console.log(`✅ ${contentType} created successfully:`, result);
+      return result;
     },
-    onSuccess: () => {
+    onSuccess: (result) => {
+      console.log(`✅ ${contentType} creation mutation succeeded:`, result);
+      
       toast({
         title: 'Success!',
         description: `${contentType.charAt(0).toUpperCase() + contentType.slice(1)} created successfully.`
       });
       
-      // Invalidate queries to refresh data
-      queryClient.invalidateQueries({ queryKey: ['/api/user-content/dots'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/user-content/wheels'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/user-content/stats'] });
+      // Force invalidate ALL related queries with specific keys
+      queryClient.invalidateQueries({ 
+        queryKey: ['/api/user-content/dots'],
+        exact: false 
+      });
+      queryClient.invalidateQueries({ 
+        queryKey: ['/api/user-content/wheels'],
+        exact: false 
+      });
+      queryClient.invalidateQueries({ 
+        queryKey: ['/api/user-content/stats'],
+        exact: false 
+      });
+      
+      // Also invalidate any query that matches the pattern
+      queryClient.invalidateQueries({ 
+        predicate: (query) => {
+          const key = query.queryKey[0];
+          return typeof key === 'string' && key.includes('/api/user-content');
+        }
+      });
+      
+      console.log('🔄 Cache invalidated, refreshing data...');
+      
+      // Reset form
+      setFormData({
+        summary: '',
+        anchor: '',
+        pulse: '',
+        wheelId: '',
+        name: '',
+        heading: '',
+        goals: '',
+        timeline: '',
+        category: 'Personal',
+        chakraId: ''
+      });
       
       onSuccess();
     },
