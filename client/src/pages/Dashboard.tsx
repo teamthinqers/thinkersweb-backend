@@ -14,7 +14,7 @@ import WheelFullView from "@/components/WheelFullView";
 import UserGrid from "@/components/UserGrid";
 import { UserContentGrid } from "@/components/UserContentGrid";
 import { PreviewMapGrid } from "@/components/PreviewMapGrid";
-import { GlobalFloatingDot } from "@/components/dotspark/GlobalFloatingDot";
+
 import { isRunningAsStandalone } from "@/lib/pwaUtils";
 import { useLocation } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
@@ -2732,8 +2732,7 @@ const Dashboard: React.FC = () => {
         />
       )}
 
-      {/* Global Floating Dot */}
-      <GlobalFloatingDot isActive={true} />
+
     </div>
   );
 };
