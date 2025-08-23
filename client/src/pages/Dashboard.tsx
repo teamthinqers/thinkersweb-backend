@@ -78,7 +78,7 @@ const Dashboard: React.FC = () => {
   const [isMapFullscreen, setIsMapFullscreen] = useState(false);
   const [viewMode, setViewMode] = useState<'grid' | 'map'>('grid'); // Add view mode toggle
   const [previewMode, setPreviewMode] = useState(false); // Start with real mode by default
-  const [showFloatingDot, setShowFloatingDot] = useState(false); // Add missing floating dot state
+ // Add missing floating dot state
   
   // PWA detection for smaller button sizing
   const isPWA = isRunningAsStandalone();
@@ -2549,17 +2549,7 @@ const Dashboard: React.FC = () => {
                     )}
                   </div>
                   
-                  {/* Create button for grid mode only */}
-                  <button
-                    onClick={() => {
-                      console.log('Create button clicked');
-                      setShowFloatingDot(true);
-                    }}
-                    className={`flex items-center gap-2 ${isPWA ? 'px-2 py-1.5 text-xs' : 'px-3 sm:px-4 py-2 text-sm sm:text-base'} rounded-lg font-medium transition-all duration-200 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-md hover:shadow-lg hover:scale-105`}
-                  >
-                    <Plus className={`${isPWA ? 'w-3 h-3' : 'w-3 h-3 sm:w-4 sm:h-4'}`} />
-                    <span className="font-semibold whitespace-nowrap">Create</span>
-                  </button>
+
                 </div>
               </div>
             </div>
@@ -2742,23 +2732,8 @@ const Dashboard: React.FC = () => {
         />
       )}
 
-      {/* Global Floating Dot for Creation */}
-      {showFloatingDot && (
-        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center">
-          <div className="relative w-full h-full">
-            <GlobalFloatingDot 
-              isActive={showFloatingDot} 
-              forceExpanded={true}
-            />
-            <button
-              onClick={() => setShowFloatingDot(false)}
-              className="absolute top-4 right-4 z-50 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-600"
-            >
-              ×
-            </button>
-          </div>
-        </div>
-      )}
+      {/* Global Floating Dot */}
+      <GlobalFloatingDot isActive={true} />
     </div>
   );
 };
