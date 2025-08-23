@@ -358,11 +358,16 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
 
   const handleSubmit = async () => {
     console.log('🚀 Starting dot submission process...');
+    console.log('🎯 Current textInput:', textInput);
+    console.log('🎯 Current captureMode:', captureMode);
+    console.log('🎯 Current structuredInput:', structuredInput);
+    console.log('🎯 Current voiceSteps:', voiceSteps);
+    
     try {
       let dotData;
       
       if (captureMode === 'text') {
-        console.log('📝 Processing text input:', structuredInput);
+        console.log('📝 Processing text mode - structured input:', structuredInput);
         // Use structured input for text mode
         dotData = {
           summary: structuredInput.summary.substring(0, 220),
@@ -370,14 +375,28 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
           pulse: structuredInput.pulse.split(' ')[0] || 'captured',
           sourceType: 'text'
         };
-      } else {
-        console.log('🎤 Processing voice input:', voiceSteps);
+      } else if (captureMode === 'voice') {
+        console.log('🎤 Processing voice mode - voice steps:', voiceSteps);
         // Use voice steps for voice mode
         dotData = {
           summary: voiceSteps.summary.substring(0, 220),
           anchor: voiceSteps.anchor.substring(0, 300),
           pulse: voiceSteps.pulse.split(' ')[0] || 'captured',
           sourceType: 'voice'
+        };
+      } else {
+        console.log('✏️ Processing simple text input:', textInput);
+        // CRITICAL FIX: Handle simple text input from textarea
+        // This is what gets called when user clicks "Save a Dot" with textInput
+        if (!textInput.trim()) {
+          throw new Error('No text provided');
+        }
+        
+        dotData = {
+          summary: textInput.trim().substring(0, 220),
+          anchor: textInput.trim().substring(0, 300), // Use same text for anchor
+          pulse: 'captured', // Default pulse
+          sourceType: 'text'
         };
       }
       
