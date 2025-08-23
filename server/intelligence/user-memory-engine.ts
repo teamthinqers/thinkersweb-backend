@@ -2,8 +2,9 @@ import OpenAI from 'openai';
 import { db } from '../../db/index.ts';
 import { eq, desc, and, gte, sql } from 'drizzle-orm';
 import { conversationSessions, entries, wheels, chakras, userBehavior } from '../../shared/schema.js';
+import { getRecommendedModel, isValidModel, DEFAULT_MODEL } from '../config/models.js';
 
-// the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
+// GPT-5 is now available as of August 2025. Support for gpt-5, gpt-5-mini, and gpt-5-nano added
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 interface UserMemoryProfile {
@@ -67,6 +68,16 @@ export class UserMemoryEngine {
       this.vectorDB = null;
     }
   }
+  
+  /**
+   * Select optimal GPT-5 model based on task and preferences
+   */
+  private selectOptimalModel(preferredModel?: string, taskType: 'chat' | 'reasoning' | 'analysis' = 'chat'): string {
+    if (preferredModel && isValidModel(preferredModel)) {
+      return preferredModel;
+    }
+    return getRecommendedModel(taskType);
+  }
 
   /**
    * Generate ChatGPT-level intelligent response with deep user understanding
@@ -75,7 +86,8 @@ export class UserMemoryEngine {
     userInput: string,
     userId: string,
     sessionId: string,
-    conversationHistory: any[] = []
+    conversationHistory: any[] = [],
+    preferredModel?: string
   ): Promise<IntelligentResponse> {
     try {
       console.log(`🧠 Generating intelligent response for user ${userId}`);
@@ -261,11 +273,10 @@ Based on this data, provide a comprehensive psychological and behavioral profile
 Be insightful, specific, and accurate based on the actual data patterns.`;
 
       const response = await openai.chat.completions.create({
-        model: "gpt-4o",
+        model: this.selectOptimalModel(undefined, 'analysis'),
         messages: [{ role: "user", content: personalityPrompt }],
         response_format: { type: "json_object" },
-        temperature: 0.3,
-        max_tokens: 1000
+        max_completion_tokens: 1000
       });
 
       return JSON.parse(response.choices[0].message.content || '{}');
@@ -305,10 +316,9 @@ Provide comprehensive context analysis in JSON format:
 }`;
 
       const response = await openai.chat.completions.create({
-        model: "gpt-4o",
+        model: this.selectOptimalModel(undefined, 'analysis'),
         messages: [{ role: "user", content: contextPrompt }],
-        response_format: { type: "json_object" },
-        temperature: 0.4
+        response_format: { type: "json_object" }
       });
 
       return JSON.parse(response.choices[0].message.content || '{}');
@@ -413,11 +423,10 @@ Respond in JSON format:
 }`;
 
       const response = await openai.chat.completions.create({
-        model: "gpt-4o",
+        model: this.selectOptimalModel(preferredModel, 'reasoning'),
         messages: [{ role: "system", content: systemPrompt }],
         response_format: { type: "json_object" },
-        temperature: 0.7,
-        max_tokens: 1200
+        max_completion_tokens: 1200
       });
 
       const result = JSON.parse(response.choices[0].message.content || '{}');

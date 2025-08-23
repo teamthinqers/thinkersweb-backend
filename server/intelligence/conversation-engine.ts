@@ -4,7 +4,7 @@ import { eq, desc, and, gte } from 'drizzle-orm';
 import { conversationSessions, entries, wheels } from '../../shared/schema.js';
 import { userMemoryEngine } from './user-memory-engine.js';
 
-// the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
+// GPT-5 is now available as of August 2025. Support for gpt-5, gpt-5-mini, and gpt-5-nano added
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 interface ConversationMemory {

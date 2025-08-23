@@ -5,7 +5,7 @@ import { eq } from 'drizzle-orm';
 import { conversationSessions, entries } from '../../shared/schema.js';
 
 
-// the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
+// GPT-5 is now available as of August 2025. Support for gpt-5, gpt-5-mini, and gpt-5-nano added
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 interface OrganizationResult {
@@ -84,7 +84,7 @@ export class AdvancedThoughtOrganizer {
             },
             metadata: {
               processingTime: Date.now() - startTime,
-              modelUsed: 'gpt-4o',
+              modelUsed: 'gpt-5',
               confidenceScore: conversationResponse.metadata.confidenceScore
             }
           };
@@ -102,7 +102,7 @@ export class AdvancedThoughtOrganizer {
         },
         metadata: {
           processingTime: Date.now() - startTime,
-          modelUsed: 'gpt-4o',
+          modelUsed: 'gpt-5',
           confidenceScore: conversationResponse.metadata.confidenceScore
         }
       };
@@ -145,10 +145,9 @@ Respond with JSON:
 }`;
 
       const response = await openai.chat.completions.create({
-        model: "gpt-4o",
+        model: "gpt-5",
         messages: [{ role: "user", content: assessmentPrompt }],
         response_format: { type: "json_object" },
-        temperature: 0.3
       });
 
       const assessment = JSON.parse(response.choices[0].message.content || '{}');
@@ -213,10 +212,9 @@ Respond with JSON:
 }`;
 
       const response = await openai.chat.completions.create({
-        model: "gpt-4o",
+        model: "gpt-5",
         messages: [{ role: "user", content: typePrompt }],
         response_format: { type: "json_object" },
-        temperature: 0.3
       });
 
       return JSON.parse(response.choices[0].message.content || '{"type": "dot", "confidence": 0.8}');
@@ -252,10 +250,9 @@ Respond with JSON:
 }`;
 
       const response = await openai.chat.completions.create({
-        model: "gpt-4o",
+        model: "gpt-5",
         messages: [{ role: "user", content: dotPrompt }],
         response_format: { type: "json_object" },
-        temperature: 0.4
       });
 
       const dotData = JSON.parse(response.choices[0].message.content || '{}');
@@ -298,10 +295,9 @@ Respond with JSON:
 }`;
 
       const response = await openai.chat.completions.create({
-        model: "gpt-4o",
+        model: "gpt-5",
         messages: [{ role: "user", content: wheelPrompt }],
         response_format: { type: "json_object" },
-        temperature: 0.4
       });
 
       const wheelData = JSON.parse(response.choices[0].message.content || '{}');
@@ -342,10 +338,9 @@ Respond with JSON:
 }`;
 
       const response = await openai.chat.completions.create({
-        model: "gpt-4o",
+        model: "gpt-5",
         messages: [{ role: "user", content: chakraPrompt }],
         response_format: { type: "json_object" },
-        temperature: 0.4
       });
 
       const chakraData = JSON.parse(response.choices[0].message.content || '{}');
@@ -388,10 +383,9 @@ Create a natural, conversational presentation that:
 Keep it warm, personal, and insightful.`;
 
       const response = await openai.chat.completions.create({
-        model: "gpt-4o",
+        model: "gpt-5",
         messages: [{ role: "user", content: presentationPrompt }],
-        temperature: 0.7,
-        max_tokens: 500
+        max_completion_tokens: 500
       });
 
       return response.choices[0].message.content || 
