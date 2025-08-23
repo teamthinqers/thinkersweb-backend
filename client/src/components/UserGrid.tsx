@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Loader2, Plus, Eye, Settings, RotateCcw, Mic, Type, Maximize, Minimize, ZoomIn, ZoomOut } from 'lucide-react';
 import UserContentCreation from './UserContentCreation';
-import DotFullView from './DotFullView';
+
 
 // Types will be inferred from API responses
 
@@ -20,8 +20,7 @@ interface DotWheelsMapProps {
   setViewFullWheel: (wheel: any | null) => void;
   previewMode: boolean;
   setPreviewMode: (previewMode: boolean) => void;
-  viewFullDot?: any;
-  setViewFullDot?: (dot: any | null) => void;
+
 }
 
 // Dynamic sizing functions exactly like Dashboard
@@ -72,8 +71,7 @@ const DotWheelsMap: React.FC<DotWheelsMapProps> = ({
   setViewFullWheel,
   previewMode,
   setPreviewMode,
-  viewFullDot,
-  setViewFullDot
+
 }) => {
   const [selectedWheel, setSelectedWheel] = useState<string | null>(null);
   const [selectedDot, setSelectedDot] = useState<any | null>(null);
@@ -281,7 +279,7 @@ const DotWheelsMap: React.FC<DotWheelsMapProps> = ({
                     if (isPWA || isMobile) {
                       setSelectedDot(dot);
                     } else {
-                      setViewFullDot(dot);
+                      // View dot functionality handled by parent component
                     }
                     setHoveredDot(null);
                   }}
@@ -319,7 +317,7 @@ const DotWheelsMap: React.FC<DotWheelsMapProps> = ({
                     }}
                     onClick={(e) => {
                       e.stopPropagation();
-                      setViewFullDot(dot);
+                      // View dot functionality handled by parent component
                       setHoveredDot(null);
                     }}
                   >
@@ -798,13 +796,7 @@ const UserGrid: React.FC<UserGridProps> = ({ userId, mode }) => {
         </>
       )}
 
-      {/* Full View Mode for Dots - Same as Preview */}
-      {viewFullDot && (
-        <DotFullView
-          dot={viewFullDot}
-          onClose={() => setViewFullDot(null)}
-        />
-      )}
+
     </div>
   );
 };
