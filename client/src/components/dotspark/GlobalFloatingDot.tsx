@@ -859,7 +859,10 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
                         className="min-h-32 text-base resize-none border-2 focus:border-amber-500 focus:ring-amber-500/20 rounded-xl"
                       />
                       <Button 
-                        onClick={handleSubmit}
+                        onClick={async () => {
+                          console.log('🎯 Save a Dot clicked - textInput:', textInput);
+                          await handleSubmit();
+                        }}
                         className="w-full h-12 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl text-lg font-semibold shadow-lg"
                         disabled={!textInput.trim()}
                       >

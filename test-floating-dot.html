@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Floating Dot UI</title>
+</head>
+<body>
+    <h1>Testing Floating Dot UI Submission</h1>
+    <button onclick="testFloatingDot()">Test Floating Dot Creation</button>
+    <div id="result"></div>
+
+    <script>
+        async function testFloatingDot() {
+            console.log('Testing floating dot creation...');
+            
+            // Simulate the exact data the floating dot sends
+            const dotData = {
+                summary: "Test from Floating UI",
+                anchor: "Test from Floating UI", 
+                pulse: "captured",
+                sourceType: "text",
+                oneWordSummary: "Test",
+                captureMode: "natural",
+                wheelId: ""
+            };
+            
+            try {
+                const response = await fetch('/api/user-content/dots', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'x-user-id': '5'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify(dotData)
+                });
+                
+                console.log('Response status:', response.status);
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    console.log('Success:', result);
+                    document.getElementById('result').innerHTML = 
+                        `<p style="color: green;">Success! Created dot with ID: ${result.dot.id}</p>`;
+                        
+                    // Now test if it's fetchable
+                    const fetchResponse = await fetch('/api/user-content/dots', {
+                        headers: {
+                            'Accept': 'application/json',
+                            'x-user-id': '5'
+                        },
+                        credentials: 'include'
+                    });
+                    
+                    if (fetchResponse.ok) {
+                        const dots = await fetchResponse.json();
+                        const found = dots.find(dot => dot.id === result.dot.id);
+                        if (found) {
+                            document.getElementById('result').innerHTML += 
+                                `<p style="color: blue;">Verified: Dot is fetchable and in database!</p>`;
+                        } else {
+                            document.getElementById('result').innerHTML += 
+                                `<p style="color: red;">Error: Dot created but not fetchable!</p>`;
+                        }
+                    }
+                } else {
+                    const errorText = await response.text();
+                    console.error('Error:', errorText);
+                    document.getElementById('result').innerHTML = 
+                        `<p style="color: red;">Error: ${response.status} - ${errorText}</p>`;
+                }
+            } catch (error) {
+                console.error('Network error:', error);
+                document.getElementById('result').innerHTML = 
+                    `<p style="color: red;">Network error: ${error.message}</p>`;
+            }
+        }
+    </script>
+</body>
+</html>
