@@ -14,6 +14,7 @@ import WheelFullView from "@/components/WheelFullView";
 import UserGrid from "@/components/UserGrid";
 import { UserContentGrid } from "@/components/UserContentGrid";
 import { PreviewMapGrid } from "@/components/PreviewMapGrid";
+import { GlobalFloatingDot } from "@/components/dotspark/GlobalFloatingDot";
 import { isRunningAsStandalone } from "@/lib/pwaUtils";
 import { useLocation } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
@@ -77,6 +78,7 @@ const Dashboard: React.FC = () => {
   const [isMapFullscreen, setIsMapFullscreen] = useState(false);
   const [viewMode, setViewMode] = useState<'grid' | 'map'>('grid'); // Add view mode toggle
   const [previewMode, setPreviewMode] = useState(false); // Start with real mode by default
+  const [showFloatingDot, setShowFloatingDot] = useState(false); // Add missing floating dot state
   
   // PWA detection for smaller button sizing
   const isPWA = isRunningAsStandalone();
@@ -2735,6 +2737,18 @@ const Dashboard: React.FC = () => {
             } catch (error) {
               console.error('Error deleting wheel:', error);
             }
+          }}
+        />
+      )}
+
+      {/* Global Floating Dot for Creation */}
+      {showFloatingDot && (
+        <GlobalFloatingDot
+          isExpanded={showFloatingDot}
+          onClose={() => setShowFloatingDot(false)}
+          onSuccess={() => {
+            setShowFloatingDot(false);
+            refetch(); // Refresh dots data after creation
           }}
         />
       )}
