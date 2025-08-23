@@ -1,12 +1,13 @@
 # DotSpark
 
 ## Overview
-DotSpark is a full-stack web application serving as a personalized learning management system with "neural extension" capabilities. It allows users to capture, organize, and share learning experiences, offering AI-powered insights and natural language processing of entries. The platform is designed to preserve natural intelligence while enhancing cognitive capabilities through tunable AI assistance. Key capabilities include comprehensive entity management (users, entries, categories, tags, connections), advanced AI/Neural Extensions (DotSpark Core, CogniShield, Neural Processing via OpenAI, conversational AI), and WhatsApp integration for seamless content capture. The project aims to provide a unique, AI-enhanced learning experience with significant market potential for personalized cognitive augmentation.
+DotSpark is a full-stack web application serving as a personalized learning management system with "neural extension" capabilities. It allows users to capture, organize, and share learning experiences, offering AI-powered insights and natural language processing of entries. The platform is designed to preserve natural intelligence while enhancing cognitive capabilities through tunable AI assistance. Key capabilities include comprehensive entity management (users, entries, categories, tags, connections), advanced AI/Neural Extensions (DotSpark Core, CogniShield, Neural Processing via OpenAI, conversational AI), ChatGPT-level intelligent conversation system with advanced memory and context awareness, and WhatsApp integration for seamless content capture. The project aims to provide a unique, AI-enhanced learning experience with significant market potential for personalized cognitive augmentation.
 
 ## User Preferences
 Preferred communication style: Simple, everyday language.
 Dot creation: User prefers no automatic AI processing of their inputs - preserve exact text as provided.
 Dot headings: Automatic AI-generated headings are acceptable and should remain enabled.
+Intelligent Chat: User wants ChatGPT-level intelligence with exceptional memory, context awareness, and sophisticated conversation capabilities. The chat should remember user history, understand patterns, and provide highly intelligent responses.
 
 ## System Architecture
 
@@ -36,6 +37,7 @@ Dot headings: Automatic AI-generated headings are acceptable and should remain e
 ### Key Features and Design Decisions
 - **Core Entities**: Users, Entries, Categories, Tags, Connections, Shared Entries.
 - **AI/Neural Extensions**: Tunable AI (DotSpark Core), cognitive alignment (CogniShield), content analysis/generation (OpenAI), conversational AI for entry creation, and automatic Python logic integration.
+- **Advanced Intelligent Chat**: ChatGPT-level conversation engine with comprehensive user memory, personality profiling, contextual awareness, and sophisticated response generation using GPT-4o and vector database integration.
 - **WhatsApp Integration**: Twilio/Meta WhatsApp Business API for message processing, user registration, and automated responses.
 - **Authentication System**: Supports both traditional session-based and Firebase Google OAuth, with dual user support and protected routes.
 - **Data Flow**: Structured flows for entry creation (web/WhatsApp to OpenAI to DB), WhatsApp message processing, and authentication management.

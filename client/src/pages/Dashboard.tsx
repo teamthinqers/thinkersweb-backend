@@ -2744,6 +2744,9 @@ const Dashboard: React.FC = () => {
       {showOrganizeThoughts && (
         <Dialog open={showOrganizeThoughts} onOpenChange={setShowOrganizeThoughts}>
           <DialogContent className="max-w-6xl h-[80vh] p-0">
+            <DialogHeader className="sr-only">
+              <DialogTitle>Intelligent Thought Organization</DialogTitle>
+            </DialogHeader>
             <IntelligentChatInterface 
               onClose={() => setShowOrganizeThoughts(false)}
               userId={user?.id || '5'}

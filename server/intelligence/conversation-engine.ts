@@ -2,6 +2,7 @@ import OpenAI from 'openai';
 import { db } from '../../db/index.ts';
 import { eq, desc, and, gte } from 'drizzle-orm';
 import { conversationSessions, entries, wheels } from '../../shared/schema.js';
+import { userMemoryEngine } from './user-memory-engine.js';
 
 // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
@@ -64,7 +65,7 @@ export class ConversationEngine {
   }
 
   /**
-   * Generate intelligent conversation response with deep context awareness
+   * Generate intelligent conversation response with ChatGPT-level sophistication
    */
   async generateIntelligentResponse(
     userInput: string,
@@ -73,31 +74,35 @@ export class ConversationEngine {
     conversationHistory: any[] = []
   ): Promise<IntelligentResponse> {
     try {
-      // Step 1: Build comprehensive user memory
-      const memory = await this.buildUserMemory(userId);
+      console.log(`🧠 Generating ChatGPT-level intelligent response for user ${userId}`);
       
-      // Step 2: Analyze current conversation context
-      const conversationContext = await this.analyzeConversationContext(userInput, conversationHistory);
-      
-      // Step 3: Find semantic connections in user's content
-      const semanticContext = await this.findSemanticConnections(userInput, userId);
-      
-      // Step 4: Generate contextually-aware response
-      const response = await this.generateContextualResponse(
+      // Use the advanced user memory engine for ChatGPT-level intelligence
+      const memoryResponse = await userMemoryEngine.generateIntelligentResponse(
         userInput,
-        memory,
-        conversationContext,
-        semanticContext,
+        userId,
+        sessionId,
         conversationHistory
       );
       
-      // Step 5: Store conversation in memory for future context
-      await this.updateConversationMemory(userId, sessionId, userInput, response.response);
+      // Convert to our expected format
+      const response: IntelligentResponse = {
+        response: memoryResponse.response,
+        conversationStrategy: memoryResponse.followUpStrategy,
+        followUpQuestions: memoryResponse.nextConversationPaths.slice(0, 3),
+        contextualInsights: memoryResponse.personalConnections,
+        nextSteps: memoryResponse.nextConversationPaths,
+        metadata: {
+          confidenceScore: Math.min(memoryResponse.contextualDepth / 10, 1),
+          emotionalTone: 'intelligent and contextual',
+          cognitiveDepth: memoryResponse.contextualDepth,
+          personalRelevance: Math.min(memoryResponse.emotionalIntelligence / 10, 1)
+        }
+      };
       
       return response;
       
     } catch (error) {
-      console.error('❌ Error in conversation engine:', error);
+      console.error('❌ Error in advanced conversation engine:', error);
       return this.generateFallbackResponse(userInput);
     }
   }

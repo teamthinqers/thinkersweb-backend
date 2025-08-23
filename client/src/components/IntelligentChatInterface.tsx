@@ -68,16 +68,17 @@ export function IntelligentChatInterface({
     textareaRef.current?.focus();
   }, []);
 
-  // Add initial greeting message
+  // Add initial intelligent greeting message
   useEffect(() => {
     if (messages.length === 0) {
       setMessages([{
         role: 'assistant',
-        content: "I'm here to help you organize your thoughts through meaningful conversation. What's on your mind today?",
+        content: "Hello! I'm your intelligent thought partner with advanced memory and context awareness. I remember our conversations, understand your patterns, and adapt to your unique thinking style. What's on your mind today? I'm here to help you explore, organize, and develop your thoughts with exceptional intelligence.",
         timestamp: new Date(),
         metadata: {
-          emotionalTone: 'welcoming',
-          cognitiveDepth: 1
+          emotionalTone: 'intelligent and welcoming',
+          cognitiveDepth: 8,
+          personalRelevance: 0.9
         }
       }]);
     }
@@ -399,10 +400,9 @@ export function IntelligentChatInterface({
             <Brain className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h2 className="text-xl font-semibold text-amber-800">Intelligent Thought Organization</h2>
+            <h2 className="text-xl font-semibold text-amber-800">Advanced AI Assistant</h2>
             <p className="text-sm text-gray-600">
-              Depth: {conversationState.depth} | 
-              {conversationState.readyToOrganize ? ' Ready to organize' : ' Exploring thoughts'}
+              ChatGPT-level intelligence with perfect memory and context awareness
             </p>
           </div>
         </div>
