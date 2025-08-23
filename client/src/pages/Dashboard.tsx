@@ -14,7 +14,7 @@ import WheelFullView from "@/components/WheelFullView";
 import UserGrid from "@/components/UserGrid";
 import { UserContentGrid } from "@/components/UserContentGrid";
 import { PreviewMapGrid } from "@/components/PreviewMapGrid";
-import { GlobalFloatingDot } from "@/components/dotspark/GlobalFloatingDot";
+import UserContentCreation from "@/components/UserContentCreation";
 import { isRunningAsStandalone } from "@/lib/pwaUtils";
 import { useLocation } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
@@ -77,7 +77,6 @@ const Dashboard: React.FC = () => {
   // Removed unused showPreview state - using previewMode instead
   const [isMapFullscreen, setIsMapFullscreen] = useState(false);
   const [viewMode, setViewMode] = useState<'grid' | 'map'>('grid'); // Add view mode toggle
-  console.log('🔵 Dashboard render - viewMode:', viewMode, 'showFloatingDot:', showFloatingDot);
   const [previewMode, setPreviewMode] = useState(false); // Start with real mode by default
   const [showFloatingDot, setShowFloatingDot] = useState(false); // Add missing floating dot state
   
@@ -2551,30 +2550,14 @@ const Dashboard: React.FC = () => {
                   </div>
                   
                   {/* Create button for grid mode only */}
-                  {console.log('🔵 Checking viewMode for Create button visibility:', viewMode === 'grid')}
                   {viewMode === 'grid' && (
                     <button
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        console.log('🔵 Create button clicked!');
-                        console.log('🔵 Current showFloatingDot state:', showFloatingDot);
-                        setShowFloatingDot(prev => {
-                          console.log('🔵 Updating showFloatingDot from', prev, 'to true');
-                          return true;
-                        });
-                      }}
-                      className={`flex items-center gap-2 ${isPWA ? 'px-2 py-1.5 text-xs' : 'px-3 sm:px-4 py-2 text-sm sm:text-base'} rounded-lg font-medium transition-all duration-200 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-md hover:shadow-lg hover:scale-105 cursor-pointer`}
-                      style={{ zIndex: 1000 }}
+                      onClick={() => setShowFloatingDot(true)}
+                      className={`flex items-center gap-2 ${isPWA ? 'px-2 py-1.5 text-xs' : 'px-3 sm:px-4 py-2 text-sm sm:text-base'} rounded-lg font-medium transition-all duration-200 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-md hover:shadow-lg hover:scale-105`}
                     >
                       <Plus className={`${isPWA ? 'w-3 h-3' : 'w-3 h-3 sm:w-4 sm:h-4'}`} />
                       <span className="font-semibold whitespace-nowrap">Create</span>
                     </button>
-                  )}
-                  {viewMode !== 'grid' && (
-                    <div className="text-red-500 text-sm">
-                      Create button hidden - viewMode is '{viewMode}'
-                    </div>
                   )}
                 </div>
               </div>
@@ -2758,44 +2741,30 @@ const Dashboard: React.FC = () => {
         />
       )}
 
-      {/* Global Floating Dot for Creation */}
-      {console.log('🔵 About to render floating dot conditional, showFloatingDot:', showFloatingDot)}
+      {/* Create Content Modal */}
       {showFloatingDot && (
-        <div style={{ 
-          position: 'fixed', 
-          top: 0, 
-          left: 0, 
-          width: '100vw', 
-          height: '100vh', 
-          zIndex: 9999, 
-          backgroundColor: 'rgba(0,0,0,0.5)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center'
-        }}>
-          {console.log('🔵 Rendering GlobalFloatingDot, showFloatingDot:', showFloatingDot)}
-          <div style={{ backgroundColor: 'white', padding: '20px', borderRadius: '8px', maxWidth: '500px', width: '90%' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-              <h3>Create New Dot</h3>
-              <button 
-                onClick={() => {
-                  console.log('🔵 Closing floating dot');
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto mx-4">
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold text-amber-800">Create New Content</h2>
+                <button
+                  onClick={() => setShowFloatingDot(false)}
+                  className="text-gray-400 hover:text-gray-600 text-2xl font-bold"
+                >
+                  ×
+                </button>
+              </div>
+              <UserContentCreation 
+                onSuccess={() => {
                   setShowFloatingDot(false);
+                  refetch(); // Refresh dots data after creation
                 }}
-                style={{ background: 'none', border: 'none', fontSize: '24px', cursor: 'pointer' }}
-              >
-                ×
-              </button>
+              />
             </div>
-            <p>Floating dot interface placeholder - This proves the modal is working!</p>
           </div>
         </div>
       )}
-      
-      {/* Debug info */}
-      <div style={{ position: 'fixed', top: '10px', right: '10px', backgroundColor: 'rgba(0,0,0,0.8)', color: 'white', padding: '10px', borderRadius: '5px', zIndex: 10000, fontSize: '12px' }}>
-        Debug: viewMode={viewMode}, showFloatingDot={showFloatingDot ? 'true' : 'false'}
-      </div>
     </div>
   );
 };
