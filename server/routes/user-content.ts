@@ -1,7 +1,7 @@
 import express from 'express';
 import { db } from '@db';
 import { entries, users, dots, wheels, vectorEmbeddings } from '@shared/schema';
-import { eq, and, desc } from 'drizzle-orm';
+import { eq, and, desc, sql } from 'drizzle-orm';
 import { z } from 'zod';
 
 // Schema removed - using direct validation for entries table format
@@ -98,11 +98,11 @@ router.post('/dots', checkDotSparkActivation, async (req, res) => {
       });
     }
     
-    // Create entry in entries table (consistent with existing data format)
+    // Create dot in entries table (working approach)
     const [newEntry] = await db.insert(entries).values({
       userId: userId,
       title: dotData.oneWordSummary,
-      content: JSON.stringify(dotData), // Store dot data as JSON in content field
+      content: JSON.stringify(dotData), // Store full dot data as JSON
       categoryId: 1 // Default category
     }).returning();
     
