@@ -14,7 +14,7 @@ import WheelFullView from "@/components/WheelFullView";
 import UserGrid from "@/components/UserGrid";
 import { UserContentGrid } from "@/components/UserContentGrid";
 import { PreviewMapGrid } from "@/components/PreviewMapGrid";
-import UserContentCreation from "@/components/UserContentCreation";
+import { GlobalFloatingDot } from "@/components/dotspark/GlobalFloatingDot";
 import { isRunningAsStandalone } from "@/lib/pwaUtils";
 import { useLocation } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
@@ -2741,29 +2741,16 @@ const Dashboard: React.FC = () => {
         />
       )}
 
-      {/* Create Content Modal */}
+      {/* Global Floating Dot for Creation */}
       {showFloatingDot && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto mx-4">
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-amber-800">Create New Content</h2>
-                <button
-                  onClick={() => setShowFloatingDot(false)}
-                  className="text-gray-400 hover:text-gray-600 text-2xl font-bold"
-                >
-                  ×
-                </button>
-              </div>
-              <UserContentCreation 
-                onSuccess={() => {
-                  setShowFloatingDot(false);
-                  refetch(); // Refresh dots data after creation
-                }}
-              />
-            </div>
-          </div>
-        </div>
+        <GlobalFloatingDot
+          isExpanded={showFloatingDot}
+          onClose={() => setShowFloatingDot(false)}
+          onSuccess={() => {
+            setShowFloatingDot(false);
+            refetch(); // Refresh dots data after creation
+          }}
+        />
       )}
     </div>
   );

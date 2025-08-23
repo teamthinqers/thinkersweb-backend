@@ -464,7 +464,7 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
       };
       
       // Add user ID header - prioritize testUserId, then persistent user, then default
-      const userIdForRequest = testUserId || ((finalUser as any).id || finalUser.id).toString();
+      const userIdForRequest = testUserId || (finalUser as any).id?.toString() || '5';
       headers['x-user-id'] = userIdForRequest;
       console.log('🎯 Sending request with user ID:', userIdForRequest);
       
