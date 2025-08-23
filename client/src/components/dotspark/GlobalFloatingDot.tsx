@@ -51,10 +51,11 @@ export function GlobalFloatingDot({ isActive, forceExpanded = false }: GlobalFlo
   });
   const [isExpanded, setIsExpanded] = useState(forceExpanded);
   
-  // Automatically expand when forceExpanded is true
+  // Automatically expand when forceExpanded is true and set capture mode to text
   useEffect(() => {
     if (forceExpanded) {
       setIsExpanded(true);
+      setCaptureMode('text'); // Skip the selection screen, go straight to text input
     }
   }, [forceExpanded]);
   const [captureMode, setCaptureMode] = useState<'voice' | 'text' | null>(null);
