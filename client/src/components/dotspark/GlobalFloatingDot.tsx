@@ -410,10 +410,10 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
       
       // Determine final user for this session - prioritize authenticated user
       let finalUser;
-      if (user && user.id) {
+      if (user && (user as any).id) {
         // Use authenticated Firebase user
         finalUser = user;
-        console.log('👤 Using authenticated Firebase user:', user.email, 'ID:', user.id);
+        console.log('👤 Using authenticated Firebase user:', user.email, 'ID:', (user as any).id);
       } else if (activeUser) {
         // Use persistent user
         finalUser = activeUser;
@@ -445,7 +445,7 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
       };
       
       // Add user ID header - prioritize testUserId, then persistent user, then default
-      const userIdForRequest = testUserId || finalUser.id.toString();
+      const userIdForRequest = testUserId || ((finalUser as any).id || finalUser.id).toString();
       headers['x-user-id'] = userIdForRequest;
       console.log('🎯 Sending request with user ID:', userIdForRequest);
       
@@ -484,8 +484,8 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
       const userId = Number(userIdForRequest);
       const activatedUser = PersistentActivationManager.handleFirstDotCreation(
         userId, 
-        finalUser.email, 
-        (finalUser as any).name || (finalUser as any).displayName
+        finalUser.email || '', 
+        (finalUser as any).name || (finalUser as any).displayName || ''
       );
       
       // Update local state
@@ -497,31 +497,48 @@ export function GlobalFloatingDot({ isActive }: GlobalFloatingDotProps) {
         description: `Your "${completeDotData.oneWordSummary}" dot has been captured!`,
       });
       
-      // Comprehensive cache invalidation
-      console.log('🔄 Invalidating all dots cache after successful creation');
+      // CRITICAL: Cache invalidation to match UserGrid fetch patterns exactly
+      console.log('🔄 Starting comprehensive cache invalidation after dot creation');
       
-      // Clear all possible query variations to ensure refresh
-      const cacheUserId = (user as any)?.id;
-      const queryKeys = [
-        ['/api/user-content/dots'],
-        ['/api/user-content/dots', cacheUserId],
-        ['/api/user-content/dots', 'real', cacheUserId],
-        ['/api/user-content/stats'],
-        ['/api/grid/positions']
-      ];
+      // UserGrid uses pattern: ['/api/user-content/dots', userId, mode]
+      // We need to invalidate ALL variations of this pattern
       
-      // Remove all variations from cache and invalidate
-      await Promise.all(queryKeys.map(async (key) => {
-        queryClient.removeQueries({ queryKey: key });
-        queryClient.invalidateQueries({ queryKey: key });
-      }));
+      const realUserId = Number(userIdForRequest);
+      const modes = ['preview', 'real'];
       
-      // Force immediate refetch of dots
-      if (cacheUserId) {
-        await queryClient.refetchQueries({ 
-          queryKey: ['/api/user-content/dots', cacheUserId]
-        });
-      }
+      // 1. Invalidate specific user+mode combinations
+      modes.forEach(mode => {
+        const queryKey = ['/api/user-content/dots', realUserId, mode];
+        console.log('🔄 Invalidating specific query:', queryKey);
+        queryClient.invalidateQueries({ queryKey, exact: true });
+        queryClient.removeQueries({ queryKey, exact: true });
+      });
+      
+      // 2. Invalidate base patterns (without userId/mode)
+      queryClient.invalidateQueries({ 
+        queryKey: ['/api/user-content/dots'],
+        exact: false 
+      });
+      
+      // 3. Invalidate ANY query that starts with /api/user-content/dots
+      queryClient.invalidateQueries({ 
+        predicate: (query) => {
+          const firstKey = query.queryKey[0];
+          return firstKey === '/api/user-content/dots';
+        }
+      });
+      
+      // 4. Also invalidate wheels and stats 
+      queryClient.invalidateQueries({ 
+        queryKey: ['/api/user-content/wheels'],
+        exact: false 
+      });
+      queryClient.invalidateQueries({ 
+        queryKey: ['/api/user-content/stats'],
+        exact: false 
+      });
+      
+      console.log('✅ Comprehensive cache invalidation completed for user:', realUserId);
       
       console.log('✅ All cache invalidated and refetched');
       
