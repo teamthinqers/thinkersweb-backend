@@ -359,7 +359,7 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    setViewFlashCard(dot);
+                    setViewFullDot(dot);
                   }}
                   onMouseDown={(e) => e.stopPropagation()}
                   onMouseEnter={() => setHoveredDot(dot)}
@@ -392,7 +392,7 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
-                      setViewFlashCard(dot);
+                      setViewFullDot(dot);
                       setHoveredDot(null);
                     }}
                     onMouseDown={(e) => e.stopPropagation()}
@@ -417,9 +417,6 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                         <Badge variant="outline" className="text-xs border-amber-200 text-amber-700">
                           {dot.pulse}
                         </Badge>
-                        <span className="text-amber-600 text-xs font-medium">
-                          Click for flash card
-                        </span>
                       </div>
                     </div>
                   </div>
