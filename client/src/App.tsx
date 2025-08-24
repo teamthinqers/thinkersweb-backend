@@ -70,7 +70,7 @@ import ProductionTest from "@/pages/ProductionTest";
 import VectorMigrationTest from "@/pages/VectorMigrationTest";
 import AuthTest from "@/pages/AuthTest";
 
-import { StructuredFloatingDot } from "@/components/dotspark/StructuredFloatingDot";
+import GlobalFloatingDotV2 from "@/components/dotspark/GlobalFloatingDotV2";
 import { neuraStorage } from "@/lib/neuraStorage";
 import { Loader2 } from "lucide-react";
 import { useAuth, AuthProvider } from "@/hooks/use-auth";
@@ -410,7 +410,7 @@ function App() {
         <Router />
         <Toaster />
         {/* Global Floating Dot for All Modes */}
-        <StructuredFloatingDot isActive={isDotSparkActive || neuraStorage.isActivated()} />
+        <GlobalFloatingDotV2 />
         {/* iOS PWA Install Prompt */}
         <IosPwaInstallPrompt />
         {/* PWA Install Floating Button (only visible when installable) */}

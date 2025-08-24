@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Loader2, Plus, Eye, Settings, RotateCcw, Mic, Type, Maximize, Minimize, ZoomIn, ZoomOut } from 'lucide-react';
 import UserContentCreation from './UserContentCreation';
 import DotFullView from './DotFullView';
-import { GlobalFloatingDot } from '@/components/dotspark/GlobalFloatingDot';
+
 // Types will be inferred from API responses
 
 // Import DotWheelsMap type to match Dashboard usage
@@ -514,7 +514,7 @@ interface UserGridProps {
 const UserGrid: React.FC<UserGridProps> = ({ userId, mode }) => {
   const [showCreation, setShowCreation] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>(null);
-  const [showFloatingDot, setShowFloatingDot] = useState(false);
+
   const [viewFullDot, setViewFullDot] = useState<any>(null);
   
   // Add refs for grid controls
@@ -775,28 +775,7 @@ const UserGrid: React.FC<UserGridProps> = ({ userId, mode }) => {
         </div>
       )}
 
-      {/* Global Floating Dot Interface - Directly open expanded mode */}
-      {showFloatingDot && (
-        <>
-          <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-            <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-y-auto">
-              <div className="p-6">
-                <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-xl font-semibold text-amber-800">Create New Dot</h2>
-                  <Button 
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setShowFloatingDot(false)}
-                  >
-                    ✕
-                  </Button>
-                </div>
-                <GlobalFloatingDot isActive={true} />
-              </div>
-            </div>
-          </div>
-        </>
-      )}
+
 
       {/* Full View Mode for Dots - Same as Preview */}
       {viewFullDot && (

@@ -7,6 +7,7 @@ DotSpark is a full-stack web application serving as a personalized learning mana
 Preferred communication style: Simple, everyday language.
 Dot creation: User prefers no automatic AI processing of their inputs - preserve exact text as provided.
 Dot headings: Automatic AI-generated headings are acceptable and should remain enabled.
+Global Floating Dot: Replaced with v2 that works universally across all pages without authentication dependencies, supports Dot/Wheel/Chakra creation in natural mode.
 
 ## System Architecture
 
@@ -46,6 +47,7 @@ Dot headings: Automatic AI-generated headings are acceptable and should remain e
     - **Mobile Optimization**: Responsive layouts, sticky headers, optimized spacing, and compact components for seamless mobile experience.
     - **Chat Interface**: ChatGPT-style collapsed sidebar, professional polish with gradients, optimized message density, and typewriter effects.
     - **PWA**: Streamlined capture interface, persistent floating dot with drag-and-drop, and seamless integration with the main app.
+    - **Global Floating Dot V2**: Replaced original authentication-dependent version with universal floating dot that works on all pages, supports Dot/Wheel/Chakra creation in natural mode with preserved visual design (amber-orange gradients, pulsing rings, drag-and-drop).
     - **Cognitive Structure Classification**: Strict AI classification for dots (single insights), wheels (goal-oriented), and chakras (life purpose), with guided conversation flows.
     - **Gamification**: Progress meters with motivational elements for dot creation.
     - **One-Word Summary & Flash Cards**: Automated generation of keywords for quick content identification.

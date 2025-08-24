@@ -14,7 +14,7 @@ import WheelFullView from "@/components/WheelFullView";
 import UserGrid from "@/components/UserGrid";
 import { UserContentGrid } from "@/components/UserContentGrid";
 import { PreviewMapGrid } from "@/components/PreviewMapGrid";
-import DashboardFloatingDot from "@/components/dotspark/DashboardFloatingDot";
+
 import { isRunningAsStandalone } from "@/lib/pwaUtils";
 import { useLocation } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
@@ -2740,11 +2740,7 @@ const Dashboard: React.FC = () => {
         />
       )}
       
-      {/* Dashboard Floating Dot for Testing */}
-      <DashboardFloatingDot onDotCreated={() => {
-        // Refresh any queries when a dot is created
-        console.log('Dashboard: Dot created successfully via floating dot');
-      }} />
+
       
     </div>
   );
