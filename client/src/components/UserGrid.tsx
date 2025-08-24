@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -105,7 +105,8 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
   const [hoveredWheel, setHoveredWheel] = useState<Wheel | null>(null);
   const [hoveredChakra, setHoveredChakra] = useState<any>(null);
   const [draggedElement, setDraggedElement] = useState<{type: 'dot' | 'wheel' | 'chakra', id: string, startPos: {x: number, y: number}} | null>(null);
-  const [elementPositions, setElementPositions] = useState<{[key: string]: {x: number, y: number}}>({}); 
+  const [elementPositions, setElementPositions] = useState<{[key: string]: {x: number, y: number}}>({});
+  const [showSaveDialog, setShowSaveDialog] = useState(false); 
   const gridContainerRef = useRef<HTMLDivElement>(null);
 
   // Fetch grid positions for proper positioning
@@ -118,7 +119,47 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
   const resetView = () => {
     setOffset({ x: 0, y: 0 });
     setZoom(0.6);
+    // Load saved positions when resetting view
+    loadSavedPositions();
   };
+
+  // Save current layout positions
+  const handleSaveLayout = () => {
+    const layoutData = {
+      elementPositions: elementPositions,
+      timestamp: new Date().toISOString()
+    };
+    
+    // Save to localStorage
+    localStorage.setItem('dotspark-saved-layout', JSON.stringify(layoutData));
+    
+    // Could also save to backend API here
+    // fetch('/api/save-layout', { method: 'POST', body: JSON.stringify(layoutData) });
+    
+    setShowSaveDialog(false);
+    
+    // Show success feedback
+    console.log('Layout saved successfully!');
+  };
+
+  // Load saved positions
+  const loadSavedPositions = () => {
+    try {
+      const savedLayout = localStorage.getItem('dotspark-saved-layout');
+      if (savedLayout) {
+        const layoutData = JSON.parse(savedLayout);
+        setElementPositions(layoutData.elementPositions || {});
+        console.log('Layout restored from saved positions');
+      }
+    } catch (error) {
+      console.error('Error loading saved positions:', error);
+    }
+  };
+
+  // Load saved positions on component mount
+  useEffect(() => {
+    loadSavedPositions();
+  }, []);
 
   // Enhanced drag handlers exactly like PreviewMapGrid
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -267,9 +308,22 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
         </button>
       </div>
 
-      {/* Fullscreen Toggle */}
+      {/* Save Positions Button - Top Right */}
+      <div className="absolute top-2 right-2 md:top-4 md:right-4 z-10">
+        <button
+          onClick={() => setShowSaveDialog(true)}
+          className="bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors shadow-lg p-2"
+          title="Save Current Layout"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3-3m0 0l-3 3m3-3v12" />
+          </svg>
+        </button>
+      </div>
+
+      {/* Fullscreen Toggle - Moved to Bottom Right */}
       {!isFullscreen && (
-        <div className="absolute top-2 right-2 md:top-4 md:right-4 z-10">
+        <div className="absolute bottom-2 right-2 md:bottom-4 md:right-4 z-10">
           <button
             onClick={() => setIsFullscreen(!isFullscreen)}
             className="bg-amber-500 hover:bg-amber-600 text-white rounded-lg transition-colors shadow-lg p-2"
@@ -430,9 +484,6 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                 <div
                   className="absolute w-10 h-10 rounded-full cursor-move transition-all duration-200 hover:scale-110 hover:shadow-md dot-element group"
                   style={{
-                    willChange: draggedElement?.id === dot.id ? 'transform' : 'auto'
-                  }}
-                  style={{
                     left: `${x - 5}px`, // Adjust for larger size
                     top: `${y - 5}px`,
                     background: dot.captureMode === 'ai' 
@@ -441,7 +492,8 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                     border: '2px solid rgba(255, 255, 255, 0.8)',
                     boxShadow: draggedElement?.id === dot.id ? '0 8px 25px rgba(0, 0, 0, 0.25)' : '0 2px 8px rgba(0, 0, 0, 0.15)',
                     pointerEvents: 'auto',
-                    zIndex: draggedElement?.id === dot.id ? 1000 : 10
+                    zIndex: draggedElement?.id === dot.id ? 1000 : 10,
+                    willChange: draggedElement?.id === dot.id ? 'transform' : 'auto'
                   }}
                   onClick={(e) => {
                     if (!draggedElement) {
@@ -560,9 +612,9 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                   wheelX = elementPositions[`wheel-${wheel.id}`].x;
                   wheelY = elementPositions[`wheel-${wheel.id}`].y;
                 } else {
-                  const cols = Math.max(2, Math.ceil(Math.sqrt(unassociatedWheels.length)));
-                  const row = Math.floor(unassociatedIndex / cols);
-                  const col = unassociatedIndex % cols;
+                  const cols = Math.max(2, Math.ceil(Math.sqrt(standaloneWheels.length)));
+                  const row = Math.floor(standaloneIndex / cols);
+                  const col = standaloneIndex % cols;
                   wheelX = 600 + (col * 280);
                   wheelY = 250 + (row * 220);
                 }
@@ -618,15 +670,13 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                 <div
                   className="absolute rounded-full border-2 border-orange-400/60 bg-orange-50/30 cursor-move transition-all duration-200 hover:scale-105 hover:border-orange-500"
                   style={{
-                    willChange: draggedElement?.id === wheel.id ? 'transform' : 'auto',
-                    transform: draggedElement?.id === wheel.id ? 'scale(1.02)' : 'scale(1)'
-                  }}
-                  style={{
                     left: `${wheelX - wheelRadius}px`,
                     top: `${wheelY - wheelRadius}px`,
                     width: `${wheelRadius * 2}px`,
                     height: `${wheelRadius * 2}px`,
-                    pointerEvents: 'auto'
+                    pointerEvents: 'auto',
+                    willChange: draggedElement?.id === wheel.id ? 'transform' : 'auto',
+                    transform: draggedElement?.id === wheel.id ? 'scale(1.02)' : 'scale(1)'
                   }}
                   onClick={(e) => {
                     if (!draggedElement) {
@@ -753,15 +803,13 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                 <div
                   className="absolute rounded-full border-4 border-amber-500/50 bg-gradient-to-br from-amber-100/40 to-orange-100/40 cursor-move transition-all duration-200 hover:scale-105 hover:border-amber-600/70"
                   style={{
-                    willChange: draggedElement?.id === chakra.id ? 'transform' : 'auto',
-                    transform: draggedElement?.id === chakra.id ? 'scale(1.01)' : 'scale(1)'
-                  }}
-                  style={{
                     left: `${chakraX - chakraRadius/2}px`,
                     top: `${chakraY - chakraRadius/2}px`,
                     width: `${chakraRadius}px`,
                     height: `${chakraRadius}px`,
-                    pointerEvents: 'auto'
+                    pointerEvents: 'auto',
+                    willChange: draggedElement?.id === chakra.id ? 'transform' : 'auto',
+                    transform: draggedElement?.id === chakra.id ? 'scale(1.01)' : 'scale(1)'
                   }}
                   onClick={(e) => {
                     if (!draggedElement) {
@@ -809,6 +857,32 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
           })}
         </div>
       </div>
+
+      {/* Save Position Confirmation Dialog */}
+      {showSaveDialog && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[10000] flex items-center justify-center">
+          <div className="bg-white rounded-xl shadow-2xl border-2 border-amber-200 p-6 max-w-md mx-4">
+            <h3 className="text-lg font-semibold text-amber-800 mb-3">Save Layout</h3>
+            <p className="text-gray-700 text-sm mb-6 leading-relaxed">
+              Are you sure? Once saved this will be the default position of your dots, wheels & chakras.
+            </p>
+            <div className="flex gap-3 justify-end">
+              <button
+                onClick={() => setShowSaveDialog(false)}
+                className="px-4 py-2 text-gray-600 hover:text-gray-800 font-medium transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSaveLayout}
+                className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg font-medium transition-colors"
+              >
+                Yes, Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
