@@ -320,7 +320,7 @@ function GlobalFloatingDotV2() {
         }}
       >
         <div 
-          className="relative cursor-move"
+          className="relative"
           onMouseDown={handleMouseDown}
         >
           {/* Enhanced pulsing rings - preserving original visual design */}
@@ -336,6 +336,7 @@ function GlobalFloatingDotV2() {
           <Button
             onClick={(e) => {
               if (!hasDragged && !isDragging) {
+                e.preventDefault();
                 e.stopPropagation();
                 setIsSpinning(true);
                 setTimeout(() => {
@@ -344,10 +345,14 @@ function GlobalFloatingDotV2() {
                 }, 600);
               }
             }}
+            onMouseDown={(e) => {
+              // Prevent the button click from triggering mouse down for dragging
+              e.stopPropagation();
+            }}
             className={cn(
-              "w-12 h-12 rounded-full bg-gradient-to-br from-amber-600 to-orange-700 flex items-center justify-center transition-all duration-300 shadow-lg hover:shadow-xl p-0 cursor-move",
+              "w-12 h-12 rounded-full bg-gradient-to-br from-amber-600 to-orange-700 flex items-center justify-center transition-all duration-300 shadow-lg hover:shadow-xl p-0 cursor-pointer",
               isDragging 
-                ? "shadow-2xl ring-4 ring-amber-300/50 scale-110" 
+                ? "shadow-2xl ring-4 ring-amber-300/50 scale-110 cursor-move" 
                 : isSpinning 
                 ? "animate-spin scale-110" 
                 : "hover:scale-110 animate-pulse"
