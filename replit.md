@@ -8,6 +8,7 @@ Preferred communication style: Simple, everyday language.
 Dot creation: User prefers no automatic AI processing of their inputs - preserve exact text as provided.
 Dot headings: Automatic AI-generated headings are acceptable and should remain enabled.
 Global Floating Dot: Replaced with v2 that works universally across all pages without authentication dependencies, supports Dot/Wheel/Chakra creation in natural mode.
+My-Neura Settings: Simplified to show only capture mode selection (AI mode, natural mode, hybrid mode) - removed AI chat preference and AI input preference settings.
 
 ## System Architecture
 
