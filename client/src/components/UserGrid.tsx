@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -6,347 +6,390 @@ import { Badge } from '@/components/ui/badge';
 import { Loader2, Plus, Eye, Settings, RotateCcw, Mic, Type, Maximize, Minimize, ZoomIn, ZoomOut } from 'lucide-react';
 import UserContentCreation from './UserContentCreation';
 import DotFullView from './DotFullView';
+import DotFlashCard from './DotFlashCard';
+import WheelFullView from './WheelFullView';
 
-// Types will be inferred from API responses
-
-// Import DotWheelsMap type to match Dashboard usage
-interface DotWheelsMapProps {
-  wheels: any[];
-  dots: any[];
-  chakras?: any[];
-  showingRecentFilter?: boolean;
-  recentCount?: number;
-  isFullscreen?: boolean;
-  onFullscreenChange?: (isFullscreen: boolean) => void;
-  setViewFullWheel: (wheel: any | null) => void;
-  previewMode: boolean;
-  setPreviewMode: (previewMode: boolean) => void;
-  viewFullDot?: any;
-  setViewFullDot?: (dot: any | null) => void;
+// Interfaces matching PreviewMapGrid exactly
+interface Dot {
+  id: string;
+  oneWordSummary: string;
+  summary: string;
+  anchor: string;
+  pulse: string;
+  wheelId?: string | null;
+  timestamp: Date;
+  sourceType: 'voice' | 'text';
+  captureMode: 'natural' | 'ai';
+  voiceData?: {
+    summaryVoiceUrl?: string;
+    anchorVoiceUrl?: string;
+    pulseVoiceUrl?: string;
+  } | null;
+  position?: { x: number; y: number };
 }
 
-// Dynamic sizing functions exactly like Dashboard
-const calculateDynamicSizing = (mode: 'preview' | 'real', count: number, type: 'dots' | 'wheels'): number => {
-  const baseConfig = {
-    preview: {
-      dots: { base: 85, min: 65, max: 110, scaleFactor: 3.5 },
-      wheels: { base: 110, min: 90, max: 140, scaleFactor: 5 }
-    },
-    real: {
-      dots: { base: 75, min: 55, max: 95, scaleFactor: 3 },
-      wheels: { base: 95, min: 75, max: 115, scaleFactor: 4 }
-    }
-  };
-  
-  const config = baseConfig[mode][type];
-  const scaledSize = Math.max(config.min, config.base - Math.floor(count / config.scaleFactor) * 5);
-  return Math.min(config.max, scaledSize);
-};
+interface Wheel {
+  id: string;
+  name: string;
+  heading?: string;
+  goals?: string;
+  purpose?: string;
+  timeline?: string;
+  category: string;
+  color: string;
+  dots: Dot[];
+  connections: string[];
+  position: { x: number; y: number };
+  radius?: number;
+  chakraId?: string;
+  createdAt?: Date;
+}
 
-const getChakraSize = (mode: 'preview' | 'real', wheelsCount: number) => {
-  const baseConfig = {
-    preview: { base: 420, min: 380, max: 480 },
-    real: { base: 370, min: 320, max: 420 }
+interface UserMapGridProps {
+  setViewFullWheel: (wheel: Wheel | null) => void;
+  setViewFlashCard: (dot: Dot | null) => void;
+  setViewFullDot: (dot: Dot | null) => void;
+  dots: Dot[];
+  wheels: Wheel[];
+  chakras: Wheel[];
+  isLoading: boolean;
+}
+
+// Dynamic sizing calculations exactly like PreviewMapGrid
+const calculateDynamicSizing = (mode: 'preview' | 'real', itemCount: number, type: 'dots' | 'wheels') => {
+  const baseSizes = {
+    preview: { dots: 25, wheels: 80 },
+    real: { dots: 35, wheels: 90 }
   };
   
-  const config = baseConfig[mode];
+  const baseSize = baseSizes[mode][type];
   
-  if (wheelsCount <= 3) {
-    return config.base;
-  } else if (wheelsCount <= 5) {
-    return Math.min(config.max, config.base + 20);
-  } else if (wheelsCount <= 8) {
-    return Math.min(config.max, config.base + 35);
+  if (type === 'dots') {
+    if (itemCount <= 3) return baseSize;
+    if (itemCount <= 6) return baseSize - 3;
+    if (itemCount <= 9) return baseSize - 5;
+    return Math.max(baseSize - 8, 20);
   } else {
-    return config.max;
+    if (itemCount <= 3) return baseSize;
+    if (itemCount <= 6) return baseSize - 5;
+    if (itemCount <= 9) return baseSize - 10;
+    return Math.max(baseSize - 15, 60);
   }
 };
 
-// Complete UserGrid DotWheelsMap exactly like PreviewMapGrid
-const DotWheelsMap: React.FC<DotWheelsMapProps> = ({ 
-  wheels, 
-  dots, 
-  chakras = [],
-  showingRecentFilter = false, 
-  recentCount = 4,
-  isFullscreen = false,
-  onFullscreenChange,
-  setViewFullWheel,
-  previewMode,
-  setPreviewMode,
-  viewFullDot,
-  setViewFullDot
-}) => {
-  const [selectedWheel, setSelectedWheel] = useState<string | null>(null);
-  const [selectedDot, setSelectedDot] = useState<any | null>(null);
-  const [hoveredDot, setHoveredDot] = useState<any | null>(null);
-  const [hoveredWheel, setHoveredWheel] = useState<any | null>(null);
-  const [zoom, setZoom] = useState(0.6);
-  const gridContainerRef = useRef<HTMLDivElement>(null);
-  const [dragStart, setDragStart] = useState<{ x: number; y: number } | null>(null);
-  const [offset, setOffset] = useState({ x: 0, y: 0 });
-  const [isPWA, setIsPWA] = useState(false);
-
-  // Detect PWA mode
-  useEffect(() => {
-    const checkPWA = () => {
-      setIsPWA(window.matchMedia('(display-mode: standalone)').matches || 
-               (window.navigator as any).standalone === true);
-    };
-    checkPWA();
-    
-    const mediaQuery = window.matchMedia('(display-mode: standalone)');
-    mediaQuery.addListener(checkPWA);
-    
-    return () => mediaQuery.removeListener(checkPWA);
-  }, []);
-
-  // Add keyboard escape for fullscreen
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isFullscreen && onFullscreenChange) {
-        onFullscreenChange(false);
-      }
-    };
-
-    if (isFullscreen) {
-      document.addEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'auto';
-    }
-
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = 'auto';
-    };
-  }, [isFullscreen]);
-
-  // Stats data
-  const totalDots = dots.length;
-  const totalWheels = wheels.length;
-  const totalChakras = chakras.length;
+const getChakraSize = (mode: 'preview' | 'real', childWheelsCount: number) => {
+  const baseSizes = { preview: 420, real: 370 };
+  const baseSize = baseSizes[mode];
   
-  const displayDots = dots;
-  const displayWheels = wheels;
+  if (childWheelsCount <= 3) return baseSize;
+  if (childWheelsCount <= 5) return baseSize + 20;
+  if (childWheelsCount <= 8) return baseSize + 35;
+  return baseSize + 50;
+};
 
-  // Mouse handlers for dragging
+// UserMapGrid component matching PreviewMapGrid exactly
+const UserMapGrid: React.FC<UserMapGridProps> = ({
+  setViewFullWheel,
+  setViewFlashCard, 
+  setViewFullDot,
+  dots,
+  wheels,
+  chakras,
+  isLoading
+}) => {
+  const [offset, setOffset] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(0.6);
+  const [dragStart, setDragStart] = useState<{ x: number; y: number } | null>(null);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [hoveredDot, setHoveredDot] = useState<Dot | null>(null);
+  const [hoveredWheel, setHoveredWheel] = useState<Wheel | null>(null);
+  const gridContainerRef = useRef<HTMLDivElement>(null);
+
+  // Fetch grid positions for proper positioning
+  const { data: gridPositions } = useQuery({
+    queryKey: ['/api/grid/positions'],
+    queryFn: () => fetch('/api/grid/positions').then(res => res.json()).then(data => data.data)
+  });
+
+  // Reset view function
+  const resetView = () => {
+    setOffset({ x: 0, y: 0 });
+    setZoom(0.6);
+  };
+
+  // Enhanced drag handlers exactly like PreviewMapGrid
   const handleMouseDown = (e: React.MouseEvent) => {
+    const target = e.target as HTMLElement;
+    if (target.closest('[data-wheel-label]') || target.closest('.pointer-events-auto')) {
+      return;
+    }
+    e.preventDefault();
     setDragStart({ x: e.clientX - offset.x, y: e.clientY - offset.y });
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (dragStart) {
-      setOffset({
-        x: e.clientX - dragStart.x,
-        y: e.clientY - dragStart.y
-      });
-    }
+    if (!dragStart) return;
+    e.preventDefault();
+    e.stopPropagation();
+    setOffset({
+      x: e.clientX - dragStart.x,
+      y: e.clientY - dragStart.y
+    });
   };
 
   const handleMouseUp = () => {
     setDragStart(null);
   };
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    const target = e.target as HTMLElement;
+    if (target.closest('.dot-element')) return;
+    
+    e.preventDefault();
+    const touch = e.touches[0];
+    setDragStart({ x: touch.clientX - offset.x, y: touch.clientY - offset.y });
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!dragStart || !e.touches[0]) return;
+    e.preventDefault();
+    const touch = e.touches[0];
+    
+    const newOffset = {
+      x: touch.clientX - dragStart.x,
+      y: touch.clientY - dragStart.y
+    };
+    
+    setOffset(newOffset);
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    e.preventDefault();
+    setDragStart(null);
+  };
+
+  const handleWheel = (e: React.WheelEvent) => {
+    e.preventDefault();
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[500px]">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-500 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading user content...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Use user data directly
+  const displayDots = dots;
+  const displayWheels = wheels;
+
   return (
-    <div className="space-y-4">
-      <div 
-        className={`relative bg-gradient-to-br from-amber-50/30 to-orange-50/30 rounded-xl border-2 border-amber-200 shadow-lg overflow-hidden transition-all duration-300 ${
-          isFullscreen ? 'fixed inset-4 z-50' : 'h-[700px] min-h-[700px]'
-        }`}
-      >
-        {/* Stats badges - top left exactly like preview mode */}
-        <div className="absolute top-4 left-4 flex items-center gap-2 z-20">
-          <Badge variant="secondary" className="bg-amber-100 text-amber-800 text-xs">
-            {totalDots} Dots
-          </Badge>
-          <Badge variant="secondary" className="bg-orange-100 text-orange-800 text-xs">
-            {totalWheels} Wheels
-          </Badge>
-          <Badge variant="secondary" className="bg-amber-200 text-amber-900 text-xs">
-            {totalChakras} Chakras
-          </Badge>
-        </div>
+    <div className={`relative bg-gradient-to-br from-amber-50/30 to-orange-50/30 rounded-xl border-2 border-amber-200 shadow-lg overflow-hidden ${
+      isFullscreen ? 'fixed inset-0 z-50 rounded-none' : 'min-h-[500px]'
+    }`}>
+      {/* User Mode Badge */}
+      <div className="absolute top-2 left-2 md:top-4 md:left-4 z-10">
+        <Badge className="bg-amber-100 text-amber-800 px-2 py-1 md:px-3 md:py-1 text-xs md:text-sm font-medium">
+          User Mode
+        </Badge>
+      </div>
 
-        {/* Maximize button - top right exactly like preview mode */}
-        <div className="absolute top-4 right-4 z-20">
-          <Button 
-            onClick={() => onFullscreenChange && onFullscreenChange(!isFullscreen)}
-            size="sm"
-            variant="outline"
-            className="h-8 w-8 p-0 bg-white/80 backdrop-blur border-amber-200 hover:bg-amber-50"
-          >
-            {isFullscreen ? <Minimize className="w-4 h-4" /> : <Maximize className="w-4 h-4" />}
-          </Button>
-        </div>
-
-        {/* Zoom and navigation controls - bottom left exactly like preview mode */}
-        <div className="absolute bottom-4 left-4 z-20 flex items-center gap-2 bg-white/80 backdrop-blur rounded-lg p-2 border border-amber-200">
-          <Button 
-            onClick={() => setZoom(Math.max(0.2, zoom - 0.1))}
-            size="sm"
-            variant="outline"
-            className="h-8 w-8 p-0 text-xs"
-          >
-            -
-          </Button>
-          <span className="text-xs font-medium min-w-[50px] text-center px-2">
-            {Math.round(zoom * 100)}%
-          </span>
-          <Button 
-            onClick={() => setZoom(Math.min(2, zoom + 0.1))}
-            size="sm"
-            variant="outline"
-            className="h-8 w-8 p-0 text-xs"
-          >
-            +
-          </Button>
-          <div className="w-px h-6 bg-gray-300 mx-1"></div>
-          <Button 
-            onClick={() => setOffset({ x: 0, y: 0 })}
-            size="sm"
-            variant="outline"
-            className="h-8 w-8 p-0"
-            title="Reset Position"
-          >
-            <RotateCcw className="w-3 h-3" />
-          </Button>
-        </div>
-
-        {/* Interactive grid container with drag support and proper padding */}
-        <div 
-          ref={gridContainerRef}
-          className="relative w-full h-full overflow-hidden cursor-grab active:cursor-grabbing"
-          style={{ 
-            transform: `scale(${zoom}) translate(${offset.x}px, ${offset.y}px)`,
-            transformOrigin: 'center center',
-            minHeight: '800px', // Ensure enough space for all content
-            paddingBottom: '100px' // Add bottom padding to prevent cutoff
-          }}
-          onMouseDown={handleMouseDown}
-          onMouseMove={handleMouseMove}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={handleMouseUp}
+      {/* Zoom Controls */}
+      <div className={`${isFullscreen ? 'fixed' : 'absolute'} z-10 flex items-center bg-white/90 backdrop-blur rounded-lg border-2 border-amber-200 shadow-lg ${
+        isFullscreen ? 'bottom-6 left-6 gap-2 p-2' : 'bottom-4 left-4 gap-2 p-2'
+      }`}>
+        <button
+          onClick={() => setZoom(Math.max(0.5, zoom - 0.1))}
+          className="bg-amber-500 hover:bg-amber-600 text-white rounded transition-colors p-2"
+          title="Zoom Out"
         >
-          {/* Render dots exactly like PreviewMapGrid */}
+          <ZoomOut className="w-3 h-3" />
+        </button>
+        <span className="text-xs text-amber-800 px-2 font-medium min-w-[3rem] text-center">
+          {Math.round(zoom * 100)}%
+        </span>
+        <button
+          onClick={() => setZoom(Math.min(1.5, zoom + 0.1))}
+          className="bg-amber-500 hover:bg-amber-600 text-white rounded transition-colors p-2"
+          title="Zoom In"
+        >
+          <ZoomIn className="w-3 h-3" />
+        </button>
+        <div className="w-px h-6 bg-amber-200 mx-1"></div>
+        <button
+          onClick={resetView}
+          className="bg-orange-500 hover:bg-orange-600 text-white rounded transition-colors p-2"
+          title="Reset View"
+        >
+          <RotateCcw className="w-3 h-3" />
+        </button>
+      </div>
+
+      {/* Fullscreen Toggle */}
+      {!isFullscreen && (
+        <div className="absolute top-2 right-2 md:top-4 md:right-4 z-10">
+          <button
+            onClick={() => setIsFullscreen(!isFullscreen)}
+            className="bg-amber-500 hover:bg-amber-600 text-white rounded-lg transition-colors shadow-lg p-2"
+            title="Enter Fullscreen"
+          >
+            <Maximize className="w-5 h-5" />
+          </button>
+        </div>
+      )}
+
+      {/* Interactive grid - complete sophisticated system from Dashboard */}
+      <div 
+        ref={gridContainerRef}
+        className={`relative ${
+          isFullscreen 
+            ? 'h-screen w-screen' 
+            : 'h-[450px] w-full'
+        } overflow-hidden cursor-grab active:cursor-grabbing`}
+        onWheel={handleWheel}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseUp}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        style={{ 
+          touchAction: 'none',
+          userSelect: 'none'
+        }}
+      >
+        {/* Fullscreen exit button */}
+        {isFullscreen && (
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setIsFullscreen(false);
+            }}
+            className="fixed bottom-6 right-6 z-[100] bg-red-500 hover:bg-red-600 text-white rounded-full p-4 transition-colors shadow-2xl border-2 border-red-400"
+            title="Exit Fullscreen (ESC)"
+            style={{ pointerEvents: 'auto', touchAction: 'manipulation' }}
+          >
+            <Minimize className="w-4 h-4" />
+          </button>
+        )}
+
+        <div 
+          className="relative transition-transform duration-100 ease-out"
+          style={{ 
+            width: `${1200 * zoom}px`, 
+            height: `${800 * zoom}px`,
+            minWidth: 'auto',
+            minHeight: 'auto',
+            transform: `translate(${offset.x}px, ${offset.y}px) scale(${zoom})`,
+            transformOrigin: 'center center'
+          }}
+        >
+          {/* Individual Dots - using exact positioning logic from PreviewMapGrid */}
           {displayDots.map((dot: any, index: number) => {
-            // Position dots in grid pattern
+            // Use algorithmic positioning from backend API when available, fallback to manual calculation
             let x, y;
             
-            if (dot.wheelId && dot.wheelId !== '' && dot.wheelId !== 'general') {
-              const wheel = displayWheels.find((w: any) => w.id === dot.wheelId);
-              if (wheel) {
-                const dotsInWheel = displayDots.filter((d: any) => d.wheelId === dot.wheelId);
-                const dotIndexInWheel = dotsInWheel.findIndex((d: any) => d.id === dot.id);
-                
-                const wheelCenterX = wheel.position?.x || (300 + (index % 3) * 200);
-                const wheelCenterY = wheel.position?.y || (250 + Math.floor(index / 3) * 180);
-                const dotRadius = calculateDynamicSizing('real', dotsInWheel.length, 'dots');
-                const angle = (dotIndexInWheel * 2 * Math.PI) / dotsInWheel.length;
-                
-                x = wheelCenterX + Math.cos(angle) * dotRadius;
-                y = wheelCenterY + Math.sin(angle) * dotRadius;
-              } else {
-                // Fallback positioning with better spacing
-                const gridCols = Math.ceil(Math.sqrt(displayDots.length));
-                const row = Math.floor(index / gridCols);
-                const col = index % gridCols;
-                x = 120 + (col * 150);
-                y = 120 + (row * 120); // Reduced vertical spacing
-              }
+            if (gridPositions?.dotPositions && gridPositions.dotPositions[dot.id]) {
+              // Use backend algorithmic positioning
+              const position = gridPositions.dotPositions[dot.id];
+              x = position.x;
+              y = position.y;
             } else {
-              // Individual scattered dots or general wheel dots with better spacing
-              const gridCols = Math.ceil(Math.sqrt(displayDots.length));
-              const row = Math.floor(index / gridCols);
-              const col = index % gridCols;
-              x = 120 + (col * 150);
-              y = 120 + (row * 120); // Reduced vertical spacing to fit more dots
+              // Fallback to manual positioning logic for dots not in API response
+              const dotId = String(dot.id || index);
+              const seedX = dotId.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
+              const seedY = seedX * 13 + index * 7;
+              
+              x = (seedX % 800) + 100;
+              y = (seedY % 600) + 100;
             }
             
             return (
               <div key={dot.id} className="relative">
-                {/* Dot with exact styling from preview mode */}
+                {/* Dot element with exact styling from PreviewMapGrid */}
                 <div
-                  className="absolute w-12 h-12 rounded-full cursor-pointer transition-all duration-300 hover:scale-125 hover:shadow-lg group dot-element z-[5]"
+                  className="absolute w-8 h-8 rounded-full cursor-pointer transition-all duration-200 hover:scale-110 hover:shadow-md dot-element group"
                   style={{
                     left: `${x}px`,
                     top: `${y}px`,
                     background: dot.captureMode === 'ai' 
-                      ? 'linear-gradient(135deg, #8B5CF6, #7C3AED)' // Purple for AI mode
-                      : 'linear-gradient(135deg, #F59E0B, #D97706)', // Amber for natural mode
-                    pointerEvents: 'auto'
+                      ? 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%)'
+                      : 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)',
+                    border: '2px solid rgba(255, 255, 255, 0.8)',
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
+                    pointerEvents: 'auto',
+                    zIndex: 10
                   }}
                   onClick={(e) => {
-                    e.stopPropagation();
                     e.preventDefault();
-                    const isMobile = window.innerWidth < 768;
-                    if (isPWA || isMobile) {
-                      setSelectedDot(dot);
-                    } else {
-                      setViewFullDot(dot);
-                    }
-                    setHoveredDot(null);
+                    e.stopPropagation();
+                    setViewFlashCard(dot);
                   }}
                   onMouseDown={(e) => e.stopPropagation()}
                   onMouseEnter={() => setHoveredDot(dot)}
                   onMouseLeave={() => setHoveredDot(null)}
                 >
-                  {/* Pulse animation for voice dots */}
-                  {dot.sourceType === 'voice' && (
-                    <div className="absolute inset-0 rounded-full bg-amber-400 opacity-50 animate-ping" />
-                  )}
+                  <div className="absolute inset-0 flex items-center justify-center text-white text-xs font-semibold">
+                    {dot.oneWordSummary.charAt(0).toUpperCase()}
+                  </div>
                   
-                  {/* Dot content */}
-                  <div className="relative w-full h-full rounded-full flex items-center justify-center">
-                    <div className="w-8 h-8 rounded-full bg-white/20 backdrop-blur flex items-center justify-center">
-                      {dot.sourceType === 'voice' ? (
-                        <Mic className="w-4 h-4 text-white" />
-                      ) : (
-                        <Type className="w-4 h-4 text-white" />
-                      )}
-                    </div>
+                  {/* Source type indicator */}
+                  <div className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-white border border-gray-200 flex items-center justify-center">
+                    {dot.sourceType === 'voice' ? (
+                      <Mic className="w-2 h-2 text-amber-600" />
+                    ) : (
+                      <Type className="w-2 h-2 text-amber-600" />
+                    )}
                   </div>
                 </div>
                 
-                {/* Hover card exactly like preview mode */}
+                {/* Dot Hover Card - exact same styling as PreviewMapGrid */}
                 {hoveredDot?.id === dot.id && (
                   <div 
-                    className="absolute bg-white/95 backdrop-blur border-2 border-amber-200 rounded-lg p-3 shadow-2xl w-64 cursor-pointer"
+                    className="absolute bg-white/95 backdrop-blur-sm border border-amber-200 rounded-lg p-3 shadow-lg z-[1000] cursor-pointer"
                     style={{
-                      left: isPWA ? '60px' : `${x + 60}px`,
-                      top: isPWA ? '-20px' : `${Math.max(0, y - 20)}px`,
-                      maxWidth: '280px',
-                      zIndex: 99999999,
-                      boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.05)'
+                      left: `${x + 35}px`,
+                      top: `${Math.max(10, y - 20)}px`,
+                      width: '240px',
+                      pointerEvents: 'auto'
                     }}
                     onClick={(e) => {
+                      e.preventDefault();
                       e.stopPropagation();
-                      setViewFullDot(dot);
+                      setViewFlashCard(dot);
                       setHoveredDot(null);
                     }}
+                    onMouseDown={(e) => e.stopPropagation()}
                   >
                     <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <Badge className={`text-xs ${
-                          dot.sourceType === 'voice' ? 'bg-amber-100 text-amber-800' : 'bg-orange-100 text-orange-800'
-                        }`}>
-                          {dot.sourceType}
-                        </Badge>
-                        {dot.captureMode === 'ai' && (
-                          <Badge className="bg-purple-100 text-purple-700 text-xs">AI</Badge>
-                        )}
-                        <Badge className="bg-gray-100 text-gray-700 text-xs">
-                          {dot.pulse}
-                        </Badge>
+                      <div className="flex justify-between items-start">
+                        <h4 className="font-semibold text-amber-800 text-sm truncate">
+                          {dot.oneWordSummary}
+                        </h4>
+                        <div className="flex gap-1">
+                          <Badge className={`text-xs px-1.5 py-0.5 ${
+                            dot.captureMode === 'ai' ? 'bg-purple-100 text-purple-700' : 'bg-amber-100 text-amber-700'
+                          }`}>
+                            {dot.sourceType === 'voice' ? <Mic className="w-2 h-2" /> : <Type className="w-2 h-2" />}
+                          </Badge>
+                        </div>
                       </div>
-                      <h4 className="font-bold text-lg text-amber-800 border-b border-amber-200 pb-2 mb-3">
-                        {dot.oneWordSummary}
-                      </h4>
-                      <p className="text-xs text-gray-600 line-clamp-3">
+                      <p className="text-gray-600 text-xs leading-relaxed line-clamp-2">
                         {dot.summary}
                       </p>
-                      <div className="text-xs text-amber-600 mt-2 font-medium">
-                        Click for full view
+                      <div className="flex justify-between items-center pt-1">
+                        <Badge variant="outline" className="text-xs border-amber-200 text-amber-700">
+                          {dot.pulse}
+                        </Badge>
+                        <span className="text-amber-600 text-xs font-medium">
+                          Click for flash card
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -354,8 +397,8 @@ const DotWheelsMap: React.FC<DotWheelsMapProps> = ({
               </div>
             );
           })}
-          
-          {/* Render wheels exactly like preview mode */}
+
+          {/* Render wheels exactly like PreviewMapGrid */}
           {displayWheels.map((wheel: any) => {
             const wheelDots = displayDots.filter((d: any) => d.wheelId === wheel.id);
             const wheelRadius = calculateDynamicSizing('real', wheelDots.length, 'wheels');
@@ -374,7 +417,7 @@ const DotWheelsMap: React.FC<DotWheelsMapProps> = ({
                   }}
                   onClick={(e) => {
                     e.stopPropagation();
-                    setViewFullWheel && setViewFullWheel(wheel);
+                    setViewFullWheel(wheel);
                   }}
                   onMouseDown={(e) => e.stopPropagation()}
                   onMouseEnter={() => setHoveredWheel(wheel)}
@@ -384,7 +427,7 @@ const DotWheelsMap: React.FC<DotWheelsMapProps> = ({
                   <div className="absolute inset-0 flex items-center justify-center p-2">
                     <div className="text-center">
                       <div className="text-xs font-bold text-orange-800 line-clamp-2">
-                        {wheel.name}
+                        {wheel.name || wheel.heading}
                       </div>
                       <div className="text-xs text-orange-600 mt-1">
                         {wheelDots.length} dots
@@ -405,27 +448,28 @@ const DotWheelsMap: React.FC<DotWheelsMapProps> = ({
                     }}
                     onClick={(e) => {
                       e.stopPropagation();
-                      setViewFullWheel && setViewFullWheel(wheel);
+                      setViewFullWheel(wheel);
                       setHoveredWheel(null);
                     }}
+                    onMouseDown={(e) => e.stopPropagation()}
                   >
-                    <div className="space-y-2">
+                    <div className="space-y-3">
                       <div className="flex items-center justify-between">
-                        <Badge className="bg-orange-100 text-orange-800 text-xs">
+                        <h4 className="font-bold text-orange-800 text-sm line-clamp-1">{wheel.name || wheel.heading}</h4>
+                        <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200 text-xs">
                           Wheel
                         </Badge>
-                        <Badge className="bg-gray-100 text-gray-700 text-xs">
+                      </div>
+                      <p className="text-gray-700 text-sm line-clamp-2 leading-relaxed">
+                        {wheel.goals || wheel.purpose || 'Goal-oriented project'}
+                      </p>
+                      <div className="flex items-center justify-between text-xs">
+                        <Badge className="bg-orange-100 text-orange-700">
                           {wheelDots.length} dots
                         </Badge>
-                      </div>
-                      <h4 className="font-bold text-lg text-orange-800 border-b border-orange-200 pb-2 mb-3">
-                        {wheel.name}
-                      </h4>
-                      <p className="text-xs text-gray-600 line-clamp-3">
-                        {wheel.goals || wheel.purpose}
-                      </p>
-                      <div className="text-xs text-orange-600 mt-2 font-medium">
-                        Click for full view
+                        <span className="text-orange-600 font-medium">
+                          Click for full view
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -433,172 +477,124 @@ const DotWheelsMap: React.FC<DotWheelsMapProps> = ({
               </div>
             );
           })}
+
+          {/* Render chakras exactly like PreviewMapGrid */}
+          {chakras.map((chakra: any) => {
+            const chakraWheels = displayWheels.filter((w: any) => w.chakraId === chakra.id);
+            const chakraRadius = getChakraSize('real', chakraWheels.length);
+            
+            return (
+              <div key={chakra.id} className="relative">
+                {/* Chakra circle */}
+                <div
+                  className="absolute rounded-full border-4 border-amber-500/50 bg-gradient-to-br from-amber-100/40 to-orange-100/40 cursor-pointer transition-all duration-300 hover:scale-105 hover:border-amber-600/70"
+                  style={{
+                    left: `${(chakra.position?.x || 500) - chakraRadius/2}px`,
+                    top: `${(chakra.position?.y || 350) - chakraRadius/2}px`,
+                    width: `${chakraRadius}px`,
+                    height: `${chakraRadius}px`,
+                    pointerEvents: 'auto'
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setViewFullWheel(chakra);
+                  }}
+                  onMouseDown={(e) => e.stopPropagation()}
+                >
+                  {/* Chakra label */}
+                  <div className="absolute inset-0 flex items-center justify-center p-4">
+                    <div className="text-center">
+                      <div className="text-sm font-bold text-amber-800 line-clamp-2 mb-2">
+                        {chakra.name || chakra.heading}
+                      </div>
+                      <div className="text-xs text-amber-700">
+                        {chakraWheels.length} wheels
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Rotating ring animation */}
+                  <div 
+                    className="absolute inset-2 rounded-full border-2 border-amber-400/30 animate-spin"
+                    style={{ animationDuration: '8s' }}
+                  />
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
-        {/* Flash card view for mobile/PWA exactly like preview mode */}
-        {selectedDot && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-[100]">
-            <div className="bg-white rounded-xl p-6 max-w-md w-full max-h-[80vh] overflow-y-auto">
-              <div className="flex justify-between items-start mb-4">
-                <Badge className={`${
-                  selectedDot.sourceType === 'voice' ? 'bg-amber-100 text-amber-800' : 'bg-orange-100 text-orange-800'
-                }`}>
-                  {selectedDot.sourceType}
-                </Badge>
-                <Button 
-                  variant="ghost" 
-                  size="sm"
-                  onClick={() => setSelectedDot(null)}
-                  className="h-6 w-6 p-0"
-                >
-                  ✕
-                </Button>
-              </div>
-              <h3 className="text-xl font-bold text-amber-800 mb-3">{selectedDot.oneWordSummary}</h3>
-              <p className="text-gray-700 mb-4">{selectedDot.summary}</p>
-              <div className="text-sm text-gray-500">
-                {selectedDot.anchor && <p className="mb-2"><strong>Context:</strong> {selectedDot.anchor}</p>}
-                <p><strong>Pulse:</strong> {selectedDot.pulse}</p>
-              </div>
-            </div>
-          </div>
-        )}
+    </div>
+  );
+};
 
-        {/* Full dot view modal exactly like preview mode */}
-        {viewFullDot && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-[100]">
-            <Card className="max-w-2xl w-full max-h-[80vh] overflow-y-auto">
-              <CardHeader>
-                <CardTitle>{viewFullDot.oneWordSummary}</CardTitle>
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => setViewFullDot(null)}
-                  className="absolute top-4 right-4"
-                >
-                  ✕
-                </Button>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex gap-2">
-                    <Badge className={`${
-                      viewFullDot.sourceType === 'voice' ? 'bg-amber-100 text-amber-800' : 'bg-orange-100 text-orange-800'
-                    }`}>
-                      {viewFullDot.sourceType}
-                    </Badge>
-                    {viewFullDot.captureMode === 'ai' && (
-                      <Badge className="bg-purple-100 text-purple-700">AI</Badge>
-                    )}
-                    <Badge variant="outline">{viewFullDot.pulse}</Badge>
-                  </div>
-                  <p className="text-gray-700">{viewFullDot.summary}</p>
-                  {viewFullDot.anchor && (
-                    <div>
-                      <h4 className="font-semibold mb-2">Context:</h4>
-                      <p className="text-gray-600">{viewFullDot.anchor}</p>
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
-      </div>
-    );
-  };
-
+// Main UserGrid component exactly like PreviewMapGrid structure
 interface UserGridProps {
+  mode?: 'preview' | 'real';
   userId?: number;
-  mode: 'real' | 'preview';
+  isDemoMode?: boolean;
+  availableWheels?: any[];
+  availableChakras?: any[];
 }
 
-const UserGrid: React.FC<UserGridProps> = ({ userId, mode }) => {
+const UserGrid: React.FC<UserGridProps> = ({ 
+  mode = 'real', 
+  userId,
+  isDemoMode = false,
+  availableWheels = [],
+  availableChakras = []
+}) => {
   const [showCreation, setShowCreation] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<any>(null);
+  const [viewFullWheel, setViewFullWheel] = useState<Wheel | null>(null);
+  const [viewFlashCard, setViewFlashCard] = useState<Dot | null>(null);
+  const [viewFullDot, setViewFullDot] = useState<Dot | null>(null);
 
-  const [viewFullDot, setViewFullDot] = useState<any>(null);
-  
-  // Add refs for grid controls
-  const gridContainerRef = useRef<HTMLDivElement>(null);
-
-  // Enhanced user dots fetching with backend session support
+  // Fetch user dots
   const { data: userDots = [], isLoading: dotsLoading } = useQuery({
-    queryKey: ['/api/user-content/dots', userId, mode],
+    queryKey: ['/api/user-content/dots'],
     queryFn: async () => {
       try {
-        console.log('🔍 UserGrid fetching dots for user:', userId, 'mode:', mode);
-        
-        if (mode === 'preview') {
-          // Preview mode - use preview endpoint
-          const previewResponse = await fetch('/api/dots?preview=true', {
-            credentials: 'include'
-          });
-          if (previewResponse.ok) {
-            return await previewResponse.json();
-          }
-          return [];
-        }
-        
-        // Real mode - fetch user-specific dots
-        const headers: Record<string, string> = {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        };
-        
-        // Add user ID header for user-specific filtering
-        if (userId) {
-          headers['x-user-id'] = userId.toString();
-        }
-        
         const response = await fetch('/api/user-content/dots', {
           credentials: 'include',
-          headers
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'x-user-id': userId?.toString() || ''
+          }
         });
-        
-        console.log('📊 UserGrid dots response:', response.status);
         
         if (response.ok) {
           const data = await response.json();
-          console.log('✅ UserGrid dots fetched for user', userId, ':', data.length, 'dots');
-          return data;
+          return Array.isArray(data) ? data : [];
         }
-        
         return [];
       } catch (error) {
         console.error('UserGrid dots fetch error:', error);
         return [];
       }
     },
-    enabled: true, // Always try to fetch
-    retry: 2,
-    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 5000),
-    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
-    gcTime: 30 * 60 * 1000, // Keep in cache for 30 minutes
-    refetchOnWindowFocus: false,
-    refetchOnMount: false, // Don't refetch on component mount if we have cached data
-    refetchOnReconnect: false, // Don't refetch on network reconnection
-  }) as { data: any[], isLoading: boolean };
+    enabled: mode === 'real' && !!userId,
+    retry: 3,
+    staleTime: 30000
+  });
 
-  // Fetch user's wheels with aggressive caching  
+  // Fetch user wheels
   const { data: userWheels = [], isLoading: wheelsLoading } = useQuery({
-    queryKey: ['/api/user-content/wheels', userId],
+    queryKey: ['/api/user-content/wheels'],
     queryFn: async () => {
-      if (!userId) return [];
-      
       try {
         const response = await fetch('/api/user-content/wheels', {
           credentials: 'include',
           headers: {
+            'Content-Type': 'application/json',
             'Accept': 'application/json',
-            'x-user-id': userId.toString()
+            'x-user-id': userId?.toString() || ''
           }
         });
         
         if (response.ok) {
           const data = await response.json();
-          console.log('✅ UserGrid wheels fetched for user', userId, ':', data.length, 'wheels');
-          return data;
+          return Array.isArray(data) ? data : [];
         }
         return [];
       } catch (error) {
@@ -606,35 +602,28 @@ const UserGrid: React.FC<UserGridProps> = ({ userId, mode }) => {
         return [];
       }
     },
-    enabled: mode === 'real' && !!userId, // Only fetch when authenticated
-    retry: 3, // Retry up to 3 times on failure
-    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
-    staleTime: 30 * 60 * 1000, // Cache for 30 minutes
-    gcTime: 60 * 60 * 1000, // Keep in cache for 1 hour
-    refetchOnWindowFocus: false, 
-    refetchOnMount: false, // Don't refetch on component mount if we have cached data
-    refetchOnReconnect: false,
-  }) as { data: any[], isLoading: boolean };
+    enabled: mode === 'real' && !!userId,
+    retry: 3,
+    staleTime: 30000
+  });
 
-  // Fetch user's chakras separately with aggressive caching  
+  // Fetch user chakras
   const { data: userChakras = [], isLoading: chakrasLoading } = useQuery({
-    queryKey: ['/api/user-content/chakras', userId],
+    queryKey: ['/api/user-content/chakras'],
     queryFn: async () => {
-      if (!userId) return [];
-      
       try {
         const response = await fetch('/api/user-content/chakras', {
           credentials: 'include',
           headers: {
+            'Content-Type': 'application/json',
             'Accept': 'application/json',
-            'x-user-id': userId.toString()
+            'x-user-id': userId?.toString() || ''
           }
         });
         
         if (response.ok) {
           const data = await response.json();
-          console.log('✅ UserGrid chakras fetched for user', userId, ':', data.length, 'chakras');
-          return data;
+          return Array.isArray(data) ? data : [];
         }
         return [];
       } catch (error) {
@@ -642,55 +631,12 @@ const UserGrid: React.FC<UserGridProps> = ({ userId, mode }) => {
         return [];
       }
     },
-    enabled: mode === 'real' && !!userId, // Only fetch when authenticated
-    retry: 3, // Retry up to 3 times on failure
-    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
-    staleTime: 30 * 60 * 1000, // Cache for 30 minutes
-    gcTime: 60 * 60 * 1000, // Keep in cache for 1 hour
-    refetchOnWindowFocus: false, 
-    refetchOnMount: false, // Don't refetch on component mount if we have cached data
-    refetchOnReconnect: false,
-  }) as { data: any[], isLoading: boolean };
-
-  // Fetch user's statistics with retry logic
-  const { data: userStats, isLoading: statsLoading } = useQuery({
-    queryKey: ['/api/user-content/stats', userId],
-    queryFn: async () => {
-      if (!userId) return {};
-      
-      try {
-        const response = await fetch('/api/user-content/stats', {
-          credentials: 'include',
-          headers: {
-            'Accept': 'application/json',
-            'x-user-id': userId.toString()
-          }
-        });
-        
-        if (response.ok) {
-          const data = await response.json();
-          console.log('✅ UserGrid stats fetched for user', userId, ':', data);
-          return data;
-        }
-        return {};
-      } catch (error) {
-        console.error('UserGrid stats fetch error:', error);
-        return {};
-      }
-    },
-    enabled: mode === 'real' && !!userId, // Only fetch when authenticated
+    enabled: mode === 'real' && !!userId,
     retry: 3,
-    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
-    staleTime: 60000,
-    refetchOnWindowFocus: false,
-    refetchOnMount: true
+    staleTime: 30000
   });
 
-  const isLoading = dotsLoading || wheelsLoading || chakrasLoading || statsLoading;
-
-  // Use separate chakras data
-  const regularWheels = Array.isArray(userWheels) ? userWheels : [];
-  const chakras = Array.isArray(userChakras) ? userChakras : [];
+  const isLoading = dotsLoading || wheelsLoading || chakrasLoading;
 
   if (mode === 'preview') {
     return (
@@ -717,111 +663,98 @@ const UserGrid: React.FC<UserGridProps> = ({ userId, mode }) => {
   if (showCreation) {
     return (
       <UserContentCreation
-        availableWheels={regularWheels}
-        availableChakras={chakras}
+        availableWheels={userWheels}
+        availableChakras={userChakras}
         onSuccess={() => setShowCreation(false)}
       />
     );
   }
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center py-8">
-        <Loader2 className="w-8 h-8 animate-spin text-amber-600" />
-        <span className="ml-2 text-amber-800">Loading your content...</span>
-      </div>
-    );
-  }
-
-  // Debug logging for content display
-  console.log('UserGrid content debugging:', {
-    userDotsLength: userDots.length,
-    userWheelsLength: userWheels.length,
-    userChakrasLength: userChakras.length,
-    userDots: userDots.map(d => ({ id: d.id, summary: d.oneWordSummary || d.summary })),
-    userWheels: userWheels.map(w => ({ id: w.id, heading: w.heading })),
-    userChakras: userChakras.map(c => ({ id: c.id, heading: c.heading })),
-    isLoading,
-    userId
-  });
-
-  const isEmpty = Array.isArray(userDots) && Array.isArray(userWheels) && Array.isArray(userChakras) && 
-    userDots.length === 0 && userWheels.length === 0 && userChakras.length === 0;
-
-  if (isEmpty) {
-    return (
-      <div className="text-center py-12">
-        <div className="max-w-md mx-auto">
-          <div className="w-16 h-16 bg-gradient-to-r from-amber-400 to-orange-500 rounded-full mx-auto mb-4 flex items-center justify-center">
-            <Plus className="w-8 h-8 text-white" />
-          </div>
-          <h3 className="text-xl font-semibold text-amber-800 mb-2">Start Your DotSpark Journey</h3>
-          <p className="text-gray-600 mb-6">
-            Create your first dot, wheel, or chakra to begin organizing your thoughts and insights.
-          </p>
-          <Button 
-            onClick={() => setShowCreation(true)}
-            className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Create Your First Thought
-          </Button>
-        </div>
-      </div>
-    );
-  }
+  const regularWheels = Array.isArray(userWheels) ? userWheels : [];
+  const chakras = Array.isArray(userChakras) ? userChakras : [];
 
   return (
     <div className="space-y-6">
-      {/* Use exact DotWheelsMap component from Dashboard with user data */}
-      <DotWheelsMap 
-        wheels={regularWheels}
-        dots={userDots}
-        chakras={chakras}
-        showingRecentFilter={false}
-        recentCount={4}
-        isFullscreen={false}
-        onFullscreenChange={() => {}}
-        setViewFullWheel={() => {}}
-        previewMode={false}
-        setPreviewMode={() => {}}
-        viewFullDot={viewFullDot}
-        setViewFullDot={setViewFullDot}
-      />
-      
-      {/* Debug: Show all content counts */}
-      <div className="text-xs text-gray-500 p-2 bg-gray-100 rounded space-y-1">
-        <div>Debug: UserGrid has {userDots.length} dots, {userWheels.length} wheels, {userChakras.length} chakras</div>
-        <div>Loading states: dots={dotsLoading}, wheels={wheelsLoading}, chakras={chakrasLoading}</div>
+      {/* Header with Create Button */}
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="text-2xl font-bold text-amber-800">Your Neural Map</h2>
+          <p className="text-gray-600">Visualize and explore your dots, wheels, and chakras</p>
+        </div>
+        <Button 
+          onClick={() => setShowCreation(true)}
+          className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white"
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          Create Content
+        </Button>
       </div>
 
-      {/* Keep detail modal for individual items */}
-      {selectedItem && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <Card className="max-w-2xl w-full max-h-[80vh] overflow-y-auto">
-            <CardHeader>
-              <CardTitle>{selectedItem.name || selectedItem.summary}</CardTitle>
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => setSelectedItem(null)}
-                className="absolute top-4 right-4"
-              >
-                ✕
-              </Button>
-            </CardHeader>
-            <CardContent>
-              <pre className="whitespace-pre-wrap text-sm">
-                {JSON.stringify(selectedItem, null, 2)}
-              </pre>
-            </CardContent>
-          </Card>
-        </div>
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-lg text-amber-800">Dots</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-amber-600">{userDots.length}</div>
+            <p className="text-xs text-gray-500 mt-1">Individual insights</p>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-lg text-orange-800">Wheels</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-orange-600">{regularWheels.length}</div>
+            <p className="text-xs text-gray-500 mt-1">Goal-oriented projects</p>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-lg text-amber-800">Chakras</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-amber-600">{chakras.length}</div>
+            <p className="text-xs text-gray-500 mt-1">Life purposes</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* User Map Grid - exact same component structure as PreviewMapGrid */}
+      <UserMapGrid
+        setViewFullWheel={setViewFullWheel}
+        setViewFlashCard={setViewFlashCard}
+        setViewFullDot={setViewFullDot}
+        dots={userDots}
+        wheels={regularWheels}
+        chakras={chakras}
+        isLoading={isLoading}
+      />
+
+      {/* Flash Card Modal */}
+      {viewFlashCard && (
+        <DotFlashCard
+          dot={viewFlashCard}
+          onClose={() => setViewFlashCard(null)}
+          onViewFull={() => {
+            setViewFullDot(viewFlashCard);
+            setViewFlashCard(null);
+          }}
+        />
       )}
 
+      {/* Full Wheel View Modal */}
+      {viewFullWheel && (
+        <WheelFullView
+          wheel={viewFullWheel}
+          onClose={() => setViewFullWheel(null)}
+        />
+      )}
 
-
-      {/* Full View Mode for Dots - Same as Preview */}
+      {/* Full Dot View Modal */}
       {viewFullDot && (
         <DotFullView
           dot={viewFullDot}
