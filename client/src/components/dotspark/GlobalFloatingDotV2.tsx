@@ -1,26 +1,30 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Plus, X, Save, Minimize2, Maximize2, Sparkles, Target, Zap, RotateCcw, Mic, Type, BrainCircuit } from 'lucide-react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useToast } from '@/hooks/use-toast';
+import { Sparkles, X, Minimize2, Maximize2, Target, Zap, Loader2, Plus, Mic, Type, BrainCircuit, RotateCcw } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useToast } from '@/hooks/use-toast';
 
-interface Position {
-  x: number;
-  y: number;
+interface FormData {
+  summary: string;
+  anchor: string;
+  pulse: string;
+  wheelId: string;
+  name: string;
+  heading: string;
+  goals: string;
+  timeline: string;
+  category: string;
+  chakraId: string;
+  lifePurpose: string;
 }
 
-interface GlobalFloatingDotV2Props {
-  // No authentication dependencies - works on all pages
-}
-
-export const GlobalFloatingDotV2: React.FC<GlobalFloatingDotV2Props> = () => {
-  const [position, setPosition] = useState<Position>(() => {
+function GlobalFloatingDotV2() {
+  const [position, setPosition] = useState(() => {
     const saved = localStorage.getItem('global-floating-dot-v2-position');
     return saved ? JSON.parse(saved) : { x: 20, y: 100 };
   });
@@ -29,205 +33,188 @@ export const GlobalFloatingDotV2: React.FC<GlobalFloatingDotV2Props> = () => {
   const [isMinimized, setIsMinimized] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const [isSpinning, setIsSpinning] = useState(false);
   const [contentType, setContentType] = useState<'dot' | 'wheel' | 'chakra'>('dot');
-  const [captureMode, setCaptureMode] = useState<'natural' | 'ai'>(() => {
-    // Load capture mode from settings or default to natural based on hybrid mode
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Load capture mode from localStorage - default to hybrid
+  const [captureMode, setCaptureMode] = useState<'natural' | 'ai' | 'hybrid'>(() => {
     const savedSettings = localStorage.getItem('dotspark-settings');
     if (savedSettings) {
       const settings = JSON.parse(savedSettings);
-      // If user is in hybrid mode (default), start with natural
-      if (settings.captureMode === 'hybrid') {
-        return 'natural';
-      } else {
-        return settings.captureMode === 'ai' ? 'ai' : 'natural';
-      }
+      return settings.captureMode ?? 'hybrid';
     }
-    return 'natural'; // Default to natural for hybrid mode
+    return 'hybrid';
   });
-  
-  // Form data for all content types
-  const [formData, setFormData] = useState({
-    // Dot fields
+
+  // Initialize form data
+  const [formData, setFormData] = useState<FormData>({
     summary: '',
     anchor: '',
     pulse: '',
     wheelId: '',
-    // Wheel/Chakra fields  
     name: '',
     heading: '',
     goals: '',
     timeline: '',
-    category: 'Personal',
-    chakraId: ''
+    category: '',
+    chakraId: '',
+    lifePurpose: ''
   });
 
   const dotRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
-  const queryClient = useQueryClient();
 
-  // Save position when changed
-  useEffect(() => {
-    localStorage.setItem('global-floating-dot-v2-position', JSON.stringify(position));
-  }, [position]);
-
-  // Create content mutation
-  const createContentMutation = useMutation({
-    mutationFn: async (data: any) => {
-      const endpoint = contentType === 'dot' ? '/api/user-content/dots' : '/api/user-content/wheels';
-      
-      console.log(`🔄 GlobalFloatingDotV2: Creating ${contentType} with data:`, data);
-      
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json'
-        },
-        credentials: 'include',
-        body: JSON.stringify(data)
-      });
-      
-      console.log(`📊 GlobalFloatingDotV2: Response status:`, response.status);
-      
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error(`❌ GlobalFloatingDotV2: Failed to create ${contentType}:`, errorText);
-        throw new Error(`Failed to create ${contentType}: ${response.status}`);
-      }
-      
-      const result = await response.json();
-      console.log(`✅ GlobalFloatingDotV2: ${contentType} created successfully:`, result);
-      return result;
-    },
-    onSuccess: (result) => {
-      console.log(`✅ GlobalFloatingDotV2: Creation mutation succeeded:`, result);
-      
-      toast({
-        title: 'Success!',
-        description: `${contentType.charAt(0).toUpperCase() + contentType.slice(1)} created successfully.`
-      });
-      
-      // Invalidate relevant queries
-      queryClient.invalidateQueries({ 
-        queryKey: ['/api/user-content/dots'],
-        exact: false 
-      });
-      queryClient.invalidateQueries({ 
-        queryKey: ['/api/user-content/wheels'],
-        exact: false 
-      });
-      queryClient.invalidateQueries({ 
-        queryKey: ['/api/user-content/stats'],
-        exact: false 
-      });
-      
-      // Reset form
-      setFormData({
-        summary: '',
-        anchor: '',
-        pulse: '',
-        wheelId: '',
-        name: '',
-        heading: '',
-        goals: '',
-        timeline: '',
-        category: 'Personal',
-        chakraId: ''
-      });
-      
-      // Close the floating dot
-      setIsOpen(false);
-      setIsMinimized(false);
-      
-      console.log('🔄 GlobalFloatingDotV2: Cache invalidated and form reset');
-    },
-    onError: (error) => {
-      console.error('❌ GlobalFloatingDotV2: Creation failed:', error);
-      toast({
-        title: 'Error',
-        description: error instanceof Error ? error.message : 'Failed to create content',
-        variant: 'destructive'
-      });
-    }
-  });
-
-  // Handle drag functionality
-  const handleMouseDown = (e: React.MouseEvent) => {
-    if (e.target === e.currentTarget || (e.target as HTMLElement).classList.contains('drag-handle')) {
-      setIsDragging(true);
-      const rect = dotRef.current?.getBoundingClientRect();
-      if (rect) {
-        setDragOffset({
-          x: e.clientX - rect.left,
-          y: e.clientY - rect.top
-        });
-      }
-    }
-  };
-
-  useEffect(() => {
+  // Mouse event handlers for dragging
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    if (!dotRef.current) return;
+    
+    const rect = dotRef.current.getBoundingClientRect();
+    const offsetX = e.clientX - rect.left;
+    const offsetY = e.clientY - rect.top;
+    
+    setDragOffset({ x: offsetX, y: offsetY });
+    setIsDragging(true);
+    
     const handleMouseMove = (e: MouseEvent) => {
-      if (isDragging) {
-        setPosition({
-          x: e.clientX - dragOffset.x,
-          y: e.clientY - dragOffset.y
-        });
-      }
+      const newX = e.clientX - offsetX;
+      const newY = e.clientY - offsetY;
+      
+      const clampedX = Math.max(0, Math.min(window.innerWidth - 200, newX));
+      const clampedY = Math.max(0, Math.min(window.innerHeight - 100, newY));
+      
+      setPosition({ x: clampedX, y: clampedY });
     };
-
+    
     const handleMouseUp = () => {
       setIsDragging(false);
-    };
-
-    if (isDragging) {
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mouseup', handleMouseUp);
-    }
-
-    return () => {
+      localStorage.setItem('global-floating-dot-v2-position', JSON.stringify(position));
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [isDragging, dragOffset]);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
     
-    if (contentType === 'dot') {
-      if (!formData.summary.trim() || !formData.pulse.trim()) {
-        toast({
-          title: 'Missing Fields',
-          description: 'Summary and pulse are required.',
-          variant: 'destructive'
-        });
-        return;
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+  }, [position]);
+
+  // Reset form when content type changes
+  useEffect(() => {
+    setFormData({
+      summary: '',
+      anchor: '',
+      pulse: '',
+      wheelId: '',
+      name: '',
+      heading: '',
+      goals: '',
+      timeline: '',
+      category: '',
+      chakraId: '',
+      lifePurpose: ''
+    });
+  }, [contentType]);
+
+  // Update capture mode when localStorage changes
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const savedSettings = localStorage.getItem('dotspark-settings');
+      if (savedSettings) {
+        const settings = JSON.parse(savedSettings);
+        setCaptureMode(settings.captureMode ?? 'hybrid');
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (captureMode === 'ai') return; // AI mode doesn't submit yet
+
+    setIsLoading(true);
+
+    try {
+      const endpoint = contentType === 'dot' ? '/api/user-content/dots' : 
+                     contentType === 'wheel' ? '/api/user-content/wheels' : 
+                     '/api/user-content/chakras';
+
+      let payload: any = {
+        captureMode: 'natural',
+        sourceType: 'text'
+      };
+
+      if (contentType === 'dot') {
+        payload = {
+          ...payload,
+          summary: formData.summary,
+          anchor: formData.anchor,
+          pulse: formData.pulse,
+          wheelId: formData.wheelId || undefined
+        };
+      } else if (contentType === 'wheel') {
+        payload = {
+          ...payload,
+          name: formData.name,
+          heading: formData.heading || formData.name,
+          goals: formData.goals || '',
+          timeline: formData.timeline || '',
+          category: formData.category,
+          chakraId: contentType === 'wheel' && formData.chakraId ? formData.chakraId : null
+        };
+      } else if (contentType === 'chakra') {
+        payload = {
+          ...payload,
+          name: formData.name,
+          heading: formData.heading || formData.name,
+          lifePurpose: formData.lifePurpose || '',
+          category: formData.category
+        };
       }
 
-      createContentMutation.mutate({
-        summary: formData.summary,
-        anchor: formData.anchor || '',
-        pulse: formData.pulse,
-        wheelId: formData.wheelId || null,
-        sourceType: 'text',
-        captureMode: captureMode
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-user-id': '5'
+        },
+        credentials: 'include',
+        body: JSON.stringify(payload)
       });
-    } else {
-      if (!formData.name.trim()) {
-        toast({
-          title: 'Missing Fields',
-          description: 'Name is required.',
-          variant: 'destructive'
-        });
-        return;
-      }
 
-      createContentMutation.mutate({
-        name: formData.name,
-        heading: formData.heading || formData.name,
-        goals: formData.goals || '',
-        timeline: formData.timeline || '',
-        category: formData.category,
-        chakraId: contentType === 'wheel' && formData.chakraId ? formData.chakraId : null
+      if (response.ok) {
+        const data = await response.json();
+        toast({
+          title: `${contentType.charAt(0).toUpperCase() + contentType.slice(1)} Created!`,
+          description: `Your ${contentType} has been successfully created.`
+        });
+
+        // Reset form and close
+        setFormData({
+          summary: '',
+          anchor: '',
+          pulse: '',
+          wheelId: '',
+          name: '',
+          heading: '',
+          goals: '',
+          timeline: '',
+          category: '',
+          chakraId: '',
+          lifePurpose: ''
+        });
+        setIsOpen(false);
+      } else {
+        throw new Error('Failed to create content');
+      }
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: `Failed to create ${contentType}. Please try again.`,
+        variant: 'destructive'
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -254,11 +241,19 @@ export const GlobalFloatingDotV2: React.FC<GlobalFloatingDotV2Props> = () => {
           
           {/* Main dot with original gradient and styling */}
           <Button
-            onClick={() => setIsOpen(true)}
+            onClick={() => {
+              setIsSpinning(true);
+              setTimeout(() => {
+                setIsOpen(true);
+                setIsSpinning(false);
+              }, 600);
+            }}
             className={cn(
               "w-12 h-12 rounded-full bg-gradient-to-br from-amber-600 to-orange-700 flex items-center justify-center transition-all duration-300 shadow-lg hover:shadow-xl p-0",
               isDragging 
                 ? "shadow-2xl ring-4 ring-amber-300/50 scale-110" 
+                : isSpinning 
+                ? "animate-spin scale-110" 
                 : "hover:scale-110 animate-pulse"
             )}
           >
@@ -350,116 +345,176 @@ export const GlobalFloatingDotV2: React.FC<GlobalFloatingDotV2Props> = () => {
               </Button>
             </div>
 
-            {/* Content Type Selection */}
-            <Tabs value={contentType} onValueChange={(value) => setContentType(value as 'dot' | 'wheel' | 'chakra')}>
-              <TabsList className="grid w-full grid-cols-3">
-                <TabsTrigger value="dot" className="flex items-center gap-2">
-                  <Sparkles className="w-4 h-4" />
-                  Dot
-                </TabsTrigger>
-                <TabsTrigger value="wheel" className="flex items-center gap-2">
-                  <Target className="w-4 h-4" />
-                  Wheel
-                </TabsTrigger>
-                <TabsTrigger value="chakra" className="flex items-center gap-2">
-                  <Zap className="w-4 h-4" />
-                  Chakra
-                </TabsTrigger>
-              </TabsList>
-
-              <form onSubmit={handleSubmit} className="space-y-4 mt-4">
-                <TabsContent value="dot" className="space-y-4">
-                  {captureMode === 'ai' ? (
-                    /* AI Mode - Dummy buttons for now */
-                    <div className="space-y-3 p-4 bg-blue-50 rounded-lg border border-blue-200">
-                      <p className="text-sm text-blue-700 font-medium text-center">AI Assistance Mode</p>
-                      <p className="text-xs text-blue-600 text-center mb-4">AI interaction options coming soon...</p>
-                      
-                      <div className="space-y-2">
-                        <Button
-                          type="button"
-                          variant="outline"
-                          className="w-full bg-blue-100 border-blue-300 text-blue-700 hover:bg-blue-200"
-                          disabled
-                        >
-                          <BrainCircuit className="w-4 h-4 mr-2" />
-                          Start AI Conversation (Coming Soon)
-                        </Button>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          className="w-full bg-blue-100 border-blue-300 text-blue-700 hover:bg-blue-200"
-                          disabled
-                        >
-                          <Sparkles className="w-4 h-4 mr-2" />
-                          AI-Assisted Creation (Coming Soon)
-                        </Button>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          className="w-full bg-blue-100 border-blue-300 text-blue-700 hover:bg-blue-200"
-                          disabled
-                        >
-                          <Target className="w-4 h-4 mr-2" />
-                          Smart Suggestions (Coming Soon)
-                        </Button>
-                      </div>
-                      
-                      <div className="text-center pt-2">
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => setCaptureMode('natural')}
-                          className="text-xs text-blue-600 hover:text-blue-800 underline"
-                        >
-                          Switch to Natural Mode for manual entry
-                        </Button>
-                      </div>
+            {captureMode === 'natural' ? (
+              /* Natural Mode - Show creation buttons like v1 */
+              <div className="space-y-3">
+                <p className="text-sm font-medium text-amber-700 text-center">Choose what to create:</p>
+                <div className="grid grid-cols-1 gap-3">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setContentType('dot')}
+                    className={`w-full h-12 justify-start gap-3 ${
+                      contentType === 'dot' 
+                        ? 'bg-amber-100 border-amber-300 text-amber-800' 
+                        : 'bg-white border-amber-200 text-amber-700 hover:bg-amber-50'
+                    }`}
+                  >
+                    <Sparkles className="w-5 h-5" />
+                    <div className="text-left">
+                      <div className="font-medium">Create Dot</div>
+                      <div className="text-xs opacity-80">Capture a single insight</div>
                     </div>
-                  ) : (
-                    /* Natural Mode - Normal form fields */
-                    <>
-                      {/* Dot Fields */}
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-amber-700">Summary *</label>
-                    <Textarea
-                      value={formData.summary}
-                      onChange={(e) => setFormData({ ...formData, summary: e.target.value })}
-                      placeholder="What's your key insight?"
-                      className="min-h-[60px] resize-none border-amber-200 focus:border-amber-400"
-                      required
-                    />
-                  </div>
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setContentType('wheel')}
+                    className={`w-full h-12 justify-start gap-3 ${
+                      contentType === 'wheel' 
+                        ? 'bg-orange-100 border-orange-300 text-orange-800' 
+                        : 'bg-white border-orange-200 text-orange-700 hover:bg-orange-50'
+                    }`}
+                  >
+                    <Target className="w-5 h-5" />
+                    <div className="text-left">
+                      <div className="font-medium">Create Wheel</div>
+                      <div className="text-xs opacity-80">Set goals and organize dots</div>
+                    </div>
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setContentType('chakra')}
+                    className={`w-full h-12 justify-start gap-3 ${
+                      contentType === 'chakra' 
+                        ? 'bg-purple-100 border-purple-300 text-purple-800' 
+                        : 'bg-white border-purple-200 text-purple-700 hover:bg-purple-50'
+                    }`}
+                  >
+                    <Zap className="w-5 h-5" />
+                    <div className="text-left">
+                      <div className="font-medium">Create Chakra</div>
+                      <div className="text-xs opacity-80">Define life purpose areas</div>
+                    </div>
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              /* AI Mode - Keep tabs for future AI integration */
+              <Tabs value={contentType} onValueChange={(value) => setContentType(value as 'dot' | 'wheel' | 'chakra')}>
+                <TabsList className="grid w-full grid-cols-3">
+                  <TabsTrigger value="dot" className="flex items-center gap-2">
+                    <Sparkles className="w-4 h-4" />
+                    Dot
+                  </TabsTrigger>
+                  <TabsTrigger value="wheel" className="flex items-center gap-2">
+                    <Target className="w-4 h-4" />
+                    Wheel
+                  </TabsTrigger>
+                  <TabsTrigger value="chakra" className="flex items-center gap-2">
+                    <Zap className="w-4 h-4" />
+                    Chakra
+                  </TabsTrigger>
+                </TabsList>
+              </Tabs>
+            )}
 
+            {/* Form Content */}
+            <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+              {captureMode === 'ai' ? (
+                /* AI Mode - Show dummy buttons */
+                <div className="space-y-3 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                  <p className="text-sm text-blue-700 font-medium text-center">AI Assistance Mode</p>
+                  <p className="text-xs text-blue-600 text-center mb-4">AI interaction options coming soon...</p>
+                  
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-amber-700">Anchor (Context)</label>
-                    <Input
-                      value={formData.anchor}
-                      onChange={(e) => setFormData({ ...formData, anchor: e.target.value })}
-                      placeholder="Where does this connect?"
-                      className="border-amber-200 focus:border-amber-400"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-amber-700">Pulse (Emotion) *</label>
-                    <Select
-                      value={formData.pulse}
-                      onValueChange={(value) => setFormData({ ...formData, pulse: value })}
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="w-full bg-blue-100 border-blue-300 text-blue-700 hover:bg-blue-200"
+                      disabled
                     >
-                      <SelectTrigger className="border-amber-200 focus:border-amber-400">
-                        <SelectValue placeholder="How do you feel?" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {emotions.map((emotion) => (
-                          <SelectItem key={emotion} value={emotion}>
-                            {emotion.charAt(0).toUpperCase() + emotion.slice(1)}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                      <BrainCircuit className="w-4 h-4 mr-2" />
+                      Start AI Conversation (Coming Soon)
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="w-full bg-blue-100 border-blue-300 text-blue-700 hover:bg-blue-200"
+                      disabled
+                    >
+                      <Sparkles className="w-4 h-4 mr-2" />
+                      AI-Assisted Creation (Coming Soon)
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="w-full bg-blue-100 border-blue-300 text-blue-700 hover:bg-blue-200"
+                      disabled
+                    >
+                      <Target className="w-4 h-4 mr-2" />
+                      Smart Suggestions (Coming Soon)
+                    </Button>
                   </div>
+                  
+                  <div className="text-center pt-2">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setCaptureMode('natural')}
+                      className="text-xs text-blue-600 hover:text-blue-800 underline"
+                    >
+                      Switch to Natural Mode for manual entry
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                /* Natural Mode - Show form fields based on selected content type */
+                <>
+                  {contentType === 'dot' && (
+                    /* Dot Fields */
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium text-amber-700">Summary *</label>
+                        <Textarea
+                          value={formData.summary}
+                          onChange={(e) => setFormData({ ...formData, summary: e.target.value })}
+                          placeholder="What's your key insight?"
+                          className="min-h-[60px] resize-none border-amber-200 focus:border-amber-400"
+                          required
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium text-amber-700">Anchor (Context)</label>
+                        <Input
+                          value={formData.anchor}
+                          onChange={(e) => setFormData({ ...formData, anchor: e.target.value })}
+                          placeholder="Where does this connect?"
+                          className="border-amber-200 focus:border-amber-400"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium text-amber-700">Pulse (Emotion) *</label>
+                        <Select
+                          value={formData.pulse}
+                          onValueChange={(value) => setFormData({ ...formData, pulse: value })}
+                        >
+                          <SelectTrigger className="border-amber-200 focus:border-amber-400">
+                            <SelectValue placeholder="How do you feel?" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {emotions.map((emotion) => (
+                              <SelectItem key={emotion} value={emotion}>
+                                {emotion.charAt(0).toUpperCase() + emotion.slice(1)}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
 
                       <div className="space-y-2">
                         <label className="text-sm font-medium text-amber-700">Wheel ID (Optional)</label>
@@ -470,167 +525,160 @@ export const GlobalFloatingDotV2: React.FC<GlobalFloatingDotV2Props> = () => {
                           className="border-amber-200 focus:border-amber-400"
                         />
                       </div>
-                    </>
+                    </div>
                   )}
-                </TabsContent>
 
-                <TabsContent value="wheel" className="space-y-4">
-                  {/* Wheel Fields */}
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-orange-700">Name *</label>
-                    <Input
-                      value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      placeholder="Wheel name"
-                      className="border-orange-200 focus:border-orange-400"
-                      required
-                    />
-                  </div>
+                  {contentType === 'wheel' && (
+                    /* Wheel Fields */
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium text-orange-700">Name *</label>
+                        <Input
+                          value={formData.name}
+                          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                          placeholder="Wheel name"
+                          className="border-orange-200 focus:border-orange-400"
+                          required
+                        />
+                      </div>
 
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-orange-700">Heading</label>
-                    <Input
-                      value={formData.heading}
-                      onChange={(e) => setFormData({ ...formData, heading: e.target.value })}
-                      placeholder="Brief heading"
-                      className="border-orange-200 focus:border-orange-400"
-                    />
-                  </div>
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium text-orange-700">Heading</label>
+                        <Input
+                          value={formData.heading}
+                          onChange={(e) => setFormData({ ...formData, heading: e.target.value })}
+                          placeholder="Brief heading"
+                          className="border-orange-200 focus:border-orange-400"
+                        />
+                      </div>
 
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-orange-700">Goals</label>
-                    <Textarea
-                      value={formData.goals}
-                      onChange={(e) => setFormData({ ...formData, goals: e.target.value })}
-                      placeholder="What are your goals?"
-                      className="min-h-[60px] resize-none border-orange-200 focus:border-orange-400"
-                    />
-                  </div>
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium text-orange-700">Goals</label>
+                        <Textarea
+                          value={formData.goals}
+                          onChange={(e) => setFormData({ ...formData, goals: e.target.value })}
+                          placeholder="What are your goals?"
+                          className="min-h-[60px] resize-none border-orange-200 focus:border-orange-400"
+                        />
+                      </div>
 
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-orange-700">Timeline</label>
-                    <Input
-                      value={formData.timeline}
-                      onChange={(e) => setFormData({ ...formData, timeline: e.target.value })}
-                      placeholder="How long will this take?"
-                      className="border-orange-200 focus:border-orange-400"
-                    />
-                  </div>
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium text-orange-700">Timeline</label>
+                        <Input
+                          value={formData.timeline}
+                          onChange={(e) => setFormData({ ...formData, timeline: e.target.value })}
+                          placeholder="How long will this take?"
+                          className="border-orange-200 focus:border-orange-400"
+                        />
+                      </div>
 
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-orange-700">Category</label>
-                    <Select
-                      value={formData.category}
-                      onValueChange={(value) => setFormData({ ...formData, category: value })}
-                    >
-                      <SelectTrigger className="border-orange-200 focus:border-orange-400">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {categories.map((category) => (
-                          <SelectItem key={category} value={category}>
-                            {category}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium text-orange-700">Category</label>
+                        <Select
+                          value={formData.category}
+                          onValueChange={(value) => setFormData({ ...formData, category: value })}
+                        >
+                          <SelectTrigger className="border-orange-200 focus:border-orange-400">
+                            <SelectValue placeholder="Select category" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {categories.map((category) => (
+                              <SelectItem key={category} value={category}>
+                                {category}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
 
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-orange-700">Chakra ID (Optional)</label>
-                    <Input
-                      value={formData.chakraId}
-                      onChange={(e) => setFormData({ ...formData, chakraId: e.target.value })}
-                      placeholder="Connect to a chakra (optional)"
-                      className="border-orange-200 focus:border-orange-400"
-                    />
-                  </div>
-                </TabsContent>
-
-                <TabsContent value="chakra" className="space-y-4">
-                  {/* Chakra Fields (same as wheel but without chakraId) */}
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-purple-700">Name *</label>
-                    <Input
-                      value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      placeholder="Chakra name"
-                      className="border-purple-200 focus:border-purple-400"
-                      required
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-purple-700">Heading</label>
-                    <Input
-                      value={formData.heading}
-                      onChange={(e) => setFormData({ ...formData, heading: e.target.value })}
-                      placeholder="Brief heading"
-                      className="border-purple-200 focus:border-purple-400"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-purple-700">Goals</label>
-                    <Textarea
-                      value={formData.goals}
-                      onChange={(e) => setFormData({ ...formData, goals: e.target.value })}
-                      placeholder="What is your life purpose?"
-                      className="min-h-[60px] resize-none border-purple-200 focus:border-purple-400"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-purple-700">Timeline</label>
-                    <Input
-                      value={formData.timeline}
-                      onChange={(e) => setFormData({ ...formData, timeline: e.target.value })}
-                      placeholder="Lifetime journey timeframe"
-                      className="border-purple-200 focus:border-purple-400"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-purple-700">Category</label>
-                    <Select
-                      value={formData.category}
-                      onValueChange={(value) => setFormData({ ...formData, category: value })}
-                    >
-                      <SelectTrigger className="border-purple-200 focus:border-purple-400">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {categories.map((category) => (
-                          <SelectItem key={category} value={category}>
-                            {category}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </TabsContent>
-
-                {/* Submit Button */}
-                <Button
-                  type="submit"
-                  disabled={createContentMutation.isPending}
-                  className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white"
-                >
-                  {createContentMutation.isPending ? (
-                    <>Creating...</>
-                  ) : (
-                    <>
-                      <Save className="w-4 h-4 mr-2" />
-                      Save {contentType.charAt(0).toUpperCase() + contentType.slice(1)} to Grid
-                    </>
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium text-orange-700">Chakra ID (Optional)</label>
+                        <Input
+                          value={formData.chakraId}
+                          onChange={(e) => setFormData({ ...formData, chakraId: e.target.value })}
+                          placeholder="Connect to a chakra (optional)"
+                          className="border-orange-200 focus:border-orange-400"
+                        />
+                      </div>
+                    </div>
                   )}
-                </Button>
-              </form>
-            </Tabs>
 
-            <div className="text-xs text-amber-600 bg-amber-50 p-2 rounded">
-              🌟 Global Content Creator V2: Works on all pages, creates dots/wheels/chakras in natural mode.
-            </div>
+                  {contentType === 'chakra' && (
+                    /* Chakra Fields */
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium text-purple-700">Name *</label>
+                        <Input
+                          value={formData.name}
+                          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                          placeholder="Chakra name"
+                          className="border-purple-200 focus:border-purple-400"
+                          required
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium text-purple-700">Heading</label>
+                        <Input
+                          value={formData.heading}
+                          onChange={(e) => setFormData({ ...formData, heading: e.target.value })}
+                          placeholder="Brief heading"
+                          className="border-purple-200 focus:border-purple-400"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium text-purple-700">Life Purpose</label>
+                        <Textarea
+                          value={formData.lifePurpose}
+                          onChange={(e) => setFormData({ ...formData, lifePurpose: e.target.value })}
+                          placeholder="What's your life purpose in this area?"
+                          className="min-h-[60px] resize-none border-purple-200 focus:border-purple-400"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium text-purple-700">Category</label>
+                        <Select
+                          value={formData.category}
+                          onValueChange={(value) => setFormData({ ...formData, category: value })}
+                        >
+                          <SelectTrigger className="border-purple-200 focus:border-purple-400">
+                            <SelectValue placeholder="Select category" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {categories.map((category) => (
+                              <SelectItem key={category} value={category}>
+                                {category}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Submit Button - Show only in natural mode */}
+                  <Button
+                    type="submit"
+                    disabled={isLoading}
+                    className="w-full bg-gradient-to-r from-amber-600 to-orange-700 hover:from-orange-700 hover:to-amber-600 text-white font-medium py-2 px-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-300"
+                  >
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Creating...
+                      </>
+                    ) : (
+                      <>
+                        <Plus className="w-4 h-4 mr-2" />
+                        Create {contentType.charAt(0).toUpperCase() + contentType.slice(1)}
+                      </>
+                    )}
+                  </Button>
+                </>
+              )}
+            </form>
           </CardContent>
         )}
       </Card>
