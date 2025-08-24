@@ -310,7 +310,11 @@ function GlobalFloatingDotV2() {
       <div
         ref={dotRef}
         className="fixed z-[9999] select-none touch-none"
-        style={{ left: position.x, top: position.y }}
+        style={{ 
+          left: position.x, 
+          top: position.y,
+          pointerEvents: 'auto'
+        }}
       >
         <div 
           className="relative cursor-move"
@@ -328,10 +332,12 @@ function GlobalFloatingDotV2() {
           {/* Main dot with original gradient and styling */}
           <Button
             onClick={(e) => {
+              console.log('Floating dot clicked', { hasDragged, isDragging });
               if (!hasDragged && !isDragging) {
                 e.stopPropagation();
                 setIsSpinning(true);
                 setTimeout(() => {
+                  console.log('Opening floating dot modal');
                   setIsOpen(true);
                   setIsSpinning(false);
                 }, 600);
@@ -374,10 +380,27 @@ function GlobalFloatingDotV2() {
     <div
       ref={dotRef}
       className="fixed z-[9999]"
-      style={{ left: position.x, top: position.y }}
+      style={{ 
+        left: Math.max(0, Math.min(position.x, (typeof window !== 'undefined' ? window.innerWidth : 1200) - 400)), 
+        top: Math.max(0, Math.min(position.y, (typeof window !== 'undefined' ? window.innerHeight : 800) - 600)),
+        pointerEvents: 'auto'
+      }}
     >
-      <Card className={`w-96 bg-white/95 backdrop-blur-sm border border-amber-200 shadow-xl ${isMinimized ? 'h-auto' : ''}`}>
-        <CardHeader className="pb-2 drag-handle cursor-move" onMouseDown={handleMouseDown}>
+      <Card className="w-96 max-h-[80vh] overflow-y-auto bg-white/95 backdrop-blur-sm border border-amber-200 shadow-xl"
+        style={{ 
+          minHeight: isMinimized ? 'auto' : '400px',
+          maxHeight: '80vh',
+          pointerEvents: 'auto'
+        }}
+      >
+        <CardHeader className="pb-2 flex-shrink-0"
+          style={{ cursor: 'move' }}
+          onMouseDown={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            handleMouseDown(e);
+          }}
+        >
           <div className="flex items-center justify-between">
             <CardTitle className="text-lg text-amber-800 flex items-center gap-2">
               <Sparkles className="w-5 h-5" />
@@ -405,7 +428,7 @@ function GlobalFloatingDotV2() {
         </CardHeader>
 
         {!isMinimized && (
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-4 flex-1 overflow-y-auto" style={{ maxHeight: 'calc(80vh - 60px)' }}>
             {/* Capture Mode Toggle Button */}
             <div className="flex items-center justify-between p-2 bg-gradient-to-r from-amber-50 to-orange-50 rounded-lg border border-amber-200">
               <div className="flex items-center gap-2">
