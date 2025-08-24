@@ -1,6 +1,6 @@
 import express from 'express';
 import { db } from '@db';
-import { entries, users, dots, wheels, vectorEmbeddings } from '@shared/schema';
+import { entries, users, dots, wheels, chakras, vectorEmbeddings } from '@shared/schema';
 import { eq, and, desc, sql } from 'drizzle-orm';
 import { z } from 'zod';
 
@@ -340,31 +340,31 @@ router.get('/wheels', checkDotSparkActivation, async (req, res) => {
   }
 });
 
-// Get user's chakras (wheels without chakraId are top-level chakras)
+// Get user's chakras from the actual chakras table
 router.get('/chakras', checkDotSparkActivation, async (req, res) => {
   try {
     const userId = req.user!.id;
     console.log(`🔍 Fetching chakras for user ID: ${userId}`);
     
-    // Query wheels table for chakras (wheels without chakraId)
-    const userChakras = await db.query.wheels.findMany({
-      where: and(
-        eq(wheels.userId, userId),
-        sql`chakra_id IS NULL`  // Chakras don't have a parent chakraId
-      ),
-      orderBy: desc(wheels.createdAt)
+    // Import chakras from schema
+    const { chakras } = await import('@shared/schema');
+    
+    // Query actual chakras table
+    const userChakras = await db.query.chakras.findMany({
+      where: eq(chakras.userId, userId),
+      orderBy: desc(chakras.createdAt)
     });
     
     console.log(`📊 Found ${userChakras.length} chakras for user ${userId}`);
     
-    // Transform to frontend format (same as wheels but marked as chakras)
+    // Transform to frontend format
     const formattedChakras = userChakras.map(chakra => ({
       id: chakra.id.toString(),
       name: chakra.heading,
       heading: chakra.heading,
-      purpose: chakra.goals, // Map goals to purpose for chakras
+      purpose: chakra.purpose, // Chakras have purpose, not goals
       timeline: chakra.timeline,
-      category: chakra.category || 'Life Purpose',
+      category: 'Life Purpose',
       color: chakra.color,
       position: { x: chakra.positionX || 400, y: chakra.positionY || 300 },
       radius: chakra.radius || 140, // Larger radius for chakras
@@ -373,7 +373,7 @@ router.get('/chakras', checkDotSparkActivation, async (req, res) => {
       updatedAt: chakra.updatedAt
     }));
     
-    console.log(`✅ Returning ${formattedChakras.length} formatted chakras`);
+    console.log(`✅ Returning ${formattedChakras.length} formatted chakras from chakras table`);
     res.json(formattedChakras);
     
   } catch (error) {
@@ -392,16 +392,20 @@ router.get('/stats', checkDotSparkActivation, async (req, res) => {
       where: eq(entries.userId, userId)
     });
     
-    // Count wheels for this user
+    // Count wheels and chakras separately
     const userWheels = await db.query.wheels.findMany({
       where: eq(wheels.userId, userId)
     });
     
+    const userChakras = await db.query.chakras.findMany({
+      where: eq(chakras.userId, userId)
+    });
+    
     res.json({
       totalDots: userEntries.length,
-      totalWheels: userWheels.filter(w => w.chakraId !== null).length, // Wheels that belong to chakras  
-      totalChakras: userWheels.filter(w => w.chakraId === null).length, // Wheels without a parent chakra are chakras themselves
-      lastActivity: userEntries.length > 0 ? userEntries[0]?.createdAt : (userWheels.length > 0 ? userWheels[0]?.createdAt : null)
+      totalWheels: userWheels.length, // All wheels regardless of chakraId
+      totalChakras: userChakras.length, // Actual chakras from chakras table
+      lastActivity: userEntries.length > 0 ? userEntries[0]?.createdAt : (userWheels.length > 0 ? userWheels[0]?.createdAt : (userChakras.length > 0 ? userChakras[0]?.createdAt : null))
     });
     
   } catch (error) {
