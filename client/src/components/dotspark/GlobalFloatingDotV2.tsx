@@ -36,6 +36,8 @@ function GlobalFloatingDotV2() {
   const [isSpinning, setIsSpinning] = useState(false);
   const [contentType, setContentType] = useState<'dot' | 'wheel' | 'chakra'>('dot');
   const [isLoading, setIsLoading] = useState(false);
+  const [dragStartPos, setDragStartPos] = useState({ x: 0, y: 0 });
+  const [hasDragged, setHasDragged] = useState(false);
 
   // Load capture mode from localStorage - default to hybrid
   const [captureMode, setCaptureMode] = useState<'natural' | 'ai' | 'hybrid'>(() => {
@@ -67,6 +69,9 @@ function GlobalFloatingDotV2() {
 
   // Mouse event handlers for dragging
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
     if (!dotRef.current) return;
     
     const rect = dotRef.current.getBoundingClientRect();
@@ -74,28 +79,55 @@ function GlobalFloatingDotV2() {
     const offsetY = e.clientY - rect.top;
     
     setDragOffset({ x: offsetX, y: offsetY });
-    setIsDragging(true);
+    setDragStartPos({ x: e.clientX, y: e.clientY });
+    setHasDragged(false);
     
     const handleMouseMove = (e: MouseEvent) => {
-      const newX = e.clientX - offsetX;
-      const newY = e.clientY - offsetY;
+      e.preventDefault();
       
-      const clampedX = Math.max(0, Math.min(window.innerWidth - 200, newX));
-      const clampedY = Math.max(0, Math.min(window.innerHeight - 100, newY));
+      // Check if we've moved enough to consider it a drag (threshold of 5 pixels)
+      const dragDistance = Math.sqrt(
+        Math.pow(e.clientX - dragStartPos.x, 2) + 
+        Math.pow(e.clientY - dragStartPos.y, 2)
+      );
       
-      setPosition({ x: clampedX, y: clampedY });
+      if (dragDistance > 5 && !hasDragged) {
+        setIsDragging(true);
+        setHasDragged(true);
+      }
+      
+      if (hasDragged || dragDistance > 5) {
+        const newX = e.clientX - offsetX;
+        const newY = e.clientY - offsetY;
+        
+        const clampedX = Math.max(0, Math.min(window.innerWidth - 200, newX));
+        const clampedY = Math.max(0, Math.min(window.innerHeight - 100, newY));
+        
+        setPosition({ x: clampedX, y: clampedY });
+      }
     };
     
-    const handleMouseUp = () => {
+    const handleMouseUp = (e: MouseEvent) => {
+      e.preventDefault();
+      
+      // Save position if dragged
+      if (hasDragged) {
+        const currentPosition = { 
+          x: Math.max(0, Math.min(window.innerWidth - 200, e.clientX - offsetX)),
+          y: Math.max(0, Math.min(window.innerHeight - 100, e.clientY - offsetY))
+        };
+        localStorage.setItem('global-floating-dot-v2-position', JSON.stringify(currentPosition));
+      }
+      
       setIsDragging(false);
-      localStorage.setItem('global-floating-dot-v2-position', JSON.stringify(position));
+      setHasDragged(false);
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
     };
     
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
-  }, [position]);
+  }, [dragStartPos, hasDragged]);
 
   // Reset form when content type changes
   useEffect(() => {
@@ -225,31 +257,36 @@ function GlobalFloatingDotV2() {
     return (
       <div
         ref={dotRef}
-        className="fixed z-[9999] select-none touch-none cursor-pointer"
+        className="fixed z-[9999] select-none touch-none"
         style={{ left: position.x, top: position.y }}
-        onMouseDown={handleMouseDown}
       >
-        <div className="relative">
+        <div 
+          className="relative cursor-move"
+          onMouseDown={handleMouseDown}
+        >
           {/* Enhanced pulsing rings - preserving original visual design */}
           {!isDragging && (
             <>
-              <div className="absolute inset-0 w-12 h-12 rounded-full bg-amber-500/40 animate-ping"></div>
-              <div className="absolute inset-1 w-10 h-10 rounded-full bg-orange-500/50 animate-ping" style={{ animationDelay: '0.5s' }}></div>
-              <div className="absolute inset-2 w-8 h-8 rounded-full bg-yellow-500/60 animate-ping" style={{ animationDelay: '1s' }}></div>
+              <div className="absolute inset-0 w-12 h-12 rounded-full bg-amber-500/40 animate-ping pointer-events-none"></div>
+              <div className="absolute inset-1 w-10 h-10 rounded-full bg-orange-500/50 animate-ping pointer-events-none" style={{ animationDelay: '0.5s' }}></div>
+              <div className="absolute inset-2 w-8 h-8 rounded-full bg-yellow-500/60 animate-ping pointer-events-none" style={{ animationDelay: '1s' }}></div>
             </>
           )}
           
           {/* Main dot with original gradient and styling */}
           <Button
-            onClick={() => {
-              setIsSpinning(true);
-              setTimeout(() => {
-                setIsOpen(true);
-                setIsSpinning(false);
-              }, 600);
+            onClick={(e) => {
+              if (!hasDragged && !isDragging) {
+                e.stopPropagation();
+                setIsSpinning(true);
+                setTimeout(() => {
+                  setIsOpen(true);
+                  setIsSpinning(false);
+                }, 600);
+              }
             }}
             className={cn(
-              "w-12 h-12 rounded-full bg-gradient-to-br from-amber-600 to-orange-700 flex items-center justify-center transition-all duration-300 shadow-lg hover:shadow-xl p-0",
+              "w-12 h-12 rounded-full bg-gradient-to-br from-amber-600 to-orange-700 flex items-center justify-center transition-all duration-300 shadow-lg hover:shadow-xl p-0 cursor-move",
               isDragging 
                 ? "shadow-2xl ring-4 ring-amber-300/50 scale-110" 
                 : isSpinning 
