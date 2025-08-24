@@ -290,24 +290,43 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
             transformOrigin: 'center center'
           }}
         >
-          {/* Individual Dots - using exact positioning logic from PreviewMapGrid */}
+          {/* Individual Dots - well distributed grid for easy identification */}
           {displayDots.map((dot: any, index: number) => {
-            // Use algorithmic positioning from backend API when available, fallback to manual calculation
             let x, y;
             
-            if (gridPositions?.dotPositions && gridPositions.dotPositions[dot.id]) {
-              // Use backend algorithmic positioning
-              const position = gridPositions.dotPositions[dot.id];
-              x = position.x;
-              y = position.y;
+            // Check if dot belongs to a wheel
+            if (dot.wheelId && dot.wheelId !== '' && dot.wheelId !== 'general') {
+              const wheel = displayWheels.find((w: any) => w.id === dot.wheelId);
+              if (wheel) {
+                // Position dots around their associated wheel in a circle
+                const dotsInWheel = displayDots.filter((d: any) => d.wheelId === dot.wheelId);
+                const dotIndexInWheel = dotsInWheel.findIndex((d: any) => d.id === dot.id);
+                const wheelCenterX = wheel.position?.x || 300;
+                const wheelCenterY = wheel.position?.y || 250;
+                const dotRadius = 60; // Fixed radius for dots around wheels
+                const angle = (dotIndexInWheel * 2 * Math.PI) / dotsInWheel.length;
+                
+                x = wheelCenterX + Math.cos(angle) * dotRadius;
+                y = wheelCenterY + Math.sin(angle) * dotRadius;
+              } else {
+                // Wheel not found, treat as unassociated
+                const unassociatedDots = displayDots.filter((d: any) => !d.wheelId || d.wheelId === '' || d.wheelId === 'general');
+                const unassociatedIndex = unassociatedDots.findIndex((d: any) => d.id === dot.id);
+                const cols = Math.ceil(Math.sqrt(unassociatedDots.length));
+                const row = Math.floor(unassociatedIndex / cols);
+                const col = unassociatedIndex % cols;
+                x = 80 + (col * 100);
+                y = 80 + (row * 80);
+              }
             } else {
-              // Fallback to manual positioning logic for dots not in API response
-              const dotId = String(dot.id || index);
-              const seedX = dotId.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
-              const seedY = seedX * 13 + index * 7;
-              
-              x = (seedX % 800) + 100;
-              y = (seedY % 600) + 100;
+              // Unassociated dots - create a clean grid in the top-left area
+              const unassociatedDots = displayDots.filter((d: any) => !d.wheelId || d.wheelId === '' || d.wheelId === 'general');
+              const unassociatedIndex = unassociatedDots.findIndex((d: any) => d.id === dot.id);
+              const cols = Math.ceil(Math.sqrt(unassociatedDots.length));
+              const row = Math.floor(unassociatedIndex / cols);
+              const col = unassociatedIndex % cols;
+              x = 80 + (col * 100);
+              y = 80 + (row * 80);
             }
             
             return (
@@ -398,10 +417,49 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
             );
           })}
 
-          {/* Render wheels exactly like PreviewMapGrid */}
-          {displayWheels.map((wheel: any) => {
+          {/* Render wheels with improved distribution */}
+          {displayWheels.map((wheel: any, wheelIndex: number) => {
             const wheelDots = displayDots.filter((d: any) => d.wheelId === wheel.id);
             const wheelRadius = calculateDynamicSizing('real', wheelDots.length, 'wheels');
+            
+            // Determine wheel position
+            let wheelX, wheelY;
+            if (wheel.chakraId) {
+              // Position wheel around its associated chakra
+              const chakra = chakras.find((c: any) => c.id === wheel.chakraId);
+              if (chakra) {
+                const wheelsInChakra = displayWheels.filter((w: any) => w.chakraId === wheel.chakraId);
+                const wheelIndexInChakra = wheelsInChakra.findIndex((w: any) => w.id === wheel.id);
+                const chakraX = chakra.position?.x || 600;
+                const chakraY = chakra.position?.y || 400;
+                const orbitRadius = 150; // Fixed radius for wheels around chakras
+                const angle = (wheelIndexInChakra * 2 * Math.PI) / wheelsInChakra.length;
+                
+                wheelX = chakraX + Math.cos(angle) * orbitRadius;
+                wheelY = chakraY + Math.sin(angle) * orbitRadius;
+              } else {
+                // Chakra not found, treat as unassociated
+                const unassociatedWheels = displayWheels.filter((w: any) => !w.chakraId);
+                const unassociatedIndex = unassociatedWheels.findIndex((w: any) => w.id === wheel.id);
+                const cols = Math.ceil(Math.sqrt(unassociatedWheels.length));
+                const row = Math.floor(unassociatedIndex / cols);
+                const col = unassociatedIndex % cols;
+                wheelX = 400 + (col * 200);
+                wheelY = 150 + (row * 150);
+              }
+            } else {
+              // Unassociated wheels - create a clean grid in the center-right area
+              const unassociatedWheels = displayWheels.filter((w: any) => !w.chakraId);
+              const unassociatedIndex = unassociatedWheels.findIndex((w: any) => w.id === wheel.id);
+              const cols = Math.ceil(Math.sqrt(unassociatedWheels.length));
+              const row = Math.floor(unassociatedIndex / cols);
+              const col = unassociatedIndex % cols;
+              wheelX = 400 + (col * 200);
+              wheelY = 150 + (row * 150);
+            }
+            
+            // Update wheel position for dot calculations
+            wheel.position = { x: wheelX, y: wheelY };
             
             return (
               <div key={wheel.id} className="relative">
@@ -409,8 +467,8 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                 <div
                   className="absolute rounded-full border-2 border-orange-400/60 bg-orange-50/30 cursor-pointer transition-all duration-300 hover:scale-105 hover:border-orange-500"
                   style={{
-                    left: `${(wheel.position?.x || 300) - wheelRadius}px`,
-                    top: `${(wheel.position?.y || 250) - wheelRadius}px`,
+                    left: `${wheelX - wheelRadius}px`,
+                    top: `${wheelY - wheelRadius}px`,
                     width: `${wheelRadius * 2}px`,
                     height: `${wheelRadius * 2}px`,
                     pointerEvents: 'auto'
@@ -441,8 +499,8 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                   <div 
                     className="absolute bg-white/95 backdrop-blur border-2 border-orange-200 rounded-lg p-3 shadow-2xl w-64 cursor-pointer z-[99999998]"
                     style={{
-                      left: `${(wheel.position?.x || 300) + wheelRadius + 20}px`,
-                      top: `${Math.max(0, (wheel.position?.y || 250) - 50)}px`,
+                      left: `${wheelX + wheelRadius + 20}px`,
+                      top: `${Math.max(0, wheelY - 50)}px`,
                       maxWidth: '280px',
                       boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.05)'
                     }}
@@ -478,10 +536,20 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
             );
           })}
 
-          {/* Render chakras exactly like PreviewMapGrid */}
-          {chakras.map((chakra: any) => {
+          {/* Render chakras with clear positioning */}
+          {chakras.map((chakra: any, chakraIndex: number) => {
             const chakraWheels = displayWheels.filter((w: any) => w.chakraId === chakra.id);
             const chakraRadius = getChakraSize('real', chakraWheels.length);
+            
+            // Position chakras in the bottom-right area with good spacing
+            const cols = Math.ceil(Math.sqrt(chakras.length));
+            const row = Math.floor(chakraIndex / cols);
+            const col = chakraIndex % cols;
+            const chakraX = 600 + (col * 300);
+            const chakraY = 400 + (row * 300);
+            
+            // Update chakra position for wheel calculations
+            chakra.position = { x: chakraX, y: chakraY };
             
             return (
               <div key={chakra.id} className="relative">
@@ -489,8 +557,8 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                 <div
                   className="absolute rounded-full border-4 border-amber-500/50 bg-gradient-to-br from-amber-100/40 to-orange-100/40 cursor-pointer transition-all duration-300 hover:scale-105 hover:border-amber-600/70"
                   style={{
-                    left: `${(chakra.position?.x || 500) - chakraRadius/2}px`,
-                    top: `${(chakra.position?.y || 350) - chakraRadius/2}px`,
+                    left: `${chakraX - chakraRadius/2}px`,
+                    top: `${chakraY - chakraRadius/2}px`,
                     width: `${chakraRadius}px`,
                     height: `${chakraRadius}px`,
                     pointerEvents: 'auto'
