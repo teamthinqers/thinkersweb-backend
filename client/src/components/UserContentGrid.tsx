@@ -116,31 +116,9 @@ export const UserContentGrid: React.FC<UserContentGridProps> = ({
               Create your first dot, wheel, or chakra to start organizing your thoughts.
             </p>
             
-            <div className="flex flex-col gap-3 max-w-xs mx-auto">
-              <button
-                onClick={() => {
-                  // Check if DotSpark is activated
-                  const isDotSparkActivated = neuraStorage.isActivated();
-                  
-                  if (isDotSparkActivated) {
-                    // User has activated DotSpark - trigger floating dot
-                    const event = new CustomEvent('triggerFloatingDot');
-                    window.dispatchEvent(event);
-                  } else {
-                    // User hasn't activated DotSpark - redirect to My Neura activation section
-                    window.location.href = '/my-neura';
-                  }
-                }}
-                className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg hover:scale-105"
-              >
-                <Plus className="w-5 h-5" />
-                Create Dot/Wheel/Spark
-              </button>
-              
-              <p className="text-xs text-amber-600 text-center">
-                Or try Preview Map to see examples
-              </p>
-            </div>
+            <p className="text-xs text-amber-600 text-center">
+              Try Preview Map to see examples
+            </p>
           </div>
         </div>
       </div>

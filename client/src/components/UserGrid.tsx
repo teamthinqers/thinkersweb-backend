@@ -570,8 +570,10 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                 >
                   {/* Wheel heading on top like preview mode */}
                   <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 text-center">
-                    <div className="text-xs font-bold text-orange-800 bg-white/90 rounded px-2 py-1 shadow-sm border border-orange-200 whitespace-nowrap">
-                      {wheel.heading || wheel.name}
+                    <div className="px-4 py-2 rounded-lg text-center shadow-lg border-2 transition-all duration-300 hover:scale-105 bg-gradient-to-r from-amber-50 to-orange-50 border-amber-300 text-amber-800">
+                      <div className="font-bold text-sm whitespace-nowrap">
+                        {wheel.heading || wheel.name}
+                      </div>
                     </div>
                   </div>
                   
@@ -677,8 +679,13 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                 >
                   {/* Chakra heading on top like preview mode */}
                   <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 text-center">
-                    <div className="text-sm font-bold text-amber-800 bg-white/90 rounded px-3 py-1 shadow-sm border border-amber-300 whitespace-nowrap">
-                      {chakra.heading || chakra.name}
+                    <div className="px-4 py-2 rounded-lg text-center shadow-lg border-2 transition-all duration-300 hover:scale-105 bg-gradient-to-r from-amber-100 to-orange-100 border-orange-300 text-orange-800">
+                      <div className="font-bold text-sm whitespace-nowrap">
+                        {chakra.heading || chakra.name}
+                      </div>
+                      <div className="text-xs opacity-75 font-medium mt-1">
+                        CHAKRA
+                      </div>
                     </div>
                   </div>
                   
