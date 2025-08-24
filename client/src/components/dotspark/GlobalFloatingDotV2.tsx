@@ -468,7 +468,7 @@ function GlobalFloatingDotV2() {
                         <textarea
                           value={formData.summary}
                           onChange={(e) => setFormData({ ...formData, summary: e.target.value })}
-                          placeholder="What's your insight?"
+                          placeholder="What's your thought?"
                           className="w-full p-2 text-sm border border-amber-200 rounded resize-none"
                           rows={2}
                           required
@@ -480,13 +480,13 @@ function GlobalFloatingDotV2() {
                           type="text"
                           value={formData.anchor}
                           onChange={(e) => setFormData({ ...formData, anchor: e.target.value })}
-                          placeholder="Context"
+                          placeholder="What's the context that helps you recall?"
                           className="w-full p-2 text-sm border border-amber-200 rounded"
                           required
                         />
                       </div>
                       <div>
-                        <label className="text-xs font-medium text-amber-700 block mb-1">Pulse *</label>
+                        <label className="text-xs font-medium text-amber-700 block mb-1">What's the emotion associated with your thought? *</label>
                         <div className="space-y-2">
                           {/* Emotion buttons */}
                           <div className="grid grid-cols-3 gap-1">

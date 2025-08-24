@@ -260,7 +260,7 @@ const UserContentCreation: React.FC<UserContentCreationProps> = ({
                     onChange={(e) => setFormData({ ...formData, summary: e.target.value })}
                     maxLength={220}
                     required
-                    placeholder="Brief summary of your insight or thought..."
+                    placeholder="What's your thought?"
                   />
                   <div className="text-xs text-gray-500 mt-1">
                     {formData.summary.length}/220 characters
@@ -274,7 +274,7 @@ const UserContentCreation: React.FC<UserContentCreationProps> = ({
                     onChange={(e) => setFormData({ ...formData, anchor: e.target.value })}
                     maxLength={300}
                     required
-                    placeholder="What will help you remember this insight..."
+                    placeholder="What's the context that helps you recall?"
                   />
                   <div className="text-xs text-gray-500 mt-1">
                     {formData.anchor.length}/300 characters
@@ -282,7 +282,7 @@ const UserContentCreation: React.FC<UserContentCreationProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">Emotion (Pulse)</label>
+                  <label className="block text-sm font-medium mb-2">What's the emotion associated with your thought?</label>
                   <div className="space-y-3">
                     {/* Emotion buttons */}
                     <div className="grid grid-cols-3 gap-2">
