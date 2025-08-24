@@ -10,17 +10,31 @@ import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 
 interface FormData {
+  // Dot fields
   summary: string;
   anchor: string;
   pulse: string;
   wheelId: string;
-  name: string;
+  
+  // Wheel fields  
   heading: string;
   goals: string;
   timeline: string;
   category: string;
   chakraId: string;
-  lifePurpose: string;
+  
+  // Chakra fields
+  purpose: string;
+}
+
+interface WheelOption {
+  id: number;
+  heading: string;
+}
+
+interface ChakraOption {
+  id: number;
+  heading: string;
 }
 
 function GlobalFloatingDotV2() {
@@ -38,6 +52,9 @@ function GlobalFloatingDotV2() {
   const [isLoading, setIsLoading] = useState(false);
   const [dragStartPos, setDragStartPos] = useState({ x: 0, y: 0 });
   const [hasDragged, setHasDragged] = useState(false);
+  const [wheels, setWheels] = useState<WheelOption[]>([]);
+  const [chakras, setChakras] = useState<ChakraOption[]>([]);
+  const [loadingData, setLoadingData] = useState(false);
 
   // Load capture mode from localStorage - default to hybrid
   const [captureMode, setCaptureMode] = useState<'natural' | 'ai' | 'hybrid'>(() => {
@@ -55,13 +72,12 @@ function GlobalFloatingDotV2() {
     anchor: '',
     pulse: '',
     wheelId: '',
-    name: '',
     heading: '',
     goals: '',
     timeline: '',
     category: '',
     chakraId: '',
-    lifePurpose: ''
+    purpose: ''
   });
 
   const dotRef = useRef<HTMLDivElement>(null);
@@ -129,6 +145,13 @@ function GlobalFloatingDotV2() {
     document.addEventListener('mouseup', handleMouseUp);
   }, [dragStartPos, hasDragged]);
 
+  // Load wheels and chakras data when component opens
+  useEffect(() => {
+    if (isOpen && !loadingData) {
+      loadWheelsAndChakras();
+    }
+  }, [isOpen]);
+
   // Reset form when content type changes
   useEffect(() => {
     setFormData({
@@ -136,15 +159,44 @@ function GlobalFloatingDotV2() {
       anchor: '',
       pulse: '',
       wheelId: '',
-      name: '',
       heading: '',
       goals: '',
       timeline: '',
       category: '',
       chakraId: '',
-      lifePurpose: ''
+      purpose: ''
     });
   }, [contentType]);
+
+  const loadWheelsAndChakras = async () => {
+    setLoadingData(true);
+    try {
+      const [wheelsResponse, chakrasResponse] = await Promise.all([
+        fetch('/api/user-content/wheels', {
+          headers: { 'x-user-id': '5' },
+          credentials: 'include'
+        }),
+        fetch('/api/user-content/chakras', {
+          headers: { 'x-user-id': '5' },
+          credentials: 'include'
+        })
+      ]);
+
+      if (wheelsResponse.ok) {
+        const wheelsData = await wheelsResponse.json();
+        setWheels(wheelsData.map((w: any) => ({ id: w.id, heading: w.heading })));
+      }
+
+      if (chakrasResponse.ok) {
+        const chakrasData = await chakrasResponse.json();
+        setChakras(chakrasData.map((c: any) => ({ id: c.id, heading: c.heading })));
+      }
+    } catch (error) {
+      console.error('Error loading wheels and chakras:', error);
+    } finally {
+      setLoadingData(false);
+    }
+  };
 
   // Update capture mode when localStorage changes
   useEffect(() => {
@@ -182,25 +234,23 @@ function GlobalFloatingDotV2() {
           summary: formData.summary,
           anchor: formData.anchor,
           pulse: formData.pulse,
-          wheelId: formData.wheelId || undefined
+          wheelId: formData.wheelId ? parseInt(formData.wheelId) : null
         };
       } else if (contentType === 'wheel') {
         payload = {
           ...payload,
-          name: formData.name,
-          heading: formData.heading || formData.name,
-          goals: formData.goals || '',
-          timeline: formData.timeline || '',
+          heading: formData.heading,
+          goals: formData.goals,
+          timeline: formData.timeline,
           category: formData.category,
-          chakraId: contentType === 'wheel' && formData.chakraId ? formData.chakraId : null
+          chakraId: formData.chakraId ? parseInt(formData.chakraId) : null
         };
       } else if (contentType === 'chakra') {
         payload = {
           ...payload,
-          name: formData.name,
-          heading: formData.heading || formData.name,
-          lifePurpose: formData.lifePurpose || '',
-          category: formData.category
+          heading: formData.heading,
+          purpose: formData.purpose,
+          timeline: formData.timeline
         };
       }
 
@@ -227,14 +277,16 @@ function GlobalFloatingDotV2() {
           anchor: '',
           pulse: '',
           wheelId: '',
-          name: '',
           heading: '',
           goals: '',
           timeline: '',
           category: '',
           chakraId: '',
-          lifePurpose: ''
+          purpose: ''
         });
+        
+        // Reload data for next time
+        loadWheelsAndChakras();
         setIsOpen(false);
       } else {
         throw new Error('Failed to create content');
@@ -554,13 +606,23 @@ function GlobalFloatingDotV2() {
                       </div>
 
                       <div className="space-y-2">
-                        <label className="text-sm font-medium text-amber-700">Wheel ID (Optional)</label>
-                        <Input
+                        <label className="text-sm font-medium text-amber-700">Connect to Wheel (Optional)</label>
+                        <Select
                           value={formData.wheelId}
-                          onChange={(e) => setFormData({ ...formData, wheelId: e.target.value })}
-                          placeholder="Connect to a wheel (optional)"
-                          className="border-amber-200 focus:border-amber-400"
-                        />
+                          onValueChange={(value) => setFormData({ ...formData, wheelId: value })}
+                        >
+                          <SelectTrigger className="border-amber-200 focus:border-amber-400">
+                            <SelectValue placeholder="Select a wheel or leave standalone" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="">Standalone (no wheel)</SelectItem>
+                            {wheels.map((wheel) => (
+                              <SelectItem key={wheel.id} value={wheel.id.toString()}>
+                                {wheel.heading}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       </div>
                     </div>
                   )}
@@ -569,43 +631,35 @@ function GlobalFloatingDotV2() {
                     /* Wheel Fields */
                     <div className="space-y-4">
                       <div className="space-y-2">
-                        <label className="text-sm font-medium text-orange-700">Name *</label>
+                        <label className="text-sm font-medium text-orange-700">Heading *</label>
                         <Input
-                          value={formData.name}
-                          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                          placeholder="Wheel name"
+                          value={formData.heading}
+                          onChange={(e) => setFormData({ ...formData, heading: e.target.value })}
+                          placeholder="What is this wheel about?"
                           className="border-orange-200 focus:border-orange-400"
                           required
                         />
                       </div>
 
                       <div className="space-y-2">
-                        <label className="text-sm font-medium text-orange-700">Heading</label>
-                        <Input
-                          value={formData.heading}
-                          onChange={(e) => setFormData({ ...formData, heading: e.target.value })}
-                          placeholder="Brief heading"
-                          className="border-orange-200 focus:border-orange-400"
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium text-orange-700">Goals</label>
+                        <label className="text-sm font-medium text-orange-700">Goals *</label>
                         <Textarea
                           value={formData.goals}
                           onChange={(e) => setFormData({ ...formData, goals: e.target.value })}
-                          placeholder="What are your goals?"
+                          placeholder="What are your goals for this wheel?"
                           className="min-h-[60px] resize-none border-orange-200 focus:border-orange-400"
+                          required
                         />
                       </div>
 
                       <div className="space-y-2">
-                        <label className="text-sm font-medium text-orange-700">Timeline</label>
+                        <label className="text-sm font-medium text-orange-700">Timeline *</label>
                         <Input
                           value={formData.timeline}
                           onChange={(e) => setFormData({ ...formData, timeline: e.target.value })}
                           placeholder="How long will this take?"
                           className="border-orange-200 focus:border-orange-400"
+                          required
                         />
                       </div>
 
@@ -629,13 +683,23 @@ function GlobalFloatingDotV2() {
                       </div>
 
                       <div className="space-y-2">
-                        <label className="text-sm font-medium text-orange-700">Chakra ID (Optional)</label>
-                        <Input
+                        <label className="text-sm font-medium text-orange-700">Connect to Chakra (Optional)</label>
+                        <Select
                           value={formData.chakraId}
-                          onChange={(e) => setFormData({ ...formData, chakraId: e.target.value })}
-                          placeholder="Connect to a chakra (optional)"
-                          className="border-orange-200 focus:border-orange-400"
-                        />
+                          onValueChange={(value) => setFormData({ ...formData, chakraId: value })}
+                        >
+                          <SelectTrigger className="border-orange-200 focus:border-orange-400">
+                            <SelectValue placeholder="Select a chakra or leave standalone" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="">Standalone (no chakra)</SelectItem>
+                            {chakras.map((chakra) => (
+                              <SelectItem key={chakra.id} value={chakra.id.toString()}>
+                                {chakra.heading}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       </div>
                     </div>
                   )}
@@ -644,53 +708,36 @@ function GlobalFloatingDotV2() {
                     /* Chakra Fields */
                     <div className="space-y-4">
                       <div className="space-y-2">
-                        <label className="text-sm font-medium text-purple-700">Name *</label>
+                        <label className="text-sm font-medium text-purple-700">Heading *</label>
                         <Input
-                          value={formData.name}
-                          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                          placeholder="Chakra name"
+                          value={formData.heading}
+                          onChange={(e) => setFormData({ ...formData, heading: e.target.value })}
+                          placeholder="What is this chakra about?"
                           className="border-purple-200 focus:border-purple-400"
                           required
                         />
                       </div>
 
                       <div className="space-y-2">
-                        <label className="text-sm font-medium text-purple-700">Heading</label>
-                        <Input
-                          value={formData.heading}
-                          onChange={(e) => setFormData({ ...formData, heading: e.target.value })}
-                          placeholder="Brief heading"
-                          className="border-purple-200 focus:border-purple-400"
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium text-purple-700">Life Purpose</label>
+                        <label className="text-sm font-medium text-purple-700">Purpose *</label>
                         <Textarea
-                          value={formData.lifePurpose}
-                          onChange={(e) => setFormData({ ...formData, lifePurpose: e.target.value })}
+                          value={formData.purpose}
+                          onChange={(e) => setFormData({ ...formData, purpose: e.target.value })}
                           placeholder="What's your life purpose in this area?"
                           className="min-h-[60px] resize-none border-purple-200 focus:border-purple-400"
+                          required
                         />
                       </div>
 
                       <div className="space-y-2">
-                        <label className="text-sm font-medium text-purple-700">Category</label>
-                        <Select
-                          value={formData.category}
-                          onValueChange={(value) => setFormData({ ...formData, category: value })}
-                        >
-                          <SelectTrigger className="border-purple-200 focus:border-purple-400">
-                            <SelectValue placeholder="Select category" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {categories.map((category) => (
-                              <SelectItem key={category} value={category}>
-                                {category}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                        <label className="text-sm font-medium text-purple-700">Timeline *</label>
+                        <Input
+                          value={formData.timeline}
+                          onChange={(e) => setFormData({ ...formData, timeline: e.target.value })}
+                          placeholder="What's the timeline for this purpose?"
+                          className="border-purple-200 focus:border-purple-400"
+                          required
+                        />
                       </div>
                     </div>
                   )}

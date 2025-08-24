@@ -7,7 +7,7 @@ DotSpark is a full-stack web application serving as a personalized learning mana
 Preferred communication style: Simple, everyday language.
 Dot creation: User prefers no automatic AI processing of their inputs - preserve exact text as provided.
 Dot headings: Automatic AI-generated headings are acceptable and should remain enabled.
-Global Floating Dot: Replaced with v2 that works universally across all pages without authentication dependencies, supports Dot/Wheel/Chakra creation with spinning wheel effect when clicked and separate create buttons in natural mode like version 1.
+Global Floating Dot: Replaced with v2 that works universally across all pages without authentication dependencies, supports Dot/Wheel/Chakra creation with spinning wheel effect when clicked and separate create buttons in natural mode like version 1. Updated form fields to match backend structure: dots have summary/anchor/pulse layers with auto-generated one-word summary, wheels have heading/goals/timeline, chakras have heading/purpose/timeline. Added dropdown mapping for dots to wheels and wheels to chakras.
 My-Neura Settings: Simplified to show only capture mode selection (AI mode, natural mode, hybrid mode) - removed AI chat preference and AI input preference settings.
 Global Floating Dot Mode Switching: Added flip button functionality to switch between natural mode and AI mode, defaulting all users to hybrid mode. Natural mode shows separate create buttons for dots/wheels/chakras like v1. AI mode shows dummy buttons pending future implementation.
 
