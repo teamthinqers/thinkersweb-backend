@@ -191,11 +191,19 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
     <div className={`relative bg-gradient-to-br from-amber-50/30 to-orange-50/30 rounded-xl border-2 border-amber-200 shadow-lg overflow-hidden ${
       isFullscreen ? 'fixed inset-0 z-50 rounded-none' : 'min-h-[500px]'
     }`}>
-      {/* User Mode Badge */}
+      {/* Stats badges - top left exactly like preview mode */}
       <div className="absolute top-2 left-2 md:top-4 md:left-4 z-10">
-        <Badge className="bg-amber-100 text-amber-800 px-2 py-1 md:px-3 md:py-1 text-xs md:text-sm font-medium">
-          User Mode
-        </Badge>
+        <div className="flex items-center gap-2">
+          <Badge className="bg-amber-100 text-amber-800 px-2 py-1 text-xs font-medium">
+            {dots.length} Dots
+          </Badge>
+          <Badge className="bg-orange-100 text-orange-800 px-2 py-1 text-xs font-medium">
+            {wheels.length} Wheels
+          </Badge>
+          <Badge className="bg-amber-200 text-amber-900 px-2 py-1 text-xs font-medium">
+            {chakras.length} Chakras
+          </Badge>
+        </div>
       </div>
 
       {/* Zoom Controls */}
@@ -354,16 +362,11 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                   onMouseEnter={() => setHoveredDot(dot)}
                   onMouseLeave={() => setHoveredDot(null)}
                 >
-                  <div className="absolute inset-0 flex items-center justify-center text-white text-xs font-semibold">
-                    {dot.oneWordSummary.charAt(0).toUpperCase()}
-                  </div>
-                  
-                  {/* Source type indicator */}
-                  <div className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-white border border-gray-200 flex items-center justify-center">
+                  <div className="absolute inset-0 flex items-center justify-center text-white text-xs font-bold">
                     {dot.sourceType === 'voice' ? (
-                      <Mic className="w-2 h-2 text-amber-600" />
+                      <Mic className="w-3 h-3" />
                     ) : (
-                      <Type className="w-2 h-2 text-amber-600" />
+                      <span className="text-sm font-bold">T</span>
                     )}
                   </div>
                 </div>
@@ -395,7 +398,7 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                           <Badge className={`text-xs px-1.5 py-0.5 ${
                             dot.captureMode === 'ai' ? 'bg-purple-100 text-purple-700' : 'bg-amber-100 text-amber-700'
                           }`}>
-                            {dot.sourceType === 'voice' ? <Mic className="w-2 h-2" /> : <Type className="w-2 h-2" />}
+                            {dot.sourceType === 'voice' ? <Mic className="w-2 h-2" /> : 'T'}
                           </Badge>
                         </div>
                       </div>
@@ -481,13 +484,17 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                   onMouseEnter={() => setHoveredWheel(wheel)}
                   onMouseLeave={() => setHoveredWheel(null)}
                 >
-                  {/* Wheel label */}
+                  {/* Wheel heading on top like preview mode */}
+                  <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 text-center">
+                    <div className="text-xs font-bold text-orange-800 bg-white/90 rounded px-2 py-1 shadow-sm border border-orange-200 whitespace-nowrap">
+                      {wheel.heading || wheel.name}
+                    </div>
+                  </div>
+                  
+                  {/* Wheel content */}
                   <div className="absolute inset-0 flex items-center justify-center p-2">
                     <div className="text-center">
-                      <div className="text-xs font-bold text-orange-800 line-clamp-2">
-                        {wheel.name || wheel.heading}
-                      </div>
-                      <div className="text-xs text-orange-600 mt-1">
+                      <div className="text-xs text-orange-600">
                         {wheelDots.length} dots
                       </div>
                     </div>
@@ -569,12 +576,16 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                   }}
                   onMouseDown={(e) => e.stopPropagation()}
                 >
-                  {/* Chakra label */}
+                  {/* Chakra heading on top like preview mode */}
+                  <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 text-center">
+                    <div className="text-sm font-bold text-amber-800 bg-white/90 rounded px-3 py-1 shadow-sm border border-amber-300 whitespace-nowrap">
+                      {chakra.heading || chakra.name}
+                    </div>
+                  </div>
+                  
+                  {/* Chakra content */}
                   <div className="absolute inset-0 flex items-center justify-center p-4">
                     <div className="text-center">
-                      <div className="text-sm font-bold text-amber-800 line-clamp-2 mb-2">
-                        {chakra.name || chakra.heading}
-                      </div>
                       <div className="text-xs text-amber-700">
                         {chakraWheels.length} wheels
                       </div>
@@ -743,53 +754,6 @@ const UserGrid: React.FC<UserGridProps> = ({
 
   return (
     <div className="space-y-6">
-      {/* Header with Create Button */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h2 className="text-2xl font-bold text-amber-800">Your Neural Map</h2>
-          <p className="text-gray-600">Visualize and explore your dots, wheels, and chakras</p>
-        </div>
-        <Button 
-          onClick={() => setShowCreation(true)}
-          className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white"
-        >
-          <Plus className="w-4 h-4 mr-2" />
-          Create Content
-        </Button>
-      </div>
-
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-lg text-amber-800">Dots</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-amber-600">{userDots.length}</div>
-            <p className="text-xs text-gray-500 mt-1">Individual insights</p>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-lg text-orange-800">Wheels</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-orange-600">{regularWheels.length}</div>
-            <p className="text-xs text-gray-500 mt-1">Goal-oriented projects</p>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-lg text-amber-800">Chakras</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-amber-600">{chakras.length}</div>
-            <p className="text-xs text-gray-500 mt-1">Life purposes</p>
-          </CardContent>
-        </Card>
-      </div>
 
       {/* User Map Grid - exact same component structure as PreviewMapGrid */}
       <UserMapGrid
