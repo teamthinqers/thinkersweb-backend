@@ -333,7 +333,7 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
             let x, y;
             
             // Check if dot belongs to a wheel
-            if (dot.wheelId && dot.wheelId !== '' && dot.wheelId !== 'general') {
+            if (dot.wheelId && dot.wheelId !== '' && dot.wheelId !== 'general' && dot.wheelId !== 'standalone') {
               const wheel = displayWheels.find((w: any) => w.id === dot.wheelId);
               if (wheel) {
                 // Position dots around their associated wheel in a circle
@@ -347,25 +347,25 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                 x = wheelCenterX + Math.cos(angle) * dotRadius;
                 y = wheelCenterY + Math.sin(angle) * dotRadius;
               } else {
-                // Wheel not found, treat as unassociated - use proper grid distribution
-                const unassociatedDots = displayDots.filter((d: any) => !d.wheelId || d.wheelId === '' || d.wheelId === 'general');
-                const unassociatedIndex = unassociatedDots.findIndex((d: any) => d.id === dot.id);
+                // Wheel not found, treat as standalone - use proper grid distribution
+                const standaloneDots = displayDots.filter((d: any) => !d.wheelId || d.wheelId === '' || d.wheelId === 'general' || d.wheelId === 'standalone');
+                const standaloneIndex = standaloneDots.findIndex((d: any) => d.id === dot.id);
                 
                 if (elementPositions[`dot-${dot.id}`]) {
                   x = elementPositions[`dot-${dot.id}`].x;
                   y = elementPositions[`dot-${dot.id}`].y;
                 } else {
-                  const cols = Math.ceil(Math.sqrt(unassociatedDots.length * 1.5));
-                  const row = Math.floor(unassociatedIndex / cols);
-                  const col = unassociatedIndex % cols;
+                  const cols = Math.ceil(Math.sqrt(standaloneDots.length * 1.5));
+                  const row = Math.floor(standaloneIndex / cols);
+                  const col = standaloneIndex % cols;
                   x = 120 + (col * 120);
                   y = 120 + (row * 120);
                 }
               }
             } else {
-              // Unassociated dots - use proper grid distribution to avoid overlaps
-              const unassociatedDots = displayDots.filter((d: any) => !d.wheelId || d.wheelId === '' || d.wheelId === 'general');
-              const unassociatedIndex = unassociatedDots.findIndex((d: any) => d.id === dot.id);
+              // Standalone dots - use proper grid distribution to avoid overlaps
+              const standaloneDots = displayDots.filter((d: any) => !d.wheelId || d.wheelId === '' || d.wheelId === 'general' || d.wheelId === 'standalone');
+              const standaloneIndex = standaloneDots.findIndex((d: any) => d.id === dot.id);
               
               // Use saved position if exists, otherwise calculate new position with proper spacing
               if (elementPositions[`dot-${dot.id}`]) {
@@ -373,9 +373,9 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                 y = elementPositions[`dot-${dot.id}`].y;
               } else {
                 // Grid-based positioning with generous spacing (120px apart)
-                const cols = Math.ceil(Math.sqrt(unassociatedDots.length * 1.5)); // More spread out
-                const row = Math.floor(unassociatedIndex / cols);
-                const col = unassociatedIndex % cols;
+                const cols = Math.ceil(Math.sqrt(standaloneDots.length * 1.5)); // More spread out
+                const row = Math.floor(standaloneIndex / cols);
+                const col = standaloneIndex % cols;
                 x = 120 + (col * 120); // 120px spacing
                 y = 120 + (row * 120); // 120px spacing
               }
@@ -479,23 +479,36 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
             
             // Determine wheel position
             let wheelX, wheelY;
-            if (wheel.chakraId) {
-              // Position wheel around its associated chakra
+            if (wheel.chakraId && wheel.chakraId !== 'standalone') {
+              // Position wheel inside/around its associated chakra like preview mode  
               const chakra = chakras.find((c: any) => c.id === wheel.chakraId);
               if (chakra) {
-                const wheelsInChakra = displayWheels.filter((w: any) => w.chakraId === wheel.chakraId);
+                const wheelsInChakra = displayWheels.filter((w: any) => w.chakraId === wheel.chakraId && w.chakraId !== 'standalone');
                 const wheelIndexInChakra = wheelsInChakra.findIndex((w: any) => w.id === wheel.id);
-                const chakraX = chakra.position?.x || 600;
-                const chakraY = chakra.position?.y || 400;
-                const orbitRadius = 150; // Fixed radius for wheels around chakras
+                
+                // Get chakra position (either saved position or calculated position)
+                let chakraX, chakraY;
+                if (elementPositions[`chakra-${chakra.id}`]) {
+                  chakraX = elementPositions[`chakra-${chakra.id}`].x;
+                  chakraY = elementPositions[`chakra-${chakra.id}`].y;
+                } else {
+                  const chakraIndex = chakras.findIndex((c: any) => c.id === chakra.id);
+                  const cols = Math.max(1, Math.ceil(Math.sqrt(chakras.length)));
+                  const row = Math.floor(chakraIndex / cols);
+                  const col = chakraIndex % cols;
+                  chakraX = 700 + (col * 400);
+                  chakraY = 600 + (row * 350);
+                }
+                
+                const orbitRadius = 120; // Fixed radius for wheels inside chakras (like preview mode)
                 const angle = (wheelIndexInChakra * 2 * Math.PI) / wheelsInChakra.length;
                 
                 wheelX = chakraX + Math.cos(angle) * orbitRadius;
                 wheelY = chakraY + Math.sin(angle) * orbitRadius;
               } else {
-                // Chakra not found, treat as unassociated - use proper spacing
-                const unassociatedWheels = displayWheels.filter((w: any) => !w.chakraId);
-                const unassociatedIndex = unassociatedWheels.findIndex((w: any) => w.id === wheel.id);
+                // Chakra not found, treat as standalone
+                const standaloneWheels = displayWheels.filter((w: any) => !w.chakraId || w.chakraId === 'standalone');
+                const standaloneIndex = standaloneWheels.findIndex((w: any) => w.id === wheel.id);
                 
                 if (elementPositions[`wheel-${wheel.id}`]) {
                   wheelX = elementPositions[`wheel-${wheel.id}`].x;
@@ -509,20 +522,20 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                 }
               }
             } else {
-              // Unassociated wheels - use proper spacing to avoid overlaps  
-              const unassociatedWheels = displayWheels.filter((w: any) => !w.chakraId);
-              const unassociatedIndex = unassociatedWheels.findIndex((w: any) => w.id === wheel.id);
+              // Standalone wheels - well distributed grid separate from chakras  
+              const standaloneWheels = displayWheels.filter((w: any) => !w.chakraId || w.chakraId === 'standalone');
+              const standaloneIndex = standaloneWheels.findIndex((w: any) => w.id === wheel.id);
               
               if (elementPositions[`wheel-${wheel.id}`]) {
                 wheelX = elementPositions[`wheel-${wheel.id}`].x;
                 wheelY = elementPositions[`wheel-${wheel.id}`].y;
               } else {
-                // Grid positioning with 280px spacing for wheels (they're larger)
-                const cols = Math.max(2, Math.ceil(Math.sqrt(unassociatedWheels.length)));
-                const row = Math.floor(unassociatedIndex / cols);
-                const col = unassociatedIndex % cols;
-                wheelX = 600 + (col * 280); // 280px spacing for wheels
-                wheelY = 250 + (row * 220); // 220px vertical spacing
+                // Grid positioning for standalone wheels (left side)
+                const cols = Math.max(2, Math.ceil(Math.sqrt(standaloneWheels.length)));
+                const row = Math.floor(standaloneIndex / cols);
+                const col = standaloneIndex % cols;
+                wheelX = 200 + (col * 280); // Position standalone wheels on left side
+                wheelY = 200 + (row * 220);
               }
             }
             

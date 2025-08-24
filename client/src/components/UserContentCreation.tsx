@@ -138,22 +138,42 @@ const UserContentCreation: React.FC<UserContentCreationProps> = ({
     e.preventDefault();
     
     if (contentType === 'dot') {
+      // Validate wheel selection
+      if (!formData.wheelId) {
+        toast({
+          title: 'Error',
+          description: 'Please select which wheel this dot belongs to or choose standalone.',
+          variant: 'destructive'
+        });
+        return;
+      }
+      
       createContentMutation.mutate({
         summary: formData.summary,
         anchor: formData.anchor,
         pulse: formData.pulse,
-        wheelId: formData.wheelId || null,
+        wheelId: formData.wheelId === 'standalone' ? null : formData.wheelId,
         sourceType: 'text',
         captureMode: 'natural'
       });
     } else if (contentType === 'wheel') {
+      // Validate chakra selection
+      if (!formData.chakraId) {
+        toast({
+          title: 'Error',
+          description: 'Please select which chakra this wheel belongs to or choose standalone.',
+          variant: 'destructive'
+        });
+        return;
+      }
+      
       createContentMutation.mutate({
         name: formData.name,
         heading: formData.heading,
         goals: formData.goals,
         timeline: formData.timeline,
         category: formData.category,
-        chakraId: formData.chakraId ? formData.chakraId : null
+        chakraId: formData.chakraId === 'standalone' ? null : formData.chakraId
       });
     } else if (contentType === 'chakra') {
       createContentMutation.mutate({
@@ -277,16 +297,16 @@ const UserContentCreation: React.FC<UserContentCreationProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">Assign to Wheel (optional)</label>
-                  <Select value={formData.wheelId} onValueChange={(value) => setFormData({ ...formData, wheelId: value })}>
+                  <label className="block text-sm font-medium mb-2">Which wheel does this belong to? *</label>
+                  <Select value={formData.wheelId} onValueChange={(value) => setFormData({ ...formData, wheelId: value })} required>
                     <SelectTrigger>
-                      <SelectValue placeholder="Choose a wheel or leave unassigned..." />
+                      <SelectValue placeholder="Select a wheel or standalone..." />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">Unassigned</SelectItem>
+                      <SelectItem value="standalone">Standalone</SelectItem>
                       {availableWheels.map((wheel) => (
                         <SelectItem key={wheel.id} value={wheel.id}>
-                          {wheel.name}
+                          {wheel.name || wheel.heading}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -353,18 +373,18 @@ const UserContentCreation: React.FC<UserContentCreationProps> = ({
                   </Select>
                 </div>
 
-                {contentType === 'wheel' && availableChakras.length > 0 && (
+                {contentType === 'wheel' && (
                   <div>
-                    <label className="block text-sm font-medium mb-2">Assign to Chakra (optional)</label>
-                    <Select value={formData.chakraId} onValueChange={(value) => setFormData({ ...formData, chakraId: value })}>
+                    <label className="block text-sm font-medium mb-2">Which chakra does this belong to? *</label>
+                    <Select value={formData.chakraId} onValueChange={(value) => setFormData({ ...formData, chakraId: value })} required>
                       <SelectTrigger>
-                        <SelectValue placeholder="Choose a chakra or leave independent..." />
+                        <SelectValue placeholder="Select a chakra or standalone..." />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">Independent Wheel</SelectItem>
+                        <SelectItem value="standalone">Standalone</SelectItem>
                         {availableChakras.map((chakra) => (
                           <SelectItem key={chakra.id} value={chakra.id}>
-                            {chakra.name}
+                            {chakra.name || chakra.heading}
                           </SelectItem>
                         ))}
                       </SelectContent>
