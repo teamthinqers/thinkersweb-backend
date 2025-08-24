@@ -410,11 +410,7 @@ function GlobalFloatingDotV2() {
       >
         <Card className="w-96 bg-white border-2 border-amber-300 shadow-2xl">
           <div className="p-6">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-bold text-amber-800 flex items-center gap-2">
-                <Sparkles className="w-5 h-5" />
-                Global Content Creator
-              </h3>
+            <div className="flex justify-end items-center mb-4">
               <button 
                 onClick={() => setIsOpen(false)}
                 className="text-gray-500 hover:text-gray-700 text-xl font-bold"
@@ -426,9 +422,6 @@ function GlobalFloatingDotV2() {
             <div className="space-y-4">
               {/* Simple working form */}
               <div className="space-y-4">
-                <div className="text-center mb-4">
-                  <p className="text-sm text-amber-700">Create content with proper form structure</p>
-                </div>
                 
                 <div className="grid grid-cols-3 gap-2 mb-4">
                   <button
