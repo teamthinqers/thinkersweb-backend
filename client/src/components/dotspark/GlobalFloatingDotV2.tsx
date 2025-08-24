@@ -409,12 +409,15 @@ function GlobalFloatingDotV2() {
           pointerEvents: 'auto'
         }}
       >
-        <Card className="w-96 bg-white border-2 border-amber-300 shadow-2xl">
+        <Card className="w-96 bg-white border-2 border-amber-300 shadow-2xl cursor-move">
           <div className="p-6">
-            <div className="flex justify-end items-center mb-4">
+            <div className="flex justify-between items-center mb-4">
+              <div className="flex-1 cursor-move">
+                <div className="text-xs text-gray-400">Drag to move</div>
+              </div>
               <button 
                 onClick={() => setIsOpen(false)}
-                className="text-gray-500 hover:text-gray-700 text-xl font-bold"
+                className="text-gray-500 hover:text-gray-700 text-xl font-bold cursor-pointer"
               >
                 ×
               </button>
@@ -526,6 +529,25 @@ function GlobalFloatingDotV2() {
                           </div>
                         </div>
                       </div>
+                      
+                      {/* Mandatory wheel selection */}
+                      <div>
+                        <label className="text-xs font-medium text-amber-700 block mb-1">Which wheel does this belong to? *</label>
+                        <select
+                          value={formData.wheelId}
+                          onChange={(e) => setFormData({ ...formData, wheelId: e.target.value })}
+                          className="w-full p-2 text-sm border border-amber-200 rounded"
+                          required
+                        >
+                          <option value="">Select wheel or standalone...</option>
+                          <option value="standalone">Standalone</option>
+                          {wheels.map((wheel) => (
+                            <option key={wheel.id} value={wheel.id}>
+                              {wheel.name || wheel.heading}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
                     </div>
                   )}
 
@@ -563,6 +585,25 @@ function GlobalFloatingDotV2() {
                           className="w-full p-2 text-sm border border-orange-200 rounded"
                           required
                         />
+                      </div>
+                      
+                      {/* Mandatory chakra selection */}
+                      <div>
+                        <label className="text-xs font-medium text-orange-700 block mb-1">Which chakra does this belong to? *</label>
+                        <select
+                          value={formData.chakraId}
+                          onChange={(e) => setFormData({ ...formData, chakraId: e.target.value })}
+                          className="w-full p-2 text-sm border border-orange-200 rounded"
+                          required
+                        >
+                          <option value="">Select chakra or standalone...</option>
+                          <option value="standalone">Standalone</option>
+                          {chakras.map((chakra) => (
+                            <option key={chakra.id} value={chakra.id}>
+                              {chakra.name || chakra.heading}
+                            </option>
+                          ))}
+                        </select>
                       </div>
                     </div>
                   )}
