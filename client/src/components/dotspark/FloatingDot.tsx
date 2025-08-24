@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Mic, MicOff, Type, X, Send } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 
@@ -22,6 +23,8 @@ export function FloatingDot({ enabled, onToggle, className }: FloatingDotProps) 
   const [captureMode, setCaptureMode] = useState<'text' | 'voice' | null>(null);
   const [isRecording, setIsRecording] = useState(false);
   const [textInput, setTextInput] = useState('');
+  const [selectedWheelId, setSelectedWheelId] = useState('');
+  const [availableWheels, setAvailableWheels] = useState<any[]>([]);
   const [position, setPosition] = useState<Position>({ x: 20, y: 100 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState<Position>({ x: 0, y: 0 });
@@ -190,6 +193,7 @@ export function FloatingDot({ enabled, onToggle, className }: FloatingDotProps) 
     setIsExpanded(false);
     setCaptureMode(null);
     setTextInput('');
+    setSelectedWheelId('');
     setIsRecording(false);
     if (recognitionRef.current) {
       recognitionRef.current.stop();
@@ -219,32 +223,69 @@ export function FloatingDot({ enabled, onToggle, className }: FloatingDotProps) 
     }
   };
 
+  // Fetch available wheels when component mounts or expands
+  useEffect(() => {
+    if (isExpanded) {
+      fetchAvailableWheels();
+    }
+  }, [isExpanded]);
+
+  const fetchAvailableWheels = async () => {
+    try {
+      const response = await fetch('/api/user-content/wheels', {
+        credentials: 'include',
+      });
+      if (response.ok) {
+        const wheels = await response.json();
+        setAvailableWheels(Array.isArray(wheels) ? wheels : []);
+      }
+    } catch (error) {
+      console.error('Error fetching wheels:', error);
+      setAvailableWheels([]);
+    }
+  };
+
   const handleSubmit = async () => {
     if (!textInput.trim()) return;
+    
+    // Validate wheel selection for dots
+    if (!selectedWheelId) {
+      toast({
+        title: 'Error',
+        description: 'Please select which wheel this dot belongs to or choose standalone.',
+        variant: 'destructive'
+      });
+      return;
+    }
 
     try {
-      const response = await fetch('/api/entries', {
+      // Create dot with proper structure matching UserContentCreation
+      const response = await fetch('/api/user-content/dots', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({
-          content: textInput.trim(),
-          source: 'floating_dot',
-          captureMode: captureMode || 'text'
+          summary: textInput.trim(),
+          anchor: textInput.trim(), // Use same content for anchor
+          pulse: 'captured', // Default pulse value
+          wheelId: selectedWheelId === 'standalone' ? null : selectedWheelId,
+          sourceType: captureMode || 'text',
+          captureMode: 'natural'
         })
       });
 
       if (response.ok) {
         toast({
-          title: "Thought captured",
+          title: "Dot created",
           description: "Your insight has been saved to DotSpark",
         });
         handleClose();
       } else {
-        throw new Error('Failed to save thought');
+        throw new Error('Failed to save dot');
       }
     } catch (error) {
       toast({
-        title: "Error saving thought",
+        title: "Error saving dot",
         description: "Please try again later",
         variant: "destructive"
       });
@@ -304,7 +345,7 @@ export function FloatingDot({ enabled, onToggle, className }: FloatingDotProps) 
       {isExpanded && (
         <div className="fixed inset-0 z-50 bg-black/20 backdrop-blur-sm flex items-center justify-center p-4">
           <Card className="w-full max-w-md bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm shadow-2xl border-amber-200 dark:border-amber-800">
-            <CardContent className="p-6">
+            <CardContent className="p-6 max-h-[80vh] overflow-y-auto">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-amber-800 dark:text-amber-200">
                   Capture Thought
@@ -353,6 +394,25 @@ export function FloatingDot({ enabled, onToggle, className }: FloatingDotProps) 
                     autoFocus
                     onKeyPress={(e) => e.key === 'Enter' && handleSubmit()}
                   />
+                  
+                  {/* Mandatory wheel selection for dots */}
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Which wheel does this belong to? *</label>
+                    <Select value={selectedWheelId} onValueChange={setSelectedWheelId} required>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a wheel or standalone..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="standalone">Standalone</SelectItem>
+                        {availableWheels.map((wheel) => (
+                          <SelectItem key={wheel.id} value={wheel.id}>
+                            {wheel.name || wheel.heading}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
                   <div className="flex gap-2">
                     <Button
                       onClick={() => setCaptureMode(null)}
@@ -363,7 +423,7 @@ export function FloatingDot({ enabled, onToggle, className }: FloatingDotProps) 
                     </Button>
                     <Button
                       onClick={handleSubmit}
-                      disabled={!textInput.trim()}
+                      disabled={!textInput.trim() || !selectedWheelId}
                       className="flex-1 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700"
                     >
                       <Send className="h-4 w-4 mr-2" />
@@ -399,6 +459,26 @@ export function FloatingDot({ enabled, onToggle, className }: FloatingDotProps) 
                     </div>
                   )}
 
+                  {/* Mandatory wheel selection for voice dots */}
+                  {textInput && !isRecording && (
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Which wheel does this belong to? *</label>
+                      <Select value={selectedWheelId} onValueChange={setSelectedWheelId} required>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a wheel or standalone..." />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="standalone">Standalone</SelectItem>
+                          {availableWheels.map((wheel) => (
+                            <SelectItem key={wheel.id} value={wheel.id}>
+                              {wheel.name || wheel.heading}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
+
                   <div className="flex gap-2">
                     <Button
                       onClick={() => setCaptureMode(null)}
@@ -418,7 +498,7 @@ export function FloatingDot({ enabled, onToggle, className }: FloatingDotProps) 
                     ) : (
                       <Button
                         onClick={handleSubmit}
-                        disabled={!textInput.trim()}
+                        disabled={!textInput.trim() || !selectedWheelId}
                         className="flex-1 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700"
                       >
                         <Send className="h-4 w-4 mr-2" />
