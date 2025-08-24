@@ -5,7 +5,7 @@ import { eq, and } from "drizzle-orm";
 
 interface AuthenticatedRequest extends Request {
   user?: any;
-  session?: { userId: number };
+  session?: any;
 }
 
 // Interface for classification result from your advanced core intelligence

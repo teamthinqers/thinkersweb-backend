@@ -28,7 +28,7 @@ if (process.env.DEEPSEEK_API_KEY) {
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const buildDirExists = fs.existsSync(path.join(__dirname, 'public'));
+const buildDirExists = fs.existsSync(path.join(__dirname, '..', 'dist', 'public'));
 
 // Force development mode if build directory doesn't exist
 if (!buildDirExists) {

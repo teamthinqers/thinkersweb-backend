@@ -1917,16 +1917,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Advanced core intelligence content classification
   app.post(`${apiPrefix}/intelligence/classify`, async (req: AuthenticatedRequest, res: Response) => {
+    const userId = req.user?.id || req.session?.userId;
+    if (!userId) {
+      return res.status(401).json({ error: 'Authentication required' });
+    }
     return await classifyContent(req, res);
   });
   
   // Confirm classification and save to grid
   app.post(`${apiPrefix}/intelligence/confirm-and-save`, async (req: AuthenticatedRequest, res: Response) => {
+    const userId = req.user?.id || req.session?.userId;
+    if (!userId) {
+      return res.status(401).json({ error: 'Authentication required' });
+    }
     return await confirmAndSave(req, res);
   });
   
   // Get contextual suggestions based on user content
   app.get(`${apiPrefix}/intelligence/suggestions`, async (req: AuthenticatedRequest, res: Response) => {
+    const userId = req.user?.id || req.session?.userId;
+    if (!userId) {
+      return res.status(401).json({ error: 'Authentication required' });
+    }
     return await getContextualSuggestions(req, res);
   });
 
