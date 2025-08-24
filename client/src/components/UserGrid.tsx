@@ -317,34 +317,37 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                 x = wheelCenterX + Math.cos(angle) * dotRadius;
                 y = wheelCenterY + Math.sin(angle) * dotRadius;
               } else {
-                // Wheel not found, treat as unassociated
+                // Wheel not found, treat as unassociated - use random distribution
                 const unassociatedDots = displayDots.filter((d: any) => !d.wheelId || d.wheelId === '' || d.wheelId === 'general');
                 const unassociatedIndex = unassociatedDots.findIndex((d: any) => d.id === dot.id);
-                const cols = Math.ceil(Math.sqrt(unassociatedDots.length));
-                const row = Math.floor(unassociatedIndex / cols);
-                const col = unassociatedIndex % cols;
-                x = 80 + (col * 100);
-                y = 80 + (row * 80);
+                const dotId = String(dot.id || index);
+                const seedX = dotId.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
+                const seedY = seedX * 13 + unassociatedIndex * 7;
+                
+                x = 100 + (seedX % 900) + (unassociatedIndex * 67) % 400;
+                y = 100 + (seedY % 500) + (unassociatedIndex * 83) % 300;
               }
             } else {
-              // Unassociated dots - create a clean grid in the top-left area
+              // Unassociated dots - distribute widely and randomly across the grid
               const unassociatedDots = displayDots.filter((d: any) => !d.wheelId || d.wheelId === '' || d.wheelId === 'general');
               const unassociatedIndex = unassociatedDots.findIndex((d: any) => d.id === dot.id);
-              const cols = Math.ceil(Math.sqrt(unassociatedDots.length));
-              const row = Math.floor(unassociatedIndex / cols);
-              const col = unassociatedIndex % cols;
-              x = 80 + (col * 100);
-              y = 80 + (row * 80);
+              const dotId = String(dot.id || index);
+              const seedX = dotId.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
+              const seedY = seedX * 13 + unassociatedIndex * 7;
+              
+              // Wide random distribution with better spacing
+              x = 100 + (seedX % 900) + (unassociatedIndex * 67) % 400;
+              y = 100 + (seedY % 500) + (unassociatedIndex * 83) % 300;
             }
             
             return (
               <div key={dot.id} className="relative">
                 {/* Dot element with exact styling from PreviewMapGrid */}
                 <div
-                  className="absolute w-8 h-8 rounded-full cursor-pointer transition-all duration-200 hover:scale-110 hover:shadow-md dot-element group"
+                  className="absolute w-10 h-10 rounded-full cursor-pointer transition-all duration-200 hover:scale-110 hover:shadow-md dot-element group"
                   style={{
-                    left: `${x}px`,
-                    top: `${y}px`,
+                    left: `${x - 5}px`, // Adjust for larger size
+                    top: `${y - 5}px`,
                     background: dot.captureMode === 'ai' 
                       ? 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%)'
                       : 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)',
@@ -362,11 +365,16 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                   onMouseEnter={() => setHoveredDot(dot)}
                   onMouseLeave={() => setHoveredDot(null)}
                 >
+                  {/* Pulse animation for voice dots exactly like PreviewMapGrid */}
+                  {dot.sourceType === 'voice' && (
+                    <div className="absolute inset-0 rounded-full bg-amber-400 opacity-50 animate-ping" />
+                  )}
+                  
                   <div className="absolute inset-0 flex items-center justify-center text-white text-xs font-bold">
                     {dot.sourceType === 'voice' ? (
-                      <Mic className="w-3 h-3" />
+                      <Mic className="w-4 h-4" />
                     ) : (
-                      <span className="text-sm font-bold">T</span>
+                      <span className="text-base font-bold">T</span>
                     )}
                   </div>
                 </div>
@@ -441,24 +449,27 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                 wheelX = chakraX + Math.cos(angle) * orbitRadius;
                 wheelY = chakraY + Math.sin(angle) * orbitRadius;
               } else {
-                // Chakra not found, treat as unassociated
+                // Chakra not found, treat as unassociated - use random distribution
                 const unassociatedWheels = displayWheels.filter((w: any) => !w.chakraId);
                 const unassociatedIndex = unassociatedWheels.findIndex((w: any) => w.id === wheel.id);
-                const cols = Math.ceil(Math.sqrt(unassociatedWheels.length));
-                const row = Math.floor(unassociatedIndex / cols);
-                const col = unassociatedIndex % cols;
-                wheelX = 400 + (col * 200);
-                wheelY = 150 + (row * 150);
+                const wheelId = String(wheel.id || wheelIndex);
+                const seedX = wheelId.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
+                const seedY = seedX * 17 + unassociatedIndex * 11;
+                
+                wheelX = 450 + (seedX % 600) + (unassociatedIndex * 120) % 300;
+                wheelY = 180 + (seedY % 400) + (unassociatedIndex * 90) % 250;
               }
             } else {
-              // Unassociated wheels - create a clean grid in the center-right area
+              // Unassociated wheels - distribute randomly in center-right area
               const unassociatedWheels = displayWheels.filter((w: any) => !w.chakraId);
               const unassociatedIndex = unassociatedWheels.findIndex((w: any) => w.id === wheel.id);
-              const cols = Math.ceil(Math.sqrt(unassociatedWheels.length));
-              const row = Math.floor(unassociatedIndex / cols);
-              const col = unassociatedIndex % cols;
-              wheelX = 400 + (col * 200);
-              wheelY = 150 + (row * 150);
+              const wheelId = String(wheel.id || wheelIndex);
+              const seedX = wheelId.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
+              const seedY = seedX * 17 + unassociatedIndex * 11;
+              
+              // Random distribution in center-right with wider spacing
+              wheelX = 450 + (seedX % 600) + (unassociatedIndex * 120) % 300;
+              wheelY = 180 + (seedY % 400) + (unassociatedIndex * 90) % 250;
             }
             
             // Update wheel position for dot calculations
@@ -548,12 +559,14 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
             const chakraWheels = displayWheels.filter((w: any) => w.chakraId === chakra.id);
             const chakraRadius = getChakraSize('real', chakraWheels.length);
             
-            // Position chakras in the bottom-right area with good spacing
-            const cols = Math.ceil(Math.sqrt(chakras.length));
-            const row = Math.floor(chakraIndex / cols);
-            const col = chakraIndex % cols;
-            const chakraX = 600 + (col * 300);
-            const chakraY = 400 + (row * 300);
+            // Position chakras randomly in the bottom-right area with wide spacing
+            const chakraId = String(chakra.id || chakraIndex);
+            const seedX = chakraId.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
+            const seedY = seedX * 19 + chakraIndex * 13;
+            
+            // Random distribution with generous spacing to avoid overlaps
+            const chakraX = 700 + (seedX % 500) + (chakraIndex * 150) % 400;
+            const chakraY = 450 + (seedY % 300) + (chakraIndex * 120) % 200;
             
             // Update chakra position for wheel calculations
             chakra.position = { x: chakraX, y: chakraY };
