@@ -320,7 +320,7 @@ function GlobalFloatingDotV2() {
         }}
       >
         <div 
-          className="relative"
+          className="relative cursor-move"
           onMouseDown={handleMouseDown}
         >
           {/* Enhanced pulsing rings - preserving original visual design */}
@@ -345,14 +345,10 @@ function GlobalFloatingDotV2() {
                 }, 600);
               }
             }}
-            onMouseDown={(e) => {
-              // Prevent the button click from triggering mouse down for dragging
-              e.stopPropagation();
-            }}
             className={cn(
-              "w-12 h-12 rounded-full bg-gradient-to-br from-amber-600 to-orange-700 flex items-center justify-center transition-all duration-300 shadow-lg hover:shadow-xl p-0 cursor-pointer",
+              "w-12 h-12 rounded-full bg-gradient-to-br from-amber-600 to-orange-700 flex items-center justify-center transition-all duration-300 shadow-lg hover:shadow-xl p-0 pointer-events-none",
               isDragging 
-                ? "shadow-2xl ring-4 ring-amber-300/50 scale-110 cursor-move" 
+                ? "shadow-2xl ring-4 ring-amber-300/50 scale-110" 
                 : isSpinning 
                 ? "animate-spin scale-110" 
                 : "hover:scale-110 animate-pulse"
@@ -377,6 +373,22 @@ function GlobalFloatingDotV2() {
               <div className="absolute inset-0 w-12 h-12 rounded-full border-2 border-dashed border-amber-300 animate-spin"></div>
             )}
           </Button>
+          
+          {/* Invisible click area for when button has pointer-events-none */}
+          <div 
+            className="absolute inset-0 w-12 h-12 rounded-full cursor-pointer"
+            onClick={(e) => {
+              if (!hasDragged && !isDragging) {
+                e.preventDefault();
+                e.stopPropagation();
+                setIsSpinning(true);
+                setTimeout(() => {
+                  setIsOpen(true);
+                  setIsSpinning(false);
+                }, 600);
+              }
+            }}
+          />
         </div>
       </div>
     );
