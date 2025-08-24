@@ -311,23 +311,21 @@ router.get('/wheels', checkDotSparkActivation, async (req, res) => {
     
     console.log(`📊 Found ${userWheels.length} wheels for user ${userId}`);
     
-    // Return wheels with proper formatting
+    // Transform to frontend format
     const formattedWheels = userWheels.map(wheel => ({
-      id: wheel.id,
+      id: wheel.id.toString(),
+      name: wheel.heading,
       heading: wheel.heading,
       goals: wheel.goals,
       timeline: wheel.timeline,
-      category: wheel.category,
+      category: wheel.category || 'User Created',
       color: wheel.color,
-      chakraId: wheel.chakraId,
-      userId: wheel.userId,
-      sourceType: wheel.sourceType,
-      positionX: wheel.positionX,
-      positionY: wheel.positionY,
-      radius: wheel.radius,
+      position: { x: wheel.positionX || 400, y: wheel.positionY || 300 },
+      radius: wheel.radius || 95,
+      chakraId: wheel.chakraId ? wheel.chakraId.toString() : undefined,
+      sourceType: wheel.sourceType || 'text',
       createdAt: wheel.createdAt,
-      updatedAt: wheel.updatedAt,
-      voiceData: wheel.voiceData
+      updatedAt: wheel.updatedAt
     }));
     
     console.log(`✅ Returning ${formattedWheels.length} formatted wheels`);
@@ -339,6 +337,48 @@ router.get('/wheels', checkDotSparkActivation, async (req, res) => {
       error: 'Failed to fetch wheels',
       details: error instanceof Error ? error.message : 'Unknown error'
     });
+  }
+});
+
+// Get user's chakras (wheels without chakraId are top-level chakras)
+router.get('/chakras', checkDotSparkActivation, async (req, res) => {
+  try {
+    const userId = req.user!.id;
+    console.log(`🔍 Fetching chakras for user ID: ${userId}`);
+    
+    // Query wheels table for chakras (wheels without chakraId)
+    const userChakras = await db.query.wheels.findMany({
+      where: and(
+        eq(wheels.userId, userId),
+        sql`chakra_id IS NULL`  // Chakras don't have a parent chakraId
+      ),
+      orderBy: desc(wheels.createdAt)
+    });
+    
+    console.log(`📊 Found ${userChakras.length} chakras for user ${userId}`);
+    
+    // Transform to frontend format (same as wheels but marked as chakras)
+    const formattedChakras = userChakras.map(chakra => ({
+      id: chakra.id.toString(),
+      name: chakra.heading,
+      heading: chakra.heading,
+      purpose: chakra.goals, // Map goals to purpose for chakras
+      timeline: chakra.timeline,
+      category: chakra.category || 'Life Purpose',
+      color: chakra.color,
+      position: { x: chakra.positionX || 400, y: chakra.positionY || 300 },
+      radius: chakra.radius || 140, // Larger radius for chakras
+      sourceType: chakra.sourceType || 'text',
+      createdAt: chakra.createdAt,
+      updatedAt: chakra.updatedAt
+    }));
+    
+    console.log(`✅ Returning ${formattedChakras.length} formatted chakras`);
+    res.json(formattedChakras);
+    
+  } catch (error) {
+    console.error('Error fetching chakras:', error);
+    res.status(500).json({ error: 'Failed to fetch chakras' });
   }
 });
 
