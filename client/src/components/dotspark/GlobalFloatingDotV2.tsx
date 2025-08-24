@@ -280,6 +280,13 @@ function GlobalFloatingDotV2() {
           purpose: ''
         });
         
+        // Invalidate all content caches to refresh the grid
+        const { queryClient } = await import('@/lib/queryClient');
+        queryClient.invalidateQueries({ queryKey: ['/api/user-content/dots'] });
+        queryClient.invalidateQueries({ queryKey: ['/api/user-content/wheels'] });
+        queryClient.invalidateQueries({ queryKey: ['/api/user-content/chakras'] });
+        queryClient.invalidateQueries({ queryKey: ['/api/user-content/stats'] });
+        
         // Reload data for next time
         loadWheelsAndChakras();
         setIsOpen(false);

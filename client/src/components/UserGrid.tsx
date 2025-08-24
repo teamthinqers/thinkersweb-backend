@@ -13,6 +13,7 @@ import DotFullView from './DotFullView';
 interface DotWheelsMapProps {
   wheels: any[];
   dots: any[];
+  chakras?: any[];
   showingRecentFilter?: boolean;
   recentCount?: number;
   isFullscreen?: boolean;
@@ -65,6 +66,7 @@ const getChakraSize = (mode: 'preview' | 'real', wheelsCount: number) => {
 const DotWheelsMap: React.FC<DotWheelsMapProps> = ({ 
   wheels, 
   dots, 
+  chakras = [],
   showingRecentFilter = false, 
   recentCount = 4,
   isFullscreen = false,
@@ -123,7 +125,7 @@ const DotWheelsMap: React.FC<DotWheelsMapProps> = ({
   // Stats data
   const totalDots = dots.length;
   const totalWheels = wheels.length;
-  const totalChakras = 0; // wheels.filter((w: any) => w.chakraId).length;
+  const totalChakras = chakras.length;
   
   const displayDots = dots;
   const displayWheels = wheels;
@@ -578,7 +580,7 @@ const UserGrid: React.FC<UserGridProps> = ({ userId, mode }) => {
     refetchOnReconnect: false, // Don't refetch on network reconnection
   }) as { data: any[], isLoading: boolean };
 
-  // Fetch user's wheels and chakras with aggressive caching  
+  // Fetch user's wheels with aggressive caching  
   const { data: userWheels = [], isLoading: wheelsLoading } = useQuery({
     queryKey: ['/api/user-content/wheels', userId],
     queryFn: async () => {
@@ -601,6 +603,42 @@ const UserGrid: React.FC<UserGridProps> = ({ userId, mode }) => {
         return [];
       } catch (error) {
         console.error('UserGrid wheels fetch error:', error);
+        return [];
+      }
+    },
+    enabled: mode === 'real' && !!userId, // Only fetch when authenticated
+    retry: 3, // Retry up to 3 times on failure
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
+    staleTime: 30 * 60 * 1000, // Cache for 30 minutes
+    gcTime: 60 * 60 * 1000, // Keep in cache for 1 hour
+    refetchOnWindowFocus: false, 
+    refetchOnMount: false, // Don't refetch on component mount if we have cached data
+    refetchOnReconnect: false,
+  }) as { data: any[], isLoading: boolean };
+
+  // Fetch user's chakras separately with aggressive caching  
+  const { data: userChakras = [], isLoading: chakrasLoading } = useQuery({
+    queryKey: ['/api/user-content/chakras', userId],
+    queryFn: async () => {
+      if (!userId) return [];
+      
+      try {
+        const response = await fetch('/api/user-content/chakras', {
+          credentials: 'include',
+          headers: {
+            'Accept': 'application/json',
+            'x-user-id': userId.toString()
+          }
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          console.log('✅ UserGrid chakras fetched for user', userId, ':', data.length, 'chakras');
+          return data;
+        }
+        return [];
+      } catch (error) {
+        console.error('UserGrid chakras fetch error:', error);
         return [];
       }
     },
@@ -648,11 +686,11 @@ const UserGrid: React.FC<UserGridProps> = ({ userId, mode }) => {
     refetchOnMount: true
   });
 
-  const isLoading = dotsLoading || wheelsLoading || statsLoading;
+  const isLoading = dotsLoading || wheelsLoading || chakrasLoading || statsLoading;
 
-  // Separate wheels and chakras
-  const regularWheels = Array.isArray(userWheels) ? userWheels.filter((w: any) => w.chakraId !== null) : [];
-  const chakras = Array.isArray(userWheels) ? userWheels.filter((w: any) => w.chakraId === null) : [];
+  // Use separate chakras data
+  const regularWheels = Array.isArray(userWheels) ? userWheels : [];
+  const chakras = Array.isArray(userChakras) ? userChakras : [];
 
   if (mode === 'preview') {
     return (
@@ -695,16 +733,20 @@ const UserGrid: React.FC<UserGridProps> = ({ userId, mode }) => {
     );
   }
 
-  // Debug logging for dots display issue
-  console.log('UserGrid dots debugging:', {
+  // Debug logging for content display
+  console.log('UserGrid content debugging:', {
     userDotsLength: userDots.length,
     userWheelsLength: userWheels.length,
-    userDots: userDots.map(d => ({ id: d.id, summary: d.oneWordSummary })),
+    userChakrasLength: userChakras.length,
+    userDots: userDots.map(d => ({ id: d.id, summary: d.oneWordSummary || d.summary })),
+    userWheels: userWheels.map(w => ({ id: w.id, heading: w.heading })),
+    userChakras: userChakras.map(c => ({ id: c.id, heading: c.heading })),
     isLoading,
     userId
   });
 
-  const isEmpty = Array.isArray(userDots) && Array.isArray(userWheels) && userDots.length === 0 && userWheels.length === 0;
+  const isEmpty = Array.isArray(userDots) && Array.isArray(userWheels) && Array.isArray(userChakras) && 
+    userDots.length === 0 && userWheels.length === 0 && userChakras.length === 0;
 
   if (isEmpty) {
     return (
@@ -733,8 +775,9 @@ const UserGrid: React.FC<UserGridProps> = ({ userId, mode }) => {
     <div className="space-y-6">
       {/* Use exact DotWheelsMap component from Dashboard with user data */}
       <DotWheelsMap 
-        wheels={userWheels}
+        wheels={regularWheels}
         dots={userDots}
+        chakras={chakras}
         showingRecentFilter={false}
         recentCount={4}
         isFullscreen={false}
@@ -746,9 +789,10 @@ const UserGrid: React.FC<UserGridProps> = ({ userId, mode }) => {
         setViewFullDot={setViewFullDot}
       />
       
-      {/* Debug: Show raw dots count */}
-      <div className="text-xs text-gray-500 p-2 bg-gray-100 rounded">
-        Debug: UserGrid has {userDots.length} dots fetched from API
+      {/* Debug: Show all content counts */}
+      <div className="text-xs text-gray-500 p-2 bg-gray-100 rounded space-y-1">
+        <div>Debug: UserGrid has {userDots.length} dots, {userWheels.length} wheels, {userChakras.length} chakras</div>
+        <div>Loading states: dots={dotsLoading}, wheels={wheelsLoading}, chakras={chakrasLoading}</div>
       </div>
 
       {/* Keep detail modal for individual items */}
