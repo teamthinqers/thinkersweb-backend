@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Plus, X, Save, Minimize2, Maximize2, Sparkles, Target, Zap } from 'lucide-react';
+import { Plus, X, Save, Minimize2, Maximize2, Sparkles, Target, Zap, RotateCcw, Mic, Type, BrainCircuit } from 'lucide-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
@@ -30,6 +30,20 @@ export const GlobalFloatingDotV2: React.FC<GlobalFloatingDotV2Props> = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [contentType, setContentType] = useState<'dot' | 'wheel' | 'chakra'>('dot');
+  const [captureMode, setCaptureMode] = useState<'natural' | 'ai'>(() => {
+    // Load capture mode from settings or default to natural based on hybrid mode
+    const savedSettings = localStorage.getItem('dotspark-settings');
+    if (savedSettings) {
+      const settings = JSON.parse(savedSettings);
+      // If user is in hybrid mode (default), start with natural
+      if (settings.captureMode === 'hybrid') {
+        return 'natural';
+      } else {
+        return settings.captureMode === 'ai' ? 'ai' : 'natural';
+      }
+    }
+    return 'natural'; // Default to natural for hybrid mode
+  });
   
   // Form data for all content types
   const [formData, setFormData] = useState({
@@ -194,7 +208,7 @@ export const GlobalFloatingDotV2: React.FC<GlobalFloatingDotV2Props> = () => {
         pulse: formData.pulse,
         wheelId: formData.wheelId || null,
         sourceType: 'text',
-        captureMode: 'natural'
+        captureMode: captureMode
       });
     } else {
       if (!formData.name.trim()) {
@@ -308,6 +322,34 @@ export const GlobalFloatingDotV2: React.FC<GlobalFloatingDotV2Props> = () => {
 
         {!isMinimized && (
           <CardContent className="space-y-4">
+            {/* Capture Mode Toggle Button */}
+            <div className="flex items-center justify-between p-2 bg-gradient-to-r from-amber-50 to-orange-50 rounded-lg border border-amber-200">
+              <div className="flex items-center gap-2">
+                {captureMode === 'natural' ? (
+                  <>
+                    <Mic className="w-4 h-4 text-orange-600" />
+                    <Type className="w-4 h-4 text-orange-600" />
+                    <span className="text-sm font-medium text-orange-700">Natural Mode</span>
+                  </>
+                ) : (
+                  <>
+                    <BrainCircuit className="w-4 h-4 text-blue-600" />
+                    <span className="text-sm font-medium text-blue-700">AI Mode</span>
+                  </>
+                )}
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setCaptureMode(captureMode === 'natural' ? 'ai' : 'natural')}
+                className="h-8 px-3 bg-white/50 hover:bg-white/80 border-amber-300 text-amber-700 hover:text-amber-800"
+              >
+                <RotateCcw className="w-3 h-3 mr-1" />
+                Flip
+              </Button>
+            </div>
+
             {/* Content Type Selection */}
             <Tabs value={contentType} onValueChange={(value) => setContentType(value as 'dot' | 'wheel' | 'chakra')}>
               <TabsList className="grid w-full grid-cols-3">
@@ -327,7 +369,58 @@ export const GlobalFloatingDotV2: React.FC<GlobalFloatingDotV2Props> = () => {
 
               <form onSubmit={handleSubmit} className="space-y-4 mt-4">
                 <TabsContent value="dot" className="space-y-4">
-                  {/* Dot Fields */}
+                  {captureMode === 'ai' ? (
+                    /* AI Mode - Dummy buttons for now */
+                    <div className="space-y-3 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                      <p className="text-sm text-blue-700 font-medium text-center">AI Assistance Mode</p>
+                      <p className="text-xs text-blue-600 text-center mb-4">AI interaction options coming soon...</p>
+                      
+                      <div className="space-y-2">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          className="w-full bg-blue-100 border-blue-300 text-blue-700 hover:bg-blue-200"
+                          disabled
+                        >
+                          <BrainCircuit className="w-4 h-4 mr-2" />
+                          Start AI Conversation (Coming Soon)
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          className="w-full bg-blue-100 border-blue-300 text-blue-700 hover:bg-blue-200"
+                          disabled
+                        >
+                          <Sparkles className="w-4 h-4 mr-2" />
+                          AI-Assisted Creation (Coming Soon)
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          className="w-full bg-blue-100 border-blue-300 text-blue-700 hover:bg-blue-200"
+                          disabled
+                        >
+                          <Target className="w-4 h-4 mr-2" />
+                          Smart Suggestions (Coming Soon)
+                        </Button>
+                      </div>
+                      
+                      <div className="text-center pt-2">
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setCaptureMode('natural')}
+                          className="text-xs text-blue-600 hover:text-blue-800 underline"
+                        >
+                          Switch to Natural Mode for manual entry
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    /* Natural Mode - Normal form fields */
+                    <>
+                      {/* Dot Fields */}
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-amber-700">Summary *</label>
                     <Textarea
@@ -368,15 +461,17 @@ export const GlobalFloatingDotV2: React.FC<GlobalFloatingDotV2Props> = () => {
                     </Select>
                   </div>
 
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-amber-700">Wheel ID (Optional)</label>
-                    <Input
-                      value={formData.wheelId}
-                      onChange={(e) => setFormData({ ...formData, wheelId: e.target.value })}
-                      placeholder="Connect to a wheel (optional)"
-                      className="border-amber-200 focus:border-amber-400"
-                    />
-                  </div>
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium text-amber-700">Wheel ID (Optional)</label>
+                        <Input
+                          value={formData.wheelId}
+                          onChange={(e) => setFormData({ ...formData, wheelId: e.target.value })}
+                          placeholder="Connect to a wheel (optional)"
+                          className="border-amber-200 focus:border-amber-400"
+                        />
+                      </div>
+                    </>
+                  )}
                 </TabsContent>
 
                 <TabsContent value="wheel" className="space-y-4">

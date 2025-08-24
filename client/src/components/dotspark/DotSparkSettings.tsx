@@ -24,12 +24,18 @@ export function DotSparkSettings() {
   const [captureMode, setCaptureMode] = useState<'natural' | 'ai' | 'hybrid'>('hybrid');
   const { toast } = useToast();
 
-  // Load settings from localStorage
+  // Load settings from localStorage - default to hybrid mode
   useEffect(() => {
     const savedSettings = localStorage.getItem('dotspark-settings');
     if (savedSettings) {
       const settings = JSON.parse(savedSettings);
       setCaptureMode(settings.captureMode ?? 'hybrid');
+    } else {
+      // Set default to hybrid mode for new users
+      setCaptureMode('hybrid');
+      const settings = { captureMode: 'hybrid' };
+      localStorage.setItem('dotspark-settings', JSON.stringify(settings));
+      window.dispatchEvent(new Event('storage'));
     }
   }, []);
 

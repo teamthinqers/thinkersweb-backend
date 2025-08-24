@@ -9,6 +9,7 @@ Dot creation: User prefers no automatic AI processing of their inputs - preserve
 Dot headings: Automatic AI-generated headings are acceptable and should remain enabled.
 Global Floating Dot: Replaced with v2 that works universally across all pages without authentication dependencies, supports Dot/Wheel/Chakra creation in natural mode.
 My-Neura Settings: Simplified to show only capture mode selection (AI mode, natural mode, hybrid mode) - removed AI chat preference and AI input preference settings.
+Global Floating Dot Mode Switching: Added flip button functionality to switch between natural mode and AI mode, defaulting all users to hybrid mode. AI mode shows dummy buttons pending future implementation.
 
 ## System Architecture
 
