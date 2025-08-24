@@ -340,6 +340,70 @@ router.get('/wheels', checkDotSparkActivation, async (req, res) => {
   }
 });
 
+// Create a new chakra 
+router.post('/chakras', checkDotSparkActivation, async (req, res) => {
+  try {
+    const userId = req.user!.id;
+    
+    // Prepare chakra data with proper defaults for database schema
+    const chakraCreateData = {
+      userId: userId,
+      heading: req.body.heading || req.body.name || '',
+      purpose: req.body.purpose || '',
+      timeline: req.body.timeline || '',
+      color: req.body.color || '#B45309', // Default dark amber color
+      positionX: req.body.positionX || Math.floor(Math.random() * 400) + 600,
+      positionY: req.body.positionY || Math.floor(Math.random() * 300) + 400,
+      radius: req.body.radius || 420,
+      sourceType: req.body.sourceType || 'text',
+      voiceData: req.body.voiceData || null
+    };
+    
+    console.log('Creating chakra with data:', chakraCreateData);
+    
+    // Create chakra in database using actual chakras table
+    const [newChakra] = await db.insert(chakras).values(chakraCreateData).returning();
+    
+    // Store in vector database for intelligence
+    try {
+      const vectorId = `chakra_${userId}_${newChakra.id}_${Date.now()}`;
+      const content = `${newChakra.heading} ${newChakra.purpose || ''} ${newChakra.timeline || ''}`;
+      
+      // Store vector embedding reference
+      await db.insert(vectorEmbeddings).values({
+        contentType: 'chakra',
+        contentId: newChakra.id,
+        userId: userId,
+        vectorId: vectorId,
+        content: content,
+        metadata: JSON.stringify({
+          color: newChakra.color,
+          isChakra: true,
+          createdAt: newChakra.createdAt
+        })
+      });
+      
+      console.log(`Stored chakra ${newChakra.id} in vector database with ID: ${vectorId}`);
+    } catch (vectorError) {
+      console.warn('Failed to store in vector database:', vectorError);
+      // Continue without vector storage - chakra is still created
+    }
+    
+    res.status(201).json({
+      success: true,
+      chakra: newChakra,
+      message: 'Chakra created successfully'
+    });
+    
+  } catch (error) {
+    console.error('Error creating chakra:', error);
+    res.status(500).json({ 
+      error: 'Failed to create chakra',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
 // Get user's chakras from the actual chakras table
 router.get('/chakras', checkDotSparkActivation, async (req, res) => {
   try {

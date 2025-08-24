@@ -28,13 +28,16 @@ const UserContentCreation: React.FC<UserContentCreationProps> = ({
     pulse: '',
     wheelId: '',
     
-    // Wheel/Chakra fields
+    // Wheel fields
     name: '',
     heading: '',
     goals: '',
     timeline: '',
     category: 'Personal',
-    chakraId: '' // For wheels that belong to chakras
+    chakraId: '', // For wheels that belong to chakras
+    
+    // Chakra fields
+    purpose: ''
   });
 
   const { toast } = useToast();
@@ -42,7 +45,11 @@ const UserContentCreation: React.FC<UserContentCreationProps> = ({
 
   const createContentMutation = useMutation({
     mutationFn: async (data: any) => {
-      const endpoint = contentType === 'dot' ? '/api/user-content/dots' : '/api/user-content/wheels';
+      const endpoint = contentType === 'dot' 
+        ? '/api/user-content/dots' 
+        : contentType === 'wheel' 
+          ? '/api/user-content/wheels'
+          : '/api/user-content/chakras';
       const response = await fetch(endpoint, {
         method: 'POST',
         headers: { 
@@ -83,6 +90,10 @@ const UserContentCreation: React.FC<UserContentCreationProps> = ({
         exact: false 
       });
       queryClient.invalidateQueries({ 
+        queryKey: ['/api/user-content/chakras'],
+        exact: false 
+      });
+      queryClient.invalidateQueries({ 
         queryKey: ['/api/user-content/stats'],
         exact: false 
       });
@@ -108,7 +119,8 @@ const UserContentCreation: React.FC<UserContentCreationProps> = ({
         goals: '',
         timeline: '',
         category: 'Personal',
-        chakraId: ''
+        chakraId: '',
+        purpose: ''
       });
       
       onSuccess();
@@ -134,14 +146,21 @@ const UserContentCreation: React.FC<UserContentCreationProps> = ({
         sourceType: 'text',
         captureMode: 'natural'
       });
-    } else {
+    } else if (contentType === 'wheel') {
       createContentMutation.mutate({
         name: formData.name,
         heading: formData.heading,
         goals: formData.goals,
         timeline: formData.timeline,
         category: formData.category,
-        chakraId: contentType === 'wheel' && formData.chakraId ? formData.chakraId : null
+        chakraId: formData.chakraId ? formData.chakraId : null
+      });
+    } else if (contentType === 'chakra') {
+      createContentMutation.mutate({
+        heading: formData.heading,
+        purpose: formData.purpose,
+        timeline: formData.timeline,
+        sourceType: 'text'
       });
     }
   };
@@ -300,8 +319,11 @@ const UserContentCreation: React.FC<UserContentCreationProps> = ({
                     {contentType === 'chakra' ? 'Purpose' : 'Goals'}
                   </label>
                   <Textarea
-                    value={formData.goals}
-                    onChange={(e) => setFormData({ ...formData, goals: e.target.value })}
+                    value={contentType === 'chakra' ? formData.purpose : formData.goals}
+                    onChange={(e) => setFormData({ 
+                      ...formData, 
+                      [contentType === 'chakra' ? 'purpose' : 'goals']: e.target.value 
+                    })}
                     placeholder={contentType === 'chakra' ? 'Life-level purpose and vision...' : 'Goals and objectives...'}
                   />
                 </div>
