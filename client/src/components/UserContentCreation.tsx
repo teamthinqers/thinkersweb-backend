@@ -21,6 +21,7 @@ const UserContentCreation: React.FC<UserContentCreationProps> = ({
   onSuccess
 }) => {
   const [contentType, setContentType] = useState<'dot' | 'wheel' | 'chakra'>('dot');
+  const [customEmotion, setCustomEmotion] = useState('');
   const [formData, setFormData] = useState({
     // Dot fields
     summary: '',
@@ -282,18 +283,44 @@ const UserContentCreation: React.FC<UserContentCreationProps> = ({
 
                 <div>
                   <label className="block text-sm font-medium mb-2">Emotion (Pulse)</label>
-                  <Select value={formData.pulse} onValueChange={(value) => setFormData({ ...formData, pulse: value })}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Choose an emotion..." />
-                    </SelectTrigger>
-                    <SelectContent>
+                  <div className="space-y-3">
+                    {/* Emotion buttons */}
+                    <div className="grid grid-cols-3 gap-2">
                       {emotions.map((emotion) => (
-                        <SelectItem key={emotion} value={emotion}>
+                        <button
+                          key={emotion}
+                          type="button"
+                          onClick={() => {
+                            setFormData({ ...formData, pulse: emotion });
+                            setCustomEmotion('');
+                          }}
+                          className={`p-2 text-sm rounded-lg border transition-all ${
+                            formData.pulse === emotion
+                              ? 'bg-amber-100 border-amber-300 text-amber-800 font-medium'
+                              : 'bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100'
+                          }`}
+                        >
                           {emotion.charAt(0).toUpperCase() + emotion.slice(1)}
-                        </SelectItem>
+                        </button>
                       ))}
-                    </SelectContent>
-                  </Select>
+                    </div>
+                    
+                    {/* Custom emotion input */}
+                    <div className="space-y-2">
+                      <label className="text-xs text-gray-600">Or enter your own:</label>
+                      <Input
+                        value={customEmotion}
+                        onChange={(e) => {
+                          setCustomEmotion(e.target.value);
+                          if (e.target.value.trim()) {
+                            setFormData({ ...formData, pulse: e.target.value.trim() });
+                          }
+                        }}
+                        placeholder="Type your emotion..."
+                        className="text-sm"
+                      />
+                    </div>
+                  </div>
                 </div>
 
                 <div>

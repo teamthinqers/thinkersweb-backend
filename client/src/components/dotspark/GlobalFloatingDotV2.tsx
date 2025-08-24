@@ -55,6 +55,7 @@ function GlobalFloatingDotV2() {
   const [wheels, setWheels] = useState<WheelOption[]>([]);
   const [chakras, setChakras] = useState<ChakraOption[]>([]);
   const [loadingData, setLoadingData] = useState(false);
+  const [customEmotion, setCustomEmotion] = useState('');
 
   // Load capture mode from localStorage - default to hybrid
   const [captureMode, setCaptureMode] = useState<'natural' | 'ai' | 'hybrid'>(() => {
@@ -486,19 +487,44 @@ function GlobalFloatingDotV2() {
                       </div>
                       <div>
                         <label className="text-xs font-medium text-amber-700 block mb-1">Pulse *</label>
-                        <select
-                          value={formData.pulse}
-                          onChange={(e) => setFormData({ ...formData, pulse: e.target.value })}
-                          className="w-full p-2 text-sm border border-amber-200 rounded"
-                          required
-                        >
-                          <option value="">Select emotion</option>
-                          {emotions.map((emotion) => (
-                            <option key={emotion} value={emotion}>
-                              {emotion.charAt(0).toUpperCase() + emotion.slice(1)}
-                            </option>
-                          ))}
-                        </select>
+                        <div className="space-y-2">
+                          {/* Emotion buttons */}
+                          <div className="grid grid-cols-3 gap-1">
+                            {emotions.map((emotion) => (
+                              <button
+                                key={emotion}
+                                type="button"
+                                onClick={() => {
+                                  setFormData({ ...formData, pulse: emotion });
+                                  setCustomEmotion('');
+                                }}
+                                className={`p-1.5 text-xs rounded border transition-all ${
+                                  formData.pulse === emotion
+                                    ? 'bg-amber-100 border-amber-300 text-amber-800 font-medium'
+                                    : 'bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100'
+                                }`}
+                              >
+                                {emotion.charAt(0).toUpperCase() + emotion.slice(1)}
+                              </button>
+                            ))}
+                          </div>
+                          
+                          {/* Custom emotion input */}
+                          <div>
+                            <input
+                              type="text"
+                              value={customEmotion}
+                              onChange={(e) => {
+                                setCustomEmotion(e.target.value);
+                                if (e.target.value.trim()) {
+                                  setFormData({ ...formData, pulse: e.target.value.trim() });
+                                }
+                              }}
+                              placeholder="Or type your own..."
+                              className="w-full p-1.5 text-xs border border-amber-200 rounded"
+                            />
+                          </div>
+                        </div>
                       </div>
                     </div>
                   )}
