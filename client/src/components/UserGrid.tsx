@@ -318,14 +318,15 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
         )}
 
         <div 
-          className="relative transition-transform duration-100 ease-out"
+          className="relative transition-transform duration-150 ease-out"
           style={{ 
             width: `${1200 * zoom}px`, 
             height: `${800 * zoom}px`,
             minWidth: 'auto',
             minHeight: 'auto',
             transform: `translate(${offset.x}px, ${offset.y}px) scale(${zoom})`,
-            transformOrigin: 'center center'
+            transformOrigin: 'center center',
+            willChange: dragStart ? 'transform' : 'auto'
           }}
         >
           {/* Individual Dots - well distributed grid for easy identification */}
@@ -347,7 +348,7 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                 x = wheelCenterX + Math.cos(angle) * dotRadius;
                 y = wheelCenterY + Math.sin(angle) * dotRadius;
               } else {
-                // Wheel not found, treat as standalone - use proper grid distribution
+                // Wheel not found, treat as standalone with collision detection
                 const standaloneDots = displayDots.filter((d: any) => !d.wheelId || d.wheelId === '' || d.wheelId === 'general' || d.wheelId === 'standalone');
                 const standaloneIndex = standaloneDots.findIndex((d: any) => d.id === dot.id);
                 
@@ -355,11 +356,12 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                   x = elementPositions[`dot-${dot.id}`].x;
                   y = elementPositions[`dot-${dot.id}`].y;
                 } else {
-                  const cols = Math.ceil(Math.sqrt(standaloneDots.length * 1.5));
+                  const cols = Math.ceil(Math.sqrt(standaloneDots.length * 1.2));
                   const row = Math.floor(standaloneIndex / cols);
                   const col = standaloneIndex % cols;
-                  x = 120 + (col * 120);
-                  y = 120 + (row * 120);
+                  const baseSpacing = 180;
+                  x = baseSpacing + (col * baseSpacing);
+                  y = baseSpacing + (row * baseSpacing);
                 }
               }
             } else {
@@ -372,12 +374,53 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                 x = elementPositions[`dot-${dot.id}`].x;
                 y = elementPositions[`dot-${dot.id}`].y;
               } else {
-                // Grid-based positioning with generous spacing (120px apart)
-                const cols = Math.ceil(Math.sqrt(standaloneDots.length * 1.5)); // More spread out
+                // Grid-based positioning with collision-aware spacing
+                const cols = Math.ceil(Math.sqrt(standaloneDots.length * 1.2));
                 const row = Math.floor(standaloneIndex / cols);
                 const col = standaloneIndex % cols;
-                x = 120 + (col * 120); // 120px spacing
-                y = 120 + (row * 120); // 120px spacing
+                
+                // Use larger spacing to account for wheels and chakras
+                const baseSpacing = 180; // Increased from 120px
+                x = baseSpacing + (col * baseSpacing);
+                y = baseSpacing + (row * baseSpacing);
+                
+                // Check for collisions with wheels and chakras
+                let attempts = 0;
+                while (attempts < 10) {
+                  let collision = false;
+                  
+                  // Check collision with wheels
+                  for (const wheel of displayWheels) {
+                    const wheelPos = wheel.position || { x: 300, y: 250 };
+                    const wheelDots = displayDots.filter((d: any) => d.wheelId === wheel.id);
+                    const wheelRadius = calculateDynamicSizing('real', wheelDots.length, 'wheels');
+                    const distance = Math.sqrt((x - wheelPos.x) ** 2 + (y - wheelPos.y) ** 2);
+                    if (distance < wheelRadius + 60) { // 60px buffer
+                      collision = true;
+                      break;
+                    }
+                  }
+                  
+                  // Check collision with chakras
+                  if (!collision) {
+                    for (const chakra of chakras) {
+                      const chakraPos = elementPositions[`chakra-${chakra.id}`] || { x: 600, y: 400 };
+                      const chakraRadius = getChakraSize('real', displayWheels.filter(w => w.chakraId === chakra.id).length) / 2;
+                      const distance = Math.sqrt((x - chakraPos.x) ** 2 + (y - chakraPos.y) ** 2);
+                      if (distance < chakraRadius + 80) { // 80px buffer
+                        collision = true;
+                        break;
+                      }
+                    }
+                  }
+                  
+                  if (!collision) break;
+                  
+                  // Move to next position
+                  x += baseSpacing / 2;
+                  y += baseSpacing / 4;
+                  attempts++;
+                }
               }
             }
             
@@ -386,6 +429,9 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                 {/* Dot element with exact styling from PreviewMapGrid */}
                 <div
                   className="absolute w-10 h-10 rounded-full cursor-move transition-all duration-200 hover:scale-110 hover:shadow-md dot-element group"
+                  style={{
+                    willChange: draggedElement?.id === dot.id ? 'transform' : 'auto'
+                  }}
                   style={{
                     left: `${x - 5}px`, // Adjust for larger size
                     top: `${y - 5}px`,
@@ -530,12 +576,36 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                 wheelX = elementPositions[`wheel-${wheel.id}`].x;
                 wheelY = elementPositions[`wheel-${wheel.id}`].y;
               } else {
-                // Grid positioning for standalone wheels (left side)
+                // Collision-aware positioning for standalone wheels
                 const cols = Math.max(2, Math.ceil(Math.sqrt(standaloneWheels.length)));
                 const row = Math.floor(standaloneIndex / cols);
                 const col = standaloneIndex % cols;
-                wheelX = 200 + (col * 280); // Position standalone wheels on left side
-                wheelY = 200 + (row * 220);
+                const wheelSpacing = 300; // Increased spacing for wheels
+                wheelX = 200 + (col * wheelSpacing);
+                wheelY = 200 + (row * 260);
+                
+                // Check for collisions with chakras and other wheels
+                let attempts = 0;
+                while (attempts < 8) {
+                  let collision = false;
+                  
+                  // Check collision with chakras
+                  for (const chakra of chakras) {
+                    const chakraPos = elementPositions[`chakra-${chakra.id}`] || { x: 600, y: 400 };
+                    const chakraRadius = getChakraSize('real', displayWheels.filter(w => w.chakraId === chakra.id).length) / 2;
+                    const distance = Math.sqrt((wheelX - chakraPos.x) ** 2 + (wheelY - chakraPos.y) ** 2);
+                    if (distance < chakraRadius + wheelRadius + 100) { // 100px buffer
+                      collision = true;
+                      break;
+                    }
+                  }
+                  
+                  if (!collision) break;
+                  
+                  wheelX += wheelSpacing / 3;
+                  wheelY += 80;
+                  attempts++;
+                }
               }
             }
             
@@ -546,7 +616,11 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
               <div key={wheel.id} className="relative">
                 {/* Wheel circle */}
                 <div
-                  className="absolute rounded-full border-2 border-orange-400/60 bg-orange-50/30 cursor-move transition-all duration-300 hover:scale-105 hover:border-orange-500"
+                  className="absolute rounded-full border-2 border-orange-400/60 bg-orange-50/30 cursor-move transition-all duration-200 hover:scale-105 hover:border-orange-500"
+                  style={{
+                    willChange: draggedElement?.id === wheel.id ? 'transform' : 'auto',
+                    transform: draggedElement?.id === wheel.id ? 'scale(1.02)' : 'scale(1)'
+                  }}
                   style={{
                     left: `${wheelX - wheelRadius}px`,
                     top: `${wheelY - wheelRadius}px`,
@@ -640,12 +714,34 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
               chakraX = elementPositions[`chakra-${chakra.id}`].x;
               chakraY = elementPositions[`chakra-${chakra.id}`].y;
             } else {
-              // Grid positioning with 400px spacing for chakras (they're largest)
-              const cols = Math.max(1, Math.ceil(Math.sqrt(chakras.length)));
-              const row = Math.floor(chakraIndex / cols);
-              const col = chakraIndex % cols;
-              chakraX = 400 + (col * 400); // 400px spacing for chakras
-              chakraY = 600 + (row * 350); // 350px vertical spacing
+              // Collision-aware positioning for chakras
+              const chakraSpacing = 600; // Large spacing for chakras
+              chakraX = 300 + (chakraIndex % 2) * chakraSpacing;
+              chakraY = 300 + Math.floor(chakraIndex / 2) * chakraSpacing;
+              
+              // Check for collisions with other chakras
+              let attempts = 0;
+              while (attempts < 5) {
+                let collision = false;
+                
+                for (let i = 0; i < chakraIndex; i++) {
+                  const otherChakra = chakras[i];
+                  const otherPos = elementPositions[`chakra-${otherChakra.id}`] || { x: 300, y: 300 };
+                  const distance = Math.sqrt((chakraX - otherPos.x) ** 2 + (chakraY - otherPos.y) ** 2);
+                  const minDistance = chakraRadius + 200; // 200px buffer between chakras
+                  
+                  if (distance < minDistance) {
+                    collision = true;
+                    break;
+                  }
+                }
+                
+                if (!collision) break;
+                
+                chakraX += chakraSpacing / 3;
+                chakraY += chakraSpacing / 4;
+                attempts++;
+              }
             }
             
             // Update chakra position for wheel calculations
@@ -655,7 +751,11 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
               <div key={chakra.id} className="relative">
                 {/* Chakra circle */}
                 <div
-                  className="absolute rounded-full border-4 border-amber-500/50 bg-gradient-to-br from-amber-100/40 to-orange-100/40 cursor-move transition-all duration-300 hover:scale-105 hover:border-amber-600/70"
+                  className="absolute rounded-full border-4 border-amber-500/50 bg-gradient-to-br from-amber-100/40 to-orange-100/40 cursor-move transition-all duration-200 hover:scale-105 hover:border-amber-600/70"
+                  style={{
+                    willChange: draggedElement?.id === chakra.id ? 'transform' : 'auto',
+                    transform: draggedElement?.id === chakra.id ? 'scale(1.01)' : 'scale(1)'
+                  }}
                   style={{
                     left: `${chakraX - chakraRadius/2}px`,
                     top: `${chakraY - chakraRadius/2}px`,
