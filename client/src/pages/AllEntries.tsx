@@ -48,7 +48,7 @@ const AllEntries: React.FC<AllEntriesProps> = ({ onEntryClick }) => {
         search: searchQuery,
         categoryId: selectedCategory,
         tagIds: selectedTags.length > 0 ? selectedTags : undefined,
-        directUserId: 5  // Always use user ID 5 (Aravindh's account)
+        // User ID handled by backend authentication
       }
     ],
     queryFn: () => {
@@ -56,7 +56,7 @@ const AllEntries: React.FC<AllEntriesProps> = ({ onEntryClick }) => {
       const url = new URL("/api/entries", window.location.origin);
       
       // Add all necessary params
-      url.searchParams.append("directUserId", "5");
+      // User ID handled by backend authentication
       url.searchParams.append("limit", itemsPerPage.toString());
       url.searchParams.append("offset", ((page - 1) * itemsPerPage).toString());
       url.searchParams.append("sortBy", sortBy);
@@ -78,8 +78,10 @@ const AllEntries: React.FC<AllEntriesProps> = ({ onEntryClick }) => {
       
       console.log("Fetching entries with URL:", url.toString());
       
-      // Make fetch request
-      return fetch(url.toString()).then(res => res.json());
+      // Make fetch request with credentials
+      return fetch(url.toString(), {
+        credentials: 'include'
+      }).then(res => res.json());
     }
   });
 

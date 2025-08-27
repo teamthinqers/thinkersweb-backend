@@ -12,11 +12,13 @@ const FixedEntries = () => {
   }
   const [visibleEntries, setVisibleEntries] = useState(10);
   
-  // Use direct query with hardcoded user ID 5
+  // Query entries for authenticated user
   const { data, isLoading, error } = useQuery({
     queryKey: [`/api/entries-fixed`],
     queryFn: () => {
-      return fetch(`/api/entries?directUserId=5&limit=${visibleEntries}&offset=0&sortBy=createdAt&sortOrder=desc`)
+      return fetch(`/api/entries?limit=${visibleEntries}&offset=0&sortBy=createdAt&sortOrder=desc`, {
+          credentials: 'include'
+        })
         .then(res => res.json());
     }
   });
