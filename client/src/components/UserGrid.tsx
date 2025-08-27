@@ -191,6 +191,8 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
   const handleMapConfirm = async () => {
     if (!mappingDialog) return;
     
+    console.log('🔄 Starting mapping process:', mappingDialog);
+    
     try {
       let endpoint, payload;
       
@@ -212,6 +214,8 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
         throw new Error('Invalid mapping type');
       }
 
+      console.log('🌐 Making API call:', { endpoint, payload });
+
       const response = await fetch(endpoint, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -219,8 +223,21 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
         body: JSON.stringify(payload)
       });
 
-      if (!response.ok) throw new Error('Failed to update mapping');
+      console.log('📡 API response:', { 
+        status: response.status, 
+        statusText: response.statusText,
+        ok: response.ok 
+      });
 
+      const responseData = await response.text();
+      console.log('📄 Response data:', responseData);
+
+      if (!response.ok) {
+        throw new Error(`API call failed: ${response.status} ${response.statusText} - ${responseData}`);
+      }
+
+      console.log('✅ Mapping successful!');
+      
       toast({
         title: "Mapping Updated",
         description: `${mappingDialog.sourceName} has been mapped to ${mappingDialog.targetName}`,
@@ -230,10 +247,10 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
       window.location.reload();
       
     } catch (error) {
-      console.error('Mapping save error:', error);
+      console.error('❌ Mapping save error:', error);
       toast({
-        title: "Error",
-        description: "Failed to update mapping. Please try again.",
+        title: "Error", 
+        description: `Failed to update mapping: ${error.message}`,
         variant: "destructive",
       });
     } finally {
@@ -244,6 +261,8 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
   // Handle delinking confirmation  
   const handleDelinkConfirm = async () => {
     if (!delinkDialog) return;
+    
+    console.log('🔄 Starting delink process:', delinkDialog);
     
     try {
       let endpoint, payload;
@@ -266,6 +285,8 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
         throw new Error('Invalid delink type');
       }
 
+      console.log('🌐 Making delink API call:', { endpoint, payload });
+
       const response = await fetch(endpoint, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -273,7 +294,20 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
         body: JSON.stringify(payload)
       });
 
-      if (!response.ok) throw new Error('Failed to delink');
+      console.log('📡 Delink API response:', { 
+        status: response.status, 
+        statusText: response.statusText,
+        ok: response.ok 
+      });
+
+      const responseData = await response.text();
+      console.log('📄 Delink response data:', responseData);
+
+      if (!response.ok) {
+        throw new Error(`Delink API call failed: ${response.status} ${response.statusText} - ${responseData}`);
+      }
+
+      console.log('✅ Delink successful!');
 
       toast({
         title: "Successfully Delinked",
@@ -284,10 +318,10 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
       window.location.reload();
       
     } catch (error) {
-      console.error('Delink save error:', error);
+      console.error('❌ Delink save error:', error);
       toast({
         title: "Error",
-        description: "Failed to delink. Please try again.",
+        description: `Failed to delink: ${error.message}`,
         variant: "destructive",
       });
     } finally {

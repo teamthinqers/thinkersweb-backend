@@ -1777,6 +1777,102 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Use the user content router for authenticated user-generated content
   app.use(`${apiPrefix}/user-content`, userContentRouter);
+
+  // ===========================
+  // MAPPING ROUTES
+  // ===========================
+
+  // PUT /api/mapping/dot-to-wheel - Map/unmap dot to wheel
+  app.put(`${apiPrefix}/mapping/dot-to-wheel`, async (req, res) => {
+    try {
+      const userId = req.user?.id || req.session?.userId;
+      if (!userId) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+
+      const { dotId, wheelId } = req.body;
+      
+      if (!dotId) {
+        return res.status(400).json({ error: 'dotId is required' });
+      }
+
+      console.log(`Mapping dot ${dotId} to wheel ${wheelId || 'null (unmap)'} for user ${userId}`);
+
+      // Update dot's wheelId (null to unmap, wheelId to map)
+      const result = await db.update(dots)
+        .set({ 
+          wheelId: wheelId ? parseInt(wheelId) : null,
+          updatedAt: new Date()
+        })
+        .where(and(
+          eq(dots.id, parseInt(dotId)),
+          eq(dots.userId, userId)
+        ))
+        .returning();
+
+      if (result.length === 0) {
+        return res.status(404).json({ error: 'Dot not found or unauthorized' });
+      }
+
+      console.log('Dot mapping updated successfully:', result[0]);
+
+      return res.json({ 
+        success: true, 
+        message: wheelId ? 'Dot mapped to wheel successfully' : 'Dot unmapped successfully',
+        dot: result[0] 
+      });
+
+    } catch (error) {
+      console.error('Error mapping dot to wheel:', error);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+
+  // PUT /api/mapping/wheel-to-chakra - Map/unmap wheel to chakra  
+  app.put(`${apiPrefix}/mapping/wheel-to-chakra`, async (req, res) => {
+    try {
+      const userId = req.user?.id || req.session?.userId;
+      if (!userId) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+
+      const { wheelId, chakraId } = req.body;
+      
+      if (!wheelId) {
+        return res.status(400).json({ error: 'wheelId is required' });
+      }
+
+      console.log(`Mapping wheel ${wheelId} to chakra ${chakraId || 'null (unmap)'} for user ${userId}`);
+
+      // Update wheel's chakraId (null to unmap, chakraId to map)
+      const result = await db.update(wheels)
+        .set({ 
+          chakraId: chakraId ? parseInt(chakraId) : null,
+          updatedAt: new Date()
+        })
+        .where(and(
+          eq(wheels.id, parseInt(wheelId)),
+          eq(wheels.userId, userId)
+        ))
+        .returning();
+
+      if (result.length === 0) {
+        return res.status(404).json({ error: 'Wheel not found or unauthorized' });
+      }
+
+      console.log('Wheel mapping updated successfully:', result[0]);
+
+      return res.json({ 
+        success: true, 
+        message: chakraId ? 'Wheel mapped to chakra successfully' : 'Wheel unmapped successfully',
+        wheel: result[0] 
+      });
+
+    } catch (error) {
+      console.error('Error mapping wheel to chakra:', error);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+  });
   
   // Mount indexing routes for comprehensive cognitive structure indexing
   app.use(`${apiPrefix}/indexing`, indexingRouter);
