@@ -180,7 +180,7 @@ const AllEntries: React.FC<AllEntriesProps> = ({ onEntryClick }) => {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="">All Categories</SelectItem>
-                    {categories?.map((category) => (
+                    {categories?.map((category: any) => (
                       <SelectItem key={category.id} value={category.id.toString()}>
                         {category.name}
                       </SelectItem>
@@ -192,7 +192,7 @@ const AllEntries: React.FC<AllEntriesProps> = ({ onEntryClick }) => {
               <div>
                 <h3 className="text-sm font-medium mb-2">Tags</h3>
                 <div className="flex flex-wrap gap-2">
-                  {tags?.map((tag) => (
+                  {tags?.map((tag: any) => (
                     <Badge 
                       key={tag.id} 
                       variant={selectedTags.includes(tag.id) ? "default" : "tag"}
