@@ -77,14 +77,59 @@ const calculateDynamicSizing = (mode: 'preview' | 'real', itemCount: number, typ
   }
 };
 
-const getChakraSize = (mode: 'preview' | 'real', childWheelsCount: number) => {
-  const baseSizes = { preview: 420, real: 370 };
+const getChakraSize = (mode: 'preview' | 'real', childWheelsCount: number, childWheels: any[] = []) => {
+  // Calculate minimum size needed to contain all wheels
+  if (childWheelsCount === 0) {
+    return mode === 'preview' ? 280 : 250; // Smaller standalone chakras
+  }
+  
+  // Calculate size needed for each wheel plus padding
+  let totalWheelArea = 0;
+  childWheels.forEach(wheel => {
+    const wheelDots = wheel.dots || [];
+    const wheelRadius = getWheelSize(mode, wheelDots.length, wheelDots);
+    totalWheelArea += (wheelRadius * 2) * (wheelRadius * 2); // Wheel area
+  });
+  
+  // Calculate chakra radius to contain wheels in circular arrangement with padding
+  const padding = 80; // Space between wheels and chakra border
+  const wheelSpacing = 40; // Space between wheels
+  const minRadius = Math.sqrt(totalWheelArea / Math.PI) + padding;
+  
+  // Ensure minimum size based on wheel count
+  const baseSizes = { preview: 420, real: 380 };
   const baseSize = baseSizes[mode];
   
-  if (childWheelsCount <= 3) return baseSize;
-  if (childWheelsCount <= 5) return baseSize + 20;
-  if (childWheelsCount <= 8) return baseSize + 35;
-  return baseSize + 50;
+  if (childWheelsCount <= 2) return Math.max(baseSize, minRadius);
+  if (childWheelsCount <= 4) return Math.max(baseSize + 60, minRadius);
+  if (childWheelsCount <= 6) return Math.max(baseSize + 120, minRadius);
+  return Math.max(baseSize + 180, minRadius);
+};
+
+const getWheelSize = (mode: 'preview' | 'real', childDotsCount: number, childDots: any[] = []) => {
+  // Calculate minimum size needed to contain all dots
+  if (childDotsCount === 0) {
+    return mode === 'preview' ? 60 : 70; // Smaller standalone wheels
+  }
+  
+  // Calculate size needed for dots in circular arrangement
+  const dotSize = 40; // Size of each dot
+  const padding = 25; // Space between dots and wheel border
+  const dotSpacing = 10; // Space between dots
+  
+  // For circular arrangement, calculate radius needed
+  const circumference = childDotsCount * (dotSize + dotSpacing);
+  const radiusForDots = circumference / (2 * Math.PI);
+  const totalRadius = radiusForDots + dotSize + padding;
+  
+  // Ensure minimum size
+  const baseSizes = { preview: 80, real: 90 };
+  const baseSize = baseSizes[mode];
+  
+  if (childDotsCount <= 3) return Math.max(baseSize, totalRadius);
+  if (childDotsCount <= 6) return Math.max(baseSize + 20, totalRadius);
+  if (childDotsCount <= 9) return Math.max(baseSize + 40, totalRadius);
+  return Math.max(baseSize + 60, totalRadius);
 };
 
 // UserMapGrid component matching PreviewMapGrid exactly
@@ -494,7 +539,12 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
           {/* Render chakras first (bottom layer) */}
           {chakras.map((chakra: any, chakraIndex: number) => {
             const chakraWheels = displayWheels.filter((w: any) => w.chakraId === chakra.id);
-            const chakraRadius = getChakraSize('real', chakraWheels.length);
+            // Add dots to wheels for proper sizing calculation
+            const chakraWheelsWithDots = chakraWheels.map(w => ({
+              ...w,
+              dots: displayDots.filter((d: any) => d.wheelId == w.id || d.wheelId === String(w.id))
+            }));
+            const chakraRadius = getChakraSize('real', chakraWheels.length, chakraWheelsWithDots);
             
             // Position chakras with proper spacing to avoid overlaps
             let chakraX, chakraY;
@@ -622,8 +672,8 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
 
           {/* Render wheels second (middle layer) */}
           {displayWheels.map((wheel: any, wheelIndex: number) => {
-            const wheelDots = displayDots.filter((d: any) => d.wheelId === wheel.id);
-            const wheelRadius = calculateDynamicSizing('real', wheelDots.length, 'wheels');
+            const wheelDots = displayDots.filter((d: any) => d.wheelId == wheel.id || d.wheelId === String(wheel.id));
+            const wheelRadius = getWheelSize('real', wheelDots.length, wheelDots);
             
             // Determine wheel position
             let wheelX, wheelY;
@@ -649,7 +699,9 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                     chakraY = chakra.position?.y || 400;
                   }
                   
-                  const orbitRadius = 120; // Fixed radius for wheels inside chakras (like preview mode)
+                  // Calculate orbit radius to ensure wheels stay inside chakra boundary
+                  const chakraRadius = getChakraSize('real', wheelsInChakra.length, wheelsInChakra) / 2;
+                  const orbitRadius = Math.max(40, chakraRadius - wheelRadius - 30); // 30px padding from chakra edge
                   const angle = (wheelIndexInChakra * 2 * Math.PI) / wheelsInChakra.length;
                   
                   wheelX = chakraX + Math.cos(angle) * orbitRadius;
@@ -820,16 +872,19 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                   x = elementPositions[`dot-${dot.id}`].x;
                   y = elementPositions[`dot-${dot.id}`].y;
                 } else {
-                  // Position dots around their associated wheel in a circle
+                  // Position dots inside their associated wheel in a circle
                   const dotsInWheel = displayDots.filter((d: any) => d.wheelId == dot.wheelId || d.wheelId === String(dot.wheelId));
                   const dotIndexInWheel = dotsInWheel.findIndex((d: any) => d.id === dot.id);
                   const wheelCenterX = wheel.position.x;
                   const wheelCenterY = wheel.position.y;
-                  const dotRadius = 60; // Fixed radius for dots around wheels
+                  
+                  // Calculate dot radius to ensure dots stay inside wheel boundary
+                  const wheelRadius = getWheelSize('real', dotsInWheel.length, dotsInWheel);
+                  const dotOrbitRadius = Math.max(15, wheelRadius - 25); // 25px padding from wheel edge, minimum 15px
                   const angle = (dotIndexInWheel * 2 * Math.PI) / dotsInWheel.length;
                   
-                  x = wheelCenterX + Math.cos(angle) * dotRadius;
-                  y = wheelCenterY + Math.sin(angle) * dotRadius;
+                  x = wheelCenterX + Math.cos(angle) * dotOrbitRadius;
+                  y = wheelCenterY + Math.sin(angle) * dotOrbitRadius;
                 }
               } else {
                 // Wheel not found, treat as standalone
@@ -877,7 +932,7 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                   for (const wheel of displayWheels) {
                     const wheelPos = wheel.position || { x: 300, y: 250 };
                     const wheelDots = displayDots.filter((d: any) => d.wheelId == wheel.id || d.wheelId === String(wheel.id));
-                    const wheelRadius = calculateDynamicSizing('real', wheelDots.length, 'wheels');
+                    const wheelRadius = getWheelSize('real', wheelDots.length, wheelDots);
                     const distance = Math.sqrt((x - wheelPos.x) ** 2 + (y - wheelPos.y) ** 2);
                     if (distance < wheelRadius + 60) { // 60px buffer
                       collision = true;
@@ -1002,8 +1057,8 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
 
           {/* Render wheels with improved distribution */}
           {displayWheels.map((wheel: any, wheelIndex: number) => {
-            const wheelDots = displayDots.filter((d: any) => d.wheelId === wheel.id);
-            const wheelRadius = calculateDynamicSizing('real', wheelDots.length, 'wheels');
+            const wheelDots = displayDots.filter((d: any) => d.wheelId == wheel.id || d.wheelId === String(wheel.id));
+            const wheelRadius = getWheelSize('real', wheelDots.length, wheelDots);
             
             // Determine wheel position
             let wheelX, wheelY;
@@ -1033,7 +1088,9 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                     chakraY = 600 + (row * 350);
                   }
                   
-                  const orbitRadius = 120; // Fixed radius for wheels inside chakras (like preview mode)
+                  // Calculate orbit radius to ensure wheels stay inside chakra boundary
+                  const chakraRadius = getChakraSize('real', wheelsInChakra.length, wheelsInChakra) / 2;
+                  const orbitRadius = Math.max(40, chakraRadius - wheelRadius - 30); // 30px padding from chakra edge
                   const angle = (wheelIndexInChakra * 2 * Math.PI) / wheelsInChakra.length;
                   
                   wheelX = chakraX + Math.cos(angle) * orbitRadius;
