@@ -584,11 +584,11 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
         wheelPos: { x: wheelX, y: wheelY },
         wheelRadius,
         distance,
-        threshold: (30 + wheelRadius) / 2
+        threshold: wheelRadius - 20
       });
       
-      // More generous collision detection
-      if (distance < wheelRadius + 50) {
+      // Precise collision detection - dot must be closer to wheel center
+      if (distance < wheelRadius - 20) {
         console.log(`🎯 Dot-to-wheel mapping detected! Moving dot "${dot.oneWordSummary}" to wheel "${wheel.heading || wheel.name}"`);
         setMappingDialog({
           open: true,
@@ -640,11 +640,11 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
         chakraPos: { x: chakraX, y: chakraY },
         chakraRadius,
         distance,
-        threshold: chakraRadius / 2
+        threshold: chakraRadius / 3
       });
       
-      // Collision detection for direct dot-to-chakra mapping
-      if (distance < chakraRadius / 2) {
+      // Precise collision detection for chakra mapping
+      if (distance < chakraRadius / 3) {
         console.log(`🎯 Dot-to-chakra mapping detected! Moving dot "${dot.oneWordSummary}" to chakra "${chakra.heading || chakra.name}"`);
         setMappingDialog({
           open: true,
