@@ -881,9 +881,9 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                   const wheelCenterX = wheel.position.x;
                   const wheelCenterY = wheel.position.y;
                   
-                  // Calculate dot radius to ensure dots stay inside wheel boundary
+                  // Calculate dot radius to ensure dots are well inside wheel boundary
                   const wheelRadius = getWheelSize('real', dotsInWheel.length, dotsInWheel);
-                  const dotOrbitRadius = Math.max(15, wheelRadius - 25); // 25px padding from wheel edge, minimum 15px
+                  const dotOrbitRadius = Math.max(15, wheelRadius - 60); // 60px padding from wheel edge for better interior placement
                   const angle = (dotIndexInWheel * 2 * Math.PI) / dotsInWheel.length;
                   
                   x = wheelCenterX + Math.cos(angle) * dotOrbitRadius;
