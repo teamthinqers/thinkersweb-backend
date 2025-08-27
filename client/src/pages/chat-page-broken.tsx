@@ -328,12 +328,7 @@ export default function ChatPage() {
                   My DotSpark
                 </Button>
               </Link>
-              <Link href="/social">
-                <Button variant="ghost" className="w-full justify-start text-sm h-9">
-                  <Users className="w-4 h-4 mr-3" />
-                  Social
-                </Button>
-              </Link>
+              {/* Social link removed for v1 launch */}
               <Link href="/about">
                 <Button variant="ghost" className="w-full justify-start text-sm h-9">
                   <Info className="w-4 h-4 mr-3" />
@@ -434,12 +429,7 @@ export default function ChatPage() {
                       My DotSpark
                     </Button>
                   </Link>
-                  <Link href="/social">
-                    <Button variant="ghost" className="w-full justify-start text-sm h-9">
-                      <Users className="w-4 h-4 mr-3" />
-                      Social
-                    </Button>
-                  </Link>
+                  {/* Social link removed for v1 launch */}
                   <Link href="/about">
                     <Button variant="ghost" className="w-full justify-start text-sm h-9">
                       <Info className="w-4 h-4 mr-3" />
