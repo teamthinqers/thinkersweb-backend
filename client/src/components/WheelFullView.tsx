@@ -1,7 +1,7 @@
 import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
-import { Clock, Target, Calendar, Trash2, Zap, Circle as WheelIcon } from 'lucide-react';
+import { Clock, Target, Calendar, Trash2, Circle, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useQuery } from '@tanstack/react-query';
 
@@ -195,16 +195,24 @@ const AssociatedContent: React.FC<{
 
   // Fetch all dots for chakra wheels
   const { data: allChakraDots } = useQuery({
-    queryKey: ['/api/user-content/dots'],
+    queryKey: ['/api/user-content/dots', 'chakra', wheel.id, chakraWheels?.map(w => w.id).sort()],
     queryFn: async () => {
       if (!isChakra || !chakraWheels?.length) return [];
       const response = await fetch('/api/user-content/dots', { credentials: 'include' });
       if (!response.ok) return [];
       const allDots = await response.json();
       const wheelIds = chakraWheels.map((w: any) => w.id);
-      return allDots.filter((dot: any) => 
-        dot.wheelId && wheelIds.some(id => dot.wheelId == id || dot.wheelId === String(id))
-      );
+      console.log('Filtering dots for chakra:', wheel.id, 'wheel IDs:', wheelIds);
+      const filteredDots = allDots.filter((dot: any) => {
+        const hasWheelId = dot.wheelId && wheelIds.some(id => {
+          const match = (dot.wheelId == id || dot.wheelId === String(id));
+          if (match) console.log('Found matching dot:', dot.oneWordSummary, 'for wheel:', id);
+          return match;
+        });
+        return hasWheelId;
+      });
+      console.log('Final filtered dots for chakra:', filteredDots.length);
+      return filteredDots;
     },
     enabled: isChakra && !!chakraWheels?.length
   });
@@ -217,7 +225,7 @@ const AssociatedContent: React.FC<{
           <div className="bg-gradient-to-br from-orange-50/60 to-amber-50/60 rounded-xl border-2 border-orange-200 p-4">
             <div className="flex items-center gap-2 mb-3">
               <div className="w-6 h-6 rounded-full bg-gradient-to-r from-orange-600 to-amber-700 flex items-center justify-center">
-                <WheelIcon className="w-3 h-3 text-white" />
+                <Settings className="w-3 h-3 text-white" />
               </div>
               <h3 className="text-lg font-semibold text-amber-800">
                 Associated Wheels ({chakraWheels.length})
@@ -232,7 +240,7 @@ const AssociatedContent: React.FC<{
                   onClick={() => onWheelClick?.(associatedWheel)}
                   className="bg-orange-100 hover:bg-orange-200 border-orange-300 text-orange-800 text-xs"
                 >
-                  <WheelIcon className="w-3 h-3 mr-1" />
+                  <Settings className="w-3 h-3 mr-1" />
                   {associatedWheel.heading || associatedWheel.name}
                 </Button>
               ))}
@@ -245,7 +253,7 @@ const AssociatedContent: React.FC<{
           <div className="bg-gradient-to-br from-amber-50/60 to-orange-50/60 rounded-xl border-2 border-amber-200 p-4">
             <div className="flex items-center gap-2 mb-3">
               <div className="w-6 h-6 rounded-full bg-gradient-to-r from-amber-600 to-orange-700 flex items-center justify-center">
-                <Zap className="w-3 h-3 text-white" />
+                <Circle className="w-3 h-3 text-white animate-pulse" />
               </div>
               <h3 className="text-lg font-semibold text-amber-800">
                 All Associated Dots ({allChakraDots.length})
@@ -260,7 +268,7 @@ const AssociatedContent: React.FC<{
                   onClick={() => onDotClick?.(dot)}
                   className="bg-amber-100 hover:bg-amber-200 border-amber-300 text-amber-800 text-xs"
                 >
-                  <Zap className="w-3 h-3 mr-1" />
+                  <Circle className="w-3 h-3 mr-1 animate-pulse" />
                   {dot.oneWordSummary || dot.summary?.split(' ')[0] || 'Insight'}
                 </Button>
               ))}
@@ -278,7 +286,7 @@ const AssociatedContent: React.FC<{
         <div className="bg-gradient-to-br from-amber-50/60 to-orange-50/60 rounded-xl border-2 border-amber-200 p-4">
           <div className="flex items-center gap-2 mb-3">
             <div className="w-6 h-6 rounded-full bg-gradient-to-r from-amber-600 to-orange-700 flex items-center justify-center">
-              <Zap className="w-3 h-3 text-white" />
+              <Circle className="w-3 h-3 text-white animate-pulse" />
             </div>
             <h3 className="text-lg font-semibold text-amber-800">
               Associated Dots ({wheelDots.length})
@@ -293,7 +301,7 @@ const AssociatedContent: React.FC<{
                 onClick={() => onDotClick?.(dot)}
                 className="bg-amber-100 hover:bg-amber-200 border-amber-300 text-amber-800 text-xs"
               >
-                <Zap className="w-3 h-3 mr-1" />
+                <Circle className="w-3 h-3 mr-1 animate-pulse" />
                 {dot.oneWordSummary || dot.summary?.split(' ')[0] || 'Insight'}
               </Button>
             ))}
