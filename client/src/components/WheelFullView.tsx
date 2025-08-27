@@ -48,8 +48,8 @@ const WheelFullView: React.FC<WheelFullViewProps> = ({ wheel, isOpen = true, onC
         <DialogHeader className="pb-4">
           <div className="flex justify-between items-start mb-4">
             <div className="flex items-center gap-2">
-              <Badge variant="outline" className={`text-xs ${isChakra ? 'border-amber-300 text-amber-700 bg-amber-50/80' : 'border-indigo-300 text-indigo-700 bg-indigo-50/80'}`}>
-                <div className={`w-3 h-3 rounded-full ${isChakra ? 'bg-amber-500' : 'bg-indigo-500'} mr-1`}></div>
+              <Badge variant="outline" className={`text-xs ${isChakra ? 'border-amber-300 text-amber-700 bg-amber-50/80' : 'border-orange-300 text-orange-700 bg-orange-50/80'}`}>
+                <div className={`w-3 h-3 rounded-full ${isChakra ? 'bg-amber-500' : 'bg-orange-500'} mr-1`}></div>
                 {wheelType}
               </Badge>
 {/* Category badge removed - no category text needed */}
