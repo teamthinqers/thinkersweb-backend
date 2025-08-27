@@ -476,6 +476,111 @@ router.get('/dots', checkDotSparkActivation, async (req, res) => {
   }
 });
 
+// Create a new chakra with alignment
+router.post('/chakras', checkDotSparkActivation, async (req, res) => {
+  const userId = req.userId;
+  
+  console.log(`✅ Chakras POST - User ${userId} authenticated`);
+  try {
+    
+    // Prepare chakra data for dedicated chakras table
+    const chakraCreateData = {
+      userId: userId,
+      heading: req.body.heading || '',
+      purpose: req.body.purpose || '',
+      timeline: req.body.timeline || '',
+      sourceType: req.body.sourceType || 'text',
+      color: req.body.color || '#B45309', // Dark amber for chakras
+      positionX: req.body.positionX || Math.floor(Math.random() * 400) + 100,
+      positionY: req.body.positionY || Math.floor(Math.random() * 300) + 100,
+      radius: req.body.radius || 120,
+      voiceData: req.body.voiceData || null
+    };
+    
+    console.log('Creating chakra with data:', chakraCreateData);
+    
+    // Create chakra in dedicated chakras table
+    const [newChakra] = await db.insert(chakras).values(chakraCreateData).returning();
+    
+    // Store in Pinecone for intelligence
+    try {
+      const vectorId = `chakra_${userId}_${newChakra.id}_${Date.now()}`;
+      const content = `${newChakra.heading} ${newChakra.purpose || ''} ${newChakra.timeline || ''}`;
+      
+      // Store vector embedding reference
+      await db.insert(vectorEmbeddings).values({
+        contentType: 'chakra',
+        contentId: newChakra.id,
+        userId: userId,
+        vectorId: vectorId,
+        content: content,
+        metadata: JSON.stringify({
+          color: newChakra.color,
+          createdAt: newChakra.createdAt
+        })
+      });
+      
+      console.log(`Stored chakra ${newChakra.id} in vector database with ID: ${vectorId}`);
+    } catch (vectorError) {
+      console.warn('Failed to store in vector database:', vectorError);
+      // Continue without vector storage - chakra is still created
+    }
+    
+    res.status(201).json({
+      success: true,
+      chakra: newChakra,
+      message: 'Chakra created successfully'
+    });
+    
+  } catch (error) {
+    console.error('Error creating chakra:', error);
+    res.status(500).json({ 
+      error: 'Failed to create chakra',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
+// Get all chakras for the authenticated user  
+router.get('/chakras', checkDotSparkActivation, async (req, res) => {
+  const userId = req.userId;
+  
+  console.log(`🔍 Fetching chakras for user ${userId}`);
+  
+  try {
+    // Fetch from dedicated chakras table
+    const userChakras = await db.query.chakras.findMany({
+      where: eq(chakras.userId, userId),
+      orderBy: desc(chakras.createdAt)
+    });
+    
+    // Transform chakras to frontend format
+    const formattedChakras = userChakras.map(chakra => ({
+      id: `chakra_${chakra.id}`,
+      heading: chakra.heading,
+      purpose: chakra.purpose,
+      timeline: chakra.timeline,
+      sourceType: chakra.sourceType || 'text',
+      color: chakra.color,
+      position: { x: chakra.positionX, y: chakra.positionY },
+      radius: chakra.radius,
+      timestamp: chakra.createdAt,
+      createdAt: chakra.createdAt,
+      updatedAt: chakra.updatedAt
+    }));
+    
+    console.log(`✅ Returning ${formattedChakras.length} chakras from chakras table`);
+    res.json(formattedChakras);
+    
+  } catch (error) {
+    console.error('❌ Error fetching user chakras:', error);
+    res.status(500).json({ 
+      error: 'Failed to fetch chakras',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
 // Delete a specific dot
 router.delete('/dots/:id', checkDotSparkActivation, async (req, res) => {
   const userId = req.userId;
