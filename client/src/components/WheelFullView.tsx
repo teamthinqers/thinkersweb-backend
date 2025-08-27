@@ -163,38 +163,48 @@ const AssociatedContent: React.FC<{
   onWheelClick?: (wheel: any) => void;
 }> = ({ wheel, isChakra, onDotClick, onWheelClick }) => {
   // Fetch dots for this wheel (if it's a wheel)
-  const { data: wheelDots } = useQuery({
-    queryKey: [`/api/dots?wheelId=${wheel.id}`],
+  const { data: allDots } = useQuery({
+    queryKey: ['/api/user-content/dots'],
     queryFn: async () => {
-      if (isChakra) return []; // Don't fetch dots directly for chakras
-      const response = await fetch(`/api/dots?wheelId=${wheel.id}`);
+      const response = await fetch('/api/user-content/dots', { credentials: 'include' });
       if (!response.ok) return [];
       return response.json();
     },
     enabled: !isChakra && !!wheel.id
   });
 
+  const wheelDots = allDots?.filter((dot: any) => 
+    dot.wheelId && (dot.wheelId == wheel.id || dot.wheelId === String(wheel.id))
+  ) || [];
+
   // Fetch wheels for this chakra (if it's a chakra)
-  const { data: chakraWheels } = useQuery({
-    queryKey: [`/api/wheels?chakraId=${wheel.id}`],
+  const { data: allWheels } = useQuery({
+    queryKey: ['/api/user-content/wheels'],
     queryFn: async () => {
       if (!isChakra) return []; // Don't fetch wheels for regular wheels
-      const response = await fetch(`/api/wheels?chakraId=${wheel.id}`);
+      const response = await fetch('/api/user-content/wheels', { credentials: 'include' });
       if (!response.ok) return [];
       return response.json();
     },
     enabled: isChakra && !!wheel.id
   });
 
+  const chakraWheels = allWheels?.filter((w: any) => 
+    w.chakraId && (w.chakraId == wheel.id || w.chakraId === String(wheel.id))
+  ) || [];
+
   // Fetch all dots for chakra wheels
   const { data: allChakraDots } = useQuery({
-    queryKey: [`/api/dots?chakraId=${wheel.id}`],
+    queryKey: ['/api/user-content/dots'],
     queryFn: async () => {
       if (!isChakra || !chakraWheels?.length) return [];
-      const wheelIds = chakraWheels.map((w: any) => w.id).join(',');
-      const response = await fetch(`/api/dots?wheelIds=${wheelIds}`);
+      const response = await fetch('/api/user-content/dots', { credentials: 'include' });
       if (!response.ok) return [];
-      return response.json();
+      const allDots = await response.json();
+      const wheelIds = chakraWheels.map((w: any) => w.id);
+      return allDots.filter((dot: any) => 
+        dot.wheelId && wheelIds.some(id => dot.wheelId == id || dot.wheelId === String(id))
+      );
     },
     enabled: isChakra && !!chakraWheels?.length
   });
