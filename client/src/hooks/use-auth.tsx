@@ -160,9 +160,33 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const logout = async () => {
     setIsLoading(true);
     try {
-      // Firebase logout only
+      console.log('Starting logout process...');
+      
+      // 1. Clear server-side session first
+      try {
+        await fetch('/api/logout', {
+          method: 'POST',
+          credentials: 'include'
+        });
+        console.log('✅ Server session cleared');
+      } catch (error) {
+        console.warn('Server logout failed, continuing with client cleanup:', error);
+      }
+      
+      // 2. Clear all local storage and session storage
+      localStorage.removeItem('dotspark_user');
+      localStorage.removeItem('dotspark_user_data');
+      localStorage.removeItem('dotspark_session_active');
+      localStorage.removeItem('auth_timestamp');
+      sessionStorage.removeItem('dotspark_temp_auth');
+      console.log('✅ Local storage cleared');
+      
+      // 3. Sign out of Firebase
       await signOut();
+      console.log('✅ Firebase signout completed');
+      
       // User state will be updated by onAuthStateChanged
+      console.log('✅ Logout process completed successfully');
     } catch (error) {
       console.error('Logout failed:', error);
       setIsLoading(false);

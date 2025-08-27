@@ -17,7 +17,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/use-auth";
 import { Link, useLocation } from "wouter";
-import { signOut } from "@/lib/authService";
+// signOut import removed - using logout from useAuth hook instead
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -145,16 +145,20 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
 
   const handleLogout = async () => {
     try {
-      // Show the toast first so user gets immediate feedback
+      console.log("User initiated logout");
+      
+      // Use the centralized logout from useAuth hook
+      await logout();
+      
       toast({
-        title: "Logging out...",
-        description: "Please wait while we log you out safely",
+        title: "Signed out successfully",
+        description: "You have been signed out of DotSpark.",
       });
       
-      // Use our centralized auth service for consistent behavior
-      await signOut(true); // true = redirect to home page after logout
-      
-      // Toast notification handled by auth service redirect
+      // Redirect to home page after successful logout
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 1000);
     } catch (error) {
       console.error("Logout error:", error);
       toast({
