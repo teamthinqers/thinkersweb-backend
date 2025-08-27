@@ -869,7 +869,7 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
               <div key={chakra.id} className="relative">
                 {/* Chakra circle */}
                 <div
-                  className="absolute rounded-full border-4 border-amber-500/50 bg-gradient-to-br from-amber-100/40 to-orange-100/40 cursor-move transition-all duration-200 hover:scale-105 hover:border-amber-600/70"
+                  className="absolute rounded-full border-4 border-amber-500/50 bg-gradient-to-br from-amber-100/40 to-orange-100/40 cursor-move chakra-element hover:scale-110 hover:shadow-2xl hover:border-amber-600/80 hover:-translate-y-2 hover:ring-8 hover:ring-amber-300/30 active:scale-95"
                   style={{
                     left: `${chakraX - chakraRadius/2}px`,
                     top: `${chakraY - chakraRadius/2}px`,
@@ -1084,7 +1084,7 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
               <div key={wheel.id} className="relative">
                 {/* Wheel circle */}
                 <div
-                  className="absolute rounded-full border-2 border-dashed border-orange-400/60 bg-orange-50/30 cursor-move transition-all duration-200 hover:scale-105 hover:border-orange-500"
+                  className="absolute rounded-full border-2 border-dashed border-orange-400/60 bg-orange-50/30 cursor-move wheel-element hover:scale-110 hover:shadow-xl hover:border-orange-500 hover:-translate-y-2 hover:ring-6 hover:ring-orange-300/40 active:scale-95"
                   style={{
                     left: `${wheelX - wheelRadius}px`,
                     top: `${wheelY - wheelRadius}px`,
@@ -1237,7 +1237,7 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                 >
                   {/* Wheel heading on top like preview mode */}
                   <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 text-center">
-                    <div className="px-4 py-2 rounded-lg text-center shadow-lg border-2 transition-all duration-300 hover:scale-105 bg-gradient-to-r from-amber-50 to-orange-50 border-amber-300 text-amber-800">
+                    <div className="px-4 py-2 rounded-lg text-center shadow-lg border-2 transition-all duration-300 hover:scale-110 hover:shadow-xl hover:-translate-y-1 bg-gradient-to-r from-amber-50 to-orange-50 border-amber-300 text-amber-800 hover:from-amber-100 hover:to-orange-100">
                       <div className="font-bold text-sm whitespace-nowrap">
                         {wheel.heading || wheel.name}
                       </div>
@@ -1458,7 +1458,8 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
               <div key={dot.id} className="relative">
                 {/* Dot element with exact styling from PreviewMapGrid */}
                 <div
-                  className="absolute w-10 h-10 rounded-full cursor-move transition-all duration-200 hover:scale-110 hover:shadow-md dot-element group"
+                  data-dot-id={dot.id}
+                  className="absolute w-10 h-10 rounded-full cursor-move transition-all duration-300 hover:scale-125 hover:shadow-2xl hover:-translate-y-1 dot-element group active:scale-95 hover:ring-4 hover:ring-amber-300/40"
                   style={{
                     left: `${x - 5}px`, // Adjust for larger size
                     top: `${y - 5}px`,
@@ -1497,6 +1498,12 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                         const newX = (e.clientX - gridRect.left - offset.x) / zoom - offsetX / zoom;
                         const newY = (e.clientY - gridRect.top - offset.y) / zoom - offsetY / zoom;
                         
+                        // Add smooth visual feedback during drag
+                        const element = e.currentTarget as HTMLElement;
+                        element.style.transform = 'scale(1.1) translateZ(0)';
+                        element.style.boxShadow = '0 20px 40px rgba(0,0,0,0.3)';
+                        element.style.zIndex = '1000';
+                        
                         setElementPositions(prev => ({
                           ...prev,
                           [`dot-${dot.id}`]: { x: newX, y: newY }
@@ -1523,9 +1530,13 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                     document.addEventListener('mouseup', handleMouseUp);
                   }}
                 >
-                  {/* Pulse animation for voice dots exactly like PreviewMapGrid */}
+                  {/* Enhanced pulse animation for voice dots with multiple rings */}
                   {dot.sourceType === 'voice' && (
-                    <div className="absolute inset-0 rounded-full bg-amber-400 opacity-50 animate-ping" />
+                    <>
+                      <div className="absolute inset-0 rounded-full bg-amber-400 opacity-40 animate-ping" />
+                      <div className="absolute inset-1 rounded-full bg-amber-300 opacity-30 animate-ping" style={{ animationDelay: '0.2s' }} />
+                      <div className="absolute inset-2 rounded-full bg-yellow-300 opacity-20 animate-ping" style={{ animationDelay: '0.4s' }} />
+                    </>
                   )}
                   
                   <div className="absolute inset-0 flex items-center justify-center text-white text-xs font-bold">
@@ -1540,7 +1551,7 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                 {/* Dot Hover Card - exact same styling as PreviewMapGrid */}
                 {hoveredDot?.id === dot.id && (
                   <div 
-                    className="absolute bg-white/95 backdrop-blur-sm border border-amber-200 rounded-lg p-3 shadow-lg z-[1000] cursor-pointer"
+                    className="absolute bg-white/95 backdrop-blur-sm border border-amber-200 rounded-lg p-3 shadow-lg z-[1000] cursor-pointer hover-card"
                     style={{
                       left: `${x + 35}px`,
                       top: `${Math.max(10, y - 20)}px`,
@@ -1689,7 +1700,7 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
               <div key={wheel.id} className="relative">
                 {/* Wheel circle */}
                 <div
-                  className="absolute rounded-full border-2 border-dashed border-orange-400/60 bg-orange-50/30 cursor-move transition-all duration-200 hover:scale-105 hover:border-orange-500"
+                  className="absolute rounded-full border-2 border-dashed border-orange-400/60 bg-orange-50/30 cursor-move wheel-element hover:scale-110 hover:shadow-xl hover:border-orange-500 hover:-translate-y-2 hover:ring-6 hover:ring-orange-300/40 active:scale-95"
                   style={{
                     left: `${wheelX - wheelRadius}px`,
                     top: `${wheelY - wheelRadius}px`,
@@ -1841,7 +1852,7 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                 >
                   {/* Wheel heading on top like preview mode */}
                   <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 text-center">
-                    <div className="px-4 py-2 rounded-lg text-center shadow-lg border-2 transition-all duration-300 hover:scale-105 bg-gradient-to-r from-amber-50 to-orange-50 border-amber-300 text-amber-800">
+                    <div className="px-4 py-2 rounded-lg text-center shadow-lg border-2 transition-all duration-300 hover:scale-110 hover:shadow-xl hover:-translate-y-1 bg-gradient-to-r from-amber-50 to-orange-50 border-amber-300 text-amber-800 hover:from-amber-100 hover:to-orange-100">
                       <div className="font-bold text-sm whitespace-nowrap">
                         {wheel.heading || wheel.name}
                       </div>

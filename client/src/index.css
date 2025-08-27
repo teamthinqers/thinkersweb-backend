@@ -124,6 +124,75 @@
     transform: scaleX(1);
   }
 
+  /* Delightful grid interactions */
+  .dot-element, .wheel-element, .chakra-element {
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    will-change: transform, box-shadow;
+  }
+  
+  .dot-element:hover {
+    animation: gentle-pulse 2s ease-in-out infinite;
+  }
+  
+  .dragging {
+    z-index: 1000 !important;
+    filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.3));
+    animation: float-drag 0.8s ease-in-out infinite;
+  }
+  
+  @keyframes gentle-pulse {
+    0%, 100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(1.02);
+      opacity: 0.95;
+    }
+  }
+  
+  @keyframes float-drag {
+    0%, 100% {
+      transform: translateY(0px) scale(1.1);
+    }
+    50% {
+      transform: translateY(-5px) scale(1.12);
+    }
+  }
+  
+  /* Enhanced hover cards with smooth entrance */
+  .hover-card {
+    animation: card-entrance 0.2s ease-out;
+    transform-origin: left center;
+  }
+  
+  @keyframes card-entrance {
+    0% {
+      opacity: 0;
+      transform: scale(0.9) translateY(10px);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+  
+  /* Smooth collision feedback */
+  .collision-warning {
+    animation: warning-pulse 0.3s ease-out;
+    border-color: #ef4444 !important;
+  }
+  
+  @keyframes warning-pulse {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
+    }
+  }
+
   /* Floating animation keyframes for DotSpark visualization */
   @keyframes float {
     0%, 100% {
