@@ -149,7 +149,7 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
   const [hoveredDot, setHoveredDot] = useState<Dot | null>(null);
   const [hoveredWheel, setHoveredWheel] = useState<Wheel | null>(null);
   const [hoveredChakra, setHoveredChakra] = useState<any>(null);
-  const [draggedElement, setDraggedElement] = useState<{type: 'dot' | 'wheel' | 'chakra', id: string, startPos: {x: number, y: number}, offset: {x: number, y: number}} | null>(null);
+  // Removed draggedElement state - using floating dot approach with document listeners
   const [elementPositions, setElementPositions] = useState<{[key: string]: {x: number, y: number}}>({});
   const [showSaveDialog, setShowSaveDialog] = useState(false); 
   const gridContainerRef = useRef<HTMLDivElement>(null);
@@ -217,78 +217,6 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (draggedElement) {
-      // Element dragging mode - update element position and all grouped elements
-      const rect = gridContainerRef.current?.getBoundingClientRect();
-      if (rect) {
-        // Use the stored offset to maintain proper cursor-to-element relationship
-        const newX = (e.clientX - draggedElement.offset.x - rect.left - offset.x) / zoom;
-        const newY = (e.clientY - draggedElement.offset.y - rect.top - offset.y) / zoom;
-        
-        // Calculate movement delta
-        const currentPos = elementPositions[`${draggedElement.type}-${draggedElement.id}`];
-        if (currentPos) {
-          const deltaX = newX - currentPos.x;
-          const deltaY = newY - currentPos.y;
-          
-          setElementPositions(prev => {
-            const newPositions = { ...prev };
-            
-            // Update the dragged element position
-            newPositions[`${draggedElement.type}-${draggedElement.id}`] = { x: newX, y: newY };
-            
-            // Move all grouped elements
-            if (draggedElement.type === 'chakra') {
-              // Move all wheels belonging to this chakra
-              const chakraWheels = displayWheels.filter(w => w.chakraId === draggedElement.id);
-              chakraWheels.forEach(wheel => {
-                const wheelKey = `wheel-${wheel.id}`;
-                if (prev[wheelKey]) {
-                  newPositions[wheelKey] = {
-                    x: prev[wheelKey].x + deltaX,
-                    y: prev[wheelKey].y + deltaY
-                  };
-                }
-                
-                // Move all dots belonging to this wheel
-                const wheelDots = displayDots.filter(d => d.wheelId === wheel.id);
-                wheelDots.forEach(dot => {
-                  const dotKey = `dot-${dot.id}`;
-                  if (prev[dotKey]) {
-                    newPositions[dotKey] = {
-                      x: prev[dotKey].x + deltaX,
-                      y: prev[dotKey].y + deltaY
-                    };
-                  }
-                });
-              });
-            } else if (draggedElement.type === 'wheel') {
-              // Move all dots belonging to this wheel
-              const wheelDots = displayDots.filter(d => d.wheelId === draggedElement.id);
-              wheelDots.forEach(dot => {
-                const dotKey = `dot-${dot.id}`;
-                if (prev[dotKey]) {
-                  newPositions[dotKey] = {
-                    x: prev[dotKey].x + deltaX,
-                    y: prev[dotKey].y + deltaY
-                  };
-                }
-              });
-            }
-            
-            return newPositions;
-          });
-        } else {
-          // First time setting position
-          setElementPositions(prev => ({
-            ...prev,
-            [`${draggedElement.type}-${draggedElement.id}`]: { x: newX, y: newY }
-          }));
-        }
-      }
-      return;
-    }
-    
     if (!dragStart) return;
     e.preventDefault();
     e.stopPropagation();
@@ -298,72 +226,7 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
     });
   };
 
-  const handleMouseUp = (e?: React.MouseEvent) => {
-    if (draggedElement && e) {
-      // Save final position of dragged element and all grouped elements
-      const rect = gridContainerRef.current?.getBoundingClientRect();
-      if (rect) {
-        // Use the stored offset to maintain proper cursor-to-element relationship
-        const newX = (e.clientX - draggedElement.offset.x - rect.left - offset.x) / zoom;
-        const newY = (e.clientY - draggedElement.offset.y - rect.top - offset.y) / zoom;
-        
-        // Calculate movement delta for final positioning
-        const currentPos = elementPositions[`${draggedElement.type}-${draggedElement.id}`];
-        if (currentPos) {
-          const deltaX = newX - currentPos.x;
-          const deltaY = newY - currentPos.y;
-          
-          setElementPositions(prev => {
-            const newPositions = { ...prev };
-            
-            // Update the dragged element position
-            newPositions[`${draggedElement.type}-${draggedElement.id}`] = { x: newX, y: newY };
-            
-            // Move all grouped elements
-            if (draggedElement.type === 'chakra') {
-              // Move all wheels belonging to this chakra
-              const chakraWheels = displayWheels.filter(w => w.chakraId === draggedElement.id);
-              chakraWheels.forEach(wheel => {
-                const wheelKey = `wheel-${wheel.id}`;
-                if (prev[wheelKey]) {
-                  newPositions[wheelKey] = {
-                    x: prev[wheelKey].x + deltaX,
-                    y: prev[wheelKey].y + deltaY
-                  };
-                }
-                
-                // Move all dots belonging to this wheel
-                const wheelDots = displayDots.filter(d => d.wheelId === wheel.id);
-                wheelDots.forEach(dot => {
-                  const dotKey = `dot-${dot.id}`;
-                  if (prev[dotKey]) {
-                    newPositions[dotKey] = {
-                      x: prev[dotKey].x + deltaX,
-                      y: prev[dotKey].y + deltaY
-                    };
-                  }
-                });
-              });
-            } else if (draggedElement.type === 'wheel') {
-              // Move all dots belonging to this wheel
-              const wheelDots = displayDots.filter(d => d.wheelId === draggedElement.id);
-              wheelDots.forEach(dot => {
-                const dotKey = `dot-${dot.id}`;
-                if (prev[dotKey]) {
-                  newPositions[dotKey] = {
-                    x: prev[dotKey].x + deltaX,
-                    y: prev[dotKey].y + deltaY
-                  };
-                }
-              });
-            }
-            
-            return newPositions;
-          });
-        }
-      }
-      setDraggedElement(null);
-    }
+  const handleMouseUp = () => {
     setDragStart(null);
   };
 
@@ -599,28 +462,51 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                     height: `${chakraRadius}px`,
                     pointerEvents: 'auto',
                     zIndex: 1, // Lowest z-index for chakras
-                    willChange: draggedElement?.id === chakra.id ? 'transform' : 'auto',
-                    transform: draggedElement?.id === chakra.id ? 'scale(1.02)' : 'scale(1)'
+                    willChange: 'auto',
+                    transform: 'scale(1)'
                   }}
                   onClick={(e) => {
-                    if (!draggedElement) {
-                      e.stopPropagation();
-                      setViewFullWheel(chakra);
-                    }
+                    e.stopPropagation();
+                    setViewFullWheel(chakra);
                   }}
                   onMouseDown={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
+                    
                     // Calculate offset from cursor to element's top-left corner
                     const rect = e.currentTarget.getBoundingClientRect();
-                    setDraggedElement({
-                      type: 'chakra', 
-                      id: chakra.id, 
-                      startPos: {x: e.clientX, y: e.clientY},
-                      offset: {x: e.clientX - rect.left, y: e.clientY - rect.top}
-                    });
+                    const offsetX = e.clientX - rect.left;
+                    const offsetY = e.clientY - rect.top;
+                    
+                    // Start drag tracking
+                    let hasDragged = false;
+                    
+                    const handleMouseMove = (e: MouseEvent) => {
+                      e.preventDefault();
+                      hasDragged = true;
+                      
+                      // Calculate new position like floating dot
+                      const gridRect = gridContainerRef.current?.getBoundingClientRect();
+                      if (gridRect) {
+                        const newX = (e.clientX - offsetX - gridRect.left - offset.x) / zoom;
+                        const newY = (e.clientY - offsetY - gridRect.top - offset.y) / zoom;
+                        
+                        setElementPositions(prev => ({
+                          ...prev,
+                          [`chakra-${chakra.id}`]: { x: newX, y: newY }
+                        }));
+                      }
+                    };
+                    
+                    const handleMouseUp = () => {
+                      document.removeEventListener('mousemove', handleMouseMove);
+                      document.removeEventListener('mouseup', handleMouseUp);
+                    };
+                    
+                    document.addEventListener('mousemove', handleMouseMove);
+                    document.addEventListener('mouseup', handleMouseUp);
                   }}
-                  onMouseEnter={() => !draggedElement && setHoveredChakra(chakra)}
+                  onMouseEnter={() => setHoveredChakra(chakra)}
                   onMouseLeave={() => setHoveredChakra(null)}
                 >
                   {/* Chakra label */}
@@ -790,28 +676,47 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                     height: `${wheelRadius * 2}px`,
                     pointerEvents: 'auto',
                     zIndex: 5, // Middle z-index for wheels
-                    willChange: draggedElement?.id === wheel.id ? 'transform' : 'auto',
-                    transform: draggedElement?.id === wheel.id ? 'scale(1.02)' : 'scale(1)'
+                    willChange: 'auto',
+                    transform: 'scale(1)'
                   }}
                   onClick={(e) => {
-                    if (!draggedElement) {
-                      e.stopPropagation();
-                      setViewFullWheel(wheel);
-                    }
+                    e.stopPropagation();
+                    setViewFullWheel(wheel);
                   }}
                   onMouseDown={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
+                    
                     // Calculate offset from cursor to element's top-left corner
                     const rect = e.currentTarget.getBoundingClientRect();
-                    setDraggedElement({
-                      type: 'wheel', 
-                      id: wheel.id, 
-                      startPos: {x: e.clientX, y: e.clientY},
-                      offset: {x: e.clientX - rect.left, y: e.clientY - rect.top}
-                    });
+                    const offsetX = e.clientX - rect.left;
+                    const offsetY = e.clientY - rect.top;
+                    
+                    const handleMouseMove = (e: MouseEvent) => {
+                      e.preventDefault();
+                      
+                      // Calculate new position like floating dot
+                      const gridRect = gridContainerRef.current?.getBoundingClientRect();
+                      if (gridRect) {
+                        const newX = (e.clientX - offsetX - gridRect.left - offset.x) / zoom;
+                        const newY = (e.clientY - offsetY - gridRect.top - offset.y) / zoom;
+                        
+                        setElementPositions(prev => ({
+                          ...prev,
+                          [`wheel-${wheel.id}`]: { x: newX, y: newY }
+                        }));
+                      }
+                    };
+                    
+                    const handleMouseUp = () => {
+                      document.removeEventListener('mousemove', handleMouseMove);
+                      document.removeEventListener('mouseup', handleMouseUp);
+                    };
+                    
+                    document.addEventListener('mousemove', handleMouseMove);
+                    document.addEventListener('mouseup', handleMouseUp);
                   }}
-                  onMouseEnter={() => !draggedElement && setHoveredWheel(wheel)}
+                  onMouseEnter={() => setHoveredWheel(wheel)}
                   onMouseLeave={() => setHoveredWheel(null)}
                 >
                   {/* Wheel heading on top like preview mode */}
@@ -990,31 +895,50 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                       ? 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%)'
                       : 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)',
                     border: '2px solid rgba(255, 255, 255, 0.8)',
-                    boxShadow: draggedElement?.id === dot.id ? '0 8px 25px rgba(0, 0, 0, 0.25)' : '0 2px 8px rgba(0, 0, 0, 0.15)',
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
                     pointerEvents: 'auto',
-                    zIndex: draggedElement?.id === dot.id ? 1000 : 10, // Highest z-index for dots
-                    willChange: draggedElement?.id === dot.id ? 'transform' : 'auto'
+                    zIndex: 10, // Highest z-index for dots
+                    willChange: 'auto'
                   }}
                   onClick={(e) => {
-                    if (!draggedElement) {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      setViewFullDot(dot);
-                    }
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setViewFullDot(dot);
                   }}
                   onMouseDown={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
+                    
                     // Calculate offset from cursor to element's top-left corner
                     const rect = e.currentTarget.getBoundingClientRect();
-                    setDraggedElement({
-                      type: 'dot', 
-                      id: dot.id, 
-                      startPos: {x: e.clientX, y: e.clientY},
-                      offset: {x: e.clientX - rect.left, y: e.clientY - rect.top}
-                    });
+                    const offsetX = e.clientX - rect.left;
+                    const offsetY = e.clientY - rect.top;
+                    
+                    const handleMouseMove = (e: MouseEvent) => {
+                      e.preventDefault();
+                      
+                      // Calculate new position like floating dot
+                      const gridRect = gridContainerRef.current?.getBoundingClientRect();
+                      if (gridRect) {
+                        const newX = (e.clientX - offsetX - gridRect.left - offset.x) / zoom;
+                        const newY = (e.clientY - offsetY - gridRect.top - offset.y) / zoom;
+                        
+                        setElementPositions(prev => ({
+                          ...prev,
+                          [`dot-${dot.id}`]: { x: newX, y: newY }
+                        }));
+                      }
+                    };
+                    
+                    const handleMouseUp = () => {
+                      document.removeEventListener('mousemove', handleMouseMove);
+                      document.removeEventListener('mouseup', handleMouseUp);
+                    };
+                    
+                    document.addEventListener('mousemove', handleMouseMove);
+                    document.addEventListener('mouseup', handleMouseUp);
                   }}
-                  onMouseEnter={() => !draggedElement && setHoveredDot(dot)}
+                  onMouseEnter={() => setHoveredDot(dot)}
                   onMouseLeave={() => setHoveredDot(null)}
                 >
                   {/* Pulse animation for voice dots exactly like PreviewMapGrid */}
@@ -1190,28 +1114,47 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                     width: `${wheelRadius * 2}px`,
                     height: `${wheelRadius * 2}px`,
                     pointerEvents: 'auto',
-                    willChange: draggedElement?.id === wheel.id ? 'transform' : 'auto',
-                    transform: draggedElement?.id === wheel.id ? 'scale(1.02)' : 'scale(1)'
+                    willChange: 'auto',
+                    transform: 'scale(1)'
                   }}
                   onClick={(e) => {
-                    if (!draggedElement) {
-                      e.stopPropagation();
-                      setViewFullWheel(wheel);
-                    }
+                    e.stopPropagation();
+                    setViewFullWheel(wheel);
                   }}
                   onMouseDown={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
+                    
                     // Calculate offset from cursor to element's top-left corner
                     const rect = e.currentTarget.getBoundingClientRect();
-                    setDraggedElement({
-                      type: 'wheel', 
-                      id: wheel.id, 
-                      startPos: {x: e.clientX, y: e.clientY},
-                      offset: {x: e.clientX - rect.left, y: e.clientY - rect.top}
-                    });
+                    const offsetX = e.clientX - rect.left;
+                    const offsetY = e.clientY - rect.top;
+                    
+                    const handleMouseMove = (e: MouseEvent) => {
+                      e.preventDefault();
+                      
+                      // Calculate new position like floating dot
+                      const gridRect = gridContainerRef.current?.getBoundingClientRect();
+                      if (gridRect) {
+                        const newX = (e.clientX - offsetX - gridRect.left - offset.x) / zoom;
+                        const newY = (e.clientY - offsetY - gridRect.top - offset.y) / zoom;
+                        
+                        setElementPositions(prev => ({
+                          ...prev,
+                          [`wheel-${wheel.id}`]: { x: newX, y: newY }
+                        }));
+                      }
+                    };
+                    
+                    const handleMouseUp = () => {
+                      document.removeEventListener('mousemove', handleMouseMove);
+                      document.removeEventListener('mouseup', handleMouseUp);
+                    };
+                    
+                    document.addEventListener('mousemove', handleMouseMove);
+                    document.addEventListener('mouseup', handleMouseUp);
                   }}
-                  onMouseEnter={() => !draggedElement && setHoveredWheel(wheel)}
+                  onMouseEnter={() => setHoveredWheel(wheel)}
                   onMouseLeave={() => setHoveredWheel(null)}
                 >
                   {/* Wheel heading on top like preview mode */}
