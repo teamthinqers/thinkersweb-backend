@@ -320,11 +320,65 @@ router.post('/wheels', async (req, res) => {
   }
 });
 
-// Remove broken router definition
+// Get all wheels for the authenticated user - MISSING ENDPOINT
+router.get('/wheels', checkDotSparkActivation, async (req, res) => {
+  const userId = req.user?.id || req.session?.userId;
+  const { filterType, filterCount, preview } = req.query;
+
+  // Support preview mode for non-authenticated access
+  if (preview === 'true') {
+    try {
+      const previewWheels = [
+        { id: 'preview_wheel_1', heading: 'Fitness Goals', goals: 'Run 5K daily, build strength', timeline: '6 months', category: 'Health', color: '#F59E0B', position: { x: 200, y: 150 }, radius: 95, timestamp: new Date(), createdAt: new Date(), updatedAt: new Date() },
+        { id: 'preview_wheel_2', heading: 'Career Growth', goals: 'Learn new skills, get promotion', timeline: '1 year', category: 'Professional', color: '#F59E0B', position: { x: 400, y: 200 }, radius: 95, timestamp: new Date(), createdAt: new Date(), updatedAt: new Date() }
+      ];
+      return res.json(previewWheels);
+    } catch (error) {
+      console.error('❌ Error fetching preview wheels:', error);
+      return res.status(500).json({ error: 'Failed to fetch preview wheels' });
+    }
+  }
+  
+  console.log(`🔍 Fetching wheels for user ${userId}`);
+  
+  try {
+    // Fetch from wheels table
+    const userWheels = await db.query.wheels.findMany({
+      where: eq(wheels.userId, userId),
+      orderBy: desc(wheels.createdAt)
+    });
+    
+    // Transform wheels to frontend format
+    const formattedWheels = userWheels.map(wheel => ({
+      id: `wheel_${wheel.id}`,
+      heading: wheel.heading,
+      goals: wheel.goals,
+      timeline: wheel.timeline,
+      category: wheel.category,
+      color: wheel.color,
+      chakraId: wheel.chakraId,
+      position: { x: wheel.positionX, y: wheel.positionY },
+      radius: wheel.radius,
+      timestamp: wheel.createdAt,
+      createdAt: wheel.createdAt,
+      updatedAt: wheel.updatedAt
+    }));
+    
+    console.log(`✅ Returning ${formattedWheels.length} wheels from wheels table`);
+    res.json(formattedWheels);
+    
+  } catch (error) {
+    console.error('❌ Error fetching user wheels:', error);
+    res.status(500).json({ 
+      error: 'Failed to fetch wheels',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
 
 // Get all dots for the authenticated user - CLEAN VERSION
 router.get('/dots', checkDotSparkActivation, async (req, res) => {
-  const userId = req.userId;
+  const userId = req.user?.id || req.session?.userId;
   const { filterType, filterCount, preview } = req.query;
 
   // Support preview mode for non-authenticated access
@@ -478,7 +532,7 @@ router.get('/dots', checkDotSparkActivation, async (req, res) => {
 
 // Create a new chakra with alignment
 router.post('/chakras', checkDotSparkActivation, async (req, res) => {
-  const userId = req.userId;
+  const userId = req.user?.id || req.session?.userId;
   
   console.log(`✅ Chakras POST - User ${userId} authenticated`);
   try {
@@ -543,7 +597,7 @@ router.post('/chakras', checkDotSparkActivation, async (req, res) => {
 
 // Get all chakras for the authenticated user  
 router.get('/chakras', checkDotSparkActivation, async (req, res) => {
-  const userId = req.userId;
+  const userId = req.user?.id || req.session?.userId;
   
   console.log(`🔍 Fetching chakras for user ${userId}`);
   
@@ -581,9 +635,57 @@ router.get('/chakras', checkDotSparkActivation, async (req, res) => {
   }
 });
 
+// Get individual dot by ID - MISSING ENDPOINT  
+router.get('/dots/:id', checkDotSparkActivation, async (req, res) => {
+  const userId = req.user?.id || req.session?.userId;
+  const dotId = req.params.id;
+  
+  console.log(`🔍 Fetching individual dot ${dotId} for user ${userId}`);
+  
+  try {
+    // Extract numeric ID from format "dot_123" or just "123"
+    const numericId = parseInt(dotId.replace('dot_', ''));
+    
+    // Fetch specific dot
+    const dot = await db.query.dots.findFirst({
+      where: and(eq(dots.id, numericId), eq(dots.userId, userId))
+    });
+    
+    if (!dot) {
+      return res.status(404).json({ error: 'Dot not found' });
+    }
+    
+    // Transform to frontend format
+    const formattedDot = {
+      id: `dot_${dot.id}`,
+      oneWordSummary: dot.oneWordSummary,
+      summary: dot.summary,
+      anchor: dot.anchor,
+      pulse: dot.pulse,
+      sourceType: dot.sourceType,
+      captureMode: dot.captureMode,
+      wheelId: dot.wheelId?.toString(),
+      timestamp: dot.createdAt,
+      createdAt: dot.createdAt,
+      updatedAt: dot.updatedAt,
+      voiceData: dot.voiceData
+    };
+    
+    console.log(`✅ Found dot ${dot.id} for user ${userId}`);
+    res.json(formattedDot);
+    
+  } catch (error) {
+    console.error('❌ Error fetching individual dot:', error);
+    res.status(500).json({ 
+      error: 'Failed to fetch dot',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
 // Delete a specific dot
 router.delete('/dots/:id', checkDotSparkActivation, async (req, res) => {
-  const userId = req.userId;
+  const userId = req.user?.id || req.session?.userId;
   const dotId = req.params.id;
   
   try {
@@ -620,6 +722,94 @@ router.delete('/dots/:id', checkDotSparkActivation, async (req, res) => {
     console.error('❌ Error deleting dot:', error);
     res.status(500).json({ 
       error: 'Failed to delete dot',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
+// Delete a specific wheel
+router.delete('/wheels/:id', checkDotSparkActivation, async (req, res) => {
+  const userId = req.user?.id || req.session?.userId;
+  const wheelId = req.params.id;
+  
+  console.log(`🗑️ Deleting wheel ${wheelId} for user ${userId}`);
+  
+  try {
+    // Extract numeric ID from format "wheel_123" or just "123"
+    const numericId = parseInt(wheelId.replace('wheel_', ''));
+    
+    // Delete wheel from database
+    const deletedWheels = await db.delete(wheels)
+      .where(and(eq(wheels.id, numericId), eq(wheels.userId, userId)))
+      .returning();
+    
+    if (deletedWheels.length === 0) {
+      return res.status(404).json({ error: 'Wheel not found' });
+    }
+    
+    // Also delete from vector embeddings
+    try {
+      await db.delete(vectorEmbeddings)
+        .where(and(
+          eq(vectorEmbeddings.contentType, 'wheel'),
+          eq(vectorEmbeddings.contentId, numericId),
+          eq(vectorEmbeddings.userId, userId)
+        ));
+    } catch (vectorError) {
+      console.warn('Failed to delete from vector database:', vectorError);
+    }
+    
+    console.log(`✅ Deleted wheel ${numericId} for user ${userId}`);
+    res.json({ success: true, message: 'Wheel deleted successfully' });
+    
+  } catch (error) {
+    console.error('❌ Error deleting wheel:', error);
+    res.status(500).json({ 
+      error: 'Failed to delete wheel',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
+// Delete a specific chakra
+router.delete('/chakras/:id', checkDotSparkActivation, async (req, res) => {
+  const userId = req.user?.id || req.session?.userId;
+  const chakraId = req.params.id;
+  
+  console.log(`🗑️ Deleting chakra ${chakraId} for user ${userId}`);
+  
+  try {
+    // Extract numeric ID from format "chakra_123" or just "123"
+    const numericId = parseInt(chakraId.replace('chakra_', ''));
+    
+    // Delete chakra from database
+    const deletedChakras = await db.delete(chakras)
+      .where(and(eq(chakras.id, numericId), eq(chakras.userId, userId)))
+      .returning();
+    
+    if (deletedChakras.length === 0) {
+      return res.status(404).json({ error: 'Chakra not found' });
+    }
+    
+    // Also delete from vector embeddings
+    try {
+      await db.delete(vectorEmbeddings)
+        .where(and(
+          eq(vectorEmbeddings.contentType, 'chakra'),
+          eq(vectorEmbeddings.contentId, numericId),
+          eq(vectorEmbeddings.userId, userId)
+        ));
+    } catch (vectorError) {
+      console.warn('Failed to delete from vector database:', vectorError);
+    }
+    
+    console.log(`✅ Deleted chakra ${numericId} for user ${userId}`);
+    res.json({ success: true, message: 'Chakra deleted successfully' });
+    
+  } catch (error) {
+    console.error('❌ Error deleting chakra:', error);
+    res.status(500).json({ 
+      error: 'Failed to delete chakra',
       details: error instanceof Error ? error.message : 'Unknown error'
     });
   }
