@@ -61,8 +61,8 @@ export const PreviewMapGrid: React.FC<PreviewMapGridProps> = ({
 
   // Fetch preview data
   const { data: previewDots = [], isLoading: dotsLoading } = useQuery({
-    queryKey: ['/api/dots', { preview: true }],
-    queryFn: () => fetch('/api/dots?preview=true').then(res => res.json())
+    queryKey: ['/api/user-content/dots', { preview: true }],
+    queryFn: () => fetch('/api/user-content/dots?preview=true').then(res => res.json())
   });
 
   const { data: previewWheels = [], isLoading: wheelsLoading } = useQuery({

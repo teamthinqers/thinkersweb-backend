@@ -62,7 +62,7 @@ const DotFullView: React.FC<DotFullViewProps> = ({ dot, onClose, onDelete }) => 
 
   const handleDelete = async () => {
     try {
-      const response = await fetch(`/api/dots/${dot.id}`, {
+      const response = await fetch(`/api/user-content/dots/${dot.id}`, {
         method: 'DELETE',
       });
 

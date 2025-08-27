@@ -325,7 +325,23 @@ router.post('/wheels', async (req, res) => {
 // Get all dots for the authenticated user - CLEAN VERSION
 router.get('/dots', checkDotSparkActivation, async (req, res) => {
   const userId = req.userId;
-  const { filterType, filterCount } = req.query;
+  const { filterType, filterCount, preview } = req.query;
+
+  // Support preview mode for non-authenticated access
+  if (preview === 'true') {
+    try {
+      // Return preview dots from preview_dots table or generate sample data
+      const previewDots = [
+        { id: 'preview_1', oneWordSummary: 'Innovation', summary: 'Ideas to transform education', anchor: 'Focus on practical applications', pulse: 'energized', sourceType: 'text', captureMode: 'natural', wheelId: '', timestamp: new Date(), createdAt: new Date(), updatedAt: new Date() },
+        { id: 'preview_2', oneWordSummary: 'Growth', summary: 'Personal development insights', anchor: 'Consistency beats intensity', pulse: 'motivated', sourceType: 'text', captureMode: 'natural', wheelId: '', timestamp: new Date(), createdAt: new Date(), updatedAt: new Date() },
+        { id: 'preview_3', oneWordSummary: 'Connection', summary: 'Building meaningful relationships', anchor: 'Listen more than you speak', pulse: 'grateful', sourceType: 'text', captureMode: 'natural', wheelId: '', timestamp: new Date(), createdAt: new Date(), updatedAt: new Date() }
+      ];
+      return res.json(previewDots);
+    } catch (error) {
+      console.error('❌ Error fetching preview dots:', error);
+      return res.status(500).json({ error: 'Failed to fetch preview dots' });
+    }
+  }
   
   console.log(`🔍 Fetching dots for user ${userId}`);
   console.log(`🎯 Filter params:`, { filterType, filterCount });
@@ -455,6 +471,50 @@ router.get('/dots', checkDotSparkActivation, async (req, res) => {
     console.error('❌ Error fetching user dots:', error);
     res.status(500).json({ 
       error: 'Failed to fetch dots',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
+// Delete a specific dot
+router.delete('/dots/:id', checkDotSparkActivation, async (req, res) => {
+  const userId = req.userId;
+  const dotId = req.params.id;
+  
+  try {
+    // Handle both dot_123 and 123 formats
+    const id = dotId.startsWith('dot_') ? parseInt(dotId.replace('dot_', '')) : parseInt(dotId);
+    
+    if (isNaN(id)) {
+      return res.status(400).json({ error: 'Invalid dot ID' });
+    }
+
+    // Try deleting from dots table first
+    const deletedDots = await db.delete(dots)
+      .where(and(eq(dots.id, id), eq(dots.userId, userId)))
+      .returning();
+
+    if (deletedDots.length > 0) {
+      console.log(`✅ Deleted dot ${id} from dots table for user ${userId}`);
+      return res.json({ success: true, message: 'Dot deleted successfully' });
+    }
+
+    // Fallback: delete from entries table for legacy dots
+    const deletedEntries = await db.delete(entries)
+      .where(and(eq(entries.id, id), eq(entries.userId, userId)))
+      .returning();
+
+    if (deletedEntries.length > 0) {
+      console.log(`✅ Deleted dot ${id} from entries table (legacy) for user ${userId}`);
+      return res.json({ success: true, message: 'Dot deleted successfully' });
+    }
+
+    return res.status(404).json({ error: 'Dot not found or access denied' });
+    
+  } catch (error) {
+    console.error('❌ Error deleting dot:', error);
+    res.status(500).json({ 
+      error: 'Failed to delete dot',
       details: error instanceof Error ? error.message : 'Unknown error'
     });
   }

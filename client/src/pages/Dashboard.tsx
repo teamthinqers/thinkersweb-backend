@@ -165,7 +165,7 @@ const Dashboard: React.FC = () => {
           
           // Only fall back to preview mode if no filter is applied
           if (previewMode) {
-            const previewResponse = await fetch('/api/dots?preview=true', {
+            const previewResponse = await fetch('/api/user-content/dots?preview=true', {
               credentials: 'include'
             });
             if (previewResponse.ok) {
