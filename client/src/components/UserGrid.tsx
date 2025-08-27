@@ -722,8 +722,7 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                   
                   wheelX = chakraX + Math.cos(angle) * orbitRadius;
                   wheelY = chakraY + Math.sin(angle) * orbitRadius;
-                }
-              } else {
+                } else {
                 // Chakra not found, treat as standalone
                 const standaloneWheels = displayWheels.filter((w: any) => !w.chakraId || w.chakraId === 'standalone');
                 const standaloneIndex = standaloneWheels.findIndex((w: any) => w.id === wheel.id);
