@@ -99,10 +99,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             console.log('Firebase auth state changed:', `User ${firebaseUser.email} signed in`);
             
             try {
-              // Sync Firebase user with backend
+              // Sync Firebase user with backend and establish session
+              console.log('🔄 Syncing Firebase user with backend...');
               const response = await fetch('/api/auth/firebase', {
                 method: 'POST',
-                credentials: 'include',
+                credentials: 'include', // Essential for session cookies
                 headers: {
                   'Content-Type': 'application/json',
                 },
