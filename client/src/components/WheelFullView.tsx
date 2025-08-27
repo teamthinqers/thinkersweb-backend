@@ -52,11 +52,7 @@ const WheelFullView: React.FC<WheelFullViewProps> = ({ wheel, isOpen = true, onC
                 <div className={`w-3 h-3 rounded-full ${isChakra ? 'bg-amber-500' : 'bg-indigo-500'} mr-1`}></div>
                 {wheelType}
               </Badge>
-              {wheel.category && (
-                <Badge className="bg-gradient-to-r from-amber-100 to-orange-100 text-amber-800 border-amber-200 text-xs">
-                  {wheel.category}
-                </Badge>
-              )}
+{/* Category badge removed - no category text needed */}
             </div>
             {/* Spacer to push close button away from content */}
             <div className="w-8"></div>

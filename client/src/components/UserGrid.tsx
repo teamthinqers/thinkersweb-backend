@@ -624,9 +624,7 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                   {/* Chakra content */}
                   <div className="absolute inset-0 flex items-center justify-center p-4">
                     <div className="text-center">
-                      <div className="text-sm text-amber-700 font-medium">
-                        Life Purpose
-                      </div>
+                      {/* Content removed - no category text needed */}
                     </div>
                   </div>
                 </div>
@@ -812,9 +810,7 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                   {/* Wheel content */}
                   <div className="absolute inset-0 flex items-center justify-center p-2">
                     <div className="text-center">
-                      <div className="text-xs text-orange-600 font-medium">
-                        Goal Project
-                      </div>
+                      {/* Content removed - no category text needed */}
                     </div>
                   </div>
                 </div>
@@ -1200,9 +1196,7 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                   {/* Wheel content */}
                   <div className="absolute inset-0 flex items-center justify-center p-2">
                     <div className="text-center">
-                      <div className="text-xs text-orange-600 font-medium">
-                        Goal Project
-                      </div>
+                      {/* Content removed - no category text needed */}
                     </div>
                   </div>
                 </div>
