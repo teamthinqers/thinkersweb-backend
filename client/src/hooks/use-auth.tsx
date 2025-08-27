@@ -46,22 +46,27 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
         if (response.ok) {
           const data = await response.json();
-          if (data.user) {
+          if (data.authenticated && data.user) {
             console.log("✅ Found existing backend session for user:", data.user.email || data.user.username);
-            // Create a user object compatible with frontend auth
+            // Create a user object compatible with frontend auth using backend user data
             const backendUser = {
-              uid: data.user.firebaseUid || `backend-${data.user.id}`,
+              uid: data.user.uid || data.user.firebaseUid || `backend-${data.user.id}`,
               id: data.user.id, // Use the backend user ID directly
               email: data.user.email,
-              displayName: data.user.fullName || data.user.username,
-              photoURL: data.user.avatarUrl,
-              fullName: data.user.fullName
+              displayName: data.user.displayName || data.user.fullName || data.user.username,
+              photoURL: data.user.photoURL || data.user.avatarUrl,
+              fullName: data.user.fullName,
+              username: data.user.username
             } as any;
             console.log('✅ Setting user from backend session:', { id: backendUser.id, email: backendUser.email });
             setUser(backendUser);
             setIsLoading(false);
             return true;
           }
+        } else if (response.status === 401) {
+          console.log("No active backend session (401)");
+        } else {
+          console.log("Session check failed:", response.status, response.statusText);
         }
         
         console.log("No existing backend session found");

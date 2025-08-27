@@ -286,9 +286,25 @@ export function setupAuth(app: Express) {
     });
 
     if (req.isAuthenticated() && req.user) {
+      // Return user data in the format expected by frontend
+      const userData = {
+        id: req.user.id,
+        uid: req.user.firebaseUid || `backend-${req.user.id}`,
+        email: req.user.email,
+        username: req.user.username,
+        fullName: req.user.fullName,
+        displayName: req.user.fullName || req.user.username,
+        bio: req.user.bio,
+        avatarUrl: req.user.avatarUrl,
+        photoURL: req.user.avatarUrl,
+        firebaseUid: req.user.firebaseUid,
+        createdAt: req.user.createdAt,
+        updatedAt: req.user.updatedAt
+      };
+
       res.status(200).json({
         authenticated: true,
-        user: req.user
+        user: userData
       });
     } else {
       res.status(401).json({
