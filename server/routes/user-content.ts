@@ -422,18 +422,32 @@ router.get('/dots', async (req, res) => {
     // First try to fetch from proper dots table
     let userDots = await db.query.dots.findMany(queryOptions);
     
-    // If no dots found in dots table, fallback to entries table for backward compatibility
-    if (userDots.length === 0) {
-      console.log(`📊 No dots in dots table, checking entries table for user ${userId}`);
-      
-      // Build entries query with same filtering logic
-      let entriesQueryOptions: any = {
-        where: eq(entries.userId, userId),
-        orderBy: desc(entries.createdAt)
-      };
-      
-      // Apply same filtering logic to entries table
-      if (filterType && filterCount) {
+    // Transform dots table data to frontend format
+    const formattedDots = userDots.map(dot => ({
+      id: `dot_${dot.id}`,
+      oneWordSummary: dot.oneWordSummary,
+      summary: dot.summary,
+      anchor: dot.anchor,
+      pulse: dot.pulse,
+      sourceType: dot.sourceType || 'text',
+      captureMode: dot.captureMode || 'natural',
+      wheelId: dot.wheelId ? dot.wheelId.toString() : '',
+      timestamp: dot.createdAt,
+      createdAt: dot.createdAt,
+      updatedAt: dot.updatedAt
+    }));
+    
+    console.log(`✅ Returning ${formattedDots.length} formatted dots from dedicated dots table`);
+    return res.json(formattedDots);
+    
+  } catch (error) {
+    console.error('❌ Error fetching user dots:', error);
+    res.status(500).json({ 
+      error: 'Failed to fetch dots',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
         const count = parseInt(filterCount as string) || 4;
         
         if (filterType === 'dot') {
@@ -911,9 +925,9 @@ router.get('/stats', async (req, res) => {
   
   console.log(`🔍 Fetching stats for user ${userId}`);
   try {
-    // Count dots for this user (stored in entries table as JSON)
-    const userEntries = await db.query.entries.findMany({
-      where: eq(entries.userId, userId)
+    // Count dots for this user (stored in dedicated dots table)
+    const userDots = await db.query.dots.findMany({
+      where: eq(dots.userId, userId)
     });
     
     // Count wheels and chakras separately
@@ -926,10 +940,10 @@ router.get('/stats', async (req, res) => {
     });
     
     res.json({
-      totalDots: userEntries.length,
-      totalWheels: userWheels.length, // All wheels regardless of chakraId
-      totalChakras: userChakras.length, // Actual chakras from chakras table
-      lastActivity: userEntries.length > 0 ? userEntries[0]?.createdAt : (userWheels.length > 0 ? userWheels[0]?.createdAt : (userChakras.length > 0 ? userChakras[0]?.createdAt : null))
+      totalDots: userDots.length, // ALIGNED: Now from dots table
+      totalWheels: userWheels.length, // From wheels table  
+      totalChakras: userChakras.length, // From chakras table
+      lastActivity: userDots.length > 0 ? userDots[0]?.createdAt : (userWheels.length > 0 ? userWheels[0]?.createdAt : (userChakras.length > 0 ? userChakras[0]?.createdAt : null))
     });
     
   } catch (error) {
