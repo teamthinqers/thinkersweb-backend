@@ -981,35 +981,17 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                             
                             // More generous collision detection - check if wheel is inside chakra
                             if (distance < chakraRadius / 2) {
-                              if (wheel.chakraId) {
-                                // This is a wheel transfer between chakras
-                                const currentChakra = chakras.find(c => c.id === wheel.chakraId);
-                                console.log(`🔄 Chakra transfer detected! Moving wheel from chakra ${currentChakra?.heading} to chakra ${chakra.heading}`);
-                                setMappingDialog({
-                                  open: true,
-                                  sourceType: 'wheel',
-                                  sourceId: wheel.id,
-                                  sourceName: wheel.heading || wheel.name,
-                                  targetType: 'chakra',
-                                  targetId: chakra.id,
-                                  targetName: chakra.heading || chakra.name,
-                                  isTransfer: true,
-                                  currentParent: currentChakra?.heading || currentChakra?.name || 'Unknown Chakra'
-                                });
-                              } else {
-                                // This is a new mapping
-                                console.log(`✅ Collision detected! Showing mapping dialog`);
-                                setMappingDialog({
-                                  open: true,
-                                  sourceType: 'wheel',
-                                  sourceId: wheel.id,
-                                  sourceName: wheel.heading || wheel.name,
-                                  targetType: 'chakra',
-                                  targetId: chakra.id,
-                                  targetName: chakra.heading || chakra.name,
-                                  isTransfer: false
-                                });
-                              }
+                              console.log(`🎯 Wheel-to-chakra mapping detected! Moving wheel "${wheel.heading || wheel.name}" to chakra "${chakra.heading || chakra.name}"`);
+                              setMappingDialog({
+                                open: true,
+                                sourceType: 'wheel',
+                                sourceId: wheel.id,
+                                sourceName: wheel.heading || wheel.name,
+                                targetType: 'chakra',
+                                targetId: chakra.id,
+                                targetName: chakra.heading || chakra.name,
+                                isTransfer: false
+                              });
                               break;
                             }
                           }
@@ -1324,35 +1306,17 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                             
                             // More generous collision detection
                             if (distance < wheelRadius + 50) {
-                              if (dot.wheelId) {
-                                // This is a dot transfer between wheels
-                                const currentWheel = displayWheels.find(w => w.id === dot.wheelId);
-                                console.log(`🔄 Wheel transfer detected! Moving dot from wheel ${currentWheel?.heading} to wheel ${wheel.heading}`);
-                                setMappingDialog({
-                                  open: true,
-                                  sourceType: 'dot',
-                                  sourceId: dot.id,
-                                  sourceName: dot.oneWordSummary,
-                                  targetType: 'wheel',
-                                  targetId: wheel.id,
-                                  targetName: wheel.heading || wheel.name,
-                                  isTransfer: true,
-                                  currentParent: currentWheel?.heading || currentWheel?.name || 'Unknown Wheel'
-                                });
-                              } else {
-                                // This is a new mapping
-                                console.log(`✅ Collision detected! Showing mapping dialog`);
-                                setMappingDialog({
-                                  open: true,
-                                  sourceType: 'dot',
-                                  sourceId: dot.id,
-                                  sourceName: dot.oneWordSummary,
-                                  targetType: 'wheel',
-                                  targetId: wheel.id,
-                                  targetName: wheel.heading || wheel.name,
-                                  isTransfer: false
-                                });
-                              }
+                              console.log(`🎯 Dot-to-wheel mapping detected! Moving dot "${dot.oneWordSummary}" to wheel "${wheel.heading || wheel.name}"`);
+                              setMappingDialog({
+                                open: true,
+                                sourceType: 'dot',
+                                sourceId: dot.id,
+                                sourceName: dot.oneWordSummary,
+                                targetType: 'wheel',
+                                targetId: wheel.id,
+                                targetName: wheel.heading || wheel.name,
+                                isTransfer: false
+                              });
                               break;
                             }
                           }
@@ -1398,35 +1362,17 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                             
                             // Collision detection for direct dot-to-chakra mapping
                             if (distance < chakraRadius / 2) {
-                              if (dot.chakraId) {
-                                // This is a dot transfer between chakras
-                                const currentChakra = chakras.find(c => c.id === dot.chakraId);
-                                console.log(`🔄 Direct chakra transfer! Moving dot from chakra ${currentChakra?.heading} to chakra ${chakra.heading}`);
-                                setMappingDialog({
-                                  open: true,
-                                  sourceType: 'dot',
-                                  sourceId: dot.id,
-                                  sourceName: dot.oneWordSummary,
-                                  targetType: 'chakra',
-                                  targetId: chakra.id,
-                                  targetName: chakra.heading || chakra.name,
-                                  isTransfer: true,
-                                  currentParent: currentChakra?.heading || currentChakra?.name || 'Unknown Chakra'
-                                });
-                              } else {
-                                // This is a new direct mapping to chakra
-                                console.log(`🎯 Direct chakra mapping detected! Mapping dot to chakra for long-term vision`);
-                                setMappingDialog({
-                                  open: true,
-                                  sourceType: 'dot',
-                                  sourceId: dot.id,
-                                  sourceName: dot.oneWordSummary,
-                                  targetType: 'chakra',
-                                  targetId: chakra.id,
-                                  targetName: chakra.heading || chakra.name,
-                                  isTransfer: false
-                                });
-                              }
+                              console.log(`🎯 Dot-to-chakra mapping detected! Moving dot "${dot.oneWordSummary}" to chakra "${chakra.heading || chakra.name}"`);
+                              setMappingDialog({
+                                open: true,
+                                sourceType: 'dot',
+                                sourceId: dot.id,
+                                sourceName: dot.oneWordSummary,
+                                targetType: 'chakra',
+                                targetId: chakra.id,
+                                targetName: chakra.heading || chakra.name,
+                                isTransfer: false
+                              });
                               break; // Exit chakra loop once collision is found
                             }
                           }
@@ -1732,35 +1678,17 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                             
                             // More generous collision detection - check if wheel is inside chakra
                             if (distance < chakraRadius / 2) {
-                              if (wheel.chakraId) {
-                                // This is a wheel transfer between chakras
-                                const currentChakra = chakras.find(c => c.id === wheel.chakraId);
-                                console.log(`🔄 Chakra transfer detected! Moving wheel from chakra ${currentChakra?.heading} to chakra ${chakra.heading}`);
-                                setMappingDialog({
-                                  open: true,
-                                  sourceType: 'wheel',
-                                  sourceId: wheel.id,
-                                  sourceName: wheel.heading || wheel.name,
-                                  targetType: 'chakra',
-                                  targetId: chakra.id,
-                                  targetName: chakra.heading || chakra.name,
-                                  isTransfer: true,
-                                  currentParent: currentChakra?.heading || currentChakra?.name || 'Unknown Chakra'
-                                });
-                              } else {
-                                // This is a new mapping
-                                console.log(`✅ Collision detected! Showing mapping dialog`);
-                                setMappingDialog({
-                                  open: true,
-                                  sourceType: 'wheel',
-                                  sourceId: wheel.id,
-                                  sourceName: wheel.heading || wheel.name,
-                                  targetType: 'chakra',
-                                  targetId: chakra.id,
-                                  targetName: chakra.heading || chakra.name,
-                                  isTransfer: false
-                                });
-                              }
+                              console.log(`🎯 Wheel-to-chakra mapping detected! Moving wheel "${wheel.heading || wheel.name}" to chakra "${chakra.heading || chakra.name}"`);
+                              setMappingDialog({
+                                open: true,
+                                sourceType: 'wheel',
+                                sourceId: wheel.id,
+                                sourceName: wheel.heading || wheel.name,
+                                targetType: 'chakra',
+                                targetId: chakra.id,
+                                targetName: chakra.heading || chakra.name,
+                                isTransfer: false
+                              });
                               break;
                             }
                           }
@@ -1865,29 +1793,18 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
       <AlertDialog open={mappingDialog?.open || false} onOpenChange={() => setMappingDialog(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>
-              {mappingDialog?.isTransfer ? 'Confirm Transfer' : 'Confirm Mapping'}
-            </AlertDialogTitle>
+            <AlertDialogTitle>Confirm Action</AlertDialogTitle>
             <AlertDialogDescription>
-              {mappingDialog?.isTransfer ? (
-                <>
-                  Are you sure you want to move <strong>{mappingDialog?.sourceName}</strong> from <strong>{mappingDialog?.currentParent}</strong> to <strong>{mappingDialog?.targetName}</strong>?
-                </>
-              ) : (
-                <>
-                  Are you sure you want to map <strong>{mappingDialog?.sourceName}</strong> to <strong>{mappingDialog?.targetName}</strong>?
-                  {mappingDialog?.sourceType === 'wheel' && " All dots associated with this wheel will also move to the new chakra."}
-                </>
-              )}
+              Are you sure you want to move <strong>{mappingDialog?.sourceName}</strong> to <strong>{mappingDialog?.targetName}</strong>?
+              {mappingDialog?.sourceType === 'wheel' && mappingDialog?.targetType === 'chakra' && 
+                <div className="mt-2 text-sm text-amber-600">Note: All dots in this wheel will also move to the chakra.</div>
+              }
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction onClick={handleMapConfirm}>
-              {mappingDialog?.isTransfer ? 
-                `Yes, Transfer ${mappingDialog?.sourceType === 'dot' ? 'Dot' : 'Wheel'}` :
-                `Yes, Map ${mappingDialog?.sourceType === 'dot' ? 'Dot' : 'Wheel'}`
-              }
+              Yes, Move {mappingDialog?.sourceType === 'dot' ? 'Dot' : 'Wheel'}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
