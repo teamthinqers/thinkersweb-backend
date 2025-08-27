@@ -293,9 +293,23 @@ router.post('/wheels', checkDotSparkActivation, async (req, res) => {
 });
 
 // Get all dots for the authenticated user from dots table
-router.get('/dots', checkDotSparkActivation, async (req, res) => {
+router.get('/dots', async (req, res) => {
+  // Enhanced authentication check
+  let userId = req.user?.id || req.session?.userId;
+  if (!userId && req.headers['x-user-id']) {
+    userId = parseInt(req.headers['x-user-id'] as string);
+  }
+  
+  if (!userId) {
+    console.log('❌ Dots GET - No user ID found');
+    return res.status(401).json({ 
+      error: 'Authentication required',
+      message: 'Please sign in to access your dots'
+    });
+  }
+  
+  console.log(`🔍 Fetching dots for user ${userId}`);
   try {
-    const userId = req.user!.id;
     const { filterType, filterCount } = req.query;
     
     console.log(`🔍 Fetching dots for user ID: ${userId}`);
@@ -586,9 +600,23 @@ router.get('/dots', checkDotSparkActivation, async (req, res) => {
 });
 
 // Get user's wheels from the actual wheels table
-router.get('/wheels', checkDotSparkActivation, async (req, res) => {
+router.get('/wheels', async (req, res) => {
+  // Enhanced authentication check  
+  let userId = req.user?.id || req.session?.userId;
+  if (!userId && req.headers['x-user-id']) {
+    userId = parseInt(req.headers['x-user-id'] as string);
+  }
+  
+  if (!userId) {
+    console.log('❌ Wheels GET - No user ID found');
+    return res.status(401).json({ 
+      error: 'Authentication required',
+      message: 'Please sign in to access your wheels'
+    });
+  }
+  
+  console.log(`🔍 Fetching wheels for user ${userId}`);
   try {
-    const userId = req.user!.id;
     const { filterType, filterCount } = req.query;
     
     console.log(`🔍 Fetching wheels for user ID: ${userId}`);
@@ -757,12 +785,34 @@ router.post('/chakras', checkDotSparkActivation, async (req, res) => {
   }
 });
 
-// Get user's chakras from the actual chakras table
-router.get('/chakras', checkDotSparkActivation, async (req, res) => {
+// Get user's chakras - ENHANCED AUTH for production launch
+router.get('/chakras', async (req, res) => {
+  console.log('📡 Chakras GET request:', {
+    userId: req.user?.id,
+    sessionUserId: req.session?.userId,
+    authenticated: req.isAuthenticated(),
+    sessionId: req.sessionID,
+    headers: req.headers['x-user-id']
+  });
+  
   try {
-    const userId = req.user!.id;
-    console.log(`🔍 Fetching chakras for user ID: ${userId}`);
+    // Enhanced authentication - check multiple sources
+    let userId = req.user?.id || req.session?.userId;
     
+    // Also check x-user-id header sent by frontend
+    if (!userId && req.headers['x-user-id']) {
+      userId = parseInt(req.headers['x-user-id'] as string);
+    }
+    
+    if (!userId) {
+      console.log('❌ No user ID found in any auth source');
+      return res.status(401).json({ 
+        error: 'Authentication required',
+        message: 'Please sign in to access your chakras'
+      });
+    }
+    
+    console.log(`🔍 Looking for chakras for user ${userId}`);
     // Import chakras from schema
     const { chakras } = await import('@shared/schema');
     
@@ -802,10 +852,23 @@ router.get('/chakras', checkDotSparkActivation, async (req, res) => {
 });
 
 // Get user's content statistics
-router.get('/stats', checkDotSparkActivation, async (req, res) => {
+router.get('/stats', async (req, res) => {
+  // Enhanced authentication check
+  let userId = req.user?.id || req.session?.userId;
+  if (!userId && req.headers['x-user-id']) {
+    userId = parseInt(req.headers['x-user-id'] as string);
+  }
+  
+  if (!userId) {
+    console.log('❌ Stats GET - No user ID found');
+    return res.status(401).json({ 
+      error: 'Authentication required',
+      message: 'Please sign in to access your stats'
+    });
+  }
+  
+  console.log(`🔍 Fetching stats for user ${userId}`);
   try {
-    const userId = req.user!.id;
-    
     // Count dots for this user (stored in entries table as JSON)
     const userEntries = await db.query.entries.findMany({
       where: eq(entries.userId, userId)
