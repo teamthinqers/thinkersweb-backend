@@ -1451,6 +1451,8 @@ const UserGrid: React.FC<UserGridProps> = ({
         <WheelFullView
           wheel={viewFullWheel}
           onClose={() => setViewFullWheel(null)}
+          onDotClick={setViewFullDot}
+          onWheelClick={setViewFullWheel}
         />
       )}
 
