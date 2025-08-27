@@ -164,7 +164,7 @@ export function setupAuth(app: Express) {
       secure: false, // Always false in development to ensure cookies work
       // Set to 30 days by default for persistent sessions
       maxAge: 30 * 24 * 60 * 60 * 1000, 
-      httpOnly: true, // Prevent JavaScript access to the cookie
+      httpOnly: false, // CRITICAL FIX: Allow JavaScript access for debugging
       sameSite: 'lax', // Allow cross-site navigation while protecting against CSRF
       path: '/',
       // Add domain settings for proper cookie scope
@@ -596,9 +596,19 @@ export function setupAuth(app: Express) {
             sessionId: req.sessionID
           });
           
+          // CRITICAL: Set explicit session cookie header
+          res.cookie('connect.sid', req.sessionID, {
+            maxAge: 30 * 24 * 60 * 60 * 1000,
+            httpOnly: false,
+            secure: false,
+            sameSite: 'lax',
+            path: '/'
+          });
+
           // Return consistent response structure for frontend
           res.status(isNewUser ? 201 : 200).json({
             user: secureUser,
+            sessionId: req.sessionID, // Include session ID for debugging
             message: isNewUser ? "User created and logged in" : "User logged in successfully"
           });
         });
