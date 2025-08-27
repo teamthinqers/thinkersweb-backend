@@ -125,12 +125,18 @@ export const UserContentGrid: React.FC<UserContentGridProps> = ({
     );
   }
 
+  // Extract chakras and regular wheels from userWheels
+  // Chakras are wheels without a chakraId (top-level)
+  // Regular wheels have a chakraId (belong to a chakra)
+  const chakras = userWheels.filter(wheel => !wheel.chakraId);
+  const regularWheels = userWheels.filter(wheel => wheel.chakraId);
+  
   // If user has content, show their actual grid
   return (
     <UserGrid 
       dots={dots}
-      wheels={userWheels}
-      chakras={[]} // No chakras in current implementation 
+      wheels={regularWheels}
+      chakras={chakras as any} // Chakras use same interface as wheels
       isLoading={false}
     />
   );
