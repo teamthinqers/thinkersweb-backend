@@ -1,47 +1,62 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Card, CardContent } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
+import { useQuery } from '@tanstack/react-query';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Plus, Eye, Settings, RotateCcw, Mic, Type, Maximize, Minimize, ZoomIn, ZoomOut, AlertCircle } from 'lucide-react';
+import { Loader2, Plus, Eye, Settings, RotateCcw, Mic, Type, Maximize, Minimize, ZoomIn, ZoomOut, AlertCircle, Save } from 'lucide-react';
 import UserContentCreation from './UserContentCreation';
 import DotFullView from './DotFullView';
 import DotFlashCard from './DotFlashCard';
 import WheelFullView from './WheelFullView';
 
-// Types for the data structures
+// Interfaces matching PreviewMapGrid exactly
 interface Dot {
   id: string;
+  oneWordSummary: string;
   summary: string;
   anchor: string;
   pulse: string;
   wheelId?: string;
+  timestamp: Date;
+  sourceType: 'voice' | 'text';
+  captureMode: 'natural' | 'ai';
+  voiceData?: {
+    summaryVoiceUrl?: string;
+    anchorVoiceUrl?: string;
+    pulseVoiceUrl?: string;
+  } | null;
   position?: { x: number; y: number };
-  oneWordSummary?: string;
 }
 
 interface Wheel {
   id: string;
-  heading: string;
-  goals: string;
-  timeline: string;
-  chakraId?: string;
-  position?: { x: number; y: number };
-  name?: string;
+  name: string;
+  heading?: string;
+  goals?: string;
   purpose?: string;
+  timeline?: string;
+  category: string;
+  color: string;
+  dots: Dot[];
+  connections: string[];
+  position: { x: number; y: number };
+  chakraId?: string;
+  createdAt?: Date;
 }
 
 interface Chakra {
   id: string;
-  heading: string;
-  purpose: string;
-  timeline: string;
-  position?: { x: number; y: number };
-  name?: string;
+  name: string;
+  heading?: string;
+  purpose?: string;
+  timeline?: string;
+  category: string;
+  color: string;
+  wheels: Wheel[];
+  position: { x: number; y: number };
+  createdAt?: Date;
 }
 
 interface UserMapGridProps {
@@ -422,6 +437,13 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
           <RotateCcw className="w-3 h-3" />
         </button>
         <button
+          onClick={() => setShowSaveDialog(true)}
+          className="bg-green-500 hover:bg-green-600 text-white rounded transition-colors p-2"
+          title="Save Layout"
+        >
+          <Save className="w-3 h-3" />
+        </button>
+        <button
           onClick={() => setIsFullscreen(!isFullscreen)}
           className="bg-purple-500 hover:bg-purple-600 text-white rounded transition-colors p-2"
           title={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
@@ -444,14 +466,22 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
         }}
       >
         <div className="w-full h-full relative" style={{ minWidth: '2000px', minHeight: '1500px' }}>
-          {/* Render Dots */}
+          {/* Use user data directly */}
           {dots.map((dot: any, index: number) => {
-            const basePosition = dot.position || { 
-              x: 300 + (index % 6) * 120, 
-              y: 200 + Math.floor(index / 6) * 120 
-            };
+            // Use algorithmic positioning from backend API when available
+            let dotPosition;
             
-            const currentPosition = elementPositions[`dot-${dot.id}`] || basePosition;
+            if (gridPositions?.dotPositions && gridPositions.dotPositions[dot.id]) {
+              dotPosition = gridPositions.dotPositions[dot.id];
+            } else {
+              // Fallback to manual positioning
+              dotPosition = dot.position || { 
+                x: 300 + (index % 6) * 120, 
+                y: 200 + Math.floor(index / 6) * 120 
+              };
+            }
+            
+            const currentPosition = elementPositions[`dot-${dot.id}`] || dotPosition;
             const dotSize = 50;
             
             return (
@@ -543,12 +573,19 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
           
           {/* Render Wheels */}
           {wheels.map((wheel: any, index: number) => {
-            const basePosition = wheel.position || { 
-              x: 600 + (index % 4) * 200, 
-              y: 300 + Math.floor(index / 4) * 200 
-            };
+            // Use algorithmic positioning from backend API when available
+            let wheelPosition;
             
-            const currentPosition = elementPositions[`wheel-${wheel.id}`] || basePosition;
+            if (gridPositions?.wheelPositions && gridPositions.wheelPositions[wheel.id]) {
+              wheelPosition = gridPositions.wheelPositions[wheel.id];
+            } else {
+              wheelPosition = wheel.position || { 
+                x: 600 + (index % 4) * 200, 
+                y: 300 + Math.floor(index / 4) * 200 
+              };
+            }
+            
+            const currentPosition = elementPositions[`wheel-${wheel.id}`] || wheelPosition;
             const wheelDots = dots.filter((d: any) => d.wheelId === wheel.id);
             const wheelSize = getWheelSize('real', wheelDots.length);
             const wheelRadius = wheelSize / 2;
@@ -643,12 +680,19 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
           
           {/* Render Chakras */}
           {chakras.map((chakra: any, index: number) => {
-            const basePosition = chakra.position || { 
-              x: 900 + (index % 3) * 300, 
-              y: 400 + Math.floor(index / 3) * 300 
-            };
+            // Use algorithmic positioning from backend API when available
+            let chakraPosition;
             
-            const currentPosition = elementPositions[`chakra-${chakra.id}`] || basePosition;
+            if (gridPositions?.chakraPositions && gridPositions.chakraPositions[chakra.id]) {
+              chakraPosition = gridPositions.chakraPositions[chakra.id];
+            } else {
+              chakraPosition = chakra.position || { 
+                x: 900 + (index % 3) * 300, 
+                y: 400 + Math.floor(index / 3) * 300 
+              };
+            }
+            
+            const currentPosition = elementPositions[`chakra-${chakra.id}`] || chakraPosition;
             const chakraWheels = wheels.filter((w: any) => w.chakraId === chakra.id);
             const chakraSize = getChakraSize('real', chakraWheels.length, 0);
             const chakraRadius = chakraSize / 2;
@@ -735,6 +779,32 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
         </div>
       </div>
 
+      {/* Save Position Confirmation Dialog */}
+      {showSaveDialog && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[10000] flex items-center justify-center">
+          <div className="bg-white rounded-xl shadow-2xl border-2 border-amber-200 p-6 max-w-md mx-4">
+            <h3 className="text-lg font-semibold text-amber-800 mb-3">Save Layout</h3>
+            <p className="text-gray-700 text-sm mb-6 leading-relaxed">
+              Are you sure? Once saved this will be the default position of your dots, wheels & chakras.
+            </p>
+            <div className="flex gap-3 justify-end">
+              <button
+                onClick={() => setShowSaveDialog(false)}
+                className="px-4 py-2 text-gray-600 hover:text-gray-800 font-medium transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSaveLayout}
+                className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg font-medium transition-colors"
+              >
+                Yes, Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Mapping Confirmation Dialog */}
       <Dialog open={!!confirmMapping} onOpenChange={() => setConfirmMapping(null)}>
         <DialogContent className="sm:max-w-md">
@@ -783,113 +853,29 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
   );
 };
 
-// Main UserGrid component exactly like PreviewMapGrid structure
+// Main UserGrid component that receives data from parent
 interface UserGridProps {
-  mode?: 'preview' | 'real';
-  userId?: number;
-  isDemoMode?: boolean;
-  availableWheels?: any[];
-  availableChakras?: any[];
+  dots: Dot[];
+  wheels: Wheel[];
+  chakras: Chakra[];
+  isLoading?: boolean;
 }
 
 const UserGrid: React.FC<UserGridProps> = ({ 
-  mode = 'real', 
-  userId,
-  isDemoMode = false,
-  availableWheels = [],
-  availableChakras = []
+  dots = [],
+  wheels = [],
+  chakras = [],
+  isLoading = false
 }) => {
   const [showCreation, setShowCreation] = useState(false);
   const [viewFullWheel, setViewFullWheel] = useState<Wheel | null>(null);
   const [viewFlashCard, setViewFlashCard] = useState<Dot | null>(null);
   const [viewFullDot, setViewFullDot] = useState<Dot | null>(null);
 
-  // Fetch user dots
-  const { data: userDots = [], isLoading: dotsLoading } = useQuery({
-    queryKey: ['/api/user-content/dots'],
-    queryFn: async () => {
-      try {
-        const response = await fetch('/api/user-content/dots', {
-          credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'x-user-id': userId?.toString() || ''
-          }
-        });
-        
-        if (response.ok) {
-          const data = await response.json();
-          return data.data || [];
-        }
-        return [];
-      } catch (error) {
-        console.error('Failed to fetch user dots:', error);
-        return [];
-      }
-    },
-    enabled: !isDemoMode
-  });
-
-  // Fetch user wheels
-  const { data: userWheels = [], isLoading: wheelsLoading } = useQuery({
-    queryKey: ['/api/user-content/wheels'],
-    queryFn: async () => {
-      try {
-        const response = await fetch('/api/user-content/wheels', {
-          credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'x-user-id': userId?.toString() || ''
-          }
-        });
-        
-        if (response.ok) {
-          const data = await response.json();
-          return data.data || [];
-        }
-        return [];
-      } catch (error) {
-        console.error('Failed to fetch user wheels:', error);
-        return [];
-      }
-    },
-    enabled: !isDemoMode
-  });
-
-  // Fetch user chakras
-  const { data: userChakras = [], isLoading: chakrasLoading } = useQuery({
-    queryKey: ['/api/user-content/chakras'],
-    queryFn: async () => {
-      try {
-        const response = await fetch('/api/user-content/chakras', {
-          credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'x-user-id': userId?.toString() || ''
-          }
-        });
-        
-        if (response.ok) {
-          const data = await response.json();
-          return data.data || [];
-        }
-        return [];
-      } catch (error) {
-        console.error('Failed to fetch user chakras:', error);
-        return [];
-      }
-    },
-    enabled: !isDemoMode
-  });
-
-  const isLoading = dotsLoading || wheelsLoading || chakrasLoading;
-
-  // Filter to regular wheels (non-chakra wheels)
-  const regularWheels = userWheels.filter((wheel: any) => !wheel.chakraId);
-  const chakras = userChakras;
+  // Use the data passed from parent Dashboard component
+  const userDots = dots;
+  const regularWheels = wheels.filter((wheel: any) => !wheel.chakraId);
+  const userChakras = chakras;
 
   return (
     <div className="space-y-4">
@@ -897,7 +883,6 @@ const UserGrid: React.FC<UserGridProps> = ({
       {showCreation && (
         <UserContentCreation 
           onClose={() => setShowCreation(false)}
-          userId={userId}
         />
       )}
 
@@ -908,7 +893,7 @@ const UserGrid: React.FC<UserGridProps> = ({
         setViewFullDot={setViewFullDot}
         dots={userDots}
         wheels={regularWheels}
-        chakras={chakras}
+        chakras={userChakras}
         isLoading={isLoading}
       />
 

@@ -128,8 +128,10 @@ export const UserContentGrid: React.FC<UserContentGridProps> = ({
   // If user has content, show their actual grid
   return (
     <UserGrid 
-      userId={user?.id} 
-      mode="real"
+      dots={dots}
+      wheels={userWheels}
+      chakras={[]} // No chakras in current implementation 
+      isLoading={false}
     />
   );
 };
