@@ -783,4 +783,165 @@ router.delete('/chakras/:id', authenticateUser, async (req, res) => {
   }
 });
 
+// MAPPING ENDPOINTS - Required for visual drag interface
+// Map/unmap dot to wheel
+router.put('/mapping/dot-to-wheel', authenticateUser, async (req, res) => {
+  const userId = req.user?.id || req.session?.userId;
+  
+  try {
+    const { dotId, wheelId } = req.body;
+    
+    if (!dotId) {
+      return res.status(400).json({ error: 'dotId is required' });
+    }
+
+    console.log(`🔗 Mapping dot ${dotId} to wheel ${wheelId || 'null (unmap)'} for user ${userId}`);
+
+    // Extract numeric ID from format "dot_123" or just "123"
+    const numericDotId = typeof dotId === 'string' ? parseInt(dotId.replace('dot_', '')) : parseInt(dotId);
+    const numericWheelId = wheelId ? (typeof wheelId === 'string' ? parseInt(wheelId.replace('wheel_', '')) : parseInt(wheelId)) : null;
+
+    // Update dot in dots table
+    const result = await db.update(dots)
+      .set({ 
+        wheelId: numericWheelId,
+        updatedAt: new Date()
+      })
+      .where(and(
+        eq(dots.id, numericDotId),
+        eq(dots.userId, userId)
+      ))
+      .returning();
+
+    if (result.length === 0) {
+      return res.status(404).json({ error: 'Dot not found or unauthorized' });
+    }
+
+    console.log('✅ Dot mapping updated successfully');
+
+    return res.json({ 
+      success: true, 
+      message: wheelId ? 'Dot mapped to wheel successfully' : 'Dot unmapped successfully',
+      dot: result[0] 
+    });
+
+  } catch (error) {
+    console.error('❌ Error mapping dot to wheel:', error);
+    return res.status(500).json({ 
+      error: 'Failed to map dot to wheel',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
+// Map/unmap wheel to chakra
+router.put('/mapping/wheel-to-chakra', authenticateUser, async (req, res) => {
+  const userId = req.user?.id || req.session?.userId;
+  
+  try {
+    const { wheelId, chakraId } = req.body;
+    
+    if (!wheelId) {
+      return res.status(400).json({ error: 'wheelId is required' });
+    }
+
+    console.log(`🔗 Mapping wheel ${wheelId} to chakra ${chakraId || 'null (unmap)'} for user ${userId}`);
+
+    // Extract numeric ID from format "wheel_123" or just "123"  
+    const numericWheelId = typeof wheelId === 'string' ? parseInt(wheelId.replace('wheel_', '')) : parseInt(wheelId);
+    const numericChakraId = chakraId ? (typeof chakraId === 'string' ? parseInt(chakraId.replace('chakra_', '')) : parseInt(chakraId)) : null;
+
+    // Update wheel in wheels table
+    const result = await db.update(wheels)
+      .set({ 
+        chakraId: numericChakraId,
+        updatedAt: new Date()
+      })
+      .where(and(
+        eq(wheels.id, numericWheelId),
+        eq(wheels.userId, userId)
+      ))
+      .returning();
+
+    if (result.length === 0) {
+      return res.status(404).json({ error: 'Wheel not found or unauthorized' });
+    }
+
+    console.log('✅ Wheel mapping updated successfully');
+
+    return res.json({ 
+      success: true, 
+      message: chakraId ? 'Wheel mapped to chakra successfully' : 'Wheel unmapped successfully',
+      wheel: result[0] 
+    });
+
+  } catch (error) {
+    console.error('❌ Error mapping wheel to chakra:', error);
+    return res.status(500).json({ 
+      error: 'Failed to map wheel to chakra',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
+// Map/unmap dot directly to chakra (optional direct mapping)
+router.put('/mapping/dot-to-chakra', authenticateUser, async (req, res) => {
+  const userId = req.user?.id || req.session?.userId;
+  
+  try {
+    const { dotId, chakraId } = req.body;
+    
+    if (!dotId) {
+      return res.status(400).json({ error: 'dotId is required' });
+    }
+
+    console.log(`🔗 Direct mapping dot ${dotId} to chakra ${chakraId || 'null (unmap)'} for user ${userId}`);
+
+    // Extract numeric ID from format "dot_123" or just "123"
+    const numericDotId = typeof dotId === 'string' ? parseInt(dotId.replace('dot_', '')) : parseInt(dotId);
+    const numericChakraId = chakraId ? (typeof chakraId === 'string' ? parseInt(chakraId.replace('chakra_', '')) : parseInt(chakraId)) : null;
+
+    // When mapping directly to chakra, clear wheelId
+    // When unmapping from chakra, preserve the existing wheelId
+    const currentDot = await db.query.dots.findFirst({
+      where: and(
+        eq(dots.id, numericDotId),
+        eq(dots.userId, userId)
+      )
+    });
+
+    if (!currentDot) {
+      return res.status(404).json({ error: 'Dot not found or unauthorized' });
+    }
+
+    // Update dot in dots table
+    const result = await db.update(dots)
+      .set({ 
+        chakraId: numericChakraId,
+        wheelId: chakraId ? null : currentDot.wheelId, // Clear wheelId when mapping to chakra, preserve when unmapping
+        updatedAt: new Date()
+      })
+      .where(and(
+        eq(dots.id, numericDotId),
+        eq(dots.userId, userId)
+      ))
+      .returning();
+
+    console.log('✅ Dot-to-chakra mapping updated successfully');
+
+    return res.json({ 
+      success: true, 
+      message: chakraId ? 'Dot mapped to chakra successfully' : 'Dot unmapped from chakra successfully',
+      dot: result[0] 
+    });
+
+  } catch (error) {
+    console.error('❌ Error mapping dot to chakra:', error);
+    return res.status(500).json({ 
+      error: 'Failed to map dot to chakra',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
 export default router;

@@ -200,21 +200,21 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
       
       if (mappingDialog.sourceType === 'dot' && mappingDialog.targetType === 'wheel') {
         // Dot to Wheel mapping
-        endpoint = `/api/mapping/dot-to-wheel`;
+        endpoint = `/api/user-content/mapping/dot-to-wheel`;
         payload = { 
           dotId: mappingDialog.sourceId,
           wheelId: mappingDialog.targetId 
         };
       } else if (mappingDialog.sourceType === 'dot' && mappingDialog.targetType === 'chakra') {
         // Dot to Chakra direct mapping (long-term vision alignment)
-        endpoint = `/api/mapping/dot-to-chakra`;
+        endpoint = `/api/user-content/mapping/dot-to-chakra`;
         payload = { 
           dotId: mappingDialog.sourceId,
           chakraId: mappingDialog.targetId 
         };
       } else if (mappingDialog.sourceType === 'wheel' && mappingDialog.targetType === 'chakra') {
         // Wheel to Chakra mapping
-        endpoint = `/api/mapping/wheel-to-chakra`;
+        endpoint = `/api/user-content/mapping/wheel-to-chakra`;
         payload = { 
           wheelId: mappingDialog.sourceId,
           chakraId: mappingDialog.targetId 
@@ -278,14 +278,14 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
       
       if (delinkDialog.sourceType === 'dot') {
         // Remove dot from wheel
-        endpoint = `/api/mapping/dot-to-wheel`;
+        endpoint = `/api/user-content/mapping/dot-to-wheel`;
         payload = { 
           dotId: delinkDialog.sourceId,
           wheelId: null // Remove mapping
         };
       } else if (delinkDialog.sourceType === 'wheel') {
         // Remove wheel from chakra
-        endpoint = `/api/mapping/wheel-to-chakra`;
+        endpoint = `/api/user-content/mapping/wheel-to-chakra`;
         payload = { 
           wheelId: delinkDialog.sourceId,
           chakraId: null // Remove mapping
