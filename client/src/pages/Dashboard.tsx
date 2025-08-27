@@ -1412,47 +1412,71 @@ const Dashboard: React.FC = () => {
     
     // Apply recent filter if enabled (only in real mode)
     let filteredWheelsToDisplay = displayWheels;
+    console.log('🔍 Checking filter conditions:', { recentFilterApplied, previewMode, shouldFilter: recentFilterApplied && !previewMode });
+    
     if (recentFilterApplied && !previewMode) {
+      console.log('🎯 Applying', recentFilterType, 'filter with count:', recentDotsCount);
       if (recentFilterType === 'dot') {
         // Show only recent dots
+        console.log('📍 Filtering dots - original count:', baseDotsToDisplay.length);
         baseDotsToDisplay = [...baseDotsToDisplay]
           .sort((a, b) => new Date(b.timestamp || b.createdAt).getTime() - new Date(a.timestamp || a.createdAt).getTime())
           .slice(0, recentDotsCount);
+        console.log('📍 Filtered dots count:', baseDotsToDisplay.length);
         filteredWheelsToDisplay = []; // Hide all wheels and chakras
+        console.log('📍 Hidden all wheels and chakras');
       } else if (recentFilterType === 'wheel') {
         // Show recent wheels + their associated dots
-        const recentWheels = [...displayWheels.filter(w => w.chakraId)] // Only wheels (not chakras)
+        console.log('🎡 Filtering wheels - all wheels:', displayWheels.length);
+        const allWheels = displayWheels.filter(w => w.chakraId); // Only wheels (not chakras)
+        console.log('🎡 Wheels with chakraId:', allWheels.length);
+        const recentWheels = [...allWheels]
           .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
           .slice(0, recentDotsCount);
+        console.log('🎡 Recent wheels selected:', recentWheels.length);
         
         filteredWheelsToDisplay = recentWheels;
         
         // Show dots associated with these recent wheels
         const wheelIds = recentWheels.map(w => w.id);
+        console.log('🎡 Wheel IDs to filter by:', wheelIds);
+        const originalDotsCount = baseDotsToDisplay.length;
         baseDotsToDisplay = baseDotsToDisplay.filter(dot => 
           dot.wheelId && wheelIds.includes(dot.wheelId)
         );
+        console.log('🎡 Dots filtered:', originalDotsCount, '->', baseDotsToDisplay.length);
         
       } else if (recentFilterType === 'chakra') {
         // Show recent chakras + their associated wheels + associated dots
-        const recentChakras = [...displayWheels.filter(w => !w.chakraId)] // Only chakras (no chakraId)
+        console.log('🕉️ Filtering chakras - all wheels:', displayWheels.length);
+        const allChakras = displayWheels.filter(w => !w.chakraId); // Only chakras (no chakraId)
+        console.log('🕉️ Chakras found:', allChakras.length);
+        const recentChakras = [...allChakras]
           .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
           .slice(0, recentDotsCount);
+        console.log('🕉️ Recent chakras selected:', recentChakras.length);
         
         // Get all wheels associated with these chakras
         const chakraIds = recentChakras.map(c => c.id);
+        console.log('🕉️ Chakra IDs:', chakraIds);
         const associatedWheels = displayWheels.filter(w => 
           w.chakraId && chakraIds.includes(w.chakraId)
         );
+        console.log('🕉️ Associated wheels found:', associatedWheels.length);
         
         filteredWheelsToDisplay = [...recentChakras, ...associatedWheels];
         
         // Show dots associated with the wheels of these chakras
         const wheelIds = associatedWheels.map(w => w.id);
+        console.log('🕉️ Wheel IDs to filter by:', wheelIds);
+        const originalDotsCount = baseDotsToDisplay.length;
         baseDotsToDisplay = baseDotsToDisplay.filter(dot => 
           dot.wheelId && wheelIds.includes(dot.wheelId)
         );
+        console.log('🕉️ Dots filtered:', originalDotsCount, '->', baseDotsToDisplay.length);
       }
+      
+      console.log('✅ Filter applied successfully');
     }
     
     const displayDots = baseDotsToDisplay;
@@ -1471,13 +1495,23 @@ const Dashboard: React.FC = () => {
       previewMode,
       wheelsLoading,
       gridLoading,
-      showRecentFilter,
+      recentFilterApplied,
+      recentFilterType,
       recentDotsCount
     });
     
     console.log('📝 All fetched dots:', dots.map(d => ({ id: d.id, summary: d.oneWordSummary, created: d.createdAt || d.timestamp })));
     console.log('📊 Dots to display after filtering:', baseDotsToDisplay.length, 'of', dots.length);
-    console.log('🔍 Recent filter enabled:', showRecentFilter, 'Preview mode:', previewMode);
+    console.log('🔍 Filter state:', { 
+      recentFilterApplied, 
+      recentFilterType, 
+      recentDotsCount, 
+      previewMode,
+      originalDotsCount: dots.length,
+      filteredDotsCount: baseDotsToDisplay.length,
+      originalWheelsCount: displayWheels.length,
+      filteredWheelsCount: filteredWheelsToDisplay.length
+    });
 
     // Show different states based on authentication and content
     // Only show auth required state if NOT loading and no user
