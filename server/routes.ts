@@ -1145,7 +1145,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Real mode - requires authentication for user-specific data
-      const userId = req.user?.id || req.session?.userId || 1;
+      const userId = req.user?.id || req.session?.userId;
+      
+      if (!userId) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
       
       const userWheels = await db.query.wheels.findMany({
         where: eq(wheels.userId, userId),
@@ -1178,7 +1182,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Grid positioning API endpoints - simplified version using existing entries
   app.get(`${apiPrefix}/grid/positions`, async (req: AuthenticatedRequest, res: Response) => {
     try {
-      const userId = req.user?.id || 1; // Demo user fallback
+      const userId = req.user?.id;
+      
+      if (!userId) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
       const isPreview = req.query.preview === 'true';
       
       if (isPreview) {

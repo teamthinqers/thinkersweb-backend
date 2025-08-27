@@ -10,7 +10,6 @@ interface ActivatedUser {
 }
 
 const STORAGE_KEY = 'dotspark-activated-users';
-const DEFAULT_USER_ID = 5;
 
 export class PersistentActivationManager {
   // Get currently activated user from localStorage
@@ -109,30 +108,27 @@ export class PersistentActivationManager {
     return !!user;
   }
 
-  // Get default/fallback user (maintains backward compatibility)
-  static getDefaultUser(): ActivatedUser {
-    return {
-      id: DEFAULT_USER_ID,
-      email: 'aravindhraj1410@gmail.com',
-      name: 'Aravindh Raj',
-      activatedAt: new Date().toISOString(),
-      lastUsed: new Date().toISOString()
-    };
+  // No default user - requires proper authentication
+  static getDefaultUser(): ActivatedUser | null {
+    return null; // Force proper authentication, no hardcoded fallback
   }
 
-  // Auto-activate user on first dot creation
-  static handleFirstDotCreation(userId?: number, email?: string, name?: string): ActivatedUser {
-    const finalUserId = userId || DEFAULT_USER_ID;
+  // Auto-activate user on first dot creation - requires valid user ID
+  static handleFirstDotCreation(userId?: number, email?: string, name?: string): ActivatedUser | null {
+    if (!userId) {
+      console.warn('Cannot activate user without valid user ID');
+      return null; // Force proper authentication, no hardcoded fallback
+    }
     
-    if (!this.isUserActivated(finalUserId)) {
-      this.activateUser(finalUserId, email, name);
+    if (!this.isUserActivated(userId)) {
+      this.activateUser(userId, email, name);
       console.log('🎉 First dot created - user permanently activated!');
     } else {
-      this.updateLastUsed(finalUserId);
+      this.updateLastUsed(userId);
       console.log('🔄 Existing user - updated last used timestamp');
     }
     
-    return this.getActivatedUser(finalUserId) || this.getDefaultUser();
+    return this.getActivatedUser(userId);
   }
 
   // Get all activated users (for switching between accounts)
