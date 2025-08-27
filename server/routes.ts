@@ -1920,6 +1920,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       console.log(`Direct mapping dot ${dotId} to chakra ${chakraId || 'null (unmap)'} for user ${userId}`);
+      console.log('Request body:', req.body);
+      console.log('User info:', { userId, userType: typeof userId });
 
       // First, get the current dot to preserve wheelId when unmapping
       const currentDot = await db.query.dots.findFirst({
@@ -1936,6 +1938,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Update dot's chakraId (null to unmap, chakraId to map)
       // If mapping to chakra, remove wheelId to avoid conflicts
       // If unmapping from chakra, preserve existing wheelId
+      console.log('About to update with values:', {
+        chakraId: chakraId ? parseInt(chakraId) : null,
+        wheelId: chakraId ? null : currentDot.wheelId,
+        updatedAt: new Date(),
+        whereDotId: parseInt(dotId),
+        whereUserId: parseInt(userId.toString())
+      });
+
       const result = await db.update(dots)
         .set({ 
           chakraId: chakraId ? parseInt(chakraId) : null,
@@ -1947,6 +1957,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           eq(dots.userId, parseInt(userId.toString()))
         ))
         .returning();
+
+      console.log('Update result:', result);
 
       if (result.length === 0) {
         return res.status(404).json({ error: 'Dot not found or unauthorized' });
