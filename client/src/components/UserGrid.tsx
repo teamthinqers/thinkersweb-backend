@@ -658,9 +658,12 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                       <p className="text-gray-700 text-sm line-clamp-2 leading-relaxed">
                         {chakra.purpose || 'Life area focus'}
                       </p>
-                      <div className="flex items-center justify-end text-xs">
+                      <div className="flex items-center justify-between text-xs">
+                        <Badge className="bg-amber-100 text-amber-700">
+                          {chakraWheels.length} wheels
+                        </Badge>
                         <span className="text-amber-600 font-medium">
-                          Life Purpose Area
+                          Click for full view
                         </span>
                       </div>
                     </div>
@@ -844,7 +847,10 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                       <p className="text-gray-700 text-sm line-clamp-2 leading-relaxed">
                         {wheel.goals || wheel.purpose || 'Goal-oriented project'}
                       </p>
-                      <div className="flex items-center justify-end text-xs">
+                      <div className="flex items-center justify-between text-xs">
+                        <Badge className="bg-orange-100 text-orange-700">
+                          {wheelDots.length} dots
+                        </Badge>
                         <span className="text-orange-600 font-medium">
                           Click for full view
                         </span>
@@ -1228,7 +1234,10 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                       <p className="text-gray-700 text-sm line-clamp-2 leading-relaxed">
                         {wheel.goals || wheel.purpose || 'Goal-oriented project'}
                       </p>
-                      <div className="flex items-center justify-end text-xs">
+                      <div className="flex items-center justify-between text-xs">
+                        <Badge className="bg-orange-100 text-orange-700">
+                          {wheelDots.length} dots
+                        </Badge>
                         <span className="text-orange-600 font-medium">
                           Click for full view
                         </span>
