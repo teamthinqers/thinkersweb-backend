@@ -411,12 +411,19 @@ function GlobalFloatingDotV2() {
       >
         <Card className="w-96 bg-white border-2 border-amber-300 shadow-2xl cursor-move">
           <div className="p-6">
-            <div className="flex justify-between items-center mb-4">
+            <div 
+              className="flex justify-between items-center mb-4"
+              onMouseDown={handleMouseDown}
+            >
               <div className="flex-1 cursor-move">
                 <div className="text-xs text-gray-400">Drag to move</div>
               </div>
               <button 
-                onClick={() => setIsOpen(false)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsOpen(false);
+                }}
+                onMouseDown={(e) => e.stopPropagation()}
                 className="text-gray-500 hover:text-gray-700 text-xl font-bold cursor-pointer"
               >
                 ×
