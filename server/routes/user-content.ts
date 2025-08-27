@@ -536,10 +536,16 @@ router.get('/dots', checkDotSparkActivation, async (req, res) => {
       updatedAt: dot.updatedAt,
       voiceData: dot.voiceData ? JSON.parse(dot.voiceData) : null,
       // Include wheel data if available
-      wheel: dot.wheel ? {
-        id: dot.wheel.id.toString(),
-        heading: dot.wheel.heading,
-        goals: dot.wheel.goals
+      wheel: (dot as any).wheel ? {
+        id: (dot as any).wheel.id.toString(),
+        heading: (dot as any).wheel.heading,
+        goals: (dot as any).wheel.goals
+      } : null,
+      // Include direct chakra data if available  
+      chakra: (dot as any).chakra ? {
+        id: (dot as any).chakra.id.toString(),
+        heading: (dot as any).chakra.heading,
+        purpose: (dot as any).chakra.purpose
       } : null
     }));
     
@@ -644,10 +650,10 @@ router.get('/wheels', checkDotSparkActivation, async (req, res) => {
       createdAt: wheel.createdAt,
       updatedAt: wheel.updatedAt,
       // Include chakra data if available
-      chakra: wheel.chakra ? {
-        id: wheel.chakra.id.toString(),
-        heading: wheel.chakra.heading,
-        purpose: wheel.chakra.purpose
+      chakra: (wheel as any).chakra ? {
+        id: (wheel as any).chakra.id.toString(),
+        heading: (wheel as any).chakra.heading,
+        purpose: (wheel as any).chakra.purpose
       } : null
     }));
     
