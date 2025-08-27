@@ -64,14 +64,30 @@ export const UserContentGrid: React.FC<UserContentGridProps> = ({
   setViewFlashCard,
   setViewFullDot
 }) => {
-  // If user is not authenticated, show demo data instead of sign-in prompt
+  // If user is not authenticated, show sign-in prompt
   if (!user) {
     return (
-      <PreviewMapGrid 
-        setViewFullWheel={setViewFullWheel}
-        setViewFlashCard={setViewFlashCard}
-        setViewFullDot={setViewFullDot || (() => {})}
-      />
+      <div className="relative bg-gradient-to-br from-slate-50/50 to-gray-50/50 rounded-xl p-4 min-h-[500px] border-2 border-slate-200 shadow-lg overflow-hidden">
+        <div className="absolute top-2 left-2 md:top-4 md:left-4 z-10">
+          <span className="bg-slate-100 text-slate-800 px-2 py-1 md:px-3 md:py-1 rounded-full text-xs md:text-sm font-medium">
+            User Mode
+          </span>
+        </div>
+        
+        <div className="flex items-center justify-center h-full">
+          <div className="text-center">
+            <User className="w-16 h-16 mx-auto mb-4 text-slate-500" />
+            <h3 className="text-2xl font-bold text-slate-800 mb-2">Sign In to Create Content</h3>
+            <p className="text-slate-600 mb-6 max-w-md mx-auto">
+              Sign in with your Google account to create and manage your personal dots, wheels, and chakras.
+            </p>
+            
+            <p className="text-xs text-slate-600 text-center">
+              Switch to Preview Mode to see demo content
+            </p>
+          </div>
+        </div>
+      </div>
     );
   }
 
