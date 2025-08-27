@@ -2841,10 +2841,6 @@ const Dashboard: React.FC = () => {
               console.error('Error deleting dot:', error);
             }
           }}
-          onWheelClick={(wheel) => {
-            setViewFullDot(null); // Close dot view
-            setViewFullWheel(wheel); // Open wheel view
-          }}
         />
       )}
 

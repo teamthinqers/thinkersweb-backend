@@ -2,9 +2,8 @@ import React from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Mic, Type, X, Volume2, Trash2, Target } from "lucide-react";
+import { Mic, Type, X, Volume2, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { useQuery } from '@tanstack/react-query';
 
 interface Dot {
   id: string;
@@ -25,55 +24,9 @@ interface DotFullViewProps {
   dot: Dot;
   onClose: () => void;
   onDelete?: (dotId: string) => void;
-  onWheelClick?: (wheel: any) => void;
 }
 
-// Associated Wheel Component
-const AssociatedWheel: React.FC<{
-  wheelId: string;
-  onWheelClick?: (wheel: any) => void;
-}> = ({ wheelId, onWheelClick }) => {
-  const { data: allWheels } = useQuery({
-    queryKey: ['/api/user-content/wheels'],
-    queryFn: async () => {
-      const response = await fetch('/api/user-content/wheels', { credentials: 'include' });
-      if (!response.ok) return [];
-      return response.json();
-    }
-  });
-
-  const associatedWheel = allWheels?.find((wheel: any) => 
-    wheel.id && (wheel.id == wheelId || wheel.id === String(wheelId))
-  );
-
-  if (!associatedWheel) return null;
-
-  return (
-    <div className="bg-gradient-to-br from-orange-50/60 to-amber-50/60 rounded-xl border-2 border-orange-200 p-4">
-      <div className="flex items-center gap-2 mb-3">
-        <div className="w-6 h-6 rounded-full bg-gradient-to-r from-orange-600 to-amber-700 flex items-center justify-center">
-          <Target className="w-3 h-3 text-white" />
-        </div>
-        <h3 className="text-lg font-semibold text-orange-800">
-          Associated Wheel
-        </h3>
-      </div>
-      <div className="pl-8">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => onWheelClick?.(associatedWheel)}
-          className="bg-orange-100 hover:bg-orange-200 border-orange-300 text-orange-800 text-sm"
-        >
-          <Target className="w-4 h-4 mr-2" />
-          {associatedWheel.heading || associatedWheel.name || 'Wheel'}
-        </Button>
-      </div>
-    </div>
-  );
-};
-
-const DotFullView: React.FC<DotFullViewProps> = ({ dot, onClose, onDelete, onWheelClick }) => {
+const DotFullView: React.FC<DotFullViewProps> = ({ dot, onClose, onDelete }) => {
   const { toast } = useToast();
 
   const handlePlayVoice = (audioUrl: string, layer: string) => {
@@ -257,17 +210,6 @@ const DotFullView: React.FC<DotFullViewProps> = ({ dot, onClose, onDelete, onWhe
               </Badge>
             </div>
           </div>
-
-          {/* Associated Wheel Section */}
-          {dot.wheelId && (
-            <AssociatedWheel 
-              wheelId={dot.wheelId} 
-              onWheelClick={(wheel) => {
-                onClose(); // Close dot view
-                onWheelClick?.(wheel); // Use prop callback
-              }} 
-            />
-          )}
 
           {/* Actions */}
           <div className="flex justify-end gap-2 pt-4 border-t">

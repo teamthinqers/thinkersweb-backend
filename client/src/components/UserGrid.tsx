@@ -869,7 +869,7 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
               <div key={chakra.id} className="relative">
                 {/* Chakra circle */}
                 <div
-                  className="absolute rounded-full border-4 border-amber-500/50 bg-gradient-to-br from-amber-100/40 to-orange-100/40 cursor-move chakra-element hover:scale-110 hover:shadow-2xl hover:border-amber-600/80 hover:-translate-y-2 hover:ring-8 hover:ring-amber-300/30 active:scale-95"
+                  className="absolute rounded-full border-4 border-amber-500/50 bg-gradient-to-br from-amber-100/40 to-orange-100/40 cursor-move transition-all duration-200 hover:scale-105 hover:border-amber-600/70"
                   style={{
                     left: `${chakraX - chakraRadius/2}px`,
                     top: `${chakraY - chakraRadius/2}px`,
@@ -907,50 +907,10 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                         const newX = (e.clientX - gridRect.left - offset.x) / zoom - offsetX / zoom;
                         const newY = (e.clientY - gridRect.top - offset.y) / zoom - offsetY / zoom;
                         
-                        // Get the previous chakra position to calculate movement delta
-                        const prevPos = elementPositions[`chakra-${chakra.id}`] || chakra.position || { x: chakraX, y: chakraY };
-                        const deltaX = newX - prevPos.x;
-                        const deltaY = newY - prevPos.y;
-                        
-                        // Update positions for the entire group (chakra + its wheels + their dots)
-                        setElementPositions(prev => {
-                          const newPositions = {
-                            ...prev,
-                            [`chakra-${chakra.id}`]: { x: newX, y: newY }
-                          };
-                          
-                          // Move all wheels that belong to this chakra
-                          const chakraWheels = displayWheels.filter(w => w.chakraId === chakra.id);
-                          chakraWheels.forEach(wheel => {
-                            const currentWheelPos = prev[`wheel-${wheel.id}`] || wheel.position || { x: 0, y: 0 };
-                            newPositions[`wheel-${wheel.id}`] = {
-                              x: currentWheelPos.x + deltaX,
-                              y: currentWheelPos.y + deltaY
-                            };
-                            
-                            // Move all dots that belong to this wheel
-                            const wheelDots = displayDots.filter((d: any) => d.wheelId == wheel.id || d.wheelId === String(wheel.id));
-                            wheelDots.forEach((dot: any) => {
-                              const currentDotPos = prev[`dot-${dot.id}`] || dot.position || { x: 0, y: 0 };
-                              newPositions[`dot-${dot.id}`] = {
-                                x: currentDotPos.x + deltaX,
-                                y: currentDotPos.y + deltaY
-                              };
-                            });
-                          });
-                          
-                          // Also move dots that are directly linked to this chakra (without wheel)
-                          const chakraDots = displayDots.filter((d: any) => d.chakraId === chakra.id && !d.wheelId);
-                          chakraDots.forEach((dot: any) => {
-                            const currentDotPos = prev[`dot-${dot.id}`] || dot.position || { x: 0, y: 0 };
-                            newPositions[`dot-${dot.id}`] = {
-                              x: currentDotPos.x + deltaX,
-                              y: currentDotPos.y + deltaY
-                            };
-                          });
-                          
-                          return newPositions;
-                        });
+                        setElementPositions(prev => ({
+                          ...prev,
+                          [`chakra-${chakra.id}`]: { x: newX, y: newY }
+                        }));
                       }
                     }
                     
@@ -1124,7 +1084,7 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
               <div key={wheel.id} className="relative">
                 {/* Wheel circle */}
                 <div
-                  className="absolute rounded-full border-2 border-dashed border-orange-400/60 bg-orange-50/30 cursor-move wheel-element hover:scale-110 hover:shadow-xl hover:border-orange-500 hover:-translate-y-2 hover:ring-6 hover:ring-orange-300/40 active:scale-95"
+                  className="absolute rounded-full border-2 border-dashed border-orange-400/60 bg-orange-50/30 cursor-move transition-all duration-200 hover:scale-105 hover:border-orange-500"
                   style={{
                     left: `${wheelX - wheelRadius}px`,
                     top: `${wheelY - wheelRadius}px`,
@@ -1158,30 +1118,10 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                         const newX = (e.clientX - gridRect.left - offset.x) / zoom - offsetX / zoom;
                         const newY = (e.clientY - gridRect.top - offset.y) / zoom - offsetY / zoom;
                         
-                        // Get the previous wheel position to calculate movement delta
-                        const prevPos = elementPositions[`wheel-${wheel.id}`] || wheel.position || { x: wheelX, y: wheelY };
-                        const deltaX = newX - prevPos.x;
-                        const deltaY = newY - prevPos.y;
-                        
-                        // Update positions for wheel and all its dots
-                        setElementPositions(prev => {
-                          const newPositions = {
-                            ...prev,
-                            [`wheel-${wheel.id}`]: { x: newX, y: newY }
-                          };
-                          
-                          // Move all dots that belong to this wheel
-                          const wheelDots = displayDots.filter((d: any) => d.wheelId == wheel.id || d.wheelId === String(wheel.id));
-                          wheelDots.forEach((dot: any) => {
-                            const currentDotPos = prev[`dot-${dot.id}`] || dot.position || { x: 0, y: 0 };
-                            newPositions[`dot-${dot.id}`] = {
-                              x: currentDotPos.x + deltaX,
-                              y: currentDotPos.y + deltaY
-                            };
-                          });
-                          
-                          return newPositions;
-                        });
+                        setElementPositions(prev => ({
+                          ...prev,
+                          [`wheel-${wheel.id}`]: { x: newX, y: newY }
+                        }));
                       }
                     }
                     
@@ -1297,7 +1237,7 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                 >
                   {/* Wheel heading on top like preview mode */}
                   <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 text-center">
-                    <div className="px-4 py-2 rounded-lg text-center shadow-lg border-2 transition-all duration-300 hover:scale-110 hover:shadow-xl hover:-translate-y-1 bg-gradient-to-r from-amber-50 to-orange-50 border-amber-300 text-amber-800 hover:from-amber-100 hover:to-orange-100">
+                    <div className="px-4 py-2 rounded-lg text-center shadow-lg border-2 transition-all duration-300 hover:scale-105 bg-gradient-to-r from-amber-50 to-orange-50 border-amber-300 text-amber-800">
                       <div className="font-bold text-sm whitespace-nowrap">
                         {wheel.heading || wheel.name}
                       </div>
@@ -1362,65 +1302,8 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
             // Check if dot belongs to a wheel (now wheels are positioned first!)
             if (dot.wheelId && dot.wheelId !== '' && dot.wheelId !== 'general' && dot.wheelId !== 'standalone') {
               const wheel = displayWheels.find((w: any) => w.id == dot.wheelId || w.id === String(dot.wheelId));
-              if (wheel) {
-                // Calculate wheel position (using same logic as wheel rendering)
-                let wheelCenterX, wheelCenterY;
-                
-                // Use saved position if exists
-                if (elementPositions[`wheel-${wheel.id}`]) {
-                  wheelCenterX = elementPositions[`wheel-${wheel.id}`].x;
-                  wheelCenterY = elementPositions[`wheel-${wheel.id}`].y;
-                } else if (wheel.position) {
-                  wheelCenterX = wheel.position.x;
-                  wheelCenterY = wheel.position.y;
-                } else {
-                  // Calculate default position based on wheel type (same as wheel rendering logic)
-                  if (wheel.chakraId && wheel.chakraId !== 'standalone') {
-                    // Position around chakra
-                    const chakra = chakras.find((c: any) => c.id === wheel.chakraId);
-                    if (chakra) {
-                      const wheelsInChakra = displayWheels.filter((w: any) => w.chakraId === wheel.chakraId && w.chakraId !== 'standalone');
-                      const wheelIndexInChakra = wheelsInChakra.findIndex((w: any) => w.id === wheel.id);
-                      
-                      // Get chakra position
-                      let chakraX, chakraY;
-                      if (elementPositions[`chakra-${chakra.id}`]) {
-                        chakraX = elementPositions[`chakra-${chakra.id}`].x;
-                        chakraY = elementPositions[`chakra-${chakra.id}`].y;
-                      } else {
-                        const chakraIndex = chakras.findIndex((c: any) => c.id === chakra.id);
-                        const cols = Math.max(1, Math.ceil(Math.sqrt(chakras.length)));
-                        const row = Math.floor(chakraIndex / cols);
-                        const col = chakraIndex % cols;
-                        chakraX = 700 + (col * 400);
-                        chakraY = 600 + (row * 350);
-                      }
-                      
-                      const chakraRadius = getChakraSize('real', wheelsInChakra.length, wheelsInChakra) / 2;
-                      const wheelRadius = getWheelSize('real', displayDots.filter((d: any) => d.wheelId == wheel.id).length, []);
-                      const orbitRadius = Math.max(40, chakraRadius - wheelRadius - 30);
-                      const angle = (wheelIndexInChakra * 2 * Math.PI) / wheelsInChakra.length;
-                      
-                      wheelCenterX = chakraX + Math.cos(angle) * orbitRadius;
-                      wheelCenterY = chakraY + Math.sin(angle) * orbitRadius;
-                    } else {
-                      // Default standalone position
-                      wheelCenterX = 300;
-                      wheelCenterY = 250;
-                    }
-                  } else {
-                    // Standalone wheel
-                    const standaloneWheels = displayWheels.filter((w: any) => !w.chakraId || w.chakraId === 'standalone');
-                    const standaloneIndex = standaloneWheels.findIndex((w: any) => w.id === wheel.id);
-                    const cols = Math.max(1, Math.ceil(Math.sqrt(standaloneWheels.length)));
-                    const row = Math.floor(standaloneIndex / cols);
-                    const col = standaloneIndex % cols;
-                    wheelCenterX = 300 + (col * 300);
-                    wheelCenterY = 250 + (row * 280);
-                  }
-                }
-                
-                // Now position dot inside the wheel
+              if (wheel && wheel.position) {
+                // Use saved position if exists, otherwise position around wheel
                 if (elementPositions[`dot-${dot.id}`]) {
                   x = elementPositions[`dot-${dot.id}`].x;
                   y = elementPositions[`dot-${dot.id}`].y;
@@ -1428,6 +1311,8 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                   // Position dots inside their associated wheel in a circle
                   const dotsInWheel = displayDots.filter((d: any) => d.wheelId == dot.wheelId || d.wheelId === String(dot.wheelId));
                   const dotIndexInWheel = dotsInWheel.findIndex((d: any) => d.id === dot.id);
+                  const wheelCenterX = wheel.position.x;
+                  const wheelCenterY = wheel.position.y;
                   
                   // Calculate dot radius to ensure dots are well inside wheel boundary
                   const wheelRadius = getWheelSize('real', dotsInWheel.length, dotsInWheel);
@@ -1518,8 +1403,7 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
               <div key={dot.id} className="relative">
                 {/* Dot element with exact styling from PreviewMapGrid */}
                 <div
-                  data-dot-id={dot.id}
-                  className="absolute w-10 h-10 rounded-full cursor-move transition-all duration-300 hover:scale-125 hover:shadow-2xl hover:-translate-y-1 dot-element group active:scale-95 hover:ring-4 hover:ring-amber-300/40"
+                  className="absolute w-10 h-10 rounded-full cursor-move transition-all duration-200 hover:scale-110 hover:shadow-md dot-element group"
                   style={{
                     left: `${x - 5}px`, // Adjust for larger size
                     top: `${y - 5}px`,
@@ -1558,12 +1442,6 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                         const newX = (e.clientX - gridRect.left - offset.x) / zoom - offsetX / zoom;
                         const newY = (e.clientY - gridRect.top - offset.y) / zoom - offsetY / zoom;
                         
-                        // Add smooth visual feedback during drag
-                        const element = e.currentTarget as HTMLElement;
-                        element.style.transform = 'scale(1.1) translateZ(0)';
-                        element.style.boxShadow = '0 20px 40px rgba(0,0,0,0.3)';
-                        element.style.zIndex = '1000';
-                        
                         setElementPositions(prev => ({
                           ...prev,
                           [`dot-${dot.id}`]: { x: newX, y: newY }
@@ -1590,13 +1468,9 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                     document.addEventListener('mouseup', handleMouseUp);
                   }}
                 >
-                  {/* Enhanced pulse animation for voice dots with multiple rings */}
+                  {/* Pulse animation for voice dots exactly like PreviewMapGrid */}
                   {dot.sourceType === 'voice' && (
-                    <>
-                      <div className="absolute inset-0 rounded-full bg-amber-400 opacity-40 animate-ping" />
-                      <div className="absolute inset-1 rounded-full bg-amber-300 opacity-30 animate-ping" style={{ animationDelay: '0.2s' }} />
-                      <div className="absolute inset-2 rounded-full bg-yellow-300 opacity-20 animate-ping" style={{ animationDelay: '0.4s' }} />
-                    </>
+                    <div className="absolute inset-0 rounded-full bg-amber-400 opacity-50 animate-ping" />
                   )}
                   
                   <div className="absolute inset-0 flex items-center justify-center text-white text-xs font-bold">
@@ -1611,7 +1485,7 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                 {/* Dot Hover Card - exact same styling as PreviewMapGrid */}
                 {hoveredDot?.id === dot.id && (
                   <div 
-                    className="absolute bg-white/95 backdrop-blur-sm border border-amber-200 rounded-lg p-3 shadow-lg z-[1000] cursor-pointer hover-card"
+                    className="absolute bg-white/95 backdrop-blur-sm border border-amber-200 rounded-lg p-3 shadow-lg z-[1000] cursor-pointer"
                     style={{
                       left: `${x + 35}px`,
                       top: `${Math.max(10, y - 20)}px`,
@@ -1760,7 +1634,7 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
               <div key={wheel.id} className="relative">
                 {/* Wheel circle */}
                 <div
-                  className="absolute rounded-full border-2 border-dashed border-orange-400/60 bg-orange-50/30 cursor-move wheel-element hover:scale-110 hover:shadow-xl hover:border-orange-500 hover:-translate-y-2 hover:ring-6 hover:ring-orange-300/40 active:scale-95"
+                  className="absolute rounded-full border-2 border-dashed border-orange-400/60 bg-orange-50/30 cursor-move transition-all duration-200 hover:scale-105 hover:border-orange-500"
                   style={{
                     left: `${wheelX - wheelRadius}px`,
                     top: `${wheelY - wheelRadius}px`,
@@ -1793,30 +1667,10 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                         const newX = (e.clientX - gridRect.left - offset.x) / zoom - offsetX / zoom;
                         const newY = (e.clientY - gridRect.top - offset.y) / zoom - offsetY / zoom;
                         
-                        // Get the previous wheel position to calculate movement delta
-                        const prevPos = elementPositions[`wheel-${wheel.id}`] || wheel.position || { x: wheelX, y: wheelY };
-                        const deltaX = newX - prevPos.x;
-                        const deltaY = newY - prevPos.y;
-                        
-                        // Update positions for wheel and all its dots
-                        setElementPositions(prev => {
-                          const newPositions = {
-                            ...prev,
-                            [`wheel-${wheel.id}`]: { x: newX, y: newY }
-                          };
-                          
-                          // Move all dots that belong to this wheel
-                          const wheelDots = displayDots.filter((d: any) => d.wheelId == wheel.id || d.wheelId === String(wheel.id));
-                          wheelDots.forEach((dot: any) => {
-                            const currentDotPos = prev[`dot-${dot.id}`] || dot.position || { x: 0, y: 0 };
-                            newPositions[`dot-${dot.id}`] = {
-                              x: currentDotPos.x + deltaX,
-                              y: currentDotPos.y + deltaY
-                            };
-                          });
-                          
-                          return newPositions;
-                        });
+                        setElementPositions(prev => ({
+                          ...prev,
+                          [`wheel-${wheel.id}`]: { x: newX, y: newY }
+                        }));
                       }
                     }
                     
@@ -1932,7 +1786,7 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                 >
                   {/* Wheel heading on top like preview mode */}
                   <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 text-center">
-                    <div className="px-4 py-2 rounded-lg text-center shadow-lg border-2 transition-all duration-300 hover:scale-110 hover:shadow-xl hover:-translate-y-1 bg-gradient-to-r from-amber-50 to-orange-50 border-amber-300 text-amber-800 hover:from-amber-100 hover:to-orange-100">
+                    <div className="px-4 py-2 rounded-lg text-center shadow-lg border-2 transition-all duration-300 hover:scale-105 bg-gradient-to-r from-amber-50 to-orange-50 border-amber-300 text-amber-800">
                       <div className="font-bold text-sm whitespace-nowrap">
                         {wheel.heading || wheel.name}
                       </div>

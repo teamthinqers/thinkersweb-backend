@@ -195,7 +195,7 @@ const AssociatedContent: React.FC<{
 
   // Fetch all dots for chakra wheels
   const { data: allChakraDots } = useQuery({
-    queryKey: ['/api/user-content/dots', 'chakra', wheel.id, chakraWheels?.map((w: any) => w.id).sort()],
+    queryKey: ['/api/user-content/dots', 'chakra', wheel.id, chakraWheels?.map(w => w.id).sort()],
     queryFn: async () => {
       if (!isChakra || !chakraWheels?.length) return [];
       const response = await fetch('/api/user-content/dots', { credentials: 'include' });
@@ -204,7 +204,7 @@ const AssociatedContent: React.FC<{
       const wheelIds = chakraWheels.map((w: any) => w.id);
       console.log('Filtering dots for chakra:', wheel.id, 'wheel IDs:', wheelIds);
       const filteredDots = allDots.filter((dot: any) => {
-        const hasWheelId = dot.wheelId && wheelIds.some((id: any) => {
+        const hasWheelId = dot.wheelId && wheelIds.some(id => {
           const match = (dot.wheelId == id || dot.wheelId === String(id));
           if (match) console.log('Found matching dot:', dot.oneWordSummary, 'for wheel:', id);
           return match;
