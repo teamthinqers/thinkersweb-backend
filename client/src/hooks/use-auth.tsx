@@ -34,15 +34,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     // Check for existing backend session and sync with frontend
     const checkBackendSession = async (): Promise<boolean> => {
-      // Skip backend session recovery if user recently logged out
+      // Skip backend session recovery if user recently logged out (but allow for new logins)
       const recentLogout = localStorage.getItem('recent_logout');
       if (recentLogout) {
         const logoutTime = parseInt(recentLogout);
         const timeSinceLogout = Date.now() - logoutTime;
-        if (timeSinceLogout < 5000) { // 5 seconds
+        if (timeSinceLogout < 3000) { // Reduced to 3 seconds to allow faster new logins
           console.log("⏭️ Skipping backend session check - recent logout detected");
+          return false; // Don't remove the logout marker yet
+        } else {
+          // Remove the logout marker if enough time has passed
           localStorage.removeItem('recent_logout');
-          return false;
         }
       }
       
@@ -87,15 +89,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     {
       console.log('Production mode detected - using Firebase authentication');
       
-      // First try to recover backend session, then setup Firebase
-      checkBackendSession().then((sessionRecovered) => {
-        if (sessionRecovered) {
-          // Backend session found, don't setup Firebase listener yet
-          return;
-        }
-
-        // Setup Firebase authentication for new logins
-        firebaseUnsubscribe = auth.onAuthStateChanged(async (firebaseUser) => {
+      // Always setup Firebase authentication listener (don't wait for backend session check)
+      firebaseUnsubscribe = auth.onAuthStateChanged(async (firebaseUser) => {
+        // Clear recent logout on any auth state change to allow immediate new logins
+        localStorage.removeItem('recent_logout');
           if (firebaseUser) {
             console.log('Firebase auth state changed:', `User ${firebaseUser.email} signed in`);
             
@@ -158,6 +155,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             console.log('✅ User state cleared after Firebase signout');
           }
         });
+      
+      // Also check for existing backend session (but don't block Firebase auth)
+      checkBackendSession().catch(error => {
+        console.log("Background session check failed:", error);
       });
     }
 

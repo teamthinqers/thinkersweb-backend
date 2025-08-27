@@ -341,14 +341,17 @@ function stopServerPing(): void {
 // Enhanced session recovery with persistent login support
 export async function recoverSession(): Promise<boolean> {
   try {
-    // Check if user recently logged out - if so, skip recovery
+    // Check if user recently logged out - if so, skip recovery (reduced time for faster new logins)
     const recentLogout = localStorage.getItem('recent_logout');
     if (recentLogout) {
       const logoutTime = parseInt(recentLogout);
       const timeSinceLogout = Date.now() - logoutTime;
-      if (timeSinceLogout < 10000) { // 10 seconds
+      if (timeSinceLogout < 3000) { // Reduced to 3 seconds
         console.log("Auth service: Session recovery skipped - recent logout detected");
         return false;
+      } else {
+        // Remove the logout marker if enough time has passed
+        localStorage.removeItem('recent_logout');
       }
     }
     
