@@ -95,50 +95,7 @@ export async function activateDotSpark(userId: number, subscriptionTier: string 
   }
 }
 
-/**
- * Middleware to check if user is authenticated AND has DotSpark activated
- */
-export function requireDotSparkActivation(req: AuthenticatedRequest, res: Response, next: NextFunction) {
-  const userId = req.user?.id;
-
-  if (!userId) {
-    return res.status(401).json({ 
-      error: 'Authentication required',
-      code: 'AUTH_REQUIRED'
-    });
-  }
-
-  // Check DotSpark activation and auto-activate if needed
-  checkDotSparkActivation(userId).then(async ({ activated, subscriptionTier }) => {
-    if (!activated) {
-      console.log(`🔧 Auto-activating DotSpark for user ${userId} on first use`);
-      
-      // Auto-activate DotSpark for new users
-      const activationResult = await activateDotSpark(userId, 'free');
-      
-      if (!activationResult.success) {
-        return res.status(403).json({
-          error: 'DotSpark activation failed',
-          message: 'Unable to activate DotSpark. Please try again.',
-          code: 'DOTSPARK_ACTIVATION_FAILED',
-          userId: userId
-        });
-      }
-      
-      console.log(`✅ DotSpark automatically activated for user ${userId}`);
-      subscriptionTier = 'free';
-    }
-
-    // Add activation info to request
-    (req as any).dotSparkActivation = { activated: true, subscriptionTier };
-    next();
-  }).catch(error => {
-    console.error('Error checking DotSpark activation in middleware:', error);
-    return res.status(500).json({
-      error: 'Failed to verify DotSpark activation status'
-    });
-  });
-}
+// DotSpark activation middleware removed - users with Google login have direct access
 
 /**
  * Track user behavior for intelligent insights
