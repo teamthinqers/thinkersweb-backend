@@ -187,7 +187,7 @@ export default function ChatPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [showBackButton, setShowBackButton] = useState(false);
   const [isNeuraActive, setIsNeuraActive] = useState(false);
-  const [selectedModel, setSelectedModel] = useState<AIModel>('gpt-4o');
+  const [selectedModel, setSelectedModel] = useState<AIModel>('gpt-5');
   const [isMobile, setIsMobile] = useState(() => {
     // Initialize with correct mobile detection to avoid re-render delay
     if (typeof window !== 'undefined') {
@@ -264,7 +264,7 @@ export default function ChatPage() {
       let apiEndpoint = '/api/dotspark/chat';
       const requestBody = { 
         message: inputValue, 
-        model: selectedModel === 'gpt-4o' ? 'gpt-4' : selectedModel,
+        model: selectedModel === 'gpt-5' ? 'gpt-5' : selectedModel,
         sessionId: `chat_${Date.now()}`
       };
 

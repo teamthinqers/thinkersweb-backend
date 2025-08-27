@@ -56,7 +56,7 @@ const AdvancedDotSparkChat: React.FC<AdvancedDotSparkChatProps> = ({ className =
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedModel, setSelectedModel] = useState<AIModel>('gpt-4o');
+  const [selectedModel, setSelectedModel] = useState<AIModel>('gpt-5');
   const [sessionId, setSessionId] = useState(`advanced_${Date.now()}`);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
@@ -95,7 +95,7 @@ const AdvancedDotSparkChat: React.FC<AdvancedDotSparkChatProps> = ({ className =
         },
         body: JSON.stringify({
           message: userMessage.content,
-          model: selectedModel === 'gpt-4o' ? 'gpt-4' : 'deepseek',
+          model: selectedModel === 'gpt-5' ? 'gpt-5' : 'deepseek',
           sessionId
         }),
       });
@@ -162,7 +162,7 @@ const AdvancedDotSparkChat: React.FC<AdvancedDotSparkChatProps> = ({ className =
         },
         body: JSON.stringify({
           thoughts: input.trim(),
-          model: selectedModel === 'gpt-4o' ? 'gpt-4' : 'deepseek'
+          model: selectedModel === 'gpt-5' ? 'gpt-5' : 'deepseek'
         }),
       });
 
