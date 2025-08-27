@@ -4,6 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Loader2, Plus, Eye, Settings, RotateCcw, Mic, Type, Maximize, Minimize, ZoomIn, ZoomOut } from 'lucide-react';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { useToast } from "@/hooks/use-toast";
 import UserContentCreation from './UserContentCreation';
 import DotFullView from './DotFullView';
 import DotFlashCard from './DotFlashCard';
@@ -153,6 +155,68 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
   const [elementPositions, setElementPositions] = useState<{[key: string]: {x: number, y: number}}>({});
   const [showSaveDialog, setShowSaveDialog] = useState(false); 
   const gridContainerRef = useRef<HTMLDivElement>(null);
+
+  // Drag-and-drop mapping states
+  const [mappingDialog, setMappingDialog] = useState<{
+    open: boolean;
+    sourceType: 'dot' | 'wheel';
+    sourceId: string;
+    sourceName: string;
+    targetType: 'wheel' | 'chakra';
+    targetId: string;
+    targetName: string;
+  } | null>(null);
+
+  const { toast } = useToast();
+
+  // Collision detection helper
+  const checkCollision = (draggedElement: {x: number, y: number, size: number}, targetElement: {x: number, y: number, size: number}) => {
+    const distance = Math.sqrt(
+      Math.pow(draggedElement.x - targetElement.x, 2) + 
+      Math.pow(draggedElement.y - targetElement.y, 2)
+    );
+    return distance < (draggedElement.size + targetElement.size) / 2;
+  };
+
+  // Handle mapping confirmation
+  const handleMapConfirm = async () => {
+    if (!mappingDialog) return;
+    
+    try {
+      const endpoint = mappingDialog.sourceType === 'dot' 
+        ? `/api/user-content/dots/${mappingDialog.sourceId}/relationship`
+        : `/api/user-content/wheels/${mappingDialog.sourceId}/relationship`;
+      
+      const payload = mappingDialog.targetType === 'wheel' 
+        ? { wheelId: mappingDialog.targetId }
+        : { chakraId: mappingDialog.targetId };
+
+      const response = await fetch(endpoint, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) throw new Error('Failed to update mapping');
+
+      toast({
+        title: "Mapping Updated",
+        description: `${mappingDialog.sourceName} has been mapped to ${mappingDialog.targetName}`,
+      });
+
+      // Refresh the data
+      window.location.reload();
+      
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to update mapping. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setMappingDialog(null);
+    }
+  };
 
   // Fetch grid positions for proper positioning
   const { data: gridPositions } = useQuery({
@@ -708,9 +772,39 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                       }
                     };
                     
-                    const handleMouseUp = () => {
+                    const handleMouseUp = (e: MouseEvent) => {
                       document.removeEventListener('mousemove', handleMouseMove);
                       document.removeEventListener('mouseup', handleMouseUp);
+                      
+                      // Check for collision with chakras (wheel-to-chakra mapping)
+                      const currentPos = elementPositions[`wheel-${wheel.id}`];
+                      if (currentPos) {
+                        // Check collision with all chakras
+                        for (const chakra of chakras) {
+                          const chakraPos = elementPositions[`chakra-${chakra.id}`] || 
+                            (chakra.position ? chakra.position : { x: Math.random() * 400, y: Math.random() * 300 });
+                          
+                          const chakraRadius = chakra.radius || 420;
+                          const wheelRadius = getWheelSize('real', displayDots.filter((d: any) => d.wheelId == wheel.id).length, []);
+                          
+                          if (checkCollision(
+                            { x: currentPos.x, y: currentPos.y, size: wheelRadius },
+                            { x: chakraPos.x, y: chakraPos.y, size: chakraRadius }
+                          )) {
+                            // Show mapping confirmation dialog
+                            setMappingDialog({
+                              open: true,
+                              sourceType: 'wheel',
+                              sourceId: wheel.id,
+                              sourceName: wheel.heading || wheel.name,
+                              targetType: 'chakra',
+                              targetId: chakra.id,
+                              targetName: chakra.heading || chakra.name
+                            });
+                            break;
+                          }
+                        }
+                      }
                     };
                     
                     document.addEventListener('mousemove', handleMouseMove);
@@ -930,9 +1024,38 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                       }
                     };
                     
-                    const handleMouseUp = () => {
+                    const handleMouseUp = (e: MouseEvent) => {
                       document.removeEventListener('mousemove', handleMouseMove);
                       document.removeEventListener('mouseup', handleMouseUp);
+                      
+                      // Check for collision with wheels (dot-to-wheel mapping)
+                      const currentPos = elementPositions[`dot-${dot.id}`];
+                      if (currentPos) {
+                        // Check collision with all wheels
+                        for (const wheel of displayWheels) {
+                          const wheelPos = elementPositions[`wheel-${wheel.id}`] || 
+                            (wheel.position ? wheel.position : { x: Math.random() * 400, y: Math.random() * 300 });
+                          
+                          const wheelRadius = getWheelSize('real', displayDots.filter((d: any) => d.wheelId == wheel.id).length, []);
+                          
+                          if (checkCollision(
+                            { x: currentPos.x, y: currentPos.y, size: 30 },
+                            { x: wheelPos.x, y: wheelPos.y, size: wheelRadius }
+                          )) {
+                            // Show mapping confirmation dialog
+                            setMappingDialog({
+                              open: true,
+                              sourceType: 'dot',
+                              sourceId: dot.id,
+                              sourceName: dot.oneWordSummary,
+                              targetType: 'wheel',
+                              targetId: wheel.id,
+                              targetName: wheel.heading || wheel.name
+                            });
+                            break;
+                          }
+                        }
+                      }
                     };
                     
                     document.addEventListener('mousemove', handleMouseMove);
@@ -1146,9 +1269,39 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                       }
                     };
                     
-                    const handleMouseUp = () => {
+                    const handleMouseUp = (e: MouseEvent) => {
                       document.removeEventListener('mousemove', handleMouseMove);
                       document.removeEventListener('mouseup', handleMouseUp);
+                      
+                      // Check for collision with chakras (wheel-to-chakra mapping)
+                      const currentPos = elementPositions[`wheel-${wheel.id}`];
+                      if (currentPos) {
+                        // Check collision with all chakras
+                        for (const chakra of chakras) {
+                          const chakraPos = elementPositions[`chakra-${chakra.id}`] || 
+                            (chakra.position ? chakra.position : { x: Math.random() * 400, y: Math.random() * 300 });
+                          
+                          const chakraRadius = chakra.radius || 420;
+                          const wheelRadius = getWheelSize('real', displayDots.filter((d: any) => d.wheelId == wheel.id).length, []);
+                          
+                          if (checkCollision(
+                            { x: currentPos.x, y: currentPos.y, size: wheelRadius },
+                            { x: chakraPos.x, y: chakraPos.y, size: chakraRadius }
+                          )) {
+                            // Show mapping confirmation dialog
+                            setMappingDialog({
+                              open: true,
+                              sourceType: 'wheel',
+                              sourceId: wheel.id,
+                              sourceName: wheel.heading || wheel.name,
+                              targetType: 'chakra',
+                              targetId: chakra.id,
+                              targetName: chakra.heading || chakra.name
+                            });
+                            break;
+                          }
+                        }
+                      }
                     };
                     
                     document.addEventListener('mousemove', handleMouseMove);
@@ -1244,6 +1397,25 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
           </div>
         </div>
       )}
+
+      {/* Drag-and-Drop Mapping Confirmation Dialog */}
+      <AlertDialog open={mappingDialog?.open || false} onOpenChange={() => setMappingDialog(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirm Mapping</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to map <strong>{mappingDialog?.sourceName}</strong> to <strong>{mappingDialog?.targetName}</strong>?
+              {mappingDialog?.sourceType === 'wheel' && " All dots associated with this wheel will also move to the new chakra."}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleMapConfirm}>
+              Yes, Map {mappingDialog?.sourceType === 'dot' ? 'Dot' : 'Wheel'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

@@ -54,6 +54,7 @@ Global Floating Dot Mode Switching: Added flip button functionality to switch be
     - **Gamification**: Progress meters with motivational elements for dot creation.
     - **One-Word Summary & Flash Cards**: Automated generation of keywords for quick content identification.
     - **Spark-Based Grouping**: Replaces the 9-dot wheel concept, allowing dots to belong to multiple "sparks" for cross-insight generation.
+    - **User Mode Grid V1 (Current Stable)**: Perfect drag experience matching floating dot methodology using document-level event listeners and precise cursor-following behavior. All filtering issues resolved with comprehensive backend/frontend solutions. Grid elements (dots, wheels, chakras) support smooth repositioning with exact click-point tracking. Authentication and settings properly configured for optimal user experience.
 
 ## External Dependencies
 
