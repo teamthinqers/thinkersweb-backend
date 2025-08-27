@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Brain, Zap, Settings } from 'lucide-react';
 
-export type AIModel = 'gpt-4o' | 'deepseek-chat';
+export type AIModel = 'gpt-5' | 'deepseek-chat';
 
 interface ModelSelectorProps {
   selectedModel: AIModel;
@@ -12,12 +12,12 @@ interface ModelSelectorProps {
 }
 
 const MODEL_INFO = {
-  'gpt-4o': {
-    name: 'GPT 4.0',
-    description: 'Advanced reasoning & creativity',
+  'gpt-5': {
+    name: 'GPT 5.0',
+    description: 'Next-gen reasoning & creativity',
     icon: Brain,
     color: 'bg-blue-500',
-    badge: 'Premium'
+    badge: 'Latest'
   },
   'deepseek-chat': {
     name: 'DeepSeek',

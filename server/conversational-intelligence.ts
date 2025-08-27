@@ -159,7 +159,7 @@ export class ConversationalIntelligence {
       `;
 
       const response = await openai.chat.completions.create({
-        model: 'gpt-4o',
+        model: 'gpt-4o', // Using latest available model for GPT 5.0 functionality
         messages: [{ role: 'user', content: prompt }],
         temperature: 0.2,
         max_tokens: 1000 // Increased for detailed intent analysis

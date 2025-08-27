@@ -40,7 +40,7 @@ interface DotSparkResponse {
 export async function runDotSparkCore(
   userInput: string, 
   userId: string = 'default', 
-  modelType: 'gpt-4' | 'deepseek' = 'gpt-4'
+  modelType: 'gpt-5' | 'deepseek' = 'gpt-5'
 ): Promise<DotSparkResponse> {
   const startTime = Date.now();
 
@@ -58,7 +58,7 @@ export async function runDotSparkCore(
       cwd: process.cwd(),
       env: { 
         ...process.env, 
-        MODEL: modelType === 'deepseek' ? 'deepseek-chat' : 'gpt-4',
+        MODEL: modelType === 'deepseek' ? 'deepseek-chat' : 'gpt-5',
         OPENAI_API_KEY: process.env.OPENAI_API_KEY,
         DEEPSEEK_API_KEY: process.env.DEEPSEEK_API_KEY,
         PINECONE_API_KEY: process.env.PINECONE_API_KEY
@@ -152,7 +152,7 @@ export async function runDotSparkCore(
 export async function organizeThoughts(
   userInput: string,
   userId: string = 'default',
-  modelType: 'gpt-4' | 'deepseek' = 'gpt-4'
+  modelType: 'gpt-5' | 'deepseek' = 'gpt-5'
 ): Promise<DotSparkResponse> {
   const startTime = Date.now();
 

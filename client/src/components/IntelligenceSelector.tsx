@@ -30,7 +30,7 @@ const intelligenceModes: IntelligenceMode[] = [
   {
     id: 'standard',
     title: 'Standard Chat',
-    description: 'Classic AI conversation with GPT-4 and DeepSeek models',
+    description: 'Classic AI conversation with GPT 5.0 and DeepSeek models',
     path: '/chat',
     icon: MessageCircle,
     features: ['Multi-model support', 'Fast responses', 'Voice input'],

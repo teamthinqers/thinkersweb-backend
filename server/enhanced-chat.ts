@@ -50,7 +50,7 @@ export interface EnhancedChatResponse {
 export async function generateEnhancedChatResponse(
   userInput: string,
   messages: EnhancedConversationMessage[] = [],
-  model: 'gpt-4o' | 'deepseek-chat' = 'gpt-4o',
+  model: 'gpt-5' | 'deepseek-chat' = 'gpt-5',
   userId?: number | null,
   sessionId?: string | null
 ): Promise<EnhancedChatResponse> {
@@ -194,7 +194,7 @@ export async function generateEnhancedChatResponse(
 async function generateStructureProposal(
   messages: EnhancedConversationMessage[],
   structure: CognitiveStructure,
-  model: 'gpt-4o' | 'deepseek-chat'
+  model: 'gpt-5' | 'deepseek-chat'
 ): Promise<StructureProposal> {
   
   const conversationContext = messages.slice(-6).map(m => 
