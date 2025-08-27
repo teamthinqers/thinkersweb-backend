@@ -1417,23 +1417,29 @@ const Dashboard: React.FC = () => {
     if (recentFilterApplied && !previewMode) {
       console.log('🎯 Applying', recentFilterType, 'filter with count:', recentDotsCount);
       if (recentFilterType === 'dot') {
-        // Show only recent dots
+        // Show recent dots - if selected count is less than actual, show all
         console.log('📍 Filtering dots - original count:', baseDotsToDisplay.length);
-        baseDotsToDisplay = [...baseDotsToDisplay]
-          .sort((a, b) => new Date(b.timestamp || b.createdAt).getTime() - new Date(a.timestamp || a.createdAt).getTime())
-          .slice(0, recentDotsCount);
-        console.log('📍 Filtered dots count:', baseDotsToDisplay.length);
+        const sortedDots = [...baseDotsToDisplay]
+          .sort((a, b) => new Date(b.timestamp || b.createdAt).getTime() - new Date(a.timestamp || a.createdAt).getTime());
+        
+        // If selected count is less than actual count, show all; otherwise limit to selected count
+        const countToShow = recentDotsCount < sortedDots.length ? sortedDots.length : recentDotsCount;
+        baseDotsToDisplay = sortedDots.slice(0, countToShow);
+        console.log('📍 Filtered dots count:', baseDotsToDisplay.length, '(requested:', recentDotsCount, ', actual:', sortedDots.length, ')');
         filteredWheelsToDisplay = []; // Hide all wheels and chakras
         console.log('📍 Hidden all wheels and chakras');
       } else if (recentFilterType === 'wheel') {
-        // Show recent wheels + their associated dots
+        // Show recent wheels + their associated dots - if selected count is less than actual, show all
         console.log('🎡 Filtering wheels - all wheels:', displayWheels.length);
         const allWheels = displayWheels.filter(w => w.chakraId); // Only wheels (not chakras)
         console.log('🎡 Wheels with chakraId:', allWheels.length);
-        const recentWheels = [...allWheels]
-          .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-          .slice(0, recentDotsCount);
-        console.log('🎡 Recent wheels selected:', recentWheels.length);
+        const sortedWheels = [...allWheels]
+          .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        
+        // If selected count is less than actual count, show all; otherwise limit to selected count
+        const countToShow = recentDotsCount < sortedWheels.length ? sortedWheels.length : recentDotsCount;
+        const recentWheels = sortedWheels.slice(0, countToShow);
+        console.log('🎡 Recent wheels selected:', recentWheels.length, '(requested:', recentDotsCount, ', actual:', sortedWheels.length, ')');
         
         filteredWheelsToDisplay = recentWheels;
         
@@ -1447,14 +1453,17 @@ const Dashboard: React.FC = () => {
         console.log('🎡 Dots filtered:', originalDotsCount, '->', baseDotsToDisplay.length);
         
       } else if (recentFilterType === 'chakra') {
-        // Show recent chakras + their associated wheels + associated dots
+        // Show recent chakras + their associated wheels + associated dots - if selected count is less than actual, show all
         console.log('🕉️ Filtering chakras - all wheels:', displayWheels.length);
         const allChakras = displayWheels.filter(w => !w.chakraId); // Only chakras (no chakraId)
         console.log('🕉️ Chakras found:', allChakras.length);
-        const recentChakras = [...allChakras]
-          .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-          .slice(0, recentDotsCount);
-        console.log('🕉️ Recent chakras selected:', recentChakras.length);
+        const sortedChakras = [...allChakras]
+          .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        
+        // If selected count is less than actual count, show all; otherwise limit to selected count
+        const countToShow = recentDotsCount < sortedChakras.length ? sortedChakras.length : recentDotsCount;
+        const recentChakras = sortedChakras.slice(0, countToShow);
+        console.log('🕉️ Recent chakras selected:', recentChakras.length, '(requested:', recentDotsCount, ', actual:', sortedChakras.length, ')');
         
         // Get all wheels associated with these chakras
         const chakraIds = recentChakras.map(c => c.id);
