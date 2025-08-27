@@ -1412,6 +1412,8 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                     e.stopPropagation();
                     setViewFullDot(dot);
                   }}
+                  onMouseEnter={() => setHoveredDot(dot)}
+                  onMouseLeave={() => setHoveredDot(null)}
                   onMouseDown={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
