@@ -720,7 +720,7 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
               <div key={wheel.id} className="relative">
                 {/* Wheel circle */}
                 <div
-                  className="absolute rounded-full border-2 border-orange-400/60 bg-orange-50/30 cursor-move transition-all duration-200 hover:scale-105 hover:border-orange-500"
+                  className="absolute rounded-full border-2 border-dashed border-orange-400/60 bg-orange-50/30 cursor-move transition-all duration-200 hover:scale-105 hover:border-orange-500"
                   style={{
                     left: `${wheelX - wheelRadius}px`,
                     top: `${wheelY - wheelRadius}px`,
@@ -1104,7 +1104,7 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
               <div key={wheel.id} className="relative">
                 {/* Wheel circle */}
                 <div
-                  className="absolute rounded-full border-2 border-orange-400/60 bg-orange-50/30 cursor-move transition-all duration-200 hover:scale-105 hover:border-orange-500"
+                  className="absolute rounded-full border-2 border-dashed border-orange-400/60 bg-orange-50/30 cursor-move transition-all duration-200 hover:scale-105 hover:border-orange-500"
                   style={{
                     left: `${wheelX - wheelRadius}px`,
                     top: `${wheelY - wheelRadius}px`,
