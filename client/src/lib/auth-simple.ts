@@ -37,35 +37,55 @@ setPersistence(auth, browserLocalPersistence).then(() => {
 // Simple Google sign-in function
 export const signInWithGoogle = async (): Promise<User> => {
   try {
-    console.log("Starting Google sign-in...");
-    console.log("Firebase config check:", {
+    console.log("🚀 Starting Google sign-in...");
+    console.log("🔧 Firebase config check:", {
       hasApiKey: !!import.meta.env.VITE_FIREBASE_API_KEY,
       hasProjectId: !!import.meta.env.VITE_FIREBASE_PROJECT_ID,
       hasAppId: !!import.meta.env.VITE_FIREBASE_APP_ID,
       authDomain: `${import.meta.env.VITE_FIREBASE_PROJECT_ID}.firebaseapp.com`
     });
     
+    console.log("📱 Opening Google auth popup...");
     const result = await signInWithPopup(auth, googleProvider);
-    console.log("Google sign-in successful:", result.user.displayName);
+    
+    console.log("✅ Google sign-in successful!", {
+      displayName: result.user.displayName,
+      email: result.user.email,
+      uid: result.user.uid,
+      emailVerified: result.user.emailVerified
+    });
+    
     return result.user;
   } catch (error: any) {
-    console.error("Google sign-in error details:", {
+    console.error("❌ Google sign-in error details:", {
       code: error.code,
       message: error.message,
       customData: error.customData,
-      credential: error.credential
+      credential: error.credential,
+      stack: error.stack
     });
     
+    // Enhanced error handling with specific Firebase Auth errors
     if (error.code === "auth/popup-closed-by-user") {
-      throw new Error("Sign-in cancelled by user");
+      throw new Error("🚪 Sign-in cancelled by user");
     } else if (error.code === "auth/unauthorized-domain") {
-      throw new Error("This domain is not authorized for Google sign-in. Please contact support.");
+      throw new Error("🚫 This domain is not authorized for Google sign-in. Check Firebase Console → Authentication → Settings → Authorized domains");
     } else if (error.code === "auth/operation-not-allowed") {
-      throw new Error("Google sign-in is not enabled. Please contact support.");
+      throw new Error("⛔ Google sign-in is not enabled. Check Firebase Console → Authentication → Sign-in methods → Google");
     } else if (error.code === "auth/popup-blocked") {
-      throw new Error("Sign-in popup was blocked. Please allow popups and try again.");
+      throw new Error("🚫 Sign-in popup was blocked. Please allow popups and try again.");
+    } else if (error.code === "auth/admin-restricted-operation") {
+      throw new Error("🔒 This Firebase project restricts authentication to specific users only. Check Firebase Console → Authentication → Users tab for allowed users.");
+    } else if (error.code === "auth/user-disabled") {
+      throw new Error("🚫 This user account has been disabled. Contact support.");
+    } else if (error.code === "auth/cancelled-popup-request") {
+      throw new Error("🔄 Another sign-in popup is already open. Close it and try again.");
+    } else if (error.code === "auth/web-storage-unsupported") {
+      throw new Error("💾 Your browser doesn't support web storage required for authentication.");
     }
-    throw error;
+    
+    // Generic error with helpful debugging info
+    throw new Error(`🔥 Firebase Auth Error: ${error.code} - ${error.message}. Check browser console for details.`);
   }
 };
 
