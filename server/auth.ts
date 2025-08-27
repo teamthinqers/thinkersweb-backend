@@ -494,6 +494,7 @@ export function setupAuth(app: Express) {
                 firebaseUid: uid,
                 fullName: displayName || (email ? email.split('@')[0] : username),
                 avatar: photoURL,
+                dotSparkActivated: true, // Auto-activate new Firebase users
                 createdAt: new Date(),
                 updatedAt: new Date()
               })
@@ -519,7 +520,7 @@ export function setupAuth(app: Express) {
         username: user.username || '',
         email: user.email,
         firebaseUid: user.firebaseUid,
-        fullName: user.fullName || displayName || user.username || user.email?.split('@')[0] || 'User',
+        fullName: user.full_name_old || displayName || user.username || user.email?.split('@')[0] || 'User',
         bio: user.bio,
         avatarUrl: user.avatar || photoURL,
         createdAt: user.createdAt,
