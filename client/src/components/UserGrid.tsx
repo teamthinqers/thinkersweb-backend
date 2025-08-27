@@ -907,10 +907,50 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                         const newX = (e.clientX - gridRect.left - offset.x) / zoom - offsetX / zoom;
                         const newY = (e.clientY - gridRect.top - offset.y) / zoom - offsetY / zoom;
                         
-                        setElementPositions(prev => ({
-                          ...prev,
-                          [`chakra-${chakra.id}`]: { x: newX, y: newY }
-                        }));
+                        // Get the previous chakra position to calculate movement delta
+                        const prevPos = elementPositions[`chakra-${chakra.id}`] || chakra.position || { x: chakraX, y: chakraY };
+                        const deltaX = newX - prevPos.x;
+                        const deltaY = newY - prevPos.y;
+                        
+                        // Update positions for the entire group (chakra + its wheels + their dots)
+                        setElementPositions(prev => {
+                          const newPositions = {
+                            ...prev,
+                            [`chakra-${chakra.id}`]: { x: newX, y: newY }
+                          };
+                          
+                          // Move all wheels that belong to this chakra
+                          const chakraWheels = displayWheels.filter(w => w.chakraId === chakra.id);
+                          chakraWheels.forEach(wheel => {
+                            const currentWheelPos = prev[`wheel-${wheel.id}`] || wheel.position || { x: 0, y: 0 };
+                            newPositions[`wheel-${wheel.id}`] = {
+                              x: currentWheelPos.x + deltaX,
+                              y: currentWheelPos.y + deltaY
+                            };
+                            
+                            // Move all dots that belong to this wheel
+                            const wheelDots = displayDots.filter((d: any) => d.wheelId == wheel.id || d.wheelId === String(wheel.id));
+                            wheelDots.forEach((dot: any) => {
+                              const currentDotPos = prev[`dot-${dot.id}`] || dot.position || { x: 0, y: 0 };
+                              newPositions[`dot-${dot.id}`] = {
+                                x: currentDotPos.x + deltaX,
+                                y: currentDotPos.y + deltaY
+                              };
+                            });
+                          });
+                          
+                          // Also move dots that are directly linked to this chakra (without wheel)
+                          const chakraDots = displayDots.filter((d: any) => d.chakraId === chakra.id && !d.wheelId);
+                          chakraDots.forEach((dot: any) => {
+                            const currentDotPos = prev[`dot-${dot.id}`] || dot.position || { x: 0, y: 0 };
+                            newPositions[`dot-${dot.id}`] = {
+                              x: currentDotPos.x + deltaX,
+                              y: currentDotPos.y + deltaY
+                            };
+                          });
+                          
+                          return newPositions;
+                        });
                       }
                     }
                     
@@ -1118,10 +1158,30 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                         const newX = (e.clientX - gridRect.left - offset.x) / zoom - offsetX / zoom;
                         const newY = (e.clientY - gridRect.top - offset.y) / zoom - offsetY / zoom;
                         
-                        setElementPositions(prev => ({
-                          ...prev,
-                          [`wheel-${wheel.id}`]: { x: newX, y: newY }
-                        }));
+                        // Get the previous wheel position to calculate movement delta
+                        const prevPos = elementPositions[`wheel-${wheel.id}`] || wheel.position || { x: wheelX, y: wheelY };
+                        const deltaX = newX - prevPos.x;
+                        const deltaY = newY - prevPos.y;
+                        
+                        // Update positions for wheel and all its dots
+                        setElementPositions(prev => {
+                          const newPositions = {
+                            ...prev,
+                            [`wheel-${wheel.id}`]: { x: newX, y: newY }
+                          };
+                          
+                          // Move all dots that belong to this wheel
+                          const wheelDots = displayDots.filter((d: any) => d.wheelId == wheel.id || d.wheelId === String(wheel.id));
+                          wheelDots.forEach((dot: any) => {
+                            const currentDotPos = prev[`dot-${dot.id}`] || dot.position || { x: 0, y: 0 };
+                            newPositions[`dot-${dot.id}`] = {
+                              x: currentDotPos.x + deltaX,
+                              y: currentDotPos.y + deltaY
+                            };
+                          });
+                          
+                          return newPositions;
+                        });
                       }
                     }
                     
@@ -1733,10 +1793,30 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                         const newX = (e.clientX - gridRect.left - offset.x) / zoom - offsetX / zoom;
                         const newY = (e.clientY - gridRect.top - offset.y) / zoom - offsetY / zoom;
                         
-                        setElementPositions(prev => ({
-                          ...prev,
-                          [`wheel-${wheel.id}`]: { x: newX, y: newY }
-                        }));
+                        // Get the previous wheel position to calculate movement delta
+                        const prevPos = elementPositions[`wheel-${wheel.id}`] || wheel.position || { x: wheelX, y: wheelY };
+                        const deltaX = newX - prevPos.x;
+                        const deltaY = newY - prevPos.y;
+                        
+                        // Update positions for wheel and all its dots
+                        setElementPositions(prev => {
+                          const newPositions = {
+                            ...prev,
+                            [`wheel-${wheel.id}`]: { x: newX, y: newY }
+                          };
+                          
+                          // Move all dots that belong to this wheel
+                          const wheelDots = displayDots.filter((d: any) => d.wheelId == wheel.id || d.wheelId === String(wheel.id));
+                          wheelDots.forEach((dot: any) => {
+                            const currentDotPos = prev[`dot-${dot.id}`] || dot.position || { x: 0, y: 0 };
+                            newPositions[`dot-${dot.id}`] = {
+                              x: currentDotPos.x + deltaX,
+                              y: currentDotPos.y + deltaY
+                            };
+                          });
+                          
+                          return newPositions;
+                        });
                       }
                     }
                     
