@@ -77,24 +77,58 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       
       // First try to recover backend session, then setup Firebase
       checkBackendSession().then((sessionRecovered) => {
-        // Firebase authentication only - no backend session dependency
+        if (sessionRecovered) {
+          // Backend session found, don't setup Firebase listener yet
+          return;
+        }
+
+        // Setup Firebase authentication for new logins
         firebaseUnsubscribe = auth.onAuthStateChanged(async (firebaseUser) => {
           if (firebaseUser) {
             console.log('Firebase auth state changed:', `User ${firebaseUser.email} signed in`);
             
-            // Create user object directly from Firebase - no backend sync needed
-            const unifiedUser = {
-              id: firebaseUser.uid,
-              uid: firebaseUser.uid,
-              email: firebaseUser.email,
-              displayName: firebaseUser.displayName || firebaseUser.email?.split('@')[0],
-              photoURL: firebaseUser.photoURL,
-              fullName: firebaseUser.displayName
-            };
-            
-            console.log('✅ Firebase user authenticated:', unifiedUser.email);
-            setUser(unifiedUser);
-            setIsLoading(false);
+            try {
+              // Sync Firebase user with backend
+              const response = await fetch('/api/auth/firebase', {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  uid: firebaseUser.uid,
+                  email: firebaseUser.email,
+                  displayName: firebaseUser.displayName,
+                  photoURL: firebaseUser.photoURL,
+                }),
+              });
+
+              if (response.ok) {
+                const backendUser = await response.json();
+                console.log('✅ Firebase user synced with backend:', backendUser.email);
+                
+                // Create unified user object
+                const unifiedUser = {
+                  id: firebaseUser.uid,
+                  uid: firebaseUser.uid,
+                  email: firebaseUser.email,
+                  displayName: firebaseUser.displayName || firebaseUser.email?.split('@')[0],
+                  photoURL: firebaseUser.photoURL,
+                  fullName: firebaseUser.displayName
+                } as any;
+                
+                setUser(unifiedUser);
+                setIsLoading(false);
+              } else {
+                console.error('Failed to sync Firebase user with backend');
+                setUser(null);
+                setIsLoading(false);
+              }
+            } catch (error) {
+              console.error('Firebase backend sync error:', error);
+              setUser(null);
+              setIsLoading(false);
+            }
           } else {
             console.log('Firebase auth state changed: User signed out');
             setUser(null);
