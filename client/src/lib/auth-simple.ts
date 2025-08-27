@@ -72,8 +72,35 @@ export const signInWithGoogle = async (): Promise<User> => {
 // Simple sign out function
 export const signOut = async (): Promise<void> => {
   try {
+    // First, sign out from Firebase
     await firebaseSignOut(auth);
-    console.log("Sign out successful");
+    console.log("Firebase sign out successful");
+    
+    // Then, destroy backend session
+    try {
+      const response = await fetch('/api/logout', {
+        method: 'POST',
+        credentials: 'include', // Include session cookies
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+      
+      if (response.ok) {
+        console.log("Backend session destroyed successfully");
+      } else {
+        console.warn("Backend session destroy failed, but Firebase signout succeeded");
+      }
+    } catch (sessionError) {
+      console.warn("Failed to destroy backend session:", sessionError);
+      // Don't throw - Firebase signout succeeded which is main requirement
+    }
+    
+    // Clear any localStorage items
+    localStorage.removeItem('dotspark-settings');
+    localStorage.removeItem('user-preferences');
+    
+    console.log("Complete sign out successful");
   } catch (error) {
     console.error("Sign out error:", error);
     throw error;
