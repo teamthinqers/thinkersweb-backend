@@ -1786,12 +1786,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.put(`${apiPrefix}/mapping/dot-to-wheel`, async (req: AuthenticatedRequest, res: Response) => {
     try {
       // Use same authentication pattern as working endpoints
-      let userId = req.user?.id || req.session?.userId;
+      const userId = req.user?.id || req.session?.userId;
       
-      // Fallback for demo mode or session persistence issues
       if (!userId) {
-        userId = 5; // Use the same user ID that's working for dots/wheels
-        console.log('⚠️ Using fallback user ID for mapping');
+        return res.status(401).json({ error: 'Authentication required' });
       }
 
       const { dotId, wheelId } = req.body;
@@ -1810,7 +1808,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         })
         .where(and(
           eq(dots.id, parseInt(dotId)),
-          eq(dots.userId, userId)
+          eq(dots.userId, parseInt(userId.toString()))
         ))
         .returning();
 
@@ -1835,13 +1833,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // PUT /api/mapping/wheel-to-chakra - Map/unmap wheel to chakra  
   app.put(`${apiPrefix}/mapping/wheel-to-chakra`, async (req: AuthenticatedRequest, res: Response) => {
     try {
-      // Use same authentication pattern as working endpoints
-      let userId = req.user?.id || req.session?.userId;
+      // Use same authentication pattern as working endpoints  
+      const userId = req.user?.id || req.session?.userId;
       
-      // Fallback for demo mode or session persistence issues
       if (!userId) {
-        userId = 5; // Use the same user ID that's working for dots/wheels
-        console.log('⚠️ Using fallback user ID for wheel mapping');
+        return res.status(401).json({ error: 'Authentication required' });
       }
 
       const { wheelId, chakraId } = req.body;
@@ -1860,7 +1856,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         })
         .where(and(
           eq(wheels.id, parseInt(wheelId)),
-          eq(wheels.userId, userId)
+          eq(wheels.userId, parseInt(userId.toString()))
         ))
         .returning();
 
