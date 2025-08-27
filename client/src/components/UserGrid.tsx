@@ -16,7 +16,7 @@ interface Dot {
   summary: string;
   anchor: string;
   pulse: string;
-  wheelId?: string | null;
+  wheelId?: string;
   timestamp: Date;
   sourceType: 'voice' | 'text';
   captureMode: 'natural' | 'ai';
@@ -723,19 +723,20 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                   wheelX = chakraX + Math.cos(angle) * orbitRadius;
                   wheelY = chakraY + Math.sin(angle) * orbitRadius;
                 } else {
-                // Chakra not found, treat as standalone
-                const standaloneWheels = displayWheels.filter((w: any) => !w.chakraId || w.chakraId === 'standalone');
-                const standaloneIndex = standaloneWheels.findIndex((w: any) => w.id === wheel.id);
-                
-                if (elementPositions[`wheel-${wheel.id}`]) {
-                  wheelX = elementPositions[`wheel-${wheel.id}`].x;
-                  wheelY = elementPositions[`wheel-${wheel.id}`].y;
-                } else {
-                  const cols = Math.max(2, Math.ceil(Math.sqrt(standaloneWheels.length)));
-                  const row = Math.floor(standaloneIndex / cols);
-                  const col = standaloneIndex % cols;
-                  wheelX = 600 + (col * 280);
-                  wheelY = 250 + (row * 220);
+                  // Chakra not found, treat as standalone
+                  const standaloneWheels = displayWheels.filter((w: any) => !w.chakraId || w.chakraId === 'standalone');
+                  const standaloneIndex = standaloneWheels.findIndex((w: any) => w.id === wheel.id);
+                  
+                  if (elementPositions[`wheel-${wheel.id}`]) {
+                    wheelX = elementPositions[`wheel-${wheel.id}`].x;
+                    wheelY = elementPositions[`wheel-${wheel.id}`].y;
+                  } else {
+                    const cols = Math.max(2, Math.ceil(Math.sqrt(standaloneWheels.length)));
+                    const row = Math.floor(standaloneIndex / cols);
+                    const col = standaloneIndex % cols;
+                    wheelX = 600 + (col * 280);
+                    wheelY = 250 + (row * 220);
+                  }
                 }
               }
             } else {
