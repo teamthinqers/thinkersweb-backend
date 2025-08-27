@@ -200,21 +200,21 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
       
       if (mappingDialog.sourceType === 'dot' && mappingDialog.targetType === 'wheel') {
         // Dot to Wheel mapping
-        endpoint = `/api/user-content/mapping/dot-to-wheel`;
+        endpoint = `/api/mapping/dot-to-wheel`;
         payload = { 
           dotId: mappingDialog.sourceId,
           wheelId: mappingDialog.targetId 
         };
       } else if (mappingDialog.sourceType === 'dot' && mappingDialog.targetType === 'chakra') {
         // Dot to Chakra direct mapping (long-term vision alignment)
-        endpoint = `/api/user-content/mapping/dot-to-chakra`;
+        endpoint = `/api/mapping/dot-to-chakra`;
         payload = { 
           dotId: mappingDialog.sourceId,
           chakraId: mappingDialog.targetId 
         };
       } else if (mappingDialog.sourceType === 'wheel' && mappingDialog.targetType === 'chakra') {
         // Wheel to Chakra mapping
-        endpoint = `/api/user-content/mapping/wheel-to-chakra`;
+        endpoint = `/api/mapping/wheel-to-chakra`;
         payload = { 
           wheelId: mappingDialog.sourceId,
           chakraId: mappingDialog.targetId 
@@ -278,14 +278,14 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
       
       if (delinkDialog.sourceType === 'dot') {
         // Remove dot from wheel
-        endpoint = `/api/user-content/mapping/dot-to-wheel`;
+        endpoint = `/api/mapping/dot-to-wheel`;
         payload = { 
           dotId: delinkDialog.sourceId,
           wheelId: null // Remove mapping
         };
       } else if (delinkDialog.sourceType === 'wheel') {
         // Remove wheel from chakra
-        endpoint = `/api/user-content/mapping/wheel-to-chakra`;
+        endpoint = `/api/mapping/wheel-to-chakra`;
         payload = { 
           wheelId: delinkDialog.sourceId,
           chakraId: null // Remove mapping
@@ -928,7 +928,7 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                   {/* Chakra label */}
                   <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 text-center">
                     <div className="px-3 py-1 rounded-lg bg-gradient-to-r from-amber-100 to-orange-100 border-2 border-amber-300 text-amber-800 font-bold text-sm whitespace-nowrap shadow-lg">
-                      {chakra.heading || chakra.name}
+                      {chakra.name}
                     </div>
                   </div>
                   
@@ -959,7 +959,7 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                   >
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
-                        <h4 className="font-bold text-amber-800 text-sm line-clamp-1">{chakra.heading || chakra.name}</h4>
+                        <h4 className="font-bold text-amber-800 text-sm line-clamp-1">{chakra.name}</h4>
                         <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200 text-xs">
                           Chakra
                         </Badge>

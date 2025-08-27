@@ -25,11 +25,7 @@ router.get('/stats', async (req, res) => {
 // Perform semantic search
 router.post('/semantic-search', async (req, res) => {
   try {
-    const { query, userId, limit = 10, threshold = 0.7 } = req.body;
-    
-    if (!userId) {
-      return res.status(400).json({ error: 'userId is required' });
-    }
+    const { query, userId = 1, limit = 10, threshold = 0.7 } = req.body;
     
     if (!query) {
       return res.status(400).json({ error: 'Query is required' });
@@ -84,11 +80,7 @@ router.post('/semantic-search', async (req, res) => {
 // Analyze thinking patterns
 router.post('/analyze-patterns', async (req, res) => {
   try {
-    const { userId } = req.body;
-    
-    if (!userId) {
-      return res.status(400).json({ error: 'userId is required' });
-    }
+    const { userId = 1 } = req.body;
     
     // Generate sample pattern analysis
     const patterns = [
@@ -134,11 +126,7 @@ router.post('/analyze-patterns', async (req, res) => {
 // Detect cognitive gaps
 router.post('/detect-gaps', async (req, res) => {
   try {
-    const { userId } = req.body;
-    
-    if (!userId) {
-      return res.status(400).json({ error: 'userId is required' });
-    }
+    const { userId = 1 } = req.body;
     
     // Generate sample gap detection results
     const gaps = [
@@ -194,11 +182,7 @@ router.post('/detect-gaps', async (req, res) => {
 // Trigger full reindexing
 router.post('/full-reindex', async (req, res) => {
   try {
-    const { userId } = req.body;
-    
-    if (!userId) {
-      return res.status(400).json({ error: 'userId is required' });
-    }
+    const { userId = 1 } = req.body;
     
     // Simulate reindexing process
     await new Promise(resolve => setTimeout(resolve, 2000));
@@ -219,11 +203,7 @@ router.post('/full-reindex', async (req, res) => {
 // Generate cognitive sparks based on similarity
 router.post('/generate-sparks', async (req, res) => {
   try {
-    const { userId, contentId, contentType } = req.body;
-    
-    if (!userId) {
-      return res.status(400).json({ error: 'userId is required' });
-    }
+    const { userId = 1, contentId, contentType } = req.body;
     
     // Generate sample cognitive sparks
     const sparks = [

@@ -46,27 +46,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
         if (response.ok) {
           const data = await response.json();
-          if (data.authenticated && data.user) {
+          if (data.user) {
             console.log("✅ Found existing backend session for user:", data.user.email || data.user.username);
-            // Create a user object compatible with frontend auth using backend user data
+            // Create a user object compatible with frontend auth
             const backendUser = {
-              uid: data.user.uid || data.user.firebaseUid || `backend-${data.user.id}`,
-              id: data.user.id, // Use the backend user ID directly
+              uid: data.user.firebaseUid || `backend-${data.user.id}`,
+              id: data.user.firebaseUid || `backend-${data.user.id}`,
               email: data.user.email,
-              displayName: data.user.displayName || data.user.fullName || data.user.username,
-              photoURL: data.user.photoURL || data.user.avatarUrl,
-              fullName: data.user.fullName,
-              username: data.user.username
+              displayName: data.user.fullName || data.user.username,
+              photoURL: data.user.avatarUrl,
+              fullName: data.user.fullName
             } as any;
-            console.log('✅ Setting user from backend session:', { id: backendUser.id, email: backendUser.email });
             setUser(backendUser);
             setIsLoading(false);
             return true;
           }
-        } else if (response.status === 401) {
-          console.log("No active backend session (401)");
-        } else {
-          console.log("Session check failed:", response.status, response.statusText);
         }
         
         console.log("No existing backend session found");
@@ -81,10 +75,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     {
       console.log('Production mode detected - using Firebase authentication');
       
-      // Always setup Firebase listener, but check backend session first
+      // First try to recover backend session, then setup Firebase
       checkBackendSession().then((sessionRecovered) => {
-        // Setup Firebase authentication for new logins regardless of session recovery
-        // This ensures proper sync between Firebase and backend
+        if (sessionRecovered) {
+          // Backend session found, don't setup Firebase listener yet
+          return;
+        }
+
+        // Setup Firebase authentication for new logins
         firebaseUnsubscribe = auth.onAuthStateChanged(async (firebaseUser) => {
           if (firebaseUser) {
             console.log('Firebase auth state changed:', `User ${firebaseUser.email} signed in`);
@@ -107,32 +105,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
               if (response.ok) {
                 const backendUser = await response.json();
-                console.log('✅ Firebase user synced with backend:', backendUser.user?.email || backendUser.email);
+                console.log('✅ Firebase user synced with backend:', backendUser.email);
                 
-                // Use the backend user ID instead of Firebase UID for consistency
+                // Create unified user object
                 const unifiedUser = {
-                  id: backendUser.user?.id || backendUser.id,
+                  id: firebaseUser.uid,
                   uid: firebaseUser.uid,
-                  email: backendUser.user?.email || backendUser.email,
-                  displayName: firebaseUser.displayName || backendUser.user?.fullName || firebaseUser.email?.split('@')[0],
-                  photoURL: firebaseUser.photoURL || backendUser.user?.avatar,
-                  fullName: backendUser.user?.fullName || firebaseUser.displayName
+                  email: firebaseUser.email,
+                  displayName: firebaseUser.displayName || firebaseUser.email?.split('@')[0],
+                  photoURL: firebaseUser.photoURL,
+                  fullName: firebaseUser.displayName
                 } as any;
                 
-                console.log('✅ Setting unified user:', { id: unifiedUser.id, email: unifiedUser.email });
                 setUser(unifiedUser);
                 setIsLoading(false);
-
-                // Verify session is active after sync
-                setTimeout(async () => {
-                  try {
-                    const sessionCheck = await fetch('/api/auth/session-check', { credentials: 'include' });
-                    const sessionData = await sessionCheck.json();
-                    console.log('Session verification after Firebase sync:', sessionData);
-                  } catch (err) {
-                    console.log('Session verification failed:', err);
-                  }
-                }, 1000);
               } else {
                 console.error('Failed to sync Firebase user with backend');
                 setUser(null);

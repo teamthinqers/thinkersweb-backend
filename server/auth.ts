@@ -162,13 +162,11 @@ export function setupAuth(app: Express) {
     }),
     cookie: {
       secure: false, // Always false in development to ensure cookies work
-      // Set to 30 days by default for persistent sessions
-      maxAge: 30 * 24 * 60 * 60 * 1000, 
-      httpOnly: false, // CRITICAL FIX: Allow JavaScript access for debugging
+      // Set to 365 days by default for persistent sessions
+      maxAge: 365 * 24 * 60 * 60 * 1000, 
+      httpOnly: true, // Prevent JavaScript access to the cookie
       sameSite: 'lax', // Allow cross-site navigation while protecting against CSRF
       path: '/',
-      // Add domain settings for proper cookie scope
-      domain: undefined, // Let browser set the domain automatically
     },
     // Reset cookie expiration on each response to maintain the session
     // This ensures that as long as the user is active, they stay logged in
@@ -288,25 +286,9 @@ export function setupAuth(app: Express) {
     });
 
     if (req.isAuthenticated() && req.user) {
-      // Return user data in the format expected by frontend
-      const userData = {
-        id: req.user.id,
-        uid: req.user.firebaseUid || `backend-${req.user.id}`,
-        email: req.user.email,
-        username: req.user.username,
-        fullName: req.user.fullName,
-        displayName: req.user.fullName || req.user.username,
-        bio: req.user.bio,
-        avatarUrl: req.user.avatarUrl,
-        photoURL: req.user.avatarUrl,
-        firebaseUid: req.user.firebaseUid,
-        createdAt: req.user.createdAt,
-        updatedAt: req.user.updatedAt
-      };
-
       res.status(200).json({
         authenticated: true,
-        user: userData
+        user: req.user
       });
     } else {
       res.status(401).json({
@@ -381,17 +363,10 @@ export function setupAuth(app: Express) {
       }
       
       // Remove password from response and ensure compatible types
-      const { hashedPassword: _, password: __, ...dbUser } = user;
-      const secureUser: Express.User = {
-        id: dbUser.id,
-        username: dbUser.username || '',
-        email: dbUser.email,
-        firebaseUid: dbUser.firebaseUid,
-        fullName: dbUser.fullName || dbUser.username || 'User',
-        bio: dbUser.bio,
-        avatarUrl: dbUser.avatar,
-        createdAt: dbUser.createdAt,
-        updatedAt: dbUser.updatedAt
+      const { hashedPassword: _, ...dbUser } = user;
+      const secureUser = {
+        ...dbUser,
+        username: dbUser.username || ''
       };
       
       // Log user in with promisified login to handle errors properly
@@ -596,21 +571,8 @@ export function setupAuth(app: Express) {
             sessionId: req.sessionID
           });
           
-          // CRITICAL: Set explicit session cookie header
-          res.cookie('connect.sid', req.sessionID, {
-            maxAge: 30 * 24 * 60 * 60 * 1000,
-            httpOnly: false,
-            secure: false,
-            sameSite: 'lax',
-            path: '/'
-          });
-
-          // Return consistent response structure for frontend
-          res.status(isNewUser ? 201 : 200).json({
-            user: secureUser,
-            sessionId: req.sessionID, // Include session ID for debugging
-            message: isNewUser ? "User created and logged in" : "User logged in successfully"
-          });
+          // Return response - session should be auto-saved
+          res.status(isNewUser ? 201 : 200).json(secureUser);
         });
       });
     } catch (error) {
@@ -1037,28 +999,13 @@ export function setupAuth(app: Express) {
 }
 
 export function isAuthenticated(req: Request, res: Response, next: NextFunction) {
-  console.log('🔍 Authentication check:', {
-    path: req.path,
-    method: req.method,
-    authenticated: req.isAuthenticated(),
-    userId: req.user?.id,
-    sessionUserId: req.session?.userId,
-    sessionId: req.sessionID
-  });
-  
   // Check if user is authenticated via session or Firebase
   if (req.isAuthenticated()) {
-    console.log('✅ Authenticated via req.isAuthenticated()');
     return next();
   }
   
   // Fallback to session userId (matches the pattern used by working endpoints)
   if (req.session?.userId) {
-    console.log('✅ Authenticated via session.userId');
-    // Set req.user for consistency if not already set
-    if (!req.user) {
-      req.user = { id: req.session.userId } as Express.User;
-    }
     return next();
   }
   

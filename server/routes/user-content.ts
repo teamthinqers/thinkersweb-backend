@@ -20,21 +20,29 @@ const insertWheelSchema = z.object({
 
 const router = express.Router();
 
-// Simple authentication check - just verify user is signed in
-const authenticateUser = async (req: any, res: any, next: any) => {
+// PROPER AUTHENTICATION CHECK: Only allow authenticated users
+const checkDotSparkActivation = async (req: any, res: any, next: any) => {
   try {
-    // Check multiple auth sources - req.user (Passport/Firebase) or req.session.userId (session)
-    let userId = req.user?.id || req.session?.userId;
+    // Check multiple auth sources - req.user (Firebase) or req.session.userId (session)
+    const userId = req.user?.id || req.session?.userId;
     
     if (!userId) {
       console.log('❌ Authentication failed - no user ID found');
       return res.status(401).json({ 
         error: 'Authentication required',
-        message: 'Please sign in to continue'
+        message: 'Please sign in to access DotSpark features'
       });
     }
     
-    console.log(`✅ Authenticated user ${userId}`);
+    // Ensure req.user is set for consistency
+    if (!req.user) {
+      req.user = { id: userId };
+    }
+    
+    // Enable DotSpark activation for authenticated users
+    req.user.dotSparkActivated = true;
+    
+    console.log(`✅ Authenticated user ${userId} accessing DotSpark`);
     next();
   } catch (error) {
     console.error('Error in authentication check:', error);
@@ -43,23 +51,9 @@ const authenticateUser = async (req: any, res: any, next: any) => {
 };
 
 // Create a new dot and store in entries table (consistent with existing data)
-router.post('/dots', async (req, res) => {
-  // Enhanced authentication - check all sources
-  let userId = req.user?.id || req.session?.userId;
-  if (!userId && req.headers['x-user-id']) {
-    userId = parseInt(req.headers['x-user-id'] as string);
-  }
-  
-  if (!userId) {
-    console.log('❌ Dots POST - Authentication failed');
-    return res.status(401).json({ 
-      error: 'Authentication required',
-      message: 'Please sign in to create dots'
-    });
-  }
-  
-  console.log(`✅ Dots POST - User ${userId} authenticated`);
+router.post('/dots', checkDotSparkActivation, async (req, res) => {
   try {
+    const userId = req.user!.id;
     
     // Check if user wants raw mode (no AI processing)
     const rawMode = req.body.rawMode === true || req.body.captureMode === 'raw';
@@ -122,29 +116,6 @@ router.post('/dots', async (req, res) => {
       wheelId: dotData.wheelId,
       voiceData: dotData.voiceData ? JSON.stringify(dotData.voiceData) : null
     }).returning();
-
-    // 🧠 COMPREHENSIVE USER CONTEXT TRACKING FOR MANUAL INPUT
-    try {
-      const { UserContextManager } = await import('../user-context-manager');
-      await UserContextManager.trackDotCreation(
-        userId,
-        newDot.id,
-        {
-          oneWordSummary: dotData.oneWordSummary,
-          summary: dotData.summary,
-          anchor: dotData.anchor,
-          pulse: dotData.pulse,
-          sourceType: dotData.sourceType,
-          captureMode: dotData.captureMode === 'raw' ? 'natural' : dotData.captureMode,
-          wheelId: dotData.wheelId,
-          voiceData: dotData.voiceData
-        },
-        req.sessionID
-      );
-      console.log('✅ User context tracked for manual dot creation');
-    } catch (contextError) {
-      console.warn('⚠️ Context tracking failed:', contextError);
-    }
     
     // Store in Pinecone for intelligence
     try {
@@ -204,23 +175,9 @@ router.post('/dots', async (req, res) => {
 });
 
 // Create a new wheel with Pinecone storage
-router.post('/wheels', async (req, res) => {
-  // Enhanced authentication - check all sources
-  let userId = req.user?.id || req.session?.userId;
-  if (!userId && req.headers['x-user-id']) {
-    userId = parseInt(req.headers['x-user-id'] as string);
-  }
-  
-  if (!userId) {
-    console.log('❌ Wheels POST - Authentication failed');
-    return res.status(401).json({ 
-      error: 'Authentication required',
-      message: 'Please sign in to create wheels'
-    });
-  }
-  
-  console.log(`✅ Wheels POST - User ${userId} authenticated`);
+router.post('/wheels', checkDotSparkActivation, async (req, res) => {
   try {
+    const userId = req.user!.id;
     
     // Prepare wheel data with proper defaults for database schema
     const wheelCreateData = {
@@ -288,128 +245,77 @@ router.post('/wheels', async (req, res) => {
   }
 });
 
-// Get all wheels for the authenticated user - MISSING ENDPOINT
-router.get('/wheels', authenticateUser, async (req, res) => {
-  const userId = req.user?.id || req.session?.userId;
-  const { filterType, filterCount, preview } = req.query;
-
-  // Support preview mode for non-authenticated access
-  if (preview === 'true') {
-    try {
-      const previewWheels = [
-        { id: 'preview_wheel_1', heading: 'Fitness Goals', goals: 'Run 5K daily, build strength', timeline: '6 months', category: 'Health', color: '#F59E0B', position: { x: 200, y: 150 }, radius: 95, timestamp: new Date(), createdAt: new Date(), updatedAt: new Date() },
-        { id: 'preview_wheel_2', heading: 'Career Growth', goals: 'Learn new skills, get promotion', timeline: '1 year', category: 'Professional', color: '#F59E0B', position: { x: 400, y: 200 }, radius: 95, timestamp: new Date(), createdAt: new Date(), updatedAt: new Date() }
-      ];
-      return res.json(previewWheels);
-    } catch (error) {
-      console.error('❌ Error fetching preview wheels:', error);
-      return res.status(500).json({ error: 'Failed to fetch preview wheels' });
-    }
-  }
-  
-  console.log(`🔍 Fetching wheels for user ${userId}`);
-  
+// Get all dots for the authenticated user from dots table
+router.get('/dots', checkDotSparkActivation, async (req, res) => {
   try {
-    // Fetch from wheels table
-    const userWheels = await db.query.wheels.findMany({
-      where: eq(wheels.userId, userId),
-      orderBy: desc(wheels.createdAt)
-    });
+    const userId = req.user!.id;
+    const { filterType, filterCount } = req.query;
     
-    // Transform wheels to frontend format
-    const formattedWheels = userWheels.map(wheel => ({
-      id: `wheel_${wheel.id}`,
-      heading: wheel.heading,
-      goals: wheel.goals,
-      timeline: wheel.timeline,
-      category: wheel.category,
-      color: wheel.color,
-      chakraId: wheel.chakraId,
-      position: { x: wheel.positionX, y: wheel.positionY },
-      radius: wheel.radius,
-      timestamp: wheel.createdAt,
-      createdAt: wheel.createdAt,
-      updatedAt: wheel.updatedAt
-    }));
+    console.log(`🔍 Fetching dots for user ID: ${userId}`);
+    console.log(`🎯 Filter params:`, { filterType, filterCount });
     
-    console.log(`✅ Returning ${formattedWheels.length} wheels from wheels table`);
-    res.json(formattedWheels);
-    
-  } catch (error) {
-    console.error('❌ Error fetching user wheels:', error);
-    res.status(500).json({ 
-      error: 'Failed to fetch wheels',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    });
-  }
-});
-
-// Get all dots for the authenticated user - CLEAN VERSION
-router.get('/dots', authenticateUser, async (req, res) => {
-  const userId = req.user?.id || req.session?.userId;
-  const { filterType, filterCount, preview } = req.query;
-
-  // Support preview mode for non-authenticated access
-  if (preview === 'true') {
-    try {
-      // Return preview dots from preview_dots table or generate sample data
-      const previewDots = [
-        { id: 'preview_1', oneWordSummary: 'Innovation', summary: 'Ideas to transform education', anchor: 'Focus on practical applications', pulse: 'energized', sourceType: 'text', captureMode: 'natural', wheelId: '', timestamp: new Date(), createdAt: new Date(), updatedAt: new Date() },
-        { id: 'preview_2', oneWordSummary: 'Growth', summary: 'Personal development insights', anchor: 'Consistency beats intensity', pulse: 'motivated', sourceType: 'text', captureMode: 'natural', wheelId: '', timestamp: new Date(), createdAt: new Date(), updatedAt: new Date() },
-        { id: 'preview_3', oneWordSummary: 'Connection', summary: 'Building meaningful relationships', anchor: 'Listen more than you speak', pulse: 'grateful', sourceType: 'text', captureMode: 'natural', wheelId: '', timestamp: new Date(), createdAt: new Date(), updatedAt: new Date() }
-      ];
-      return res.json(previewDots);
-    } catch (error) {
-      console.error('❌ Error fetching preview dots:', error);
-      return res.status(500).json({ error: 'Failed to fetch preview dots' });
-    }
-  }
-  
-  console.log(`🔍 Fetching dots for user ${userId}`);
-  console.log(`🎯 Filter params:`, { filterType, filterCount });
-  
-  try {
-    // Build query options for dots table
+    // Build query based on filter parameters
     let queryOptions: any = {
       where: eq(dots.userId, userId),
-      orderBy: desc(dots.createdAt)
+      orderBy: desc(dots.createdAt),
+      with: {
+        wheel: true // Include wheel relationship data
+      }
     };
-
-    // Apply filtering if specified
+    
+    // Apply filtering based on filterType
     if (filterType && filterCount) {
       const count = parseInt(filterCount as string) || 4;
       
       if (filterType === 'dot') {
+        // For dot filter: limit to recent dots
         queryOptions.limit = count;
+        console.log(`📍 Applying DOT filter: showing ${count} recent dots`);
         
       } else if (filterType === 'wheel' || filterType === 'chakra') {
-        // Get filtered wheel IDs based on type
+        // For wheel/chakra filters: only show dots from filtered wheels
+        console.log(`${filterType === 'wheel' ? '🎡' : '🕉️'} Applying ${filterType.toUpperCase()} filter: showing dots from filtered wheels only`);
+        
+        // First get the filtered wheel IDs based on filter type
         let filteredWheelIds: number[] = [];
         
         if (filterType === 'wheel') {
+          // Get recent N wheels
           const recentWheels = await db.query.wheels.findMany({
-            where: and(eq(wheels.userId, userId), sql`${wheels.chakraId} IS NOT NULL`),
+            where: and(
+              eq(wheels.userId, userId),
+              sql`${wheels.chakraId} IS NOT NULL` // Only wheels
+            ),
             orderBy: desc(wheels.createdAt),
             limit: count
           });
           filteredWheelIds = recentWheels.map(w => w.id);
-        } else {
-          // chakra filter - get chakras from dedicated table
-          const recentChakras = await db.query.chakras.findMany({
-            where: eq(chakras.userId, userId),
-            orderBy: desc(chakras.createdAt),
+          
+        } else if (filterType === 'chakra') {
+          // Get recent N chakras, then get ALL their associated wheels
+          const recentChakras = await db.query.wheels.findMany({
+            where: and(
+              eq(wheels.userId, userId),
+              sql`${wheels.chakraId} IS NULL` // Only chakras
+            ),
+            orderBy: desc(wheels.createdAt),
             limit: count
           });
-          const chakraIds = recentChakras.map(c => c.id);
           
-          if (chakraIds.length > 0) {
+          if (recentChakras.length > 0) {
+            const chakraIds = recentChakras.map(c => c.id);
             const associatedWheels = await db.query.wheels.findMany({
-              where: and(eq(wheels.userId, userId), inArray(wheels.chakraId, chakraIds)),
+              where: and(
+                eq(wheels.userId, userId),
+                inArray(wheels.chakraId, chakraIds)
+              ),
               orderBy: desc(wheels.createdAt)
             });
             filteredWheelIds = associatedWheels.map(w => w.id);
           }
         }
+        
+        console.log(`${filterType === 'wheel' ? '🎡' : '🕉️'} Found ${filteredWheelIds.length} filtered wheel IDs for dots:`, filteredWheelIds);
         
         if (filteredWheelIds.length > 0) {
           queryOptions.where = and(
@@ -417,24 +323,94 @@ router.get('/dots', authenticateUser, async (req, res) => {
             inArray(dots.wheelId, filteredWheelIds)
           );
         } else {
+          // No filtered wheels found, return no dots
           queryOptions.where = sql`1 = 0`;
         }
       }
     }
-
-    // Fetch from dots table first (NEW SYSTEM)
+    
+    // First try to fetch from proper dots table
     let userDots = await db.query.dots.findMany(queryOptions);
     
-    // If no dots in new system, fallback to entries table for existing users
+    // If no dots found in dots table, fallback to entries table for backward compatibility
     if (userDots.length === 0) {
       console.log(`📊 No dots in dots table, checking entries table for user ${userId}`);
       
-      const userEntries = await db.query.entries.findMany({
+      // Build entries query with same filtering logic
+      let entriesQueryOptions: any = {
         where: eq(entries.userId, userId),
         orderBy: desc(entries.createdAt)
-      });
+      };
       
-      const formattedFromEntries = userEntries.map(entry => {
+      // Apply same filtering logic to entries table
+      if (filterType && filterCount) {
+        const count = parseInt(filterCount as string) || 4;
+        
+        if (filterType === 'dot') {
+          // For dot filter: limit to recent entries
+          entriesQueryOptions.limit = count;
+          console.log(`📍 Applying DOT filter to entries: showing ${count} recent entries`);
+          
+        } else if (filterType === 'wheel' || filterType === 'chakra') {
+          // For wheel/chakra filters on entries: show entries with wheelId matching filtered wheels
+          console.log(`${filterType === 'wheel' ? '🎡' : '🕉️'} Applying ${filterType.toUpperCase()} filter to entries: showing entries from filtered wheels`);
+          
+          // Get the same filtered wheel IDs as above
+          let filteredWheelIds: number[] = [];
+          
+          if (filterType === 'wheel') {
+            // Get recent N wheels
+            const recentWheels = await db.query.wheels.findMany({
+              where: and(
+                eq(wheels.userId, userId),
+                sql`${wheels.chakraId} IS NOT NULL` // Only wheels
+              ),
+              orderBy: desc(wheels.createdAt),
+              limit: count
+            });
+            filteredWheelIds = recentWheels.map(w => w.id);
+            
+          } else if (filterType === 'chakra') {
+            // Get recent N chakras, then get ALL their associated wheels
+            const recentChakras = await db.query.wheels.findMany({
+              where: and(
+                eq(wheels.userId, userId),
+                sql`${wheels.chakraId} IS NULL` // Only chakras
+              ),
+              orderBy: desc(wheels.createdAt),
+              limit: count
+            });
+            
+            if (recentChakras.length > 0) {
+              const chakraIds = recentChakras.map(c => c.id);
+              const associatedWheels = await db.query.wheels.findMany({
+                where: and(
+                  eq(wheels.userId, userId),
+                  inArray(wheels.chakraId, chakraIds)
+                ),
+                orderBy: desc(wheels.createdAt)
+              });
+              filteredWheelIds = associatedWheels.map(w => w.id);
+            }
+          }
+          
+          console.log(`${filterType === 'wheel' ? '🎡' : '🕉️'} Found ${filteredWheelIds.length} filtered wheel IDs for entries:`, filteredWheelIds);
+          
+          // Note: entries table stores wheelId in JSON content, so we'll need to filter after parsing
+          // For now, we'll get all entries and filter them during the mapping phase
+          if (filteredWheelIds.length === 0) {
+            entriesQueryOptions.where = sql`1 = 0`; // No wheels found, return no results
+          }
+          // Keep the base query if we have wheel IDs - we'll filter during JSON parsing
+        }
+      }
+      
+      const userEntries = await db.query.entries.findMany(entriesQueryOptions);
+      
+      console.log(`📊 Found ${userEntries.length} entries for user ${userId}`);
+      
+      // Parse JSON content and format as dots, then filter by wheelId if needed
+      let formattedDots = userEntries.map(entry => {
         try {
           const content = typeof entry.content === 'string' ? JSON.parse(entry.content) : entry.content;
           return {
@@ -448,9 +424,11 @@ router.get('/dots', authenticateUser, async (req, res) => {
             wheelId: content.wheelId || '',
             timestamp: entry.createdAt,
             createdAt: entry.createdAt,
-            updatedAt: entry.updatedAt
+            updatedAt: entry.updatedAt,
+            voiceData: content.voiceData || null
           };
         } catch (parseError) {
+          console.warn(`Failed to parse entry ${entry.id}:`, parseError);
           return {
             id: `entry_${entry.id}`,
             oneWordSummary: entry.title || 'Untitled',
@@ -462,28 +440,83 @@ router.get('/dots', authenticateUser, async (req, res) => {
             wheelId: '',
             timestamp: entry.createdAt,
             createdAt: entry.createdAt,
-            updatedAt: entry.updatedAt
+            updatedAt: entry.updatedAt,
+            voiceData: null
           };
         }
       });
       
-      console.log(`✅ Returning ${formattedFromEntries.length} formatted dots from entries table (fallback)`);
-      return res.json(formattedFromEntries);
+      // Apply wheel/chakra filtering to formatted dots based on wheelId in JSON content
+      if (filterType && filterCount && (filterType === 'wheel' || filterType === 'chakra')) {
+        // Get the same filtered wheel IDs as before
+        let filteredWheelIds: number[] = [];
+        const count = parseInt(filterCount as string) || 4;
+        
+        if (filterType === 'wheel') {
+          const recentWheels = await db.query.wheels.findMany({
+            where: and(eq(wheels.userId, userId), sql`${wheels.chakraId} IS NOT NULL`),
+            orderBy: desc(wheels.createdAt),
+            limit: count
+          });
+          filteredWheelIds = recentWheels.map(w => w.id);
+          
+        } else if (filterType === 'chakra') {
+          const recentChakras = await db.query.wheels.findMany({
+            where: and(eq(wheels.userId, userId), sql`${wheels.chakraId} IS NULL`),
+            orderBy: desc(wheels.createdAt),
+            limit: count
+          });
+          
+          if (recentChakras.length > 0) {
+            const chakraIds = recentChakras.map(c => c.id);
+            const associatedWheels = await db.query.wheels.findMany({
+              where: and(eq(wheels.userId, userId), inArray(wheels.chakraId, chakraIds)),
+              orderBy: desc(wheels.createdAt)
+            });
+            filteredWheelIds = associatedWheels.map(w => w.id);
+          }
+        }
+        
+        console.log(`${filterType === 'wheel' ? '🎡' : '🕉️'} Filtering entries by wheel IDs:`, filteredWheelIds);
+        
+        if (filteredWheelIds.length > 0) {
+          // Filter dots by wheelId (convert string wheelId to number for comparison)
+          formattedDots = formattedDots.filter(dot => {
+            const wheelId = dot.wheelId ? parseInt(dot.wheelId) : null;
+            return wheelId && filteredWheelIds.includes(wheelId);
+          });
+          console.log(`${filterType === 'wheel' ? '🎡' : '🕉️'} After filtering by wheelId: ${formattedDots.length} dots`);
+        } else {
+          // No wheels found, return empty
+          formattedDots = [];
+          console.log(`${filterType === 'wheel' ? '🎡' : '🕉️'} No filtered wheels found, returning 0 dots`);
+        }
+      }
+      
+      console.log(`✅ Returning ${formattedDots.length} formatted dots from entries`);
+      return res.json(formattedDots);
     }
-
-    // NEW SYSTEM: Transform dots table data to frontend format
+    
+    // Transform dots table data to frontend format
     const formattedDots = userDots.map(dot => ({
       id: `dot_${dot.id}`,
       oneWordSummary: dot.oneWordSummary,
       summary: dot.summary,
       anchor: dot.anchor,
       pulse: dot.pulse,
-      sourceType: dot.sourceType || 'text',
-      captureMode: dot.captureMode || 'natural',
-      wheelId: dot.wheelId ? dot.wheelId.toString() : '',
+      sourceType: dot.sourceType,
+      captureMode: dot.captureMode,
+      wheelId: dot.wheelId?.toString() || null,
       timestamp: dot.createdAt,
       createdAt: dot.createdAt,
-      updatedAt: dot.updatedAt
+      updatedAt: dot.updatedAt,
+      voiceData: dot.voiceData ? JSON.parse(dot.voiceData) : null,
+      // Include wheel data if available
+      wheel: dot.wheel ? {
+        id: dot.wheel.id.toString(),
+        heading: dot.wheel.heading,
+        goals: dot.wheel.goals
+      } : null
     }));
     
     console.log(`✅ Returning ${formattedDots.length} formatted dots from dots table`);
@@ -498,33 +531,139 @@ router.get('/dots', authenticateUser, async (req, res) => {
   }
 });
 
-// Create a new chakra with alignment
-router.post('/chakras', authenticateUser, async (req, res) => {
-  const userId = req.user?.id || req.session?.userId;
-  
-  console.log(`✅ Chakras POST - User ${userId} authenticated`);
+// Get user's wheels from the actual wheels table
+router.get('/wheels', checkDotSparkActivation, async (req, res) => {
   try {
+    const userId = req.user!.id;
+    const { filterType, filterCount } = req.query;
     
-    // Prepare chakra data for dedicated chakras table
+    console.log(`🔍 Fetching wheels for user ID: ${userId}`);
+    console.log(`🎯 Filter params:`, { filterType, filterCount });
+    
+    // Build query based on filter parameters
+    let queryOptions: any = {
+      where: eq(wheels.userId, userId),
+      orderBy: desc(wheels.createdAt),
+      with: {
+        chakra: true // Include chakra relationship data
+      }
+    };
+    
+    // Apply filtering based on filterType
+    if (filterType && filterCount) {
+      const count = parseInt(filterCount as string) || 4;
+      
+      if (filterType === 'dot') {
+        // For dot filter: hide all wheels and chakras
+        console.log(`📍 DOT filter applied: hiding all wheels and chakras`);
+        queryOptions.where = sql`1 = 0`; // Return no results
+        
+      } else if (filterType === 'wheel') {
+        // For wheel filter: show recent N wheels only (not chakras)
+        console.log(`🎡 WHEEL filter applied: showing ${count} recent wheels`);
+        queryOptions.where = and(
+          eq(wheels.userId, userId),
+          sql`${wheels.chakraId} IS NOT NULL` // Only wheels (have chakraId)
+        );
+        queryOptions.limit = count;
+        
+      } else if (filterType === 'chakra') {
+        // For chakra filter: show recent N chakras only (we'll add associated wheels separately)
+        console.log(`🕉️ CHAKRA filter applied: showing ${count} recent chakras`);
+        queryOptions.where = and(
+          eq(wheels.userId, userId),
+          sql`${wheels.chakraId} IS NULL` // Only chakras (no chakraId)
+        );
+        queryOptions.limit = count;
+      }
+    }
+    
+    // Query actual wheels table with chakra relationships
+    let userWheels = await db.query.wheels.findMany(queryOptions);
+    
+    // For chakra filter, add all wheels associated with the selected chakras
+    if (filterType === 'chakra' && filterCount && userWheels.length > 0) {
+      const chakraIds = userWheels.map(chakra => chakra.id);
+      console.log(`🕉️ Fetching ALL wheels associated with ${chakraIds.length} recent chakras:`, chakraIds);
+      
+      // Get ALL wheels associated with these chakras (no limit)
+      const associatedWheels = await db.query.wheels.findMany({
+        where: and(
+          eq(wheels.userId, userId),
+          inArray(wheels.chakraId, chakraIds)
+        ),
+        orderBy: desc(wheels.createdAt),
+        with: {
+          chakra: true
+        }
+      });
+      
+      console.log(`🕉️ Found ${associatedWheels.length} wheels associated with selected chakras`);
+      userWheels = [...userWheels, ...associatedWheels];
+    }
+    
+    console.log(`📊 Found ${userWheels.length} wheels for user ${userId}`);
+    
+    // Transform to frontend format with chakra relationship data
+    const formattedWheels = userWheels.map(wheel => ({
+      id: wheel.id.toString(),
+      name: wheel.heading,
+      heading: wheel.heading,
+      goals: wheel.goals,
+      timeline: wheel.timeline,
+      category: wheel.category || 'User Created',
+      color: wheel.color,
+      position: { x: wheel.positionX || 400, y: wheel.positionY || 300 },
+      radius: wheel.radius || 95,
+      chakraId: wheel.chakraId ? wheel.chakraId.toString() : undefined,
+      sourceType: wheel.sourceType || 'text',
+      createdAt: wheel.createdAt,
+      updatedAt: wheel.updatedAt,
+      // Include chakra data if available
+      chakra: wheel.chakra ? {
+        id: wheel.chakra.id.toString(),
+        heading: wheel.chakra.heading,
+        purpose: wheel.chakra.purpose
+      } : null
+    }));
+    
+    console.log(`✅ Returning ${formattedWheels.length} formatted wheels`);
+    res.json(formattedWheels);
+    
+  } catch (error) {
+    console.error('❌ Error fetching user wheels:', error);
+    res.status(500).json({ 
+      error: 'Failed to fetch wheels',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
+// Create a new chakra 
+router.post('/chakras', checkDotSparkActivation, async (req, res) => {
+  try {
+    const userId = req.user!.id;
+    
+    // Prepare chakra data with proper defaults for database schema
     const chakraCreateData = {
       userId: userId,
-      heading: req.body.heading || '',
+      heading: req.body.heading || req.body.name || '',
       purpose: req.body.purpose || '',
       timeline: req.body.timeline || '',
+      color: req.body.color || '#B45309', // Default dark amber color
+      positionX: req.body.positionX || Math.floor(Math.random() * 400) + 600,
+      positionY: req.body.positionY || Math.floor(Math.random() * 300) + 400,
+      radius: req.body.radius || 420,
       sourceType: req.body.sourceType || 'text',
-      color: req.body.color || '#B45309', // Dark amber for chakras
-      positionX: req.body.positionX || Math.floor(Math.random() * 400) + 100,
-      positionY: req.body.positionY || Math.floor(Math.random() * 300) + 100,
-      radius: req.body.radius || 120,
       voiceData: req.body.voiceData || null
     };
     
     console.log('Creating chakra with data:', chakraCreateData);
     
-    // Create chakra in dedicated chakras table
+    // Create chakra in database using actual chakras table
     const [newChakra] = await db.insert(chakras).values(chakraCreateData).returning();
     
-    // Store in Pinecone for intelligence
+    // Store in vector database for intelligence
     try {
       const vectorId = `chakra_${userId}_${newChakra.id}_${Date.now()}`;
       const content = `${newChakra.heading} ${newChakra.purpose || ''} ${newChakra.timeline || ''}`;
@@ -538,6 +677,7 @@ router.post('/chakras', authenticateUser, async (req, res) => {
         content: content,
         metadata: JSON.stringify({
           color: newChakra.color,
+          isChakra: true,
           createdAt: newChakra.createdAt
         })
       });
@@ -563,384 +703,212 @@ router.post('/chakras', authenticateUser, async (req, res) => {
   }
 });
 
-// Get all chakras for the authenticated user  
-router.get('/chakras', authenticateUser, async (req, res) => {
-  const userId = req.user?.id || req.session?.userId;
-  
-  console.log(`🔍 Fetching chakras for user ${userId}`);
-  
+// Get user's chakras from the actual chakras table
+router.get('/chakras', checkDotSparkActivation, async (req, res) => {
   try {
-    // Fetch from dedicated chakras table
+    const userId = req.user!.id;
+    console.log(`🔍 Fetching chakras for user ID: ${userId}`);
+    
+    // Import chakras from schema
+    const { chakras } = await import('@shared/schema');
+    
+    // Query actual chakras table
     const userChakras = await db.query.chakras.findMany({
       where: eq(chakras.userId, userId),
       orderBy: desc(chakras.createdAt)
     });
     
-    // Transform chakras to frontend format
+    console.log(`📊 Found ${userChakras.length} chakras for user ${userId}`);
+    
+    // Transform to frontend format
     const formattedChakras = userChakras.map(chakra => ({
-      id: `chakra_${chakra.id}`,
+      id: chakra.id.toString(),
+      name: chakra.heading,
       heading: chakra.heading,
-      purpose: chakra.purpose,
+      purpose: chakra.purpose, // Chakras have purpose, not goals
       timeline: chakra.timeline,
-      sourceType: chakra.sourceType || 'text',
+      category: 'Life Purpose',
       color: chakra.color,
-      position: { x: chakra.positionX, y: chakra.positionY },
-      radius: chakra.radius,
-      timestamp: chakra.createdAt,
+      position: { x: chakra.positionX || 400, y: chakra.positionY || 300 },
+      radius: chakra.radius || 140, // Larger radius for chakras
+      sourceType: chakra.sourceType || 'text',
       createdAt: chakra.createdAt,
       updatedAt: chakra.updatedAt
     }));
     
-    console.log(`✅ Returning ${formattedChakras.length} chakras from chakras table`);
+    console.log(`✅ Returning ${formattedChakras.length} formatted chakras from chakras table`);
     res.json(formattedChakras);
     
   } catch (error) {
-    console.error('❌ Error fetching user chakras:', error);
-    res.status(500).json({ 
-      error: 'Failed to fetch chakras',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    });
+    console.error('Error fetching chakras:', error);
+    res.status(500).json({ error: 'Failed to fetch chakras' });
   }
 });
 
-// Get individual dot by ID - MISSING ENDPOINT  
-router.get('/dots/:id', authenticateUser, async (req, res) => {
-  const userId = req.user?.id || req.session?.userId;
-  const dotId = req.params.id;
-  
-  console.log(`🔍 Fetching individual dot ${dotId} for user ${userId}`);
-  
+// Get user's content statistics
+router.get('/stats', checkDotSparkActivation, async (req, res) => {
   try {
-    // Extract numeric ID from format "dot_123" or just "123"
-    const numericId = parseInt(dotId.replace('dot_', ''));
+    const userId = req.user!.id;
     
-    // Fetch specific dot
-    const dot = await db.query.dots.findFirst({
-      where: and(eq(dots.id, numericId), eq(dots.userId, userId))
+    // Count dots for this user (stored in entries table as JSON)
+    const userEntries = await db.query.entries.findMany({
+      where: eq(entries.userId, userId)
     });
     
-    if (!dot) {
-      return res.status(404).json({ error: 'Dot not found' });
-    }
+    // Count wheels and chakras separately
+    const userWheels = await db.query.wheels.findMany({
+      where: eq(wheels.userId, userId)
+    });
     
-    // Transform to frontend format
-    const formattedDot = {
-      id: `dot_${dot.id}`,
-      oneWordSummary: dot.oneWordSummary,
-      summary: dot.summary,
-      anchor: dot.anchor,
-      pulse: dot.pulse,
-      sourceType: dot.sourceType,
-      captureMode: dot.captureMode,
-      wheelId: dot.wheelId?.toString(),
-      timestamp: dot.createdAt,
-      createdAt: dot.createdAt,
-      updatedAt: dot.updatedAt,
-      voiceData: dot.voiceData
-    };
+    const userChakras = await db.query.chakras.findMany({
+      where: eq(chakras.userId, userId)
+    });
     
-    console.log(`✅ Found dot ${dot.id} for user ${userId}`);
-    res.json(formattedDot);
+    res.json({
+      totalDots: userEntries.length,
+      totalWheels: userWheels.length, // All wheels regardless of chakraId
+      totalChakras: userChakras.length, // Actual chakras from chakras table
+      lastActivity: userEntries.length > 0 ? userEntries[0]?.createdAt : (userWheels.length > 0 ? userWheels[0]?.createdAt : (userChakras.length > 0 ? userChakras[0]?.createdAt : null))
+    });
     
   } catch (error) {
-    console.error('❌ Error fetching individual dot:', error);
-    res.status(500).json({ 
-      error: 'Failed to fetch dot',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    });
+    console.error('Error fetching user stats:', error);
+    res.status(500).json({ error: 'Failed to fetch statistics' });
   }
 });
 
-// Delete a specific dot
-router.delete('/dots/:id', authenticateUser, async (req, res) => {
-  const userId = req.user?.id || req.session?.userId;
-  const dotId = req.params.id;
-  
+// Update dot-to-wheel relationship
+router.patch('/dots/:id/relationship', checkDotSparkActivation, async (req, res) => {
   try {
-    // Handle both dot_123 and 123 formats
-    const id = dotId.startsWith('dot_') ? parseInt(dotId.replace('dot_', '')) : parseInt(dotId);
+    const userId = req.user!.id;
+    const dotId = parseInt(req.params.id);
+    const { wheelId } = req.body; // New wheel ID or null to remove relationship
     
-    if (isNaN(id)) {
-      return res.status(400).json({ error: 'Invalid dot ID' });
+    console.log(`🔗 Updating dot ${dotId} relationship to wheel ${wheelId} for user ${userId}`);
+    
+    // Validate wheelId if provided
+    if (wheelId && wheelId !== null) {
+      const targetWheel = await db.query.wheels.findFirst({
+        where: and(eq(wheels.id, parseInt(wheelId)), eq(wheels.userId, userId))
+      });
+      
+      if (!targetWheel) {
+        return res.status(400).json({ error: 'Invalid wheel ID or access denied' });
+      }
     }
-
-    // Try deleting from dots table first
-    const deletedDots = await db.delete(dots)
-      .where(and(eq(dots.id, id), eq(dots.userId, userId)))
+    
+    // Try updating in dots table first
+    const dotResult = await db.update(dots)
+      .set({ wheelId: wheelId ? parseInt(wheelId) : null })
+      .where(and(eq(dots.id, dotId), eq(dots.userId, userId)))
       .returning();
-
-    if (deletedDots.length > 0) {
-      console.log(`✅ Deleted dot ${id} from dots table for user ${userId}`);
-      return res.json({ success: true, message: 'Dot deleted successfully' });
+    
+    if (dotResult.length === 0) {
+      // Fallback: Try updating in entries table
+      const entryResult = await db.query.entries.findFirst({
+        where: and(eq(entries.id, dotId), eq(entries.userId, userId))
+      });
+      
+      if (entryResult) {
+        try {
+          const content = JSON.parse(entryResult.content || '{}');
+          content.wheelId = wheelId;
+          
+          await db.update(entries)
+            .set({ content: JSON.stringify(content) })
+            .where(and(eq(entries.id, dotId), eq(entries.userId, userId)));
+          
+          console.log(`✅ Updated entry ${dotId} relationship in entries table`);
+        } catch (parseError) {
+          console.error('Failed to parse entry content:', parseError);
+          return res.status(500).json({ error: 'Failed to update relationship' });
+        }
+      } else {
+        return res.status(404).json({ error: 'Dot not found' });
+      }
+    } else {
+      console.log(`✅ Updated dot ${dotId} relationship in dots table`);
     }
-
-    // Fallback: delete from entries table for legacy dots
-    const deletedEntries = await db.delete(entries)
-      .where(and(eq(entries.id, id), eq(entries.userId, userId)))
-      .returning();
-
-    if (deletedEntries.length > 0) {
-      console.log(`✅ Deleted dot ${id} from entries table (legacy) for user ${userId}`);
-      return res.json({ success: true, message: 'Dot deleted successfully' });
-    }
-
-    return res.status(404).json({ error: 'Dot not found or access denied' });
+    
+    res.json({ 
+      success: true, 
+      message: `Dot relationship ${wheelId ? 'updated' : 'removed'} successfully` 
+    });
     
   } catch (error) {
-    console.error('❌ Error deleting dot:', error);
-    res.status(500).json({ 
-      error: 'Failed to delete dot',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    });
+    console.error('Error updating dot relationship:', error);
+    res.status(500).json({ error: 'Failed to update relationship' });
   }
 });
 
-// Delete a specific wheel
-router.delete('/wheels/:id', authenticateUser, async (req, res) => {
-  const userId = req.user?.id || req.session?.userId;
-  const wheelId = req.params.id;
-  
-  console.log(`🗑️ Deleting wheel ${wheelId} for user ${userId}`);
-  
+// Update wheel-to-chakra relationship  
+router.patch('/wheels/:id/relationship', checkDotSparkActivation, async (req, res) => {
   try {
-    // Extract numeric ID from format "wheel_123" or just "123"
-    const numericId = parseInt(wheelId.replace('wheel_', ''));
+    const userId = req.user!.id;
+    const wheelId = parseInt(req.params.id);
+    const { chakraId } = req.body; // New chakra ID or null to remove relationship
     
-    // Delete wheel from database
-    const deletedWheels = await db.delete(wheels)
-      .where(and(eq(wheels.id, numericId), eq(wheels.userId, userId)))
+    console.log(`🔗 Updating wheel ${wheelId} relationship to chakra ${chakraId} for user ${userId}`);
+    
+    // Validate chakraId if provided
+    if (chakraId && chakraId !== null) {
+      const targetChakra = await db.query.chakras.findFirst({
+        where: and(eq(chakras.id, parseInt(chakraId)), eq(chakras.userId, userId))
+      });
+      
+      if (!targetChakra) {
+        return res.status(400).json({ error: 'Invalid chakra ID or access denied' });
+      }
+    }
+    
+    // Update wheel's chakra relationship
+    const updateResult = await db.update(wheels)
+      .set({ chakraId: chakraId ? parseInt(chakraId) : null })
+      .where(and(eq(wheels.id, wheelId), eq(wheels.userId, userId)))
       .returning();
     
-    if (deletedWheels.length === 0) {
+    if (updateResult.length === 0) {
       return res.status(404).json({ error: 'Wheel not found' });
     }
     
-    // Also delete from vector embeddings
-    try {
-      await db.delete(vectorEmbeddings)
-        .where(and(
-          eq(vectorEmbeddings.contentType, 'wheel'),
-          eq(vectorEmbeddings.contentId, numericId),
-          eq(vectorEmbeddings.userId, userId)
-        ));
-    } catch (vectorError) {
-      console.warn('Failed to delete from vector database:', vectorError);
-    }
+    console.log(`✅ Updated wheel ${wheelId} relationship to chakra ${chakraId}`);
     
-    console.log(`✅ Deleted wheel ${numericId} for user ${userId}`);
-    res.json({ success: true, message: 'Wheel deleted successfully' });
-    
-  } catch (error) {
-    console.error('❌ Error deleting wheel:', error);
-    res.status(500).json({ 
-      error: 'Failed to delete wheel',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    });
-  }
-});
-
-// Delete a specific chakra
-router.delete('/chakras/:id', authenticateUser, async (req, res) => {
-  const userId = req.user?.id || req.session?.userId;
-  const chakraId = req.params.id;
-  
-  console.log(`🗑️ Deleting chakra ${chakraId} for user ${userId}`);
-  
-  try {
-    // Extract numeric ID from format "chakra_123" or just "123"
-    const numericId = parseInt(chakraId.replace('chakra_', ''));
-    
-    // Delete chakra from database
-    const deletedChakras = await db.delete(chakras)
-      .where(and(eq(chakras.id, numericId), eq(chakras.userId, userId)))
-      .returning();
-    
-    if (deletedChakras.length === 0) {
-      return res.status(404).json({ error: 'Chakra not found' });
-    }
-    
-    // Also delete from vector embeddings
-    try {
-      await db.delete(vectorEmbeddings)
-        .where(and(
-          eq(vectorEmbeddings.contentType, 'chakra'),
-          eq(vectorEmbeddings.contentId, numericId),
-          eq(vectorEmbeddings.userId, userId)
-        ));
-    } catch (vectorError) {
-      console.warn('Failed to delete from vector database:', vectorError);
-    }
-    
-    console.log(`✅ Deleted chakra ${numericId} for user ${userId}`);
-    res.json({ success: true, message: 'Chakra deleted successfully' });
-    
-  } catch (error) {
-    console.error('❌ Error deleting chakra:', error);
-    res.status(500).json({ 
-      error: 'Failed to delete chakra',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    });
-  }
-});
-
-// MAPPING ENDPOINTS - Required for visual drag interface
-// Map/unmap dot to wheel
-router.put('/mapping/dot-to-wheel', authenticateUser, async (req, res) => {
-  const userId = req.user?.id || req.session?.userId;
-  
-  try {
-    const { dotId, wheelId } = req.body;
-    
-    if (!dotId) {
-      return res.status(400).json({ error: 'dotId is required' });
-    }
-
-    console.log(`🔗 Mapping dot ${dotId} to wheel ${wheelId || 'null (unmap)'} for user ${userId}`);
-
-    // Extract numeric ID from format "dot_123" or just "123"
-    const numericDotId = typeof dotId === 'string' ? parseInt(dotId.replace('dot_', '')) : parseInt(dotId);
-    const numericWheelId = wheelId ? (typeof wheelId === 'string' ? parseInt(wheelId.replace('wheel_', '')) : parseInt(wheelId)) : null;
-
-    // Update dot in dots table
-    const result = await db.update(dots)
-      .set({ 
-        wheelId: numericWheelId,
-        updatedAt: new Date()
-      })
-      .where(and(
-        eq(dots.id, numericDotId),
-        eq(dots.userId, userId)
-      ))
-      .returning();
-
-    if (result.length === 0) {
-      return res.status(404).json({ error: 'Dot not found or unauthorized' });
-    }
-
-    console.log('✅ Dot mapping updated successfully');
-
-    return res.json({ 
+    res.json({ 
       success: true, 
-      message: wheelId ? 'Dot mapped to wheel successfully' : 'Dot unmapped successfully',
-      dot: result[0] 
+      message: `Wheel relationship ${chakraId ? 'updated' : 'removed'} successfully` 
     });
-
+    
   } catch (error) {
-    console.error('❌ Error mapping dot to wheel:', error);
-    return res.status(500).json({ 
-      error: 'Failed to map dot to wheel',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    });
+    console.error('Error updating wheel relationship:', error);
+    res.status(500).json({ error: 'Failed to update relationship' });
   }
 });
 
-// Map/unmap wheel to chakra
-router.put('/mapping/wheel-to-chakra', authenticateUser, async (req, res) => {
-  const userId = req.user?.id || req.session?.userId;
-  
+// Delete user's dot
+router.delete('/dots/:id', checkDotSparkActivation, async (req, res) => {
   try {
-    const { wheelId, chakraId } = req.body;
+    const userId = req.user!.id;
+    const dotId = parseInt(req.params.id);
     
-    if (!wheelId) {
-      return res.status(400).json({ error: 'wheelId is required' });
-    }
-
-    console.log(`🔗 Mapping wheel ${wheelId} to chakra ${chakraId || 'null (unmap)'} for user ${userId}`);
-
-    // Extract numeric ID from format "wheel_123" or just "123"  
-    const numericWheelId = typeof wheelId === 'string' ? parseInt(wheelId.replace('wheel_', '')) : parseInt(wheelId);
-    const numericChakraId = chakraId ? (typeof chakraId === 'string' ? parseInt(chakraId.replace('chakra_', '')) : parseInt(chakraId)) : null;
-
-    // Update wheel in wheels table
-    const result = await db.update(wheels)
-      .set({ 
-        chakraId: numericChakraId,
-        updatedAt: new Date()
-      })
-      .where(and(
-        eq(wheels.id, numericWheelId),
-        eq(wheels.userId, userId)
-      ))
-      .returning();
-
-    if (result.length === 0) {
-      return res.status(404).json({ error: 'Wheel not found or unauthorized' });
-    }
-
-    console.log('✅ Wheel mapping updated successfully');
-
-    return res.json({ 
-      success: true, 
-      message: chakraId ? 'Wheel mapped to chakra successfully' : 'Wheel unmapped successfully',
-      wheel: result[0] 
+    // Verify ownership
+    const existingDot = await db.query.dots.findFirst({
+      where: and(eq(dots.id, dotId), eq(dots.userId, userId))
     });
-
-  } catch (error) {
-    console.error('❌ Error mapping wheel to chakra:', error);
-    return res.status(500).json({ 
-      error: 'Failed to map wheel to chakra',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    });
-  }
-});
-
-// Map/unmap dot directly to chakra (optional direct mapping)
-router.put('/mapping/dot-to-chakra', authenticateUser, async (req, res) => {
-  const userId = req.user?.id || req.session?.userId;
-  
-  try {
-    const { dotId, chakraId } = req.body;
     
-    if (!dotId) {
-      return res.status(400).json({ error: 'dotId is required' });
+    if (!existingDot) {
+      return res.status(404).json({ error: 'Dot not found' });
     }
-
-    console.log(`🔗 Direct mapping dot ${dotId} to chakra ${chakraId || 'null (unmap)'} for user ${userId}`);
-
-    // Extract numeric ID from format "dot_123" or just "123"
-    const numericDotId = typeof dotId === 'string' ? parseInt(dotId.replace('dot_', '')) : parseInt(dotId);
-    const numericChakraId = chakraId ? (typeof chakraId === 'string' ? parseInt(chakraId.replace('chakra_', '')) : parseInt(chakraId)) : null;
-
-    // When mapping directly to chakra, clear wheelId
-    // When unmapping from chakra, preserve the existing wheelId
-    const currentDot = await db.query.dots.findFirst({
-      where: and(
-        eq(dots.id, numericDotId),
-        eq(dots.userId, userId)
-      )
-    });
-
-    if (!currentDot) {
-      return res.status(404).json({ error: 'Dot not found or unauthorized' });
-    }
-
-    // Update dot in dots table
-    const result = await db.update(dots)
-      .set({ 
-        chakraId: numericChakraId,
-        wheelId: chakraId ? null : currentDot.wheelId, // Clear wheelId when mapping to chakra, preserve when unmapping
-        updatedAt: new Date()
-      })
-      .where(and(
-        eq(dots.id, numericDotId),
-        eq(dots.userId, userId)
-      ))
-      .returning();
-
-    console.log('✅ Dot-to-chakra mapping updated successfully');
-
-    return res.json({ 
-      success: true, 
-      message: chakraId ? 'Dot mapped to chakra successfully' : 'Dot unmapped from chakra successfully',
-      dot: result[0] 
-    });
-
+    
+    // Delete from database
+    await db.delete(dots).where(and(eq(dots.id, dotId), eq(dots.userId, userId)));
+    
+    // TODO: Delete from Pinecone vector database
+    
+    res.json({ success: true, message: 'Dot deleted successfully' });
+    
   } catch (error) {
-    console.error('❌ Error mapping dot to chakra:', error);
-    return res.status(500).json({ 
-      error: 'Failed to map dot to chakra',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    });
+    console.error('Error deleting dot:', error);
+    res.status(500).json({ error: 'Failed to delete dot' });
   }
 });
 

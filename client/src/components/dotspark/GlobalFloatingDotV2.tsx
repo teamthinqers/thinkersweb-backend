@@ -191,9 +191,11 @@ function GlobalFloatingDotV2() {
     try {
       const [wheelsResponse, chakrasResponse] = await Promise.all([
         fetch('/api/user-content/wheels', {
+          headers: { 'x-user-id': '5' },
           credentials: 'include'
         }),
         fetch('/api/user-content/chakras', {
+          headers: { 'x-user-id': '5' },
           credentials: 'include'
         })
       ]);
@@ -221,6 +223,7 @@ function GlobalFloatingDotV2() {
     try {
       // Base payload for all content types
       let payload: any = {
+        userId: 5,
         captureMode: 'natural',
         sourceType: 'text'
       };
@@ -255,7 +258,8 @@ function GlobalFloatingDotV2() {
       const response = await fetch(`/api/user-content/${contentType}s`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'x-user-id': '5'
         },
         credentials: 'include',
         body: JSON.stringify(payload)

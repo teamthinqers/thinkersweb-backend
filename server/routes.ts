@@ -542,30 +542,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         dotType: 'three-layer'
       });
 
-      // 🧠 COMPREHENSIVE USER CONTEXT TRACKING
-      try {
-        const { UserContextManager } = await import('./user-context-manager');
-        await UserContextManager.trackDotCreation(
-          userId,
-          newDot.id,
-          {
-            oneWordSummary,
-            summary,
-            anchor,
-            pulse,
-            sourceType,
-            captureMode: 'manual',
-            wheelId: null,
-            voiceData: null
-          },
-          req.sessionID
-        );
-        console.log('✅ User context tracked for manual dot creation');
-      } catch (contextError) {
-        console.warn('⚠️ Context tracking failed:', contextError);
-      }
-
-      // Legacy behavior tracking (keep for compatibility)
+      // Track dot creation behavior
       await trackUserBehavior(userId, 'dot_created', 'dot', newDot.id, {
         oneWordSummary,
         sourceType,
@@ -687,7 +664,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       let userId = req.user?.id || req.session?.userId;
       if (!userId) {
-        return res.status(401).json({ error: 'Authentication required' });
+        console.log('No authenticated user found, using test userId for demo');
+        userId = 1; // Use a test user ID for demonstration
       }
       const { message, messages = [], model = 'gpt-4o', sessionId = null } = req.body;
 
@@ -730,7 +708,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let userId = req.user?.id || req.session?.userId;
       
       if (!userId) {
-        return res.status(401).json({ error: 'Authentication required' });
+        // For testing purposes, allow anonymous users with a default userId
+        console.log('No authenticated user found, using test userId for demo');
+        userId = 1; // Use a test user ID for demonstration
       }
       const { message, messages = [], action = 'chat', model = 'gpt-4o', sessionId = null } = req.body;
 
@@ -884,47 +864,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: 'Invalid dot ID' });
       }
 
-      // First verify the dot belongs to the user (check both dots and entries tables)
-      const existingDot = await db.query.dots.findFirst({
-        where: and(eq(dots.id, dotId), eq(dots.userId, userId))
+      // First verify the dot belongs to the user
+      const existingEntry = await db.query.entries.findFirst({
+        where: and(eq(entries.id, dotId), eq(entries.userId, userId))
       });
 
-      let deletedFromDots = false;
-      let deletedFromEntries = false;
-
-      if (existingDot) {
-        // Delete from dots table
-        await db.delete(dots).where(
-          and(eq(dots.id, dotId), eq(dots.userId, userId))
-        );
-        deletedFromDots = true;
-        console.log(`✅ Deleted dot ${dotId} from dots table`);
-      } else {
-        // Fallback: check entries table for legacy dots
-        const existingEntry = await db.query.entries.findFirst({
-          where: and(eq(entries.id, dotId), eq(entries.userId, userId))
-        });
-
-        if (existingEntry) {
-          await db.delete(entries).where(
-            and(eq(entries.id, dotId), eq(entries.userId, userId))
-          );
-          deletedFromEntries = true;
-          console.log(`✅ Deleted dot ${dotId} from entries table (legacy)`);
-        }
-      }
-
-      if (!deletedFromDots && !deletedFromEntries) {
+      if (!existingEntry) {
         return res.status(404).json({ error: 'Dot not found or access denied' });
       }
 
-      // TODO: Delete from vector database if needed
-      
-      res.json({ 
-        success: true, 
-        message: 'Dot deleted successfully',
-        deletedFrom: deletedFromDots ? 'dots' : 'entries'
-      });
+      // Delete the dot
+      await db.delete(entries).where(
+        and(eq(entries.id, dotId), eq(entries.userId, userId))
+      );
+
+      res.json({ success: true, message: 'Dot deleted successfully' });
     } catch (error) {
       console.error('Error deleting dot:', error);
       res.status(500).json({ error: 'Failed to delete dot' });
@@ -1007,26 +961,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const newChakraResult = await db.insert(chakras).values(chakraData).returning();
       const newChakra = Array.isArray(newChakraResult) ? newChakraResult[0] : newChakraResult;
       
-      // 🧠 COMPREHENSIVE USER CONTEXT TRACKING
-      try {
-        const { UserContextManager } = await import('./user-context-manager');
-        await UserContextManager.trackChakraCreation(
-          userId,
-          newChakra.id,
-          {
-            heading,
-            purpose,
-            timeline,
-            sourceType: 'text',
-            voiceData: null
-          },
-          req.sessionID
-        );
-        console.log('✅ User context tracked for manual chakra creation');
-      } catch (contextError) {
-        console.warn('⚠️ Context tracking failed:', contextError);
-      }
-
       // Store in vector database for intelligent retrieval
       try {
         await vectorIntegration.storeChakraInVector(newChakra.id, userId);
@@ -1155,28 +1089,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const newWheelResult = await db.insert(wheels).values(wheelData).returning();
       const newWheel = Array.isArray(newWheelResult) ? newWheelResult[0] : newWheelResult;
       
-      // 🧠 COMPREHENSIVE USER CONTEXT TRACKING
-      try {
-        const { UserContextManager } = await import('./user-context-manager');
-        await UserContextManager.trackWheelCreation(
-          userId,
-          newWheel.id,
-          {
-            heading,
-            goals,
-            timeline,
-            sourceType: 'text',
-            category: 'general',
-            chakraId: chakraId ? parseInt(chakraId) : null,
-            voiceData: null
-          },
-          req.sessionID
-        );
-        console.log('✅ User context tracked for manual wheel creation');
-      } catch (contextError) {
-        console.warn('⚠️ Context tracking failed:', contextError);
-      }
-
       // Store in vector database for intelligent retrieval
       try {
         await vectorIntegration.storeWheelInVector(newWheel.id, userId);
@@ -1239,11 +1151,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Real mode - requires authentication for user-specific data
-      const userId = req.user?.id || req.session?.userId;
-      
-      if (!userId) {
-        return res.status(401).json({ error: 'Authentication required' });
-      }
+      const userId = req.user?.id || req.session?.userId || 1;
       
       const userWheels = await db.query.wheels.findMany({
         where: eq(wheels.userId, userId),
@@ -1276,11 +1184,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Grid positioning API endpoints - simplified version using existing entries
   app.get(`${apiPrefix}/grid/positions`, async (req: AuthenticatedRequest, res: Response) => {
     try {
-      const userId = req.user?.id || req.session?.userId;
-      
-      if (!userId) {
-        return res.status(401).json({ error: 'Authentication required' });
-      }
+      const userId = req.user?.id || 1; // Demo user fallback
       const isPreview = req.query.preview === 'true';
       
       if (isPreview) {
@@ -1883,16 +1787,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = req.user?.id;
       
-      console.log('🔍 Dot-to-wheel mapping debug:', {
-        authenticated: req.isAuthenticated(),
-        userId: userId,
-        sessionUserId: req.session?.userId,
-        body: req.body,
-        sessionId: req.sessionID
-      });
-      
       if (!userId) {
-        console.log('❌ Authentication failed - no user ID found');
         return res.status(401).json({ error: 'Authentication required' });
       }
 
@@ -1903,23 +1798,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       console.log(`Mapping dot ${dotId} to wheel ${wheelId || 'null (unmap)'} for user ${userId}`);
-
-      // 🧠 TRACK MAPPING ACTION FOR USER CONTEXT
-      try {
-        const { UserContextManager } = await import('./user-context-manager');
-        await UserContextManager.trackMappingAction(
-          userId,
-          'dot',
-          parseInt(dotId),
-          'wheel',
-          wheelId ? parseInt(wheelId) : null,
-          wheelId ? 'linked' : 'unlinked',
-          req.sessionID
-        );
-        console.log('✅ Mapping action tracked for user context');
-      } catch (contextError) {
-        console.warn('⚠️ Context tracking failed:', contextError);
-      }
 
       // Handle both integer and string dot IDs (entries have string IDs like "entry_123")
       let result: any[] = [];
@@ -1984,16 +1862,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = req.user?.id;
       
-      console.log('🔍 Wheel-to-chakra mapping debug:', {
-        authenticated: req.isAuthenticated(),
-        userId: userId,
-        sessionUserId: req.session?.userId,
-        body: req.body,
-        sessionId: req.sessionID
-      });
-      
       if (!userId) {
-        console.log('❌ Authentication failed - no user ID found');
         return res.status(401).json({ error: 'Authentication required' });
       }
 
@@ -2052,7 +1921,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       console.log(`Direct mapping dot ${dotId} to chakra ${chakraId || 'null (unmap)'} for user ${userId}`);
 
-      // First, get the current dot to preserve wheelId when unmapping  
+      // First, get the current dot to preserve wheelId when unmapping
       const currentDot = await db.query.dots.findFirst({
         where: and(
           eq(dots.id, parseInt(dotId)),
@@ -2064,15 +1933,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ error: 'Dot not found or unauthorized' });
       }
 
-      // SAFE UPDATE: Only update the specific dot with proper WHERE clause
-      const updateData = {
-        chakraId: chakraId ? parseInt(chakraId) : null,
-        wheelId: chakraId ? null : currentDot.wheelId, // Clear wheelId when mapping to chakra, preserve when unmapping
-        updatedAt: new Date()
-      };
-
+      // Update dot's chakraId (null to unmap, chakraId to map)
+      // If mapping to chakra, remove wheelId to avoid conflicts
+      // If unmapping from chakra, preserve existing wheelId
       const result = await db.update(dots)
-        .set(updateData)
+        .set({ 
+          chakraId: chakraId ? parseInt(chakraId) : null,
+          wheelId: chakraId ? null : currentDot.wheelId, // Clear wheelId when mapping to chakra, preserve when unmapping
+          updatedAt: new Date()
+        })
         .where(and(
           eq(dots.id, parseInt(dotId)),
           eq(dots.userId, parseInt(userId.toString()))
@@ -2080,10 +1949,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         .returning();
 
       if (result.length === 0) {
-        return res.status(404).json({ error: 'Dot not found after update' });
+        return res.status(404).json({ error: 'Dot not found or unauthorized' });
       }
 
-      console.log('✅ Dot-to-chakra mapping updated successfully:', result[0]);
+      console.log('Dot-to-chakra mapping updated successfully:', result[0]);
 
       return res.json({ 
         success: true, 
@@ -2092,7 +1961,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
 
     } catch (error) {
-      console.error('❌ Error mapping dot to chakra:', error);
+      console.error('Error mapping dot to chakra:', error);
       return res.status(500).json({ error: 'Internal server error' });
     }
   });

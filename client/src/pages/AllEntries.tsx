@@ -48,7 +48,7 @@ const AllEntries: React.FC<AllEntriesProps> = ({ onEntryClick }) => {
         search: searchQuery,
         categoryId: selectedCategory,
         tagIds: selectedTags.length > 0 ? selectedTags : undefined,
-        // User ID handled by backend authentication
+        directUserId: 5  // Always use user ID 5 (Aravindh's account)
       }
     ],
     queryFn: () => {
@@ -56,7 +56,7 @@ const AllEntries: React.FC<AllEntriesProps> = ({ onEntryClick }) => {
       const url = new URL("/api/entries", window.location.origin);
       
       // Add all necessary params
-      // User ID handled by backend authentication
+      url.searchParams.append("directUserId", "5");
       url.searchParams.append("limit", itemsPerPage.toString());
       url.searchParams.append("offset", ((page - 1) * itemsPerPage).toString());
       url.searchParams.append("sortBy", sortBy);
@@ -78,10 +78,8 @@ const AllEntries: React.FC<AllEntriesProps> = ({ onEntryClick }) => {
       
       console.log("Fetching entries with URL:", url.toString());
       
-      // Make fetch request with credentials
-      return fetch(url.toString(), {
-        credentials: 'include'
-      }).then(res => res.json());
+      // Make fetch request
+      return fetch(url.toString()).then(res => res.json());
     }
   });
 
@@ -180,7 +178,7 @@ const AllEntries: React.FC<AllEntriesProps> = ({ onEntryClick }) => {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="">All Categories</SelectItem>
-                    {categories?.map((category: any) => (
+                    {categories?.map((category) => (
                       <SelectItem key={category.id} value={category.id.toString()}>
                         {category.name}
                       </SelectItem>
@@ -192,7 +190,7 @@ const AllEntries: React.FC<AllEntriesProps> = ({ onEntryClick }) => {
               <div>
                 <h3 className="text-sm font-medium mb-2">Tags</h3>
                 <div className="flex flex-wrap gap-2">
-                  {tags?.map((tag: any) => (
+                  {tags?.map((tag) => (
                     <Badge 
                       key={tag.id} 
                       variant={selectedTags.includes(tag.id) ? "default" : "tag"}

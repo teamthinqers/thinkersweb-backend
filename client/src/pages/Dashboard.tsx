@@ -165,7 +165,7 @@ const Dashboard: React.FC = () => {
           
           // Only fall back to preview mode if no filter is applied
           if (previewMode) {
-            const previewResponse = await fetch('/api/user-content/dots?preview=true', {
+            const previewResponse = await fetch('/api/dots?preview=true', {
               credentials: 'include'
             });
             if (previewResponse.ok) {
@@ -201,7 +201,7 @@ const Dashboard: React.FC = () => {
     refetchInterval: false
   });
 
-  // Fetch user wheels from the correct API endpoint
+  // Fetch user wheels and chakras from the correct API endpoint
   const { data: userWheels = [], isLoading: wheelsLoading, refetch: refetchWheels } = useQuery({
     queryKey: ['/api/user-content/wheels', previewMode ? 'preview' : 'real', recentFilterApplied, recentFilterType, recentDotsCount],
     queryFn: async () => {
@@ -233,49 +233,6 @@ const Dashboard: React.FC = () => {
         return data;
       } catch (err) {
         console.error('Error fetching wheels:', err);
-        return [];
-      }
-    },
-    enabled: !isLoading, // Fetch regardless of user state - backend will handle auth
-    retry: 3, // Retry up to 3 times on failure
-    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff  
-    refetchOnWindowFocus: false,
-    refetchOnMount: false, // Disable auto-refetch to prevent filter interference
-    staleTime: 0 // No caching when filter is applied
-  });
-
-  // Fetch user chakras from the correct API endpoint
-  const { data: userChakras = [], isLoading: chakrasLoading, refetch: refetchChakras } = useQuery({
-    queryKey: ['/api/user-content/chakras', previewMode ? 'preview' : 'real', recentFilterApplied, recentFilterType, recentDotsCount],
-    queryFn: async () => {
-      try {
-        let url = previewMode ? '/api/chakras?preview=true' : '/api/user-content/chakras';
-        
-        // Add filter parameters if filter is applied and not in preview mode
-        if (recentFilterApplied && !previewMode) {
-          const params = new URLSearchParams({
-            filterType: recentFilterType,
-            filterCount: recentDotsCount.toString()
-          });
-          url += (url.includes('?') ? '&' : '?') + params.toString();
-          console.log('🎯 Fetching filtered chakras from:', url);
-        }
-        
-        const response = await fetch(url, {
-          credentials: 'include' // Include cookies for authentication
-        });
-        if (!response.ok) {
-          if (response.status === 401 && recentFilterApplied) {
-            console.log('⚠️ Chakras filter applied but user not authenticated - returning empty results');
-            return [];
-          }
-          return [];
-        }
-        const data = await response.json();
-        console.log(`✅ Chakras fetched successfully: ${data.length} items`);
-        return data;
-      } catch (err) {
-        console.error('Error fetching chakras:', err);
         return [];
       }
     },
@@ -2667,7 +2624,6 @@ const Dashboard: React.FC = () => {
                               // Force immediate refetch with new filter parameters
                               refetch();
                               refetchWheels();
-                              refetchChakras();
                             }}
                             className="w-full px-3 py-2 bg-orange-500 hover:bg-orange-600 text-white text-xs font-medium rounded transition-colors"
                           >
@@ -2813,7 +2769,6 @@ const Dashboard: React.FC = () => {
               user={user}
               userWheels={userWheels}
               dots={dots}
-              chakras={userChakras}
               setViewFullWheel={setViewFullWheel}
               setViewFlashCard={setViewFlashCard}
             />

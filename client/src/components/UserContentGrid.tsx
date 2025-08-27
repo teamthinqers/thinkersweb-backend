@@ -50,7 +50,6 @@ interface UserContentGridProps {
   user: DashboardUser | null;
   userWheels: Wheel[];
   dots: Dot[];
-  chakras?: Wheel[]; // Add chakras to the interface
   setViewFullWheel: (wheel: Wheel | null) => void;
   setViewFlashCard: (dot: Dot | null) => void;
 }
@@ -59,7 +58,6 @@ export const UserContentGrid: React.FC<UserContentGridProps> = ({
   user,
   userWheels,
   dots,
-  chakras = [], // Default to empty array if not provided
   setViewFullWheel,
   setViewFlashCard
 }) => {
@@ -101,7 +99,7 @@ export const UserContentGrid: React.FC<UserContentGridProps> = ({
   }
 
   // If user is authenticated but has no content, show creation prompt
-  if (userWheels.length === 0 && dots.length === 0 && chakras.length === 0) {
+  if (userWheels.length === 0 && dots.length === 0) {
     return (
       <div className="relative bg-gradient-to-br from-amber-50/50 to-orange-50/50 rounded-xl p-4 min-h-[500px] border-2 border-amber-200 shadow-lg overflow-hidden">
         <div className="absolute top-2 left-2 md:top-4 md:left-4 z-10">

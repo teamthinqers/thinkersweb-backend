@@ -42,10 +42,8 @@ export default function WhatsAppEntries() {
         const data = await response.json();
         setWhatsappUsers(data.whatsappUsers);
         
-        // Query entries for authenticated user
-        const entriesResponse = await fetch(`/api/entries`, {
-          credentials: 'include'
-        });
+        // Directly query entries from user ID 5 (your account)
+        const entriesResponse = await fetch(`/api/entries?directUserId=5`);
         const entriesData = await entriesResponse.json();
         setEntries(entriesData.entries);
         

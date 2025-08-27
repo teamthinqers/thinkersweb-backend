@@ -9,9 +9,8 @@ export const users = pgTable("users", {
   firebaseUid: text("firebase_uid").unique(),
   username: text("username").unique(),
   email: text("email").unique().notNull(),
-  fullName: text("full_name_old"), // Match existing database column
+  fullName: text("full_name"),
   hashedPassword: text("hashed_password"),
-  password: text("password"), // Legacy password field
   bio: text("bio"),
   avatar: text("avatar"),
   dotSparkActivated: boolean("dotspark_activated").default(false).notNull(),
