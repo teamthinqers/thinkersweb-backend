@@ -27,7 +27,8 @@ interface WheelFullViewProps {
 const WheelFullView: React.FC<WheelFullViewProps> = ({ wheel, isOpen = true, onClose, onDelete }) => {
   if (!wheel) return null;
 
-  const isChakra = wheel.chakraId === undefined;
+  // A chakra is identified by having a 'purpose' field, while wheels have 'goals'
+  const isChakra = !!wheel.purpose && !wheel.goals;
   const wheelType = isChakra ? "Chakra" : "Wheel";
   const description = isChakra ? wheel.purpose : wheel.goals;
 
