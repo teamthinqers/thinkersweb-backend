@@ -3,9 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { useToast } from '@/hooks/use-toast';
-import { Loader2, Plus, Eye, Settings, RotateCcw, Mic, Type, Maximize, Minimize, ZoomIn, ZoomOut, AlertCircle, Save } from 'lucide-react';
+import { Loader2, Plus, Eye, Settings, RotateCcw, Mic, Type, Maximize, Minimize, ZoomIn, ZoomOut } from 'lucide-react';
 import UserContentCreation from './UserContentCreation';
 import DotFullView from './DotFullView';
 import DotFlashCard from './DotFlashCard';
@@ -42,20 +40,8 @@ interface Wheel {
   dots: Dot[];
   connections: string[];
   position: { x: number; y: number };
+  radius?: number;
   chakraId?: string;
-  createdAt?: Date;
-}
-
-interface Chakra {
-  id: string;
-  name: string;
-  heading?: string;
-  purpose?: string;
-  timeline?: string;
-  category: string;
-  color: string;
-  wheels: Wheel[];
-  position: { x: number; y: number };
   createdAt?: Date;
 }
 
@@ -65,24 +51,61 @@ interface UserMapGridProps {
   setViewFullDot: (dot: Dot | null) => void;
   dots: Dot[];
   wheels: Wheel[];
-  chakras: Chakra[];
+  chakras: Wheel[];
   isLoading: boolean;
 }
 
-// Get chakra size based on child wheels and dots
-const getChakraSize = (mode: 'preview' | 'real', childWheelsCount: number, childDotsCount: number) => {
-  const baseSizes = { preview: 120, real: 150 };
-  const baseSize = baseSizes[mode];
+// Dynamic sizing calculations exactly like PreviewMapGrid
+const calculateDynamicSizing = (mode: 'preview' | 'real', itemCount: number, type: 'dots' | 'wheels') => {
+  const baseSizes = {
+    preview: { dots: 25, wheels: 80 },
+    real: { dots: 35, wheels: 90 }
+  };
   
-  const totalChildren = childWheelsCount + childDotsCount;
-  if (totalChildren === 0) return baseSize;
-  if (totalChildren <= 2) return baseSize + 30;
-  if (totalChildren <= 5) return baseSize + 60;
-  if (totalChildren <= 8) return baseSize + 90;
-  return baseSize + 120;
+  const baseSize = baseSizes[mode][type];
+  
+  if (type === 'dots') {
+    if (itemCount <= 3) return baseSize;
+    if (itemCount <= 6) return baseSize - 3;
+    if (itemCount <= 9) return baseSize - 5;
+    return Math.max(baseSize - 8, 20);
+  } else {
+    if (itemCount <= 3) return baseSize;
+    if (itemCount <= 6) return baseSize - 5;
+    if (itemCount <= 9) return baseSize - 10;
+    return Math.max(baseSize - 15, 60);
+  }
 };
 
-// Get wheel size based on child dots count
+const getChakraSize = (mode: 'preview' | 'real', childWheelsCount: number, childWheels: any[] = []) => {
+  // Calculate minimum size needed to contain all wheels
+  if (childWheelsCount === 0) {
+    return mode === 'preview' ? 280 : 250; // Smaller standalone chakras
+  }
+  
+  // Calculate size needed for each wheel plus padding
+  let totalWheelArea = 0;
+  childWheels.forEach(wheel => {
+    const wheelDots = wheel.dots || [];
+    const wheelRadius = getWheelSize(mode, wheelDots.length, wheelDots);
+    totalWheelArea += (wheelRadius * 2) * (wheelRadius * 2); // Wheel area
+  });
+  
+  // Calculate chakra radius to contain wheels in circular arrangement with padding
+  const padding = 80; // Space between wheels and chakra border
+  const wheelSpacing = 40; // Space between wheels
+  const minRadius = Math.sqrt(totalWheelArea / Math.PI) + padding;
+  
+  // Ensure minimum size based on wheel count
+  const baseSizes = { preview: 420, real: 380 };
+  const baseSize = baseSizes[mode];
+  
+  if (childWheelsCount <= 2) return Math.max(baseSize, minRadius);
+  if (childWheelsCount <= 4) return Math.max(baseSize + 60, minRadius);
+  if (childWheelsCount <= 6) return Math.max(baseSize + 120, minRadius);
+  return Math.max(baseSize + 180, minRadius);
+};
+
 const getWheelSize = (mode: 'preview' | 'real', childDotsCount: number, childDots: any[] = []) => {
   // Calculate minimum size needed to contain all dots
   if (childDotsCount === 0) {
@@ -126,71 +149,10 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
   const [hoveredDot, setHoveredDot] = useState<Dot | null>(null);
   const [hoveredWheel, setHoveredWheel] = useState<Wheel | null>(null);
   const [hoveredChakra, setHoveredChakra] = useState<any>(null);
-  const [draggedElement, setDraggedElement] = useState<{type: 'dot' | 'wheel' | 'chakra', id: string, startPos: {x: number, y: number}, initialPos: {x: number, y: number}} | null>(null);
+  const [draggedElement, setDraggedElement] = useState<{type: 'dot' | 'wheel' | 'chakra', id: string, startPos: {x: number, y: number}} | null>(null);
   const [elementPositions, setElementPositions] = useState<{[key: string]: {x: number, y: number}}>({});
   const [showSaveDialog, setShowSaveDialog] = useState(false); 
-  const [confirmMapping, setConfirmMapping] = useState<{
-    sourceType: 'dot' | 'wheel';
-    sourceId: string;
-    sourceName: string;
-    targetType: 'wheel' | 'chakra';
-    targetId: string;
-    targetName: string;
-  } | null>(null);
   const gridContainerRef = useRef<HTMLDivElement>(null);
-  const { toast } = useToast();
-
-  // Mapping functions for drag and drop
-  const handleConfirmMapping = async () => {
-    if (!confirmMapping) return;
-    
-    try {
-      const endpoint = confirmMapping.sourceType === 'dot' 
-        ? '/api/mapping/dot-to-wheel' 
-        : '/api/mapping/wheel-to-chakra';
-      
-      const payload = confirmMapping.sourceType === 'dot'
-        ? { dotId: confirmMapping.sourceId, wheelId: confirmMapping.targetId }
-        : { wheelId: confirmMapping.sourceId, chakraId: confirmMapping.targetId };
-      
-      const response = await fetch(endpoint, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify(payload)
-      });
-      
-      if (response.ok) {
-        const result = await response.json();
-        toast({
-          title: "Mapping Successful!",
-          description: result.message,
-          variant: "default"
-        });
-        
-        // Refresh the data to show new mapping
-        window.location.reload();
-      } else {
-        const error = await response.json();
-        toast({
-          title: "Mapping Failed",
-          description: error.error || "Failed to map elements",
-          variant: "destructive"
-        });
-      }
-    } catch (error) {
-      console.error('Mapping error:', error);
-      toast({
-        title: "Error",
-        description: "Network error during mapping",
-        variant: "destructive"
-      });
-    }
-    
-    setConfirmMapping(null);
-  };
 
   // Fetch grid positions for proper positioning
   const { data: gridPositions } = useQuery({
@@ -215,6 +177,9 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
     
     // Save to localStorage
     localStorage.setItem('dotspark-saved-layout', JSON.stringify(layoutData));
+    
+    // Could also save to backend API here
+    // fetch('/api/save-layout', { method: 'POST', body: JSON.stringify(layoutData) });
     
     setShowSaveDialog(false);
     
@@ -256,11 +221,8 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
       // Element dragging mode - update element position and all grouped elements
       const rect = gridContainerRef.current?.getBoundingClientRect();
       if (rect) {
-        // Fix cursor tracking: calculate position based on mouse delta from start position
-        const mouseDeltaX = e.clientX - draggedElement.startPos.x;
-        const mouseDeltaY = e.clientY - draggedElement.startPos.y;
-        const newX = (draggedElement.initialPos.x + mouseDeltaX / zoom);
-        const newY = (draggedElement.initialPos.y + mouseDeltaY / zoom);
+        const newX = (e.clientX - rect.left - offset.x) / zoom;
+        const newY = (e.clientY - rect.top - offset.y) / zoom;
         
         // Calculate movement delta
         const currentPos = elementPositions[`${draggedElement.type}-${draggedElement.id}`];
@@ -277,7 +239,7 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
             // Move all grouped elements
             if (draggedElement.type === 'chakra') {
               // Move all wheels belonging to this chakra
-              const chakraWheels = wheels.filter(w => w.chakraId === draggedElement.id);
+              const chakraWheels = displayWheels.filter(w => w.chakraId === draggedElement.id);
               chakraWheels.forEach(wheel => {
                 const wheelKey = `wheel-${wheel.id}`;
                 if (prev[wheelKey]) {
@@ -288,7 +250,7 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                 }
                 
                 // Move all dots belonging to this wheel
-                const wheelDots = dots.filter(d => d.wheelId === wheel.id);
+                const wheelDots = displayDots.filter(d => d.wheelId === wheel.id);
                 wheelDots.forEach(dot => {
                   const dotKey = `dot-${dot.id}`;
                   if (prev[dotKey]) {
@@ -301,7 +263,88 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
               });
             } else if (draggedElement.type === 'wheel') {
               // Move all dots belonging to this wheel
-              const wheelDots = dots.filter(d => d.wheelId === draggedElement.id);
+              const wheelDots = displayDots.filter(d => d.wheelId === draggedElement.id);
+              wheelDots.forEach(dot => {
+                const dotKey = `dot-${dot.id}`;
+                if (prev[dotKey]) {
+                  newPositions[dotKey] = {
+                    x: prev[dotKey].x + deltaX,
+                    y: prev[dotKey].y + deltaY
+                  };
+                }
+              });
+            }
+            
+            return newPositions;
+          });
+        } else {
+          // First time setting position
+          setElementPositions(prev => ({
+            ...prev,
+            [`${draggedElement.type}-${draggedElement.id}`]: { x: newX, y: newY }
+          }));
+        }
+      }
+      return;
+    }
+    
+    if (!dragStart) return;
+    e.preventDefault();
+    e.stopPropagation();
+    setOffset({
+      x: e.clientX - dragStart.x,
+      y: e.clientY - dragStart.y
+    });
+  };
+
+  const handleMouseUp = (e?: React.MouseEvent) => {
+    if (draggedElement && e) {
+      // Save final position of dragged element and all grouped elements
+      const rect = gridContainerRef.current?.getBoundingClientRect();
+      if (rect) {
+        const newX = (e.clientX - rect.left - offset.x) / zoom;
+        const newY = (e.clientY - rect.top - offset.y) / zoom;
+        
+        // Calculate movement delta for final positioning
+        const currentPos = elementPositions[`${draggedElement.type}-${draggedElement.id}`];
+        if (currentPos) {
+          const deltaX = newX - currentPos.x;
+          const deltaY = newY - currentPos.y;
+          
+          setElementPositions(prev => {
+            const newPositions = { ...prev };
+            
+            // Update the dragged element position
+            newPositions[`${draggedElement.type}-${draggedElement.id}`] = { x: newX, y: newY };
+            
+            // Move all grouped elements
+            if (draggedElement.type === 'chakra') {
+              // Move all wheels belonging to this chakra
+              const chakraWheels = displayWheels.filter(w => w.chakraId === draggedElement.id);
+              chakraWheels.forEach(wheel => {
+                const wheelKey = `wheel-${wheel.id}`;
+                if (prev[wheelKey]) {
+                  newPositions[wheelKey] = {
+                    x: prev[wheelKey].x + deltaX,
+                    y: prev[wheelKey].y + deltaY
+                  };
+                }
+                
+                // Move all dots belonging to this wheel
+                const wheelDots = displayDots.filter(d => d.wheelId === wheel.id);
+                wheelDots.forEach(dot => {
+                  const dotKey = `dot-${dot.id}`;
+                  if (prev[dotKey]) {
+                    newPositions[dotKey] = {
+                      x: prev[dotKey].x + deltaX,
+                      y: prev[dotKey].y + deltaY
+                    };
+                  }
+                });
+              });
+            } else if (draggedElement.type === 'wheel') {
+              // Move all dots belonging to this wheel
+              const wheelDots = displayDots.filter(d => d.wheelId === draggedElement.id);
               wheelDots.forEach(dot => {
                 const dotKey = `dot-${dot.id}`;
                 if (prev[dotKey]) {
@@ -317,64 +360,40 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
           });
         }
       }
-    } else if (!dragStart) return;
-    
-    if (dragStart) {
-      const newOffset = {
-        x: e.clientX - dragStart.x,
-        y: e.clientY - dragStart.y
-      };
-      setOffset(newOffset);
-    }
-  };
-
-  const handleMouseUp = (e: React.MouseEvent) => {
-    if (draggedElement) {
-      // Check for collision with valid drop targets
-      const dropTargets = document.elementsFromPoint(e.clientX, e.clientY);
-      
-      for (const target of dropTargets) {
-        const element = target as HTMLElement;
-        const wheelElement = element.closest('[data-wheel-id]');
-        const chakraElement = element.closest('[data-chakra-id]');
-        
-        if (draggedElement.type === 'dot' && wheelElement) {
-          const targetWheelId = wheelElement.getAttribute('data-wheel-id');
-          const targetWheel = wheels.find(w => w.id === targetWheelId);
-          const sourceDot = dots.find(d => d.id === draggedElement.id);
-          
-          if (targetWheel && sourceDot && targetWheelId !== sourceDot.wheelId) {
-            setConfirmMapping({
-              sourceType: 'dot',
-              sourceId: draggedElement.id,
-              sourceName: sourceDot.oneWordSummary || sourceDot.summary || 'Dot',
-              targetType: 'wheel',
-              targetId: targetWheelId,
-              targetName: targetWheel.heading || targetWheel.name || 'Wheel'
-            });
-            break;
-          }
-        } else if (draggedElement.type === 'wheel' && chakraElement) {
-          const targetChakraId = chakraElement.getAttribute('data-chakra-id');
-          const targetChakra = chakras.find(c => c.id === targetChakraId);
-          const sourceWheel = wheels.find(w => w.id === draggedElement.id);
-          
-          if (targetChakra && sourceWheel && targetChakraId !== sourceWheel.chakraId) {
-            setConfirmMapping({
-              sourceType: 'wheel',
-              sourceId: draggedElement.id,
-              sourceName: sourceWheel.heading || sourceWheel.name || 'Wheel',
-              targetType: 'chakra',
-              targetId: targetChakraId,
-              targetName: targetChakra.heading || targetChakra.name || 'Chakra'
-            });
-            break;
-          }
-        }
-      }
       setDraggedElement(null);
     }
     setDragStart(null);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    const target = e.target as HTMLElement;
+    if (target.closest('.dot-element')) return;
+    
+    e.preventDefault();
+    const touch = e.touches[0];
+    setDragStart({ x: touch.clientX - offset.x, y: touch.clientY - offset.y });
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!dragStart || !e.touches[0]) return;
+    e.preventDefault();
+    const touch = e.touches[0];
+    
+    const newOffset = {
+      x: touch.clientX - dragStart.x,
+      y: touch.clientY - dragStart.y
+    };
+    
+    setOffset(newOffset);
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    e.preventDefault();
+    setDragStart(null);
+  };
+
+  const handleWheel = (e: React.WheelEvent) => {
+    e.preventDefault();
   };
 
   if (isLoading) {
@@ -387,6 +406,10 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
       </div>
     );
   }
+
+  // Use user data directly
+  const displayDots = dots;
+  const displayWheels = wheels;
 
   return (
     <div className={`relative bg-gradient-to-br from-amber-50/30 to-orange-50/30 rounded-xl border-2 border-amber-200 shadow-lg overflow-hidden ${
@@ -436,129 +459,206 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
         >
           <RotateCcw className="w-3 h-3" />
         </button>
+      </div>
+
+      {/* Save Positions Button - Top Right */}
+      <div className="absolute top-2 right-2 md:top-4 md:right-4 z-10">
         <button
           onClick={() => setShowSaveDialog(true)}
-          className="bg-green-500 hover:bg-green-600 text-white rounded transition-colors p-2"
-          title="Save Layout"
+          className="bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors shadow-lg p-2"
+          title="Save Current Layout"
         >
-          <Save className="w-3 h-3" />
-        </button>
-        <button
-          onClick={() => setIsFullscreen(!isFullscreen)}
-          className="bg-purple-500 hover:bg-purple-600 text-white rounded transition-colors p-2"
-          title={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
-        >
-          {isFullscreen ? <Minimize className="w-3 h-3" /> : <Maximize className="w-3 h-3" />}
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3-3m0 0l-3 3m3-3v12" />
+          </svg>
         </button>
       </div>
 
-      {/* Interactive Grid Container */}
+      {/* Fullscreen Toggle - Moved to Bottom Right */}
+      {!isFullscreen && (
+        <div className="absolute bottom-2 right-2 md:bottom-4 md:right-4 z-10">
+          <button
+            onClick={() => setIsFullscreen(!isFullscreen)}
+            className="bg-amber-500 hover:bg-amber-600 text-white rounded-lg transition-colors shadow-lg p-2"
+            title="Enter Fullscreen"
+          >
+            <Maximize className="w-5 h-5" />
+          </button>
+        </div>
+      )}
+
+      {/* Interactive grid - complete sophisticated system from Dashboard */}
       <div 
         ref={gridContainerRef}
-        className="absolute inset-0 cursor-move"
+        className={`relative ${
+          isFullscreen 
+            ? 'h-screen w-screen' 
+            : 'h-[450px] w-full'
+        } overflow-hidden cursor-grab active:cursor-grabbing`}
+        onWheel={handleWheel}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
-        style={{
-          transform: `translate(${offset.x}px, ${offset.y}px) scale(${zoom})`,
-          transformOrigin: 'center center',
-          transition: dragStart ? 'none' : 'transform 0.1s ease-out'
+        onMouseLeave={handleMouseUp}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        style={{ 
+          touchAction: 'none',
+          userSelect: 'none'
         }}
       >
-        <div className="w-full h-full relative" style={{ minWidth: '2000px', minHeight: '1500px' }}>
-          {/* Use user data directly */}
-          {dots.map((dot: any, index: number) => {
-            // Use algorithmic positioning from backend API when available
-            let dotPosition;
+        {/* Fullscreen exit button */}
+        {isFullscreen && (
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setIsFullscreen(false);
+            }}
+            className="fixed bottom-6 right-6 z-[100] bg-red-500 hover:bg-red-600 text-white rounded-full p-4 transition-colors shadow-2xl border-2 border-red-400"
+            title="Exit Fullscreen (ESC)"
+            style={{ pointerEvents: 'auto', touchAction: 'manipulation' }}
+          >
+            <Minimize className="w-4 h-4" />
+          </button>
+        )}
+
+        <div 
+          className="relative transition-transform duration-150 ease-out"
+          style={{ 
+            width: `${1200 * zoom}px`, 
+            height: `${800 * zoom}px`,
+            minWidth: 'auto',
+            minHeight: 'auto',
+            transform: `translate(${offset.x}px, ${offset.y}px) scale(${zoom})`,
+            transformOrigin: 'center center',
+            willChange: dragStart ? 'transform' : 'auto'
+          }}
+        >
+          {/* Render chakras first (bottom layer) */}
+          {chakras.map((chakra: any, chakraIndex: number) => {
+            const chakraWheels = displayWheels.filter((w: any) => w.chakraId === chakra.id);
+            // Add dots to wheels for proper sizing calculation
+            const chakraWheelsWithDots = chakraWheels.map(w => ({
+              ...w,
+              dots: displayDots.filter((d: any) => d.wheelId == w.id || d.wheelId === String(w.id))
+            }));
+            const chakraRadius = getChakraSize('real', chakraWheels.length, chakraWheelsWithDots);
             
-            if (gridPositions?.dotPositions && gridPositions.dotPositions[dot.id]) {
-              dotPosition = gridPositions.dotPositions[dot.id];
+            // Position chakras with proper spacing to avoid overlaps
+            let chakraX, chakraY;
+            if (elementPositions[`chakra-${chakra.id}`]) {
+              chakraX = elementPositions[`chakra-${chakra.id}`].x;
+              chakraY = elementPositions[`chakra-${chakra.id}`].y;
             } else {
-              // Fallback to manual positioning
-              dotPosition = dot.position || { 
-                x: 300 + (index % 6) * 120, 
-                y: 200 + Math.floor(index / 6) * 120 
-              };
+              // Collision-aware positioning for chakras
+              const chakraSpacing = 600; // Large spacing for chakras
+              chakraX = 300 + (chakraIndex % 2) * chakraSpacing;
+              chakraY = 300 + Math.floor(chakraIndex / 2) * chakraSpacing;
+              
+              // Check for collisions with other chakras
+              let attempts = 0;
+              while (attempts < 5) {
+                let collision = false;
+                
+                for (let i = 0; i < chakraIndex; i++) {
+                  const otherChakra = chakras[i];
+                  const otherPos = elementPositions[`chakra-${otherChakra.id}`] || { x: 300, y: 300 };
+                  const distance = Math.sqrt((chakraX - otherPos.x) ** 2 + (chakraY - otherPos.y) ** 2);
+                  const minDistance = chakraRadius + 200; // 200px buffer between chakras
+                  
+                  if (distance < minDistance) {
+                    collision = true;
+                    break;
+                  }
+                }
+                
+                if (!collision) break;
+                
+                chakraX += chakraSpacing / 3;
+                chakraY += chakraSpacing / 4;
+                attempts++;
+              }
             }
             
-            const currentPosition = elementPositions[`dot-${dot.id}`] || dotPosition;
-            const dotSize = 50;
+            // Update chakra position for wheel calculations
+            chakra.position = { x: chakraX, y: chakraY };
             
             return (
-              <div
-                key={dot.id}
-                className="absolute cursor-pointer pointer-events-auto"
-                data-dot-id={dot.id}
-                style={{
-                  left: `${currentPosition.x - dotSize/2}px`,
-                  top: `${currentPosition.y - dotSize/2}px`,
-                  width: `${dotSize}px`,
-                  height: `${dotSize}px`,
-                  zIndex: 10
-                }}
-                onMouseDown={(e) => {
-                  e.stopPropagation();
-                  setDraggedElement({
-                    type: 'dot',
-                    id: dot.id,
-                    startPos: { x: e.clientX, y: e.clientY },
-                    initialPos: currentPosition
-                  });
-                }}
-                onMouseEnter={() => setHoveredDot(dot)}
-                onMouseLeave={() => setHoveredDot(null)}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  if (!draggedElement) {
-                    setViewFlashCard(dot);
-                  }
-                }}
-              >
-                {/* Dot Visual */}
-                <div className={`w-full h-full rounded-full transition-all duration-300 ${
-                  hoveredDot?.id === dot.id ? 'scale-110' : ''
-                } bg-gradient-to-br from-amber-400 to-orange-500 shadow-lg border-2 border-amber-300`}>
-                  <div className="w-full h-full rounded-full bg-gradient-to-br from-amber-300/50 to-transparent animate-pulse" />
-                </div>
-                
-                {/* Dot Label */}
-                <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-xs text-center">
-                  <div className="bg-white/90 backdrop-blur px-2 py-1 rounded border shadow-sm">
-                    <span className="font-medium text-amber-800">
-                      {dot.oneWordSummary || dot.summary?.slice(0, 10) + '...' || 'Dot'}
-                    </span>
+              <div key={chakra.id} className="relative">
+                {/* Chakra circle */}
+                <div
+                  className="absolute rounded-full border-4 border-amber-500/50 bg-gradient-to-br from-amber-100/40 to-orange-100/40 cursor-move transition-all duration-200 hover:scale-105 hover:border-amber-600/70"
+                  style={{
+                    left: `${chakraX - chakraRadius/2}px`,
+                    top: `${chakraY - chakraRadius/2}px`,
+                    width: `${chakraRadius}px`,
+                    height: `${chakraRadius}px`,
+                    pointerEvents: 'auto',
+                    zIndex: 1, // Lowest z-index for chakras
+                    willChange: draggedElement?.id === chakra.id ? 'transform' : 'auto',
+                    transform: draggedElement?.id === chakra.id ? 'scale(1.02)' : 'scale(1)'
+                  }}
+                  onClick={(e) => {
+                    if (!draggedElement) {
+                      e.stopPropagation();
+                      setViewFullWheel(chakra);
+                    }
+                  }}
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setDraggedElement({type: 'chakra', id: chakra.id, startPos: {x: e.clientX, y: e.clientY}});
+                  }}
+                  onMouseEnter={() => !draggedElement && setHoveredChakra(chakra)}
+                  onMouseLeave={() => setHoveredChakra(null)}
+                >
+                  {/* Chakra label */}
+                  <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 text-center">
+                    <div className="px-3 py-1 rounded-lg bg-gradient-to-r from-amber-100 to-orange-100 border-2 border-amber-300 text-amber-800 font-bold text-sm whitespace-nowrap shadow-lg">
+                      {chakra.name}
+                    </div>
+                  </div>
+                  
+                  {/* Chakra content */}
+                  <div className="absolute inset-0 flex items-center justify-center p-4">
+                    <div className="text-center">
+                      {/* Content removed - no category text needed */}
+                    </div>
                   </div>
                 </div>
                 
-                {/* Hover Card */}
-                {hoveredDot?.id === dot.id && (
+                {/* Chakra hover card */}
+                {hoveredChakra?.id === chakra.id && (
                   <div 
-                    className="absolute bg-white/95 backdrop-blur border-2 border-amber-200 rounded-lg p-3 shadow-2xl w-64 cursor-pointer z-[99999999]"
+                    className="absolute bg-white/95 backdrop-blur border-2 border-amber-200 rounded-lg p-3 shadow-2xl w-64 cursor-pointer"
                     style={{
-                      left: `${dotSize + 10}px`,
-                      top: `${Math.max(-50, -50)}px`,
+                      left: `${chakraX - 140}px`,
+                      top: `${chakraY - 120}px`,
                       maxWidth: '280px',
-                      boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
+                      zIndex: 1000,
+                      boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.05)'
                     }}
                     onClick={(e) => {
                       e.stopPropagation();
-                      setViewFullDot(dot);
-                      setHoveredDot(null);
+                      setHoveredChakra(null);
                     }}
+                    onMouseDown={(e) => e.stopPropagation()}
                   >
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
-                        <h4 className="font-bold text-amber-800 text-sm">{dot.oneWordSummary || 'Insight'}</h4>
+                        <h4 className="font-bold text-amber-800 text-sm line-clamp-1">{chakra.name}</h4>
                         <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200 text-xs">
-                          Dot
+                          Chakra
                         </Badge>
                       </div>
-                      <p className="text-gray-700 text-sm line-clamp-2">
-                        {dot.summary || 'A moment of insight or learning'}
+                      <p className="text-gray-700 text-sm line-clamp-2 leading-relaxed">
+                        {chakra.purpose || 'Life area focus'}
                       </p>
                       <div className="flex items-center justify-between text-xs">
                         <Badge className="bg-amber-100 text-amber-700">
-                          {dot.sourceType || 'insight'}
+                          {chakraWheels.length} wheels
                         </Badge>
                         <span className="text-amber-600 font-medium">
                           Click for full view
@@ -570,97 +670,177 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
               </div>
             );
           })}
-          
-          {/* Render Wheels */}
-          {wheels.map((wheel: any, index: number) => {
-            // Use algorithmic positioning from backend API when available
-            let wheelPosition;
+
+          {/* Render wheels second (middle layer) */}
+          {displayWheels.map((wheel: any, wheelIndex: number) => {
+            const wheelDots = displayDots.filter((d: any) => d.wheelId == wheel.id || d.wheelId === String(wheel.id));
+            const wheelRadius = getWheelSize('real', wheelDots.length, wheelDots);
             
-            if (gridPositions?.wheelPositions && gridPositions.wheelPositions[wheel.id]) {
-              wheelPosition = gridPositions.wheelPositions[wheel.id];
+            // Determine wheel position
+            let wheelX, wheelY;
+            if (wheel.chakraId && wheel.chakraId !== 'standalone') {
+              // Use saved position if exists, otherwise position around chakra
+              if (elementPositions[`wheel-${wheel.id}`]) {
+                wheelX = elementPositions[`wheel-${wheel.id}`].x;
+                wheelY = elementPositions[`wheel-${wheel.id}`].y;
+              } else {
+                // Position wheel inside/around its associated chakra like preview mode  
+                const chakra = chakras.find((c: any) => c.id === wheel.chakraId);
+                if (chakra) {
+                  const wheelsInChakra = displayWheels.filter((w: any) => w.chakraId === wheel.chakraId && w.chakraId !== 'standalone');
+                  const wheelIndexInChakra = wheelsInChakra.findIndex((w: any) => w.id === wheel.id);
+                  
+                  // Get chakra position (either saved position or calculated position)
+                  let chakraX, chakraY;
+                  if (elementPositions[`chakra-${chakra.id}`]) {
+                    chakraX = elementPositions[`chakra-${chakra.id}`].x;
+                    chakraY = elementPositions[`chakra-${chakra.id}`].y;
+                  } else {
+                    chakraX = chakra.position?.x || 600;
+                    chakraY = chakra.position?.y || 400;
+                  }
+                  
+                  // Calculate orbit radius to ensure wheels stay inside chakra boundary
+                  const chakraRadius = getChakraSize('real', wheelsInChakra.length, wheelsInChakra) / 2;
+                  const orbitRadius = Math.max(40, chakraRadius - wheelRadius - 30); // 30px padding from chakra edge
+                  const angle = (wheelIndexInChakra * 2 * Math.PI) / wheelsInChakra.length;
+                  
+                  wheelX = chakraX + Math.cos(angle) * orbitRadius;
+                  wheelY = chakraY + Math.sin(angle) * orbitRadius;
+                } else {
+                  // Chakra not found, treat as standalone
+                  const standaloneWheels = displayWheels.filter((w: any) => !w.chakraId || w.chakraId === 'standalone');
+                  const standaloneIndex = standaloneWheels.findIndex((w: any) => w.id === wheel.id);
+                  
+                  if (elementPositions[`wheel-${wheel.id}`]) {
+                    wheelX = elementPositions[`wheel-${wheel.id}`].x;
+                    wheelY = elementPositions[`wheel-${wheel.id}`].y;
+                  } else {
+                    const cols = Math.max(2, Math.ceil(Math.sqrt(standaloneWheels.length)));
+                    const row = Math.floor(standaloneIndex / cols);
+                    const col = standaloneIndex % cols;
+                    wheelX = 600 + (col * 280);
+                    wheelY = 250 + (row * 220);
+                  }
+                }
+              }
             } else {
-              wheelPosition = wheel.position || { 
-                x: 600 + (index % 4) * 200, 
-                y: 300 + Math.floor(index / 4) * 200 
-              };
+              // Standalone wheels - well distributed grid separate from chakras  
+              const standaloneWheels = displayWheels.filter((w: any) => !w.chakraId || w.chakraId === 'standalone');
+              const standaloneIndex = standaloneWheels.findIndex((w: any) => w.id === wheel.id);
+              
+              if (elementPositions[`wheel-${wheel.id}`]) {
+                wheelX = elementPositions[`wheel-${wheel.id}`].x;
+                wheelY = elementPositions[`wheel-${wheel.id}`].y;
+              } else {
+                // Collision-aware positioning for standalone wheels
+                const cols = Math.max(2, Math.ceil(Math.sqrt(standaloneWheels.length)));
+                const row = Math.floor(standaloneIndex / cols);
+                const col = standaloneIndex % cols;
+                const wheelSpacing = 300; // Increased spacing for wheels
+                wheelX = 200 + (col * wheelSpacing);
+                wheelY = 200 + (row * 260);
+                
+                // Check for collisions with chakras and other wheels
+                let attempts = 0;
+                while (attempts < 8) {
+                  let collision = false;
+                  
+                  // Check collision with chakras
+                  for (const chakra of chakras) {
+                    const chakraPos = elementPositions[`chakra-${chakra.id}`] || chakra.position || { x: 600, y: 400 };
+                    const chakraRadius = getChakraSize('real', displayWheels.filter(w => w.chakraId === chakra.id).length) / 2;
+                    const distance = Math.sqrt((wheelX - chakraPos.x) ** 2 + (wheelY - chakraPos.y) ** 2);
+                    if (distance < chakraRadius + wheelRadius + 100) { // 100px buffer
+                      collision = true;
+                      break;
+                    }
+                  }
+                  
+                  if (!collision) break;
+                  
+                  wheelX += wheelSpacing / 3;
+                  wheelY += 80;
+                  attempts++;
+                }
+              }
             }
             
-            const currentPosition = elementPositions[`wheel-${wheel.id}`] || wheelPosition;
-            const wheelDots = dots.filter((d: any) => d.wheelId === wheel.id);
-            const wheelSize = getWheelSize('real', wheelDots.length);
-            const wheelRadius = wheelSize / 2;
+            // Update wheel position for dot calculations
+            wheel.position = { x: wheelX, y: wheelY };
             
             return (
-              <div
-                key={wheel.id}
-                className="absolute pointer-events-auto cursor-pointer"
-                data-wheel-id={wheel.id}
-                style={{
-                  left: `${currentPosition.x - wheelRadius}px`,
-                  top: `${currentPosition.y - wheelRadius}px`,
-                  width: `${wheelSize}px`,
-                  height: `${wheelSize}px`,
-                  zIndex: 5
-                }}
-                onMouseDown={(e) => {
-                  e.stopPropagation();
-                  setDraggedElement({
-                    type: 'wheel',
-                    id: wheel.id,
-                    startPos: { x: e.clientX, y: e.clientY },
-                    initialPos: currentPosition
-                  });
-                }}
-                onMouseEnter={() => setHoveredWheel(wheel)}
-                onMouseLeave={() => setHoveredWheel(null)}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  if (!draggedElement) {
-                    setViewFullWheel(wheel);
-                  }
-                }}
-              >
-                {/* Wheel Visual */}
-                <div className={`w-full h-full rounded-full border-4 border-dashed border-orange-400 bg-orange-50/30 transition-all duration-300 ${
-                  hoveredWheel?.id === wheel.id ? 'scale-105 border-orange-500' : ''
-                }`}>
-                  {/* Inner content */}
-                  <div className="w-full h-full rounded-full bg-gradient-to-br from-orange-100/50 to-transparent flex items-center justify-center">
-                    <div className="text-center">
-                      <div className="text-orange-700 font-bold text-sm">
+              <div key={wheel.id} className="relative">
+                {/* Wheel circle */}
+                <div
+                  className="absolute rounded-full border-2 border-dashed border-orange-400/60 bg-orange-50/30 cursor-move transition-all duration-200 hover:scale-105 hover:border-orange-500"
+                  style={{
+                    left: `${wheelX - wheelRadius}px`,
+                    top: `${wheelY - wheelRadius}px`,
+                    width: `${wheelRadius * 2}px`,
+                    height: `${wheelRadius * 2}px`,
+                    pointerEvents: 'auto',
+                    zIndex: 5, // Middle z-index for wheels
+                    willChange: draggedElement?.id === wheel.id ? 'transform' : 'auto',
+                    transform: draggedElement?.id === wheel.id ? 'scale(1.02)' : 'scale(1)'
+                  }}
+                  onClick={(e) => {
+                    if (!draggedElement) {
+                      e.stopPropagation();
+                      setViewFullWheel(wheel);
+                    }
+                  }}
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setDraggedElement({type: 'wheel', id: wheel.id, startPos: {x: e.clientX, y: e.clientY}});
+                  }}
+                  onMouseEnter={() => !draggedElement && setHoveredWheel(wheel)}
+                  onMouseLeave={() => setHoveredWheel(null)}
+                >
+                  {/* Wheel heading on top like preview mode */}
+                  <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 text-center">
+                    <div className="px-4 py-2 rounded-lg text-center shadow-lg border-2 transition-all duration-300 hover:scale-105 bg-gradient-to-r from-amber-50 to-orange-50 border-amber-300 text-amber-800">
+                      <div className="font-bold text-sm whitespace-nowrap">
                         {wheel.heading || wheel.name}
                       </div>
-                      <div className="text-xs text-orange-600 mt-1">
-                        {wheelDots.length} dots
-                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Wheel content */}
+                  <div className="absolute inset-0 flex items-center justify-center p-2">
+                    <div className="text-center">
+                      {/* Content removed - no category text needed */}
                     </div>
                   </div>
                 </div>
                 
-                {/* Wheel Hover Card */}
+                {/* Wheel hover card */}
                 {hoveredWheel?.id === wheel.id && (
                   <div 
-                    className="absolute bg-white/95 backdrop-blur border-2 border-orange-200 rounded-lg p-3 shadow-2xl w-64 cursor-pointer z-[99999998]"
+                    className="absolute bg-white/95 backdrop-blur border-2 border-orange-200 rounded-lg p-3 shadow-2xl w-64 cursor-pointer"
                     style={{
-                      left: `${wheelRadius + 20}px`,
-                      top: `${Math.max(0, -50)}px`,
+                      left: `${wheelX + wheelRadius + 20}px`,
+                      top: `${Math.max(0, wheelY - 50)}px`,
                       maxWidth: '280px',
-                      boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
+                      zIndex: 1001,
+                      boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.05)'
                     }}
                     onClick={(e) => {
                       e.stopPropagation();
                       setViewFullWheel(wheel);
                       setHoveredWheel(null);
                     }}
+                    onMouseDown={(e) => e.stopPropagation()}
                   >
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
-                        <h4 className="font-bold text-orange-800 text-sm">{wheel.name || wheel.heading}</h4>
+                        <h4 className="font-bold text-orange-800 text-sm line-clamp-1">{wheel.name || wheel.heading}</h4>
                         <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200 text-xs">
                           Wheel
                         </Badge>
                       </div>
-                      <p className="text-gray-700 text-sm line-clamp-2">
+                      <p className="text-gray-700 text-sm line-clamp-2 leading-relaxed">
                         {wheel.goals || wheel.purpose || 'Goal-oriented project'}
                       </p>
                       <div className="flex items-center justify-between text-xs">
@@ -677,105 +857,392 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
               </div>
             );
           })}
-          
-          {/* Render Chakras */}
-          {chakras.map((chakra: any, index: number) => {
-            // Use algorithmic positioning from backend API when available
-            let chakraPosition;
+
+          {/* Render dots last (top layer) */}
+          {displayDots.map((dot: any, index: number) => {
+            let x, y;
             
-            if (gridPositions?.chakraPositions && gridPositions.chakraPositions[chakra.id]) {
-              chakraPosition = gridPositions.chakraPositions[chakra.id];
+            // Check if dot belongs to a wheel (now wheels are positioned first!)
+            if (dot.wheelId && dot.wheelId !== '' && dot.wheelId !== 'general' && dot.wheelId !== 'standalone') {
+              const wheel = displayWheels.find((w: any) => w.id == dot.wheelId || w.id === String(dot.wheelId));
+              if (wheel && wheel.position) {
+                // Use saved position if exists, otherwise position around wheel
+                if (elementPositions[`dot-${dot.id}`]) {
+                  x = elementPositions[`dot-${dot.id}`].x;
+                  y = elementPositions[`dot-${dot.id}`].y;
+                } else {
+                  // Position dots inside their associated wheel in a circle
+                  const dotsInWheel = displayDots.filter((d: any) => d.wheelId == dot.wheelId || d.wheelId === String(dot.wheelId));
+                  const dotIndexInWheel = dotsInWheel.findIndex((d: any) => d.id === dot.id);
+                  const wheelCenterX = wheel.position.x;
+                  const wheelCenterY = wheel.position.y;
+                  
+                  // Calculate dot radius to ensure dots are well inside wheel boundary
+                  const wheelRadius = getWheelSize('real', dotsInWheel.length, dotsInWheel);
+                  const dotOrbitRadius = Math.max(15, wheelRadius - 60); // 60px padding from wheel edge for better interior placement
+                  const angle = (dotIndexInWheel * 2 * Math.PI) / dotsInWheel.length;
+                  
+                  x = wheelCenterX + Math.cos(angle) * dotOrbitRadius;
+                  y = wheelCenterY + Math.sin(angle) * dotOrbitRadius;
+                }
+              } else {
+                // Wheel not found, treat as standalone
+                const standaloneDots = displayDots.filter((d: any) => !d.wheelId || d.wheelId === '' || d.wheelId === 'general' || d.wheelId === 'standalone');
+                const standaloneIndex = standaloneDots.findIndex((d: any) => d.id === dot.id);
+                
+                if (elementPositions[`dot-${dot.id}`]) {
+                  x = elementPositions[`dot-${dot.id}`].x;
+                  y = elementPositions[`dot-${dot.id}`].y;
+                } else {
+                  const cols = Math.ceil(Math.sqrt(standaloneDots.length * 1.2));
+                  const row = Math.floor(standaloneIndex / cols);
+                  const col = standaloneIndex % cols;
+                  const baseSpacing = 180;
+                  x = baseSpacing + (col * baseSpacing);
+                  y = baseSpacing + (row * baseSpacing);
+                }
+              }
             } else {
-              chakraPosition = chakra.position || { 
-                x: 900 + (index % 3) * 300, 
-                y: 400 + Math.floor(index / 3) * 300 
-              };
+              // Standalone dots - use proper grid distribution to avoid overlaps
+              const standaloneDots = displayDots.filter((d: any) => !d.wheelId || d.wheelId === '' || d.wheelId === 'general' || d.wheelId === 'standalone');
+              const standaloneIndex = standaloneDots.findIndex((d: any) => d.id === dot.id);
+              
+              // Use saved position if exists, otherwise calculate new position with proper spacing
+              if (elementPositions[`dot-${dot.id}`]) {
+                x = elementPositions[`dot-${dot.id}`].x;
+                y = elementPositions[`dot-${dot.id}`].y;
+              } else {
+                // Grid-based positioning with collision-aware spacing
+                const cols = Math.ceil(Math.sqrt(standaloneDots.length * 1.2));
+                const row = Math.floor(standaloneIndex / cols);
+                const col = standaloneIndex % cols;
+                
+                // Use larger spacing to account for wheels and chakras
+                const baseSpacing = 180;
+                x = baseSpacing + (col * baseSpacing);
+                y = baseSpacing + (row * baseSpacing);
+                
+                // Check for collisions with wheels and chakras
+                let attempts = 0;
+                while (attempts < 10) {
+                  let collision = false;
+                  
+                  // Check collision with wheels
+                  for (const wheel of displayWheels) {
+                    const wheelPos = wheel.position || { x: 300, y: 250 };
+                    const wheelDots = displayDots.filter((d: any) => d.wheelId == wheel.id || d.wheelId === String(wheel.id));
+                    const wheelRadius = getWheelSize('real', wheelDots.length, wheelDots);
+                    const distance = Math.sqrt((x - wheelPos.x) ** 2 + (y - wheelPos.y) ** 2);
+                    if (distance < wheelRadius + 60) { // 60px buffer
+                      collision = true;
+                      break;
+                    }
+                  }
+                  
+                  // Check collision with chakras
+                  if (!collision) {
+                    for (const chakra of chakras) {
+                      const chakraPos = elementPositions[`chakra-${chakra.id}`] || chakra.position || { x: 600, y: 400 };
+                      const chakraRadius = getChakraSize('real', displayWheels.filter(w => w.chakraId === chakra.id).length) / 2;
+                      const distance = Math.sqrt((x - chakraPos.x) ** 2 + (y - chakraPos.y) ** 2);
+                      if (distance < chakraRadius + 80) { // 80px buffer
+                        collision = true;
+                        break;
+                      }
+                    }
+                  }
+                  
+                  if (!collision) break;
+                  
+                  // Move to next position
+                  x += baseSpacing / 2;
+                  y += baseSpacing / 4;
+                  attempts++;
+                }
+              }
             }
             
-            const currentPosition = elementPositions[`chakra-${chakra.id}`] || chakraPosition;
-            const chakraWheels = wheels.filter((w: any) => w.chakraId === chakra.id);
-            const chakraSize = getChakraSize('real', chakraWheels.length, 0);
-            const chakraRadius = chakraSize / 2;
-            
             return (
-              <div
-                key={chakra.id}
-                className="absolute pointer-events-auto cursor-pointer"
-                data-chakra-id={chakra.id}
-                style={{
-                  left: `${currentPosition.x - chakraRadius}px`,
-                  top: `${currentPosition.y - chakraRadius}px`,
-                  width: `${chakraSize}px`,
-                  height: `${chakraSize}px`,
-                  zIndex: 1
-                }}
-                onMouseDown={(e) => {
-                  e.stopPropagation();
-                  setDraggedElement({
-                    type: 'chakra',
-                    id: chakra.id,
-                    startPos: { x: e.clientX, y: e.clientY },
-                    initialPos: currentPosition
-                  });
-                }}
-                onMouseEnter={() => setHoveredChakra(chakra)}
-                onMouseLeave={() => setHoveredChakra(null)}
-              >
-                {/* Chakra Visual with Energy Rings */}
-                <div className="relative w-full h-full">
-                  {/* Outer energy ring */}
+              <div key={dot.id} className="relative">
+                {/* Dot element with exact styling from PreviewMapGrid */}
+                <div
+                  className="absolute w-10 h-10 rounded-full cursor-move transition-all duration-200 hover:scale-110 hover:shadow-md dot-element group"
+                  style={{
+                    left: `${x - 5}px`, // Adjust for larger size
+                    top: `${y - 5}px`,
+                    background: dot.captureMode === 'ai' 
+                      ? 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%)'
+                      : 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)',
+                    border: '2px solid rgba(255, 255, 255, 0.8)',
+                    boxShadow: draggedElement?.id === dot.id ? '0 8px 25px rgba(0, 0, 0, 0.25)' : '0 2px 8px rgba(0, 0, 0, 0.15)',
+                    pointerEvents: 'auto',
+                    zIndex: draggedElement?.id === dot.id ? 1000 : 10, // Highest z-index for dots
+                    willChange: draggedElement?.id === dot.id ? 'transform' : 'auto'
+                  }}
+                  onClick={(e) => {
+                    if (!draggedElement) {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setViewFullDot(dot);
+                    }
+                  }}
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setDraggedElement({type: 'dot', id: dot.id, startPos: {x: e.clientX, y: e.clientY}});
+                  }}
+                  onMouseEnter={() => !draggedElement && setHoveredDot(dot)}
+                  onMouseLeave={() => setHoveredDot(null)}
+                >
+                  {/* Pulse animation for voice dots exactly like PreviewMapGrid */}
+                  {dot.sourceType === 'voice' && (
+                    <div className="absolute inset-0 rounded-full bg-amber-400 opacity-50 animate-ping" />
+                  )}
+                  
+                  <div className="absolute inset-0 flex items-center justify-center text-white text-xs font-bold">
+                    {dot.sourceType === 'voice' ? (
+                      <Mic className="w-4 h-4" />
+                    ) : (
+                      <span className="text-base font-bold">T</span>
+                    )}
+                  </div>
+                </div>
+                
+                {/* Dot Hover Card - exact same styling as PreviewMapGrid */}
+                {hoveredDot?.id === dot.id && (
                   <div 
-                    className="absolute inset-0 rounded-full opacity-30 animate-spin"
-                    style={{ 
-                      background: `conic-gradient(from 0deg, #B4530900, #B4530980, #B4530900, #B4530980, #B4530900)`,
-                      animationDuration: '20s'
+                    className="absolute bg-white/95 backdrop-blur-sm border border-amber-200 rounded-lg p-3 shadow-lg z-[1000] cursor-pointer"
+                    style={{
+                      left: `${x + 35}px`,
+                      top: `${Math.max(10, y - 20)}px`,
+                      width: '240px',
+                      pointerEvents: 'auto'
                     }}
-                  />
-                  
-                  {/* Middle energy ring */}
-                  <div 
-                    className="absolute inset-2 rounded-full opacity-40 animate-pulse"
-                    style={{ 
-                      background: `radial-gradient(circle, #B4530940, transparent 70%)`,
-                      animationDuration: '3s'
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setViewFullDot(dot);
+                      setHoveredDot(null);
                     }}
-                  />
-                  
-                  {/* Inner core */}
-                  <div 
-                    className="absolute inset-4 rounded-full opacity-50"
-                    style={{ 
-                      background: `radial-gradient(circle, #B4530960, transparent 60%)`,
-                      boxShadow: `0 0 20px #B4530940`
-                    }}
-                  />
-                  
-                  {/* Chakra boundary */}
-                  <div 
-                    className={`absolute inset-0 rounded-full border-4 border-dashed transition-all duration-300 ${
-                      hoveredChakra?.id === chakra.id ? 'border-amber-600 scale-105' : 'border-amber-500'
-                    }`}
-                    style={{ backgroundColor: 'rgba(180, 83, 9, 0.05)' }}
-                  />
-                  
-                  {/* Center Label */}
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="text-center bg-white/80 backdrop-blur rounded-lg px-4 py-2 border border-amber-300">
-                      <div className="font-bold text-amber-800 text-lg">
-                        {chakra.heading || chakra.name}
+                    onMouseDown={(e) => e.stopPropagation()}
+                  >
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-start">
+                        <h4 className="font-semibold text-amber-800 text-sm truncate">
+                          {dot.oneWordSummary}
+                        </h4>
+                        <div className="flex gap-1">
+                          <Badge className={`text-xs px-1.5 py-0.5 ${
+                            dot.captureMode === 'ai' ? 'bg-purple-100 text-purple-700' : 'bg-amber-100 text-amber-700'
+                          }`}>
+                            {dot.sourceType === 'voice' ? <Mic className="w-2 h-2" /> : 'T'}
+                          </Badge>
+                        </div>
                       </div>
-                      <div className="text-xs text-amber-600 uppercase tracking-wide">
-                        CHAKRA
-                      </div>
-                      <div className="text-xs text-amber-600 mt-1">
-                        {chakraWheels.length} wheels
+                      <p className="text-gray-600 text-xs leading-relaxed line-clamp-2">
+                        {dot.summary}
+                      </p>
+                      <div className="flex justify-between items-center pt-1">
+                        <Badge variant="outline" className="text-xs border-amber-200 text-amber-700">
+                          {dot.pulse}
+                        </Badge>
                       </div>
                     </div>
                   </div>
-                </div>
+                )}
               </div>
             );
           })}
+
+          {/* Render wheels with improved distribution */}
+          {displayWheels.map((wheel: any, wheelIndex: number) => {
+            const wheelDots = displayDots.filter((d: any) => d.wheelId == wheel.id || d.wheelId === String(wheel.id));
+            const wheelRadius = getWheelSize('real', wheelDots.length, wheelDots);
+            
+            // Determine wheel position
+            let wheelX, wheelY;
+            if (wheel.chakraId && wheel.chakraId !== 'standalone') {
+              // Use saved position if exists, otherwise position around chakra
+              if (elementPositions[`wheel-${wheel.id}`]) {
+                wheelX = elementPositions[`wheel-${wheel.id}`].x;
+                wheelY = elementPositions[`wheel-${wheel.id}`].y;
+              } else {
+                // Position wheel inside/around its associated chakra like preview mode  
+                const chakra = chakras.find((c: any) => c.id === wheel.chakraId);
+                if (chakra) {
+                  const wheelsInChakra = displayWheels.filter((w: any) => w.chakraId === wheel.chakraId && w.chakraId !== 'standalone');
+                  const wheelIndexInChakra = wheelsInChakra.findIndex((w: any) => w.id === wheel.id);
+                  
+                  // Get chakra position (either saved position or calculated position)
+                  let chakraX, chakraY;
+                  if (elementPositions[`chakra-${chakra.id}`]) {
+                    chakraX = elementPositions[`chakra-${chakra.id}`].x;
+                    chakraY = elementPositions[`chakra-${chakra.id}`].y;
+                  } else {
+                    const chakraIndex = chakras.findIndex((c: any) => c.id === chakra.id);
+                    const cols = Math.max(1, Math.ceil(Math.sqrt(chakras.length)));
+                    const row = Math.floor(chakraIndex / cols);
+                    const col = chakraIndex % cols;
+                    chakraX = 700 + (col * 400);
+                    chakraY = 600 + (row * 350);
+                  }
+                  
+                  // Calculate orbit radius to ensure wheels stay inside chakra boundary
+                  const chakraRadius = getChakraSize('real', wheelsInChakra.length, wheelsInChakra) / 2;
+                  const orbitRadius = Math.max(40, chakraRadius - wheelRadius - 30); // 30px padding from chakra edge
+                  const angle = (wheelIndexInChakra * 2 * Math.PI) / wheelsInChakra.length;
+                  
+                  wheelX = chakraX + Math.cos(angle) * orbitRadius;
+                  wheelY = chakraY + Math.sin(angle) * orbitRadius;
+                } else {
+                  // Chakra not found, treat as standalone
+                  const standaloneWheels = displayWheels.filter((w: any) => !w.chakraId || w.chakraId === 'standalone');
+                  const standaloneIndex = standaloneWheels.findIndex((w: any) => w.id === wheel.id);
+                  
+                  if (elementPositions[`wheel-${wheel.id}`]) {
+                    wheelX = elementPositions[`wheel-${wheel.id}`].x;
+                    wheelY = elementPositions[`wheel-${wheel.id}`].y;
+                  } else {
+                    const cols = Math.max(2, Math.ceil(Math.sqrt(standaloneWheels.length)));
+                    const row = Math.floor(standaloneIndex / cols);
+                    const col = standaloneIndex % cols;
+                    wheelX = 600 + (col * 280);
+                    wheelY = 250 + (row * 220);
+                  }
+                }
+              }
+            } else {
+              // Standalone wheels - well distributed grid separate from chakras  
+              const standaloneWheels = displayWheels.filter((w: any) => !w.chakraId || w.chakraId === 'standalone');
+              const standaloneIndex = standaloneWheels.findIndex((w: any) => w.id === wheel.id);
+              
+              if (elementPositions[`wheel-${wheel.id}`]) {
+                wheelX = elementPositions[`wheel-${wheel.id}`].x;
+                wheelY = elementPositions[`wheel-${wheel.id}`].y;
+              } else {
+                // Collision-aware positioning for standalone wheels
+                const cols = Math.max(2, Math.ceil(Math.sqrt(standaloneWheels.length)));
+                const row = Math.floor(standaloneIndex / cols);
+                const col = standaloneIndex % cols;
+                const wheelSpacing = 300; // Increased spacing for wheels
+                wheelX = 200 + (col * wheelSpacing);
+                wheelY = 200 + (row * 260);
+                
+                // Check for collisions with chakras and other wheels
+                let attempts = 0;
+                while (attempts < 8) {
+                  let collision = false;
+                  
+                  // Check collision with chakras
+                  for (const chakra of chakras) {
+                    const chakraPos = elementPositions[`chakra-${chakra.id}`] || { x: 600, y: 400 };
+                    const chakraRadius = getChakraSize('real', displayWheels.filter(w => w.chakraId === chakra.id).length) / 2;
+                    const distance = Math.sqrt((wheelX - chakraPos.x) ** 2 + (wheelY - chakraPos.y) ** 2);
+                    if (distance < chakraRadius + wheelRadius + 100) { // 100px buffer
+                      collision = true;
+                      break;
+                    }
+                  }
+                  
+                  if (!collision) break;
+                  
+                  wheelX += wheelSpacing / 3;
+                  wheelY += 80;
+                  attempts++;
+                }
+              }
+            }
+            
+            // Update wheel position for dot calculations
+            wheel.position = { x: wheelX, y: wheelY };
+            
+            return (
+              <div key={wheel.id} className="relative">
+                {/* Wheel circle */}
+                <div
+                  className="absolute rounded-full border-2 border-dashed border-orange-400/60 bg-orange-50/30 cursor-move transition-all duration-200 hover:scale-105 hover:border-orange-500"
+                  style={{
+                    left: `${wheelX - wheelRadius}px`,
+                    top: `${wheelY - wheelRadius}px`,
+                    width: `${wheelRadius * 2}px`,
+                    height: `${wheelRadius * 2}px`,
+                    pointerEvents: 'auto',
+                    willChange: draggedElement?.id === wheel.id ? 'transform' : 'auto',
+                    transform: draggedElement?.id === wheel.id ? 'scale(1.02)' : 'scale(1)'
+                  }}
+                  onClick={(e) => {
+                    if (!draggedElement) {
+                      e.stopPropagation();
+                      setViewFullWheel(wheel);
+                    }
+                  }}
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setDraggedElement({type: 'wheel', id: wheel.id, startPos: {x: e.clientX, y: e.clientY}});
+                  }}
+                  onMouseEnter={() => !draggedElement && setHoveredWheel(wheel)}
+                  onMouseLeave={() => setHoveredWheel(null)}
+                >
+                  {/* Wheel heading on top like preview mode */}
+                  <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 text-center">
+                    <div className="px-4 py-2 rounded-lg text-center shadow-lg border-2 transition-all duration-300 hover:scale-105 bg-gradient-to-r from-amber-50 to-orange-50 border-amber-300 text-amber-800">
+                      <div className="font-bold text-sm whitespace-nowrap">
+                        {wheel.heading || wheel.name}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Wheel content */}
+                  <div className="absolute inset-0 flex items-center justify-center p-2">
+                    <div className="text-center">
+                      {/* Content removed - no category text needed */}
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Wheel hover card */}
+                {hoveredWheel?.id === wheel.id && (
+                  <div 
+                    className="absolute bg-white/95 backdrop-blur border-2 border-orange-200 rounded-lg p-3 shadow-2xl w-64 cursor-pointer z-[99999998]"
+                    style={{
+                      left: `${wheelX + wheelRadius + 20}px`,
+                      top: `${Math.max(0, wheelY - 50)}px`,
+                      maxWidth: '280px',
+                      boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.05)'
+                    }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setViewFullWheel(wheel);
+                      setHoveredWheel(null);
+                    }}
+                    onMouseDown={(e) => e.stopPropagation()}
+                  >
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <h4 className="font-bold text-orange-800 text-sm line-clamp-1">{wheel.name || wheel.heading}</h4>
+                        <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200 text-xs">
+                          Wheel
+                        </Badge>
+                      </div>
+                      <p className="text-gray-700 text-sm line-clamp-2 leading-relaxed">
+                        {wheel.goals || wheel.purpose || 'Goal-oriented project'}
+                      </p>
+                      <div className="flex items-center justify-between text-xs">
+                        <Badge className="bg-orange-100 text-orange-700">
+                          {wheelDots.length} dots
+                        </Badge>
+                        <span className="text-orange-600 font-medium">
+                          Click for full view
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+
         </div>
       </div>
 
@@ -804,87 +1271,157 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
           </div>
         </div>
       )}
-
-      {/* Mapping Confirmation Dialog */}
-      <Dialog open={!!confirmMapping} onOpenChange={() => setConfirmMapping(null)}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <AlertCircle className="w-5 h-5 text-amber-500" />
-              Confirm Mapping
-            </DialogTitle>
-          </DialogHeader>
-          
-          {confirmMapping && (
-            <div className="space-y-4">
-              <p className="text-gray-600">
-                Are you sure you want to map <strong>"{confirmMapping.sourceName}"</strong> to{' '}
-                <strong>"{confirmMapping.targetName}"</strong>?
-              </p>
-              
-              <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
-                <p className="text-sm text-amber-800">
-                  {confirmMapping.sourceType === 'dot' 
-                    ? "This dot will become part of the selected wheel and move to its location."
-                    : "This wheel will become part of the selected chakra and all its dots will move with it."
-                  }
-                </p>
-              </div>
-            </div>
-          )}
-          
-          <DialogFooter className="gap-2">
-            <Button
-              variant="outline"
-              onClick={() => setConfirmMapping(null)}
-            >
-              Cancel
-            </Button>
-            <Button
-              onClick={handleConfirmMapping}
-              className="bg-amber-500 hover:bg-amber-600 text-white"
-            >
-              Confirm Mapping
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };
 
-// Main UserGrid component that receives data from parent
+// Main UserGrid component exactly like PreviewMapGrid structure
 interface UserGridProps {
-  dots: Dot[];
-  wheels: Wheel[];
-  chakras: Chakra[];
-  isLoading?: boolean;
+  mode?: 'preview' | 'real';
+  userId?: number;
+  isDemoMode?: boolean;
+  availableWheels?: any[];
+  availableChakras?: any[];
 }
 
 const UserGrid: React.FC<UserGridProps> = ({ 
-  dots = [],
-  wheels = [],
-  chakras = [],
-  isLoading = false
+  mode = 'real', 
+  userId,
+  isDemoMode = false,
+  availableWheels = [],
+  availableChakras = []
 }) => {
   const [showCreation, setShowCreation] = useState(false);
   const [viewFullWheel, setViewFullWheel] = useState<Wheel | null>(null);
   const [viewFlashCard, setViewFlashCard] = useState<Dot | null>(null);
   const [viewFullDot, setViewFullDot] = useState<Dot | null>(null);
 
-  // Use the data passed from parent Dashboard component
-  const userDots = dots;
-  const regularWheels = wheels.filter((wheel: any) => !wheel.chakraId);
-  const userChakras = chakras;
+  // Fetch user dots
+  const { data: userDots = [], isLoading: dotsLoading } = useQuery({
+    queryKey: ['/api/user-content/dots'],
+    queryFn: async () => {
+      try {
+        const response = await fetch('/api/user-content/dots', {
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'x-user-id': userId?.toString() || ''
+          }
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          return Array.isArray(data) ? data : [];
+        }
+        return [];
+      } catch (error) {
+        console.error('UserGrid dots fetch error:', error);
+        return [];
+      }
+    },
+    enabled: mode === 'real' && !!userId,
+    retry: 3,
+    staleTime: 30000
+  });
+
+  // Fetch user wheels
+  const { data: userWheels = [], isLoading: wheelsLoading } = useQuery({
+    queryKey: ['/api/user-content/wheels'],
+    queryFn: async () => {
+      try {
+        const response = await fetch('/api/user-content/wheels', {
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'x-user-id': userId?.toString() || ''
+          }
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          return Array.isArray(data) ? data : [];
+        }
+        return [];
+      } catch (error) {
+        console.error('UserGrid wheels fetch error:', error);
+        return [];
+      }
+    },
+    enabled: mode === 'real' && !!userId,
+    retry: 3,
+    staleTime: 30000
+  });
+
+  // Fetch user chakras
+  const { data: userChakras = [], isLoading: chakrasLoading } = useQuery({
+    queryKey: ['/api/user-content/chakras'],
+    queryFn: async () => {
+      try {
+        const response = await fetch('/api/user-content/chakras', {
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'x-user-id': userId?.toString() || ''
+          }
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          return Array.isArray(data) ? data : [];
+        }
+        return [];
+      } catch (error) {
+        console.error('UserGrid chakras fetch error:', error);
+        return [];
+      }
+    },
+    enabled: mode === 'real' && !!userId,
+    retry: 3,
+    staleTime: 30000
+  });
+
+  const isLoading = dotsLoading || wheelsLoading || chakrasLoading;
+
+  if (mode === 'preview') {
+    return (
+      <div className="text-center py-8">
+        <h3 className="text-lg font-semibold text-amber-800 mb-2">Preview Mode Active</h3>
+        <p className="text-gray-600">
+          This is demonstration data. Sign in and activate DotSpark to create your own content.
+        </p>
+      </div>
+    );
+  }
+
+  if (!userId) {
+    return (
+      <div className="text-center py-8">
+        <h3 className="text-lg font-semibold text-amber-800 mb-2">Authentication Required</h3>
+        <p className="text-gray-600">
+          Please sign in to create and view your personal dots, wheels, and chakras.
+        </p>
+      </div>
+    );
+  }
+
+  if (showCreation) {
+    return (
+      <UserContentCreation
+        availableWheels={userWheels}
+        availableChakras={userChakras}
+        onSuccess={() => setShowCreation(false)}
+      />
+    );
+  }
+
+  const regularWheels = Array.isArray(userWheels) ? userWheels : [];
+  const chakras = Array.isArray(userChakras) ? userChakras : [];
 
   return (
-    <div className="space-y-4">
-      {/* Content Creation Modal */}
-      {showCreation && (
-        <UserContentCreation 
-          onClose={() => setShowCreation(false)}
-        />
-      )}
+    <div className="space-y-6">
 
       {/* User Map Grid - exact same component structure as PreviewMapGrid */}
       <UserMapGrid
@@ -893,7 +1430,7 @@ const UserGrid: React.FC<UserGridProps> = ({
         setViewFullDot={setViewFullDot}
         dots={userDots}
         wheels={regularWheels}
-        chakras={userChakras}
+        chakras={chakras}
         isLoading={isLoading}
       />
 
