@@ -1,7 +1,7 @@
 import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
-import { Clock, Target, Calendar, Trash2, Zap, Wheel as WheelIcon } from 'lucide-react';
+import { Clock, Target, Calendar, Trash2, Zap, Circle as WheelIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useQuery } from '@tanstack/react-query';
 
