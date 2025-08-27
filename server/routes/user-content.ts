@@ -755,23 +755,25 @@ router.get('/chakras', checkDotSparkActivation, async (req, res) => {
       id: chakra.id.toString(),
       name: chakra.heading,
       heading: chakra.heading,
-      purpose: chakra.purpose, // Chakras have purpose, not goals
+      purpose: chakra.purpose,
       timeline: chakra.timeline,
-      category: 'Life Purpose',
-      color: chakra.color,
-      position: { x: chakra.positionX || 400, y: chakra.positionY || 300 },
-      radius: chakra.radius || 140, // Larger radius for chakras
+      color: chakra.color || '#B45309',
+      position: { x: chakra.positionX || 600, y: chakra.positionY || 400 },
+      radius: chakra.radius || 420,
       sourceType: chakra.sourceType || 'text',
       createdAt: chakra.createdAt,
       updatedAt: chakra.updatedAt
     }));
     
-    console.log(`✅ Returning ${formattedChakras.length} formatted chakras from chakras table`);
+    console.log(`✅ Returning ${formattedChakras.length} formatted chakras`);
     res.json(formattedChakras);
     
   } catch (error) {
-    console.error('Error fetching chakras:', error);
-    res.status(500).json({ error: 'Failed to fetch chakras' });
+    console.error('❌ Error fetching user chakras:', error);
+    res.status(500).json({ 
+      error: 'Failed to fetch chakras',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
   }
 });
 
