@@ -120,17 +120,23 @@ const Dashboard: React.FC = () => {
 
   // Enhanced dots fetching with backend session fallback
   const { data: dots = [], isLoading: dotsLoading, refetch } = useQuery({
-    queryKey: ['/api/user-content/dots', 'enhanced', recentFilterApplied, recentFilterType, recentDotsCount],
+    queryKey: ['/api/user-content/dots', 'enhanced', previewMode, recentFilterApplied, recentFilterType, recentDotsCount],
     queryFn: async () => {
       try {
-        // Always try to fetch from the user-content endpoint first
         console.log('🔍 Fetching user dots with backend session fallback');
         console.log('🔐 Frontend auth state:', { hasUser: !!user, userEmail: user?.email, isLoading });
         console.log('🎯 Filter state:', { recentFilterApplied, recentFilterType, recentDotsCount, previewMode });
         
+        // If in preview mode, use static demo data
+        if (previewMode) {
+          const demoData = getDemoDataForPreview();
+          console.log('✅ Preview dots loaded from static demo data:', demoData.previewDots.length);
+          return demoData.previewDots;
+        }
+        
         // Build URL with filter parameters if filter is applied
         let url = '/api/user-content/dots';
-        if (recentFilterApplied && !previewMode) {
+        if (recentFilterApplied) {
           const params = new URLSearchParams({
             filterType: recentFilterType,
             filterCount: recentDotsCount.toString()
@@ -166,17 +172,6 @@ const Dashboard: React.FC = () => {
             return [];
           }
           
-          // Only fall back to preview mode if no filter is applied
-          if (previewMode) {
-            const previewResponse = await fetch('/api/dots?preview=true', {
-              credentials: 'include'
-            });
-            if (previewResponse.ok) {
-              const previewData = await previewResponse.json();
-              console.log('✅ Preview dots fetched (no filters applied):', previewData.length);
-              return previewData;
-            }
-          }
           console.log('❌ No dots available - authentication required');
           return [];
         } else {
@@ -206,18 +201,25 @@ const Dashboard: React.FC = () => {
 
   // Fetch user wheels and chakras from the correct API endpoint
   const { data: userWheels = [], isLoading: wheelsLoading, refetch: refetchWheels } = useQuery({
-    queryKey: ['/api/user-content/wheels', previewMode ? 'preview' : 'real', recentFilterApplied, recentFilterType, recentDotsCount],
+    queryKey: ['/api/user-content/wheels', previewMode, recentFilterApplied, recentFilterType, recentDotsCount],
     queryFn: async () => {
       try {
-        let url = previewMode ? '/api/wheels?preview=true' : '/api/user-content/wheels';
+        // If in preview mode, use static demo data
+        if (previewMode) {
+          const demoData = getDemoDataForPreview();
+          console.log('✅ Preview wheels loaded from static demo data:', demoData.previewWheels.length);
+          return demoData.previewWheels;
+        }
         
-        // Add filter parameters if filter is applied and not in preview mode
-        if (recentFilterApplied && !previewMode) {
+        let url = '/api/user-content/wheels';
+        
+        // Add filter parameters if filter is applied
+        if (recentFilterApplied) {
           const params = new URLSearchParams({
             filterType: recentFilterType,
             filterCount: recentDotsCount.toString()
           });
-          url += (url.includes('?') ? '&' : '?') + params.toString();
+          url += `?${params.toString()}`;
           console.log('🎯 Fetching filtered wheels from:', url);
         }
         
