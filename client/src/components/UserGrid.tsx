@@ -1015,7 +1015,6 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                           }
                         }
                       }
-                    };
                     
                     document.addEventListener('mousemove', handleMouseMove);
                     document.addEventListener('mouseup', handleMouseUp);
@@ -1433,7 +1432,6 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                           }
                         }
                       }
-                    };
                     
                     document.addEventListener('mousemove', handleMouseMove);
                     document.addEventListener('mouseup', handleMouseUp);
@@ -1768,7 +1766,6 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                           }
                         }
                       }
-                    };
                     
                     document.addEventListener('mousemove', handleMouseMove);
                     document.addEventListener('mouseup', handleMouseUp);
