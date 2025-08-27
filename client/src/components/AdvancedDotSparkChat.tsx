@@ -266,7 +266,7 @@ const AdvancedDotSparkChat: React.FC<AdvancedDotSparkChatProps> = ({ className =
                   </div>
                   <div className="flex items-center space-x-1">
                     <Sparkles className="h-3 w-3" />
-                    <span>GPT-4 + DeepSeek</span>
+                    <span>GPT 5.0 + DeepSeek</span>
                   </div>
                   <div className="flex items-center space-x-1">
                     <Settings className="h-3 w-3" />

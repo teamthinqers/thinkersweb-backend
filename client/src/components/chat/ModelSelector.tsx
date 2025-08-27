@@ -38,9 +38,14 @@ export function ModelSelector({ selectedModel, onModelChange, className = '' }: 
 
   // Load model preference from localStorage on mount
   useEffect(() => {
-    const savedModel = localStorage.getItem('dotsparkAIModel') as AIModel;
-    if (savedModel && savedModel !== selectedModel) {
-      onModelChange(savedModel);
+    const savedModel = localStorage.getItem('dotsparkAIModel');
+    
+    // Migrate old gpt-4o references to gpt-5
+    if (savedModel === 'gpt-4o') {
+      localStorage.setItem('dotsparkAIModel', 'gpt-5');
+      onModelChange('gpt-5');
+    } else if (savedModel && ['gpt-5', 'deepseek-v3'].includes(savedModel)) {
+      onModelChange(savedModel as AIModel);
     }
   }, []);
 
