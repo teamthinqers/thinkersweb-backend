@@ -1921,12 +1921,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       console.log(`Direct mapping dot ${dotId} to chakra ${chakraId || 'null (unmap)'} for user ${userId}`);
 
+      // First, get the current dot to preserve wheelId when unmapping
+      const currentDot = await db.query.dots.findFirst({
+        where: and(
+          eq(dots.id, parseInt(dotId)),
+          eq(dots.userId, parseInt(userId.toString()))
+        )
+      });
+
+      if (!currentDot) {
+        return res.status(404).json({ error: 'Dot not found or unauthorized' });
+      }
+
       // Update dot's chakraId (null to unmap, chakraId to map)
       // If mapping to chakra, remove wheelId to avoid conflicts
+      // If unmapping from chakra, preserve existing wheelId
       const result = await db.update(dots)
         .set({ 
           chakraId: chakraId ? parseInt(chakraId) : null,
-          wheelId: chakraId ? null : dots.wheelId, // Clear wheelId when mapping to chakra
+          wheelId: chakraId ? null : currentDot.wheelId, // Clear wheelId when mapping to chakra, preserve when unmapping
           updatedAt: new Date()
         })
         .where(and(
