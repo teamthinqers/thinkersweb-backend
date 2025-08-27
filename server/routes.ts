@@ -1799,17 +1799,45 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       console.log(`Mapping dot ${dotId} to wheel ${wheelId || 'null (unmap)'} for user ${userId}`);
 
-      // Update dot's wheelId (null to unmap, wheelId to map)
-      const result = await db.update(dots)
-        .set({ 
-          wheelId: wheelId ? parseInt(wheelId) : null,
-          updatedAt: new Date()
-        })
-        .where(and(
-          eq(dots.id, parseInt(dotId)),
-          eq(dots.userId, parseInt(userId.toString()))
-        ))
-        .returning();
+      // Handle both integer and string dot IDs (entries have string IDs like "entry_123")
+      let result: any[] = [];
+      
+      // Try dots table first (integer IDs)
+      if (/^\d+$/.test(dotId)) {
+        result = await db.update(dots)
+          .set({ 
+            wheelId: wheelId ? parseInt(wheelId) : null,
+            updatedAt: new Date()
+          })
+          .where(and(
+            eq(dots.id, parseInt(dotId)),
+            eq(dots.userId, parseInt(userId.toString()))
+          ))
+          .returning();
+      }
+      
+      // If not found in dots table, try entries table (string IDs like "entry_234")
+      if (result.length === 0 && dotId.startsWith('entry_')) {
+        const entryId = parseInt(dotId.replace('entry_', ''));
+        const entryResult = await db.query.entries.findFirst({
+          where: and(eq(entries.id, entryId), eq(entries.userId, parseInt(userId.toString())))
+        });
+        
+        if (entryResult) {
+          try {
+            const content = JSON.parse(entryResult.content || '{}');
+            content.wheelId = wheelId;
+            
+            await db.update(entries)
+              .set({ content: JSON.stringify(content), updatedAt: new Date() })
+              .where(and(eq(entries.id, entryId), eq(entries.userId, parseInt(userId.toString()))));
+            
+            result = [{ id: dotId, wheelId, success: true }];
+          } catch (parseError) {
+            console.error('Failed to parse entry content:', parseError);
+          }
+        }
+      }
 
       if (result.length === 0) {
         return res.status(404).json({ error: 'Dot not found or unauthorized' });
