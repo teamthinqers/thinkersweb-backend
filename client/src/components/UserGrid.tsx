@@ -205,6 +205,13 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
           dotId: mappingDialog.sourceId,
           wheelId: mappingDialog.targetId 
         };
+      } else if (mappingDialog.sourceType === 'dot' && mappingDialog.targetType === 'chakra') {
+        // Dot to Chakra direct mapping (long-term vision alignment)
+        endpoint = `/api/mapping/dot-to-chakra`;
+        payload = { 
+          dotId: mappingDialog.sourceId,
+          chakraId: mappingDialog.targetId 
+        };
       } else if (mappingDialog.sourceType === 'wheel' && mappingDialog.targetType === 'chakra') {
         // Wheel to Chakra mapping
         endpoint = `/api/mapping/wheel-to-chakra`;
@@ -1348,6 +1355,80 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                                 });
                               }
                               break;
+                            }
+                          }
+                        }
+
+                        // Check collision with all chakras for direct dot-to-chakra mapping
+                        if (!dot.wheelId) { // Only allow direct chakra mapping for standalone dots
+                          for (const chakra of chakras) {
+                            // Skip if this is the chakra the dot is already in
+                            if (dot.chakraId && chakra.id === dot.chakraId) {
+                              continue;
+                            }
+
+                            // Get chakra position - try multiple sources
+                            let chakraX, chakraY;
+                            const savedChakraPos = elementPositions[`chakra-${chakra.id}`];
+                            
+                            if (savedChakraPos) {
+                              chakraX = savedChakraPos.x;
+                              chakraY = savedChakraPos.y;
+                            } else if (chakra.position) {
+                              chakraX = chakra.position.x;
+                              chakraY = chakra.position.y;
+                            } else {
+                              // Calculate chakra position based on index like the rendering code
+                              const chakraIndex = chakras.findIndex(c => c.id === chakra.id);
+                              const cols = Math.max(1, Math.ceil(Math.sqrt(chakras.length)));
+                              const row = Math.floor(chakraIndex / cols);
+                              const col = chakraIndex % cols;
+                              chakraX = 700 + (col * 400);
+                              chakraY = 600 + (row * 350);
+                            }
+                            
+                            const chakraRadius = chakra.radius || 420;
+                            const distance = Math.sqrt(Math.pow(finalX - chakraX, 2) + Math.pow(finalY - chakraY, 2));
+                            
+                            console.log(`🔍 Checking direct chakra mapping for dot to chakra ${chakra.id}:`, {
+                              chakraPos: { x: chakraX, y: chakraY },
+                              chakraRadius,
+                              distance,
+                              threshold: chakraRadius / 2
+                            });
+                            
+                            // Collision detection for direct dot-to-chakra mapping
+                            if (distance < chakraRadius / 2) {
+                              if (dot.chakraId) {
+                                // This is a dot transfer between chakras
+                                const currentChakra = chakras.find(c => c.id === dot.chakraId);
+                                console.log(`🔄 Direct chakra transfer! Moving dot from chakra ${currentChakra?.heading} to chakra ${chakra.heading}`);
+                                setMappingDialog({
+                                  open: true,
+                                  sourceType: 'dot',
+                                  sourceId: dot.id,
+                                  sourceName: dot.oneWordSummary,
+                                  targetType: 'chakra',
+                                  targetId: chakra.id,
+                                  targetName: chakra.heading || chakra.name,
+                                  isTransfer: true,
+                                  currentParent: currentChakra?.heading || currentChakra?.name || 'Unknown Chakra'
+                                });
+                              } else {
+                                // This is a new direct mapping to chakra
+                                console.log(`🎯 Direct chakra mapping detected! Mapping dot to chakra for long-term vision`);
+                                setMappingDialog({
+                                  open: true,
+                                  sourceType: 'dot',
+                                  sourceId: dot.id,
+                                  sourceName: dot.oneWordSummary,
+                                  targetType: 'chakra',
+                                  targetId: chakra.id,
+                                  targetName: chakra.heading || chakra.name,
+                                  isTransfer: false
+                                });
+                              }
+                              break; // Exit chakra loop once collision is found
                             }
                           }
                         }

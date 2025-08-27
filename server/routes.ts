@@ -1877,6 +1877,56 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return res.status(500).json({ error: 'Internal server error' });
     }
   });
+
+  // PUT /api/mapping/dot-to-chakra - Map/unmap dot directly to chakra (long-term vision alignment)
+  app.put(`${apiPrefix}/mapping/dot-to-chakra`, isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      // Use same authentication pattern as working endpoints  
+      const userId = req.user?.id || req.session?.userId;
+      
+      if (!userId) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+
+      const { dotId, chakraId } = req.body;
+      
+      if (!dotId) {
+        return res.status(400).json({ error: 'dotId is required' });
+      }
+
+      console.log(`Direct mapping dot ${dotId} to chakra ${chakraId || 'null (unmap)'} for user ${userId}`);
+
+      // Update dot's chakraId (null to unmap, chakraId to map)
+      // If mapping to chakra, remove wheelId to avoid conflicts
+      const result = await db.update(dots)
+        .set({ 
+          chakraId: chakraId ? parseInt(chakraId) : null,
+          wheelId: chakraId ? null : dots.wheelId, // Clear wheelId when mapping to chakra
+          updatedAt: new Date()
+        })
+        .where(and(
+          eq(dots.id, parseInt(dotId)),
+          eq(dots.userId, parseInt(userId.toString()))
+        ))
+        .returning();
+
+      if (result.length === 0) {
+        return res.status(404).json({ error: 'Dot not found or unauthorized' });
+      }
+
+      console.log('Dot-to-chakra mapping updated successfully:', result[0]);
+
+      return res.json({ 
+        success: true, 
+        message: chakraId ? 'Dot mapped directly to chakra successfully' : 'Dot unmapped from chakra successfully',
+        dot: result[0] 
+      });
+
+    } catch (error) {
+      console.error('Error mapping dot to chakra:', error);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+  });
   
   // Mount indexing routes for comprehensive cognitive structure indexing
   app.use(`${apiPrefix}/indexing`, indexingRouter);

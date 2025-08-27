@@ -50,6 +50,7 @@ export const dots = pgTable("dots", {
   sourceType: text("source_type").notNull().default("text"), // 'text', 'voice', 'hybrid'
   captureMode: text("capture_mode").notNull().default("natural"), // 'natural', 'ai'
   wheelId: integer("wheel_id").references(() => wheels.id), // Optional: belongs to a wheel
+  chakraId: integer("chakra_id").references(() => chakras.id), // Optional: direct mapping to chakra (long-term vision)
   positionX: integer("position_x").default(0),
   positionY: integer("position_y").default(0),
   voiceData: text("voice_data"), // JSON for voice URLs
@@ -143,6 +144,10 @@ export const dotsRelations = relations(dots, ({ one }) => ({
     fields: [dots.wheelId],
     references: [wheels.id],
   }),
+  chakra: one(chakras, {
+    fields: [dots.chakraId],
+    references: [chakras.id],
+  }),
 }));
 
 export const chakrasRelations = relations(chakras, ({ one, many }) => ({
@@ -151,6 +156,7 @@ export const chakrasRelations = relations(chakras, ({ one, many }) => ({
     references: [users.id],
   }),
   wheels: many(wheels),
+  dots: many(dots), // Direct chakra-to-dot relationship for long-term vision alignment
 }));
 
 export const wheelsRelations = relations(wheels, ({ one, many }) => ({
