@@ -542,7 +542,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
         dotType: 'three-layer'
       });
 
-      // Track dot creation behavior
+      // 🧠 COMPREHENSIVE USER CONTEXT TRACKING
+      try {
+        const { UserContextManager } = await import('./user-context-manager');
+        await UserContextManager.trackDotCreation(
+          userId,
+          newDot.id,
+          {
+            oneWordSummary,
+            summary,
+            anchor,
+            pulse,
+            sourceType,
+            captureMode: 'manual',
+            wheelId: null,
+            voiceData: null
+          },
+          req.sessionID
+        );
+        console.log('✅ User context tracked for manual dot creation');
+      } catch (contextError) {
+        console.warn('⚠️ Context tracking failed:', contextError);
+      }
+
+      // Legacy behavior tracking (keep for compatibility)
       await trackUserBehavior(userId, 'dot_created', 'dot', newDot.id, {
         oneWordSummary,
         sourceType,
@@ -987,6 +1010,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const newChakraResult = await db.insert(chakras).values(chakraData).returning();
       const newChakra = Array.isArray(newChakraResult) ? newChakraResult[0] : newChakraResult;
       
+      // 🧠 COMPREHENSIVE USER CONTEXT TRACKING
+      try {
+        const { UserContextManager } = await import('./user-context-manager');
+        await UserContextManager.trackChakraCreation(
+          userId,
+          newChakra.id,
+          {
+            heading,
+            purpose,
+            timeline,
+            sourceType: 'text',
+            voiceData: null
+          },
+          req.sessionID
+        );
+        console.log('✅ User context tracked for manual chakra creation');
+      } catch (contextError) {
+        console.warn('⚠️ Context tracking failed:', contextError);
+      }
+
       // Store in vector database for intelligent retrieval
       try {
         await vectorIntegration.storeChakraInVector(newChakra.id, userId);
@@ -1115,6 +1158,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const newWheelResult = await db.insert(wheels).values(wheelData).returning();
       const newWheel = Array.isArray(newWheelResult) ? newWheelResult[0] : newWheelResult;
       
+      // 🧠 COMPREHENSIVE USER CONTEXT TRACKING
+      try {
+        const { UserContextManager } = await import('./user-context-manager');
+        await UserContextManager.trackWheelCreation(
+          userId,
+          newWheel.id,
+          {
+            heading,
+            goals,
+            timeline,
+            sourceType: 'text',
+            category: 'general',
+            chakraId: chakraId ? parseInt(chakraId) : null,
+            voiceData: null
+          },
+          req.sessionID
+        );
+        console.log('✅ User context tracked for manual wheel creation');
+      } catch (contextError) {
+        console.warn('⚠️ Context tracking failed:', contextError);
+      }
+
       // Store in vector database for intelligent retrieval
       try {
         await vectorIntegration.storeWheelInVector(newWheel.id, userId);
@@ -1833,6 +1898,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       console.log(`Mapping dot ${dotId} to wheel ${wheelId || 'null (unmap)'} for user ${userId}`);
+
+      // 🧠 TRACK MAPPING ACTION FOR USER CONTEXT
+      try {
+        const { UserContextManager } = await import('./user-context-manager');
+        await UserContextManager.trackMappingAction(
+          userId,
+          'dot',
+          parseInt(dotId),
+          'wheel',
+          wheelId ? parseInt(wheelId) : null,
+          wheelId ? 'linked' : 'unlinked',
+          req.sessionID
+        );
+        console.log('✅ Mapping action tracked for user context');
+      } catch (contextError) {
+        console.warn('⚠️ Context tracking failed:', contextError);
+      }
 
       // Handle both integer and string dot IDs (entries have string IDs like "entry_123")
       let result: any[] = [];

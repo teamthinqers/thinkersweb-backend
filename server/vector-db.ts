@@ -69,7 +69,7 @@ export async function initializeVectorDB(): Promise<void> {
       await pinecone.createIndex({
         name: VECTOR_CONFIG.indexName,
         dimension: VECTOR_CONFIG.dimension,
-        metric: VECTOR_CONFIG.metric,
+        metric: VECTOR_CONFIG.metric as any,
         spec: {
           serverless: {
             cloud: 'aws',

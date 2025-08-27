@@ -116,6 +116,29 @@ router.post('/dots', checkDotSparkActivation, async (req, res) => {
       wheelId: dotData.wheelId,
       voiceData: dotData.voiceData ? JSON.stringify(dotData.voiceData) : null
     }).returning();
+
+    // 🧠 COMPREHENSIVE USER CONTEXT TRACKING FOR MANUAL INPUT
+    try {
+      const { UserContextManager } = await import('../user-context-manager');
+      await UserContextManager.trackDotCreation(
+        userId,
+        newDot.id,
+        {
+          oneWordSummary: dotData.oneWordSummary,
+          summary: dotData.summary,
+          anchor: dotData.anchor,
+          pulse: dotData.pulse,
+          sourceType: dotData.sourceType,
+          captureMode: dotData.captureMode === 'raw' ? 'natural' : dotData.captureMode,
+          wheelId: dotData.wheelId,
+          voiceData: dotData.voiceData
+        },
+        req.sessionID
+      );
+      console.log('✅ User context tracked for manual dot creation');
+    } catch (contextError) {
+      console.warn('⚠️ Context tracking failed:', contextError);
+    }
     
     // Store in Pinecone for intelligence
     try {
@@ -259,7 +282,8 @@ router.get('/dots', checkDotSparkActivation, async (req, res) => {
       where: eq(dots.userId, userId),
       orderBy: desc(dots.createdAt),
       with: {
-        wheel: true // Include wheel relationship data
+        wheel: true, // Include wheel relationship data
+        chakra: true // Include direct chakra relationship data
       }
     };
     
