@@ -1,5 +1,5 @@
 import express from 'express';
-import { db } from '../db';
+import { db } from '@db';
 import { dots, wheels } from '@shared/schema';
 import { eq, and } from 'drizzle-orm';
 import { calculateGridPositions } from '../grid-positioning';
@@ -12,7 +12,10 @@ const router = express.Router();
  */
 router.get('/positions', async (req, res) => {
   try {
-    const userId = req.session?.userId || 1; // Demo user fallback
+    const userId = (req as any).user?.id;
+    if (!userId) {
+      return res.status(401).json({ success: false, error: 'Authentication required' });
+    }
     const isPreview = req.query.preview === 'true';
     
     // Fetch all dots and wheels for the user
@@ -68,7 +71,10 @@ router.get('/positions', async (req, res) => {
  */
 router.post('/update-positions', async (req, res) => {
   try {
-    const userId = req.session?.userId || 1;
+    const userId = (req as any).user?.id;
+    if (!userId) {
+      return res.status(401).json({ success: false, error: 'Authentication required' });
+    }
     const { dotPositions, wheelPositions, chakraPositions } = req.body;
     
     // Update dot positions

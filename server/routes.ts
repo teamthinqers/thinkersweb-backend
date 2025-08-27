@@ -1783,10 +1783,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // ===========================
 
   // PUT /api/mapping/dot-to-wheel - Map/unmap dot to wheel
-  app.put(`${apiPrefix}/mapping/dot-to-wheel`, async (req: AuthenticatedRequest, res: Response) => {
+  app.put(`${apiPrefix}/mapping/dot-to-wheel`, isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
     try {
-      // Use same authentication pattern as working endpoints
-      const userId = req.user?.id || req.session?.userId;
+      const userId = req.user?.id;
       
       if (!userId) {
         return res.status(401).json({ error: 'Authentication required' });
@@ -1831,10 +1830,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // PUT /api/mapping/wheel-to-chakra - Map/unmap wheel to chakra  
-  app.put(`${apiPrefix}/mapping/wheel-to-chakra`, async (req: AuthenticatedRequest, res: Response) => {
+  app.put(`${apiPrefix}/mapping/wheel-to-chakra`, isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
     try {
-      // Use same authentication pattern as working endpoints  
-      const userId = req.user?.id || req.session?.userId;
+      const userId = req.user?.id;
       
       if (!userId) {
         return res.status(401).json({ error: 'Authentication required' });
@@ -1881,8 +1879,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // PUT /api/mapping/dot-to-chakra - Map/unmap dot directly to chakra (long-term vision alignment)
   app.put(`${apiPrefix}/mapping/dot-to-chakra`, isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
     try {
-      // Use same authentication pattern as working endpoints  
-      const userId = req.user?.id || req.session?.userId;
+      const userId = req.user?.id;
       
       if (!userId) {
         return res.status(401).json({ error: 'Authentication required' });
