@@ -4,6 +4,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { RotateCcw, Maximize, Minimize, Mic, Type, ZoomIn, ZoomOut } from "lucide-react";
 
+// Import static demo data
+import { getDemoDataForPreview } from '@shared/demo-data';
+
 // Same interfaces as Dashboard
 interface Dot {
   id: string;
@@ -59,16 +62,12 @@ export const PreviewMapGrid: React.FC<PreviewMapGridProps> = ({
   const [hoveredWheel, setHoveredWheel] = useState<Wheel | null>(null);
   const gridContainerRef = useRef<HTMLDivElement>(null);
 
-  // Fetch preview data
-  const { data: previewDots = [], isLoading: dotsLoading } = useQuery({
-    queryKey: ['/api/dots', { preview: true }],
-    queryFn: () => fetch('/api/dots?preview=true').then(res => res.json())
-  });
-
-  const { data: previewWheels = [], isLoading: wheelsLoading } = useQuery({
-    queryKey: ['/api/wheels', { preview: true }],
-    queryFn: () => fetch('/api/wheels?preview=true').then(res => res.json())
-  });
+  // Use static demo data instead of API calls
+  const demoData = getDemoDataForPreview();
+  const previewDots = demoData.previewDots;
+  const previewWheels = demoData.previewWheels;
+  const dotsLoading = false;
+  const wheelsLoading = false;
 
   // Fetch grid positions for proper positioning
   const { data: gridPositions } = useQuery({

@@ -24,6 +24,9 @@ import { PersistentActivationManager } from "@/lib/persistent-activation";
 // Import types from schema instead of duplicating
 import type { Dot, Wheel, Chakra } from '@shared/schema';
 
+// Import static demo data for preview mode
+import { getDemoDataForPreview } from '@shared/demo-data';
+
 // Wheel and Chakra types are imported from schema
 
 const Dashboard: React.FC = () => {

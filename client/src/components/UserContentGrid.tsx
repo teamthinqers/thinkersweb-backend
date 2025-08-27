@@ -1,6 +1,7 @@
 import React from 'react';
 import { Brain, Plus, User } from 'lucide-react';
 import UserGrid from './UserGrid';
+import { PreviewMapGrid } from './PreviewMapGrid';
 import { neuraStorage } from '@/lib/neuraStorage';
 // Using local interfaces that match Dashboard component types
 interface DashboardUser {
@@ -52,6 +53,7 @@ interface UserContentGridProps {
   dots: Dot[];
   setViewFullWheel: (wheel: Wheel | null) => void;
   setViewFlashCard: (dot: Dot | null) => void;
+  setViewFullDot?: (dot: Dot | null) => void;
 }
 
 export const UserContentGrid: React.FC<UserContentGridProps> = ({
@@ -59,42 +61,17 @@ export const UserContentGrid: React.FC<UserContentGridProps> = ({
   userWheels,
   dots,
   setViewFullWheel,
-  setViewFlashCard
+  setViewFlashCard,
+  setViewFullDot
 }) => {
-  // If user is not authenticated, show sign-in prompt
+  // If user is not authenticated, show demo data instead of sign-in prompt
   if (!user) {
     return (
-      <div className="relative bg-gradient-to-br from-amber-50/50 to-orange-50/50 rounded-xl p-4 min-h-[500px] border-2 border-amber-200 shadow-lg overflow-hidden">
-        <div className="absolute top-2 left-2 md:top-4 md:left-4 z-10">
-          <span className="bg-red-100 text-red-800 px-2 py-1 md:px-3 md:py-1 rounded-full text-xs md:text-sm font-medium">
-            Not Signed In
-          </span>
-        </div>
-        
-        <div className="flex items-center justify-center h-full">
-          <div className="text-center">
-            <User className="w-16 h-16 mx-auto mb-4 text-amber-500" />
-            <h3 className="text-2xl font-bold text-amber-800 mb-2">Sign In Required</h3>
-            <p className="text-amber-600 mb-6 max-w-md mx-auto">
-              Please sign in to create and save your personal Dots, Wheels, and Chakras.
-            </p>
-            
-            <div className="flex flex-col gap-3 max-w-xs mx-auto">
-              <button
-                onClick={() => window.location.href = '/auth'}
-                className="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 md:px-6 md:py-3 rounded-lg font-medium transition-colors flex items-center justify-center gap-2 text-sm md:text-base"
-              >
-                <User className="w-4 h-4 md:w-5 md:h-5" />
-                Sign In to DotSpark
-              </button>
-              
-              <p className="text-xs text-amber-600">
-                Or try Preview Map to see examples
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
+      <PreviewMapGrid 
+        setViewFullWheel={setViewFullWheel}
+        setViewFlashCard={setViewFlashCard}
+        setViewFullDot={setViewFullDot || (() => {})}
+      />
     );
   }
 
