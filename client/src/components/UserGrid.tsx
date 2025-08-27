@@ -553,7 +553,12 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
     let collisionDetected = false;
     
     // Check collision with all wheels for new mappings OR transfers between wheels
-    for (const wheel of displayWheels) {
+    // PRIORITY: Check wheels inside chakras first, then standalone wheels
+    const wheelsInChakras = displayWheels.filter(w => w.chakraId && w.chakraId !== 'standalone');
+    const standaloneWheels = displayWheels.filter(w => !w.chakraId || w.chakraId === 'standalone');
+    const prioritizedWheels = [...wheelsInChakras, ...standaloneWheels];
+    
+    for (const wheel of prioritizedWheels) {
       // Skip if this is the wheel the dot is already in
       if (dot.wheelId && wheel.id === dot.wheelId) {
         continue;
@@ -580,15 +585,17 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
       const wheelRadius = getWheelSize('real', displayDots.filter((d: any) => d.wheelId == wheel.id).length, []);
       const distance = Math.sqrt(Math.pow(finalX - wheelX, 2) + Math.pow(finalY - wheelY, 2));
       
-      console.log(`🔍 Checking wheel ${wheel.id}:`, {
+      console.log(`🔍 Checking wheel ${wheel.id} (in chakra: ${wheel.chakraId || 'standalone'}):`, {
         wheelPos: { x: wheelX, y: wheelY },
         wheelRadius,
         distance,
-        threshold: wheelRadius - 20
+        threshold: wheelRadius - 10
       });
       
-      // Precise collision detection - dot must be closer to wheel center
-      if (distance < wheelRadius - 20) {
+      // More precise collision detection for wheels inside chakras
+      // Use smaller threshold to ensure precise targeting
+      const threshold = wheel.chakraId && wheel.chakraId !== 'standalone' ? wheelRadius - 10 : wheelRadius - 20;
+      if (distance < threshold) {
         console.log(`🎯 Dot-to-wheel mapping detected! Moving dot "${dot.oneWordSummary}" to wheel "${wheel.heading || wheel.name}"`);
         setMappingDialog({
           open: true,
@@ -605,9 +612,10 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
       }
     }
 
-    // Check collision with all chakras for direct dot-to-chakra mapping
-    // Allow all dots (standalone, from wheels, between chakras) to map to chakras
-    for (const chakra of chakras) {
+    // Check collision with all chakras for direct dot-to-chakra mapping ONLY if no wheel collision
+    // This ensures wheels inside chakras take priority over chakra collision
+    if (!collisionDetected) {
+      for (const chakra of chakras) {
       // Skip if this is the chakra the dot is already in
       if (dot.chakraId && chakra.id === dot.chakraId) {
         continue;
@@ -660,6 +668,7 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
         break; // Exit chakra loop once collision is found
       }
     }
+    } // End of chakra collision check (only runs if no wheel collision)
 
     // If no collision detected and dot is currently in a wheel or chakra, ask to make standalone
     if (!collisionDetected && (dot.wheelId || dot.chakraId)) {
