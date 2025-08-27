@@ -1783,7 +1783,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // ===========================
 
   // PUT /api/mapping/dot-to-wheel - Map/unmap dot to wheel
-  app.put(`${apiPrefix}/mapping/dot-to-wheel`, async (req, res) => {
+  app.put(`${apiPrefix}/mapping/dot-to-wheel`, isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
     try {
       const userId = req.user?.id || req.session?.userId;
       if (!userId) {
@@ -1829,7 +1829,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // PUT /api/mapping/wheel-to-chakra - Map/unmap wheel to chakra  
-  app.put(`${apiPrefix}/mapping/wheel-to-chakra`, async (req, res) => {
+  app.put(`${apiPrefix}/mapping/wheel-to-chakra`, isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
     try {
       const userId = req.user?.id || req.session?.userId;
       if (!userId) {
