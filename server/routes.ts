@@ -1904,78 +1904,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // PUT /api/mapping/dot-to-chakra - Map/unmap dot directly to chakra (long-term vision alignment)
+  // PUT /api/mapping/dot-to-chakra - TEMPORARILY DISABLED DUE TO DATA LOSS BUG
   app.put(`${apiPrefix}/mapping/dot-to-chakra`, isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
-    try {
-      const userId = req.user?.id;
-      
-      if (!userId) {
-        return res.status(401).json({ error: 'Authentication required' });
-      }
-
-      const { dotId, chakraId } = req.body;
-      
-      if (!dotId) {
-        return res.status(400).json({ error: 'dotId is required' });
-      }
-
-      console.log(`Direct mapping dot ${dotId} to chakra ${chakraId || 'null (unmap)'} for user ${userId}`);
-      console.log('Request body:', req.body);
-      console.log('User info:', { userId, userType: typeof userId });
-
-      // First, get the current dot to preserve wheelId when unmapping
-      const currentDot = await db.query.dots.findFirst({
-        where: and(
-          eq(dots.id, parseInt(dotId)),
-          eq(dots.userId, parseInt(userId.toString()))
-        )
-      });
-
-      if (!currentDot) {
-        return res.status(404).json({ error: 'Dot not found or unauthorized' });
-      }
-
-      // Update dot's chakraId (null to unmap, chakraId to map)
-      // If mapping to chakra, remove wheelId to avoid conflicts
-      // If unmapping from chakra, preserve existing wheelId
-      console.log('About to update with values:', {
-        chakraId: chakraId ? parseInt(chakraId) : null,
-        wheelId: chakraId ? null : currentDot.wheelId,
-        updatedAt: new Date(),
-        whereDotId: parseInt(dotId),
-        whereUserId: parseInt(userId.toString())
-      });
-
-      const result = await db.update(dots)
-        .set({ 
-          chakraId: chakraId ? parseInt(chakraId) : null,
-          wheelId: chakraId ? null : currentDot.wheelId, // Clear wheelId when mapping to chakra, preserve when unmapping
-          updatedAt: new Date()
-        })
-        .where(and(
-          eq(dots.id, parseInt(dotId)),
-          eq(dots.userId, parseInt(userId.toString()))
-        ))
-        .returning();
-
-      console.log('Update result:', result);
-
-      if (result.length === 0) {
-        return res.status(404).json({ error: 'Dot not found or unauthorized' });
-      }
-
-      console.log('Dot-to-chakra mapping updated successfully:', result[0]);
-
-      return res.json({ 
-        success: true, 
-        message: chakraId ? 'Dot mapped directly to chakra successfully' : 'Dot unmapped from chakra successfully',
-        dot: result[0] 
-      });
-
-    } catch (error) {
-      console.error('Error mapping dot to chakra:', error);
-      return res.status(500).json({ error: 'Internal server error' });
-    }
+    // 🚨 EMERGENCY DISABLE - This endpoint causes mass data deletion
+    return res.status(503).json({ 
+      error: 'Direct dot-to-chakra mapping temporarily disabled due to data loss bug',
+      message: 'This feature is being fixed to prevent data loss. Please use dot-to-wheel mapping instead.'
+    });
+    
+    /* ORIGINAL CODE - DISABLED UNTIL BUG IS FIXED - CAUSES MASS DATA DELETION */
   });
   
   // Mount indexing routes for comprehensive cognitive structure indexing
