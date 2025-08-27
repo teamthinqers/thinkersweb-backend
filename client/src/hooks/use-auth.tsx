@@ -32,10 +32,43 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     console.log('Auth initialization - isDemoMode:', isDemoMode);
 
-    // Simplified auth - always trust Firebase authentication
+    // Check for existing backend session and sync with frontend
     const checkBackendSession = async (): Promise<boolean> => {
-      // Skip backend session checks - Firebase handles authentication
-      return false;
+      try {
+        console.log("Checking for existing backend session...");
+        const response = await fetch("/api/auth/session-check", {
+          method: "GET",
+          credentials: "include", // Important: include cookies
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data.user) {
+            console.log("✅ Found existing backend session for user:", data.user.email || data.user.username);
+            // Create a user object compatible with frontend auth
+            const backendUser = {
+              uid: data.user.firebaseUid || `backend-${data.user.id}`,
+              id: data.user.firebaseUid || `backend-${data.user.id}`,
+              email: data.user.email,
+              displayName: data.user.fullName || data.user.username,
+              photoURL: data.user.avatarUrl,
+              fullName: data.user.fullName
+            } as any;
+            setUser(backendUser);
+            setIsLoading(false);
+            return true;
+          }
+        }
+        
+        console.log("No existing backend session found");
+        return false;
+      } catch (error) {
+        console.log("Backend session check failed:", error);
+        return false;
+      }
     };
 
     // Always use Firebase authentication - no demo mode

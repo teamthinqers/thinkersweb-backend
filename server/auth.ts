@@ -258,6 +258,27 @@ export function setupAuth(app: Express) {
     }
   });
 
+  // Session check endpoint for frontend sync
+  app.get("/api/auth/session-check", (req, res) => {
+    console.log("Session check request:", {
+      authenticated: req.isAuthenticated(),
+      sessionId: req.sessionID,
+      userId: req.user?.id
+    });
+
+    if (req.isAuthenticated() && req.user) {
+      res.status(200).json({
+        authenticated: true,
+        user: req.user
+      });
+    } else {
+      res.status(401).json({
+        authenticated: false,
+        message: "No active session"
+      });
+    }
+  });
+
   // Traditional login endpoint
   app.post("/api/login", (req, res, next) => {
     passport.authenticate("local", (err: any, user: any, info: any) => {
