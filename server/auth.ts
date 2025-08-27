@@ -578,8 +578,11 @@ export function setupAuth(app: Express) {
             sessionId: req.sessionID
           });
           
-          // Return response - session should be auto-saved
-          res.status(isNewUser ? 201 : 200).json(secureUser);
+          // Return consistent response structure for frontend
+          res.status(isNewUser ? 201 : 200).json({
+            user: secureUser,
+            message: isNewUser ? "User created and logged in" : "User logged in successfully"
+          });
         });
       });
     } catch (error) {
