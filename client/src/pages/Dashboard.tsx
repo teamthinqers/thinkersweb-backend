@@ -123,6 +123,7 @@ const Dashboard: React.FC = () => {
         // Always try to fetch from the user-content endpoint first
         console.log('🔍 Fetching user dots with backend session fallback');
         console.log('🔐 Frontend auth state:', { hasUser: !!user, userEmail: user?.email, isLoading });
+        console.log('🎯 Filter state:', { recentFilterApplied, recentFilterType, recentDotsCount, previewMode });
         
         // Build URL with filter parameters if filter is applied
         let url = '/api/user-content/dots';
@@ -149,7 +150,9 @@ const Dashboard: React.FC = () => {
           const data = await response.json();
           console.log('✅ Dots fetched successfully:', data.length, 'dots');
           console.log('📝 Recent dots:', data.slice(0, 3).map(d => d.oneWordSummary));
-          console.log('🎯 Full dot structure sample:', data[0]);
+          if (recentFilterApplied) {
+            console.log(`🎯 FILTER APPLIED: Expected ${recentDotsCount} ${recentFilterType}s, got ${data.length} results`);
+          }
           return data;
         } else if (response.status === 401) {
           console.log('🔒 Authentication required - filters cannot be applied without sign-in');
