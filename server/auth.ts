@@ -162,11 +162,13 @@ export function setupAuth(app: Express) {
     }),
     cookie: {
       secure: false, // Always false in development to ensure cookies work
-      // Set to 365 days by default for persistent sessions
-      maxAge: 365 * 24 * 60 * 60 * 1000, 
+      // Set to 30 days by default for persistent sessions
+      maxAge: 30 * 24 * 60 * 60 * 1000, 
       httpOnly: true, // Prevent JavaScript access to the cookie
       sameSite: 'lax', // Allow cross-site navigation while protecting against CSRF
       path: '/',
+      // Add domain settings for proper cookie scope
+      domain: undefined, // Let browser set the domain automatically
     },
     // Reset cookie expiration on each response to maintain the session
     // This ensures that as long as the user is active, they stay logged in
