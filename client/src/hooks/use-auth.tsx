@@ -34,6 +34,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     // Check for existing backend session and sync with frontend
     const checkBackendSession = async (): Promise<boolean> => {
+      // Skip backend session recovery if user recently logged out
+      const recentLogout = localStorage.getItem('recent_logout');
+      if (recentLogout) {
+        const logoutTime = parseInt(recentLogout);
+        const timeSinceLogout = Date.now() - logoutTime;
+        if (timeSinceLogout < 5000) { // 5 seconds
+          console.log("⏭️ Skipping backend session check - recent logout detected");
+          localStorage.removeItem('recent_logout');
+          return false;
+        }
+      }
+      
       try {
         console.log("Checking for existing backend session...");
         const response = await fetch("/api/auth/session-check", {
@@ -192,13 +204,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         console.warn('⚠️ Server logout failed, continuing with client cleanup:', error);
       }
       
-      // 2. Clear all local storage and session storage immediately
+      // 2. Clear all local storage and session storage immediately + mark recent logout
       localStorage.removeItem('dotspark_user');
       localStorage.removeItem('dotspark_user_data');
       localStorage.removeItem('dotspark_session_active');
       localStorage.removeItem('auth_timestamp');
       sessionStorage.removeItem('dotspark_temp_auth');
-      console.log('✅ Local storage cleared');
+      
+      // Mark recent logout to prevent immediate session recovery
+      localStorage.setItem('recent_logout', Date.now().toString());
+      console.log('✅ Local storage cleared and logout timestamp set');
       
       // 3. Sign out of Firebase (this will trigger onAuthStateChanged)
       await signOut();
