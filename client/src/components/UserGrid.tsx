@@ -3,6 +3,8 @@ import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { useToast } from '@/hooks/use-toast';
 import { Loader2, Plus, Eye, Settings, RotateCcw, Mic, Type, Maximize, Minimize, ZoomIn, ZoomOut } from 'lucide-react';
 import UserContentCreation from './UserContentCreation';
 import DotFullView from './DotFullView';
@@ -149,10 +151,71 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
   const [hoveredDot, setHoveredDot] = useState<Dot | null>(null);
   const [hoveredWheel, setHoveredWheel] = useState<Wheel | null>(null);
   const [hoveredChakra, setHoveredChakra] = useState<any>(null);
-  const [draggedElement, setDraggedElement] = useState<{type: 'dot' | 'wheel' | 'chakra', id: string, startPos: {x: number, y: number}} | null>(null);
+  const [draggedElement, setDraggedElement] = useState<{type: 'dot' | 'wheel' | 'chakra', id: string, startPos: {x: number, y: number}, initialPos: {x: number, y: number}} | null>(null);
   const [elementPositions, setElementPositions] = useState<{[key: string]: {x: number, y: number}}>({});
   const [showSaveDialog, setShowSaveDialog] = useState(false); 
+  const [confirmMapping, setConfirmMapping] = useState<{
+    sourceType: 'dot' | 'wheel';
+    sourceId: string;
+    sourceName: string;
+    targetType: 'wheel' | 'chakra';
+    targetId: string;
+    targetName: string;
+  } | null>(null);
   const gridContainerRef = useRef<HTMLDivElement>(null);
+  const { toast } = useToast();
+
+  // Mapping functions for drag and drop
+  const handleConfirmMapping = async () => {
+    if (!confirmMapping) return;
+    
+    try {
+      const endpoint = confirmMapping.sourceType === 'dot' 
+        ? '/api/mapping/dot-to-wheel' 
+        : '/api/mapping/wheel-to-chakra';
+      
+      const payload = confirmMapping.sourceType === 'dot'
+        ? { dotId: confirmMapping.sourceId, wheelId: confirmMapping.targetId }
+        : { wheelId: confirmMapping.sourceId, chakraId: confirmMapping.targetId };
+      
+      const response = await fetch(endpoint, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify(payload)
+      });
+      
+      if (response.ok) {
+        const result = await response.json();
+        toast({
+          title: "Mapping Successful!",
+          description: result.message,
+          variant: "default"
+        });
+        
+        // Refresh the data to show new mapping
+        window.location.reload();
+      } else {
+        const error = await response.json();
+        toast({
+          title: "Mapping Failed",
+          description: error.error || "Failed to map elements",
+          variant: "destructive"
+        });
+      }
+    } catch (error) {
+      console.error('Mapping error:', error);
+      toast({
+        title: "Error",
+        description: "Network error during mapping",
+        variant: "destructive"
+      });
+    }
+    
+    setConfirmMapping(null);
+  };
 
   // Fetch grid positions for proper positioning
   const { data: gridPositions } = useQuery({
@@ -221,8 +284,11 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
       // Element dragging mode - update element position and all grouped elements
       const rect = gridContainerRef.current?.getBoundingClientRect();
       if (rect) {
-        const newX = (e.clientX - rect.left - offset.x) / zoom;
-        const newY = (e.clientY - rect.top - offset.y) / zoom;
+        // Fix cursor tracking: calculate position based on mouse delta from start position
+        const mouseDeltaX = e.clientX - draggedElement.startPos.x;
+        const mouseDeltaY = e.clientY - draggedElement.startPos.y;
+        const newX = (draggedElement.initialPos.x + mouseDeltaX / zoom);
+        const newY = (draggedElement.initialPos.y + mouseDeltaY / zoom);
         
         // Calculate movement delta
         const currentPos = elementPositions[`${draggedElement.type}-${draggedElement.id}`];
@@ -299,11 +365,62 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
 
   const handleMouseUp = (e?: React.MouseEvent) => {
     if (draggedElement && e) {
-      // Save final position of dragged element and all grouped elements
-      const rect = gridContainerRef.current?.getBoundingClientRect();
-      if (rect) {
-        const newX = (e.clientX - rect.left - offset.x) / zoom;
-        const newY = (e.clientY - rect.top - offset.y) / zoom;
+      // Calculate final position using same logic as mouse move
+      const mouseDeltaX = e.clientX - draggedElement.startPos.x;
+      const mouseDeltaY = e.clientY - draggedElement.startPos.y;
+      const newX = draggedElement.initialPos.x + mouseDeltaX / zoom;
+      const newY = draggedElement.initialPos.y + mouseDeltaY / zoom;
+      
+      // Check for collision/mapping opportunities
+      let targetElement = null;
+      
+      if (draggedElement.type === 'dot') {
+        // Check if dot is dropped on a wheel
+        for (const wheel of wheels) {
+          const wheelPos = elementPositions[`wheel-${wheel.id}`] || wheel.position;
+          if (wheelPos) {
+            const distance = Math.sqrt(Math.pow(newX - wheelPos.x, 2) + Math.pow(newY - wheelPos.y, 2));
+            const wheelRadius = getWheelSize('real', wheel.dots?.length || 0, wheel.dots || []);
+            if (distance < wheelRadius) {
+              targetElement = { type: 'wheel', id: wheel.id, name: wheel.heading || wheel.name };
+              break;
+            }
+          }
+        }
+      } else if (draggedElement.type === 'wheel') {
+        // Check if wheel is dropped on a chakra
+        for (const chakra of chakras) {
+          const chakraPos = elementPositions[`chakra-${chakra.id}`] || chakra.position;
+          if (chakraPos) {
+            const distance = Math.sqrt(Math.pow(newX - chakraPos.x, 2) + Math.pow(newY - chakraPos.y, 2));
+            const chakraRadius = chakra.radius || 420;
+            if (distance < chakraRadius / 2) {
+              targetElement = { type: 'chakra', id: chakra.id, name: chakra.heading || chakra.name };
+              break;
+            }
+          }
+        }
+      }
+      
+      // If collision detected, show confirmation dialog
+      if (targetElement) {
+        const sourceElement = draggedElement.type === 'dot' 
+          ? dots.find(d => d.id === draggedElement.id)
+          : wheels.find(w => w.id === draggedElement.id);
+        
+        if (sourceElement) {
+          setConfirmMapping({
+            sourceType: draggedElement.type as 'dot' | 'wheel',
+            sourceId: draggedElement.id,
+            sourceName: draggedElement.type === 'dot' 
+              ? (sourceElement as Dot).oneWordSummary 
+              : (sourceElement as Wheel).heading || (sourceElement as Wheel).name,
+            targetType: targetElement.type as 'wheel' | 'chakra',
+            targetId: targetElement.id,
+            targetName: targetElement.name
+          });
+        }
+      }
         
         // Calculate movement delta for final positioning
         const currentPos = elementPositions[`${draggedElement.type}-${draggedElement.id}`];
@@ -793,7 +910,13 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                   onMouseDown={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    setDraggedElement({type: 'wheel', id: wheel.id, startPos: {x: e.clientX, y: e.clientY}});
+                    const currentPos = elementPositions[`wheel-${wheel.id}`] || { x: wheelX, y: wheelY };
+                    setDraggedElement({
+                      type: 'wheel', 
+                      id: wheel.id, 
+                      startPos: {x: e.clientX, y: e.clientY},
+                      initialPos: currentPos
+                    });
                   }}
                   onMouseEnter={() => !draggedElement && setHoveredWheel(wheel)}
                   onMouseLeave={() => setHoveredWheel(null)}
@@ -989,7 +1112,13 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                   onMouseDown={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    setDraggedElement({type: 'dot', id: dot.id, startPos: {x: e.clientX, y: e.clientY}});
+                    const currentPos = elementPositions[`dot-${dot.id}`] || { x, y };
+                    setDraggedElement({
+                      type: 'dot', 
+                      id: dot.id, 
+                      startPos: {x: e.clientX, y: e.clientY},
+                      initialPos: currentPos
+                    });
                   }}
                   onMouseEnter={() => !draggedElement && setHoveredDot(dot)}
                   onMouseLeave={() => setHoveredDot(null)}
@@ -1179,7 +1308,13 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                   onMouseDown={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    setDraggedElement({type: 'wheel', id: wheel.id, startPos: {x: e.clientX, y: e.clientY}});
+                    const currentPos = elementPositions[`wheel-${wheel.id}`] || { x: wheelX, y: wheelY };
+                    setDraggedElement({
+                      type: 'wheel', 
+                      id: wheel.id, 
+                      startPos: {x: e.clientX, y: e.clientY},
+                      initialPos: currentPos
+                    });
                   }}
                   onMouseEnter={() => !draggedElement && setHoveredWheel(wheel)}
                   onMouseLeave={() => setHoveredWheel(null)}
@@ -1271,6 +1406,51 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
           </div>
         </div>
       )}
+
+      {/* Mapping Confirmation Dialog */}
+      <Dialog open={!!confirmMapping} onOpenChange={() => setConfirmMapping(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <AlertCircle className="w-5 h-5 text-amber-500" />
+              Confirm Mapping
+            </DialogTitle>
+          </DialogHeader>
+          
+          {confirmMapping && (
+            <div className="space-y-4">
+              <p className="text-gray-600">
+                Are you sure you want to map <strong>"{confirmMapping.sourceName}"</strong> to{' '}
+                <strong>"{confirmMapping.targetName}"</strong>?
+              </p>
+              
+              <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+                <p className="text-sm text-amber-800">
+                  {confirmMapping.sourceType === 'dot' 
+                    ? "This dot will become part of the selected wheel and move to its location."
+                    : "This wheel will become part of the selected chakra and all its dots will move with it."
+                  }
+                </p>
+              </div>
+            </div>
+          )}
+          
+          <DialogFooter className="gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setConfirmMapping(null)}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleConfirmMapping}
+              className="bg-amber-500 hover:bg-amber-600 text-white"
+            >
+              Confirm Mapping
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
