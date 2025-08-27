@@ -250,7 +250,7 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
       console.error('❌ Mapping save error:', error);
       toast({
         title: "Error", 
-        description: `Failed to update mapping: ${error.message}`,
+        description: `Failed to update mapping: ${error instanceof Error ? error.message : 'Unknown error'}`,
         variant: "destructive",
       });
     } finally {
@@ -321,7 +321,7 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
       console.error('❌ Delink save error:', error);
       toast({
         title: "Error",
-        description: `Failed to delink: ${error.message}`,
+        description: `Failed to delink: ${error instanceof Error ? error.message : 'Unknown error'}`,
         variant: "destructive",
       });
     } finally {
@@ -1940,7 +1940,7 @@ const UserGrid: React.FC<UserGridProps> = ({
       {/* Full Dot View Modal */}
       {viewFullDot && (
         <DotFullView
-          dot={viewFullDot}
+          dot={viewFullDot as any}
           onClose={() => setViewFullDot(null)}
         />
       )}
