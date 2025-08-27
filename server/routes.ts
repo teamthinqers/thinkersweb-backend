@@ -23,9 +23,7 @@ import { db } from "@db";
 import { setupAuth, isAuthenticated } from "./auth";
 import { 
   setupDotSparkRoutes, 
-  requireDotSparkActivation, 
-  trackUserBehavior,
-  checkDotSparkActivation 
+  trackUserBehavior
 } from "./dotspark-activation";
 import { 
   initializeIntelligentContext,
