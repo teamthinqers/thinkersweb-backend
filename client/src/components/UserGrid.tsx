@@ -611,15 +611,13 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                   onMouseDown={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    // Calculate offset from cursor to element center
+                    // Calculate offset from cursor to element's top-left corner
                     const rect = e.currentTarget.getBoundingClientRect();
-                    const centerX = rect.left + rect.width / 2;
-                    const centerY = rect.top + rect.height / 2;
                     setDraggedElement({
                       type: 'chakra', 
                       id: chakra.id, 
                       startPos: {x: e.clientX, y: e.clientY},
-                      offset: {x: e.clientX - centerX, y: e.clientY - centerY}
+                      offset: {x: e.clientX - rect.left, y: e.clientY - rect.top}
                     });
                   }}
                   onMouseEnter={() => !draggedElement && setHoveredChakra(chakra)}
@@ -804,15 +802,13 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                   onMouseDown={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    // Calculate offset from cursor to element center
+                    // Calculate offset from cursor to element's top-left corner
                     const rect = e.currentTarget.getBoundingClientRect();
-                    const centerX = rect.left + rect.width / 2;
-                    const centerY = rect.top + rect.height / 2;
                     setDraggedElement({
                       type: 'wheel', 
                       id: wheel.id, 
                       startPos: {x: e.clientX, y: e.clientY},
-                      offset: {x: e.clientX - centerX, y: e.clientY - centerY}
+                      offset: {x: e.clientX - rect.left, y: e.clientY - rect.top}
                     });
                   }}
                   onMouseEnter={() => !draggedElement && setHoveredWheel(wheel)}
@@ -1009,15 +1005,13 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                   onMouseDown={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    // Calculate offset from cursor to element center
+                    // Calculate offset from cursor to element's top-left corner
                     const rect = e.currentTarget.getBoundingClientRect();
-                    const centerX = rect.left + rect.width / 2;
-                    const centerY = rect.top + rect.height / 2;
                     setDraggedElement({
                       type: 'dot', 
                       id: dot.id, 
                       startPos: {x: e.clientX, y: e.clientY},
-                      offset: {x: e.clientX - centerX, y: e.clientY - centerY}
+                      offset: {x: e.clientX - rect.left, y: e.clientY - rect.top}
                     });
                   }}
                   onMouseEnter={() => !draggedElement && setHoveredDot(dot)}
@@ -1208,15 +1202,13 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                   onMouseDown={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    // Calculate offset from cursor to element center
+                    // Calculate offset from cursor to element's top-left corner
                     const rect = e.currentTarget.getBoundingClientRect();
-                    const centerX = rect.left + rect.width / 2;
-                    const centerY = rect.top + rect.height / 2;
                     setDraggedElement({
                       type: 'wheel', 
                       id: wheel.id, 
                       startPos: {x: e.clientX, y: e.clientY},
-                      offset: {x: e.clientX - centerX, y: e.clientY - centerY}
+                      offset: {x: e.clientX - rect.left, y: e.clientY - rect.top}
                     });
                   }}
                   onMouseEnter={() => !draggedElement && setHoveredWheel(wheel)}
