@@ -60,7 +60,7 @@ router.post('/dots', checkDotSparkActivation, async (req, res) => {
       pulse: req.body.pulse,
       sourceType: req.body.sourceType || 'text',
       captureMode: rawMode ? 'raw' : (req.body.captureMode || 'natural'),
-      wheelId: req.body.wheelId || '',
+      wheelId: req.body.wheelId && req.body.wheelId !== '' ? parseInt(req.body.wheelId) : null,
       voiceData: req.body.voiceData || null,
       rawMode: rawMode
     };
@@ -98,23 +98,28 @@ router.post('/dots', checkDotSparkActivation, async (req, res) => {
       });
     }
     
-    // Create dot in entries table (working approach)
-    const [newEntry] = await db.insert(entries).values({
+    // Create dot in proper dots table
+    const [newDot] = await db.insert(dots).values({
       userId: userId,
-      title: dotData.oneWordSummary,
-      content: JSON.stringify(dotData), // Store full dot data as JSON
-      categoryId: 1 // Default category
+      oneWordSummary: dotData.oneWordSummary,
+      summary: dotData.summary,
+      anchor: dotData.anchor,
+      pulse: dotData.pulse,
+      sourceType: dotData.sourceType,
+      captureMode: dotData.captureMode === 'raw' ? 'natural' : dotData.captureMode,
+      wheelId: dotData.wheelId,
+      voiceData: dotData.voiceData ? JSON.stringify(dotData.voiceData) : null
     }).returning();
     
     // Store in Pinecone for intelligence
     try {
-      const vectorId = `dot_${userId}_${newEntry.id}_${Date.now()}`;
+      const vectorId = `dot_${userId}_${newDot.id}_${Date.now()}`;
       const content = `${dotData.summary} ${dotData.anchor} ${dotData.pulse}`;
       
       // Store vector embedding reference
       await db.insert(vectorEmbeddings).values({
         contentType: 'dot',
-        contentId: newEntry.id,
+        contentId: newDot.id,
         userId: userId,
         vectorId: vectorId,
         content: content,
@@ -122,11 +127,11 @@ router.post('/dots', checkDotSparkActivation, async (req, res) => {
           sourceType: dotData.sourceType,
           captureMode: dotData.captureMode,
           wheelId: dotData.wheelId,
-          createdAt: newEntry.createdAt
+          createdAt: newDot.createdAt
         })
       });
       
-      console.log(`Stored dot entry ${newEntry.id} in vector database with ID: ${vectorId}`);
+      console.log(`Stored dot ${newDot.id} in vector database with ID: ${vectorId}`);
     } catch (vectorError) {
       console.warn('Failed to store in vector database:', vectorError);
       // Continue without vector storage - dot is still created
@@ -134,17 +139,17 @@ router.post('/dots', checkDotSparkActivation, async (req, res) => {
     
     // Return formatted response matching the fetch format
     const responseData = {
-      id: `entry_${newEntry.id}`,
+      id: `dot_${newDot.id}`,
       oneWordSummary: dotData.oneWordSummary,
       summary: dotData.summary,
       anchor: dotData.anchor,
       pulse: dotData.pulse,
       sourceType: dotData.sourceType,
       captureMode: dotData.captureMode,
-      wheelId: dotData.wheelId,
-      timestamp: newEntry.createdAt,
-      createdAt: newEntry.createdAt,
-      updatedAt: newEntry.updatedAt,
+      wheelId: dotData.wheelId?.toString(),
+      timestamp: newDot.createdAt,
+      createdAt: newDot.createdAt,
+      updatedAt: newDot.updatedAt,
       voiceData: dotData.voiceData
     };
     
@@ -234,58 +239,95 @@ router.post('/wheels', checkDotSparkActivation, async (req, res) => {
   }
 });
 
-// Get user's dots from the entries table (where actual data is stored)
+// Get all dots for the authenticated user from dots table
 router.get('/dots', checkDotSparkActivation, async (req, res) => {
   try {
     const userId = req.user!.id;
     console.log(`🔍 Fetching dots for user ID: ${userId}`);
     
-    // Query entries table where dots are actually stored as JSON
-    const userEntries = await db.query.entries.findMany({
-      where: eq(entries.userId, userId),
-      orderBy: desc(entries.createdAt)
-    });
-    
-    console.log(`📊 Found ${userEntries.length} entries for user ${userId}`);
-    
-    // Parse JSON content and format as dots
-    const formattedDots = userEntries.map(entry => {
-      try {
-        const content = typeof entry.content === 'string' ? JSON.parse(entry.content) : entry.content;
-        return {
-          id: `entry_${entry.id}`,
-          oneWordSummary: content.oneWordSummary || entry.title || 'Untitled',
-          summary: content.summary || entry.title || 'No summary',
-          anchor: content.anchor || '',
-          pulse: content.pulse || 'neutral',
-          sourceType: content.sourceType || 'text',
-          captureMode: content.captureMode || 'natural',
-          wheelId: content.wheelId || '',
-          timestamp: entry.createdAt,
-          createdAt: entry.createdAt,
-          updatedAt: entry.updatedAt,
-          voiceData: content.voiceData || null
-        };
-      } catch (parseError) {
-        console.warn(`Failed to parse entry ${entry.id}:`, parseError);
-        return {
-          id: `entry_${entry.id}`,
-          oneWordSummary: entry.title || 'Untitled',
-          summary: entry.title || 'No summary',
-          anchor: '',
-          pulse: 'neutral',
-          sourceType: 'text',
-          captureMode: 'natural',
-          wheelId: '',
-          timestamp: entry.createdAt,
-          createdAt: entry.createdAt,
-          updatedAt: entry.updatedAt,
-          voiceData: null
-        };
+    // First try to fetch from proper dots table
+    let userDots = await db.query.dots.findMany({
+      where: eq(dots.userId, userId),
+      orderBy: desc(dots.createdAt),
+      with: {
+        wheel: true // Include wheel relationship data
       }
     });
     
-    console.log(`✅ Returning ${formattedDots.length} formatted dots from entries`);
+    // If no dots found in dots table, fallback to entries table for backward compatibility
+    if (userDots.length === 0) {
+      console.log(`📊 No dots in dots table, checking entries table for user ${userId}`);
+      const userEntries = await db.query.entries.findMany({
+        where: eq(entries.userId, userId),
+        orderBy: desc(entries.createdAt)
+      });
+      
+      console.log(`📊 Found ${userEntries.length} entries for user ${userId}`);
+      
+      // Parse JSON content and format as dots
+      const formattedDots = userEntries.map(entry => {
+        try {
+          const content = typeof entry.content === 'string' ? JSON.parse(entry.content) : entry.content;
+          return {
+            id: `entry_${entry.id}`,
+            oneWordSummary: content.oneWordSummary || entry.title || 'Untitled',
+            summary: content.summary || entry.title || 'No summary',
+            anchor: content.anchor || '',
+            pulse: content.pulse || 'neutral',
+            sourceType: content.sourceType || 'text',
+            captureMode: content.captureMode || 'natural',
+            wheelId: content.wheelId || '',
+            timestamp: entry.createdAt,
+            createdAt: entry.createdAt,
+            updatedAt: entry.updatedAt,
+            voiceData: content.voiceData || null
+          };
+        } catch (parseError) {
+          console.warn(`Failed to parse entry ${entry.id}:`, parseError);
+          return {
+            id: `entry_${entry.id}`,
+            oneWordSummary: entry.title || 'Untitled',
+            summary: entry.title || 'No summary',
+            anchor: '',
+            pulse: 'neutral',
+            sourceType: 'text',
+            captureMode: 'natural',
+            wheelId: '',
+            timestamp: entry.createdAt,
+            createdAt: entry.createdAt,
+            updatedAt: entry.updatedAt,
+            voiceData: null
+          };
+        }
+      });
+      
+      console.log(`✅ Returning ${formattedDots.length} formatted dots from entries`);
+      return res.json(formattedDots);
+    }
+    
+    // Transform dots table data to frontend format
+    const formattedDots = userDots.map(dot => ({
+      id: `dot_${dot.id}`,
+      oneWordSummary: dot.oneWordSummary,
+      summary: dot.summary,
+      anchor: dot.anchor,
+      pulse: dot.pulse,
+      sourceType: dot.sourceType,
+      captureMode: dot.captureMode,
+      wheelId: dot.wheelId?.toString() || null,
+      timestamp: dot.createdAt,
+      createdAt: dot.createdAt,
+      updatedAt: dot.updatedAt,
+      voiceData: dot.voiceData ? JSON.parse(dot.voiceData) : null,
+      // Include wheel data if available
+      wheel: dot.wheel ? {
+        id: dot.wheel.id.toString(),
+        heading: dot.wheel.heading,
+        goals: dot.wheel.goals
+      } : null
+    }));
+    
+    console.log(`✅ Returning ${formattedDots.length} formatted dots from dots table`);
     res.json(formattedDots);
     
   } catch (error) {
@@ -303,15 +345,18 @@ router.get('/wheels', checkDotSparkActivation, async (req, res) => {
     const userId = req.user!.id;
     console.log(`🔍 Fetching wheels for user ID: ${userId}`);
     
-    // Query actual wheels table
+    // Query actual wheels table with chakra relationships
     const userWheels = await db.query.wheels.findMany({
       where: eq(wheels.userId, userId),
-      orderBy: desc(wheels.createdAt)
+      orderBy: desc(wheels.createdAt),
+      with: {
+        chakra: true // Include chakra relationship data
+      }
     });
     
     console.log(`📊 Found ${userWheels.length} wheels for user ${userId}`);
     
-    // Transform to frontend format
+    // Transform to frontend format with chakra relationship data
     const formattedWheels = userWheels.map(wheel => ({
       id: wheel.id.toString(),
       name: wheel.heading,
@@ -325,7 +370,13 @@ router.get('/wheels', checkDotSparkActivation, async (req, res) => {
       chakraId: wheel.chakraId ? wheel.chakraId.toString() : undefined,
       sourceType: wheel.sourceType || 'text',
       createdAt: wheel.createdAt,
-      updatedAt: wheel.updatedAt
+      updatedAt: wheel.updatedAt,
+      // Include chakra data if available
+      chakra: wheel.chakra ? {
+        id: wheel.chakra.id.toString(),
+        heading: wheel.chakra.heading,
+        purpose: wheel.chakra.purpose
+      } : null
     }));
     
     console.log(`✅ Returning ${formattedWheels.length} formatted wheels`);
@@ -475,6 +526,113 @@ router.get('/stats', checkDotSparkActivation, async (req, res) => {
   } catch (error) {
     console.error('Error fetching user stats:', error);
     res.status(500).json({ error: 'Failed to fetch statistics' });
+  }
+});
+
+// Update dot-to-wheel relationship
+router.patch('/dots/:id/relationship', checkDotSparkActivation, async (req, res) => {
+  try {
+    const userId = req.user!.id;
+    const dotId = parseInt(req.params.id);
+    const { wheelId } = req.body; // New wheel ID or null to remove relationship
+    
+    console.log(`🔗 Updating dot ${dotId} relationship to wheel ${wheelId} for user ${userId}`);
+    
+    // Validate wheelId if provided
+    if (wheelId && wheelId !== null) {
+      const targetWheel = await db.query.wheels.findFirst({
+        where: and(eq(wheels.id, parseInt(wheelId)), eq(wheels.userId, userId))
+      });
+      
+      if (!targetWheel) {
+        return res.status(400).json({ error: 'Invalid wheel ID or access denied' });
+      }
+    }
+    
+    // Try updating in dots table first
+    const dotResult = await db.update(dots)
+      .set({ wheelId: wheelId ? parseInt(wheelId) : null })
+      .where(and(eq(dots.id, dotId), eq(dots.userId, userId)))
+      .returning();
+    
+    if (dotResult.length === 0) {
+      // Fallback: Try updating in entries table
+      const entryResult = await db.query.entries.findFirst({
+        where: and(eq(entries.id, dotId), eq(entries.userId, userId))
+      });
+      
+      if (entryResult) {
+        try {
+          const content = JSON.parse(entryResult.content || '{}');
+          content.wheelId = wheelId;
+          
+          await db.update(entries)
+            .set({ content: JSON.stringify(content) })
+            .where(and(eq(entries.id, dotId), eq(entries.userId, userId)));
+          
+          console.log(`✅ Updated entry ${dotId} relationship in entries table`);
+        } catch (parseError) {
+          console.error('Failed to parse entry content:', parseError);
+          return res.status(500).json({ error: 'Failed to update relationship' });
+        }
+      } else {
+        return res.status(404).json({ error: 'Dot not found' });
+      }
+    } else {
+      console.log(`✅ Updated dot ${dotId} relationship in dots table`);
+    }
+    
+    res.json({ 
+      success: true, 
+      message: `Dot relationship ${wheelId ? 'updated' : 'removed'} successfully` 
+    });
+    
+  } catch (error) {
+    console.error('Error updating dot relationship:', error);
+    res.status(500).json({ error: 'Failed to update relationship' });
+  }
+});
+
+// Update wheel-to-chakra relationship  
+router.patch('/wheels/:id/relationship', checkDotSparkActivation, async (req, res) => {
+  try {
+    const userId = req.user!.id;
+    const wheelId = parseInt(req.params.id);
+    const { chakraId } = req.body; // New chakra ID or null to remove relationship
+    
+    console.log(`🔗 Updating wheel ${wheelId} relationship to chakra ${chakraId} for user ${userId}`);
+    
+    // Validate chakraId if provided
+    if (chakraId && chakraId !== null) {
+      const targetChakra = await db.query.chakras.findFirst({
+        where: and(eq(chakras.id, parseInt(chakraId)), eq(chakras.userId, userId))
+      });
+      
+      if (!targetChakra) {
+        return res.status(400).json({ error: 'Invalid chakra ID or access denied' });
+      }
+    }
+    
+    // Update wheel's chakra relationship
+    const updateResult = await db.update(wheels)
+      .set({ chakraId: chakraId ? parseInt(chakraId) : null })
+      .where(and(eq(wheels.id, wheelId), eq(wheels.userId, userId)))
+      .returning();
+    
+    if (updateResult.length === 0) {
+      return res.status(404).json({ error: 'Wheel not found' });
+    }
+    
+    console.log(`✅ Updated wheel ${wheelId} relationship to chakra ${chakraId}`);
+    
+    res.json({ 
+      success: true, 
+      message: `Wheel relationship ${chakraId ? 'updated' : 'removed'} successfully` 
+    });
+    
+  } catch (error) {
+    console.error('Error updating wheel relationship:', error);
+    res.status(500).json({ error: 'Failed to update relationship' });
   }
 });
 
