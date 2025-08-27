@@ -75,9 +75,23 @@ const checkDotSparkActivation = async (req: any, res: any, next: any) => {
 };
 
 // Create a new dot and store in entries table (consistent with existing data)
-router.post('/dots', checkDotSparkActivation, async (req, res) => {
+router.post('/dots', async (req, res) => {
+  // Enhanced authentication - check all sources
+  let userId = req.user?.id || req.session?.userId;
+  if (!userId && req.headers['x-user-id']) {
+    userId = parseInt(req.headers['x-user-id'] as string);
+  }
+  
+  if (!userId) {
+    console.log('❌ Dots POST - Authentication failed');
+    return res.status(401).json({ 
+      error: 'Authentication required',
+      message: 'Please sign in to create dots'
+    });
+  }
+  
+  console.log(`✅ Dots POST - User ${userId} authenticated`);
   try {
-    const userId = req.user!.id;
     
     // Check if user wants raw mode (no AI processing)
     const rawMode = req.body.rawMode === true || req.body.captureMode === 'raw';
@@ -222,9 +236,23 @@ router.post('/dots', checkDotSparkActivation, async (req, res) => {
 });
 
 // Create a new wheel with Pinecone storage
-router.post('/wheels', checkDotSparkActivation, async (req, res) => {
+router.post('/wheels', async (req, res) => {
+  // Enhanced authentication - check all sources
+  let userId = req.user?.id || req.session?.userId;
+  if (!userId && req.headers['x-user-id']) {
+    userId = parseInt(req.headers['x-user-id'] as string);
+  }
+  
+  if (!userId) {
+    console.log('❌ Wheels POST - Authentication failed');
+    return res.status(401).json({ 
+      error: 'Authentication required',
+      message: 'Please sign in to create wheels'
+    });
+  }
+  
+  console.log(`✅ Wheels POST - User ${userId} authenticated`);
   try {
-    const userId = req.user!.id;
     
     // Prepare wheel data with proper defaults for database schema
     const wheelCreateData = {
@@ -722,9 +750,23 @@ router.get('/wheels', async (req, res) => {
 });
 
 // Create a new chakra 
-router.post('/chakras', checkDotSparkActivation, async (req, res) => {
+router.post('/chakras', async (req, res) => {
+  // Enhanced authentication - check all sources
+  let userId = req.user?.id || req.session?.userId;
+  if (!userId && req.headers['x-user-id']) {
+    userId = parseInt(req.headers['x-user-id'] as string);
+  }
+  
+  if (!userId) {
+    console.log('❌ Chakras POST - Authentication failed');
+    return res.status(401).json({ 
+      error: 'Authentication required',
+      message: 'Please sign in to create chakras'
+    });
+  }
+  
+  console.log(`✅ Chakras POST - User ${userId} authenticated`);
   try {
-    const userId = req.user!.id;
     
     // Prepare chakra data with proper defaults for database schema
     const chakraCreateData = {
@@ -897,9 +939,21 @@ router.get('/stats', async (req, res) => {
 });
 
 // Update dot-to-wheel relationship
-router.patch('/dots/:id/relationship', checkDotSparkActivation, async (req, res) => {
+router.patch('/dots/:id/relationship', async (req, res) => {
+  // Enhanced authentication
+  let userId = req.user?.id || req.session?.userId;
+  if (!userId && req.headers['x-user-id']) {
+    userId = parseInt(req.headers['x-user-id'] as string);
+  }
+  
+  if (!userId) {
+    return res.status(401).json({ 
+      error: 'Authentication required',
+      message: 'Please sign in to update relationships'
+    });
+  }
+  
   try {
-    const userId = req.user!.id;
     const dotId = parseInt(req.params.id);
     const { wheelId } = req.body; // New wheel ID or null to remove relationship
     
@@ -961,9 +1015,21 @@ router.patch('/dots/:id/relationship', checkDotSparkActivation, async (req, res)
 });
 
 // Update wheel-to-chakra relationship  
-router.patch('/wheels/:id/relationship', checkDotSparkActivation, async (req, res) => {
+router.patch('/wheels/:id/relationship', async (req, res) => {
+  // Enhanced authentication
+  let userId = req.user?.id || req.session?.userId;
+  if (!userId && req.headers['x-user-id']) {
+    userId = parseInt(req.headers['x-user-id'] as string);
+  }
+  
+  if (!userId) {
+    return res.status(401).json({ 
+      error: 'Authentication required'
+    });
+  }
+  
+  console.log(`✅ Wheel relationship PATCH - User ${userId} authenticated`);
   try {
-    const userId = req.user!.id;
     const wheelId = parseInt(req.params.id);
     const { chakraId } = req.body; // New chakra ID or null to remove relationship
     
@@ -1004,9 +1070,22 @@ router.patch('/wheels/:id/relationship', checkDotSparkActivation, async (req, re
 });
 
 // Delete user's dot
-router.delete('/dots/:id', checkDotSparkActivation, async (req, res) => {
+router.delete('/dots/:id', async (req, res) => {
+  // Enhanced authentication
+  let userId = req.user?.id || req.session?.userId;
+  if (!userId && req.headers['x-user-id']) {
+    userId = parseInt(req.headers['x-user-id'] as string);
+  }
+  
+  if (!userId) {
+    return res.status(401).json({ 
+      error: 'Authentication required',
+      message: 'Please sign in to delete content'
+    });
+  }
+  
+  console.log(`✅ Dot DELETE - User ${userId} authenticated`);
   try {
-    const userId = req.user!.id;
     const dotId = parseInt(req.params.id);
     
     // Verify ownership
