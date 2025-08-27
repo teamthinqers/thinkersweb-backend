@@ -459,19 +459,22 @@ export function setupAuth(app: Express) {
         }
         
         if (user) {
-          // Update existing user with Firebase UID
+          // Update existing user with Firebase UID using raw query to avoid schema mismatch
           console.log(`Updating user ${user.id} with Firebase UID`);
-          const [updatedUser] = await db.update(users)
-            .set({ 
-              firebaseUid: uid,
-              fullName: displayName || user.fullName || user.username,
-              avatar: photoURL || user.avatar,
-              updatedAt: new Date()
-            })
-            .where(eq(users.id, user.id))
-            .returning();
-            
-          user = updatedUser;
+          
+          const result = await db.execute(sql`
+            UPDATE users 
+            SET firebase_uid = ${uid},
+                full_name_old = ${displayName || user.full_name_old || user.username},
+                avatar = ${photoURL || user.avatar},
+                updated_at = ${new Date()}
+            WHERE id = ${user.id}
+            RETURNING *
+          `);
+          
+          if (result.rows && result.rows.length > 0) {
+            user = result.rows[0] as any;
+          }
         } else {
           // Create new user if none exists
           isNewUser = true;

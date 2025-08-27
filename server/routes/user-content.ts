@@ -23,18 +23,26 @@ const router = express.Router();
 // PROPER AUTHENTICATION CHECK: Only allow authenticated users
 const checkDotSparkActivation = async (req: any, res: any, next: any) => {
   try {
-    // Check if user is properly authenticated
-    if (!req.user || !req.user.id) {
+    // Check multiple auth sources - req.user (Firebase) or req.session.userId (session)
+    const userId = req.user?.id || req.session?.userId;
+    
+    if (!userId) {
+      console.log('❌ Authentication failed - no user ID found');
       return res.status(401).json({ 
         error: 'Authentication required',
         message: 'Please sign in to access DotSpark features'
       });
     }
     
+    // Ensure req.user is set for consistency
+    if (!req.user) {
+      req.user = { id: userId };
+    }
+    
     // Enable DotSpark activation for authenticated users
     req.user.dotSparkActivated = true;
     
-    console.log(`✅ Authenticated user ${req.user.id} accessing DotSpark`);
+    console.log(`✅ Authenticated user ${userId} accessing DotSpark`);
     next();
   } catch (error) {
     console.error('Error in authentication check:', error);
