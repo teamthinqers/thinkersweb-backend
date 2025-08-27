@@ -603,7 +603,7 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                   onClick={(e) => {
                     if (!draggedElement) {
                       e.stopPropagation();
-                      // Add chakra click functionality if needed
+                      setViewFullWheel(chakra);
                     }
                   }}
                   onMouseDown={(e) => {
@@ -636,8 +636,8 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                   <div 
                     className="absolute bg-white/95 backdrop-blur border-2 border-amber-200 rounded-lg p-3 shadow-2xl w-64 cursor-pointer"
                     style={{
-                      left: `${chakraX + chakraRadius/2 + 20}px`,
-                      top: `${Math.max(0, chakraY - 50)}px`,
+                      left: `${chakraX - 140}px`,
+                      top: `${chakraY - 120}px`,
                       maxWidth: '280px',
                       zIndex: 1000,
                       boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.05)'
@@ -812,8 +812,8 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                   {/* Wheel content */}
                   <div className="absolute inset-0 flex items-center justify-center p-2">
                     <div className="text-center">
-                      <div className="text-xs text-orange-600">
-                        {wheelDots.length} dots
+                      <div className="text-xs text-orange-600 font-medium">
+                        Goal Project
                       </div>
                     </div>
                   </div>
@@ -1200,8 +1200,8 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                   {/* Wheel content */}
                   <div className="absolute inset-0 flex items-center justify-center p-2">
                     <div className="text-center">
-                      <div className="text-xs text-orange-600">
-                        {wheelDots.length} dots
+                      <div className="text-xs text-orange-600 font-medium">
+                        Goal Project
                       </div>
                     </div>
                   </div>

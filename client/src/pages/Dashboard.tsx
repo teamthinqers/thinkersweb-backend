@@ -2376,6 +2376,8 @@ const Dashboard: React.FC = () => {
                 console.error('Error deleting wheel:', error);
               }
             }}
+            onDotClick={(dot) => setViewFullDot(dot)}
+            onWheelClick={(wheel) => setViewFullWheel(wheel)}
           />
         )}
       </div>
@@ -2721,6 +2723,8 @@ const Dashboard: React.FC = () => {
               console.error('Error deleting wheel:', error);
             }
           }}
+          onDotClick={(dot) => setViewFullDot(dot)}
+          onWheelClick={(wheel) => setViewFullWheel(wheel)}
         />
       )}
       

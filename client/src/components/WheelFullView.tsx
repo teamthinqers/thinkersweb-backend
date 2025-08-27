@@ -1,8 +1,9 @@
 import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
-import { Clock, Target, Calendar, Trash2 } from 'lucide-react';
+import { Clock, Target, Calendar, Trash2, Zap, Wheel as WheelIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useQuery } from '@tanstack/react-query';
 
 interface Wheel {
   id: string;
@@ -22,9 +23,11 @@ interface WheelFullViewProps {
   isOpen?: boolean;
   onClose: () => void;
   onDelete?: (wheelId: string) => void;
+  onDotClick?: (dot: any) => void;
+  onWheelClick?: (wheel: any) => void;
 }
 
-const WheelFullView: React.FC<WheelFullViewProps> = ({ wheel, isOpen = true, onClose, onDelete }) => {
+const WheelFullView: React.FC<WheelFullViewProps> = ({ wheel, isOpen = true, onClose, onDelete, onDotClick, onWheelClick }) => {
   if (!wheel) return null;
 
   // A chakra is identified by having a 'purpose' field, while wheels have 'goals'
@@ -130,6 +133,9 @@ const WheelFullView: React.FC<WheelFullViewProps> = ({ wheel, isOpen = true, onC
             </div>
           )}
 
+          {/* Associated Content */}
+          <AssociatedContent wheel={wheel} isChakra={isChakra} onDotClick={onDotClick} onWheelClick={onWheelClick} />
+
           {/* Metadata */}
           <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
             <div className="flex items-center gap-2 text-sm text-gray-600">
@@ -150,6 +156,145 @@ const WheelFullView: React.FC<WheelFullViewProps> = ({ wheel, isOpen = true, onC
         </div>
       </DialogContent>
     </Dialog>
+  );
+};
+
+// Component to handle associated content (dots for wheels, wheels/dots for chakras)
+const AssociatedContent: React.FC<{
+  wheel: Wheel;
+  isChakra: boolean;
+  onDotClick?: (dot: any) => void;
+  onWheelClick?: (wheel: any) => void;
+}> = ({ wheel, isChakra, onDotClick, onWheelClick }) => {
+  // Fetch dots for this wheel (if it's a wheel)
+  const { data: wheelDots } = useQuery({
+    queryKey: [`/api/dots?wheelId=${wheel.id}`],
+    queryFn: async () => {
+      if (isChakra) return []; // Don't fetch dots directly for chakras
+      const response = await fetch(`/api/dots?wheelId=${wheel.id}`);
+      if (!response.ok) return [];
+      return response.json();
+    },
+    enabled: !isChakra && !!wheel.id
+  });
+
+  // Fetch wheels for this chakra (if it's a chakra)
+  const { data: chakraWheels } = useQuery({
+    queryKey: [`/api/wheels?chakraId=${wheel.id}`],
+    queryFn: async () => {
+      if (!isChakra) return []; // Don't fetch wheels for regular wheels
+      const response = await fetch(`/api/wheels?chakraId=${wheel.id}`);
+      if (!response.ok) return [];
+      return response.json();
+    },
+    enabled: isChakra && !!wheel.id
+  });
+
+  // Fetch all dots for chakra wheels
+  const { data: allChakraDots } = useQuery({
+    queryKey: [`/api/dots?chakraId=${wheel.id}`],
+    queryFn: async () => {
+      if (!isChakra || !chakraWheels?.length) return [];
+      const wheelIds = chakraWheels.map((w: any) => w.id).join(',');
+      const response = await fetch(`/api/dots?wheelIds=${wheelIds}`);
+      if (!response.ok) return [];
+      return response.json();
+    },
+    enabled: isChakra && !!chakraWheels?.length
+  });
+
+  if (isChakra) {
+    return (
+      <div className="space-y-4">
+        {/* Associated Wheels */}
+        {chakraWheels && chakraWheels.length > 0 && (
+          <div className="bg-gradient-to-br from-orange-50/60 to-amber-50/60 rounded-xl border-2 border-orange-200 p-4">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-6 h-6 rounded-full bg-gradient-to-r from-orange-600 to-amber-700 flex items-center justify-center">
+                <WheelIcon className="w-3 h-3 text-white" />
+              </div>
+              <h3 className="text-lg font-semibold text-amber-800">
+                Associated Wheels ({chakraWheels.length})
+              </h3>
+            </div>
+            <div className="flex flex-wrap gap-2 pl-8">
+              {chakraWheels.map((associatedWheel: any) => (
+                <Button
+                  key={associatedWheel.id}
+                  variant="outline"
+                  size="sm"
+                  onClick={() => onWheelClick?.(associatedWheel)}
+                  className="bg-orange-100 hover:bg-orange-200 border-orange-300 text-orange-800 text-xs"
+                >
+                  <WheelIcon className="w-3 h-3 mr-1" />
+                  {associatedWheel.heading || associatedWheel.name}
+                </Button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Associated Dots from all wheels */}
+        {allChakraDots && allChakraDots.length > 0 && (
+          <div className="bg-gradient-to-br from-amber-50/60 to-orange-50/60 rounded-xl border-2 border-amber-200 p-4">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-6 h-6 rounded-full bg-gradient-to-r from-amber-600 to-orange-700 flex items-center justify-center">
+                <Zap className="w-3 h-3 text-white" />
+              </div>
+              <h3 className="text-lg font-semibold text-amber-800">
+                All Associated Dots ({allChakraDots.length})
+              </h3>
+            </div>
+            <div className="flex flex-wrap gap-2 pl-8">
+              {allChakraDots.map((dot: any) => (
+                <Button
+                  key={dot.id}
+                  variant="outline"
+                  size="sm"
+                  onClick={() => onDotClick?.(dot)}
+                  className="bg-amber-100 hover:bg-amber-200 border-amber-300 text-amber-800 text-xs"
+                >
+                  <Zap className="w-3 h-3 mr-1" />
+                  {dot.oneWordSummary || dot.summary?.split(' ')[0] || 'Insight'}
+                </Button>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // For regular wheels, show associated dots
+  return (
+    <div>
+      {wheelDots && wheelDots.length > 0 && (
+        <div className="bg-gradient-to-br from-amber-50/60 to-orange-50/60 rounded-xl border-2 border-amber-200 p-4">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-6 h-6 rounded-full bg-gradient-to-r from-amber-600 to-orange-700 flex items-center justify-center">
+              <Zap className="w-3 h-3 text-white" />
+            </div>
+            <h3 className="text-lg font-semibold text-amber-800">
+              Associated Dots ({wheelDots.length})
+            </h3>
+          </div>
+          <div className="flex flex-wrap gap-2 pl-8">
+            {wheelDots.map((dot: any) => (
+              <Button
+                key={dot.id}
+                variant="outline"
+                size="sm"
+                onClick={() => onDotClick?.(dot)}
+                className="bg-amber-100 hover:bg-amber-200 border-amber-300 text-amber-800 text-xs"
+              >
+                <Zap className="w-3 h-3 mr-1" />
+                {dot.oneWordSummary || dot.summary?.split(' ')[0] || 'Insight'}
+              </Button>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 
