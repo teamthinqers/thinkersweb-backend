@@ -15,13 +15,14 @@ interface FormData {
   anchor: string;
   pulse: string;
   wheelId: string;
+  dotChakraId: string;  // For direct dot-to-chakra mapping
   
   // Wheel fields  
   heading: string;
   goals: string;
   timeline: string;
   category: string;
-  chakraId: string;
+  chakraId: string;  // For wheel-to-chakra mapping
   
   // Chakra fields
   purpose: string;
@@ -73,6 +74,7 @@ function GlobalFloatingDotV2() {
     anchor: '',
     pulse: '',
     wheelId: '',
+    dotChakraId: '',
     heading: '',
     goals: '',
     timeline: '',
@@ -160,6 +162,7 @@ function GlobalFloatingDotV2() {
       anchor: '',
       pulse: '',
       wheelId: '',
+      dotChakraId: '',
       heading: '',
       goals: '',
       timeline: '',
@@ -231,7 +234,8 @@ function GlobalFloatingDotV2() {
           summary: formData.summary,
           anchor: formData.anchor,
           pulse: formData.pulse,
-          wheelId: formData.wheelId ? parseInt(formData.wheelId) : null
+          wheelId: formData.wheelId ? parseInt(formData.wheelId) : null,
+          chakraId: formData.dotChakraId ? parseInt(formData.dotChakraId) : null
         };
       } else if (contentType === 'wheel') {
         payload = {
@@ -273,6 +277,7 @@ function GlobalFloatingDotV2() {
           anchor: '',
           pulse: '',
           wheelId: '',
+          dotChakraId: '',
           heading: '',
           goals: '',
           timeline: '',
@@ -537,23 +542,39 @@ function GlobalFloatingDotV2() {
                         </div>
                       </div>
                       
-                      {/* Mandatory wheel selection */}
+                      {/* Optional wheel selection */}
                       <div>
-                        <label className="text-xs font-medium text-amber-700 block mb-1">Which wheel does this belong to? *</label>
+                        <label className="text-xs font-medium text-amber-700 block mb-1">Which wheel does this belong to?</label>
                         <select
                           value={formData.wheelId}
                           onChange={(e) => setFormData({ ...formData, wheelId: e.target.value })}
                           className="w-full p-2 text-sm border border-amber-200 rounded"
-                          required
                         >
-                          <option value="">Select wheel or standalone...</option>
-                          <option value="standalone">Standalone</option>
+                          <option value="">Select wheel (optional)</option>
                           {wheels.map((wheel) => (
                             <option key={wheel.id} value={wheel.id}>
-                              {wheel.name || wheel.heading}
+                              {wheel.heading}
                             </option>
                           ))}
                         </select>
+                      </div>
+
+                      {/* Optional direct chakra mapping */}
+                      <div>
+                        <label className="text-xs font-medium text-purple-700 block mb-1">Link directly to a Chakra</label>
+                        <select
+                          value={formData.dotChakraId}
+                          onChange={(e) => setFormData({ ...formData, dotChakraId: e.target.value })}
+                          className="w-full p-2 text-sm border border-purple-200 rounded"
+                        >
+                          <option value="">Select chakra (optional)</option>
+                          {chakras.map((chakra) => (
+                            <option key={chakra.id} value={chakra.id}>
+                              {chakra.heading}
+                            </option>
+                          ))}
+                        </select>
+                        <p className="text-xs text-purple-600 mt-1">For thoughts aligned with long-term vision</p>
                       </div>
                     </div>
                   )}
@@ -607,7 +628,7 @@ function GlobalFloatingDotV2() {
                           <option value="standalone">Standalone</option>
                           {chakras.map((chakra) => (
                             <option key={chakra.id} value={chakra.id}>
-                              {chakra.name || chakra.heading}
+                              {chakra.heading}
                             </option>
                           ))}
                         </select>
