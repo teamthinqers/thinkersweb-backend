@@ -1255,7 +1255,7 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                             
                             // Check if dot is dragged outside its current wheel
                             if (distance > wheelRadius + 70) {
-                              console.log(`🔗 Delink detected! Dot dragged outside wheel`);
+                              console.log(`🔗 Delink from wheel detected! Distance: ${distance}, Threshold: ${wheelRadius + 70}`);
                               setDelinkDialog({
                                 open: true,
                                 sourceType: 'dot',
@@ -1263,6 +1263,50 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                                 sourceName: dot.oneWordSummary,
                                 parentType: 'wheel',
                                 parentName: currentWheel.heading || currentWheel.name
+                              });
+                              return; // Don't check for new mappings if delinking
+                            }
+                          }
+                        }
+
+                        // If dot is currently mapped directly to a chakra, check if dragged outside (delink)
+                        if (dot.chakraId && !dot.wheelId) {
+                          const currentChakra = chakras.find(c => c.id === dot.chakraId);
+                          if (currentChakra) {
+                            console.log(`🔍 Checking delink for dot in chakra ${currentChakra.id}`);
+                            
+                            // Get current chakra position
+                            let chakraX, chakraY;
+                            const savedChakraPos = elementPositions[`chakra-${currentChakra.id}`];
+                            
+                            if (savedChakraPos) {
+                              chakraX = savedChakraPos.x;
+                              chakraY = savedChakraPos.y;
+                            } else if (currentChakra.position) {
+                              chakraX = currentChakra.position.x;
+                              chakraY = currentChakra.position.y;
+                            } else {
+                              const chakraIndex = chakras.findIndex(c => c.id === currentChakra.id);
+                              const cols = Math.max(1, Math.ceil(Math.sqrt(chakras.length)));
+                              const row = Math.floor(chakraIndex / cols);
+                              const col = chakraIndex % cols;
+                              chakraX = 700 + (col * 400);
+                              chakraY = 600 + (row * 350);
+                            }
+                            
+                            const chakraRadius = currentChakra.radius || 420;
+                            const distance = Math.sqrt(Math.pow(finalX - chakraX, 2) + Math.pow(finalY - chakraY, 2));
+                            
+                            // Check if dot is dragged outside its current chakra
+                            if (distance > chakraRadius / 2 + 50) {
+                              console.log(`🔗 Delink from chakra detected! Distance: ${distance}, Threshold: ${chakraRadius / 2 + 50}`);
+                              setDelinkDialog({
+                                open: true,
+                                sourceType: 'dot',
+                                sourceId: dot.id,
+                                sourceName: dot.oneWordSummary,
+                                parentType: 'chakra',
+                                parentName: currentChakra.heading || currentChakra.name
                               });
                               return; // Don't check for new mappings if delinking
                             }
@@ -1323,7 +1367,7 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                         }
 
                         // Check collision with all chakras for direct dot-to-chakra mapping
-                        if (!dot.wheelId) { // Only allow direct chakra mapping for standalone dots
+                        // Allow all dots (standalone, from wheels, between chakras) to map to chakras
                           for (const chakra of chakras) {
                             // Skip if this is the chakra the dot is already in
                             if (dot.chakraId && chakra.id === dot.chakraId) {
