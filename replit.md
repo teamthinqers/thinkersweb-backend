@@ -54,6 +54,7 @@ Global Floating Dot Mode Switching: Added flip button functionality to switch be
     - **Gamification**: Progress meters with motivational elements for dot creation.
     - **One-Word Summary & Flash Cards**: Automated generation of keywords for quick content identification.
     - **Spark-Based Grouping**: Replaces the 9-dot wheel concept, allowing dots to belong to multiple "sparks" for cross-insight generation.
+    - **Social Elements (Reserved for Future)**: Red/rose/pink gradient color scheme (`from-rose-500 to-pink-500`, `from-orange-500 to-red-500`, `text-red-600 dark:text-red-400`), Users and Brain icons with animate-pulse, "DotSpark Social" and "Social Neura" naming convention. Removed from v1 launch, saved for future DotSpark Social release.
 
 ## External Dependencies
 

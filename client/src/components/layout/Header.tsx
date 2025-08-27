@@ -211,23 +211,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 </div>
               </div>
               
-              {/* Social Neura button with brain icon */}
-              <Button
-                variant="ghost"
-                size="sm"
-                className="bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-md hover:bg-gradient-to-r hover:from-orange-600 hover:to-red-600 transition-all duration-300 ml-2"
-                onClick={() => setLocation("/social-neura")}
-              >
-                <div className="flex items-center gap-1">
-                  <div className="relative">
-                    <Brain className="h-4 w-4 animate-pulse hover:animate-bounce transition-all duration-300" />
-                    <div className="absolute inset-0 animate-ping opacity-30">
-                      <Brain className="h-4 w-4" />
-                    </div>
-                  </div>
-                  <span className="text-xs">Social</span>
-                </div>
-              </Button>
+              {/* Social Neura button removed for v1 launch */}
               
               {/* Profile button - Mobile */}
               <DropdownMenu>
@@ -268,12 +252,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                       Neural Dashboard
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link href="/social" className="cursor-pointer w-full">
-                      <Users className="mr-2 h-4 w-4" />
-                      DotSpark Social
-                    </Link>
-                  </DropdownMenuItem>
+                  {/* DotSpark Social removed for v1 launch */}
                   <DropdownMenuItem onClick={handleLogout} className="text-red-600">
                     <LogOut className="mr-2 h-4 w-4" />
                     <span>Sign out</span>
@@ -335,23 +314,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 </div>
               </Button>
               
-              {/* Social Neura button with brain icon */}
-              <Button
-                variant="ghost"
-                size="sm"
-                className="mr-2 bg-gradient-to-r from-red-500 to-orange-600 text-white shadow-md hover:bg-gradient-to-r hover:from-red-600 hover:to-orange-700 transition-all duration-300"
-                onClick={() => setLocation("/social-neura")}
-              >
-                <div className="flex items-center gap-2">
-                  <div className="relative">
-                    <Brain className="h-5 w-5 animate-pulse hover:animate-bounce transition-all duration-300" />
-                    <div className="absolute inset-0 animate-ping opacity-30">
-                      <Brain className="h-5 w-5" />
-                    </div>
-                  </div>
-                  <span className="text-sm font-medium">Social</span>
-                </div>
-              </Button>
+              {/* Social Neura button removed for v1 launch */}
               
               {/* Profile button - Desktop */}
               <DropdownMenu>
@@ -393,12 +356,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                       Neural Dashboard
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link href="/social" className="cursor-pointer w-full">
-                      <Users className="mr-2 h-4 w-4" />
-                      DotSpark Social
-                    </Link>
-                  </DropdownMenuItem>
+                  {/* DotSpark Social removed for v1 launch */}
                   <DropdownMenuItem onClick={handleLogout} className="text-red-600">
                     <LogOut className="mr-2 h-4 w-4" />
                     <span>Sign out</span>
@@ -468,18 +426,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 My DotSpark
               </Button>
               
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className="w-full justify-start mb-2 bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-md hover:bg-gradient-to-r hover:from-orange-600 hover:to-red-600 transition-all duration-300"
-                onClick={() => {
-                  setShowMobileNav(false);
-                  setLocation("/social");
-                }}
-              >
-                <Users className="h-5 w-5 mr-2 animate-pulse" />
-                DotSpark Social
-              </Button>
+              {/* DotSpark Social button removed for v1 launch */}
             </nav>
           </div>
         </div>
