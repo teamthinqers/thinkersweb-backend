@@ -491,24 +491,340 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
             willChange: dragStart ? 'transform' : 'auto'
           }}
         >
-          {/* Individual Dots - well distributed grid for easy identification */}
+          {/* Render chakras first (bottom layer) */}
+          {chakras.map((chakra: any, chakraIndex: number) => {
+            const chakraWheels = displayWheels.filter((w: any) => w.chakraId === chakra.id);
+            const chakraRadius = getChakraSize('real', chakraWheels.length);
+            
+            // Position chakras with proper spacing to avoid overlaps
+            let chakraX, chakraY;
+            if (elementPositions[`chakra-${chakra.id}`]) {
+              chakraX = elementPositions[`chakra-${chakra.id}`].x;
+              chakraY = elementPositions[`chakra-${chakra.id}`].y;
+            } else {
+              // Collision-aware positioning for chakras
+              const chakraSpacing = 600; // Large spacing for chakras
+              chakraX = 300 + (chakraIndex % 2) * chakraSpacing;
+              chakraY = 300 + Math.floor(chakraIndex / 2) * chakraSpacing;
+              
+              // Check for collisions with other chakras
+              let attempts = 0;
+              while (attempts < 5) {
+                let collision = false;
+                
+                for (let i = 0; i < chakraIndex; i++) {
+                  const otherChakra = chakras[i];
+                  const otherPos = elementPositions[`chakra-${otherChakra.id}`] || { x: 300, y: 300 };
+                  const distance = Math.sqrt((chakraX - otherPos.x) ** 2 + (chakraY - otherPos.y) ** 2);
+                  const minDistance = chakraRadius + 200; // 200px buffer between chakras
+                  
+                  if (distance < minDistance) {
+                    collision = true;
+                    break;
+                  }
+                }
+                
+                if (!collision) break;
+                
+                chakraX += chakraSpacing / 3;
+                chakraY += chakraSpacing / 4;
+                attempts++;
+              }
+            }
+            
+            // Update chakra position for wheel calculations
+            chakra.position = { x: chakraX, y: chakraY };
+            
+            return (
+              <div key={chakra.id} className="relative">
+                {/* Chakra circle */}
+                <div
+                  className="absolute rounded-full border-4 border-amber-500/50 bg-gradient-to-br from-amber-100/40 to-orange-100/40 cursor-move transition-all duration-200 hover:scale-105 hover:border-amber-600/70"
+                  style={{
+                    left: `${chakraX - chakraRadius/2}px`,
+                    top: `${chakraY - chakraRadius/2}px`,
+                    width: `${chakraRadius}px`,
+                    height: `${chakraRadius}px`,
+                    pointerEvents: 'auto',
+                    zIndex: 1, // Lowest z-index for chakras
+                    willChange: draggedElement?.id === chakra.id ? 'transform' : 'auto',
+                    transform: draggedElement?.id === chakra.id ? 'scale(1.02)' : 'scale(1)'
+                  }}
+                  onClick={(e) => {
+                    if (!draggedElement) {
+                      e.stopPropagation();
+                      // Add chakra click functionality if needed
+                    }
+                  }}
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setDraggedElement({type: 'chakra', id: chakra.id, startPos: {x: e.clientX, y: e.clientY}});
+                  }}
+                  onMouseEnter={() => !draggedElement && setHoveredChakra(chakra)}
+                  onMouseLeave={() => setHoveredChakra(null)}
+                >
+                  {/* Chakra label */}
+                  <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 text-center">
+                    <div className="px-3 py-1 rounded-lg bg-gradient-to-r from-amber-100 to-orange-100 border-2 border-amber-300 text-amber-800 font-bold text-sm whitespace-nowrap shadow-lg">
+                      {chakra.name}
+                    </div>
+                  </div>
+                  
+                  {/* Chakra content */}
+                  <div className="absolute inset-0 flex items-center justify-center p-4">
+                    <div className="text-center">
+                      <div className="text-sm text-amber-700 font-medium">
+                        {chakraWheels.length} wheels
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Chakra hover card */}
+                {hoveredChakra?.id === chakra.id && (
+                  <div 
+                    className="absolute bg-white/95 backdrop-blur border-2 border-amber-200 rounded-lg p-3 shadow-2xl w-64 cursor-pointer"
+                    style={{
+                      left: `${chakraX + chakraRadius/2 + 20}px`,
+                      top: `${Math.max(0, chakraY - 50)}px`,
+                      maxWidth: '280px',
+                      zIndex: 1000,
+                      boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.05)'
+                    }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setHoveredChakra(null);
+                    }}
+                    onMouseDown={(e) => e.stopPropagation()}
+                  >
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <h4 className="font-bold text-amber-800 text-sm line-clamp-1">{chakra.name}</h4>
+                        <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200 text-xs">
+                          Chakra
+                        </Badge>
+                      </div>
+                      <p className="text-gray-700 text-sm line-clamp-2 leading-relaxed">
+                        {chakra.purpose || 'Life area focus'}
+                      </p>
+                      <div className="flex items-center justify-between text-xs">
+                        <Badge className="bg-amber-100 text-amber-700">
+                          {chakraWheels.length} wheels
+                        </Badge>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+
+          {/* Render wheels second (middle layer) */}
+          {displayWheels.map((wheel: any, wheelIndex: number) => {
+            const wheelDots = displayDots.filter((d: any) => d.wheelId === wheel.id);
+            const wheelRadius = calculateDynamicSizing('real', wheelDots.length, 'wheels');
+            
+            // Determine wheel position
+            let wheelX, wheelY;
+            if (wheel.chakraId && wheel.chakraId !== 'standalone') {
+              // Use saved position if exists, otherwise position around chakra
+              if (elementPositions[`wheel-${wheel.id}`]) {
+                wheelX = elementPositions[`wheel-${wheel.id}`].x;
+                wheelY = elementPositions[`wheel-${wheel.id}`].y;
+              } else {
+                // Position wheel inside/around its associated chakra like preview mode  
+                const chakra = chakras.find((c: any) => c.id === wheel.chakraId);
+                if (chakra) {
+                  const wheelsInChakra = displayWheels.filter((w: any) => w.chakraId === wheel.chakraId && w.chakraId !== 'standalone');
+                  const wheelIndexInChakra = wheelsInChakra.findIndex((w: any) => w.id === wheel.id);
+                  
+                  // Get chakra position (either saved position or calculated position)
+                  let chakraX, chakraY;
+                  if (elementPositions[`chakra-${chakra.id}`]) {
+                    chakraX = elementPositions[`chakra-${chakra.id}`].x;
+                    chakraY = elementPositions[`chakra-${chakra.id}`].y;
+                  } else {
+                    chakraX = chakra.position?.x || 600;
+                    chakraY = chakra.position?.y || 400;
+                  }
+                  
+                  const orbitRadius = 120; // Fixed radius for wheels inside chakras (like preview mode)
+                  const angle = (wheelIndexInChakra * 2 * Math.PI) / wheelsInChakra.length;
+                  
+                  wheelX = chakraX + Math.cos(angle) * orbitRadius;
+                  wheelY = chakraY + Math.sin(angle) * orbitRadius;
+                } else {
+                  // Chakra not found, treat as standalone
+                  const standaloneWheels = displayWheels.filter((w: any) => !w.chakraId || w.chakraId === 'standalone');
+                  const standaloneIndex = standaloneWheels.findIndex((w: any) => w.id === wheel.id);
+                  
+                  if (elementPositions[`wheel-${wheel.id}`]) {
+                    wheelX = elementPositions[`wheel-${wheel.id}`].x;
+                    wheelY = elementPositions[`wheel-${wheel.id}`].y;
+                  } else {
+                    const cols = Math.max(2, Math.ceil(Math.sqrt(standaloneWheels.length)));
+                    const row = Math.floor(standaloneIndex / cols);
+                    const col = standaloneIndex % cols;
+                    wheelX = 600 + (col * 280);
+                    wheelY = 250 + (row * 220);
+                  }
+                }
+              }
+            } else {
+              // Standalone wheels - well distributed grid separate from chakras  
+              const standaloneWheels = displayWheels.filter((w: any) => !w.chakraId || w.chakraId === 'standalone');
+              const standaloneIndex = standaloneWheels.findIndex((w: any) => w.id === wheel.id);
+              
+              if (elementPositions[`wheel-${wheel.id}`]) {
+                wheelX = elementPositions[`wheel-${wheel.id}`].x;
+                wheelY = elementPositions[`wheel-${wheel.id}`].y;
+              } else {
+                // Collision-aware positioning for standalone wheels
+                const cols = Math.max(2, Math.ceil(Math.sqrt(standaloneWheels.length)));
+                const row = Math.floor(standaloneIndex / cols);
+                const col = standaloneIndex % cols;
+                const wheelSpacing = 300; // Increased spacing for wheels
+                wheelX = 200 + (col * wheelSpacing);
+                wheelY = 200 + (row * 260);
+                
+                // Check for collisions with chakras and other wheels
+                let attempts = 0;
+                while (attempts < 8) {
+                  let collision = false;
+                  
+                  // Check collision with chakras
+                  for (const chakra of chakras) {
+                    const chakraPos = elementPositions[`chakra-${chakra.id}`] || chakra.position || { x: 600, y: 400 };
+                    const chakraRadius = getChakraSize('real', displayWheels.filter(w => w.chakraId === chakra.id).length) / 2;
+                    const distance = Math.sqrt((wheelX - chakraPos.x) ** 2 + (wheelY - chakraPos.y) ** 2);
+                    if (distance < chakraRadius + wheelRadius + 100) { // 100px buffer
+                      collision = true;
+                      break;
+                    }
+                  }
+                  
+                  if (!collision) break;
+                  
+                  wheelX += wheelSpacing / 3;
+                  wheelY += 80;
+                  attempts++;
+                }
+              }
+            }
+            
+            // Update wheel position for dot calculations
+            wheel.position = { x: wheelX, y: wheelY };
+            
+            return (
+              <div key={wheel.id} className="relative">
+                {/* Wheel circle */}
+                <div
+                  className="absolute rounded-full border-2 border-orange-400/60 bg-orange-50/30 cursor-move transition-all duration-200 hover:scale-105 hover:border-orange-500"
+                  style={{
+                    left: `${wheelX - wheelRadius}px`,
+                    top: `${wheelY - wheelRadius}px`,
+                    width: `${wheelRadius * 2}px`,
+                    height: `${wheelRadius * 2}px`,
+                    pointerEvents: 'auto',
+                    zIndex: 5, // Middle z-index for wheels
+                    willChange: draggedElement?.id === wheel.id ? 'transform' : 'auto',
+                    transform: draggedElement?.id === wheel.id ? 'scale(1.02)' : 'scale(1)'
+                  }}
+                  onClick={(e) => {
+                    if (!draggedElement) {
+                      e.stopPropagation();
+                      setViewFullWheel(wheel);
+                    }
+                  }}
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setDraggedElement({type: 'wheel', id: wheel.id, startPos: {x: e.clientX, y: e.clientY}});
+                  }}
+                  onMouseEnter={() => !draggedElement && setHoveredWheel(wheel)}
+                  onMouseLeave={() => setHoveredWheel(null)}
+                >
+                  {/* Wheel heading on top like preview mode */}
+                  <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 text-center">
+                    <div className="px-4 py-2 rounded-lg text-center shadow-lg border-2 transition-all duration-300 hover:scale-105 bg-gradient-to-r from-amber-50 to-orange-50 border-amber-300 text-amber-800">
+                      <div className="font-bold text-sm whitespace-nowrap">
+                        {wheel.heading || wheel.name}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Wheel content */}
+                  <div className="absolute inset-0 flex items-center justify-center p-2">
+                    <div className="text-center">
+                      <div className="text-xs text-orange-600">
+                        {wheelDots.length} dots
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Wheel hover card */}
+                {hoveredWheel?.id === wheel.id && (
+                  <div 
+                    className="absolute bg-white/95 backdrop-blur border-2 border-orange-200 rounded-lg p-3 shadow-2xl w-64 cursor-pointer"
+                    style={{
+                      left: `${wheelX + wheelRadius + 20}px`,
+                      top: `${Math.max(0, wheelY - 50)}px`,
+                      maxWidth: '280px',
+                      zIndex: 1001,
+                      boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.05)'
+                    }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setViewFullWheel(wheel);
+                      setHoveredWheel(null);
+                    }}
+                    onMouseDown={(e) => e.stopPropagation()}
+                  >
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <h4 className="font-bold text-orange-800 text-sm line-clamp-1">{wheel.name || wheel.heading}</h4>
+                        <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200 text-xs">
+                          Wheel
+                        </Badge>
+                      </div>
+                      <p className="text-gray-700 text-sm line-clamp-2 leading-relaxed">
+                        {wheel.goals || wheel.purpose || 'Goal-oriented project'}
+                      </p>
+                      <div className="flex items-center justify-between text-xs">
+                        <Badge className="bg-orange-100 text-orange-700">
+                          {wheelDots.length} dots
+                        </Badge>
+                        <span className="text-orange-600 font-medium">
+                          Click for full view
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+
+          {/* Render dots last (top layer) */}
           {displayDots.map((dot: any, index: number) => {
             let x, y;
             
-            // Check if dot belongs to a wheel
+            // Check if dot belongs to a wheel (now wheels are positioned first!)
             if (dot.wheelId && dot.wheelId !== '' && dot.wheelId !== 'general' && dot.wheelId !== 'standalone') {
-              const wheel = displayWheels.find((w: any) => w.id === dot.wheelId);
-              if (wheel) {
+              const wheel = displayWheels.find((w: any) => w.id == dot.wheelId || w.id === String(dot.wheelId));
+              if (wheel && wheel.position) {
                 // Use saved position if exists, otherwise position around wheel
                 if (elementPositions[`dot-${dot.id}`]) {
                   x = elementPositions[`dot-${dot.id}`].x;
                   y = elementPositions[`dot-${dot.id}`].y;
                 } else {
                   // Position dots around their associated wheel in a circle
-                  const dotsInWheel = displayDots.filter((d: any) => d.wheelId === dot.wheelId);
+                  const dotsInWheel = displayDots.filter((d: any) => d.wheelId == dot.wheelId || d.wheelId === String(dot.wheelId));
                   const dotIndexInWheel = dotsInWheel.findIndex((d: any) => d.id === dot.id);
-                  const wheelCenterX = elementPositions[`wheel-${wheel.id}`]?.x || wheel.position?.x || 300;
-                  const wheelCenterY = elementPositions[`wheel-${wheel.id}`]?.y || wheel.position?.y || 250;
+                  const wheelCenterX = wheel.position.x;
+                  const wheelCenterY = wheel.position.y;
                   const dotRadius = 60; // Fixed radius for dots around wheels
                   const angle = (dotIndexInWheel * 2 * Math.PI) / dotsInWheel.length;
                   
@@ -516,7 +832,7 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                   y = wheelCenterY + Math.sin(angle) * dotRadius;
                 }
               } else {
-                // Wheel not found, treat as standalone with collision detection
+                // Wheel not found, treat as standalone
                 const standaloneDots = displayDots.filter((d: any) => !d.wheelId || d.wheelId === '' || d.wheelId === 'general' || d.wheelId === 'standalone');
                 const standaloneIndex = standaloneDots.findIndex((d: any) => d.id === dot.id);
                 
@@ -548,7 +864,7 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                 const col = standaloneIndex % cols;
                 
                 // Use larger spacing to account for wheels and chakras
-                const baseSpacing = 180; // Increased from 120px
+                const baseSpacing = 180;
                 x = baseSpacing + (col * baseSpacing);
                 y = baseSpacing + (row * baseSpacing);
                 
@@ -560,7 +876,7 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                   // Check collision with wheels
                   for (const wheel of displayWheels) {
                     const wheelPos = wheel.position || { x: 300, y: 250 };
-                    const wheelDots = displayDots.filter((d: any) => d.wheelId === wheel.id);
+                    const wheelDots = displayDots.filter((d: any) => d.wheelId == wheel.id || d.wheelId === String(wheel.id));
                     const wheelRadius = calculateDynamicSizing('real', wheelDots.length, 'wheels');
                     const distance = Math.sqrt((x - wheelPos.x) ** 2 + (y - wheelPos.y) ** 2);
                     if (distance < wheelRadius + 60) { // 60px buffer
@@ -572,7 +888,7 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                   // Check collision with chakras
                   if (!collision) {
                     for (const chakra of chakras) {
-                      const chakraPos = elementPositions[`chakra-${chakra.id}`] || { x: 600, y: 400 };
+                      const chakraPos = elementPositions[`chakra-${chakra.id}`] || chakra.position || { x: 600, y: 400 };
                       const chakraRadius = getChakraSize('real', displayWheels.filter(w => w.chakraId === chakra.id).length) / 2;
                       const distance = Math.sqrt((x - chakraPos.x) ** 2 + (y - chakraPos.y) ** 2);
                       if (distance < chakraRadius + 80) { // 80px buffer
@@ -606,7 +922,7 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                     border: '2px solid rgba(255, 255, 255, 0.8)',
                     boxShadow: draggedElement?.id === dot.id ? '0 8px 25px rgba(0, 0, 0, 0.25)' : '0 2px 8px rgba(0, 0, 0, 0.15)',
                     pointerEvents: 'auto',
-                    zIndex: draggedElement?.id === dot.id ? 1000 : 10,
+                    zIndex: draggedElement?.id === dot.id ? 1000 : 10, // Highest z-index for dots
                     willChange: draggedElement?.id === dot.id ? 'transform' : 'auto'
                   }}
                   onClick={(e) => {
@@ -873,108 +1189,6 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
             );
           })}
 
-          {/* Render chakras with clear positioning */}
-          {chakras.map((chakra: any, chakraIndex: number) => {
-            const chakraWheels = displayWheels.filter((w: any) => w.chakraId === chakra.id);
-            const chakraRadius = getChakraSize('real', chakraWheels.length);
-            
-            // Position chakras with proper spacing to avoid overlaps
-            let chakraX, chakraY;
-            if (elementPositions[`chakra-${chakra.id}`]) {
-              chakraX = elementPositions[`chakra-${chakra.id}`].x;
-              chakraY = elementPositions[`chakra-${chakra.id}`].y;
-            } else {
-              // Collision-aware positioning for chakras
-              const chakraSpacing = 600; // Large spacing for chakras
-              chakraX = 300 + (chakraIndex % 2) * chakraSpacing;
-              chakraY = 300 + Math.floor(chakraIndex / 2) * chakraSpacing;
-              
-              // Check for collisions with other chakras
-              let attempts = 0;
-              while (attempts < 5) {
-                let collision = false;
-                
-                for (let i = 0; i < chakraIndex; i++) {
-                  const otherChakra = chakras[i];
-                  const otherPos = elementPositions[`chakra-${otherChakra.id}`] || { x: 300, y: 300 };
-                  const distance = Math.sqrt((chakraX - otherPos.x) ** 2 + (chakraY - otherPos.y) ** 2);
-                  const minDistance = chakraRadius + 200; // 200px buffer between chakras
-                  
-                  if (distance < minDistance) {
-                    collision = true;
-                    break;
-                  }
-                }
-                
-                if (!collision) break;
-                
-                chakraX += chakraSpacing / 3;
-                chakraY += chakraSpacing / 4;
-                attempts++;
-              }
-            }
-            
-            // Update chakra position for wheel calculations
-            chakra.position = { x: chakraX, y: chakraY };
-            
-            return (
-              <div key={chakra.id} className="relative">
-                {/* Chakra circle */}
-                <div
-                  className="absolute rounded-full border-4 border-amber-500/50 bg-gradient-to-br from-amber-100/40 to-orange-100/40 cursor-move transition-all duration-200 hover:scale-105 hover:border-amber-600/70"
-                  style={{
-                    left: `${chakraX - chakraRadius/2}px`,
-                    top: `${chakraY - chakraRadius/2}px`,
-                    width: `${chakraRadius}px`,
-                    height: `${chakraRadius}px`,
-                    pointerEvents: 'auto',
-                    willChange: draggedElement?.id === chakra.id ? 'transform' : 'auto',
-                    transform: draggedElement?.id === chakra.id ? 'scale(1.01)' : 'scale(1)'
-                  }}
-                  onClick={(e) => {
-                    if (!draggedElement) {
-                      e.stopPropagation();
-                      setViewFullWheel(chakra);
-                    }
-                  }}
-                  onMouseDown={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    setDraggedElement({type: 'chakra', id: chakra.id, startPos: {x: e.clientX, y: e.clientY}});
-                  }}
-                  onMouseEnter={() => !draggedElement && setHoveredChakra(chakra)}
-                  onMouseLeave={() => setHoveredChakra(null)}
-                >
-                  {/* Chakra heading on top like preview mode */}
-                  <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 text-center">
-                    <div className="px-4 py-2 rounded-lg text-center shadow-lg border-2 transition-all duration-300 hover:scale-105 bg-gradient-to-r from-amber-100 to-orange-100 border-orange-300 text-orange-800">
-                      <div className="font-bold text-sm whitespace-nowrap">
-                        {chakra.heading || chakra.name}
-                      </div>
-                      <div className="text-xs opacity-75 font-medium mt-1">
-                        CHAKRA
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {/* Chakra content */}
-                  <div className="absolute inset-0 flex items-center justify-center p-4">
-                    <div className="text-center">
-                      <div className="text-xs text-amber-700">
-                        {chakraWheels.length} wheels
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {/* Rotating ring animation */}
-                  <div 
-                    className="absolute inset-2 rounded-full border-2 border-amber-400/30 animate-spin"
-                    style={{ animationDuration: '8s' }}
-                  />
-                </div>
-              </div>
-            );
-          })}
         </div>
       </div>
 
