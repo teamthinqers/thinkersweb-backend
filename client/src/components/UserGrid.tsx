@@ -625,7 +625,7 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                   <div className="absolute inset-0 flex items-center justify-center p-4">
                     <div className="text-center">
                       <div className="text-sm text-amber-700 font-medium">
-                        {chakraWheels.length} wheels
+                        Life Purpose
                       </div>
                     </div>
                   </div>
@@ -658,10 +658,10 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                       <p className="text-gray-700 text-sm line-clamp-2 leading-relaxed">
                         {chakra.purpose || 'Life area focus'}
                       </p>
-                      <div className="flex items-center justify-between text-xs">
-                        <Badge className="bg-amber-100 text-amber-700">
-                          {chakraWheels.length} wheels
-                        </Badge>
+                      <div className="flex items-center justify-end text-xs">
+                        <span className="text-amber-600 font-medium">
+                          Life Purpose Area
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -844,10 +844,7 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                       <p className="text-gray-700 text-sm line-clamp-2 leading-relaxed">
                         {wheel.goals || wheel.purpose || 'Goal-oriented project'}
                       </p>
-                      <div className="flex items-center justify-between text-xs">
-                        <Badge className="bg-orange-100 text-orange-700">
-                          {wheelDots.length} dots
-                        </Badge>
+                      <div className="flex items-center justify-end text-xs">
                         <span className="text-orange-600 font-medium">
                           Click for full view
                         </span>
@@ -1231,10 +1228,7 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                       <p className="text-gray-700 text-sm line-clamp-2 leading-relaxed">
                         {wheel.goals || wheel.purpose || 'Goal-oriented project'}
                       </p>
-                      <div className="flex items-center justify-between text-xs">
-                        <Badge className="bg-orange-100 text-orange-700">
-                          {wheelDots.length} dots
-                        </Badge>
+                      <div className="flex items-center justify-end text-xs">
                         <span className="text-orange-600 font-medium">
                           Click for full view
                         </span>
