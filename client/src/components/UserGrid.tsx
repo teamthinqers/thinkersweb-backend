@@ -183,17 +183,30 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
     if (!mappingDialog) return;
     
     try {
-      const endpoint = mappingDialog.sourceType === 'dot' 
-        ? `/api/user-content/dots/${mappingDialog.sourceId}/relationship`
-        : `/api/user-content/wheels/${mappingDialog.sourceId}/relationship`;
+      let endpoint, payload;
       
-      const payload = mappingDialog.targetType === 'wheel' 
-        ? { wheelId: mappingDialog.targetId }
-        : { chakraId: mappingDialog.targetId };
+      if (mappingDialog.sourceType === 'dot' && mappingDialog.targetType === 'wheel') {
+        // Dot to Wheel mapping
+        endpoint = `/api/mapping/dot-to-wheel`;
+        payload = { 
+          dotId: mappingDialog.sourceId,
+          wheelId: mappingDialog.targetId 
+        };
+      } else if (mappingDialog.sourceType === 'wheel' && mappingDialog.targetType === 'chakra') {
+        // Wheel to Chakra mapping
+        endpoint = `/api/mapping/wheel-to-chakra`;
+        payload = { 
+          wheelId: mappingDialog.sourceId,
+          chakraId: mappingDialog.targetId 
+        };
+      } else {
+        throw new Error('Invalid mapping type');
+      }
 
       const response = await fetch(endpoint, {
-        method: 'PATCH',
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify(payload)
       });
 
@@ -208,6 +221,7 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
       window.location.reload();
       
     } catch (error) {
+      console.error('Mapping save error:', error);
       toast({
         title: "Error",
         description: "Failed to update mapping. Please try again.",
@@ -781,8 +795,8 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                       // Calculate final position for collision detection
                       const gridRect = gridContainerRef.current?.getBoundingClientRect();
                       if (gridRect) {
-                        const finalX = (e.clientX - offsetX - gridRect.left - offset.x) / zoom;
-                        const finalY = (e.clientY - offsetY - gridRect.top - offset.y) / zoom;
+                        const finalX = (e.clientX - gridRect.left - offset.x) / zoom - offsetX / zoom;
+                        const finalY = (e.clientY - gridRect.top - offset.y) / zoom - offsetY / zoom;
                         
                         console.log(`🎯 Checking collision for wheel ${wheel.id} at position:`, { x: finalX, y: finalY });
                         
@@ -1059,8 +1073,8 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                       // Calculate final position for collision detection
                       const gridRect = gridContainerRef.current?.getBoundingClientRect();
                       if (gridRect) {
-                        const finalX = (e.clientX - offsetX - gridRect.left - offset.x) / zoom;
-                        const finalY = (e.clientY - offsetY - gridRect.top - offset.y) / zoom;
+                        const finalX = (e.clientX - gridRect.left - offset.x) / zoom - offsetX / zoom;
+                        const finalY = (e.clientY - gridRect.top - offset.y) / zoom - offsetY / zoom;
                         
                         console.log(`🎯 Checking collision for dot ${dot.id} at position:`, { x: finalX, y: finalY });
                         
@@ -1332,8 +1346,8 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                       // Calculate final position for collision detection
                       const gridRect = gridContainerRef.current?.getBoundingClientRect();
                       if (gridRect) {
-                        const finalX = (e.clientX - offsetX - gridRect.left - offset.x) / zoom;
-                        const finalY = (e.clientY - offsetY - gridRect.top - offset.y) / zoom;
+                        const finalX = (e.clientX - gridRect.left - offset.x) / zoom - offsetX / zoom;
+                        const finalY = (e.clientY - gridRect.top - offset.y) / zoom - offsetY / zoom;
                         
                         console.log(`🎯 Checking collision for wheel ${wheel.id} at position:`, { x: finalX, y: finalY });
                         
