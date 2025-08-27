@@ -493,7 +493,7 @@ export default function ChatPage() {
                   <span className="font-medium">My DotSpark</span>
                 </Button>
               </Link>
-              {/* Social link removed for v1 launch */}
+              {/* Social link completely removed for v1 launch - cache bust */}
               <Link href="/about">
                 <Button variant="ghost" className="w-full justify-start text-sm h-10 hover:bg-gradient-to-r hover:from-amber-50 hover:to-orange-50 dark:hover:from-amber-950/20 dark:hover:to-orange-950/20 hover:text-amber-700 dark:hover:text-amber-300 rounded-xl transition-all duration-300">
                   <Info className="w-4 h-4 mr-3" />
@@ -725,7 +725,7 @@ export default function ChatPage() {
               <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-yellow-300/20 via-amber-400/20 to-orange-500/20 group-hover:from-yellow-200/30 group-hover:via-amber-300/30 group-hover:to-orange-400/30 transition-all duration-300"></div>
             </Button>
 
-            {/* Social Icon removed for v1 launch */}
+            {/* Social Icon completely removed for v1 launch - cache bust */}
 
             {/* WhatsApp Icon */}
             <Button 
