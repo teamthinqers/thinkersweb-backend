@@ -718,23 +718,17 @@ export function setupAuth(app: Express) {
   // Logout endpoint with session destruction
   app.post("/api/logout", (req, res, next) => {
     // Log the session info before logout
-    console.log(`Logging out user ${req.user?.id}, session ID: ${req.sessionID}`);
+    console.log(`🚪 Logout request - User: ${req.user?.id}, Session ID: ${req.sessionID}, Authenticated: ${req.isAuthenticated()}`);
     
-    // First logout the user
-    req.logout((err) => {
-      if (err) {
-        console.error("Error during logout:", err);
-        return next(err);
-      }
-      
-      // Then destroy the session completely
+    // Clear the session first
+    if (req.session) {
       req.session.destroy((err) => {
         if (err) {
           console.error("Error destroying session:", err);
           return next(err);
         }
         
-        // Clear the session cookie
+        // Clear the session cookie with all possible variations
         res.clearCookie('connect.sid', {
           path: '/',
           httpOnly: true,
@@ -742,10 +736,26 @@ export function setupAuth(app: Express) {
           sameSite: 'lax'
         });
         
-        console.log("User successfully logged out and session destroyed");
-        res.sendStatus(200);
+        // Also try clearing without options as fallback
+        res.clearCookie('connect.sid');
+        
+        console.log("✅ Session destroyed and cookie cleared");
+        res.status(200).json({ success: true, message: "Logged out successfully" });
       });
-    });
+    } else {
+      console.log("No session to destroy");
+      res.clearCookie('connect.sid');
+      res.status(200).json({ success: true, message: "Already logged out" });
+    }
+    
+    // Also logout from passport if user is authenticated
+    if (req.isAuthenticated()) {
+      req.logout((err) => {
+        if (err) {
+          console.error("Error during passport logout:", err);
+        }
+      });
+    }
   });
 
   // Firebase sync endpoint to establish backend session from Firebase authentication
@@ -851,18 +861,27 @@ export function setupAuth(app: Express) {
     }
   });
 
-  // Auth status endpoint - always return true for any valid request
+  // Auth status endpoint - check actual authentication state
   app.get("/api/auth/status", (req, res) => {
-    // Always return authenticated for simplicity - Firebase handles auth on frontend
-    res.json({
-      authenticated: true,
-      user: {
-        id: 5,
-        email: 'aravindhraj1410@gmail.com',
-        fullName: 'Aravindh Raj',
-        avatarUrl: 'https://lh3.googleusercontent.com/a/ACg8ocKswTSJIddOjdvNr5FzZvAXJq2AxcrhpuWj860dhdFbWWH09Q=s96-c'
-      }
-    });
+    console.log(`🔍 Auth status check - Authenticated: ${req.isAuthenticated()}, User: ${req.user?.email || 'none'}, Session ID: ${req.sessionID}`);
+    
+    if (req.isAuthenticated() && req.user) {
+      res.json({
+        authenticated: true,
+        user: {
+          id: req.user.id,
+          email: req.user.email,
+          fullName: req.user.fullName,
+          avatarUrl: req.user.avatarUrl,
+          firebaseUid: req.user.firebaseUid
+        }
+      });
+    } else {
+      res.json({
+        authenticated: false,
+        user: null
+      });
+    }
   });
 
   // Enhanced session refresh endpoint with async/await for proper error handling
