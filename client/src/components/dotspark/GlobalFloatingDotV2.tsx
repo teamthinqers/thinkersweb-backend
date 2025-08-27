@@ -654,7 +654,7 @@ function GlobalFloatingDotV2() {
                         <textarea
                           value={formData.purpose}
                           onChange={(e) => setFormData({ ...formData, purpose: e.target.value })}
-                          placeholder="Life purpose"
+                          placeholder="Vision or purpose"
                           className="w-full p-2 text-sm border border-purple-200 rounded resize-none"
                           rows={2}
                           required
