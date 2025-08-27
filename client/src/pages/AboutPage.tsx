@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { 
-  ArrowRight, ArrowLeft, Brain, BookOpen, Users, Sparkles, BarChart2, 
+  ArrowRight, ArrowLeft, Brain, BookOpen, Network, Sparkles, BarChart2, 
   MessageCircle, MessageSquare, User, Menu, X, Check, CheckCircle, Download,
   Smartphone, Monitor, Share, Plus, Home as HomeIcon
 } from "lucide-react";
@@ -307,7 +307,7 @@ export default function AboutPage() {
             
             <div className="text-center">
               <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-red-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-                <Users className="w-8 h-8 text-white" />
+                <Network className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-xl font-bold mb-3">Connect Patterns</h3>
               <p className="text-muted-foreground">

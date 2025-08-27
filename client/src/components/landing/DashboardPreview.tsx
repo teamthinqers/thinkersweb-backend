@@ -1,6 +1,6 @@
 import React from "react";
 import { Card } from "@/components/ui/card";
-import { Brain, Users, BookOpen, Sparkles, BarChart2, Star } from "lucide-react";
+import { Brain, Network, BookOpen, Sparkles, BarChart2, Star } from "lucide-react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 
@@ -67,7 +67,7 @@ const DashboardPreview: React.FC = () => {
         {/* DotSpark Network Mapping Preview */}
         <div className="mb-4 bg-gradient-to-r from-indigo-50 to-violet-50 dark:from-indigo-950 dark:to-violet-950 rounded-lg p-4 border border-indigo-100 dark:border-indigo-900">
           <div className="flex items-center mb-2">
-            <Users className="h-4 w-4 text-primary mr-2" />
+            <Network className="h-4 w-4 text-primary mr-2" />
             <div className="text-sm font-bold">DotSpark Network Mapping</div>
           </div>
           
