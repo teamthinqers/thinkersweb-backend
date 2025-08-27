@@ -460,6 +460,203 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
   const displayDots = dots;
   const displayWheels = wheels;
 
+  // Extract dot drag collision detection logic to fix deployment syntax issues
+  const handleDotDragEnd = (dot: any, finalX: number, finalY: number) => {
+    console.log(`🎯 Checking collision for dot ${dot.id} at position:`, { x: finalX, y: finalY });
+    
+    // If dot is currently mapped to a wheel, check if dragged outside (delink)
+    if (dot.wheelId) {
+      const currentWheel = displayWheels.find(w => w.id === dot.wheelId);
+      if (currentWheel) {
+        // Get current wheel position
+        let wheelX, wheelY;
+        const savedWheelPos = elementPositions[`wheel-${currentWheel.id}`];
+        
+        if (savedWheelPos) {
+          wheelX = savedWheelPos.x;
+          wheelY = savedWheelPos.y;
+        } else if (currentWheel.position) {
+          wheelX = currentWheel.position.x;
+          wheelY = currentWheel.position.y;
+        } else {
+          const wheelIndex = displayWheels.findIndex(w => w.id === currentWheel.id);
+          const angle = (wheelIndex * 120) * (Math.PI / 180);
+          const radius = 250;
+          wheelX = 400 + Math.cos(angle) * radius;
+          wheelY = 300 + Math.sin(angle) * radius;
+        }
+        
+        const wheelRadius = getWheelSize('real', displayDots.filter((d: any) => d.wheelId == currentWheel.id).length, []);
+        const distance = Math.sqrt(Math.pow(finalX - wheelX, 2) + Math.pow(finalY - wheelY, 2));
+        
+        // Check if dot is dragged outside its current wheel
+        if (distance > wheelRadius + 70) {
+          console.log(`🔗 Delink from wheel detected! Distance: ${distance}, Threshold: ${wheelRadius + 70}`);
+          setDelinkDialog({
+            open: true,
+            sourceType: 'dot',
+            sourceId: dot.id,
+            sourceName: dot.oneWordSummary,
+            parentType: 'wheel',
+            parentName: currentWheel.heading || currentWheel.name
+          });
+          return; // Don't check for new mappings if delinking
+        }
+      }
+    }
+
+    // If dot is currently mapped directly to a chakra, check if dragged outside (delink)
+    if (dot.chakraId && !dot.wheelId) {
+      const currentChakra = chakras.find(c => c.id === dot.chakraId);
+      if (currentChakra) {
+        console.log(`🔍 Checking delink for dot in chakra ${currentChakra.id}`);
+        
+        // Get current chakra position
+        let chakraX, chakraY;
+        const savedChakraPos = elementPositions[`chakra-${currentChakra.id}`];
+        
+        if (savedChakraPos) {
+          chakraX = savedChakraPos.x;
+          chakraY = savedChakraPos.y;
+        } else if (currentChakra.position) {
+          chakraX = currentChakra.position.x;
+          chakraY = currentChakra.position.y;
+        } else {
+          const chakraIndex = chakras.findIndex(c => c.id === currentChakra.id);
+          const cols = Math.max(1, Math.ceil(Math.sqrt(chakras.length)));
+          const row = Math.floor(chakraIndex / cols);
+          const col = chakraIndex % cols;
+          chakraX = 700 + (col * 400);
+          chakraY = 600 + (row * 350);
+        }
+        
+        const chakraRadius = currentChakra.radius || 420;
+        const distance = Math.sqrt(Math.pow(finalX - chakraX, 2) + Math.pow(finalY - chakraY, 2));
+        
+        // Check if dot is dragged outside its current chakra
+        if (distance > chakraRadius / 2 + 50) {
+          console.log(`🔗 Delink from chakra detected! Distance: ${distance}, Threshold: ${chakraRadius / 2 + 50}`);
+          setDelinkDialog({
+            open: true,
+            sourceType: 'dot',
+            sourceId: dot.id,
+            sourceName: dot.oneWordSummary,
+            parentType: 'chakra',
+            parentName: currentChakra.heading || currentChakra.name
+          });
+          return; // Don't check for new mappings if delinking
+        }
+      }
+    }
+    
+    // Check collision with all wheels for new mappings OR transfers between wheels
+    for (const wheel of displayWheels) {
+      // Skip if this is the wheel the dot is already in
+      if (dot.wheelId && wheel.id === dot.wheelId) {
+        continue;
+      }
+      // Get wheel position - try multiple sources
+      let wheelX, wheelY;
+      const savedWheelPos = elementPositions[`wheel-${wheel.id}`];
+      
+      if (savedWheelPos) {
+        wheelX = savedWheelPos.x;
+        wheelY = savedWheelPos.y;
+      } else if (wheel.position) {
+        wheelX = wheel.position.x;
+        wheelY = wheel.position.y;
+      } else {
+        // Calculate wheel position based on index like the rendering code
+        const wheelIndex = displayWheels.findIndex(w => w.id === wheel.id);
+        const angle = (wheelIndex * 120) * (Math.PI / 180);
+        const radius = 250;
+        wheelX = 400 + Math.cos(angle) * radius;
+        wheelY = 300 + Math.sin(angle) * radius;
+      }
+      
+      const wheelRadius = getWheelSize('real', displayDots.filter((d: any) => d.wheelId == wheel.id).length, []);
+      const distance = Math.sqrt(Math.pow(finalX - wheelX, 2) + Math.pow(finalY - wheelY, 2));
+      
+      console.log(`🔍 Checking wheel ${wheel.id}:`, {
+        wheelPos: { x: wheelX, y: wheelY },
+        wheelRadius,
+        distance,
+        threshold: (30 + wheelRadius) / 2
+      });
+      
+      // More generous collision detection
+      if (distance < wheelRadius + 50) {
+        console.log(`🎯 Dot-to-wheel mapping detected! Moving dot "${dot.oneWordSummary}" to wheel "${wheel.heading || wheel.name}"`);
+        setMappingDialog({
+          open: true,
+          sourceType: 'dot',
+          sourceId: dot.id,
+          sourceName: dot.oneWordSummary,
+          targetType: 'wheel',
+          targetId: wheel.id,
+          targetName: wheel.heading || wheel.name,
+          isTransfer: false
+        });
+        break;
+      }
+    }
+
+    // Check collision with all chakras for direct dot-to-chakra mapping
+    // Allow all dots (standalone, from wheels, between chakras) to map to chakras
+    for (const chakra of chakras) {
+      // Skip if this is the chakra the dot is already in
+      if (dot.chakraId && chakra.id === dot.chakraId) {
+        continue;
+      }
+
+      // Get chakra position - try multiple sources
+      let chakraX, chakraY;
+      const savedChakraPos = elementPositions[`chakra-${chakra.id}`];
+      
+      if (savedChakraPos) {
+        chakraX = savedChakraPos.x;
+        chakraY = savedChakraPos.y;
+      } else if (chakra.position) {
+        chakraX = chakra.position.x;
+        chakraY = chakra.position.y;
+      } else {
+        // Calculate chakra position based on index like the rendering code
+        const chakraIndex = chakras.findIndex(c => c.id === chakra.id);
+        const cols = Math.max(1, Math.ceil(Math.sqrt(chakras.length)));
+        const row = Math.floor(chakraIndex / cols);
+        const col = chakraIndex % cols;
+        chakraX = 700 + (col * 400);
+        chakraY = 600 + (row * 350);
+      }
+      
+      const chakraRadius = chakra.radius || 420;
+      const distance = Math.sqrt(Math.pow(finalX - chakraX, 2) + Math.pow(finalY - chakraY, 2));
+      
+      console.log(`🔍 Checking direct chakra mapping for dot to chakra ${chakra.id}:`, {
+        chakraPos: { x: chakraX, y: chakraY },
+        chakraRadius,
+        distance,
+        threshold: chakraRadius / 2
+      });
+      
+      // Collision detection for direct dot-to-chakra mapping
+      if (distance < chakraRadius / 2) {
+        console.log(`🎯 Dot-to-chakra mapping detected! Moving dot "${dot.oneWordSummary}" to chakra "${chakra.heading || chakra.name}"`);
+        setMappingDialog({
+          open: true,
+          sourceType: 'dot',
+          sourceId: dot.id,
+          sourceName: dot.oneWordSummary,
+          targetType: 'chakra',
+          targetId: chakra.id,
+          targetName: chakra.heading || chakra.name,
+          isTransfer: false
+        });
+        break; // Exit chakra loop once collision is found
+      }
+    }
+  };
+
   return (
     <div className={`relative bg-gradient-to-br from-amber-50/30 to-orange-50/30 rounded-xl border-2 border-amber-200 shadow-lg overflow-hidden ${
       isFullscreen ? 'fixed inset-0 z-50 rounded-none' : 'min-h-[500px]'
@@ -1226,203 +1423,10 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                         const finalX = (e.clientX - gridRect.left - offset.x) / zoom - offsetX / zoom;
                         const finalY = (e.clientY - gridRect.top - offset.y) / zoom - offsetY / zoom;
                         
-                        console.log(`🎯 Checking collision for dot ${dot.id} at position:`, { x: finalX, y: finalY });
-                        
-                        // If dot is currently mapped to a wheel, check if dragged outside (delink)
-                        if (dot.wheelId) {
-                          const currentWheel = displayWheels.find(w => w.id === dot.wheelId);
-                          if (currentWheel) {
-                            // Get current wheel position
-                            let wheelX, wheelY;
-                            const savedWheelPos = elementPositions[`wheel-${currentWheel.id}`];
-                            
-                            if (savedWheelPos) {
-                              wheelX = savedWheelPos.x;
-                              wheelY = savedWheelPos.y;
-                            } else if (currentWheel.position) {
-                              wheelX = currentWheel.position.x;
-                              wheelY = currentWheel.position.y;
-                            } else {
-                              const wheelIndex = displayWheels.findIndex(w => w.id === currentWheel.id);
-                              const angle = (wheelIndex * 120) * (Math.PI / 180);
-                              const radius = 250;
-                              wheelX = 400 + Math.cos(angle) * radius;
-                              wheelY = 300 + Math.sin(angle) * radius;
-                            }
-                            
-                            const wheelRadius = getWheelSize('real', displayDots.filter((d: any) => d.wheelId == currentWheel.id).length, []);
-                            const distance = Math.sqrt(Math.pow(finalX - wheelX, 2) + Math.pow(finalY - wheelY, 2));
-                            
-                            // Check if dot is dragged outside its current wheel
-                            if (distance > wheelRadius + 70) {
-                              console.log(`🔗 Delink from wheel detected! Distance: ${distance}, Threshold: ${wheelRadius + 70}`);
-                              setDelinkDialog({
-                                open: true,
-                                sourceType: 'dot',
-                                sourceId: dot.id,
-                                sourceName: dot.oneWordSummary,
-                                parentType: 'wheel',
-                                parentName: currentWheel.heading || currentWheel.name
-                              });
-                              return; // Don't check for new mappings if delinking
-                            }
-                          }
-                        }
-
-                        // If dot is currently mapped directly to a chakra, check if dragged outside (delink)
-                        if (dot.chakraId && !dot.wheelId) {
-                          const currentChakra = chakras.find(c => c.id === dot.chakraId);
-                          if (currentChakra) {
-                            console.log(`🔍 Checking delink for dot in chakra ${currentChakra.id}`);
-                            
-                            // Get current chakra position
-                            let chakraX, chakraY;
-                            const savedChakraPos = elementPositions[`chakra-${currentChakra.id}`];
-                            
-                            if (savedChakraPos) {
-                              chakraX = savedChakraPos.x;
-                              chakraY = savedChakraPos.y;
-                            } else if (currentChakra.position) {
-                              chakraX = currentChakra.position.x;
-                              chakraY = currentChakra.position.y;
-                            } else {
-                              const chakraIndex = chakras.findIndex(c => c.id === currentChakra.id);
-                              const cols = Math.max(1, Math.ceil(Math.sqrt(chakras.length)));
-                              const row = Math.floor(chakraIndex / cols);
-                              const col = chakraIndex % cols;
-                              chakraX = 700 + (col * 400);
-                              chakraY = 600 + (row * 350);
-                            }
-                            
-                            const chakraRadius = currentChakra.radius || 420;
-                            const distance = Math.sqrt(Math.pow(finalX - chakraX, 2) + Math.pow(finalY - chakraY, 2));
-                            
-                            // Check if dot is dragged outside its current chakra
-                            if (distance > chakraRadius / 2 + 50) {
-                              console.log(`🔗 Delink from chakra detected! Distance: ${distance}, Threshold: ${chakraRadius / 2 + 50}`);
-                              setDelinkDialog({
-                                open: true,
-                                sourceType: 'dot',
-                                sourceId: dot.id,
-                                sourceName: dot.oneWordSummary,
-                                parentType: 'chakra',
-                                parentName: currentChakra.heading || currentChakra.name
-                              });
-                              return; // Don't check for new mappings if delinking
-                            }
-                          }
-                        }
-                        
-                        // Check collision with all wheels for new mappings OR transfers between wheels
-                        for (const wheel of displayWheels) {
-                          // Skip if this is the wheel the dot is already in
-                          if (dot.wheelId && wheel.id === dot.wheelId) {
-                            continue;
-                          }
-                            // Get wheel position - try multiple sources
-                            let wheelX, wheelY;
-                            const savedWheelPos = elementPositions[`wheel-${wheel.id}`];
-                            
-                            if (savedWheelPos) {
-                              wheelX = savedWheelPos.x;
-                              wheelY = savedWheelPos.y;
-                            } else if (wheel.position) {
-                              wheelX = wheel.position.x;
-                              wheelY = wheel.position.y;
-                            } else {
-                              // Calculate wheel position based on index like the rendering code
-                              const wheelIndex = displayWheels.findIndex(w => w.id === wheel.id);
-                              const angle = (wheelIndex * 120) * (Math.PI / 180);
-                              const radius = 250;
-                              wheelX = 400 + Math.cos(angle) * radius;
-                              wheelY = 300 + Math.sin(angle) * radius;
-                            }
-                            
-                            const wheelRadius = getWheelSize('real', displayDots.filter((d: any) => d.wheelId == wheel.id).length, []);
-                            const distance = Math.sqrt(Math.pow(finalX - wheelX, 2) + Math.pow(finalY - wheelY, 2));
-                            
-                            console.log(`🔍 Checking wheel ${wheel.id}:`, {
-                              wheelPos: { x: wheelX, y: wheelY },
-                              wheelRadius,
-                              distance,
-                              threshold: (30 + wheelRadius) / 2
-                            });
-                            
-                            // More generous collision detection
-                            if (distance < wheelRadius + 50) {
-                              console.log(`🎯 Dot-to-wheel mapping detected! Moving dot "${dot.oneWordSummary}" to wheel "${wheel.heading || wheel.name}"`);
-                              setMappingDialog({
-                                open: true,
-                                sourceType: 'dot',
-                                sourceId: dot.id,
-                                sourceName: dot.oneWordSummary,
-                                targetType: 'wheel',
-                                targetId: wheel.id,
-                                targetName: wheel.heading || wheel.name,
-                                isTransfer: false
-                              });
-                              break;
-                            }
-                          }
-                        }
-
-                        // Check collision with all chakras for direct dot-to-chakra mapping
-                        // Allow all dots (standalone, from wheels, between chakras) to map to chakras
-                          for (const chakra of chakras) {
-                            // Skip if this is the chakra the dot is already in
-                            if (dot.chakraId && chakra.id === dot.chakraId) {
-                              continue;
-                            }
-
-                            // Get chakra position - try multiple sources
-                            let chakraX, chakraY;
-                            const savedChakraPos = elementPositions[`chakra-${chakra.id}`];
-                            
-                            if (savedChakraPos) {
-                              chakraX = savedChakraPos.x;
-                              chakraY = savedChakraPos.y;
-                            } else if (chakra.position) {
-                              chakraX = chakra.position.x;
-                              chakraY = chakra.position.y;
-                            } else {
-                              // Calculate chakra position based on index like the rendering code
-                              const chakraIndex = chakras.findIndex(c => c.id === chakra.id);
-                              const cols = Math.max(1, Math.ceil(Math.sqrt(chakras.length)));
-                              const row = Math.floor(chakraIndex / cols);
-                              const col = chakraIndex % cols;
-                              chakraX = 700 + (col * 400);
-                              chakraY = 600 + (row * 350);
-                            }
-                            
-                            const chakraRadius = chakra.radius || 420;
-                            const distance = Math.sqrt(Math.pow(finalX - chakraX, 2) + Math.pow(finalY - chakraY, 2));
-                            
-                            console.log(`🔍 Checking direct chakra mapping for dot to chakra ${chakra.id}:`, {
-                              chakraPos: { x: chakraX, y: chakraY },
-                              chakraRadius,
-                              distance,
-                              threshold: chakraRadius / 2
-                            });
-                            
-                            // Collision detection for direct dot-to-chakra mapping
-                            if (distance < chakraRadius / 2) {
-                              console.log(`🎯 Dot-to-chakra mapping detected! Moving dot "${dot.oneWordSummary}" to chakra "${chakra.heading || chakra.name}"`);
-                              setMappingDialog({
-                                open: true,
-                                sourceType: 'dot',
-                                sourceId: dot.id,
-                                sourceName: dot.oneWordSummary,
-                                targetType: 'chakra',
-                                targetId: chakra.id,
-                                targetName: chakra.heading || chakra.name,
-                                isTransfer: false
-                              });
-                              break; // Exit chakra loop once collision is found
-                            }
-                          }
-                        }
+                        // Use extracted utility function for collision detection
+                        handleDotDragEnd(dot, finalX, finalY);
                       }
-                    }
+                    };
                     
                     document.addEventListener('mousemove', handleMouseMove);
                     document.addEventListener('mouseup', handleMouseUp);
