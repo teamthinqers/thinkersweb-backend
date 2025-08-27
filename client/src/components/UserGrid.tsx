@@ -681,12 +681,12 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                           [`chakra-${chakra.id}`]: { x: newX, y: newY }
                         }));
                       }
-                    };
+                    }
                     
                     const handleMouseUp = () => {
                       document.removeEventListener('mousemove', handleMouseMove);
                       document.removeEventListener('mouseup', handleMouseUp);
-                    };
+                    }
                     
                     document.addEventListener('mousemove', handleMouseMove);
                     document.addEventListener('mouseup', handleMouseUp);
@@ -892,7 +892,7 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                           [`wheel-${wheel.id}`]: { x: newX, y: newY }
                         }));
                       }
-                    };
+                    }
                     
                     const handleMouseUp = (e: MouseEvent) => {
                       document.removeEventListener('mousemove', handleMouseMove);
@@ -1214,7 +1214,7 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                           [`dot-${dot.id}`]: { x: newX, y: newY }
                         }));
                       }
-                    };
+                    }
                     
                     const handleMouseUp = (e: MouseEvent) => {
                       document.removeEventListener('mousemove', handleMouseMove);
@@ -1422,12 +1422,11 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                           }
                         }
                       }
+                    }
                     
                     document.addEventListener('mousemove', handleMouseMove);
                     document.addEventListener('mouseup', handleMouseUp);
                   }}
-                  onMouseEnter={() => setHoveredDot(dot)}
-                  onMouseLeave={() => setHoveredDot(null)}
                 >
                   {/* Pulse animation for voice dots exactly like PreviewMapGrid */}
                   {dot.sourceType === 'voice' && (
@@ -1633,7 +1632,7 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                           [`wheel-${wheel.id}`]: { x: newX, y: newY }
                         }));
                       }
-                    };
+                    }
                     
                     const handleMouseUp = (e: MouseEvent) => {
                       document.removeEventListener('mousemove', handleMouseMove);
