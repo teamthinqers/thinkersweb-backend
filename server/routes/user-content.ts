@@ -20,26 +20,24 @@ const insertWheelSchema = z.object({
 
 const router = express.Router();
 
-// AUTOMATIC DOTSPARK ACTIVATION: All authenticated users get DotSpark access by default
+// PROPER AUTHENTICATION CHECK: Only allow authenticated users
 const checkDotSparkActivation = async (req: any, res: any, next: any) => {
   try {
-    // For any authenticated user, automatically grant DotSpark access
-    // Default to user 5 if no specific user is authenticated
-    if (!req.user) {
-      req.user = { 
-        id: 5, 
-        email: 'aravindhraj1410@gmail.com',
-        fullName: 'Aravindh Raj'
-      };
+    // Check if user is properly authenticated
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({ 
+        error: 'Authentication required',
+        message: 'Please sign in to access DotSpark features'
+      });
     }
     
-    // Always enable DotSpark activation for any user
+    // Enable DotSpark activation for authenticated users
     req.user.dotSparkActivated = true;
     
-    console.log(`✅ User ${req.user.id} automatically activated for DotSpark`);
+    console.log(`✅ Authenticated user ${req.user.id} accessing DotSpark`);
     next();
   } catch (error) {
-    console.error('Error in authentication:', error);
+    console.error('Error in authentication check:', error);
     res.status(500).json({ error: 'Authentication failed' });
   }
 };
