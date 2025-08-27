@@ -776,22 +776,47 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                       document.removeEventListener('mousemove', handleMouseMove);
                       document.removeEventListener('mouseup', handleMouseUp);
                       
-                      // Check for collision with chakras (wheel-to-chakra mapping)
-                      const currentPos = elementPositions[`wheel-${wheel.id}`];
-                      if (currentPos) {
+                      // Calculate final position for collision detection
+                      const gridRect = gridContainerRef.current?.getBoundingClientRect();
+                      if (gridRect) {
+                        const finalX = (e.clientX - offsetX - gridRect.left - offset.x) / zoom;
+                        const finalY = (e.clientY - offsetY - gridRect.top - offset.y) / zoom;
+                        
+                        console.log(`🎯 Checking collision for wheel ${wheel.id} at position:`, { x: finalX, y: finalY });
+                        
                         // Check collision with all chakras
                         for (const chakra of chakras) {
-                          const chakraPos = elementPositions[`chakra-${chakra.id}`] || 
-                            (chakra.position ? chakra.position : { x: Math.random() * 400, y: Math.random() * 300 });
+                          // Get chakra position - try multiple sources
+                          let chakraX, chakraY;
+                          const savedChakraPos = elementPositions[`chakra-${chakra.id}`];
+                          
+                          if (savedChakraPos) {
+                            chakraX = savedChakraPos.x;
+                            chakraY = savedChakraPos.y;
+                          } else if (chakra.position) {
+                            chakraX = chakra.position.x;
+                            chakraY = chakra.position.y;
+                          } else {
+                            // Calculate chakra position based on index like the rendering code
+                            const chakraIndex = chakras.findIndex(c => c.id === chakra.id);
+                            chakraX = 100 + (chakraIndex * 500);
+                            chakraY = 200;
+                          }
                           
                           const chakraRadius = chakra.radius || 420;
                           const wheelRadius = getWheelSize('real', displayDots.filter((d: any) => d.wheelId == wheel.id).length, []);
+                          const distance = Math.sqrt(Math.pow(finalX - chakraX, 2) + Math.pow(finalY - chakraY, 2));
                           
-                          if (checkCollision(
-                            { x: currentPos.x, y: currentPos.y, size: wheelRadius },
-                            { x: chakraPos.x, y: chakraPos.y, size: chakraRadius }
-                          )) {
-                            // Show mapping confirmation dialog
+                          console.log(`🔍 Checking chakra ${chakra.id}:`, {
+                            chakraPos: { x: chakraX, y: chakraY },
+                            chakraRadius,
+                            distance,
+                            threshold: chakraRadius / 2
+                          });
+                          
+                          // More generous collision detection - check if wheel is inside chakra
+                          if (distance < chakraRadius / 2) {
+                            console.log(`✅ Collision detected! Showing mapping dialog`);
                             setMappingDialog({
                               open: true,
                               sourceType: 'wheel',
@@ -1028,21 +1053,48 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                       document.removeEventListener('mousemove', handleMouseMove);
                       document.removeEventListener('mouseup', handleMouseUp);
                       
-                      // Check for collision with wheels (dot-to-wheel mapping)
-                      const currentPos = elementPositions[`dot-${dot.id}`];
-                      if (currentPos) {
+                      // Calculate final position for collision detection
+                      const gridRect = gridContainerRef.current?.getBoundingClientRect();
+                      if (gridRect) {
+                        const finalX = (e.clientX - offsetX - gridRect.left - offset.x) / zoom;
+                        const finalY = (e.clientY - offsetY - gridRect.top - offset.y) / zoom;
+                        
+                        console.log(`🎯 Checking collision for dot ${dot.id} at position:`, { x: finalX, y: finalY });
+                        
                         // Check collision with all wheels
                         for (const wheel of displayWheels) {
-                          const wheelPos = elementPositions[`wheel-${wheel.id}`] || 
-                            (wheel.position ? wheel.position : { x: Math.random() * 400, y: Math.random() * 300 });
+                          // Get wheel position - try multiple sources
+                          let wheelX, wheelY;
+                          const savedWheelPos = elementPositions[`wheel-${wheel.id}`];
+                          
+                          if (savedWheelPos) {
+                            wheelX = savedWheelPos.x;
+                            wheelY = savedWheelPos.y;
+                          } else if (wheel.position) {
+                            wheelX = wheel.position.x;
+                            wheelY = wheel.position.y;
+                          } else {
+                            // Calculate wheel position based on index like the rendering code
+                            const wheelIndex = displayWheels.findIndex(w => w.id === wheel.id);
+                            const angle = (wheelIndex * 120) * (Math.PI / 180);
+                            const radius = 250;
+                            wheelX = 400 + Math.cos(angle) * radius;
+                            wheelY = 300 + Math.sin(angle) * radius;
+                          }
                           
                           const wheelRadius = getWheelSize('real', displayDots.filter((d: any) => d.wheelId == wheel.id).length, []);
+                          const distance = Math.sqrt(Math.pow(finalX - wheelX, 2) + Math.pow(finalY - wheelY, 2));
                           
-                          if (checkCollision(
-                            { x: currentPos.x, y: currentPos.y, size: 30 },
-                            { x: wheelPos.x, y: wheelPos.y, size: wheelRadius }
-                          )) {
-                            // Show mapping confirmation dialog
+                          console.log(`🔍 Checking wheel ${wheel.id}:`, {
+                            wheelPos: { x: wheelX, y: wheelY },
+                            wheelRadius,
+                            distance,
+                            threshold: (30 + wheelRadius) / 2
+                          });
+                          
+                          // More generous collision detection
+                          if (distance < wheelRadius + 50) {
+                            console.log(`✅ Collision detected! Showing mapping dialog`);
                             setMappingDialog({
                               open: true,
                               sourceType: 'dot',
@@ -1273,22 +1325,47 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                       document.removeEventListener('mousemove', handleMouseMove);
                       document.removeEventListener('mouseup', handleMouseUp);
                       
-                      // Check for collision with chakras (wheel-to-chakra mapping)
-                      const currentPos = elementPositions[`wheel-${wheel.id}`];
-                      if (currentPos) {
+                      // Calculate final position for collision detection
+                      const gridRect = gridContainerRef.current?.getBoundingClientRect();
+                      if (gridRect) {
+                        const finalX = (e.clientX - offsetX - gridRect.left - offset.x) / zoom;
+                        const finalY = (e.clientY - offsetY - gridRect.top - offset.y) / zoom;
+                        
+                        console.log(`🎯 Checking collision for wheel ${wheel.id} at position:`, { x: finalX, y: finalY });
+                        
                         // Check collision with all chakras
                         for (const chakra of chakras) {
-                          const chakraPos = elementPositions[`chakra-${chakra.id}`] || 
-                            (chakra.position ? chakra.position : { x: Math.random() * 400, y: Math.random() * 300 });
+                          // Get chakra position - try multiple sources
+                          let chakraX, chakraY;
+                          const savedChakraPos = elementPositions[`chakra-${chakra.id}`];
+                          
+                          if (savedChakraPos) {
+                            chakraX = savedChakraPos.x;
+                            chakraY = savedChakraPos.y;
+                          } else if (chakra.position) {
+                            chakraX = chakra.position.x;
+                            chakraY = chakra.position.y;
+                          } else {
+                            // Calculate chakra position based on index like the rendering code
+                            const chakraIndex = chakras.findIndex(c => c.id === chakra.id);
+                            chakraX = 100 + (chakraIndex * 500);
+                            chakraY = 200;
+                          }
                           
                           const chakraRadius = chakra.radius || 420;
                           const wheelRadius = getWheelSize('real', displayDots.filter((d: any) => d.wheelId == wheel.id).length, []);
+                          const distance = Math.sqrt(Math.pow(finalX - chakraX, 2) + Math.pow(finalY - chakraY, 2));
                           
-                          if (checkCollision(
-                            { x: currentPos.x, y: currentPos.y, size: wheelRadius },
-                            { x: chakraPos.x, y: chakraPos.y, size: chakraRadius }
-                          )) {
-                            // Show mapping confirmation dialog
+                          console.log(`🔍 Checking chakra ${chakra.id}:`, {
+                            chakraPos: { x: chakraX, y: chakraY },
+                            chakraRadius,
+                            distance,
+                            threshold: chakraRadius / 2
+                          });
+                          
+                          // More generous collision detection - check if wheel is inside chakra
+                          if (distance < chakraRadius / 2) {
+                            console.log(`✅ Collision detected! Showing mapping dialog`);
                             setMappingDialog({
                               open: true,
                               sourceType: 'wheel',
