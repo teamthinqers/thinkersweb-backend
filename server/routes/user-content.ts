@@ -1,7 +1,7 @@
 import express from 'express';
 import { db } from '@db';
 import { entries, users, dots, wheels, chakras, vectorEmbeddings } from '@shared/schema';
-import { eq, and, desc, sql } from 'drizzle-orm';
+import { eq, and, desc, sql, inArray, isNotNull } from 'drizzle-orm';
 import { z } from 'zod';
 
 // Schema removed - using direct validation for entries table format
@@ -243,16 +243,41 @@ router.post('/wheels', checkDotSparkActivation, async (req, res) => {
 router.get('/dots', checkDotSparkActivation, async (req, res) => {
   try {
     const userId = req.user!.id;
-    console.log(`🔍 Fetching dots for user ID: ${userId}`);
+    const { filterType, filterCount } = req.query;
     
-    // First try to fetch from proper dots table
-    let userDots = await db.query.dots.findMany({
+    console.log(`🔍 Fetching dots for user ID: ${userId}`);
+    console.log(`🎯 Filter params:`, { filterType, filterCount });
+    
+    // Build query based on filter parameters
+    let queryOptions: any = {
       where: eq(dots.userId, userId),
       orderBy: desc(dots.createdAt),
       with: {
         wheel: true // Include wheel relationship data
       }
-    });
+    };
+    
+    // Apply filtering based on filterType
+    if (filterType && filterCount) {
+      const count = parseInt(filterCount as string) || 4;
+      
+      if (filterType === 'dot') {
+        // For dot filter: limit to recent dots
+        queryOptions.limit = count;
+        console.log(`📍 Applying DOT filter: showing ${count} recent dots`);
+        
+      } else if (filterType === 'wheel' || filterType === 'chakra') {
+        // For wheel/chakra filters: only show dots associated with wheels
+        console.log(`${filterType === 'wheel' ? '🎡' : '🕉️'} Applying ${filterType.toUpperCase()} filter: showing only associated dots`);
+        queryOptions.where = and(
+          eq(dots.userId, userId),
+          sql`${dots.wheelId} IS NOT NULL` // Only dots that belong to wheels
+        );
+      }
+    }
+    
+    // First try to fetch from proper dots table
+    let userDots = await db.query.dots.findMany(queryOptions);
     
     // If no dots found in dots table, fallback to entries table for backward compatibility
     if (userDots.length === 0) {
@@ -343,16 +368,73 @@ router.get('/dots', checkDotSparkActivation, async (req, res) => {
 router.get('/wheels', checkDotSparkActivation, async (req, res) => {
   try {
     const userId = req.user!.id;
-    console.log(`🔍 Fetching wheels for user ID: ${userId}`);
+    const { filterType, filterCount } = req.query;
     
-    // Query actual wheels table with chakra relationships
-    const userWheels = await db.query.wheels.findMany({
+    console.log(`🔍 Fetching wheels for user ID: ${userId}`);
+    console.log(`🎯 Filter params:`, { filterType, filterCount });
+    
+    // Build query based on filter parameters
+    let queryOptions: any = {
       where: eq(wheels.userId, userId),
       orderBy: desc(wheels.createdAt),
       with: {
         chakra: true // Include chakra relationship data
       }
-    });
+    };
+    
+    // Apply filtering based on filterType
+    if (filterType && filterCount) {
+      const count = parseInt(filterCount as string) || 4;
+      
+      if (filterType === 'dot') {
+        // For dot filter: hide all wheels
+        console.log(`📍 DOT filter applied: hiding all wheels`);
+        queryOptions.where = sql`1 = 0`; // Return no results
+        
+      } else if (filterType === 'wheel') {
+        // For wheel filter: show recent wheels only (wheels have chakraId)
+        console.log(`🎡 WHEEL filter applied: showing ${count} recent wheels`);
+        queryOptions.where = and(
+          eq(wheels.userId, userId),
+          sql`${wheels.chakraId} IS NOT NULL` // Only wheels (not chakras)
+        );
+        queryOptions.limit = count;
+        
+      } else if (filterType === 'chakra') {
+        // For chakra filter: show recent chakras + associated wheels
+        console.log(`🕉️ CHAKRA filter applied: showing ${count} recent chakras + associated wheels`);
+        // First get recent chakras (no limit here as we'll handle the logic in two queries)
+        queryOptions.where = and(
+          eq(wheels.userId, userId),
+          sql`${wheels.chakraId} IS NULL` // Only chakras (no chakraId)
+        );
+        queryOptions.limit = count;
+      }
+    }
+    
+    // Query actual wheels table with chakra relationships
+    let userWheels = await db.query.wheels.findMany(queryOptions);
+    
+    // For chakra filter, we need to add associated wheels
+    if (filterType === 'chakra' && filterCount && userWheels.length > 0) {
+      const chakraIds = userWheels.map(chakra => chakra.id);
+      console.log(`🕉️ Fetching wheels associated with chakras:`, chakraIds);
+      
+      // Get associated wheels
+      const associatedWheels = await db.query.wheels.findMany({
+        where: and(
+          eq(wheels.userId, userId),
+          inArray(wheels.chakraId, chakraIds)
+        ),
+        orderBy: desc(wheels.createdAt),
+        with: {
+          chakra: true
+        }
+      });
+      
+      console.log(`🕉️ Found ${associatedWheels.length} associated wheels`);
+      userWheels = [...userWheels, ...associatedWheels];
+    }
     
     console.log(`📊 Found ${userWheels.length} wheels for user ${userId}`);
     
