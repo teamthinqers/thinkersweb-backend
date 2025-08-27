@@ -20,11 +20,12 @@ const insertWheelSchema = z.object({
 
 const router = express.Router();
 
-// PROPER AUTHENTICATION CHECK: Only allow authenticated users
+// ENHANCED AUTHENTICATION CHECK: Support both Firebase and session auth
 const checkDotSparkActivation = async (req: any, res: any, next: any) => {
   try {
-    // Check multiple auth sources - req.user (Firebase) or req.session.userId (session)
-    const userId = req.user?.id || req.session?.userId;
+    // Check multiple auth sources - req.user (Passport/Firebase) or req.session.userId (session)
+    let userId = req.user?.id || req.session?.userId;
+    let user = req.user;
     
     if (!userId) {
       console.log('❌ Authentication failed - no user ID found');
@@ -34,12 +35,35 @@ const checkDotSparkActivation = async (req: any, res: any, next: any) => {
       });
     }
     
-    // Ensure req.user is set for consistency
-    if (!req.user) {
-      req.user = { id: userId };
+    // If we only have userId from session, fetch full user data
+    if (!user && userId) {
+      try {
+        const dbUser = await db.query.users.findFirst({
+          where: eq(users.id, userId)
+        });
+        
+        if (dbUser) {
+          user = {
+            id: dbUser.id,
+            username: dbUser.username || '',
+            email: dbUser.email,
+            firebaseUid: dbUser.firebaseUid,
+            fullName: dbUser.fullName || dbUser.username || 'User',
+            bio: dbUser.bio,
+            avatarUrl: dbUser.avatar,
+            createdAt: dbUser.createdAt,
+            updatedAt: dbUser.updatedAt
+          };
+        }
+      } catch (error) {
+        console.error('Failed to fetch user data:', error);
+      }
     }
     
-    // Enable DotSpark activation for authenticated users
+    // Ensure req.user is set for consistency
+    req.user = user || { id: userId };
+    
+    // Enable DotSpark activation for authenticated users (simplified for smooth UX)
     req.user.dotSparkActivated = true;
     
     console.log(`✅ Authenticated user ${userId} accessing DotSpark`);

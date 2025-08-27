@@ -363,10 +363,17 @@ export function setupAuth(app: Express) {
       }
       
       // Remove password from response and ensure compatible types
-      const { hashedPassword: _, ...dbUser } = user;
-      const secureUser = {
-        ...dbUser,
-        username: dbUser.username || ''
+      const { hashedPassword: _, password: __, ...dbUser } = user;
+      const secureUser: Express.User = {
+        id: dbUser.id,
+        username: dbUser.username || '',
+        email: dbUser.email,
+        firebaseUid: dbUser.firebaseUid,
+        fullName: dbUser.fullName || dbUser.username || 'User',
+        bio: dbUser.bio,
+        avatarUrl: dbUser.avatar,
+        createdAt: dbUser.createdAt,
+        updatedAt: dbUser.updatedAt
       };
       
       // Log user in with promisified login to handle errors properly
