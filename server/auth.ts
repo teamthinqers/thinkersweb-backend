@@ -999,13 +999,28 @@ export function setupAuth(app: Express) {
 }
 
 export function isAuthenticated(req: Request, res: Response, next: NextFunction) {
+  console.log('🔍 Authentication check:', {
+    path: req.path,
+    method: req.method,
+    authenticated: req.isAuthenticated(),
+    userId: req.user?.id,
+    sessionUserId: req.session?.userId,
+    sessionId: req.sessionID
+  });
+  
   // Check if user is authenticated via session or Firebase
   if (req.isAuthenticated()) {
+    console.log('✅ Authenticated via req.isAuthenticated()');
     return next();
   }
   
   // Fallback to session userId (matches the pattern used by working endpoints)
   if (req.session?.userId) {
+    console.log('✅ Authenticated via session.userId');
+    // Set req.user for consistency if not already set
+    if (!req.user) {
+      req.user = { id: req.session.userId } as Express.User;
+    }
     return next();
   }
   

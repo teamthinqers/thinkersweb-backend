@@ -1813,7 +1813,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = req.user?.id;
       
+      console.log('🔍 Dot-to-wheel mapping debug:', {
+        authenticated: req.isAuthenticated(),
+        userId: userId,
+        sessionUserId: req.session?.userId,
+        body: req.body,
+        sessionId: req.sessionID
+      });
+      
       if (!userId) {
+        console.log('❌ Authentication failed - no user ID found');
         return res.status(401).json({ error: 'Authentication required' });
       }
 
@@ -1888,7 +1897,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = req.user?.id;
       
+      console.log('🔍 Wheel-to-chakra mapping debug:', {
+        authenticated: req.isAuthenticated(),
+        userId: userId,
+        sessionUserId: req.session?.userId,
+        body: req.body,
+        sessionId: req.sessionID
+      });
+      
       if (!userId) {
+        console.log('❌ Authentication failed - no user ID found');
         return res.status(401).json({ error: 'Authentication required' });
       }
 
