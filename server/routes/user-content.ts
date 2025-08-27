@@ -282,10 +282,32 @@ router.get('/dots', checkDotSparkActivation, async (req, res) => {
     // If no dots found in dots table, fallback to entries table for backward compatibility
     if (userDots.length === 0) {
       console.log(`📊 No dots in dots table, checking entries table for user ${userId}`);
-      const userEntries = await db.query.entries.findMany({
+      
+      // Build entries query with same filtering logic
+      let entriesQueryOptions: any = {
         where: eq(entries.userId, userId),
         orderBy: desc(entries.createdAt)
-      });
+      };
+      
+      // Apply same filtering logic to entries table
+      if (filterType && filterCount) {
+        const count = parseInt(filterCount as string) || 4;
+        
+        if (filterType === 'dot') {
+          // For dot filter: limit to recent entries
+          entriesQueryOptions.limit = count;
+          console.log(`📍 Applying DOT filter to entries: showing ${count} recent entries`);
+          
+        } else if (filterType === 'wheel' || filterType === 'chakra') {
+          // For wheel/chakra filters: only show entries associated with wheels
+          console.log(`${filterType === 'wheel' ? '🎡' : '🕉️'} Applying ${filterType.toUpperCase()} filter to entries: showing only associated entries`);
+          // Note: entries table doesn't have wheelId, so this will return empty for wheel/chakra filters
+          // This is correct behavior since entries are just dots, not wheels/chakras
+          entriesQueryOptions.where = sql`1 = 0`; // Return no results for wheel/chakra filters
+        }
+      }
+      
+      const userEntries = await db.query.entries.findMany(entriesQueryOptions);
       
       console.log(`📊 Found ${userEntries.length} entries for user ${userId}`);
       
