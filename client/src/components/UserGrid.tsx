@@ -167,6 +167,15 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
     targetName: string;
   } | null>(null);
 
+  const [delinkDialog, setDelinkDialog] = useState<{
+    open: boolean;
+    sourceType: 'dot' | 'wheel';
+    sourceId: string;
+    sourceName: string;
+    parentType: 'wheel' | 'chakra';
+    parentName: string;
+  } | null>(null);
+
   const { toast } = useToast();
 
   // Collision detection helper
@@ -229,6 +238,60 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
       });
     } finally {
       setMappingDialog(null);
+    }
+  };
+
+  // Handle delinking confirmation  
+  const handleDelinkConfirm = async () => {
+    if (!delinkDialog) return;
+    
+    try {
+      let endpoint, payload;
+      
+      if (delinkDialog.sourceType === 'dot') {
+        // Remove dot from wheel
+        endpoint = `/api/mapping/dot-to-wheel`;
+        payload = { 
+          dotId: delinkDialog.sourceId,
+          wheelId: null // Remove mapping
+        };
+      } else if (delinkDialog.sourceType === 'wheel') {
+        // Remove wheel from chakra
+        endpoint = `/api/mapping/wheel-to-chakra`;
+        payload = { 
+          wheelId: delinkDialog.sourceId,
+          chakraId: null // Remove mapping
+        };
+      } else {
+        throw new Error('Invalid delink type');
+      }
+
+      const response = await fetch(endpoint, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) throw new Error('Failed to delink');
+
+      toast({
+        title: "Successfully Delinked",
+        description: `${delinkDialog.sourceName} has been removed from ${delinkDialog.parentName}`,
+      });
+
+      // Refresh the data
+      window.location.reload();
+      
+    } catch (error) {
+      console.error('Delink save error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delink. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setDelinkDialog(null);
     }
   };
 
@@ -800,49 +863,90 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                         
                         console.log(`🎯 Checking collision for wheel ${wheel.id} at position:`, { x: finalX, y: finalY });
                         
-                        // Check collision with all chakras
-                        for (const chakra of chakras) {
-                          // Get chakra position - try multiple sources
-                          let chakraX, chakraY;
-                          const savedChakraPos = elementPositions[`chakra-${chakra.id}`];
-                          
-                          if (savedChakraPos) {
-                            chakraX = savedChakraPos.x;
-                            chakraY = savedChakraPos.y;
-                          } else if (chakra.position) {
-                            chakraX = chakra.position.x;
-                            chakraY = chakra.position.y;
-                          } else {
-                            // Calculate chakra position based on index like the rendering code
-                            const chakraIndex = chakras.findIndex(c => c.id === chakra.id);
-                            chakraX = 100 + (chakraIndex * 500);
-                            chakraY = 200;
+                        // If wheel is currently mapped to a chakra, check if dragged outside (delink)
+                        if (wheel.chakraId) {
+                          const currentChakra = chakras.find(c => c.id === wheel.chakraId);
+                          if (currentChakra) {
+                            // Get current chakra position
+                            let chakraX, chakraY;
+                            const savedChakraPos = elementPositions[`chakra-${currentChakra.id}`];
+                            
+                            if (savedChakraPos) {
+                              chakraX = savedChakraPos.x;
+                              chakraY = savedChakraPos.y;
+                            } else if (currentChakra.position) {
+                              chakraX = currentChakra.position.x;
+                              chakraY = currentChakra.position.y;
+                            } else {
+                              const chakraIndex = chakras.findIndex(c => c.id === currentChakra.id);
+                              chakraX = 100 + (chakraIndex * 500);
+                              chakraY = 200;
+                            }
+                            
+                            const chakraRadius = currentChakra.radius || 420;
+                            const distance = Math.sqrt(Math.pow(finalX - chakraX, 2) + Math.pow(finalY - chakraY, 2));
+                            
+                            // Check if wheel is dragged outside its current chakra
+                            if (distance > chakraRadius / 2 + 50) {
+                              console.log(`🔗 Delink detected! Wheel dragged outside chakra`);
+                              setDelinkDialog({
+                                open: true,
+                                sourceType: 'wheel',
+                                sourceId: wheel.id,
+                                sourceName: wheel.heading || wheel.name,
+                                parentType: 'chakra',
+                                parentName: currentChakra.heading || currentChakra.name
+                              });
+                              return; // Don't check for new mappings if delinking
+                            }
                           }
-                          
-                          const chakraRadius = chakra.radius || 420;
-                          const wheelRadius = getWheelSize('real', displayDots.filter((d: any) => d.wheelId == wheel.id).length, []);
-                          const distance = Math.sqrt(Math.pow(finalX - chakraX, 2) + Math.pow(finalY - chakraY, 2));
-                          
-                          console.log(`🔍 Checking chakra ${chakra.id}:`, {
-                            chakraPos: { x: chakraX, y: chakraY },
-                            chakraRadius,
-                            distance,
-                            threshold: chakraRadius / 2
-                          });
-                          
-                          // More generous collision detection - check if wheel is inside chakra
-                          if (distance < chakraRadius / 2) {
-                            console.log(`✅ Collision detected! Showing mapping dialog`);
-                            setMappingDialog({
-                              open: true,
-                              sourceType: 'wheel',
-                              sourceId: wheel.id,
-                              sourceName: wheel.heading || wheel.name,
-                              targetType: 'chakra',
-                              targetId: chakra.id,
-                              targetName: chakra.heading || chakra.name
+                        }
+                        
+                        // Check collision with all chakras for new mappings (only if not currently mapped)
+                        if (!wheel.chakraId) {
+                          for (const chakra of chakras) {
+                            // Get chakra position - try multiple sources
+                            let chakraX, chakraY;
+                            const savedChakraPos = elementPositions[`chakra-${chakra.id}`];
+                            
+                            if (savedChakraPos) {
+                              chakraX = savedChakraPos.x;
+                              chakraY = savedChakraPos.y;
+                            } else if (chakra.position) {
+                              chakraX = chakra.position.x;
+                              chakraY = chakra.position.y;
+                            } else {
+                              // Calculate chakra position based on index like the rendering code
+                              const chakraIndex = chakras.findIndex(c => c.id === chakra.id);
+                              chakraX = 100 + (chakraIndex * 500);
+                              chakraY = 200;
+                            }
+                            
+                            const chakraRadius = chakra.radius || 420;
+                            const wheelRadius = getWheelSize('real', displayDots.filter((d: any) => d.wheelId == wheel.id).length, []);
+                            const distance = Math.sqrt(Math.pow(finalX - chakraX, 2) + Math.pow(finalY - chakraY, 2));
+                            
+                            console.log(`🔍 Checking chakra ${chakra.id}:`, {
+                              chakraPos: { x: chakraX, y: chakraY },
+                              chakraRadius,
+                              distance,
+                              threshold: chakraRadius / 2
                             });
-                            break;
+                            
+                            // More generous collision detection - check if wheel is inside chakra
+                            if (distance < chakraRadius / 2) {
+                              console.log(`✅ Collision detected! Showing mapping dialog`);
+                              setMappingDialog({
+                                open: true,
+                                sourceType: 'wheel',
+                                sourceId: wheel.id,
+                                sourceName: wheel.heading || wheel.name,
+                                targetType: 'chakra',
+                                targetId: chakra.id,
+                                targetName: chakra.heading || chakra.name
+                              });
+                              break;
+                            }
                           }
                         }
                       }
@@ -1078,50 +1182,93 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                         
                         console.log(`🎯 Checking collision for dot ${dot.id} at position:`, { x: finalX, y: finalY });
                         
-                        // Check collision with all wheels
-                        for (const wheel of displayWheels) {
-                          // Get wheel position - try multiple sources
-                          let wheelX, wheelY;
-                          const savedWheelPos = elementPositions[`wheel-${wheel.id}`];
-                          
-                          if (savedWheelPos) {
-                            wheelX = savedWheelPos.x;
-                            wheelY = savedWheelPos.y;
-                          } else if (wheel.position) {
-                            wheelX = wheel.position.x;
-                            wheelY = wheel.position.y;
-                          } else {
-                            // Calculate wheel position based on index like the rendering code
-                            const wheelIndex = displayWheels.findIndex(w => w.id === wheel.id);
-                            const angle = (wheelIndex * 120) * (Math.PI / 180);
-                            const radius = 250;
-                            wheelX = 400 + Math.cos(angle) * radius;
-                            wheelY = 300 + Math.sin(angle) * radius;
+                        // If dot is currently mapped to a wheel, check if dragged outside (delink)
+                        if (dot.wheelId) {
+                          const currentWheel = displayWheels.find(w => w.id === dot.wheelId);
+                          if (currentWheel) {
+                            // Get current wheel position
+                            let wheelX, wheelY;
+                            const savedWheelPos = elementPositions[`wheel-${currentWheel.id}`];
+                            
+                            if (savedWheelPos) {
+                              wheelX = savedWheelPos.x;
+                              wheelY = savedWheelPos.y;
+                            } else if (currentWheel.position) {
+                              wheelX = currentWheel.position.x;
+                              wheelY = currentWheel.position.y;
+                            } else {
+                              const wheelIndex = displayWheels.findIndex(w => w.id === currentWheel.id);
+                              const angle = (wheelIndex * 120) * (Math.PI / 180);
+                              const radius = 250;
+                              wheelX = 400 + Math.cos(angle) * radius;
+                              wheelY = 300 + Math.sin(angle) * radius;
+                            }
+                            
+                            const wheelRadius = getWheelSize('real', displayDots.filter((d: any) => d.wheelId == currentWheel.id).length, []);
+                            const distance = Math.sqrt(Math.pow(finalX - wheelX, 2) + Math.pow(finalY - wheelY, 2));
+                            
+                            // Check if dot is dragged outside its current wheel
+                            if (distance > wheelRadius + 70) {
+                              console.log(`🔗 Delink detected! Dot dragged outside wheel`);
+                              setDelinkDialog({
+                                open: true,
+                                sourceType: 'dot',
+                                sourceId: dot.id,
+                                sourceName: dot.oneWordSummary,
+                                parentType: 'wheel',
+                                parentName: currentWheel.heading || currentWheel.name
+                              });
+                              return; // Don't check for new mappings if delinking
+                            }
                           }
-                          
-                          const wheelRadius = getWheelSize('real', displayDots.filter((d: any) => d.wheelId == wheel.id).length, []);
-                          const distance = Math.sqrt(Math.pow(finalX - wheelX, 2) + Math.pow(finalY - wheelY, 2));
-                          
-                          console.log(`🔍 Checking wheel ${wheel.id}:`, {
-                            wheelPos: { x: wheelX, y: wheelY },
-                            wheelRadius,
-                            distance,
-                            threshold: (30 + wheelRadius) / 2
-                          });
-                          
-                          // More generous collision detection
-                          if (distance < wheelRadius + 50) {
-                            console.log(`✅ Collision detected! Showing mapping dialog`);
-                            setMappingDialog({
-                              open: true,
-                              sourceType: 'dot',
-                              sourceId: dot.id,
-                              sourceName: dot.oneWordSummary,
-                              targetType: 'wheel',
-                              targetId: wheel.id,
-                              targetName: wheel.heading || wheel.name
+                        }
+                        
+                        // Check collision with all wheels for new mappings (only if not currently mapped)
+                        if (!dot.wheelId) {
+                          for (const wheel of displayWheels) {
+                            // Get wheel position - try multiple sources
+                            let wheelX, wheelY;
+                            const savedWheelPos = elementPositions[`wheel-${wheel.id}`];
+                            
+                            if (savedWheelPos) {
+                              wheelX = savedWheelPos.x;
+                              wheelY = savedWheelPos.y;
+                            } else if (wheel.position) {
+                              wheelX = wheel.position.x;
+                              wheelY = wheel.position.y;
+                            } else {
+                              // Calculate wheel position based on index like the rendering code
+                              const wheelIndex = displayWheels.findIndex(w => w.id === wheel.id);
+                              const angle = (wheelIndex * 120) * (Math.PI / 180);
+                              const radius = 250;
+                              wheelX = 400 + Math.cos(angle) * radius;
+                              wheelY = 300 + Math.sin(angle) * radius;
+                            }
+                            
+                            const wheelRadius = getWheelSize('real', displayDots.filter((d: any) => d.wheelId == wheel.id).length, []);
+                            const distance = Math.sqrt(Math.pow(finalX - wheelX, 2) + Math.pow(finalY - wheelY, 2));
+                            
+                            console.log(`🔍 Checking wheel ${wheel.id}:`, {
+                              wheelPos: { x: wheelX, y: wheelY },
+                              wheelRadius,
+                              distance,
+                              threshold: (30 + wheelRadius) / 2
                             });
-                            break;
+                            
+                            // More generous collision detection
+                            if (distance < wheelRadius + 50) {
+                              console.log(`✅ Collision detected! Showing mapping dialog`);
+                              setMappingDialog({
+                                open: true,
+                                sourceType: 'dot',
+                                sourceId: dot.id,
+                                sourceName: dot.oneWordSummary,
+                                targetType: 'wheel',
+                                targetId: wheel.id,
+                                targetName: wheel.heading || wheel.name
+                              });
+                              break;
+                            }
                           }
                         }
                       }
@@ -1351,49 +1498,90 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                         
                         console.log(`🎯 Checking collision for wheel ${wheel.id} at position:`, { x: finalX, y: finalY });
                         
-                        // Check collision with all chakras
-                        for (const chakra of chakras) {
-                          // Get chakra position - try multiple sources
-                          let chakraX, chakraY;
-                          const savedChakraPos = elementPositions[`chakra-${chakra.id}`];
-                          
-                          if (savedChakraPos) {
-                            chakraX = savedChakraPos.x;
-                            chakraY = savedChakraPos.y;
-                          } else if (chakra.position) {
-                            chakraX = chakra.position.x;
-                            chakraY = chakra.position.y;
-                          } else {
-                            // Calculate chakra position based on index like the rendering code
-                            const chakraIndex = chakras.findIndex(c => c.id === chakra.id);
-                            chakraX = 100 + (chakraIndex * 500);
-                            chakraY = 200;
+                        // If wheel is currently mapped to a chakra, check if dragged outside (delink)
+                        if (wheel.chakraId) {
+                          const currentChakra = chakras.find(c => c.id === wheel.chakraId);
+                          if (currentChakra) {
+                            // Get current chakra position
+                            let chakraX, chakraY;
+                            const savedChakraPos = elementPositions[`chakra-${currentChakra.id}`];
+                            
+                            if (savedChakraPos) {
+                              chakraX = savedChakraPos.x;
+                              chakraY = savedChakraPos.y;
+                            } else if (currentChakra.position) {
+                              chakraX = currentChakra.position.x;
+                              chakraY = currentChakra.position.y;
+                            } else {
+                              const chakraIndex = chakras.findIndex(c => c.id === currentChakra.id);
+                              chakraX = 100 + (chakraIndex * 500);
+                              chakraY = 200;
+                            }
+                            
+                            const chakraRadius = currentChakra.radius || 420;
+                            const distance = Math.sqrt(Math.pow(finalX - chakraX, 2) + Math.pow(finalY - chakraY, 2));
+                            
+                            // Check if wheel is dragged outside its current chakra
+                            if (distance > chakraRadius / 2 + 50) {
+                              console.log(`🔗 Delink detected! Wheel dragged outside chakra`);
+                              setDelinkDialog({
+                                open: true,
+                                sourceType: 'wheel',
+                                sourceId: wheel.id,
+                                sourceName: wheel.heading || wheel.name,
+                                parentType: 'chakra',
+                                parentName: currentChakra.heading || currentChakra.name
+                              });
+                              return; // Don't check for new mappings if delinking
+                            }
                           }
-                          
-                          const chakraRadius = chakra.radius || 420;
-                          const wheelRadius = getWheelSize('real', displayDots.filter((d: any) => d.wheelId == wheel.id).length, []);
-                          const distance = Math.sqrt(Math.pow(finalX - chakraX, 2) + Math.pow(finalY - chakraY, 2));
-                          
-                          console.log(`🔍 Checking chakra ${chakra.id}:`, {
-                            chakraPos: { x: chakraX, y: chakraY },
-                            chakraRadius,
-                            distance,
-                            threshold: chakraRadius / 2
-                          });
-                          
-                          // More generous collision detection - check if wheel is inside chakra
-                          if (distance < chakraRadius / 2) {
-                            console.log(`✅ Collision detected! Showing mapping dialog`);
-                            setMappingDialog({
-                              open: true,
-                              sourceType: 'wheel',
-                              sourceId: wheel.id,
-                              sourceName: wheel.heading || wheel.name,
-                              targetType: 'chakra',
-                              targetId: chakra.id,
-                              targetName: chakra.heading || chakra.name
+                        }
+                        
+                        // Check collision with all chakras for new mappings (only if not currently mapped)
+                        if (!wheel.chakraId) {
+                          for (const chakra of chakras) {
+                            // Get chakra position - try multiple sources
+                            let chakraX, chakraY;
+                            const savedChakraPos = elementPositions[`chakra-${chakra.id}`];
+                            
+                            if (savedChakraPos) {
+                              chakraX = savedChakraPos.x;
+                              chakraY = savedChakraPos.y;
+                            } else if (chakra.position) {
+                              chakraX = chakra.position.x;
+                              chakraY = chakra.position.y;
+                            } else {
+                              // Calculate chakra position based on index like the rendering code
+                              const chakraIndex = chakras.findIndex(c => c.id === chakra.id);
+                              chakraX = 100 + (chakraIndex * 500);
+                              chakraY = 200;
+                            }
+                            
+                            const chakraRadius = chakra.radius || 420;
+                            const wheelRadius = getWheelSize('real', displayDots.filter((d: any) => d.wheelId == wheel.id).length, []);
+                            const distance = Math.sqrt(Math.pow(finalX - chakraX, 2) + Math.pow(finalY - chakraY, 2));
+                            
+                            console.log(`🔍 Checking chakra ${chakra.id}:`, {
+                              chakraPos: { x: chakraX, y: chakraY },
+                              chakraRadius,
+                              distance,
+                              threshold: chakraRadius / 2
                             });
-                            break;
+                            
+                            // More generous collision detection - check if wheel is inside chakra
+                            if (distance < chakraRadius / 2) {
+                              console.log(`✅ Collision detected! Showing mapping dialog`);
+                              setMappingDialog({
+                                open: true,
+                                sourceType: 'wheel',
+                                sourceId: wheel.id,
+                                sourceName: wheel.heading || wheel.name,
+                                targetType: 'chakra',
+                                targetId: chakra.id,
+                                targetName: chakra.heading || chakra.name
+                              });
+                              break;
+                            }
                           }
                         }
                       }
@@ -1507,6 +1695,25 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction onClick={handleMapConfirm}>
               Yes, Map {mappingDialog?.sourceType === 'dot' ? 'Dot' : 'Wheel'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Drag-and-Drop Delink Confirmation Dialog */}
+      <AlertDialog open={delinkDialog?.open || false} onOpenChange={() => setDelinkDialog(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirm Delinking</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delink <strong>{delinkDialog?.sourceName}</strong> from <strong>{delinkDialog?.parentName}</strong>?
+              {delinkDialog?.sourceType === 'wheel' && " All dots in this wheel will also be removed from the chakra."}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelinkConfirm} className="bg-red-600 hover:bg-red-700">
+              Yes, Delink {delinkDialog?.sourceType === 'dot' ? 'Dot' : 'Wheel'}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
