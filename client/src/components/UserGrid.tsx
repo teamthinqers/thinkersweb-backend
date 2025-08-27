@@ -549,6 +549,9 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
       }
     }
     
+    // Track if any collision/mapping was detected
+    let collisionDetected = false;
+    
     // Check collision with all wheels for new mappings OR transfers between wheels
     for (const wheel of displayWheels) {
       // Skip if this is the wheel the dot is already in
@@ -597,6 +600,7 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
           targetName: wheel.heading || wheel.name,
           isTransfer: false
         });
+        collisionDetected = true;
         break;
       }
     }
@@ -652,7 +656,28 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
           targetName: chakra.heading || chakra.name,
           isTransfer: false
         });
+        collisionDetected = true;
         break; // Exit chakra loop once collision is found
+      }
+    }
+
+    // If no collision detected and dot is currently in a wheel or chakra, ask to make standalone
+    if (!collisionDetected && (dot.wheelId || dot.chakraId)) {
+      console.log(`🔄 No collision detected for dot "${dot.oneWordSummary}" - offering to make standalone`);
+      
+      const currentParent = dot.wheelId 
+        ? displayWheels.find(w => w.id === dot.wheelId) 
+        : chakras.find(c => c.id === dot.chakraId);
+        
+      if (currentParent) {
+        setDelinkDialog({
+          open: true,
+          sourceType: 'dot',
+          sourceId: dot.id,
+          sourceName: dot.oneWordSummary,
+          parentType: dot.wheelId ? 'wheel' : 'chakra',
+          parentName: currentParent.heading || currentParent.name
+        });
       }
     }
   };
