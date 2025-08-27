@@ -68,15 +68,25 @@ async function getUserByUsername(username: string) {
 }
 
 async function getUserByEmail(email: string) {
-  return await db.query.users.findFirst({
-    where: eq(users.email, email)
-  });
+  try {
+    // Use raw query to handle schema differences
+    const result = await db.execute(`SELECT * FROM users WHERE email = $1`, [email]);
+    return result.rows && result.rows.length > 0 ? result.rows[0] as any : null;
+  } catch (error) {
+    console.error("getUserByEmail error:", error);
+    return null;
+  }
 }
 
 async function getUserByFirebaseUid(uid: string) {
-  return await db.query.users.findFirst({
-    where: eq(users.firebaseUid, uid)
-  });
+  try {
+    // Use raw query to handle schema differences
+    const result = await db.execute(`SELECT * FROM users WHERE firebase_uid = $1`, [uid]);
+    return result.rows && result.rows.length > 0 ? result.rows[0] as any : null;
+  } catch (error) {
+    console.error("getUserByFirebaseUid error:", error);
+    return null;
+  }
 }
 
 async function getUser(id: number) {
