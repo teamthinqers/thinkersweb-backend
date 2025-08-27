@@ -149,7 +149,7 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
   const [hoveredDot, setHoveredDot] = useState<Dot | null>(null);
   const [hoveredWheel, setHoveredWheel] = useState<Wheel | null>(null);
   const [hoveredChakra, setHoveredChakra] = useState<any>(null);
-  const [draggedElement, setDraggedElement] = useState<{type: 'dot' | 'wheel' | 'chakra', id: string, startPos: {x: number, y: number}} | null>(null);
+  const [draggedElement, setDraggedElement] = useState<{type: 'dot' | 'wheel' | 'chakra', id: string, startPos: {x: number, y: number}, offset: {x: number, y: number}} | null>(null);
   const [elementPositions, setElementPositions] = useState<{[key: string]: {x: number, y: number}}>({});
   const [showSaveDialog, setShowSaveDialog] = useState(false); 
   const gridContainerRef = useRef<HTMLDivElement>(null);
@@ -221,8 +221,9 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
       // Element dragging mode - update element position and all grouped elements
       const rect = gridContainerRef.current?.getBoundingClientRect();
       if (rect) {
-        const newX = (e.clientX - rect.left - offset.x) / zoom;
-        const newY = (e.clientY - rect.top - offset.y) / zoom;
+        // Use the stored offset to maintain proper cursor-to-element relationship
+        const newX = (e.clientX - draggedElement.offset.x - rect.left - offset.x) / zoom;
+        const newY = (e.clientY - draggedElement.offset.y - rect.top - offset.y) / zoom;
         
         // Calculate movement delta
         const currentPos = elementPositions[`${draggedElement.type}-${draggedElement.id}`];
@@ -302,8 +303,9 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
       // Save final position of dragged element and all grouped elements
       const rect = gridContainerRef.current?.getBoundingClientRect();
       if (rect) {
-        const newX = (e.clientX - rect.left - offset.x) / zoom;
-        const newY = (e.clientY - rect.top - offset.y) / zoom;
+        // Use the stored offset to maintain proper cursor-to-element relationship
+        const newX = (e.clientX - draggedElement.offset.x - rect.left - offset.x) / zoom;
+        const newY = (e.clientY - draggedElement.offset.y - rect.top - offset.y) / zoom;
         
         // Calculate movement delta for final positioning
         const currentPos = elementPositions[`${draggedElement.type}-${draggedElement.id}`];
@@ -609,7 +611,16 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                   onMouseDown={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    setDraggedElement({type: 'chakra', id: chakra.id, startPos: {x: e.clientX, y: e.clientY}});
+                    // Calculate offset from cursor to element center
+                    const rect = e.currentTarget.getBoundingClientRect();
+                    const centerX = rect.left + rect.width / 2;
+                    const centerY = rect.top + rect.height / 2;
+                    setDraggedElement({
+                      type: 'chakra', 
+                      id: chakra.id, 
+                      startPos: {x: e.clientX, y: e.clientY},
+                      offset: {x: e.clientX - centerX, y: e.clientY - centerY}
+                    });
                   }}
                   onMouseEnter={() => !draggedElement && setHoveredChakra(chakra)}
                   onMouseLeave={() => setHoveredChakra(null)}
@@ -793,7 +804,16 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                   onMouseDown={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    setDraggedElement({type: 'wheel', id: wheel.id, startPos: {x: e.clientX, y: e.clientY}});
+                    // Calculate offset from cursor to element center
+                    const rect = e.currentTarget.getBoundingClientRect();
+                    const centerX = rect.left + rect.width / 2;
+                    const centerY = rect.top + rect.height / 2;
+                    setDraggedElement({
+                      type: 'wheel', 
+                      id: wheel.id, 
+                      startPos: {x: e.clientX, y: e.clientY},
+                      offset: {x: e.clientX - centerX, y: e.clientY - centerY}
+                    });
                   }}
                   onMouseEnter={() => !draggedElement && setHoveredWheel(wheel)}
                   onMouseLeave={() => setHoveredWheel(null)}
@@ -989,7 +1009,16 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                   onMouseDown={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    setDraggedElement({type: 'dot', id: dot.id, startPos: {x: e.clientX, y: e.clientY}});
+                    // Calculate offset from cursor to element center
+                    const rect = e.currentTarget.getBoundingClientRect();
+                    const centerX = rect.left + rect.width / 2;
+                    const centerY = rect.top + rect.height / 2;
+                    setDraggedElement({
+                      type: 'dot', 
+                      id: dot.id, 
+                      startPos: {x: e.clientX, y: e.clientY},
+                      offset: {x: e.clientX - centerX, y: e.clientY - centerY}
+                    });
                   }}
                   onMouseEnter={() => !draggedElement && setHoveredDot(dot)}
                   onMouseLeave={() => setHoveredDot(null)}
@@ -1179,7 +1208,16 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                   onMouseDown={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    setDraggedElement({type: 'wheel', id: wheel.id, startPos: {x: e.clientX, y: e.clientY}});
+                    // Calculate offset from cursor to element center
+                    const rect = e.currentTarget.getBoundingClientRect();
+                    const centerX = rect.left + rect.width / 2;
+                    const centerY = rect.top + rect.height / 2;
+                    setDraggedElement({
+                      type: 'wheel', 
+                      id: wheel.id, 
+                      startPos: {x: e.clientX, y: e.clientY},
+                      offset: {x: e.clientX - centerX, y: e.clientY - centerY}
+                    });
                   }}
                   onMouseEnter={() => !draggedElement && setHoveredWheel(wheel)}
                   onMouseLeave={() => setHoveredWheel(null)}
