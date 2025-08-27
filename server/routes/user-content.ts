@@ -20,53 +20,21 @@ const insertWheelSchema = z.object({
 
 const router = express.Router();
 
-// ENHANCED AUTHENTICATION CHECK: Support both Firebase and session auth
-const checkDotSparkActivation = async (req: any, res: any, next: any) => {
+// Simple authentication check - just verify user is signed in
+const authenticateUser = async (req: any, res: any, next: any) => {
   try {
     // Check multiple auth sources - req.user (Passport/Firebase) or req.session.userId (session)
     let userId = req.user?.id || req.session?.userId;
-    let user = req.user;
     
     if (!userId) {
       console.log('❌ Authentication failed - no user ID found');
       return res.status(401).json({ 
         error: 'Authentication required',
-        message: 'Please sign in to access DotSpark features'
+        message: 'Please sign in to continue'
       });
     }
     
-    // If we only have userId from session, fetch full user data
-    if (!user && userId) {
-      try {
-        const dbUser = await db.query.users.findFirst({
-          where: eq(users.id, userId)
-        });
-        
-        if (dbUser) {
-          user = {
-            id: dbUser.id,
-            username: dbUser.username || '',
-            email: dbUser.email,
-            firebaseUid: dbUser.firebaseUid,
-            fullName: dbUser.fullName || dbUser.username || 'User',
-            bio: dbUser.bio,
-            avatarUrl: dbUser.avatar,
-            createdAt: dbUser.createdAt,
-            updatedAt: dbUser.updatedAt
-          };
-        }
-      } catch (error) {
-        console.error('Failed to fetch user data:', error);
-      }
-    }
-    
-    // Ensure req.user is set for consistency
-    req.user = user || { id: userId };
-    
-    // Enable DotSpark activation for authenticated users (simplified for smooth UX)
-    req.user.dotSparkActivated = true;
-    
-    console.log(`✅ Authenticated user ${userId} accessing DotSpark`);
+    console.log(`✅ Authenticated user ${userId}`);
     next();
   } catch (error) {
     console.error('Error in authentication check:', error);
@@ -321,7 +289,7 @@ router.post('/wheels', async (req, res) => {
 });
 
 // Get all wheels for the authenticated user - MISSING ENDPOINT
-router.get('/wheels', checkDotSparkActivation, async (req, res) => {
+router.get('/wheels', authenticateUser, async (req, res) => {
   const userId = req.user?.id || req.session?.userId;
   const { filterType, filterCount, preview } = req.query;
 
@@ -377,7 +345,7 @@ router.get('/wheels', checkDotSparkActivation, async (req, res) => {
 });
 
 // Get all dots for the authenticated user - CLEAN VERSION
-router.get('/dots', checkDotSparkActivation, async (req, res) => {
+router.get('/dots', authenticateUser, async (req, res) => {
   const userId = req.user?.id || req.session?.userId;
   const { filterType, filterCount, preview } = req.query;
 
@@ -531,7 +499,7 @@ router.get('/dots', checkDotSparkActivation, async (req, res) => {
 });
 
 // Create a new chakra with alignment
-router.post('/chakras', checkDotSparkActivation, async (req, res) => {
+router.post('/chakras', authenticateUser, async (req, res) => {
   const userId = req.user?.id || req.session?.userId;
   
   console.log(`✅ Chakras POST - User ${userId} authenticated`);
@@ -596,7 +564,7 @@ router.post('/chakras', checkDotSparkActivation, async (req, res) => {
 });
 
 // Get all chakras for the authenticated user  
-router.get('/chakras', checkDotSparkActivation, async (req, res) => {
+router.get('/chakras', authenticateUser, async (req, res) => {
   const userId = req.user?.id || req.session?.userId;
   
   console.log(`🔍 Fetching chakras for user ${userId}`);
@@ -636,7 +604,7 @@ router.get('/chakras', checkDotSparkActivation, async (req, res) => {
 });
 
 // Get individual dot by ID - MISSING ENDPOINT  
-router.get('/dots/:id', checkDotSparkActivation, async (req, res) => {
+router.get('/dots/:id', authenticateUser, async (req, res) => {
   const userId = req.user?.id || req.session?.userId;
   const dotId = req.params.id;
   
@@ -684,7 +652,7 @@ router.get('/dots/:id', checkDotSparkActivation, async (req, res) => {
 });
 
 // Delete a specific dot
-router.delete('/dots/:id', checkDotSparkActivation, async (req, res) => {
+router.delete('/dots/:id', authenticateUser, async (req, res) => {
   const userId = req.user?.id || req.session?.userId;
   const dotId = req.params.id;
   
@@ -728,7 +696,7 @@ router.delete('/dots/:id', checkDotSparkActivation, async (req, res) => {
 });
 
 // Delete a specific wheel
-router.delete('/wheels/:id', checkDotSparkActivation, async (req, res) => {
+router.delete('/wheels/:id', authenticateUser, async (req, res) => {
   const userId = req.user?.id || req.session?.userId;
   const wheelId = req.params.id;
   
@@ -772,7 +740,7 @@ router.delete('/wheels/:id', checkDotSparkActivation, async (req, res) => {
 });
 
 // Delete a specific chakra
-router.delete('/chakras/:id', checkDotSparkActivation, async (req, res) => {
+router.delete('/chakras/:id', authenticateUser, async (req, res) => {
   const userId = req.user?.id || req.session?.userId;
   const chakraId = req.params.id;
   
