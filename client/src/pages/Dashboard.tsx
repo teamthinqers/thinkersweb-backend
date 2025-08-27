@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Mic, Type, Eye, Brain, Network, Zap, Search, Clock, Info, Database, Cpu, Sparkles, Users, Maximize, Minimize, RotateCcw, X, ArrowLeft, User, Plus } from "lucide-react";
+import { Mic, Type, Eye, Brain, Network, Zap, Search, Clock, Info, Database, Cpu, Sparkles, Users, Maximize, Minimize, RotateCcw, X, ArrowLeft, User, Plus, AlertCircle } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import DotFullView from "@/components/DotFullView";
 import DotFlashCard from "@/components/DotFlashCard";
@@ -152,15 +152,22 @@ const Dashboard: React.FC = () => {
           console.log('🎯 Full dot structure sample:', data[0]);
           return data;
         } else if (response.status === 401) {
-          console.log('🔒 Authentication required - checking if we should show preview mode');
-          // Fall back to preview mode if available
+          console.log('🔒 Authentication required - filters cannot be applied without sign-in');
+          
+          if (recentFilterApplied) {
+            console.log('⚠️ Filter applied but user not authenticated - returning empty results');
+            // When filter is applied but user is not authenticated, return empty to show filter is not working
+            return [];
+          }
+          
+          // Only fall back to preview mode if no filter is applied
           if (previewMode) {
             const previewResponse = await fetch('/api/dots?preview=true', {
               credentials: 'include'
             });
             if (previewResponse.ok) {
               const previewData = await previewResponse.json();
-              console.log('✅ Preview dots fetched:', previewData.length);
+              console.log('✅ Preview dots fetched (no filters applied):', previewData.length);
               return previewData;
             }
           }
@@ -212,9 +219,14 @@ const Dashboard: React.FC = () => {
           credentials: 'include' // Include cookies for authentication
         });
         if (!response.ok) {
+          if (response.status === 401 && recentFilterApplied) {
+            console.log('⚠️ Wheels filter applied but user not authenticated - returning empty results');
+            return [];
+          }
           return [];
         }
         const data = await response.json();
+        console.log(`✅ Wheels fetched successfully: ${data.length} items`);
         return data;
       } catch (err) {
         console.error('Error fetching wheels:', err);
@@ -1700,12 +1712,21 @@ const Dashboard: React.FC = () => {
           
           {/* Recent Filter Indicator */}
           {recentFilterApplied && !previewMode && (
-            <div className="bg-gradient-to-r from-amber-600 to-orange-600 text-white rounded-lg px-3 py-2 border-2 border-amber-400 shadow-lg">
-              <div className="flex items-center gap-2">
-                <Clock className="w-3 h-3" />
-                <span className="text-xs font-medium">Showing {recentDotsCount} Recent {recentFilterType === 'dot' ? 'Dots' : recentFilterType === 'wheel' ? 'Wheels + Associated Dots' : 'Chakras + Associated Content'}</span>
+            !user ? (
+              <div className="bg-gradient-to-r from-red-600 to-red-700 text-white rounded-lg px-3 py-2 border-2 border-red-400 shadow-lg">
+                <div className="flex items-center gap-2">
+                  <AlertCircle className="w-3 h-3" />
+                  <span className="text-xs font-medium">Filter Applied - Sign In Required to Apply Filters</span>
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="bg-gradient-to-r from-amber-600 to-orange-600 text-white rounded-lg px-3 py-2 border-2 border-amber-400 shadow-lg">
+                <div className="flex items-center gap-2">
+                  <Clock className="w-3 h-3" />
+                  <span className="text-xs font-medium">Showing {recentDotsCount} Recent {recentFilterType === 'dot' ? 'Dots' : recentFilterType === 'wheel' ? 'Wheels + Associated Dots' : 'Chakras + Associated Content'}</span>
+                </div>
+              </div>
+            )
           )}
         </div>
         
