@@ -92,6 +92,25 @@ const Dashboard: React.FC = () => {
     queryKey: ['/api/grid/positions', { preview: previewMode }, user?.id || 'anonymous'],
     queryFn: async () => {
       try {
+        // If in preview mode, use static demo positioning data
+        if (previewMode) {
+          console.log('✅ Using static demo positioning data for preview mode');
+          const demoData = getDemoDataForPreview();
+          return { 
+            data: { 
+              dotPositions: demoData.positioning?.dotPositions || {}, 
+              wheelPositions: demoData.positioning?.wheelPositions || {}, 
+              chakraPositions: demoData.positioning?.chakraPositions || {}, 
+              statistics: { 
+                totalDots: demoData.previewDots.length, 
+                totalWheels: demoData.previewWheels.length, 
+                totalChakras: 0, 
+                freeDots: demoData.previewDots.filter(d => !d.wheelId).length 
+              } 
+            } 
+          };
+        }
+        
         console.log('Fetching grid positions for user:', user?.email || 'anonymous', 'preview:', previewMode);
         const response = await fetch(`/api/grid/positions?preview=${previewMode}`, {
           credentials: 'include' // Include cookies for authentication

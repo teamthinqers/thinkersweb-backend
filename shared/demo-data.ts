@@ -461,10 +461,42 @@ export const demoData = {
   allWheels: [...demoChakras, ...demoWheels] // Combined for components that need all wheels
 };
 
+// Demo positioning data to maintain exact grid layout
+const demoPositioning = {
+  dotPositions: {
+    // Extract positions from dots that already have them
+    ...demoDots.reduce((acc, dot) => {
+      if (dot.position) {
+        acc[dot.id] = dot.position;
+      }
+      return acc;
+    }, {} as Record<string, { x: number; y: number }>)
+  },
+  wheelPositions: {
+    // Extract positions from wheels that already have them
+    ...demoWheels.reduce((acc, wheel) => {
+      acc[wheel.id] = wheel.position;
+      return acc;
+    }, {} as Record<string, { x: number; y: number }>),
+    // Also include chakras
+    ...demoChakras.reduce((acc, chakra) => {
+      acc[chakra.id] = chakra.position;
+      return acc;
+    }, {} as Record<string, { x: number; y: number }>)
+  },
+  chakraPositions: {
+    ...demoChakras.reduce((acc, chakra) => {
+      acc[chakra.id] = chakra.position;
+      return acc;
+    }, {} as Record<string, { x: number; y: number }>)
+  }
+};
+
 // Helper function to get demo data in the format expected by components
 export function getDemoDataForPreview() {
   return {
     previewDots: demoDots,
-    previewWheels: [...demoChakras, ...demoWheels]
+    previewWheels: [...demoChakras, ...demoWheels],
+    positioning: demoPositioning
   };
 }

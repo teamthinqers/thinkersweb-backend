@@ -281,13 +281,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Add DotSpark activation status to response
-      let dotSparkActivated = false;
+      // For authenticated users, DotSpark is always activated
+      let dotSparkActivated = !!req.session?.userId;
       let subscriptionTier = 'free';
-      if (req.session?.userId) {
-        const activation = await checkDotSparkActivation(req.session.userId);
-        dotSparkActivated = activation.activated;
-        subscriptionTier = activation.subscriptionTier || 'free';
-      }
       
       response.dotSparkActivated = dotSparkActivated;
       response.subscriptionTier = subscriptionTier;
@@ -328,7 +324,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Enhanced Intelligent Chat Context API - Requires DotSpark activation
-  app.post(`${apiPrefix}/chat/intelligent`, requireDotSparkActivation, async (req: AuthenticatedRequest, res: Response) => {
+  app.post(`${apiPrefix}/chat/intelligent`, isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
     const startTime = Date.now();
     
     try {
@@ -390,7 +386,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get user context summary for intelligent features
-  app.get(`${apiPrefix}/context/summary`, requireDotSparkActivation, async (req: AuthenticatedRequest, res: Response) => {
+  app.get(`${apiPrefix}/context/summary`, isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
     try {
       const userId = req.user?.id;
       
@@ -442,7 +438,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Dots and Wheels API Endpoints
   
   // Enhanced dots endpoint with DotSpark activation and intelligent tracking
-  app.post(`${apiPrefix}/dots`, requireDotSparkActivation, async (req: AuthenticatedRequest, res: Response) => {
+  app.post(`${apiPrefix}/dots`, isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
     try {
       const userId = req.user?.id;
       

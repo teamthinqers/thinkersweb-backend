@@ -69,11 +69,19 @@ export const PreviewMapGrid: React.FC<PreviewMapGridProps> = ({
   const dotsLoading = false;
   const wheelsLoading = false;
 
-  // Fetch grid positions for proper positioning
-  const { data: gridPositions } = useQuery({
-    queryKey: ['/api/grid/positions'],
-    queryFn: () => fetch('/api/grid/positions').then(res => res.json()).then(data => data.data)
-  });
+  // Use static positioning data for preview mode
+  const demoPositioning = demoData.positioning;
+  const gridPositions = {
+    dotPositions: demoPositioning?.dotPositions || {},
+    wheelPositions: demoPositioning?.wheelPositions || {},
+    chakraPositions: demoPositioning?.chakraPositions || {},
+    statistics: { 
+      totalDots: demoData.previewDots.length, 
+      totalWheels: demoData.previewWheels.length, 
+      totalChakras: 0, 
+      freeDots: demoData.previewDots.filter(d => !d.wheelId).length 
+    }
+  };
 
   // Dynamic sizing calculations (copied from Dashboard)
   const calculateDynamicSizing = (mode: 'preview' | 'real', itemCount: number, type: 'dots' | 'wheels') => {
