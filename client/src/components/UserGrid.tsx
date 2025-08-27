@@ -549,11 +549,12 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                       e.preventDefault();
                       hasDragged = true;
                       
-                      // Calculate new position like floating dot
+                      // Perfect floating dot behavior - element follows cursor exactly where clicked
                       const gridRect = gridContainerRef.current?.getBoundingClientRect();
                       if (gridRect) {
-                        const newX = (e.clientX - offsetX - gridRect.left - offset.x) / zoom;
-                        const newY = (e.clientY - offsetY - gridRect.top - offset.y) / zoom;
+                        // Calculate the exact position so the click point follows the cursor
+                        const newX = (e.clientX - gridRect.left - offset.x) / zoom - offsetX / zoom;
+                        const newY = (e.clientY - gridRect.top - offset.y) / zoom - offsetY / zoom;
                         
                         setElementPositions(prev => ({
                           ...prev,
@@ -759,11 +760,12 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                     const handleMouseMove = (e: MouseEvent) => {
                       e.preventDefault();
                       
-                      // Calculate new position like floating dot
+                      // Perfect floating dot behavior - element follows cursor exactly where clicked
                       const gridRect = gridContainerRef.current?.getBoundingClientRect();
                       if (gridRect) {
-                        const newX = (e.clientX - offsetX - gridRect.left - offset.x) / zoom;
-                        const newY = (e.clientY - offsetY - gridRect.top - offset.y) / zoom;
+                        // Calculate the exact position so the click point follows the cursor
+                        const newX = (e.clientX - gridRect.left - offset.x) / zoom - offsetX / zoom;
+                        const newY = (e.clientY - gridRect.top - offset.y) / zoom - offsetY / zoom;
                         
                         setElementPositions(prev => ({
                           ...prev,
@@ -1036,11 +1038,12 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                     const handleMouseMove = (e: MouseEvent) => {
                       e.preventDefault();
                       
-                      // Calculate new position like floating dot
+                      // Perfect floating dot behavior - element follows cursor exactly where clicked
                       const gridRect = gridContainerRef.current?.getBoundingClientRect();
                       if (gridRect) {
-                        const newX = (e.clientX - offsetX - gridRect.left - offset.x) / zoom;
-                        const newY = (e.clientY - offsetY - gridRect.top - offset.y) / zoom;
+                        // Calculate the exact position so the click point follows the cursor
+                        const newX = (e.clientX - gridRect.left - offset.x) / zoom - offsetX / zoom;
+                        const newY = (e.clientY - gridRect.top - offset.y) / zoom - offsetY / zoom;
                         
                         setElementPositions(prev => ({
                           ...prev,
@@ -1308,11 +1311,12 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                     const handleMouseMove = (e: MouseEvent) => {
                       e.preventDefault();
                       
-                      // Calculate new position like floating dot
+                      // Perfect floating dot behavior - element follows cursor exactly where clicked
                       const gridRect = gridContainerRef.current?.getBoundingClientRect();
                       if (gridRect) {
-                        const newX = (e.clientX - offsetX - gridRect.left - offset.x) / zoom;
-                        const newY = (e.clientY - offsetY - gridRect.top - offset.y) / zoom;
+                        // Calculate the exact position so the click point follows the cursor
+                        const newX = (e.clientX - gridRect.left - offset.x) / zoom - offsetX / zoom;
+                        const newY = (e.clientY - gridRect.top - offset.y) / zoom - offsetY / zoom;
                         
                         setElementPositions(prev => ({
                           ...prev,
