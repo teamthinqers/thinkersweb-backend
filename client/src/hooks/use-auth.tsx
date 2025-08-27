@@ -91,6 +91,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       
       // Always setup Firebase authentication listener (don't wait for backend session check)
       firebaseUnsubscribe = auth.onAuthStateChanged(async (firebaseUser) => {
+        console.log('🔥 Firebase auth state changed:', firebaseUser ? `User ${firebaseUser.email} signed in` : 'User signed out');
+        
         // Clear recent logout on any auth state change to allow immediate new logins
         localStorage.removeItem('recent_logout');
           if (firebaseUser) {
@@ -168,12 +170,22 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   const loginWithGoogle = async () => {
+    console.log('🚀 Starting Google login process...');
+    
+    // Clear any blocking logout markers immediately
+    localStorage.removeItem('recent_logout');
+    console.log('✅ Cleared recent logout marker');
+    
     setIsLoading(true);
     try {
+      console.log('📱 Calling Firebase signInWithGoogle...');
       const userCredential = await signInWithGoogle();
+      console.log('✅ Firebase sign-in successful:', userCredential.displayName);
+      
       // The onAuthStateChanged handler will sync with backend automatically
+      console.log('⏳ Waiting for onAuthStateChanged to sync with backend...');
     } catch (error) {
-      console.error('Login failed:', error);
+      console.error('❌ Login failed:', error);
       setIsLoading(false);
       throw error;
     }
