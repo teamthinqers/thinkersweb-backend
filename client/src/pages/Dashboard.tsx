@@ -74,6 +74,8 @@ const Dashboard: React.FC = () => {
   const [viewFullWheel, setViewFullWheel] = useState<Wheel | null>(null);
   const [showRecentFilter, setShowRecentFilter] = useState(false);
   const [recentDotsCount, setRecentDotsCount] = useState(4);
+  const [recentFilterType, setRecentFilterType] = useState<'dot' | 'wheel' | 'chakra'>('dot');
+  const [recentFilterApplied, setRecentFilterApplied] = useState(false);
   // Removed unused showPreview state - using previewMode instead
   const [isMapFullscreen, setIsMapFullscreen] = useState(false);
   const [viewMode, setViewMode] = useState<'grid' | 'map'>('grid'); // Add view mode toggle
@@ -1403,17 +1405,54 @@ const Dashboard: React.FC = () => {
     };
 
     // Base wheels to display - Real mode shows user data, Preview mode shows database preview data
-    const displayWheels = userWheels; // userWheels now contains correct data for both modes
+    let displayWheels = userWheels; // userWheels now contains correct data for both modes
     
     // Real mode shows user data, Preview mode shows database preview data  
     let baseDotsToDisplay = previewMode ? dots : dots; // Use dots for both modes (dots contains correct data)
     
     // Apply recent filter if enabled (only in real mode)
-    if (showRecentFilter && !previewMode) {
-      // Sort by timestamp (most recent first) and take the specified number
-      baseDotsToDisplay = [...baseDotsToDisplay]
-        .sort((a, b) => new Date(b.timestamp || b.createdAt).getTime() - new Date(a.timestamp || a.createdAt).getTime())
-        .slice(0, recentDotsCount);
+    let filteredWheelsToDisplay = displayWheels;
+    if (recentFilterApplied && !previewMode) {
+      if (recentFilterType === 'dot') {
+        // Show only recent dots
+        baseDotsToDisplay = [...baseDotsToDisplay]
+          .sort((a, b) => new Date(b.timestamp || b.createdAt).getTime() - new Date(a.timestamp || a.createdAt).getTime())
+          .slice(0, recentDotsCount);
+        filteredWheelsToDisplay = []; // Hide all wheels and chakras
+      } else if (recentFilterType === 'wheel') {
+        // Show recent wheels + their associated dots
+        const recentWheels = [...displayWheels.filter(w => w.chakraId)] // Only wheels (not chakras)
+          .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+          .slice(0, recentDotsCount);
+        
+        filteredWheelsToDisplay = recentWheels;
+        
+        // Show dots associated with these recent wheels
+        const wheelIds = recentWheels.map(w => w.id);
+        baseDotsToDisplay = baseDotsToDisplay.filter(dot => 
+          dot.wheelId && wheelIds.includes(dot.wheelId)
+        );
+        
+      } else if (recentFilterType === 'chakra') {
+        // Show recent chakras + their associated wheels + associated dots
+        const recentChakras = [...displayWheels.filter(w => !w.chakraId)] // Only chakras (no chakraId)
+          .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+          .slice(0, recentDotsCount);
+        
+        // Get all wheels associated with these chakras
+        const chakraIds = recentChakras.map(c => c.id);
+        const associatedWheels = displayWheels.filter(w => 
+          w.chakraId && chakraIds.includes(w.chakraId)
+        );
+        
+        filteredWheelsToDisplay = [...recentChakras, ...associatedWheels];
+        
+        // Show dots associated with the wheels of these chakras
+        const wheelIds = associatedWheels.map(w => w.id);
+        baseDotsToDisplay = baseDotsToDisplay.filter(dot => 
+          dot.wheelId && wheelIds.includes(dot.wheelId)
+        );
+      }
     }
     
     const displayDots = baseDotsToDisplay;
@@ -1664,11 +1703,11 @@ const Dashboard: React.FC = () => {
 
           
           {/* Recent Filter Indicator */}
-          {showRecentFilter && !previewMode && (
+          {recentFilterApplied && !previewMode && (
             <div className="bg-gradient-to-r from-amber-600 to-orange-600 text-white rounded-lg px-3 py-2 border-2 border-amber-400 shadow-lg">
               <div className="flex items-center gap-2">
                 <Clock className="w-3 h-3" />
-                <span className="text-xs font-medium">Showing {recentDotsCount} Recent Dots</span>
+                <span className="text-xs font-medium">Showing {recentDotsCount} Recent {recentFilterType === 'dot' ? 'Dots' : recentFilterType === 'wheel' ? 'Wheels + Associated Dots' : 'Chakras + Associated Content'}</span>
               </div>
             </div>
           )}
@@ -1811,7 +1850,7 @@ const Dashboard: React.FC = () => {
                   // Check if this dot belongs to a wheel
                   if (dot.wheelId && dot.wheelId !== '') {
                     // Find the wheel this dot belongs to
-                    const wheel = displayWheels.find((w: any) => w.id === dot.wheelId);
+                    const wheel = filteredWheelsToDisplay.find((w: any) => w.id === dot.wheelId);
                     if (wheel) {
                       // Find position within the wheel
                       const dotsInWheel = displayDots.filter((d: any) => d.wheelId === dot.wheelId);
@@ -1838,7 +1877,7 @@ const Dashboard: React.FC = () => {
                 } else {
                   // Real mode fallback
                   if (dot.wheelId && dot.wheelId !== '') {
-                    const wheel = displayWheels.find((w: any) => w.id === dot.wheelId);
+                    const wheel = filteredWheelsToDisplay.find((w: any) => w.id === dot.wheelId);
                     if (wheel) {
                       const dotsInWheel = displayDots.filter((d: any) => d.wheelId === dot.wheelId);
                       const dotIndexInWheel = dotsInWheel.findIndex((d: any) => d.id === dot.id);
@@ -1978,7 +2017,7 @@ const Dashboard: React.FC = () => {
             })}
             
             {/* Wheel Flashcards - positioned at grid level like dot flashcards */}
-            {(previewMode ? displayWheels : displayWheels.filter((w: any) => w.dots && w.dots.length > 0)).map((wheel: any, wheelIndex: number) => {
+            {(previewMode ? filteredWheelsToDisplay : filteredWheelsToDisplay.filter((w: any) => w.dots && w.dots.length > 0)).map((wheel: any, wheelIndex: number) => {
               // Use same positioning logic as wheels
               let wheelPosition;
               
@@ -1991,7 +2030,7 @@ const Dashboard: React.FC = () => {
                 
                 if (!previewMode && (!wheel.position || (wheel.position.x === 0 && wheel.position.y === 0))) {
                   const wheelGridCols = 3;
-                  const totalWheelsCount = displayWheels.length;
+                  const totalWheelsCount = filteredWheelsToDisplay.length;
                   const baseSpacing = 250;
                   const wheelSpacing = totalWheelsCount <= 6 ? baseSpacing : Math.max(200, baseSpacing - (totalWheelsCount - 6) * 10);
                   const wheelBaseX = 200;
@@ -2010,7 +2049,7 @@ const Dashboard: React.FC = () => {
               let wheelSize;
               if (previewMode) {
                 if (isChakra) {
-                  const childWheels = displayWheels.filter((w: any) => w.chakraId === wheel.id);
+                  const childWheels = filteredWheelsToDisplay.filter((w: any) => w.chakraId === wheel.id);
                   wheelSize = getChakraSize('preview', childWheels.length);
                 } else {
                   const wheelDots = displayDots.filter((d: any) => d.wheelId === wheel.id);
@@ -2018,7 +2057,7 @@ const Dashboard: React.FC = () => {
                 }
               } else {
                 if (isChakra) {
-                  const childWheels = displayWheels.filter((w: any) => w.chakraId === wheel.id);
+                  const childWheels = filteredWheelsToDisplay.filter((w: any) => w.chakraId === wheel.id);
                   wheelSize = getChakraSize('real', childWheels.length);
                 } else {
                   const wheelDots = displayDots.filter((d: any) => d.wheelId === wheel.id);
@@ -2092,7 +2131,7 @@ const Dashboard: React.FC = () => {
             })}
             
             {/* Wheel Boundaries - Only show when wheels exist */}
-            {(previewMode ? displayWheels : displayWheels).map((wheel: any, wheelIndex: number) => {
+            {(previewMode ? filteredWheelsToDisplay : filteredWheelsToDisplay).map((wheel: any, wheelIndex: number) => {
               // Use algorithmic positioning from backend API when available, fallback to manual positioning
               let wheelPosition;
               
@@ -2111,7 +2150,7 @@ const Dashboard: React.FC = () => {
                 if (!previewMode && (!wheel.position || (wheel.position.x === 0 && wheel.position.y === 0))) {
                   // Auto-position wheels in a grid layout for real data with dynamic spacing
                   const wheelGridCols = 3;
-                  const totalWheelsCount = displayWheels.length;
+                  const totalWheelsCount = filteredWheelsToDisplay.length;
                   const baseSpacing = 250;
                   const wheelSpacing = totalWheelsCount <= 6 ? baseSpacing : Math.max(200, baseSpacing - (totalWheelsCount - 6) * 10);
                   const wheelBaseX = 200;
@@ -2133,7 +2172,7 @@ const Dashboard: React.FC = () => {
                 isChakra = wheel.chakraId === undefined;
                 if (isChakra) {
                   // Dynamic chakra sizing based on child wheels count
-                  const childWheels = displayWheels.filter((w: any) => w.chakraId === wheel.id);
+                  const childWheels = filteredWheelsToDisplay.filter((w: any) => w.chakraId === wheel.id);
                   wheelSize = getChakraSize('preview', childWheels.length);
 
                 } else {
@@ -2146,7 +2185,7 @@ const Dashboard: React.FC = () => {
                 isChakra = wheel.chakraId === undefined;
                 if (isChakra) {
                   // Dynamic chakra sizing based on child wheels count
-                  const childWheels = displayWheels.filter((w: any) => w.chakraId === wheel.id);
+                  const childWheels = filteredWheelsToDisplay.filter((w: any) => w.chakraId === wheel.id);
                   wheelSize = getChakraSize('real', childWheels.length);
 
                 } else {
@@ -2504,41 +2543,68 @@ const Dashboard: React.FC = () => {
                   {/* Recent Dots Button with Dropdown Container */}
                   <div className="relative">
                     <button
-                      onClick={() => setShowRecentFilter(!showRecentFilter)}
+                      onClick={() => {
+                        if (recentFilterApplied) {
+                          // Reset filter if already applied
+                          setRecentFilterApplied(false);
+                          setShowRecentFilter(false);
+                        } else {
+                          // Toggle dropdown
+                          setShowRecentFilter(!showRecentFilter);
+                        }
+                      }}
                       className={`flex items-center gap-2 ${isPWA ? 'px-2 py-1.5 text-xs' : 'px-3 sm:px-4 py-2 text-sm sm:text-base'} rounded-lg font-medium transition-all duration-200 ${
-                        showRecentFilter 
+                        recentFilterApplied 
                           ? 'bg-orange-600 hover:bg-orange-700 text-white shadow-lg hover:shadow-xl transform hover:scale-105' 
                           : 'bg-orange-500 hover:bg-orange-600 text-white shadow-md hover:shadow-lg'
                       }`}
                     >
                       <Clock className={`${isPWA ? 'w-3 h-3' : 'w-3 h-3 sm:w-4 sm:h-4'}`} />
-                      <span className="font-semibold whitespace-nowrap">Recent Dots</span>
-                      {dots.length > 0 && (
-                        <Badge className={`border-0 ml-1 text-xs ${
-                          showRecentFilter 
-                            ? 'bg-white/30 text-white' 
-                            : 'bg-white/20 text-white'
-                        }`}>
-                          {Math.min(dots.length, recentDotsCount)}
-                        </Badge>
-                      )}
+                      <span className="font-semibold whitespace-nowrap">Recent</span>
                     </button>
                     
-                    {/* Recent Dots Count Dropdown - positioned relative to Recent Dots button */}
+                    {/* Enhanced Recent Filter Dropdown */}
                     {showRecentFilter && (
-                      <div className={`${isPWA ? 'mt-2' : 'absolute left-0 mt-2'} p-2 bg-white/90 backdrop-blur border-2 border-amber-200 rounded-lg shadow-lg z-10`}>
-                        <div className="flex items-center gap-2 text-xs">
-                          <span className="text-gray-600 whitespace-nowrap">Show:</span>
-                          <select
-                            value={recentDotsCount}
-                            onChange={(e) => setRecentDotsCount(parseInt(e.target.value))}
-                            className="px-2 py-1 text-xs border border-amber-300 rounded focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white min-w-[60px]"
+                      <div className={`${isPWA ? 'mt-2' : 'absolute left-0 mt-2'} p-4 bg-white/95 backdrop-blur border-2 border-amber-200 rounded-lg shadow-lg z-10 min-w-[200px]`}>
+                        <div className="space-y-3">
+                          {/* Content Type Selection */}
+                          <div>
+                            <label className="block text-xs font-medium text-gray-700 mb-1">Content Type:</label>
+                            <select
+                              value={recentFilterType}
+                              onChange={(e) => setRecentFilterType(e.target.value as 'dot' | 'wheel' | 'chakra')}
+                              className="w-full px-2 py-1 text-xs border border-amber-300 rounded focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white"
+                            >
+                              <option value="dot">Dot</option>
+                              <option value="wheel">Wheel</option>
+                              <option value="chakra">Chakra</option>
+                            </select>
+                          </div>
+                          
+                          {/* Count Selection */}
+                          <div>
+                            <label className="block text-xs font-medium text-gray-700 mb-1">Count:</label>
+                            <select
+                              value={recentDotsCount}
+                              onChange={(e) => setRecentDotsCount(parseInt(e.target.value))}
+                              className="w-full px-2 py-1 text-xs border border-amber-300 rounded focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white"
+                            >
+                              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 20].map(num => (
+                                <option key={num} value={num}>{num}</option>
+                              ))}
+                            </select>
+                          </div>
+                          
+                          {/* OK Button */}
+                          <button
+                            onClick={() => {
+                              setRecentFilterApplied(true);
+                              setShowRecentFilter(false);
+                            }}
+                            className="w-full px-3 py-2 bg-orange-500 hover:bg-orange-600 text-white text-xs font-medium rounded transition-colors"
                           >
-                            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 20].map(num => (
-                              <option key={num} value={num}>{num}</option>
-                            ))}
-                          </select>
-                          <span className="text-gray-600 whitespace-nowrap">dots</span>
+                            Apply Filter
+                          </button>
                         </div>
                       </div>
                     )}
