@@ -264,13 +264,7 @@ const Dashboard: React.FC = () => {
     
     // Get current data source based on preview mode
     let searchDots = dots;
-    let searchWheels: Wheel[] = [];
-    
-    // In preview mode, dots and userWheels already contain preview data from database
-    if (previewMode) {
-      searchDots = dots; // Already contains preview data from database
-      searchWheels = userWheels; // Already contains preview data from database  
-    }
+    let searchWheels = userWheels; // Always use userWheels for searching wheels and chakras
     
     // Search dots
     const filteredDots = searchDots.filter((dot: Dot) => {
