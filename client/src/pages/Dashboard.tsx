@@ -194,9 +194,9 @@ const Dashboard: React.FC = () => {
       return true;
     },
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 5000),
-    refetchOnWindowFocus: true, // Refetch when user returns to tab to show new dots
-    refetchOnMount: true, // Always refetch on mount to get latest data
-    staleTime: 10 * 1000, // Cache for only 10 seconds to show new dots quickly
+    refetchOnWindowFocus: false, // Disable to prevent interference with filtering
+    refetchOnMount: false, // Disable auto-refetch to prevent filter interference
+    staleTime: 0, // No caching when filter is applied
     gcTime: 30 * 60 * 1000, // Keep in cache for 30 minutes
     refetchInterval: false
   });
@@ -240,8 +240,8 @@ const Dashboard: React.FC = () => {
     retry: 3, // Retry up to 3 times on failure
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff  
     refetchOnWindowFocus: false,
-    refetchOnMount: true, // Always refetch on component mount
-    staleTime: 30 * 1000 // Reduce stale time to 30 seconds
+    refetchOnMount: false, // Disable auto-refetch to prevent filter interference
+    staleTime: 0 // No caching when filter is applied
   });
 
   // Counts are now inline for simplicity
@@ -2618,8 +2618,12 @@ const Dashboard: React.FC = () => {
                           {/* OK Button */}
                           <button
                             onClick={() => {
+                              console.log('🎯 APPLYING FILTER:', { type: recentFilterType, count: recentDotsCount });
                               setRecentFilterApplied(true);
                               setShowRecentFilter(false);
+                              // Force immediate refetch with new filter parameters
+                              refetch();
+                              refetchWheels();
                             }}
                             className="w-full px-3 py-2 bg-orange-500 hover:bg-orange-600 text-white text-xs font-medium rounded transition-colors"
                           >
