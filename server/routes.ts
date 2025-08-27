@@ -1785,8 +1785,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // PUT /api/mapping/dot-to-wheel - Map/unmap dot to wheel
   app.put(`${apiPrefix}/mapping/dot-to-wheel`, async (req: AuthenticatedRequest, res: Response) => {
     try {
+      console.log('🔍 Debug mapping request:', {
+        user: req.user,
+        session: req.session,
+        sessionId: req.sessionID,
+        headers: req.headers.cookie ? 'Cookie present' : 'No cookie'
+      });
+      
       const userId = req.user?.id || req.session?.userId;
       if (!userId) {
+        console.log('❌ No userId found in request');
         return res.status(401).json({ error: 'Authentication required' });
       }
 
@@ -1831,8 +1839,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // PUT /api/mapping/wheel-to-chakra - Map/unmap wheel to chakra  
   app.put(`${apiPrefix}/mapping/wheel-to-chakra`, async (req: AuthenticatedRequest, res: Response) => {
     try {
+      console.log('🔍 Debug wheel mapping request:', {
+        user: req.user,
+        session: req.session,
+        sessionId: req.sessionID,
+        headers: req.headers.cookie ? 'Cookie present' : 'No cookie'
+      });
+      
       const userId = req.user?.id || req.session?.userId;
       if (!userId) {
+        console.log('❌ No userId found in wheel mapping request');
         return res.status(401).json({ error: 'Authentication required' });
       }
 
