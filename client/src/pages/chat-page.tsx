@@ -493,7 +493,12 @@ export default function ChatPage() {
                   <span className="font-medium">My DotSpark</span>
                 </Button>
               </Link>
-              {/* Social link completely removed for v1 launch - cache bust */}
+              <Link href="/social">
+                <Button variant="ghost" className="w-full justify-start text-sm h-10 hover:bg-rose-50 dark:hover:bg-rose-950/30 hover:text-rose-700 dark:hover:text-rose-300 rounded-xl transition-all duration-300">
+                  <Users className="w-4 h-4 mr-3" />
+                  <span className="font-medium">Social</span>
+                </Button>
+              </Link>
               <Link href="/about">
                 <Button variant="ghost" className="w-full justify-start text-sm h-10 hover:bg-gradient-to-r hover:from-amber-50 hover:to-orange-50 dark:hover:from-amber-950/20 dark:hover:to-orange-950/20 hover:text-amber-700 dark:hover:text-amber-300 rounded-xl transition-all duration-300">
                   <Info className="w-4 h-4 mr-3" />
@@ -604,7 +609,11 @@ export default function ChatPage() {
               </Button>
             </Link>
             
-            {/* Social link removed for v1 launch */}
+            <Link href="/social" title="Social">
+              <Button variant="ghost" size="icon" className="h-10 w-10 hover:bg-rose-50 dark:hover:bg-rose-950/30 hover:text-rose-700 dark:hover:text-rose-300 rounded-xl transition-all duration-300">
+                <Users className="w-4 h-4" />
+              </Button>
+            </Link>
             
             <Link href="/about" title="About DotSpark">
               <Button variant="ghost" size="icon" className="h-10 w-10 hover:bg-gradient-to-r hover:from-amber-50 hover:to-orange-50 dark:hover:from-amber-950/20 dark:hover:to-orange-950/20 hover:text-amber-700 dark:hover:text-amber-300 rounded-xl transition-all duration-300">
@@ -725,7 +734,17 @@ export default function ChatPage() {
               <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-yellow-300/20 via-amber-400/20 to-orange-500/20 group-hover:from-yellow-200/30 group-hover:via-amber-300/30 group-hover:to-orange-400/30 transition-all duration-300"></div>
             </Button>
 
-            {/* Social Icon completely removed for v1 launch - cache bust */}
+            {/* Social Icon */}
+            <Link href="/social">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="p-3 bg-red-500 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700 rounded-xl transition-all duration-300 hover:scale-105 shadow-sm"
+                title="DotSpark Social"
+              >
+                <Users className="h-5 w-5 text-white" />
+              </Button>
+            </Link>
 
             {/* WhatsApp Icon */}
             <Button 
