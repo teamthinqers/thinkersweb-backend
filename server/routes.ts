@@ -864,21 +864,47 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: 'Invalid dot ID' });
       }
 
-      // First verify the dot belongs to the user
-      const existingEntry = await db.query.entries.findFirst({
-        where: and(eq(entries.id, dotId), eq(entries.userId, userId))
+      // First verify the dot belongs to the user (check both dots and entries tables)
+      const existingDot = await db.query.dots.findFirst({
+        where: and(eq(dots.id, dotId), eq(dots.userId, userId))
       });
 
-      if (!existingEntry) {
+      let deletedFromDots = false;
+      let deletedFromEntries = false;
+
+      if (existingDot) {
+        // Delete from dots table
+        await db.delete(dots).where(
+          and(eq(dots.id, dotId), eq(dots.userId, userId))
+        );
+        deletedFromDots = true;
+        console.log(`✅ Deleted dot ${dotId} from dots table`);
+      } else {
+        // Fallback: check entries table for legacy dots
+        const existingEntry = await db.query.entries.findFirst({
+          where: and(eq(entries.id, dotId), eq(entries.userId, userId))
+        });
+
+        if (existingEntry) {
+          await db.delete(entries).where(
+            and(eq(entries.id, dotId), eq(entries.userId, userId))
+          );
+          deletedFromEntries = true;
+          console.log(`✅ Deleted dot ${dotId} from entries table (legacy)`);
+        }
+      }
+
+      if (!deletedFromDots && !deletedFromEntries) {
         return res.status(404).json({ error: 'Dot not found or access denied' });
       }
 
-      // Delete the dot
-      await db.delete(entries).where(
-        and(eq(entries.id, dotId), eq(entries.userId, userId))
-      );
-
-      res.json({ success: true, message: 'Dot deleted successfully' });
+      // TODO: Delete from vector database if needed
+      
+      res.json({ 
+        success: true, 
+        message: 'Dot deleted successfully',
+        deletedFrom: deletedFromDots ? 'dots' : 'entries'
+      });
     } catch (error) {
       console.error('Error deleting dot:', error);
       res.status(500).json({ error: 'Failed to delete dot' });
