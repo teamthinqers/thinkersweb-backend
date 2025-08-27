@@ -173,15 +173,72 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
 
   const handleMouseMove = (e: React.MouseEvent) => {
     if (draggedElement) {
-      // Element dragging mode - update element position
+      // Element dragging mode - update element position and all grouped elements
       const rect = gridContainerRef.current?.getBoundingClientRect();
       if (rect) {
-        const x = (e.clientX - rect.left - offset.x) / zoom;
-        const y = (e.clientY - rect.top - offset.y) / zoom;
-        setElementPositions(prev => ({
-          ...prev,
-          [`${draggedElement.type}-${draggedElement.id}`]: { x, y }
-        }));
+        const newX = (e.clientX - rect.left - offset.x) / zoom;
+        const newY = (e.clientY - rect.top - offset.y) / zoom;
+        
+        // Calculate movement delta
+        const currentPos = elementPositions[`${draggedElement.type}-${draggedElement.id}`];
+        if (currentPos) {
+          const deltaX = newX - currentPos.x;
+          const deltaY = newY - currentPos.y;
+          
+          setElementPositions(prev => {
+            const newPositions = { ...prev };
+            
+            // Update the dragged element position
+            newPositions[`${draggedElement.type}-${draggedElement.id}`] = { x: newX, y: newY };
+            
+            // Move all grouped elements
+            if (draggedElement.type === 'chakra') {
+              // Move all wheels belonging to this chakra
+              const chakraWheels = displayWheels.filter(w => w.chakraId === draggedElement.id);
+              chakraWheels.forEach(wheel => {
+                const wheelKey = `wheel-${wheel.id}`;
+                if (prev[wheelKey]) {
+                  newPositions[wheelKey] = {
+                    x: prev[wheelKey].x + deltaX,
+                    y: prev[wheelKey].y + deltaY
+                  };
+                }
+                
+                // Move all dots belonging to this wheel
+                const wheelDots = displayDots.filter(d => d.wheelId === wheel.id);
+                wheelDots.forEach(dot => {
+                  const dotKey = `dot-${dot.id}`;
+                  if (prev[dotKey]) {
+                    newPositions[dotKey] = {
+                      x: prev[dotKey].x + deltaX,
+                      y: prev[dotKey].y + deltaY
+                    };
+                  }
+                });
+              });
+            } else if (draggedElement.type === 'wheel') {
+              // Move all dots belonging to this wheel
+              const wheelDots = displayDots.filter(d => d.wheelId === draggedElement.id);
+              wheelDots.forEach(dot => {
+                const dotKey = `dot-${dot.id}`;
+                if (prev[dotKey]) {
+                  newPositions[dotKey] = {
+                    x: prev[dotKey].x + deltaX,
+                    y: prev[dotKey].y + deltaY
+                  };
+                }
+              });
+            }
+            
+            return newPositions;
+          });
+        } else {
+          // First time setting position
+          setElementPositions(prev => ({
+            ...prev,
+            [`${draggedElement.type}-${draggedElement.id}`]: { x: newX, y: newY }
+          }));
+        }
       }
       return;
     }
@@ -197,15 +254,66 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
 
   const handleMouseUp = (e?: React.MouseEvent) => {
     if (draggedElement && e) {
-      // Save final position of dragged element
+      // Save final position of dragged element and all grouped elements
       const rect = gridContainerRef.current?.getBoundingClientRect();
       if (rect) {
-        const x = (e.clientX - rect.left - offset.x) / zoom;
-        const y = (e.clientY - rect.top - offset.y) / zoom;
-        setElementPositions(prev => ({
-          ...prev,
-          [`${draggedElement.type}-${draggedElement.id}`]: { x, y }
-        }));
+        const newX = (e.clientX - rect.left - offset.x) / zoom;
+        const newY = (e.clientY - rect.top - offset.y) / zoom;
+        
+        // Calculate movement delta for final positioning
+        const currentPos = elementPositions[`${draggedElement.type}-${draggedElement.id}`];
+        if (currentPos) {
+          const deltaX = newX - currentPos.x;
+          const deltaY = newY - currentPos.y;
+          
+          setElementPositions(prev => {
+            const newPositions = { ...prev };
+            
+            // Update the dragged element position
+            newPositions[`${draggedElement.type}-${draggedElement.id}`] = { x: newX, y: newY };
+            
+            // Move all grouped elements
+            if (draggedElement.type === 'chakra') {
+              // Move all wheels belonging to this chakra
+              const chakraWheels = displayWheels.filter(w => w.chakraId === draggedElement.id);
+              chakraWheels.forEach(wheel => {
+                const wheelKey = `wheel-${wheel.id}`;
+                if (prev[wheelKey]) {
+                  newPositions[wheelKey] = {
+                    x: prev[wheelKey].x + deltaX,
+                    y: prev[wheelKey].y + deltaY
+                  };
+                }
+                
+                // Move all dots belonging to this wheel
+                const wheelDots = displayDots.filter(d => d.wheelId === wheel.id);
+                wheelDots.forEach(dot => {
+                  const dotKey = `dot-${dot.id}`;
+                  if (prev[dotKey]) {
+                    newPositions[dotKey] = {
+                      x: prev[dotKey].x + deltaX,
+                      y: prev[dotKey].y + deltaY
+                    };
+                  }
+                });
+              });
+            } else if (draggedElement.type === 'wheel') {
+              // Move all dots belonging to this wheel
+              const wheelDots = displayDots.filter(d => d.wheelId === draggedElement.id);
+              wheelDots.forEach(dot => {
+                const dotKey = `dot-${dot.id}`;
+                if (prev[dotKey]) {
+                  newPositions[dotKey] = {
+                    x: prev[dotKey].x + deltaX,
+                    y: prev[dotKey].y + deltaY
+                  };
+                }
+              });
+            }
+            
+            return newPositions;
+          });
+        }
       }
       setDraggedElement(null);
     }
@@ -391,16 +499,22 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
             if (dot.wheelId && dot.wheelId !== '' && dot.wheelId !== 'general' && dot.wheelId !== 'standalone') {
               const wheel = displayWheels.find((w: any) => w.id === dot.wheelId);
               if (wheel) {
-                // Position dots around their associated wheel in a circle
-                const dotsInWheel = displayDots.filter((d: any) => d.wheelId === dot.wheelId);
-                const dotIndexInWheel = dotsInWheel.findIndex((d: any) => d.id === dot.id);
-                const wheelCenterX = wheel.position?.x || 300;
-                const wheelCenterY = wheel.position?.y || 250;
-                const dotRadius = 60; // Fixed radius for dots around wheels
-                const angle = (dotIndexInWheel * 2 * Math.PI) / dotsInWheel.length;
-                
-                x = wheelCenterX + Math.cos(angle) * dotRadius;
-                y = wheelCenterY + Math.sin(angle) * dotRadius;
+                // Use saved position if exists, otherwise position around wheel
+                if (elementPositions[`dot-${dot.id}`]) {
+                  x = elementPositions[`dot-${dot.id}`].x;
+                  y = elementPositions[`dot-${dot.id}`].y;
+                } else {
+                  // Position dots around their associated wheel in a circle
+                  const dotsInWheel = displayDots.filter((d: any) => d.wheelId === dot.wheelId);
+                  const dotIndexInWheel = dotsInWheel.findIndex((d: any) => d.id === dot.id);
+                  const wheelCenterX = elementPositions[`wheel-${wheel.id}`]?.x || wheel.position?.x || 300;
+                  const wheelCenterY = elementPositions[`wheel-${wheel.id}`]?.y || wheel.position?.y || 250;
+                  const dotRadius = 60; // Fixed radius for dots around wheels
+                  const angle = (dotIndexInWheel * 2 * Math.PI) / dotsInWheel.length;
+                  
+                  x = wheelCenterX + Math.cos(angle) * dotRadius;
+                  y = wheelCenterY + Math.sin(angle) * dotRadius;
+                }
               } else {
                 // Wheel not found, treat as standalone with collision detection
                 const standaloneDots = displayDots.filter((d: any) => !d.wheelId || d.wheelId === '' || d.wheelId === 'general' || d.wheelId === 'standalone');
@@ -578,31 +692,37 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
             // Determine wheel position
             let wheelX, wheelY;
             if (wheel.chakraId && wheel.chakraId !== 'standalone') {
-              // Position wheel inside/around its associated chakra like preview mode  
-              const chakra = chakras.find((c: any) => c.id === wheel.chakraId);
-              if (chakra) {
-                const wheelsInChakra = displayWheels.filter((w: any) => w.chakraId === wheel.chakraId && w.chakraId !== 'standalone');
-                const wheelIndexInChakra = wheelsInChakra.findIndex((w: any) => w.id === wheel.id);
-                
-                // Get chakra position (either saved position or calculated position)
-                let chakraX, chakraY;
-                if (elementPositions[`chakra-${chakra.id}`]) {
-                  chakraX = elementPositions[`chakra-${chakra.id}`].x;
-                  chakraY = elementPositions[`chakra-${chakra.id}`].y;
-                } else {
-                  const chakraIndex = chakras.findIndex((c: any) => c.id === chakra.id);
-                  const cols = Math.max(1, Math.ceil(Math.sqrt(chakras.length)));
-                  const row = Math.floor(chakraIndex / cols);
-                  const col = chakraIndex % cols;
-                  chakraX = 700 + (col * 400);
-                  chakraY = 600 + (row * 350);
+              // Use saved position if exists, otherwise position around chakra
+              if (elementPositions[`wheel-${wheel.id}`]) {
+                wheelX = elementPositions[`wheel-${wheel.id}`].x;
+                wheelY = elementPositions[`wheel-${wheel.id}`].y;
+              } else {
+                // Position wheel inside/around its associated chakra like preview mode  
+                const chakra = chakras.find((c: any) => c.id === wheel.chakraId);
+                if (chakra) {
+                  const wheelsInChakra = displayWheels.filter((w: any) => w.chakraId === wheel.chakraId && w.chakraId !== 'standalone');
+                  const wheelIndexInChakra = wheelsInChakra.findIndex((w: any) => w.id === wheel.id);
+                  
+                  // Get chakra position (either saved position or calculated position)
+                  let chakraX, chakraY;
+                  if (elementPositions[`chakra-${chakra.id}`]) {
+                    chakraX = elementPositions[`chakra-${chakra.id}`].x;
+                    chakraY = elementPositions[`chakra-${chakra.id}`].y;
+                  } else {
+                    const chakraIndex = chakras.findIndex((c: any) => c.id === chakra.id);
+                    const cols = Math.max(1, Math.ceil(Math.sqrt(chakras.length)));
+                    const row = Math.floor(chakraIndex / cols);
+                    const col = chakraIndex % cols;
+                    chakraX = 700 + (col * 400);
+                    chakraY = 600 + (row * 350);
+                  }
+                  
+                  const orbitRadius = 120; // Fixed radius for wheels inside chakras (like preview mode)
+                  const angle = (wheelIndexInChakra * 2 * Math.PI) / wheelsInChakra.length;
+                  
+                  wheelX = chakraX + Math.cos(angle) * orbitRadius;
+                  wheelY = chakraY + Math.sin(angle) * orbitRadius;
                 }
-                
-                const orbitRadius = 120; // Fixed radius for wheels inside chakras (like preview mode)
-                const angle = (wheelIndexInChakra * 2 * Math.PI) / wheelsInChakra.length;
-                
-                wheelX = chakraX + Math.cos(angle) * orbitRadius;
-                wheelY = chakraY + Math.sin(angle) * orbitRadius;
               } else {
                 // Chakra not found, treat as standalone
                 const standaloneWheels = displayWheels.filter((w: any) => !w.chakraId || w.chakraId === 'standalone');
