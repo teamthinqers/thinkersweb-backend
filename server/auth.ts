@@ -6,7 +6,7 @@ import { scrypt, randomBytes, timingSafeEqual } from "crypto";
 import { promisify } from "util";
 import { db, pool } from "@db";
 import { users } from "@shared/schema";
-import { and, eq, or } from "drizzle-orm";
+import { and, eq, or, sql } from "drizzle-orm";
 import connectPg from "connect-pg-simple";
 
 // Add session data type definition
@@ -62,15 +62,18 @@ async function comparePasswords(supplied: string, stored: string) {
 }
 
 async function getUserByUsername(username: string) {
-  return await db.query.users.findFirst({
-    where: eq(users.username, username)
-  });
+  try {
+    const result = await db.execute(sql`SELECT * FROM users WHERE username = ${username}`);
+    return result.rows && result.rows.length > 0 ? result.rows[0] as any : null;
+  } catch (error) {
+    console.error("getUserByUsername error:", error);
+    return null;
+  }
 }
 
 async function getUserByEmail(email: string) {
   try {
-    // Use raw query to handle schema differences
-    const result = await db.execute(`SELECT * FROM users WHERE email = $1`, [email]);
+    const result = await db.execute(sql`SELECT * FROM users WHERE email = ${email}`);
     return result.rows && result.rows.length > 0 ? result.rows[0] as any : null;
   } catch (error) {
     console.error("getUserByEmail error:", error);
@@ -80,8 +83,7 @@ async function getUserByEmail(email: string) {
 
 async function getUserByFirebaseUid(uid: string) {
   try {
-    // Use raw query to handle schema differences
-    const result = await db.execute(`SELECT * FROM users WHERE firebase_uid = $1`, [uid]);
+    const result = await db.execute(sql`SELECT * FROM users WHERE firebase_uid = ${uid}`);
     return result.rows && result.rows.length > 0 ? result.rows[0] as any : null;
   } catch (error) {
     console.error("getUserByFirebaseUid error:", error);
@@ -90,9 +92,16 @@ async function getUserByFirebaseUid(uid: string) {
 }
 
 async function getUser(id: number) {
-  return await db.query.users.findFirst({
-    where: eq(users.id, id)
-  });
+  try {
+    const result = await db.execute(sql`SELECT * FROM users WHERE id = ${id}`);
+    if (result.rows && result.rows.length > 0) {
+      return result.rows[0] as any;
+    }
+    return null;
+  } catch (error) {
+    console.error("getUser error:", error);
+    return null;
+  }
 }
 
 // Generate a unique username based on display name or email
