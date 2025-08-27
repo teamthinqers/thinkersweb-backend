@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { 
-  ArrowRight, Brain, BookOpen, Users, Sparkles, BarChart2, 
+  ArrowRight, Brain, BookOpen, Sparkles, BarChart2, 
   MessageCircle, MessageSquare, User, Menu, X, Check, CheckCircle, Download,
   Smartphone, Monitor, Share, Plus, Home as HomeIcon
 } from "lucide-react";
@@ -364,22 +364,7 @@ export default function LandingPage() {
                   <span className="text-sm font-medium">My Neura</span>
                 </div>
               </Button>
-              {/* Enhanced Social button */}
-              <Button 
-                size="sm"
-                onClick={() => setLocation("/social")}
-                className="relative bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 rounded-xl px-4 py-2"
-              >
-                <div className="flex items-center gap-2">
-                  <div className="relative">
-                    <Users className="h-4 w-4 animate-pulse" />
-                    <div className="absolute inset-0 animate-ping opacity-30">
-                      <Users className="h-4 w-4" />
-                    </div>
-                  </div>
-                  <span className="text-sm font-medium">Social</span>
-                </div>
-              </Button>
+              {/* Social button removed for v1 launch */}
               {/* Enhanced AI Chat button */}
               <Button 
                 size="sm"
@@ -412,21 +397,7 @@ export default function LandingPage() {
                     <span className="text-xs">Neura</span>
                   </div>
                 </Button>
-                <Button
-                  size="sm"
-                  onClick={() => setLocation("/social")}
-                  className="bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-md hover:bg-gradient-to-r hover:from-orange-600 hover:to-red-600 transition-all duration-300"
-                >
-                  <div className="flex items-center gap-1">
-                    <div className="relative">
-                      <Users className="h-3 w-3 animate-pulse" />
-                      <div className="absolute inset-0 animate-ping opacity-30">
-                        <Users className="h-3 w-3" />
-                      </div>
-                    </div>
-                    <span className="text-xs">Social</span>
-                  </div>
-                </Button>
+                {/* Social button removed for v1 launch */}
                 <Button
                   size="sm"
                   onClick={() => setLocation("/chat")}
@@ -480,10 +451,7 @@ export default function LandingPage() {
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link href="/social" className="cursor-pointer w-full">
-                      <Users className="mr-2 h-4 w-4" />
-                      DotSpark Social
-                    </Link>
+                    {/* DotSpark Social removed for v1 launch */}
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link href="/chat" className="cursor-pointer w-full">
@@ -557,10 +525,7 @@ export default function LandingPage() {
                       </SheetClose>
                       
                       <SheetClose asChild>
-                        <div onClick={() => setLocation("/social")} className="py-3 px-4 hover:bg-rose-100/70 dark:hover:bg-rose-900/30 transition-all duration-300 flex items-center gap-3 rounded-xl font-medium cursor-pointer">
-                          <Users className="h-5 w-5 text-rose-600 dark:text-rose-400" />
-                          <span className="text-gray-800 dark:text-gray-200">DotSpark Social</span>
-                        </div>
+                        {/* DotSpark Social removed for v1 launch */}
                       </SheetClose>
                       
                       <SheetClose asChild>
@@ -680,10 +645,7 @@ export default function LandingPage() {
                   </Link>
                 </Button>
                 <Button size="lg" asChild className="w-full relative overflow-hidden bg-gradient-to-r from-orange-500 to-red-500 hover:from-red-500 hover:to-orange-500 text-white border-0 shadow-lg shadow-orange-500/20 hover:shadow-red-500/30 transition-all duration-300 transform hover:scale-105">
-                  <Link href="/social" className="flex items-center justify-center">
-                    <Users className="mr-2 h-5 w-5 animate-pulse" />
-                    <span>Access DotSpark Social</span>
-                  </Link>
+                  {/* DotSpark Social removed for v1 launch */}
                 </Button>
               </div>
             ) : (
@@ -739,10 +701,7 @@ export default function LandingPage() {
                     asChild
                     className="w-full mb-2 relative overflow-hidden bg-gradient-to-r from-orange-500 to-red-500 hover:from-red-500 hover:to-orange-500 text-white border-0 shadow-lg shadow-orange-500/20 hover:shadow-red-500/30 transition-all duration-300 transform hover:scale-105"
                   >
-                    <Link href="/social" className="flex items-center justify-center">
-                      <Users className="h-4 w-4 mr-2 animate-pulse" />
-                      <span className="text-sm">Social Neura</span>
-                    </Link>
+                    {/* Social Neura removed for v1 launch */}
                   </Button>
 
                   <div className="text-xs text-muted-foreground text-left relative z-10">
