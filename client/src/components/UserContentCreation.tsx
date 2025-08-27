@@ -411,7 +411,7 @@ const UserContentCreation: React.FC<UserContentCreationProps> = ({
                         <SelectItem value="standalone">Standalone</SelectItem>
                         {availableChakras.map((chakra) => (
                           <SelectItem key={chakra.id} value={chakra.id}>
-                            {chakra.name || chakra.heading}
+                            {chakra.heading || chakra.name}
                           </SelectItem>
                         ))}
                       </SelectContent>

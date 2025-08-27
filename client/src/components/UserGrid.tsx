@@ -928,7 +928,7 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                   {/* Chakra label */}
                   <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 text-center">
                     <div className="px-3 py-1 rounded-lg bg-gradient-to-r from-amber-100 to-orange-100 border-2 border-amber-300 text-amber-800 font-bold text-sm whitespace-nowrap shadow-lg">
-                      {chakra.name}
+                      {chakra.heading || chakra.name}
                     </div>
                   </div>
                   
@@ -959,7 +959,7 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
                   >
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
-                        <h4 className="font-bold text-amber-800 text-sm line-clamp-1">{chakra.name}</h4>
+                        <h4 className="font-bold text-amber-800 text-sm line-clamp-1">{chakra.heading || chakra.name}</h4>
                         <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200 text-xs">
                           Chakra
                         </Badge>
