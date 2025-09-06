@@ -44,9 +44,9 @@ function GlobalFloatingDotV2() {
     if (saved) {
       return JSON.parse(saved);
     }
-    // Default position: right side slightly above bottom (adjusted for smaller 12x12 size)
+    // Default position: right side slightly above bottom (adjusted for 14x14 size)
     const defaultX = window.innerWidth - 70; // 70px from right edge
-    const defaultY = window.innerHeight - 100; // 100px from bottom
+    const defaultY = window.innerHeight - 150; // 150px from bottom
     return { x: defaultX, y: defaultY };
   });
   
