@@ -203,7 +203,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
               onClick={() => setLocation("/my-neura")}
             >
               <img src="/dotspark-logo-icon.png?v=2" alt="DotSpark" className="h-8 w-8 object-contain rounded" />
-              <img src="/dotspark-logo-wordmark.png?v=2" alt="DotSpark" className="h-6 w-auto object-contain" />
+              <span className="text-lg font-semibold text-amber-700 dark:text-amber-300">DotSpark</span>
             </div>
             
             <div className="flex items-center space-x-2">
@@ -316,7 +316,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, onMenuClick, showMenuButton }
                 onClick={() => setLocation("/my-neura")}
               >
                 <img src="/dotspark-logo-icon.png?v=2?v=2" alt="DotSpark" className="h-5 w-5 mr-1 object-contain rounded" />
-                <span className="hidden sm:inline">My <img src="/dotspark-logo-wordmark.png?v=2" alt="DotSpark" className="h-6 w-auto object-contain" /></span>
+                <span className="hidden sm:inline">My DotSpark</span>
               </Button>
 
             </div>

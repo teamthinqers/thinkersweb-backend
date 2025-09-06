@@ -64,7 +64,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onNewEntry }) => {
           className="bg-amber-700 hover:bg-amber-800 text-white shadow-md flex items-center"
         >
           <MessageCircle className="h-4 w-4 mr-1.5" />
-          <span>Chat with <img src="/dotspark-logo-wordmark.png?v=2" alt="DotSpark" className="h-6 w-auto object-contain" /></span>
+          <span>Chat with DotSpark</span>
         </Button>
       </div>
       

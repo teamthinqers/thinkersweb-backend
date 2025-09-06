@@ -526,7 +526,7 @@ export default function ActivateNeuralExtension() {
               <div className="absolute inset-0 rounded-full border border-primary/20 animate-ping"></div>
             </div>
             <h1 className="text-2xl md:text-3xl font-bold tracking-tight mb-0.5">
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-primary to-blue-600"><img src="/dotspark-logo-wordmark.png?v=2" alt="DotSpark" className="h-6 w-auto object-contain" /></span>
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-primary to-blue-600">DotSpark</span>
             </h1>
             <p className="text-sm text-muted-foreground">
               Think Sharper, Stay You

@@ -129,7 +129,7 @@ export default function AboutPage() {
                 <img src="/dotspark-logo-icon.png?v=2" alt="DotSpark" className="h-8 w-8 rounded-full ring-2 ring-amber-300/50" />
                 <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-amber-400/30 to-orange-400/30 animate-pulse"></div>
               </div>
-              <img src="/dotspark-logo-wordmark.png?v=2" alt="DotSpark" className="h-4 w-auto object-contain" />
+              <span className="font-semibold tracking-wide">Introducing DotSpark</span>
             </div>
             
             {/* Heading */}
@@ -197,7 +197,7 @@ export default function AboutPage() {
         
         <div className="container mx-auto px-6 md:px-8 relative z-10">
           <div className="text-center mb-20">
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-10">Why <span className="bg-gradient-to-r from-amber-600 via-orange-600 to-amber-500 dark:from-amber-400 dark:via-orange-400 dark:to-amber-300 bg-clip-text text-transparent"><img src="/dotspark-logo-wordmark.png?v=2" alt="DotSpark" className="h-6 w-auto object-contain" /></span>?</h2>
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-10">Why <span className="bg-gradient-to-r from-amber-600 via-orange-600 to-amber-500 dark:from-amber-400 dark:via-orange-400 dark:to-amber-300 bg-clip-text text-transparent">DotSpark</span>?</h2>
             
             <div className="max-w-4xl mx-auto space-y-8 text-lg leading-relaxed text-foreground">
               <p className="font-medium">
@@ -235,7 +235,7 @@ export default function AboutPage() {
       <section className="py-24 relative overflow-hidden bg-gradient-to-b from-muted/30 to-background">
         <div className="container mx-auto px-4 md:px-6">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-12">How <span className="bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent"><img src="/dotspark-logo-wordmark.png?v=2" alt="DotSpark" className="h-6 w-auto object-contain" /></span> Works?</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-12">How <span className="bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">DotSpark</span> Works?</h2>
           </div>
           
           <div className="relative max-w-6xl mx-auto mb-16">

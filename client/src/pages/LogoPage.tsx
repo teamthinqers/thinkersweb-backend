@@ -40,12 +40,12 @@ export default function LogoPage() {
         
         <div className="flex flex-col items-center gap-4 border p-6 rounded-lg">
           <div className="w-40 h-40 flex items-center justify-center bg-white rounded-lg border">
-            <img src="/dotspark-logo-small.jpg" alt="DotSpark Small Logo" className="w-full h-full object-contain rounded-lg" />
+            <img src="/dotspark-logo-icon.png?v=2" alt="DotSpark Small Logo" className="w-full h-full object-contain rounded-lg" />
           </div>
           <h2 className="text-xl font-bold">Small Logo</h2>
           <p className="text-muted-foreground text-center text-sm">DotSpark compact logo for icons</p>
           <Button asChild>
-            <a href="/dotspark-logo-small.jpg" download="dotspark-logo-small.jpg">Download JPG</a>
+            <a href="/dotspark-logo-icon.png?v=2" download="dotspark-logo-icon.png?v=2">Download JPG</a>
           </Button>
         </div>
       </div>

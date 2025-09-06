@@ -98,7 +98,7 @@ export function InstallPrompt() {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <BrainCircuit className="h-5 w-5 text-purple-600" />
-            <span>Install <img src="/dotspark-logo-wordmark.png?v=2" alt="DotSpark" className="h-6 w-auto object-contain" /></span>
+            <span>Install DotSpark</span>
           </DialogTitle>
           <DialogDescription>
             Install DotSpark as an app on your device for the best neural tuning experience. You'll be able to access your DotSpark even when offline.

@@ -503,7 +503,7 @@ export default function MyNeura() {
             onClick={() => setLocation('/dotspark-tuning')}
           >
             <img src="/dotspark-logo-icon.png?v=2" alt="DotSpark" className="h-12 w-12 object-contain rounded" />
-            <span className="text-xl font-semibold text-amber-700 dark:text-amber-300"><img src="/dotspark-logo-wordmark.png?v=2" alt="DotSpark" className="h-6 w-auto object-contain" /></span>
+            <span className="text-xl font-semibold text-amber-700 dark:text-amber-300">DotSpark</span>
           </div>
         </div>
         
