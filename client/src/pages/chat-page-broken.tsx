@@ -299,7 +299,7 @@ export default function ChatPage() {
           <div className="p-4 border-b border-gray-200 dark:border-gray-700">
             <div className="flex items-center gap-3">
               <img 
-                src="/dotspark-logo-icon.jpeg" 
+                src="/dotspark-logo-icon.png" 
                 alt="DotSpark" 
                 className="w-8 h-8 rounded-full"
               />
@@ -411,7 +411,7 @@ export default function ChatPage() {
               <div className="p-4 border-b border-gray-200 dark:border-gray-700">
                 <div className="flex items-center gap-3">
                   <img 
-                    src="/dotspark-logo-icon.jpeg" 
+                    src="/dotspark-logo-icon.png" 
                     alt="DotSpark" 
                     className="w-8 h-8 rounded-full"
                   />
@@ -477,7 +477,7 @@ export default function ChatPage() {
         </Sheet>
         
         <img 
-          src="/dotspark-logo-icon.jpeg" 
+          src="/dotspark-logo-icon.png" 
           alt="DotSpark" 
           className="w-8 h-8 rounded-full"
         />
@@ -673,7 +673,7 @@ export default function ChatPage() {
                       {!message.isUser && (
                         <div className="flex-shrink-0">
                           <img 
-                            src="/dotspark-logo-icon.jpeg" 
+                            src="/dotspark-logo-icon.png" 
                             alt="DotSpark AI" 
                             className="w-8 h-8 rounded-full"
                           />

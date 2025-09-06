@@ -502,7 +502,7 @@ export default function MyNeura() {
             className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity" 
             onClick={() => setLocation('/dotspark-tuning')}
           >
-            <img src="/dotspark-logo-icon.jpeg" alt="DotSpark" className="h-12 w-12 object-contain rounded" />
+            <img src="/dotspark-logo-icon.png" alt="DotSpark" className="h-12 w-12 object-contain rounded" />
             <span className="text-xl font-semibold text-amber-700 dark:text-amber-300">DotSpark</span>
           </div>
         </div>
@@ -558,7 +558,7 @@ export default function MyNeura() {
       {isActivated ? (
         <div className="mb-6 p-4 rounded-lg border bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950 dark:to-emerald-950 border-green-200 dark:border-green-800">
           <div className="flex items-center">
-            <img src="/dotspark-logo-icon.jpeg" alt="DotSpark" className="h-10 w-10 object-contain mr-4 rounded" />
+            <img src="/dotspark-logo-icon.png" alt="DotSpark" className="h-10 w-10 object-contain mr-4 rounded" />
             <div>
               <h3 className="text-lg font-medium">DotSpark is Active</h3>
               <p className="text-sm text-muted-foreground">Your DotSpark is active and ready to assist you.</p>
@@ -568,7 +568,7 @@ export default function MyNeura() {
       ) : (
         <div className="mb-6 p-4 rounded-lg border bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950 dark:to-orange-950 border-amber-200 dark:border-amber-800">
           <div className="flex items-center">
-            <img src="/dotspark-logo-icon.jpeg" alt="DotSpark" className="h-10 w-10 object-contain mr-4 opacity-60 rounded" />
+            <img src="/dotspark-logo-icon.png" alt="DotSpark" className="h-10 w-10 object-contain mr-4 opacity-60 rounded" />
             <div>
               <h3 className="text-lg font-medium">DotSpark is Inactive</h3>
               <p className="text-sm text-muted-foreground">Activate your DotSpark to begin capturing your valuable thoughts.</p>

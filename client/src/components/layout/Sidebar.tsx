@@ -43,7 +43,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isMobile, onNewEntry
     <div className={sidebarClasses}>
       <div className="px-6 py-5 border-b">
         <h1 className="text-xl font-bold flex items-center">
-          <img src="/dotspark-logo-icon.jpeg" alt="DotSpark" className="mr-2 h-6 w-6 object-contain rounded" />
+          <img src="/dotspark-logo-icon.png" alt="DotSpark" className="mr-2 h-6 w-6 object-contain rounded" />
           <span className="text-amber-700 dark:text-amber-400 font-bold">
             DotSpark
           </span>
@@ -70,7 +70,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, isMobile, onNewEntry
                   <div className="relative mr-2">
                     {item.icon === "dotspark-logo" ? (
                       <img 
-                        src="/dotspark-logo-icon.jpeg" 
+                        src="/dotspark-logo-icon.png" 
                         alt="DotSpark" 
                         className={`h-5 w-5 object-contain rounded ${
                           isActivated ? "animate-pulse" : ""

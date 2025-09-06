@@ -121,12 +121,12 @@ export default function DotCapture() {
           <div className="text-center space-y-4">
             <div className="mx-auto w-24 h-24 rounded-full flex items-center justify-center overflow-hidden shadow-lg">
               <img 
-                src="/dotspark-icon-only.jpeg" 
+                src="/dotspark-logo-icon.png" 
                 alt="DotSpark" 
                 className="w-full h-full object-cover rounded-full"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
-                  target.src = "/dotspark-logo-icon.jpeg";
+                  target.src = "/dotspark-logo-icon.png";
                   target.onerror = () => {
                     target.src = "/dotspark-pwa-final.png";
                   };

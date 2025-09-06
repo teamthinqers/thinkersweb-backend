@@ -390,7 +390,7 @@ export default function AuthPage() {
             {/* Hero Section Content */}
             <div className="text-center">
               <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-2 text-sm text-primary mb-4">
-                <img src="/dotspark-logo-icon.jpeg" alt="DotSpark" className="h-6 w-6 rounded" />
+                <img src="/dotspark-logo-icon.png" alt="DotSpark" className="h-6 w-6 rounded" />
                 <span>Introducing DotSpark</span>
               </div>
               
