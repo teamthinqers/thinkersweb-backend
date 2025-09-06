@@ -329,13 +329,13 @@ function GlobalFloatingDotV2() {
           className="relative cursor-move"
           onMouseDown={handleMouseDown}
         >
-          {/* Dynamic multi-color pulsing rings with varied colors */}
+          {/* Brand-aligned pulsing rings that enhance the logo's dot concept */}
           {!isDragging && (
             <>
-              <div className="absolute inset-0 w-12 h-12 rounded-full bg-gradient-to-r from-blue-400 to-purple-500 opacity-30 animate-ping pointer-events-none"></div>
-              <div className="absolute inset-1 w-10 h-10 rounded-full bg-gradient-to-r from-green-400 to-blue-500 opacity-40 animate-ping pointer-events-none" style={{ animationDelay: '0.4s' }}></div>
-              <div className="absolute inset-2 w-8 h-8 rounded-full bg-gradient-to-r from-pink-400 to-red-500 opacity-50 animate-ping pointer-events-none" style={{ animationDelay: '0.8s' }}></div>
-              <div className="absolute inset-3 w-6 h-6 rounded-full bg-gradient-to-r from-yellow-400 to-orange-500 opacity-60 animate-ping pointer-events-none" style={{ animationDelay: '1.2s' }}></div>
+              <div className="absolute inset-0 w-12 h-12 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 opacity-25 animate-ping pointer-events-none"></div>
+              <div className="absolute inset-1 w-10 h-10 rounded-full bg-gradient-to-r from-orange-400 to-red-500 opacity-35 animate-ping pointer-events-none" style={{ animationDelay: '0.4s' }}></div>
+              <div className="absolute inset-2 w-8 h-8 rounded-full bg-gradient-to-r from-yellow-400 to-amber-500 opacity-45 animate-ping pointer-events-none" style={{ animationDelay: '0.8s' }}></div>
+              <div className="absolute inset-3 w-6 h-6 rounded-full bg-gradient-to-r from-amber-300 to-orange-400 opacity-55 animate-ping pointer-events-none" style={{ animationDelay: '1.2s' }}></div>
             </>
           )}
           
@@ -353,59 +353,60 @@ function GlobalFloatingDotV2() {
               }
             }}
             className={cn(
-              "w-12 h-12 rounded-full bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 flex items-center justify-center transition-all duration-300 shadow-lg hover:shadow-xl p-0 pointer-events-none relative overflow-hidden",
+              "w-12 h-12 rounded-full bg-gradient-to-br from-amber-600 via-orange-600 to-red-600 flex items-center justify-center transition-all duration-300 shadow-lg hover:shadow-xl p-0 pointer-events-none relative overflow-hidden",
               isDragging 
-                ? "shadow-2xl ring-4 ring-cyan-300/60 scale-110" 
+                ? "shadow-2xl ring-4 ring-amber-300/60 scale-110" 
                 : isSpinning 
                 ? "animate-spin scale-110" 
                 : "hover:scale-110 animate-pulse"
             )}
           >
-            {/* Animated background shimmer effect */}
-            <div className="absolute inset-0 w-12 h-12 rounded-full bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 opacity-20 animate-pulse"></div>
+            {/* Brand-aligned shimmer effect that complements the logo's dot */}
+            <div className="absolute inset-0 w-12 h-12 rounded-full bg-gradient-to-r from-yellow-400 via-amber-500 to-orange-600 opacity-15 animate-pulse"></div>
             
-            {/* DotSpark logo with dynamic multi-color sparking */}
+            {/* DotSpark logo with brand-aligned sparking that enhances the lightning bolt */}
             <div className="relative z-10">
               <img 
                 src="/dotspark-logo-transparent.png?v=1" 
                 alt="DotSpark" 
                 className={cn(
-                  "w-7 h-7 transition-all duration-300 relative z-20",
+                  "w-8 h-8 transition-all duration-300 relative z-20",
                   isDragging ? "scale-125" : "animate-pulse drop-shadow-lg"
                 )} 
                 style={{ 
                   animationDelay: isDragging ? '0s' : '0.3s',
-                  filter: 'drop-shadow(0 0 8px rgba(255, 255, 255, 0.8))'
+                  filter: 'drop-shadow(0 0 6px rgba(255, 255, 255, 0.9)) drop-shadow(0 0 12px rgba(255, 215, 0, 0.4))'
                 }} 
               />
-              {/* Multi-color sparking effects */}
+              {/* Brand-aligned sparking effects that highlight the logo's spark element */}
               {!isDragging && (
                 <>
-                  <div className="absolute inset-0 w-7 h-7 animate-ping opacity-40" style={{ animationDelay: '0.1s' }}>
-                    <div className="w-full h-full rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 opacity-60"></div>
+                  <div className="absolute inset-0 w-8 h-8 animate-ping opacity-30" style={{ animationDelay: '0.2s' }}>
+                    <div className="w-full h-full rounded-full bg-gradient-to-r from-white to-yellow-200 opacity-80"></div>
                   </div>
-                  <div className="absolute inset-0 w-7 h-7 animate-ping opacity-30" style={{ animationDelay: '0.6s' }}>
-                    <div className="w-full h-full rounded-full bg-gradient-to-r from-green-400 to-emerald-500 opacity-70"></div>
+                  <div className="absolute inset-0 w-8 h-8 animate-ping opacity-25" style={{ animationDelay: '0.7s' }}>
+                    <div className="w-full h-full rounded-full bg-gradient-to-r from-amber-300 to-orange-400 opacity-90"></div>
                   </div>
                 </>
               )}
             </div>
             
-            {/* Enhanced multi-color indicators with varied animations */}
+            {/* Brand-aligned spark indicators that represent the "spark" concept */}
             {!isDragging && (
               <>
-                <div className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-gradient-to-r from-yellow-400 to-orange-500 animate-ping shadow-lg"></div>
-                <div className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-gradient-to-r from-white to-cyan-200 animate-pulse shadow-lg" style={{ animationDelay: '0.7s' }}></div>
-                <div className="absolute -bottom-1 -left-1 w-2 h-2 rounded-full bg-gradient-to-r from-pink-400 to-purple-500 animate-ping opacity-80" style={{ animationDelay: '1.1s' }}></div>
-                <div className="absolute top-0 left-0 w-1 h-1 rounded-full bg-emerald-400 animate-pulse" style={{ animationDelay: '1.5s' }}></div>
+                <div className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-gradient-to-r from-yellow-300 to-amber-400 animate-ping shadow-lg"></div>
+                <div className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-gradient-to-r from-white to-yellow-100 animate-pulse shadow-lg" style={{ animationDelay: '0.7s' }}></div>
+                <div className="absolute -bottom-1 -left-1 w-2 h-2 rounded-full bg-gradient-to-r from-orange-300 to-red-400 animate-ping opacity-80" style={{ animationDelay: '1.1s' }}></div>
+                <div className="absolute top-0 left-0 w-1 h-1 rounded-full bg-yellow-300 animate-pulse" style={{ animationDelay: '1.5s' }}></div>
+                <div className="absolute bottom-0 right-0 w-1 h-1 rounded-full bg-amber-300 animate-pulse" style={{ animationDelay: '2s' }}></div>
               </>
             )}
             
-            {/* Enhanced dragging state with rainbow effect */}
+            {/* Brand-aligned dragging state that maintains the spark theme */}
             {isDragging && (
               <>
-                <div className="absolute inset-0 w-12 h-12 rounded-full border-2 border-dashed border-cyan-300 animate-spin"></div>
-                <div className="absolute inset-1 w-10 h-10 rounded-full border border-dashed border-pink-300 animate-spin" style={{ animationDirection: 'reverse' }}></div>
+                <div className="absolute inset-0 w-12 h-12 rounded-full border-2 border-dashed border-amber-300 animate-spin"></div>
+                <div className="absolute inset-1 w-10 h-10 rounded-full border border-dashed border-yellow-300 animate-spin" style={{ animationDirection: 'reverse' }}></div>
               </>
             )}
           </Button>
