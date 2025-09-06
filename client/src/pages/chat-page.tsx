@@ -869,13 +869,13 @@ export default function ChatPage() {
                   {/* Logo - Mobile specific above heading, Desktop original position */}
                   {isMobile ? (
                     <img 
-                      src="/dotspark-logo-header.png" 
+                      src="/dotspark-logo-icon.png?v=3" 
                       alt="DotSpark" 
                       className="w-12 h-12 mx-auto mb-4 rounded-2xl"
                     />
                   ) : (
                     <img 
-                      src="/dotspark-logo-header.png" 
+                      src="/dotspark-logo-icon.png?v=3" 
                       alt="DotSpark" 
                       className="w-16 h-16 mx-auto mb-6 rounded-2xl"
                     />
