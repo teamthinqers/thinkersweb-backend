@@ -332,64 +332,50 @@ function GlobalFloatingDotV2() {
           {/* Brand-aligned pulsing rings that enhance the logo's dot concept */}
           {!isDragging && (
             <>
-              <div className="absolute inset-0 w-12 h-12 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 opacity-25 animate-ping pointer-events-none"></div>
-              <div className="absolute inset-1 w-10 h-10 rounded-full bg-gradient-to-r from-orange-400 to-red-500 opacity-35 animate-ping pointer-events-none" style={{ animationDelay: '0.4s' }}></div>
-              <div className="absolute inset-2 w-8 h-8 rounded-full bg-gradient-to-r from-yellow-400 to-amber-500 opacity-45 animate-ping pointer-events-none" style={{ animationDelay: '0.8s' }}></div>
-              <div className="absolute inset-3 w-6 h-6 rounded-full bg-gradient-to-r from-amber-300 to-orange-400 opacity-55 animate-ping pointer-events-none" style={{ animationDelay: '1.2s' }}></div>
+              <div className="absolute inset-0 w-16 h-16 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 opacity-25 animate-ping pointer-events-none"></div>
+              <div className="absolute inset-1 w-14 h-14 rounded-full bg-gradient-to-r from-orange-400 to-red-500 opacity-35 animate-ping pointer-events-none" style={{ animationDelay: '0.4s' }}></div>
+              <div className="absolute inset-2 w-12 h-12 rounded-full bg-gradient-to-r from-yellow-400 to-amber-500 opacity-45 animate-ping pointer-events-none" style={{ animationDelay: '0.8s' }}></div>
+              <div className="absolute inset-3 w-10 h-10 rounded-full bg-gradient-to-r from-amber-300 to-orange-400 opacity-55 animate-ping pointer-events-none" style={{ animationDelay: '1.2s' }}></div>
             </>
           )}
           
-          {/* Main dot with enhanced gradient and dynamic effects */}
-          <Button
-            onClick={(e) => {
-              if (!hasDragged && !isDragging) {
-                e.preventDefault();
-                e.stopPropagation();
-                setIsSpinning(true);
-                setTimeout(() => {
-                  setIsOpen(true);
-                  setIsSpinning(false);
-                }, 600);
-              }
-            }}
-            className={cn(
-              "w-12 h-12 rounded-full bg-gradient-to-br from-amber-600 via-orange-600 to-red-600 flex items-center justify-center transition-all duration-300 shadow-lg hover:shadow-xl p-0 pointer-events-none relative overflow-hidden",
-              isDragging 
-                ? "shadow-2xl ring-4 ring-amber-300/60 scale-110" 
-                : isSpinning 
-                ? "animate-spin scale-110" 
-                : "hover:scale-110 animate-pulse"
-            )}
-          >
-            {/* Brand-aligned shimmer effect that complements the logo's dot */}
-            <div className="absolute inset-0 w-12 h-12 rounded-full bg-gradient-to-r from-yellow-400 via-amber-500 to-orange-600 opacity-15 animate-pulse"></div>
+          {/* DotSpark logo as the floating dot itself - matching chat section size */}
+          <div className="relative">
+            <img 
+              src="/dotspark-logo-transparent.png?v=1" 
+              alt="DotSpark" 
+              className={cn(
+                "w-16 h-16 transition-all duration-300 cursor-pointer",
+                isDragging ? "scale-125" : "animate-pulse drop-shadow-lg hover:scale-110"
+              )} 
+              style={{ 
+                animationDelay: isDragging ? '0s' : '0.3s',
+                filter: 'drop-shadow(0 0 4px rgba(255, 255, 255, 1)) drop-shadow(0 0 8px rgba(255, 255, 255, 0.8)) drop-shadow(0 0 16px rgba(255, 255, 255, 0.6))'
+              }}
+              onClick={(e) => {
+                if (!hasDragged && !isDragging) {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setIsSpinning(true);
+                  setTimeout(() => {
+                    setIsOpen(true);
+                    setIsSpinning(false);
+                  }, 600);
+                }
+              }}
+            />
             
-            {/* DotSpark logo with brand-aligned sparking that enhances the lightning bolt */}
-            <div className="relative z-10">
-              <img 
-                src="/dotspark-logo-transparent.png?v=1" 
-                alt="DotSpark" 
-                className={cn(
-                  "w-8 h-8 transition-all duration-300 relative z-20",
-                  isDragging ? "scale-125" : "animate-pulse drop-shadow-lg"
-                )} 
-                style={{ 
-                  animationDelay: isDragging ? '0s' : '0.3s',
-                  filter: 'drop-shadow(0 0 4px rgba(255, 255, 255, 1)) drop-shadow(0 0 8px rgba(255, 255, 255, 0.8)) drop-shadow(0 0 16px rgba(255, 255, 255, 0.6))'
-                }} 
-              />
-              {/* Brand-aligned sparking effects that highlight the logo's spark element */}
-              {!isDragging && (
-                <>
-                  <div className="absolute inset-0 w-8 h-8 animate-ping opacity-30" style={{ animationDelay: '0.2s' }}>
-                    <div className="w-full h-full rounded-full bg-gradient-to-r from-white to-yellow-200 opacity-80"></div>
-                  </div>
-                  <div className="absolute inset-0 w-8 h-8 animate-ping opacity-25" style={{ animationDelay: '0.7s' }}>
-                    <div className="w-full h-full rounded-full bg-gradient-to-r from-amber-300 to-orange-400 opacity-90"></div>
-                  </div>
-                </>
-              )}
-            </div>
+            {/* Brand-aligned sparking effects that highlight the logo's spark element */}
+            {!isDragging && (
+              <>
+                <div className="absolute inset-0 w-16 h-16 animate-ping opacity-30" style={{ animationDelay: '0.2s' }}>
+                  <div className="w-full h-full rounded-full bg-gradient-to-r from-white to-yellow-200 opacity-80"></div>
+                </div>
+                <div className="absolute inset-0 w-16 h-16 animate-ping opacity-25" style={{ animationDelay: '0.7s' }}>
+                  <div className="w-full h-full rounded-full bg-gradient-to-r from-amber-300 to-orange-400 opacity-90"></div>
+                </div>
+              </>
+            )}
             
             {/* Brand-aligned spark indicators that represent the "spark" concept */}
             {!isDragging && (
@@ -405,27 +391,12 @@ function GlobalFloatingDotV2() {
             {/* Brand-aligned dragging state that maintains the spark theme */}
             {isDragging && (
               <>
-                <div className="absolute inset-0 w-12 h-12 rounded-full border-2 border-dashed border-amber-300 animate-spin"></div>
-                <div className="absolute inset-1 w-10 h-10 rounded-full border border-dashed border-yellow-300 animate-spin" style={{ animationDirection: 'reverse' }}></div>
+                <div className="absolute inset-0 w-16 h-16 rounded-full border-2 border-dashed border-amber-300 animate-spin"></div>
+                <div className="absolute inset-1 w-14 h-14 rounded-full border border-dashed border-yellow-300 animate-spin" style={{ animationDirection: 'reverse' }}></div>
               </>
             )}
-          </Button>
+          </div>
           
-          {/* Invisible click area for when button has pointer-events-none */}
-          <div 
-            className="absolute inset-0 w-12 h-12 rounded-full cursor-pointer"
-            onClick={(e) => {
-              if (!hasDragged && !isDragging) {
-                e.preventDefault();
-                e.stopPropagation();
-                setIsSpinning(true);
-                setTimeout(() => {
-                  setIsOpen(true);
-                  setIsSpinning(false);
-                }, 600);
-              }
-            }}
-          />
         </div>
       </div>
     );
