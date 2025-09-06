@@ -360,16 +360,28 @@ function GlobalFloatingDotV2() {
                 : "hover:scale-110 animate-pulse"
             )}
           >
-            {/* DotSpark logo - using new transparent circular logo */}
-            <img 
-              src="/dotspark-logo-transparent.png?v=1" 
-              alt="DotSpark" 
-              className={cn(
-                "w-6 h-6 transition-all duration-300",
-                isDragging ? "scale-125" : "animate-pulse"
-              )} 
-              style={{ animationDelay: isDragging ? '0s' : '0.3s' }} 
-            />
+            {/* DotSpark logo - using new transparent circular logo with enhanced sparking */}
+            <div className="relative">
+              <img 
+                src="/dotspark-logo-transparent.png?v=1" 
+                alt="DotSpark" 
+                className={cn(
+                  "w-6 h-6 transition-all duration-300",
+                  isDragging ? "scale-125" : "animate-pulse"
+                )} 
+                style={{ animationDelay: isDragging ? '0s' : '0.3s' }} 
+              />
+              {/* Add subtle sparking effect over the logo */}
+              {!isDragging && (
+                <div className="absolute inset-0 w-6 h-6 animate-ping opacity-30">
+                  <img 
+                    src="/dotspark-logo-transparent.png?v=1" 
+                    alt="" 
+                    className="w-6 h-6"
+                  />
+                </div>
+              )}
+            </div>
             
             {/* Attention-grabbing indicators - preserving original design */}
             {!isDragging && (
