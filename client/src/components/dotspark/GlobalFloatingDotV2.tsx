@@ -44,9 +44,9 @@ function GlobalFloatingDotV2() {
     if (saved) {
       return JSON.parse(saved);
     }
-    // Default position: right side slightly above bottom
-    const defaultX = window.innerWidth - 80; // 80px from right edge
-    const defaultY = window.innerHeight - 120; // 120px from bottom
+    // Default position: right side slightly above bottom (adjusted for smaller 12x12 size)
+    const defaultX = window.innerWidth - 70; // 70px from right edge
+    const defaultY = window.innerHeight - 100; // 100px from bottom
     return { x: defaultX, y: defaultY };
   });
   
@@ -338,46 +338,49 @@ function GlobalFloatingDotV2() {
           {/* Brand-aligned pulsing rings that enhance the logo's dot concept */}
           {!isDragging && (
             <>
-              <div className="absolute inset-0 w-16 h-16 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 opacity-25 animate-ping pointer-events-none"></div>
-              <div className="absolute inset-1 w-14 h-14 rounded-full bg-gradient-to-r from-orange-400 to-red-500 opacity-35 animate-ping pointer-events-none" style={{ animationDelay: '0.4s' }}></div>
-              <div className="absolute inset-2 w-12 h-12 rounded-full bg-gradient-to-r from-yellow-400 to-amber-500 opacity-45 animate-ping pointer-events-none" style={{ animationDelay: '0.8s' }}></div>
-              <div className="absolute inset-3 w-10 h-10 rounded-full bg-gradient-to-r from-amber-300 to-orange-400 opacity-55 animate-ping pointer-events-none" style={{ animationDelay: '1.2s' }}></div>
+              <div className="absolute inset-0 w-12 h-12 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 opacity-25 animate-ping pointer-events-none"></div>
+              <div className="absolute inset-1 w-10 h-10 rounded-full bg-gradient-to-r from-orange-400 to-red-500 opacity-35 animate-ping pointer-events-none" style={{ animationDelay: '0.4s' }}></div>
+              <div className="absolute inset-2 w-8 h-8 rounded-full bg-gradient-to-r from-yellow-400 to-amber-500 opacity-45 animate-ping pointer-events-none" style={{ animationDelay: '0.8s' }}></div>
+              <div className="absolute inset-3 w-6 h-6 rounded-full bg-gradient-to-r from-amber-300 to-orange-400 opacity-55 animate-ping pointer-events-none" style={{ animationDelay: '1.2s' }}></div>
             </>
           )}
           
-          {/* DotSpark logo as the floating dot itself - matching chat section size */}
-          <div className="relative">
+          {/* DotSpark logo as the floating dot itself - matching chat section mobile size */}
+          <Button
+            className="w-12 h-12 rounded-full bg-transparent p-0 border-0 hover:bg-transparent relative"
+            onClick={(e) => {
+              if (!hasDragged && !isDragging) {
+                e.preventDefault();
+                e.stopPropagation();
+                setIsSpinning(true);
+                setTimeout(() => {
+                  setIsOpen(true);
+                  setIsSpinning(false);
+                }, 600);
+              }
+            }}
+          >
             <img 
               src="/dotspark-logo-transparent.png?v=1" 
               alt="DotSpark" 
               className={cn(
-                "w-16 h-16 transition-all duration-300 cursor-pointer",
-                isDragging ? "scale-125" : "animate-pulse drop-shadow-lg hover:scale-110"
+                "w-12 h-12 transition-all duration-300",
+                isDragging ? "" : "animate-pulse drop-shadow-lg",
+                isSpinning ? "animate-spin" : ""
               )} 
               style={{ 
                 animationDelay: isDragging ? '0s' : '0.3s',
                 filter: 'drop-shadow(0 0 4px rgba(255, 255, 255, 1)) drop-shadow(0 0 8px rgba(255, 255, 255, 0.8)) drop-shadow(0 0 16px rgba(255, 255, 255, 0.6))'
-              }}
-              onClick={(e) => {
-                if (!hasDragged && !isDragging) {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  setIsSpinning(true);
-                  setTimeout(() => {
-                    setIsOpen(true);
-                    setIsSpinning(false);
-                  }, 600);
-                }
               }}
             />
             
             {/* Brand-aligned sparking effects that highlight the logo's spark element */}
             {!isDragging && (
               <>
-                <div className="absolute inset-0 w-16 h-16 animate-ping opacity-30" style={{ animationDelay: '0.2s' }}>
+                <div className="absolute inset-0 w-12 h-12 animate-ping opacity-30" style={{ animationDelay: '0.2s' }}>
                   <div className="w-full h-full rounded-full bg-gradient-to-r from-white to-yellow-200 opacity-80"></div>
                 </div>
-                <div className="absolute inset-0 w-16 h-16 animate-ping opacity-25" style={{ animationDelay: '0.7s' }}>
+                <div className="absolute inset-0 w-12 h-12 animate-ping opacity-25" style={{ animationDelay: '0.7s' }}>
                   <div className="w-full h-full rounded-full bg-gradient-to-r from-amber-300 to-orange-400 opacity-90"></div>
                 </div>
               </>
@@ -388,7 +391,7 @@ function GlobalFloatingDotV2() {
             {isDragging && (
               <>
                 {/* Outer chakra ring with spiritual energy pattern */}
-                <div className="absolute inset-0 w-16 h-16 rounded-full animate-spin" style={{ animationDuration: '2s' }}>
+                <div className="absolute inset-0 w-12 h-12 rounded-full animate-spin" style={{ animationDuration: '2s' }}>
                   <div className="w-full h-full rounded-full border-2 border-dashed border-gradient-to-r from-amber-300 via-orange-400 to-yellow-300 opacity-70"></div>
                   {/* Chakra energy points around the circle */}
                   <div className="absolute top-0 left-1/2 w-1 h-1 bg-white rounded-full transform -translate-x-1/2 -translate-y-1"></div>
@@ -400,7 +403,7 @@ function GlobalFloatingDotV2() {
                 </div>
                 
                 {/* Inner chakra ring spinning in reverse with faster speed */}
-                <div className="absolute inset-2 w-12 h-12 rounded-full animate-spin" style={{ animationDirection: 'reverse', animationDuration: '1.5s' }}>
+                <div className="absolute inset-1 w-10 h-10 rounded-full animate-spin" style={{ animationDirection: 'reverse', animationDuration: '1.5s' }}>
                   <div className="w-full h-full rounded-full border border-dashed border-gradient-to-r from-yellow-200 via-amber-300 to-orange-200 opacity-60"></div>
                   {/* Inner energy sparks */}
                   <div className="absolute top-0 left-1/2 w-0.5 h-0.5 bg-white rounded-full transform -translate-x-1/2"></div>
@@ -410,10 +413,10 @@ function GlobalFloatingDotV2() {
                 </div>
                 
                 {/* Core chakra glow effect */}
-                <div className="absolute inset-4 w-8 h-8 rounded-full bg-gradient-to-r from-white via-yellow-100 to-amber-100 opacity-20 animate-pulse" style={{ animationDuration: '1s' }}></div>
+                <div className="absolute inset-2 w-8 h-8 rounded-full bg-gradient-to-r from-white via-yellow-100 to-amber-100 opacity-20 animate-pulse" style={{ animationDuration: '1s' }}></div>
               </>
             )}
-          </div>
+          </Button>
           
         </div>
       </div>
