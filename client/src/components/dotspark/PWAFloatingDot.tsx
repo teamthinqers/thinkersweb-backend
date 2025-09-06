@@ -190,10 +190,15 @@ export function PWAFloatingDot({ isActive }: PWAFloatingDotProps) {
                 ? "shadow-2xl ring-4 ring-amber-300/50 scale-110" 
                 : "shadow-lg hover:shadow-xl hover:scale-110 animate-pulse"
             )}>
-              <div className={cn(
-                "w-4 h-4 rounded-full bg-white transition-all duration-300",
-                isDragging ? "scale-125" : "animate-pulse"
-              )} style={{ animationDelay: isDragging ? '0s' : '0.3s' }}></div>
+              <img 
+                src="/dotspark-logo-transparent.png?v=1" 
+                alt="DotSpark" 
+                className={cn(
+                  "w-6 h-6 transition-all duration-300",
+                  isDragging ? "scale-125" : "animate-pulse"
+                )} 
+                style={{ animationDelay: isDragging ? '0s' : '0.3s' }} 
+              />
               
               {/* Attention-grabbing blinking indicator - hidden when dragging */}
               {!isDragging && (
@@ -221,7 +226,11 @@ export function PWAFloatingDot({ isActive }: PWAFloatingDotProps) {
                   <div className="text-center space-y-2">
                     <div className="flex justify-center mb-4">
                       <div className="w-16 h-16 rounded-full bg-gradient-to-br from-amber-600 to-orange-700 flex items-center justify-center shadow-lg">
-                        <div className="w-6 h-6 rounded-full bg-white"></div>
+                        <img 
+                          src="/dotspark-logo-transparent.png?v=1" 
+                          alt="DotSpark" 
+                          className="w-8 h-8"
+                        />
                       </div>
                     </div>
                     <h2 className="text-xl font-bold bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent">
