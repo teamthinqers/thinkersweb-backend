@@ -54,7 +54,6 @@ function GlobalFloatingDotV2() {
   const [isMinimized, setIsMinimized] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
-  const [isSpinning, setIsSpinning] = useState(false);
   const [contentType, setContentType] = useState<'dot' | 'wheel' | 'chakra'>('dot');
   const [isLoading, setIsLoading] = useState(false);
   const [dragStartPos, setDragStartPos] = useState({ x: 0, y: 0 });
@@ -335,6 +334,15 @@ function GlobalFloatingDotV2() {
           className="relative cursor-move"
           onMouseDown={handleMouseDown}
         >
+          {/* Brand-aligned pulsing rings that enhance the logo's dot concept */}
+          {!isDragging && (
+            <>
+              <div className="absolute inset-0 w-14 h-14 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 opacity-25 animate-ping pointer-events-none"></div>
+              <div className="absolute inset-1 w-12 h-12 rounded-full bg-gradient-to-r from-orange-400 to-red-500 opacity-35 animate-ping pointer-events-none" style={{ animationDelay: '0.4s' }}></div>
+              <div className="absolute inset-2 w-10 h-10 rounded-full bg-gradient-to-r from-yellow-400 to-amber-500 opacity-45 animate-ping pointer-events-none" style={{ animationDelay: '0.8s' }}></div>
+              <div className="absolute inset-3 w-8 h-8 rounded-full bg-gradient-to-r from-amber-300 to-orange-400 opacity-55 animate-ping pointer-events-none" style={{ animationDelay: '1.2s' }}></div>
+            </>
+          )}
           
           {/* DotSpark logo as the floating dot itself - slightly larger size */}
           <Button
@@ -343,11 +351,7 @@ function GlobalFloatingDotV2() {
               if (!hasDragged && !isDragging) {
                 e.preventDefault();
                 e.stopPropagation();
-                setIsSpinning(true);
-                setTimeout(() => {
-                  setIsOpen(true);
-                  setIsSpinning(false);
-                }, 600);
+                setIsOpen(true);
               }
             }}
           >
@@ -356,11 +360,12 @@ function GlobalFloatingDotV2() {
               alt="DotSpark" 
               className={cn(
                 "w-14 h-14 transition-all duration-300",
-                isDragging ? "animate-spin" : "",
-                isSpinning ? "animate-spin" : ""
+                isDragging ? "animate-spin" : "animate-pulse drop-shadow-lg"
               )} 
               style={{ 
-                animationDuration: isDragging ? '0.8s' : '1s'
+                animationDuration: isDragging ? '0.15s' : '2s',
+                animationDelay: isDragging ? '0s' : '0.3s',
+                filter: 'drop-shadow(0 0 4px rgba(255, 255, 255, 0.8)) drop-shadow(0 0 8px rgba(255, 255, 255, 0.6))'
               }}
             />
           </Button>
