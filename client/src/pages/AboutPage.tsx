@@ -104,7 +104,7 @@ export default function AboutPage() {
           </Link>
           
           <Link href="/about" className="flex items-center gap-3 hover:scale-105 transition-all duration-300 cursor-pointer group">
-            <img src="/dotspark-logo-icon.png" alt="DotSpark" className="h-12 w-12 rounded-full transition-all duration-300" />
+            <img src="/dotspark-logo-icon.png?v=2" alt="DotSpark" className="h-12 w-12 rounded-full transition-all duration-300" />
             <span className="text-2xl font-bold text-amber-700 dark:text-amber-400 tracking-tight">DotSpark</span>
           </Link>
           
@@ -126,7 +126,7 @@ export default function AboutPage() {
             {/* Enhanced badge */}
             <div className="inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-amber-100 via-orange-50 to-amber-100 dark:from-amber-900/30 dark:via-orange-900/20 dark:to-amber-900/30 border border-amber-200 dark:border-amber-700/50 px-6 py-3 text-sm font-medium text-amber-800 dark:text-amber-300 mb-8 shadow-lg backdrop-blur-sm">
               <div className="relative">
-                <img src="/dotspark-logo-icon.png" alt="DotSpark" className="h-8 w-8 rounded-full ring-2 ring-amber-300/50" />
+                <img src="/dotspark-logo-icon.png?v=2" alt="DotSpark" className="h-8 w-8 rounded-full ring-2 ring-amber-300/50" />
                 <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-amber-400/30 to-orange-400/30 animate-pulse"></div>
               </div>
               <span className="font-semibold tracking-wide">Introducing DotSpark</span>

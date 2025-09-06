@@ -2482,7 +2482,7 @@ const Dashboard: React.FC = () => {
             </button>
             <div className="flex items-center gap-2">
               <img 
-                src="/dotspark-logo-icon.png" 
+                src="/dotspark-logo-icon.png?v=2" 
                 alt="DotSpark" 
                 className="w-8 h-8 rounded-full"
               />

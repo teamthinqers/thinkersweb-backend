@@ -343,7 +343,7 @@ export default function LandingPage() {
                 className="relative bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 rounded-xl px-4 py-2"
               >
                 <div className="flex items-center gap-2">
-                  <img src="/dotspark-logo-icon.png" alt="DotSpark" className="h-4 w-4 object-contain rounded ring-1 ring-white/30" />
+                  <img src="/dotspark-logo-icon.png?v=2" alt="DotSpark" className="h-4 w-4 object-contain rounded ring-1 ring-white/30" />
                   <span className="text-sm font-medium">My DotSpark</span>
                 </div>
               </Button>
@@ -469,7 +469,7 @@ export default function LandingPage() {
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link href="/my-neura" className="cursor-pointer w-full">
-                      <img src="/dotspark-logo-icon.png" alt="DotSpark" className="mr-2 h-4 w-4 object-contain rounded" />
+                      <img src="/dotspark-logo-icon.png?v=2" alt="DotSpark" className="mr-2 h-4 w-4 object-contain rounded" />
                       My DotSpark
                     </Link>
                   </DropdownMenuItem>
@@ -522,7 +522,7 @@ export default function LandingPage() {
                     <div className="mb-8 pb-4 border-b border-amber-200/50 dark:border-amber-700/50 flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <div className="relative">
-                          <img src="/dotspark-logo-icon.png" alt="DotSpark" className="h-12 w-12 rounded-full shadow-lg ring-2 ring-amber-300/50" />
+                          <img src="/dotspark-logo-icon.png?v=2" alt="DotSpark" className="h-12 w-12 rounded-full shadow-lg ring-2 ring-amber-300/50" />
                           <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-amber-400/20 to-orange-400/20 animate-pulse"></div>
                         </div>
                         <h3 className="text-xl font-bold text-gray-800 dark:text-gray-200">DotSpark</h3>
@@ -539,7 +539,7 @@ export default function LandingPage() {
                       
                       <SheetClose asChild>
                         <div onClick={() => setLocation("/my-neura")} className="py-3 px-4 hover:bg-amber-100/70 dark:hover:bg-amber-900/30 transition-all duration-300 flex items-center gap-3 rounded-xl font-medium cursor-pointer">
-                          <img src="/dotspark-logo-icon.png" alt="DotSpark" className="h-5 w-5 rounded-full object-cover flex-shrink-0" />
+                          <img src="/dotspark-logo-icon.png?v=2" alt="DotSpark" className="h-5 w-5 rounded-full object-cover flex-shrink-0" />
                           <span className="text-gray-800 dark:text-gray-200">My DotSpark</span>
                         </div>
                       </SheetClose>
@@ -638,7 +638,7 @@ export default function LandingPage() {
           <div className="flex flex-col items-center max-w-3xl mx-auto">
             {/* Centered badge */}
             <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-sm text-primary mb-1">
-              <img src="/dotspark-logo-icon.png" alt="DotSpark" className="h-6 w-6 rounded" />
+              <img src="/dotspark-logo-icon.png?v=2" alt="DotSpark" className="h-6 w-6 rounded" />
               <span className="text-xs">Introducing DotSpark</span>
             </div>
             
@@ -792,7 +792,7 @@ export default function LandingPage() {
               <div className="bg-card rounded-lg p-6 relative group hover:shadow-lg transition-all duration-300 border border-orange-200/30 dark:border-orange-800/30 overflow-hidden h-full flex flex-col">
                 <div className="absolute top-0 right-0 w-24 h-24 bg-orange-500/5 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:bg-orange-500/10 transition-colors duration-300"></div>
                 <div className="flex items-center justify-center w-12 h-12 rounded-full bg-orange-500/10 text-orange-600 mb-4 relative z-10">
-                  <img src="/dotspark-logo-icon.png" alt="DotSpark" className="h-6 w-6 rounded-full" />
+                  <img src="/dotspark-logo-icon.png?v=2" alt="DotSpark" className="h-6 w-6 rounded-full" />
                 </div>
                 <div className="absolute top-6 right-6 flex items-center justify-center w-8 h-8 rounded-full bg-orange-500/80 text-white font-bold text-lg">
                   2
@@ -864,7 +864,7 @@ export default function LandingPage() {
                   </div>
                   <div className="flex flex-col items-center">
                     <div className="w-8 h-8 bg-amber-500 rounded-full flex items-center justify-center mb-2">
-                      <img src="/dotspark-logo-icon.png" alt="DotSpark" className="h-4 w-4 rounded" />
+                      <img src="/dotspark-logo-icon.png?v=2" alt="DotSpark" className="h-4 w-4 rounded" />
                     </div>
                     <span className="text-xs text-amber-600 dark:text-amber-400 font-medium">DotSpark Active</span>
                   </div>
@@ -1221,7 +1221,7 @@ export default function LandingPage() {
         <div className="container mx-auto px-4 md:px-6">
           <div className="flex flex-col md:flex-row justify-between items-center w-full">
             <div className="flex items-center mb-4 md:mb-0">
-              <img src="/dotspark-logo-wordmark.png" alt="DotSpark" className="h-8 w-auto rounded-sm" />
+              <img src="/dotspark-logo-wordmark.png?v=2" alt="DotSpark" className="h-8 w-auto rounded-sm" />
             </div>
             
             <div className="text-xs md:text-sm text-muted-foreground">

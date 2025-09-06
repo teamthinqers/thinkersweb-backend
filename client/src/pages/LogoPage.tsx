@@ -29,12 +29,12 @@ export default function LogoPage() {
         
         <div className="flex flex-col items-center gap-4 border p-6 rounded-lg">
           <div className="w-40 h-40 flex items-center justify-center bg-gray-900 rounded-lg border">
-            <img src="/dotspark-logo-wordmark.png" alt="DotSpark Logo" className="w-full h-full object-contain rounded-lg" />
+            <img src="/dotspark-logo-wordmark.png?v=2" alt="DotSpark Logo" className="w-full h-full object-contain rounded-lg" />
           </div>
           <h2 className="text-xl font-bold">Logo - Dark Background</h2>
           <p className="text-muted-foreground text-center text-sm">DotSpark logo for dark backgrounds</p>
           <Button asChild>
-            <a href="/dotspark-logo-wordmark.png" download="dotspark-logo-wordmark.png">Download JPG</a>
+            <a href="/dotspark-logo-wordmark.png?v=2" download="dotspark-logo-wordmark.png?v=2">Download JPG</a>
           </Button>
         </div>
         

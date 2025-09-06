@@ -449,7 +449,7 @@ export default function ChatPage() {
           <div className={`${isMobile ? 'p-4' : 'p-6'} border-b border-amber-200/30 dark:border-amber-700/30 bg-gradient-to-r from-amber-50/50 to-orange-50/50 dark:from-amber-950/30 dark:to-orange-950/30`}>
             <div className={`flex items-center ${isMobile ? 'gap-2' : 'gap-3'}`}>
               <img 
-                src="/dotspark-logo-icon.png" 
+                src="/dotspark-logo-icon.png?v=2" 
                 alt="DotSpark" 
                 className={`${isMobile ? 'w-8 h-8' : 'w-10 h-10'} rounded-full`}
               />
@@ -486,7 +486,7 @@ export default function ChatPage() {
               <Link href="/my-neura">
                 <Button variant="ghost" className="w-full justify-start text-sm h-10 hover:bg-gradient-to-r hover:from-amber-50 hover:to-orange-50 dark:hover:from-amber-950/20 dark:hover:to-orange-950/20 hover:text-amber-700 dark:hover:text-amber-300 rounded-xl transition-all duration-300">
                   <img 
-                    src="/dotspark-logo-icon.png" 
+                    src="/dotspark-logo-icon.png?v=2" 
                     alt="DotSpark" 
                     className="w-4 h-4 mr-3 rounded-sm"
                   />
@@ -566,7 +566,7 @@ export default function ChatPage() {
           {/* Brand Logo at Top */}
           <div className={`${isMobile ? 'mb-4' : 'mb-6'}`}>
             <img 
-              src="/dotspark-logo-icon.png" 
+              src="/dotspark-logo-icon.png?v=2" 
               alt="DotSpark" 
               className={`${isMobile ? 'w-6 h-6' : 'w-8 h-8'} rounded-full`}
             />
@@ -602,7 +602,7 @@ export default function ChatPage() {
             <Link href="/my-neura" title="My DotSpark">
               <Button variant="ghost" size="icon" className="h-10 w-10 hover:bg-gradient-to-r hover:from-amber-50 hover:to-orange-50 dark:hover:from-amber-950/20 dark:hover:to-orange-950/20 hover:text-amber-700 dark:hover:text-amber-300 rounded-xl transition-all duration-300">
                 <img 
-                  src="/dotspark-logo-icon.png" 
+                  src="/dotspark-logo-icon.png?v=2" 
                   alt="DotSpark" 
                   className="w-4 h-4 rounded-sm"
                 />
@@ -1065,7 +1065,7 @@ export default function ChatPage() {
                       </div>
                       <div className="text-xs text-gray-500 mt-1 px-2 flex items-center gap-1">
                         {!message.isUser && (
-                          <img src="/dotspark-logo-icon.png" alt="DS" className="w-3 h-3 rounded-full" />
+                          <img src="/dotspark-logo-icon.png?v=2" alt="DS" className="w-3 h-3 rounded-full" />
                         )}
                         {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       </div>
