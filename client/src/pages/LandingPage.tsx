@@ -326,10 +326,7 @@ export default function LandingPage() {
               className="flex items-center px-6 py-4 rounded-xl hover:bg-gradient-to-r hover:from-amber-100/60 hover:to-orange-100/60 dark:hover:from-amber-900/40 dark:hover:to-orange-900/40 cursor-pointer transition-all duration-300 ease-in-out hover:shadow-lg hover:scale-105 group" 
               onClick={() => setLocation("/about")}
             >
-              <div className="flex items-center gap-3">
-                <img src="/dotspark-logo-icon.png?v=2" alt="DotSpark" className="h-12 w-12 object-contain rounded transition-all duration-300" />
-                <img src="/dotspark-logo-wordmark.png?v=2" alt="DotSpark" className="h-8 w-auto object-contain transition-all duration-300" />
-              </div>
+              <img src="/dotspark-logo-combined.png?v=1" alt="DotSpark" className="h-12 w-auto object-contain rounded transition-all duration-300" />
             </div>
           </div>
           
@@ -642,7 +639,7 @@ export default function LandingPage() {
             {/* Centered badge */}
             <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-sm text-primary mb-1">
               <img src="/dotspark-logo-icon.png?v=2" alt="DotSpark" className="h-6 w-6 rounded" />
-              <img src="/dotspark-logo-wordmark.png?v=2" alt="DotSpark" className="h-4 w-auto object-contain" />
+              <span className="text-xs">Introducing DotSpark</span>
             </div>
             
             {/* Heading - Mobile brought down */}

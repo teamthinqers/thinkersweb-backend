@@ -104,8 +104,7 @@ export default function AboutPage() {
           </Link>
           
           <Link href="/about" className="flex items-center gap-3 hover:scale-105 transition-all duration-300 cursor-pointer group">
-            <img src="/dotspark-logo-icon.png?v=2" alt="DotSpark" className="h-12 w-12 rounded-full transition-all duration-300" />
-            <img src="/dotspark-logo-wordmark.png?v=2" alt="DotSpark" className="h-8 w-auto object-contain" />
+            <img src="/dotspark-logo-combined.png?v=1" alt="DotSpark" className="h-12 w-auto object-contain rounded transition-all duration-300" />
           </Link>
           
           <div className="w-24"></div> {/* Spacer for centering */}

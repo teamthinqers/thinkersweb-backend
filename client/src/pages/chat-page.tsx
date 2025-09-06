@@ -449,11 +449,10 @@ export default function ChatPage() {
           <div className={`${isMobile ? 'p-4' : 'p-6'} border-b border-amber-200/30 dark:border-amber-700/30 bg-gradient-to-r from-amber-50/50 to-orange-50/50 dark:from-amber-950/30 dark:to-orange-950/30`}>
             <div className={`flex items-center ${isMobile ? 'gap-2' : 'gap-3'}`}>
               <img 
-                src="/dotspark-logo-icon.png?v=2" 
+                src="/dotspark-logo-combined.png?v=1" 
                 alt="DotSpark" 
-                className={`${isMobile ? 'w-8 h-8' : 'w-10 h-10'} rounded-full`}
+                className={`${isMobile ? 'h-5' : 'h-6'} w-auto object-contain rounded`}
               />
-              <h2 className={`${isMobile ? 'text-lg' : 'text-xl'} font-bold text-amber-700 dark:text-amber-400 tracking-tight`}>DotSpark</h2>
             </div>
           </div>
           

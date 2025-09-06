@@ -299,11 +299,10 @@ export default function ChatPage() {
           <div className="p-4 border-b border-gray-200 dark:border-gray-700">
             <div className="flex items-center gap-3">
               <img 
-                src="/dotspark-logo-icon.png?v=2" 
+                src="/dotspark-logo-combined.png?v=1" 
                 alt="DotSpark" 
-                className="w-8 h-8 rounded-full"
+                className="h-6 w-auto object-contain rounded"
               />
-              <h2 className="font-semibold bg-gradient-to-r from-amber-700 to-amber-600 bg-clip-text text-transparent">DotSpark</h2>
             </div>
           </div>
           
