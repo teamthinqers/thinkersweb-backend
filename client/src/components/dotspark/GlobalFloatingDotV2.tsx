@@ -375,7 +375,7 @@ function GlobalFloatingDotV2() {
                 )} 
                 style={{ 
                   animationDelay: isDragging ? '0s' : '0.3s',
-                  filter: 'drop-shadow(0 0 6px rgba(255, 255, 255, 0.9)) drop-shadow(0 0 12px rgba(255, 215, 0, 0.4))'
+                  filter: 'drop-shadow(0 0 4px rgba(255, 255, 255, 1)) drop-shadow(0 0 8px rgba(255, 255, 255, 0.8)) drop-shadow(0 0 16px rgba(255, 255, 255, 0.6))'
                 }} 
               />
               {/* Brand-aligned sparking effects that highlight the logo's spark element */}
