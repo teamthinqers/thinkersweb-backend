@@ -335,15 +335,6 @@ function GlobalFloatingDotV2() {
           className="relative cursor-move"
           onMouseDown={handleMouseDown}
         >
-          {/* Brand-aligned pulsing rings that enhance the logo's dot concept */}
-          {!isDragging && (
-            <>
-              <div className="absolute inset-0 w-14 h-14 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 opacity-25 animate-ping pointer-events-none"></div>
-              <div className="absolute inset-1 w-12 h-12 rounded-full bg-gradient-to-r from-orange-400 to-red-500 opacity-35 animate-ping pointer-events-none" style={{ animationDelay: '0.4s' }}></div>
-              <div className="absolute inset-2 w-10 h-10 rounded-full bg-gradient-to-r from-yellow-400 to-amber-500 opacity-45 animate-ping pointer-events-none" style={{ animationDelay: '0.8s' }}></div>
-              <div className="absolute inset-3 w-8 h-8 rounded-full bg-gradient-to-r from-amber-300 to-orange-400 opacity-55 animate-ping pointer-events-none" style={{ animationDelay: '1.2s' }}></div>
-            </>
-          )}
           
           {/* DotSpark logo as the floating dot itself - slightly larger size */}
           <Button
@@ -365,63 +356,13 @@ function GlobalFloatingDotV2() {
               alt="DotSpark" 
               className={cn(
                 "w-14 h-14 transition-all duration-300",
-                isDragging ? "" : "animate-pulse drop-shadow-lg",
+                isDragging ? "animate-spin" : "",
                 isSpinning ? "animate-spin" : ""
               )} 
               style={{ 
-                animationDelay: isDragging ? '0s' : '0.3s',
-                filter: 'drop-shadow(0 0 4px rgba(255, 255, 255, 1)) drop-shadow(0 0 8px rgba(255, 255, 255, 0.8)) drop-shadow(0 0 16px rgba(255, 255, 255, 0.6))'
+                animationDuration: isDragging ? '0.8s' : '1s'
               }}
             />
-            
-            {/* Brand-aligned sparking effects that highlight the logo's spark element */}
-            {!isDragging && (
-              <>
-                <div className="absolute inset-0 w-14 h-14 animate-ping opacity-30" style={{ animationDelay: '0.2s' }}>
-                  <div className="w-full h-full rounded-full bg-gradient-to-r from-white to-yellow-200 opacity-80"></div>
-                </div>
-                <div className="absolute inset-0 w-14 h-14 animate-ping opacity-25" style={{ animationDelay: '0.7s' }}>
-                  <div className="w-full h-full rounded-full bg-gradient-to-r from-amber-300 to-orange-400 opacity-90"></div>
-                </div>
-              </>
-            )}
-            
-            
-            {/* Fast spinning wheel/chakra effect when dragging */}
-            {isDragging && (
-              <>
-                {/* Outer wheel with fast spinning spokes */}
-                <div className="absolute inset-0 w-14 h-14 rounded-full animate-spin" style={{ animationDuration: '0.6s' }}>
-                  <div className="w-full h-full rounded-full border-2 border-dashed border-amber-400 opacity-80"></div>
-                  {/* Wheel spokes - 8 energy points */}
-                  <div className="absolute top-0 left-1/2 w-1.5 h-1.5 bg-white rounded-full transform -translate-x-1/2 -translate-y-1.5 animate-pulse"></div>
-                  <div className="absolute top-1/4 right-0 w-1.5 h-1.5 bg-yellow-300 rounded-full transform translate-x-1.5 -translate-y-1/2 animate-pulse" style={{ animationDelay: '0.1s' }}></div>
-                  <div className="absolute right-0 top-1/2 w-1.5 h-1.5 bg-amber-300 rounded-full transform translate-x-1.5 -translate-y-1/2 animate-pulse" style={{ animationDelay: '0.2s' }}></div>
-                  <div className="absolute bottom-1/4 right-0 w-1.5 h-1.5 bg-orange-300 rounded-full transform translate-x-1.5 translate-y-1/2 animate-pulse" style={{ animationDelay: '0.3s' }}></div>
-                  <div className="absolute bottom-0 left-1/2 w-1.5 h-1.5 bg-red-300 rounded-full transform -translate-x-1/2 translate-y-1.5 animate-pulse" style={{ animationDelay: '0.4s' }}></div>
-                  <div className="absolute bottom-1/4 left-0 w-1.5 h-1.5 bg-orange-300 rounded-full transform -translate-x-1.5 translate-y-1/2 animate-pulse" style={{ animationDelay: '0.5s' }}></div>
-                  <div className="absolute left-0 top-1/2 w-1.5 h-1.5 bg-amber-300 rounded-full transform -translate-x-1.5 -translate-y-1/2 animate-pulse" style={{ animationDelay: '0.6s' }}></div>
-                  <div className="absolute top-1/4 left-0 w-1.5 h-1.5 bg-yellow-300 rounded-full transform -translate-x-1.5 -translate-y-1/2 animate-pulse" style={{ animationDelay: '0.7s' }}></div>
-                </div>
-                
-                {/* Middle wheel spinning super fast in reverse */}
-                <div className="absolute inset-2 w-10 h-10 rounded-full animate-spin" style={{ animationDirection: 'reverse', animationDuration: '0.4s' }}>
-                  <div className="w-full h-full rounded-full border border-dashed border-yellow-400 opacity-70"></div>
-                  {/* Inner energy points */}
-                  <div className="absolute top-0 left-1/2 w-1 h-1 bg-white rounded-full transform -translate-x-1/2 animate-pulse"></div>
-                  <div className="absolute right-0 top-1/2 w-1 h-1 bg-yellow-200 rounded-full transform -translate-y-1/2 animate-pulse" style={{ animationDelay: '0.15s' }}></div>
-                  <div className="absolute bottom-0 left-1/2 w-1 h-1 bg-amber-200 rounded-full transform -translate-x-1/2 animate-pulse" style={{ animationDelay: '0.3s' }}></div>
-                  <div className="absolute left-0 top-1/2 w-1 h-1 bg-orange-200 rounded-full transform -translate-y-1/2 animate-pulse" style={{ animationDelay: '0.45s' }}></div>
-                </div>
-                
-                {/* Core chakra with ultra fast spin */}
-                <div className="absolute inset-3 w-8 h-8 rounded-full animate-spin" style={{ animationDuration: '0.2s' }}>
-                  <div className="w-full h-full rounded-full bg-gradient-to-r from-white via-yellow-100 to-amber-100 opacity-30"></div>
-                  <div className="absolute top-1 left-1/2 w-0.5 h-0.5 bg-white rounded-full transform -translate-x-1/2"></div>
-                  <div className="absolute bottom-1 left-1/2 w-0.5 h-0.5 bg-amber-300 rounded-full transform -translate-x-1/2"></div>
-                </div>
-              </>
-            )}
           </Button>
           
         </div>
