@@ -391,7 +391,7 @@ export default function AuthPage() {
             <div className="text-center">
               <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-2 text-sm text-primary mb-4">
                 <img src="/dotspark-logo-icon.png?v=2" alt="DotSpark" className="h-6 w-6 rounded" />
-                <span>Introducing DotSpark</span>
+                <span><img src="/dotspark-logo-wordmark.png?v=2" alt="DotSpark" className="h-4 w-auto object-contain" /></span>
               </div>
               
               <div className="text-2xl md:text-3xl font-bold tracking-tight mb-4">
@@ -409,7 +409,7 @@ export default function AuthPage() {
             {/* 3-Step Process */}
             <div className="space-y-6">
               <h2 className="text-xl font-bold text-center">
-                Setup <span className="bg-clip-text text-transparent bg-gradient-to-r from-amber-600 to-orange-600">DotSpark</span> in 3 Simple Steps
+                Setup <span className="bg-clip-text text-transparent bg-gradient-to-r from-amber-600 to-orange-600"><img src="/dotspark-logo-wordmark.png?v=2" alt="DotSpark" className="h-6 w-auto object-contain" /></span> in 3 Simple Steps
               </h2>
               
               <div className="space-y-4">

@@ -64,7 +64,7 @@ export function CompactWhatsAppButton({ className = "" }: CompactWhatsAppButtonP
       className={`rounded-full bg-[#25D366] hover:bg-[#128C7E] text-white shadow-md hover:shadow-lg transition-all duration-300 ${className}`}
     >
       <MessageCircle className="h-5 w-5 mr-2" />
-      <span>Ask DotSpark</span>
+      <span>Ask <img src="/dotspark-logo-wordmark.png?v=2" alt="DotSpark" className="h-6 w-auto object-contain" /></span>
     </Button>
   );
 }

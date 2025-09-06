@@ -26,7 +26,7 @@ export function DotSparkSummary() {
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2">
             <img src="/dotspark-logo-icon.png?v=2" alt="DotSpark" className="h-5 w-5 object-contain rounded" />
-            <span>DotSpark</span>
+            <span><img src="/dotspark-logo-wordmark.png?v=2" alt="DotSpark" className="h-6 w-auto object-contain" /></span>
           </CardTitle>
           <CardDescription>Loading DotSpark data...</CardDescription>
         </CardHeader>
@@ -43,7 +43,7 @@ export function DotSparkSummary() {
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2 text-red-700 dark:text-red-400">
             <img src="/dotspark-logo-icon.png?v=2" alt="DotSpark" className="h-5 w-5 object-contain rounded opacity-60" />
-            <span>DotSpark</span>
+            <span><img src="/dotspark-logo-wordmark.png?v=2" alt="DotSpark" className="h-6 w-auto object-contain" /></span>
           </CardTitle>
           <CardDescription>Unable to load DotSpark data</CardDescription>
         </CardHeader>
@@ -73,7 +73,7 @@ export function DotSparkSummary() {
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">
             <img src="/dotspark-logo-icon.png?v=2" alt="DotSpark" className="h-5 w-5 object-contain rounded" />
-            <span>DotSpark</span>
+            <span><img src="/dotspark-logo-wordmark.png?v=2" alt="DotSpark" className="h-6 w-auto object-contain" /></span>
           </CardTitle>
           <Badge className="bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-200 hover:bg-amber-200 dark:hover:bg-amber-800/50">
             Level {level}

@@ -344,7 +344,7 @@ export default function LandingPage() {
               >
                 <div className="flex items-center gap-2">
                   <img src="/dotspark-logo-icon.png?v=2" alt="DotSpark" className="h-4 w-4 object-contain rounded ring-1 ring-white/30" />
-                  <span className="text-sm font-medium">My DotSpark</span>
+                  <span className="text-sm font-medium">My <img src="/dotspark-logo-wordmark.png?v=2" alt="DotSpark" className="h-6 w-auto object-contain" /></span>
                 </div>
               </Button>
               {/* Enhanced Neura button */}
@@ -540,7 +540,7 @@ export default function LandingPage() {
                       <SheetClose asChild>
                         <div onClick={() => setLocation("/my-neura")} className="py-3 px-4 hover:bg-amber-100/70 dark:hover:bg-amber-900/30 transition-all duration-300 flex items-center gap-3 rounded-xl font-medium cursor-pointer">
                           <img src="/dotspark-logo-icon.png?v=2" alt="DotSpark" className="h-5 w-5 rounded-full object-cover flex-shrink-0" />
-                          <span className="text-gray-800 dark:text-gray-200">My DotSpark</span>
+                          <span className="text-gray-800 dark:text-gray-200">My <img src="/dotspark-logo-wordmark.png?v=2" alt="DotSpark" className="h-6 w-auto object-contain" /></span>
                         </div>
                       </SheetClose>
                       
@@ -639,7 +639,7 @@ export default function LandingPage() {
             {/* Centered badge */}
             <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-sm text-primary mb-1">
               <img src="/dotspark-logo-icon.png?v=2" alt="DotSpark" className="h-6 w-6 rounded" />
-              <span className="text-xs">Introducing DotSpark</span>
+              <span className="text-xs"><img src="/dotspark-logo-wordmark.png?v=2" alt="DotSpark" className="h-4 w-auto object-contain" /></span>
             </div>
             
             {/* Heading - Mobile brought down */}
@@ -710,7 +710,7 @@ export default function LandingPage() {
                     <Button size="sm" asChild className="w-full mb-2 relative overflow-hidden bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-600 border-0 shadow-lg shadow-amber-600/20 hover:shadow-amber-700/30 transition-all duration-300 transform hover:scale-105 group">
                       <Link href="/sectioned-dotspark-tuning" className="flex items-center justify-center relative z-10">
                         <img src="/dotspark-logo-small.jpg" alt="DotSpark" className="mr-2 h-4 w-4 rounded-sm" />
-                        <span className="text-sm">Activate DotSpark</span>
+                        <span className="text-sm">Activate <img src="/dotspark-logo-wordmark.png?v=2" alt="DotSpark" className="h-6 w-auto object-contain" /></span>
                         <div className="absolute top-0 left-0 w-full h-full overflow-hidden">
                           <div className="h-4 w-4 absolute top-1/2 left-3 transform -translate-y-1/2 text-white opacity-80 animate-pulse" />
                         </div>
@@ -761,7 +761,7 @@ export default function LandingPage() {
         <div className="container mx-auto px-4 md:px-6">
           <div className="text-center mb-10">
             <h2 className="text-2xl md:text-3xl font-bold">
-              Setup <span className="bg-clip-text text-transparent bg-gradient-to-r from-amber-600 to-orange-600">DotSpark</span> in 3 Simple Steps
+              Setup <span className="bg-clip-text text-transparent bg-gradient-to-r from-amber-600 to-orange-600"><img src="/dotspark-logo-wordmark.png?v=2" alt="DotSpark" className="h-6 w-auto object-contain" /></span> in 3 Simple Steps
             </h2>
           </div>
           
@@ -892,7 +892,7 @@ export default function LandingPage() {
       <section className="py-24 relative overflow-hidden bg-gradient-to-b from-background to-muted/30">
         <div className="container mx-auto px-4 md:px-6">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-8">Why <span className="gradient-heading">DotSpark</span>?</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-8">Why <span className="gradient-heading"><img src="/dotspark-logo-wordmark.png?v=2" alt="DotSpark" className="h-6 w-auto object-contain" /></span>?</h2>
             
             <div className="max-w-4xl mx-auto space-y-8 text-lg leading-relaxed text-foreground">
               <p className="font-medium">
@@ -934,7 +934,7 @@ export default function LandingPage() {
       <section className="py-24 relative overflow-hidden bg-gradient-to-b from-muted/30 to-background">
         <div className="container mx-auto px-4 md:px-6">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-12">How <span className="gradient-heading">DotSpark</span> Works?</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-12">How <span className="gradient-heading"><img src="/dotspark-logo-wordmark.png?v=2" alt="DotSpark" className="h-6 w-auto object-contain" /></span> Works?</h2>
           </div>
           
           <div className="relative max-w-6xl mx-auto mb-16">

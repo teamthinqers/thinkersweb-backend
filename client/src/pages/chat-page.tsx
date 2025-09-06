@@ -490,7 +490,7 @@ export default function ChatPage() {
                     alt="DotSpark" 
                     className="w-4 h-4 mr-3 rounded-sm"
                   />
-                  <span className="font-medium">My DotSpark</span>
+                  <span className="font-medium">My <img src="/dotspark-logo-wordmark.png?v=2" alt="DotSpark" className="h-6 w-auto object-contain" /></span>
                 </Button>
               </Link>
               <Link href="/social">
@@ -502,7 +502,7 @@ export default function ChatPage() {
               <Link href="/about">
                 <Button variant="ghost" className="w-full justify-start text-sm h-10 hover:bg-gradient-to-r hover:from-amber-50 hover:to-orange-50 dark:hover:from-amber-950/20 dark:hover:to-orange-950/20 hover:text-amber-700 dark:hover:text-amber-300 rounded-xl transition-all duration-300">
                   <Info className="w-4 h-4 mr-3" />
-                  <span className="font-medium">About DotSpark</span>
+                  <span className="font-medium">About <img src="/dotspark-logo-wordmark.png?v=2" alt="DotSpark" className="h-6 w-auto object-contain" /></span>
                 </Button>
               </Link>
 
