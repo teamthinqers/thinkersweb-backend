@@ -638,7 +638,7 @@ export default function LandingPage() {
           <div className="flex flex-col items-center max-w-3xl mx-auto">
             {/* Centered badge */}
             <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-sm text-primary mb-1">
-              <img src="/dotspark-logo-icon.png?v=2" alt="DotSpark" className="h-6 w-6 rounded" />
+              <img src="/dotspark-logo-icon.png?v=3" alt="DotSpark" className="h-6 w-6 rounded" />
               <span className="text-xs">Introducing DotSpark</span>
             </div>
             
