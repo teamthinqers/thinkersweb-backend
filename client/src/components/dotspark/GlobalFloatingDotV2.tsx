@@ -41,7 +41,13 @@ interface ChakraOption {
 function GlobalFloatingDotV2() {
   const [position, setPosition] = useState(() => {
     const saved = localStorage.getItem('global-floating-dot-v2-position');
-    return saved ? JSON.parse(saved) : { x: 20, y: 100 };
+    if (saved) {
+      return JSON.parse(saved);
+    }
+    // Default position: right side slightly above bottom
+    const defaultX = window.innerWidth - 80; // 80px from right edge
+    const defaultY = window.innerHeight - 120; // 120px from bottom
+    return { x: defaultX, y: defaultY };
   });
   
   const [isOpen, setIsOpen] = useState(false);
