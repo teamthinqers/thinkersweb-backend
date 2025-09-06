@@ -377,22 +377,34 @@ function GlobalFloatingDotV2() {
               </>
             )}
             
-            {/* Brand-aligned spark indicators that represent the "spark" concept */}
-            {!isDragging && (
-              <>
-                <div className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-gradient-to-r from-yellow-300 to-amber-400 animate-ping shadow-lg"></div>
-                <div className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-gradient-to-r from-white to-yellow-100 animate-pulse shadow-lg" style={{ animationDelay: '0.7s' }}></div>
-                <div className="absolute -bottom-1 -left-1 w-2 h-2 rounded-full bg-gradient-to-r from-orange-300 to-red-400 animate-ping opacity-80" style={{ animationDelay: '1.1s' }}></div>
-                <div className="absolute top-0 left-0 w-1 h-1 rounded-full bg-yellow-300 animate-pulse" style={{ animationDelay: '1.5s' }}></div>
-                <div className="absolute bottom-0 right-0 w-1 h-1 rounded-full bg-amber-300 animate-pulse" style={{ animationDelay: '2s' }}></div>
-              </>
-            )}
             
-            {/* Brand-aligned dragging state that maintains the spark theme */}
+            {/* Mystical chakra spinning effect when dragging */}
             {isDragging && (
               <>
-                <div className="absolute inset-0 w-16 h-16 rounded-full border-2 border-dashed border-amber-300 animate-spin"></div>
-                <div className="absolute inset-1 w-14 h-14 rounded-full border border-dashed border-yellow-300 animate-spin" style={{ animationDirection: 'reverse' }}></div>
+                {/* Outer chakra ring with spiritual energy pattern */}
+                <div className="absolute inset-0 w-16 h-16 rounded-full animate-spin" style={{ animationDuration: '2s' }}>
+                  <div className="w-full h-full rounded-full border-2 border-dashed border-gradient-to-r from-amber-300 via-orange-400 to-yellow-300 opacity-70"></div>
+                  {/* Chakra energy points around the circle */}
+                  <div className="absolute top-0 left-1/2 w-1 h-1 bg-white rounded-full transform -translate-x-1/2 -translate-y-1"></div>
+                  <div className="absolute top-1/4 right-0 w-1 h-1 bg-yellow-300 rounded-full transform translate-x-1"></div>
+                  <div className="absolute bottom-1/4 right-0 w-1 h-1 bg-amber-300 rounded-full transform translate-x-1"></div>
+                  <div className="absolute bottom-0 left-1/2 w-1 h-1 bg-orange-300 rounded-full transform -translate-x-1/2 translate-y-1"></div>
+                  <div className="absolute bottom-1/4 left-0 w-1 h-1 bg-amber-300 rounded-full transform -translate-x-1"></div>
+                  <div className="absolute top-1/4 left-0 w-1 h-1 bg-yellow-300 rounded-full transform -translate-x-1"></div>
+                </div>
+                
+                {/* Inner chakra ring spinning in reverse with faster speed */}
+                <div className="absolute inset-2 w-12 h-12 rounded-full animate-spin" style={{ animationDirection: 'reverse', animationDuration: '1.5s' }}>
+                  <div className="w-full h-full rounded-full border border-dashed border-gradient-to-r from-yellow-200 via-amber-300 to-orange-200 opacity-60"></div>
+                  {/* Inner energy sparks */}
+                  <div className="absolute top-0 left-1/2 w-0.5 h-0.5 bg-white rounded-full transform -translate-x-1/2"></div>
+                  <div className="absolute right-0 top-1/2 w-0.5 h-0.5 bg-yellow-200 rounded-full transform -translate-y-1/2"></div>
+                  <div className="absolute bottom-0 left-1/2 w-0.5 h-0.5 bg-amber-200 rounded-full transform -translate-x-1/2"></div>
+                  <div className="absolute left-0 top-1/2 w-0.5 h-0.5 bg-orange-200 rounded-full transform -translate-y-1/2"></div>
+                </div>
+                
+                {/* Core chakra glow effect */}
+                <div className="absolute inset-4 w-8 h-8 rounded-full bg-gradient-to-r from-white via-yellow-100 to-amber-100 opacity-20 animate-pulse" style={{ animationDuration: '1s' }}></div>
               </>
             )}
           </div>
