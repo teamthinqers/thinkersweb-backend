@@ -582,17 +582,7 @@ export function useGridData(includeRealTime = true) {
   const dedupedWheels = uniqueById(rawWheels);
   const dedupedChakras = uniqueById(rawChakras);
   
-  // Debug logging to identify duplicate sources
-  console.log('🔍 Grid V2 Data Debug:', {
-    rawWheels: rawWheels.map(w => ({ id: w.id, heading: w.heading })),
-    dedupedWheels: dedupedWheels.map(w => ({ id: w.id, heading: w.heading })),
-    rawChakras: rawChakras.map(c => ({ id: c.id, heading: c.heading })),
-    dedupedChakras: dedupedChakras.map(c => ({ id: c.id, heading: c.heading })),
-    duplicatesFound: {
-      wheels: rawWheels.length !== dedupedWheels.length,
-      chakras: rawChakras.length !== dedupedChakras.length
-    }
-  });
+  // Debug logging removed - duplicates fixed
 
   return {
     dots: dedupedDots,
