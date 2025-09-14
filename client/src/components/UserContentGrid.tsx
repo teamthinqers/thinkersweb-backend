@@ -119,9 +119,11 @@ export const UserContentGrid: React.FC<UserContentGridProps> = ({
   }
 
   // If user has content, show their actual grid using UserMapGrid directly with deduplicated data
-  // Separate chakras from wheels
+  // Separate chakras from wheels correctly: 
+  // - chakras are wheels WITHOUT a chakraId (they are top-level)
+  // - wheels are wheels WITH a chakraId (they belong to a chakra, but exclude 'standalone' sentinel)
   const chakras = userWheels.filter(w => !w.chakraId);
-  const wheels = userWheels.filter(w => w.chakraId);
+  const wheels = userWheels.filter(w => w.chakraId && w.chakraId !== 'standalone');
 
   return (
     <div className="relative bg-gradient-to-br from-amber-50/50 to-orange-50/50 rounded-xl p-4 min-h-[500px] border-2 border-amber-200 shadow-lg overflow-hidden">
@@ -134,7 +136,7 @@ export const UserContentGrid: React.FC<UserContentGridProps> = ({
       <UserGrid 
         userId={user?.id} 
         mode="real"
-        availableWheels={userWheels}
+        availableWheels={wheels}
         availableChakras={chakras}
       />
     </div>

@@ -1965,6 +1965,10 @@ const UserGrid: React.FC<UserGridProps> = ({
     staleTime: 30000
   });
 
+  // Determine if we should fetch data (only when props are empty)
+  const shouldFetchWheels = mode === 'real' && !!userId && availableWheels.length === 0;
+  const shouldFetchChakras = mode === 'real' && !!userId && availableChakras.length === 0;
+
   // Fetch user wheels only if not provided as props
   const { data: fetchedWheels = [], isLoading: wheelsLoading } = useQuery({
     queryKey: ['/api/user-content/wheels'],
@@ -1989,7 +1993,7 @@ const UserGrid: React.FC<UserGridProps> = ({
         return [];
       }
     },
-    enabled: mode === 'real' && !!userId && availableWheels.length === 0,
+    enabled: shouldFetchWheels,
     retry: 3,
     staleTime: 30000
   });
@@ -2018,14 +2022,18 @@ const UserGrid: React.FC<UserGridProps> = ({
         return [];
       }
     },
-    enabled: mode === 'real' && !!userId && availableChakras.length === 0,
+    enabled: shouldFetchChakras,
     retry: 3,
     staleTime: 30000
   });
 
-  // Use props if provided, otherwise use fetched data
-  const userWheels = availableWheels.length > 0 ? availableWheels : fetchedWheels;
-  const userChakras = availableChakras.length > 0 ? availableChakras : fetchedChakras;
+  // Use effective variables to avoid name collisions - use props when available, otherwise use fetched data
+  const effectiveWheels = availableWheels.length > 0 ? availableWheels : fetchedWheels;
+  const effectiveChakras = availableChakras.length > 0 ? availableChakras : fetchedChakras;
+  
+  // Debug logging to verify deduplication
+  console.log('UserGrid debug - effective wheels:', effectiveWheels.map(w => `${w.id}-${w.name || w.heading}`));
+  console.log('UserGrid debug - effective chakras:', effectiveChakras.map(c => `${c.id}-${c.name || c.heading}`));
 
   const isLoading = dotsLoading || wheelsLoading || chakrasLoading;
 
@@ -2054,15 +2062,15 @@ const UserGrid: React.FC<UserGridProps> = ({
   if (showCreation) {
     return (
       <UserContentCreation
-        availableWheels={userWheels}
-        availableChakras={userChakras}
+        availableWheels={effectiveWheels}
+        availableChakras={effectiveChakras}
         onSuccess={() => setShowCreation(false)}
       />
     );
   }
 
-  const regularWheels = Array.isArray(userWheels) ? userWheels : [];
-  const chakras = Array.isArray(userChakras) ? userChakras : [];
+  const regularWheels = Array.isArray(effectiveWheels) ? effectiveWheels : [];
+  const chakras = Array.isArray(effectiveChakras) ? effectiveChakras : [];
 
   return (
     <div className="space-y-6">
