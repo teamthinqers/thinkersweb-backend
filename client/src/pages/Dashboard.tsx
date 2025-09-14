@@ -268,26 +268,69 @@ const Dashboard: React.FC = () => {
     staleTime: 0 // No caching when filter is applied
   });
 
-  // Deduplicate wheels to prevent frontend display duplicates (safe fix for display issue)
+  // Fetch user chakras separately (chakras are stored in separate table)
+  const { data: userChakras = [], isLoading: chakrasLoading, refetch: refetchChakras } = useQuery({
+    queryKey: ['/api/user-content/chakras', previewMode],
+    queryFn: async () => {
+      try {
+        // If in preview mode, chakras are already included in the demo wheels data
+        if (previewMode) {
+          return []; // Demo data includes chakras in wheels already
+        }
+        
+        const response = await fetch('/api/user-content/chakras', {
+          credentials: 'include' // Include cookies for authentication
+        });
+        if (!response.ok) {
+          if (response.status === 401) {
+            console.log('⚠️ Chakras fetch: user not authenticated - returning empty results');
+            return [];
+          }
+          return [];
+        }
+        const data = await response.json();
+        console.log(`✅ Chakras fetched successfully: ${data.length} items`);
+        return data;
+      } catch (err) {
+        console.error('Error fetching chakras:', err);
+        return [];
+      }
+    },
+    enabled: !isLoading, // Fetch regardless of user state - backend will handle auth
+    retry: 3,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    staleTime: 0
+  });
+
+  // Combine wheels and chakras into single array, then deduplicate to prevent frontend display duplicates
+  const combinedWheelsAndChakras = useMemo(() => {
+    return [...userWheels, ...userChakras];
+  }, [userWheels, userChakras]);
+
+  // Deduplicate combined wheels and chakras to prevent frontend display duplicates (safe fix for display issue)
   const dedupedWheels = useMemo(() => {
-    if (!userWheels) return [];
+    if (!combinedWheelsAndChakras) return [];
     const map = new Map<string, Wheel>();
-    for (const w of userWheels) {
+    for (const w of combinedWheelsAndChakras) {
       map.set(w.id, w);
     }
     const result = Array.from(map.values());
     
     // Temporary logging to verify fix (remove after validation)
-    if (userWheels.length !== result.length) {
-      console.log(`🔧 Wheel deduplication: ${userWheels.length} raw -> ${result.length} unique`, {
-        raw: userWheels.length,
+    if (combinedWheelsAndChakras.length !== result.length) {
+      console.log(`🔧 Wheel+Chakra deduplication: ${combinedWheelsAndChakras.length} raw -> ${result.length} unique`, {
+        raw: combinedWheelsAndChakras.length,
         dedup: result.length,
-        ids: new Set(userWheels.map(w => w.id)).size
+        wheels: userWheels.length,
+        chakras: userChakras.length,
+        ids: new Set(combinedWheelsAndChakras.map(w => w.id)).size
       });
     }
     
     return result;
-  }, [userWheels]);
+  }, [combinedWheelsAndChakras, userWheels.length, userChakras.length]);
 
   // Counts are now inline for simplicity
 
@@ -1516,6 +1559,7 @@ const Dashboard: React.FC = () => {
       dotsCount: dots.length,
       previewMode,
       wheelsLoading,
+      chakrasLoading,
       gridLoading,
       recentFilterApplied,
       recentFilterType,
@@ -1590,7 +1634,7 @@ const Dashboard: React.FC = () => {
     }
     
     // Show empty state only if user is authenticated and has no data and not loading  
-    if (!previewMode && user && userWheels.length === 0 && dots.length === 0 && !dotsLoading && !wheelsLoading) {
+    if (!previewMode && user && dedupedWheels.length === 0 && dots.length === 0 && !dotsLoading && !wheelsLoading && !chakrasLoading) {
       return (
         <div className="relative bg-gradient-to-br from-amber-50/50 to-orange-50/50 rounded-xl p-4 min-h-[500px] border-2 border-amber-200 shadow-lg overflow-hidden">
           <div className="absolute top-2 left-2 md:top-4 md:left-4 z-10 flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-3">
