@@ -1,6 +1,6 @@
 import React from 'react';
 import { Brain, Plus, User } from 'lucide-react';
-import UserGrid from './UserGrid';
+import { UserGridV2 } from './UserGridV2';
 import { PreviewMapGrid } from './PreviewMapGrid';
 import { neuraStorage } from '@/lib/neuraStorage';
 // Using local interfaces that match Dashboard component types
@@ -118,13 +118,7 @@ export const UserContentGrid: React.FC<UserContentGridProps> = ({
     );
   }
 
-  // If user has content, show their actual grid using UserMapGrid directly with deduplicated data
-  // Separate chakras from wheels correctly: 
-  // - chakras are wheels WITHOUT a chakraId (they are top-level)
-  // - wheels are wheels WITH a chakraId (they belong to a chakra, but exclude 'standalone' sentinel)
-  const chakras = userWheels.filter(w => !w.chakraId);
-  const wheels = userWheels.filter(w => w.chakraId && w.chakraId !== 'standalone');
-
+  // Use Grid V2 system that fixes the data corruption and duplicate bugs
   return (
     <div className="relative bg-gradient-to-br from-amber-50/50 to-orange-50/50 rounded-xl p-4 min-h-[500px] border-2 border-amber-200 shadow-lg overflow-hidden">
       <div className="absolute top-2 left-2 md:top-4 md:left-4 z-10">
@@ -133,11 +127,11 @@ export const UserContentGrid: React.FC<UserContentGridProps> = ({
         </span>
       </div>
       
-      <UserGrid 
-        userId={user?.id} 
-        mode="real"
-        availableWheels={wheels}
-        availableChakras={chakras}
+      <UserGridV2 
+        setViewFullWheel={setViewFullWheel}
+        setViewFlashCard={setViewFlashCard}
+        setViewFullDot={setViewFullDot}
+        className="w-full h-full"
       />
     </div>
   );

@@ -11,7 +11,7 @@ import DotFullView from "@/components/DotFullView";
 import DotFlashCard from "@/components/DotFlashCard";
 import WheelFlashCard from "@/components/WheelFlashCard";
 import WheelFullView from "@/components/WheelFullView";
-import UserGrid from "@/components/UserGrid";
+import { UserGridV2 } from "@/components/UserGridV2";
 import { UserContentGrid } from "@/components/UserContentGrid";
 import { PreviewMapGrid } from "@/components/PreviewMapGrid";
 
