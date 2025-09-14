@@ -289,7 +289,7 @@ async function saveChakra(userId: number, data: UserConfirmation['data']) {
     positionY: Math.floor(Math.random() * 400) + 100,
   };
 
-  const [newChakra] = await db.insert(chakras).values(chakraData).returning();
+  const [newChakra] = await db.insert(wheels).values(chakraData).returning();
   return newChakra;
 }
 
