@@ -589,7 +589,17 @@ router.get('/wheels', ensureAuthenticated, async (req, res) => {
       });
       
       console.log(`🕉️ Found ${associatedWheels.length} wheels associated with selected chakras`);
-      userWheels = [...userWheels, ...associatedWheels];
+      
+      // Merge and deduplicate wheels by ID to prevent duplicates
+      const allWheels = [...userWheels, ...associatedWheels];
+      const uniqueWheelsMap = new Map();
+      
+      allWheels.forEach(wheel => {
+        uniqueWheelsMap.set(wheel.id, wheel);
+      });
+      
+      userWheels = Array.from(uniqueWheelsMap.values());
+      console.log(`🔧 Deduplicated result: ${allWheels.length} total -> ${userWheels.length} unique wheels`);
     }
     
     console.log(`📊 Found ${userWheels.length} wheels for user ${userId}`);
