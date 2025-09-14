@@ -121,13 +121,9 @@ export const UserContentGrid: React.FC<UserContentGridProps> = ({
   // If user has content, show their actual grid
   return (
     <UserGrid 
-      setViewFullWheel={setViewFullWheel}
-      setViewFlashCard={setViewFlashCard}
-      setViewFullDot={setViewFullDot}
-      dots={dots}
-      wheels={userWheels}
-      chakras={[]} // Empty array for now as we don't have chakras data
-      isLoading={false}
+      userId={user?.id} 
+      mode="real"
+      isDemoMode={false}
     />
   );
 };
