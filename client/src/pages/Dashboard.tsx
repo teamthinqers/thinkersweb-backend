@@ -78,6 +78,8 @@ const Dashboard: React.FC = () => {
   } catch (error) {
     console.warn('Authentication hook error, using default values:', error);
   }
+
+  // State declarations - must come before canFetch computation
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedWheel, setSelectedWheel] = useState<string | null>(null);
   const [viewFullDot, setViewFullDot] = useState<FrontendDot | null>(null);
@@ -87,18 +89,36 @@ const Dashboard: React.FC = () => {
   const [recentDotsCount, setRecentDotsCount] = useState(4);
   const [recentFilterType, setRecentFilterType] = useState<'dot' | 'wheel' | 'chakra'>('dot');
   const [recentFilterApplied, setRecentFilterApplied] = useState(false);
-  // Removed unused showPreview state - using previewMode instead
   const [isMapFullscreen, setIsMapFullscreen] = useState(false);
   const [viewMode, setViewMode] = useState<'grid' | 'map'>('grid'); // Add view mode toggle
   const [previewMode, setPreviewMode] = useState(false); // Start with real mode by default
+
+  // Single authentication guard to fix duplicate enabled options
+  const canFetch = (previewMode || !!user) && !isLoading;
+
+  // Early return while auth is loading to prevent mounting queries during auth initialization
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50 flex items-center justify-center">
+        <div className="bg-white/90 backdrop-blur-sm border-2 border-amber-200 rounded-2xl shadow-lg p-8 max-w-md text-center">
+          <div className="animate-spin w-12 h-12 border-4 border-amber-200 border-t-amber-600 rounded-full mx-auto mb-4"></div>
+          <h2 className="text-xl font-semibold text-amber-800 mb-2">Loading Dashboard</h2>
+          <p className="text-gray-600">Checking your authentication...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Create stable user ID for consistent typing
+  const stableUserId = user ? String(user.uid || user.id) : null;
   
   // PWA detection for smaller button sizing
   const isPWA = isRunningAsStandalone();
 
   // Fetch optimized grid positions from new API
   const { data: gridData, isLoading: gridLoading, refetch: refetchGrid } = useQuery({
-    queryKey: ['/api/grid/positions', { preview: previewMode }, user?.id || 'anonymous'],
-    enabled: !!user || previewMode, // Only fetch when authenticated or in preview mode
+    queryKey: ['/api/grid/positions', { preview: previewMode }, stableUserId || 'anonymous'],
+    enabled: canFetch,
     queryFn: async () => {
       try {
         // If in preview mode, use static demo positioning data
@@ -141,7 +161,6 @@ const Dashboard: React.FC = () => {
     staleTime: 30000, // Cache for 30 seconds
     refetchOnWindowFocus: false,
     refetchOnMount: false, // Don't refetch if we have cached data
-    enabled: !isLoading, // Fetch regardless of user state - backend will handle auth
     refetchInterval: false, // Disable automatic refetching
     gcTime: 2 * 60 * 1000 // Keep data in cache for 2 minutes
   });
@@ -149,7 +168,7 @@ const Dashboard: React.FC = () => {
   // Enhanced dots fetching with backend session fallback
   const { data: dots = [], isLoading: dotsLoading, refetch } = useQuery({
     queryKey: ['/api/user-content/dots', 'enhanced', previewMode, recentFilterApplied, recentFilterType, recentDotsCount],
-    enabled: !!user || previewMode, // Only fetch when authenticated or in preview mode
+    enabled: canFetch,
     queryFn: async () => {
       try {
         console.log('🔍 Fetching user dots with backend session fallback');
@@ -214,7 +233,6 @@ const Dashboard: React.FC = () => {
         return [];
       }
     },
-    enabled: true, // Always try to fetch - backend will handle auth
     retry: (failureCount, error) => {
       // Retry up to 2 times, but not for auth failures
       if (failureCount >= 2) return false;
@@ -233,7 +251,7 @@ const Dashboard: React.FC = () => {
   // Fetch user wheels and chakras from the correct API endpoint
   const { data: userWheels = [], isLoading: wheelsLoading, refetch: refetchWheels } = useQuery({
     queryKey: ['/api/user-content/wheels', previewMode, recentFilterApplied, recentFilterType, recentDotsCount],
-    enabled: !!user || previewMode, // Only fetch when authenticated or in preview mode
+    enabled: canFetch,
     queryFn: async () => {
       try {
         // If in preview mode, use static demo data
@@ -275,7 +293,6 @@ const Dashboard: React.FC = () => {
         return [];
       }
     },
-    enabled: !isLoading, // Fetch regardless of user state - backend will handle auth
     retry: 3, // Retry up to 3 times on failure
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff  
     refetchOnWindowFocus: false,
@@ -2850,6 +2867,7 @@ const Dashboard: React.FC = () => {
             // User Content Mode - shows user's actual content or empty state with creation prompts
             <UserContentGrid 
               user={user}
+              stableUserId={stableUserId}
               userWheels={userWheels}
               dots={dots}
               setViewFullWheel={setViewFullWheel}
