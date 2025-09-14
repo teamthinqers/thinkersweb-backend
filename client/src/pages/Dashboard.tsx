@@ -2813,8 +2813,37 @@ const Dashboard: React.FC = () => {
           
 
 
-          {/* Content based on view mode */}
-          {viewMode === 'grid' ? (
+          {/* Content based on view mode and authentication */}
+          {!user && !isLoading ? (
+            // Show sign-in prompt when not authenticated
+            <div className="flex flex-col items-center justify-center py-16 px-4">
+              <div className="bg-white/90 backdrop-blur-sm border-2 border-amber-200 rounded-2xl shadow-lg p-8 max-w-md text-center">
+                <User className="w-16 h-16 mx-auto mb-4 text-amber-600" />
+                <h2 className="text-2xl font-bold text-amber-800 mb-4">Sign In Required</h2>
+                <p className="text-gray-600 mb-6">
+                  Please sign in to access your personal dashboard and view your dots, wheels, and chakras.
+                </p>
+                <Button 
+                  onClick={() => setLocation('/auth')}
+                  className="w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg"
+                >
+                  Sign In to Continue
+                </Button>
+                <p className="text-sm text-gray-500 mt-4">
+                  New to DotSpark? Signing in will create your account automatically.
+                </p>
+              </div>
+            </div>
+          ) : isLoading ? (
+            // Show loading state while checking authentication
+            <div className="flex flex-col items-center justify-center py-16">
+              <div className="bg-white/90 backdrop-blur-sm border-2 border-amber-200 rounded-2xl shadow-lg p-8 max-w-md text-center">
+                <div className="animate-spin w-12 h-12 border-4 border-amber-200 border-t-amber-600 rounded-full mx-auto mb-4"></div>
+                <h2 className="text-xl font-semibold text-amber-800 mb-2">Loading Dashboard</h2>
+                <p className="text-gray-600">Checking your authentication...</p>
+              </div>
+            </div>
+          ) : viewMode === 'grid' ? (
             // User Content Mode - shows user's actual content or empty state with creation prompts
             <UserContentGrid 
               user={user}
