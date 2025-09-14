@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -458,7 +458,26 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
 
   // Use user data directly
   const displayDots = dots;
-  const displayWheels = wheels;
+  
+  // Deduplicate wheels by ID to prevent frontend rendering duplicates
+  const uniqueWheels = useMemo(() => {
+    if (!wheels || !Array.isArray(wheels)) return [];
+    const wheelMap = new Map();
+    wheels.forEach(wheel => {
+      if (wheel && wheel.id) {
+        // Normalize ID to string to handle number/string mismatches
+        const key = String(wheel.id);
+        wheelMap.set(key, wheel);
+      }
+    });
+    const deduped = Array.from(wheelMap.values());
+    if (wheels.length !== deduped.length) {
+      console.log(`🔧 UserGrid deduplication: ${wheels.length} wheels -> ${deduped.length} unique wheels`);
+    }
+    return deduped;
+  }, [wheels]);
+  
+  const displayWheels = uniqueWheels;
 
   // Extract dot drag collision detection logic to fix deployment syntax issues
   const handleDotDragEnd = (dot: any, finalX: number, finalY: number) => {
@@ -1081,7 +1100,7 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
             wheel.position = { x: wheelX, y: wheelY };
             
             return (
-              <div key={wheel.id} className="relative">
+              <div key={`wheel-${wheel.id}`} className="relative">
                 {/* Wheel circle */}
                 <div
                   className="absolute rounded-full border-2 border-dashed border-orange-400/60 bg-orange-50/30 cursor-move transition-all duration-200 hover:scale-105 hover:border-orange-500"
@@ -1529,7 +1548,7 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
           })}
 
           {/* Render wheels with improved distribution */}
-          {displayWheels.map((wheel: any, wheelIndex: number) => {
+          {displayWheels.map((wheel: any) => {
             const wheelDots = displayDots.filter((d: any) => d.wheelId == wheel.id || d.wheelId === String(wheel.id));
             const wheelRadius = getWheelSize('real', wheelDots.length, wheelDots);
             
@@ -1631,7 +1650,7 @@ const UserMapGrid: React.FC<UserMapGridProps> = ({
             wheel.position = { x: wheelX, y: wheelY };
             
             return (
-              <div key={wheel.id} className="relative">
+              <div key={`wheel-${wheel.id}`} className="relative">
                 {/* Wheel circle */}
                 <div
                   className="absolute rounded-full border-2 border-dashed border-orange-400/60 bg-orange-50/30 cursor-move transition-all duration-200 hover:scale-105 hover:border-orange-500"
