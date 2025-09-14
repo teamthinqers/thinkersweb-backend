@@ -118,11 +118,25 @@ export const UserContentGrid: React.FC<UserContentGridProps> = ({
     );
   }
 
-  // If user has content, show their actual grid
+  // If user has content, show their actual grid using UserMapGrid directly with deduplicated data
+  // Separate chakras from wheels
+  const chakras = userWheels.filter(w => !w.chakraId);
+  const wheels = userWheels.filter(w => w.chakraId);
+
   return (
-    <UserGrid 
-      userId={user?.id} 
-      mode="real"
-    />
+    <div className="relative bg-gradient-to-br from-amber-50/50 to-orange-50/50 rounded-xl p-4 min-h-[500px] border-2 border-amber-200 shadow-lg overflow-hidden">
+      <div className="absolute top-2 left-2 md:top-4 md:left-4 z-10">
+        <span className="bg-amber-100 text-amber-800 px-2 py-1 md:px-3 md:py-1 rounded-full text-xs md:text-sm font-medium">
+          User Mode
+        </span>
+      </div>
+      
+      <UserGrid 
+        userId={user?.id} 
+        mode="real"
+        availableWheels={userWheels}
+        availableChakras={chakras}
+      />
+    </div>
   );
 };
