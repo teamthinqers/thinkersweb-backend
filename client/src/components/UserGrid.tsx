@@ -1965,8 +1965,8 @@ const UserGrid: React.FC<UserGridProps> = ({
     staleTime: 30000
   });
 
-  // Fetch user wheels
-  const { data: userWheels = [], isLoading: wheelsLoading } = useQuery({
+  // Fetch user wheels only if not provided as props
+  const { data: fetchedWheels = [], isLoading: wheelsLoading } = useQuery({
     queryKey: ['/api/user-content/wheels'],
     queryFn: async () => {
       try {
@@ -1989,13 +1989,13 @@ const UserGrid: React.FC<UserGridProps> = ({
         return [];
       }
     },
-    enabled: mode === 'real' && !!userId,
+    enabled: mode === 'real' && !!userId && availableWheels.length === 0,
     retry: 3,
     staleTime: 30000
   });
 
-  // Fetch user chakras
-  const { data: userChakras = [], isLoading: chakrasLoading } = useQuery({
+  // Fetch user chakras only if not provided as props
+  const { data: fetchedChakras = [], isLoading: chakrasLoading } = useQuery({
     queryKey: ['/api/user-content/chakras'],
     queryFn: async () => {
       try {
@@ -2018,10 +2018,14 @@ const UserGrid: React.FC<UserGridProps> = ({
         return [];
       }
     },
-    enabled: mode === 'real' && !!userId,
+    enabled: mode === 'real' && !!userId && availableChakras.length === 0,
     retry: 3,
     staleTime: 30000
   });
+
+  // Use props if provided, otherwise use fetched data
+  const userWheels = availableWheels.length > 0 ? availableWheels : fetchedWheels;
+  const userChakras = availableChakras.length > 0 ? availableChakras : fetchedChakras;
 
   const isLoading = dotsLoading || wheelsLoading || chakrasLoading;
 
