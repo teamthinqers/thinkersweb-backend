@@ -21,8 +21,16 @@ import { useAuth } from "@/hooks/use-auth";
 import { PersistentActivationManager } from "@/lib/persistent-activation";
 
 
-// Import types from schema instead of duplicating
-import type { Dot, Wheel, Chakra } from '@shared/schema';
+// Import database types from schema
+import type { Dot as DbDot, Wheel as DbWheel, Chakra as DbChakra } from '@shared/schema';
+
+// Import frontend-compatible types and adapters
+import type { FrontendDot, FrontendWheel, FrontendChakra } from '@shared/type-adapters';
+import { 
+  adaptDotsToFrontend, 
+  adaptWheelsToFrontend, 
+  adaptChakrasToFrontend 
+} from '@shared/type-adapters';
 
 // Import static demo data for preview mode
 import { getDemoDataForPreview } from '@shared/demo-data';
@@ -72,9 +80,9 @@ const Dashboard: React.FC = () => {
   }
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedWheel, setSelectedWheel] = useState<string | null>(null);
-  const [viewFullDot, setViewFullDot] = useState<Dot | null>(null);
-  const [viewFlashCard, setViewFlashCard] = useState<Dot | null>(null);
-  const [viewFullWheel, setViewFullWheel] = useState<Wheel | null>(null);
+  const [viewFullDot, setViewFullDot] = useState<FrontendDot | null>(null);
+  const [viewFlashCard, setViewFlashCard] = useState<FrontendDot | null>(null);
+  const [viewFullWheel, setViewFullWheel] = useState<FrontendWheel | null>(null);
   const [showRecentFilter, setShowRecentFilter] = useState(false);
   const [recentDotsCount, setRecentDotsCount] = useState(4);
   const [recentFilterType, setRecentFilterType] = useState<'dot' | 'wheel' | 'chakra'>('dot');
@@ -150,7 +158,8 @@ const Dashboard: React.FC = () => {
         if (previewMode) {
           const demoData = getDemoDataForPreview();
           console.log('✅ Preview dots loaded from static demo data:', demoData.previewDots.length);
-          return demoData.previewDots;
+          // Convert demo data to frontend types
+          return adaptDotsToFrontend(demoData.previewDots as any);
         }
         
         // Build URL with filter parameters if filter is applied
@@ -177,11 +186,12 @@ const Dashboard: React.FC = () => {
         if (response.ok) {
           const data = await response.json();
           console.log('✅ Dots fetched successfully:', data.length, 'dots');
-          console.log('📝 Recent dots:', data.slice(0, 3).map(d => d.oneWordSummary));
+          console.log('📝 Recent dots:', data.slice(0, 3).map((d: DbDot) => d.oneWordSummary));
           if (recentFilterApplied) {
             console.log(`🎯 FILTER APPLIED: Expected ${recentDotsCount} ${recentFilterType}s, got ${data.length} results`);
           }
-          return data;
+          // Convert database types to frontend types
+          return adaptDotsToFrontend(data);
         } else if (response.status === 401) {
           console.log('🔒 Authentication required - filters cannot be applied without sign-in');
           
@@ -227,7 +237,8 @@ const Dashboard: React.FC = () => {
         if (previewMode) {
           const demoData = getDemoDataForPreview();
           console.log('✅ Preview wheels loaded from static demo data:', demoData.previewWheels.length);
-          return demoData.previewWheels;
+          // Convert demo data to frontend types
+          return adaptWheelsToFrontend(demoData.previewWheels as any);
         }
         
         let url = '/api/user-content/wheels';
@@ -254,7 +265,8 @@ const Dashboard: React.FC = () => {
         }
         const data = await response.json();
         console.log(`✅ Wheels fetched successfully: ${data.length} items`);
-        return data;
+        // Convert database types to frontend types - need to get dots for proper wheel/chakra setup
+        return adaptWheelsToFrontend(data);
       } catch (err) {
         console.error('Error fetching wheels:', err);
         return [];
@@ -271,7 +283,7 @@ const Dashboard: React.FC = () => {
   // Counts are now inline for simplicity
 
   // Example data for preview mode when no dots exist
-  const exampleDots: Dot[] = [
+  const exampleDots: FrontendDot[] = [
     {
       id: "example-1",
       oneWordSummary: "Microservices",
@@ -279,7 +291,9 @@ const Dashboard: React.FC = () => {
       anchor: "Discussed with senior architect about breaking down monolith, focusing on domain boundaries and data consistency challenges",
       pulse: "curious",
       wheelId: "example-wheel-1",
+      chakraId: null,
       timestamp: new Date(),
+      createdAt: new Date(),
       sourceType: 'text',
       captureMode: 'natural'
     },
@@ -290,7 +304,9 @@ const Dashboard: React.FC = () => {
       anchor: "Workshop by Kent C. Dodds, practiced compound components pattern with real examples from UI libraries",
       pulse: "focused",
       wheelId: "example-wheel-1",
+      chakraId: null,
       timestamp: new Date(),
+      createdAt: new Date(),
       sourceType: 'voice',
       captureMode: 'natural'
     },
@@ -300,8 +316,10 @@ const Dashboard: React.FC = () => {
       summary: "Started morning meditation routine, noticed improved focus and reduced anxiety levels",
       anchor: "Using Headspace app, 10-minute sessions before work, tracking mood changes and productivity correlations",
       pulse: "calm",
-      wheelId: "example-wheel-2", 
+      wheelId: "example-wheel-2",
+      chakraId: null,
       timestamp: new Date(),
+      createdAt: new Date(),
       sourceType: 'text',
       captureMode: 'ai'
     }
@@ -309,9 +327,9 @@ const Dashboard: React.FC = () => {
 
   // Enhanced search functionality with keyword-based searching
   const [searchResults, setSearchResults] = useState<{
-    dots: Dot[];
-    wheels: Wheel[];
-    chakras: Wheel[];
+    dots: FrontendDot[];
+    wheels: FrontendWheel[];
+    chakras: FrontendChakra[];
   }>({ dots: [], wheels: [], chakras: [] });
   const [showSearchResults, setShowSearchResults] = useState(false);
 
@@ -330,7 +348,7 @@ const Dashboard: React.FC = () => {
     let searchWheels = userWheels; // Always use userWheels for searching wheels and chakras
     
     // Search dots
-    const filteredDots = searchDots.filter((dot: Dot) => {
+    const filteredDots = searchDots.filter((dot: FrontendDot | DbDot) => {
       const searchText = [
         dot.summary,
         dot.anchor,
@@ -342,22 +360,22 @@ const Dashboard: React.FC = () => {
     });
 
     // Search wheels and chakras
-    const filteredWheels = searchWheels.filter(wheel => {
+    const filteredWheels = searchWheels.filter((wheel: FrontendWheel | DbWheel) => {
       const searchText = [
-        wheel.name,
-        wheel.heading || '',
-        wheel.goals || '',
-        wheel.purpose || '',
-        wheel.timeline || '',
-        wheel.category
+        (wheel as FrontendWheel).name || (wheel as DbWheel).heading,
+        (wheel as FrontendWheel).heading || (wheel as DbWheel).heading,
+        (wheel as FrontendWheel).goals || (wheel as DbWheel).goals,
+        (wheel as FrontendChakra).purpose || '',
+        (wheel as FrontendWheel).timeline || (wheel as DbWheel).timeline || '',
+        (wheel as FrontendWheel).category || (wheel as DbWheel).category
       ].join(' ').toLowerCase();
       
       return keywords.some(keyword => searchText.includes(keyword));
     });
 
     // Separate wheels from chakras
-    const regularWheels = filteredWheels.filter(w => w.chakraId !== null && w.chakraId !== undefined);
-    const chakras = filteredWheels.filter(w => w.chakraId === null || w.chakraId === undefined);
+    const regularWheels = filteredWheels.filter((w: FrontendWheel | DbWheel) => w.chakraId !== null && w.chakraId !== undefined) as FrontendWheel[];
+    const chakras = filteredWheels.filter((w: FrontendWheel | DbWheel) => w.chakraId === null || w.chakraId === undefined) as FrontendChakra[];
 
     setSearchResults({
       dots: filteredDots,
@@ -368,21 +386,20 @@ const Dashboard: React.FC = () => {
   };
 
   // Mock wheels data for visualization - moved before search function
-  const [wheels] = useState<Wheel[]>([]);
+  const [wheels] = useState<FrontendWheel[]>([]);
 
   // Generate preview data function moved to Dashboard level
   const generatePreviewData = () => {
     const emotions = ['excited', 'curious', 'focused', 'happy', 'calm', 'inspired', 'confident', 'grateful', 'motivated'];
     
-    const previewDots: Dot[] = [];
-    const previewWheels: Wheel[] = [];
+    const previewDots: FrontendDot[] = [];
+    const previewWheels: FrontendWheel[] = [];
 
     // Chakra - top-level business theme that encompasses the three wheels
-    const businessChakra: Wheel = {
+    const businessChakra: FrontendChakra = {
       id: 'preview-chakra-business',
       name: 'Build an Enduring Company',
       heading: 'Build an Enduring Company',
-      goals: 'Creating a sustainable, innovative business that delivers value to customers while maintaining long-term growth and meaningful impact in the market.',
       purpose: 'Creating a sustainable, innovative business that delivers value to customers while maintaining long-term growth and meaningful impact in the market.',
       timeline: '15 years',
       category: 'Business',
@@ -395,7 +412,7 @@ const Dashboard: React.FC = () => {
     };
 
     // GTM wheel
-    const gtmWheel: Wheel = {
+    const gtmWheel: FrontendWheel = {
       id: 'preview-wheel-0',
       name: 'GTM (Go-To-Market)',
       heading: 'GTM (Go-To-Market) Strategy',
@@ -411,7 +428,7 @@ const Dashboard: React.FC = () => {
     };
 
     // Leadership wheel
-    const leadershipWheel: Wheel = {
+    const leadershipWheel: FrontendWheel = {
       id: 'preview-wheel-1',
       name: 'Leadership Development',
       heading: 'Leadership Development',
@@ -427,7 +444,7 @@ const Dashboard: React.FC = () => {
     };
 
     // Product Innovation wheel
-    const productWheel: Wheel = {
+    const productWheel: FrontendWheel = {
       id: 'preview-wheel-2',
       name: 'Product Innovation',
       heading: 'Product Innovation',
@@ -443,7 +460,7 @@ const Dashboard: React.FC = () => {
     };
 
     // Health & Wellness wheel (standalone)
-    const healthWheel: Wheel = {
+    const healthWheel: FrontendWheel = {
       id: 'preview-wheel-personal',
       name: 'Health & Wellness',
       heading: 'Health & Wellness Mastery',
@@ -454,7 +471,7 @@ const Dashboard: React.FC = () => {
       dots: [],
       connections: [],
       position: { x: 750, y: 180 },
-      chakraId: undefined,
+      chakraId: null,
       createdAt: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000)
     };
 
@@ -466,16 +483,18 @@ const Dashboard: React.FC = () => {
 
     // Add dots to GTM wheel
     gtmHeadings.forEach((heading, i) => {
-      const dot: Dot = {
+      const dot: FrontendDot = {
         id: `preview-dot-gtm-${i}`,
         oneWordSummary: heading,
         summary: `Strategic insights about ${heading.toLowerCase()} and business growth`,
         anchor: `Key learnings about ${heading.toLowerCase()} implementation`,
         pulse: emotions[Math.floor(Math.random() * emotions.length)],
         wheelId: gtmWheel.id,
+        chakraId: null,
         timestamp: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
         sourceType: Math.random() > 0.5 ? 'voice' : 'text',
-        captureMode: Math.random() > 0.7 ? 'ai' : 'natural'
+        captureMode: Math.random() > 0.7 ? 'ai' : 'natural',
+        createdAt: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000)
       };
       previewDots.push(dot);
       gtmWheel.dots.push(dot);
@@ -483,16 +502,18 @@ const Dashboard: React.FC = () => {
 
     // Add dots to Leadership wheel
     leadershipHeadings.forEach((heading, i) => {
-      const dot: Dot = {
+      const dot: FrontendDot = {
         id: `preview-dot-leadership-${i}`,
         oneWordSummary: heading,
         summary: `Leadership insights about ${heading.toLowerCase()} and team excellence`,
         anchor: `Key strategies for ${heading.toLowerCase()} development`,
         pulse: emotions[Math.floor(Math.random() * emotions.length)],
         wheelId: leadershipWheel.id,
+        chakraId: null,
         timestamp: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
         sourceType: Math.random() > 0.5 ? 'voice' : 'text',
-        captureMode: Math.random() > 0.7 ? 'ai' : 'natural'
+        captureMode: Math.random() > 0.7 ? 'ai' : 'natural',
+        createdAt: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000)
       };
       previewDots.push(dot);
       leadershipWheel.dots.push(dot);
@@ -500,16 +521,18 @@ const Dashboard: React.FC = () => {
 
     // Add dots to Product wheel
     productHeadings.forEach((heading, i) => {
-      const dot: Dot = {
+      const dot: FrontendDot = {
         id: `preview-dot-product-${i}`,
         oneWordSummary: heading,
         summary: `Product insights about ${heading.toLowerCase()} and innovation excellence`,
         anchor: `Strategic approaches to ${heading.toLowerCase()} implementation`,
         pulse: emotions[Math.floor(Math.random() * emotions.length)],
         wheelId: productWheel.id,
+        chakraId: null,
         timestamp: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
         sourceType: Math.random() > 0.5 ? 'voice' : 'text',
-        captureMode: Math.random() > 0.7 ? 'ai' : 'natural'
+        captureMode: Math.random() > 0.7 ? 'ai' : 'natural',
+        createdAt: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000)
       };
       previewDots.push(dot);
       productWheel.dots.push(dot);
@@ -517,16 +540,18 @@ const Dashboard: React.FC = () => {
 
     // Add dots to Health wheel
     healthHeadings.forEach((heading, i) => {
-      const dot: Dot = {
+      const dot: FrontendDot = {
         id: `preview-dot-health-${i}`,
         oneWordSummary: heading,
         summary: `Health insights about ${heading.toLowerCase()} and wellness optimization`,
         anchor: `Personal strategies for ${heading.toLowerCase()} improvement`,
         pulse: emotions[Math.floor(Math.random() * emotions.length)],
         wheelId: healthWheel.id,
+        chakraId: null,
         timestamp: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
         sourceType: Math.random() > 0.5 ? 'voice' : 'text',
-        captureMode: Math.random() > 0.7 ? 'ai' : 'natural'
+        captureMode: Math.random() > 0.7 ? 'ai' : 'natural',
+        createdAt: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000)
       };
       previewDots.push(dot);
       healthWheel.dots.push(dot);
@@ -548,21 +573,23 @@ const Dashboard: React.FC = () => {
     ];
 
     individualHeadings.forEach((heading, i) => {
-      const dot: Dot = {
+      const dot: FrontendDot = {
         id: `individual-${i + 1}`,
         oneWordSummary: heading,
         summary: individualSummaries[i],
         anchor: `Personal observation about ${heading.toLowerCase()} and its impact on daily life`,
         pulse: emotions[Math.floor(Math.random() * emotions.length)],
-        wheelId: '', // No wheel - individual dot
+        wheelId: null, // No wheel - individual dot
+        chakraId: null,
         timestamp: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
         sourceType: Math.random() > 0.5 ? 'voice' : 'text',
-        captureMode: Math.random() > 0.7 ? 'ai' : 'natural'
+        captureMode: Math.random() > 0.7 ? 'ai' : 'natural',
+        createdAt: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000)
       };
       previewDots.push(dot);
     });
 
-    previewWheels.push(businessChakra, gtmWheel, leadershipWheel, productWheel, healthWheel);
+    previewWheels.push(gtmWheel, leadershipWheel, productWheel, healthWheel);
 
     return { previewDots, previewWheels };
   };
@@ -572,7 +599,7 @@ const Dashboard: React.FC = () => {
     performSearch(searchTerm);
   }, [searchTerm, dots, wheels, previewMode]);
 
-  const DotCard: React.FC<{ dot: Dot; isPreview?: boolean; onClick?: () => void }> = ({ dot, isPreview = false, onClick }) => {
+  const DotCard: React.FC<{ dot: FrontendDot; isPreview?: boolean; onClick?: () => void }> = ({ dot, isPreview = false, onClick }) => {
     const handleDotClick = () => {
       if (onClick) {
         onClick();
@@ -618,7 +645,7 @@ const Dashboard: React.FC = () => {
     );
   };
 
-  const WheelCard: React.FC<{ wheel: Wheel; isPreview?: boolean; onClick?: () => void }> = ({ wheel, isPreview = false, onClick }) => {
+  const WheelCard: React.FC<{ wheel: FrontendWheel | FrontendChakra; isPreview?: boolean; onClick?: () => void }> = ({ wheel, isPreview = false, onClick }) => {
     const handleWheelClick = () => {
       if (onClick) {
         onClick();
