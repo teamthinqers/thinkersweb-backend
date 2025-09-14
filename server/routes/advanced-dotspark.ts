@@ -86,7 +86,7 @@ export async function advancedDotSparkChat(req: AuthenticatedRequest, res: Respo
             chakraId: null // Chakras have no parent
           };
           
-          const [newChakra] = await db.insert(wheels).values(chakraData).returning();
+          const [newChakra] = await db.insert(chakras).values(chakraData).returning();
           savedItem = { type: 'chakra', id: newChakra.id, name: structuredOutput.chakra.heading };
         }
         

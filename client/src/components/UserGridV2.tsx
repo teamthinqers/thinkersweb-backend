@@ -35,6 +35,11 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 
+// Utility function for ID-based deduplication
+const uniqueById = <T extends { id: number }>(arr: T[]): T[] => {
+  return Array.from(new Map(arr.map(item => [item.id, item])).values());
+};
+
 // Import our new Grid V2 hooks
 import { 
   useGridData,
@@ -173,11 +178,11 @@ export function UserGridV2({
   const mapDotToChakra = useMapDotToChakra();
   const savePosition = useSavePosition();
 
-  // Extract data from hook
+  // Extract data from hook with final deduplication guardrail
   const { 
-    dots, 
-    wheels, 
-    chakras, 
+    dots: rawDots, 
+    wheels: rawWheels, 
+    chakras: rawChakras, 
     stats, 
     isLoading, 
     isError, 
@@ -186,7 +191,10 @@ export function UserGridV2({
     refetch 
   } = gridData;
   
-  // Debug logging removed - duplicates fixed
+  // Final guardrail: ensure rendering never shows duplicates
+  const dots = React.useMemo(() => uniqueById(rawDots), [rawDots]);
+  const wheels = React.useMemo(() => uniqueById(rawWheels), [rawWheels]);
+  const chakras = React.useMemo(() => uniqueById(rawChakras), [rawChakras]);
 
   // Create combined elements array for collision detection
   const allElements = React.useMemo(() => {

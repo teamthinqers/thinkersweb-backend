@@ -573,20 +573,19 @@ export function useGridData(includeRealTime = true) {
   
   const realTimeUpdates = includeRealTime ? useGridRealTimeUpdates() : null;
 
-  // Apply ID-based deduplication to prevent duplicate rendering
+  // Apply ID-based deduplication at boundary to prevent rendering duplicates
   const rawDots = dots.data?.data || [];
   const rawWheels = wheels.data?.data || [];
   const rawChakras = chakras.data?.data || [];
   
+  // Ensure no merging of same entities from multiple sources without dedup
   const dedupedDots = uniqueById(rawDots);
   const dedupedWheels = uniqueById(rawWheels);
   const dedupedChakras = uniqueById(rawChakras);
-  
-  // Debug logging removed - duplicates fixed
 
   return {
     dots: dedupedDots,
-    wheels: dedupedWheels,
+    wheels: dedupedWheels, 
     chakras: dedupedChakras,
     stats: stats.data?.data,
     
