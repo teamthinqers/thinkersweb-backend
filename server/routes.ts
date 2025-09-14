@@ -52,6 +52,7 @@ import userContentRouter from './routes/user-content';
 import { initializeVectorDB } from './vector-db';
 import { vectorIntegration } from './vector-integration';
 import { setupVectorAPI } from './routes/vector-api';
+import { setupGridV2Routes } from './routes/grid-v2';
 
 // Interface for authenticated requests
 interface AuthenticatedRequest extends Request {
@@ -74,6 +75,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Setup DotSpark activation routes
   setupDotSparkRoutes(app);
+  
+  // Setup Grid V2 routes for clean data management
+  setupGridV2Routes(app);
   
   // Initialize intelligent context system
   initializeIntelligentContext();

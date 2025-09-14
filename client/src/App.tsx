@@ -52,6 +52,7 @@ import TestGoogleAuth from "@/pages/TestGoogleAuth";
 import Social from "@/pages/Social";
 import SocialNeura from "@/pages/SocialNeura";
 import SparkTest from "@/pages/SparkTest";
+import GridV2Test from "@/pages/GridV2Test";
 import Spark from "@/pages/Spark";
 import SimpleAuthTest from "@/pages/SimpleAuthTest";
 import AuthVerificationTest from "@/pages/AuthVerificationTest";
@@ -211,6 +212,7 @@ function Router() {
       <Route path="/social" component={Social} />
       <Route path="/social-neura" component={SocialNeura} />
       <Route path="/sparktest" component={SparkTest} />
+      <Route path="/grid-v2-test" component={GridV2Test} />
       <Route path="/spark" component={Spark} />
       <Route path="/production-test" component={ProductionTest} />
       <Route path="/vector-migration-test" component={VectorMigrationTest} />
