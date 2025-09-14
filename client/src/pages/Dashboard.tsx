@@ -98,6 +98,7 @@ const Dashboard: React.FC = () => {
   // Fetch optimized grid positions from new API
   const { data: gridData, isLoading: gridLoading, refetch: refetchGrid } = useQuery({
     queryKey: ['/api/grid/positions', { preview: previewMode }, user?.id || 'anonymous'],
+    enabled: !!user || previewMode, // Only fetch when authenticated or in preview mode
     queryFn: async () => {
       try {
         // If in preview mode, use static demo positioning data
@@ -148,6 +149,7 @@ const Dashboard: React.FC = () => {
   // Enhanced dots fetching with backend session fallback
   const { data: dots = [], isLoading: dotsLoading, refetch } = useQuery({
     queryKey: ['/api/user-content/dots', 'enhanced', previewMode, recentFilterApplied, recentFilterType, recentDotsCount],
+    enabled: !!user || previewMode, // Only fetch when authenticated or in preview mode
     queryFn: async () => {
       try {
         console.log('🔍 Fetching user dots with backend session fallback');
@@ -231,6 +233,7 @@ const Dashboard: React.FC = () => {
   // Fetch user wheels and chakras from the correct API endpoint
   const { data: userWheels = [], isLoading: wheelsLoading, refetch: refetchWheels } = useQuery({
     queryKey: ['/api/user-content/wheels', previewMode, recentFilterApplied, recentFilterType, recentDotsCount],
+    enabled: !!user || previewMode, // Only fetch when authenticated or in preview mode
     queryFn: async () => {
       try {
         // If in preview mode, use static demo data
