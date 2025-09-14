@@ -82,6 +82,11 @@ interface ApiResponse<T> {
   filters?: Record<string, any>;
 }
 
+// Utility function for ID-based deduplication
+const uniqueById = <T extends { id: number }>(arr: T[]): T[] => {
+  return Array.from(new Map(arr.map(item => [item.id, item])).values());
+};
+
 interface GridStats {
   totals: {
     dots: number;
@@ -568,10 +573,15 @@ export function useGridData(includeRealTime = true) {
   
   const realTimeUpdates = includeRealTime ? useGridRealTimeUpdates() : null;
 
+  // Apply ID-based deduplication to prevent duplicate rendering
+  const dedupedDots = uniqueById(dots.data?.data || []);
+  const dedupedWheels = uniqueById(wheels.data?.data || []);
+  const dedupedChakras = uniqueById(chakras.data?.data || []);
+
   return {
-    dots: dots.data?.data || [],
-    wheels: wheels.data?.data || [],
-    chakras: chakras.data?.data || [],
+    dots: dedupedDots,
+    wheels: dedupedWheels,
+    chakras: dedupedChakras,
     stats: stats.data?.data,
     
     // Loading states
