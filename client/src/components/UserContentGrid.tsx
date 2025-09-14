@@ -49,7 +49,6 @@ interface Wheel {
 
 interface UserContentGridProps {
   user: DashboardUser | null;
-  stableUserId: string | null;
   userWheels: Wheel[];
   dots: Dot[];
   setViewFullWheel: (wheel: Wheel | null) => void;
@@ -59,7 +58,6 @@ interface UserContentGridProps {
 
 export const UserContentGrid: React.FC<UserContentGridProps> = ({
   user,
-  stableUserId,
   userWheels,
   dots,
   setViewFullWheel,
@@ -123,9 +121,8 @@ export const UserContentGrid: React.FC<UserContentGridProps> = ({
   // If user has content, show their actual grid
   return (
     <UserGrid 
-      userId={stableUserId} 
+      userId={user?.id} 
       mode="real"
-      isDemoMode={false}
     />
   );
 };

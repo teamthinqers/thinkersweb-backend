@@ -21,16 +21,8 @@ import { useAuth } from "@/hooks/use-auth";
 import { PersistentActivationManager } from "@/lib/persistent-activation";
 
 
-// Import database types from schema
-import type { Dot as DbDot, Wheel as DbWheel, Chakra as DbChakra } from '@shared/schema';
-
-// Import frontend-compatible types and adapters
-import type { FrontendDot, FrontendWheel, FrontendChakra } from '@shared/type-adapters';
-import { 
-  adaptDotsToFrontend, 
-  adaptWheelsToFrontend, 
-  adaptChakrasToFrontend 
-} from '@shared/type-adapters';
+// Import types from schema instead of duplicating
+import type { Dot, Wheel, Chakra } from '@shared/schema';
 
 // Import static demo data for preview mode
 import { getDemoDataForPreview } from '@shared/demo-data';
@@ -78,47 +70,26 @@ const Dashboard: React.FC = () => {
   } catch (error) {
     console.warn('Authentication hook error, using default values:', error);
   }
-
-  // State declarations - must come before canFetch computation
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedWheel, setSelectedWheel] = useState<string | null>(null);
-  const [viewFullDot, setViewFullDot] = useState<FrontendDot | null>(null);
-  const [viewFlashCard, setViewFlashCard] = useState<FrontendDot | null>(null);
-  const [viewFullWheel, setViewFullWheel] = useState<FrontendWheel | null>(null);
+  const [viewFullDot, setViewFullDot] = useState<Dot | null>(null);
+  const [viewFlashCard, setViewFlashCard] = useState<Dot | null>(null);
+  const [viewFullWheel, setViewFullWheel] = useState<Wheel | null>(null);
   const [showRecentFilter, setShowRecentFilter] = useState(false);
   const [recentDotsCount, setRecentDotsCount] = useState(4);
   const [recentFilterType, setRecentFilterType] = useState<'dot' | 'wheel' | 'chakra'>('dot');
   const [recentFilterApplied, setRecentFilterApplied] = useState(false);
+  // Removed unused showPreview state - using previewMode instead
   const [isMapFullscreen, setIsMapFullscreen] = useState(false);
   const [viewMode, setViewMode] = useState<'grid' | 'map'>('grid'); // Add view mode toggle
   const [previewMode, setPreviewMode] = useState(false); // Start with real mode by default
-
-  // Single authentication guard to fix duplicate enabled options
-  const canFetch = (previewMode || !!user) && !isLoading;
-
-  // Early return while auth is loading to prevent mounting queries during auth initialization
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50 flex items-center justify-center">
-        <div className="bg-white/90 backdrop-blur-sm border-2 border-amber-200 rounded-2xl shadow-lg p-8 max-w-md text-center">
-          <div className="animate-spin w-12 h-12 border-4 border-amber-200 border-t-amber-600 rounded-full mx-auto mb-4"></div>
-          <h2 className="text-xl font-semibold text-amber-800 mb-2">Loading Dashboard</h2>
-          <p className="text-gray-600">Checking your authentication...</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Create stable user ID for consistent typing
-  const stableUserId = user ? String(user.uid || user.id) : null;
   
   // PWA detection for smaller button sizing
   const isPWA = isRunningAsStandalone();
 
   // Fetch optimized grid positions from new API
   const { data: gridData, isLoading: gridLoading, refetch: refetchGrid } = useQuery({
-    queryKey: ['/api/grid/positions', { preview: previewMode }, stableUserId || 'anonymous'],
-    enabled: canFetch,
+    queryKey: ['/api/grid/positions', { preview: previewMode }, user?.id || 'anonymous'],
     queryFn: async () => {
       try {
         // If in preview mode, use static demo positioning data
@@ -161,6 +132,7 @@ const Dashboard: React.FC = () => {
     staleTime: 30000, // Cache for 30 seconds
     refetchOnWindowFocus: false,
     refetchOnMount: false, // Don't refetch if we have cached data
+    enabled: !isLoading, // Fetch regardless of user state - backend will handle auth
     refetchInterval: false, // Disable automatic refetching
     gcTime: 2 * 60 * 1000 // Keep data in cache for 2 minutes
   });
@@ -168,7 +140,6 @@ const Dashboard: React.FC = () => {
   // Enhanced dots fetching with backend session fallback
   const { data: dots = [], isLoading: dotsLoading, refetch } = useQuery({
     queryKey: ['/api/user-content/dots', 'enhanced', previewMode, recentFilterApplied, recentFilterType, recentDotsCount],
-    enabled: canFetch,
     queryFn: async () => {
       try {
         console.log('🔍 Fetching user dots with backend session fallback');
@@ -179,8 +150,7 @@ const Dashboard: React.FC = () => {
         if (previewMode) {
           const demoData = getDemoDataForPreview();
           console.log('✅ Preview dots loaded from static demo data:', demoData.previewDots.length);
-          // Convert demo data to frontend types
-          return adaptDotsToFrontend(demoData.previewDots as any);
+          return demoData.previewDots;
         }
         
         // Build URL with filter parameters if filter is applied
@@ -207,12 +177,11 @@ const Dashboard: React.FC = () => {
         if (response.ok) {
           const data = await response.json();
           console.log('✅ Dots fetched successfully:', data.length, 'dots');
-          console.log('📝 Recent dots:', data.slice(0, 3).map((d: DbDot) => d.oneWordSummary));
+          console.log('📝 Recent dots:', data.slice(0, 3).map(d => d.oneWordSummary));
           if (recentFilterApplied) {
             console.log(`🎯 FILTER APPLIED: Expected ${recentDotsCount} ${recentFilterType}s, got ${data.length} results`);
           }
-          // Convert database types to frontend types
-          return adaptDotsToFrontend(data);
+          return data;
         } else if (response.status === 401) {
           console.log('🔒 Authentication required - filters cannot be applied without sign-in');
           
@@ -233,6 +202,7 @@ const Dashboard: React.FC = () => {
         return [];
       }
     },
+    enabled: true, // Always try to fetch - backend will handle auth
     retry: (failureCount, error) => {
       // Retry up to 2 times, but not for auth failures
       if (failureCount >= 2) return false;
@@ -251,15 +221,13 @@ const Dashboard: React.FC = () => {
   // Fetch user wheels and chakras from the correct API endpoint
   const { data: userWheels = [], isLoading: wheelsLoading, refetch: refetchWheels } = useQuery({
     queryKey: ['/api/user-content/wheels', previewMode, recentFilterApplied, recentFilterType, recentDotsCount],
-    enabled: canFetch,
     queryFn: async () => {
       try {
         // If in preview mode, use static demo data
         if (previewMode) {
           const demoData = getDemoDataForPreview();
           console.log('✅ Preview wheels loaded from static demo data:', demoData.previewWheels.length);
-          // Convert demo data to frontend types
-          return adaptWheelsToFrontend(demoData.previewWheels as any);
+          return demoData.previewWheels;
         }
         
         let url = '/api/user-content/wheels';
@@ -286,13 +254,13 @@ const Dashboard: React.FC = () => {
         }
         const data = await response.json();
         console.log(`✅ Wheels fetched successfully: ${data.length} items`);
-        // Convert database types to frontend types - need to get dots for proper wheel/chakra setup
-        return adaptWheelsToFrontend(data);
+        return data;
       } catch (err) {
         console.error('Error fetching wheels:', err);
         return [];
       }
     },
+    enabled: !isLoading, // Fetch regardless of user state - backend will handle auth
     retry: 3, // Retry up to 3 times on failure
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff  
     refetchOnWindowFocus: false,
@@ -303,7 +271,7 @@ const Dashboard: React.FC = () => {
   // Counts are now inline for simplicity
 
   // Example data for preview mode when no dots exist
-  const exampleDots: FrontendDot[] = [
+  const exampleDots: Dot[] = [
     {
       id: "example-1",
       oneWordSummary: "Microservices",
@@ -311,9 +279,7 @@ const Dashboard: React.FC = () => {
       anchor: "Discussed with senior architect about breaking down monolith, focusing on domain boundaries and data consistency challenges",
       pulse: "curious",
       wheelId: "example-wheel-1",
-      chakraId: null,
       timestamp: new Date(),
-      createdAt: new Date(),
       sourceType: 'text',
       captureMode: 'natural'
     },
@@ -324,9 +290,7 @@ const Dashboard: React.FC = () => {
       anchor: "Workshop by Kent C. Dodds, practiced compound components pattern with real examples from UI libraries",
       pulse: "focused",
       wheelId: "example-wheel-1",
-      chakraId: null,
       timestamp: new Date(),
-      createdAt: new Date(),
       sourceType: 'voice',
       captureMode: 'natural'
     },
@@ -336,10 +300,8 @@ const Dashboard: React.FC = () => {
       summary: "Started morning meditation routine, noticed improved focus and reduced anxiety levels",
       anchor: "Using Headspace app, 10-minute sessions before work, tracking mood changes and productivity correlations",
       pulse: "calm",
-      wheelId: "example-wheel-2",
-      chakraId: null,
+      wheelId: "example-wheel-2", 
       timestamp: new Date(),
-      createdAt: new Date(),
       sourceType: 'text',
       captureMode: 'ai'
     }
@@ -347,9 +309,9 @@ const Dashboard: React.FC = () => {
 
   // Enhanced search functionality with keyword-based searching
   const [searchResults, setSearchResults] = useState<{
-    dots: FrontendDot[];
-    wheels: FrontendWheel[];
-    chakras: FrontendChakra[];
+    dots: Dot[];
+    wheels: Wheel[];
+    chakras: Wheel[];
   }>({ dots: [], wheels: [], chakras: [] });
   const [showSearchResults, setShowSearchResults] = useState(false);
 
@@ -368,7 +330,7 @@ const Dashboard: React.FC = () => {
     let searchWheels = userWheels; // Always use userWheels for searching wheels and chakras
     
     // Search dots
-    const filteredDots = searchDots.filter((dot: FrontendDot | DbDot) => {
+    const filteredDots = searchDots.filter((dot: Dot) => {
       const searchText = [
         dot.summary,
         dot.anchor,
@@ -380,22 +342,22 @@ const Dashboard: React.FC = () => {
     });
 
     // Search wheels and chakras
-    const filteredWheels = searchWheels.filter((wheel: FrontendWheel | DbWheel) => {
+    const filteredWheels = searchWheels.filter(wheel => {
       const searchText = [
-        (wheel as FrontendWheel).name || (wheel as DbWheel).heading,
-        (wheel as FrontendWheel).heading || (wheel as DbWheel).heading,
-        (wheel as FrontendWheel).goals || (wheel as DbWheel).goals,
-        (wheel as FrontendChakra).purpose || '',
-        (wheel as FrontendWheel).timeline || (wheel as DbWheel).timeline || '',
-        (wheel as FrontendWheel).category || (wheel as DbWheel).category
+        wheel.name,
+        wheel.heading || '',
+        wheel.goals || '',
+        wheel.purpose || '',
+        wheel.timeline || '',
+        wheel.category
       ].join(' ').toLowerCase();
       
       return keywords.some(keyword => searchText.includes(keyword));
     });
 
     // Separate wheels from chakras
-    const regularWheels = filteredWheels.filter((w: FrontendWheel | DbWheel) => w.chakraId !== null && w.chakraId !== undefined) as FrontendWheel[];
-    const chakras = filteredWheels.filter((w: FrontendWheel | DbWheel) => w.chakraId === null || w.chakraId === undefined) as FrontendChakra[];
+    const regularWheels = filteredWheels.filter(w => w.chakraId !== null && w.chakraId !== undefined);
+    const chakras = filteredWheels.filter(w => w.chakraId === null || w.chakraId === undefined);
 
     setSearchResults({
       dots: filteredDots,
@@ -406,20 +368,21 @@ const Dashboard: React.FC = () => {
   };
 
   // Mock wheels data for visualization - moved before search function
-  const [wheels] = useState<FrontendWheel[]>([]);
+  const [wheels] = useState<Wheel[]>([]);
 
   // Generate preview data function moved to Dashboard level
   const generatePreviewData = () => {
     const emotions = ['excited', 'curious', 'focused', 'happy', 'calm', 'inspired', 'confident', 'grateful', 'motivated'];
     
-    const previewDots: FrontendDot[] = [];
-    const previewWheels: FrontendWheel[] = [];
+    const previewDots: Dot[] = [];
+    const previewWheels: Wheel[] = [];
 
     // Chakra - top-level business theme that encompasses the three wheels
-    const businessChakra: FrontendChakra = {
+    const businessChakra: Wheel = {
       id: 'preview-chakra-business',
       name: 'Build an Enduring Company',
       heading: 'Build an Enduring Company',
+      goals: 'Creating a sustainable, innovative business that delivers value to customers while maintaining long-term growth and meaningful impact in the market.',
       purpose: 'Creating a sustainable, innovative business that delivers value to customers while maintaining long-term growth and meaningful impact in the market.',
       timeline: '15 years',
       category: 'Business',
@@ -432,7 +395,7 @@ const Dashboard: React.FC = () => {
     };
 
     // GTM wheel
-    const gtmWheel: FrontendWheel = {
+    const gtmWheel: Wheel = {
       id: 'preview-wheel-0',
       name: 'GTM (Go-To-Market)',
       heading: 'GTM (Go-To-Market) Strategy',
@@ -448,7 +411,7 @@ const Dashboard: React.FC = () => {
     };
 
     // Leadership wheel
-    const leadershipWheel: FrontendWheel = {
+    const leadershipWheel: Wheel = {
       id: 'preview-wheel-1',
       name: 'Leadership Development',
       heading: 'Leadership Development',
@@ -464,7 +427,7 @@ const Dashboard: React.FC = () => {
     };
 
     // Product Innovation wheel
-    const productWheel: FrontendWheel = {
+    const productWheel: Wheel = {
       id: 'preview-wheel-2',
       name: 'Product Innovation',
       heading: 'Product Innovation',
@@ -480,7 +443,7 @@ const Dashboard: React.FC = () => {
     };
 
     // Health & Wellness wheel (standalone)
-    const healthWheel: FrontendWheel = {
+    const healthWheel: Wheel = {
       id: 'preview-wheel-personal',
       name: 'Health & Wellness',
       heading: 'Health & Wellness Mastery',
@@ -491,7 +454,7 @@ const Dashboard: React.FC = () => {
       dots: [],
       connections: [],
       position: { x: 750, y: 180 },
-      chakraId: null,
+      chakraId: undefined,
       createdAt: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000)
     };
 
@@ -503,18 +466,16 @@ const Dashboard: React.FC = () => {
 
     // Add dots to GTM wheel
     gtmHeadings.forEach((heading, i) => {
-      const dot: FrontendDot = {
+      const dot: Dot = {
         id: `preview-dot-gtm-${i}`,
         oneWordSummary: heading,
         summary: `Strategic insights about ${heading.toLowerCase()} and business growth`,
         anchor: `Key learnings about ${heading.toLowerCase()} implementation`,
         pulse: emotions[Math.floor(Math.random() * emotions.length)],
         wheelId: gtmWheel.id,
-        chakraId: null,
         timestamp: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
         sourceType: Math.random() > 0.5 ? 'voice' : 'text',
-        captureMode: Math.random() > 0.7 ? 'ai' : 'natural',
-        createdAt: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000)
+        captureMode: Math.random() > 0.7 ? 'ai' : 'natural'
       };
       previewDots.push(dot);
       gtmWheel.dots.push(dot);
@@ -522,18 +483,16 @@ const Dashboard: React.FC = () => {
 
     // Add dots to Leadership wheel
     leadershipHeadings.forEach((heading, i) => {
-      const dot: FrontendDot = {
+      const dot: Dot = {
         id: `preview-dot-leadership-${i}`,
         oneWordSummary: heading,
         summary: `Leadership insights about ${heading.toLowerCase()} and team excellence`,
         anchor: `Key strategies for ${heading.toLowerCase()} development`,
         pulse: emotions[Math.floor(Math.random() * emotions.length)],
         wheelId: leadershipWheel.id,
-        chakraId: null,
         timestamp: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
         sourceType: Math.random() > 0.5 ? 'voice' : 'text',
-        captureMode: Math.random() > 0.7 ? 'ai' : 'natural',
-        createdAt: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000)
+        captureMode: Math.random() > 0.7 ? 'ai' : 'natural'
       };
       previewDots.push(dot);
       leadershipWheel.dots.push(dot);
@@ -541,18 +500,16 @@ const Dashboard: React.FC = () => {
 
     // Add dots to Product wheel
     productHeadings.forEach((heading, i) => {
-      const dot: FrontendDot = {
+      const dot: Dot = {
         id: `preview-dot-product-${i}`,
         oneWordSummary: heading,
         summary: `Product insights about ${heading.toLowerCase()} and innovation excellence`,
         anchor: `Strategic approaches to ${heading.toLowerCase()} implementation`,
         pulse: emotions[Math.floor(Math.random() * emotions.length)],
         wheelId: productWheel.id,
-        chakraId: null,
         timestamp: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
         sourceType: Math.random() > 0.5 ? 'voice' : 'text',
-        captureMode: Math.random() > 0.7 ? 'ai' : 'natural',
-        createdAt: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000)
+        captureMode: Math.random() > 0.7 ? 'ai' : 'natural'
       };
       previewDots.push(dot);
       productWheel.dots.push(dot);
@@ -560,18 +517,16 @@ const Dashboard: React.FC = () => {
 
     // Add dots to Health wheel
     healthHeadings.forEach((heading, i) => {
-      const dot: FrontendDot = {
+      const dot: Dot = {
         id: `preview-dot-health-${i}`,
         oneWordSummary: heading,
         summary: `Health insights about ${heading.toLowerCase()} and wellness optimization`,
         anchor: `Personal strategies for ${heading.toLowerCase()} improvement`,
         pulse: emotions[Math.floor(Math.random() * emotions.length)],
         wheelId: healthWheel.id,
-        chakraId: null,
         timestamp: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
         sourceType: Math.random() > 0.5 ? 'voice' : 'text',
-        captureMode: Math.random() > 0.7 ? 'ai' : 'natural',
-        createdAt: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000)
+        captureMode: Math.random() > 0.7 ? 'ai' : 'natural'
       };
       previewDots.push(dot);
       healthWheel.dots.push(dot);
@@ -593,23 +548,21 @@ const Dashboard: React.FC = () => {
     ];
 
     individualHeadings.forEach((heading, i) => {
-      const dot: FrontendDot = {
+      const dot: Dot = {
         id: `individual-${i + 1}`,
         oneWordSummary: heading,
         summary: individualSummaries[i],
         anchor: `Personal observation about ${heading.toLowerCase()} and its impact on daily life`,
         pulse: emotions[Math.floor(Math.random() * emotions.length)],
-        wheelId: null, // No wheel - individual dot
-        chakraId: null,
+        wheelId: '', // No wheel - individual dot
         timestamp: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
         sourceType: Math.random() > 0.5 ? 'voice' : 'text',
-        captureMode: Math.random() > 0.7 ? 'ai' : 'natural',
-        createdAt: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000)
+        captureMode: Math.random() > 0.7 ? 'ai' : 'natural'
       };
       previewDots.push(dot);
     });
 
-    previewWheels.push(gtmWheel, leadershipWheel, productWheel, healthWheel);
+    previewWheels.push(businessChakra, gtmWheel, leadershipWheel, productWheel, healthWheel);
 
     return { previewDots, previewWheels };
   };
@@ -619,7 +572,7 @@ const Dashboard: React.FC = () => {
     performSearch(searchTerm);
   }, [searchTerm, dots, wheels, previewMode]);
 
-  const DotCard: React.FC<{ dot: FrontendDot; isPreview?: boolean; onClick?: () => void }> = ({ dot, isPreview = false, onClick }) => {
+  const DotCard: React.FC<{ dot: Dot; isPreview?: boolean; onClick?: () => void }> = ({ dot, isPreview = false, onClick }) => {
     const handleDotClick = () => {
       if (onClick) {
         onClick();
@@ -665,7 +618,7 @@ const Dashboard: React.FC = () => {
     );
   };
 
-  const WheelCard: React.FC<{ wheel: FrontendWheel | FrontendChakra; isPreview?: boolean; onClick?: () => void }> = ({ wheel, isPreview = false, onClick }) => {
+  const WheelCard: React.FC<{ wheel: Wheel; isPreview?: boolean; onClick?: () => void }> = ({ wheel, isPreview = false, onClick }) => {
     const handleWheelClick = () => {
       if (onClick) {
         onClick();
@@ -2833,41 +2786,11 @@ const Dashboard: React.FC = () => {
           
 
 
-          {/* Content based on view mode and authentication */}
-          {!user && !isLoading ? (
-            // Show sign-in prompt when not authenticated
-            <div className="flex flex-col items-center justify-center py-16 px-4">
-              <div className="bg-white/90 backdrop-blur-sm border-2 border-amber-200 rounded-2xl shadow-lg p-8 max-w-md text-center">
-                <User className="w-16 h-16 mx-auto mb-4 text-amber-600" />
-                <h2 className="text-2xl font-bold text-amber-800 mb-4">Sign In Required</h2>
-                <p className="text-gray-600 mb-6">
-                  Please sign in to access your personal dashboard and view your dots, wheels, and chakras.
-                </p>
-                <Button 
-                  onClick={() => setLocation('/auth')}
-                  className="w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg"
-                >
-                  Sign In to Continue
-                </Button>
-                <p className="text-sm text-gray-500 mt-4">
-                  New to DotSpark? Signing in will create your account automatically.
-                </p>
-              </div>
-            </div>
-          ) : isLoading ? (
-            // Show loading state while checking authentication
-            <div className="flex flex-col items-center justify-center py-16">
-              <div className="bg-white/90 backdrop-blur-sm border-2 border-amber-200 rounded-2xl shadow-lg p-8 max-w-md text-center">
-                <div className="animate-spin w-12 h-12 border-4 border-amber-200 border-t-amber-600 rounded-full mx-auto mb-4"></div>
-                <h2 className="text-xl font-semibold text-amber-800 mb-2">Loading Dashboard</h2>
-                <p className="text-gray-600">Checking your authentication...</p>
-              </div>
-            </div>
-          ) : viewMode === 'grid' ? (
+          {/* Content based on view mode */}
+          {viewMode === 'grid' ? (
             // User Content Mode - shows user's actual content or empty state with creation prompts
             <UserContentGrid 
               user={user}
-              stableUserId={stableUserId}
               userWheels={userWheels}
               dots={dots}
               setViewFullWheel={setViewFullWheel}
