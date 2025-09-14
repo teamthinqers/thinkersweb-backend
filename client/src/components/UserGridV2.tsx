@@ -185,6 +185,13 @@ export function UserGridV2({
     realTime, 
     refetch 
   } = gridData;
+  
+  // Debug logging for rendering
+  console.log('🎨 UserGridV2 Render Data:', {
+    wheels: wheels.map(w => ({ id: w.id, heading: w.heading })),
+    chakras: chakras.map(c => ({ id: c.id, heading: c.heading })),
+    totalElements: dots.length + wheels.length + chakras.length
+  });
 
   // Create combined elements array for collision detection
   const allElements = React.useMemo(() => {

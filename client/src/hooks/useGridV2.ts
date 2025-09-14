@@ -574,9 +574,25 @@ export function useGridData(includeRealTime = true) {
   const realTimeUpdates = includeRealTime ? useGridRealTimeUpdates() : null;
 
   // Apply ID-based deduplication to prevent duplicate rendering
-  const dedupedDots = uniqueById(dots.data?.data || []);
-  const dedupedWheels = uniqueById(wheels.data?.data || []);
-  const dedupedChakras = uniqueById(chakras.data?.data || []);
+  const rawDots = dots.data?.data || [];
+  const rawWheels = wheels.data?.data || [];
+  const rawChakras = chakras.data?.data || [];
+  
+  const dedupedDots = uniqueById(rawDots);
+  const dedupedWheels = uniqueById(rawWheels);
+  const dedupedChakras = uniqueById(rawChakras);
+  
+  // Debug logging to identify duplicate sources
+  console.log('🔍 Grid V2 Data Debug:', {
+    rawWheels: rawWheels.map(w => ({ id: w.id, heading: w.heading })),
+    dedupedWheels: dedupedWheels.map(w => ({ id: w.id, heading: w.heading })),
+    rawChakras: rawChakras.map(c => ({ id: c.id, heading: c.heading })),
+    dedupedChakras: dedupedChakras.map(c => ({ id: c.id, heading: c.heading })),
+    duplicatesFound: {
+      wheels: rawWheels.length !== dedupedWheels.length,
+      chakras: rawChakras.length !== dedupedChakras.length
+    }
+  });
 
   return {
     dots: dedupedDots,
