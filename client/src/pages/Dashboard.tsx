@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -267,6 +267,27 @@ const Dashboard: React.FC = () => {
     refetchOnMount: false, // Disable auto-refetch to prevent filter interference
     staleTime: 0 // No caching when filter is applied
   });
+
+  // Deduplicate wheels to prevent frontend display duplicates (safe fix for display issue)
+  const dedupedWheels = useMemo(() => {
+    if (!userWheels) return [];
+    const map = new Map<string, Wheel>();
+    for (const w of userWheels) {
+      map.set(w.id, w);
+    }
+    const result = Array.from(map.values());
+    
+    // Temporary logging to verify fix (remove after validation)
+    if (userWheels.length !== result.length) {
+      console.log(`🔧 Wheel deduplication: ${userWheels.length} raw -> ${result.length} unique`, {
+        raw: userWheels.length,
+        dedup: result.length,
+        ids: new Set(userWheels.map(w => w.id)).size
+      });
+    }
+    
+    return result;
+  }, [userWheels]);
 
   // Counts are now inline for simplicity
 
@@ -2791,7 +2812,7 @@ const Dashboard: React.FC = () => {
             // User Content Mode - shows user's actual content or empty state with creation prompts
             <UserContentGrid 
               user={user}
-              userWheels={userWheels}
+              userWheels={dedupedWheels}
               dots={dots}
               setViewFullWheel={setViewFullWheel}
               setViewFlashCard={setViewFlashCard}
