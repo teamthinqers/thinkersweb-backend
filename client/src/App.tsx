@@ -50,7 +50,6 @@ import DotInstall from "@/pages/DotInstall";
 import DotCapture from "@/pages/DotCapture";
 import TestGoogleAuth from "@/pages/TestGoogleAuth";
 import Social from "@/pages/Social";
-import SocialNeura from "@/pages/SocialNeura";
 import SparkTest from "@/pages/SparkTest";
 import Spark from "@/pages/Spark";
 import SimpleAuthTest from "@/pages/SimpleAuthTest";
@@ -209,7 +208,6 @@ function Router() {
       <Route path="/settings" component={() => <ProtectedRoute><AppWithLayout /></ProtectedRoute>} />
       <Route path="/profile" component={() => <ProtectedRoute><AppWithLayout /></ProtectedRoute>} />
       <Route path="/social" component={Social} />
-      <Route path="/socialneura" component={SocialNeura} />
       <Route path="/sparktest" component={SparkTest} />
       <Route path="/spark" component={Spark} />
       <Route path="/production-test" component={ProductionTest} />
