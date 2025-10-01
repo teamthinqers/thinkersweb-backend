@@ -137,135 +137,76 @@ const SocialNeura: React.FC = () => {
     gcTime: 2 * 60 * 1000 // Keep data in cache for 2 minutes
   });
 
-  // Enhanced dots fetching with backend session fallback
+  // Fetch collective dots from all users (Collective Intelligence)
   const { data: dots = [], isLoading: dotsLoading, refetch } = useQuery({
-    queryKey: ['/api/user-content/dots', 'enhanced', previewMode, recentFilterApplied, recentFilterType, recentDotsCount],
+    queryKey: ['/api/user-content/collective/dots'],
     queryFn: async () => {
       try {
-        console.log('🔍 Fetching user dots with backend session fallback');
-        console.log('🔐 Frontend auth state:', { hasUser: !!user, userEmail: user?.email, isLoading });
-        console.log('🎯 Filter state:', { recentFilterApplied, recentFilterType, recentDotsCount, previewMode });
+        console.log('🌍 Fetching collective intelligence dots from all users');
         
-        // If in preview mode, use static demo data
-        if (previewMode) {
-          const demoData = getDemoDataForPreview();
-          console.log('✅ Preview dots loaded from static demo data:', demoData.previewDots.length);
-          return demoData.previewDots;
-        }
-        
-        // Build URL with filter parameters if filter is applied
-        let url = '/api/user-content/dots';
-        if (recentFilterApplied) {
-          const params = new URLSearchParams({
-            filterType: recentFilterType,
-            filterCount: recentDotsCount.toString()
-          });
-          url += `?${params.toString()}`;
-          console.log('🎯 Fetching filtered dots from:', url);
-        }
-        
-        const response = await fetch(url, {
-          credentials: 'include',
+        const response = await fetch('/api/user-content/collective/dots', {
           headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
           }
         });
         
-        console.log('📊 Dots fetch response status:', response.status);
+        console.log('📊 Collective dots fetch response status:', response.status);
         
         if (response.ok) {
           const data = await response.json();
-          console.log('✅ Dots fetched successfully:', data.length, 'dots');
-          console.log('📝 Recent dots:', data.slice(0, 3).map(d => d.oneWordSummary));
-          if (recentFilterApplied) {
-            console.log(`🎯 FILTER APPLIED: Expected ${recentDotsCount} ${recentFilterType}s, got ${data.length} results`);
-          }
+          console.log('✅ Collective dots fetched successfully:', data.length, 'dots from community');
           return data;
-        } else if (response.status === 401) {
-          console.log('🔒 Authentication required - filters cannot be applied without sign-in');
-          
-          if (recentFilterApplied) {
-            console.log('⚠️ Filter applied but user not authenticated - returning empty results');
-            // When filter is applied but user is not authenticated, return empty to show filter is not working
-            return [];
-          }
-          
-          console.log('❌ No dots available - authentication required');
-          return [];
         } else {
-          console.warn('❌ Dots fetch failed:', response.status, response.statusText);
+          console.warn('❌ Collective dots fetch failed:', response.status, response.statusText);
           return [];
         }
       } catch (err) {
-        console.error('💥 Error fetching dots:', err);
+        console.error('💥 Error fetching collective dots:', err);
         return [];
       }
     },
-    enabled: true, // Always try to fetch - backend will handle auth
-    retry: (failureCount, error) => {
-      // Retry up to 2 times, but not for auth failures
-      if (failureCount >= 2) return false;
-      // Don't retry on 401 errors  
-      if (error && error.message?.includes('401')) return false;
-      return true;
-    },
+    enabled: true,
+    retry: 3,
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 5000),
-    refetchOnWindowFocus: false, // Disable to prevent interference with filtering
-    refetchOnMount: false, // Disable auto-refetch to prevent filter interference
-    staleTime: 0, // No caching when filter is applied
-    gcTime: 30 * 60 * 1000, // Keep in cache for 30 minutes
-    refetchInterval: false
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    staleTime: 60000, // Cache for 1 minute
+    gcTime: 5 * 60 * 1000
   });
 
-  // Fetch user wheels and chakras from the correct API endpoint
+  // Fetch collective wheels from all users (Collective Intelligence)
   const { data: userWheels = [], isLoading: wheelsLoading, refetch: refetchWheels } = useQuery({
-    queryKey: ['/api/user-content/wheels', previewMode, recentFilterApplied, recentFilterType, recentDotsCount],
+    queryKey: ['/api/user-content/collective/wheels'],
     queryFn: async () => {
       try {
-        // If in preview mode, use static demo data
-        if (previewMode) {
-          const demoData = getDemoDataForPreview();
-          console.log('✅ Preview wheels loaded from static demo data:', demoData.previewWheels.length);
-          return demoData.previewWheels;
-        }
+        console.log('🌍 Fetching collective intelligence wheels from all users');
         
-        let url = '/api/user-content/wheels';
-        
-        // Add filter parameters if filter is applied
-        if (recentFilterApplied) {
-          const params = new URLSearchParams({
-            filterType: recentFilterType,
-            filterCount: recentDotsCount.toString()
-          });
-          url += `?${params.toString()}`;
-          console.log('🎯 Fetching filtered wheels from:', url);
-        }
-        
-        const response = await fetch(url, {
-          credentials: 'include' // Include cookies for authentication
-        });
-        if (!response.ok) {
-          if (response.status === 401 && recentFilterApplied) {
-            console.log('⚠️ Wheels filter applied but user not authenticated - returning empty results');
-            return [];
+        const response = await fetch('/api/user-content/collective/wheels', {
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
           }
+        });
+        
+        if (!response.ok) {
+          console.warn('❌ Collective wheels fetch failed:', response.status);
           return [];
         }
         const data = await response.json();
-        console.log(`✅ Wheels fetched successfully: ${data.length} items`);
+        console.log(`✅ Collective wheels fetched successfully: ${data.length} wheels from community`);
         return data;
       } catch (err) {
-        console.error('Error fetching wheels:', err);
+        console.error('Error fetching collective wheels:', err);
         return [];
       }
     },
-    enabled: !isLoading, // Fetch regardless of user state - backend will handle auth
-    retry: 3, // Retry up to 3 times on failure
-    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff  
+    enabled: true,
+    retry: 3,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 5000),
     refetchOnWindowFocus: false,
-    refetchOnMount: false, // Disable auto-refetch to prevent filter interference
-    staleTime: 0 // No caching when filter is applied
+    refetchOnMount: false,
+    staleTime: 60000 // Cache for 1 minute
   });
 
   // Deduplicate wheels to prevent frontend display duplicates (safe fix for display issue)
@@ -2516,33 +2457,14 @@ const SocialNeura: React.FC = () => {
             </div>
           </div>
 
-          {/* Center - Toggle Buttons */}
-          <div className="flex items-center gap-2 bg-white/90 backdrop-blur border-2 border-amber-200 rounded-lg px-3 py-2 shadow-sm">
-            <div className="flex items-center gap-1">
-              <Button
-                variant={viewMode === 'grid' ? 'default' : 'ghost'}
-                size="sm"
-                onClick={() => setViewMode('grid')}
-                className={viewMode === 'grid' ? 
-                  'bg-gradient-to-r from-amber-500 to-orange-500 text-white' : 
-                  'text-amber-700 hover:bg-amber-50'
-                }
-              >
-                <Eye className="w-4 h-4 mr-1" />
-                User Mode
-              </Button>
-              <Button
-                variant={viewMode === 'map' ? 'default' : 'ghost'}
-                size="sm"
-                onClick={() => setViewMode('map')}
-                className={viewMode === 'map' ? 
-                  'bg-gradient-to-r from-amber-500 to-orange-500 text-white' : 
-                  'text-amber-700 hover:bg-amber-50'
-                }
-              >
-                <Network className="w-4 h-4 mr-1" />
-                Preview Mode
-              </Button>
+          {/* Center - Collective Intelligence Badge */}
+          <div className="flex items-center gap-2 bg-gradient-to-r from-purple-100 to-indigo-100 backdrop-blur border-2 border-purple-300 rounded-lg px-4 py-2 shadow-lg">
+            <div className="flex items-center gap-2">
+              <Users className="w-5 h-5 text-purple-600" />
+              <span className="font-bold text-purple-800 text-sm md:text-base whitespace-nowrap">
+                Collective Intelligence Repository
+              </span>
+              <Sparkles className="w-4 h-4 text-purple-500 animate-pulse" />
             </div>
           </div>
 

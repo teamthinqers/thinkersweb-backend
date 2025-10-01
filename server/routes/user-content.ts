@@ -912,4 +912,95 @@ router.delete('/dots/:id', ensureAuthenticated, async (req, res) => {
   }
 });
 
+// ========================================
+// COLLECTIVE INTELLIGENCE ENDPOINTS
+// Fetch all users' content for community view
+// ========================================
+
+// Get all collective dots from all users
+router.get('/collective/dots', async (req, res) => {
+  try {
+    console.log('🌍 Fetching collective dots from all users');
+    
+    const allDots = await db.query.dots.findMany({
+      orderBy: desc(dots.createdAt),
+      limit: 100, // Limit for performance
+      with: {
+        wheel: true,
+        user: {
+          columns: {
+            id: true,
+            username: true,
+            fullName: true
+          }
+        }
+      }
+    });
+    
+    console.log(`✅ Found ${allDots.length} collective dots`);
+    res.json(allDots);
+    
+  } catch (error) {
+    console.error('Error fetching collective dots:', error);
+    res.status(500).json({ error: 'Failed to fetch collective dots' });
+  }
+});
+
+// Get all collective wheels from all users
+router.get('/collective/wheels', async (req, res) => {
+  try {
+    console.log('🌍 Fetching collective wheels from all users');
+    
+    const allWheels = await db.query.wheels.findMany({
+      orderBy: desc(wheels.createdAt),
+      limit: 100, // Limit for performance
+      with: {
+        chakra: true,
+        user: {
+          columns: {
+            id: true,
+            username: true,
+            fullName: true
+          }
+        }
+      }
+    });
+    
+    console.log(`✅ Found ${allWheels.length} collective wheels`);
+    res.json(allWheels);
+    
+  } catch (error) {
+    console.error('Error fetching collective wheels:', error);
+    res.status(500).json({ error: 'Failed to fetch collective wheels' });
+  }
+});
+
+// Get all collective chakras from all users
+router.get('/collective/chakras', async (req, res) => {
+  try {
+    console.log('🌍 Fetching collective chakras from all users');
+    
+    const allChakras = await db.query.chakras.findMany({
+      orderBy: desc(chakras.createdAt),
+      limit: 50, // Limit for performance
+      with: {
+        user: {
+          columns: {
+            id: true,
+            username: true,
+            fullName: true
+          }
+        }
+      }
+    });
+    
+    console.log(`✅ Found ${allChakras.length} collective chakras`);
+    res.json(allChakras);
+    
+  } catch (error) {
+    console.error('Error fetching collective chakras:', error);
+    res.status(500).json({ error: 'Failed to fetch collective chakras' });
+  }
+});
+
 export default router;
