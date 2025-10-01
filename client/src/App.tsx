@@ -209,7 +209,7 @@ function Router() {
       <Route path="/settings" component={() => <ProtectedRoute><AppWithLayout /></ProtectedRoute>} />
       <Route path="/profile" component={() => <ProtectedRoute><AppWithLayout /></ProtectedRoute>} />
       <Route path="/social" component={Social} />
-      <Route path="/social-neura" component={SocialNeura} />
+      <Route path="/socialneura" component={SocialNeura} />
       <Route path="/sparktest" component={SparkTest} />
       <Route path="/spark" component={Spark} />
       <Route path="/production-test" component={ProductionTest} />
