@@ -10,6 +10,7 @@ import Insights from "@/pages/Insights";
 import Favorites from "@/pages/Favorites";
 import Network from "@/pages/Network";
 import LandingPage from "@/pages/LandingPage";
+import NewLandingPage from "@/pages/NewLandingPage";
 import AboutPage from "@/pages/AboutPage";
 import LogoPage from "@/pages/LogoPage";
 import AuthPage from "@/pages/auth-page";
@@ -194,6 +195,7 @@ function Router() {
     <Switch>
       <Route path="/test-minimal" component={() => <div>Basic Test</div>} />
       <Route path="/" component={ChatPage} />
+      <Route path="/new-landing" component={NewLandingPage} />
       <Route path="/about" component={AboutPage} />
       <Route path="/auth" component={AuthPage} />
       
