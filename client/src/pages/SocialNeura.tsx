@@ -79,63 +79,22 @@ const SocialNeura: React.FC = () => {
   const [recentDotsCount, setRecentDotsCount] = useState(4);
   const [recentFilterType, setRecentFilterType] = useState<'dot' | 'wheel' | 'chakra'>('dot');
   const [recentFilterApplied, setRecentFilterApplied] = useState(false);
-  // Removed unused showPreview state - using previewMode instead
   const [isMapFullscreen, setIsMapFullscreen] = useState(false);
   const [viewMode, setViewMode] = useState<'grid' | 'map'>('grid'); // Add view mode toggle
-  const [previewMode, setPreviewMode] = useState(false); // Start with real mode by default
   
   // PWA detection for smaller button sizing
   const isPWA = isRunningAsStandalone();
 
-  // Fetch optimized grid positions from new API
-  const { data: gridData, isLoading: gridLoading, refetch: refetchGrid } = useQuery({
-    queryKey: ['/api/grid/positions', { preview: previewMode }, user?.id || 'anonymous'],
-    queryFn: async () => {
-      try {
-        // If in preview mode, use static demo positioning data
-        if (previewMode) {
-          console.log('✅ Using static demo positioning data for preview mode');
-          const demoData = getDemoDataForPreview();
-          return { 
-            data: { 
-              dotPositions: demoData.positioning?.dotPositions || {}, 
-              wheelPositions: demoData.positioning?.wheelPositions || {}, 
-              chakraPositions: demoData.positioning?.chakraPositions || {}, 
-              statistics: { 
-                totalDots: demoData.previewDots.length, 
-                totalWheels: demoData.previewWheels.length, 
-                totalChakras: 0, 
-                freeDots: demoData.previewDots.filter(d => !d.wheelId).length 
-              } 
-            } 
-          };
-        }
-        
-        console.log('Fetching grid positions for user:', user?.email || 'anonymous', 'preview:', previewMode);
-        const response = await fetch(`/api/grid/positions?preview=${previewMode}`, {
-          credentials: 'include' // Include cookies for authentication
-        });
-        if (!response.ok) {
-          console.log('Grid positions fetch failed:', response.status);
-          return { data: { dotPositions: {}, wheelPositions: {}, chakraPositions: {}, statistics: { totalDots: 0, totalWheels: 0, totalChakras: 0, freeDots: 0 } } };
-        }
-        const result = await response.json();
-        console.log('Grid positions fetched successfully for user:', user?.email || 'anonymous');
-        return result;
-      } catch (error) {
-        console.error('Grid positions fetch error:', error);
-        return { data: { dotPositions: {}, wheelPositions: {}, chakraPositions: {}, statistics: { totalDots: 0, totalWheels: 0, totalChakras: 0, freeDots: 0 } } };
-      }
-    },
-    retry: 3, // Retry up to 3 times on failure
-    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
-    staleTime: 30000, // Cache for 30 seconds
-    refetchOnWindowFocus: false,
-    refetchOnMount: false, // Don't refetch if we have cached data
-    enabled: !isLoading, // Fetch regardless of user state - backend will handle auth
-    refetchInterval: false, // Disable automatic refetching
-    gcTime: 2 * 60 * 1000 // Keep data in cache for 2 minutes
-  });
+  // Grid positions not needed for collective intelligence (client-side positioning)
+  const gridData = { 
+    data: { 
+      dotPositions: {}, 
+      wheelPositions: {}, 
+      chakraPositions: {}, 
+      statistics: { totalDots: 0, totalWheels: 0, totalChakras: 0, freeDots: 0 } 
+    } 
+  };
+  const gridLoading = false;
 
   // Fetch collective dots from all users (Collective Intelligence)
   const { data: dots = [], isLoading: dotsLoading, refetch } = useQuery({
