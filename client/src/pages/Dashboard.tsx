@@ -2527,8 +2527,8 @@ const Dashboard: React.FC = () => {
                 size="sm"
                 onClick={() => setSocialMode(true)}
                 className={socialMode ? 
-                  'bg-gradient-to-r from-purple-500 to-indigo-500 text-white' : 
-                  'text-purple-700 hover:bg-purple-50'
+                  'bg-gradient-to-r from-red-500 to-orange-500 text-white' : 
+                  'text-red-600 hover:bg-red-50'
                 }
               >
                 <Users className="w-4 h-4 mr-1" />
