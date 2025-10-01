@@ -79,40 +79,33 @@ const Dashboard: React.FC = () => {
   const [recentDotsCount, setRecentDotsCount] = useState(4);
   const [recentFilterType, setRecentFilterType] = useState<'dot' | 'wheel' | 'chakra'>('dot');
   const [recentFilterApplied, setRecentFilterApplied] = useState(false);
-  // Removed unused showPreview state - using previewMode instead
   const [isMapFullscreen, setIsMapFullscreen] = useState(false);
   const [viewMode, setViewMode] = useState<'grid' | 'map'>('grid'); // Add view mode toggle
-  const [previewMode, setPreviewMode] = useState(false); // Start with real mode by default
+  const [socialMode, setSocialMode] = useState(false); // false = Personal Mode, true = Social Mode
   
   // PWA detection for smaller button sizing
   const isPWA = isRunningAsStandalone();
 
   // Fetch optimized grid positions from new API
   const { data: gridData, isLoading: gridLoading, refetch: refetchGrid } = useQuery({
-    queryKey: ['/api/grid/positions', { preview: previewMode }, user?.id || 'anonymous'],
+    queryKey: ['/api/grid/positions', { social: socialMode }, user?.id || 'anonymous'],
     queryFn: async () => {
       try {
-        // If in preview mode, use static demo positioning data
-        if (previewMode) {
-          console.log('✅ Using static demo positioning data for preview mode');
-          const demoData = getDemoDataForPreview();
+        // If in social mode, return empty grid data (backend logic to be implemented later)
+        if (socialMode) {
+          console.log('✅ Social Mode - Grid data will be populated with collective intelligence');
           return { 
             data: { 
-              dotPositions: demoData.positioning?.dotPositions || {}, 
-              wheelPositions: demoData.positioning?.wheelPositions || {}, 
-              chakraPositions: demoData.positioning?.chakraPositions || {}, 
-              statistics: { 
-                totalDots: demoData.previewDots.length, 
-                totalWheels: demoData.previewWheels.length, 
-                totalChakras: 0, 
-                freeDots: demoData.previewDots.filter(d => !d.wheelId).length 
-              } 
+              dotPositions: {}, 
+              wheelPositions: {}, 
+              chakraPositions: {}, 
+              statistics: { totalDots: 0, totalWheels: 0, totalChakras: 0, freeDots: 0 } 
             } 
           };
         }
         
-        console.log('Fetching grid positions for user:', user?.email || 'anonymous', 'preview:', previewMode);
-        const response = await fetch(`/api/grid/positions?preview=${previewMode}`, {
+        console.log('Fetching grid positions for user:', user?.email || 'anonymous', 'mode:', socialMode ? 'Social' : 'Personal');
+        const response = await fetch(`/api/grid/positions`, {
           credentials: 'include' // Include cookies for authentication
         });
         if (!response.ok) {
@@ -139,18 +132,17 @@ const Dashboard: React.FC = () => {
 
   // Enhanced dots fetching with backend session fallback
   const { data: dots = [], isLoading: dotsLoading, refetch } = useQuery({
-    queryKey: ['/api/user-content/dots', 'enhanced', previewMode, recentFilterApplied, recentFilterType, recentDotsCount],
+    queryKey: ['/api/user-content/dots', 'enhanced', socialMode, recentFilterApplied, recentFilterType, recentDotsCount],
     queryFn: async () => {
       try {
-        console.log('🔍 Fetching user dots with backend session fallback');
+        console.log('🔍 Fetching dots - Mode:', socialMode ? 'Social' : 'Personal');
         console.log('🔐 Frontend auth state:', { hasUser: !!user, userEmail: user?.email, isLoading });
-        console.log('🎯 Filter state:', { recentFilterApplied, recentFilterType, recentDotsCount, previewMode });
+        console.log('🎯 Filter state:', { recentFilterApplied, recentFilterType, recentDotsCount, socialMode });
         
-        // If in preview mode, use static demo data
-        if (previewMode) {
-          const demoData = getDemoDataForPreview();
-          console.log('✅ Preview dots loaded from static demo data:', demoData.previewDots.length);
-          return demoData.previewDots;
+        // If in social mode, return empty (backend logic to be implemented later)
+        if (socialMode) {
+          console.log('✅ Social Mode - Dots will be populated with collective intelligence');
+          return [];
         }
         
         // Build URL with filter parameters if filter is applied
@@ -220,14 +212,13 @@ const Dashboard: React.FC = () => {
 
   // Fetch user wheels and chakras from the correct API endpoint
   const { data: userWheels = [], isLoading: wheelsLoading, refetch: refetchWheels } = useQuery({
-    queryKey: ['/api/user-content/wheels', previewMode, recentFilterApplied, recentFilterType, recentDotsCount],
+    queryKey: ['/api/user-content/wheels', socialMode, recentFilterApplied, recentFilterType, recentDotsCount],
     queryFn: async () => {
       try {
-        // If in preview mode, use static demo data
-        if (previewMode) {
-          const demoData = getDemoDataForPreview();
-          console.log('✅ Preview wheels loaded from static demo data:', demoData.previewWheels.length);
-          return demoData.previewWheels;
+        // If in social mode, return empty (backend logic to be implemented later)
+        if (socialMode) {
+          console.log('✅ Social Mode - Wheels will be populated with collective intelligence');
+          return [];
         }
         
         let url = '/api/user-content/wheels';
@@ -2520,28 +2511,28 @@ const Dashboard: React.FC = () => {
           <div className="flex items-center gap-2 bg-white/90 backdrop-blur border-2 border-amber-200 rounded-lg px-3 py-2 shadow-sm">
             <div className="flex items-center gap-1">
               <Button
-                variant={viewMode === 'grid' ? 'default' : 'ghost'}
+                variant={!socialMode ? 'default' : 'ghost'}
                 size="sm"
-                onClick={() => setViewMode('grid')}
-                className={viewMode === 'grid' ? 
+                onClick={() => setSocialMode(false)}
+                className={!socialMode ? 
                   'bg-gradient-to-r from-amber-500 to-orange-500 text-white' : 
                   'text-amber-700 hover:bg-amber-50'
                 }
               >
-                <Eye className="w-4 h-4 mr-1" />
-                User Mode
+                <User className="w-4 h-4 mr-1" />
+                Personal Mode
               </Button>
               <Button
-                variant={viewMode === 'map' ? 'default' : 'ghost'}
+                variant={socialMode ? 'default' : 'ghost'}
                 size="sm"
-                onClick={() => setViewMode('map')}
-                className={viewMode === 'map' ? 
-                  'bg-gradient-to-r from-amber-500 to-orange-500 text-white' : 
-                  'text-amber-700 hover:bg-amber-50'
+                onClick={() => setSocialMode(true)}
+                className={socialMode ? 
+                  'bg-gradient-to-r from-purple-500 to-indigo-500 text-white' : 
+                  'text-purple-700 hover:bg-purple-50'
                 }
               >
-                <Network className="w-4 h-4 mr-1" />
-                Preview Mode
+                <Users className="w-4 h-4 mr-1" />
+                Social Mode
               </Button>
             </div>
           </div>
