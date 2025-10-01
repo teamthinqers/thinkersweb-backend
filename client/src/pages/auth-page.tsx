@@ -55,13 +55,12 @@ export default function AuthPage() {
       const urlParams = new URLSearchParams(window.location.search);
       const redirect = urlParams.get('redirect');
       if (redirect) {
-        return `/${redirect}`;
+        setLocation(`/${redirect}`);
+      } else {
+        // Default redirect to dashboard after login
+        setLocation('/dashboard');
       }
-      // Redirect to the main DotSpark domain
-      window.location.href = 'https://www.dotspark.in';
-      return;
     }
-    window.location.href = 'https://www.dotspark.in';
   };
 
   // Redirect if already logged in
