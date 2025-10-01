@@ -582,7 +582,7 @@ const Dashboard: React.FC = () => {
   // Handle search functionality
   React.useEffect(() => {
     performSearch(searchTerm);
-  }, [searchTerm, dots, wheels, previewMode]);
+  }, [searchTerm, dots, wheels, socialMode]);
 
   const DotCard: React.FC<{ dot: Dot; isPreview?: boolean; onClick?: () => void }> = ({ dot, isPreview = false, onClick }) => {
     const handleDotClick = () => {
