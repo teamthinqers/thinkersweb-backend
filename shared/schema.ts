@@ -37,6 +37,33 @@ export const tags = pgTable("tags", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+// === NEW SIMPLIFIED THOUGHT SYSTEM ===
+
+// Thoughts table - Unified personal and social thoughts
+export const thoughts = pgTable("thoughts", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  heading: text("heading").notNull(),
+  summary: text("summary").notNull(),
+  emotion: text("emotion"), // Optional: joy, curiosity, frustration, etc.
+  visibility: text("visibility").notNull().default("personal"), // 'personal' or 'social'
+  positionX: integer("position_x"),
+  positionY: integer("position_y"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Saved thoughts - Junction table for users saving others' social thoughts to their MyNeura
+export const savedThoughts = pgTable("saved_thoughts", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id).notNull(), // Who saved it
+  thoughtId: integer("thought_id").references(() => thoughts.id).notNull(), // What they saved
+  savedAt: timestamp("saved_at").defaultNow().notNull(),
+}, (table) => ({
+  // Prevent duplicate saves
+  uniqueUserThought: unique().on(table.userId, table.thoughtId),
+}));
+
 // === SEPARATE TABLES FOR VECTOR DB MIGRATION ===
 
 // 1. DOTS table - Individual insights with three-layer structure
@@ -135,6 +162,27 @@ export const userBehavior = pgTable("user_behavior", {
 
 // === RELATIONS ===
 
+// New thought system relations
+export const thoughtsRelations = relations(thoughts, ({ one, many }) => ({
+  user: one(users, {
+    fields: [thoughts.userId],
+    references: [users.id],
+  }),
+  saves: many(savedThoughts),
+}));
+
+export const savedThoughtsRelations = relations(savedThoughts, ({ one }) => ({
+  user: one(users, {
+    fields: [savedThoughts.userId],
+    references: [users.id],
+  }),
+  thought: one(thoughts, {
+    fields: [savedThoughts.thoughtId],
+    references: [thoughts.id],
+  }),
+}));
+
+// Old system relations (legacy)
 export const dotsRelations = relations(dots, ({ one }) => ({
   user: one(users, {
     fields: [dots.userId],
@@ -187,6 +235,28 @@ export const userBehaviorRelations = relations(userBehavior, ({ one }) => ({
 
 // === VALIDATION SCHEMAS ===
 
+// New thought system schemas
+export const insertThoughtSchema = createInsertSchema(thoughts, {
+  heading: (schema) => schema.min(3, "Heading must be at least 3 characters").max(100, "Heading too long"),
+  summary: (schema) => schema.min(10, "Summary must be at least 10 characters").max(500, "Summary too long"),
+  emotion: (schema) => schema.optional(),
+  visibility: (schema) => schema.refine(val => ['personal', 'social'].includes(val), "Visibility must be personal or social"),
+});
+
+export const selectThoughtSchema = createSelectSchema(thoughts);
+export type Thought = z.infer<typeof selectThoughtSchema>;
+export type InsertThought = z.infer<typeof insertThoughtSchema>;
+
+export const insertSavedThoughtSchema = createInsertSchema(savedThoughts, {
+  userId: (schema) => schema.positive("User ID must be positive"),
+  thoughtId: (schema) => schema.positive("Thought ID must be positive"),
+});
+
+export const selectSavedThoughtSchema = createSelectSchema(savedThoughts);
+export type SavedThought = z.infer<typeof selectSavedThoughtSchema>;
+export type InsertSavedThought = z.infer<typeof insertSavedThoughtSchema>;
+
+// Old system schemas (legacy)
 export const insertDotSchema = createInsertSchema(dots, {
   oneWordSummary: (schema) => schema.min(1, "One word summary is required").max(20, "Must be one word"),
   summary: (schema) => schema.min(10, "Summary must be at least 10 characters").max(220, "Summary too long"),
