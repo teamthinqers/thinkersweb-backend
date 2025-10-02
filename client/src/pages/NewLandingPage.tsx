@@ -7,7 +7,7 @@ import {
   CheckCircle, Network, Zap, Globe, Shield, TrendingUp,
   Menu, X, User
 } from "lucide-react";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuth } from "@/hooks/use-auth-new";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -58,30 +58,44 @@ export default function NewLandingPage() {
               </div>
             </div>
 
-            {/* Desktop Navigation - Simple: About + Sign In only */}
+            {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center gap-6">
               <span className="text-sm font-medium text-gray-700 hover:text-amber-600 transition-colors cursor-pointer">
                 About
               </span>
+              {user && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setLocation("/home")}
+                  className="text-sm font-medium"
+                >
+                  Home
+                </Button>
+              )}
             </nav>
 
-            {/* Right side - Sign In button only */}
+            {/* Right side - Sign In button or User menu */}
             <div className="flex items-center gap-3">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setLocation("/auth")}
-                className="hidden md:inline-flex"
-              >
-                Sign In
-              </Button>
-              <Button
-                size="sm"
-                onClick={() => setLocation("/auth")}
-                className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white"
-              >
-                Join Now
-              </Button>
+              {!user ? (
+                <>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setLocation("/auth")}
+                    className="hidden md:inline-flex"
+                  >
+                    Sign In
+                  </Button>
+                  <Button
+                    size="sm"
+                    onClick={() => setLocation("/auth")}
+                    className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white"
+                  >
+                    Join Now
+                  </Button>
+                </>
+              ) : null}
 
               {/* Mobile menu */}
               <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
@@ -207,7 +221,7 @@ export default function NewLandingPage() {
                 <div className="space-y-6">
                   <div className="space-y-2">
                     <h2 className="text-3xl font-bold">
-                      Welcome back, {user.displayName?.split(' ')[0]}!
+                      Welcome back, {user.fullName?.split(' ')[0] || user.username}!
                     </h2>
                     <p className="text-amber-100 text-lg">
                       Ready to expand your cognitive network?

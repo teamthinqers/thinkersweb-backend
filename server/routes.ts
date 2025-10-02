@@ -20,7 +20,7 @@ import {
 import { processEntryFromChat, generateChatResponse, type Message } from "./chat";
 import { connectionsService } from "./connections";
 import { db } from "@db";
-import { setupAuth, isAuthenticated } from "./auth";
+import { setupNewAuth, requireAuth } from "./auth-new";
 import { 
   setupDotSparkRoutes, 
   trackUserBehavior
@@ -72,7 +72,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Setup authentication middleware
-  setupAuth(app);
+  setupNewAuth(app);
   
   // Setup DotSpark activation routes
   setupDotSparkRoutes(app);
@@ -86,7 +86,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.use(`${apiPrefix}/whatsapp/webhook`, whatsappWebhookRouter);
 
   // Register a phone number for DotSpark WhatsApp chatbot
-  app.post(`${apiPrefix}/whatsapp/register`, isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
+  app.post(`${apiPrefix}/whatsapp/register`, requireAuth, async (req: AuthenticatedRequest, res: Response) => {
     try {
       const userId = req.user?.id;
       
@@ -109,7 +109,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Unregister a phone number from DotSpark WhatsApp chatbot
-  app.post(`${apiPrefix}/whatsapp/unregister`, isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
+  app.post(`${apiPrefix}/whatsapp/unregister`, requireAuth, async (req: AuthenticatedRequest, res: Response) => {
     try {
       const userId = req.user?.id;
       
@@ -126,7 +126,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get DotSpark WhatsApp chatbot status
-  app.get(`${apiPrefix}/whatsapp/status`, isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
+  app.get(`${apiPrefix}/whatsapp/status`, requireAuth, async (req: AuthenticatedRequest, res: Response) => {
     try {
       const userId = req.user?.id;
       
@@ -163,7 +163,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Direct WhatsApp registration (no OTP needed)
-  app.post(`${apiPrefix}/whatsapp/direct-register`, isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
+  app.post(`${apiPrefix}/whatsapp/direct-register`, requireAuth, async (req: AuthenticatedRequest, res: Response) => {
     try {
       console.log("Received direct WhatsApp registration request:", req.body);
       
@@ -326,7 +326,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Enhanced Intelligent Chat Context API - Requires DotSpark activation
-  app.post(`${apiPrefix}/chat/intelligent`, isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
+  app.post(`${apiPrefix}/chat/intelligent`, requireAuth, async (req: AuthenticatedRequest, res: Response) => {
     const startTime = Date.now();
     
     try {
@@ -388,7 +388,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get user context summary for intelligent features
-  app.get(`${apiPrefix}/context/summary`, isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
+  app.get(`${apiPrefix}/context/summary`, requireAuth, async (req: AuthenticatedRequest, res: Response) => {
     try {
       const userId = req.user?.id;
       
@@ -440,7 +440,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Dots and Wheels API Endpoints
   
   // Enhanced dots endpoint with DotSpark activation and intelligent tracking
-  app.post(`${apiPrefix}/dots`, isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
+  app.post(`${apiPrefix}/dots`, requireAuth, async (req: AuthenticatedRequest, res: Response) => {
     try {
       const userId = req.user?.id;
       
@@ -1783,17 +1783,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.use(`${apiPrefix}/user-content`, userContentRouter);
   
   // Mount social feed routes for the thought cloud (legacy)
-  app.use(`${apiPrefix}/social`, isAuthenticated, socialRouter);
+  app.use(`${apiPrefix}/social`, requireAuth, socialRouter);
   
-  // Mount new thoughts system routes
-  app.use(`${apiPrefix}/thoughts`, isAuthenticated, thoughtsRouter);
+  // Mount new thoughts system routes - PUBLIC for social feed, protected endpoints handle auth internally
+  app.use(`${apiPrefix}/thoughts`, thoughtsRouter);
 
   // ===========================
   // MAPPING ROUTES
   // ===========================
 
   // PUT /api/mapping/dot-to-wheel - Map/unmap dot to wheel
-  app.put(`${apiPrefix}/mapping/dot-to-wheel`, isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
+  app.put(`${apiPrefix}/mapping/dot-to-wheel`, requireAuth, async (req: AuthenticatedRequest, res: Response) => {
     try {
       const userId = req.user?.id;
       
@@ -1868,7 +1868,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // PUT /api/mapping/wheel-to-chakra - Map/unmap wheel to chakra  
-  app.put(`${apiPrefix}/mapping/wheel-to-chakra`, isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
+  app.put(`${apiPrefix}/mapping/wheel-to-chakra`, requireAuth, async (req: AuthenticatedRequest, res: Response) => {
     try {
       const userId = req.user?.id;
       
@@ -1915,7 +1915,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // PUT /api/mapping/dot-to-chakra - Map/unmap dot directly to chakra (long-term vision alignment)
-  app.put(`${apiPrefix}/mapping/dot-to-chakra`, isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
+  app.put(`${apiPrefix}/mapping/dot-to-chakra`, requireAuth, async (req: AuthenticatedRequest, res: Response) => {
     try {
       const userId = req.user?.id;
       

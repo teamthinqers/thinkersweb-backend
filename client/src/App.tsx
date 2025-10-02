@@ -71,7 +71,8 @@ import AuthTest from "@/pages/AuthTest";
 import SimplifiedFloatingDot from "@/components/dotspark/SimplifiedFloatingDot";
 import { neuraStorage } from "@/lib/neuraStorage";
 import { Loader2 } from "lucide-react";
-import { useAuth, AuthProvider } from "@/hooks/use-auth";
+import { useAuth, AuthProvider } from "@/hooks/use-auth-new";
+import { AuthInitializer } from "@/components/AuthProvider";
 
 import { PWAInstallButton } from "@/components/ui/pwa-install-button";
 import { IosPwaInstallPrompt } from "@/components/ui/ios-pwa-install-prompt";
@@ -385,29 +386,31 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        {showNetworkWarning && (
-          <div className="fixed top-0 left-0 right-0 p-2 bg-amber-500 text-black z-50 text-center text-sm">
-            <p>
-              Network module warning detected. Visit the <a href="/pwa-debug" className="underline font-bold">PWA Debugger</a> for help.
-              <button 
-                className="ml-2 px-2 py-0.5 bg-black text-white rounded-sm text-xs"
-                onClick={() => setShowNetworkWarning(false)}
-              >
-                Dismiss
-              </button>
-            </p>
+        <AuthInitializer>
+          {showNetworkWarning && (
+            <div className="fixed top-0 left-0 right-0 p-2 bg-amber-500 text-black z-50 text-center text-sm">
+              <p>
+                Network module warning detected. Visit the <a href="/pwa-debug" className="underline font-bold">PWA Debugger</a> for help.
+                <button 
+                  className="ml-2 px-2 py-0.5 bg-black text-white rounded-sm text-xs"
+                  onClick={() => setShowNetworkWarning(false)}
+                >
+                  Dismiss
+                </button>
+              </p>
+            </div>
+          )}
+          <Router />
+          <Toaster />
+          {/* Global Floating Dot for Thought Creation */}
+          <SimplifiedFloatingDot />
+          {/* iOS PWA Install Prompt */}
+          <IosPwaInstallPrompt />
+          {/* PWA Install Floating Button (only visible when installable) */}
+          <div className="fixed bottom-4 right-4 left-4 md:left-auto z-50">
+            <PWAInstallButton size="lg" className="w-full md:w-auto" />
           </div>
-        )}
-        <Router />
-        <Toaster />
-        {/* Global Floating Dot for Thought Creation */}
-        <SimplifiedFloatingDot />
-        {/* iOS PWA Install Prompt */}
-        <IosPwaInstallPrompt />
-        {/* PWA Install Floating Button (only visible when installable) */}
-        <div className="fixed bottom-4 right-4 left-4 md:left-auto z-50">
-          <PWAInstallButton size="lg" className="w-full md:w-auto" />
-        </div>
+        </AuthInitializer>
       </AuthProvider>
     </QueryClientProvider>
   );
