@@ -9,7 +9,7 @@ export default function AuthPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [, setLocation] = useLocation();
   const { toast } = useToast();
-  const { user, loginWithGoogle } = useAuth();
+  const { user, loginWithGoogle, checkAuth } = useAuth();
   
   // Get redirect path from URL if any
   const getRedirectPath = () => {
@@ -42,6 +42,11 @@ export default function AuthPage() {
       await loginWithGoogle();
       
       console.log("✅ Google login completed successfully");
+      
+      // Refresh user state from session before redirecting
+      await checkAuth();
+      
+      console.log("✅ Session loaded, redirecting...");
       
       // Navigate after successful login
       getRedirectPath();
