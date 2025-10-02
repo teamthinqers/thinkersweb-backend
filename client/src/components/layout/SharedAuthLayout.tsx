@@ -26,7 +26,7 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
 
   return (
     <div className="flex h-screen bg-gray-50">
-      {/* Desktop Sidebar - Collapsible */}
+      {/* Desktop Sidebar - Always Visible, Collapsible */}
       <div className={`hidden md:flex flex-col transition-all duration-300 bg-white border-r border-amber-200/30 ${isSidebarOpen ? 'w-64' : 'w-16'}`}>
         <div className="flex flex-col h-full">
           {/* Sidebar Header */}
@@ -112,53 +112,8 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
           {/* Center: Empty space */}
           <div className="flex-1"></div>
 
-          {/* Right: Fixed position icons */}
+          {/* Right: User Avatar */}
           <div className="flex items-center gap-2">
-            {/* Home Icon with LinkedIn-style underline */}
-            <Link href="/home">
-              <div className="relative flex flex-col items-center">
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  className={`p-2 rounded-lg transition-all duration-300 ${
-                    isOnSocialFeed
-                      ? 'bg-amber-50 text-amber-700'
-                      : 'hover:bg-amber-50 hover:text-amber-600'
-                  }`}
-                  title="Home"
-                >
-                  <Home className="h-5 w-5" />
-                </Button>
-                {/* LinkedIn-style active indicator */}
-                {isOnSocialFeed && (
-                  <div className="absolute -bottom-0.5 left-0 right-0 h-0.5 bg-amber-600 rounded-full"></div>
-                )}
-              </div>
-            </Link>
-
-            {/* My Neura Icon with LinkedIn-style underline */}
-            <Link href="/myneura">
-              <div className="relative flex flex-col items-center">
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  className={`p-2 rounded-lg transition-all duration-300 ${
-                    isOnMyNeura
-                      ? 'bg-amber-50 text-amber-700'
-                      : 'hover:bg-amber-50 hover:text-amber-600'
-                  }`}
-                  title="My Neura"
-                >
-                  <Brain className="h-5 w-5" />
-                </Button>
-                {/* LinkedIn-style active indicator */}
-                {isOnMyNeura && (
-                  <div className="absolute -bottom-0.5 left-0 right-0 h-0.5 bg-amber-600 rounded-full"></div>
-                )}
-              </div>
-            </Link>
-
-            {/* User Avatar */}
             {user && (
               <Sheet>
                 <SheetTrigger asChild>
