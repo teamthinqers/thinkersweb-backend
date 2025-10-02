@@ -19,8 +19,8 @@ export default function AuthPage() {
       if (redirect) {
         setLocation(`/${redirect}`);
       } else {
-        // Default redirect to dashboard after login
-        setLocation('/dashboard');
+        // Default redirect to home after login
+        setLocation('/home');
       }
     }
   };

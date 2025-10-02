@@ -58,9 +58,9 @@ export default function NewLandingPage() {
                   About
                 </span>
               </Link>
-              <Link href="/dashboard">
+              <Link href="/home">
                 <span className="text-sm font-medium text-gray-700 hover:text-amber-600 transition-colors cursor-pointer">
-                  Discover
+                  Home
                 </span>
               </Link>
               <Link href="/social">
@@ -94,9 +94,9 @@ export default function NewLandingPage() {
                     </div>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
-                      <Link href="/dashboard" className="cursor-pointer w-full">
+                      <Link href="/home" className="cursor-pointer w-full">
                         <Brain className="mr-2 h-4 w-4" />
-                        My Neura
+                        Home
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
@@ -152,8 +152,8 @@ export default function NewLandingPage() {
                       </Link>
                     </SheetClose>
                     <SheetClose asChild>
-                      <Link href="/dashboard">
-                        <span className="text-lg font-medium hover:text-amber-600 cursor-pointer">Discover</span>
+                      <Link href="/home">
+                        <span className="text-lg font-medium hover:text-amber-600 cursor-pointer">Home</span>
                       </Link>
                     </SheetClose>
                     <SheetClose asChild>
@@ -204,10 +204,10 @@ export default function NewLandingPage() {
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button
                   size="lg"
-                  onClick={() => setLocation(user ? "/dashboard" : "/auth")}
+                  onClick={() => setLocation(user ? "/home" : "/auth")}
                   className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white text-lg px-8 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all"
                 >
-                  {user ? "Go to Dashboard" : "Get Started"}
+                  {user ? "Go to Home" : "Get Started"}
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
                 <Button
@@ -288,11 +288,11 @@ export default function NewLandingPage() {
 
                   <div className="space-y-3">
                     <Button
-                      onClick={() => setLocation("/dashboard")}
+                      onClick={() => setLocation("/home")}
                       className="w-full bg-white text-amber-700 hover:bg-amber-50 py-6 text-lg rounded-xl font-semibold"
                     >
                       <Brain className="mr-2 h-5 w-5" />
-                      My Neural Dashboard
+                      Go to Home
                     </Button>
                     <Button
                       onClick={() => setLocation("/social")}
@@ -477,10 +477,10 @@ export default function NewLandingPage() {
               </p>
               <Button
                 size="lg"
-                onClick={() => setLocation(user ? "/dashboard" : "/auth")}
+                onClick={() => setLocation(user ? "/home" : "/auth")}
                 className="bg-white text-amber-700 hover:bg-amber-50 text-lg px-12 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all font-semibold"
               >
-                {user ? "Go to Dashboard" : "Get Started for Free"}
+                {user ? "Go to Home" : "Get Started for Free"}
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </div>
@@ -506,7 +506,7 @@ export default function NewLandingPage() {
             <div>
               <h3 className="font-semibold text-white mb-4">Platform</h3>
               <ul className="space-y-2 text-sm">
-                <li><Link href="/dashboard"><span className="hover:text-amber-400 cursor-pointer">Dashboard</span></Link></li>
+                <li><Link href="/home"><span className="hover:text-amber-400 cursor-pointer">Home</span></Link></li>
                 <li><Link href="/social"><span className="hover:text-amber-400 cursor-pointer">Community</span></Link></li>
                 <li><Link href="/chat"><span className="hover:text-amber-400 cursor-pointer">AI Chat</span></Link></li>
               </ul>

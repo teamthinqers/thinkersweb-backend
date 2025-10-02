@@ -194,7 +194,7 @@ function Router() {
     <Switch>
       <Route path="/test-minimal" component={() => <div>Basic Test</div>} />
       <Route path="/" component={NewLandingPage} />
-      <Route path="/home" component={() => <ProtectedRoute><ChatPage /></ProtectedRoute>} />
+      <Route path="/home" component={() => <ProtectedRoute><LandingPage /></ProtectedRoute>} />
       <Route path="/about" component={AboutPage} />
       <Route path="/auth" component={AuthPage} />
       
