@@ -282,68 +282,68 @@ export default function LandingPage() {
                     style={{
                       left: `${dot.x}%`,
                       top: `${dot.y}%`,
-                      transform: `translate(-50%, -50%) rotate(${dot.rotation}deg)`,
+                      transform: `translate(-50%, -50%)`,
                       width: `${dot.size}px`,
+                      height: `${dot.size}px`,
                       animation: `float-${dot.id % 3} ${6 + (dot.id % 4)}s ease-in-out infinite`,
                     }}
                     onClick={() => setSelectedDot(dot)}
                   >
-                    {/* Pulsing glow effect */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-orange-400 rounded-full blur-xl opacity-30 group-hover:opacity-50 transition-opacity animate-pulse" />
+                    {/* Outer pulsing ring */}
+                    <div className="absolute inset-0 rounded-full bg-gradient-to-br from-amber-400 via-orange-400 to-red-400 opacity-20 group-hover:opacity-40 transition-opacity animate-pulse" 
+                         style={{ transform: 'scale(1.15)' }} />
                     
-                    {/* Dot card */}
-                    <Card className="relative bg-white/95 backdrop-blur-sm border-2 border-amber-200 hover:border-orange-400 shadow-lg hover:shadow-2xl transition-all h-full">
-                      <CardHeader className="p-4 space-y-2">
-                        {/* User info */}
-                        <div className="flex items-center gap-2 mb-2">
-                          <Avatar className="h-6 w-6 border border-amber-200">
-                            {dot.user?.avatar ? (
-                              <AvatarImage src={dot.user.avatar} alt={dot.user.fullName || 'User'} />
-                            ) : (
-                              <AvatarFallback className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs">
-                                {dot.user?.fullName?.charAt(0).toUpperCase() || 'U'}
-                              </AvatarFallback>
-                            )}
-                          </Avatar>
-                          <span className="text-xs text-gray-600 truncate">
-                            {dot.user?.fullName || 'Anonymous'}
-                          </span>
+                    {/* Middle glow layer */}
+                    <div className="absolute inset-0 rounded-full bg-gradient-to-br from-amber-300 to-orange-300 blur-md opacity-40 group-hover:opacity-60 transition-opacity" />
+                    
+                    {/* Main circular dot */}
+                    <div className="relative w-full h-full rounded-full bg-gradient-to-br from-white via-amber-50 to-orange-50 border-3 border-amber-300 group-hover:border-orange-400 shadow-xl group-hover:shadow-2xl transition-all flex flex-col items-center justify-center p-4 backdrop-blur-sm">
+                      
+                      {/* User avatar - centered at top */}
+                      <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                        <Avatar className="h-8 w-8 border-2 border-white shadow-md">
+                          {dot.user?.avatar ? (
+                            <AvatarImage src={dot.user.avatar} alt={dot.user.fullName || 'User'} />
+                          ) : (
+                            <AvatarFallback className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs">
+                              {dot.user?.fullName?.charAt(0).toUpperCase() || 'U'}
+                            </AvatarFallback>
+                          )}
+                        </Avatar>
+                      </div>
+
+                      {/* One-word summary - at the very top */}
+                      <div className="text-center mb-2">
+                        <span className="px-2 py-0.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-[10px] font-bold rounded-full uppercase tracking-wider shadow-sm">
+                          {dot.oneWordSummary}
+                        </span>
+                      </div>
+
+                      {/* Summary heading - center */}
+                      <h3 className="text-xs font-bold text-gray-900 text-center line-clamp-3 leading-tight mb-2">
+                        {dot.summary}
+                      </h3>
+
+                      {/* Pulse indicator - at bottom */}
+                      <div className="flex items-center gap-1 text-[10px] text-amber-600 mt-auto">
+                        <TrendingUp className="h-3 w-3" />
+                        <span className="font-medium truncate max-w-[80px]">{dot.pulse}</span>
+                      </div>
+
+                      {/* Quick action indicators - only show on hover */}
+                      <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2">
+                        <div className="w-6 h-6 rounded-full bg-white shadow-md flex items-center justify-center hover:bg-red-50 transition-colors">
+                          <Heart className="h-3 w-3 text-red-500" />
                         </div>
-
-                        {/* One-word summary badge */}
-                        <div className="inline-flex w-fit">
-                          <span className="px-3 py-1 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-bold rounded-full uppercase tracking-wide">
-                            {dot.oneWordSummary}
-                          </span>
+                        <div className="w-6 h-6 rounded-full bg-white shadow-md flex items-center justify-center hover:bg-blue-50 transition-colors">
+                          <Eye className="h-3 w-3 text-blue-500" />
                         </div>
+                      </div>
+                    </div>
 
-                        {/* Summary heading */}
-                        <CardTitle className="text-sm font-bold text-gray-900 line-clamp-2 leading-tight">
-                          {dot.summary}
-                        </CardTitle>
-
-                        {/* Pulse indicator */}
-                        <div className="flex items-center gap-1 text-xs text-amber-600">
-                          <TrendingUp className="h-3 w-3" />
-                          <span className="font-medium truncate">{dot.pulse}</span>
-                        </div>
-
-                        {/* Quick actions - only show on hover */}
-                        <div className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2 pt-2 border-t border-gray-100">
-                          <Button variant="ghost" size="sm" className="h-7 px-2 text-xs">
-                            <Heart className="h-3 w-3 mr-1" />
-                            <span className="hidden sm:inline">Like</span>
-                          </Button>
-                          <Button variant="ghost" size="sm" className="h-7 px-2 text-xs">
-                            <Eye className="h-3 w-3 mr-1" />
-                            <span className="hidden sm:inline">View</span>
-                          </Button>
-                        </div>
-                      </CardHeader>
-                    </Card>
-
-                    {/* Floating particle effect */}
-                    <div className="absolute -top-1 -right-1 w-2 h-2 bg-orange-400 rounded-full animate-ping opacity-75" />
+                    {/* Sparkle particle effect */}
+                    <div className="absolute top-0 right-2 w-2 h-2 bg-yellow-400 rounded-full animate-ping opacity-75" />
+                    <div className="absolute bottom-2 left-1 w-1.5 h-1.5 bg-orange-400 rounded-full animate-pulse opacity-60" />
                   </div>
                 ))
               )}
