@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus, X, Sparkles, Users, User } from "lucide-react";
+import { Plus, X, Sparkles, Users, User, Image } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -31,13 +31,14 @@ export default function SimplifiedFloatingDot() {
   const [heading, setHeading] = useState('');
   const [summary, setSummary] = useState('');
   const [emotion, setEmotion] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
   
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
   // Create thought mutation
   const createMutation = useMutation({
-    mutationFn: async (data: { heading: string; summary: string; emotion?: string; visibility: string }) => {
+    mutationFn: async (data: { heading: string; summary: string; emotion?: string; imageUrl?: string; visibility: string }) => {
       const response = await fetch('/api/thoughts', {
         method: 'POST',
         body: JSON.stringify(data),
@@ -68,6 +69,7 @@ export default function SimplifiedFloatingDot() {
       setHeading('');
       setSummary('');
       setEmotion('');
+      setImageUrl('');
       setIsOpen(false);
     },
     onError: (error) => {
@@ -149,6 +151,7 @@ export default function SimplifiedFloatingDot() {
       heading: heading.trim(),
       summary: summary.trim(),
       emotion: emotion.trim() || undefined,
+      imageUrl: imageUrl.trim() || undefined,
       visibility,
     });
   };
@@ -302,6 +305,23 @@ export default function SimplifiedFloatingDot() {
                     <SelectItem value="gratitude">🙏 Gratitude</SelectItem>
                   </SelectContent>
                 </Select>
+              </div>
+
+              {/* Image URL (Optional) */}
+              <div>
+                <Label htmlFor="imageUrl" className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                  <Image className="h-4 w-4" />
+                  Image URL (Optional)
+                </Label>
+                <Input
+                  id="imageUrl"
+                  value={imageUrl}
+                  onChange={(e) => setImageUrl(e.target.value)}
+                  placeholder="https://example.com/image.jpg"
+                  className="mt-2 border-amber-200 focus:border-amber-400 focus:ring-amber-400"
+                  type="url"
+                />
+                <p className="text-xs text-gray-500 mt-1">Add a visual to your thought</p>
               </div>
 
               {/* Submit */}
