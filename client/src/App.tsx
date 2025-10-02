@@ -185,13 +185,47 @@ function AppWithLayout() {
   );
 }
 
+// Smart root route - redirects authenticated users to /home
+function RootRoute() {
+  const { user, isLoading } = useAuth();
+  const [, setLocation] = useLocation();
+
+  useEffect(() => {
+    if (!isLoading && user) {
+      setLocation("/home");
+    }
+  }, [user, isLoading, setLocation]);
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen">
+        <Loader2 className="h-8 w-8 animate-spin text-primary mb-4" />
+        <p className="text-center text-muted-foreground">Loading...</p>
+      </div>
+    );
+  }
+
+  // If logged in, show loading while redirecting
+  if (user) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen">
+        <Loader2 className="h-8 w-8 animate-spin text-primary mb-4" />
+        <p className="text-center text-muted-foreground">Redirecting to home...</p>
+      </div>
+    );
+  }
+
+  // Not logged in - show landing page
+  return <NewLandingPage />;
+}
+
 function Router() {
   const [location] = useLocation();
   
   return (
     <Switch>
       <Route path="/test-minimal" component={() => <div>Basic Test</div>} />
-      <Route path="/" component={NewLandingPage} />
+      <Route path="/" component={RootRoute} />
       <Route path="/home" component={LandingPage} />
       <Route path="/myneura" component={() => <ProtectedRoute><MyNeuraPage /></ProtectedRoute>} />
       <Route path="/about" component={AboutPage} />
