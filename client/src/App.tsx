@@ -163,25 +163,23 @@ function AppWithLayout() {
   };
 
   return (
-    <ProtectedRoute>
-      <AppLayout onNewEntry={openNewEntryForm}>
-        {renderContent()}
+    <AppLayout onNewEntry={openNewEntryForm}>
+      {renderContent()}
 
-        {showEntryDetail && currentEntryId && (
-          <EntryDetail 
-            entryId={currentEntryId} 
-            isOpen={showEntryDetail} 
-            onClose={closeEntryDetail} 
-            onEdit={openEditEntryForm} 
-          />
-        )}
-
-        <ChatEntryForm 
-          isOpen={showEntryForm} 
-          onClose={closeEntryForm} 
+      {showEntryDetail && currentEntryId && (
+        <EntryDetail 
+          entryId={currentEntryId} 
+          isOpen={showEntryDetail} 
+          onClose={closeEntryDetail} 
+          onEdit={openEditEntryForm} 
         />
-      </AppLayout>
-    </ProtectedRoute>
+      )}
+
+      <ChatEntryForm 
+        isOpen={showEntryForm} 
+        onClose={closeEntryForm} 
+      />
+    </AppLayout>
   );
 }
 
