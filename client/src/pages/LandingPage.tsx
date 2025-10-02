@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   Dialog,
   DialogContent,
@@ -26,6 +26,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
+import { useToast } from "@/hooks/use-toast";
 
 interface ThoughtDot {
   id: number;
@@ -57,6 +58,9 @@ export default function LandingPage() {
   const [showRecentOnly, setShowRecentOnly] = useState(false);
   const [viewMode, setViewMode] = useState<'cloud' | 'feed'>('cloud'); // Cloud grid or Feed list
   
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  
   // Cache for dot positions to prevent teleporting on refetch
   const positionCacheRef = useState(() => new Map<number, { x: number; y: number; size: number; rotation: number }>())[0];
 
@@ -64,6 +68,37 @@ export default function LandingPage() {
   const { data: publicDots, isLoading } = useQuery({
     queryKey: ['/api/thoughts?limit=50'],
     enabled: !!user,
+  });
+
+  // Save thought to MyNeura mutation
+  const saveToMyNeuraMutation = useMutation({
+    mutationFn: async (thoughtId: number) => {
+      const response = await fetch(`/api/thoughts/myneura/save/${thoughtId}`, {
+        method: 'POST',
+        credentials: 'include',
+      });
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to save thought');
+      }
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Saved to MyNeura!",
+        description: "This thought is now in your personal cloud",
+      });
+      // Invalidate MyNeura queries to refresh the data
+      queryClient.invalidateQueries({ queryKey: ['/api/thoughts/myneura'] });
+      setSelectedDot(null); // Close the modal
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
   });
 
   // Transform and position thoughts using collision-free grid system
@@ -586,9 +621,11 @@ export default function LandingPage() {
                   <Button 
                     className="w-full bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 text-white"
                     size="lg"
+                    onClick={() => saveToMyNeuraMutation.mutate(selectedDot.id)}
+                    disabled={saveToMyNeuraMutation.isPending}
                   >
                     <Bookmark className="h-5 w-5 mr-2" />
-                    Save to MyNeura
+                    {saveToMyNeuraMutation.isPending ? 'Saving...' : 'Save to MyNeura'}
                   </Button>
                 )}
 
