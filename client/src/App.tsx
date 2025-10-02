@@ -421,7 +421,7 @@ function App() {
         <Router />
         <Toaster />
         {/* Global Floating Dot for Thought Creation */}
-        <SimplifiedFloatingDot />
+        {/* <SimplifiedFloatingDot /> */}
         {/* iOS PWA Install Prompt */}
         <IosPwaInstallPrompt />
         {/* PWA Install Floating Button (only visible when installable) */}
