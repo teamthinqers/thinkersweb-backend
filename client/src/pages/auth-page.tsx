@@ -19,7 +19,7 @@ export default function AuthPage() {
       if (redirect) {
         setLocation(`/${redirect}`);
       } else {
-        // Default redirect to home after login
+        // Default redirect to /home after successful login
         setLocation('/home');
       }
     }
