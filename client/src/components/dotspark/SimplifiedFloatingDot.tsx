@@ -14,10 +14,12 @@ import {
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/use-auth";
 
 type VisibilityMode = 'social' | 'personal';
 
 export default function SimplifiedFloatingDot() {
+  const { user, isLoading } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [isSpinning, setIsSpinning] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
@@ -69,14 +71,27 @@ export default function SimplifiedFloatingDot() {
       setIsOpen(false);
     },
     onError: (error) => {
+      const errorMessage = error instanceof Error && error.message.includes('401')
+        ? "Please sign in to create thoughts"
+        : "Failed to create thought. Please try again.";
+      
       toast({
         title: "Error",
-        description: "Failed to create thought. Please try again.",
+        description: errorMessage,
         variant: "destructive",
       });
       console.error('Create thought error:', error);
     },
   });
+
+  // Don't render if user is not authenticated
+  if (isLoading) {
+    return null; // Don't show anything while checking auth
+  }
+
+  if (!user) {
+    return null; // Don't show floating dot for unauthenticated users
+  }
 
   const handleDotClick = () => {
     if (!isDragging) {
