@@ -44,12 +44,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       if (response.ok) {
         const data = await response.json();
-        setUser(data.user || null);
+        if (data && data.user) {
+          console.log("✅ User authenticated:", data.user.email);
+          setUser(data.user);
+        } else {
+          console.log("ℹ️ No authenticated user");
+          setUser(null);
+        }
       } else {
+        console.log("ℹ️ Auth check returned:", response.status);
         setUser(null);
       }
     } catch (err) {
-      console.error("Auth check error:", err);
+      console.error("❌ Auth check error:", err);
       setUser(null);
       setError("Failed to check authentication");
     } finally {
