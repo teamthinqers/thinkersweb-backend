@@ -58,11 +58,16 @@ export default function SocialFeedPage() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  // Redirect if not authenticated
+  // Redirect if not authenticated (with delay to prevent blank screen)
   useEffect(() => {
+    let timeout: NodeJS.Timeout;
     if (!authLoading && !user) {
-      setLocation("/auth");
+      // Add small delay to prevent race conditions
+      timeout = setTimeout(() => {
+        setLocation("/auth");
+      }, 100);
     }
+    return () => clearTimeout(timeout);
   }, [user, authLoading, setLocation]);
 
   // Fetch public thoughts from all users
@@ -154,15 +159,28 @@ export default function SocialFeedPage() {
   // Show loading while checking authentication
   if (authLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="h-8 w-8 animate-spin text-amber-600" />
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-amber-50/50 via-white to-orange-50/30">
+        <Loader2 className="h-8 w-8 animate-spin text-amber-600 mb-4" />
+        <p className="text-gray-600">Loading...</p>
       </div>
     );
   }
 
-  // Don't render if not authenticated (will redirect)
+  // Show sign-in prompt if not authenticated (instead of blank redirect)
   if (!user) {
-    return null;
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-amber-50/50 via-white to-orange-50/30">
+        <Brain className="h-16 w-16 text-amber-400 mb-4" />
+        <h2 className="text-2xl font-bold mb-2">Sign In Required</h2>
+        <p className="text-gray-600 mb-6">Please sign in to view the social feed</p>
+        <Button
+          onClick={() => setLocation("/auth")}
+          className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
+        >
+          Sign In
+        </Button>
+      </div>
+    );
   }
 
   return (
