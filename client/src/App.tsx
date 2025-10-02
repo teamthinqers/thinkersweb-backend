@@ -39,7 +39,6 @@ import PwaDebugger from "@/pages/PwaDebugger";
 import PwaInstallGuide from "@/pages/PwaInstallGuide";
 import Testing from "@/pages/Testing";
 import TestCreation from "@/pages/TestCreation";
-import { AuthDebug } from "@/pages/AuthDebug";
 import { QuickAuthTest } from "@/pages/QuickAuthTest";
 
 import WorkingDot from "@/pages/working-dot";
@@ -50,7 +49,6 @@ import ChatPage from "@/pages/chat-page";
 import QuickCapture from "@/pages/QuickCapture";
 import DotInstall from "@/pages/DotInstall";
 import DotCapture from "@/pages/DotCapture";
-import TestGoogleAuth from "@/pages/TestGoogleAuth";
 import Social from "@/pages/Social";
 import SparkTest from "@/pages/SparkTest";
 import Spark from "@/pages/Spark";
@@ -255,10 +253,7 @@ function Router() {
       <Route path="/install-guide" component={PwaInstallGuide} />
       <Route path="/testing" component={Testing} />
       <Route path="/intelligence-test" component={() => <div className="min-h-screen bg-gray-50 py-8"><IntelligenceClassification /></div>} />
-      <Route path="/test-auth" component={TestGoogleAuth} />
       <Route path="/auth-test" component={AuthTest} />
-      <Route path="/auth-debug" component={AuthDebug} />
-      <Route path="/debug-auth" component={AuthDebug} />
       <Route path="/simple-debug" component={() => <div className="p-8"><h1>Debug Route Test</h1><p>If you can see this, routing is working!</p></div>} />
       <Route path="/quick-auth" component={QuickAuthTest} />
       <Route path="/simple-auth" component={SimpleAuthTest} />
