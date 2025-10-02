@@ -65,10 +65,9 @@ export default function LandingPage() {
   // Cache for dot positions to prevent teleporting on refetch
   const positionCacheRef = useState(() => new Map<number, { x: number; y: number; size: number; rotation: number }>())[0];
 
-  // Fetch social thoughts from all users for the thought cloud
+  // Fetch social thoughts from all users for the thought cloud (public, no auth required)
   const { data: publicDots, isLoading } = useQuery({
     queryKey: ['/api/thoughts?limit=50'],
-    enabled: !!user,
   });
 
   // Save thought to MyNeura mutation
