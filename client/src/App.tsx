@@ -185,29 +185,22 @@ function AppWithLayout() {
   );
 }
 
-// Smart root route - redirects authenticated users to /home (like LinkedIn)
-function RootRoute() {
-  const { user, isLoading } = useAuth();
-  const [, setLocation] = useLocation();
-
-  // Redirect authenticated users to /home
-  useEffect(() => {
-    if (!isLoading && user) {
-      setLocation("/home");
-    }
-  }, [user, isLoading, setLocation]);
-
-  // Always render NewLandingPage - it will redirect if needed
-  return <NewLandingPage />;
-}
-
 function Router() {
   const [location] = useLocation();
+  const { user, isLoading } = useAuth();
+  const [, setLocation] = useLocation();
+  
+  // Auto-redirect authenticated users from root to /home
+  useEffect(() => {
+    if (!isLoading && user && location === '/') {
+      setLocation("/home");
+    }
+  }, [user, isLoading, location, setLocation]);
   
   return (
     <Switch>
       <Route path="/test-minimal" component={() => <div>Basic Test</div>} />
-      <Route path="/" component={RootRoute} />
+      <Route path="/" component={NewLandingPage} />
       <Route path="/home" component={LandingPage} />
       <Route path="/myneura" component={() => <ProtectedRoute><MyNeuraPage /></ProtectedRoute>} />
       <Route path="/about" component={AboutPage} />
