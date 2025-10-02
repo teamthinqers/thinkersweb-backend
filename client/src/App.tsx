@@ -10,6 +10,7 @@ import Insights from "@/pages/Insights";
 import Favorites from "@/pages/Favorites";
 import Network from "@/pages/Network";
 import LandingPage from "@/pages/LandingPage";
+import MyNeuraPage from "@/pages/MyNeuraPage";
 import NewLandingPage from "@/pages/NewLandingPage";
 import AboutPage from "@/pages/AboutPage";
 import LogoPage from "@/pages/LogoPage";
@@ -195,6 +196,7 @@ function Router() {
       <Route path="/test-minimal" component={() => <div>Basic Test</div>} />
       <Route path="/" component={NewLandingPage} />
       <Route path="/home" component={() => <ProtectedRoute><LandingPage /></ProtectedRoute>} />
+      <Route path="/myneura" component={() => <ProtectedRoute><MyNeuraPage /></ProtectedRoute>} />
       <Route path="/about" component={AboutPage} />
       <Route path="/auth" component={AuthPage} />
       

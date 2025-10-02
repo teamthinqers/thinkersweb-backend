@@ -7,6 +7,7 @@ import {
   Share2, Eye, MoreHorizontal, Maximize, Minimize, Clock,
   Grid3x3, List, Bookmark
 } from "lucide-react";
+import SimplifiedFloatingDot from "@/components/dotspark/SimplifiedFloatingDot";
 import { useAuth } from "@/hooks/use-auth";
 import {
   DropdownMenu,
@@ -526,6 +527,8 @@ export default function MyNeuraPage() {
           )}
         </DialogContent>
       </Dialog>
+
+      <SimplifiedFloatingDot />
 
       <style>{`
         @keyframes float-0 {

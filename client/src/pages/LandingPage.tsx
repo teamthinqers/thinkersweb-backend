@@ -5,8 +5,9 @@ import {
   Brain, Users, Sparkles, MessageSquare, Plus,
   Menu, User, LogOut, Settings, TrendingUp, Heart,
   Share2, Eye, MoreHorizontal, Maximize, Minimize, Clock,
-  Grid3x3, List
+  Grid3x3, List, Bookmark
 } from "lucide-react";
+import SimplifiedFloatingDot from "@/components/dotspark/SimplifiedFloatingDot";
 import { useAuth } from "@/hooks/use-auth";
 import {
   DropdownMenu,
@@ -29,17 +30,18 @@ import { Badge } from "@/components/ui/badge";
 
 interface ThoughtDot {
   id: number;
-  oneWordSummary: string;
+  heading: string;
   summary: string;
-  anchor: string;
-  pulse: string;
+  emotion?: string;
   userId: number;
+  visibility: string;
   user?: {
     id: number;
     fullName: string | null;
     avatar: string | null;
-    email: string;
+    email?: string;
   };
+  isSaved?: boolean;
   createdAt: string;
   x: number;
   y: number;
@@ -59,18 +61,17 @@ export default function LandingPage() {
   // Cache for dot positions to prevent teleporting on refetch
   const positionCacheRef = useState(() => new Map<number, { x: number; y: number; size: number; rotation: number }>())[0];
 
-  // Fetch public dots from all users for the thought cloud
-  // Limit to 20 dots to prevent overlapping and keep the cloud clean
+  // Fetch social thoughts from all users for the thought cloud
   const { data: publicDots, isLoading } = useQuery({
-    queryKey: ['/api/social/dots?limit=20'],
+    queryKey: ['/api/thoughts?limit=50'],
     enabled: !!user,
   });
 
-  // Transform and position dots using collision-free grid system
+  // Transform and position thoughts using collision-free grid system
   useEffect(() => {
-    if (!publicDots || !(publicDots as any).dots) return;
+    if (!publicDots || !(publicDots as any).thoughts) return;
 
-    let dotsArray = (publicDots as any).dots;
+    let dotsArray = (publicDots as any).thoughts;
     
     // Apply recent filter if enabled (last 7 days)
     if (showRecentOnly) {
@@ -424,23 +425,24 @@ export default function LandingPage() {
                         </Avatar>
                       </div>
 
-                      {/* One-word summary - at the very top */}
-                      <div className="text-center mb-2">
-                        <span className="px-2 py-0.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-[10px] font-bold rounded-full uppercase tracking-wider shadow-sm">
-                          {dot.oneWordSummary}
-                        </span>
-                      </div>
+                      {/* Emotion badge - at the very top */}
+                      {dot.emotion && (
+                        <div className="text-center mb-2">
+                          <span className="px-2 py-0.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-[10px] font-bold rounded-full uppercase tracking-wider shadow-sm">
+                            {dot.emotion}
+                          </span>
+                        </div>
+                      )}
 
-                      {/* Summary heading - center */}
+                      {/* Heading - center */}
                       <h3 className="text-xs font-bold text-gray-900 text-center line-clamp-3 leading-tight mb-2">
-                        {dot.summary}
+                        {dot.heading}
                       </h3>
 
-                      {/* Pulse indicator - at bottom */}
-                      <div className="flex items-center gap-1 text-[10px] text-amber-600 mt-auto">
-                        <TrendingUp className="h-3 w-3" />
-                        <span className="font-medium truncate max-w-[80px]">{dot.pulse}</span>
-                      </div>
+                      {/* Summary preview - at bottom */}
+                      <p className="text-[10px] text-gray-600 text-center line-clamp-2 mt-auto">
+                        {dot.summary.substring(0, 60)}...
+                      </p>
 
                       {/* Quick action indicators - only show on hover */}
                       <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2">
@@ -515,21 +517,19 @@ export default function LandingPage() {
                                 {new Date(dot.createdAt).toLocaleDateString()} · {new Date(dot.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                               </p>
                             </div>
-                            <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0 text-xs">
-                              {dot.oneWordSummary}
-                            </Badge>
+                            {dot.emotion && (
+                              <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0 text-xs">
+                                {dot.emotion}
+                              </Badge>
+                            )}
                           </div>
                           <CardTitle className="text-lg font-bold text-gray-900">
-                            {dot.summary}
+                            {dot.heading}
                           </CardTitle>
                         </CardHeader>
                         <CardContent className="pt-0">
-                          <div className="flex items-center gap-2 text-sm text-amber-600 mb-4">
-                            <TrendingUp className="h-4 w-4" />
-                            <span className="font-medium">{dot.pulse}</span>
-                          </div>
-                          <p className="text-gray-700 line-clamp-2 mb-4">
-                            {dot.anchor}
+                          <p className="text-gray-700 line-clamp-3 mb-4">
+                            {dot.summary.length > 150 ? `${dot.summary.substring(0, 150)}...` : dot.summary}
                           </p>
                           <div className="flex items-center gap-4 pt-3 border-t border-gray-100">
                             <Button variant="ghost" size="sm" className="text-red-500 hover:text-red-600 hover:bg-red-50">
@@ -572,44 +572,44 @@ export default function LandingPage() {
                       </AvatarFallback>
                     )}
                   </Avatar>
-                  <div>
+                  <div className="flex-1">
                     <p className="font-semibold text-gray-900">{selectedDot.user?.fullName || 'Anonymous'}</p>
                     <p className="text-sm text-gray-500">{selectedDot.user?.email}</p>
                   </div>
+                  {selectedDot.emotion && (
+                    <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0">
+                      {selectedDot.emotion}
+                    </Badge>
+                  )}
                 </div>
                 
-                <Badge className="w-fit bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0">
-                  {selectedDot.oneWordSummary}
-                </Badge>
-                
-                <DialogTitle className="text-2xl font-bold text-gray-900 mt-4">
-                  {selectedDot.summary}
+                <DialogTitle className="text-2xl font-bold text-gray-900 mt-2">
+                  {selectedDot.heading}
                 </DialogTitle>
               </DialogHeader>
 
               <div className="space-y-6 mt-6">
-                {/* Anchor Layer */}
+                {/* Main Summary Content */}
                 <div className="space-y-2">
-                  <h4 className="text-sm font-semibold text-gray-500 uppercase tracking-wide">
-                    Anchor Layer
-                  </h4>
                   <Card className="bg-gradient-to-br from-amber-50 to-orange-50 border-amber-200">
-                    <CardContent className="pt-4">
-                      <p className="text-gray-800 leading-relaxed">{selectedDot.anchor}</p>
+                    <CardContent className="pt-6">
+                      <p className="text-gray-800 leading-relaxed text-base whitespace-pre-wrap">
+                        {selectedDot.summary}
+                      </p>
                     </CardContent>
                   </Card>
                 </div>
 
-                {/* Pulse Layer */}
-                <div className="space-y-2">
-                  <h4 className="text-sm font-semibold text-gray-500 uppercase tracking-wide">
-                    Pulse Layer
-                  </h4>
-                  <div className="flex items-center gap-2 p-4 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-lg border border-purple-200">
-                    <TrendingUp className="h-5 w-5 text-purple-600" />
-                    <p className="text-purple-900 font-medium">{selectedDot.pulse}</p>
-                  </div>
-                </div>
+                {/* Save to MyNeura Button - Only show if viewing others' thoughts */}
+                {user && selectedDot.user?.email && selectedDot.user.email !== user.email && (
+                  <Button 
+                    className="w-full bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 text-white"
+                    size="lg"
+                  >
+                    <Bookmark className="h-5 w-5 mr-2" />
+                    Save to MyNeura
+                  </Button>
+                )}
 
                 {/* Engagement Actions */}
                 <div className="flex items-center gap-3 pt-4 border-t border-gray-200">
@@ -659,6 +659,9 @@ export default function LandingPage() {
           50% { transform: translate(-50%, -50%) rotate(2deg) translateY(-12px); }
         }
       `}</style>
+
+      {/* Simplified Floating Dot for Quick Thought Creation */}
+      <SimplifiedFloatingDot />
     </div>
   );
 }
