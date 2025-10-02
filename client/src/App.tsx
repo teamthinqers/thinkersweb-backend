@@ -11,6 +11,8 @@ import Network from "@/pages/Network";
 import LandingPage from "@/pages/LandingPage";
 import MyNeuraPage from "@/pages/MyNeuraPage";
 import NewLandingPage from "@/pages/NewLandingPage";
+import HomePage from "@/pages/HomePage";
+import PreviewPage from "@/pages/PreviewPage";
 import LogoPage from "@/pages/LogoPage";
 import AuthPage from "@/pages/auth-page";
 import Settings from "@/pages/Settings";
@@ -187,7 +189,8 @@ function Router() {
   return (
     <Switch>
       <Route path="/test-minimal" component={() => <div>Basic Test</div>} />
-      <Route path="/" component={NewLandingPage} />
+      <Route path="/" component={HomePage} />
+      <Route path="/preview" component={PreviewPage} />
       <Route path="/home" component={LandingPage} />
       <Route path="/myneura" component={MyNeuraPage} />
       <Route path="/auth" component={AuthPage} />
