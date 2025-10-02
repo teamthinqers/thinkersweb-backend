@@ -38,16 +38,6 @@ export default function NewLandingPage() {
     }
   };
 
-  // Show nothing while checking auth status to prevent flash
-  if (isLoading) {
-    return null;
-  }
-
-  // If user is authenticated, return null (redirect will happen)
-  if (user) {
-    return null;
-  }
-
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-amber-50/50 via-white to-orange-50/30">
       {/* Header */}
