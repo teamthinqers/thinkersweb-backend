@@ -185,7 +185,7 @@ function AppWithLayout() {
   );
 }
 
-// Smart root route - redirects authenticated users to /home
+// Smart root route - redirects authenticated users to /home (like LinkedIn)
 function RootRoute() {
   const { user, isLoading } = useAuth();
   const [, setLocation] = useLocation();
@@ -193,22 +193,11 @@ function RootRoute() {
   // Redirect authenticated users to /home
   useEffect(() => {
     if (!isLoading && user) {
-      // Use replace instead of setLocation to avoid history issues
-      window.location.replace("/home");
+      setLocation("/home");
     }
-  }, [user, isLoading]);
+  }, [user, isLoading, setLocation]);
 
-  // Show loading while checking auth
-  if (isLoading) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen">
-        <Loader2 className="h-8 w-8 animate-spin text-primary mb-4" />
-        <p className="text-center text-muted-foreground">Loading...</p>
-      </div>
-    );
-  }
-
-  // Not logged in - show landing page
+  // Always render NewLandingPage - it will redirect if needed
   return <NewLandingPage />;
 }
 
