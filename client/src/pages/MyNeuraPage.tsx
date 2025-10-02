@@ -26,7 +26,6 @@ type ThoughtDot = {
   heading: string;
   summary: string;
   emotion?: string;
-  imageUrl?: string;
   createdAt: string;
   user?: {
     id: number;
@@ -360,18 +359,6 @@ export default function MyNeuraPage() {
                         </div>
                       )}
 
-                      {/* Image - if present */}
-                      {thought.imageUrl && (
-                        <div className="mb-2">
-                          <img 
-                            src={thought.imageUrl} 
-                            alt={thought.heading}
-                            className="w-full h-20 object-cover rounded-md"
-                            onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                          />
-                        </div>
-                      )}
-
                       {/* Heading - center */}
                       <h3 className="text-xs font-bold text-gray-900 text-center line-clamp-3 leading-tight mb-2">
                         {thought.heading}
@@ -465,14 +452,6 @@ export default function MyNeuraPage() {
                           </CardTitle>
                         </CardHeader>
                         <CardContent className="pt-0">
-                          {thought.imageUrl && (
-                            <img 
-                              src={thought.imageUrl} 
-                              alt={thought.heading}
-                              className="w-full h-48 object-cover rounded-lg mb-4"
-                              onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                            />
-                          )}
                           <p className="text-gray-700 line-clamp-3">
                             {thought.summary}
                           </p>
@@ -535,18 +514,6 @@ export default function MyNeuraPage() {
               </DialogHeader>
 
               <div className="space-y-6 mt-6">
-                {/* Image - if present */}
-                {selectedThought.imageUrl && (
-                  <div className="space-y-2">
-                    <img 
-                      src={selectedThought.imageUrl} 
-                      alt={selectedThought.heading}
-                      className="w-full max-h-96 object-cover rounded-lg shadow-lg"
-                      onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                    />
-                  </div>
-                )}
-
                 <Card className="bg-gradient-to-br from-amber-50 to-orange-50 border-amber-200">
                   <CardContent className="pt-6">
                     <p className="text-gray-700 leading-relaxed">

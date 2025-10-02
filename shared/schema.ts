@@ -46,7 +46,6 @@ export const thoughts = pgTable("thoughts", {
   heading: text("heading").notNull(),
   summary: text("summary").notNull(),
   emotion: text("emotion"), // Optional: joy, curiosity, frustration, etc.
-  imageUrl: text("image_url"), // Optional: image attachment
   visibility: text("visibility").notNull().default("personal"), // 'personal' or 'social'
   positionX: integer("position_x"),
   positionY: integer("position_y"),
