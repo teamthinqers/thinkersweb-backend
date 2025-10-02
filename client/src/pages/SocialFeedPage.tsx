@@ -141,15 +141,6 @@ export default function SocialFeedPage() {
     setDots(transformedDots);
   }, [publicDots, showRecentOnly]);
 
-  const handleLogout = async () => {
-    try {
-      await logout();
-      setLocation("/");
-    } catch (error) {
-      console.error("Logout error:", error);
-    }
-  };
-
   // Show loading while checking authentication
   if (authLoading) {
     return (
@@ -351,8 +342,3 @@ export default function SocialFeedPage() {
     </SharedAuthLayout>
   );
 }
-
-// Removed old mobile sidebar code - now handled by SharedAuthLayout
-
-        <div 
-          className="md:hidden fixed inset-0 bg-black/50 z-50"
