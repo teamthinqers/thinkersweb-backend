@@ -120,16 +120,36 @@ export function setupNewAuth(app: Express) {
   // Initialize Firebase Admin if not already initialized
   if (!admin.apps.length) {
     try {
+      // Handle the private key - it may have escaped newlines or be base64 encoded
+      let privateKey = process.env.FIREBASE_PRIVATE_KEY;
+      
+      if (!privateKey) {
+        throw new Error("FIREBASE_PRIVATE_KEY not found in environment");
+      }
+      
+      // Try to decode if it looks like base64
+      if (!privateKey.includes('BEGIN PRIVATE KEY')) {
+        try {
+          privateKey = Buffer.from(privateKey, 'base64').toString('utf-8');
+        } catch (e) {
+          // Not base64, continue
+        }
+      }
+      
+      // Replace escaped newlines with actual newlines
+      privateKey = privateKey.replace(/\\n/g, '\n');
+      
       admin.initializeApp({
         credential: admin.credential.cert({
           projectId: process.env.VITE_FIREBASE_PROJECT_ID,
           clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-          privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+          privateKey: privateKey,
         }),
       });
       console.log("✅ Firebase Admin initialized for token verification");
     } catch (error) {
       console.error("❌ Failed to initialize Firebase Admin:", error);
+      console.error("Please ensure FIREBASE_PRIVATE_KEY is set correctly");
     }
   }
   
