@@ -19,6 +19,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useQuery } from "@tanstack/react-query";
+import SharedAuthLayout from "@/components/layout/SharedAuthLayout";
 
 // Type for a thought with user info
 type ThoughtDot = {
@@ -115,77 +116,8 @@ export default function MyNeuraPage() {
   }, [myNeuraThoughts, showRecentOnly, positionCacheRef]);
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-amber-50 via-orange-50 to-red-50">
-      {/* Header */}
-      <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-200 shadow-sm">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center space-x-8">
-              <Link href="/">
-                <div className="flex items-center space-x-2 cursor-pointer">
-                  <Brain className="h-8 w-8 text-gradient bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text" />
-                  <span className="text-xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
-                    DotSpark
-                  </span>
-                </div>
-              </Link>
-
-              <nav className="hidden md:flex space-x-6">
-                <Link href="/">
-                  <span className="text-gray-700 hover:text-amber-600 cursor-pointer transition-colors flex items-center gap-2">
-                    <Users className="h-4 w-4" />
-                    Home
-                  </span>
-                </Link>
-                <Link href="/myneura">
-                  <span className="text-amber-600 font-semibold cursor-pointer flex items-center gap-2">
-                    <Sparkles className="h-4 w-4" />
-                    MyNeura
-                  </span>
-                </Link>
-              </nav>
-            </div>
-
-            <div className="flex items-center gap-4">
-              {user ? (
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="flex items-center gap-2">
-                      <Avatar className="h-8 w-8">
-                        {user.photoURL ? (
-                          <AvatarImage src={user.photoURL} alt={user.displayName || 'User'} />
-                        ) : (
-                          <AvatarFallback className="bg-gradient-to-r from-amber-500 to-orange-500 text-white">
-                            {user.displayName?.charAt(0).toUpperCase() || 'U'}
-                          </AvatarFallback>
-                        )}
-                      </Avatar>
-                      <span className="hidden sm:inline">{user.displayName || user.email}</span>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-48">
-                    <DropdownMenuItem onClick={() => setLocation('/settings')}>
-                      <Settings className="mr-2 h-4 w-4" />
-                      Settings
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={logout}>
-                      <LogOut className="mr-2 h-4 w-4" />
-                      Logout
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              ) : (
-                <Button onClick={() => setLocation("/login")}>
-                  Sign In
-                </Button>
-              )}
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className={`flex-1 overflow-hidden ${isFullscreen ? 'fixed inset-0 z-50 bg-gradient-to-br from-amber-50 via-orange-50 to-red-50' : ''}`}>
+    <SharedAuthLayout>
+      <div className={`flex-1 overflow-hidden ${isFullscreen ? 'fixed inset-0 z-50 bg-gradient-to-br from-amber-50 via-orange-50 to-red-50' : ''}`}>
         <div className={`${isFullscreen ? 'h-full' : 'container mx-auto px-4 sm:px-6 lg:px-8 py-8'}`}>
           {/* Thought Cloud Canvas */}
           <div className={`relative w-full bg-gradient-to-br from-white/60 to-amber-50/40 shadow-2xl border border-amber-100 overflow-hidden backdrop-blur-sm ${isFullscreen ? 'h-full rounded-none' : 'rounded-3xl'}`}>
@@ -574,6 +506,7 @@ export default function MyNeuraPage() {
           50% { transform: translate(-50%, -50%) translateY(-8px); }
         }
       `}</style>
-    </div>
+      </div>
+    </SharedAuthLayout>
   );
 }
