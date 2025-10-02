@@ -227,22 +227,7 @@ export default function LandingPage() {
               <nav className="hidden md:flex items-center gap-6">
                 <Link href="/home">
                   <span className="text-sm font-medium text-gray-700 hover:text-amber-600 transition-colors cursor-pointer">
-                    Thought Cloud
-                  </span>
-                </Link>
-                <Link href="/myneura">
-                  <span className="text-sm font-medium text-gray-700 hover:text-amber-600 transition-colors cursor-pointer">
-                    My Neura
-                  </span>
-                </Link>
-                <Link href="/social">
-                  <span className="text-sm font-medium text-gray-700 hover:text-amber-600 transition-colors cursor-pointer">
-                    Network
-                  </span>
-                </Link>
-                <Link href="/chat">
-                  <span className="text-sm font-medium text-gray-700 hover:text-amber-600 transition-colors cursor-pointer">
-                    AI Chat
+                    Home
                   </span>
                 </Link>
               </nav>
