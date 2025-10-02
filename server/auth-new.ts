@@ -120,7 +120,7 @@ export function setupNewAuth(app: Express) {
   // Initialize Firebase Admin if not already initialized
   if (!admin.apps.length) {
     try {
-      // Handle the private key - it may have escaped newlines or be base64 encoded
+      // Handle the private key - it may have escaped newlines, be on one line, or be base64 encoded
       let privateKey = process.env.FIREBASE_PRIVATE_KEY;
       
       if (!privateKey) {
@@ -138,6 +138,29 @@ export function setupNewAuth(app: Express) {
       
       // Replace escaped newlines with actual newlines
       privateKey = privateKey.replace(/\\n/g, '\n');
+      
+      // If the key is all on one line (spaces between parts), fix the formatting
+      if (!privateKey.includes('\n') || privateKey.split('\n').length < 5) {
+        // Split at BEGIN/END markers and reconstruct with proper newlines
+        const beginMarker = '-----BEGIN PRIVATE KEY-----';
+        const endMarker = '-----END PRIVATE KEY-----';
+        
+        if (privateKey.includes(beginMarker) && privateKey.includes(endMarker)) {
+          // Extract the key content between markers
+          const keyContent = privateKey
+            .replace(beginMarker, '')
+            .replace(endMarker, '')
+            .replace(/\s+/g, ''); // Remove all whitespace
+          
+          // Reconstruct with proper line breaks (64 chars per line is PEM standard)
+          const lines = [beginMarker];
+          for (let i = 0; i < keyContent.length; i += 64) {
+            lines.push(keyContent.substring(i, i + 64));
+          }
+          lines.push(endMarker);
+          privateKey = lines.join('\n');
+        }
+      }
       
       admin.initializeApp({
         credential: admin.credential.cert({
