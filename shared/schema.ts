@@ -322,12 +322,7 @@ export const conversationSessions = pgTable("conversation_sessions", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
-export const session = pgTable("session", {
-  id: text("id").primaryKey(),
-  userId: integer("user_id").references(() => users.id),
-  expiresAt: timestamp("expires_at").notNull(),
-  data: text("data"),
-});
+// Note: Session table is managed by connect-pg-simple middleware, not by Drizzle
 
 export const whatsappUsers = pgTable("whatsapp_users", {
   id: serial("id").primaryKey(),
