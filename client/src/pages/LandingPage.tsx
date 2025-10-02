@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { 
   Brain, Users, Sparkles, MessageSquare, Plus,
   Menu, User, LogOut, Settings, TrendingUp, Heart,
-  Share2, Eye, MoreHorizontal
+  Share2, Eye, MoreHorizontal, Maximize, Minimize, Clock
 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import {
@@ -51,6 +51,8 @@ export default function LandingPage() {
   const [location, setLocation] = useLocation();
   const [selectedDot, setSelectedDot] = useState<ThoughtDot | null>(null);
   const [dots, setDots] = useState<ThoughtDot[]>([]);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [showRecentOnly, setShowRecentOnly] = useState(false);
   
   // Cache for dot positions to prevent teleporting on refetch
   const positionCacheRef = useState(() => new Map<number, { x: number; y: number; size: number; rotation: number }>())[0];
@@ -62,11 +64,48 @@ export default function LandingPage() {
     enabled: !!user,
   });
 
-  // Transform and position dots in an organic cloud formation
+  // Transform and position dots using collision-free grid system
   useEffect(() => {
     if (!publicDots || !(publicDots as any).dots) return;
 
-    const transformedDots: ThoughtDot[] = (publicDots as any).dots.map((dot: any, index: number) => {
+    let dotsArray = (publicDots as any).dots;
+    
+    // Apply recent filter if enabled (last 7 days)
+    if (showRecentOnly) {
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+      dotsArray = dotsArray.filter((dot: any) => new Date(dot.createdAt) >= sevenDaysAgo);
+    }
+    
+    // Simple, bulletproof grid configuration
+    const minContainerWidth = window.innerWidth < 640 ? 340 : 800; // Mobile vs Desktop
+    const minContainerHeight = 600; // From min-h-[600px]
+    
+    // CRITICAL: Apply padding FIRST to match positioning
+    const padding = 5; // Must match positioning padding below
+    const effectiveWidth = minContainerWidth * (100 - padding * 2) / 100;
+    const effectiveHeight = minContainerHeight * (100 - padding * 2) / 100;
+    
+    // Simple grid: Choose columns based on viewport, calculate rows for capacity
+    const gridColumns = window.innerWidth < 640 ? 3 : 5; // 3 cols mobile, 5 desktop
+    const gridRows = Math.ceil(dotsArray.length / gridColumns); // Exactly enough rows
+    
+    // Calculate cell dimensions in pixels
+    const cellWidthPx = effectiveWidth / gridColumns;
+    const cellHeightPx = effectiveHeight / gridRows;
+    
+    // Size dots to fit with visual effects - NO artificial limits
+    // Visual effects scale dots by ~1.3x (pulsing ring + glow)
+    // Safety factor ensures dots never touch even with effects
+    const visualScaleFactor = 1.35; // Conservative 35% for all effects  
+    const safetyFactor = 0.85; // Use 85% of available space
+    const dotSize = Math.min(cellWidthPx, cellHeightPx) / visualScaleFactor * safetyFactor;
+    // No min/max - trust the calculation to prevent overlap
+    
+    // Track occupied cells to prevent collisions
+    const occupiedCells = new Set<number>();
+    
+    const transformedDots: ThoughtDot[] = dotsArray.map((dot: any, index: number) => {
       // Check if we have cached position for this dot
       const cached = positionCacheRef.get(dot.id);
       
@@ -78,25 +117,36 @@ export default function LandingPage() {
         };
       }
       
-      // Generate new organic positioning using golden angle spiral
-      const goldenAngle = Math.PI * (3 - Math.sqrt(5)); // ~137.5 degrees
-      const radius = 18 * Math.sqrt(index + 1); // Increased spacing - spiral outward more
-      const angle = index * goldenAngle;
+      // Collision-free sequential allocation
+      let cellIndex = index;
       
-      // Convert polar to cartesian with some randomness for organic feel
-      const x = Math.max(8, Math.min(92, 50 + radius * Math.cos(angle) + (Math.random() - 0.5) * 10));
-      const y = Math.max(8, Math.min(92, 50 + radius * Math.sin(angle) + (Math.random() - 0.5) * 10));
+      // Safety check for occupied cells
+      while (occupiedCells.has(cellIndex) && cellIndex < gridColumns * gridRows) {
+        cellIndex++;
+      }
       
-      // Vary dot sizes based on recency and engagement
-      const baseSize = 140;
-      const sizeVariation = Math.random() * 60 + 20;
-      const size = baseSize + sizeVariation;
+      occupiedCells.add(cellIndex);
       
-      // Random rotation for visual variety
-      const rotation = Math.random() * 20 - 10;
+      const col = cellIndex % gridColumns;
+      const row = Math.floor(cellIndex / gridColumns);
+      
+      // Calculate cell center position in percentages
+      // Use padding to ensure dots don't touch edges
+      const padding = 5; // 5% padding on each side
+      const availableWidth = 100 - (padding * 2);
+      const availableHeight = 100 - (padding * 2);
+      
+      const cellWidthPct = availableWidth / gridColumns;
+      const cellHeightPct = availableHeight / gridRows;
+      
+      const x = padding + cellWidthPct * col + cellWidthPct / 2;
+      const y = padding + cellHeightPct * row + cellHeightPct / 2;
+      
+      // No rotation for cleaner look
+      const rotation = 0;
       
       // Cache this position for future renders
-      const position = { x, y, size, rotation };
+      const position = { x, y, size: dotSize, rotation };
       positionCacheRef.set(dot.id, position);
 
       return {
@@ -106,7 +156,7 @@ export default function LandingPage() {
     });
 
     setDots(transformedDots);
-  }, [publicDots, positionCacheRef]);
+  }, [publicDots, positionCacheRef, showRecentOnly]);
 
   const handleLogout = async () => {
     try {
@@ -221,20 +271,49 @@ export default function LandingPage() {
       </header>
 
       {/* Main Thought Cloud */}
-      <main className="flex-1 overflow-hidden">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          {/* Page Title */}
-          <div className="text-center space-y-2 mb-8">
-            <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-amber-600 via-orange-600 to-red-600 bg-clip-text text-transparent">
-              The Thought Cloud
-            </h1>
-            <p className="text-gray-600 text-lg">
-              Explore insights floating across the collective intelligence network
-            </p>
-          </div>
-
+      <main className={`flex-1 overflow-hidden ${isFullscreen ? 'fixed inset-0 z-50 bg-gradient-to-br from-amber-50 via-orange-50 to-red-50' : ''}`}>
+        <div className={`${isFullscreen ? 'h-full' : 'container mx-auto px-4 sm:px-6 lg:px-8 py-8'}`}>
           {/* Thought Cloud Canvas */}
-          <div className="relative w-full bg-gradient-to-br from-white/60 to-amber-50/40 rounded-3xl shadow-2xl border border-amber-100 overflow-hidden backdrop-blur-sm">
+          <div className={`relative w-full bg-gradient-to-br from-white/60 to-amber-50/40 shadow-2xl border border-amber-100 overflow-hidden backdrop-blur-sm ${isFullscreen ? 'h-full rounded-none' : 'rounded-3xl'}`}>
+            {/* Toolbar */}
+            <div className="sticky top-0 z-10 bg-white/90 backdrop-blur-md border-b border-amber-200 px-6 py-3 flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <Sparkles className="h-5 w-5 text-amber-500" />
+                  <span className="font-semibold text-gray-900">{dots.length} Thoughts</span>
+                </div>
+                <div className="h-6 w-px bg-gray-300" />
+                <Button
+                  variant={showRecentOnly ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setShowRecentOnly(!showRecentOnly)}
+                  className={showRecentOnly ? "bg-amber-500 hover:bg-amber-600 text-white" : ""}
+                >
+                  <Clock className="h-4 w-4 mr-2" />
+                  Recent
+                </Button>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setIsFullscreen(!isFullscreen)}
+                  className="hover:bg-amber-100"
+                >
+                  {isFullscreen ? (
+                    <>
+                      <Minimize className="h-4 w-4 mr-2" />
+                      Exit Fullscreen
+                    </>
+                  ) : (
+                    <>
+                      <Maximize className="h-4 w-4 mr-2" />
+                      Fullscreen
+                    </>
+                  )}
+                </Button>
+              </div>
+            </div>
             {/* Cloud background pattern */}
             <div className="absolute inset-0 opacity-20">
               <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
@@ -348,59 +427,6 @@ export default function LandingPage() {
                   </div>
                 ))
               )}
-            </div>
-          </div>
-
-          {/* Stats bar */}
-          <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="bg-white rounded-xl p-4 shadow-md border border-amber-100">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-r from-amber-500 to-orange-500 rounded-lg flex items-center justify-center">
-                  <Sparkles className="h-5 w-5 text-white" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-gray-900">{dots.length}</p>
-                  <p className="text-xs text-gray-500">Floating Thoughts</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-xl p-4 shadow-md border border-amber-100">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-lg flex items-center justify-center">
-                  <Users className="h-5 w-5 text-white" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-gray-900">
-                    {new Set(dots.map(d => d.userId)).size}
-                  </p>
-                  <p className="text-xs text-gray-500">Active Thinkers</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-xl p-4 shadow-md border border-amber-100">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-r from-red-500 to-orange-500 rounded-lg flex items-center justify-center">
-                  <TrendingUp className="h-5 w-5 text-white" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-gray-900">Live</p>
-                  <p className="text-xs text-gray-500">Real-time Updates</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-xl p-4 shadow-md border border-amber-100">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-r from-amber-500 to-orange-500 rounded-lg flex items-center justify-center">
-                  <Brain className="h-5 w-5 text-white" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-gray-900">∞</p>
-                  <p className="text-xs text-gray-500">Insights Shared</p>
-                </div>
-              </div>
             </div>
           </div>
         </div>
