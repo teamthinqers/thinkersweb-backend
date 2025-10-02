@@ -41,7 +41,7 @@ export default function NewLandingPage() {
             <div className="flex items-center">
               <div 
                 className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity"
-                onClick={() => setLocation("/")}
+                onClick={() => setLocation(user ? "/home" : "/")}
               >
                 <img 
                   src="/dotspark-logo-combined.png?v=1" 
@@ -258,35 +258,10 @@ export default function NewLandingPage() {
 
                   <Button
                     onClick={() => setLocation("/auth")}
-                    className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white py-6 text-lg rounded-xl"
+                    className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white py-6 text-lg rounded-xl font-semibold"
                   >
-                    Sign Up with Google
+                    Continue with Google
                   </Button>
-
-                  <div className="relative">
-                    <div className="absolute inset-0 flex items-center">
-                      <div className="w-full border-t border-gray-200"></div>
-                    </div>
-                    <div className="relative flex justify-center text-sm">
-                      <span className="px-4 bg-white text-gray-500">or</span>
-                    </div>
-                  </div>
-
-                  <div className="space-y-4">
-                    <Input
-                      type="email"
-                      placeholder="Email address"
-                      className="h-12 rounded-xl"
-                      disabled
-                    />
-                    <Button
-                      onClick={() => setLocation("/auth")}
-                      variant="outline"
-                      className="w-full border-2 border-amber-500 text-amber-700 hover:bg-amber-50 py-6 text-lg rounded-xl"
-                    >
-                      Continue with Email
-                    </Button>
-                  </div>
 
                   <div className="text-center text-sm text-gray-600">
                     Already have an account?{" "}
@@ -294,7 +269,7 @@ export default function NewLandingPage() {
                       onClick={() => setLocation("/auth")}
                       className="text-amber-600 font-medium hover:underline cursor-pointer"
                     >
-                      Sign in
+                      Sign in with Google
                     </span>
                   </div>
                 </div>

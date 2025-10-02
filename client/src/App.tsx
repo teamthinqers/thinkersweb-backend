@@ -193,8 +193,8 @@ function Router() {
   return (
     <Switch>
       <Route path="/test-minimal" component={() => <div>Basic Test</div>} />
-      <Route path="/" component={ChatPage} />
-      <Route path="/new-landing" component={NewLandingPage} />
+      <Route path="/" component={NewLandingPage} />
+      <Route path="/home" component={() => <ProtectedRoute><ChatPage /></ProtectedRoute>} />
       <Route path="/about" component={AboutPage} />
       <Route path="/auth" component={AuthPage} />
       
