@@ -196,7 +196,7 @@ export default function LandingPage() {
                     Thought Cloud
                   </span>
                 </Link>
-                <Link href="/dashboard">
+                <Link href="/myneura">
                   <span className="text-sm font-medium text-gray-700 hover:text-amber-600 transition-colors cursor-pointer">
                     My Neura
                   </span>
@@ -216,17 +216,6 @@ export default function LandingPage() {
 
             {/* Right side - Actions and User menu */}
             <div className="flex items-center gap-3">
-              {user && (
-                <Button
-                  onClick={() => setLocation("/dashboard?create=dot")}
-                  className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white"
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  <span className="hidden sm:inline">Create Dot</span>
-                  <span className="sm:hidden">Create</span>
-                </Button>
-              )}
-
               {user ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -249,7 +238,7 @@ export default function LandingPage() {
                     </div>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
-                      <Link href="/dashboard" className="cursor-pointer w-full">
+                      <Link href="/myneura" className="cursor-pointer w-full">
                         <Brain className="mr-2 h-4 w-4" />
                         My Neura
                       </Link>
@@ -376,15 +365,8 @@ export default function LandingPage() {
                     <Brain className="h-16 w-16 text-amber-500 mx-auto" />
                     <h3 className="text-xl font-semibold text-gray-700">The cloud is waiting</h3>
                     <p className="text-gray-500">
-                      Be the first to share your thoughts and insights with the community
+                      Use the floating dot button to share your first thought with the community
                     </p>
-                    <Button
-                      onClick={() => setLocation("/dashboard?create=dot")}
-                      className="bg-gradient-to-r from-amber-500 to-orange-500 text-white"
-                    >
-                      <Plus className="mr-2 h-4 w-4" />
-                      Create Your First Dot
-                    </Button>
                   </div>
                 </div>
               ) : (
