@@ -417,7 +417,7 @@ export default function MyNeuraPage() {
             )}
           </div>
         </div>
-      </main>
+      </div>
 
       {/* Expanded Thought Modal */}
       <Dialog open={!!selectedThought} onOpenChange={(open) => !open && setSelectedThought(null)}>
@@ -506,7 +506,6 @@ export default function MyNeuraPage() {
           50% { transform: translate(-50%, -50%) translateY(-8px); }
         }
       `}</style>
-      </div>
     </SharedAuthLayout>
   );
 }
