@@ -56,8 +56,9 @@ export default function LandingPage() {
   const positionCacheRef = useState(() => new Map<number, { x: number; y: number; size: number; rotation: number }>())[0];
 
   // Fetch public dots from all users for the thought cloud
+  // Limit to 20 dots to prevent overlapping and keep the cloud clean
   const { data: publicDots, isLoading } = useQuery({
-    queryKey: ['/api/social/dots'],
+    queryKey: ['/api/social/dots?limit=20'],
     enabled: !!user,
   });
 
@@ -79,12 +80,12 @@ export default function LandingPage() {
       
       // Generate new organic positioning using golden angle spiral
       const goldenAngle = Math.PI * (3 - Math.sqrt(5)); // ~137.5 degrees
-      const radius = 12 * Math.sqrt(index + 1); // Spiral outward
+      const radius = 18 * Math.sqrt(index + 1); // Increased spacing - spiral outward more
       const angle = index * goldenAngle;
       
-      // Convert polar to cartesian with some randomness
-      const x = Math.max(5, Math.min(95, 50 + radius * Math.cos(angle) + (Math.random() - 0.5) * 15));
-      const y = Math.max(5, Math.min(95, 50 + radius * Math.sin(angle) + (Math.random() - 0.5) * 15));
+      // Convert polar to cartesian with some randomness for organic feel
+      const x = Math.max(8, Math.min(92, 50 + radius * Math.cos(angle) + (Math.random() - 0.5) * 10));
+      const y = Math.max(8, Math.min(92, 50 + radius * Math.sin(angle) + (Math.random() - 0.5) * 10));
       
       // Vary dot sizes based on recency and engagement
       const baseSize = 140;
