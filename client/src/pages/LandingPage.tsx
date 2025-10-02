@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { 
   Brain, Users, Sparkles, MessageSquare, Plus,
   Menu, User, LogOut, Settings, TrendingUp, Heart,
-  Share2, Eye, MoreHorizontal, Maximize, Minimize, Clock
+  Share2, Eye, MoreHorizontal, Maximize, Minimize, Clock,
+  Grid3x3, List
 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import {
@@ -53,6 +54,7 @@ export default function LandingPage() {
   const [dots, setDots] = useState<ThoughtDot[]>([]);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showRecentOnly, setShowRecentOnly] = useState(false);
+  const [viewMode, setViewMode] = useState<'cloud' | 'feed'>('cloud'); // Cloud grid or Feed list
   
   // Cache for dot positions to prevent teleporting on refetch
   const positionCacheRef = useState(() => new Map<number, { x: number; y: number; size: number; rotation: number }>())[0];
@@ -283,6 +285,30 @@ export default function LandingPage() {
                   <span className="font-semibold text-gray-900">{dots.length} Thoughts</span>
                 </div>
                 <div className="h-6 w-px bg-gray-300" />
+                
+                {/* View Mode Toggle */}
+                <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-1">
+                  <Button
+                    variant={viewMode === 'cloud' ? "default" : "ghost"}
+                    size="sm"
+                    onClick={() => setViewMode('cloud')}
+                    className={`h-8 ${viewMode === 'cloud' ? 'bg-white shadow-sm' : 'hover:bg-gray-200'}`}
+                  >
+                    <Grid3x3 className="h-4 w-4 mr-1" />
+                    Cloud
+                  </Button>
+                  <Button
+                    variant={viewMode === 'feed' ? "default" : "ghost"}
+                    size="sm"
+                    onClick={() => setViewMode('feed')}
+                    className={`h-8 ${viewMode === 'feed' ? 'bg-white shadow-sm' : 'hover:bg-gray-200'}`}
+                  >
+                    <List className="h-4 w-4 mr-1" />
+                    Feed
+                  </Button>
+                </div>
+                
+                <div className="h-6 w-px bg-gray-300" />
                 <Button
                   variant={showRecentOnly ? "default" : "outline"}
                   size="sm"
@@ -294,42 +320,48 @@ export default function LandingPage() {
                 </Button>
               </div>
               <div className="flex items-center gap-2">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setIsFullscreen(!isFullscreen)}
-                  className="hover:bg-amber-100"
-                >
-                  {isFullscreen ? (
-                    <>
-                      <Minimize className="h-4 w-4 mr-2" />
-                      Exit Fullscreen
-                    </>
-                  ) : (
-                    <>
-                      <Maximize className="h-4 w-4 mr-2" />
-                      Fullscreen
-                    </>
-                  )}
-                </Button>
+                {viewMode === 'cloud' && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setIsFullscreen(!isFullscreen)}
+                    className="hover:bg-amber-100"
+                  >
+                    {isFullscreen ? (
+                      <>
+                        <Minimize className="h-4 w-4 mr-2" />
+                        Exit
+                      </>
+                    ) : (
+                      <>
+                        <Maximize className="h-4 w-4 mr-2" />
+                        Fullscreen
+                      </>
+                    )}
+                  </Button>
+                )}
               </div>
             </div>
-            {/* Cloud background pattern */}
-            <div className="absolute inset-0 opacity-20">
-              <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                  <pattern id="cloud-pattern" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
-                    <circle cx="25" cy="25" r="2" fill="#F59E0B" opacity="0.3"/>
-                    <circle cx="75" cy="75" r="2" fill="#EA580C" opacity="0.3"/>
-                    <circle cx="50" cy="50" r="1.5" fill="#F97316" opacity="0.4"/>
-                  </pattern>
-                </defs>
-                <rect width="100%" height="100%" fill="url(#cloud-pattern)"/>
-              </svg>
-            </div>
+            
+            {/* Cloud View */}
+            {viewMode === 'cloud' && (
+              <>
+                {/* Cloud background pattern */}
+                <div className="absolute inset-0 opacity-20">
+                  <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                      <pattern id="cloud-pattern" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
+                        <circle cx="25" cy="25" r="2" fill="#F59E0B" opacity="0.3"/>
+                        <circle cx="75" cy="75" r="2" fill="#EA580C" opacity="0.3"/>
+                        <circle cx="50" cy="50" r="1.5" fill="#F97316" opacity="0.4"/>
+                      </pattern>
+                    </defs>
+                    <rect width="100%" height="100%" fill="url(#cloud-pattern)"/>
+                  </svg>
+                </div>
 
-            {/* Floating Dots Container */}
-            <div className="relative min-h-[600px] h-[calc(100vh-300px)] max-h-[900px] p-8">
+                {/* Floating Dots Container */}
+                <div className="relative min-h-[600px] h-[calc(100vh-300px)] max-h-[900px] p-8">
               {isLoading ? (
                 <div className="flex items-center justify-center h-full">
                   <div className="text-center space-y-4">
@@ -427,7 +459,99 @@ export default function LandingPage() {
                   </div>
                 ))
               )}
-            </div>
+                </div>
+              </>
+            )}
+            
+            {/* Feed View */}
+            {viewMode === 'feed' && (
+              <div className="relative h-[calc(100vh-200px)] overflow-y-auto">
+                {isLoading ? (
+                  <div className="flex items-center justify-center h-full">
+                    <div className="text-center space-y-4">
+                      <Sparkles className="h-12 w-12 text-amber-500 animate-pulse mx-auto" />
+                      <p className="text-gray-500">Loading feed...</p>
+                    </div>
+                  </div>
+                ) : dots.length === 0 ? (
+                  <div className="flex items-center justify-center h-full">
+                    <div className="text-center space-y-4 max-w-md">
+                      <Brain className="h-16 w-16 text-amber-500 mx-auto" />
+                      <h3 className="text-xl font-semibold text-gray-700">No thoughts yet</h3>
+                      <p className="text-gray-500">
+                        Be the first to share your insights with the community
+                      </p>
+                      <Button
+                        onClick={() => setLocation("/dashboard?create=dot")}
+                        className="bg-gradient-to-r from-amber-500 to-orange-500 text-white"
+                      >
+                        <Plus className="mr-2 h-4 w-4" />
+                        Create Your First Dot
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="max-w-2xl mx-auto py-6 px-4 space-y-4">
+                    {dots.map((dot) => (
+                      <Card 
+                        key={dot.id} 
+                        className="hover:shadow-lg transition-all cursor-pointer border-l-4 border-l-amber-500"
+                        onClick={() => setSelectedDot(dot)}
+                      >
+                        <CardHeader className="pb-3">
+                          <div className="flex items-center gap-3 mb-3">
+                            <Avatar className="h-10 w-10 border-2 border-amber-200">
+                              {dot.user?.avatar ? (
+                                <AvatarImage src={dot.user.avatar} alt={dot.user.fullName || 'User'} />
+                              ) : (
+                                <AvatarFallback className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-sm">
+                                  {dot.user?.fullName?.charAt(0).toUpperCase() || 'U'}
+                                </AvatarFallback>
+                              )}
+                            </Avatar>
+                            <div className="flex-1">
+                              <p className="font-semibold text-gray-900">{dot.user?.fullName || 'Anonymous'}</p>
+                              <p className="text-xs text-gray-500">
+                                {new Date(dot.createdAt).toLocaleDateString()} · {new Date(dot.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                              </p>
+                            </div>
+                            <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0 text-xs">
+                              {dot.oneWordSummary}
+                            </Badge>
+                          </div>
+                          <CardTitle className="text-lg font-bold text-gray-900">
+                            {dot.summary}
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent className="pt-0">
+                          <div className="flex items-center gap-2 text-sm text-amber-600 mb-4">
+                            <TrendingUp className="h-4 w-4" />
+                            <span className="font-medium">{dot.pulse}</span>
+                          </div>
+                          <p className="text-gray-700 line-clamp-2 mb-4">
+                            {dot.anchor}
+                          </p>
+                          <div className="flex items-center gap-4 pt-3 border-t border-gray-100">
+                            <Button variant="ghost" size="sm" className="text-red-500 hover:text-red-600 hover:bg-red-50">
+                              <Heart className="h-4 w-4 mr-1" />
+                              Like
+                            </Button>
+                            <Button variant="ghost" size="sm" className="text-blue-500 hover:text-blue-600 hover:bg-blue-50">
+                              <MessageSquare className="h-4 w-4 mr-1" />
+                              Comment
+                            </Button>
+                            <Button variant="ghost" size="sm" className="text-green-500 hover:text-green-600 hover:bg-green-50">
+                              <Share2 className="h-4 w-4 mr-1" />
+                              Share
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </main>
