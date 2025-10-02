@@ -6,7 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useToast } from '@/hooks/use-toast';
 import { Send, Loader2, ArrowLeft, Menu, Brain, Users, Settings, BarChart2, User, MessageSquare, Home, Sparkles, Mic, MicOff, Info, Lightbulb, Target, Puzzle } from 'lucide-react';
 import { Link } from 'wouter';
-import { useAuth } from '@/hooks/use-auth';
+import { useAuth } from '@/hooks/use-auth-new';
 import { UsageLimitMessage } from '@/components/ui/usage-limit-message';
 import { hasExceededLimit, getLimitMessage, incrementUsageCount, isFirstChat, markFirstChatDone } from '@/lib/usageLimits';
 import { neuraStorage } from '@/lib/neuraStorage';
@@ -362,7 +362,7 @@ export default function ChatPage() {
             <div className="p-4 border-t border-gray-200 dark:border-gray-700">
               <div className="flex items-center gap-3">
                 <Avatar className="h-8 w-8">
-                  <AvatarImage src={user.photoURL || undefined} />
+                  <AvatarImage src={user.avatarUrl || undefined} />
                   <AvatarFallback>
                     {user.displayName?.charAt(0) || user.email?.charAt(0) || 'U'}
                   </AvatarFallback>
@@ -453,7 +453,7 @@ export default function ChatPage() {
                 {user ? (
                   <div className="flex items-center gap-3">
                     <Avatar className="h-8 w-8">
-                      <AvatarImage src={user.photoURL || undefined} />
+                      <AvatarImage src={user.avatarUrl || undefined} />
                       <AvatarFallback className="text-xs">
                         {user.displayName?.[0]?.toUpperCase() || 'U'}
                       </AvatarFallback>
@@ -493,7 +493,7 @@ export default function ChatPage() {
               <SheetTrigger asChild>
                 <Button variant="ghost" size="sm" className="p-1">
                   <Avatar className="h-8 w-8">
-                    <AvatarImage src={user.photoURL || undefined} />
+                    <AvatarImage src={user.avatarUrl || undefined} />
                     <AvatarFallback className="text-xs">
                       {user.displayName?.[0]?.toUpperCase() || 'U'}
                     </AvatarFallback>
@@ -506,7 +506,7 @@ export default function ChatPage() {
                   <div className="p-4 border-b border-gray-200 dark:border-gray-700">
                     <div className="flex items-center gap-3">
                       <Avatar className="h-12 w-12">
-                        <AvatarImage src={user.photoURL || undefined} />
+                        <AvatarImage src={user.avatarUrl || undefined} />
                         <AvatarFallback>
                           {user.displayName?.[0]?.toUpperCase() || 'U'}
                         </AvatarFallback>

@@ -17,7 +17,7 @@ import { PreviewMapGrid } from "@/components/PreviewMapGrid";
 
 import { isRunningAsStandalone } from "@/lib/pwaUtils";
 import { useLocation } from "wouter";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuth } from "@/hooks/use-auth-new";
 import { PersistentActivationManager } from "@/lib/persistent-activation";
 
 

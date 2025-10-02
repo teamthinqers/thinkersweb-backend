@@ -34,7 +34,7 @@ export function GoogleSignInTest() {
         uid: result.user.uid,
         email: result.user.email,
         displayName: result.user.displayName,
-        photoURL: result.user.photoURL
+        photoURL: result.user.avatarUrl
       });
       
       console.log("Google sign-in successful!", result.user.displayName);

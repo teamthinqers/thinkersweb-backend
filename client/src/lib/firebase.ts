@@ -72,7 +72,7 @@ export const signInWithGoogle = async (): Promise<User> => {
       uid: result.user.uid,
       email: result.user.email,
       displayName: result.user.displayName,
-      photoURL: result.user.photoURL,
+      photoURL: result.user.avatarUrl,
       lastLogin: new Date().toISOString(),
       // Add explicit fields for persistence
       persistUntil: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(), // 90 days

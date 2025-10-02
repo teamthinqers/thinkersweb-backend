@@ -7,7 +7,7 @@ import {
   Share2, Eye, MoreHorizontal, Maximize, Minimize, Clock,
   Grid3x3, List, Bookmark
 } from "lucide-react";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuth } from "@/hooks/use-auth-new";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -240,11 +240,11 @@ export default function LandingPage() {
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="sm" className="rounded-full">
                       <Avatar className="h-8 w-8 border border-amber-200">
-                        {user.photoURL ? (
-                          <AvatarImage src={user.photoURL} alt={user.displayName || 'User'} />
+                        {user.avatarUrl ? (
+                          <AvatarImage src={user.avatarUrl} alt={user.fullName || 'User'} />
                         ) : (
                           <AvatarFallback className="bg-gradient-to-r from-amber-500 to-orange-500 text-white">
-                            {user.displayName ? user.displayName.charAt(0).toUpperCase() : 'U'}
+                            {user.fullName ? user.fullName.charAt(0).toUpperCase() : 'U'}
                           </AvatarFallback>
                         )}
                       </Avatar>
@@ -252,7 +252,7 @@ export default function LandingPage() {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-56">
                     <div className="p-2 text-sm">
-                      <p className="font-medium">{user.displayName || 'User'}</p>
+                      <p className="font-medium">{user.fullName || 'User'}</p>
                       <p className="text-xs text-muted-foreground truncate">{user.email}</p>
                     </div>
                     <DropdownMenuSeparator />

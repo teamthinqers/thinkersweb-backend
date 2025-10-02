@@ -52,9 +52,9 @@ export default function TestAuth() {
           {user ? (
             <div className="space-y-4">
               <div className="flex items-center space-x-4">
-                {user.photoURL && (
+                {user.avatarUrl && (
                   <img 
-                    src={user.photoURL} 
+                    src={user.avatarUrl} 
                     alt={user.displayName || 'User'} 
                     className="w-12 h-12 rounded-full" 
                   />
