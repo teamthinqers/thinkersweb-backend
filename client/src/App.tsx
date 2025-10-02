@@ -185,9 +185,8 @@ function AppWithLayout() {
 }
 
 function Router() {
-  const [location] = useLocation();
+  const [location, setLocation] = useLocation();
   const { user, isLoading } = useAuth();
-  const [, setLocation] = useLocation();
   
   // Auto-redirect authenticated users from root to /home
   useEffect(() => {
