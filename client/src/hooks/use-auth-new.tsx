@@ -84,9 +84,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       console.log("✅ ID token obtained, exchanging for backend session...");
 
       // Step 3: Exchange Firebase ID token for backend session
-      const data = await apiRequest('/api/auth/login', 'POST', {
+      const response = await apiRequest('POST', '/api/auth/login', {
         idToken,
-      }) as unknown as { user: User; isNewUser: boolean };
+      });
+      
+      const data = await response.json() as { user: User; isNewUser: boolean };
 
       if (data && data.user) {
         console.log("✅ Backend session created successfully");
@@ -113,7 +115,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       setIsLoading(true);
       
-      await apiRequest('/api/auth/logout', 'POST', {});
+      await apiRequest('POST', '/api/auth/logout', {});
       
       // Also sign out from Firebase if somehow still signed in
       try {
