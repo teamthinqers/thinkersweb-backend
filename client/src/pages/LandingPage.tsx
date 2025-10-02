@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { 
-  Brain, Users, Sparkles, MessageSquare, ArrowRight, 
-  CheckCircle, Network, Zap, Globe, Shield, TrendingUp,
-  Menu, X, User
+  Brain, Users, Sparkles, MessageSquare, Plus,
+  Menu, User, LogOut, Settings, TrendingUp, Heart,
+  Share2, Eye, MoreHorizontal
 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import {
@@ -16,32 +15,118 @@ import {
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { useQuery } from "@tanstack/react-query";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge";
+
+interface ThoughtDot {
+  id: number;
+  oneWordSummary: string;
+  summary: string;
+  anchor: string;
+  pulse: string;
+  userId: number;
+  user?: {
+    id: number;
+    fullName: string | null;
+    avatar: string | null;
+    email: string;
+  };
+  createdAt: string;
+  x: number;
+  y: number;
+  size: number;
+  rotation: number;
+}
 
 export default function LandingPage() {
   const { user, logout } = useAuth();
   const [location, setLocation] = useLocation();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [selectedDot, setSelectedDot] = useState<ThoughtDot | null>(null);
+  const [dots, setDots] = useState<ThoughtDot[]>([]);
+  
+  // Cache for dot positions to prevent teleporting on refetch
+  const positionCacheRef = useState(() => new Map<number, { x: number; y: number; size: number; rotation: number }>())[0];
+
+  // Fetch public dots from all users for the thought cloud
+  const { data: publicDots, isLoading } = useQuery({
+    queryKey: ['/api/social/dots'],
+    enabled: !!user,
+  });
+
+  // Transform and position dots in an organic cloud formation
+  useEffect(() => {
+    if (!publicDots || !(publicDots as any).dots) return;
+
+    const transformedDots: ThoughtDot[] = (publicDots as any).dots.map((dot: any, index: number) => {
+      // Check if we have cached position for this dot
+      const cached = positionCacheRef.get(dot.id);
+      
+      if (cached) {
+        // Use cached position to prevent teleporting
+        return {
+          ...dot,
+          ...cached,
+        };
+      }
+      
+      // Generate new organic positioning using golden angle spiral
+      const goldenAngle = Math.PI * (3 - Math.sqrt(5)); // ~137.5 degrees
+      const radius = 12 * Math.sqrt(index + 1); // Spiral outward
+      const angle = index * goldenAngle;
+      
+      // Convert polar to cartesian with some randomness
+      const x = Math.max(5, Math.min(95, 50 + radius * Math.cos(angle) + (Math.random() - 0.5) * 15));
+      const y = Math.max(5, Math.min(95, 50 + radius * Math.sin(angle) + (Math.random() - 0.5) * 15));
+      
+      // Vary dot sizes based on recency and engagement
+      const baseSize = 140;
+      const sizeVariation = Math.random() * 60 + 20;
+      const size = baseSize + sizeVariation;
+      
+      // Random rotation for visual variety
+      const rotation = Math.random() * 20 - 10;
+      
+      // Cache this position for future renders
+      const position = { x, y, size, rotation };
+      positionCacheRef.set(dot.id, position);
+
+      return {
+        ...dot,
+        ...position,
+      };
+    });
+
+    setDots(transformedDots);
+  }, [publicDots, positionCacheRef]);
 
   const handleLogout = async () => {
     try {
       await logout();
+      setLocation("/");
     } catch (error) {
       console.error("Logout error:", error);
     }
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-b from-amber-50/50 via-white to-orange-50/30">
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-red-50">
       {/* Header */}
-      <header className="sticky top-0 z-50 border-b bg-white/80 backdrop-blur-lg shadow-sm">
+      <header className="sticky top-0 z-50 border-b bg-white/95 backdrop-blur-lg shadow-sm">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
             {/* Logo */}
-            <div className="flex items-center">
+            <div className="flex items-center gap-8">
               <div 
                 className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity"
-                onClick={() => setLocation("/")}
+                onClick={() => setLocation(user ? "/home" : "/")}
               >
                 <img 
                   src="/dotspark-logo-combined.png?v=1" 
@@ -49,29 +134,45 @@ export default function LandingPage() {
                   className="h-10 w-auto object-contain" 
                 />
               </div>
+
+              {/* Desktop Navigation */}
+              <nav className="hidden md:flex items-center gap-6">
+                <Link href="/home">
+                  <span className="text-sm font-medium text-gray-700 hover:text-amber-600 transition-colors cursor-pointer">
+                    Thought Cloud
+                  </span>
+                </Link>
+                <Link href="/dashboard">
+                  <span className="text-sm font-medium text-gray-700 hover:text-amber-600 transition-colors cursor-pointer">
+                    My Neura
+                  </span>
+                </Link>
+                <Link href="/social">
+                  <span className="text-sm font-medium text-gray-700 hover:text-amber-600 transition-colors cursor-pointer">
+                    Network
+                  </span>
+                </Link>
+                <Link href="/chat">
+                  <span className="text-sm font-medium text-gray-700 hover:text-amber-600 transition-colors cursor-pointer">
+                    AI Chat
+                  </span>
+                </Link>
+              </nav>
             </div>
 
-            {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center gap-6">
-              <Link href="/about">
-                <span className="text-sm font-medium text-gray-700 hover:text-amber-600 transition-colors cursor-pointer">
-                  About
-                </span>
-              </Link>
-              <Link href="/dashboard">
-                <span className="text-sm font-medium text-gray-700 hover:text-amber-600 transition-colors cursor-pointer">
-                  Discover
-                </span>
-              </Link>
-              <Link href="/social">
-                <span className="text-sm font-medium text-gray-700 hover:text-amber-600 transition-colors cursor-pointer">
-                  Community
-                </span>
-              </Link>
-            </nav>
-
-            {/* Right side - Auth buttons or User menu */}
+            {/* Right side - Actions and User menu */}
             <div className="flex items-center gap-3">
+              {user && (
+                <Button
+                  onClick={() => setLocation("/dashboard?create=dot")}
+                  className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  <span className="hidden sm:inline">Create Dot</span>
+                  <span className="sm:hidden">Create</span>
+                </Button>
+              )}
+
               {user ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -100,467 +201,313 @@ export default function LandingPage() {
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link href="/social" className="cursor-pointer w-full">
-                        <Users className="mr-2 h-4 w-4" />
-                        Social Network
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link href="/chat" className="cursor-pointer w-full">
-                        <MessageSquare className="mr-2 h-4 w-4" />
-                        AI Chat
+                      <Link href="/settings" className="cursor-pointer w-full">
+                        <Settings className="mr-2 h-4 w-4" />
+                        Settings
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={handleLogout} className="text-red-600">
+                      <LogOut className="mr-2 h-4 w-4" />
                       Sign out
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
-              ) : (
-                <>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setLocation("/auth")}
-                    className="hidden md:inline-flex"
-                  >
-                    Sign In
-                  </Button>
-                  <Button
-                    size="sm"
-                    onClick={() => setLocation("/auth")}
-                    className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white"
-                  >
-                    Join Now
-                  </Button>
-                </>
-              )}
-
-              {/* Mobile menu */}
-              <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-                <SheetTrigger asChild>
-                  <Button variant="ghost" size="sm" className="md:hidden">
-                    <Menu className="h-5 w-5" />
-                  </Button>
-                </SheetTrigger>
-                <SheetContent side="right" className="w-80">
-                  <div className="flex flex-col gap-6 mt-8">
-                    <SheetClose asChild>
-                      <Link href="/about">
-                        <span className="text-lg font-medium hover:text-amber-600 cursor-pointer">About</span>
-                      </Link>
-                    </SheetClose>
-                    <SheetClose asChild>
-                      <Link href="/dashboard">
-                        <span className="text-lg font-medium hover:text-amber-600 cursor-pointer">Discover</span>
-                      </Link>
-                    </SheetClose>
-                    <SheetClose asChild>
-                      <Link href="/social">
-                        <span className="text-lg font-medium hover:text-amber-600 cursor-pointer">Community</span>
-                      </Link>
-                    </SheetClose>
-                    {!user && (
-                      <>
-                        <SheetClose asChild>
-                          <Button
-                            onClick={() => setLocation("/auth")}
-                            className="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white"
-                          >
-                            Join Now
-                          </Button>
-                        </SheetClose>
-                      </>
-                    )}
-                  </div>
-                </SheetContent>
-              </Sheet>
+              ) : null}
             </div>
           </div>
         </div>
       </header>
 
-      {/* Hero Section */}
-      <main className="flex-1">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-12 py-12 lg:py-20 items-center">
-            {/* Left side - Hero content */}
-            <div className="space-y-8">
-              <div className="space-y-4">
-                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight">
-                  Welcome to the{" "}
-                  <span className="bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
-                    Collective Intelligence
-                  </span>{" "}
-                  Network
-                </h1>
-                <p className="text-lg sm:text-xl text-gray-600 leading-relaxed">
-                  Connect with thinkers worldwide. Share knowledge, discover insights, 
-                  and enhance your cognitive capabilities through collective intelligence.
-                </p>
-              </div>
+      {/* Main Thought Cloud */}
+      <main className="flex-1 overflow-hidden">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {/* Page Title */}
+          <div className="text-center space-y-2 mb-8">
+            <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-amber-600 via-orange-600 to-red-600 bg-clip-text text-transparent">
+              The Thought Cloud
+            </h1>
+            <p className="text-gray-600 text-lg">
+              Explore insights floating across the collective intelligence network
+            </p>
+          </div>
 
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Button
-                  size="lg"
-                  onClick={() => setLocation(user ? "/dashboard" : "/auth")}
-                  className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white text-lg px-8 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all"
-                >
-                  {user ? "Go to Dashboard" : "Get Started"}
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-                <Button
-                  size="lg"
-                  variant="outline"
-                  onClick={() => setLocation("/about")}
-                  className="border-2 border-amber-500 text-amber-700 hover:bg-amber-50 text-lg px-8 py-6 rounded-xl"
-                >
-                  Learn More
-                </Button>
-              </div>
-
-              {/* Stats */}
-              <div className="grid grid-cols-3 gap-6 pt-8 border-t border-gray-200">
-                <div>
-                  <div className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
-                    10K+
-                  </div>
-                  <div className="text-sm text-gray-600">Active Thinkers</div>
-                </div>
-                <div>
-                  <div className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
-                    50K+
-                  </div>
-                  <div className="text-sm text-gray-600">Knowledge Dots</div>
-                </div>
-                <div>
-                  <div className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
-                    100+
-                  </div>
-                  <div className="text-sm text-gray-600">Communities</div>
-                </div>
-              </div>
+          {/* Thought Cloud Canvas */}
+          <div className="relative w-full bg-gradient-to-br from-white/60 to-amber-50/40 rounded-3xl shadow-2xl border border-amber-100 overflow-hidden backdrop-blur-sm">
+            {/* Cloud background pattern */}
+            <div className="absolute inset-0 opacity-20">
+              <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <pattern id="cloud-pattern" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
+                    <circle cx="25" cy="25" r="2" fill="#F59E0B" opacity="0.3"/>
+                    <circle cx="75" cy="75" r="2" fill="#EA580C" opacity="0.3"/>
+                    <circle cx="50" cy="50" r="1.5" fill="#F97316" opacity="0.4"/>
+                  </pattern>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#cloud-pattern)"/>
+              </svg>
             </div>
 
-            {/* Right side - Login/Signup Card or Welcome Card */}
-            {!user ? (
-              <div className="bg-white rounded-2xl shadow-2xl p-8 border border-gray-100">
-                <div className="space-y-6">
-                  <div className="text-center space-y-2">
-                    <h2 className="text-2xl font-bold text-gray-900">
-                      Join DotSpark Today
-                    </h2>
-                    <p className="text-gray-600">
-                      Start your cognitive enhancement journey
-                    </p>
+            {/* Floating Dots Container */}
+            <div className="relative min-h-[600px] h-[calc(100vh-300px)] max-h-[900px] p-8">
+              {isLoading ? (
+                <div className="flex items-center justify-center h-full">
+                  <div className="text-center space-y-4">
+                    <Sparkles className="h-12 w-12 text-amber-500 animate-pulse mx-auto" />
+                    <p className="text-gray-500">Loading thought cloud...</p>
                   </div>
-
-                  <Button
-                    onClick={() => setLocation("/auth")}
-                    className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white py-6 text-lg rounded-xl"
+                </div>
+              ) : dots.length === 0 ? (
+                <div className="flex items-center justify-center h-full">
+                  <div className="text-center space-y-4 max-w-md">
+                    <Brain className="h-16 w-16 text-amber-500 mx-auto" />
+                    <h3 className="text-xl font-semibold text-gray-700">The cloud is waiting</h3>
+                    <p className="text-gray-500">
+                      Be the first to share your thoughts and insights with the community
+                    </p>
+                    <Button
+                      onClick={() => setLocation("/dashboard?create=dot")}
+                      className="bg-gradient-to-r from-amber-500 to-orange-500 text-white"
+                    >
+                      <Plus className="mr-2 h-4 w-4" />
+                      Create Your First Dot
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                dots.map((dot) => (
+                  <div
+                    key={dot.id}
+                    className="absolute cursor-pointer transition-all duration-300 hover:scale-110 hover:z-50 group"
+                    style={{
+                      left: `${dot.x}%`,
+                      top: `${dot.y}%`,
+                      transform: `translate(-50%, -50%) rotate(${dot.rotation}deg)`,
+                      width: `${dot.size}px`,
+                      animation: `float-${dot.id % 3} ${6 + (dot.id % 4)}s ease-in-out infinite`,
+                    }}
+                    onClick={() => setSelectedDot(dot)}
                   >
-                    Sign Up with Google
-                  </Button>
+                    {/* Pulsing glow effect */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-orange-400 rounded-full blur-xl opacity-30 group-hover:opacity-50 transition-opacity animate-pulse" />
+                    
+                    {/* Dot card */}
+                    <Card className="relative bg-white/95 backdrop-blur-sm border-2 border-amber-200 hover:border-orange-400 shadow-lg hover:shadow-2xl transition-all h-full">
+                      <CardHeader className="p-4 space-y-2">
+                        {/* User info */}
+                        <div className="flex items-center gap-2 mb-2">
+                          <Avatar className="h-6 w-6 border border-amber-200">
+                            {dot.user?.avatar ? (
+                              <AvatarImage src={dot.user.avatar} alt={dot.user.fullName || 'User'} />
+                            ) : (
+                              <AvatarFallback className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs">
+                                {dot.user?.fullName?.charAt(0).toUpperCase() || 'U'}
+                              </AvatarFallback>
+                            )}
+                          </Avatar>
+                          <span className="text-xs text-gray-600 truncate">
+                            {dot.user?.fullName || 'Anonymous'}
+                          </span>
+                        </div>
 
-                  <div className="relative">
-                    <div className="absolute inset-0 flex items-center">
-                      <div className="w-full border-t border-gray-200"></div>
-                    </div>
-                    <div className="relative flex justify-center text-sm">
-                      <span className="px-4 bg-white text-gray-500">or</span>
-                    </div>
+                        {/* One-word summary badge */}
+                        <div className="inline-flex w-fit">
+                          <span className="px-3 py-1 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-bold rounded-full uppercase tracking-wide">
+                            {dot.oneWordSummary}
+                          </span>
+                        </div>
+
+                        {/* Summary heading */}
+                        <CardTitle className="text-sm font-bold text-gray-900 line-clamp-2 leading-tight">
+                          {dot.summary}
+                        </CardTitle>
+
+                        {/* Pulse indicator */}
+                        <div className="flex items-center gap-1 text-xs text-amber-600">
+                          <TrendingUp className="h-3 w-3" />
+                          <span className="font-medium truncate">{dot.pulse}</span>
+                        </div>
+
+                        {/* Quick actions - only show on hover */}
+                        <div className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2 pt-2 border-t border-gray-100">
+                          <Button variant="ghost" size="sm" className="h-7 px-2 text-xs">
+                            <Heart className="h-3 w-3 mr-1" />
+                            <span className="hidden sm:inline">Like</span>
+                          </Button>
+                          <Button variant="ghost" size="sm" className="h-7 px-2 text-xs">
+                            <Eye className="h-3 w-3 mr-1" />
+                            <span className="hidden sm:inline">View</span>
+                          </Button>
+                        </div>
+                      </CardHeader>
+                    </Card>
+
+                    {/* Floating particle effect */}
+                    <div className="absolute -top-1 -right-1 w-2 h-2 bg-orange-400 rounded-full animate-ping opacity-75" />
                   </div>
-
-                  <div className="space-y-4">
-                    <Input
-                      type="email"
-                      placeholder="Email address"
-                      className="h-12 rounded-xl"
-                      disabled
-                    />
-                    <Button
-                      onClick={() => setLocation("/auth")}
-                      variant="outline"
-                      className="w-full border-2 border-amber-500 text-amber-700 hover:bg-amber-50 py-6 text-lg rounded-xl"
-                    >
-                      Continue with Email
-                    </Button>
-                  </div>
-
-                  <div className="text-center text-sm text-gray-600">
-                    Already have an account?{" "}
-                    <span
-                      onClick={() => setLocation("/auth")}
-                      className="text-amber-600 font-medium hover:underline cursor-pointer"
-                    >
-                      Sign in
-                    </span>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <div className="bg-gradient-to-br from-amber-500 to-orange-500 rounded-2xl shadow-2xl p-8 text-white">
-                <div className="space-y-6">
-                  <div className="space-y-2">
-                    <h2 className="text-3xl font-bold">
-                      Welcome back, {user.displayName?.split(' ')[0]}!
-                    </h2>
-                    <p className="text-amber-100 text-lg">
-                      Ready to expand your cognitive network?
-                    </p>
-                  </div>
-
-                  <div className="space-y-3">
-                    <Button
-                      onClick={() => setLocation("/dashboard")}
-                      className="w-full bg-white text-amber-700 hover:bg-amber-50 py-6 text-lg rounded-xl font-semibold"
-                    >
-                      <Brain className="mr-2 h-5 w-5" />
-                      My Neural Dashboard
-                    </Button>
-                    <Button
-                      onClick={() => setLocation("/social")}
-                      variant="outline"
-                      className="w-full border-2 border-white text-white hover:bg-white/10 py-6 text-lg rounded-xl font-semibold"
-                    >
-                      <Users className="mr-2 h-5 w-5" />
-                      Explore Community
-                    </Button>
-                    <Button
-                      onClick={() => setLocation("/chat")}
-                      variant="outline"
-                      className="w-full border-2 border-white text-white hover:bg-white/10 py-6 text-lg rounded-xl font-semibold"
-                    >
-                      <MessageSquare className="mr-2 h-5 w-5" />
-                      AI Chat
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Features Section */}
-        <div className="bg-gradient-to-b from-white to-amber-50/30 py-20">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center space-y-4 mb-16">
-              <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">
-                Why Choose{" "}
-                <span className="bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
-                  DotSpark
-                </span>
-              </h2>
-              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                Transform the way you learn, think, and connect with a global community of knowledge seekers
-              </p>
-            </div>
-
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {/* Feature 1 */}
-              <div className="bg-white rounded-xl p-8 shadow-lg hover:shadow-xl transition-shadow border border-gray-100">
-                <div className="w-14 h-14 bg-gradient-to-r from-amber-500 to-orange-500 rounded-xl flex items-center justify-center mb-6">
-                  <Brain className="h-7 w-7 text-white" />
-                </div>
-                <h3 className="text-xl font-bold mb-3 text-gray-900">
-                  Neural Extension
-                </h3>
-                <p className="text-gray-600 leading-relaxed">
-                  Enhance your cognitive capabilities with AI-powered insights and personalized learning paths
-                </p>
-              </div>
-
-              {/* Feature 2 */}
-              <div className="bg-white rounded-xl p-8 shadow-lg hover:shadow-xl transition-shadow border border-gray-100">
-                <div className="w-14 h-14 bg-gradient-to-r from-red-500 to-orange-500 rounded-xl flex items-center justify-center mb-6">
-                  <Users className="h-7 w-7 text-white" />
-                </div>
-                <h3 className="text-xl font-bold mb-3 text-gray-900">
-                  Collective Intelligence
-                </h3>
-                <p className="text-gray-600 leading-relaxed">
-                  Connect with thinkers worldwide and tap into the power of shared knowledge and insights
-                </p>
-              </div>
-
-              {/* Feature 3 */}
-              <div className="bg-white rounded-xl p-8 shadow-lg hover:shadow-xl transition-shadow border border-gray-100">
-                <div className="w-14 h-14 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-xl flex items-center justify-center mb-6">
-                  <Sparkles className="h-7 w-7 text-white" />
-                </div>
-                <h3 className="text-xl font-bold mb-3 text-gray-900">
-                  Knowledge Dots
-                </h3>
-                <p className="text-gray-600 leading-relaxed">
-                  Capture and organize insights into interconnected knowledge dots that grow with you
-                </p>
-              </div>
-
-              {/* Feature 4 */}
-              <div className="bg-white rounded-xl p-8 shadow-lg hover:shadow-xl transition-shadow border border-gray-100">
-                <div className="w-14 h-14 bg-gradient-to-r from-amber-500 to-orange-500 rounded-xl flex items-center justify-center mb-6">
-                  <Network className="h-7 w-7 text-white" />
-                </div>
-                <h3 className="text-xl font-bold mb-3 text-gray-900">
-                  Neural Networks
-                </h3>
-                <p className="text-gray-600 leading-relaxed">
-                  Build meaningful connections between ideas, people, and insights in your cognitive map
-                </p>
-              </div>
-
-              {/* Feature 5 */}
-              <div className="bg-white rounded-xl p-8 shadow-lg hover:shadow-xl transition-shadow border border-gray-100">
-                <div className="w-14 h-14 bg-gradient-to-r from-red-500 to-orange-500 rounded-xl flex items-center justify-center mb-6">
-                  <Globe className="h-7 w-7 text-white" />
-                </div>
-                <h3 className="text-xl font-bold mb-3 text-gray-900">
-                  Global Community
-                </h3>
-                <p className="text-gray-600 leading-relaxed">
-                  Join a vibrant community of learners, thinkers, and innovators from around the world
-                </p>
-              </div>
-
-              {/* Feature 6 */}
-              <div className="bg-white rounded-xl p-8 shadow-lg hover:shadow-xl transition-shadow border border-gray-100">
-                <div className="w-14 h-14 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-xl flex items-center justify-center mb-6">
-                  <Shield className="h-7 w-7 text-white" />
-                </div>
-                <h3 className="text-xl font-bold mb-3 text-gray-900">
-                  Privacy First
-                </h3>
-                <p className="text-gray-600 leading-relaxed">
-                  Your data, your control. Choose what to share and what to keep private in your neural space
-                </p>
-              </div>
+                ))
+              )}
             </div>
           </div>
-        </div>
 
-        {/* Visual Infographic Section - Placeholder for dots/sparks visuals */}
-        <div className="bg-white py-20">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center space-y-4 mb-16">
-              <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">
-                How{" "}
-                <span className="bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
-                  DotSpark
-                </span>{" "}
-                Works
-              </h2>
-              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                A revolutionary approach to knowledge management and cognitive enhancement
-              </p>
-            </div>
-
-            {/* Placeholder for visual infographics */}
-            <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-              <div className="text-center space-y-4">
-                <div className="mx-auto w-32 h-32 bg-gradient-to-br from-amber-100 to-orange-100 rounded-full flex items-center justify-center border-4 border-amber-200">
-                  <Sparkles className="h-16 w-16 text-amber-600" />
+          {/* Stats bar */}
+          <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="bg-white rounded-xl p-4 shadow-md border border-amber-100">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-to-r from-amber-500 to-orange-500 rounded-lg flex items-center justify-center">
+                  <Sparkles className="h-5 w-5 text-white" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900">Capture Insights</h3>
-                <p className="text-gray-600">
-                  Save your thoughts, learnings, and discoveries as knowledge dots
-                </p>
-              </div>
-
-              <div className="text-center space-y-4">
-                <div className="mx-auto w-32 h-32 bg-gradient-to-br from-purple-100 to-indigo-100 rounded-full flex items-center justify-center border-4 border-purple-200">
-                  <Network className="h-16 w-16 text-purple-600" />
+                <div>
+                  <p className="text-2xl font-bold text-gray-900">{dots.length}</p>
+                  <p className="text-xs text-gray-500">Floating Thoughts</p>
                 </div>
-                <h3 className="text-xl font-bold text-gray-900">Connect Ideas</h3>
-                <p className="text-gray-600">
-                  Link related concepts and watch your knowledge network grow
-                </p>
-              </div>
-
-              <div className="text-center space-y-4">
-                <div className="mx-auto w-32 h-32 bg-gradient-to-br from-red-100 to-orange-100 rounded-full flex items-center justify-center border-4 border-red-200">
-                  <TrendingUp className="h-16 w-16 text-red-600" />
-                </div>
-                <h3 className="text-xl font-bold text-gray-900">Grow Together</h3>
-                <p className="text-gray-600">
-                  Share insights with the community and learn from collective intelligence
-                </p>
               </div>
             </div>
-          </div>
-        </div>
 
-        {/* CTA Section */}
-        <div className="bg-gradient-to-r from-amber-500 to-orange-500 py-20">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <div className="max-w-3xl mx-auto space-y-8">
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white">
-                Ready to Enhance Your Cognitive Abilities?
-              </h2>
-              <p className="text-xl text-white/90">
-                Join thousands of thinkers who are already transforming their learning journey
-              </p>
-              <Button
-                size="lg"
-                onClick={() => setLocation(user ? "/dashboard" : "/auth")}
-                className="bg-white text-amber-700 hover:bg-amber-50 text-lg px-12 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all font-semibold"
-              >
-                {user ? "Go to Dashboard" : "Get Started for Free"}
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
+            <div className="bg-white rounded-xl p-4 shadow-md border border-amber-100">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-lg flex items-center justify-center">
+                  <Users className="h-5 w-5 text-white" />
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {new Set(dots.map(d => d.userId)).size}
+                  </p>
+                  <p className="text-xs text-gray-500">Active Thinkers</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-xl p-4 shadow-md border border-amber-100">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-to-r from-red-500 to-orange-500 rounded-lg flex items-center justify-center">
+                  <TrendingUp className="h-5 w-5 text-white" />
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-gray-900">Live</p>
+                  <p className="text-xs text-gray-500">Real-time Updates</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-xl p-4 shadow-md border border-amber-100">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-to-r from-amber-500 to-orange-500 rounded-lg flex items-center justify-center">
+                  <Brain className="h-5 w-5 text-white" />
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-gray-900">∞</p>
+                  <p className="text-xs text-gray-500">Insights Shared</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 text-gray-300 py-12">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div className="space-y-4">
-              <img 
-                src="/dotspark-logo-combined.png?v=1" 
-                alt="DotSpark" 
-                className="h-10 w-auto object-contain brightness-0 invert" 
-              />
-              <p className="text-sm text-gray-400">
-                Your neural extension for cognitive enhancement and collective intelligence.
-              </p>
-            </div>
-            
-            <div>
-              <h3 className="font-semibold text-white mb-4">Platform</h3>
-              <ul className="space-y-2 text-sm">
-                <li><Link href="/dashboard"><span className="hover:text-amber-400 cursor-pointer">Dashboard</span></Link></li>
-                <li><Link href="/social"><span className="hover:text-amber-400 cursor-pointer">Community</span></Link></li>
-                <li><Link href="/chat"><span className="hover:text-amber-400 cursor-pointer">AI Chat</span></Link></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h3 className="font-semibold text-white mb-4">Company</h3>
-              <ul className="space-y-2 text-sm">
-                <li><Link href="/about"><span className="hover:text-amber-400 cursor-pointer">About</span></Link></li>
-                <li><span className="hover:text-amber-400 cursor-pointer">Blog</span></li>
-                <li><span className="hover:text-amber-400 cursor-pointer">Careers</span></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h3 className="font-semibold text-white mb-4">Legal</h3>
-              <ul className="space-y-2 text-sm">
-                <li><span className="hover:text-amber-400 cursor-pointer">Privacy</span></li>
-                <li><span className="hover:text-amber-400 cursor-pointer">Terms</span></li>
-                <li><span className="hover:text-amber-400 cursor-pointer">Security</span></li>
-              </ul>
-            </div>
-          </div>
-          
-          <div className="border-t border-gray-800 mt-12 pt-8 text-center text-sm text-gray-400">
-            <p>&copy; 2025 DotSpark. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
+      {/* Expanded Dot Modal */}
+      <Dialog open={!!selectedDot} onOpenChange={(open) => !open && setSelectedDot(null)}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          {selectedDot && (
+            <>
+              <DialogHeader>
+                <div className="flex items-center gap-3 mb-4">
+                  <Avatar className="h-12 w-12 border-2 border-amber-200">
+                    {selectedDot.user?.avatar ? (
+                      <AvatarImage src={selectedDot.user.avatar} alt={selectedDot.user.fullName || 'User'} />
+                    ) : (
+                      <AvatarFallback className="bg-gradient-to-r from-amber-500 to-orange-500 text-white">
+                        {selectedDot.user?.fullName?.charAt(0).toUpperCase() || 'U'}
+                      </AvatarFallback>
+                    )}
+                  </Avatar>
+                  <div>
+                    <p className="font-semibold text-gray-900">{selectedDot.user?.fullName || 'Anonymous'}</p>
+                    <p className="text-sm text-gray-500">{selectedDot.user?.email}</p>
+                  </div>
+                </div>
+                
+                <Badge className="w-fit bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0">
+                  {selectedDot.oneWordSummary}
+                </Badge>
+                
+                <DialogTitle className="text-2xl font-bold text-gray-900 mt-4">
+                  {selectedDot.summary}
+                </DialogTitle>
+              </DialogHeader>
+
+              <div className="space-y-6 mt-6">
+                {/* Anchor Layer */}
+                <div className="space-y-2">
+                  <h4 className="text-sm font-semibold text-gray-500 uppercase tracking-wide">
+                    Anchor Layer
+                  </h4>
+                  <Card className="bg-gradient-to-br from-amber-50 to-orange-50 border-amber-200">
+                    <CardContent className="pt-4">
+                      <p className="text-gray-800 leading-relaxed">{selectedDot.anchor}</p>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Pulse Layer */}
+                <div className="space-y-2">
+                  <h4 className="text-sm font-semibold text-gray-500 uppercase tracking-wide">
+                    Pulse Layer
+                  </h4>
+                  <div className="flex items-center gap-2 p-4 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-lg border border-purple-200">
+                    <TrendingUp className="h-5 w-5 text-purple-600" />
+                    <p className="text-purple-900 font-medium">{selectedDot.pulse}</p>
+                  </div>
+                </div>
+
+                {/* Engagement Actions */}
+                <div className="flex items-center gap-3 pt-4 border-t border-gray-200">
+                  <Button variant="outline" className="flex-1" size="sm">
+                    <Heart className="h-4 w-4 mr-2" />
+                    Like
+                  </Button>
+                  <Button variant="outline" className="flex-1" size="sm">
+                    <MessageSquare className="h-4 w-4 mr-2" />
+                    Discuss
+                  </Button>
+                  <Button variant="outline" className="flex-1" size="sm">
+                    <Share2 className="h-4 w-4 mr-2" />
+                    Share
+                  </Button>
+                </div>
+
+                {/* Timestamp */}
+                <div className="text-sm text-gray-500 text-center">
+                  Created {new Date(selectedDot.createdAt).toLocaleDateString('en-US', {
+                    month: 'long',
+                    day: 'numeric',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                  })}
+                </div>
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Floating animation keyframes - injected via style tag */}
+      <style>{`
+        @keyframes float-0 {
+          0%, 100% { transform: translate(-50%, -50%) translateY(0px); }
+          50% { transform: translate(-50%, -50%) translateY(-15px); }
+        }
+        @keyframes float-1 {
+          0%, 100% { transform: translate(-50%, -50%) translateY(0px) translateX(0px); }
+          33% { transform: translate(-50%, -50%) translateY(-10px) translateX(5px); }
+          66% { transform: translate(-50%, -50%) translateY(-5px) translateX(-5px); }
+        }
+        @keyframes float-2 {
+          0%, 100% { transform: translate(-50%, -50%) rotate(0deg) translateY(0px); }
+          50% { transform: translate(-50%, -50%) rotate(2deg) translateY(-12px); }
+        }
+      `}</style>
     </div>
   );
 }
