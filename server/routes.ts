@@ -50,6 +50,7 @@ import vectorSearchRouter from './routes/vector-search';
 import indexingRouter from './routes/indexing';
 import userContentRouter from './routes/user-content';
 import socialRouter from './routes/social';
+import thoughtsRouter from './routes/thoughts';
 import { initializeVectorDB } from './vector-db';
 import { vectorIntegration } from './vector-integration';
 import { setupVectorAPI } from './routes/vector-api';
@@ -1781,8 +1782,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Use the user content router for authenticated user-generated content
   app.use(`${apiPrefix}/user-content`, userContentRouter);
   
-  // Mount social feed routes for the thought cloud
+  // Mount social feed routes for the thought cloud (legacy)
   app.use(`${apiPrefix}/social`, isAuthenticated, socialRouter);
+  
+  // Mount new thoughts system routes
+  app.use(`${apiPrefix}/thoughts`, isAuthenticated, thoughtsRouter);
 
   // ===========================
   // MAPPING ROUTES
