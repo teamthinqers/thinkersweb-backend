@@ -58,16 +58,20 @@ export default function NewLandingPage() {
                   About
                 </span>
               </Link>
-              <Link href="/home">
-                <span className="text-sm font-medium text-gray-700 hover:text-amber-600 transition-colors cursor-pointer">
-                  Home
-                </span>
-              </Link>
-              <Link href="/social">
-                <span className="text-sm font-medium text-gray-700 hover:text-amber-600 transition-colors cursor-pointer">
-                  Community
-                </span>
-              </Link>
+              {user && (
+                <Link href="/home">
+                  <span className="text-sm font-medium text-gray-700 hover:text-amber-600 transition-colors cursor-pointer">
+                    Home
+                  </span>
+                </Link>
+              )}
+              {user && (
+                <Link href="/social">
+                  <span className="text-sm font-medium text-gray-700 hover:text-amber-600 transition-colors cursor-pointer">
+                    Community
+                  </span>
+                </Link>
+              )}
             </nav>
 
             {/* Right side - Auth buttons or User menu */}
@@ -151,16 +155,20 @@ export default function NewLandingPage() {
                         <span className="text-lg font-medium hover:text-amber-600 cursor-pointer">About</span>
                       </Link>
                     </SheetClose>
-                    <SheetClose asChild>
-                      <Link href="/home">
-                        <span className="text-lg font-medium hover:text-amber-600 cursor-pointer">Home</span>
-                      </Link>
-                    </SheetClose>
-                    <SheetClose asChild>
-                      <Link href="/social">
-                        <span className="text-lg font-medium hover:text-amber-600 cursor-pointer">Community</span>
-                      </Link>
-                    </SheetClose>
+                    {user && (
+                      <>
+                        <SheetClose asChild>
+                          <Link href="/home">
+                            <span className="text-lg font-medium hover:text-amber-600 cursor-pointer">Home</span>
+                          </Link>
+                        </SheetClose>
+                        <SheetClose asChild>
+                          <Link href="/social">
+                            <span className="text-lg font-medium hover:text-amber-600 cursor-pointer">Community</span>
+                          </Link>
+                        </SheetClose>
+                      </>
+                    )}
                     {!user && (
                       <>
                         <SheetClose asChild>
