@@ -191,16 +191,16 @@ function Router() {
       <Route path="/test-minimal" component={() => <div>Basic Test</div>} />
       <Route path="/" component={NewLandingPage} />
       <Route path="/home" component={LandingPage} />
-      <Route path="/myneura" component={() => <ProtectedRoute><MyNeuraPage /></ProtectedRoute>} />
+      <Route path="/myneura" component={MyNeuraPage} />
       <Route path="/auth" component={AuthPage} />
       
-      {/* Other protected routes */}
-      <Route path="/entries" component={() => <ProtectedRoute><AppWithLayout /></ProtectedRoute>} />
-      <Route path="/insights" component={() => <ProtectedRoute><AppWithLayout /></ProtectedRoute>} />
-      <Route path="/favorites" component={() => <ProtectedRoute><AppWithLayout /></ProtectedRoute>} />
-      <Route path="/network" component={() => <ProtectedRoute><AppWithLayout /></ProtectedRoute>} />
-      <Route path="/settings" component={() => <ProtectedRoute><AppWithLayout /></ProtectedRoute>} />
-      <Route path="/profile" component={() => <ProtectedRoute><AppWithLayout /></ProtectedRoute>} />
+      {/* All routes now public - no authentication required */}
+      <Route path="/entries" component={AppWithLayout} />
+      <Route path="/insights" component={AppWithLayout} />
+      <Route path="/favorites" component={AppWithLayout} />
+      <Route path="/network" component={AppWithLayout} />
+      <Route path="/settings" component={AppWithLayout} />
+      <Route path="/profile" component={AppWithLayout} />
       <Route path="/social" component={Social} />
       <Route path="/sparktest" component={SparkTest} />
       <Route path="/spark" component={Spark} />
