@@ -7,7 +7,6 @@ import {
   Share2, Eye, MoreHorizontal, Maximize, Minimize, Clock,
   Grid3x3, List, Bookmark
 } from "lucide-react";
-import SimplifiedFloatingDot from "@/components/dotspark/SimplifiedFloatingDot";
 import { useAuth } from "@/hooks/use-auth";
 import {
   DropdownMenu,
@@ -641,9 +640,6 @@ export default function LandingPage() {
           50% { transform: translate(-50%, -50%) rotate(2deg) translateY(-12px); }
         }
       `}</style>
-
-      {/* Simplified Floating Dot for Quick Thought Creation */}
-      <SimplifiedFloatingDot />
     </div>
   );
 }

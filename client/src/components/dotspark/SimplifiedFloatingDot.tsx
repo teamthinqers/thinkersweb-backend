@@ -36,11 +36,16 @@ export default function SimplifiedFloatingDot() {
   // Create thought mutation
   const createMutation = useMutation({
     mutationFn: async (data: { heading: string; summary: string; emotion?: string; visibility: string }) => {
-      return await apiRequest('/api/thoughts', {
+      const response = await fetch('/api/thoughts', {
         method: 'POST',
         body: JSON.stringify(data),
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
       });
+      if (!response.ok) {
+        throw new Error('Failed to create thought');
+      }
+      return response.json();
     },
     onSuccess: (data, variables) => {
       toast({
@@ -145,26 +150,28 @@ export default function SimplifiedFloatingDot() {
         onMouseDown={handleMouseDown}
       >
         <div
-          className={`relative w-20 h-20 cursor-pointer transition-transform duration-300 ${
-            isSpinning ? 'animate-spin-slow' : ''
-          }`}
+          className="relative w-14 h-14 cursor-pointer"
           onClick={handleDotClick}
         >
           {/* Outer pulsing ring */}
           <div className="absolute inset-0 rounded-full bg-gradient-to-br from-amber-400 via-orange-400 to-red-400 opacity-30 animate-pulse" 
-               style={{ transform: 'scale(1.2)' }} />
+               style={{ transform: 'scale(1.4)' }} />
           
           {/* Middle glow */}
-          <div className="absolute inset-0 rounded-full bg-gradient-to-br from-amber-300 to-orange-300 blur-lg opacity-50" />
+          <div className="absolute inset-0 rounded-full bg-gradient-to-br from-amber-300 to-orange-300 blur-md opacity-40" />
           
-          {/* Main dot */}
-          <div className="relative w-full h-full rounded-full bg-gradient-to-br from-white via-amber-50 to-orange-50 border-4 border-amber-400 shadow-2xl flex items-center justify-center hover:scale-110 transition-transform">
-            <Plus className="h-8 w-8 text-amber-600" />
-          </div>
+          {/* DotSpark Logo */}
+          <img 
+            src="/dotspark-logo-transparent.png?v=1" 
+            alt="DotSpark" 
+            className={`w-14 h-14 transition-all duration-300 hover:scale-110 ${
+              isSpinning ? 'animate-spin-slow' : ''
+            }`}
+          />
           
           {/* Sparkle effects */}
-          <div className="absolute top-1 right-3 w-2 h-2 bg-yellow-400 rounded-full animate-ping opacity-75" />
-          <div className="absolute bottom-3 left-2 w-1.5 h-1.5 bg-orange-400 rounded-full animate-pulse opacity-60" />
+          <div className="absolute -top-1 -right-1 w-2 h-2 bg-yellow-400 rounded-full animate-ping opacity-75" />
+          <div className="absolute -bottom-1 -left-1 w-1.5 h-1.5 bg-orange-400 rounded-full animate-pulse opacity-60" />
         </div>
       </div>
 

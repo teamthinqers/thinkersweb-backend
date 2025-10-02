@@ -7,7 +7,6 @@ import {
   Share2, Eye, MoreHorizontal, Maximize, Minimize, Clock,
   Grid3x3, List, Bookmark
 } from "lucide-react";
-import SimplifiedFloatingDot from "@/components/dotspark/SimplifiedFloatingDot";
 import { useAuth } from "@/hooks/use-auth";
 import {
   DropdownMenu,
@@ -61,8 +60,8 @@ export default function MyNeuraPage() {
   });
 
   useEffect(() => {
-    if (myNeuraThoughts?.thoughts) {
-      const rawThoughts = myNeuraThoughts.thoughts;
+    if (myNeuraThoughts && (myNeuraThoughts as any).thoughts) {
+      const rawThoughts = (myNeuraThoughts as any).thoughts;
       
       // Filter by recent if enabled (last 7 days)
       const filtered = showRecentOnly 
@@ -152,15 +151,15 @@ export default function MyNeuraPage() {
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" className="flex items-center gap-2">
                       <Avatar className="h-8 w-8">
-                        {user.avatar ? (
-                          <AvatarImage src={user.avatar} alt={user.fullName || 'User'} />
+                        {user.photoURL ? (
+                          <AvatarImage src={user.photoURL} alt={user.displayName || 'User'} />
                         ) : (
                           <AvatarFallback className="bg-gradient-to-r from-amber-500 to-orange-500 text-white">
-                            {user.fullName?.charAt(0).toUpperCase() || 'U'}
+                            {user.displayName?.charAt(0).toUpperCase() || 'U'}
                           </AvatarFallback>
                         )}
                       </Avatar>
-                      <span className="hidden sm:inline">{user.fullName || user.email}</span>
+                      <span className="hidden sm:inline">{user.displayName || user.email}</span>
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-48">
@@ -527,8 +526,6 @@ export default function MyNeuraPage() {
           )}
         </DialogContent>
       </Dialog>
-
-      <SimplifiedFloatingDot />
 
       <style>{`
         @keyframes float-0 {
