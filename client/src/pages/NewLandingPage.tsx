@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,9 +19,16 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
 
 export default function NewLandingPage() {
-  const { user, logout } = useAuth();
+  const { user, logout, isLoading } = useAuth();
   const [location, setLocation] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Redirect authenticated users to /home
+  useEffect(() => {
+    if (!isLoading && user) {
+      setLocation("/home");
+    }
+  }, [user, isLoading, setLocation]);
 
   const handleLogout = async () => {
     try {
@@ -30,6 +37,16 @@ export default function NewLandingPage() {
       console.error("Logout error:", error);
     }
   };
+
+  // Show nothing while checking auth status to prevent flash
+  if (isLoading) {
+    return null;
+  }
+
+  // If user is authenticated, return null (redirect will happen)
+  if (user) {
+    return null;
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-amber-50/50 via-white to-orange-50/30">

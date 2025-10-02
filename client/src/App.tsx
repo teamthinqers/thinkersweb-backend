@@ -185,16 +185,6 @@ function AppWithLayout() {
 }
 
 function Router() {
-  const [location, setLocation] = useLocation();
-  const { user, isLoading } = useAuth();
-  
-  // Auto-redirect authenticated users from root to /home
-  useEffect(() => {
-    if (!isLoading && user && location === '/') {
-      setLocation("/home");
-    }
-  }, [user, isLoading, location, setLocation]);
-  
   return (
     <Switch>
       <Route path="/test-minimal" component={() => <div>Basic Test</div>} />
