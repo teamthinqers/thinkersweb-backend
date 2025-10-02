@@ -1,7 +1,7 @@
 import { useState, ReactNode } from 'react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Menu, Brain, Users, User, Settings, LogOut } from 'lucide-react';
+import { Menu, Brain, Home, User, Settings, LogOut } from 'lucide-react';
 import { Link, useLocation } from 'wouter';
 import { useAuth } from '@/hooks/use-auth-new';
 import { useToast } from '@/hooks/use-toast';
@@ -52,14 +52,14 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
               <Button 
                 variant="ghost" 
                 size="icon"
-                title="Social Feed"
+                title="Home"
                 className={`h-10 w-10 rounded-xl transition-all duration-300 ${
                   isOnSocialFeed 
-                    ? 'bg-red-50 text-red-600 hover:bg-red-100' 
-                    : 'hover:bg-red-50 hover:text-red-600'
+                    ? 'bg-amber-50 text-amber-600 hover:bg-amber-100' 
+                    : 'hover:bg-amber-50 hover:text-amber-600'
                 }`}
               >
-                <Users className="w-5 h-5" />
+                <Home className="w-5 h-5" />
               </Button>
             </Link>
             
@@ -128,36 +128,48 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
 
           {/* Right: Fixed position icons */}
           <div className="flex items-center gap-2">
-            {/* Social Feed Icon */}
+            {/* Home Icon with LinkedIn-style underline */}
             <Link href="/home">
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className={`p-2 rounded-lg transition-all duration-300 shadow-sm ${
-                  isOnSocialFeed
-                    ? 'bg-gradient-to-br from-red-500 to-red-600 hover:from-red-600 hover:to-red-700'
-                    : 'bg-red-100 hover:bg-gradient-to-br hover:from-red-500 hover:to-red-600'
-                }`}
-                title="Social Feed"
-              >
-                <Users className={`h-5 w-5 ${isOnSocialFeed ? 'text-white' : 'text-red-600'}`} />
-              </Button>
+              <div className="relative flex flex-col items-center">
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className={`p-2 rounded-lg transition-all duration-300 ${
+                    isOnSocialFeed
+                      ? 'bg-amber-50 text-amber-700'
+                      : 'hover:bg-amber-50 hover:text-amber-600'
+                  }`}
+                  title="Home"
+                >
+                  <Home className="h-5 w-5" />
+                </Button>
+                {/* LinkedIn-style active indicator */}
+                {isOnSocialFeed && (
+                  <div className="absolute -bottom-0.5 left-0 right-0 h-0.5 bg-amber-600 rounded-full"></div>
+                )}
+              </div>
             </Link>
 
-            {/* My Neura Icon */}
+            {/* My Neura Icon with LinkedIn-style underline */}
             <Link href="/myneura">
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className={`p-2 rounded-lg transition-all duration-300 shadow-sm ${
-                  isOnMyNeura
-                    ? 'bg-gradient-to-br from-amber-500 via-amber-600 to-orange-600 hover:from-amber-600 hover:via-amber-700 hover:to-orange-700'
-                    : 'bg-amber-100 hover:bg-gradient-to-br hover:from-amber-500 hover:via-amber-600 hover:to-orange-600'
-                }`}
-                title="My Neura"
-              >
-                <Brain className={`h-5 w-5 ${isOnMyNeura ? 'text-white' : 'text-amber-600'}`} />
-              </Button>
+              <div className="relative flex flex-col items-center">
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className={`p-2 rounded-lg transition-all duration-300 ${
+                    isOnMyNeura
+                      ? 'bg-amber-50 text-amber-700'
+                      : 'hover:bg-amber-50 hover:text-amber-600'
+                  }`}
+                  title="My Neura"
+                >
+                  <Brain className="h-5 w-5" />
+                </Button>
+                {/* LinkedIn-style active indicator */}
+                {isOnMyNeura && (
+                  <div className="absolute -bottom-0.5 left-0 right-0 h-0.5 bg-amber-600 rounded-full"></div>
+                )}
+              </div>
             </Link>
 
             {/* User Avatar */}
@@ -282,11 +294,11 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
                   <Link href="/home">
                     <Button 
                       variant="ghost" 
-                      className={`w-full justify-start text-sm h-10 ${isOnSocialFeed ? 'bg-red-50 text-red-600' : ''}`}
+                      className={`w-full justify-start text-sm h-10 ${isOnSocialFeed ? 'bg-amber-50 text-amber-600' : ''}`}
                       onClick={() => setIsSidebarOpen(false)}
                     >
-                      <Users className="w-4 h-4 mr-3" />
-                      Social Feed
+                      <Home className="w-4 h-4 mr-3" />
+                      Home
                     </Button>
                   </Link>
                   
