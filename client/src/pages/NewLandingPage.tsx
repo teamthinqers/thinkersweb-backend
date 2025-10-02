@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,9 +19,16 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
 
 export default function NewLandingPage() {
-  const { user, logout } = useAuth();
+  const { user, logout, isLoading } = useAuth();
   const [location, setLocation] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Redirect authenticated users to /home
+  useEffect(() => {
+    if (!isLoading && user) {
+      setLocation("/home");
+    }
+  }, [user, isLoading, setLocation]);
 
   const handleLogout = async () => {
     try {
@@ -51,91 +58,30 @@ export default function NewLandingPage() {
               </div>
             </div>
 
-            {/* Desktop Navigation */}
+            {/* Desktop Navigation - Simple: About + Sign In only */}
             <nav className="hidden md:flex items-center gap-6">
-              <Link href="/about">
-                <span className="text-sm font-medium text-gray-700 hover:text-amber-600 transition-colors cursor-pointer">
-                  About
-                </span>
-              </Link>
-              <Link href="/home">
-                <span className="text-sm font-medium text-gray-700 hover:text-amber-600 transition-colors cursor-pointer">
-                  Home
-                </span>
-              </Link>
-              <Link href="/social">
-                <span className="text-sm font-medium text-gray-700 hover:text-amber-600 transition-colors cursor-pointer">
-                  Community
-                </span>
-              </Link>
+              <span className="text-sm font-medium text-gray-700 hover:text-amber-600 transition-colors cursor-pointer">
+                About
+              </span>
             </nav>
 
-            {/* Right side - Auth buttons or User menu */}
+            {/* Right side - Sign In button only */}
             <div className="flex items-center gap-3">
-              {user ? (
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="sm" className="rounded-full">
-                      <Avatar className="h-8 w-8 border border-amber-200">
-                        {user.photoURL ? (
-                          <AvatarImage src={user.photoURL} alt={user.displayName || 'User'} />
-                        ) : (
-                          <AvatarFallback className="bg-gradient-to-r from-amber-500 to-orange-500 text-white">
-                            {user.displayName ? user.displayName.charAt(0).toUpperCase() : 'U'}
-                          </AvatarFallback>
-                        )}
-                      </Avatar>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-56">
-                    <div className="p-2 text-sm">
-                      <p className="font-medium">{user.displayName || 'User'}</p>
-                      <p className="text-xs text-muted-foreground truncate">{user.email}</p>
-                    </div>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem asChild>
-                      <Link href="/home" className="cursor-pointer w-full">
-                        <Brain className="mr-2 h-4 w-4" />
-                        Home
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link href="/social" className="cursor-pointer w-full">
-                        <Users className="mr-2 h-4 w-4" />
-                        Social Network
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link href="/chat" className="cursor-pointer w-full">
-                        <MessageSquare className="mr-2 h-4 w-4" />
-                        AI Chat
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={handleLogout} className="text-red-600">
-                      Sign out
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              ) : (
-                <>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setLocation("/auth")}
-                    className="hidden md:inline-flex"
-                  >
-                    Sign In
-                  </Button>
-                  <Button
-                    size="sm"
-                    onClick={() => setLocation("/auth")}
-                    className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white"
-                  >
-                    Join Now
-                  </Button>
-                </>
-              )}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setLocation("/auth")}
+                className="hidden md:inline-flex"
+              >
+                Sign In
+              </Button>
+              <Button
+                size="sm"
+                onClick={() => setLocation("/auth")}
+                className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white"
+              >
+                Join Now
+              </Button>
 
               {/* Mobile menu */}
               <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
@@ -146,33 +92,15 @@ export default function NewLandingPage() {
                 </SheetTrigger>
                 <SheetContent side="right" className="w-80">
                   <div className="flex flex-col gap-6 mt-8">
+                    <span className="text-lg font-medium hover:text-amber-600 cursor-pointer">About</span>
                     <SheetClose asChild>
-                      <Link href="/about">
-                        <span className="text-lg font-medium hover:text-amber-600 cursor-pointer">About</span>
-                      </Link>
+                      <Button
+                        onClick={() => setLocation("/auth")}
+                        className="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white"
+                      >
+                        Sign In
+                      </Button>
                     </SheetClose>
-                    <SheetClose asChild>
-                      <Link href="/home">
-                        <span className="text-lg font-medium hover:text-amber-600 cursor-pointer">Home</span>
-                      </Link>
-                    </SheetClose>
-                    <SheetClose asChild>
-                      <Link href="/social">
-                        <span className="text-lg font-medium hover:text-amber-600 cursor-pointer">Community</span>
-                      </Link>
-                    </SheetClose>
-                    {!user && (
-                      <>
-                        <SheetClose asChild>
-                          <Button
-                            onClick={() => setLocation("/auth")}
-                            className="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white"
-                          >
-                            Join Now
-                          </Button>
-                        </SheetClose>
-                      </>
-                    )}
                   </div>
                 </SheetContent>
               </Sheet>

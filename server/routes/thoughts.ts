@@ -11,14 +11,12 @@ const router = Router();
  * GET /api/thoughts
  * Fetch social thoughts from all users for the /home thought cloud
  * Returns only thoughts with visibility='social'
+ * PUBLIC ENDPOINT - No authentication required
  */
 router.get('/', async (req, res) => {
   try {
+    // Optional: userId available if logged in (for future features like checking if thought is saved)
     const userId = (req as any).user?.id;
-    
-    if (!userId) {
-      return res.status(401).json({ error: 'Authentication required' });
-    }
 
     const limit = parseInt(req.query.limit as string) || 50;
     const offset = parseInt(req.query.offset as string) || 0;
@@ -352,14 +350,12 @@ router.delete('/myneura/save/:thoughtId', async (req, res) => {
 /**
  * GET /api/thoughts/:id
  * Get detailed view of a specific thought
+ * PUBLIC ENDPOINT - No authentication required (for social thoughts)
  */
 router.get('/:id', async (req, res) => {
   try {
+    // Optional: userId available if logged in
     const userId = (req as any).user?.id;
-    
-    if (!userId) {
-      return res.status(401).json({ error: 'Authentication required' });
-    }
 
     const thoughtId = parseInt(req.params.id);
 
@@ -386,13 +382,16 @@ router.get('/:id', async (req, res) => {
       return res.status(404).json({ error: 'Thought not found' });
     }
 
-    // Check if user has saved this thought
-    const saved = await db.query.savedThoughts.findFirst({
-      where: and(
-        eq(savedThoughts.userId, userId),
-        eq(savedThoughts.thoughtId, thoughtId)
-      ),
-    });
+    // Check if user has saved this thought (only if logged in)
+    let saved = null;
+    if (userId) {
+      saved = await db.query.savedThoughts.findFirst({
+        where: and(
+          eq(savedThoughts.userId, userId),
+          eq(savedThoughts.thoughtId, thoughtId)
+        ),
+      });
+    }
 
     res.json({
       success: true,

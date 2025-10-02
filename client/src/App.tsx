@@ -11,7 +11,6 @@ import Network from "@/pages/Network";
 import LandingPage from "@/pages/LandingPage";
 import MyNeuraPage from "@/pages/MyNeuraPage";
 import NewLandingPage from "@/pages/NewLandingPage";
-import AboutPage from "@/pages/AboutPage";
 import LogoPage from "@/pages/LogoPage";
 import AuthPage from "@/pages/auth-page";
 import Settings from "@/pages/Settings";
@@ -186,15 +185,12 @@ function AppWithLayout() {
 }
 
 function Router() {
-  const [location] = useLocation();
-  
   return (
     <Switch>
       <Route path="/test-minimal" component={() => <div>Basic Test</div>} />
       <Route path="/" component={NewLandingPage} />
-      <Route path="/home" component={() => <ProtectedRoute><LandingPage /></ProtectedRoute>} />
+      <Route path="/home" component={LandingPage} />
       <Route path="/myneura" component={() => <ProtectedRoute><MyNeuraPage /></ProtectedRoute>} />
-      <Route path="/about" component={AboutPage} />
       <Route path="/auth" component={AuthPage} />
       
       {/* Other protected routes */}

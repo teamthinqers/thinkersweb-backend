@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Plus, X, Sparkles, Users, User } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Plus, X, Sparkles, Users, User, Image, Upload, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -31,13 +31,16 @@ export default function SimplifiedFloatingDot() {
   const [heading, setHeading] = useState('');
   const [summary, setSummary] = useState('');
   const [emotion, setEmotion] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string>('');
   
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
   // Create thought mutation
   const createMutation = useMutation({
-    mutationFn: async (data: { heading: string; summary: string; emotion?: string; visibility: string }) => {
+    mutationFn: async (data: { heading: string; summary: string; emotion?: string; imageUrl?: string; visibility: string }) => {
       const response = await fetch('/api/thoughts', {
         method: 'POST',
         body: JSON.stringify(data),
@@ -68,6 +71,9 @@ export default function SimplifiedFloatingDot() {
       setHeading('');
       setSummary('');
       setEmotion('');
+      setImageUrl('');
+      setImageFile(null);
+      setImagePreview('');
       setIsOpen(false);
     },
     onError: (error) => {
@@ -112,26 +118,69 @@ export default function SimplifiedFloatingDot() {
     });
   };
 
-  const handleMouseMove = (e: MouseEvent) => {
-    if (isDragging) {
-      const newX = Math.max(0, Math.min(window.innerWidth - 80, e.clientX - dragOffset.x));
-      const newY = Math.max(0, Math.min(window.innerHeight - 80, e.clientY - dragOffset.y));
-      setPosition({ x: newX, y: newY });
-    }
-  };
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (isDragging) {
+        const newX = Math.max(0, Math.min(window.innerWidth - 80, e.clientX - dragOffset.x));
+        const newY = Math.max(0, Math.min(window.innerHeight - 80, e.clientY - dragOffset.y));
+        setPosition({ x: newX, y: newY });
+      }
+    };
 
-  const handleMouseUp = () => {
-    setTimeout(() => setIsDragging(false), 10);
-  };
+    const handleMouseUp = () => {
+      setTimeout(() => setIsDragging(false), 10);
+    };
 
-  useState(() => {
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
     return () => {
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
     };
-  });
+  }, [isDragging, dragOffset]);
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        toast({
+          title: "Invalid file type",
+          description: "Please select an image file (JPEG, PNG, WebP, etc.)",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Validate file size (5MB max)
+      if (file.size > 5 * 1024 * 1024) {
+        toast({
+          title: "File too large",
+          description: "Please select an image under 5MB",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      setImageFile(file);
+      
+      // Create preview URL
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+      
+      // Clear URL input if file is selected
+      setImageUrl('');
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setImageFile(null);
+    setImagePreview('');
+    setImageUrl('');
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -149,6 +198,7 @@ export default function SimplifiedFloatingDot() {
       heading: heading.trim(),
       summary: summary.trim(),
       emotion: emotion.trim() || undefined,
+      imageUrl: imageUrl.trim() || undefined,
       visibility,
     });
   };
@@ -302,6 +352,76 @@ export default function SimplifiedFloatingDot() {
                     <SelectItem value="gratitude">🙏 Gratitude</SelectItem>
                   </SelectContent>
                 </Select>
+              </div>
+
+              {/* Image Upload/URL (Optional) */}
+              <div className="space-y-3">
+                <Label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                  <Image className="h-4 w-4" />
+                  Add Image (Optional)
+                </Label>
+
+                {/* Image Preview */}
+                {(imagePreview || imageUrl) && (
+                  <div className="relative">
+                    <img
+                      src={imagePreview || imageUrl}
+                      alt="Preview"
+                      className="w-full h-40 object-cover rounded-lg border-2 border-amber-200"
+                      onError={(e) => { 
+                        e.currentTarget.src = 'https://via.placeholder.com/400x300?text=Invalid+Image';
+                      }}
+                    />
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      size="sm"
+                      className="absolute top-2 right-2"
+                      onClick={handleRemoveImage}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                )}
+
+                {/* File Upload Button */}
+                {!imagePreview && !imageUrl && (
+                  <div className="space-y-2">
+                    <label
+                      htmlFor="image-file"
+                      className="flex items-center justify-center gap-2 w-full px-4 py-3 border-2 border-dashed border-amber-300 rounded-lg cursor-pointer hover:bg-amber-50 transition-colors"
+                    >
+                      <Upload className="h-5 w-5 text-amber-600" />
+                      <span className="text-sm font-medium text-amber-700">Upload from device</span>
+                    </label>
+                    <input
+                      id="image-file"
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handleFileSelect}
+                    />
+                    
+                    <div className="relative flex items-center gap-2">
+                      <div className="flex-1 border-t border-gray-300"></div>
+                      <span className="text-xs text-gray-500">or</span>
+                      <div className="flex-1 border-t border-gray-300"></div>
+                    </div>
+
+                    <Input
+                      id="imageUrl"
+                      value={imageUrl}
+                      onChange={(e) => setImageUrl(e.target.value)}
+                      placeholder="Paste image URL..."
+                      className="border-amber-200 focus:border-amber-400 focus:ring-amber-400"
+                      type="url"
+                    />
+                  </div>
+                )}
+
+                <p className="text-xs text-gray-500">
+                  {imageFile ? `Selected: ${imageFile.name} (${(imageFile.size / 1024).toFixed(1)}KB)` : 'Upload an image or paste a URL'}
+                </p>
               </div>
 
               {/* Submit */}
