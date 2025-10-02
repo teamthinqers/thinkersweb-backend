@@ -35,30 +35,30 @@
     
     <!-- Offline support detection -->
     <script>
-      // Simple offline detection
-      window.addEventListener('offline', () => {
-        // If we go offline, try to show the offline page
-        try {
-          fetch('/offline.html')
-            .then(response => response.text())
-            .then(offlineContent => {
-              if (!navigator.onLine) {
-                document.open();
-                document.write(offlineContent);
-                document.close();
-              }
-            }).catch(() => {
-              console.log('Failed to load offline page, but we are offline');
-            });
-        } catch (e) {
-          console.error('Error handling offline state:', e);
-        }
-      });
+      // Simple offline detection - disabled to prevent reload loops
+      // window.addEventListener('offline', () => {
+      //   // If we go offline, try to show the offline page
+      //   try {
+      //     fetch('/offline.html')
+      //       .then(response => response.text())
+      //       .then(offlineContent => {
+      //         if (!navigator.onLine) {
+      //           document.open();
+      //           document.write(offlineContent);
+      //           document.close();
+      //         }
+      //       }).catch(() => {
+      //         console.log('Failed to load offline page, but we are offline');
+      //       });
+      //   } catch (e) {
+      //     console.error('Error handling offline state:', e);
+      //   }
+      // });
       
-      // Check if coming back online
-      window.addEventListener('online', () => {
-        window.location.reload();
-      });
+      // Check if coming back online - disabled to prevent reload loops
+      // window.addEventListener('online', () => {
+      //   window.location.reload();
+      // });
     </script>
   </head>
   <body>

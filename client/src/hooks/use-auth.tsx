@@ -20,6 +20,7 @@ const AuthContext = createContext<AuthContextType>({
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [hasBackendSession, setHasBackendSession] = useState(false);
 
   useEffect(() => {
     let firebaseUnsubscribe: (() => void) | null = null;
@@ -72,12 +73,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
               fullName: data.user.fullName
             } as any;
             setUser(backendUser);
+            setHasBackendSession(true);
             setIsLoading(false);
             return true;
           }
         }
         
         console.log("No existing backend session found");
+        setHasBackendSession(false);
         return false;
       } catch (error) {
         console.log("Backend session check failed:", error);
@@ -130,32 +133,42 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 } as any;
                 
                 setUser(unifiedUser);
+                setHasBackendSession(true);
                 setIsLoading(false);
               } else {
                 console.error('Failed to sync Firebase user with backend');
                 setUser(null);
+                setHasBackendSession(false);
                 setIsLoading(false);
               }
             } catch (error) {
               console.error('Firebase backend sync error:', error);
               setUser(null);
+              setHasBackendSession(false);
               setIsLoading(false);
             }
           } else {
-            console.log('Firebase auth state changed: User signed out - clearing all state');
+            console.log('Firebase auth state changed: User signed out');
             
-            // Ensure complete state cleanup when Firebase user signs out
-            setUser(null);
-            setIsLoading(false);
-            
-            // Clear any residual local storage
-            localStorage.removeItem('dotspark_user');
-            localStorage.removeItem('dotspark_user_data');
-            localStorage.removeItem('dotspark_session_active');
-            localStorage.removeItem('auth_timestamp');
-            sessionStorage.removeItem('dotspark_temp_auth');
-            
-            console.log('✅ User state cleared after Firebase signout');
+            // CRITICAL FIX: Don't clear user if we have an active backend session
+            // This prevents Firebase from overwriting the backend session with null
+            if (!hasBackendSession) {
+              console.log('No backend session - clearing all state');
+              setUser(null);
+              setIsLoading(false);
+              
+              // Clear any residual local storage
+              localStorage.removeItem('dotspark_user');
+              localStorage.removeItem('dotspark_user_data');
+              localStorage.removeItem('dotspark_session_active');
+              localStorage.removeItem('auth_timestamp');
+              sessionStorage.removeItem('dotspark_temp_auth');
+              
+              console.log('✅ User state cleared after Firebase signout');
+            } else {
+              console.log('✅ Backend session active - preserving user state');
+              setIsLoading(false);
+            }
           }
         });
       
@@ -229,6 +242,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       localStorage.setItem('recent_logout', Date.now().toString());
       console.log('✅ Local storage cleared and logout timestamp set');
       
+      // Clear backend session flag
+      setHasBackendSession(false);
+      
       // 3. Sign out of Firebase (this will trigger onAuthStateChanged)
       await signOut();
       console.log('✅ Firebase signout completed');
@@ -242,6 +258,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       
       // Force state cleanup even if Firebase logout fails
       setUser(null);
+      setHasBackendSession(false);
       setIsLoading(false);
       
       // Clear storage as fallback
