@@ -78,20 +78,6 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
               </Button>
             </Link>
           </div>
-
-          {/* User Avatar at Bottom */}
-          {user && (
-            <div className="mt-auto mb-4 flex justify-center">
-              <Link href="/profile">
-                <Avatar className="h-8 w-8 hover:ring-2 hover:ring-amber-400 transition-all duration-300 cursor-pointer">
-                  <AvatarImage src={user.photoURL || undefined} />
-                  <AvatarFallback className="text-xs">
-                    {user.displayName?.[0]?.toUpperCase() || 'U'}
-                  </AvatarFallback>
-                </Avatar>
-              </Link>
-            </div>
-          )}
         </div>
       </div>
 
