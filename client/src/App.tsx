@@ -270,7 +270,7 @@ function Router() {
         <div className="p-8 text-center">
           <h1 className="text-2xl mb-4">Authentication</h1>
           <p>Demo mode has been removed. Please use Google authentication.</p>
-          <a href="/dashboard" className="text-blue-600 underline">Go to Dashboard</a>
+          <a href="/home" className="text-blue-600 underline">Go to Home</a>
         </div>
       )} />
       <Route path="/chat" component={ChatPage} />
