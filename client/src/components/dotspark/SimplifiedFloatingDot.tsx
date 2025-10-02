@@ -118,26 +118,26 @@ export default function SimplifiedFloatingDot() {
     });
   };
 
-  const handleMouseMove = (e: MouseEvent) => {
-    if (isDragging) {
-      const newX = Math.max(0, Math.min(window.innerWidth - 80, e.clientX - dragOffset.x));
-      const newY = Math.max(0, Math.min(window.innerHeight - 80, e.clientY - dragOffset.y));
-      setPosition({ x: newX, y: newY });
-    }
-  };
-
-  const handleMouseUp = () => {
-    setTimeout(() => setIsDragging(false), 10);
-  };
-
   useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (isDragging) {
+        const newX = Math.max(0, Math.min(window.innerWidth - 80, e.clientX - dragOffset.x));
+        const newY = Math.max(0, Math.min(window.innerHeight - 80, e.clientY - dragOffset.y));
+        setPosition({ x: newX, y: newY });
+      }
+    };
+
+    const handleMouseUp = () => {
+      setTimeout(() => setIsDragging(false), 10);
+    };
+
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
     return () => {
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
     };
-  }, []);
+  }, [isDragging, dragOffset]);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
