@@ -42,7 +42,6 @@ import { QuickAuthTest } from "@/pages/QuickAuthTest";
 
 import WorkingDot from "@/pages/working-dot";
 import TestComplete from "@/pages/TestComplete";
-import { AuthModeSelector } from "@/components/AuthModeSelector";
 import { WorkingDotTest } from "@/pages/WorkingDotTest";
 import IntelligenceClassification from "@/components/IntelligenceClassification";
 import ChatPage from "@/pages/chat-page";
