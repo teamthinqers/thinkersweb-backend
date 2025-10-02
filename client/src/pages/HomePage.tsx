@@ -1,12 +1,19 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Brain, Users, Sparkles, ArrowRight, CheckCircle, Network, Zap } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth-new";
 
 export default function HomePage() {
-  const { user } = useAuth();
+  const { user, isLoading } = useAuth();
   const [, setLocation] = useLocation();
+
+  // Redirect logged-in users to /home
+  useEffect(() => {
+    if (!isLoading && user) {
+      setLocation("/home");
+    }
+  }, [user, isLoading, setLocation]);
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-amber-50/50 via-white to-orange-50/30">
@@ -46,25 +53,14 @@ export default function HomePage() {
               >
                 Preview
               </Button>
-              {user ? (
-                <Button
-                  variant="default"
-                  size="sm"
-                  onClick={() => setLocation("/home")}
-                  className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
-                >
-                  Dashboard
-                </Button>
-              ) : (
-                <Button
-                  variant="default"
-                  size="sm"
-                  onClick={() => setLocation("/auth")}
-                  className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
-                >
-                  Sign In
-                </Button>
-              )}
+              <Button
+                variant="default"
+                size="sm"
+                onClick={() => setLocation("/auth")}
+                className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
+              >
+                Sign In
+              </Button>
             </nav>
           </div>
         </div>
