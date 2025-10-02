@@ -47,34 +47,34 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
           </div>
 
           {/* Navigation Items */}
-          <div className="flex flex-col items-center space-y-3 flex-1 py-4">
+          <div className={`flex flex-col space-y-3 flex-1 py-4 ${isSidebarOpen ? 'px-2' : 'items-center'}`}>
             <Link href="/home">
               <Button 
                 variant="ghost" 
-                size="icon"
                 title="Home"
-                className={`h-10 w-10 rounded-xl transition-all duration-300 ${
+                className={`${isSidebarOpen ? 'w-full justify-start h-10' : 'w-10 h-10'} rounded-xl transition-all duration-300 ${
                   isOnSocialFeed 
                     ? 'bg-amber-50 text-amber-600 hover:bg-amber-100' 
                     : 'hover:bg-amber-50 hover:text-amber-600'
                 }`}
               >
                 <Home className="w-5 h-5" />
+                {isSidebarOpen && <span className="ml-3 text-sm font-medium">Home</span>}
               </Button>
             </Link>
             
             <Link href="/myneura">
               <Button 
                 variant="ghost" 
-                size="icon"
                 title="My Neura"
-                className={`h-10 w-10 rounded-xl transition-all duration-300 ${
+                className={`${isSidebarOpen ? 'w-full justify-start h-10' : 'w-10 h-10'} rounded-xl transition-all duration-300 ${
                   isOnMyNeura 
                     ? 'bg-amber-50 text-amber-600 hover:bg-amber-100' 
                     : 'hover:bg-amber-50 hover:text-amber-600'
                 }`}
               >
                 <Brain className="w-5 h-5" />
+                {isSidebarOpen && <span className="ml-3 text-sm font-medium">My Neura</span>}
               </Button>
             </Link>
           </div>
