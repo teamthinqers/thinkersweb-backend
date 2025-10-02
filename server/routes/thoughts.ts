@@ -3,6 +3,7 @@ import { db } from '@db';
 import { thoughts, savedThoughts, users } from '@shared/schema';
 import { eq, desc, and, or, sql } from 'drizzle-orm';
 import { insertThoughtSchema } from '@shared/schema';
+import { storeVectorEmbedding } from '../vector-db';
 
 const router = Router();
 
@@ -111,6 +112,26 @@ router.post('/', async (req, res) => {
     const [newThought] = await db.insert(thoughts)
       .values(validatedData)
       .returning();
+
+    // Store vector embedding for semantic search
+    try {
+      const embeddingContent = `${newThought.heading}\n\n${newThought.summary}${newThought.emotion ? `\nEmotion: ${newThought.emotion}` : ''}`;
+      await storeVectorEmbedding(
+        'thought',
+        newThought.id,
+        embeddingContent,
+        userId,
+        {
+          heading: newThought.heading,
+          visibility: newThought.visibility,
+          emotion: newThought.emotion || '',
+          createdAt: newThought.createdAt.toISOString(),
+        }
+      );
+    } catch (error) {
+      console.error('Vector embedding creation failed (non-fatal):', error);
+      // Continue even if vector embedding fails
+    }
 
     // Fetch with user info
     const thoughtWithUser = await db.query.thoughts.findFirst({
