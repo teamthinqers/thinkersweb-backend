@@ -7,7 +7,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Send, Loader2, ArrowLeft, Menu, Brain, Users, Settings, BarChart2, User, MessageSquare, Home, Sparkles, Mic, MicOff, Info, Lightbulb, Target, Puzzle, RotateCcw, Plus, RefreshCw, Phone, Zap } from 'lucide-react';
 import { SiWhatsapp } from 'react-icons/si';
 import { Link, useLocation } from 'wouter';
-import { useAuth } from '@/hooks/use-auth-new';
+import { useAuth } from '@/hooks/use-auth';
 import { UsageLimitMessage } from '@/components/ui/usage-limit-message';
 import { hasExceededLimit, getLimitMessage, incrementUsageCount, isFirstChat, markFirstChatDone } from '@/lib/usageLimits';
 import { neuraStorage } from '@/lib/neuraStorage';
@@ -540,14 +540,14 @@ export default function ChatPage() {
             <div className="p-4 border-t border-gray-200 dark:border-gray-700">
               <div className="flex items-center gap-3">
                 <Avatar className="h-8 w-8">
-                  <AvatarImage src={user.avatarUrl || undefined} />
+                  <AvatarImage src={user.photoURL || undefined} />
                   <AvatarFallback>
-                    {user.fullName?.charAt(0) || user.email?.charAt(0) || 'U'}
+                    {user.displayName?.charAt(0) || user.email?.charAt(0) || 'U'}
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
-                    {user.fullName || 'User'}
+                    {user.displayName || 'User'}
                   </p>
                   <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
                     {user.email}
@@ -624,11 +624,11 @@ export default function ChatPage() {
           {/* User Avatar at Bottom */}
           {user ? (
             <div className="mt-auto">
-              <Link href="/profile" title={user.fullName || 'Profile'}>
+              <Link href="/profile" title={user.displayName || 'Profile'}>
                 <Avatar className="h-8 w-8 hover:ring-2 hover:ring-amber-400 transition-all duration-300">
-                  <AvatarImage src={user.avatarUrl || undefined} />
+                  <AvatarImage src={user.photoURL || undefined} />
                   <AvatarFallback className="text-xs">
-                    {user.fullName?.charAt(0) || user.email?.charAt(0) || 'U'}
+                    {user.displayName?.charAt(0) || user.email?.charAt(0) || 'U'}
                   </AvatarFallback>
                 </Avatar>
               </Link>
@@ -772,9 +772,9 @@ export default function ChatPage() {
                 <SheetTrigger asChild>
                   <Button variant="ghost" size="sm" className="p-1">
                     <Avatar className="h-8 w-8">
-                      <AvatarImage src={user.avatarUrl || undefined} />
+                      <AvatarImage src={user.photoURL || undefined} />
                       <AvatarFallback className="text-xs">
-                        {user.fullName?.[0]?.toUpperCase() || 'U'}
+                        {user.displayName?.[0]?.toUpperCase() || 'U'}
                       </AvatarFallback>
                     </Avatar>
                   </Button>
@@ -785,13 +785,13 @@ export default function ChatPage() {
                     <div className="p-4 border-b border-gray-200 dark:border-gray-700">
                       <div className="flex items-center gap-3">
                         <Avatar className="h-12 w-12">
-                          <AvatarImage src={user.avatarUrl || undefined} />
+                          <AvatarImage src={user.photoURL || undefined} />
                           <AvatarFallback>
-                            {user.fullName?.[0]?.toUpperCase() || 'U'}
+                            {user.displayName?.[0]?.toUpperCase() || 'U'}
                           </AvatarFallback>
                         </Avatar>
                         <div className="flex-1 min-w-0">
-                          <p className="font-semibold truncate">{user.fullName || 'User'}</p>
+                          <p className="font-semibold truncate">{user.displayName || 'User'}</p>
                           <p className="text-sm text-gray-500 truncate">{user.email}</p>
                         </div>
                       </div>

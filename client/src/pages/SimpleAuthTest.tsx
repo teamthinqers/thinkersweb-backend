@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { useAuth } from '@/hooks/use-auth-new';
+import { useAuth } from '@/hooks/use-auth';
 
 const SimpleAuthTest: React.FC = () => {
   const { user, isLoading } = useAuth();

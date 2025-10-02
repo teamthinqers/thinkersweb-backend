@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { useAuth } from '@/hooks/use-auth-new';
+import { useAuth } from '@/hooks/use-auth';
 
 export default function ProductionTest() {
   const [testResults, setTestResults] = useState<any[]>([]);

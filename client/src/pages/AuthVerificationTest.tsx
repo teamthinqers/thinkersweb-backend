@@ -59,7 +59,7 @@ const AuthVerificationTest: React.FC = () => {
           email: user.email,
           uid: user.uid,
           displayName: user.displayName,
-          photoURL: user.avatarUrl
+          photoURL: user.photoURL
         })
       });
       

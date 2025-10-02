@@ -7,7 +7,7 @@ import {
   Share2, Eye, MoreHorizontal, Maximize, Minimize, Clock,
   Grid3x3, List, Bookmark
 } from "lucide-react";
-import { useAuth } from "@/hooks/use-auth-new";
+import { useAuth } from "@/hooks/use-auth";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -152,15 +152,15 @@ export default function MyNeuraPage() {
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" className="flex items-center gap-2">
                       <Avatar className="h-8 w-8">
-                        {user.avatarUrl ? (
-                          <AvatarImage src={user.avatarUrl} alt={user.fullName || 'User'} />
+                        {user.photoURL ? (
+                          <AvatarImage src={user.photoURL} alt={user.displayName || 'User'} />
                         ) : (
                           <AvatarFallback className="bg-gradient-to-r from-amber-500 to-orange-500 text-white">
-                            {user.fullName?.charAt(0).toUpperCase() || 'U'}
+                            {user.displayName?.charAt(0).toUpperCase() || 'U'}
                           </AvatarFallback>
                         )}
                       </Avatar>
-                      <span className="hidden sm:inline">{user.fullName || user.email}</span>
+                      <span className="hidden sm:inline">{user.displayName || user.email}</span>
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-48">

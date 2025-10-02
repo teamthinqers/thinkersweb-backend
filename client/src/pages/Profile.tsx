@@ -23,7 +23,7 @@ import {
   ChevronLeft,
   ChevronRight
 } from "lucide-react";
-import { useAuth } from '@/hooks/use-auth-new';
+import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 
@@ -161,7 +161,7 @@ const Profile: React.FC = () => {
       setProfileData(prev => ({
         ...prev,
         email: user.email || prev.email,
-        profileImage: user.avatarUrl || prev.profileImage,
+        profileImage: user.photoURL || prev.profileImage,
         // Only auto-fill name fields if they're empty AND no saved data exists
         firstName: prev.firstName || (localStorage.getItem('userProfile') ? '' : (user.displayName?.split(' ')[0] || '')),
         lastName: prev.lastName || (localStorage.getItem('userProfile') ? '' : (user.displayName?.split(' ').slice(1).join(' ') || ''))
