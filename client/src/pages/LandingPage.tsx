@@ -33,6 +33,7 @@ interface ThoughtDot {
   heading: string;
   summary: string;
   emotion?: string;
+  imageUrl?: string;
   userId: number;
   visibility: string;
   user?: {
@@ -450,6 +451,18 @@ export default function LandingPage() {
                         </div>
                       )}
 
+                      {/* Image - if present */}
+                      {dot.imageUrl && (
+                        <div className="mb-2">
+                          <img 
+                            src={dot.imageUrl} 
+                            alt={dot.heading}
+                            className="w-full h-20 object-cover rounded-md"
+                            onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                          />
+                        </div>
+                      )}
+
                       {/* Heading - center */}
                       <h3 className="text-xs font-bold text-gray-900 text-center line-clamp-3 leading-tight mb-2">
                         {dot.heading}
@@ -544,6 +557,14 @@ export default function LandingPage() {
                           </CardTitle>
                         </CardHeader>
                         <CardContent className="pt-0">
+                          {dot.imageUrl && (
+                            <img 
+                              src={dot.imageUrl} 
+                              alt={dot.heading}
+                              className="w-full h-48 object-cover rounded-lg mb-4"
+                              onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                            />
+                          )}
                           <p className="text-gray-700 line-clamp-3 mb-4">
                             {dot.summary.length > 150 ? `${dot.summary.substring(0, 150)}...` : dot.summary}
                           </p>
@@ -605,6 +626,18 @@ export default function LandingPage() {
               </DialogHeader>
 
               <div className="space-y-6 mt-6">
+                {/* Image - if present */}
+                {selectedDot.imageUrl && (
+                  <div className="space-y-2">
+                    <img 
+                      src={selectedDot.imageUrl} 
+                      alt={selectedDot.heading}
+                      className="w-full max-h-96 object-cover rounded-lg shadow-lg"
+                      onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                    />
+                  </div>
+                )}
+
                 {/* Main Summary Content */}
                 <div className="space-y-2">
                   <Card className="bg-gradient-to-br from-amber-50 to-orange-50 border-amber-200">
