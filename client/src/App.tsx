@@ -69,7 +69,6 @@ import ProductionTest from "@/pages/ProductionTest";
 import VectorMigrationTest from "@/pages/VectorMigrationTest";
 import AuthTest from "@/pages/AuthTest";
 
-import SimplifiedFloatingDot from "@/components/dotspark/SimplifiedFloatingDot";
 import { neuraStorage } from "@/lib/neuraStorage";
 import { Loader2 } from "lucide-react";
 import { useAuth, AuthProvider } from "@/hooks/use-auth-new";
@@ -399,8 +398,6 @@ function App() {
           )}
           <Router />
           <Toaster />
-          {/* Global Floating Dot for Thought Creation */}
-          <SimplifiedFloatingDot />
           {/* iOS PWA Install Prompt */}
           <IosPwaInstallPrompt />
           {/* PWA Install Floating Button (only visible when installable) */}
