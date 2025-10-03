@@ -215,7 +215,27 @@ export default function MyNeuraPage() {
                 </Link>
               </div>
 
-              {/* 3. Sparks - with count below */}
+              {/* 3. Dots - with count below */}
+              <div className="flex flex-col items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="group flex items-center gap-2 rounded-lg px-3 py-2 bg-gradient-to-br from-orange-50 to-amber-50 hover:from-orange-100 hover:to-amber-100 border-l-2 border-orange-500 transition-all duration-300 relative"
+                  title="Dots"
+                >
+                  <div className="relative">
+                    <Lightbulb className="h-4 w-4 text-orange-600 group-hover:scale-110 transition-transform" />
+                  </div>
+                  <span className="text-sm font-medium text-orange-700">
+                    Dots
+                  </span>
+                </Button>
+                <div className="px-2.5 py-1 bg-gradient-to-br from-orange-50 to-amber-50 rounded-lg border border-orange-200/50">
+                  <span className="text-xs font-semibold text-orange-800">{thoughts.length}</span>
+                </div>
+              </div>
+
+              {/* 4. Sparks - with count below */}
               <div className="flex flex-col items-center gap-2">
                 <Button
                   variant="ghost"
@@ -233,46 +253,6 @@ export default function MyNeuraPage() {
                 </Button>
                 <div className="px-2.5 py-1 bg-gradient-to-br from-yellow-50 to-amber-50 rounded-lg border border-yellow-200/50">
                   <span className="text-xs font-semibold text-yellow-800">0</span>
-                </div>
-              </div>
-
-              {/* 4. Social Reflections - with count below */}
-              <div className="flex flex-col items-center gap-2">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="group flex items-center gap-2 rounded-lg px-3 py-2 bg-gradient-to-br from-pink-50 to-rose-50 hover:from-pink-100 hover:to-rose-100 border-l-2 border-pink-500 transition-all duration-300 relative"
-                  title="Social Reflections"
-                >
-                  <div className="relative">
-                    <MessageCircle className="h-4 w-4 text-pink-600 group-hover:scale-110 transition-transform" />
-                  </div>
-                  <span className="text-sm font-medium text-pink-700">
-                    Social Reflections
-                  </span>
-                </Button>
-                <div className="px-2.5 py-1 bg-gradient-to-br from-pink-50 to-rose-50 rounded-lg border border-pink-200/50">
-                  <span className="text-xs font-semibold text-pink-800">0</span>
-                </div>
-              </div>
-
-              {/* 5. Thoughts - with count below */}
-              <div className="flex flex-col items-center gap-2">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="group flex items-center gap-2 rounded-lg px-3 py-2 bg-gradient-to-br from-orange-50 to-amber-50 hover:from-orange-100 hover:to-amber-100 border-l-2 border-orange-500 transition-all duration-300 relative"
-                  title="Thoughts"
-                >
-                  <div className="relative">
-                    <Lightbulb className="h-4 w-4 text-orange-600 group-hover:scale-110 transition-transform" />
-                  </div>
-                  <span className="text-sm font-medium text-orange-700">
-                    Thoughts
-                  </span>
-                </Button>
-                <div className="px-2.5 py-1 bg-gradient-to-br from-orange-50 to-amber-50 rounded-lg border border-orange-200/50">
-                  <span className="text-xs font-semibold text-orange-800">{thoughts.length}</span>
                 </div>
               </div>
               
