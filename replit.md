@@ -55,6 +55,13 @@ Global Floating Dot Mode Switching: Added flip button functionality to switch be
     - **One-Word Summary & Flash Cards**: Automated generation of keywords for quick content identification.
     - **Spark-Based Grouping**: Replaces the 9-dot wheel concept, allowing dots to belong to multiple "sparks" for cross-insight generation.
     - **User Mode Grid V1 (Current Stable)**: Perfect drag experience matching floating dot methodology using document-level event listeners and precise cursor-following behavior. All filtering issues resolved with comprehensive backend/frontend solutions. Grid elements (dots, wheels, chakras) support smooth repositioning with exact click-point tracking. Authentication and settings properly configured for optimal user experience.
+    - **MyNeura Toolbar Navigation**: Five-button navigation system designed for gamification and user engagement:
+        1. **Cognitive Identity** (Progress Meter) - Dedicated page with progress tracking to nudge users toward completion
+        2. **Learning Engine** (Progress Meter) - Dedicated page with progress tracking to encourage engagement
+        3. **Sparks** (Count Display) - Shows count only, no separate page
+        4. **Social Reflections** (Count Display) - Shows count only, no separate page
+        5. **Thoughts** (Count Display) - Shows live thought count, no separate page
+      Progress meters (1-2) gamify the experience by motivating users to complete cognitive profiles and learning goals. Count displays (3-5) provide at-a-glance metrics for ongoing activity and engagement.
 
 ## External Dependencies
 
