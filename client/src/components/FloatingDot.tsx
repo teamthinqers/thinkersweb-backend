@@ -221,15 +221,15 @@ export default function FloatingDot({ onClick }: FloatingDotProps) {
                   </button>
 
                   {/* 2. LinkedIn Import */}
-                  <button className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-blue-200 bg-blue-50 hover:bg-blue-100 hover:border-[#0A66C2] transition-all group shadow-sm hover:shadow-md">
-                    <SiLinkedin className="h-6 w-6 text-[#0A66C2]" />
-                    <span className="text-xs font-semibold text-[#0A66C2] group-hover:text-blue-800">Import</span>
+                  <button className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-[#0A66C2] bg-[#0A66C2] hover:bg-[#004182] transition-all group shadow-sm hover:shadow-md">
+                    <SiLinkedin className="h-6 w-6 text-white" />
+                    <span className="text-xs font-semibold text-white">Import</span>
                   </button>
 
-                  {/* 3. WhatsApp Chat */}
-                  <button className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-green-200 bg-green-50 hover:bg-green-100 hover:border-[#25D366] transition-all group shadow-sm hover:shadow-md">
-                    <SiWhatsapp className="h-6 w-6 text-[#25D366]" />
-                    <span className="text-xs font-semibold text-[#25D366] group-hover:text-green-700">Chat</span>
+                  {/* 3. WhatsApp */}
+                  <button className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-[#25D366] bg-[#25D366] hover:bg-[#128C7E] transition-all group shadow-sm hover:shadow-md">
+                    <SiWhatsapp className="h-6 w-6 text-white" />
+                    <span className="text-xs font-semibold text-white">WhatsApp</span>
                   </button>
 
                   {/* 4. AI Help - Purple magic effect */}
@@ -242,9 +242,9 @@ export default function FloatingDot({ onClick }: FloatingDotProps) {
                   </button>
 
                   {/* 5. ChatGPT Import */}
-                  <button className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-teal-200 bg-gradient-to-br from-teal-50 to-emerald-50 hover:from-teal-100 hover:to-emerald-100 hover:border-teal-400 transition-all group shadow-sm hover:shadow-md">
-                    <SiOpenai className="h-6 w-6 text-teal-600" />
-                    <span className="text-xs font-semibold text-teal-700 group-hover:text-teal-900">Import</span>
+                  <button className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-[#10A37F] bg-[#10A37F] hover:bg-[#0D8A6B] transition-all group shadow-sm hover:shadow-md">
+                    <SiOpenai className="h-6 w-6 text-white" />
+                    <span className="text-xs font-semibold text-white">Import</span>
                   </button>
                 </div>
               </CardContent>
