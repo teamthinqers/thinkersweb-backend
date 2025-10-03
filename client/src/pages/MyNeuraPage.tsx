@@ -117,65 +117,65 @@ export default function MyNeuraPage() {
 
   return (
     <SharedAuthLayout>
-      <div className={`flex-1 overflow-hidden ${isFullscreen ? 'fixed inset-0 z-50 bg-gradient-to-br from-amber-100 via-orange-100 to-red-100' : ''}`}>
+      <div className={`flex-1 overflow-hidden ${isFullscreen ? 'fixed inset-0 z-50 bg-gradient-to-br from-amber-50 via-orange-50 to-red-50' : ''}`}>
         <div className={`${isFullscreen ? 'h-full' : 'container mx-auto px-4 sm:px-6 lg:px-8 py-8'}`}>
           {/* Thought Cloud Canvas */}
-          <div className={`relative w-full bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 shadow-2xl border-2 border-amber-300 overflow-hidden backdrop-blur-sm ${isFullscreen ? 'h-full rounded-none' : 'rounded-3xl'}`}>
+          <div className={`relative w-full bg-gradient-to-br from-white/60 to-amber-50/40 shadow-2xl border border-amber-100 overflow-hidden backdrop-blur-sm ${isFullscreen ? 'h-full rounded-none' : 'rounded-3xl'}`}>
             {/* Toolbar - Neura Navigation */}
-            <div className="sticky top-0 z-10 bg-gradient-to-r from-amber-100 via-orange-100 to-amber-100 backdrop-blur-md border-b-2 border-amber-300 px-6 py-3 flex items-center gap-4">
+            <div className="sticky top-0 z-10 bg-amber-50/80 backdrop-blur-md border-b border-amber-200/50 px-6 py-3 flex items-center gap-4">
               {/* 1. Cognitive Identity */}
               <Button
                 variant="ghost"
                 size="sm"
-                className="flex items-center gap-2 hover:bg-white/70 hover:shadow-md rounded-lg transition-all duration-300"
+                className="flex items-center gap-2 hover:bg-amber-100/70 rounded-lg transition-all duration-300"
                 title="Cognitive Identity"
               >
-                <Fingerprint className="h-4 w-4 text-amber-700" />
-                <span className="text-sm font-semibold text-amber-900">Cognitive Identity</span>
+                <Fingerprint className="h-4 w-4 text-amber-600" />
+                <span className="text-sm font-medium text-gray-700">Cognitive Identity</span>
               </Button>
 
               {/* 2. Learning Engine */}
               <Button
                 variant="ghost"
                 size="sm"
-                className="flex items-center gap-2 hover:bg-white/70 hover:shadow-md rounded-lg transition-all duration-300"
+                className="flex items-center gap-2 hover:bg-amber-100/70 rounded-lg transition-all duration-300"
                 title="Learning Engine"
               >
-                <Lightbulb className="h-4 w-4 text-amber-700" />
-                <span className="text-sm font-semibold text-amber-900">Learning Engine</span>
+                <Lightbulb className="h-4 w-4 text-amber-600" />
+                <span className="text-sm font-medium text-gray-700">Learning Engine</span>
               </Button>
 
               {/* 3. Sparks */}
               <Button
                 variant="ghost"
                 size="sm"
-                className="flex items-center gap-2 hover:bg-white/70 hover:shadow-md rounded-lg transition-all duration-300"
+                className="flex items-center gap-2 hover:bg-amber-100/70 rounded-lg transition-all duration-300"
                 title="Sparks"
               >
-                <Zap className="h-4 w-4 text-amber-700" />
-                <span className="text-sm font-semibold text-amber-900">Sparks</span>
+                <Zap className="h-4 w-4 text-amber-600" />
+                <span className="text-sm font-medium text-gray-700">Sparks</span>
               </Button>
 
               {/* 4. Social Reflections */}
               <Button
                 variant="ghost"
                 size="sm"
-                className="flex items-center gap-2 hover:bg-white/70 hover:shadow-md rounded-lg transition-all duration-300"
+                className="flex items-center gap-2 hover:bg-amber-100/70 rounded-lg transition-all duration-300"
                 title="Social Reflections"
               >
-                <MessageCircle className="h-4 w-4 text-amber-700" />
-                <span className="text-sm font-semibold text-amber-900">Social Reflections</span>
+                <MessageCircle className="h-4 w-4 text-amber-600" />
+                <span className="text-sm font-medium text-gray-700">Social Reflections</span>
               </Button>
 
               {/* 5. Thoughts */}
               <Button
                 variant="ghost"
                 size="sm"
-                className="flex items-center gap-2 hover:bg-white/70 hover:shadow-md rounded-lg transition-all duration-300"
+                className="flex items-center gap-2 hover:bg-amber-100/70 rounded-lg transition-all duration-300"
                 title="Thoughts"
               >
-                <Hash className="h-4 w-4 text-amber-700" />
-                <span className="text-sm font-semibold text-amber-900">Thoughts ({thoughts.length})</span>
+                <Hash className="h-4 w-4 text-amber-600" />
+                <span className="text-sm font-medium text-gray-700">Thoughts ({thoughts.length})</span>
               </Button>
             </div>
             
@@ -183,13 +183,13 @@ export default function MyNeuraPage() {
             {viewMode === 'cloud' && (
               <>
                 {/* Cloud background pattern */}
-                <div className="absolute inset-0 opacity-30">
+                <div className="absolute inset-0 opacity-20">
                   <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
                     <defs>
                       <pattern id="myneura-pattern" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
-                        <circle cx="25" cy="25" r="3" fill="#F59E0B" opacity="0.6"/>
-                        <circle cx="75" cy="75" r="3" fill="#EA580C" opacity="0.6"/>
-                        <circle cx="50" cy="50" r="2" fill="#F97316" opacity="0.7"/>
+                        <circle cx="25" cy="25" r="2" fill="#F59E0B" opacity="0.3"/>
+                        <circle cx="75" cy="75" r="2" fill="#EA580C" opacity="0.3"/>
+                        <circle cx="50" cy="50" r="1.5" fill="#F97316" opacity="0.4"/>
                       </pattern>
                     </defs>
                     <rect width="100%" height="100%" fill="url(#myneura-pattern)"/>
@@ -267,14 +267,14 @@ export default function MyNeuraPage() {
                     onClick={() => setSelectedThought(thought)}
                   >
                     {/* Outer pulsing ring */}
-                    <div className="absolute inset-0 rounded-full bg-gradient-to-br from-amber-400 via-orange-500 to-red-500 opacity-40 group-hover:opacity-60 transition-opacity animate-pulse" 
+                    <div className="absolute inset-0 rounded-full bg-gradient-to-br from-amber-400 via-orange-400 to-red-400 opacity-20 group-hover:opacity-40 transition-opacity animate-pulse" 
                          style={{ transform: 'scale(1.15)' }} />
                     
                     {/* Middle glow layer */}
-                    <div className="absolute inset-0 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 blur-md opacity-50 group-hover:opacity-70 transition-opacity" />
+                    <div className="absolute inset-0 rounded-full bg-gradient-to-br from-amber-300 to-orange-300 blur-md opacity-40 group-hover:opacity-60 transition-opacity" />
                     
                     {/* Main circular thought */}
-                    <div className="relative w-full h-full rounded-full bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 border-3 border-amber-400 group-hover:border-orange-500 shadow-xl group-hover:shadow-2xl transition-all flex flex-col items-center justify-center p-4 backdrop-blur-sm">
+                    <div className="relative w-full h-full rounded-full bg-gradient-to-br from-white via-amber-50 to-orange-50 border-3 border-amber-300 group-hover:border-orange-400 shadow-xl group-hover:shadow-2xl transition-all flex flex-col items-center justify-center p-4 backdrop-blur-sm">
                       
                       {/* User avatar or saved indicator */}
                       <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
@@ -298,7 +298,7 @@ export default function MyNeuraPage() {
                       {/* Emotion badge */}
                       {thought.emotion && (
                         <div className="text-center mb-2">
-                          <span className="px-2 py-0.5 bg-gradient-to-r from-amber-600 to-orange-600 text-white text-[10px] font-bold rounded-full uppercase tracking-wider shadow-md">
+                          <span className="px-2 py-0.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-[10px] font-bold rounded-full uppercase tracking-wider shadow-sm">
                             {thought.emotion}
                           </span>
                         </div>
@@ -317,19 +317,19 @@ export default function MyNeuraPage() {
                       )}
 
                       {/* Heading - center */}
-                      <h3 className="text-xs font-extrabold text-amber-900 text-center line-clamp-3 leading-tight mb-2">
+                      <h3 className="text-xs font-bold text-gray-900 text-center line-clamp-3 leading-tight mb-2">
                         {thought.heading}
                       </h3>
 
                       {/* Summary preview - bottom */}
-                      <p className="text-[10px] font-medium text-gray-700 text-center line-clamp-2 mt-auto">
+                      <p className="text-[10px] text-gray-600 text-center line-clamp-2 mt-auto">
                         {thought.summary}
                       </p>
                     </div>
 
                     {/* Sparkle particle effect */}
-                    <div className="absolute top-0 right-2 w-2.5 h-2.5 bg-yellow-500 rounded-full animate-ping opacity-90" />
-                    <div className="absolute bottom-2 left-1 w-2 h-2 bg-orange-500 rounded-full animate-pulse opacity-80" />
+                    <div className="absolute top-0 right-2 w-2 h-2 bg-yellow-400 rounded-full animate-ping opacity-75" />
+                    <div className="absolute bottom-2 left-1 w-1.5 h-1.5 bg-orange-400 rounded-full animate-pulse opacity-60" />
                   </div>
                 ))
               )}
