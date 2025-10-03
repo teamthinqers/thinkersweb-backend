@@ -210,7 +210,7 @@ export default function SocialFeedPage() {
 
         {/* Thought Cloud View */}
         {!dotsLoading && viewMode === 'cloud' && (
-          <div className="relative w-full min-h-[600px] bg-gradient-to-br from-amber-50/30 to-orange-50/20 rounded-2xl border border-amber-100 overflow-hidden">
+          <div className="relative w-full min-h-[600px] bg-gradient-to-br from-amber-50/50 to-orange-50/40 rounded-2xl border border-amber-200 overflow-hidden shadow-lg">
             {dots.map((dot) => (
               <div
                 key={dot.id}
@@ -226,10 +226,10 @@ export default function SocialFeedPage() {
               >
                 <div className="relative w-full h-full">
                   {/* Pulsing ring effect */}
-                  <div className="absolute inset-0 rounded-full bg-gradient-to-r from-amber-400 to-orange-400 animate-pulse opacity-20"></div>
+                  <div className="absolute inset-0 rounded-full bg-gradient-to-r from-amber-400 to-orange-400 animate-pulse opacity-30"></div>
                   
                   {/* Main dot */}
-                  <div className="absolute inset-[10%] rounded-full bg-gradient-to-br from-amber-500 to-orange-500 shadow-lg flex items-center justify-center">
+                  <div className="absolute inset-[10%] rounded-full bg-gradient-to-br from-amber-500 to-orange-600 shadow-lg flex items-center justify-center">
                     <div className="text-white text-center p-2">
                       <p className="text-xs font-semibold line-clamp-2">
                         {dot.heading}

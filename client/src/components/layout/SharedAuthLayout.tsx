@@ -84,7 +84,7 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
       {/* Main Content Area */}
       <div className="flex flex-col flex-1 min-w-0">
         {/* Slim Header - Static across all pages */}
-        <header className="flex items-center justify-between h-14 px-4 md:px-6 border-b border-amber-200/30 bg-gradient-to-r from-amber-50/80 via-orange-50/60 to-amber-50/80 backdrop-blur-sm shadow-sm">
+        <header className="flex items-center justify-between h-14 px-4 md:px-6 border-b border-amber-200/50 bg-gradient-to-r from-amber-50 via-orange-50/80 to-amber-50 backdrop-blur-sm shadow-sm">
           {/* Left: Sidebar Toggle + Logo */}
           <div className="flex items-center gap-3">
             {/* Sidebar Toggle */}

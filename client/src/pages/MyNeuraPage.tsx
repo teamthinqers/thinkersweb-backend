@@ -120,9 +120,9 @@ export default function MyNeuraPage() {
       <div className={`flex-1 overflow-hidden ${isFullscreen ? 'fixed inset-0 z-50 bg-gradient-to-br from-amber-50 via-orange-50 to-red-50' : ''}`}>
         <div className={`${isFullscreen ? 'h-full' : 'container mx-auto px-4 sm:px-6 lg:px-8 py-8'}`}>
           {/* Thought Cloud Canvas */}
-          <div className={`relative w-full bg-gradient-to-br from-white/60 to-amber-50/40 shadow-2xl border border-amber-100 overflow-hidden backdrop-blur-sm ${isFullscreen ? 'h-full rounded-none' : 'rounded-3xl'}`}>
+          <div className={`relative w-full bg-gradient-to-br from-amber-50/70 to-orange-50/50 shadow-2xl border border-amber-200 overflow-hidden backdrop-blur-sm ${isFullscreen ? 'h-full rounded-none' : 'rounded-3xl'}`}>
             {/* Toolbar - Neura Navigation */}
-            <div className="sticky top-0 z-10 bg-amber-50/80 backdrop-blur-md border-b border-amber-200/50 px-6 py-3 flex items-center gap-4">
+            <div className="sticky top-0 z-10 bg-amber-50 backdrop-blur-md border-b border-amber-200 px-6 py-3 flex items-center gap-4">
               {/* 1. Cognitive Identity */}
               <Button
                 variant="ghost"
@@ -183,13 +183,13 @@ export default function MyNeuraPage() {
             {viewMode === 'cloud' && (
               <>
                 {/* Cloud background pattern */}
-                <div className="absolute inset-0 opacity-20">
+                <div className="absolute inset-0 opacity-25">
                   <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
                     <defs>
                       <pattern id="myneura-pattern" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
-                        <circle cx="25" cy="25" r="2" fill="#F59E0B" opacity="0.3"/>
-                        <circle cx="75" cy="75" r="2" fill="#EA580C" opacity="0.3"/>
-                        <circle cx="50" cy="50" r="1.5" fill="#F97316" opacity="0.4"/>
+                        <circle cx="25" cy="25" r="2" fill="#F59E0B" opacity="0.4"/>
+                        <circle cx="75" cy="75" r="2" fill="#EA580C" opacity="0.4"/>
+                        <circle cx="50" cy="50" r="1.5" fill="#F97316" opacity="0.5"/>
                       </pattern>
                     </defs>
                     <rect width="100%" height="100%" fill="url(#myneura-pattern)"/>
@@ -267,11 +267,11 @@ export default function MyNeuraPage() {
                     onClick={() => setSelectedThought(thought)}
                   >
                     {/* Outer pulsing ring */}
-                    <div className="absolute inset-0 rounded-full bg-gradient-to-br from-amber-400 via-orange-400 to-red-400 opacity-20 group-hover:opacity-40 transition-opacity animate-pulse" 
+                    <div className="absolute inset-0 rounded-full bg-gradient-to-br from-amber-400 via-orange-400 to-red-400 opacity-25 group-hover:opacity-45 transition-opacity animate-pulse" 
                          style={{ transform: 'scale(1.15)' }} />
                     
                     {/* Middle glow layer */}
-                    <div className="absolute inset-0 rounded-full bg-gradient-to-br from-amber-300 to-orange-300 blur-md opacity-40 group-hover:opacity-60 transition-opacity" />
+                    <div className="absolute inset-0 rounded-full bg-gradient-to-br from-amber-400 to-orange-400 blur-md opacity-45 group-hover:opacity-65 transition-opacity" />
                     
                     {/* Main circular thought */}
                     <div className="relative w-full h-full rounded-full bg-gradient-to-br from-white via-amber-50 to-orange-50 border-3 border-amber-300 group-hover:border-orange-400 shadow-xl group-hover:shadow-2xl transition-all flex flex-col items-center justify-center p-4 backdrop-blur-sm">
