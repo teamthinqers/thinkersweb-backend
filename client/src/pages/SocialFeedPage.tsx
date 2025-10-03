@@ -174,8 +174,8 @@ export default function SocialFeedPage() {
         {/* Toolbar */}
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-2xl font-bold flex items-center gap-2">
-            <Users className="h-6 w-6 text-amber-600" />
-            Social Thoughts
+            <Users className="h-6 w-6 text-red-600" />
+            <span className="bg-gradient-to-r from-red-600 to-purple-600 bg-clip-text text-transparent">Social Thoughts</span>
           </h1>
           
           <div className="flex items-center gap-2">
@@ -184,7 +184,7 @@ export default function SocialFeedPage() {
               variant={showRecentOnly ? "default" : "outline"}
               size="sm"
               onClick={() => setShowRecentOnly(!showRecentOnly)}
-              className={showRecentOnly ? "bg-amber-500 hover:bg-amber-600" : ""}
+              className={showRecentOnly ? "bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white border-0" : "border-red-300 text-red-600 hover:bg-red-50"}
             >
               <Clock className="h-4 w-4 mr-2" />
               Recent
@@ -210,7 +210,7 @@ export default function SocialFeedPage() {
 
         {/* Thought Cloud View */}
         {!dotsLoading && viewMode === 'cloud' && (
-          <div className="relative w-full min-h-[600px] bg-gradient-to-br from-amber-50/30 to-orange-50/20 rounded-2xl border border-amber-100 overflow-hidden">
+          <div className="relative w-full min-h-[600px] bg-gradient-to-br from-red-50 via-pink-50 to-purple-50 rounded-2xl border-2 border-red-200 overflow-hidden shadow-xl">
             {dots.map((dot) => (
               <div
                 key={dot.id}
@@ -226,10 +226,10 @@ export default function SocialFeedPage() {
               >
                 <div className="relative w-full h-full">
                   {/* Pulsing ring effect */}
-                  <div className="absolute inset-0 rounded-full bg-gradient-to-r from-amber-400 to-orange-400 animate-pulse opacity-20"></div>
+                  <div className="absolute inset-0 rounded-full bg-gradient-to-r from-red-400 via-pink-400 to-purple-400 animate-pulse opacity-40"></div>
                   
                   {/* Main dot */}
-                  <div className="absolute inset-[10%] rounded-full bg-gradient-to-br from-amber-500 to-orange-500 shadow-lg flex items-center justify-center">
+                  <div className="absolute inset-[10%] rounded-full bg-gradient-to-br from-red-500 via-pink-500 to-purple-600 shadow-xl flex items-center justify-center">
                     <div className="text-white text-center p-2">
                       <p className="text-xs font-semibold line-clamp-2">
                         {dot.heading}
