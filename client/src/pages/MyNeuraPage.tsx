@@ -5,7 +5,7 @@ import {
   Brain, Users, Sparkles, MessageSquare, Plus,
   Menu, User, LogOut, Settings, TrendingUp, Heart,
   Share2, Eye, MoreHorizontal, Maximize, Minimize, Clock,
-  Grid3x3, List, Bookmark, Fingerprint, Hash, Lightbulb, MessageCircle, Zap, Info
+  Grid3x3, List, Bookmark, Fingerprint, Hash, Lightbulb, MessageCircle, Zap, Info, Cog
 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth-new";
 import {
@@ -151,19 +151,24 @@ export default function MyNeuraPage() {
             <div className="sticky top-0 z-10 bg-amber-50 backdrop-blur-md border-b border-amber-200 px-6 py-3 flex items-center justify-between">
               {/* Left: Navigation buttons */}
               <div className="flex items-center gap-4">
-              {/* 1. Cognitive Identity - with nudge */}
+              {/* 1. Cognitive Identity - with nudge and stunning visual */}
               <Button
                 variant="ghost"
                 size="sm"
-                className={`flex items-center gap-2 rounded-lg transition-all duration-300 relative ${
+                className={`group flex items-center gap-2 rounded-xl px-4 py-2 transition-all duration-300 relative shadow-sm ${
                   !neuralStrength?.milestones?.cognitiveIdentityCompleted 
-                    ? 'bg-gradient-to-r from-amber-100 to-orange-100 hover:from-amber-200 hover:to-orange-200 border-2 border-amber-400 animate-pulse' 
-                    : 'hover:bg-amber-100/70'
+                    ? 'bg-gradient-to-r from-purple-100 via-violet-100 to-purple-100 hover:from-purple-200 hover:via-violet-200 hover:to-purple-200 border-2 border-purple-400 animate-pulse shadow-purple-200' 
+                    : 'bg-white/80 hover:bg-purple-50 border border-purple-200'
                 }`}
                 title="Cognitive Identity"
               >
-                <Fingerprint className="h-4 w-4 text-amber-600" />
-                <span className="text-sm font-medium text-gray-700">Cognitive Identity</span>
+                <div className="relative">
+                  <Fingerprint className="h-5 w-5 text-purple-600 group-hover:scale-110 transition-transform" />
+                  <div className="absolute inset-0 bg-purple-400 blur-md opacity-0 group-hover:opacity-30 transition-opacity"></div>
+                </div>
+                <span className="text-sm font-semibold bg-gradient-to-r from-purple-700 to-violet-600 bg-clip-text text-transparent">
+                  Cognitive Identity
+                </span>
                 {!neuralStrength?.milestones?.cognitiveIdentityCompleted && (
                   <span className="absolute -top-1 -right-1 flex h-3 w-3">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
@@ -172,19 +177,24 @@ export default function MyNeuraPage() {
                 )}
               </Button>
 
-              {/* 2. Learning Engine - with nudge */}
+              {/* 2. Learning Engine - with revolving gear */}
               <Button
                 variant="ghost"
                 size="sm"
-                className={`flex items-center gap-2 rounded-lg transition-all duration-300 relative ${
+                className={`group flex items-center gap-2 rounded-xl px-4 py-2 transition-all duration-300 relative shadow-sm ${
                   !neuralStrength?.milestones?.learningEngineCompleted 
-                    ? 'bg-gradient-to-r from-amber-100 to-orange-100 hover:from-amber-200 hover:to-orange-200 border-2 border-amber-400 animate-pulse' 
-                    : 'hover:bg-amber-100/70'
+                    ? 'bg-gradient-to-r from-blue-100 via-cyan-100 to-blue-100 hover:from-blue-200 hover:via-cyan-200 hover:to-blue-200 border-2 border-blue-400 animate-pulse shadow-blue-200' 
+                    : 'bg-white/80 hover:bg-blue-50 border border-blue-200'
                 }`}
                 title="Learning Engine"
               >
-                <Lightbulb className="h-4 w-4 text-amber-600" />
-                <span className="text-sm font-medium text-gray-700">Learning Engine</span>
+                <div className="relative">
+                  <Cog className="h-5 w-5 text-blue-600 group-hover:animate-spin transition-transform" />
+                  <div className="absolute inset-0 bg-blue-400 blur-md opacity-0 group-hover:opacity-30 transition-opacity"></div>
+                </div>
+                <span className="text-sm font-semibold bg-gradient-to-r from-blue-700 to-cyan-600 bg-clip-text text-transparent">
+                  Learning Engine
+                </span>
                 {!neuralStrength?.milestones?.learningEngineCompleted && (
                   <span className="absolute -top-1 -right-1 flex h-3 w-3">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
@@ -193,37 +203,53 @@ export default function MyNeuraPage() {
                 )}
               </Button>
 
-              {/* 3. Sparks */}
+              {/* 3. Sparks - with sparking animation */}
               <Button
                 variant="ghost"
                 size="sm"
-                className="flex items-center gap-2 hover:bg-amber-100/70 rounded-lg transition-all duration-300"
+                className="group flex items-center gap-2 rounded-xl px-4 py-2 bg-white/80 hover:bg-yellow-50 border border-yellow-200 transition-all duration-300 relative shadow-sm hover:shadow-yellow-200"
                 title="Sparks"
               >
-                <Zap className="h-4 w-4 text-amber-600" />
-                <span className="text-sm font-medium text-gray-700">Sparks</span>
+                <div className="relative">
+                  <Zap className="h-5 w-5 text-yellow-600 group-hover:scale-110 transition-transform" />
+                  <Sparkles className="h-3 w-3 text-yellow-400 absolute -top-1 -right-1 animate-pulse opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="absolute inset-0 bg-yellow-400 blur-md opacity-0 group-hover:opacity-30 transition-opacity"></div>
+                </div>
+                <span className="text-sm font-semibold bg-gradient-to-r from-yellow-700 to-amber-600 bg-clip-text text-transparent">
+                  Sparks
+                </span>
               </Button>
 
-              {/* 4. Social Reflections */}
+              {/* 4. Social Reflections - with chat bubble animation */}
               <Button
                 variant="ghost"
                 size="sm"
-                className="flex items-center gap-2 hover:bg-amber-100/70 rounded-lg transition-all duration-300"
+                className="group flex items-center gap-2 rounded-xl px-4 py-2 bg-white/80 hover:bg-pink-50 border border-pink-200 transition-all duration-300 relative shadow-sm hover:shadow-pink-200"
                 title="Social Reflections"
               >
-                <MessageCircle className="h-4 w-4 text-amber-600" />
-                <span className="text-sm font-medium text-gray-700">Social Reflections</span>
+                <div className="relative">
+                  <MessageCircle className="h-5 w-5 text-pink-600 group-hover:scale-110 transition-transform" />
+                  <div className="absolute inset-0 bg-pink-400 blur-md opacity-0 group-hover:opacity-30 transition-opacity"></div>
+                </div>
+                <span className="text-sm font-semibold bg-gradient-to-r from-pink-700 to-rose-600 bg-clip-text text-transparent">
+                  Social Reflections
+                </span>
               </Button>
 
-              {/* 5. Thoughts */}
+              {/* 5. Thoughts - with lightbulb icon */}
               <Button
                 variant="ghost"
                 size="sm"
-                className="flex items-center gap-2 hover:bg-amber-100/70 rounded-lg transition-all duration-300"
+                className="group flex items-center gap-2 rounded-xl px-4 py-2 bg-white/80 hover:bg-orange-50 border border-orange-200 transition-all duration-300 relative shadow-sm hover:shadow-orange-200"
                 title="Thoughts"
               >
-                <Hash className="h-4 w-4 text-amber-600" />
-                <span className="text-sm font-medium text-gray-700">Thoughts ({thoughts.length})</span>
+                <div className="relative">
+                  <Lightbulb className="h-5 w-5 text-orange-600 group-hover:scale-110 transition-transform" />
+                  <div className="absolute inset-0 bg-orange-400 blur-md opacity-0 group-hover:opacity-30 transition-opacity"></div>
+                </div>
+                <span className="text-sm font-semibold bg-gradient-to-r from-orange-700 to-amber-600 bg-clip-text text-transparent">
+                  Thoughts ({thoughts.length})
+                </span>
               </Button>
               </div>
 
