@@ -17,7 +17,10 @@ export default function FloatingDot({ onClick }: FloatingDotProps) {
   const [hasMoved, setHasMoved] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [targetNeura, setTargetNeura] = useState<'social' | 'myneura'>('social');
+  const [dialogPosition, setDialogPosition] = useState({ x: 0, y: 0 });
+  const [isDraggingDialog, setIsDraggingDialog] = useState(false);
   const dotRef = useRef<HTMLDivElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
 
   useEffect(() => {
@@ -87,7 +90,48 @@ export default function FloatingDot({ onClick }: FloatingDotProps) {
   const handleClick = (e: React.MouseEvent) => {
     if (!hasMoved && !isDragging) {
       setIsOpen(true);
+      // Center the dialog
+      setDialogPosition({
+        x: window.innerWidth / 2 - 300,
+        y: window.innerHeight / 2 - 200
+      });
     }
+  };
+
+  const handleDialogMouseDown = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (!dialogRef.current) return;
+    
+    const rect = dialogRef.current.getBoundingClientRect();
+    const offsetX = e.clientX - rect.left;
+    const offsetY = e.clientY - rect.top;
+    
+    const handleMouseMove = (e: MouseEvent) => {
+      e.preventDefault();
+      setIsDraggingDialog(true);
+      
+      const newX = e.clientX - offsetX;
+      const newY = e.clientY - offsetY;
+      
+      const maxX = window.innerWidth - 600;
+      const maxY = window.innerHeight - 400;
+      
+      const clampedX = Math.max(0, Math.min(maxX, newX));
+      const clampedY = Math.max(0, Math.min(maxY, newY));
+      
+      setDialogPosition({ x: clampedX, y: clampedY });
+    };
+    
+    const handleMouseUp = () => {
+      setIsDraggingDialog(false);
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+    
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
   };
 
   const displayName = (user as any)?.fullName || (user as any)?.displayName || "User";
@@ -153,11 +197,21 @@ export default function FloatingDot({ onClick }: FloatingDotProps) {
           />
           
           {/* Dialog */}
-          <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[70] w-full max-w-xl px-4">
+          <div 
+            ref={dialogRef}
+            className="fixed z-[70] w-full max-w-xl"
+            style={{
+              left: `${dialogPosition.x}px`,
+              top: `${dialogPosition.y}px`,
+            }}
+          >
             <Card className="bg-white shadow-2xl border-gray-200">
               <CardContent className="p-6">
-                {/* Header */}
-                <div className="flex items-start justify-between mb-6">
+                {/* Header - Draggable */}
+                <div 
+                  className="flex items-start justify-between mb-6 cursor-move"
+                  onMouseDown={handleDialogMouseDown}
+                >
                   {/* User Info */}
                   <div className="flex items-center gap-3">
                     <Avatar className="h-12 w-12">
@@ -221,13 +275,13 @@ export default function FloatingDot({ onClick }: FloatingDotProps) {
                   </button>
 
                   {/* 2. LinkedIn Import */}
-                  <button className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-[#0A66C2] bg-[#0A66C2] hover:bg-[#004182] transition-all group shadow-sm hover:shadow-md">
+                  <button className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-[#0077B5] bg-[#0077B5] hover:bg-[#005885] transition-all group shadow-sm hover:shadow-md">
                     <SiLinkedin className="h-6 w-6 text-white" />
                     <span className="text-xs font-semibold text-white">Import</span>
                   </button>
 
                   {/* 3. WhatsApp */}
-                  <button className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-[#25D366] bg-[#25D366] hover:bg-[#128C7E] transition-all group shadow-sm hover:shadow-md">
+                  <button className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-[#25D366] bg-[#25D366] hover:bg-[#1EBE5B] transition-all group shadow-sm hover:shadow-md">
                     <SiWhatsapp className="h-6 w-6 text-white" />
                     <span className="text-xs font-semibold text-white">WhatsApp</span>
                   </button>
@@ -241,8 +295,8 @@ export default function FloatingDot({ onClick }: FloatingDotProps) {
                     <span className="text-xs font-semibold text-white">AI Help</span>
                   </button>
 
-                  {/* 5. ChatGPT Import */}
-                  <button className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-[#10A37F] bg-[#10A37F] hover:bg-[#0D8A6B] transition-all group shadow-sm hover:shadow-md">
+                  {/* 5. ChatGPT Import - Black & White */}
+                  <button className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-black bg-black hover:bg-gray-800 transition-all group shadow-sm hover:shadow-md">
                     <SiOpenai className="h-6 w-6 text-white" />
                     <span className="text-xs font-semibold text-white">Import</span>
                   </button>
