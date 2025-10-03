@@ -3,8 +3,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { useAuth } from '@/hooks/use-auth-new';
-import { X, PenTool, MessageCircle, Sparkles, Crown, Linkedin } from 'lucide-react';
-import { SiChatbot, SiOpenai } from 'react-icons/si';
+import { X, PenTool, Sparkles, Crown } from 'lucide-react';
+import { SiWhatsapp, SiLinkedin, SiOpenai } from 'react-icons/si';
 
 interface FloatingDotProps {
   onClick?: () => void;
@@ -168,7 +168,7 @@ export default function FloatingDot({ onClick }: FloatingDotProps) {
                     </Avatar>
                     <div>
                       <h3 className="font-semibold text-gray-900">{displayName}</h3>
-                      <p className="text-sm text-gray-500">Post to {targetNeura === 'social' ? 'Social Neura' : 'My Neura'}</p>
+                      <p className="text-sm text-gray-500">{targetNeura === 'social' ? 'Share to Social Neura' : 'Save to My Neura'}</p>
                     </div>
                   </div>
 
@@ -178,23 +178,23 @@ export default function FloatingDot({ onClick }: FloatingDotProps) {
                     <div className="flex items-center bg-gray-100 rounded-full p-1">
                       <button
                         onClick={() => setTargetNeura('social')}
-                        className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
+                        className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all whitespace-nowrap ${
                           targetNeura === 'social'
                             ? 'bg-red-500 text-white shadow-sm'
                             : 'text-gray-600 hover:text-gray-900'
                         }`}
                       >
-                        Social Neura
+                        Share to Social Neura
                       </button>
                       <button
                         onClick={() => setTargetNeura('myneura')}
-                        className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
+                        className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all whitespace-nowrap ${
                           targetNeura === 'myneura'
                             ? 'bg-gradient-to-br from-amber-500 to-orange-500 text-white shadow-sm'
                             : 'text-gray-600 hover:text-gray-900'
                         }`}
                       >
-                        My Neura
+                        Save to My Neura
                       </button>
                     </div>
 
@@ -210,37 +210,41 @@ export default function FloatingDot({ onClick }: FloatingDotProps) {
 
                 {/* Action Buttons Grid */}
                 <div className="grid grid-cols-5 gap-3">
-                  {/* 1. Write */}
-                  <button className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-gray-200 hover:border-amber-400 hover:bg-amber-50 transition-all group">
+                  {/* 1. Write - Premium with glittering crown */}
+                  <button className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-amber-300 bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-50 hover:from-amber-100 hover:via-yellow-100 hover:to-orange-100 hover:border-amber-400 transition-all group shadow-sm hover:shadow-md">
                     <div className="relative">
-                      <PenTool className="h-6 w-6 text-amber-600" />
-                      <Crown className="h-3 w-3 text-yellow-500 absolute -top-1 -right-1" />
+                      <PenTool className="h-6 w-6 text-amber-700" strokeWidth={2.5} />
+                      <Crown className="h-3.5 w-3.5 text-yellow-500 absolute -top-1.5 -right-1 animate-pulse" fill="currentColor" />
+                      <Sparkles className="h-2 w-2 text-yellow-400 absolute -top-0.5 -right-0.5 animate-pulse" style={{ animationDelay: '0.5s' }} />
                     </div>
-                    <span className="text-xs font-medium text-gray-700 group-hover:text-amber-700">Write</span>
+                    <span className="text-xs font-semibold text-amber-800 group-hover:text-amber-900">Write</span>
                   </button>
 
                   {/* 2. LinkedIn Import */}
-                  <button className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-gray-200 hover:border-blue-400 hover:bg-blue-50 transition-all group">
-                    <Linkedin className="h-6 w-6 text-[#0A66C2]" />
-                    <span className="text-xs font-medium text-gray-700 group-hover:text-blue-700">Import</span>
+                  <button className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-blue-200 bg-blue-50 hover:bg-blue-100 hover:border-[#0A66C2] transition-all group shadow-sm hover:shadow-md">
+                    <SiLinkedin className="h-6 w-6 text-[#0A66C2]" />
+                    <span className="text-xs font-semibold text-[#0A66C2] group-hover:text-blue-800">Import</span>
                   </button>
 
                   {/* 3. WhatsApp Chat */}
-                  <button className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-gray-200 hover:border-green-400 hover:bg-green-50 transition-all group">
-                    <MessageCircle className="h-6 w-6 text-green-600" />
-                    <span className="text-xs font-medium text-gray-700 group-hover:text-green-700">Chat</span>
+                  <button className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-green-200 bg-green-50 hover:bg-green-100 hover:border-[#25D366] transition-all group shadow-sm hover:shadow-md">
+                    <SiWhatsapp className="h-6 w-6 text-[#25D366]" />
+                    <span className="text-xs font-semibold text-[#25D366] group-hover:text-green-700">Chat</span>
                   </button>
 
-                  {/* 4. AI Help */}
-                  <button className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-gray-200 hover:border-purple-400 hover:bg-purple-50 transition-all group">
-                    <Sparkles className="h-6 w-6 text-purple-600" />
-                    <span className="text-xs font-medium text-gray-700 group-hover:text-purple-700">AI Help</span>
+                  {/* 4. AI Help - Purple magic effect */}
+                  <button className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-purple-200 bg-gradient-to-br from-purple-50 via-violet-50 to-purple-50 hover:from-purple-100 hover:via-violet-100 hover:to-purple-100 hover:border-purple-400 transition-all group shadow-sm hover:shadow-md">
+                    <div className="relative">
+                      <Sparkles className="h-6 w-6 text-purple-600 animate-pulse" />
+                      <div className="absolute inset-0 bg-purple-400 rounded-full blur-md opacity-30 group-hover:opacity-50 transition-opacity"></div>
+                    </div>
+                    <span className="text-xs font-semibold text-purple-700 group-hover:text-purple-900">AI Help</span>
                   </button>
 
                   {/* 5. ChatGPT Import */}
-                  <button className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-gray-200 hover:border-emerald-400 hover:bg-emerald-50 transition-all group">
-                    <SiOpenai className="h-6 w-6 text-emerald-600" />
-                    <span className="text-xs font-medium text-gray-700 group-hover:text-emerald-700">Import</span>
+                  <button className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-teal-200 bg-gradient-to-br from-teal-50 to-emerald-50 hover:from-teal-100 hover:to-emerald-100 hover:border-teal-400 transition-all group shadow-sm hover:shadow-md">
+                    <SiOpenai className="h-6 w-6 text-teal-600" />
+                    <span className="text-xs font-semibold text-teal-700 group-hover:text-teal-900">Import</span>
                   </button>
                 </div>
               </CardContent>
