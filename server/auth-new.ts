@@ -333,6 +333,16 @@ export function setupNewAuth(app: Express) {
     ? `https://${process.env.REPLIT_DEV_DOMAIN}/api/auth/linkedin/callback`
     : 'http://localhost:5000/api/auth/linkedin/callback';
 
+  // Debug endpoint to show LinkedIn OAuth config
+  app.get("/api/auth/linkedin/config", (req: Request, res: Response) => {
+    res.json({
+      redirectUri: LINKEDIN_REDIRECT_URI,
+      clientId: LINKEDIN_CLIENT_ID,
+      hasClientSecret: !!LINKEDIN_CLIENT_SECRET,
+      instructions: "Copy the redirectUri above and add it EXACTLY as shown in LinkedIn Developer Portal > Your App > Auth > OAuth 2.0 settings > Redirect URLs"
+    });
+  });
+
   // GET /api/auth/linkedin - Initiate LinkedIn OAuth flow
   app.get("/api/auth/linkedin", (req: Request, res: Response) => {
     if (!LINKEDIN_CLIENT_ID) {
