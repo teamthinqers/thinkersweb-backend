@@ -19,8 +19,8 @@ export default function AuthPage() {
       if (redirect) {
         setLocation(`/${redirect}`);
       } else {
-        // Default redirect to /home after successful login
-        setLocation('/home');
+        // Default redirect to /myneura after successful login
+        setLocation('/myneura');
       }
     }
   };

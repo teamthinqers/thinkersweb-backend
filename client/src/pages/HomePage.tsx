@@ -8,10 +8,10 @@ export default function HomePage() {
   const { user, isLoading } = useAuth();
   const [, setLocation] = useLocation();
 
-  // Redirect logged-in users to /social
+  // Redirect logged-in users to /myneura
   useEffect(() => {
     if (!isLoading && user) {
-      setLocation("/social");
+      setLocation("/myneura");
     }
   }, [user, isLoading, setLocation]);
 
