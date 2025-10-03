@@ -160,16 +160,16 @@ export default function MyNeuraPage() {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="group flex items-center gap-2 rounded-xl px-4 py-2 bg-white hover:bg-gradient-to-r hover:from-purple-50/50 hover:to-violet-50/50 border border-gray-200/60 hover:border-purple-300/60 transition-all duration-300 relative shadow-sm hover:shadow-md"
+                    className="group flex items-center gap-2 rounded-xl px-4 py-2 bg-gradient-to-br from-purple-500/10 to-violet-500/10 hover:from-purple-500/20 hover:to-violet-500/20 border border-purple-200/40 hover:border-purple-400/60 transition-all duration-300 relative shadow-sm hover:shadow-lg hover:shadow-purple-500/20"
                     title="Cognitive Identity"
                   >
-                    <span className="text-sm font-semibold bg-gradient-to-r from-purple-700 to-violet-600 bg-clip-text text-transparent">
+                    <span className="text-sm font-semibold text-purple-700">
                       Cognitive Identity
                     </span>
                   </Button>
                 </Link>
                 <Link href="/cognitive-identity">
-                  <div className="relative px-3 py-2 bg-white rounded-lg border border-gray-200/60 shadow-sm transition-all duration-300 hover:shadow-md hover:border-purple-300/60 cursor-pointer">
+                  <div className="relative px-3 py-2 bg-gradient-to-br from-purple-500/10 to-violet-500/10 rounded-lg border border-purple-200/40 shadow-sm transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/20 hover:border-purple-400/60 cursor-pointer">
                     {!neuralStrength?.milestones?.cognitiveIdentityCompleted && (
                       <span className="absolute -top-1 -right-1 flex h-3 w-3 z-10">
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
@@ -187,16 +187,16 @@ export default function MyNeuraPage() {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="group flex items-center gap-2 rounded-xl px-4 py-2 bg-white hover:bg-gradient-to-r hover:from-amber-50/50 hover:to-orange-50/50 border border-gray-200/60 hover:border-amber-300/60 transition-all duration-300 relative shadow-sm hover:shadow-md"
+                    className="group flex items-center gap-2 rounded-xl px-4 py-2 bg-gradient-to-br from-amber-400/15 to-orange-500/15 hover:from-amber-400/25 hover:to-orange-500/25 border border-amber-300/50 hover:border-amber-400/70 transition-all duration-300 relative shadow-sm hover:shadow-lg hover:shadow-amber-500/20"
                     title="Learning Engine"
                   >
-                    <span className="text-sm font-semibold bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent">
+                    <span className="text-sm font-semibold text-amber-800">
                       Learning Engine
                     </span>
                   </Button>
                 </Link>
                 <Link href="/learning-engine">
-                  <div className="relative px-3 py-2 bg-white rounded-lg border border-gray-200/60 shadow-sm transition-all duration-300 hover:shadow-md hover:border-amber-300/60 cursor-pointer">
+                  <div className="relative px-3 py-2 bg-gradient-to-br from-amber-400/15 to-orange-500/15 rounded-lg border border-amber-300/50 shadow-sm transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/20 hover:border-amber-400/70 cursor-pointer">
                     {!neuralStrength?.milestones?.learningEngineCompleted && (
                       <span className="absolute -top-1 -right-1 flex h-3 w-3 z-10">
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
@@ -220,19 +220,19 @@ export default function MyNeuraPage() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="group flex items-center gap-2 rounded-xl px-4 py-2 bg-white hover:bg-gradient-to-r hover:from-yellow-50/50 hover:to-amber-50/50 border border-gray-200/60 hover:border-yellow-300/60 transition-all duration-300 relative shadow-sm hover:shadow-md"
+                  className="group flex items-center gap-2 rounded-xl px-4 py-2 bg-gradient-to-br from-yellow-400/15 to-amber-400/15 hover:from-yellow-400/25 hover:to-amber-400/25 border border-yellow-300/50 hover:border-yellow-400/70 transition-all duration-300 relative shadow-sm hover:shadow-lg hover:shadow-yellow-500/20"
                   title="Sparks"
                 >
                   <div className="relative">
-                    <Zap className="h-5 w-5 text-yellow-600 group-hover:scale-110 transition-transform" />
-                    <Sparkles className="h-3 w-3 text-yellow-400 absolute -top-1 -right-1 animate-pulse opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <Zap className="h-5 w-5 text-yellow-700 group-hover:scale-110 transition-transform" />
+                    <Sparkles className="h-3 w-3 text-yellow-500 absolute -top-1 -right-1 animate-pulse opacity-0 group-hover:opacity-100 transition-opacity" />
                   </div>
-                  <span className="text-sm font-semibold bg-gradient-to-r from-yellow-700 to-amber-600 bg-clip-text text-transparent">
+                  <span className="text-sm font-semibold text-yellow-800">
                     Sparks
                   </span>
                 </Button>
-                <div className="px-3 py-1 bg-white rounded-lg border border-gray-200/60 shadow-sm">
-                  <span className="text-xs font-bold text-gray-700">0</span>
+                <div className="px-3 py-1 bg-gradient-to-br from-yellow-400/10 to-amber-400/10 rounded-lg border border-yellow-300/40 shadow-sm">
+                  <span className="text-xs font-bold text-yellow-800">0</span>
                 </div>
               </div>
 
@@ -241,18 +241,18 @@ export default function MyNeuraPage() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="group flex items-center gap-2 rounded-xl px-4 py-2 bg-white hover:bg-gradient-to-r hover:from-pink-50/50 hover:to-rose-50/50 border border-gray-200/60 hover:border-pink-300/60 transition-all duration-300 relative shadow-sm hover:shadow-md"
+                  className="group flex items-center gap-2 rounded-xl px-4 py-2 bg-gradient-to-br from-pink-400/12 to-rose-400/12 hover:from-pink-400/22 hover:to-rose-400/22 border border-pink-300/50 hover:border-pink-400/70 transition-all duration-300 relative shadow-sm hover:shadow-lg hover:shadow-pink-500/20"
                   title="Social Reflections"
                 >
                   <div className="relative">
-                    <MessageCircle className="h-5 w-5 text-pink-600 group-hover:scale-110 transition-transform" />
+                    <MessageCircle className="h-5 w-5 text-pink-700 group-hover:scale-110 transition-transform" />
                   </div>
-                  <span className="text-sm font-semibold bg-gradient-to-r from-pink-700 to-rose-600 bg-clip-text text-transparent">
+                  <span className="text-sm font-semibold text-pink-800">
                     Social Reflections
                   </span>
                 </Button>
-                <div className="px-3 py-1 bg-white rounded-lg border border-gray-200/60 shadow-sm">
-                  <span className="text-xs font-bold text-gray-700">0</span>
+                <div className="px-3 py-1 bg-gradient-to-br from-pink-400/10 to-rose-400/10 rounded-lg border border-pink-300/40 shadow-sm">
+                  <span className="text-xs font-bold text-pink-800">0</span>
                 </div>
               </div>
 
@@ -261,18 +261,18 @@ export default function MyNeuraPage() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="group flex items-center gap-2 rounded-xl px-4 py-2 bg-white hover:bg-gradient-to-r hover:from-orange-50/50 hover:to-amber-50/50 border border-gray-200/60 hover:border-orange-300/60 transition-all duration-300 relative shadow-sm hover:shadow-md"
+                  className="group flex items-center gap-2 rounded-xl px-4 py-2 bg-gradient-to-br from-orange-400/15 to-amber-500/15 hover:from-orange-400/25 hover:to-amber-500/25 border border-orange-300/50 hover:border-orange-400/70 transition-all duration-300 relative shadow-sm hover:shadow-lg hover:shadow-orange-500/20"
                   title="Thoughts"
                 >
                   <div className="relative">
-                    <Lightbulb className="h-5 w-5 text-orange-600 group-hover:scale-110 transition-transform" />
+                    <Lightbulb className="h-5 w-5 text-orange-700 group-hover:scale-110 transition-transform" />
                   </div>
-                  <span className="text-sm font-semibold bg-gradient-to-r from-orange-700 to-amber-600 bg-clip-text text-transparent">
+                  <span className="text-sm font-semibold text-orange-800">
                     Thoughts
                   </span>
                 </Button>
-                <div className="px-3 py-1 bg-white rounded-lg border border-gray-200/60 shadow-sm">
-                  <span className="text-xs font-bold text-gray-700">{thoughts.length}</span>
+                <div className="px-3 py-1 bg-gradient-to-br from-orange-400/10 to-amber-400/10 rounded-lg border border-orange-300/40 shadow-sm">
+                  <span className="text-xs font-bold text-orange-800">{thoughts.length}</span>
                 </div>
               </div>
               
