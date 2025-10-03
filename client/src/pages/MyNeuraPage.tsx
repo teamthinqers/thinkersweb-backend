@@ -5,7 +5,7 @@ import {
   Brain, Users, Sparkles, MessageSquare, Plus,
   Menu, User, LogOut, Settings, TrendingUp, Heart,
   Share2, Eye, MoreHorizontal, Maximize, Minimize, Clock,
-  Grid3x3, List, Bookmark, Fingerprint, Hash, Lightbulb, MessageCircle
+  Grid3x3, List, Bookmark, Fingerprint, Hash, Lightbulb, MessageCircle, Zap
 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth-new";
 import {
@@ -123,7 +123,7 @@ export default function MyNeuraPage() {
           <div className={`relative w-full bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 shadow-2xl border-2 border-amber-300 overflow-hidden backdrop-blur-sm ${isFullscreen ? 'h-full rounded-none' : 'rounded-3xl'}`}>
             {/* Toolbar - Neura Navigation */}
             <div className="sticky top-0 z-10 bg-gradient-to-r from-amber-100 via-orange-100 to-amber-100 backdrop-blur-md border-b-2 border-amber-300 px-6 py-3 flex items-center gap-4">
-              {/* Cognitive Identity */}
+              {/* 1. Cognitive Identity */}
               <Button
                 variant="ghost"
                 size="sm"
@@ -134,18 +134,7 @@ export default function MyNeuraPage() {
                 <span className="text-sm font-semibold text-amber-900">Cognitive Identity</span>
               </Button>
 
-              {/* Thoughts Count */}
-              <Button
-                variant="ghost"
-                size="sm"
-                className="flex items-center gap-2 hover:bg-white/70 hover:shadow-md rounded-lg transition-all duration-300"
-                title="Thoughts Count"
-              >
-                <Hash className="h-4 w-4 text-amber-700" />
-                <span className="text-sm font-semibold text-amber-900">Thoughts ({thoughts.length})</span>
-              </Button>
-
-              {/* Learning Engine */}
+              {/* 2. Learning Engine */}
               <Button
                 variant="ghost"
                 size="sm"
@@ -156,7 +145,18 @@ export default function MyNeuraPage() {
                 <span className="text-sm font-semibold text-amber-900">Learning Engine</span>
               </Button>
 
-              {/* Social Reflections */}
+              {/* 3. Sparks */}
+              <Button
+                variant="ghost"
+                size="sm"
+                className="flex items-center gap-2 hover:bg-white/70 hover:shadow-md rounded-lg transition-all duration-300"
+                title="Sparks"
+              >
+                <Zap className="h-4 w-4 text-amber-700" />
+                <span className="text-sm font-semibold text-amber-900">Sparks</span>
+              </Button>
+
+              {/* 4. Social Reflections */}
               <Button
                 variant="ghost"
                 size="sm"
@@ -165,6 +165,17 @@ export default function MyNeuraPage() {
               >
                 <MessageCircle className="h-4 w-4 text-amber-700" />
                 <span className="text-sm font-semibold text-amber-900">Social Reflections</span>
+              </Button>
+
+              {/* 5. Thoughts */}
+              <Button
+                variant="ghost"
+                size="sm"
+                className="flex items-center gap-2 hover:bg-white/70 hover:shadow-md rounded-lg transition-all duration-300"
+                title="Thoughts"
+              >
+                <Hash className="h-4 w-4 text-amber-700" />
+                <span className="text-sm font-semibold text-amber-900">Thoughts ({thoughts.length})</span>
               </Button>
             </div>
             
