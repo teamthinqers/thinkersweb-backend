@@ -121,70 +121,9 @@ export default function MyNeuraPage() {
         <div className={`${isFullscreen ? 'h-full' : 'container mx-auto px-4 sm:px-6 lg:px-8 py-8'}`}>
           {/* Thought Cloud Canvas */}
           <div className={`relative w-full bg-gradient-to-br from-white/60 to-amber-50/40 shadow-2xl border border-amber-100 overflow-hidden backdrop-blur-sm ${isFullscreen ? 'h-full rounded-none' : 'rounded-3xl'}`}>
-            {/* Toolbar */}
-            <div className="sticky top-0 z-10 bg-white/90 backdrop-blur-md border-b border-amber-200 px-6 py-3 flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-2">
-                  <Bookmark className="h-5 w-5 text-amber-500" />
-                  <span className="font-semibold text-gray-900">MyNeura - {thoughts.length} Thoughts</span>
-                </div>
-                <div className="h-6 w-px bg-gray-300" />
-                
-                {/* View Mode Toggle */}
-                <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-1">
-                  <Button
-                    variant={viewMode === 'cloud' ? "default" : "ghost"}
-                    size="sm"
-                    onClick={() => setViewMode('cloud')}
-                    className={`h-8 ${viewMode === 'cloud' ? 'bg-white shadow-sm' : 'hover:bg-gray-200'}`}
-                  >
-                    <Grid3x3 className="h-4 w-4 mr-1" />
-                    Cloud
-                  </Button>
-                  <Button
-                    variant={viewMode === 'feed' ? "default" : "ghost"}
-                    size="sm"
-                    onClick={() => setViewMode('feed')}
-                    className={`h-8 ${viewMode === 'feed' ? 'bg-white shadow-sm' : 'hover:bg-gray-200'}`}
-                  >
-                    <List className="h-4 w-4 mr-1" />
-                    Feed
-                  </Button>
-                </div>
-                
-                <div className="h-6 w-px bg-gray-300" />
-                <Button
-                  variant={showRecentOnly ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setShowRecentOnly(!showRecentOnly)}
-                  className={showRecentOnly ? "bg-amber-500 hover:bg-amber-600 text-white" : ""}
-                >
-                  <Clock className="h-4 w-4 mr-2" />
-                  Recent
-                </Button>
-              </div>
-              <div className="flex items-center gap-2">
-                {viewMode === 'cloud' && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setIsFullscreen(!isFullscreen)}
-                    className="hover:bg-amber-100"
-                  >
-                    {isFullscreen ? (
-                      <>
-                        <Minimize className="h-4 w-4 mr-2" />
-                        Exit
-                      </>
-                    ) : (
-                      <>
-                        <Maximize className="h-4 w-4 mr-2" />
-                        Fullscreen
-                      </>
-                    )}
-                  </Button>
-                )}
-              </div>
+            {/* Toolbar - Empty for future buttons */}
+            <div className="sticky top-0 z-10 bg-amber-50/80 backdrop-blur-md border-b border-amber-200/50 px-6 py-3 flex items-center justify-between">
+              {/* Empty - ready for future buttons */}
             </div>
             
             {/* Cloud View */}
@@ -206,6 +145,26 @@ export default function MyNeuraPage() {
 
                 {/* Floating Thoughts Container */}
                 <div className="relative min-h-[600px] h-[calc(100vh-300px)] max-h-[900px] p-8">
+                  {/* Fullscreen toggle button - top right of grid */}
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setIsFullscreen(!isFullscreen)}
+                    className="absolute top-4 right-4 z-20 bg-white/80 hover:bg-amber-100 shadow-md"
+                  >
+                    {isFullscreen ? (
+                      <>
+                        <Minimize className="h-4 w-4 mr-2" />
+                        Exit
+                      </>
+                    ) : (
+                      <>
+                        <Maximize className="h-4 w-4 mr-2" />
+                        Fullscreen
+                      </>
+                    )}
+                  </Button>
+                  
               {isLoading ? (
                 <div className="flex items-center justify-center h-full">
                   <div className="text-center space-y-4">
