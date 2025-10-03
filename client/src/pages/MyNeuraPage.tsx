@@ -26,6 +26,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Switch } from "@/components/ui/switch";
 
 // Type for a thought with user info
 type ThoughtDot = {
@@ -149,108 +150,151 @@ export default function MyNeuraPage() {
           <div className={`relative w-full bg-gradient-to-br from-amber-50/70 to-orange-50/50 shadow-2xl border border-amber-200 overflow-hidden backdrop-blur-sm ${isFullscreen ? 'h-full rounded-none' : 'rounded-3xl'}`}>
             {/* Toolbar - Neura Navigation */}
             <div className="sticky top-0 z-10 bg-amber-50 backdrop-blur-md border-b border-amber-200 px-6 py-3 flex items-center justify-between">
-              {/* Left: Navigation buttons */}
-              <div className="flex items-center gap-4">
-              {/* 1. Cognitive Identity - with nudge and stunning visual */}
-              <Button
-                variant="ghost"
-                size="sm"
-                className={`group flex items-center gap-2 rounded-xl px-4 py-2 transition-all duration-300 relative shadow-sm ${
-                  !neuralStrength?.milestones?.cognitiveIdentityCompleted 
-                    ? 'bg-gradient-to-r from-purple-100 via-violet-100 to-purple-100 hover:from-purple-200 hover:via-violet-200 hover:to-purple-200 border-2 border-purple-400 animate-pulse shadow-purple-200' 
-                    : 'bg-white/80 hover:bg-purple-50 border border-purple-200'
-                }`}
-                title="Cognitive Identity"
-              >
-                <div className="relative">
-                  <Fingerprint className="h-5 w-5 text-purple-600 group-hover:scale-110 transition-transform" />
-                  <div className="absolute inset-0 bg-purple-400 blur-md opacity-0 group-hover:opacity-30 transition-opacity"></div>
-                </div>
-                <span className="text-sm font-semibold bg-gradient-to-r from-purple-700 to-violet-600 bg-clip-text text-transparent">
-                  Cognitive Identity
-                </span>
-                {!neuralStrength?.milestones?.cognitiveIdentityCompleted && (
-                  <span className="absolute -top-1 -right-1 flex h-3 w-3">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+              {/* Left: Navigation sections */}
+              <div className="flex items-center gap-6">
+              
+              {/* 1. Cognitive Identity - with toggle below */}
+              <div className="flex flex-col items-center gap-2">
+                <Link href="/cognitive-identity">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className={`group flex items-center gap-2 rounded-xl px-4 py-2 transition-all duration-300 relative shadow-sm ${
+                      !neuralStrength?.milestones?.cognitiveIdentityCompleted 
+                        ? 'bg-gradient-to-r from-amber-100 via-orange-100 to-amber-100 hover:from-amber-200 hover:via-orange-200 hover:to-amber-200 border-2 border-amber-400 shadow-amber-200' 
+                        : 'bg-white/80 hover:bg-amber-50 border border-amber-200'
+                    }`}
+                    title="Cognitive Identity"
+                  >
+                    <div className="relative">
+                      <Fingerprint className="h-5 w-5 text-amber-600 group-hover:scale-110 transition-transform" />
+                      <div className="absolute inset-0 bg-amber-400 blur-md opacity-0 group-hover:opacity-30 transition-opacity"></div>
+                    </div>
+                    <span className="text-sm font-semibold bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent">
+                      Cognitive Identity
+                    </span>
+                    {!neuralStrength?.milestones?.cognitiveIdentityCompleted && (
+                      <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                      </span>
+                    )}
+                  </Button>
+                </Link>
+                <Link href="/cognitive-identity">
+                  <div className="flex items-center gap-2 px-2 py-1 hover:bg-amber-100 rounded-lg transition-colors cursor-pointer">
+                    <Switch 
+                      checked={neuralStrength?.milestones?.cognitiveIdentityCompleted || false}
+                      className="data-[state=checked]:bg-amber-500"
+                    />
+                    <span className="text-xs text-gray-600">Progress Meter</span>
+                  </div>
+                </Link>
+              </div>
+
+              {/* 2. Learning Engine - with toggle below */}
+              <div className="flex flex-col items-center gap-2">
+                <Link href="/learning-engine">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className={`group flex items-center gap-2 rounded-xl px-4 py-2 transition-all duration-300 relative shadow-sm ${
+                      !neuralStrength?.milestones?.learningEngineCompleted 
+                        ? 'bg-gradient-to-r from-amber-100 via-orange-100 to-amber-100 hover:from-amber-200 hover:via-orange-200 hover:to-amber-200 border-2 border-amber-400 shadow-amber-200' 
+                        : 'bg-white/80 hover:bg-amber-50 border border-amber-200'
+                    }`}
+                    title="Learning Engine"
+                  >
+                    <div className="relative">
+                      <Cog className="h-5 w-5 text-amber-600 group-hover:animate-spin transition-transform" />
+                      <div className="absolute inset-0 bg-amber-400 blur-md opacity-0 group-hover:opacity-30 transition-opacity"></div>
+                    </div>
+                    <span className="text-sm font-semibold bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent">
+                      Learning Engine
+                    </span>
+                    {!neuralStrength?.milestones?.learningEngineCompleted && (
+                      <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                      </span>
+                    )}
+                  </Button>
+                </Link>
+                <Link href="/learning-engine">
+                  <div className="flex items-center gap-2 px-2 py-1 hover:bg-amber-100 rounded-lg transition-colors cursor-pointer">
+                    <Switch 
+                      checked={neuralStrength?.milestones?.learningEngineCompleted || false}
+                      className="data-[state=checked]:bg-amber-500"
+                    />
+                    <span className="text-xs text-gray-600">Progress Meter</span>
+                  </div>
+                </Link>
+              </div>
+
+              {/* 3. Sparks - with count below */}
+              <div className="flex flex-col items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="group flex items-center gap-2 rounded-xl px-4 py-2 bg-white/80 hover:bg-yellow-50 border border-yellow-200 transition-all duration-300 relative shadow-sm hover:shadow-yellow-200"
+                  title="Sparks"
+                >
+                  <div className="relative">
+                    <Zap className="h-5 w-5 text-yellow-600 group-hover:scale-110 transition-transform" />
+                    <Sparkles className="h-3 w-3 text-yellow-400 absolute -top-1 -right-1 animate-pulse opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <div className="absolute inset-0 bg-yellow-400 blur-md opacity-0 group-hover:opacity-30 transition-opacity"></div>
+                  </div>
+                  <span className="text-sm font-semibold bg-gradient-to-r from-yellow-700 to-amber-600 bg-clip-text text-transparent">
+                    Sparks
                   </span>
-                )}
-              </Button>
-
-              {/* 2. Learning Engine - with revolving gear */}
-              <Button
-                variant="ghost"
-                size="sm"
-                className={`group flex items-center gap-2 rounded-xl px-4 py-2 transition-all duration-300 relative shadow-sm ${
-                  !neuralStrength?.milestones?.learningEngineCompleted 
-                    ? 'bg-gradient-to-r from-blue-100 via-cyan-100 to-blue-100 hover:from-blue-200 hover:via-cyan-200 hover:to-blue-200 border-2 border-blue-400 animate-pulse shadow-blue-200' 
-                    : 'bg-white/80 hover:bg-blue-50 border border-blue-200'
-                }`}
-                title="Learning Engine"
-              >
-                <div className="relative">
-                  <Cog className="h-5 w-5 text-blue-600 group-hover:animate-spin transition-transform" />
-                  <div className="absolute inset-0 bg-blue-400 blur-md opacity-0 group-hover:opacity-30 transition-opacity"></div>
+                </Button>
+                <div className="px-3 py-1 bg-yellow-100 rounded-lg border border-yellow-300">
+                  <span className="text-xs font-bold text-yellow-800">0</span>
                 </div>
-                <span className="text-sm font-semibold bg-gradient-to-r from-blue-700 to-cyan-600 bg-clip-text text-transparent">
-                  Learning Engine
-                </span>
-                {!neuralStrength?.milestones?.learningEngineCompleted && (
-                  <span className="absolute -top-1 -right-1 flex h-3 w-3">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+              </div>
+
+              {/* 4. Social Reflections - with count below */}
+              <div className="flex flex-col items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="group flex items-center gap-2 rounded-xl px-4 py-2 bg-white/80 hover:bg-pink-50 border border-pink-200 transition-all duration-300 relative shadow-sm hover:shadow-pink-200"
+                  title="Social Reflections"
+                >
+                  <div className="relative">
+                    <MessageCircle className="h-5 w-5 text-pink-600 group-hover:scale-110 transition-transform" />
+                    <div className="absolute inset-0 bg-pink-400 blur-md opacity-0 group-hover:opacity-30 transition-opacity"></div>
+                  </div>
+                  <span className="text-sm font-semibold bg-gradient-to-r from-pink-700 to-rose-600 bg-clip-text text-transparent">
+                    Social Reflections
                   </span>
-                )}
-              </Button>
-
-              {/* 3. Sparks - with sparking animation */}
-              <Button
-                variant="ghost"
-                size="sm"
-                className="group flex items-center gap-2 rounded-xl px-4 py-2 bg-white/80 hover:bg-yellow-50 border border-yellow-200 transition-all duration-300 relative shadow-sm hover:shadow-yellow-200"
-                title="Sparks"
-              >
-                <div className="relative">
-                  <Zap className="h-5 w-5 text-yellow-600 group-hover:scale-110 transition-transform" />
-                  <Sparkles className="h-3 w-3 text-yellow-400 absolute -top-1 -right-1 animate-pulse opacity-0 group-hover:opacity-100 transition-opacity" />
-                  <div className="absolute inset-0 bg-yellow-400 blur-md opacity-0 group-hover:opacity-30 transition-opacity"></div>
+                </Button>
+                <div className="px-3 py-1 bg-pink-100 rounded-lg border border-pink-300">
+                  <span className="text-xs font-bold text-pink-800">0</span>
                 </div>
-                <span className="text-sm font-semibold bg-gradient-to-r from-yellow-700 to-amber-600 bg-clip-text text-transparent">
-                  Sparks
-                </span>
-              </Button>
+              </div>
 
-              {/* 4. Social Reflections - with chat bubble animation */}
-              <Button
-                variant="ghost"
-                size="sm"
-                className="group flex items-center gap-2 rounded-xl px-4 py-2 bg-white/80 hover:bg-pink-50 border border-pink-200 transition-all duration-300 relative shadow-sm hover:shadow-pink-200"
-                title="Social Reflections"
-              >
-                <div className="relative">
-                  <MessageCircle className="h-5 w-5 text-pink-600 group-hover:scale-110 transition-transform" />
-                  <div className="absolute inset-0 bg-pink-400 blur-md opacity-0 group-hover:opacity-30 transition-opacity"></div>
+              {/* 5. Thoughts - with count below */}
+              <div className="flex flex-col items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="group flex items-center gap-2 rounded-xl px-4 py-2 bg-white/80 hover:bg-orange-50 border border-orange-200 transition-all duration-300 relative shadow-sm hover:shadow-orange-200"
+                  title="Thoughts"
+                >
+                  <div className="relative">
+                    <Lightbulb className="h-5 w-5 text-orange-600 group-hover:scale-110 transition-transform" />
+                    <div className="absolute inset-0 bg-orange-400 blur-md opacity-0 group-hover:opacity-30 transition-opacity"></div>
+                  </div>
+                  <span className="text-sm font-semibold bg-gradient-to-r from-orange-700 to-amber-600 bg-clip-text text-transparent">
+                    Thoughts
+                  </span>
+                </Button>
+                <div className="px-3 py-1 bg-orange-100 rounded-lg border border-orange-300">
+                  <span className="text-xs font-bold text-orange-800">{thoughts.length}</span>
                 </div>
-                <span className="text-sm font-semibold bg-gradient-to-r from-pink-700 to-rose-600 bg-clip-text text-transparent">
-                  Social Reflections
-                </span>
-              </Button>
-
-              {/* 5. Thoughts - with lightbulb icon */}
-              <Button
-                variant="ghost"
-                size="sm"
-                className="group flex items-center gap-2 rounded-xl px-4 py-2 bg-white/80 hover:bg-orange-50 border border-orange-200 transition-all duration-300 relative shadow-sm hover:shadow-orange-200"
-                title="Thoughts"
-              >
-                <div className="relative">
-                  <Lightbulb className="h-5 w-5 text-orange-600 group-hover:scale-110 transition-transform" />
-                  <div className="absolute inset-0 bg-orange-400 blur-md opacity-0 group-hover:opacity-30 transition-opacity"></div>
-                </div>
-                <span className="text-sm font-semibold bg-gradient-to-r from-orange-700 to-amber-600 bg-clip-text text-transparent">
-                  Thoughts ({thoughts.length})
-                </span>
-              </Button>
+              </div>
+              
               </div>
 
               {/* Right: Neural Strength Meter */}

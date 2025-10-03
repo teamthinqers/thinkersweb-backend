@@ -14,6 +14,8 @@ import NewLandingPage from "@/pages/NewLandingPage";
 import HomePage from "@/pages/HomePage";
 import PreviewPage from "@/pages/PreviewPage";
 import SocialFeedPage from "@/pages/SocialFeedPage";
+import CognitiveIdentityPage from "@/pages/CognitiveIdentityPage";
+import LearningEnginePage from "@/pages/LearningEnginePage";
 import LogoPage from "@/pages/LogoPage";
 import AuthPage from "@/pages/auth-page";
 import Settings from "@/pages/Settings";
@@ -191,6 +193,8 @@ function Router() {
       <Route path="/preview" component={PreviewPage} />
       <Route path="/social" component={SocialFeedPage} />
       <Route path="/myneura" component={MyNeuraPage} />
+      <Route path="/cognitive-identity" component={CognitiveIdentityPage} />
+      <Route path="/learning-engine" component={LearningEnginePage} />
       <Route path="/auth" component={AuthPage} />
       
       {/* All routes now public - no authentication required */}
