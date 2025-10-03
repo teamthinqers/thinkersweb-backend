@@ -7,9 +7,13 @@ import { z } from 'zod';
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   firebaseUid: text("firebase_uid").unique(),
+  linkedinId: text("linkedin_id").unique(), // LinkedIn user ID
   username: text("username").unique(),
   email: text("email").unique().notNull(),
   fullName: text("full_name"),
+  linkedinHeadline: text("linkedin_headline"), // Professional headline from LinkedIn
+  linkedinProfileUrl: text("linkedin_profile_url"), // Link to LinkedIn profile
+  linkedinPhotoUrl: text("linkedin_photo_url"), // LinkedIn profile picture URL
   hashedPassword: text("hashed_password"),
   bio: text("bio"),
   avatar: text("avatar"),
