@@ -5,7 +5,7 @@ import {
   Brain, Users, Sparkles, MessageSquare, Plus,
   Menu, User, LogOut, Settings, TrendingUp, Heart,
   Share2, Eye, MoreHorizontal, Maximize, Minimize, Clock,
-  Grid3x3, List, Bookmark
+  Grid3x3, List, Bookmark, Fingerprint, Hash, Lightbulb, MessageCircle
 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth-new";
 import {
@@ -121,9 +121,51 @@ export default function MyNeuraPage() {
         <div className={`${isFullscreen ? 'h-full' : 'container mx-auto px-4 sm:px-6 lg:px-8 py-8'}`}>
           {/* Thought Cloud Canvas */}
           <div className={`relative w-full bg-gradient-to-br from-white/60 to-amber-50/40 shadow-2xl border border-amber-100 overflow-hidden backdrop-blur-sm ${isFullscreen ? 'h-full rounded-none' : 'rounded-3xl'}`}>
-            {/* Toolbar - Empty for future buttons */}
-            <div className="sticky top-0 z-10 bg-amber-50/80 backdrop-blur-md border-b border-amber-200/50 px-6 py-3 flex items-center justify-between">
-              {/* Empty - ready for future buttons */}
+            {/* Toolbar - Neura Navigation */}
+            <div className="sticky top-0 z-10 bg-amber-50/80 backdrop-blur-md border-b border-amber-200/50 px-6 py-3 flex items-center gap-4">
+              {/* Cognitive Identity */}
+              <Button
+                variant="ghost"
+                size="sm"
+                className="flex items-center gap-2 hover:bg-amber-100/70 rounded-lg transition-all duration-300"
+                title="Cognitive Identity"
+              >
+                <Fingerprint className="h-4 w-4 text-amber-600" />
+                <span className="text-sm font-medium text-gray-700">Cognitive Identity</span>
+              </Button>
+
+              {/* Thoughts Count */}
+              <Button
+                variant="ghost"
+                size="sm"
+                className="flex items-center gap-2 hover:bg-amber-100/70 rounded-lg transition-all duration-300"
+                title="Thoughts Count"
+              >
+                <Hash className="h-4 w-4 text-amber-600" />
+                <span className="text-sm font-medium text-gray-700">Thoughts ({thoughts.length})</span>
+              </Button>
+
+              {/* Learning Engine */}
+              <Button
+                variant="ghost"
+                size="sm"
+                className="flex items-center gap-2 hover:bg-amber-100/70 rounded-lg transition-all duration-300"
+                title="Learning Engine"
+              >
+                <Lightbulb className="h-4 w-4 text-amber-600" />
+                <span className="text-sm font-medium text-gray-700">Learning Engine</span>
+              </Button>
+
+              {/* Social Reflections */}
+              <Button
+                variant="ghost"
+                size="sm"
+                className="flex items-center gap-2 hover:bg-amber-100/70 rounded-lg transition-all duration-300"
+                title="Social Reflections"
+              >
+                <MessageCircle className="h-4 w-4 text-amber-600" />
+                <span className="text-sm font-medium text-gray-700">Social Reflections</span>
+              </Button>
             </div>
             
             {/* Cloud View */}
