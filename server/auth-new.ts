@@ -92,7 +92,23 @@ export function requireAuth(req: Request, res: Response, next: NextFunction) {
 async function loadUserFromSession(req: Request, res: Response, next: NextFunction) {
   if (req.session?.userId) {
     try {
-      const result = await db.execute(sql`SELECT id, username, email, firebase_uid, full_name_old as "fullName", avatar as "avatarUrl", created_at as "createdAt", updated_at as "updatedAt" FROM users WHERE id = ${req.session.userId}`);
+      const result = await db.execute(sql`
+        SELECT 
+          id, 
+          username, 
+          email, 
+          firebase_uid, 
+          full_name as "fullName", 
+          avatar as "avatarUrl", 
+          linkedin_id as "linkedinId",
+          linkedin_headline as "linkedinHeadline",
+          linkedin_profile_url as "linkedinProfileUrl",
+          linkedin_photo_url as "linkedinPhotoUrl",
+          created_at as "createdAt", 
+          updated_at as "updatedAt" 
+        FROM users 
+        WHERE id = ${req.session.userId}
+      `);
       if (result.rows && result.rows.length > 0) {
         const row: any = result.rows[0];
         req.user = {
@@ -102,6 +118,10 @@ async function loadUserFromSession(req: Request, res: Response, next: NextFuncti
           firebaseUid: row.firebase_uid,
           fullName: row.fullName,
           avatarUrl: row.avatarUrl,
+          linkedinId: row.linkedinId,
+          linkedinHeadline: row.linkedinHeadline,
+          linkedinProfileUrl: row.linkedinProfileUrl,
+          linkedinPhotoUrl: row.linkedinPhotoUrl,
           createdAt: new Date(row.createdAt),
           updatedAt: new Date(row.updatedAt),
         };
@@ -438,6 +458,37 @@ export function setupNewAuth(app: Express) {
       console.log(`✅ LinkedIn profile obtained:`, profile);
 
       const { sub: linkedinId, email, name, picture } = profile;
+      
+      // Try to get additional profile details from LinkedIn v2 API
+      let headline = null;
+      let profileUrl = null;
+      
+      try {
+        const detailedProfileResponse = await fetch('https://api.linkedin.com/v2/me', {
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+          },
+        });
+        
+        if (detailedProfileResponse.ok) {
+          const detailedProfile = await detailedProfileResponse.json();
+          console.log(`✅ LinkedIn detailed profile:`, detailedProfile);
+          
+          // Extract headline if available
+          headline = detailedProfile.headline || null;
+          
+          // Construct profile URL from vanityName or id
+          if (detailedProfile.vanityName) {
+            profileUrl = `https://www.linkedin.com/in/${detailedProfile.vanityName}`;
+          } else if (linkedinId) {
+            // Fallback: use the sub/id to construct URL
+            profileUrl = `https://www.linkedin.com/profile/view?id=${linkedinId}`;
+          }
+        }
+      } catch (detailError) {
+        console.log(`⚠️ Could not fetch detailed LinkedIn profile:`, detailError);
+        // Continue without detailed profile - not critical
+      }
 
       if (!linkedinId || !email) {
         console.error("❌ Missing required profile data");
@@ -460,6 +511,8 @@ export function setupNewAuth(app: Express) {
             UPDATE users 
             SET linkedin_id = ${linkedinId},
                 full_name = ${name || dbUser.full_name},
+                linkedin_headline = ${headline || dbUser.linkedin_headline},
+                linkedin_profile_url = ${profileUrl || dbUser.linkedin_profile_url},
                 linkedin_photo_url = ${picture || dbUser.linkedin_photo_url},
                 avatar = ${picture || dbUser.avatar},
                 updated_at = NOW()
@@ -479,6 +532,8 @@ export function setupNewAuth(app: Express) {
               hashed_password, 
               linkedin_id, 
               full_name, 
+              linkedin_headline,
+              linkedin_profile_url,
               linkedin_photo_url,
               avatar,
               dot_spark_activated
@@ -489,6 +544,8 @@ export function setupNewAuth(app: Express) {
               ${randomPassword}, 
               ${linkedinId}, 
               ${name || username}, 
+              ${headline},
+              ${profileUrl},
               ${picture},
               ${picture},
               true

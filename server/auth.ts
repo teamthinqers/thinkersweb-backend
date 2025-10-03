@@ -34,6 +34,10 @@ declare global {
       fullName?: string | null;
       bio?: string | null;
       avatarUrl?: string | null;
+      linkedinId?: string | null;
+      linkedinHeadline?: string | null;
+      linkedinProfileUrl?: string | null;
+      linkedinPhotoUrl?: string | null;
       createdAt: Date;
       updatedAt: Date;
       isNewUser?: boolean;
