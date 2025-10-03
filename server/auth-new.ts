@@ -490,18 +490,18 @@ export function setupNewAuth(app: Express) {
       }
 
       // Create session
-      req.session.userId = dbUser.id;
+      req.session.userId = Number(dbUser.id);
       req.session.oauthState = undefined; // Clear state
 
       const sessionUser: SessionUser = {
-        id: dbUser.id,
-        username: dbUser.username,
-        email: dbUser.email,
-        firebaseUid: dbUser.firebase_uid,
-        fullName: dbUser.full_name || name || dbUser.username,
-        avatarUrl: dbUser.avatar || picture,
-        createdAt: new Date(dbUser.created_at || Date.now()),
-        updatedAt: new Date(dbUser.updated_at || Date.now()),
+        id: Number(dbUser.id),
+        username: String(dbUser.username),
+        email: String(dbUser.email),
+        firebaseUid: dbUser.firebase_uid ? String(dbUser.firebase_uid) : null,
+        fullName: dbUser.full_name ? String(dbUser.full_name) : (name || String(dbUser.username)),
+        avatarUrl: dbUser.avatar ? String(dbUser.avatar) : picture,
+        createdAt: dbUser.created_at ? new Date(String(dbUser.created_at)) : new Date(),
+        updatedAt: dbUser.updated_at ? new Date(String(dbUser.updated_at)) : new Date(),
       };
 
       req.user = sessionUser;
