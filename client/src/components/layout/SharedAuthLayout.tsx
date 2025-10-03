@@ -1,7 +1,7 @@
 import { useState, ReactNode } from 'react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Menu, Brain, Users, User, Settings, LogOut } from 'lucide-react';
+import { Menu, Brain, Users, User, Settings, LogOut, Sparkles } from 'lucide-react';
 import { Link, useLocation } from 'wouter';
 import { useAuth } from '@/hooks/use-auth-new';
 import { useToast } from '@/hooks/use-toast';
@@ -149,7 +149,7 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
                   }`}
                   title="My Neura"
                 >
-                  <Brain className="h-5 w-5" />
+                  <Sparkles className="h-5 w-5" />
                 </Button>
                 {/* LinkedIn-style active indicator */}
                 {isOnMyNeura && (
