@@ -143,7 +143,7 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
           </div>
 
           {/* User Avatar */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 ml-4">
             {user && (
               <Sheet>
                 <SheetTrigger asChild>
