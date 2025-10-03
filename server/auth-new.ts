@@ -345,7 +345,11 @@ export function setupNewAuth(app: Express) {
 
   // GET /api/auth/linkedin - Initiate LinkedIn OAuth flow
   app.get("/api/auth/linkedin", (req: Request, res: Response) => {
+    console.log(`📱 LinkedIn OAuth initiation requested`);
+    console.log(`📍 Redirect URI configured as: ${LINKEDIN_REDIRECT_URI}`);
+    
     if (!LINKEDIN_CLIENT_ID) {
+      console.error("❌ LinkedIn Client ID not configured");
       return res.status(500).json({ error: "LinkedIn OAuth not configured" });
     }
 
@@ -360,7 +364,8 @@ export function setupNewAuth(app: Express) {
       `state=${state}&` +
       `scope=${encodeURIComponent(scope)}`;
     
-    console.log(`🔗 Redirecting to LinkedIn OAuth: ${authUrl}`);
+    console.log(`🔗 Redirecting to LinkedIn OAuth`);
+    console.log(`   Encoded redirect_uri: ${encodeURIComponent(LINKEDIN_REDIRECT_URI)}`);
     res.redirect(authUrl);
   });
 
