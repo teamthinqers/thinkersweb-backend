@@ -345,14 +345,14 @@ export default function MyNeuraPage() {
                         className="bg-gradient-to-r from-amber-500 to-orange-500 text-white"
                       >
                         <Plus className="mr-2 h-4 w-4" />
-                        Create Thought
+                        Save Thought
                       </Button>
                       <Button
                         onClick={() => setLocation("/")}
                         variant="outline"
                       >
                         <Users className="mr-2 h-4 w-4" />
-                        Browse Community
+                        Explore Social Neura
                       </Button>
                     </div>
                   </div>
