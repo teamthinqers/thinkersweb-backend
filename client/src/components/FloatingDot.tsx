@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect } from 'react';
-import { Sparkles } from 'lucide-react';
 
 interface FloatingDotProps {
   onClick?: () => void;
@@ -87,17 +86,22 @@ export default function FloatingDot({ onClick }: FloatingDotProps) {
       onClick={handleClick}
     >
       <div className="relative group">
-        {/* Pulsing rings */}
+        {/* Pulsing rings - blinking to nudge users */}
         <div className="absolute inset-0 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 opacity-30 animate-ping"></div>
         <div className="absolute inset-0 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 opacity-20 animate-pulse"></div>
         
-        {/* Main dot */}
-        <div className="relative w-16 h-16 rounded-full bg-gradient-to-br from-amber-500 via-orange-500 to-red-500 shadow-2xl flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-amber-500/50">
-          {/* Inner glow */}
-          <div className="absolute inset-2 rounded-full bg-gradient-to-br from-white/30 to-transparent"></div>
-          
-          {/* Icon */}
-          <Sparkles className="w-8 h-8 text-white relative z-10 drop-shadow-lg" />
+        {/* Main dot with logo - spins when dragging */}
+        <div 
+          className={`relative w-16 h-16 rounded-full shadow-2xl flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-amber-500/50 ${
+            isDragging ? 'animate-spin' : ''
+          }`}
+        >
+          {/* Logo image */}
+          <img 
+            src="/attached_assets/dot_spark_logo_var-07_1759508370187.png" 
+            alt="DotSpark" 
+            className="w-16 h-16 rounded-full object-cover drop-shadow-2xl"
+          />
           
           {/* Tooltip on hover */}
           <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs py-2 px-3 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none shadow-xl">
