@@ -189,7 +189,7 @@ function Router() {
       <Route path="/test-minimal" component={() => <div>Basic Test</div>} />
       <Route path="/" component={HomePage} />
       <Route path="/preview" component={PreviewPage} />
-      <Route path="/home" component={SocialFeedPage} />
+      <Route path="/social" component={SocialFeedPage} />
       <Route path="/myneura" component={MyNeuraPage} />
       <Route path="/auth" component={AuthPage} />
       

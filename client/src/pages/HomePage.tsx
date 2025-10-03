@@ -8,10 +8,10 @@ export default function HomePage() {
   const { user, isLoading } = useAuth();
   const [, setLocation] = useLocation();
 
-  // Redirect logged-in users to /home
+  // Redirect logged-in users to /social
   useEffect(() => {
     if (!isLoading && user) {
-      setLocation("/home");
+      setLocation("/social");
     }
   }, [user, isLoading, setLocation]);
 

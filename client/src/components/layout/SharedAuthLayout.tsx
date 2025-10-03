@@ -1,7 +1,7 @@
 import { useState, ReactNode } from 'react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Menu, Brain, Home, User, Settings, LogOut } from 'lucide-react';
+import { Menu, Brain, Users, User, Settings, LogOut } from 'lucide-react';
 import { Link, useLocation } from 'wouter';
 import { useAuth } from '@/hooks/use-auth-new';
 import { useToast } from '@/hooks/use-toast';
@@ -21,7 +21,7 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { toast } = useToast();
 
-  const isOnSocialFeed = location === '/home';
+  const isOnSocial = location === '/social';
   const isOnMyNeura = location === '/myneura';
 
   return (
@@ -48,18 +48,18 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
 
           {/* Navigation Items */}
           <div className={`flex flex-col space-y-3 flex-1 py-4 ${isSidebarOpen ? 'px-2' : 'items-center'}`}>
-            <Link href="/home">
+            <Link href="/social">
               <Button 
                 variant="ghost" 
-                title="Home"
+                title="Social"
                 className={`${isSidebarOpen ? 'w-full justify-start h-10' : 'w-10 h-10'} rounded-xl transition-all duration-300 ${
-                  isOnSocialFeed 
-                    ? 'bg-amber-50 text-amber-600 hover:bg-amber-100' 
-                    : 'hover:bg-amber-50 hover:text-amber-600'
+                  isOnSocial 
+                    ? 'bg-purple-50 text-purple-600 hover:bg-purple-100' 
+                    : 'hover:bg-purple-50 hover:text-purple-600'
                 }`}
               >
-                <Home className="w-5 h-5" />
-                {isSidebarOpen && <span className="ml-3 text-sm font-medium">Home</span>}
+                <Users className="w-5 h-5" />
+                {isSidebarOpen && <span className="ml-3 text-sm font-medium">Social</span>}
               </Button>
             </Link>
             
@@ -98,7 +98,7 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
             </Button>
 
             {/* Logo - Mobile */}
-            <Link href="/home">
+            <Link href="/social">
               <div className="flex md:hidden items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
                 <img 
                   src="/dotspark-logo-combined.png?v=1" 
@@ -112,7 +112,54 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
           {/* Center: Empty space */}
           <div className="flex-1"></div>
 
-          {/* Right: User Avatar */}
+          {/* Right: Navigation Icons with underline indicator */}
+          <div className="flex items-center gap-2">
+            {/* Social Icon with underline */}
+            <Link href="/social">
+              <div className="relative flex flex-col items-center">
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className={`p-2 rounded-lg transition-all duration-300 ${
+                    isOnSocial
+                      ? 'bg-purple-50 text-purple-700'
+                      : 'hover:bg-purple-50 hover:text-purple-600'
+                  }`}
+                  title="Social"
+                >
+                  <Users className="h-5 w-5" />
+                </Button>
+                {/* LinkedIn-style active indicator */}
+                {isOnSocial && (
+                  <div className="absolute -bottom-0.5 left-0 right-0 h-0.5 bg-purple-600 rounded-full"></div>
+                )}
+              </div>
+            </Link>
+
+            {/* My Neura Icon with underline */}
+            <Link href="/myneura">
+              <div className="relative flex flex-col items-center">
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className={`p-2 rounded-lg transition-all duration-300 ${
+                    isOnMyNeura
+                      ? 'bg-amber-50 text-amber-700'
+                      : 'hover:bg-amber-50 hover:text-amber-600'
+                  }`}
+                  title="My Neura"
+                >
+                  <Brain className="h-5 w-5" />
+                </Button>
+                {/* LinkedIn-style active indicator */}
+                {isOnMyNeura && (
+                  <div className="absolute -bottom-0.5 left-0 right-0 h-0.5 bg-amber-600 rounded-full"></div>
+                )}
+              </div>
+            </Link>
+          </div>
+
+          {/* User Avatar */}
           <div className="flex items-center gap-2">
             {user && (
               <Sheet>
@@ -232,14 +279,14 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
               {/* Navigation Items */}
               <div className="flex-1 p-2">
                 <div className="space-y-1">
-                  <Link href="/home">
+                  <Link href="/social">
                     <Button 
                       variant="ghost" 
-                      className={`w-full justify-start text-sm h-10 ${isOnSocialFeed ? 'bg-amber-50 text-amber-600' : ''}`}
+                      className={`w-full justify-start text-sm h-10 ${isOnSocial ? 'bg-purple-50 text-purple-600' : ''}`}
                       onClick={() => setIsSidebarOpen(false)}
                     >
-                      <Home className="w-4 h-4 mr-3" />
-                      Home
+                      <Users className="w-4 h-4 mr-3" />
+                      Social
                     </Button>
                   </Link>
                   
