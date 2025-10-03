@@ -130,20 +130,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { fullName, headline, linkedinUrl } = req.body;
       const avatarFile = req.file;
       
-      // Build update object
+      // Build update object using Drizzle schema field names
       const updates: any = {
-        updated_at: new Date(),
+        updatedAt: new Date(),
       };
       
-      if (fullName) updates.full_name = fullName;
-      if (headline) updates.linkedin_headline = headline;
-      if (linkedinUrl) updates.linkedin_profile_url = linkedinUrl;
+      if (fullName) updates.fullName = fullName;
+      if (headline) updates.linkedinHeadline = headline;
+      if (linkedinUrl) updates.linkedinProfileUrl = linkedinUrl;
       
       if (avatarFile) {
         // Save avatar path to database
         const avatarPath = `/uploads/avatars/${avatarFile.filename}`;
         updates.avatar = avatarPath;
-        updates.linkedin_photo_url = avatarPath; // Update LinkedIn photo URL too
+        updates.linkedinPhotoUrl = avatarPath; // Update LinkedIn photo URL too
       }
       
       // Update user in database
