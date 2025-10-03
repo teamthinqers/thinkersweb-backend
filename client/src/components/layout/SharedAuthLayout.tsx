@@ -112,50 +112,33 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
           {/* Center: Empty space */}
           <div className="flex-1"></div>
 
-          {/* Right: Navigation Icons with underline indicator */}
-          <div className="flex items-center gap-2">
-            {/* Social Icon with underline */}
+          {/* Right: Navigation Icons - Chat page style */}
+          <div className="flex items-center gap-3">
+            {/* Social Icon */}
             <Link href="/social">
-              <div className="relative flex flex-col items-center">
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  className={`p-2 rounded-lg transition-all duration-300 ${
-                    isOnSocial
-                      ? 'bg-purple-50 text-purple-700'
-                      : 'hover:bg-purple-50 hover:text-purple-600'
-                  }`}
-                  title="Social"
-                >
-                  <Users className="h-5 w-5" />
-                </Button>
-                {/* LinkedIn-style active indicator */}
-                {isOnSocial && (
-                  <div className="absolute -bottom-0.5 left-0 right-0 h-0.5 bg-purple-600 rounded-full"></div>
-                )}
-              </div>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="p-3 bg-red-500 hover:bg-red-600 rounded-xl transition-all duration-300 hover:scale-105 shadow-sm"
+                title="Social"
+              >
+                <Users className="h-5 w-5 text-white" />
+              </Button>
             </Link>
 
-            {/* My Neura Icon with underline */}
+            {/* My Neura Icon with green active indicator */}
             <Link href="/myneura">
-              <div className="relative flex flex-col items-center">
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  className={`p-2 rounded-lg transition-all duration-300 ${
-                    isOnMyNeura
-                      ? 'bg-amber-50 text-amber-700'
-                      : 'hover:bg-amber-50 hover:text-amber-600'
-                  }`}
-                  title="My Neura"
-                >
-                  <Sparkles className="h-5 w-5" />
-                </Button>
-                {/* LinkedIn-style active indicator */}
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="relative p-3 bg-gradient-to-br from-amber-500 via-amber-600 to-orange-600 hover:from-amber-600 hover:via-amber-700 hover:to-orange-700 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg"
+                title="My Neura"
+              >
+                <Brain className="h-5 w-5 text-white transition-all duration-300" />
                 {isOnMyNeura && (
-                  <div className="absolute -bottom-0.5 left-0 right-0 h-0.5 bg-amber-600 rounded-full"></div>
+                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full animate-pulse shadow-lg border-2 border-white"></div>
                 )}
-              </div>
+              </Button>
             </Link>
           </div>
 
