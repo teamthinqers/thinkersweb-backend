@@ -335,7 +335,7 @@ export default function MyNeuraPage() {
                 <div className="flex items-center justify-center h-full">
                   <div className="text-center space-y-4 max-w-md">
                     <Brain className="h-16 w-16 text-amber-500 mx-auto" />
-                    <h3 className="text-xl font-semibold text-gray-700">Your cloud awaits</h3>
+                    <h3 className="text-xl font-semibold text-gray-700">Your Thought Cloud awaits</h3>
                     <p className="text-gray-500">
                       Start capturing your thoughts or save inspiring ideas from others
                     </p>
