@@ -205,7 +205,7 @@ export default function FloatingDot({ onClick }: FloatingDotProps) {
               top: `${dialogPosition.y}px`,
             }}
           >
-            <Card className="bg-white shadow-2xl border-gray-200">
+            <Card className="bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100 shadow-2xl border-2 border-amber-200">
               <CardContent className="p-6">
                 {/* Header - Draggable */}
                 <div 
@@ -286,8 +286,8 @@ export default function FloatingDot({ onClick }: FloatingDotProps) {
                     <span className="text-xs font-semibold text-white">WhatsApp</span>
                   </button>
 
-                  {/* 4. AI Help - Purple magic effect */}
-                  <button className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-[#9333EA] bg-[#9333EA] hover:bg-[#7E22CE] transition-all group shadow-sm hover:shadow-md">
+                  {/* 4. AI Help - Lighter Purple */}
+                  <button className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-[#A855F7] bg-[#A855F7] hover:bg-[#9333EA] transition-all group shadow-sm hover:shadow-md">
                     <div className="relative">
                       <Sparkles className="h-6 w-6 text-white animate-pulse" />
                       <div className="absolute inset-0 bg-purple-300 rounded-full blur-md opacity-30 group-hover:opacity-50 transition-opacity"></div>
@@ -295,10 +295,10 @@ export default function FloatingDot({ onClick }: FloatingDotProps) {
                     <span className="text-xs font-semibold text-white">AI Help</span>
                   </button>
 
-                  {/* 5. ChatGPT Import - Black & White */}
-                  <button className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-black bg-black hover:bg-gray-800 transition-all group shadow-sm hover:shadow-md">
-                    <SiOpenai className="h-6 w-6 text-white" />
-                    <span className="text-xs font-semibold text-white">Import</span>
+                  {/* 5. ChatGPT Import - White bg, Black icon */}
+                  <button className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-gray-300 bg-white hover:bg-gray-50 transition-all group shadow-sm hover:shadow-md">
+                    <SiOpenai className="h-6 w-6 text-black" />
+                    <span className="text-xs font-semibold text-black">Import</span>
                   </button>
                 </div>
               </CardContent>
