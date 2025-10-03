@@ -211,13 +211,13 @@ export default function FloatingDot({ onClick }: FloatingDotProps) {
                 {/* Action Buttons Grid */}
                 <div className="grid grid-cols-5 gap-3">
                   {/* 1. Write - Premium with glittering crown */}
-                  <button className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-amber-300 bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-50 hover:from-amber-100 hover:via-yellow-100 hover:to-orange-100 hover:border-amber-400 transition-all group shadow-sm hover:shadow-md">
+                  <button className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-[#F59E0B] bg-[#F59E0B] hover:bg-[#D97706] transition-all group shadow-sm hover:shadow-md">
                     <div className="relative">
-                      <PenTool className="h-6 w-6 text-amber-700" strokeWidth={2.5} />
-                      <Crown className="h-3.5 w-3.5 text-yellow-500 absolute -top-1.5 -right-1 animate-pulse" fill="currentColor" />
-                      <Sparkles className="h-2 w-2 text-yellow-400 absolute -top-0.5 -right-0.5 animate-pulse" style={{ animationDelay: '0.5s' }} />
+                      <PenTool className="h-6 w-6 text-white" strokeWidth={2.5} />
+                      <Crown className="h-3.5 w-3.5 text-yellow-200 absolute -top-1.5 -right-1 animate-pulse" fill="currentColor" />
+                      <Sparkles className="h-2 w-2 text-yellow-100 absolute -top-0.5 -right-0.5 animate-pulse" style={{ animationDelay: '0.5s' }} />
                     </div>
-                    <span className="text-xs font-semibold text-amber-800 group-hover:text-amber-900">Write</span>
+                    <span className="text-xs font-semibold text-white">Write</span>
                   </button>
 
                   {/* 2. LinkedIn Import */}
@@ -233,12 +233,12 @@ export default function FloatingDot({ onClick }: FloatingDotProps) {
                   </button>
 
                   {/* 4. AI Help - Purple magic effect */}
-                  <button className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-purple-200 bg-gradient-to-br from-purple-50 via-violet-50 to-purple-50 hover:from-purple-100 hover:via-violet-100 hover:to-purple-100 hover:border-purple-400 transition-all group shadow-sm hover:shadow-md">
+                  <button className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-[#9333EA] bg-[#9333EA] hover:bg-[#7E22CE] transition-all group shadow-sm hover:shadow-md">
                     <div className="relative">
-                      <Sparkles className="h-6 w-6 text-purple-600 animate-pulse" />
-                      <div className="absolute inset-0 bg-purple-400 rounded-full blur-md opacity-30 group-hover:opacity-50 transition-opacity"></div>
+                      <Sparkles className="h-6 w-6 text-white animate-pulse" />
+                      <div className="absolute inset-0 bg-purple-300 rounded-full blur-md opacity-30 group-hover:opacity-50 transition-opacity"></div>
                     </div>
-                    <span className="text-xs font-semibold text-purple-700 group-hover:text-purple-900">AI Help</span>
+                    <span className="text-xs font-semibold text-white">AI Help</span>
                   </button>
 
                   {/* 5. ChatGPT Import */}
