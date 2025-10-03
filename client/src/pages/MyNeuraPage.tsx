@@ -72,6 +72,7 @@ export default function MyNeuraPage() {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showRecentOnly, setShowRecentOnly] = useState(false);
   const [viewMode, setViewMode] = useState<'cloud' | 'feed'>('cloud');
+  const [showStrengthInfo, setShowStrengthInfo] = useState(false);
   
   // Cache for thought positions to prevent teleporting on refetch
   const positionCacheRef = useState(() => new Map<number, { x: number; y: number; size: number; rotation: number }>())[0];
@@ -299,47 +300,13 @@ export default function MyNeuraPage() {
 
               {/* Right: Neural Strength Meter */}
               <div className="flex items-center gap-3 bg-white/70 px-4 py-2 rounded-xl border border-amber-300 shadow-sm relative">
-                {/* Info tooltip with proper z-index */}
-                <TooltipProvider>
-                  <Tooltip delayDuration={200}>
-                    <TooltipTrigger asChild>
-                      <button className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-amber-500 hover:bg-amber-600 flex items-center justify-center transition-colors shadow-md z-50">
-                        <Info className="h-3 w-3 text-white" />
-                      </button>
-                    </TooltipTrigger>
-                    <TooltipContent 
-                      className="max-w-xs p-4 bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-300 z-[100]"
-                      sideOffset={5}
-                    >
-                      <div className="space-y-2">
-                        <h4 className="font-bold text-amber-900 mb-2">Boost Your Neural Strength</h4>
-                        <div className="text-sm text-gray-700 space-y-1">
-                          <p className="flex items-center gap-2">
-                            <span className="w-12 font-semibold text-amber-700">10%</span>
-                            <span>Starting strength</span>
-                          </p>
-                          <p className="flex items-center gap-2">
-                            <span className="w-12 font-semibold text-amber-700">+30%</span>
-                            <span>Complete Cognitive Identity</span>
-                          </p>
-                          <p className="flex items-center gap-2">
-                            <span className="w-12 font-semibold text-amber-700">+20%</span>
-                            <span>Set up Learning Engine</span>
-                          </p>
-                          <p className="flex items-center gap-2">
-                            <span className="w-12 font-semibold text-amber-700">+10%</span>
-                            <span>Create your first thought</span>
-                          </p>
-                          <div className="pt-2 mt-2 border-t border-amber-200">
-                            <p className="text-xs italic text-gray-600">
-                              Keep growing: +0.5% per thought, +0.3% per saved spark
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
+                {/* Info button that opens dialog */}
+                <button 
+                  onClick={() => setShowStrengthInfo(true)}
+                  className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-amber-500 hover:bg-amber-600 flex items-center justify-center transition-colors shadow-md z-10"
+                >
+                  <Info className="h-3 w-3 text-white" />
+                </button>
 
                 <div className="flex flex-col items-end gap-1">
                   <span className="text-xs font-semibold text-amber-900">Neural Strength</span>
@@ -680,6 +647,80 @@ export default function MyNeuraPage() {
               </div>
             </>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Neural Strength Info Dialog */}
+      <Dialog open={showStrengthInfo} onOpenChange={setShowStrengthInfo}>
+        <DialogContent className="max-w-md bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-300">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent flex items-center gap-2">
+              <Sparkles className="h-6 w-6 text-amber-500" />
+              Boost Your Neural Strength
+            </DialogTitle>
+          </DialogHeader>
+          
+          <div className="space-y-4 mt-4">
+            <p className="text-sm text-gray-600 mb-4">
+              Complete these milestones to unlock your full cognitive potential:
+            </p>
+            
+            <div className="space-y-3">
+              <div className="flex items-center gap-3 p-3 bg-white/70 rounded-lg border border-amber-200">
+                <div className="flex-shrink-0 w-16 text-center">
+                  <span className="text-lg font-bold text-amber-700">10%</span>
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-gray-800">Starting strength</p>
+                  <p className="text-xs text-gray-600">Your baseline neural capacity</p>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-3 p-3 bg-white/70 rounded-lg border border-amber-200">
+                <div className="flex-shrink-0 w-16 text-center">
+                  <span className="text-lg font-bold text-amber-700">+30%</span>
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-gray-800">Complete Cognitive Identity</p>
+                  <p className="text-xs text-gray-600">Define your thinking patterns</p>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-3 p-3 bg-white/70 rounded-lg border border-amber-200">
+                <div className="flex-shrink-0 w-16 text-center">
+                  <span className="text-lg font-bold text-amber-700">+20%</span>
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-gray-800">Set up Learning Engine</p>
+                  <p className="text-xs text-gray-600">Configure personalized learning</p>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-3 p-3 bg-white/70 rounded-lg border border-amber-200">
+                <div className="flex-shrink-0 w-16 text-center">
+                  <span className="text-lg font-bold text-amber-700">+10%</span>
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-gray-800">Create your first thought</p>
+                  <p className="text-xs text-gray-600">Begin your neural journey</p>
+                </div>
+              </div>
+            </div>
+            
+            <div className="pt-4 mt-4 border-t border-amber-200">
+              <p className="text-xs text-gray-600 mb-2 font-medium">Continuous Growth:</p>
+              <div className="grid grid-cols-2 gap-2">
+                <div className="flex items-center gap-2 text-xs text-gray-700">
+                  <span className="font-bold text-amber-600">+0.5%</span>
+                  <span>per thought</span>
+                </div>
+                <div className="flex items-center gap-2 text-xs text-gray-700">
+                  <span className="font-bold text-amber-600">+0.3%</span>
+                  <span>per saved spark</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </DialogContent>
       </Dialog>
 
