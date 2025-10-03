@@ -341,7 +341,7 @@ export default function MyNeuraPage() {
                         className="bg-gradient-to-r from-amber-500 to-orange-500 text-white"
                       >
                         <Plus className="mr-2 h-4 w-4" />
-                        Save Thought
+                        Save Thought/Dot
                       </Button>
                       <Button
                         onClick={() => setLocation("/social")}

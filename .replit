@@ -53,6 +53,10 @@ localPort = 37091
 externalPort = 5173
 
 [[ports]]
+localPort = 39367
+externalPort = 8000
+
+[[ports]]
 localPort = 39627
 externalPort = 6800
 
@@ -71,9 +75,5 @@ externalPort = 3000
 [[ports]]
 localPort = 44317
 externalPort = 3001
-
-[[ports]]
-localPort = 45419
-externalPort = 8008
 
 [agent]
