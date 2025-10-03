@@ -4,6 +4,7 @@ import { thoughts, savedThoughts, users } from '@shared/schema';
 import { eq, desc, and, or, sql } from 'drizzle-orm';
 import { insertThoughtSchema } from '@shared/schema';
 import { storeVectorEmbedding } from '../vector-db';
+import { calculateNeuralStrength } from '../neural-strength';
 
 const router = Router();
 
@@ -406,6 +407,36 @@ router.get('/:id', async (req, res) => {
     res.status(500).json({
       success: false,
       error: 'Failed to fetch thought details',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
+/**
+ * GET /api/thoughts/neural-strength
+ * Get user's neural strength percentage based on their progress
+ * Requires authentication
+ */
+router.get('/neural-strength', async (req, res) => {
+  try {
+    const userId = (req as any).user?.id;
+
+    if (!userId) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    const neuralStrength = await calculateNeuralStrength(userId);
+
+    res.json({
+      success: true,
+      ...neuralStrength,
+    });
+
+  } catch (error) {
+    console.error('Neural strength calculation error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to calculate neural strength',
       details: error instanceof Error ? error.message : 'Unknown error'
     });
   }

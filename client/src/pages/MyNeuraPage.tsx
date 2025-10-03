@@ -43,6 +43,20 @@ type ThoughtDot = {
   rotation?: number;
 };
 
+// Type for neural strength data
+type NeuralStrengthData = {
+  percentage: number;
+  milestones: {
+    cognitiveIdentityCompleted: boolean;
+    learningEngineCompleted: boolean;
+    hasActivity: boolean;
+  };
+  stats: {
+    thoughtsCount: number;
+    savedSparksCount: number;
+  };
+};
+
 export default function MyNeuraPage() {
   const { user, logout } = useAuth();
   const [location, setLocation] = useLocation();
@@ -58,6 +72,12 @@ export default function MyNeuraPage() {
   // Fetch user's personal thoughts from MyNeura
   const { data: myNeuraThoughts, isLoading } = useQuery({
     queryKey: ['/api/thoughts/myneura'],
+    enabled: !!user,
+  });
+
+  // Fetch neural strength
+  const { data: neuralStrength } = useQuery<NeuralStrengthData>({
+    queryKey: ['/api/thoughts/neural-strength'],
     enabled: !!user,
   });
 
@@ -122,7 +142,9 @@ export default function MyNeuraPage() {
           {/* Thought Cloud Canvas */}
           <div className={`relative w-full bg-gradient-to-br from-amber-50/70 to-orange-50/50 shadow-2xl border border-amber-200 overflow-hidden backdrop-blur-sm ${isFullscreen ? 'h-full rounded-none' : 'rounded-3xl'}`}>
             {/* Toolbar - Neura Navigation */}
-            <div className="sticky top-0 z-10 bg-amber-50 backdrop-blur-md border-b border-amber-200 px-6 py-3 flex items-center gap-4">
+            <div className="sticky top-0 z-10 bg-amber-50 backdrop-blur-md border-b border-amber-200 px-6 py-3 flex items-center justify-between">
+              {/* Left: Navigation buttons */}
+              <div className="flex items-center gap-4">
               {/* 1. Cognitive Identity */}
               <Button
                 variant="ghost"
@@ -177,6 +199,28 @@ export default function MyNeuraPage() {
                 <Hash className="h-4 w-4 text-amber-600" />
                 <span className="text-sm font-medium text-gray-700">Thoughts ({thoughts.length})</span>
               </Button>
+              </div>
+
+              {/* Right: Neural Strength Meter */}
+              <div className="flex items-center gap-3 bg-white/70 px-4 py-2 rounded-xl border border-amber-300 shadow-sm">
+                <div className="flex flex-col items-end gap-1">
+                  <span className="text-xs font-semibold text-amber-900">Neural Strength</span>
+                  <span className="text-xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
+                    {neuralStrength?.percentage || 10}%
+                  </span>
+                </div>
+                
+                {/* Progress bar */}
+                <div className="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 transition-all duration-1000 ease-out"
+                    style={{ width: `${neuralStrength?.percentage || 10}%` }}
+                  />
+                </div>
+
+                {/* Sparkle icon */}
+                <Sparkles className="h-5 w-5 text-amber-500 animate-pulse" />
+              </div>
             </div>
             
             {/* Cloud View */}

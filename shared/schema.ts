@@ -16,6 +16,11 @@ export const users = pgTable("users", {
   dotSparkActivated: boolean("dotspark_activated").default(false).notNull(),
   dotSparkActivatedAt: timestamp("dotspark_activated_at"),
   subscriptionTier: text("subscription_tier").default("free"), // 'free', 'pro', 'premium'
+  // Neural Strength Milestones
+  cognitiveIdentityCompleted: boolean("cognitive_identity_completed").default(false).notNull(),
+  cognitiveIdentityCompletedAt: timestamp("cognitive_identity_completed_at"),
+  learningEngineCompleted: boolean("learning_engine_completed").default(false).notNull(),
+  learningEngineCompletedAt: timestamp("learning_engine_completed_at"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
