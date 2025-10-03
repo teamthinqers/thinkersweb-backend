@@ -98,7 +98,7 @@ const Profile = () => {
   const displayName = (user as any)?.fullName || (user as any)?.displayName || "User Name";
   const displayHeadline = (user as any)?.linkedinHeadline || "Professional Headline";
   const linkedinProfileUrl = (user as any)?.linkedinProfileUrl || "";
-  const hasLinkedIn = !!(user as any)?.linkedinId;
+  const hasLinkedIn = !!linkedinProfileUrl;
 
   return (
     <SharedAuthLayout>
@@ -194,10 +194,21 @@ const Profile = () => {
                   />
                 ) : (
                   <div className="mt-1 flex items-center gap-2">
-                    <p className="text-base font-semibold text-gray-900">{displayName}</p>
+                    {hasLinkedIn ? (
+                      <a
+                        href={linkedinProfileUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-base font-semibold text-gray-900 hover:text-[#0A66C2] transition-colors cursor-pointer"
+                      >
+                        {displayName}
+                      </a>
+                    ) : (
+                      <p className="text-base font-semibold text-gray-900">{displayName}</p>
+                    )}
                     {hasLinkedIn && (
                       <a
-                        href={linkedinProfileUrl || "https://linkedin.com"}
+                        href={linkedinProfileUrl}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center justify-center rounded-sm w-6 h-6 bg-[#0A66C2] hover:bg-[#004182] transition-colors"
