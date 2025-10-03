@@ -203,7 +203,7 @@ function Router() {
       <Route path="/favorites" component={AppWithLayout} />
       <Route path="/network" component={AppWithLayout} />
       <Route path="/settings" component={AppWithLayout} />
-      <Route path="/profile" component={AppWithLayout} />
+      <Route path="/profile" component={Profile} />
       <Route path="/social" component={Social} />
       <Route path="/sparktest" component={SparkTest} />
       <Route path="/spark" component={Spark} />
