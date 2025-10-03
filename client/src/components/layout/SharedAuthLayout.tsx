@@ -5,6 +5,7 @@ import { Menu, Brain, Users, User, Settings, LogOut, Sparkles, UsersRound } from
 import { Link, useLocation } from 'wouter';
 import { useAuth } from '@/hooks/use-auth-new';
 import { useToast } from '@/hooks/use-toast';
+import FloatingDot from '@/components/FloatingDot';
 import {
   Sheet,
   SheetContent,
@@ -333,6 +334,12 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
           </div>
         </div>
       )}
+
+      {/* Global Floating Dot */}
+      <FloatingDot onClick={() => {
+        // TODO: Handle click - will be implemented next
+        console.log('Floating dot clicked');
+      }} />
     </div>
   );
 }
