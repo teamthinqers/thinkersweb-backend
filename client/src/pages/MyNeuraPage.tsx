@@ -353,9 +353,9 @@ export default function MyNeuraPage() {
                       </Button>
                       <Button
                         onClick={() => setLocation("/social")}
-                        variant="outline"
+                        className="bg-gradient-to-r from-red-500 to-orange-500 text-white hover:from-red-600 hover:to-orange-600"
                       >
-                        <Users className="mr-2 h-4 w-4" />
+                        <Brain className="mr-2 h-4 w-4 animate-pulse" />
                         Explore Social Neura
                       </Button>
                     </div>
