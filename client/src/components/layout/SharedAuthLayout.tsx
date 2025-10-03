@@ -54,8 +54,8 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
                 title="Social"
                 className={`${isSidebarOpen ? 'w-full justify-start h-10' : 'w-10 h-10'} rounded-xl transition-all duration-300 ${
                   isOnSocial 
-                    ? 'bg-purple-50 text-purple-600 hover:bg-purple-100' 
-                    : 'hover:bg-purple-50 hover:text-purple-600'
+                    ? 'bg-red-500 text-white hover:bg-red-600' 
+                    : 'hover:bg-red-50 hover:text-red-600'
                 }`}
               >
                 <Users className="w-5 h-5" />
@@ -69,7 +69,7 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
                 title="My Neura"
                 className={`${isSidebarOpen ? 'w-full justify-start h-10' : 'w-10 h-10'} rounded-xl transition-all duration-300 ${
                   isOnMyNeura 
-                    ? 'bg-amber-50 text-amber-600 hover:bg-amber-100' 
+                    ? 'bg-gradient-to-br from-amber-500 via-amber-600 to-orange-600 text-white hover:from-amber-600 hover:via-amber-700 hover:to-orange-700' 
                     : 'hover:bg-amber-50 hover:text-amber-600'
                 }`}
               >
@@ -265,7 +265,7 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
                   <Link href="/social">
                     <Button 
                       variant="ghost" 
-                      className={`w-full justify-start text-sm h-10 ${isOnSocial ? 'bg-purple-50 text-purple-600' : ''}`}
+                      className={`w-full justify-start text-sm h-10 rounded-xl ${isOnSocial ? 'bg-red-500 text-white hover:bg-red-600' : 'hover:bg-red-50 hover:text-red-600'}`}
                       onClick={() => setIsSidebarOpen(false)}
                     >
                       <Users className="w-4 h-4 mr-3" />
@@ -276,7 +276,7 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
                   <Link href="/myneura">
                     <Button 
                       variant="ghost" 
-                      className={`w-full justify-start text-sm h-10 ${isOnMyNeura ? 'bg-amber-50 text-amber-600' : ''}`}
+                      className={`w-full justify-start text-sm h-10 rounded-xl ${isOnMyNeura ? 'bg-gradient-to-br from-amber-500 via-amber-600 to-orange-600 text-white hover:from-amber-600 hover:via-amber-700 hover:to-orange-700' : 'hover:bg-amber-50 hover:text-amber-600'}`}
                       onClick={() => setIsSidebarOpen(false)}
                     >
                       <Brain className="w-4 h-4 mr-3" />
