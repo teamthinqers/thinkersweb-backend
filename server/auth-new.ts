@@ -12,6 +12,7 @@ declare module "express-session" {
   interface SessionData {
     userId?: number;
     firebaseUid?: string;
+    oauthState?: string;
   }
 }
 
@@ -323,5 +324,198 @@ export function setupNewAuth(app: Express) {
       console.log(`✅ User ${userId} logged out`);
       res.json({ success: true });
     });
+  });
+
+  // LinkedIn OAuth endpoints
+  const LINKEDIN_CLIENT_ID = process.env.LINKEDIN_CLIENT_ID;
+  const LINKEDIN_CLIENT_SECRET = process.env.LINKEDIN_CLIENT_SECRET;
+  const LINKEDIN_REDIRECT_URI = process.env.REPLIT_DEV_DOMAIN 
+    ? `https://${process.env.REPLIT_DEV_DOMAIN}/api/auth/linkedin/callback`
+    : 'http://localhost:5000/api/auth/linkedin/callback';
+
+  // GET /api/auth/linkedin - Initiate LinkedIn OAuth flow
+  app.get("/api/auth/linkedin", (req: Request, res: Response) => {
+    if (!LINKEDIN_CLIENT_ID) {
+      return res.status(500).json({ error: "LinkedIn OAuth not configured" });
+    }
+
+    const state = randomBytes(32).toString('hex');
+    req.session.oauthState = state;
+    
+    const scope = 'openid profile email';
+    const authUrl = `https://www.linkedin.com/oauth/v2/authorization?` +
+      `response_type=code&` +
+      `client_id=${LINKEDIN_CLIENT_ID}&` +
+      `redirect_uri=${encodeURIComponent(LINKEDIN_REDIRECT_URI)}&` +
+      `state=${state}&` +
+      `scope=${encodeURIComponent(scope)}`;
+    
+    console.log(`🔗 Redirecting to LinkedIn OAuth: ${authUrl}`);
+    res.redirect(authUrl);
+  });
+
+  // GET /api/auth/linkedin/callback - Handle LinkedIn OAuth callback
+  app.get("/api/auth/linkedin/callback", async (req: Request, res: Response) => {
+    try {
+      const { code, state } = req.query;
+
+      // Verify state to prevent CSRF
+      if (!state || state !== req.session.oauthState) {
+        console.error("❌ Invalid OAuth state");
+        return res.redirect('/?error=invalid_state');
+      }
+
+      if (!code) {
+        console.error("❌ No authorization code received");
+        return res.redirect('/?error=no_code');
+      }
+
+      console.log(`🔐 Exchanging code for LinkedIn access token...`);
+
+      // Exchange code for access token
+      const tokenResponse = await fetch('https://www.linkedin.com/oauth/v2/accessToken', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+          grant_type: 'authorization_code',
+          code: code as string,
+          redirect_uri: LINKEDIN_REDIRECT_URI,
+          client_id: LINKEDIN_CLIENT_ID!,
+          client_secret: LINKEDIN_CLIENT_SECRET!,
+        }),
+      });
+
+      if (!tokenResponse.ok) {
+        const errorText = await tokenResponse.text();
+        console.error("❌ Token exchange failed:", errorText);
+        return res.redirect('/?error=token_exchange_failed');
+      }
+
+      const tokenData = await tokenResponse.json();
+      const accessToken = tokenData.access_token;
+
+      console.log(`✅ Access token obtained`);
+
+      // Get user profile using OpenID Connect userinfo endpoint
+      const profileResponse = await fetch('https://api.linkedin.com/v2/userinfo', {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+        },
+      });
+
+      if (!profileResponse.ok) {
+        const errorText = await profileResponse.text();
+        console.error("❌ Profile fetch failed:", errorText);
+        return res.redirect('/?error=profile_fetch_failed');
+      }
+
+      const profile = await profileResponse.json();
+      console.log(`✅ LinkedIn profile obtained:`, profile);
+
+      const { sub: linkedinId, email, name, picture } = profile;
+
+      if (!linkedinId || !email) {
+        console.error("❌ Missing required profile data");
+        return res.redirect('/?error=missing_profile_data');
+      }
+
+      // Find or create user
+      let user = await db.execute(sql`SELECT * FROM users WHERE linkedin_id = ${linkedinId}`);
+      let dbUser = user.rows && user.rows.length > 0 ? user.rows[0] : null;
+      let isNewUser = false;
+
+      if (!dbUser) {
+        // Check if user exists by email
+        user = await db.execute(sql`SELECT * FROM users WHERE email = ${email}`);
+        dbUser = user.rows && user.rows.length > 0 ? user.rows[0] : null;
+
+        if (dbUser) {
+          // Link LinkedIn to existing user
+          await db.execute(sql`
+            UPDATE users 
+            SET linkedin_id = ${linkedinId},
+                full_name = ${name || dbUser.full_name},
+                linkedin_photo_url = ${picture || dbUser.linkedin_photo_url},
+                avatar = ${picture || dbUser.avatar},
+                updated_at = NOW()
+            WHERE id = ${dbUser.id}
+          `);
+          console.log(`✅ Linked LinkedIn to existing user: ${dbUser.username}`);
+        } else {
+          // Create new user
+          isNewUser = true;
+          const username = await generateUniqueUsername(name, email);
+          const randomPassword = randomBytes(16).toString('hex') + '.' + randomBytes(16).toString('hex');
+
+          const result = await db.execute(sql`
+            INSERT INTO users (
+              username, 
+              email, 
+              hashed_password, 
+              linkedin_id, 
+              full_name, 
+              linkedin_photo_url,
+              avatar,
+              dot_spark_activated
+            )
+            VALUES (
+              ${username}, 
+              ${email}, 
+              ${randomPassword}, 
+              ${linkedinId}, 
+              ${name || username}, 
+              ${picture},
+              ${picture},
+              true
+            )
+            RETURNING *
+          `);
+
+          dbUser = result.rows[0];
+          console.log(`✅ Created new user from LinkedIn: ${username}`);
+        }
+
+        // Refresh user data
+        user = await db.execute(sql`SELECT * FROM users WHERE linkedin_id = ${linkedinId}`);
+        dbUser = user.rows[0];
+      } else {
+        console.log(`✅ Found existing LinkedIn user: ${dbUser.username}`);
+      }
+
+      // Create session
+      req.session.userId = dbUser.id;
+      req.session.oauthState = undefined; // Clear state
+
+      const sessionUser: SessionUser = {
+        id: dbUser.id,
+        username: dbUser.username,
+        email: dbUser.email,
+        firebaseUid: dbUser.firebase_uid,
+        fullName: dbUser.full_name || name || dbUser.username,
+        avatarUrl: dbUser.avatar || picture,
+        createdAt: new Date(dbUser.created_at || Date.now()),
+        updatedAt: new Date(dbUser.updated_at || Date.now()),
+      };
+
+      req.user = sessionUser;
+
+      // Save session and redirect
+      req.session.save((err) => {
+        if (err) {
+          console.error("❌ Session save error:", err);
+          return res.redirect('/?error=session_failed');
+        }
+
+        console.log(`✅ Session created for LinkedIn user ${dbUser.id}`);
+        // Redirect to MyNeura page after successful login
+        res.redirect('/myneura');
+      });
+
+    } catch (error) {
+      console.error("❌ LinkedIn OAuth error:", error);
+      res.redirect('/?error=oauth_failed');
+    }
   });
 }

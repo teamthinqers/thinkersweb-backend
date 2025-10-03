@@ -91,8 +91,32 @@ export default function AuthPage() {
             </p>
           </div>
 
-          {/* Google Sign In Button */}
+          {/* Sign In Buttons */}
           <div className="w-full space-y-6">
+            {/* LinkedIn Sign In Button */}
+            <Button 
+              className="w-full bg-[#0A66C2] hover:bg-[#004182] text-white py-6 text-lg rounded-xl font-semibold flex items-center justify-center gap-3"
+              onClick={() => window.location.href = '/api/auth/linkedin'}
+              type="button"
+              disabled={isLoading}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="h-6 w-6 fill-white">
+                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+              </svg>
+              Continue with LinkedIn
+            </Button>
+
+            {/* Divider */}
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t border-gray-300" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-white px-2 text-gray-500">Or</span>
+              </div>
+            </div>
+
+            {/* Google Sign In Button */}
             <Button 
               className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white py-6 text-lg rounded-xl font-semibold flex items-center justify-center gap-3"
               onClick={handleGoogleSignIn}
@@ -156,10 +180,10 @@ export default function AuthPage() {
                 <div className="bg-white/80 border border-amber-200/50 rounded-lg p-4">
                   <div className="flex items-center mb-2">
                     <div className="flex items-center justify-center w-8 h-8 rounded-full bg-amber-500 text-white font-bold text-sm mr-3">1</div>
-                    <h3 className="text-lg font-semibold">Sign In with Google</h3>
+                    <h3 className="text-lg font-semibold">Sign In with LinkedIn or Google</h3>
                   </div>
                   <p className="text-gray-600 text-sm ml-11">
-                    Quick and secure authentication to access your DotSpark network.
+                    Quick and secure authentication to access your professional intelligence network.
                   </p>
                 </div>
 
