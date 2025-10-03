@@ -58,7 +58,7 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
                     : 'hover:bg-red-50 hover:text-red-600'
                 }`}
               >
-                <UsersRound className="w-5 h-5" />
+                <Brain className={`w-5 h-5 ${isOnSocial ? '' : 'animate-pulse'}`} />
                 {isSidebarOpen && <span className="ml-3 text-sm font-medium">Social</span>}
               </Button>
             </Link>
@@ -112,29 +112,31 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
           {/* Center: Empty space */}
           <div className="flex-1"></div>
 
-          {/* Right: Navigation Icons - Chat page style */}
+          {/* Right: Navigation Buttons with Icons and Text */}
           <div className="flex items-center gap-3">
-            {/* Social Icon */}
+            {/* Social Button with Brain Icon and Text */}
             <Link href="/social">
               <Button 
                 variant="ghost" 
                 size="sm" 
-                className="p-3 bg-red-500 hover:bg-red-600 rounded-xl transition-all duration-300 hover:scale-105 shadow-sm"
+                className="flex items-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-600 rounded-xl transition-all duration-300 hover:scale-105 shadow-sm"
                 title="Social"
               >
-                <UsersRound className="h-5 w-5 text-white" />
+                <Brain className="h-5 w-5 text-white animate-pulse" />
+                <span className="text-white font-medium">Social</span>
               </Button>
             </Link>
 
-            {/* My Neura Icon with green active indicator */}
+            {/* My Neura Button with Brain Icon, Text and green active indicator */}
             <Link href="/myneura">
               <Button 
                 variant="ghost" 
                 size="sm" 
-                className="relative p-3 bg-gradient-to-br from-amber-500 via-amber-600 to-orange-600 hover:from-amber-600 hover:via-amber-700 hover:to-orange-700 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg"
+                className="relative flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-amber-500 via-amber-600 to-orange-600 hover:from-amber-600 hover:via-amber-700 hover:to-orange-700 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg"
                 title="My Neura"
               >
                 <Brain className="h-5 w-5 text-white transition-all duration-300" />
+                <span className="text-white font-medium">My Neura</span>
                 {isOnMyNeura && (
                   <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full animate-pulse shadow-lg border-2 border-white"></div>
                 )}
@@ -149,9 +151,9 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
                 <SheetTrigger asChild>
                   <Button variant="ghost" size="sm" className="p-0">
                     <Avatar className="h-8 w-8">
-                      <AvatarImage src={(user as any).avatar || (user as any).linkedinPhotoUrl || user.photoURL || undefined} />
+                      <AvatarImage src={(user as any).avatar || (user as any).linkedinPhotoUrl || (user as any).photoURL || undefined} />
                       <AvatarFallback className="text-xs">
-                        {user.displayName?.[0]?.toUpperCase() || 'U'}
+                        {(user as any).displayName?.[0]?.toUpperCase() || 'U'}
                       </AvatarFallback>
                     </Avatar>
                   </Button>
@@ -162,13 +164,13 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
                     <div className="p-4 border-b border-gray-200">
                       <div className="flex items-center gap-3">
                         <Avatar className="h-12 w-12">
-                          <AvatarImage src={(user as any).avatar || (user as any).linkedinPhotoUrl || user.photoURL || undefined} />
+                          <AvatarImage src={(user as any).avatar || (user as any).linkedinPhotoUrl || (user as any).photoURL || undefined} />
                           <AvatarFallback>
-                            {user.displayName?.[0]?.toUpperCase() || 'U'}
+                            {(user as any).displayName?.[0]?.toUpperCase() || 'U'}
                           </AvatarFallback>
                         </Avatar>
                         <div className="flex-1 min-w-0">
-                          <p className="font-semibold truncate">{user.displayName || 'User'}</p>
+                          <p className="font-semibold truncate">{(user as any).displayName || 'User'}</p>
                           <p className="text-sm text-gray-500 truncate">{user.email}</p>
                         </div>
                       </div>
@@ -268,7 +270,7 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
                       className={`w-full justify-start text-sm h-10 rounded-xl ${isOnSocial ? 'bg-red-500 text-white hover:bg-red-600' : 'hover:bg-red-50 hover:text-red-600'}`}
                       onClick={() => setIsSidebarOpen(false)}
                     >
-                      <UsersRound className="w-4 h-4 mr-3" />
+                      <Brain className={`w-4 h-4 mr-3 ${isOnSocial ? '' : 'animate-pulse'}`} />
                       Social
                     </Button>
                   </Link>
@@ -291,13 +293,13 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
                 <div className="p-4 border-t border-gray-200">
                   <div className="flex items-center gap-3 mb-3">
                     <Avatar className="h-10 w-10">
-                      <AvatarImage src={(user as any).avatar || (user as any).linkedinPhotoUrl || user.photoURL || undefined} />
+                      <AvatarImage src={(user as any).avatar || (user as any).linkedinPhotoUrl || (user as any).photoURL || undefined} />
                       <AvatarFallback>
-                        {user.displayName?.[0]?.toUpperCase() || 'U'}
+                        {(user as any).displayName?.[0]?.toUpperCase() || 'U'}
                       </AvatarFallback>
                     </Avatar>
                     <div className="flex-1 min-w-0">
-                      <p className="font-medium text-sm truncate">{user.displayName || 'User'}</p>
+                      <p className="font-medium text-sm truncate">{(user as any).displayName || 'User'}</p>
                       <p className="text-xs text-gray-500 truncate">{user.email}</p>
                     </div>
                   </div>
