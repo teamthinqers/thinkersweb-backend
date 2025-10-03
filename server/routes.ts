@@ -1,4 +1,5 @@
 import type { Express, Request, Response, NextFunction } from "express";
+import express from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { z } from "zod";
@@ -42,6 +43,9 @@ import {
 } from "./whatsapp";
 import { eq, inArray, and, lt, desc, sql } from "drizzle-orm";
 import twilio from "twilio";
+import multer from "multer";
+import path from "path";
+import fs from "fs";
 import whatsappWebhookRouter from "./whatsapp-webhook";
 import { calculateGridPositions } from "./grid-positioning";
 import { advancedChatEngine } from './advanced-chat';
@@ -58,6 +62,7 @@ import { setupVectorAPI } from './routes/vector-api';
 // Interface for authenticated requests
 interface AuthenticatedRequest extends Request {
   user?: Express.User;
+  file?: Express.Multer.File;
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -73,6 +78,85 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Setup authentication middleware
   setupNewAuth(app);
+  
+  // Serve uploaded files
+  const uploadsPath = path.join(process.cwd(), 'uploads');
+  if (!fs.existsSync(uploadsPath)) {
+    fs.mkdirSync(uploadsPath, { recursive: true });
+  }
+  app.use('/uploads', express.static(uploadsPath));
+  
+  // Configure multer for file uploads
+  const uploadDir = path.join(process.cwd(), 'uploads', 'avatars');
+  if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+  }
+  
+  const multerStorage = multer.diskStorage({
+    destination: (req: Request, file: Express.Multer.File, cb: (error: Error | null, destination: string) => void) => {
+      cb(null, uploadDir);
+    },
+    filename: (req: Request, file: Express.Multer.File, cb: (error: Error | null, filename: string) => void) => {
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+      cb(null, 'avatar-' + uniqueSuffix + path.extname(file.originalname));
+    }
+  });
+  
+  const upload = multer({
+    storage: multerStorage,
+    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+    fileFilter: (req: Request, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
+      const allowedTypes = /jpeg|jpg|png|gif|webp/;
+      const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+      const mimetype = allowedTypes.test(file.mimetype);
+      
+      if (mimetype && extname) {
+        return cb(null, true);
+      } else {
+        cb(new Error('Only image files are allowed!'));
+      }
+    }
+  });
+  
+  // Profile update endpoint
+  app.post(`${apiPrefix}/profile/update`, requireAuth, upload.single('avatar'), async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const userId = req.user?.id;
+      
+      if (!userId) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+      
+      const { fullName, headline, linkedinUrl } = req.body;
+      const avatarFile = req.file;
+      
+      // Build update object
+      const updates: any = {
+        updated_at: new Date(),
+      };
+      
+      if (fullName) updates.full_name = fullName;
+      if (headline) updates.linkedin_headline = headline;
+      if (linkedinUrl) updates.linkedin_profile_url = linkedinUrl;
+      
+      if (avatarFile) {
+        // Save avatar path to database
+        const avatarPath = `/uploads/avatars/${avatarFile.filename}`;
+        updates.avatar = avatarPath;
+        updates.linkedin_photo_url = avatarPath; // Update LinkedIn photo URL too
+      }
+      
+      // Update user in database
+      await db.update(users)
+        .set(updates)
+        .where(eq(users.id, userId));
+      
+      res.json({ success: true, message: 'Profile updated successfully' });
+    } catch (error) {
+      console.error('Profile update error:', error);
+      res.status(500).json({ error: 'Failed to update profile' });
+    }
+  });
   
   // Setup DotSpark activation routes
   setupDotSparkRoutes(app);
