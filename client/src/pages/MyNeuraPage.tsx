@@ -154,69 +154,61 @@ export default function MyNeuraPage() {
               {/* Left: Navigation sections */}
               <div className="flex items-center gap-4">
               
-              {/* 1. Cognitive Identity - with status icon below */}
-              <div className="flex flex-col items-center gap-2">
-                <Link href="/cognitive-identity">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="group flex items-center gap-2 rounded-lg px-3 py-2 bg-gradient-to-br from-purple-50 to-violet-50 hover:from-purple-100 hover:to-violet-100 border-l-2 border-purple-400 transition-all duration-300 relative"
-                    title="Cognitive Identity"
-                  >
-                    <span className="text-sm font-medium text-purple-700">
-                      Cognitive Identity
+              {/* 1. Cognitive Identity - button and icon in one line */}
+              <Link href="/cognitive-identity" className="flex items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="group flex items-center gap-2 rounded-lg px-3 py-2 bg-gradient-to-br from-purple-50 to-violet-50 hover:from-purple-100 hover:to-violet-100 border-l-2 border-purple-400 transition-all duration-300 relative"
+                  title="Cognitive Identity"
+                >
+                  <span className="text-sm font-medium text-purple-700">
+                    Cognitive Identity
+                  </span>
+                </Button>
+                <div className="relative px-2.5 py-2.5 bg-gradient-to-br from-purple-50 to-violet-50 rounded-lg border border-purple-200/50 transition-all duration-300 hover:border-purple-300 hover:shadow-md cursor-pointer">
+                  {!neuralStrength?.milestones?.cognitiveIdentityCompleted && (
+                    <span className="absolute -top-1 -right-1 flex h-3 w-3 z-10">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-3 w-3 bg-red-600"></span>
                     </span>
-                  </Button>
-                </Link>
-                <Link href="/cognitive-identity">
-                  <div className="relative px-2.5 py-2.5 bg-gradient-to-br from-purple-50 to-violet-50 rounded-lg border border-purple-200/50 transition-all duration-300 hover:border-purple-300 hover:shadow-md cursor-pointer">
-                    {!neuralStrength?.milestones?.cognitiveIdentityCompleted && (
-                      <span className="absolute -top-1 -right-1 flex h-3 w-3 z-10">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-3 w-3 bg-red-600"></span>
-                      </span>
-                    )}
-                    <Fingerprint className="h-5 w-5 text-purple-600" />
-                  </div>
-                </Link>
-              </div>
+                  )}
+                  <Fingerprint className="h-5 w-5 text-purple-600" />
+                </div>
+              </Link>
 
-              {/* 2. Learning Engine - with status icon below */}
-              <div className="flex flex-col items-center gap-2">
-                <Link href="/learning-engine">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="group flex items-center gap-2 rounded-lg px-3 py-2 bg-gradient-to-br from-amber-50 to-orange-50 hover:from-amber-100 hover:to-orange-100 border-l-2 border-amber-500 transition-all duration-300 relative"
-                    title="Learning Engine"
-                  >
-                    <span className="text-sm font-medium text-amber-800">
-                      Learning Engine
+              {/* 2. Learning Engine - button and icon in one line */}
+              <Link href="/learning-engine" className="flex items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="group flex items-center gap-2 rounded-lg px-3 py-2 bg-gradient-to-br from-amber-50 to-orange-50 hover:from-amber-100 hover:to-orange-100 border-l-2 border-amber-500 transition-all duration-300 relative"
+                  title="Learning Engine"
+                >
+                  <span className="text-sm font-medium text-amber-800">
+                    Learning Engine
+                  </span>
+                </Button>
+                <div className="relative px-2.5 py-2.5 bg-gradient-to-br from-amber-50 to-orange-50 rounded-lg border border-amber-200/50 transition-all duration-300 hover:border-amber-300 hover:shadow-md cursor-pointer">
+                  {!neuralStrength?.milestones?.learningEngineCompleted && (
+                    <span className="absolute -top-1 -right-1 flex h-3 w-3 z-10">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-3 w-3 bg-red-600"></span>
                     </span>
-                  </Button>
-                </Link>
-                <Link href="/learning-engine">
-                  <div className="relative px-2.5 py-2.5 bg-gradient-to-br from-amber-50 to-orange-50 rounded-lg border border-amber-200/50 transition-all duration-300 hover:border-amber-300 hover:shadow-md cursor-pointer">
-                    {!neuralStrength?.milestones?.learningEngineCompleted && (
-                      <span className="absolute -top-1 -right-1 flex h-3 w-3 z-10">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-3 w-3 bg-red-600"></span>
-                      </span>
-                    )}
-                    <Cog 
-                      className={`h-5 w-5 text-amber-700 ${
-                        neuralStrength?.milestones?.learningEngineCompleted 
-                          ? 'animate-spin' 
-                          : ''
-                      }`}
-                      style={neuralStrength?.milestones?.learningEngineCompleted ? { animationDuration: '2s' } : {}}
-                    />
-                  </div>
-                </Link>
-              </div>
+                  )}
+                  <Cog 
+                    className={`h-5 w-5 text-amber-700 ${
+                      neuralStrength?.milestones?.learningEngineCompleted 
+                        ? 'animate-spin' 
+                        : ''
+                    }`}
+                    style={neuralStrength?.milestones?.learningEngineCompleted ? { animationDuration: '2s' } : {}}
+                  />
+                </div>
+              </Link>
 
-              {/* 3. Dots - with count below */}
-              <div className="flex flex-col items-center gap-2">
+              {/* 3. Dots - button and count in one line */}
+              <div className="flex items-center gap-2">
                 <Button
                   variant="ghost"
                   size="sm"
@@ -235,8 +227,8 @@ export default function MyNeuraPage() {
                 </div>
               </div>
 
-              {/* 4. Sparks - with count below */}
-              <div className="flex flex-col items-center gap-2">
+              {/* 4. Sparks - button and count in one line */}
+              <div className="flex items-center gap-2">
                 <Button
                   variant="ghost"
                   size="sm"
@@ -259,7 +251,7 @@ export default function MyNeuraPage() {
               </div>
 
               {/* Right: Neural Strength Meter */}
-              <div className="flex items-center gap-3 bg-white/70 px-4 py-2 rounded-xl border border-amber-300 shadow-sm relative">
+              <div className="flex items-center gap-2 bg-white/70 px-3 py-2 rounded-xl border border-amber-300 shadow-sm relative">
                 {/* Info button that opens dialog */}
                 <button 
                   onClick={() => setShowStrengthInfo(true)}
@@ -268,15 +260,15 @@ export default function MyNeuraPage() {
                   <Info className="h-3 w-3 text-white" />
                 </button>
 
-                <div className="flex flex-col items-end gap-1">
+                <div className="flex flex-col items-end gap-0.5">
                   <span className="text-xs font-semibold text-amber-900">Neural Strength</span>
-                  <span className="text-xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
+                  <span className="text-lg font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
                     {neuralStrength?.percentage || 10}%
                   </span>
                 </div>
                 
                 {/* Progress bar */}
-                <div className="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
+                <div className="w-20 h-2 bg-gray-200 rounded-full overflow-hidden">
                   <div 
                     className="h-full bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 transition-all duration-1000 ease-out"
                     style={{ width: `${neuralStrength?.percentage || 10}%` }}
