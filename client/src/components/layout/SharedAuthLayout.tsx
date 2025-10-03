@@ -122,7 +122,7 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
                 className="p-3 bg-red-500 hover:bg-red-600 rounded-xl transition-all duration-300 hover:scale-105 shadow-sm"
                 title="Social"
               >
-                <Users className="h-5 w-5 text-white" />
+                <UsersRound className="h-5 w-5 text-white" />
               </Button>
             </Link>
 
@@ -268,7 +268,7 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
                       className={`w-full justify-start text-sm h-10 rounded-xl ${isOnSocial ? 'bg-red-500 text-white hover:bg-red-600' : 'hover:bg-red-50 hover:text-red-600'}`}
                       onClick={() => setIsSidebarOpen(false)}
                     >
-                      <Users className="w-4 h-4 mr-3" />
+                      <UsersRound className="w-4 h-4 mr-3" />
                       Social
                     </Button>
                   </Link>
