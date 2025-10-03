@@ -151,26 +151,46 @@ export default function MyNeuraPage() {
             <div className="sticky top-0 z-10 bg-amber-50 backdrop-blur-md border-b border-amber-200 px-6 py-3 flex items-center justify-between">
               {/* Left: Navigation buttons */}
               <div className="flex items-center gap-4">
-              {/* 1. Cognitive Identity */}
+              {/* 1. Cognitive Identity - with nudge */}
               <Button
                 variant="ghost"
                 size="sm"
-                className="flex items-center gap-2 hover:bg-amber-100/70 rounded-lg transition-all duration-300"
+                className={`flex items-center gap-2 rounded-lg transition-all duration-300 relative ${
+                  !neuralStrength?.milestones?.cognitiveIdentityCompleted 
+                    ? 'bg-gradient-to-r from-amber-100 to-orange-100 hover:from-amber-200 hover:to-orange-200 border-2 border-amber-400 animate-pulse' 
+                    : 'hover:bg-amber-100/70'
+                }`}
                 title="Cognitive Identity"
               >
                 <Fingerprint className="h-4 w-4 text-amber-600" />
                 <span className="text-sm font-medium text-gray-700">Cognitive Identity</span>
+                {!neuralStrength?.milestones?.cognitiveIdentityCompleted && (
+                  <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                  </span>
+                )}
               </Button>
 
-              {/* 2. Learning Engine */}
+              {/* 2. Learning Engine - with nudge */}
               <Button
                 variant="ghost"
                 size="sm"
-                className="flex items-center gap-2 hover:bg-amber-100/70 rounded-lg transition-all duration-300"
+                className={`flex items-center gap-2 rounded-lg transition-all duration-300 relative ${
+                  !neuralStrength?.milestones?.learningEngineCompleted 
+                    ? 'bg-gradient-to-r from-amber-100 to-orange-100 hover:from-amber-200 hover:to-orange-200 border-2 border-amber-400 animate-pulse' 
+                    : 'hover:bg-amber-100/70'
+                }`}
                 title="Learning Engine"
               >
                 <Lightbulb className="h-4 w-4 text-amber-600" />
                 <span className="text-sm font-medium text-gray-700">Learning Engine</span>
+                {!neuralStrength?.milestones?.learningEngineCompleted && (
+                  <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                  </span>
+                )}
               </Button>
 
               {/* 3. Sparks */}
@@ -209,15 +229,18 @@ export default function MyNeuraPage() {
 
               {/* Right: Neural Strength Meter */}
               <div className="flex items-center gap-3 bg-white/70 px-4 py-2 rounded-xl border border-amber-300 shadow-sm relative">
-                {/* Info tooltip */}
+                {/* Info tooltip with proper z-index */}
                 <TooltipProvider>
                   <Tooltip delayDuration={200}>
                     <TooltipTrigger asChild>
-                      <button className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-amber-500 hover:bg-amber-600 flex items-center justify-center transition-colors shadow-md">
+                      <button className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-amber-500 hover:bg-amber-600 flex items-center justify-center transition-colors shadow-md z-50">
                         <Info className="h-3 w-3 text-white" />
                       </button>
                     </TooltipTrigger>
-                    <TooltipContent className="max-w-xs p-4 bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-300">
+                    <TooltipContent 
+                      className="max-w-xs p-4 bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-300 z-[100]"
+                      sideOffset={5}
+                    >
                       <div className="space-y-2">
                         <h4 className="font-bold text-amber-900 mb-2">Boost Your Neural Strength</h4>
                         <div className="text-sm text-gray-700 space-y-1">
@@ -262,9 +285,6 @@ export default function MyNeuraPage() {
                     style={{ width: `${neuralStrength?.percentage || 10}%` }}
                   />
                 </div>
-
-                {/* Sparkle icon */}
-                <Sparkles className="h-5 w-5 text-amber-500 animate-pulse" />
               </div>
             </div>
             
