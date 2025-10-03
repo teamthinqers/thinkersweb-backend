@@ -1,4 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { useAuth } from '@/hooks/use-auth-new';
+import { X, PenTool, MessageCircle, Sparkles, Crown, Linkedin } from 'lucide-react';
+import { SiChatbot, SiOpenai } from 'react-icons/si';
 
 interface FloatingDotProps {
   onClick?: () => void;
@@ -9,7 +15,10 @@ export default function FloatingDot({ onClick }: FloatingDotProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [hasMoved, setHasMoved] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [targetNeura, setTargetNeura] = useState<'social' | 'myneura'>('social');
   const dotRef = useRef<HTMLDivElement>(null);
+  const { user } = useAuth();
 
   useEffect(() => {
     const savedPosition = localStorage.getItem('floatingDotPosition');
@@ -76,57 +85,169 @@ export default function FloatingDot({ onClick }: FloatingDotProps) {
   };
 
   const handleClick = (e: React.MouseEvent) => {
-    if (!hasMoved && !isDragging && onClick) {
-      onClick();
+    if (!hasMoved && !isDragging) {
+      setIsOpen(true);
     }
   };
 
+  const displayName = (user as any)?.fullName || (user as any)?.displayName || "User";
+  const userAvatar = (user as any)?.avatar || (user as any)?.linkedinPhotoUrl || (user as any)?.photoURL;
+
   return (
-    <div
-      ref={dotRef}
-      className="fixed z-50 cursor-move select-none"
-      style={{
-        left: `${position.x}px`,
-        top: `${position.y}px`,
-      }}
-      onMouseDown={handleMouseDown}
-      onClick={handleClick}
-    >
-      <div className="relative cursor-move">
-        {/* Brand-aligned pulsing rings that enhance the logo's dot concept - only show when NOT dragging */}
-        {!isDragging && (
-          <>
-            <div className="absolute inset-0 w-14 h-14 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 opacity-25 animate-ping pointer-events-none"></div>
-            <div className="absolute inset-1 w-12 h-12 rounded-full bg-gradient-to-r from-orange-400 to-red-500 opacity-35 animate-ping pointer-events-none" style={{ animationDelay: '0.4s' }}></div>
-            <div className="absolute inset-2 w-10 h-10 rounded-full bg-gradient-to-r from-yellow-400 to-amber-500 opacity-45 animate-ping pointer-events-none" style={{ animationDelay: '0.8s' }}></div>
-            <div className="absolute inset-3 w-8 h-8 rounded-full bg-gradient-to-r from-amber-300 to-orange-400 opacity-55 animate-ping pointer-events-none" style={{ animationDelay: '1.2s' }}></div>
-          </>
-        )}
-        
-        {/* DotSpark logo - spins fast when dragging, pulses when idle */}
-        <img 
-          src="/dotspark-logo-transparent.png?v=1" 
-          alt="DotSpark" 
-          className={`w-14 h-14 transition-all duration-300 ${
-            isDragging ? 'animate-spin' : 'animate-pulse drop-shadow-lg'
-          }`}
-          style={{ 
-            animationDuration: isDragging ? '0.15s' : '2s',
-            animationDelay: isDragging ? '0s' : '0.3s',
-            filter: 'drop-shadow(0 0 4px rgba(255, 255, 255, 0.8)) drop-shadow(0 0 8px rgba(255, 255, 255, 0.6))'
-          }}
-        />
-        
-        {/* Tooltip on hover - only show when not dragging */}
-        {!isDragging && (
-          <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs py-2 px-3 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none shadow-xl group">
-            Click to create
-            <div className="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1">
-              <div className="border-4 border-transparent border-t-gray-900"></div>
+    <>
+      {/* Floating Dot */}
+      <div
+        ref={dotRef}
+        className="fixed z-50 cursor-move select-none"
+        style={{
+          left: `${position.x}px`,
+          top: `${position.y}px`,
+        }}
+        onMouseDown={handleMouseDown}
+        onClick={handleClick}
+      >
+        <div className="relative cursor-move">
+          {/* Brand-aligned pulsing rings that enhance the logo's dot concept - only show when NOT dragging */}
+          {!isDragging && (
+            <>
+              <div className="absolute inset-0 w-14 h-14 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 opacity-25 animate-ping pointer-events-none"></div>
+              <div className="absolute inset-1 w-12 h-12 rounded-full bg-gradient-to-r from-orange-400 to-red-500 opacity-35 animate-ping pointer-events-none" style={{ animationDelay: '0.4s' }}></div>
+              <div className="absolute inset-2 w-10 h-10 rounded-full bg-gradient-to-r from-yellow-400 to-amber-500 opacity-45 animate-ping pointer-events-none" style={{ animationDelay: '0.8s' }}></div>
+              <div className="absolute inset-3 w-8 h-8 rounded-full bg-gradient-to-r from-amber-300 to-orange-400 opacity-55 animate-ping pointer-events-none" style={{ animationDelay: '1.2s' }}></div>
+            </>
+          )}
+          
+          {/* DotSpark logo - spins fast when dragging, pulses when idle */}
+          <img 
+            src="/dotspark-logo-transparent.png?v=1" 
+            alt="DotSpark" 
+            className={`w-14 h-14 transition-all duration-300 ${
+              isDragging ? 'animate-spin' : 'animate-pulse drop-shadow-lg'
+            }`}
+            style={{ 
+              animationDuration: isDragging ? '0.15s' : '2s',
+              animationDelay: isDragging ? '0s' : '0.3s',
+              filter: 'drop-shadow(0 0 4px rgba(255, 255, 255, 0.8)) drop-shadow(0 0 8px rgba(255, 255, 255, 0.6))'
+            }}
+          />
+          
+          {/* Tooltip on hover - only show when not dragging */}
+          {!isDragging && (
+            <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs py-2 px-3 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none shadow-xl group">
+              Click to create
+              <div className="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1">
+                <div className="border-4 border-transparent border-t-gray-900"></div>
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
-    </div>
+
+      {/* Creation Dialog */}
+      {isOpen && (
+        <>
+          {/* Backdrop */}
+          <div 
+            className="fixed inset-0 bg-black/30 z-[60]"
+            onClick={() => setIsOpen(false)}
+          />
+          
+          {/* Dialog */}
+          <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[70] w-full max-w-xl px-4">
+            <Card className="bg-white shadow-2xl border-gray-200">
+              <CardContent className="p-6">
+                {/* Header */}
+                <div className="flex items-start justify-between mb-6">
+                  {/* User Info */}
+                  <div className="flex items-center gap-3">
+                    <Avatar className="h-12 w-12">
+                      <AvatarImage src={userAvatar} />
+                      <AvatarFallback className="bg-gradient-to-br from-amber-500 to-orange-500 text-white">
+                        {displayName[0]?.toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <h3 className="font-semibold text-gray-900">{displayName}</h3>
+                      <p className="text-sm text-gray-500">Post to {targetNeura === 'social' ? 'Social Neura' : 'My Neura'}</p>
+                    </div>
+                  </div>
+
+                  {/* Right Side: Toggle and Close */}
+                  <div className="flex items-center gap-2">
+                    {/* Toggle */}
+                    <div className="flex items-center bg-gray-100 rounded-full p-1">
+                      <button
+                        onClick={() => setTargetNeura('social')}
+                        className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
+                          targetNeura === 'social'
+                            ? 'bg-red-500 text-white shadow-sm'
+                            : 'text-gray-600 hover:text-gray-900'
+                        }`}
+                      >
+                        Social Neura
+                      </button>
+                      <button
+                        onClick={() => setTargetNeura('myneura')}
+                        className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
+                          targetNeura === 'myneura'
+                            ? 'bg-gradient-to-br from-amber-500 to-orange-500 text-white shadow-sm'
+                            : 'text-gray-600 hover:text-gray-900'
+                        }`}
+                      >
+                        My Neura
+                      </button>
+                    </div>
+
+                    {/* Close Button */}
+                    <button
+                      onClick={() => setIsOpen(false)}
+                      className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                    >
+                      <X className="h-5 w-5 text-gray-500" />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Action Buttons Grid */}
+                <div className="grid grid-cols-5 gap-3">
+                  {/* 1. Write */}
+                  <button className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-gray-200 hover:border-amber-400 hover:bg-amber-50 transition-all group">
+                    <div className="relative">
+                      <PenTool className="h-6 w-6 text-amber-600" />
+                      <Crown className="h-3 w-3 text-yellow-500 absolute -top-1 -right-1" />
+                    </div>
+                    <span className="text-xs font-medium text-gray-700 group-hover:text-amber-700">Write</span>
+                  </button>
+
+                  {/* 2. LinkedIn Import */}
+                  <button className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-gray-200 hover:border-blue-400 hover:bg-blue-50 transition-all group">
+                    <Linkedin className="h-6 w-6 text-[#0A66C2]" />
+                    <span className="text-xs font-medium text-gray-700 group-hover:text-blue-700">Import</span>
+                  </button>
+
+                  {/* 3. WhatsApp Chat */}
+                  <button className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-gray-200 hover:border-green-400 hover:bg-green-50 transition-all group">
+                    <MessageCircle className="h-6 w-6 text-green-600" />
+                    <span className="text-xs font-medium text-gray-700 group-hover:text-green-700">Chat</span>
+                  </button>
+
+                  {/* 4. AI Help */}
+                  <button className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-gray-200 hover:border-purple-400 hover:bg-purple-50 transition-all group">
+                    <Sparkles className="h-6 w-6 text-purple-600" />
+                    <span className="text-xs font-medium text-gray-700 group-hover:text-purple-700">AI Help</span>
+                  </button>
+
+                  {/* 5. ChatGPT Import */}
+                  <button className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-gray-200 hover:border-emerald-400 hover:bg-emerald-50 transition-all group">
+                    <SiOpenai className="h-6 w-6 text-emerald-600" />
+                    <span className="text-xs font-medium text-gray-700 group-hover:text-emerald-700">Import</span>
+                  </button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </>
+      )}
+    </>
   );
 }
