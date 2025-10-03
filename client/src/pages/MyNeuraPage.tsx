@@ -154,7 +154,7 @@ export default function MyNeuraPage() {
               {/* Left: Navigation sections */}
               <div className="flex items-center gap-6">
               
-              {/* 1. Cognitive Identity - with toggle below */}
+              {/* 1. Cognitive Identity - with fingerprint status indicator */}
               <div className="flex flex-col items-center gap-2">
                 <Link href="/cognitive-identity">
                   <Button
@@ -168,8 +168,18 @@ export default function MyNeuraPage() {
                     title="Cognitive Identity"
                   >
                     <div className="relative">
-                      <Fingerprint className="h-5 w-5 text-amber-600 group-hover:scale-110 transition-transform" />
-                      <div className="absolute inset-0 bg-amber-400 blur-md opacity-0 group-hover:opacity-30 transition-opacity"></div>
+                      <Fingerprint 
+                        className={`h-5 w-5 group-hover:scale-110 transition-transform ${
+                          neuralStrength?.milestones?.cognitiveIdentityCompleted 
+                            ? 'text-green-600' 
+                            : 'text-red-600'
+                        }`} 
+                      />
+                      <div className={`absolute inset-0 blur-md opacity-0 group-hover:opacity-30 transition-opacity ${
+                        neuralStrength?.milestones?.cognitiveIdentityCompleted 
+                          ? 'bg-green-400' 
+                          : 'bg-red-400'
+                      }`}></div>
                     </div>
                     <span className="text-sm font-semibold bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent">
                       Cognitive Identity
@@ -182,18 +192,9 @@ export default function MyNeuraPage() {
                     )}
                   </Button>
                 </Link>
-                <Link href="/cognitive-identity">
-                  <div className="flex items-center gap-2 px-2 py-1 hover:bg-amber-100 rounded-lg transition-colors cursor-pointer">
-                    <Switch 
-                      checked={neuralStrength?.milestones?.cognitiveIdentityCompleted || false}
-                      className="data-[state=checked]:bg-amber-500"
-                    />
-                    <span className="text-xs text-gray-600">Progress Meter</span>
-                  </div>
-                </Link>
               </div>
 
-              {/* 2. Learning Engine - with toggle below */}
+              {/* 2. Learning Engine - with running/idle gear status */}
               <div className="flex flex-col items-center gap-2">
                 <Link href="/learning-engine">
                   <Button
@@ -207,7 +208,14 @@ export default function MyNeuraPage() {
                     title="Learning Engine"
                   >
                     <div className="relative">
-                      <Cog className="h-5 w-5 text-amber-600 group-hover:animate-spin transition-transform" />
+                      <Cog 
+                        className={`h-5 w-5 text-amber-600 transition-transform ${
+                          neuralStrength?.milestones?.learningEngineCompleted 
+                            ? 'animate-spin' 
+                            : 'group-hover:rotate-45'
+                        }`}
+                        style={neuralStrength?.milestones?.learningEngineCompleted ? { animationDuration: '2s' } : {}}
+                      />
                       <div className="absolute inset-0 bg-amber-400 blur-md opacity-0 group-hover:opacity-30 transition-opacity"></div>
                     </div>
                     <span className="text-sm font-semibold bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent">
@@ -220,15 +228,6 @@ export default function MyNeuraPage() {
                       </span>
                     )}
                   </Button>
-                </Link>
-                <Link href="/learning-engine">
-                  <div className="flex items-center gap-2 px-2 py-1 hover:bg-amber-100 rounded-lg transition-colors cursor-pointer">
-                    <Switch 
-                      checked={neuralStrength?.milestones?.learningEngineCompleted || false}
-                      className="data-[state=checked]:bg-amber-500"
-                    />
-                    <span className="text-xs text-gray-600">Progress Meter</span>
-                  </div>
                 </Link>
               </div>
 
