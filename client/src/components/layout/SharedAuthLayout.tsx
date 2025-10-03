@@ -1,7 +1,7 @@
 import { useState, ReactNode } from 'react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Menu, Brain, Users, User, Settings, LogOut, Sparkles } from 'lucide-react';
+import { Menu, Brain, Users, User, Settings, LogOut, Sparkles, UsersRound } from 'lucide-react';
 import { Link, useLocation } from 'wouter';
 import { useAuth } from '@/hooks/use-auth-new';
 import { useToast } from '@/hooks/use-toast';
@@ -58,7 +58,7 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
                     : 'hover:bg-red-50 hover:text-red-600'
                 }`}
               >
-                <Users className="w-5 h-5" />
+                <UsersRound className="w-5 h-5" />
                 {isSidebarOpen && <span className="ml-3 text-sm font-medium">Social</span>}
               </Button>
             </Link>

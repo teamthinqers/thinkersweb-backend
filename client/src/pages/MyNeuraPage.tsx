@@ -150,7 +150,7 @@ export default function MyNeuraPage() {
           {/* Thought Cloud Canvas */}
           <div className={`relative w-full bg-gradient-to-br from-amber-50/70 to-orange-50/50 shadow-2xl border border-amber-200 overflow-hidden backdrop-blur-sm ${isFullscreen ? 'h-full rounded-none' : 'rounded-3xl'}`}>
             {/* Toolbar - Neura Navigation */}
-            <div className="sticky top-0 z-10 bg-amber-50 backdrop-blur-md border-b border-amber-200 px-6 py-3 flex items-center justify-between">
+            <div className="sticky top-0 z-10 bg-amber-100 backdrop-blur-md border-b border-amber-300 px-6 py-3 flex items-center justify-between">
               {/* Left: Navigation sections */}
               <div className="flex items-center gap-6">
               
