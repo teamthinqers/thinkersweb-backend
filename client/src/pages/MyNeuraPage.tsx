@@ -341,14 +341,18 @@ export default function MyNeuraPage() {
                     </p>
                     <div className="flex gap-4 justify-center">
                       <Button
-                        onClick={() => setLocation("/?create=personal")}
+                        onClick={() => {
+                          window.dispatchEvent(new CustomEvent('openFloatingDot', {
+                            detail: { targetNeura: 'myneura' }
+                          }));
+                        }}
                         className="bg-gradient-to-r from-amber-500 to-orange-500 text-white"
                       >
                         <Plus className="mr-2 h-4 w-4" />
                         Save Thought
                       </Button>
                       <Button
-                        onClick={() => setLocation("/")}
+                        onClick={() => setLocation("/social")}
                         variant="outline"
                       >
                         <Users className="mr-2 h-4 w-4" />

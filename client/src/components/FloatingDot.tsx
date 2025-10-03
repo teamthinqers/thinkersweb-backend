@@ -36,6 +36,26 @@ export default function FloatingDot({ onClick }: FloatingDotProps) {
     }
   }, []);
 
+  // Listen for custom event to open the dialog
+  useEffect(() => {
+    const handleOpenDialog = (e: CustomEvent) => {
+      setIsOpen(true);
+      if (e.detail?.targetNeura) {
+        setTargetNeura(e.detail.targetNeura);
+      }
+      // Center the dialog
+      setDialogPosition({
+        x: window.innerWidth / 2 - 300,
+        y: window.innerHeight / 2 - 200
+      });
+    };
+
+    window.addEventListener('openFloatingDot' as any, handleOpenDialog);
+    return () => {
+      window.removeEventListener('openFloatingDot' as any, handleOpenDialog);
+    };
+  }, []);
+
   const handleMouseDown = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
