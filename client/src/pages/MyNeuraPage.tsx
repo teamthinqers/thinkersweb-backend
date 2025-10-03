@@ -163,13 +163,13 @@ export default function MyNeuraPage() {
                     className="group flex items-center gap-2 rounded-xl px-4 py-2 bg-white hover:bg-gray-50 border border-gray-200 hover:border-gray-300 transition-all duration-300 relative shadow-sm hover:shadow-md"
                     title="Cognitive Identity"
                   >
-                    <span className="text-sm font-semibold text-gray-800">
+                    <span className="text-sm font-semibold text-purple-700">
                       Cognitive Identity
                     </span>
                   </Button>
                 </Link>
                 <Link href="/cognitive-identity">
-                  <div className="relative px-3 py-2 bg-white rounded-lg border border-gray-200 shadow-sm transition-all duration-300 hover:shadow-md hover:border-gray-300 cursor-pointer">
+                  <div className="relative px-3 py-2 bg-purple-100 rounded-lg border border-purple-200 shadow-sm transition-all duration-300 hover:shadow-md hover:border-purple-300 cursor-pointer">
                     {!neuralStrength?.milestones?.cognitiveIdentityCompleted && (
                       <span className="absolute -top-1 -right-1 flex h-3 w-3 z-10">
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
@@ -190,13 +190,13 @@ export default function MyNeuraPage() {
                     className="group flex items-center gap-2 rounded-xl px-4 py-2 bg-white hover:bg-gray-50 border border-gray-200 hover:border-gray-300 transition-all duration-300 relative shadow-sm hover:shadow-md"
                     title="Learning Engine"
                   >
-                    <span className="text-sm font-semibold text-gray-800">
+                    <span className="text-sm font-semibold text-amber-800">
                       Learning Engine
                     </span>
                   </Button>
                 </Link>
                 <Link href="/learning-engine">
-                  <div className="relative px-3 py-2 bg-white rounded-lg border border-gray-200 shadow-sm transition-all duration-300 hover:shadow-md hover:border-gray-300 cursor-pointer">
+                  <div className="relative px-3 py-2 bg-amber-100 rounded-lg border border-amber-200 shadow-sm transition-all duration-300 hover:shadow-md hover:border-amber-300 cursor-pointer">
                     {!neuralStrength?.milestones?.learningEngineCompleted && (
                       <span className="absolute -top-1 -right-1 flex h-3 w-3 z-10">
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
@@ -224,15 +224,15 @@ export default function MyNeuraPage() {
                   title="Sparks"
                 >
                   <div className="relative">
-                    <Zap className="h-5 w-5 text-yellow-600 group-hover:scale-110 transition-transform" />
+                    <Zap className="h-5 w-5 text-yellow-700 group-hover:scale-110 transition-transform" />
                     <Sparkles className="h-3 w-3 text-yellow-500 absolute -top-1 -right-1 animate-pulse opacity-0 group-hover:opacity-100 transition-opacity" />
                   </div>
-                  <span className="text-sm font-semibold text-gray-800">
+                  <span className="text-sm font-semibold text-yellow-700">
                     Sparks
                   </span>
                 </Button>
-                <div className="px-3 py-1 bg-white rounded-lg border border-gray-200 shadow-sm">
-                  <span className="text-xs font-bold text-gray-800">0</span>
+                <div className="px-3 py-1 bg-yellow-100 rounded-lg border border-yellow-200 shadow-sm">
+                  <span className="text-xs font-bold text-yellow-800">0</span>
                 </div>
               </div>
 
@@ -245,14 +245,14 @@ export default function MyNeuraPage() {
                   title="Social Reflections"
                 >
                   <div className="relative">
-                    <MessageCircle className="h-5 w-5 text-pink-600 group-hover:scale-110 transition-transform" />
+                    <MessageCircle className="h-5 w-5 text-pink-700 group-hover:scale-110 transition-transform" />
                   </div>
-                  <span className="text-sm font-semibold text-gray-800">
+                  <span className="text-sm font-semibold text-pink-700">
                     Social Reflections
                   </span>
                 </Button>
-                <div className="px-3 py-1 bg-white rounded-lg border border-gray-200 shadow-sm">
-                  <span className="text-xs font-bold text-gray-800">0</span>
+                <div className="px-3 py-1 bg-pink-100 rounded-lg border border-pink-200 shadow-sm">
+                  <span className="text-xs font-bold text-pink-800">0</span>
                 </div>
               </div>
 
@@ -265,14 +265,14 @@ export default function MyNeuraPage() {
                   title="Thoughts"
                 >
                   <div className="relative">
-                    <Lightbulb className="h-5 w-5 text-orange-600 group-hover:scale-110 transition-transform" />
+                    <Lightbulb className="h-5 w-5 text-yellow-600 group-hover:scale-110 transition-transform" />
                   </div>
-                  <span className="text-sm font-semibold text-gray-800">
+                  <span className="text-sm font-semibold text-yellow-700">
                     Thoughts
                   </span>
                 </Button>
-                <div className="px-3 py-1 bg-white rounded-lg border border-gray-200 shadow-sm">
-                  <span className="text-xs font-bold text-gray-800">{thoughts.length}</span>
+                <div className="px-3 py-1 bg-yellow-50 rounded-lg border border-yellow-200 shadow-sm">
+                  <span className="text-xs font-bold text-yellow-800">{thoughts.length}</span>
                 </div>
               </div>
               
