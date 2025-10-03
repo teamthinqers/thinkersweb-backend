@@ -70,7 +70,6 @@ import ActivationPage from "@/pages/ActivationPage";
 import ProductionTest from "@/pages/ProductionTest";
 import VectorMigrationTest from "@/pages/VectorMigrationTest";
 import AuthTest from "@/pages/AuthTest";
-import LinkedInDebug from "@/pages/LinkedInDebug";
 
 import { neuraStorage } from "@/lib/neuraStorage";
 import { Loader2 } from "lucide-react";
@@ -197,7 +196,6 @@ function Router() {
       <Route path="/cognitive-identity" component={CognitiveIdentityPage} />
       <Route path="/learning-engine" component={LearningEnginePage} />
       <Route path="/auth" component={AuthPage} />
-      <Route path="/linkedin-debug" component={LinkedInDebug} />
       
       {/* All routes now public - no authentication required */}
       <Route path="/entries" component={AppWithLayout} />
