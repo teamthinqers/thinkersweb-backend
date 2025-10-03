@@ -329,9 +329,27 @@ export function setupNewAuth(app: Express) {
   // LinkedIn OAuth endpoints
   const LINKEDIN_CLIENT_ID = process.env.LINKEDIN_CLIENT_ID;
   const LINKEDIN_CLIENT_SECRET = process.env.LINKEDIN_CLIENT_SECRET;
-  const LINKEDIN_REDIRECT_URI = process.env.REPLIT_DEV_DOMAIN 
-    ? `https://${process.env.REPLIT_DEV_DOMAIN}/api/auth/linkedin/callback`
-    : 'http://localhost:5000/api/auth/linkedin/callback';
+  
+  // Determine the correct redirect URI based on environment
+  // For production, use the custom domain; for dev, use Replit dev domain
+  const getRedirectUri = () => {
+    // Check if we have a custom production domain
+    const productionDomain = 'www.dotspark.in';
+    
+    // If in production (NODE_ENV=production or has published domain), use production domain
+    if (process.env.NODE_ENV === 'production' || process.env.REPL_DEPLOYMENT === '1') {
+      return `https://${productionDomain}/api/auth/linkedin/callback`;
+    }
+    
+    // Otherwise use dev domain
+    if (process.env.REPLIT_DEV_DOMAIN) {
+      return `https://${process.env.REPLIT_DEV_DOMAIN}/api/auth/linkedin/callback`;
+    }
+    
+    return 'http://localhost:5000/api/auth/linkedin/callback';
+  };
+  
+  const LINKEDIN_REDIRECT_URI = getRedirectUri();
 
   // GET /api/auth/linkedin - Initiate LinkedIn OAuth flow
   app.get("/api/auth/linkedin", (req: Request, res: Response) => {
