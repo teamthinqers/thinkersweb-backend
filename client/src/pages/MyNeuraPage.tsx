@@ -168,15 +168,17 @@ export default function MyNeuraPage() {
                     </span>
                   </Button>
                 </Link>
-                <div className="relative px-3 py-2 bg-purple-100 rounded-lg border border-purple-300 transition-all duration-300">
-                  {!neuralStrength?.milestones?.cognitiveIdentityCompleted && (
-                    <span className="absolute -top-1 -right-1 flex h-3 w-3 z-10">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-3 w-3 bg-red-600"></span>
-                    </span>
-                  )}
-                  <Fingerprint className="h-5 w-5 text-purple-600" />
-                </div>
+                <Link href="/cognitive-identity">
+                  <div className="relative px-3 py-2 bg-purple-100 rounded-lg border border-purple-300 transition-all duration-300 hover:bg-purple-200 cursor-pointer">
+                    {!neuralStrength?.milestones?.cognitiveIdentityCompleted && (
+                      <span className="absolute -top-1 -right-1 flex h-3 w-3 z-10">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-3 w-3 bg-red-600"></span>
+                      </span>
+                    )}
+                    <Fingerprint className="h-5 w-5 text-purple-600" />
+                  </div>
+                </Link>
               </div>
 
               {/* 2. Learning Engine - with status icon below */}
@@ -185,30 +187,32 @@ export default function MyNeuraPage() {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="group flex items-center gap-2 rounded-xl px-4 py-2 bg-white/80 hover:bg-indigo-50 border border-indigo-200 transition-all duration-300 relative shadow-sm hover:shadow-indigo-200"
+                    className="group flex items-center gap-2 rounded-xl px-4 py-2 bg-white/80 hover:bg-amber-50 border border-amber-200 transition-all duration-300 relative shadow-sm hover:shadow-amber-200"
                     title="Learning Engine"
                   >
-                    <span className="text-sm font-semibold bg-gradient-to-r from-indigo-700 to-purple-700 bg-clip-text text-transparent">
+                    <span className="text-sm font-semibold bg-gradient-to-r from-amber-700 to-orange-600 bg-clip-text text-transparent">
                       Learning Engine
                     </span>
                   </Button>
                 </Link>
-                <div className="relative px-3 py-2 bg-indigo-100 rounded-lg border border-indigo-300 transition-all duration-300">
-                  {!neuralStrength?.milestones?.learningEngineCompleted && (
-                    <span className="absolute -top-1 -right-1 flex h-3 w-3 z-10">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-3 w-3 bg-red-600"></span>
-                    </span>
-                  )}
-                  <Cog 
-                    className={`h-5 w-5 text-indigo-700 ${
-                      neuralStrength?.milestones?.learningEngineCompleted 
-                        ? 'animate-spin' 
-                        : ''
-                    }`}
-                    style={neuralStrength?.milestones?.learningEngineCompleted ? { animationDuration: '2s' } : {}}
-                  />
-                </div>
+                <Link href="/learning-engine">
+                  <div className="relative px-3 py-2 bg-amber-100 rounded-lg border border-amber-300 transition-all duration-300 hover:bg-amber-200 cursor-pointer">
+                    {!neuralStrength?.milestones?.learningEngineCompleted && (
+                      <span className="absolute -top-1 -right-1 flex h-3 w-3 z-10">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-3 w-3 bg-red-600"></span>
+                      </span>
+                    )}
+                    <Cog 
+                      className={`h-5 w-5 text-amber-700 ${
+                        neuralStrength?.milestones?.learningEngineCompleted 
+                          ? 'animate-spin' 
+                          : ''
+                      }`}
+                      style={neuralStrength?.milestones?.learningEngineCompleted ? { animationDuration: '2s' } : {}}
+                    />
+                  </div>
+                </Link>
               </div>
 
               {/* 3. Sparks - with count below */}
