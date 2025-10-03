@@ -16,6 +16,13 @@ declare module "express-session" {
   }
 }
 
+// Extend Express User type
+declare global {
+  namespace Express {
+    interface User extends SessionUser {}
+  }
+}
+
 // User type for session
 export interface SessionUser {
   id: number;
@@ -24,6 +31,11 @@ export interface SessionUser {
   firebaseUid?: string | null;
   fullName?: string | null;
   avatarUrl?: string | null;
+  avatar?: string | null;
+  linkedinPhotoUrl?: string | null;
+  linkedinId?: string | null;
+  linkedinHeadline?: string | null;
+  linkedinProfileUrl?: string | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -99,7 +111,7 @@ async function loadUserFromSession(req: Request, res: Response, next: NextFuncti
           email, 
           firebase_uid, 
           full_name as "fullName", 
-          avatar as "avatarUrl", 
+          avatar, 
           linkedin_id as "linkedinId",
           linkedin_headline as "linkedinHeadline",
           linkedin_profile_url as "linkedinProfileUrl",
@@ -117,7 +129,8 @@ async function loadUserFromSession(req: Request, res: Response, next: NextFuncti
           email: row.email,
           firebaseUid: row.firebase_uid,
           fullName: row.fullName,
-          avatarUrl: row.avatarUrl,
+          avatarUrl: row.avatar,
+          avatar: row.avatar,
           linkedinId: row.linkedinId,
           linkedinHeadline: row.linkedinHeadline,
           linkedinProfileUrl: row.linkedinProfileUrl,
@@ -307,6 +320,11 @@ export function setupNewAuth(app: Express) {
         firebaseUid: user.firebase_uid,
         fullName: user.full_name_old || displayName || user.username,
         avatarUrl: user.avatar || photoURL,
+        avatar: user.avatar,
+        linkedinPhotoUrl: user.linkedin_photo_url,
+        linkedinId: user.linkedin_id,
+        linkedinHeadline: user.linkedin_headline,
+        linkedinProfileUrl: user.linkedin_profile_url,
         createdAt: new Date(user.created_at || Date.now()),
         updatedAt: new Date(user.updated_at || Date.now()),
       };
@@ -575,6 +593,11 @@ export function setupNewAuth(app: Express) {
         firebaseUid: dbUser.firebase_uid ? String(dbUser.firebase_uid) : null,
         fullName: dbUser.full_name ? String(dbUser.full_name) : (name || String(dbUser.username)),
         avatarUrl: dbUser.avatar ? String(dbUser.avatar) : picture,
+        avatar: dbUser.avatar ? String(dbUser.avatar) : null,
+        linkedinPhotoUrl: dbUser.linkedin_photo_url ? String(dbUser.linkedin_photo_url) : null,
+        linkedinId: dbUser.linkedin_id ? String(dbUser.linkedin_id) : null,
+        linkedinHeadline: dbUser.linkedin_headline ? String(dbUser.linkedin_headline) : null,
+        linkedinProfileUrl: dbUser.linkedin_profile_url ? String(dbUser.linkedin_profile_url) : null,
         createdAt: dbUser.created_at ? new Date(String(dbUser.created_at)) : new Date(),
         updatedAt: dbUser.updated_at ? new Date(String(dbUser.updated_at)) : new Date(),
       };

@@ -149,7 +149,7 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
                 <SheetTrigger asChild>
                   <Button variant="ghost" size="sm" className="p-0">
                     <Avatar className="h-8 w-8">
-                      <AvatarImage src={user.photoURL || undefined} />
+                      <AvatarImage src={(user as any).avatar || (user as any).linkedinPhotoUrl || user.photoURL || undefined} />
                       <AvatarFallback className="text-xs">
                         {user.displayName?.[0]?.toUpperCase() || 'U'}
                       </AvatarFallback>
@@ -162,7 +162,7 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
                     <div className="p-4 border-b border-gray-200">
                       <div className="flex items-center gap-3">
                         <Avatar className="h-12 w-12">
-                          <AvatarImage src={user.photoURL || undefined} />
+                          <AvatarImage src={(user as any).avatar || (user as any).linkedinPhotoUrl || user.photoURL || undefined} />
                           <AvatarFallback>
                             {user.displayName?.[0]?.toUpperCase() || 'U'}
                           </AvatarFallback>
@@ -291,7 +291,7 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
                 <div className="p-4 border-t border-gray-200">
                   <div className="flex items-center gap-3 mb-3">
                     <Avatar className="h-10 w-10">
-                      <AvatarImage src={user.photoURL || undefined} />
+                      <AvatarImage src={(user as any).avatar || (user as any).linkedinPhotoUrl || user.photoURL || undefined} />
                       <AvatarFallback>
                         {user.displayName?.[0]?.toUpperCase() || 'U'}
                       </AvatarFallback>
