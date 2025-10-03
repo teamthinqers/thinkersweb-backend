@@ -7,7 +7,8 @@ interface FloatingDotProps {
 export default function FloatingDot({ onClick }: FloatingDotProps) {
   const [position, setPosition] = useState({ x: 100, y: 100 });
   const [isDragging, setIsDragging] = useState(false);
-  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const [hasMoved, setHasMoved] = useState(false);
   const dotRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -23,53 +24,59 @@ export default function FloatingDot({ onClick }: FloatingDotProps) {
     }
   }, []);
 
-  useEffect(() => {
+  const handleMouseDown = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (!dotRef.current) return;
+    
+    const rect = dotRef.current.getBoundingClientRect();
+    const offsetX = e.clientX - rect.left;
+    const offsetY = e.clientY - rect.top;
+    
+    setDragOffset({ x: offsetX, y: offsetY });
+    setHasMoved(false);
+    
     const handleMouseMove = (e: MouseEvent) => {
-      if (isDragging) {
-        const newX = e.clientX - dragStart.x;
-        const newY = e.clientY - dragStart.y;
-        
-        const maxX = window.innerWidth - 64;
-        const maxY = window.innerHeight - 64;
-        
-        const boundedX = Math.max(0, Math.min(newX, maxX));
-        const boundedY = Math.max(0, Math.min(newY, maxY));
-        
-        setPosition({ x: boundedX, y: boundedY });
-      }
+      e.preventDefault();
+      setHasMoved(true);
+      setIsDragging(true);
+      
+      const newX = e.clientX - offsetX;
+      const newY = e.clientY - offsetY;
+      
+      const maxX = window.innerWidth - 60;
+      const maxY = window.innerHeight - 60;
+      
+      const clampedX = Math.max(0, Math.min(maxX, newX));
+      const clampedY = Math.max(0, Math.min(maxY, newY));
+      
+      setPosition({ x: clampedX, y: clampedY });
     };
-
-    const handleMouseUp = () => {
-      if (isDragging) {
-        setIsDragging(false);
-        localStorage.setItem('floatingDotPosition', JSON.stringify(position));
+    
+    const handleMouseUp = (e: MouseEvent) => {
+      e.preventDefault();
+      
+      if (hasMoved || isDragging) {
+        const currentPosition = { 
+          x: Math.max(0, Math.min(window.innerWidth - 60, e.clientX - offsetX)),
+          y: Math.max(0, Math.min(window.innerHeight - 60, e.clientY - offsetY))
+        };
+        localStorage.setItem('floatingDotPosition', JSON.stringify(currentPosition));
       }
-    };
-
-    if (isDragging) {
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mouseup', handleMouseUp);
-    }
-
-    return () => {
+      
+      setIsDragging(false);
+      setTimeout(() => setHasMoved(false), 100);
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [isDragging, dragStart, position]);
-
-  const handleMouseDown = (e: React.MouseEvent) => {
-    if (dotRef.current) {
-      const rect = dotRef.current.getBoundingClientRect();
-      setDragStart({
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top
-      });
-      setIsDragging(true);
-    }
+    
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
   };
 
   const handleClick = (e: React.MouseEvent) => {
-    if (!isDragging && onClick) {
+    if (!hasMoved && !isDragging && onClick) {
       onClick();
     }
   };
