@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { useAuth } from '@/hooks/use-auth-new';
 import { useToast } from '@/hooks/use-toast';
-import { X, PenTool, Sparkles, Crown, ArrowLeft, Loader2 } from 'lucide-react';
+import { X, PenTool, Sparkles, Crown, ArrowLeft, Loader2, ImageIcon, Layers } from 'lucide-react';
 import { SiWhatsapp, SiLinkedin, SiOpenai } from 'react-icons/si';
 import { apiRequest, queryClient } from '@/lib/queryClient';
 
@@ -364,20 +364,40 @@ export default function FloatingDot({ onClick }: FloatingDotProps) {
 
                     {/* Action Buttons */}
                     <div className="flex items-center justify-between pt-4 border-t border-gray-200">
-                      <Button
-                        onClick={() => {
-                          setShowWriteForm(false);
-                          setSummary('');
-                          setHeading('');
-                          setEmotion('');
-                        }}
-                        variant="ghost"
-                        disabled={isSubmitting}
-                        className="text-gray-600 hover:text-gray-900"
-                      >
-                        <ArrowLeft className="mr-2 h-4 w-4" />
-                        Back
-                      </Button>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          onClick={() => {
+                            setShowWriteForm(false);
+                            setSummary('');
+                            setHeading('');
+                            setEmotion('');
+                          }}
+                          variant="ghost"
+                          disabled={isSubmitting}
+                          className="text-gray-600 hover:text-gray-900"
+                        >
+                          <ArrowLeft className="mr-2 h-4 w-4" />
+                          Back
+                        </Button>
+
+                        <Button
+                          variant="outline"
+                          disabled={isSubmitting}
+                          className="text-gray-700 hover:text-gray-900"
+                        >
+                          <ImageIcon className="mr-2 h-4 w-4" />
+                          Media
+                        </Button>
+
+                        <Button
+                          variant="outline"
+                          disabled={isSubmitting}
+                          className="text-gray-700 hover:text-gray-900"
+                        >
+                          <Layers className="mr-2 h-4 w-4" />
+                          Add Layers
+                        </Button>
+                      </div>
 
                       <Button
                         onClick={handleSubmitThought}
