@@ -2,9 +2,14 @@ import { useState, useRef, useEffect } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
 import { useAuth } from '@/hooks/use-auth-new';
-import { X, PenTool, Sparkles, Crown } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import { X, PenTool, Sparkles, Crown, ArrowLeft, Loader2 } from 'lucide-react';
 import { SiWhatsapp, SiLinkedin, SiOpenai } from 'react-icons/si';
+import { apiRequest, queryClient } from '@/lib/queryClient';
 
 interface FloatingDotProps {
   onClick?: () => void;
@@ -19,9 +24,63 @@ export default function FloatingDot({ onClick }: FloatingDotProps) {
   const [targetNeura, setTargetNeura] = useState<'social' | 'myneura'>('social');
   const [dialogPosition, setDialogPosition] = useState({ x: 0, y: 0 });
   const [isDraggingDialog, setIsDraggingDialog] = useState(false);
+  const [showWriteForm, setShowWriteForm] = useState(false);
+  const [heading, setHeading] = useState('');
+  const [summary, setSummary] = useState('');
+  const [emotion, setEmotion] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const dotRef = useRef<HTMLDivElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
+  const { toast } = useToast();
+
+  const handleSubmitThought = async () => {
+    if (!heading.trim() || !summary.trim()) {
+      toast({
+        title: "Missing fields",
+        description: "Please provide both heading and summary for your thought.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      await apiRequest('POST', '/api/thoughts', {
+        heading: heading.trim(),
+        summary: summary.trim(),
+        emotion: emotion.trim() || null,
+        visibility: targetNeura === 'social' ? 'social' : 'personal',
+      });
+
+      // Invalidate queries to refresh the data
+      await queryClient.invalidateQueries({ queryKey: ['/api/thoughts/myneura'] });
+      await queryClient.invalidateQueries({ queryKey: ['/api/thoughts'] });
+
+      toast({
+        title: "Thought saved!",
+        description: targetNeura === 'social' 
+          ? "Your thought has been shared to Social Neura." 
+          : "Your thought has been saved to My Neura.",
+      });
+
+      // Reset form and close dialog
+      setHeading('');
+      setSummary('');
+      setEmotion('');
+      setShowWriteForm(false);
+      setIsOpen(false);
+    } catch (error) {
+      console.error('Error creating thought:', error);
+      toast({
+        title: "Error",
+        description: "Failed to save your thought. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   useEffect(() => {
     const savedPosition = localStorage.getItem('floatingDotPosition');
@@ -282,45 +341,137 @@ export default function FloatingDot({ onClick }: FloatingDotProps) {
                   </div>
                 </div>
 
-                {/* Action Buttons Grid */}
-                <div className="grid grid-cols-5 gap-3">
-                  {/* 1. Write - Premium with glittering crown */}
-                  <button className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-[#F59E0B] bg-[#F59E0B] hover:bg-[#D97706] transition-all group shadow-sm hover:shadow-md">
-                    <div className="relative">
-                      <PenTool className="h-6 w-6 text-white" strokeWidth={2.5} />
-                      <Crown className="h-3.5 w-3.5 text-yellow-200 absolute -top-1.5 -right-1 animate-pulse" fill="currentColor" />
-                      <Sparkles className="h-2 w-2 text-yellow-100 absolute -top-0.5 -right-0.5 animate-pulse" style={{ animationDelay: '0.5s' }} />
+                {/* Conditional Content: Write Form or Action Buttons */}
+                {showWriteForm ? (
+                  <div className="space-y-4">
+                    {/* Back Button */}
+                    <button
+                      onClick={() => setShowWriteForm(false)}
+                      className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900"
+                    >
+                      <ArrowLeft className="h-4 w-4" />
+                      Back to options
+                    </button>
+
+                    {/* Write Form */}
+                    <div className="space-y-4">
+                      <div>
+                        <Label htmlFor="heading" className="text-sm font-medium text-gray-700">
+                          Heading *
+                        </Label>
+                        <Input
+                          id="heading"
+                          value={heading}
+                          onChange={(e) => setHeading(e.target.value)}
+                          placeholder="What's on your mind?"
+                          className="mt-1"
+                          disabled={isSubmitting}
+                        />
+                      </div>
+
+                      <div>
+                        <Label htmlFor="summary" className="text-sm font-medium text-gray-700">
+                          Summary *
+                        </Label>
+                        <Textarea
+                          id="summary"
+                          value={summary}
+                          onChange={(e) => setSummary(e.target.value)}
+                          placeholder="Share your thoughts in detail..."
+                          className="mt-1 min-h-[120px]"
+                          disabled={isSubmitting}
+                        />
+                      </div>
+
+                      <div>
+                        <Label htmlFor="emotion" className="text-sm font-medium text-gray-700">
+                          Emotion (optional)
+                        </Label>
+                        <Input
+                          id="emotion"
+                          value={emotion}
+                          onChange={(e) => setEmotion(e.target.value)}
+                          placeholder="e.g., joy, curiosity, excited..."
+                          className="mt-1"
+                          disabled={isSubmitting}
+                        />
+                      </div>
+
+                      <Button
+                        onClick={handleSubmitThought}
+                        disabled={isSubmitting || !heading.trim() || !summary.trim()}
+                        className="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white hover:from-amber-600 hover:to-orange-600"
+                      >
+                        {isSubmitting ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Saving...
+                          </>
+                        ) : (
+                          <>
+                            <Sparkles className="mr-2 h-4 w-4" />
+                            Save Thought/Dot
+                          </>
+                        )}
+                      </Button>
                     </div>
-                    <span className="text-xs font-semibold text-white">Write</span>
-                  </button>
+                  </div>
+                ) : (
+                  /* Action Buttons Grid */
+                  <div className="grid grid-cols-5 gap-3">
+                    {/* 1. Write - Premium with glittering crown */}
+                    <button
+                      onClick={() => setShowWriteForm(true)}
+                      className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-[#F59E0B] bg-[#F59E0B] hover:bg-[#D97706] transition-all group shadow-sm hover:shadow-md"
+                    >
+                      <div className="relative">
+                        <PenTool className="h-6 w-6 text-white" strokeWidth={2.5} />
+                        <Crown className="h-3.5 w-3.5 text-yellow-200 absolute -top-1.5 -right-1 animate-pulse" fill="currentColor" />
+                        <Sparkles className="h-2 w-2 text-yellow-100 absolute -top-0.5 -right-0.5 animate-pulse" style={{ animationDelay: '0.5s' }} />
+                      </div>
+                      <span className="text-xs font-semibold text-white">Write</span>
+                    </button>
 
-                  {/* 2. LinkedIn Import */}
-                  <button className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-[#0077B5] bg-[#0077B5] hover:bg-[#005885] transition-all group shadow-sm hover:shadow-md">
-                    <SiLinkedin className="h-6 w-6 text-white" />
-                    <span className="text-xs font-semibold text-white">Import</span>
-                  </button>
+                    {/* 2. LinkedIn Import */}
+                    <button
+                      onClick={() => toast({ title: "Coming Soon", description: "LinkedIn import will be available soon!" })}
+                      className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-[#0077B5] bg-[#0077B5] hover:bg-[#005885] transition-all group shadow-sm hover:shadow-md"
+                    >
+                      <SiLinkedin className="h-6 w-6 text-white" />
+                      <span className="text-xs font-semibold text-white">Import</span>
+                    </button>
 
-                  {/* 3. WhatsApp */}
-                  <button className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-[#25D366] bg-[#25D366] hover:bg-[#1EBE5B] transition-all group shadow-sm hover:shadow-md">
-                    <SiWhatsapp className="h-6 w-6 text-white" />
-                    <span className="text-xs font-semibold text-white">WhatsApp</span>
-                  </button>
+                    {/* 3. WhatsApp */}
+                    <button
+                      onClick={() => toast({ title: "Coming Soon", description: "WhatsApp integration will be available soon!" })}
+                      className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-[#25D366] bg-[#25D366] hover:bg-[#1EBE5B] transition-all group shadow-sm hover:shadow-md"
+                    >
+                      <SiWhatsapp className="h-6 w-6 text-white" />
+                      <span className="text-xs font-semibold text-white">WhatsApp</span>
+                    </button>
 
-                  {/* 4. AI Help - Lighter Purple */}
-                  <button className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-[#A855F7] bg-[#A855F7] hover:bg-[#9333EA] transition-all group shadow-sm hover:shadow-md">
-                    <div className="relative">
-                      <Sparkles className="h-6 w-6 text-white animate-pulse" />
-                      <div className="absolute inset-0 bg-purple-300 rounded-full blur-md opacity-30 group-hover:opacity-50 transition-opacity"></div>
-                    </div>
-                    <span className="text-xs font-semibold text-white">AI Help</span>
-                  </button>
+                    {/* 4. AI Help - Lighter Purple */}
+                    <button
+                      onClick={() => toast({ title: "Coming Soon", description: "AI assistance will be available soon!" })}
+                      className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-[#A855F7] bg-[#A855F7] hover:bg-[#9333EA] transition-all group shadow-sm hover:shadow-md"
+                    >
+                      <div className="relative">
+                        <Sparkles className="h-6 w-6 text-white animate-pulse" />
+                        <div className="absolute inset-0 bg-purple-300 rounded-full blur-md opacity-30 group-hover:opacity-50 transition-opacity"></div>
+                      </div>
+                      <span className="text-xs font-semibold text-white">AI Help</span>
+                    </button>
 
-                  {/* 5. ChatGPT Import - White bg, Black icon */}
-                  <button className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-gray-300 bg-white hover:bg-gray-50 transition-all group shadow-sm hover:shadow-md">
-                    <SiOpenai className="h-6 w-6 text-black" />
-                    <span className="text-xs font-semibold text-black">Import</span>
-                  </button>
-                </div>
+                    {/* 5. ChatGPT Import - White bg, Black icon */}
+                    <button
+                      onClick={() => toast({ title: "Coming Soon", description: "ChatGPT import will be available soon!" })}
+                      className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-gray-300 bg-white hover:bg-gray-50 transition-all group shadow-sm hover:shadow-md"
+                    >
+                      <SiOpenai className="h-6 w-6 text-black" />
+                      <span className="text-xs font-semibold text-black">Import</span>
+                    </button>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </div>
