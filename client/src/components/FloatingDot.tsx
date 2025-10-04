@@ -304,7 +304,6 @@ export default function FloatingDot({ onClick }: FloatingDotProps) {
                     </Avatar>
                     <div>
                       <h3 className="font-semibold text-gray-900">{displayName}</h3>
-                      <p className="text-sm text-gray-500">{targetNeura === 'social' ? 'Share to Social Neura' : 'Save to My Neura'}</p>
                     </div>
                   </div>
 
