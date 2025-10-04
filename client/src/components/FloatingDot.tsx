@@ -35,10 +35,10 @@ export default function FloatingDot({ onClick }: FloatingDotProps) {
   const { toast } = useToast();
 
   const handleSubmitThought = async () => {
-    if (!heading.trim() || !summary.trim()) {
+    if (!summary.trim()) {
       toast({
-        title: "Missing fields",
-        description: "Please provide both heading and summary for your thought.",
+        title: "Missing content",
+        description: "Please write your thought before posting.",
         variant: "destructive",
       });
       return;
@@ -46,8 +46,11 @@ export default function FloatingDot({ onClick }: FloatingDotProps) {
 
     setIsSubmitting(true);
     try {
+      // Auto-generate heading from first 50 characters of summary
+      const autoHeading = summary.trim().substring(0, 50) + (summary.trim().length > 50 ? '...' : '');
+      
       await apiRequest('POST', '/api/thoughts', {
-        heading: heading.trim(),
+        heading: autoHeading,
         summary: summary.trim(),
         emotion: emotion.trim() || null,
         visibility: targetNeura === 'social' ? 'social' : 'personal',
@@ -344,63 +347,84 @@ export default function FloatingDot({ onClick }: FloatingDotProps) {
                 {/* Conditional Content: Write Form or Action Buttons */}
                 {showWriteForm ? (
                   <div className="space-y-4">
-                    {/* Back Button */}
-                    <button
-                      onClick={() => setShowWriteForm(false)}
-                      className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900"
-                    >
-                      <ArrowLeft className="h-4 w-4" />
-                      Back to options
-                    </button>
-
-                    {/* Write Form */}
-                    <div className="space-y-4">
-                      <div>
-                        <Label htmlFor="heading" className="text-sm font-medium text-gray-700">
-                          Heading *
-                        </Label>
-                        <Input
-                          id="heading"
-                          value={heading}
-                          onChange={(e) => setHeading(e.target.value)}
-                          placeholder="What's on your mind?"
-                          className="mt-1"
-                          disabled={isSubmitting}
-                        />
+                    {/* Header with User Info and Toggle */}
+                    <div className="flex items-start justify-between pb-4 border-b border-gray-200">
+                      {/* Left: User Info */}
+                      <div className="flex items-center gap-3">
+                        <Avatar className="h-12 w-12">
+                          <AvatarImage src={userAvatar} />
+                          <AvatarFallback className="bg-gradient-to-br from-amber-500 to-orange-500 text-white">
+                            {displayName[0]?.toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <h3 className="font-semibold text-gray-900">{displayName}</h3>
+                          <p className="text-xs text-gray-500">Share your thoughts...</p>
+                        </div>
                       </div>
 
-                      <div>
-                        <Label htmlFor="summary" className="text-sm font-medium text-gray-700">
-                          Summary *
-                        </Label>
-                        <Textarea
-                          id="summary"
-                          value={summary}
-                          onChange={(e) => setSummary(e.target.value)}
-                          placeholder="Share your thoughts in detail..."
-                          className="mt-1 min-h-[120px]"
-                          disabled={isSubmitting}
-                        />
+                      {/* Right: Toggle */}
+                      <div className="flex items-center bg-gray-100 rounded-full p-1">
+                        <button
+                          onClick={() => setTargetNeura('social')}
+                          className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all whitespace-nowrap ${
+                            targetNeura === 'social'
+                              ? 'bg-gradient-to-r from-red-500 to-orange-500 text-white shadow-sm'
+                              : 'text-gray-600 hover:text-gray-900'
+                          }`}
+                        >
+                          Social Neura
+                        </button>
+                        <button
+                          onClick={() => setTargetNeura('myneura')}
+                          className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all whitespace-nowrap ${
+                            targetNeura === 'myneura'
+                              ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-sm'
+                              : 'text-gray-600 hover:text-gray-900'
+                          }`}
+                        >
+                          My Neura
+                        </button>
                       </div>
+                    </div>
 
-                      <div>
-                        <Label htmlFor="emotion" className="text-sm font-medium text-gray-700">
-                          Emotion (optional)
-                        </Label>
-                        <Input
-                          id="emotion"
-                          value={emotion}
-                          onChange={(e) => setEmotion(e.target.value)}
-                          placeholder="e.g., joy, curiosity, excited..."
-                          className="mt-1"
-                          disabled={isSubmitting}
-                        />
-                      </div>
+                    {/* Thought/Dot Input Section */}
+                    <div className="space-y-2">
+                      <Label htmlFor="thought" className="text-sm font-medium text-gray-700">
+                        Thought/Dot
+                      </Label>
+                      <Textarea
+                        id="thought"
+                        value={summary}
+                        onChange={(e) => setSummary(e.target.value)}
+                        placeholder="What's on your mind?"
+                        className="min-h-[180px] resize-none border-gray-300 focus:border-amber-500 focus:ring-amber-500"
+                        disabled={isSubmitting}
+                      />
+                      <p className="text-xs text-gray-500 text-right">{summary.length} characters</p>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="flex items-center justify-between pt-4 border-t border-gray-200">
+                      <Button
+                        onClick={() => {
+                          setShowWriteForm(false);
+                          setSummary('');
+                          setHeading('');
+                          setEmotion('');
+                        }}
+                        variant="ghost"
+                        disabled={isSubmitting}
+                        className="text-gray-600 hover:text-gray-900"
+                      >
+                        <ArrowLeft className="mr-2 h-4 w-4" />
+                        Back
+                      </Button>
 
                       <Button
                         onClick={handleSubmitThought}
-                        disabled={isSubmitting || !heading.trim() || !summary.trim()}
-                        className="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white hover:from-amber-600 hover:to-orange-600"
+                        disabled={isSubmitting || !summary.trim()}
+                        className="bg-gradient-to-r from-amber-500 to-orange-500 text-white hover:from-amber-600 hover:to-orange-600"
                       >
                         {isSubmitting ? (
                           <>
@@ -410,7 +434,7 @@ export default function FloatingDot({ onClick }: FloatingDotProps) {
                         ) : (
                           <>
                             <Sparkles className="mr-2 h-4 w-4" />
-                            Save Thought/Dot
+                            Post Thought
                           </>
                         )}
                       </Button>
