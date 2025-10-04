@@ -390,10 +390,7 @@ export default function FloatingDot({ onClick }: FloatingDotProps) {
                             Saving...
                           </>
                         ) : (
-                          <>
-                            <Sparkles className="mr-2 h-4 w-4" />
-                            Post Thought
-                          </>
+                          'Post Thought'
                         )}
                       </Button>
                     </div>
