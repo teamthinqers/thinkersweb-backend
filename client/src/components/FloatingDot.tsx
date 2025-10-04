@@ -347,47 +347,6 @@ export default function FloatingDot({ onClick }: FloatingDotProps) {
                 {/* Conditional Content: Write Form or Action Buttons */}
                 {showWriteForm ? (
                   <div className="space-y-4">
-                    {/* Header with User Info and Toggle */}
-                    <div className="flex items-start justify-between pb-4 border-b border-gray-200">
-                      {/* Left: User Info */}
-                      <div className="flex items-center gap-3">
-                        <Avatar className="h-12 w-12">
-                          <AvatarImage src={userAvatar} />
-                          <AvatarFallback className="bg-gradient-to-br from-amber-500 to-orange-500 text-white">
-                            {displayName[0]?.toUpperCase()}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <h3 className="font-semibold text-gray-900">{displayName}</h3>
-                          <p className="text-xs text-gray-500">Share your thoughts...</p>
-                        </div>
-                      </div>
-
-                      {/* Right: Toggle */}
-                      <div className="flex items-center bg-gray-100 rounded-full p-1">
-                        <button
-                          onClick={() => setTargetNeura('social')}
-                          className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all whitespace-nowrap ${
-                            targetNeura === 'social'
-                              ? 'bg-gradient-to-r from-red-500 to-orange-500 text-white shadow-sm'
-                              : 'text-gray-600 hover:text-gray-900'
-                          }`}
-                        >
-                          Social Neura
-                        </button>
-                        <button
-                          onClick={() => setTargetNeura('myneura')}
-                          className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all whitespace-nowrap ${
-                            targetNeura === 'myneura'
-                              ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-sm'
-                              : 'text-gray-600 hover:text-gray-900'
-                          }`}
-                        >
-                          My Neura
-                        </button>
-                      </div>
-                    </div>
-
                     {/* Thought/Dot Input Section */}
                     <div className="space-y-2">
                       <Label htmlFor="thought" className="text-sm font-medium text-gray-700">
