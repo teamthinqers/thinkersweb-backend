@@ -59,6 +59,9 @@ export const thoughts = pgTable("thoughts", {
   visibility: text("visibility").notNull().default("personal"), // 'personal' or 'social'
   positionX: integer("position_x"),
   positionY: integer("position_y"),
+  keywords: text("keywords"), // Optional: keywords for search
+  anchor: text("anchor"), // Optional: context to recall thought
+  analogies: text("analogies"), // Optional: analogies for thought
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });

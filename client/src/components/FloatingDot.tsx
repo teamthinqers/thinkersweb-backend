@@ -29,6 +29,10 @@ export default function FloatingDot({ onClick }: FloatingDotProps) {
   const [summary, setSummary] = useState('');
   const [emotion, setEmotion] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showLayers, setShowLayers] = useState(false);
+  const [keywords, setKeywords] = useState('');
+  const [anchor, setAnchor] = useState('');
+  const [analogies, setAnalogies] = useState('');
   const dotRef = useRef<HTMLDivElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
@@ -54,6 +58,9 @@ export default function FloatingDot({ onClick }: FloatingDotProps) {
         summary: summary.trim(),
         emotion: emotion.trim() || null,
         visibility: targetNeura === 'social' ? 'social' : 'personal',
+        keywords: keywords.trim() || null,
+        anchor: anchor.trim() || null,
+        analogies: analogies.trim() || null,
       });
 
       // Invalidate queries to refresh the data
@@ -71,6 +78,10 @@ export default function FloatingDot({ onClick }: FloatingDotProps) {
       setHeading('');
       setSummary('');
       setEmotion('');
+      setShowLayers(false);
+      setKeywords('');
+      setAnchor('');
+      setAnalogies('');
       setShowWriteForm(false);
       setIsOpen(false);
     } catch (error) {
@@ -362,6 +373,53 @@ export default function FloatingDot({ onClick }: FloatingDotProps) {
                       <p className="text-xs text-gray-500 text-right">{summary.length} characters</p>
                     </div>
 
+                    {/* Add Layers Section - Collapsible */}
+                    {showLayers && (
+                      <div className="space-y-3 pt-3 border-t border-gray-200">
+                        <div className="space-y-2">
+                          <Label htmlFor="keywords" className="text-sm font-medium text-gray-700">
+                            Keywords
+                          </Label>
+                          <Input
+                            id="keywords"
+                            value={keywords}
+                            onChange={(e) => setKeywords(e.target.value)}
+                            placeholder="Enter the Keywords to search for later"
+                            className="border-gray-300 focus:border-amber-500 focus:ring-amber-500"
+                            disabled={isSubmitting}
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="anchor" className="text-sm font-medium text-gray-700">
+                            Anchor
+                          </Label>
+                          <Input
+                            id="anchor"
+                            value={anchor}
+                            onChange={(e) => setAnchor(e.target.value)}
+                            placeholder="What context will help you recall this thought later?"
+                            className="border-gray-300 focus:border-amber-500 focus:ring-amber-500"
+                            disabled={isSubmitting}
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="analogies" className="text-sm font-medium text-gray-700">
+                            Analogies
+                          </Label>
+                          <Input
+                            id="analogies"
+                            value={analogies}
+                            onChange={(e) => setAnalogies(e.target.value)}
+                            placeholder="What Analogies does this thought remind you of?"
+                            className="border-gray-300 focus:border-amber-500 focus:ring-amber-500"
+                            disabled={isSubmitting}
+                          />
+                        </div>
+                      </div>
+                    )}
+
                     {/* Action Buttons */}
                     <div className="flex items-center justify-between pt-4 border-t border-gray-200">
                       <div className="flex items-center gap-2">
@@ -371,6 +429,10 @@ export default function FloatingDot({ onClick }: FloatingDotProps) {
                             setSummary('');
                             setHeading('');
                             setEmotion('');
+                            setShowLayers(false);
+                            setKeywords('');
+                            setAnchor('');
+                            setAnalogies('');
                           }}
                           variant="ghost"
                           disabled={isSubmitting}
@@ -390,12 +452,13 @@ export default function FloatingDot({ onClick }: FloatingDotProps) {
                         </Button>
 
                         <Button
+                          onClick={() => setShowLayers(!showLayers)}
                           variant="outline"
                           disabled={isSubmitting}
-                          className="text-gray-700 hover:text-gray-900"
+                          className={`text-gray-700 hover:text-gray-900 ${showLayers ? 'bg-amber-50 border-amber-300' : ''}`}
                         >
                           <Layers className="mr-2 h-4 w-4" />
-                          Add Layers
+                          {showLayers ? 'Hide Layers' : 'Add Layers'}
                         </Button>
                       </div>
 
