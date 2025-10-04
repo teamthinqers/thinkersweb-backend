@@ -25,14 +25,20 @@ export default function FloatingDot({ onClick }: FloatingDotProps) {
   const [dialogPosition, setDialogPosition] = useState({ x: 0, y: 0 });
   const [isDraggingDialog, setIsDraggingDialog] = useState(false);
   const [showWriteForm, setShowWriteForm] = useState(false);
+  const [showLayersScreen, setShowLayersScreen] = useState(false);
   const [heading, setHeading] = useState('');
   const [summary, setSummary] = useState('');
   const [emotion, setEmotion] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showLayers, setShowLayers] = useState(false);
   const [keywords, setKeywords] = useState('');
   const [anchor, setAnchor] = useState('');
   const [analogies, setAnalogies] = useState('');
+
+  // 10 predefined emotions for quick selection
+  const emotionOptions = [
+    'Joy', 'Curiosity', 'Excitement', 'Gratitude', 'Peace',
+    'Frustration', 'Anxiety', 'Hope', 'Inspiration', 'Reflection'
+  ];
   const dotRef = useRef<HTMLDivElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
@@ -78,7 +84,7 @@ export default function FloatingDot({ onClick }: FloatingDotProps) {
       setHeading('');
       setSummary('');
       setEmotion('');
-      setShowLayers(false);
+      setShowLayersScreen(false);
       setKeywords('');
       setAnchor('');
       setAnalogies('');
@@ -354,8 +360,8 @@ export default function FloatingDot({ onClick }: FloatingDotProps) {
                   </div>
                 </div>
 
-                {/* Conditional Content: Write Form or Action Buttons */}
-                {showWriteForm ? (
+                {/* Conditional Content: Write Form, Layers Screen, or Action Buttons */}
+                {showWriteForm && !showLayersScreen ? (
                   <div className="space-y-4">
                     {/* Thought/Dot Input Section */}
                     <div className="space-y-2">
@@ -373,53 +379,6 @@ export default function FloatingDot({ onClick }: FloatingDotProps) {
                       <p className="text-xs text-gray-500 text-right">{summary.length} characters</p>
                     </div>
 
-                    {/* Add Layers Section - Collapsible */}
-                    {showLayers && (
-                      <div className="space-y-3 pt-3 border-t border-gray-200">
-                        <div className="space-y-2">
-                          <Label htmlFor="keywords" className="text-sm font-medium text-gray-700">
-                            Keywords
-                          </Label>
-                          <Input
-                            id="keywords"
-                            value={keywords}
-                            onChange={(e) => setKeywords(e.target.value)}
-                            placeholder="Enter the Keywords to search for later"
-                            className="border-gray-300 focus:border-amber-500 focus:ring-amber-500"
-                            disabled={isSubmitting}
-                          />
-                        </div>
-
-                        <div className="space-y-2">
-                          <Label htmlFor="anchor" className="text-sm font-medium text-gray-700">
-                            Anchor
-                          </Label>
-                          <Input
-                            id="anchor"
-                            value={anchor}
-                            onChange={(e) => setAnchor(e.target.value)}
-                            placeholder="What context will help you recall this thought later?"
-                            className="border-gray-300 focus:border-amber-500 focus:ring-amber-500"
-                            disabled={isSubmitting}
-                          />
-                        </div>
-
-                        <div className="space-y-2">
-                          <Label htmlFor="analogies" className="text-sm font-medium text-gray-700">
-                            Analogies
-                          </Label>
-                          <Input
-                            id="analogies"
-                            value={analogies}
-                            onChange={(e) => setAnalogies(e.target.value)}
-                            placeholder="What Analogies does this thought remind you of?"
-                            className="border-gray-300 focus:border-amber-500 focus:ring-amber-500"
-                            disabled={isSubmitting}
-                          />
-                        </div>
-                      </div>
-                    )}
-
                     {/* Action Buttons */}
                     <div className="flex items-center justify-between pt-4 border-t border-gray-200">
                       <div className="flex items-center gap-2">
@@ -429,7 +388,7 @@ export default function FloatingDot({ onClick }: FloatingDotProps) {
                             setSummary('');
                             setHeading('');
                             setEmotion('');
-                            setShowLayers(false);
+                            setShowLayersScreen(false);
                             setKeywords('');
                             setAnchor('');
                             setAnalogies('');
@@ -452,15 +411,128 @@ export default function FloatingDot({ onClick }: FloatingDotProps) {
                         </Button>
 
                         <Button
-                          onClick={() => setShowLayers(!showLayers)}
+                          onClick={() => setShowLayersScreen(true)}
                           variant="outline"
                           disabled={isSubmitting}
-                          className={`text-gray-700 hover:text-gray-900 ${showLayers ? 'bg-amber-50 border-amber-300' : ''}`}
+                          className="text-gray-700 hover:text-gray-900"
                         >
                           <Layers className="mr-2 h-4 w-4" />
-                          {showLayers ? 'Hide Layers' : 'Add Layers'}
+                          Add Layers
                         </Button>
                       </div>
+
+                      <Button
+                        onClick={handleSubmitThought}
+                        disabled={isSubmitting || !summary.trim()}
+                        className="bg-gradient-to-r from-amber-500 to-orange-500 text-white hover:from-amber-600 hover:to-orange-600"
+                      >
+                        {isSubmitting ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Saving...
+                          </>
+                        ) : (
+                          'Post Thought'
+                        )}
+                      </Button>
+                    </div>
+                  </div>
+                ) : showLayersScreen ? (
+                  /* Layers Screen */
+                  <div className="space-y-4">
+                    <div className="space-y-4">
+                      {/* 1. Keywords */}
+                      <div className="space-y-2">
+                        <Label htmlFor="keywords" className="text-sm font-medium text-gray-700">
+                          Keywords
+                        </Label>
+                        <Input
+                          id="keywords"
+                          value={keywords}
+                          onChange={(e) => setKeywords(e.target.value)}
+                          placeholder="Enter the Keywords to search for later"
+                          className="border-gray-300 focus:border-amber-500 focus:ring-amber-500"
+                          disabled={isSubmitting}
+                        />
+                      </div>
+
+                      {/* 2. Anchor */}
+                      <div className="space-y-2">
+                        <Label htmlFor="anchor" className="text-sm font-medium text-gray-700">
+                          Anchor
+                        </Label>
+                        <Input
+                          id="anchor"
+                          value={anchor}
+                          onChange={(e) => setAnchor(e.target.value)}
+                          placeholder="What context will help you recall this thought later?"
+                          className="border-gray-300 focus:border-amber-500 focus:ring-amber-500"
+                          disabled={isSubmitting}
+                        />
+                      </div>
+
+                      {/* 3. Analogies */}
+                      <div className="space-y-2">
+                        <Label htmlFor="analogies" className="text-sm font-medium text-gray-700">
+                          Analogies
+                        </Label>
+                        <Input
+                          id="analogies"
+                          value={analogies}
+                          onChange={(e) => setAnalogies(e.target.value)}
+                          placeholder="What Analogies does this thought remind you of?"
+                          className="border-gray-300 focus:border-amber-500 focus:ring-amber-500"
+                          disabled={isSubmitting}
+                        />
+                      </div>
+
+                      {/* 4. Emotions Tag */}
+                      <div className="space-y-2">
+                        <Label htmlFor="emotion" className="text-sm font-medium text-gray-700">
+                          Emotions Tag
+                        </Label>
+                        <Input
+                          id="emotion"
+                          value={emotion}
+                          onChange={(e) => setEmotion(e.target.value)}
+                          placeholder="What emotions are attached with this thought?"
+                          className="border-gray-300 focus:border-amber-500 focus:ring-amber-500"
+                          disabled={isSubmitting}
+                        />
+                        {/* Emotion Tag Buttons */}
+                        <div className="flex flex-wrap gap-2 pt-2">
+                          {emotionOptions.map((emotionOption) => (
+                            <Button
+                              key={emotionOption}
+                              type="button"
+                              onClick={() => setEmotion(emotionOption)}
+                              variant="outline"
+                              size="sm"
+                              disabled={isSubmitting}
+                              className={`${
+                                emotion === emotionOption
+                                  ? 'bg-amber-100 border-amber-400 text-amber-800'
+                                  : 'hover:bg-gray-100'
+                              }`}
+                            >
+                              {emotionOption}
+                            </Button>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="flex items-center justify-between pt-4 border-t border-gray-200">
+                      <Button
+                        onClick={() => setShowLayersScreen(false)}
+                        variant="ghost"
+                        disabled={isSubmitting}
+                        className="text-gray-600 hover:text-gray-900"
+                      >
+                        <ArrowLeft className="mr-2 h-4 w-4" />
+                        Back to Thought
+                      </Button>
 
                       <Button
                         onClick={handleSubmitThought}
