@@ -90,40 +90,77 @@ export function getIdentityCardTop(dotSize: number): string {
   return `-${dotSize / 2 + GRID_CONSTANTS.IDENTITY_CARD.CLEARANCE}px`;
 }
 
-// Generate 1000 fixed grid positions (pre-calculated to avoid overlaps)
+// Bounding box constants for dot + identity card groups
+const BOUNDING_BOX = {
+  // Identity card dimensions (approximate)
+  CARD_HEIGHT: 60, // Height of identity card in pixels
+  CARD_WIDTH: 200, // Typical width of identity card
+  
+  // Guardrail padding around the entire group
+  GUARDRAIL_PADDING: 40, // Pixels of space around each group
+  
+  // Calculate total bounding box size
+  getBoxDimensions: (dotSize: number) => {
+    // Total height: dot + card above it + clearance + guardrails
+    const totalHeight = dotSize + BOUNDING_BOX.CARD_HEIGHT + GRID_CONSTANTS.IDENTITY_CARD.CLEARANCE + (BOUNDING_BOX.GUARDRAIL_PADDING * 2);
+    // Total width: max of dot and card + guardrails
+    const totalWidth = Math.max(dotSize, BOUNDING_BOX.CARD_WIDTH) + (BOUNDING_BOX.GUARDRAIL_PADDING * 2);
+    return { width: totalWidth, height: totalHeight };
+  }
+};
+
+// Generate 1000 fixed grid positions using hexagonal close packing
+// Each position accounts for dot + identity card bounding box to prevent overlaps
 function generateFixedGridPositions(): Array<{ x: number; y: number; size: number; rotation: number }> {
   const positions: Array<{ x: number; y: number; size: number; rotation: number }> = [];
   const sizes = GRID_CONSTANTS.DOT_SIZES.DESKTOP;
   
-  const minX = GRID_CONSTANTS.MARGIN_X;
-  const maxX = 100 - GRID_CONSTANTS.MARGIN_X;
-  const minY = GRID_CONSTANTS.MARGIN_Y;
-  const maxY = 100 - GRID_CONSTANTS.MARGIN_Y;
-  
-  const DOTS_PER_LAYER = 8;
   const TOTAL_POSITIONS = 1000;
   
-  // Use golden ratio for natural-looking distribution
-  const PHI = 1.618033988749895;
+  // Virtual canvas size for positioning (percentage-based)
+  const canvasWidth = 100;
+  const canvasHeight = 100;
   
-  for (let i = 0; i < TOTAL_POSITIONS; i++) {
-    const layer = Math.floor(i / DOTS_PER_LAYER);
-    const indexInLayer = i % DOTS_PER_LAYER;
+  // Use average dot size for consistent spacing
+  const avgDotSize = 120; // Middle size
+  const boxDims = BOUNDING_BOX.getBoxDimensions(avgDotSize);
+  
+  // Convert to percentage of viewport
+  // Assume viewport height ~600px for calculations
+  const viewportHeight = 600;
+  const boxWidthPercent = (boxDims.width / viewportHeight) * 100;
+  const boxHeightPercent = (boxDims.height / viewportHeight) * 100;
+  
+  // Hexagonal grid parameters
+  const horizontalSpacing = boxWidthPercent * 1.2; // Extra spacing for cloud effect
+  const verticalSpacing = boxHeightPercent * 1.1;
+  const hexOffset = horizontalSpacing / 2; // Offset for alternating rows
+  
+  // Calculate how many can fit per row
+  const dotsPerRow = Math.floor((canvasWidth - GRID_CONSTANTS.MARGIN_X * 2) / horizontalSpacing);
+  
+  let index = 0;
+  let row = 0;
+  
+  while (index < TOTAL_POSITIONS) {
+    const isEvenRow = row % 2 === 0;
+    const xOffset = isEvenRow ? 0 : hexOffset;
+    const dotsInThisRow = isEvenRow ? dotsPerRow : Math.max(1, dotsPerRow - 1);
     
-    // Golden angle spiral for natural distribution within layer
-    const angle = indexInLayer * PHI * Math.PI * 2;
-    const radius = Math.sqrt(indexInLayer / DOTS_PER_LAYER) * 0.8; // 0-0.8 range
-    
-    // Convert polar to cartesian with layer offset
-    const layerOffset = layer * 100;
-    const x = minX + (maxX - minX) * (0.5 + radius * Math.cos(angle) * 0.4);
-    const y = minY + (maxY - minY) * (0.5 + radius * Math.sin(angle) * 0.4) + layerOffset;
-    
-    // Cycle through sizes deterministically
-    const size = sizes[i % sizes.length];
-    const rotation = (i * 137.5) % 360; // Golden angle rotation
-    
-    positions.push({ x, y, size, rotation });
+    for (let col = 0; col < dotsInThisRow && index < TOTAL_POSITIONS; col++) {
+      const x = GRID_CONSTANTS.MARGIN_X + xOffset + (col * horizontalSpacing);
+      const y = GRID_CONSTANTS.MARGIN_Y + (row * verticalSpacing);
+      
+      // Ensure we stay within bounds
+      if (x + boxWidthPercent / 2 <= 100 - GRID_CONSTANTS.MARGIN_X) {
+        const size = sizes[index % sizes.length];
+        const rotation = (index * 137.5) % 360; // Golden angle rotation
+        
+        positions.push({ x, y, size, rotation });
+        index++;
+      }
+    }
+    row++;
   }
   
   return positions;
