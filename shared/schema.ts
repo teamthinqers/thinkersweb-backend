@@ -251,8 +251,8 @@ export const userBehaviorRelations = relations(userBehavior, ({ one }) => ({
 
 // New thought system schemas
 export const insertThoughtSchema = createInsertSchema(thoughts, {
-  heading: (schema) => schema.min(3, "Heading must be at least 3 characters").max(100, "Heading too long"),
-  summary: (schema) => schema.min(10, "Summary must be at least 10 characters").max(500, "Summary too long"),
+  heading: (schema) => schema.min(1, "Heading is required").max(100, "Heading too long"),
+  summary: (schema) => schema.min(1, "Your thought cannot be empty").max(1000, "Thought is too long (max 1000 characters)"),
   emotion: (schema) => schema.optional(),
   visibility: (schema) => schema.refine(val => ['personal', 'social'].includes(val), "Visibility must be personal or social"),
 });

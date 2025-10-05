@@ -91,11 +91,20 @@ export default function FloatingDot({ onClick }: FloatingDotProps) {
       setAnalogies('');
       setShowWriteForm(false);
       setIsOpen(false);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error creating thought:', error);
+      
+      let errorMessage = "Failed to save your thought. Please try again.";
+      
+      if (error?.message) {
+        errorMessage = error.message;
+      } else if (error?.errors && Array.isArray(error.errors) && error.errors.length > 0) {
+        errorMessage = error.errors[0].message || errorMessage;
+      }
+      
       toast({
         title: "Error",
-        description: "Failed to save your thought. Please try again.",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
