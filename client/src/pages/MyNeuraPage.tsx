@@ -459,7 +459,12 @@ export default function MyNeuraPage() {
                     }}
                   >
                     {/* Identity Card - Always Visible */}
-                    <div className="absolute -top-14 left-1/2 transform -translate-x-1/2 z-50">
+                    <div 
+                      className="absolute left-1/2 transform -translate-x-1/2 z-50"
+                      style={{ 
+                        top: `-${(thought.size || 110) / 2 + 50}px` // Position above the dot with 50px clearance
+                      }}
+                    >
                       <Card className="bg-white/95 backdrop-blur-md shadow-lg border-2 border-amber-200">
                         <CardContent className="p-2 px-3">
                           <div className="flex items-center gap-2">

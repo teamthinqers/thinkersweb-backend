@@ -186,11 +186,21 @@ export default function SocialFeedPage() {
       dotsArray = dotsArray.filter((dot: any) => new Date(dot.createdAt) >= sevenDaysAgo);
     }
     
-    // Calculate cloud/universe positions with organic spacing
+    // Helper function to check if two dots are too close
+    const isTooClose = (x1: number, y1: number, size1: number, x2: number, y2: number, size2: number): boolean => {
+      const minDistance = 15; // Minimum distance in percentage
+      const distance = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+      return distance < minDistance;
+    };
+    
+    // Calculate cloud/universe positions with collision detection
+    const positionedDots: Array<{ x: number; y: number; size: number; rotation: number }> = [];
+    
     const transformedDots: ThoughtDot[] = dotsArray.map((dot: any, index: number) => {
       // Check cache first
       const cached = positionCacheRef.get(dot.id);
       if (cached) {
+        positionedDots.push(cached);
         return { ...dot, ...cached };
       }
 
@@ -199,31 +209,54 @@ export default function SocialFeedPage() {
       
       // Safe margins to prevent cut-off (in percentage)
       const marginX = 10; // 10% margin on each side
-      const marginY = 15; // 15% margin top and bottom (more for heading card)
+      const marginY = 20; // 20% margin top and bottom (more for identity card)
       const safeZoneX = 100 - (marginX * 2);
       const safeZoneY = 100 - (marginY * 2);
       
       // Generate pseudo-random but consistent position based on thought ID
       const seed = dot.id * 9876543;
-      const pseudoRandom1 = (Math.sin(seed) * 10000) % 1;
-      const pseudoRandom2 = (Math.cos(seed * 1.5) * 10000) % 1;
+      let pseudoRandom1 = (Math.sin(seed) * 10000) % 1;
+      let pseudoRandom2 = (Math.cos(seed * 1.5) * 10000) % 1;
       const pseudoRandom3 = (Math.sin(seed * 2.3) * 10000) % 1;
       
       // Create clusters/layers for depth (recent thoughts more spread, older more clustered)
       const layer = Math.floor(index / (isMobile ? 6 : 10));
       const layerOffset = layer * (isMobile ? 60 : 40); // Push older thoughts down
       
-      // Position within safe zone with organic distribution
-      const x = marginX + (Math.abs(pseudoRandom1) * safeZoneX);
-      const y = marginY + (Math.abs(pseudoRandom2) * (safeZoneY * 0.7)) + layerOffset;
-      
       // Varied sizes for visual interest
       const sizes = isMobile ? [70, 80, 90] : [90, 110, 130];
       const size = sizes[Math.floor(Math.abs(pseudoRandom3) * sizes.length)];
+      
+      // Try to find a non-overlapping position (max 10 attempts)
+      let x: number, y: number;
+      let attempts = 0;
+      const maxAttempts = 10;
+      
+      do {
+        // Position within safe zone with organic distribution
+        x = marginX + (Math.abs(pseudoRandom1) * safeZoneX);
+        y = marginY + (Math.abs(pseudoRandom2) * (safeZoneY * 0.7)) + layerOffset;
+        
+        // Check for collisions with existing dots
+        const hasCollision = positionedDots.some(existing => 
+          isTooClose(x, y, size, existing.x, existing.y, existing.size)
+        );
+        
+        if (!hasCollision || attempts >= maxAttempts) {
+          break;
+        }
+        
+        // Generate new random position for next attempt
+        attempts++;
+        pseudoRandom1 = (Math.sin(seed * (attempts + 1)) * 10000) % 1;
+        pseudoRandom2 = (Math.cos(seed * (attempts + 1) * 1.5) * 10000) % 1;
+      } while (attempts < maxAttempts);
+      
       const rotation = (dot.id * 13) % 360;
       
       const position = { x, y, size, rotation };
       positionCacheRef.set(dot.id, position);
+      positionedDots.push(position);
       
       return {
         ...dot,
@@ -372,7 +405,12 @@ export default function SocialFeedPage() {
                 }}
               >
                 {/* Identity Card - Always Visible */}
-                <div className="absolute -top-14 left-1/2 transform -translate-x-1/2 z-50">
+                <div 
+                  className="absolute left-1/2 transform -translate-x-1/2 z-50"
+                  style={{ 
+                    top: `-${(dot.size || 110) / 2 + 50}px` // Position above the dot with 50px clearance
+                  }}
+                >
                   <Card className="bg-white/95 backdrop-blur-md shadow-lg border-2 border-amber-200">
                     <CardContent className="p-2 px-3">
                       <div className="flex items-center gap-2">
