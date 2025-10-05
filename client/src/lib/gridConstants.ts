@@ -93,72 +93,69 @@ export function getIdentityCardTop(dotSize: number): string {
 // Bounding box constants for dot + identity card groups
 const BOUNDING_BOX = {
   // Identity card dimensions (approximate)
-  CARD_HEIGHT: 60, // Height of identity card in pixels
-  CARD_WIDTH: 200, // Typical width of identity card
+  CARD_HEIGHT: 50, // Height of identity card in pixels
+  CARD_WIDTH: 180, // Typical width of identity card
   
-  // Guardrail padding around the entire group
-  GUARDRAIL_PADDING: 40, // Pixels of space around each group
+  // Guardrail padding around the entire group (reduced for tighter spacing)
+  GUARDRAIL_PADDING: 15, // Minimal space around each group
   
   // Calculate total bounding box size
   getBoxDimensions: (dotSize: number) => {
-    // Total height: dot + card above it + clearance + guardrails
+    // Total height: dot + card above it + clearance + minimal guardrails
     const totalHeight = dotSize + BOUNDING_BOX.CARD_HEIGHT + GRID_CONSTANTS.IDENTITY_CARD.CLEARANCE + (BOUNDING_BOX.GUARDRAIL_PADDING * 2);
-    // Total width: max of dot and card + guardrails
+    // Total width: max of dot and card + minimal guardrails
     const totalWidth = Math.max(dotSize, BOUNDING_BOX.CARD_WIDTH) + (BOUNDING_BOX.GUARDRAIL_PADDING * 2);
     return { width: totalWidth, height: totalHeight };
   }
 };
 
-// Generate 1000 fixed grid positions using hexagonal close packing
+// Generate 1000 fixed grid positions with proper spacing and distribution
 // Each position accounts for dot + identity card bounding box to prevent overlaps
 function generateFixedGridPositions(): Array<{ x: number; y: number; size: number; rotation: number }> {
   const positions: Array<{ x: number; y: number; size: number; rotation: number }> = [];
   const sizes = GRID_CONSTANTS.DOT_SIZES.DESKTOP;
   
   const TOTAL_POSITIONS = 1000;
-  
-  // Virtual canvas size for positioning (percentage-based)
-  const canvasWidth = 100;
-  const canvasHeight = 100;
+  const DOTS_PER_ROW = 8; // Distribute 8 dots per layer
   
   // Use average dot size for consistent spacing
-  const avgDotSize = 120; // Middle size
+  const avgDotSize = 120;
   const boxDims = BOUNDING_BOX.getBoxDimensions(avgDotSize);
   
-  // Convert to percentage of viewport
-  // Assume viewport height ~600px for calculations
-  const viewportHeight = 600;
-  const boxWidthPercent = (boxDims.width / viewportHeight) * 100;
-  const boxHeightPercent = (boxDims.height / viewportHeight) * 100;
+  // Box dimensions as percentages (based on typical container ~1200px width x 600px height)
+  const typicalContainerWidth = 1200;
+  const typicalContainerHeight = 600;
+  const boxWidthPx = boxDims.width;
+  const boxHeightPx = boxDims.height;
   
-  // Hexagonal grid parameters
-  const horizontalSpacing = boxWidthPercent * 1.2; // Extra spacing for cloud effect
-  const verticalSpacing = boxHeightPercent * 1.1;
-  const hexOffset = horizontalSpacing / 2; // Offset for alternating rows
+  // Calculate available space
+  const availableWidth = 100 - (GRID_CONSTANTS.MARGIN_X * 2); // Percentage
+  const availableHeight = 100 - (GRID_CONSTANTS.MARGIN_Y * 2); // Percentage
   
-  // Calculate how many can fit per row
-  const dotsPerRow = Math.floor((canvasWidth - GRID_CONSTANTS.MARGIN_X * 2) / horizontalSpacing);
+  // Calculate spacing to fit 8 dots per row across full width
+  const totalWidthNeeded = DOTS_PER_ROW * boxWidthPx;
+  const widthScale = (availableWidth / 100) * typicalContainerWidth / totalWidthNeeded;
+  const horizontalSpacingPercent = (boxWidthPx / typicalContainerWidth * 100) * widthScale * 0.95; // Slight reduction for comfort
+  
+  // Vertical spacing to fit 8 rows in viewport (8 dots visible without scrolling)
+  const verticalSpacingPercent = (boxHeightPx / typicalContainerHeight * 100) * 0.85; // Tighter vertical
   
   let index = 0;
   let row = 0;
   
   while (index < TOTAL_POSITIONS) {
-    const isEvenRow = row % 2 === 0;
-    const xOffset = isEvenRow ? 0 : hexOffset;
-    const dotsInThisRow = isEvenRow ? dotsPerRow : Math.max(1, dotsPerRow - 1);
+    // Calculate starting X to center dots in row
+    const rowStartX = GRID_CONSTANTS.MARGIN_X + (availableWidth - (DOTS_PER_ROW * horizontalSpacingPercent)) / 2;
     
-    for (let col = 0; col < dotsInThisRow && index < TOTAL_POSITIONS; col++) {
-      const x = GRID_CONSTANTS.MARGIN_X + xOffset + (col * horizontalSpacing);
-      const y = GRID_CONSTANTS.MARGIN_Y + (row * verticalSpacing);
+    for (let col = 0; col < DOTS_PER_ROW && index < TOTAL_POSITIONS; col++) {
+      const x = rowStartX + (col * horizontalSpacingPercent) + (horizontalSpacingPercent / 2);
+      const y = GRID_CONSTANTS.MARGIN_Y + (row * verticalSpacingPercent);
       
-      // Ensure we stay within bounds
-      if (x + boxWidthPercent / 2 <= 100 - GRID_CONSTANTS.MARGIN_X) {
-        const size = sizes[index % sizes.length];
-        const rotation = (index * 137.5) % 360; // Golden angle rotation
-        
-        positions.push({ x, y, size, rotation });
-        index++;
-      }
+      const size = sizes[index % sizes.length];
+      const rotation = (index * 137.5) % 360; // Golden angle rotation
+      
+      positions.push({ x, y, size, rotation });
+      index++;
     }
     row++;
   }
