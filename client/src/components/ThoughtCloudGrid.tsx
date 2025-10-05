@@ -262,11 +262,11 @@ export default function ThoughtCloudGrid({
                 transform: `translate(-50%, -50%)`,
               }}
             >
-              {/* Identity Card - Centered above dot */}
+              {/* Identity Card - Anchored above dot's outer edge */}
               <div 
                 className="absolute z-50"
                 style={{ 
-                  top: `-${(dot.size || 110) / 2 + GRID_CONSTANTS.IDENTITY_CARD.CLEARANCE}px`,
+                  bottom: `calc(100% + ${GRID_CONSTANTS.IDENTITY_CARD.CLEARANCE}px)`,
                   left: '50%',
                   transform: 'translateX(-50%)',
                 }}
