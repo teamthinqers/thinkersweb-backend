@@ -430,17 +430,59 @@ export default function MyNeuraPage() {
                   return (
                   <div
                     key={thought.id}
-                    className="absolute cursor-pointer transition-all duration-300 hover:scale-110 hover:z-50 group"
+                    className="absolute transition-all duration-300 hover:z-50 group"
                     style={{
                       left: `${thought.x}%`,
                       top: `${thought.y}%`,
                       transform: `translate(-50%, -50%)`,
-                      width: `${thought.size}px`,
-                      height: `${thought.size}px`,
-                      animation: `float-${thought.id % 3} ${6 + (thought.id % 4)}s ease-in-out infinite`,
                     }}
-                    onClick={() => setSelectedThought(thought)}
                   >
+                    {/* Smart Heading Card */}
+                    <div className="absolute -top-16 left-1/2 transform -translate-x-1/2 w-64 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none group-hover:pointer-events-auto z-50">
+                      <Card className="bg-white/95 backdrop-blur-md shadow-lg border-2 border-amber-200">
+                        <CardContent className="p-3">
+                          <div className="flex items-center gap-2">
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Avatar className="h-8 w-8 border-2 border-amber-300 cursor-pointer hover:scale-110 transition-transform">
+                                    {thought.user?.avatar ? (
+                                      <AvatarImage src={thought.user.avatar} alt={thought.user.fullName || 'User'} />
+                                    ) : (
+                                      <AvatarFallback className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs">
+                                        {thought.user?.fullName?.charAt(0).toUpperCase() || 'U'}
+                                      </AvatarFallback>
+                                    )}
+                                  </Avatar>
+                                </TooltipTrigger>
+                                <TooltipContent side="top">
+                                  <div className="space-y-1">
+                                    <p className="font-semibold">{thought.user?.fullName || 'Unknown'}</p>
+                                    <p className="text-xs text-gray-500">{thought.user?.email || ''}</p>
+                                    <p className="text-xs text-amber-600 cursor-pointer hover:underline">View Profile →</p>
+                                  </div>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-xs font-bold text-gray-900 truncate">{thought.heading}</p>
+                              <p className="text-[10px] text-gray-500">{new Date(thought.createdAt).toLocaleDateString()}</p>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
+
+                    {/* Main Dot Container */}
+                    <div
+                      className="cursor-pointer transition-all duration-300 hover:scale-110"
+                      style={{
+                        width: `${thought.size}px`,
+                        height: `${thought.size}px`,
+                        animation: `float-${thought.id % 3} ${6 + (thought.id % 4)}s ease-in-out infinite`,
+                      }}
+                      onClick={() => setSelectedThought(thought)}
+                    >
                     {/* Outer pulsing ring with channel color */}
                     <div className={`absolute inset-0 rounded-full bg-gradient-to-br ${channelConfig.color} opacity-25 group-hover:opacity-45 transition-opacity animate-pulse`}
                          style={{ transform: 'scale(1.15)' }} />
@@ -521,6 +563,7 @@ export default function MyNeuraPage() {
                     {/* Sparkle particle effect */}
                     <div className="absolute top-0 right-2 w-2 h-2 bg-yellow-400 rounded-full animate-ping opacity-75" />
                     <div className="absolute bottom-2 left-1 w-1.5 h-1.5 bg-orange-400 rounded-full animate-pulse opacity-60" />
+                    </div>
                   </div>
                   );})
               )}
