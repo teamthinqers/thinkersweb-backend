@@ -6,10 +6,10 @@ export const GRID_CONSTANTS = {
   MARGIN_X: 15, // 15% margin on each side for spacious edge spacing
   MARGIN_Y: 22, // 22% margin top and bottom - generous space for identity cards
   
-  // Dot sizes (in pixels)
+  // Dot sizes (in pixels) - uniform size for clean appearance
   DOT_SIZES: {
-    MOBILE: [80, 95, 110],
-    DESKTOP: [100, 120, 140],
+    MOBILE: [100], // Single size for consistency
+    DESKTOP: [120], // Single size for consistency
   },
   
   // Identity card positioning
@@ -122,7 +122,7 @@ function generateFixedGridPositions(): Array<{ x: number; y: number; size: numbe
   const sizes = GRID_CONSTANTS.DOT_SIZES.DESKTOP;
   
   const TOTAL_POSITIONS = 1000;
-  const DOTS_PER_ROW = 5; // Base grid: 5 dots per row - spacious cloud layout
+  const DOTS_PER_ROW = 4; // Base grid: 4 dots per row - very spacious cloud layout
   
   // Calculate available space
   const leftMargin = GRID_CONSTANTS.MARGIN_X; // 15%

@@ -237,13 +237,13 @@ export default function ThoughtCloudGrid({
                 transform: `translate(-50%, -50%)`,
               }}
             >
-              {/* Identity Card - Anchored above dot's outer edge */}
+              {/* Identity Card - Pinned to tip of dot circumference */}
               <div 
                 className="absolute z-50 thought-dot-clickable"
                 style={{ 
-                  bottom: `calc(100% + ${GRID_CONSTANTS.IDENTITY_CARD.CLEARANCE}px)`,
+                  top: '0',
                   left: '50%',
-                  transform: 'translateX(-50%)',
+                  transform: 'translate(-50%, -50%)',
                 }}
               >
                 <Card className="bg-white/95 backdrop-blur-md shadow-lg border-2 border-amber-200">
