@@ -233,7 +233,7 @@ export default function ThoughtCloudGrid({
         variant="ghost"
         size="sm"
         onClick={handleRefresh}
-        className="absolute top-4 right-4 z-30 bg-white/80 hover:bg-amber-100 shadow-md"
+        className="absolute top-4 right-4 z-30 bg-white/95 hover:bg-white hover:shadow-lg active:bg-white/90 shadow-md text-gray-700 hover:text-gray-900 transition-all"
         title="Refresh thought cloud"
       >
         <RefreshCw className="h-4 w-4 mr-2" />
@@ -244,7 +244,7 @@ export default function ThoughtCloudGrid({
         variant="ghost"
         size="sm"
         onClick={onFullscreenToggle}
-        className="absolute bottom-4 right-4 z-30 bg-white/80 hover:bg-white/90 active:bg-white/80 shadow-md"
+        className="absolute bottom-4 right-4 z-30 bg-white/95 hover:bg-white hover:shadow-lg active:bg-white/90 shadow-md text-gray-700 hover:text-gray-900 transition-all"
       >
         {isFullscreen ? (
           <>
