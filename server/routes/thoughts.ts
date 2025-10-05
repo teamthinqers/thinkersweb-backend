@@ -23,8 +23,12 @@ router.get('/', async (req, res) => {
     const offset = parseInt(req.query.offset as string) || 0;
     const recent = req.query.recent === 'true';
 
+    // Get thoughts that are either visibility='social' OR sharedToSocial=true
     let query = db.query.thoughts.findMany({
-      where: eq(thoughts.visibility, 'social'),
+      where: or(
+        eq(thoughts.visibility, 'social'),
+        eq(thoughts.sharedToSocial, true)
+      ),
       limit,
       offset,
       orderBy: desc(thoughts.createdAt),
@@ -47,7 +51,10 @@ router.get('/', async (req, res) => {
       
       query = db.query.thoughts.findMany({
         where: and(
-          eq(thoughts.visibility, 'social'),
+          or(
+            eq(thoughts.visibility, 'social'),
+            eq(thoughts.sharedToSocial, true)
+          ),
           sql`${thoughts.createdAt} >= ${sevenDaysAgo}`
         ),
         limit,
@@ -100,7 +107,10 @@ router.get('/', async (req, res) => {
     // Calculate total count
     const [{ count }] = await db.select({ count: sql<number>`count(*)` })
       .from(thoughts)
-      .where(eq(thoughts.visibility, 'social'));
+      .where(or(
+        eq(thoughts.visibility, 'social'),
+        eq(thoughts.sharedToSocial, true)
+      ));
 
     res.json({
       success: true,
@@ -298,9 +308,13 @@ router.post('/myneura/save/:thoughtId', async (req, res) => {
       return res.status(403).json({ error: 'Can only save social thoughts' });
     }
 
-    if (thought.userId === userId) {
-      return res.status(400).json({ error: 'Cannot save your own thought' });
+    // Special case: Check if user is trying to save their own thought that was shared from MyNeura
+    if (thought.userId === userId && thought.sharedToSocial) {
+      return res.status(400).json({ error: 'Dot already exists' });
     }
+
+    // Allow saving if it's user's own thought created directly in social (not shared from MyNeura)
+    // Skip the ownership check for thoughts created directly in /social
 
     // Check if already saved
     const existing = await db.query.savedThoughts.findFirst({
@@ -372,6 +386,71 @@ router.delete('/myneura/save/:thoughtId', async (req, res) => {
     res.status(500).json({
       success: false,
       error: 'Failed to remove thought',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
+/**
+ * POST /api/thoughts/:thoughtId/share-to-social
+ * Share a personal thought from MyNeura to Social feed
+ */
+router.post('/:thoughtId/share-to-social', async (req, res) => {
+  try {
+    const userId = (req as any).user?.id;
+    
+    if (!userId) {
+      return res.status(401).json({ error: 'Authentication required' });
+    }
+
+    const thoughtId = parseInt(req.params.thoughtId);
+
+    if (isNaN(thoughtId)) {
+      return res.status(400).json({ error: 'Invalid thought ID' });
+    }
+
+    // Check if thought exists and belongs to user
+    const thought = await db.query.thoughts.findFirst({
+      where: eq(thoughts.id, thoughtId),
+    });
+
+    if (!thought) {
+      return res.status(404).json({ error: 'Thought not found' });
+    }
+
+    if (thought.userId !== userId) {
+      return res.status(403).json({ error: 'Can only share your own thoughts' });
+    }
+
+    if (thought.visibility !== 'personal') {
+      return res.status(400).json({ error: 'Can only share personal thoughts' });
+    }
+
+    // Check if already shared
+    if (thought.sharedToSocial) {
+      return res.status(400).json({ error: 'Thought already shared' });
+    }
+
+    // Share to social by setting sharedToSocial flag
+    const [updated] = await db.update(thoughts)
+      .set({
+        sharedToSocial: true,
+        updatedAt: new Date(),
+      })
+      .where(eq(thoughts.id, thoughtId))
+      .returning();
+
+    res.json({
+      success: true,
+      thought: updated,
+      message: 'Thought shared to social feed',
+    });
+
+  } catch (error) {
+    console.error('Share to social error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to share thought',
       details: error instanceof Error ? error.message : 'Unknown error'
     });
   }
