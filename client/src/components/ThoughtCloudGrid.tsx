@@ -237,11 +237,11 @@ export default function ThoughtCloudGrid({
                 transform: `translate(-50%, -50%)`,
               }}
             >
-              {/* Identity Card - Pinned above dot circumference */}
+              {/* Identity Card - Pinned well above dot to avoid overlap */}
               <div 
                 className="absolute z-50 thought-dot-clickable"
                 style={{ 
-                  top: '-20px',
+                  top: '-45px',
                   left: '50%',
                   transform: 'translate(-50%, -50%)',
                 }}
