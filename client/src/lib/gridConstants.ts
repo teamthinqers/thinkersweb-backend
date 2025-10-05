@@ -3,8 +3,8 @@
 
 export const GRID_CONSTANTS = {
   // Margins to prevent dots from being cut off at edges (percentage)
-  MARGIN_X: 15, // 15% margin on each side (increased to center dots better)
-  MARGIN_Y: 20, // 20% margin top and bottom (increased for better centering)
+  MARGIN_X: 12, // 12% margin on each side for comfortable edge spacing
+  MARGIN_Y: 15, // 15% margin top and bottom for comfortable vertical spacing
   
   // Dot sizes (in pixels)
   DOT_SIZES: {
@@ -20,9 +20,9 @@ export const GRID_CONSTANTS = {
   
   // Collision detection
   COLLISION: {
-    MIN_DISTANCE: 18, // Minimum distance between dot centers (percentage)
+    MIN_DISTANCE: 25, // Minimum distance between dot centers (percentage) - increased for more spacing
     MAX_ATTEMPTS: 200, // Maximum attempts to find non-overlapping position (increased)
-    GUTTER_PX: 30, // Minimum pixel gap between dot edges
+    GUTTER_PX: 80, // Minimum pixel gap between dot edges - significantly increased
   },
   
   // Cloud/Universe layout
