@@ -109,47 +109,39 @@ const BOUNDING_BOX = {
   }
 };
 
-// Generate 1000 fixed grid positions with proper spacing and distribution
+// Generate 1000 fixed grid positions in straight horizontal rows
 // Each position accounts for dot + identity card bounding box to prevent overlaps
 function generateFixedGridPositions(): Array<{ x: number; y: number; size: number; rotation: number }> {
   const positions: Array<{ x: number; y: number; size: number; rotation: number }> = [];
   const sizes = GRID_CONSTANTS.DOT_SIZES.DESKTOP;
   
   const TOTAL_POSITIONS = 1000;
-  const DOTS_PER_ROW = 8; // Distribute 8 dots per layer
+  const DOTS_PER_ROW = 8; // 8 dots per straight horizontal row
   
-  // Use average dot size for consistent spacing
-  const avgDotSize = 120;
-  const boxDims = BOUNDING_BOX.getBoxDimensions(avgDotSize);
+  // Calculate available space (accounting for margins)
+  const leftMargin = GRID_CONSTANTS.MARGIN_X; // 12%
+  const rightMargin = GRID_CONSTANTS.MARGIN_X; // 12%
+  const topMargin = GRID_CONSTANTS.MARGIN_Y; // 15%
+  const availableWidth = 100 - leftMargin - rightMargin; // 76%
   
-  // Box dimensions as percentages (based on typical container ~1200px width x 600px height)
-  const typicalContainerWidth = 1200;
-  const typicalContainerHeight = 600;
-  const boxWidthPx = boxDims.width;
-  const boxHeightPx = boxDims.height;
+  // Calculate spacing between dots to spread evenly across width
+  // Space is divided into gaps between dots (7 gaps for 8 dots)
+  const horizontalSpacing = availableWidth / (DOTS_PER_ROW - 1);
   
-  // Calculate available space
-  const availableWidth = 100 - (GRID_CONSTANTS.MARGIN_X * 2); // Percentage
-  const availableHeight = 100 - (GRID_CONSTANTS.MARGIN_Y * 2); // Percentage
-  
-  // Calculate spacing to fit 8 dots per row across full width
-  const totalWidthNeeded = DOTS_PER_ROW * boxWidthPx;
-  const widthScale = (availableWidth / 100) * typicalContainerWidth / totalWidthNeeded;
-  const horizontalSpacingPercent = (boxWidthPx / typicalContainerWidth * 100) * widthScale * 0.95; // Slight reduction for comfort
-  
-  // Vertical spacing to fit 8 rows in viewport (8 dots visible without scrolling)
-  const verticalSpacingPercent = (boxHeightPx / typicalContainerHeight * 100) * 0.85; // Tighter vertical
+  // Vertical spacing - fit first 8 dots (1 row) comfortably on screen
+  // Each row needs space for: dot (120px avg) + card (50px) + clearance (20px) + padding (30px) = ~220px
+  // For 600px viewport: 220/600 = ~36.67% per row
+  const verticalSpacing = 36; // Percentage - gives ~220px per row in 600px container
   
   let index = 0;
-  let row = 0;
   
-  while (index < TOTAL_POSITIONS) {
-    // Calculate starting X to center dots in row
-    const rowStartX = GRID_CONSTANTS.MARGIN_X + (availableWidth - (DOTS_PER_ROW * horizontalSpacingPercent)) / 2;
-    
+  for (let row = 0; row < Math.ceil(TOTAL_POSITIONS / DOTS_PER_ROW); row++) {
     for (let col = 0; col < DOTS_PER_ROW && index < TOTAL_POSITIONS; col++) {
-      const x = rowStartX + (col * horizontalSpacingPercent) + (horizontalSpacingPercent / 2);
-      const y = GRID_CONSTANTS.MARGIN_Y + (row * verticalSpacingPercent);
+      // Calculate X position: spread evenly from left margin to right edge
+      const x = leftMargin + (col * horizontalSpacing);
+      
+      // Calculate Y position: rows stacked vertically
+      const y = topMargin + (row * verticalSpacing);
       
       const size = sizes[index % sizes.length];
       const rotation = (index * 137.5) % 360; // Golden angle rotation
@@ -157,7 +149,6 @@ function generateFixedGridPositions(): Array<{ x: number; y: number; size: numbe
       positions.push({ x, y, size, rotation });
       index++;
     }
-    row++;
   }
   
   return positions;
