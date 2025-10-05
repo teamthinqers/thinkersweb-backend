@@ -109,39 +109,50 @@ const BOUNDING_BOX = {
   }
 };
 
-// Generate 1000 fixed grid positions in straight horizontal rows
-// Each position accounts for dot + identity card bounding box to prevent overlaps
+// Seeded random function for consistent positioning across refreshes
+function seededRandom(seed: number): number {
+  const x = Math.sin(seed) * 10000;
+  return x - Math.floor(x);
+}
+
+// Generate 1000 fixed positions with organic "stars in the cloud" distribution
+// Uses jittered grid to ensure spacing while creating natural scatter
 function generateFixedGridPositions(): Array<{ x: number; y: number; size: number; rotation: number }> {
   const positions: Array<{ x: number; y: number; size: number; rotation: number }> = [];
   const sizes = GRID_CONSTANTS.DOT_SIZES.DESKTOP;
   
   const TOTAL_POSITIONS = 1000;
-  const DOTS_PER_ROW = 8; // 8 dots per straight horizontal row
+  const DOTS_PER_ROW = 8; // Base grid: 8 dots per row
   
-  // Calculate available space (accounting for margins)
+  // Calculate available space
   const leftMargin = GRID_CONSTANTS.MARGIN_X; // 12%
-  const rightMargin = GRID_CONSTANTS.MARGIN_X; // 12%
   const topMargin = GRID_CONSTANTS.MARGIN_Y; // 15%
-  const availableWidth = 100 - leftMargin - rightMargin; // 76%
+  const availableWidth = 100 - (GRID_CONSTANTS.MARGIN_X * 2); // 76%
   
-  // Calculate spacing between dots to spread evenly across width
-  // Space is divided into gaps between dots (7 gaps for 8 dots)
-  const horizontalSpacing = availableWidth / (DOTS_PER_ROW - 1);
+  // Base grid spacing to ensure minimum distance
+  const cellWidth = availableWidth / DOTS_PER_ROW;
+  const cellHeight = 25; // Vertical spacing percentage - fits ~4 rows in 600px viewport
   
-  // Vertical spacing - fit first 8 dots (1 row) comfortably on screen
-  // Each row needs space for: dot (120px avg) + card (50px) + clearance (20px) + padding (30px) = ~220px
-  // For 600px viewport: 220/600 = ~36.67% per row
-  const verticalSpacing = 36; // Percentage - gives ~220px per row in 600px container
+  // Jitter amount - random offset within cell to create organic look
+  // Keep it within bounds to prevent overlaps (max 40% of cell size)
+  const maxJitterX = cellWidth * 0.4;
+  const maxJitterY = cellHeight * 0.4;
   
   let index = 0;
   
   for (let row = 0; row < Math.ceil(TOTAL_POSITIONS / DOTS_PER_ROW); row++) {
     for (let col = 0; col < DOTS_PER_ROW && index < TOTAL_POSITIONS; col++) {
-      // Calculate X position: spread evenly from left margin to right edge
-      const x = leftMargin + (col * horizontalSpacing);
+      // Base grid position (center of cell)
+      const baseX = leftMargin + (col * cellWidth) + (cellWidth / 2);
+      const baseY = topMargin + (row * cellHeight) + (cellHeight / 2);
       
-      // Calculate Y position: rows stacked vertically
-      const y = topMargin + (row * verticalSpacing);
+      // Add seeded random jitter for organic "scattered stars" look
+      const jitterX = (seededRandom(index * 2.5) - 0.5) * 2 * maxJitterX;
+      const jitterY = (seededRandom(index * 3.7) - 0.5) * 2 * maxJitterY;
+      
+      // Final position with jitter (clamped to margins)
+      const x = Math.max(leftMargin + 5, Math.min(100 - GRID_CONSTANTS.MARGIN_X - 5, baseX + jitterX));
+      const y = Math.max(topMargin, baseY + jitterY);
       
       const size = sizes[index % sizes.length];
       const rotation = (index * 137.5) % 360; // Golden angle rotation
