@@ -96,6 +96,16 @@ const getChannelConfig = (channel?: string) => {
         badgeBg: 'bg-purple-600',
         name: 'ChatGPT'
       };
+    case 'aihelp':
+      return {
+        icon: Sparkles,
+        color: 'from-violet-400 via-fuchsia-400 to-pink-400',
+        borderColor: 'border-violet-300',
+        hoverBorderColor: 'border-fuchsia-400',
+        bgGradient: 'from-white via-violet-50 to-fuchsia-50',
+        badgeBg: 'bg-gradient-to-r from-violet-600 to-fuchsia-600',
+        name: 'AI Help'
+      };
     default:
       return {
         icon: PenTool,
