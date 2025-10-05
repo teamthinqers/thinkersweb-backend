@@ -230,7 +230,7 @@ export default function ThoughtCloudGrid({
         variant="ghost"
         size="sm"
         onClick={onFullscreenToggle}
-        className="absolute bottom-4 right-4 z-30 bg-white/80 hover:bg-amber-100 shadow-md"
+        className="absolute bottom-4 right-4 z-30 bg-white/80 hover:bg-white/90 active:bg-white/80 shadow-md"
       >
         {isFullscreen ? (
           <>
