@@ -157,7 +157,7 @@ export default function ThoughtCloudGrid({
   };
 
   return (
-    <div className={`relative w-full bg-gradient-to-br from-amber-50/70 to-orange-50/50 shadow-2xl border border-amber-200 overflow-hidden backdrop-blur-sm ${isFullscreen ? 'h-full rounded-none' : 'rounded-3xl'}`}>
+    <div className={`relative w-full bg-gradient-to-br from-amber-50/70 to-orange-50/50 shadow-2xl border border-amber-200 overflow-hidden backdrop-blur-sm ${isFullscreen ? 'h-full rounded-none' : 'h-[600px] rounded-3xl'}`}>
       
       {/* Cloud background pattern */}
       <div className="absolute inset-0 opacity-25">
@@ -212,7 +212,7 @@ export default function ThoughtCloudGrid({
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
         style={{
-          height: isFullscreen ? '100vh' : '600px',
+          height: '10000px', // Large virtual canvas for infinite scrolling
           transform: `translateY(${panOffset.y}px)`,
           transition: isDragging ? 'none' : 'transform 0.3s ease-out',
           touchAction: 'none',
