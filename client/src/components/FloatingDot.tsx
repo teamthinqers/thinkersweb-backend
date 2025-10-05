@@ -64,6 +64,7 @@ export default function FloatingDot({ onClick }: FloatingDotProps) {
         summary: summary.trim(),
         emotion: emotion.trim() || null,
         visibility: targetNeura === 'social' ? 'social' : 'personal',
+        channel: 'write',
         keywords: keywords.trim() || null,
         anchor: anchor.trim() || null,
         analogies: analogies.trim() || null,

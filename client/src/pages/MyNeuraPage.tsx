@@ -5,8 +5,10 @@ import {
   Brain, Users, Sparkles, MessageSquare, Plus,
   Menu, User, LogOut, Settings, TrendingUp, Heart,
   Share2, Eye, MoreHorizontal, Maximize, Minimize, Clock,
-  Grid3x3, List, Bookmark, Fingerprint, Hash, Lightbulb, MessageCircle, Zap, Info, Cog
+  Grid3x3, List, Bookmark, Fingerprint, Hash, Lightbulb, MessageCircle, Zap, Info, Cog,
+  PenTool, Linkedin, MessageCircleMore
 } from "lucide-react";
+import { SiWhatsapp, SiLinkedin, SiOpenai } from 'react-icons/si';
 import { useAuth } from "@/hooks/use-auth-new";
 import {
   DropdownMenu,
@@ -35,6 +37,7 @@ type ThoughtDot = {
   summary: string;
   emotion?: string;
   imageUrl?: string;
+  channel?: string;
   createdAt: string;
   user?: {
     id: number;
@@ -48,6 +51,62 @@ type ThoughtDot = {
   y?: number;
   size?: number;
   rotation?: number;
+};
+
+// Channel-specific visual configurations
+const getChannelConfig = (channel?: string) => {
+  switch (channel) {
+    case 'write':
+      return {
+        icon: PenTool,
+        color: 'from-amber-400 via-orange-400 to-red-400',
+        borderColor: 'border-amber-300',
+        hoverBorderColor: 'border-orange-400',
+        bgGradient: 'from-white via-amber-50 to-orange-50',
+        badgeBg: 'bg-amber-500',
+        name: 'Write'
+      };
+    case 'linkedin':
+      return {
+        icon: SiLinkedin,
+        color: 'from-blue-400 via-blue-500 to-blue-600',
+        borderColor: 'border-blue-300',
+        hoverBorderColor: 'border-blue-500',
+        bgGradient: 'from-white via-blue-50 to-blue-100',
+        badgeBg: 'bg-blue-600',
+        name: 'LinkedIn'
+      };
+    case 'whatsapp':
+      return {
+        icon: SiWhatsapp,
+        color: 'from-green-400 via-green-500 to-green-600',
+        borderColor: 'border-green-300',
+        hoverBorderColor: 'border-green-500',
+        bgGradient: 'from-white via-green-50 to-green-100',
+        badgeBg: 'bg-green-600',
+        name: 'WhatsApp'
+      };
+    case 'chatgpt':
+      return {
+        icon: SiOpenai,
+        color: 'from-purple-400 via-purple-500 to-purple-600',
+        borderColor: 'border-purple-300',
+        hoverBorderColor: 'border-purple-500',
+        bgGradient: 'from-white via-purple-50 to-purple-100',
+        badgeBg: 'bg-purple-600',
+        name: 'ChatGPT'
+      };
+    default:
+      return {
+        icon: PenTool,
+        color: 'from-amber-400 via-orange-400 to-red-400',
+        borderColor: 'border-amber-300',
+        hoverBorderColor: 'border-orange-400',
+        bgGradient: 'from-white via-amber-50 to-orange-50',
+        badgeBg: 'bg-amber-500',
+        name: 'Default'
+      };
+  }
 };
 
 // Type for neural strength data
@@ -354,7 +413,11 @@ export default function MyNeuraPage() {
                   </div>
                 </div>
               ) : (
-                thoughts.map((thought) => (
+                thoughts.map((thought) => {
+                  const channelConfig = getChannelConfig(thought.channel);
+                  const ChannelIcon = channelConfig.icon;
+                  
+                  return (
                   <div
                     key={thought.id}
                     className="absolute cursor-pointer transition-all duration-300 hover:scale-110 hover:z-50 group"
@@ -368,15 +431,15 @@ export default function MyNeuraPage() {
                     }}
                     onClick={() => setSelectedThought(thought)}
                   >
-                    {/* Outer pulsing ring */}
-                    <div className="absolute inset-0 rounded-full bg-gradient-to-br from-amber-400 via-orange-400 to-red-400 opacity-25 group-hover:opacity-45 transition-opacity animate-pulse" 
+                    {/* Outer pulsing ring with channel color */}
+                    <div className={`absolute inset-0 rounded-full bg-gradient-to-br ${channelConfig.color} opacity-25 group-hover:opacity-45 transition-opacity animate-pulse`}
                          style={{ transform: 'scale(1.15)' }} />
                     
-                    {/* Middle glow layer */}
-                    <div className="absolute inset-0 rounded-full bg-gradient-to-br from-amber-400 to-orange-400 blur-md opacity-45 group-hover:opacity-65 transition-opacity" />
+                    {/* Middle glow layer with channel color */}
+                    <div className={`absolute inset-0 rounded-full bg-gradient-to-br ${channelConfig.color} blur-md opacity-45 group-hover:opacity-65 transition-opacity`} />
                     
-                    {/* Main circular thought */}
-                    <div className="relative w-full h-full rounded-full bg-gradient-to-br from-white via-amber-50 to-orange-50 border-3 border-amber-300 group-hover:border-orange-400 shadow-xl group-hover:shadow-2xl transition-all flex flex-col items-center justify-center p-4 backdrop-blur-sm">
+                    {/* Main circular thought with channel styling */}
+                    <div className={`relative w-full h-full rounded-full bg-gradient-to-br ${channelConfig.bgGradient} border-3 ${channelConfig.borderColor} group-hover:${channelConfig.hoverBorderColor} shadow-xl group-hover:shadow-2xl transition-all flex flex-col items-center justify-center p-4 backdrop-blur-sm`}>
                       
                       {/* User avatar or saved indicator */}
                       <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
@@ -429,11 +492,27 @@ export default function MyNeuraPage() {
                       </p>
                     </div>
 
+                    {/* Channel indicator badge */}
+                    <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2">
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger>
+                            <div className={`h-6 w-6 rounded-full ${channelConfig.badgeBg} flex items-center justify-center border-2 border-white shadow-md`}>
+                              <ChannelIcon className="h-3 w-3 text-white" />
+                            </div>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p className="text-xs">From {channelConfig.name}</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </div>
+
                     {/* Sparkle particle effect */}
                     <div className="absolute top-0 right-2 w-2 h-2 bg-yellow-400 rounded-full animate-ping opacity-75" />
                     <div className="absolute bottom-2 left-1 w-1.5 h-1.5 bg-orange-400 rounded-full animate-pulse opacity-60" />
                   </div>
-                ))
+                  );})
               )}
                 </div>
               </>
