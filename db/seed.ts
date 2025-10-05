@@ -9,10 +9,10 @@ async function seed() {
     // Categories seeding
     console.log("Creating categories...");
     const categories = [
-      { name: "Professional", color: "#6366f1" }, // Primary color
-      { name: "Personal", color: "#8b5cf6" }, // Secondary color
-      { name: "Health", color: "#10b981" }, // Green-500
-      { name: "Finance", color: "#f59e0b" }, // Yellow-500
+      { name: "Professional", color: "#6366f1", description: "Professional development and career" },
+      { name: "Personal", color: "#8b5cf6", description: "Personal growth and relationships" },
+      { name: "Health", color: "#10b981", description: "Health and wellness" },
+      { name: "Finance", color: "#f59e0b", description: "Financial planning and management" },
     ];
 
     for (const category of categories) {
@@ -173,6 +173,47 @@ async function seed() {
           originEntryId: allEntries[1].id, // Meditation
           relatedEntryId: allEntries[2].id, // Active listening
         });
+      }
+    }
+
+    // Thoughts seeding - for grid demonstration
+    console.log("Creating thoughts...");
+    const thoughtsData = [
+      { heading: "Morning Productivity Insight", summary: "Best work happens in the first 3 hours after waking up. Protect this time ruthlessly.", channel: "write" },
+      { heading: "Code Review Best Practice", summary: "Always review the PR description before diving into code - it provides critical context.", channel: "write" },
+      { heading: "Atomic Habits Book Recommendation", summary: "Just finished 'Atomic Habits' by James Clear. The compound effect of 1% daily improvements is mind-blowing.", channel: "linkedin" },
+      { heading: "Coffee Shop Discovery", summary: "Found an amazing coffee shop downtown with perfect wifi and quiet atmosphere for deep work.", channel: "write" },
+      { heading: "TypeScript Type Safety Tip", summary: "Use union types instead of `any` whenever possible - your future self will thank you.", channel: "write" },
+      { heading: "Meditation Changed My Life", summary: "Started meditating 10 minutes daily. Noticing better focus, less anxiety, and improved decision making.", channel: "linkedin" },
+      { heading: "Walking Meeting Success", summary: "Tried walking meetings this week - team loved it! Fresh air + movement = better ideas.", channel: "write" },
+      { heading: "Reading Goal Progress", summary: "Completed book #12 this year! Reading before bed instead of scrolling has been game-changing.", channel: "write" },
+      { heading: "Git Workflow Optimization", summary: "Switched to trunk-based development. Smaller, more frequent merges = fewer conflicts and faster feedback.", channel: "write" },
+      { heading: "Networking Event Insight", summary: "At tech conference: Quality connections matter more than quantity. Had 3 deep conversations vs. 20 superficial ones.", channel: "linkedin" },
+      { heading: "Time Blocking Transform", summary: "Time blocking my calendar transformed my productivity. No more reactive days - everything has its time.", channel: "write" },
+      { heading: "React Performance Win", summary: "Implemented React.memo and useMemo strategically. App feels 3x faster with no visual changes.", channel: "write" },
+      { heading: "Gratitude Practice", summary: "Writing 3 things I'm grateful for each morning. Simple but powerful mindset shift.", channel: "write" },
+      { heading: "Async Communication Preference", summary: "Embracing async communication at work. Fewer meetings, more deep work, better documentation.", channel: "linkedin" },
+      { heading: "Design System Success", summary: "Our new design system cut development time by 40%. Consistency and speed improved dramatically.", channel: "write" },
+    ];
+
+    // Get first user ID for test thoughts
+    const firstUser = await db.query.users.findFirst();
+    if (firstUser) {
+      for (const thoughtData of thoughtsData) {
+        const existing = await db.query.thoughts.findFirst({
+          where: eq(schema.thoughts.heading, thoughtData.heading),
+        });
+
+        if (!existing) {
+          await db.insert(schema.thoughts).values({
+            userId: firstUser.id,
+            heading: thoughtData.heading,
+            summary: thoughtData.summary,
+            channel: thoughtData.channel,
+            visibility: 'social', // Make them public for social feed
+            createdAt: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000), // Random time in last week
+          });
+        }
       }
     }
 
