@@ -131,29 +131,38 @@ export default function SocialFeedPage() {
           <div className="flex items-center justify-between mb-6">
             <h1 className="text-2xl font-bold flex items-center gap-2">
               <Users className="h-6 w-6 text-amber-600" />
-              Social Thoughts
+              Social Neura
             </h1>
             
-            {/* Cloud/Feed Mode Toggle */}
-            <div className="flex items-center gap-3 bg-white px-4 py-2 rounded-lg border border-gray-200 shadow-sm">
-              <Label htmlFor="view-mode" className="flex items-center gap-2 cursor-pointer">
-                {viewMode === 'cloud' ? (
-                  <>
-                    <Cloud className="h-4 w-4 text-amber-600" />
-                    <span className="text-sm font-medium text-gray-700">Cloud Mode</span>
-                  </>
-                ) : (
-                  <>
-                    <ListIcon className="h-4 w-4 text-amber-600" />
-                    <span className="text-sm font-medium text-gray-700">Feed Mode</span>
-                  </>
-                )}
-              </Label>
-              <Switch
-                id="view-mode"
-                checked={viewMode === 'feed'}
-                onCheckedChange={(checked) => setViewMode(checked ? 'feed' : 'cloud')}
-                className="data-[state=checked]:bg-amber-500"
+            {/* Stylish Flip Toggle for Cloud/Feed Mode */}
+            <div className="relative inline-flex items-center bg-white rounded-full p-1 border-2 border-gray-200 shadow-sm">
+              <button
+                onClick={() => setViewMode('cloud')}
+                className={`relative z-10 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 flex items-center gap-2 ${
+                  viewMode === 'cloud'
+                    ? 'text-white'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                <Cloud className="h-4 w-4" />
+                Cloud
+              </button>
+              <button
+                onClick={() => setViewMode('feed')}
+                className={`relative z-10 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 flex items-center gap-2 ${
+                  viewMode === 'feed'
+                    ? 'text-white'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                <ListIcon className="h-4 w-4" />
+                Feed
+              </button>
+              {/* Animated background slider */}
+              <div
+                className={`absolute top-1 bottom-1 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full transition-all duration-300 ease-in-out ${
+                  viewMode === 'cloud' ? 'left-1 w-[calc(50%-4px)]' : 'left-[calc(50%+2px)] w-[calc(50%-4px)]'
+                }`}
               />
             </div>
           </div>
