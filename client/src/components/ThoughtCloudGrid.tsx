@@ -198,7 +198,7 @@ export default function ThoughtCloudGrid({
               <div 
                 className="absolute z-50 thought-dot-clickable"
                 style={{ 
-                  top: showAvatarOnly ? '-85px' : '-70px', // Higher position for avatar-only
+                  top: showAvatarOnly ? '-60px' : '-70px', // Closer to circumference for avatar-only
                   left: '50%',
                   transform: 'translate(-50%, -50%)',
                 }}
