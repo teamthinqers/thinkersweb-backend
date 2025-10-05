@@ -60,22 +60,35 @@ export default function ThoughtCloudGrid({
   
   // Cache for thought positions to prevent teleporting on refetch
   const [positionCache] = useState(() => new Map<number, { x: number; y: number; size: number; rotation: number }>());
+  const prevDimensionsRef = useRef({ width: 0, height: 0 });
 
   // Track container dimensions
   useEffect(() => {
     const updateDimensions = () => {
       if (containerRef.current) {
-        setContainerDimensions({
+        const newDimensions = {
           width: containerRef.current.offsetWidth,
           height: containerRef.current.offsetHeight,
-        });
+        };
+        
+        // Clear cache if dimensions changed significantly (more than 10%)
+        const widthChange = Math.abs(newDimensions.width - prevDimensionsRef.current.width);
+        const heightChange = Math.abs(newDimensions.height - prevDimensionsRef.current.height);
+        
+        if (widthChange > prevDimensionsRef.current.width * 0.1 || 
+            heightChange > prevDimensionsRef.current.height * 0.1) {
+          positionCache.clear();
+        }
+        
+        prevDimensionsRef.current = newDimensions;
+        setContainerDimensions(newDimensions);
       }
     };
     
     updateDimensions();
     window.addEventListener('resize', updateDimensions);
     return () => window.removeEventListener('resize', updateDimensions);
-  }, [isFullscreen]);
+  }, [isFullscreen, positionCache]);
 
   // Position thoughts in cloud formation with vertical layering
   useEffect(() => {
