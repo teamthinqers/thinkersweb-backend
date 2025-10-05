@@ -20,8 +20,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import SharedAuthLayout from "@/components/layout/SharedAuthLayout";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
 import {
   Tooltip,
   TooltipContent,
@@ -61,6 +63,9 @@ export default function MyNeuraPage() {
   const [viewMode, setViewMode] = useState<'cloud' | 'feed'>('cloud');
   const [showStrengthInfo, setShowStrengthInfo] = useState(false);
 
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
   // Fetch user's personal thoughts from MyNeura
   const { data: myNeuraThoughts, isLoading } = useQuery({
     queryKey: ['/api/thoughts/myneura'],
@@ -71,6 +76,30 @@ export default function MyNeuraPage() {
   const { data: neuralStrength } = useQuery<NeuralStrengthData>({
     queryKey: ['/api/thoughts/neural-strength'],
     enabled: !!user,
+  });
+
+  // Share thought to social feed
+  const shareToSocialMutation = useMutation({
+    mutationFn: async (thoughtId: number) => {
+      const response = await apiRequest('POST', `/api/thoughts/${thoughtId}/share-to-social`, {});
+      return response.json();
+    },
+    onSuccess: (data) => {
+      toast({
+        title: data.error || "Shared!",
+        description: data.error === 'Thought already shared' ? "This thought is already visible in Social feed" : "Thought shared to Social feed",
+        variant: data.error ? "destructive" : "default",
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/thoughts/myneura'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/thoughts'] });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
   });
 
   // Load and filter thoughts
@@ -503,6 +532,20 @@ export default function MyNeuraPage() {
                       </Card>
                     </div>
                   </div>
+
+                  {/* Share to Social Button - only for non-saved thoughts */}
+                  {!selectedThought.isSaved && (
+                    <div className="pt-4">
+                      <Button
+                        onClick={() => shareToSocialMutation.mutate(selectedThought.id)}
+                        disabled={shareToSocialMutation.isPending || selectedThought.sharedToSocial}
+                        className="w-full bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600"
+                      >
+                        <Share2 className="h-4 w-4 mr-2" />
+                        {selectedThought.sharedToSocial ? 'Already Shared to Social' : 'Share to Social'}
+                      </Button>
+                    </div>
+                  )}
                 </div>
               </div>
 

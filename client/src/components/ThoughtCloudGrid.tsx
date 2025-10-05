@@ -15,6 +15,7 @@ export interface ThoughtDot {
   channel?: string;
   userId?: number;
   visibility?: string;
+  sharedToSocial?: boolean;
   createdAt: string;
   username?: string;
   user?: {
