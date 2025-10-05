@@ -13,15 +13,24 @@ import { apiRequest, queryClient } from '@/lib/queryClient';
 
 interface FloatingDotProps {
   onClick?: () => void;
+  currentPage?: string;
 }
 
-export default function FloatingDot({ onClick }: FloatingDotProps) {
+export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) {
   const [position, setPosition] = useState({ x: 100, y: 100 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [hasMoved, setHasMoved] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [targetNeura, setTargetNeura] = useState<'social' | 'myneura'>('social');
+  
+  // Set default target based on current page
+  const getDefaultTarget = () => {
+    if (currentPage === '/myneura') return 'myneura';
+    if (currentPage === '/social') return 'social';
+    return 'social'; // default fallback
+  };
+  
+  const [targetNeura, setTargetNeura] = useState<'social' | 'myneura'>(getDefaultTarget());
   const [dialogPosition, setDialogPosition] = useState({ x: 0, y: 0 });
   const [isDraggingDialog, setIsDraggingDialog] = useState(false);
   const [showWriteForm, setShowWriteForm] = useState(false);
@@ -43,6 +52,15 @@ export default function FloatingDot({ onClick }: FloatingDotProps) {
   const dialogRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
   const { toast } = useToast();
+
+  // Update targetNeura when page changes
+  useEffect(() => {
+    if (currentPage === '/myneura') {
+      setTargetNeura('myneura');
+    } else if (currentPage === '/social') {
+      setTargetNeura('social');
+    }
+  }, [currentPage]);
 
   const handleSubmitThought = async () => {
     if (!heading.trim()) {

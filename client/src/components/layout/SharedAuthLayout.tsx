@@ -336,10 +336,13 @@ export default function SharedAuthLayout({ children }: SharedAuthLayoutProps) {
       )}
 
       {/* Global Floating Dot */}
-      <FloatingDot onClick={() => {
-        // TODO: Handle click - will be implemented next
-        console.log('Floating dot clicked');
-      }} />
+      <FloatingDot 
+        currentPage={location}
+        onClick={() => {
+          // TODO: Handle click - will be implemented next
+          console.log('Floating dot clicked');
+        }} 
+      />
     </div>
   );
 }
