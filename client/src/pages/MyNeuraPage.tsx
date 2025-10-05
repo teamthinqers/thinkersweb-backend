@@ -98,8 +98,9 @@ export default function MyNeuraPage() {
         <div className={`${isFullscreen ? 'h-full' : 'container mx-auto px-4 sm:px-6 lg:px-8 py-8'}`}>
           {/* Thought Cloud Canvas */}
           <div className={`relative w-full bg-gradient-to-br from-amber-50/70 to-orange-50/50 shadow-2xl border border-amber-200 overflow-hidden backdrop-blur-sm ${isFullscreen ? 'h-full rounded-none' : 'rounded-3xl'}`}>
-            {/* Toolbar - Neura Navigation */}
-            <div className="sticky top-0 z-10 bg-white/95 backdrop-blur-lg border-b border-gray-200 shadow-sm px-6 py-4 flex items-center justify-between">
+            {/* Toolbar - Neura Navigation - hide in fullscreen */}
+            {!isFullscreen && (
+              <div className="sticky top-0 z-10 bg-white/95 backdrop-blur-lg border-b border-gray-200 shadow-sm px-6 py-4 flex items-center justify-between">
               {/* Left: Navigation sections */}
               <div className="flex items-center gap-4">
               
@@ -225,6 +226,7 @@ export default function MyNeuraPage() {
                 </div>
               </div>
             </div>
+            )}
             
             {/* Cloud View */}
             {viewMode === 'cloud' && (

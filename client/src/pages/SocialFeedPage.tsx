@@ -135,35 +135,37 @@ export default function SocialFeedPage() {
     <SharedAuthLayout>
       <div className={`flex-1 overflow-hidden ${isFullscreen ? 'fixed inset-0 z-50 bg-gradient-to-br from-amber-50 via-orange-50 to-red-50' : ''}`}>
         <div className={`${isFullscreen ? 'h-full' : 'container mx-auto px-4 sm:px-6 lg:px-8 py-8'}`}>
-        {/* Toolbar */}
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold flex items-center gap-2">
-            <Users className="h-6 w-6 text-amber-600" />
-            Social Thoughts
-          </h1>
-          
-          <div className="flex items-center gap-2">
-            {/* Recent Filter */}
-            <Button
-              variant={showRecentOnly ? "default" : "outline"}
-              size="sm"
-              onClick={() => setShowRecentOnly(!showRecentOnly)}
-              className={showRecentOnly ? "bg-amber-500 hover:bg-amber-600" : ""}
-            >
-              <Clock className="h-4 w-4 mr-2" />
-              Recent
-            </Button>
+        {/* Toolbar - hide in fullscreen */}
+        {!isFullscreen && (
+          <div className="flex items-center justify-between mb-6">
+            <h1 className="text-2xl font-bold flex items-center gap-2">
+              <Users className="h-6 w-6 text-amber-600" />
+              Social Thoughts
+            </h1>
             
-            {/* View Mode Toggle */}
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setViewMode(viewMode === 'cloud' ? 'feed' : 'cloud')}
-            >
-              {viewMode === 'cloud' ? <List className="h-4 w-4" /> : <Grid3x3 className="h-4 w-4" />}
-            </Button>
+            <div className="flex items-center gap-2">
+              {/* Recent Filter */}
+              <Button
+                variant={showRecentOnly ? "default" : "outline"}
+                size="sm"
+                onClick={() => setShowRecentOnly(!showRecentOnly)}
+                className={showRecentOnly ? "bg-amber-500 hover:bg-amber-600" : ""}
+              >
+                <Clock className="h-4 w-4 mr-2" />
+                Recent
+              </Button>
+              
+              {/* View Mode Toggle */}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setViewMode(viewMode === 'cloud' ? 'feed' : 'cloud')}
+              >
+                {viewMode === 'cloud' ? <List className="h-4 w-4" /> : <Grid3x3 className="h-4 w-4" />}
+              </Button>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Loading State */}
         {dotsLoading && (
