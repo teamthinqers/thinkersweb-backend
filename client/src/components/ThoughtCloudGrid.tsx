@@ -40,7 +40,7 @@ interface ThoughtCloudGridProps {
   onRefresh?: () => void;
 }
 
-const DOTS_PER_PAGE = 10;
+const DOTS_PER_PAGE = 8;
 
 export default function ThoughtCloudGrid({
   thoughts: allThoughts,
