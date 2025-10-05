@@ -197,14 +197,17 @@ export default function ThoughtCloudGrid({
       {/* Floating Thoughts Container - Draggable */}
       <div 
         ref={containerRef}
-        className={`relative min-h-[600px] h-[calc(100vh-200px)] max-h-[1200px] p-8 ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+        className={`relative w-full p-8 ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
         style={{
+          height: isFullscreen ? '100vh' : '600px',
           transform: `translateY(${panOffset.y}px)`,
           transition: isDragging ? 'none' : 'transform 0.3s ease-out',
-          touchAction: 'none'
+          touchAction: 'none',
+          userSelect: 'none',
+          WebkitUserSelect: 'none'
         }}
       >
         {dots.map((dot) => {

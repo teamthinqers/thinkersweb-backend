@@ -163,14 +163,10 @@ function generateFixedGridPositions(): Array<{ x: number; y: number; size: numbe
   return positions;
 }
 
-// Pre-generated fixed positions (cached for performance)
-let FIXED_GRID_POSITIONS: Array<{ x: number; y: number; size: number; rotation: number }> | null = null;
+// Pre-generated fixed positions (regenerated on each module load for updates)
+const FIXED_GRID_POSITIONS = generateFixedGridPositions();
 
 export function getFixedPosition(index: number): { x: number; y: number; size: number; rotation: number } {
-  if (!FIXED_GRID_POSITIONS) {
-    FIXED_GRID_POSITIONS = generateFixedGridPositions();
-  }
-  
   // Cycle through positions if we exceed 1000
   const actualIndex = index % 1000;
   return FIXED_GRID_POSITIONS[actualIndex];
