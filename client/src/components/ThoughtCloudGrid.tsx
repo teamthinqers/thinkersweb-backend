@@ -55,6 +55,7 @@ export default function ThoughtCloudGrid({
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
+  const [hasMoved, setHasMoved] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerDimensions, setContainerDimensions] = useState({ width: 1000, height: 600 });
 
@@ -99,7 +100,14 @@ export default function ThoughtCloudGrid({
 
   // Smooth drag handlers using pointer events and RAF
   const handlePointerDown = (e: React.PointerEvent) => {
+    // Don't start drag if clicking on a dot or card (they have their own handlers)
+    const target = e.target as HTMLElement;
+    if (target.closest('.thought-dot-clickable')) {
+      return;
+    }
+    
     setIsDragging(true);
+    setHasMoved(false);
     setDragStart({ x: e.clientX, y: e.clientY });
     e.currentTarget.setPointerCapture(e.pointerId);
   };
@@ -108,6 +116,11 @@ export default function ThoughtCloudGrid({
     if (!isDragging) return;
 
     const deltaY = (e.clientY - dragStart.y) * 1.8; // Increased sensitivity for smoother drag
+    
+    // Mark as moved if there's significant movement (more than 3px)
+    if (Math.abs(deltaY) > 3) {
+      setHasMoved(true);
+    }
     
     requestAnimationFrame(() => {
       setPanOffset(prev => {
@@ -217,7 +230,7 @@ export default function ThoughtCloudGrid({
           return (
             <div
               key={dot.id}
-              className="absolute transition-all duration-300 hover:z-50 group pointer-events-none"
+              className="absolute transition-all duration-300 hover:z-50 group"
               style={{
                 left: `${dot.x}%`,
                 top: `${dot.y}%`,
@@ -226,7 +239,7 @@ export default function ThoughtCloudGrid({
             >
               {/* Identity Card - Anchored above dot's outer edge */}
               <div 
-                className="absolute z-50 pointer-events-auto"
+                className="absolute z-50 thought-dot-clickable"
                 style={{ 
                   bottom: `calc(100% + ${GRID_CONSTANTS.IDENTITY_CARD.CLEARANCE}px)`,
                   left: '50%',
@@ -255,13 +268,18 @@ export default function ThoughtCloudGrid({
 
               {/* Main Dot Container */}
               <div
-                className="cursor-pointer transition-all duration-300 hover:scale-110 pointer-events-auto"
+                className="cursor-pointer transition-all duration-300 hover:scale-110 thought-dot-clickable"
                 style={{
                   width: `${dot.size}px`,
                   height: `${dot.size}px`,
                   animation: `float-${dot.id % 3} ${6 + (dot.id % 4)}s ease-in-out infinite`,
                 }}
-                onClick={() => onDotClick(dot)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (!hasMoved) {
+                    onDotClick(dot);
+                  }
+                }}
               >
                 {/* Outer pulsing ring with channel color */}
                 <div className={`absolute inset-0 rounded-full bg-gradient-to-br ${channelConfig.color} opacity-30 group-hover:opacity-50 transition-opacity animate-pulse`}
