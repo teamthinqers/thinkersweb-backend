@@ -165,7 +165,7 @@ export default function ThoughtCloudGrid({
   };
 
   return (
-    <div className={`relative w-full bg-gradient-to-br from-amber-50/70 to-orange-50/50 shadow-2xl border border-amber-200 overflow-hidden backdrop-blur-sm ${isFullscreen ? 'h-full rounded-none' : 'h-[600px] rounded-3xl'}`}>
+    <div className={`relative w-full max-w-[1200px] mx-auto bg-gradient-to-br from-amber-50/70 to-orange-50/50 shadow-2xl border border-amber-200 overflow-hidden backdrop-blur-sm ${isFullscreen ? 'h-full rounded-none' : 'h-[600px] rounded-3xl'}`}>
       
       {/* Cloud background pattern */}
       <div className="absolute inset-0 opacity-25">
@@ -221,7 +221,7 @@ export default function ThoughtCloudGrid({
         onPointerUp={handlePointerUp}
         onDragStart={(e) => e.preventDefault()}
         onMouseDown={(e) => {
-          if (!e.target.closest('.thought-dot-clickable')) {
+          if (!(e.target as HTMLElement).closest('.thought-dot-clickable')) {
             e.preventDefault();
           }
         }}
@@ -245,8 +245,8 @@ export default function ThoughtCloudGrid({
               key={dot.id}
               className="absolute transition-all duration-300 hover:z-50 group"
               style={{
-                left: `${dot.x}%`,
-                top: `${dot.y}%`,
+                left: `${dot.x}px`,
+                top: `${dot.y}px`,
                 transform: `translate(-50%, -50%)`,
               }}
             >

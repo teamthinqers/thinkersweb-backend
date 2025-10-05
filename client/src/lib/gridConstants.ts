@@ -117,6 +117,7 @@ function seededRandom(seed: number): number {
 
 // Generate 1000 fixed positions with organic "stars in the cloud" distribution
 // Uses jittered grid to ensure spacing while creating natural scatter
+// Returns PIXEL positions for use in infinite scrolling canvas
 function generateFixedGridPositions(): Array<{ x: number; y: number; size: number; rotation: number }> {
   const positions: Array<{ x: number; y: number; size: number; rotation: number }> = [];
   const sizes = GRID_CONSTANTS.DOT_SIZES.DESKTOP;
@@ -124,35 +125,36 @@ function generateFixedGridPositions(): Array<{ x: number; y: number; size: numbe
   const TOTAL_POSITIONS = 1000;
   const DOTS_PER_ROW = 4; // Base grid: 4 dots per row - very spacious cloud layout
   
-  // Calculate available space
-  const leftMargin = GRID_CONSTANTS.MARGIN_X; // 15%
-  const topMargin = GRID_CONSTANTS.MARGIN_Y; // 22%
-  const availableWidth = 100 - (GRID_CONSTANTS.MARGIN_X * 2); // 70%
+  // Use pixel-based layout for infinite canvas (assume 1200px width container)
+  const containerWidth = 1200;
+  const leftMarginPx = 180; // 15% of 1200px
+  const rightMarginPx = 180;
+  const topMarginPx = 100; // Starting top margin in pixels
+  const availableWidthPx = containerWidth - leftMarginPx - rightMarginPx; // 840px
   
-  // Base grid spacing to ensure minimum distance
-  const cellWidth = availableWidth / DOTS_PER_ROW;
-  const cellHeight = 50; // Vertical spacing percentage - very spacious for clean cloud
+  // Base grid spacing in pixels
+  const cellWidthPx = availableWidthPx / DOTS_PER_ROW; // ~210px per cell
+  const cellHeightPx = 250; // Vertical spacing in pixels - very spacious for clean cloud
   
-  // Jitter amount - random offset within cell to create organic look
-  // Conservative jitter: organic scatter while maintaining safe spacing
-  const maxJitterX = cellWidth * 0.25;
-  const maxJitterY = cellHeight * 0.2;
+  // Jitter amount in pixels - random offset within cell to create organic look
+  const maxJitterXPx = cellWidthPx * 0.25; // ~52px
+  const maxJitterYPx = cellHeightPx * 0.2; // ~50px
   
   let index = 0;
   
   for (let row = 0; row < Math.ceil(TOTAL_POSITIONS / DOTS_PER_ROW); row++) {
     for (let col = 0; col < DOTS_PER_ROW && index < TOTAL_POSITIONS; col++) {
-      // Base grid position (center of cell)
-      const baseX = leftMargin + (col * cellWidth) + (cellWidth / 2);
-      const baseY = topMargin + (row * cellHeight) + (cellHeight / 2);
+      // Base grid position (center of cell) in pixels
+      const baseX = leftMarginPx + (col * cellWidthPx) + (cellWidthPx / 2);
+      const baseY = topMarginPx + (row * cellHeightPx) + (cellHeightPx / 2);
       
       // Add seeded random jitter for organic "scattered stars" look
-      const jitterX = (seededRandom(index * 2.5) - 0.5) * 2 * maxJitterX;
-      const jitterY = (seededRandom(index * 3.7) - 0.5) * 2 * maxJitterY;
+      const jitterX = (seededRandom(index * 2.5) - 0.5) * 2 * maxJitterXPx;
+      const jitterY = (seededRandom(index * 3.7) - 0.5) * 2 * maxJitterYPx;
       
-      // Final position with jitter (clamped to margins)
-      const x = Math.max(leftMargin + 5, Math.min(100 - GRID_CONSTANTS.MARGIN_X - 5, baseX + jitterX));
-      const y = Math.max(topMargin, baseY + jitterY);
+      // Final position with jitter (clamped to margins) in PIXELS
+      const x = Math.max(leftMarginPx + 60, Math.min(containerWidth - rightMarginPx - 60, baseX + jitterX));
+      const y = Math.max(topMarginPx, baseY + jitterY);
       
       const size = sizes[index % sizes.length];
       const rotation = (index * 137.5) % 360; // Golden angle rotation
