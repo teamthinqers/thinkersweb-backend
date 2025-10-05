@@ -237,9 +237,9 @@ export default function ThoughtCloudGrid({
                         </Avatar>
                       ))}
 
-                      {/* +X indicator if more than 3 contributors - no overlap */}
+                      {/* +X indicator if more than 3 contributors - slight gap */}
                       {dot.contributorCount && dot.contributorCount > 3 && (
-                        <div className="h-8 w-8 rounded-full bg-gradient-to-r from-red-500 to-orange-500 border-2 border-red-400 flex items-center justify-center ml-1 shadow-lg">
+                        <div className="h-8 w-8 rounded-full bg-gradient-to-r from-red-500 to-orange-500 border-2 border-red-400 flex items-center justify-center -ml-1 shadow-lg">
                           <p className="text-white text-[10px] font-bold">+{dot.contributorCount - 3}</p>
                         </div>
                       )}
