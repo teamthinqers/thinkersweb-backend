@@ -32,28 +32,8 @@ import { Switch } from "@/components/ui/switch";
 import { GRID_CONSTANTS, dotsCollide, getDotSize, getIdentityCardTop, getChannelConfig } from "@/lib/gridConstants";
 import ThoughtCloudGrid from "@/components/ThoughtCloudGrid";
 
-// Type for a thought with user info
-type ThoughtDot = {
-  id: number;
-  heading: string;
-  summary: string;
-  emotion?: string;
-  imageUrl?: string;
-  channel?: string;
-  createdAt: string;
-  user?: {
-    id: number;
-    fullName: string;
-    avatar?: string;
-    email?: string;
-  };
-  isSaved?: boolean;
-  savedAt?: string;
-  x?: number;
-  y?: number;
-  size?: number;
-  rotation?: number;
-};
+// Import ThoughtDot type from shared component
+import { ThoughtDot } from "@/components/ThoughtCloudGrid";
 
 // Channel-specific visual configurations now in gridConstants
 

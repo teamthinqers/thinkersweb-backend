@@ -10,12 +10,14 @@ export interface ThoughtDot {
   emotion?: string;
   imageUrl?: string;
   channel?: string;
+  userId?: number;
+  visibility?: string;
   createdAt: string;
   username?: string;
   user?: {
     id: number;
-    fullName: string;
-    avatar?: string;
+    fullName: string | null;
+    avatar?: string | null;
     email?: string;
   };
   isSaved?: boolean;
