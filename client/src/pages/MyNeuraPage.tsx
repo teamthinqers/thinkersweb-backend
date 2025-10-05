@@ -412,12 +412,6 @@ export default function MyNeuraPage() {
                     )}
                   </div>
                   
-                  {selectedThought.emotion && (
-                    <Badge className="w-fit bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0">
-                      {selectedThought.emotion}
-                    </Badge>
-                  )}
-                  
                   <DialogTitle className="text-2xl font-bold text-gray-900 mt-4">
                     {selectedThought.heading}
                   </DialogTitle>
