@@ -38,6 +38,7 @@ interface ThoughtCloudGridProps {
   onDotClick: (dot: ThoughtDot) => void;
   patternId?: string;
   onRefresh?: () => void;
+  showAvatarOnly?: boolean; // If true, show only avatar without name
 }
 
 const DOTS_PER_PAGE = 8;
@@ -49,6 +50,7 @@ export default function ThoughtCloudGrid({
   onDotClick,
   patternId = 'thought-pattern',
   onRefresh,
+  showAvatarOnly = false,
 }: ThoughtCloudGridProps) {
   const [dots, setDots] = useState<ThoughtDot[]>([]);
   const [page, setPage] = useState(0);
@@ -192,33 +194,47 @@ export default function ThoughtCloudGrid({
                 transform: `translate(-50%, -50%)`,
               }}
             >
-              {/* Identity Card - Pinned to dot circumference */}
+              {/* Identity Card - Avatar only or Full card */}
               <div 
                 className="absolute z-50 thought-dot-clickable"
                 style={{ 
-                  top: '-70px',
+                  top: showAvatarOnly ? '-85px' : '-70px', // Higher position for avatar-only
                   left: '50%',
                   transform: 'translate(-50%, -50%)',
                 }}
               >
-                <Card className="bg-white/95 backdrop-blur-md shadow-lg border-2 border-amber-200">
-                  <CardContent className="p-2 px-3">
-                    <div className="flex items-center gap-2 justify-center">
-                      <Avatar className="h-7 w-7 border-2 border-amber-300">
-                        {dot.user?.avatar ? (
-                          <AvatarImage src={dot.user.avatar} alt={dot.user.fullName || 'User'} />
-                        ) : (
-                          <AvatarFallback className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs">
-                            {dot.user?.fullName?.charAt(0).toUpperCase() || 'U'}
-                          </AvatarFallback>
-                        )}
-                      </Avatar>
-                      <p className="text-xs font-semibold text-gray-900 whitespace-nowrap">
-                        {dot.user?.fullName || 'Anonymous'}
-                      </p>
-                    </div>
-                  </CardContent>
-                </Card>
+                {showAvatarOnly ? (
+                  // Avatar only (for MyNeura)
+                  <Avatar className="h-10 w-10 border-2 border-amber-300 shadow-lg">
+                    {dot.user?.avatar ? (
+                      <AvatarImage src={dot.user.avatar} alt={dot.user.fullName || 'User'} />
+                    ) : (
+                      <AvatarFallback className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-sm">
+                        {dot.user?.fullName?.charAt(0).toUpperCase() || 'U'}
+                      </AvatarFallback>
+                    )}
+                  </Avatar>
+                ) : (
+                  // Full identity card (for Social)
+                  <Card className="bg-white/95 backdrop-blur-md shadow-lg border-2 border-amber-200">
+                    <CardContent className="p-2 px-3">
+                      <div className="flex items-center gap-2 justify-center">
+                        <Avatar className="h-7 w-7 border-2 border-amber-300">
+                          {dot.user?.avatar ? (
+                            <AvatarImage src={dot.user.avatar} alt={dot.user.fullName || 'User'} />
+                          ) : (
+                            <AvatarFallback className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs">
+                              {dot.user?.fullName?.charAt(0).toUpperCase() || 'U'}
+                            </AvatarFallback>
+                          )}
+                        </Avatar>
+                        <p className="text-xs font-semibold text-gray-900 whitespace-nowrap">
+                          {dot.user?.fullName || 'Anonymous'}
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
               </div>
 
               {/* Main Dot Container */}
