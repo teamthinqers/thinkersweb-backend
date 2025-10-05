@@ -351,7 +351,7 @@ export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) 
               <CardContent className="p-6">
                 {/* Header - Draggable */}
                 <div 
-                  className="flex items-start justify-between mb-6 cursor-move"
+                  className={`flex items-start justify-between mb-6 ${isDraggingDialog ? 'cursor-move' : 'cursor-auto'}`}
                   onMouseDown={handleDialogMouseDown}
                 >
                   {/* User Info */}
@@ -375,7 +375,7 @@ export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) 
                       <div className="flex items-center bg-gray-100 rounded-full p-1">
                         <button
                           onClick={() => setTargetNeura('social')}
-                          className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all whitespace-nowrap ${
+                          className={`cursor-pointer px-3 py-1.5 rounded-full text-xs font-medium transition-all whitespace-nowrap ${
                             targetNeura === 'social'
                               ? 'bg-red-500 text-white shadow-sm'
                               : 'text-gray-600 hover:text-gray-900'
@@ -385,7 +385,7 @@ export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) 
                         </button>
                         <button
                           onClick={() => setTargetNeura('myneura')}
-                          className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all whitespace-nowrap ${
+                          className={`cursor-pointer px-3 py-1.5 rounded-full text-xs font-medium transition-all whitespace-nowrap ${
                             targetNeura === 'myneura'
                               ? 'bg-gradient-to-br from-amber-500 to-orange-500 text-white shadow-sm'
                               : 'text-gray-600 hover:text-gray-900'
