@@ -130,7 +130,7 @@ export default function SocialFeedPage() {
         {!isFullscreen && (
           <div className="flex items-center justify-between mb-6">
             <h1 className="text-2xl font-bold flex items-center gap-2">
-              <Users className="h-6 w-6 text-amber-600" />
+              <Brain className="h-6 w-6 text-red-500" />
               Social Neura
             </h1>
             
