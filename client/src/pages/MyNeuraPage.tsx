@@ -446,12 +446,12 @@ export default function MyNeuraPage() {
                     </h3>
                     
                     <div className="space-y-3">
-                      {/* Feeling/Emotion Layer */}
+                      {/* Emotions Tag Layer */}
                       <Card className="border-amber-200 bg-white/50">
                         <CardContent className="pt-4">
                           <div className="flex items-start gap-3">
                             <div className="flex-shrink-0 w-24">
-                              <p className="text-sm font-semibold text-gray-700">Feeling</p>
+                              <p className="text-sm font-semibold text-gray-700">Emotions Tag</p>
                             </div>
                             <div className="flex-1">
                               {selectedThought.emotion ? (
@@ -459,7 +459,7 @@ export default function MyNeuraPage() {
                                   {selectedThought.emotion}
                                 </Badge>
                               ) : (
-                                <p className="text-sm text-gray-400 italic">No feeling added yet</p>
+                                <p className="text-sm text-gray-400 italic">No emotion added yet</p>
                               )}
                             </div>
                           </div>

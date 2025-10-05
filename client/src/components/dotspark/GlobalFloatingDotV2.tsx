@@ -316,7 +316,7 @@ function GlobalFloatingDotV2() {
     }
   };
 
-  const emotions = ['excited', 'curious', 'focused', 'happy', 'calm', 'inspired', 'confident', 'grateful', 'motivated'];
+  const emotions = ['Joy', 'Curiosity', 'Excitement', 'Gratitude', 'Peace', 'Frustration', 'Anxiety', 'Hope', 'Inspiration', 'Reflection'];
   const categories = ['Personal', 'Professional', 'Health', 'Finance', 'Learning', 'Business'];
 
   if (!isOpen) {
