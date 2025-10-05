@@ -78,6 +78,48 @@ export const savedThoughts = pgTable("saved_thoughts", {
   uniqueUserThought: unique().on(table.userId, table.thoughtId),
 }));
 
+// === PERSPECTIVES SYSTEM (Real-time chat/reflections on thoughts) ===
+
+// Perspectives threads - One thread per thought for discussions
+export const perspectivesThreads = pgTable("perspectives_threads", {
+  id: serial("id").primaryKey(),
+  thoughtId: integer("thought_id").references(() => thoughts.id).notNull(),
+  threadType: text("thread_type").notNull().default("social"), // 'social' or 'personal'
+  userId: integer("user_id").references(() => users.id), // Only for personal threads
+  socialThreadId: integer("social_thread_id").references((): any => perspectivesThreads.id), // Link to social thread for archive
+  lastActivityAt: timestamp("last_activity_at").defaultNow().notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+}, (table) => ({
+  // One social thread per thought
+  uniqueSocialThread: unique().on(table.thoughtId, table.threadType),
+}));
+
+// Perspectives messages - Chat messages in threads
+export const perspectivesMessages = pgTable("perspectives_messages", {
+  id: serial("id").primaryKey(),
+  threadId: integer("thread_id").references(() => perspectivesThreads.id).notNull(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  messageBody: text("message_body").notNull(),
+  attachments: text("attachments"), // JSON for future image/file attachments
+  visibilityScope: text("visibility_scope").notNull().default("public"), // 'public' or 'personal'
+  isDeleted: boolean("is_deleted").default(false).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Perspectives participants - Track users in threads for notifications
+export const perspectivesParticipants = pgTable("perspectives_participants", {
+  id: serial("id").primaryKey(),
+  threadId: integer("thread_id").references(() => perspectivesThreads.id).notNull(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  lastSeenAt: timestamp("last_seen_at").defaultNow().notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => ({
+  // One participant record per user per thread
+  uniqueParticipant: unique().on(table.threadId, table.userId),
+}));
+
 // === SEPARATE TABLES FOR VECTOR DB MIGRATION ===
 
 // 1. DOTS table - Individual insights with three-layer structure
