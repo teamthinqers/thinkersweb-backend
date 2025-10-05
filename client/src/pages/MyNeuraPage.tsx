@@ -29,6 +29,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Switch } from "@/components/ui/switch";
+import { GRID_CONSTANTS, dotsCollide, getDotSize, getIdentityCardTop } from "@/lib/gridConstants";
 
 // Type for a thought with user info
 type ThoughtDot = {
@@ -173,43 +174,72 @@ export default function MyNeuraPage() {
         : rawThoughts;
 
       // Calculate cloud/universe positions with organic spacing
+      const positionedDots: Array<{ x: number; y: number; size: number; rotation: number }> = [];
+      
       const positioned = filtered.map((thought: ThoughtDot, index: number) => {
         // Check cache first
         const cached = positionCacheRef.get(thought.id);
         if (cached) {
+          positionedDots.push(cached);
           return { ...thought, ...cached };
         }
 
         // Calculate new position with cloud-like distribution
         const isMobile = window.innerWidth < 768;
         
-        // Safe margins to prevent cut-off (in percentage)
-        const marginX = 10; // 10% margin on each side
-        const marginY = 15; // 15% margin top and bottom (more for heading card)
+        // Use standardized margins
+        const marginX = GRID_CONSTANTS.MARGIN_X;
+        const marginY = GRID_CONSTANTS.MARGIN_Y;
         const safeZoneX = 100 - (marginX * 2);
         const safeZoneY = 100 - (marginY * 2);
         
         // Generate pseudo-random but consistent position based on thought ID
         const seed = thought.id * 9876543;
-        const pseudoRandom1 = (Math.sin(seed) * 10000) % 1;
-        const pseudoRandom2 = (Math.cos(seed * 1.5) * 10000) % 1;
-        const pseudoRandom3 = (Math.sin(seed * 2.3) * 10000) % 1;
+        let pseudoRandom1 = (Math.sin(seed) * 10000) % 1;
+        let pseudoRandom2 = (Math.cos(seed * 1.5) * 10000) % 1;
         
-        // Create clusters/layers for depth (recent thoughts more spread, older more clustered)
-        const layer = Math.floor(index / (isMobile ? 6 : 10));
-        const layerOffset = layer * (isMobile ? 60 : 40); // Push older thoughts down
+        // Create clusters/layers for depth
+        const dotsPerLayer = isMobile 
+          ? GRID_CONSTANTS.LAYOUT.DOTS_PER_LAYER_MOBILE 
+          : GRID_CONSTANTS.LAYOUT.DOTS_PER_LAYER_DESKTOP;
+        const layer = Math.floor(index / dotsPerLayer);
+        const layerOffset = layer * (isMobile 
+          ? GRID_CONSTANTS.LAYOUT.LAYER_OFFSET_MOBILE 
+          : GRID_CONSTANTS.LAYOUT.LAYER_OFFSET_DESKTOP);
         
-        // Position within safe zone with organic distribution
-        const x = marginX + (Math.abs(pseudoRandom1) * safeZoneX);
-        const y = marginY + (Math.abs(pseudoRandom2) * (safeZoneY * 0.7)) + layerOffset;
+        // Use standardized size calculation
+        const size = getDotSize(thought.id, isMobile);
         
-        // Varied sizes for visual interest
-        const sizes = isMobile ? [70, 80, 90] : [90, 110, 130];
-        const size = sizes[Math.floor(Math.abs(pseudoRandom3) * sizes.length)];
+        // Try to find a non-overlapping position
+        let x: number, y: number;
+        let attempts = 0;
+        const maxAttempts = GRID_CONSTANTS.COLLISION.MAX_ATTEMPTS;
+        
+        do {
+          // Position within safe zone with organic distribution
+          x = marginX + (Math.abs(pseudoRandom1) * safeZoneX);
+          y = marginY + (Math.abs(pseudoRandom2) * (safeZoneY * 0.7)) + layerOffset;
+          
+          // Check for collisions with existing dots
+          const hasCollision = positionedDots.some(existing => 
+            dotsCollide(x, y, size, existing.x, existing.y, existing.size)
+          );
+          
+          if (!hasCollision || attempts >= maxAttempts) {
+            break;
+          }
+          
+          // Generate new random position for next attempt
+          attempts++;
+          pseudoRandom1 = (Math.sin(seed * (attempts + 1)) * 10000) % 1;
+          pseudoRandom2 = (Math.cos(seed * (attempts + 1) * 1.5) * 10000) % 1;
+        } while (attempts < maxAttempts);
+        
         const rotation = (thought.id * 13) % 360;
         
         const position = { x, y, size, rotation };
         positionCacheRef.set(thought.id, position);
+        positionedDots.push(position);
         
         return { ...thought, ...position };
       }).filter(Boolean) as ThoughtDot[];
@@ -460,14 +490,15 @@ export default function MyNeuraPage() {
                   >
                     {/* Identity Card - Always Visible */}
                     <div 
-                      className="absolute left-1/2 transform -translate-x-1/2 z-50"
+                      className="absolute left-1/2 z-50"
                       style={{ 
-                        top: `-${(thought.size || 110) / 2 + 50}px` // Position above the dot with 50px clearance
+                        top: getIdentityCardTop(thought.size || 110),
+                        transform: 'translateX(-50%)', // Center horizontally
                       }}
                     >
                       <Card className="bg-white/95 backdrop-blur-md shadow-lg border-2 border-amber-200">
                         <CardContent className="p-2 px-3">
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-2 justify-center">
                             <Avatar className="h-7 w-7 border-2 border-amber-300">
                               {thought.user?.avatar ? (
                                 <AvatarImage src={thought.user.avatar} alt={thought.user.fullName || 'User'} />
@@ -477,7 +508,7 @@ export default function MyNeuraPage() {
                                 </AvatarFallback>
                               )}
                             </Avatar>
-                            <p className="text-xs font-semibold text-gray-900">
+                            <p className="text-xs font-semibold text-gray-900 whitespace-nowrap">
                               {thought.user?.fullName || 'Anonymous'}
                             </p>
                           </div>
