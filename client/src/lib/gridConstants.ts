@@ -73,3 +73,84 @@ export function getDotSize(index: number, isMobile: boolean): number {
 export function getIdentityCardTop(dotSize: number): string {
   return `-${dotSize / 2 + GRID_CONSTANTS.IDENTITY_CARD.CLEARANCE}px`;
 }
+
+// Channel configuration types
+export interface ChannelConfig {
+  icon: any;
+  color: string;
+  borderColor: string;
+  hoverBorderColor: string;
+  bgGradient: string;
+  badgeBg: string;
+  name: string;
+}
+
+// Import icons needed for channel configs
+import { PenTool, Sparkles } from 'lucide-react';
+import { SiLinkedin, SiWhatsapp, SiOpenai } from 'react-icons/si';
+
+// Shared channel configuration
+export function getChannelConfig(channel: string): ChannelConfig {
+  switch (channel) {
+    case 'write':
+      return {
+        icon: PenTool,
+        color: 'from-amber-400 via-orange-400 to-red-400',
+        borderColor: 'border-amber-300',
+        hoverBorderColor: 'border-orange-400',
+        bgGradient: 'from-white via-amber-50 to-orange-50',
+        badgeBg: 'bg-amber-500',
+        name: 'Write'
+      };
+    case 'linkedin':
+      return {
+        icon: SiLinkedin,
+        color: 'from-blue-400 via-blue-500 to-blue-600',
+        borderColor: 'border-blue-300',
+        hoverBorderColor: 'border-blue-500',
+        bgGradient: 'from-white via-blue-50 to-blue-100',
+        badgeBg: 'bg-blue-600',
+        name: 'LinkedIn'
+      };
+    case 'whatsapp':
+      return {
+        icon: SiWhatsapp,
+        color: 'from-green-400 via-green-500 to-green-600',
+        borderColor: 'border-green-300',
+        hoverBorderColor: 'border-green-500',
+        bgGradient: 'from-white via-green-50 to-green-100',
+        badgeBg: 'bg-green-600',
+        name: 'WhatsApp'
+      };
+    case 'chatgpt':
+      return {
+        icon: SiOpenai,
+        color: 'from-purple-400 via-purple-500 to-purple-600',
+        borderColor: 'border-purple-300',
+        hoverBorderColor: 'border-purple-500',
+        bgGradient: 'from-white via-purple-50 to-purple-100',
+        badgeBg: 'bg-purple-600',
+        name: 'ChatGPT'
+      };
+    case 'aihelp':
+      return {
+        icon: Sparkles,
+        color: 'from-violet-400 via-fuchsia-400 to-pink-400',
+        borderColor: 'border-violet-300',
+        hoverBorderColor: 'border-fuchsia-400',
+        bgGradient: 'from-white via-violet-50 to-fuchsia-50',
+        badgeBg: 'bg-gradient-to-r from-violet-600 to-fuchsia-600',
+        name: 'AI Help'
+      };
+    default:
+      return {
+        icon: PenTool,
+        color: 'from-amber-400 via-orange-400 to-red-400',
+        borderColor: 'border-amber-300',
+        hoverBorderColor: 'border-orange-400',
+        bgGradient: 'from-white via-amber-50 to-orange-50',
+        badgeBg: 'bg-amber-500',
+        name: 'Default'
+      };
+  }
+}
