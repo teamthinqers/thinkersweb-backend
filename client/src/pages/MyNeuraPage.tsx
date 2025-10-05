@@ -6,7 +6,7 @@ import {
   Menu, User, LogOut, Settings, TrendingUp, Heart,
   Share2, Eye, MoreHorizontal, Maximize, Minimize, Clock,
   Grid3x3, List, Bookmark, Fingerprint, Hash, Lightbulb, MessageCircle, Zap, Info, Cog,
-  PenTool, Linkedin, MessageCircleMore
+  PenTool, Linkedin, MessageCircleMore, RefreshCw
 } from "lucide-react";
 import { SiWhatsapp, SiLinkedin, SiOpenai } from 'react-icons/si';
 import { useAuth } from "@/hooks/use-auth-new";
@@ -172,7 +172,7 @@ export default function MyNeuraPage() {
           })
         : rawThoughts;
 
-      // Calculate grid positions for visual cloud
+      // Calculate cloud/universe positions with organic spacing
       const positioned = filtered.map((thought: ThoughtDot, index: number) => {
         // Check cache first
         const cached = positionCacheRef.get(thought.id);
@@ -180,27 +180,33 @@ export default function MyNeuraPage() {
           return { ...thought, ...cached };
         }
 
-        // Calculate new position
+        // Calculate new position with cloud-like distribution
         const isMobile = window.innerWidth < 768;
-        const cols = isMobile ? 3 : 5;
-        const rows = isMobile ? 7 : 4;
-        const totalCells = cols * rows;
         
-        // Limit to grid capacity
-        if (index >= totalCells) return null;
+        // Safe margins to prevent cut-off (in percentage)
+        const marginX = 10; // 10% margin on each side
+        const marginY = 15; // 15% margin top and bottom (more for heading card)
+        const safeZoneX = 100 - (marginX * 2);
+        const safeZoneY = 100 - (marginY * 2);
         
-        const col = index % cols;
-        const row = Math.floor(index / cols);
+        // Generate pseudo-random but consistent position based on thought ID
+        const seed = thought.id * 9876543;
+        const pseudoRandom1 = (Math.sin(seed) * 10000) % 1;
+        const pseudoRandom2 = (Math.cos(seed * 1.5) * 10000) % 1;
+        const pseudoRandom3 = (Math.sin(seed * 2.3) * 10000) % 1;
         
-        const cellWidth = 100 / cols;
-        const cellHeight = 100 / rows;
+        // Create clusters/layers for depth (recent thoughts more spread, older more clustered)
+        const layer = Math.floor(index / (isMobile ? 6 : 10));
+        const layerOffset = layer * (isMobile ? 60 : 40); // Push older thoughts down
         
-        const x = (col * cellWidth) + (cellWidth / 2);
-        const y = (row * cellHeight) + (cellHeight / 2);
+        // Position within safe zone with organic distribution
+        const x = marginX + (Math.abs(pseudoRandom1) * safeZoneX);
+        const y = marginY + (Math.abs(pseudoRandom2) * (safeZoneY * 0.7)) + layerOffset;
         
-        const sizes = isMobile ? [60, 70, 80] : [80, 100, 120];
-        const size = sizes[index % sizes.length];
-        const rotation = (index * 13) % 360;
+        // Varied sizes for visual interest
+        const sizes = isMobile ? [70, 80, 90] : [90, 110, 130];
+        const size = sizes[Math.floor(Math.abs(pseudoRandom3) * sizes.length)];
+        const rotation = (thought.id * 13) % 360;
         
         const position = { x, y, size, rotation };
         positionCacheRef.set(thought.id, position);
@@ -365,12 +371,27 @@ export default function MyNeuraPage() {
 
                 {/* Floating Thoughts Container */}
                 <div className="relative min-h-[600px] h-[calc(100vh-300px)] max-h-[900px] p-8">
-                  {/* Fullscreen toggle button - top right of grid */}
+                  {/* Refresh button - top right of grid */}
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      positionCacheRef.clear();
+                      window.location.reload();
+                    }}
+                    className="absolute top-4 right-4 z-20 bg-white/80 hover:bg-amber-100 shadow-md"
+                    title="Refresh thought cloud"
+                  >
+                    <RefreshCw className="h-4 w-4 mr-2" />
+                    Refresh
+                  </Button>
+
+                  {/* Fullscreen toggle button - bottom right of grid */}
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => setIsFullscreen(!isFullscreen)}
-                    className="absolute top-4 right-4 z-20 bg-white/80 hover:bg-amber-100 shadow-md"
+                    className="absolute bottom-4 right-4 z-20 bg-white/80 hover:bg-amber-100 shadow-md"
                   >
                     {isFullscreen ? (
                       <>
