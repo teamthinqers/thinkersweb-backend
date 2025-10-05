@@ -151,9 +151,10 @@ export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) 
       const parsed = JSON.parse(savedPosition);
       setPosition(parsed);
     } else {
+      // Default to bottom right corner
       setPosition({
         x: window.innerWidth - 100,
-        y: window.innerHeight / 2
+        y: window.innerHeight - 100
       });
     }
   }, []);
