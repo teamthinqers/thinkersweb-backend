@@ -4,7 +4,7 @@
 export const GRID_CONSTANTS = {
   // Margins to prevent dots from being cut off at edges (percentage)
   MARGIN_X: 12, // 12% margin on each side for comfortable edge spacing
-  MARGIN_Y: 15, // 15% margin top and bottom for comfortable vertical spacing
+  MARGIN_Y: 18, // 18% margin top and bottom - extra space for identity cards
   
   // Dot sizes (in pixels)
   DOT_SIZES: {
@@ -14,7 +14,7 @@ export const GRID_CONSTANTS = {
   
   // Identity card positioning
   IDENTITY_CARD: {
-    CLEARANCE: 20, // Pixels above dot center to position identity card (reduced from 42)
+    CLEARANCE: 28, // Pixels above dot center to position identity card - optimized for spacing
     WIDTH: 'auto', // Auto-width based on content
   },
   
@@ -22,7 +22,7 @@ export const GRID_CONSTANTS = {
   COLLISION: {
     MIN_DISTANCE: 25, // Minimum distance between dot centers (percentage) - increased for more spacing
     MAX_ATTEMPTS: 300, // Maximum attempts to find non-overlapping position (increased)
-    GUTTER_PX: 120, // Minimum pixel gap between dot edges - very large spacing to prevent any overlap
+    GUTTER_PX: 140, // Minimum pixel gap between dot edges - optimized for better spacing
   },
   
   // Cloud/Universe layout
@@ -93,17 +93,17 @@ export function getIdentityCardTop(dotSize: number): string {
 // Bounding box constants for dot + identity card groups
 const BOUNDING_BOX = {
   // Identity card dimensions (approximate)
-  CARD_HEIGHT: 50, // Height of identity card in pixels
+  CARD_HEIGHT: 45, // Height of identity card in pixels
   CARD_WIDTH: 180, // Typical width of identity card
   
-  // Guardrail padding around the entire group (reduced for tighter spacing)
-  GUARDRAIL_PADDING: 15, // Minimal space around each group
+  // Guardrail padding around the entire group - optimized spacing
+  GUARDRAIL_PADDING: 20, // Comfortable space around each group
   
   // Calculate total bounding box size
   getBoxDimensions: (dotSize: number) => {
-    // Total height: dot + card above it + clearance + minimal guardrails
+    // Total height: dot + card above it + clearance + guardrails
     const totalHeight = dotSize + BOUNDING_BOX.CARD_HEIGHT + GRID_CONSTANTS.IDENTITY_CARD.CLEARANCE + (BOUNDING_BOX.GUARDRAIL_PADDING * 2);
-    // Total width: max of dot and card + minimal guardrails
+    // Total width: max of dot and card + guardrails
     const totalWidth = Math.max(dotSize, BOUNDING_BOX.CARD_WIDTH) + (BOUNDING_BOX.GUARDRAIL_PADDING * 2);
     return { width: totalWidth, height: totalHeight };
   }
@@ -131,12 +131,12 @@ function generateFixedGridPositions(): Array<{ x: number; y: number; size: numbe
   
   // Base grid spacing to ensure minimum distance
   const cellWidth = availableWidth / DOTS_PER_ROW;
-  const cellHeight = 25; // Vertical spacing percentage - fits ~4 rows in 600px viewport
+  const cellHeight = 30; // Vertical spacing percentage - optimized for identity card clearance
   
   // Jitter amount - random offset within cell to create organic look
-  // Keep it within bounds to prevent overlaps (max 40% of cell size)
-  const maxJitterX = cellWidth * 0.4;
-  const maxJitterY = cellHeight * 0.4;
+  // Optimized jitter: enough for organic scatter, not too much for overlap
+  const maxJitterX = cellWidth * 0.35;
+  const maxJitterY = cellHeight * 0.3;
   
   let index = 0;
   
