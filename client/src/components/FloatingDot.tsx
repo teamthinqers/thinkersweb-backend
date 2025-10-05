@@ -17,7 +17,11 @@ interface FloatingDotProps {
 }
 
 export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) {
-  const [position, setPosition] = useState({ x: 100, y: 100 });
+  // Default position: bottom right corner (accounting for dot size and padding)
+  const [position, setPosition] = useState({ 
+    x: window.innerWidth - 100, 
+    y: window.innerHeight - 100 
+  });
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [hasMoved, setHasMoved] = useState(false);
