@@ -118,8 +118,8 @@ export default function ThoughtCloudGrid({
 
     const deltaY = (e.clientY - dragStart.y) * 1.8; // Increased sensitivity for smoother drag
     
-    // Mark as moved if there's significant movement (more than 3px)
-    if (Math.abs(deltaY) > 3) {
+    // Mark as moved if there's significant movement (more than 5px for better click detection)
+    if (Math.abs(deltaY) > 5) {
       setHasMoved(true);
     }
     
@@ -142,6 +142,9 @@ export default function ThoughtCloudGrid({
 
   const handlePointerUp = (e: React.PointerEvent) => {
     setIsDragging(false);
+    // Reset hasMoved after a short delay to allow immediate clicks
+    setTimeout(() => setHasMoved(false), 50);
+    
     if (e.currentTarget.hasPointerCapture(e.pointerId)) {
       e.currentTarget.releasePointerCapture(e.pointerId);
     }
@@ -152,8 +155,12 @@ export default function ThoughtCloudGrid({
     setPanOffset({ x: 0, y: 0 });
     setPage(0);
     
+    // Always call refresh to reload data
     if (onRefresh) {
       onRefresh();
+    } else {
+      // Fallback: reload the page if no refresh handler provided
+      window.location.reload();
     }
   };
 
@@ -212,6 +219,12 @@ export default function ThoughtCloudGrid({
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
+        onDragStart={(e) => e.preventDefault()}
+        onMouseDown={(e) => {
+          if (!e.target.closest('.thought-dot-clickable')) {
+            e.preventDefault();
+          }
+        }}
         style={{
           height: '10000px', // Large virtual canvas for infinite scrolling
           transform: `translateY(${panOffset.y}px)`,
