@@ -77,7 +77,7 @@ export default function ThoughtCloudGrid({
     return () => window.removeEventListener('resize', updateDimensions);
   }, [isFullscreen]);
 
-  // Position thoughts in cloud formation
+  // Position thoughts in cloud formation with proper spacing
   useEffect(() => {
     const isMobile = window.innerWidth < 768;
     
@@ -88,19 +88,11 @@ export default function ThoughtCloudGrid({
 
     const positionedDots: { x: number; y: number; size: number; rotation: number }[] = [];
 
-    // Predefined 10-slot grid layout with wide spacing to accommodate dot + identity card units
-    const gridSlots = [
-      { x: 20, y: 32 },  // Top-left
-      { x: 50, y: 28 },  // Top-center
-      { x: 80, y: 32 },  // Top-right
-      { x: 15, y: 56 },  // Mid-left
-      { x: 38, y: 52 },  // Mid-center-left
-      { x: 62, y: 56 },  // Mid-center-right
-      { x: 85, y: 52 },  // Mid-right
-      { x: 22, y: 76 },  // Bottom-left
-      { x: 50, y: 78 },  // Bottom-center
-      { x: 78, y: 74 },  // Bottom-right
-    ];
+    // Calculate safe zone with margins from grid constants
+    const minX = GRID_CONSTANTS.MARGIN_X;
+    const maxX = 100 - GRID_CONSTANTS.MARGIN_X;
+    const minY = GRID_CONSTANTS.MARGIN_Y;
+    const maxY = 100 - GRID_CONSTANTS.MARGIN_Y;
 
     const positioned = currentPageThoughts.map((thought, index) => {
       // Check cache first
@@ -113,17 +105,38 @@ export default function ThoughtCloudGrid({
       // Use standardized size calculation
       const size = getDotSize(thought.id, isMobile);
 
-      // Use predefined slot for this index
-      const slotIndex = index % gridSlots.length;
-      const baseSlot = gridSlots[slotIndex];
-      
-      // Add tiny pseudo-random offset for organic feel (max 2% in each direction)
-      const seed = thought.id * 7919;
-      const offsetX = (Math.sin(seed) * 2);
-      const offsetY = (Math.cos(seed * 1.5) * 2);
-      
-      const x = Math.max(18, Math.min(82, baseSlot.x + offsetX));
-      const y = Math.max(23, Math.min(77, baseSlot.y + offsetY));
+      let x = 0;
+      let y = 0;
+      let attempts = 0;
+      const maxAttempts = GRID_CONSTANTS.COLLISION.MAX_ATTEMPTS;
+
+      // Find a non-overlapping position using collision detection
+      while (attempts < maxAttempts) {
+        // Generate random position within safe zone
+        const seed = thought.id * 7919 + attempts * 1337;
+        x = minX + (Math.abs(Math.sin(seed)) * (maxX - minX));
+        y = minY + (Math.abs(Math.cos(seed * 1.5)) * (maxY - minY));
+
+        // Check if this position collides with any existing dots
+        let collides = false;
+        for (const existingDot of positionedDots) {
+          if (dotsCollide(
+            x, y, size,
+            existingDot.x, existingDot.y, existingDot.size,
+            containerDimensions.width,
+            containerDimensions.height
+          )) {
+            collides = true;
+            break;
+          }
+        }
+
+        if (!collides) {
+          break; // Found a good position
+        }
+
+        attempts++;
+      }
       
       const rotation = (thought.id * 13) % 360;
 
@@ -135,7 +148,7 @@ export default function ThoughtCloudGrid({
     }).filter(Boolean) as ThoughtDot[];
 
     setDots(positioned);
-  }, [allThoughts, page, positionCache]);
+  }, [allThoughts, page, positionCache, containerDimensions]);
 
   // Drag handlers for panning the grid
   const handleMouseDown = (e: React.MouseEvent) => {
