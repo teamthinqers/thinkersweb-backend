@@ -126,9 +126,18 @@ export default function SocialFeedPage() {
   const [viewMode, setViewMode] = useState<'cloud' | 'feed'>('cloud');
   const [showRecentOnly, setShowRecentOnly] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [page, setPage] = useState(0);
+  const [allDotsLoaded, setAllDotsLoaded] = useState<ThoughtDot[]>([]);
   
   // Cache for thought positions to prevent teleporting on refetch
   const positionCacheRef = useState(() => new Map<number, { x: number; y: number; size: number; rotation: number }>())[0];
+
+  // Drag state for panning the grid
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
+  
+  const DOTS_PER_PAGE = 10;
   
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -174,7 +183,7 @@ export default function SocialFeedPage() {
     },
   });
 
-  // Transform thoughts into positioned dots with cloud/universe layout
+  // Load all thoughts and store them
   useEffect(() => {
     if (!publicDots || !(publicDots as any).thoughts) return;
 
@@ -186,11 +195,26 @@ export default function SocialFeedPage() {
       sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
       dotsArray = dotsArray.filter((dot: any) => new Date(dot.createdAt) >= sevenDaysAgo);
     }
+
+    setAllDotsLoaded(dotsArray);
+  }, [publicDots, showRecentOnly]);
+
+  // Display paginated dots with positions
+  useEffect(() => {
+    if (allDotsLoaded.length === 0) {
+      setDots([]);
+      return;
+    }
+
+    // Get current page of dots (10 most recent + any loaded pages)
+    const startIndex = 0;
+    const endIndex = (page + 1) * DOTS_PER_PAGE;
+    const dotsToDisplay = allDotsLoaded.slice(startIndex, endIndex);
     
     // Calculate cloud/universe positions with collision detection
     const positionedDots: Array<{ x: number; y: number; size: number; rotation: number }> = [];
     
-    const transformedDots: ThoughtDot[] = dotsArray.map((dot: any, index: number) => {
+    const transformedDots: ThoughtDot[] = dotsToDisplay.map((dot: any, index: number) => {
       // Check cache first
       const cached = positionCacheRef.get(dot.id);
       if (cached) {
@@ -262,7 +286,32 @@ export default function SocialFeedPage() {
     });
     
     setDots(transformedDots);
-  }, [publicDots, showRecentOnly, positionCacheRef]);
+  }, [allDotsLoaded, page, positionCacheRef]);
+
+  // Drag handlers for panning the grid
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (viewMode !== 'cloud') return;
+    setIsDragging(true);
+    setDragStart({ x: e.clientX, y: e.clientY });
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging || viewMode !== 'cloud') return;
+    
+    const deltaY = e.clientY - dragStart.y;
+    setPanOffset(prev => ({ x: 0, y: prev.y + deltaY }));
+    setDragStart({ x: e.clientX, y: e.clientY });
+    
+    // Load more dots if dragged up significantly and more exist
+    if (deltaY > 100 && (page + 1) * DOTS_PER_PAGE < allDotsLoaded.length) {
+      setPage(prev => prev + 1);
+      setPanOffset({ x: 0, y: 0 });
+    }
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
 
   // Show loading while checking authentication
   if (authLoading) {
@@ -351,7 +400,17 @@ export default function SocialFeedPage() {
             </div>
 
             {/* Floating Thoughts Container */}
-            <div className="relative min-h-[600px] h-[calc(100vh-200px)] max-h-[1200px] p-8">
+            <div 
+              className={`relative min-h-[600px] h-[calc(100vh-200px)] max-h-[1200px] p-8 ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+              onMouseDown={handleMouseDown}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUp}
+              onMouseLeave={handleMouseUp}
+              style={{
+                transform: `translateY(${panOffset.y}px)`,
+                transition: isDragging ? 'none' : 'transform 0.3s ease-out'
+              }}
+            >
               {/* Refresh button - top right of grid */}
               <Button
                 variant="ghost"

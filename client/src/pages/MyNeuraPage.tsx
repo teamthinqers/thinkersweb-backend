@@ -143,9 +143,18 @@ export default function MyNeuraPage() {
   const [showRecentOnly, setShowRecentOnly] = useState(false);
   const [viewMode, setViewMode] = useState<'cloud' | 'feed'>('cloud');
   const [showStrengthInfo, setShowStrengthInfo] = useState(false);
+  const [page, setPage] = useState(0);
+  const [allThoughtsLoaded, setAllThoughtsLoaded] = useState<ThoughtDot[]>([]);
   
   // Cache for thought positions to prevent teleporting on refetch
   const positionCacheRef = useState(() => new Map<number, { x: number; y: number; size: number; rotation: number }>())[0];
+
+  // Drag state for panning the grid
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
+  
+  const DOTS_PER_PAGE = 10;
 
   // Fetch user's personal thoughts from MyNeura
   const { data: myNeuraThoughts, isLoading } = useQuery({
@@ -159,6 +168,7 @@ export default function MyNeuraPage() {
     enabled: !!user,
   });
 
+  // Load all thoughts and store them
   useEffect(() => {
     if (myNeuraThoughts && (myNeuraThoughts as any).thoughts) {
       const rawThoughts = (myNeuraThoughts as any).thoughts;
@@ -173,10 +183,26 @@ export default function MyNeuraPage() {
           })
         : rawThoughts;
 
-      // Calculate cloud/universe positions with organic spacing
-      const positionedDots: Array<{ x: number; y: number; size: number; rotation: number }> = [];
-      
-      const positioned = filtered.map((thought: ThoughtDot, index: number) => {
+      setAllThoughtsLoaded(filtered);
+    }
+  }, [myNeuraThoughts, showRecentOnly]);
+
+  // Display paginated thoughts with positions
+  useEffect(() => {
+    if (allThoughtsLoaded.length === 0) {
+      setThoughts([]);
+      return;
+    }
+
+    // Get current page of thoughts (10 most recent + any loaded pages)
+    const startIndex = 0;
+    const endIndex = (page + 1) * DOTS_PER_PAGE;
+    const thoughtsToDisplay = allThoughtsLoaded.slice(startIndex, endIndex);
+
+    // Calculate cloud/universe positions with organic spacing
+    const positionedDots: Array<{ x: number; y: number; size: number; rotation: number }> = [];
+    
+    const positioned = thoughtsToDisplay.map((thought: ThoughtDot, index: number) => {
         // Check cache first
         const cached = positionCacheRef.get(thought.id);
         if (cached) {
@@ -245,8 +271,32 @@ export default function MyNeuraPage() {
       }).filter(Boolean) as ThoughtDot[];
 
       setThoughts(positioned);
+  }, [allThoughtsLoaded, page, positionCacheRef]);
+
+  // Drag handlers for panning the grid
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (viewMode !== 'cloud') return;
+    setIsDragging(true);
+    setDragStart({ x: e.clientX, y: e.clientY });
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging || viewMode !== 'cloud') return;
+    
+    const deltaY = e.clientY - dragStart.y;
+    setPanOffset(prev => ({ x: 0, y: prev.y + deltaY }));
+    setDragStart({ x: e.clientX, y: e.clientY });
+    
+    // Load more dots if dragged up significantly and more exist
+    if (deltaY > 100 && (page + 1) * DOTS_PER_PAGE < allThoughtsLoaded.length) {
+      setPage(prev => prev + 1);
+      setPanOffset({ x: 0, y: 0 });
     }
-  }, [myNeuraThoughts, showRecentOnly, positionCacheRef]);
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
 
   return (
     <SharedAuthLayout>
@@ -400,7 +450,17 @@ export default function MyNeuraPage() {
                 </div>
 
                 {/* Floating Thoughts Container */}
-                <div className="relative min-h-[600px] h-[calc(100vh-300px)] max-h-[900px] p-8">
+                <div 
+                  className={`relative min-h-[600px] h-[calc(100vh-300px)] max-h-[900px] p-8 ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+                  onMouseDown={handleMouseDown}
+                  onMouseMove={handleMouseMove}
+                  onMouseUp={handleMouseUp}
+                  onMouseLeave={handleMouseUp}
+                  style={{
+                    transform: `translateY(${panOffset.y}px)`,
+                    transition: isDragging ? 'none' : 'transform 0.3s ease-out'
+                  }}
+                >
                   {/* Refresh button - top right of grid */}
                   <Button
                     variant="ghost"
