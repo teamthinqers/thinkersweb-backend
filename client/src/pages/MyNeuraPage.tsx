@@ -376,7 +376,7 @@ export default function MyNeuraPage() {
 
       {/* Expanded Thought Modal */}
       <Dialog open={!!selectedThought} onOpenChange={(open) => !open && setSelectedThought(null)}>
-        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+        <DialogContent className="max-w-5xl max-h-[85vh] overflow-y-auto">
           {selectedThought && (
             <>
               <DialogHeader>
@@ -441,6 +441,70 @@ export default function MyNeuraPage() {
                     </p>
                   </CardContent>
                 </Card>
+
+                {/* Additional Layers Section */}
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                    <span className="text-amber-500">●</span>
+                    Additional Layers
+                  </h3>
+                  
+                  <div className="space-y-3">
+                    {/* Keywords Layer */}
+                    <Card className="border-amber-200 bg-white/50">
+                      <CardContent className="pt-4">
+                        <div className="flex items-start gap-3">
+                          <div className="flex-shrink-0 w-24">
+                            <p className="text-sm font-semibold text-gray-700">Keywords</p>
+                          </div>
+                          <div className="flex-1">
+                            {selectedThought.keywords ? (
+                              <p className="text-sm text-gray-600">{selectedThought.keywords}</p>
+                            ) : (
+                              <p className="text-sm text-gray-400 italic">No keywords added yet</p>
+                            )}
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    {/* Anchor Layer */}
+                    <Card className="border-amber-200 bg-white/50">
+                      <CardContent className="pt-4">
+                        <div className="flex items-start gap-3">
+                          <div className="flex-shrink-0 w-24">
+                            <p className="text-sm font-semibold text-gray-700">Anchor</p>
+                          </div>
+                          <div className="flex-1">
+                            {selectedThought.anchor ? (
+                              <p className="text-sm text-gray-600">{selectedThought.anchor}</p>
+                            ) : (
+                              <p className="text-sm text-gray-400 italic">No anchor added yet</p>
+                            )}
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    {/* Analogies Layer */}
+                    <Card className="border-amber-200 bg-white/50">
+                      <CardContent className="pt-4">
+                        <div className="flex items-start gap-3">
+                          <div className="flex-shrink-0 w-24">
+                            <p className="text-sm font-semibold text-gray-700">Analogies</p>
+                          </div>
+                          <div className="flex-1">
+                            {selectedThought.analogies ? (
+                              <p className="text-sm text-gray-600">{selectedThought.analogies}</p>
+                            ) : (
+                              <p className="text-sm text-gray-400 italic">No analogies added yet</p>
+                            )}
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </div>
               </div>
             </>
           )}

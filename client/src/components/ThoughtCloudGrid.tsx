@@ -31,6 +31,9 @@ export interface ThoughtDot {
   contributorCount?: number;
   isSaved?: boolean;
   savedAt?: string;
+  keywords?: string | null;
+  anchor?: string | null;
+  analogies?: string | null;
   x?: number;
   y?: number;
   size?: number;
