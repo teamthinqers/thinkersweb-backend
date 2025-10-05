@@ -450,18 +450,20 @@ export default function MyNeuraPage() {
                   </h3>
                   
                   <div className="space-y-3">
-                    {/* Keywords Layer */}
+                    {/* Feeling/Emotion Layer */}
                     <Card className="border-amber-200 bg-white/50">
                       <CardContent className="pt-4">
                         <div className="flex items-start gap-3">
                           <div className="flex-shrink-0 w-24">
-                            <p className="text-sm font-semibold text-gray-700">Keywords</p>
+                            <p className="text-sm font-semibold text-gray-700">Feeling</p>
                           </div>
                           <div className="flex-1">
-                            {selectedThought.keywords ? (
-                              <p className="text-sm text-gray-600">{selectedThought.keywords}</p>
+                            {selectedThought.emotion ? (
+                              <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0">
+                                {selectedThought.emotion}
+                              </Badge>
                             ) : (
-                              <p className="text-sm text-gray-400 italic">No keywords added yet</p>
+                              <p className="text-sm text-gray-400 italic">No feeling added yet</p>
                             )}
                           </div>
                         </div>
