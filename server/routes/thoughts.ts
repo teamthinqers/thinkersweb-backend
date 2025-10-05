@@ -68,6 +68,35 @@ router.get('/', async (req, res) => {
 
     const socialThoughts = await query;
 
+    // Get contributors (users who saved each thought) for each thought
+    const thoughtsWithContributors = await Promise.all(
+      socialThoughts.map(async (thought) => {
+        // Get up to 4 contributors (we'll show first 3 + count for rest)
+        const contributors = await db
+          .select({
+            id: users.id,
+            fullName: users.fullName,
+            avatar: users.avatar,
+          })
+          .from(savedThoughts)
+          .innerJoin(users, eq(savedThoughts.userId, users.id))
+          .where(eq(savedThoughts.thoughtId, thought.id))
+          .limit(4);
+
+        // Get total contributor count
+        const [{ count: contributorCount }] = await db
+          .select({ count: sql<number>`count(*)` })
+          .from(savedThoughts)
+          .where(eq(savedThoughts.thoughtId, thought.id));
+
+        return {
+          ...thought,
+          contributors,
+          contributorCount,
+        };
+      })
+    );
+
     // Calculate total count
     const [{ count }] = await db.select({ count: sql<number>`count(*)` })
       .from(thoughts)
@@ -75,7 +104,7 @@ router.get('/', async (req, res) => {
 
     res.json({
       success: true,
-      thoughts: socialThoughts,
+      thoughts: thoughtsWithContributors,
       total: count,
       limit,
       offset,

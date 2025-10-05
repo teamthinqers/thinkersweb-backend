@@ -23,6 +23,12 @@ export interface ThoughtDot {
     avatar?: string | null;
     email?: string;
   };
+  contributors?: {
+    id: number;
+    fullName: string | null;
+    avatar?: string | null;
+  }[];
+  contributorCount?: number;
   isSaved?: boolean;
   savedAt?: string;
   x?: number;
@@ -192,24 +198,54 @@ export default function ThoughtCloudGrid({
                 transform: `translate(-50%, -50%)`,
               }}
             >
-              {/* Identity Card - Avatar only */}
+              {/* Identity Card - Avatar(s) only */}
               <div 
                 className="absolute z-50 thought-dot-clickable"
                 style={{ 
-                  top: '-60px', // Position close to circumference
+                  top: '-60px',
                   left: '50%',
                   transform: 'translate(-50%, -50%)',
                 }}
               >
-                <Avatar className="h-10 w-10 border-2 border-amber-300 shadow-lg">
-                  {dot.user?.avatar ? (
-                    <AvatarImage src={dot.user.avatar} alt={dot.user.fullName || 'User'} />
-                  ) : (
-                    <AvatarFallback className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-sm">
-                      {dot.user?.fullName?.charAt(0).toUpperCase() || 'U'}
-                    </AvatarFallback>
+                <div className="flex items-center justify-center gap-0">
+                  {/* Author avatar */}
+                  <Avatar className="h-10 w-10 border-2 border-amber-300 shadow-lg">
+                    {dot.user?.avatar ? (
+                      <AvatarImage src={dot.user.avatar} alt={dot.user.fullName || 'User'} />
+                    ) : (
+                      <AvatarFallback className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-sm">
+                        {dot.user?.fullName?.charAt(0).toUpperCase() || 'U'}
+                      </AvatarFallback>
+                    )}
+                  </Avatar>
+
+                  {/* Contributor avatars (up to 3) - only show on /social */}
+                  {dot.contributors && dot.contributors.length > 0 && (
+                    <>
+                      {dot.contributors.slice(0, 3).map((contributor) => (
+                        <Avatar 
+                          key={contributor.id} 
+                          className="h-8 w-8 border-2 border-red-400 shadow-lg -ml-3"
+                        >
+                          {contributor.avatar ? (
+                            <AvatarImage src={contributor.avatar} alt={contributor.fullName || 'Contributor'} />
+                          ) : (
+                            <AvatarFallback className="bg-gradient-to-r from-red-500 to-orange-500 text-white text-xs">
+                              {contributor.fullName?.charAt(0).toUpperCase() || 'C'}
+                            </AvatarFallback>
+                          )}
+                        </Avatar>
+                      ))}
+
+                      {/* +X indicator if more than 3 contributors */}
+                      {dot.contributorCount && dot.contributorCount > 3 && (
+                        <div className="h-8 w-8 rounded-full bg-gradient-to-r from-red-500 to-orange-500 border-2 border-red-400 flex items-center justify-center -ml-3 shadow-lg">
+                          <p className="text-white text-[10px] font-bold">+{dot.contributorCount - 3}</p>
+                        </div>
+                      )}
+                    </>
                   )}
-                </Avatar>
+                </div>
               </div>
 
               {/* Main Dot Container */}
