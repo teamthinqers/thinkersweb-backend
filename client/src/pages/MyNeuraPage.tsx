@@ -381,132 +381,133 @@ export default function MyNeuraPage() {
             <div className="grid grid-cols-3 h-full max-h-[90vh]">
               {/* Left Column: Thought Details */}
               <div className="p-6 overflow-y-auto border-r border-gray-200">
-              <DialogHeader>
-                <div className="flex items-center gap-3 mb-4">
-                  {selectedThought.isSaved ? (
-                    <>
-                      <div className="h-12 w-12 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center border-2 border-purple-200">
-                        <Bookmark className="h-6 w-6 text-white" />
-                      </div>
-                      <div>
-                        <p className="font-semibold text-gray-900">Saved from {selectedThought.user?.fullName || 'Community'}</p>
-                        <p className="text-sm text-gray-500">{selectedThought.user?.email}</p>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <Avatar className="h-12 w-12 border-2 border-amber-200">
-                        {selectedThought.user?.avatar ? (
-                          <AvatarImage src={selectedThought.user.avatar} alt={selectedThought.user.fullName || 'User'} />
-                        ) : (
-                          <AvatarFallback className="bg-gradient-to-r from-amber-500 to-orange-500 text-white">
-                            {selectedThought.user?.fullName?.charAt(0).toUpperCase() || 'U'}
-                          </AvatarFallback>
-                        )}
-                      </Avatar>
-                      <div>
-                        <p className="font-semibold text-gray-900">My Thought</p>
-                        <p className="text-sm text-gray-500">Created {new Date(selectedThought.createdAt).toLocaleString()}</p>
-                      </div>
-                    </>
-                  )}
-                </div>
-                
-                {selectedThought.emotion && (
-                  <Badge className="w-fit bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0">
-                    {selectedThought.emotion}
-                  </Badge>
-                )}
-                
-                <DialogTitle className="text-2xl font-bold text-gray-900 mt-4">
-                  {selectedThought.heading}
-                </DialogTitle>
-              </DialogHeader>
-
-              <div className="space-y-6 mt-6">
-                {/* Image - if present */}
-                {selectedThought.imageUrl && (
-                  <div className="space-y-2">
-                    <img 
-                      src={selectedThought.imageUrl} 
-                      alt={selectedThought.heading}
-                      className="w-full max-h-96 object-cover rounded-lg shadow-lg"
-                      onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                    />
+                <DialogHeader>
+                  <div className="flex items-center gap-3 mb-4">
+                    {selectedThought.isSaved ? (
+                      <>
+                        <div className="h-12 w-12 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center border-2 border-purple-200">
+                          <Bookmark className="h-6 w-6 text-white" />
+                        </div>
+                        <div>
+                          <p className="font-semibold text-gray-900">Saved from {selectedThought.user?.fullName || 'Community'}</p>
+                          <p className="text-sm text-gray-500">{selectedThought.user?.email}</p>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <Avatar className="h-12 w-12 border-2 border-amber-200">
+                          {selectedThought.user?.avatar ? (
+                            <AvatarImage src={selectedThought.user.avatar} alt={selectedThought.user.fullName || 'User'} />
+                          ) : (
+                            <AvatarFallback className="bg-gradient-to-r from-amber-500 to-orange-500 text-white">
+                              {selectedThought.user?.fullName?.charAt(0).toUpperCase() || 'U'}
+                            </AvatarFallback>
+                          )}
+                        </Avatar>
+                        <div>
+                          <p className="font-semibold text-gray-900">My Thought</p>
+                          <p className="text-sm text-gray-500">Created {new Date(selectedThought.createdAt).toLocaleString()}</p>
+                        </div>
+                      </>
+                    )}
                   </div>
-                )}
-
-                <Card className="bg-gradient-to-br from-amber-50 to-orange-50 border-amber-200">
-                  <CardContent className="pt-6">
-                    <p className="text-gray-700 leading-relaxed">
-                      {selectedThought.summary}
-                    </p>
-                  </CardContent>
-                </Card>
-
-                {/* Additional Layers Section */}
-                <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                    <span className="text-amber-500">●</span>
-                    Additional Layers
-                  </h3>
                   
-                  <div className="space-y-3">
-                    {/* Feeling/Emotion Layer */}
-                    <Card className="border-amber-200 bg-white/50">
-                      <CardContent className="pt-4">
-                        <div className="flex items-start gap-3">
-                          <div className="flex-shrink-0 w-24">
-                            <p className="text-sm font-semibold text-gray-700">Feeling</p>
-                          </div>
-                          <div className="flex-1">
-                            {selectedThought.emotion ? (
-                              <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0">
-                                {selectedThought.emotion}
-                              </Badge>
-                            ) : (
-                              <p className="text-sm text-gray-400 italic">No feeling added yet</p>
-                            )}
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
+                  {selectedThought.emotion && (
+                    <Badge className="w-fit bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0">
+                      {selectedThought.emotion}
+                    </Badge>
+                  )}
+                  
+                  <DialogTitle className="text-2xl font-bold text-gray-900 mt-4">
+                    {selectedThought.heading}
+                  </DialogTitle>
+                </DialogHeader>
 
-                    {/* Anchor Layer */}
-                    <Card className="border-amber-200 bg-white/50">
-                      <CardContent className="pt-4">
-                        <div className="flex items-start gap-3">
-                          <div className="flex-shrink-0 w-24">
-                            <p className="text-sm font-semibold text-gray-700">Anchor</p>
-                          </div>
-                          <div className="flex-1">
-                            {selectedThought.anchor ? (
-                              <p className="text-sm text-gray-600">{selectedThought.anchor}</p>
-                            ) : (
-                              <p className="text-sm text-gray-400 italic">No anchor added yet</p>
-                            )}
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
+                <div className="space-y-6 mt-6">
+                  {/* Image - if present */}
+                  {selectedThought.imageUrl && (
+                    <div className="space-y-2">
+                      <img 
+                        src={selectedThought.imageUrl} 
+                        alt={selectedThought.heading}
+                        className="w-full max-h-96 object-cover rounded-lg shadow-lg"
+                        onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                      />
+                    </div>
+                  )}
 
-                    {/* Analogies Layer */}
-                    <Card className="border-amber-200 bg-white/50">
-                      <CardContent className="pt-4">
-                        <div className="flex items-start gap-3">
-                          <div className="flex-shrink-0 w-24">
-                            <p className="text-sm font-semibold text-gray-700">Analogies</p>
+                  <Card className="bg-gradient-to-br from-amber-50 to-orange-50 border-amber-200">
+                    <CardContent className="pt-6">
+                      <p className="text-gray-700 leading-relaxed">
+                        {selectedThought.summary}
+                      </p>
+                    </CardContent>
+                  </Card>
+
+                  {/* Additional Layers Section */}
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                      <span className="text-amber-500">●</span>
+                      Additional Layers
+                    </h3>
+                    
+                    <div className="space-y-3">
+                      {/* Feeling/Emotion Layer */}
+                      <Card className="border-amber-200 bg-white/50">
+                        <CardContent className="pt-4">
+                          <div className="flex items-start gap-3">
+                            <div className="flex-shrink-0 w-24">
+                              <p className="text-sm font-semibold text-gray-700">Feeling</p>
+                            </div>
+                            <div className="flex-1">
+                              {selectedThought.emotion ? (
+                                <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0">
+                                  {selectedThought.emotion}
+                                </Badge>
+                              ) : (
+                                <p className="text-sm text-gray-400 italic">No feeling added yet</p>
+                              )}
+                            </div>
                           </div>
-                          <div className="flex-1">
-                            {selectedThought.analogies ? (
-                              <p className="text-sm text-gray-600">{selectedThought.analogies}</p>
-                            ) : (
-                              <p className="text-sm text-gray-400 italic">No analogies added yet</p>
-                            )}
+                        </CardContent>
+                      </Card>
+
+                      {/* Anchor Layer */}
+                      <Card className="border-amber-200 bg-white/50">
+                        <CardContent className="pt-4">
+                          <div className="flex items-start gap-3">
+                            <div className="flex-shrink-0 w-24">
+                              <p className="text-sm font-semibold text-gray-700">Anchor</p>
+                            </div>
+                            <div className="flex-1">
+                              {selectedThought.anchor ? (
+                                <p className="text-sm text-gray-600">{selectedThought.anchor}</p>
+                              ) : (
+                                <p className="text-sm text-gray-400 italic">No anchor added yet</p>
+                              )}
+                            </div>
                           </div>
-                        </div>
-                      </CardContent>
-                    </Card>
+                        </CardContent>
+                      </Card>
+
+                      {/* Analogies Layer */}
+                      <Card className="border-amber-200 bg-white/50">
+                        <CardContent className="pt-4">
+                          <div className="flex items-start gap-3">
+                            <div className="flex-shrink-0 w-24">
+                              <p className="text-sm font-semibold text-gray-700">Analogies</p>
+                            </div>
+                            <div className="flex-1">
+                              {selectedThought.analogies ? (
+                                <p className="text-sm text-gray-600">{selectedThought.analogies}</p>
+                              ) : (
+                                <p className="text-sm text-gray-400 italic">No analogies added yet</p>
+                              )}
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
                   </div>
                 </div>
               </div>
