@@ -292,38 +292,6 @@ export default function SocialFeedPage() {
                           />
                         </div>
                       )}
-                      
-                      {/* Engagement Footer */}
-                      <div className="flex items-center gap-6 mt-4 pt-3 border-t border-gray-100">
-                        <Button 
-                          variant="ghost" 
-                          size="sm"
-                          className="text-gray-600 hover:text-amber-600 hover:bg-amber-50"
-                        >
-                          <Heart className="h-4 w-4 mr-2" />
-                          <span className="text-sm">Like</span>
-                        </Button>
-                        <Button 
-                          variant="ghost" 
-                          size="sm"
-                          className="text-gray-600 hover:text-amber-600 hover:bg-amber-50"
-                        >
-                          <Sparkles className="h-4 w-4 mr-2" />
-                          <span className="text-sm">Inspire</span>
-                        </Button>
-                        <Button 
-                          variant="ghost" 
-                          size="sm"
-                          className="text-gray-600 hover:text-amber-600 hover:bg-amber-50"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            // Save to MyNeura functionality will be handled by existing mutation
-                          }}
-                        >
-                          <Bookmark className="h-4 w-4 mr-2" />
-                          <span className="text-sm">Save</span>
-                        </Button>
-                      </div>
                     </CardContent>
                   </Card>
                 );
