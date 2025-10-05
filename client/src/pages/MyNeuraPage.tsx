@@ -284,14 +284,18 @@ export default function MyNeuraPage() {
     if (!isDragging || viewMode !== 'cloud') return;
     
     const deltaY = e.clientY - dragStart.y;
-    setPanOffset(prev => ({ x: 0, y: prev.y + deltaY }));
+    setPanOffset(prev => {
+      const newY = prev.y + deltaY;
+      
+      // Load more dots if dragged up beyond 200px and more exist
+      if (newY < -200 && (page + 1) * DOTS_PER_PAGE < allThoughtsLoaded.length) {
+        setPage(prev => prev + 1);
+        return { x: 0, y: 0 }; // Reset after loading
+      }
+      
+      return { x: 0, y: newY };
+    });
     setDragStart({ x: e.clientX, y: e.clientY });
-    
-    // Load more dots if dragged up significantly and more exist
-    if (deltaY > 100 && (page + 1) * DOTS_PER_PAGE < allThoughtsLoaded.length) {
-      setPage(prev => prev + 1);
-      setPanOffset({ x: 0, y: 0 });
-    }
   };
 
   const handleMouseUp = () => {
@@ -434,7 +438,7 @@ export default function MyNeuraPage() {
             
             {/* Cloud View */}
             {viewMode === 'cloud' && (
-              <>
+              <div className="relative">
                 {/* Cloud background pattern */}
                 <div className="absolute inset-0 opacity-25">
                   <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
@@ -449,7 +453,41 @@ export default function MyNeuraPage() {
                   </svg>
                 </div>
 
-                {/* Floating Thoughts Container */}
+                {/* Fixed position buttons - outside draggable container */}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    positionCacheRef.clear();
+                    window.location.reload();
+                  }}
+                  className="absolute top-4 right-4 z-30 bg-white/80 hover:bg-amber-100 shadow-md"
+                  title="Refresh thought cloud"
+                >
+                  <RefreshCw className="h-4 w-4 mr-2" />
+                  Refresh
+                </Button>
+
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setIsFullscreen(!isFullscreen)}
+                  className="absolute bottom-4 right-4 z-30 bg-white/80 hover:bg-amber-100 shadow-md"
+                >
+                  {isFullscreen ? (
+                    <>
+                      <Minimize className="h-4 w-4 mr-2" />
+                      Exit
+                    </>
+                  ) : (
+                    <>
+                      <Maximize className="h-4 w-4 mr-2" />
+                      Fullscreen
+                    </>
+                  )}
+                </Button>
+
+                {/* Floating Thoughts Container - Draggable */}
                 <div 
                   className={`relative min-h-[600px] h-[calc(100vh-300px)] max-h-[900px] p-8 ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
                   onMouseDown={handleMouseDown}
@@ -461,40 +499,6 @@ export default function MyNeuraPage() {
                     transition: isDragging ? 'none' : 'transform 0.3s ease-out'
                   }}
                 >
-                  {/* Refresh button - top right of grid */}
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => {
-                      positionCacheRef.clear();
-                      window.location.reload();
-                    }}
-                    className="absolute top-4 right-4 z-20 bg-white/80 hover:bg-amber-100 shadow-md"
-                    title="Refresh thought cloud"
-                  >
-                    <RefreshCw className="h-4 w-4 mr-2" />
-                    Refresh
-                  </Button>
-
-                  {/* Fullscreen toggle button - bottom right of grid */}
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setIsFullscreen(!isFullscreen)}
-                    className="absolute bottom-4 right-4 z-20 bg-white/80 hover:bg-amber-100 shadow-md"
-                  >
-                    {isFullscreen ? (
-                      <>
-                        <Minimize className="h-4 w-4 mr-2" />
-                        Exit
-                      </>
-                    ) : (
-                      <>
-                        <Maximize className="h-4 w-4 mr-2" />
-                        Fullscreen
-                      </>
-                    )}
-                  </Button>
                   
               {isLoading ? (
                 <div className="flex items-center justify-center h-full">
@@ -633,7 +637,7 @@ export default function MyNeuraPage() {
                   );})
               )}
                 </div>
-              </>
+              </div>
             )}
             
             {/* Feed View */}
