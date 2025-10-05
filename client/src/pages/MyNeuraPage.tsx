@@ -458,37 +458,23 @@ export default function MyNeuraPage() {
                       transform: `translate(-50%, -50%)`,
                     }}
                   >
-                    {/* Smart Heading Card */}
-                    <div className="absolute -top-16 left-1/2 transform -translate-x-1/2 w-64 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none group-hover:pointer-events-auto z-50">
+                    {/* Identity Card - Always Visible */}
+                    <div className="absolute -top-14 left-1/2 transform -translate-x-1/2 z-50">
                       <Card className="bg-white/95 backdrop-blur-md shadow-lg border-2 border-amber-200">
-                        <CardContent className="p-3">
+                        <CardContent className="p-2 px-3">
                           <div className="flex items-center gap-2">
-                            <TooltipProvider>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <Avatar className="h-8 w-8 border-2 border-amber-300 cursor-pointer hover:scale-110 transition-transform">
-                                    {thought.user?.avatar ? (
-                                      <AvatarImage src={thought.user.avatar} alt={thought.user.fullName || 'User'} />
-                                    ) : (
-                                      <AvatarFallback className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs">
-                                        {thought.user?.fullName?.charAt(0).toUpperCase() || 'U'}
-                                      </AvatarFallback>
-                                    )}
-                                  </Avatar>
-                                </TooltipTrigger>
-                                <TooltipContent side="top">
-                                  <div className="space-y-1">
-                                    <p className="font-semibold">{thought.user?.fullName || 'Unknown'}</p>
-                                    <p className="text-xs text-gray-500">{thought.user?.email || ''}</p>
-                                    <p className="text-xs text-amber-600 cursor-pointer hover:underline">View Profile →</p>
-                                  </div>
-                                </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
-                            <div className="flex-1 min-w-0">
-                              <p className="text-xs font-bold text-gray-900 truncate">{thought.heading}</p>
-                              <p className="text-[10px] text-gray-500">{new Date(thought.createdAt).toLocaleDateString()}</p>
-                            </div>
+                            <Avatar className="h-7 w-7 border-2 border-amber-300">
+                              {thought.user?.avatar ? (
+                                <AvatarImage src={thought.user.avatar} alt={thought.user.fullName || 'User'} />
+                              ) : (
+                                <AvatarFallback className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs">
+                                  {thought.user?.fullName?.charAt(0).toUpperCase() || 'U'}
+                                </AvatarFallback>
+                              )}
+                            </Avatar>
+                            <p className="text-xs font-semibold text-gray-900">
+                              {thought.user?.fullName || 'Anonymous'}
+                            </p>
                           </div>
                         </CardContent>
                       </Card>
@@ -517,57 +503,13 @@ export default function MyNeuraPage() {
                       <div className={`absolute inset-0 bg-gradient-to-br ${channelConfig.bgGradient} opacity-95`} />
                       
                       {/* Content wrapper */}
-                      <div className="relative z-10 w-full h-full flex flex-col items-center justify-center">
+                      <div className="relative z-10 w-full h-full flex flex-col items-center justify-center px-2">
                       
-                      {/* User avatar or saved indicator */}
-                      <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                        {thought.isSaved ? (
-                          <div className="h-8 w-8 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center border-2 border-white shadow-md">
-                            <Bookmark className="h-4 w-4 text-white" />
-                          </div>
-                        ) : (
-                          <Avatar className="h-8 w-8 border-2 border-white shadow-md">
-                            {thought.user?.avatar ? (
-                              <AvatarImage src={thought.user.avatar} alt={thought.user.fullName || 'User'} />
-                            ) : (
-                              <AvatarFallback className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs">
-                                {thought.user?.fullName?.charAt(0).toUpperCase() || 'U'}
-                              </AvatarFallback>
-                            )}
-                          </Avatar>
-                        )}
-                      </div>
-
-                      {/* Emotion badge */}
-                      {thought.emotion && (
-                        <div className="text-center mb-2">
-                          <span className="px-2 py-0.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-[10px] font-bold rounded-full uppercase tracking-wider shadow-sm">
-                            {thought.emotion}
-                          </span>
-                        </div>
-                      )}
-
-                      {/* Image - if present */}
-                      {thought.imageUrl && (
-                        <div className="mb-2">
-                          <img 
-                            src={thought.imageUrl} 
-                            alt={thought.heading}
-                            className="w-full h-20 object-cover rounded-md"
-                            onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                          />
-                        </div>
-                      )}
-
-                      {/* Heading - center */}
-                      <h3 className="text-xs font-bold text-gray-900 text-center line-clamp-3 leading-tight mb-2">
+                      {/* Heading - prominently displayed in center */}
+                      <h3 className="text-sm font-bold text-gray-900 text-center line-clamp-4 leading-tight">
                         {thought.heading}
                       </h3>
 
-                      {/* Summary preview - bottom */}
-                      <p className="text-[10px] text-gray-600 text-center line-clamp-2 mt-auto">
-                        {thought.summary}
-                      </p>
                       </div>
                     </div>
 
