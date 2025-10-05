@@ -126,47 +126,52 @@ export default function SocialFeedPage() {
     <SharedAuthLayout>
       <div className={`flex-1 overflow-hidden ${isFullscreen ? 'fixed inset-0 z-50 bg-gradient-to-br from-amber-50 via-orange-50 to-red-50' : ''}`}>
         <div className={`${isFullscreen ? 'h-full' : 'container mx-auto px-4 sm:px-6 lg:px-8 py-8'}`}>
-        {/* Toolbar - hide in fullscreen */}
-        {!isFullscreen && (
-          <div className="flex items-center justify-between mb-6">
-            <h1 className="text-2xl font-bold flex items-center gap-2">
-              <Brain className="h-6 w-6 text-red-500" />
-              Social Neura
-            </h1>
-            
-            {/* Stylish Flip Toggle for Cloud/Feed Mode */}
-            <div className="relative inline-flex items-center bg-white rounded-full p-1 border-2 border-gray-200 shadow-sm">
-              <button
-                onClick={() => setViewMode('cloud')}
-                className={`relative z-10 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 flex items-center gap-2 ${
-                  viewMode === 'cloud'
-                    ? 'text-white'
-                    : 'text-gray-600 hover:text-gray-900'
-                }`}
-              >
-                <Cloud className="h-4 w-4" />
-                Cloud
-              </button>
-              <button
-                onClick={() => setViewMode('feed')}
-                className={`relative z-10 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 flex items-center gap-2 ${
-                  viewMode === 'feed'
-                    ? 'text-white'
-                    : 'text-gray-600 hover:text-gray-900'
-                }`}
-              >
-                <ListIcon className="h-4 w-4" />
-                Feed
-              </button>
-              {/* Animated background slider */}
-              <div
-                className={`absolute top-1 bottom-1 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full transition-all duration-300 ease-in-out ${
-                  viewMode === 'cloud' ? 'left-1 w-[calc(50%-4px)]' : 'left-[calc(50%+2px)] w-[calc(50%-4px)]'
-                }`}
-              />
-            </div>
-          </div>
-        )}
+          {/* Thought Cloud Canvas */}
+          <div className={`relative w-full bg-gradient-to-br from-amber-50/70 to-orange-50/50 shadow-2xl border border-amber-200 overflow-hidden backdrop-blur-sm ${isFullscreen ? 'h-full rounded-none' : 'rounded-3xl'}`}>
+            {/* Toolbar - Social Navigation - hide in fullscreen */}
+            {!isFullscreen && (
+              <div className="sticky top-0 z-10 bg-white/95 backdrop-blur-lg border-b border-gray-200 shadow-sm px-6 py-4 flex items-center justify-between">
+                {/* Left: Social Neura heading with Brain icon */}
+                <div className="flex items-center gap-3">
+                  <Brain className="h-7 w-7 text-red-500" />
+                  <h1 className="text-2xl font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
+                    Social Neura
+                  </h1>
+                </div>
+
+                {/* Right: Cloud/Feed Toggle */}
+                <div className="relative inline-flex items-center bg-white rounded-full p-1 border-2 border-gray-200 shadow-sm">
+                  <button
+                    onClick={() => setViewMode('cloud')}
+                    className={`relative z-10 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 flex items-center gap-2 ${
+                      viewMode === 'cloud'
+                        ? 'text-white'
+                        : 'text-gray-600 hover:text-gray-900'
+                    }`}
+                  >
+                    <Cloud className="h-4 w-4" />
+                    Cloud
+                  </button>
+                  <button
+                    onClick={() => setViewMode('feed')}
+                    className={`relative z-10 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 flex items-center gap-2 ${
+                      viewMode === 'feed'
+                        ? 'text-white'
+                        : 'text-gray-600 hover:text-gray-900'
+                    }`}
+                  >
+                    <ListIcon className="h-4 w-4" />
+                    Feed
+                  </button>
+                  {/* Animated background slider */}
+                  <div
+                    className={`absolute top-1 bottom-1 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full transition-all duration-300 ease-in-out ${
+                      viewMode === 'cloud' ? 'left-1 w-[calc(50%-4px)]' : 'left-[calc(50%+2px)] w-[calc(50%-4px)]'
+                    }`}
+                  />
+                </div>
+              </div>
+            )}
 
         {/* Loading State */}
         {dotsLoading && (
@@ -320,57 +325,58 @@ export default function SocialFeedPage() {
           </div>
         )}
 
-        {/* Thought Detail Dialog */}
-        {selectedDot && (
-          <Dialog open={!!selectedDot} onOpenChange={() => setSelectedDot(null)}>
-            <DialogContent className="max-w-2xl">
-              <DialogHeader>
-                <DialogTitle>{selectedDot.heading}</DialogTitle>
-              </DialogHeader>
-              <div className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <Avatar className="h-10 w-10">
-                    <AvatarImage src={selectedDot.user?.avatar || undefined} />
-                    <AvatarFallback className="bg-gradient-to-r from-amber-500 to-orange-500 text-white">
-                      {selectedDot.user?.fullName?.[0]?.toUpperCase() || 'U'}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <p className="font-semibold text-sm">{selectedDot.user?.fullName || 'Anonymous'}</p>
-                    <p className="text-xs text-gray-500">
-                      {new Date(selectedDot.createdAt).toLocaleDateString()}
-                    </p>
+          {/* Thought Detail Dialog */}
+          {selectedDot && (
+            <Dialog open={!!selectedDot} onOpenChange={() => setSelectedDot(null)}>
+              <DialogContent className="max-w-2xl">
+                <DialogHeader>
+                  <DialogTitle>{selectedDot.heading}</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <Avatar className="h-10 w-10">
+                      <AvatarImage src={selectedDot.user?.avatar || undefined} />
+                      <AvatarFallback className="bg-gradient-to-r from-amber-500 to-orange-500 text-white">
+                        {selectedDot.user?.fullName?.[0]?.toUpperCase() || 'U'}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <p className="font-semibold text-sm">{selectedDot.user?.fullName || 'Anonymous'}</p>
+                      <p className="text-xs text-gray-500">
+                        {new Date(selectedDot.createdAt).toLocaleDateString()}
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <p className="text-gray-700">{selectedDot.summary}</p>
+                  
+                  {selectedDot.imageUrl && (
+                    <img 
+                      src={selectedDot.imageUrl} 
+                      alt={selectedDot.heading}
+                      className="w-full rounded-lg"
+                    />
+                  )}
+                  
+                  {selectedDot.emotion && (
+                    <Badge variant="secondary">{selectedDot.emotion}</Badge>
+                  )}
+                  
+                  <div className="flex gap-2 pt-4">
+                    <Button
+                      onClick={() => saveToMyNeuraMutation.mutate(selectedDot.id)}
+                      disabled={saveToMyNeuraMutation.isPending}
+                      className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
+                    >
+                      <Heart className="h-4 w-4 mr-2" />
+                      Save to MyNeura
+                    </Button>
                   </div>
                 </div>
-                
-                <p className="text-gray-700">{selectedDot.summary}</p>
-                
-                {selectedDot.imageUrl && (
-                  <img 
-                    src={selectedDot.imageUrl} 
-                    alt={selectedDot.heading}
-                    className="w-full rounded-lg"
-                  />
-                )}
-                
-                {selectedDot.emotion && (
-                  <Badge variant="secondary">{selectedDot.emotion}</Badge>
-                )}
-                
-                <div className="flex gap-2 pt-4">
-                  <Button
-                    onClick={() => saveToMyNeuraMutation.mutate(selectedDot.id)}
-                    disabled={saveToMyNeuraMutation.isPending}
-                    className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
-                  >
-                    <Heart className="h-4 w-4 mr-2" />
-                    Save to MyNeura
-                  </Button>
-                </div>
-              </div>
-            </DialogContent>
-          </Dialog>
-        )}
+              </DialogContent>
+            </Dialog>
+          )}
+          </div>
         </div>
       </div>
     </SharedAuthLayout>
