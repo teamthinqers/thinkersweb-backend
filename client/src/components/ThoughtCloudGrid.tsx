@@ -88,6 +88,20 @@ export default function ThoughtCloudGrid({
 
     const positionedDots: { x: number; y: number; size: number; rotation: number }[] = [];
 
+    // Predefined 10-slot grid layout with guaranteed spacing
+    const gridSlots = [
+      { x: 20, y: 28 },  // Top-left
+      { x: 50, y: 23 },  // Top-center
+      { x: 78, y: 28 },  // Top-right
+      { x: 18, y: 52 },  // Mid-left
+      { x: 42, y: 48 },  // Mid-center-left
+      { x: 66, y: 53 },  // Mid-center-right
+      { x: 83, y: 48 },  // Mid-right
+      { x: 25, y: 73 },  // Bottom-left
+      { x: 54, y: 75 },  // Bottom-center
+      { x: 77, y: 70 },  // Bottom-right
+    ];
+
     const positioned = currentPageThoughts.map((thought, index) => {
       // Check cache first
       const cached = positionCache.get(thought.id);
@@ -96,64 +110,21 @@ export default function ThoughtCloudGrid({
         return { ...thought, ...cached };
       }
 
-      const marginX = GRID_CONSTANTS.MARGIN_X;
-      const marginY = GRID_CONSTANTS.MARGIN_Y;
-      const safeZoneX = 100 - (marginX * 2);
-      const safeZoneY = 100 - (marginY * 2);
-
-      // Pseudo-random position based on thought ID
-      const seed = thought.id * 7919;
-      let pseudoRandom1 = (Math.sin(seed) * 10000) % 1;
-      let pseudoRandom2 = (Math.cos(seed * 1.5) * 10000) % 1;
-
-      // Create clusters/layers for depth
-      const dotsPerLayer = isMobile 
-        ? GRID_CONSTANTS.LAYOUT.DOTS_PER_LAYER_MOBILE 
-        : GRID_CONSTANTS.LAYOUT.DOTS_PER_LAYER_DESKTOP;
-      const layer = Math.floor(index / dotsPerLayer);
-      const layerOffset = layer * (isMobile 
-        ? GRID_CONSTANTS.LAYOUT.LAYER_OFFSET_MOBILE 
-        : GRID_CONSTANTS.LAYOUT.LAYER_OFFSET_DESKTOP);
-
       // Use standardized size calculation
       const size = getDotSize(thought.id, isMobile);
 
-      // Try to find a non-overlapping position
-      let x: number, y: number;
-      let attempts = 0;
-      const maxAttempts = GRID_CONSTANTS.COLLISION.MAX_ATTEMPTS;
-
-      do {
-        // Position within safe zone with organic distribution
-        x = marginX + (Math.abs(pseudoRandom1) * safeZoneX);
-        y = marginY + (Math.abs(pseudoRandom2) * (safeZoneY * 0.7)) + layerOffset;
-        
-        // Clamp position to ensure dot (including radius) stays within bounds
-        const radiusPct = ((size / 2) / containerDimensions.width) * 100;
-        x = Math.max(marginX + radiusPct, Math.min(x, 100 - marginX - radiusPct));
-        const yRadiusPct = ((size / 2) / containerDimensions.height) * 100;
-        y = Math.max(marginY + yRadiusPct, Math.min(y, 100 - marginY - yRadiusPct));
-
-        // Check for collisions with existing dots (pixel-based)
-        const hasCollision = positionedDots.some(existing => 
-          dotsCollide(
-            x, y, size, 
-            existing.x, existing.y, existing.size,
-            containerDimensions.width,
-            containerDimensions.height
-          )
-        );
-
-        if (!hasCollision || attempts >= maxAttempts) {
-          break;
-        }
-
-        // Generate new random position for next attempt
-        attempts++;
-        pseudoRandom1 = (Math.sin(seed * (attempts + 1)) * 10000) % 1;
-        pseudoRandom2 = (Math.cos(seed * (attempts + 1) * 1.5) * 10000) % 1;
-      } while (attempts < maxAttempts);
-
+      // Use predefined slot for this index
+      const slotIndex = index % gridSlots.length;
+      const baseSlot = gridSlots[slotIndex];
+      
+      // Add tiny pseudo-random offset for organic feel (max 2% in each direction)
+      const seed = thought.id * 7919;
+      const offsetX = (Math.sin(seed) * 2);
+      const offsetY = (Math.cos(seed * 1.5) * 2);
+      
+      const x = Math.max(18, Math.min(82, baseSlot.x + offsetX));
+      const y = Math.max(23, Math.min(77, baseSlot.y + offsetY));
+      
       const rotation = (thought.id * 13) % 360;
 
       const position = { x, y, size, rotation };
@@ -164,7 +135,7 @@ export default function ThoughtCloudGrid({
     }).filter(Boolean) as ThoughtDot[];
 
     setDots(positioned);
-  }, [allThoughts, page, positionCache, containerDimensions]);
+  }, [allThoughts, page, positionCache]);
 
   // Drag handlers for panning the grid
   const handleMouseDown = (e: React.MouseEvent) => {
