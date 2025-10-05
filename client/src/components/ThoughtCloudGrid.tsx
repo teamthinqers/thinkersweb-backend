@@ -52,28 +52,8 @@ export default function ThoughtCloudGrid({
 }: ThoughtCloudGridProps) {
   const [dots, setDots] = useState<ThoughtDot[]>([]);
   const [page, setPage] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
-  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
-  const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
-  const [hasMoved, setHasMoved] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [containerDimensions, setContainerDimensions] = useState({ width: 1000, height: 600 });
-
-  // Track container dimensions
-  useEffect(() => {
-    const updateDimensions = () => {
-      if (containerRef.current) {
-        setContainerDimensions({
-          width: containerRef.current.offsetWidth,
-          height: containerRef.current.offsetHeight,
-        });
-      }
-    };
-    
-    updateDimensions();
-    window.addEventListener('resize', updateDimensions);
-    return () => window.removeEventListener('resize', updateDimensions);
-  }, [isFullscreen]);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const sentinelRef = useRef<HTMLDivElement>(null);
 
   // Position thoughts using fixed grid (no collision detection needed)
   useEffect(() => {
@@ -98,61 +78,30 @@ export default function ThoughtCloudGrid({
     setDots(positioned);
   }, [allThoughts, page]);
 
-  // Smooth drag handlers using pointer events and RAF
-  const handlePointerDown = (e: React.PointerEvent) => {
-    // Don't start drag if clicking on a dot or card (they have their own handlers)
-    const target = e.target as HTMLElement;
-    if (target.closest('.thought-dot-clickable')) {
-      return;
-    }
-    
-    e.preventDefault(); // Prevent text selection
-    setIsDragging(true);
-    setHasMoved(false);
-    setDragStart({ x: e.clientX, y: e.clientY });
-    e.currentTarget.setPointerCapture(e.pointerId);
-  };
-
-  const handlePointerMove = (e: React.PointerEvent) => {
-    if (!isDragging) return;
-
-    const deltaY = (e.clientY - dragStart.y) * 1.8; // Increased sensitivity for smoother drag
-    
-    // Mark as moved if there's significant movement (more than 5px for better click detection)
-    if (Math.abs(deltaY) > 5) {
-      setHasMoved(true);
-    }
-    
-    requestAnimationFrame(() => {
-      setPanOffset(prev => {
-        const newY = prev.y + deltaY;
-
-        // Load more dots if dragged up beyond 200px and more exist
-        if (newY < -200 && (page + 1) * DOTS_PER_PAGE < allThoughts.length) {
+  // Infinite scroll with IntersectionObserver
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const sentinel = entries[0];
+        if (sentinel.isIntersecting && (page + 1) * DOTS_PER_PAGE < allThoughts.length) {
           setPage(prev => prev + 1);
         }
+      },
+      { threshold: 0.1, rootMargin: '100px' }
+    );
 
-        // Infinite scrolling - no boundaries, users can drag as far as they want
-        return { x: 0, y: newY };
-      });
-    });
-    
-    setDragStart({ x: e.clientX, y: e.clientY });
-  };
-
-  const handlePointerUp = (e: React.PointerEvent) => {
-    setIsDragging(false);
-    // Reset hasMoved after a short delay to allow immediate clicks
-    setTimeout(() => setHasMoved(false), 50);
-    
-    if (e.currentTarget.hasPointerCapture(e.pointerId)) {
-      e.currentTarget.releasePointerCapture(e.pointerId);
+    if (sentinelRef.current) {
+      observer.observe(sentinelRef.current);
     }
-  };
+
+    return () => observer.disconnect();
+  }, [page, allThoughts.length]);
 
   const handleRefresh = () => {
-    // Reset position to origin
-    setPanOffset({ x: 0, y: 0 });
+    // Reset scroll to top
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+    }
     setPage(0);
     
     // Always call refresh to reload data
@@ -212,30 +161,23 @@ export default function ThoughtCloudGrid({
         )}
       </Button>
 
-      {/* Floating Thoughts Container - Draggable */}
+      {/* Scrollable Cloud Container - Native mobile-like scrolling */}
       <div 
-        ref={containerRef}
-        className={`relative w-full p-8 select-none ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
-        onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerUp={handlePointerUp}
-        onDragStart={(e) => e.preventDefault()}
-        onMouseDown={(e) => {
-          if (!(e.target as HTMLElement).closest('.thought-dot-clickable')) {
-            e.preventDefault();
-          }
-        }}
+        ref={scrollContainerRef}
+        className="relative w-full h-full overflow-y-auto overflow-x-hidden"
         style={{
-          height: '10000px', // Large virtual canvas for infinite scrolling
-          transform: `translateY(${panOffset.y}px)`,
-          transition: isDragging ? 'none' : 'transform 0.3s ease-out',
-          touchAction: 'none',
-          userSelect: 'none',
-          WebkitUserSelect: 'none',
-          MozUserSelect: 'none',
-          msUserSelect: 'none'
+          WebkitOverflowScrolling: 'touch', // iOS momentum scrolling
+          scrollBehavior: 'smooth',
         }}
       >
+        {/* Virtual canvas for dot positioning */}
+        <div 
+          className="relative w-full p-8"
+          style={{
+            height: '10000px', // Large virtual canvas for infinite scrolling
+            minHeight: '100%'
+          }}
+        >
         {dots.map((dot) => {
           const channelConfig = getChannelConfig(dot.channel || 'write');
           const ChannelIcon = channelConfig.icon;
@@ -289,9 +231,7 @@ export default function ThoughtCloudGrid({
                 }}
                 onClick={(e) => {
                   e.stopPropagation();
-                  if (!hasMoved) {
-                    onDotClick(dot);
-                  }
+                  onDotClick(dot);
                 }}
               >
                 {/* Outer pulsing ring with channel color */}
@@ -340,6 +280,10 @@ export default function ThoughtCloudGrid({
             </div>
           );
         })}
+        
+        {/* Infinite scroll sentinel */}
+        <div ref={sentinelRef} className="h-4 w-full" />
+        </div>
       </div>
     </div>
   );
