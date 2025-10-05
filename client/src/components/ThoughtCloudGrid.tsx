@@ -160,32 +160,46 @@ export default function ThoughtCloudGrid({
     setDots(positioned);
   }, [allThoughts, page, positionCache, containerDimensions]);
 
-  // Drag handlers for panning the grid
-  const handleMouseDown = (e: React.MouseEvent) => {
+  // Smooth drag handlers using pointer events and RAF
+  const handlePointerDown = (e: React.PointerEvent) => {
     setIsDragging(true);
     setDragStart({ x: e.clientX, y: e.clientY });
+    e.currentTarget.setPointerCapture(e.pointerId);
   };
 
-  const handleMouseMove = (e: React.MouseEvent) => {
+  const handlePointerMove = (e: React.PointerEvent) => {
     if (!isDragging) return;
 
     const deltaY = e.clientY - dragStart.y;
-    setPanOffset(prev => {
-      const newY = prev.y + deltaY;
+    
+    requestAnimationFrame(() => {
+      setPanOffset(prev => {
+        const newY = prev.y + deltaY;
 
-      // Load more dots if dragged up beyond 200px and more exist
-      if (newY < -200 && (page + 1) * DOTS_PER_PAGE < allThoughts.length) {
-        setPage(prev => prev + 1);
-        return { x: 0, y: 0 }; // Reset after loading
-      }
+        // Load more dots if dragged up beyond 200px and more exist
+        if (newY < -200 && (page + 1) * DOTS_PER_PAGE < allThoughts.length) {
+          setPage(prev => prev + 1);
+          // Keep the offset instead of resetting
+          return { x: 0, y: newY };
+        }
 
-      return { x: 0, y: newY };
+        // Clamp offset for smooth boundaries
+        const maxOffset = 200;
+        const minOffset = -((page + 1) * 100 * containerDimensions.height / 100);
+        const clampedY = Math.max(minOffset, Math.min(maxOffset, newY));
+
+        return { x: 0, y: clampedY };
+      });
     });
+    
     setDragStart({ x: e.clientX, y: e.clientY });
   };
 
-  const handleMouseUp = () => {
+  const handlePointerUp = (e: React.PointerEvent) => {
     setIsDragging(false);
+    if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+      e.currentTarget.releasePointerCapture(e.pointerId);
+    }
   };
 
   const handleRefresh = () => {
@@ -249,10 +263,10 @@ export default function ThoughtCloudGrid({
       <div 
         ref={containerRef}
         className={`relative min-h-[600px] h-[calc(100vh-200px)] max-h-[1200px] p-8 ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseUp}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerLeave={handlePointerUp}
         style={{
           transform: `translateY(${panOffset.y}px)`,
           transition: isDragging ? 'none' : 'transform 0.3s ease-out'
