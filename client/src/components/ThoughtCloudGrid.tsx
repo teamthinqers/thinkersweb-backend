@@ -106,6 +106,7 @@ export default function ThoughtCloudGrid({
       return;
     }
     
+    e.preventDefault(); // Prevent text selection
     setIsDragging(true);
     setHasMoved(false);
     setDragStart({ x: e.clientX, y: e.clientY });
@@ -207,7 +208,7 @@ export default function ThoughtCloudGrid({
       {/* Floating Thoughts Container - Draggable */}
       <div 
         ref={containerRef}
-        className={`relative w-full p-8 ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+        className={`relative w-full p-8 select-none ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
@@ -217,7 +218,9 @@ export default function ThoughtCloudGrid({
           transition: isDragging ? 'none' : 'transform 0.3s ease-out',
           touchAction: 'none',
           userSelect: 'none',
-          WebkitUserSelect: 'none'
+          WebkitUserSelect: 'none',
+          MozUserSelect: 'none',
+          msUserSelect: 'none'
         }}
       >
         {dots.map((dot) => {
