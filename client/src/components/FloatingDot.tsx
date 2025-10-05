@@ -294,16 +294,6 @@ export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) 
         onClick={handleClick}
       >
         <div className="relative cursor-move">
-          {/* Brand-aligned pulsing rings that enhance the logo's dot concept - only show when NOT dragging */}
-          {!isDragging && (
-            <>
-              <div className="absolute inset-0 w-14 h-14 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 opacity-25 animate-ping pointer-events-none"></div>
-              <div className="absolute inset-1 w-12 h-12 rounded-full bg-gradient-to-r from-orange-400 to-red-500 opacity-35 animate-ping pointer-events-none" style={{ animationDelay: '0.4s' }}></div>
-              <div className="absolute inset-2 w-10 h-10 rounded-full bg-gradient-to-r from-yellow-400 to-amber-500 opacity-45 animate-ping pointer-events-none" style={{ animationDelay: '0.8s' }}></div>
-              <div className="absolute inset-3 w-8 h-8 rounded-full bg-gradient-to-r from-amber-300 to-orange-400 opacity-55 animate-ping pointer-events-none" style={{ animationDelay: '1.2s' }}></div>
-            </>
-          )}
-          
           {/* DotSpark logo - spins fast when dragging, pulses when idle */}
           <img 
             src="/dotspark-logo-transparent.png?v=1" 
