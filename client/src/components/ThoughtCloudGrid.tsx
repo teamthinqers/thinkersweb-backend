@@ -77,11 +77,11 @@ export default function ThoughtCloudGrid({
     return () => window.removeEventListener('resize', updateDimensions);
   }, [isFullscreen]);
 
-  // Position thoughts in cloud formation with proper spacing
+  // Position thoughts in cloud formation with vertical layering
   useEffect(() => {
     const isMobile = window.innerWidth < 768;
     
-    // Get thoughts for current page
+    // Show all thoughts loaded so far (load in batches of 8)
     const startIdx = 0;
     const endIdx = (page + 1) * DOTS_PER_PAGE;
     const currentPageThoughts = allThoughts.slice(startIdx, endIdx);
@@ -105,29 +105,39 @@ export default function ThoughtCloudGrid({
       // Use standardized size calculation
       const size = getDotSize(thought.id, isMobile);
 
+      // Calculate which layer this dot belongs to (0 = first 8, 1 = next 8, etc.)
+      const layer = Math.floor(index / DOTS_PER_PAGE);
+      const indexInLayer = index % DOTS_PER_PAGE;
+
+      // Y offset for each layer - older dots appear below
+      const layerOffset = layer * 100; // Each layer is 100% height apart
+
       let x = 0;
       let y = 0;
       let attempts = 0;
       const maxAttempts = GRID_CONSTANTS.COLLISION.MAX_ATTEMPTS;
 
-      // Find a non-overlapping position using collision detection
+      // Find a non-overlapping position within this layer
       while (attempts < maxAttempts) {
-        // Generate random position within safe zone
+        // Generate random position within safe zone for this layer
         const seed = thought.id * 7919 + attempts * 1337;
         x = minX + (Math.abs(Math.sin(seed)) * (maxX - minX));
-        y = minY + (Math.abs(Math.cos(seed * 1.5)) * (maxY - minY));
+        y = minY + (Math.abs(Math.cos(seed * 1.5)) * (maxY - minY)) + layerOffset;
 
-        // Check if this position collides with any existing dots
+        // Check if this position collides with any dots in the same layer
         let collides = false;
         for (const existingDot of positionedDots) {
-          if (dotsCollide(
-            x, y, size,
-            existingDot.x, existingDot.y, existingDot.size,
-            containerDimensions.width,
-            containerDimensions.height
-          )) {
-            collides = true;
-            break;
+          // Only check collision within same layer (within 100% height range)
+          if (Math.abs(existingDot.y - y) < 100) {
+            if (dotsCollide(
+              x, y, size,
+              existingDot.x, existingDot.y, existingDot.size,
+              containerDimensions.width,
+              containerDimensions.height
+            )) {
+              collides = true;
+              break;
+            }
           }
         }
 
