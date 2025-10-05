@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import { 
   Brain, Users, Heart,
-  Grid3x3, List, Clock, Loader2, Maximize, Minimize, RefreshCw,
+  Cloud, List as ListIcon, Loader2, Maximize, Minimize, RefreshCw,
   PenTool, Bookmark, Sparkles
 } from "lucide-react";
 import { SiWhatsapp, SiLinkedin, SiOpenai } from 'react-icons/si';
@@ -41,7 +43,6 @@ export default function SocialFeedPage() {
   const [selectedDot, setSelectedDot] = useState<ThoughtDot | null>(null);
   const [dots, setDots] = useState<ThoughtDot[]>([]);
   const [viewMode, setViewMode] = useState<'cloud' | 'feed'>('cloud');
-  const [showRecentOnly, setShowRecentOnly] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   
   const { toast } = useToast();
@@ -88,21 +89,11 @@ export default function SocialFeedPage() {
     },
   });
 
-  // Load and filter thoughts
+  // Load thoughts
   useEffect(() => {
     if (!publicDots || !(publicDots as any).thoughts) return;
-
-    let dotsArray = (publicDots as any).thoughts;
-    
-    // Filter recent if enabled
-    if (showRecentOnly) {
-      const sevenDaysAgo = new Date();
-      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-      dotsArray = dotsArray.filter((dot: any) => new Date(dot.createdAt) >= sevenDaysAgo);
-    }
-
-    setDots(dotsArray);
-  }, [publicDots, showRecentOnly]);
+    setDots((publicDots as any).thoughts);
+  }, [publicDots]);
 
   // Show loading while checking authentication
   if (authLoading) {
@@ -143,26 +134,27 @@ export default function SocialFeedPage() {
               Social Thoughts
             </h1>
             
-            <div className="flex items-center gap-2">
-              {/* Recent Filter */}
-              <Button
-                variant={showRecentOnly ? "default" : "outline"}
-                size="sm"
-                onClick={() => setShowRecentOnly(!showRecentOnly)}
-                className={showRecentOnly ? "bg-amber-500 hover:bg-amber-600" : ""}
-              >
-                <Clock className="h-4 w-4 mr-2" />
-                Recent
-              </Button>
-              
-              {/* View Mode Toggle */}
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setViewMode(viewMode === 'cloud' ? 'feed' : 'cloud')}
-              >
-                {viewMode === 'cloud' ? <List className="h-4 w-4" /> : <Grid3x3 className="h-4 w-4" />}
-              </Button>
+            {/* Cloud/Feed Mode Toggle */}
+            <div className="flex items-center gap-3 bg-white px-4 py-2 rounded-lg border border-gray-200 shadow-sm">
+              <Label htmlFor="view-mode" className="flex items-center gap-2 cursor-pointer">
+                {viewMode === 'cloud' ? (
+                  <>
+                    <Cloud className="h-4 w-4 text-amber-600" />
+                    <span className="text-sm font-medium text-gray-700">Cloud Mode</span>
+                  </>
+                ) : (
+                  <>
+                    <ListIcon className="h-4 w-4 text-amber-600" />
+                    <span className="text-sm font-medium text-gray-700">Feed Mode</span>
+                  </>
+                )}
+              </Label>
+              <Switch
+                id="view-mode"
+                checked={viewMode === 'feed'}
+                onCheckedChange={(checked) => setViewMode(checked ? 'feed' : 'cloud')}
+                className="data-[state=checked]:bg-amber-500"
+              />
             </div>
           </div>
         )}
@@ -199,40 +191,115 @@ export default function SocialFeedPage() {
           </>
         )}
 
-        {/* Feed List View */}
+        {/* Feed List View - LinkedIn-style posts */}
         {!dotsLoading && viewMode === 'feed' && (
-          <div className={`space-y-4 ${isFullscreen ? 'h-full overflow-y-auto p-6' : ''}`}>
-            {dots.map((dot) => (
-              <div
-                key={dot.id}
-                className="bg-white rounded-xl border border-gray-200 p-6 hover:border-amber-300 transition-colors cursor-pointer"
-                onClick={() => setSelectedDot(dot)}
-              >
-                <div className="flex items-start justify-between mb-3">
-                  <div className="flex items-center gap-3">
-                    <Avatar className="h-10 w-10">
-                      <AvatarImage src={dot.user?.avatar || undefined} />
-                      <AvatarFallback className="bg-gradient-to-r from-amber-500 to-orange-500 text-white">
-                        {dot.user?.fullName?.[0]?.toUpperCase() || 'U'}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <p className="font-semibold text-sm">{dot.user?.fullName || 'Anonymous'}</p>
-                      <p className="text-xs text-gray-500">
-                        {new Date(dot.createdAt).toLocaleDateString()}
-                      </p>
-                    </div>
-                  </div>
-                  {dot.emotion && (
-                    <Badge variant="secondary" className="text-xs">
-                      {dot.emotion}
-                    </Badge>
-                  )}
-                </div>
-                <h3 className="font-semibold text-lg mb-2">{dot.heading}</h3>
-                <p className="text-gray-600 text-sm">{dot.summary}</p>
-              </div>
-            ))}
+          <div className={`${isFullscreen ? 'h-full overflow-y-auto p-6' : ''}`}>
+            <div className="max-w-2xl mx-auto space-y-4">
+              {dots.map((dot) => {
+                const channelConfig = getChannelConfig(dot.channel || 'write');
+                const ChannelIcon = channelConfig.icon;
+                
+                return (
+                  <Card 
+                    key={dot.id}
+                    className="bg-white hover:shadow-lg transition-shadow cursor-pointer border border-gray-200"
+                    onClick={() => setSelectedDot(dot)}
+                  >
+                    <CardContent className="p-5">
+                      {/* Author Header */}
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex items-center gap-3">
+                          <Avatar className="h-12 w-12 ring-2 ring-amber-100">
+                            <AvatarImage src={dot.user?.avatar || undefined} />
+                            <AvatarFallback className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-sm font-semibold">
+                              {dot.user?.fullName?.[0]?.toUpperCase() || 'U'}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <p className="font-semibold text-base text-gray-900">{dot.user?.fullName || 'Anonymous'}</p>
+                            <p className="text-sm text-gray-500">
+                              {new Date(dot.createdAt).toLocaleDateString('en-US', { 
+                                month: 'short', 
+                                day: 'numeric',
+                                year: 'numeric'
+                              })}
+                            </p>
+                          </div>
+                        </div>
+                        
+                        {/* Channel Badge */}
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <div className={`h-8 w-8 rounded-full ${channelConfig.badgeBg} flex items-center justify-center shadow-sm`}>
+                                <ChannelIcon className="h-4 w-4 text-white" />
+                              </div>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p className="text-xs">From {channelConfig.name}</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      </div>
+                      
+                      {/* Post Content */}
+                      <div className="space-y-3">
+                        <h3 className="font-bold text-xl text-gray-900 leading-snug">
+                          {dot.heading}
+                        </h3>
+                        <p className="text-gray-700 text-base leading-relaxed whitespace-pre-wrap">
+                          {dot.summary}
+                        </p>
+                      </div>
+                      
+                      {/* Image if present */}
+                      {dot.imageUrl && (
+                        <div className="mt-4 rounded-lg overflow-hidden">
+                          <img 
+                            src={dot.imageUrl} 
+                            alt={dot.heading}
+                            className="w-full max-h-96 object-cover"
+                            onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                          />
+                        </div>
+                      )}
+                      
+                      {/* Engagement Footer */}
+                      <div className="flex items-center gap-6 mt-4 pt-3 border-t border-gray-100">
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          className="text-gray-600 hover:text-amber-600 hover:bg-amber-50"
+                        >
+                          <Heart className="h-4 w-4 mr-2" />
+                          <span className="text-sm">Like</span>
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          className="text-gray-600 hover:text-amber-600 hover:bg-amber-50"
+                        >
+                          <Sparkles className="h-4 w-4 mr-2" />
+                          <span className="text-sm">Inspire</span>
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          className="text-gray-600 hover:text-amber-600 hover:bg-amber-50"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            // Save to MyNeura functionality will be handled by existing mutation
+                          }}
+                        >
+                          <Bookmark className="h-4 w-4 mr-2" />
+                          <span className="text-sm">Save</span>
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
           </div>
         )}
 
