@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { RefreshCw, Maximize, Minimize, User } from 'lucide-react';
-import { GRID_CONSTANTS, dotsCollide, getDotSize, getIdentityCardTop, getChannelConfig } from '@/lib/gridConstants';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Card, CardContent } from '@/components/ui/card';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { RefreshCw, Maximize, Minimize } from 'lucide-react';
+import { GRID_CONSTANTS, dotsCollide, getDotSize, getChannelConfig } from '@/lib/gridConstants';
 
 export interface ThoughtDot {
   id: number;
@@ -245,59 +248,86 @@ export default function ThoughtCloudGrid({
                 transform: `translate(-50%, -50%)`,
               }}
             >
-              {/* Identity Card - Always Visible */}
+              {/* Identity Card - Closer to dot */}
               <div 
-                className="absolute left-1/2 -translate-x-1/2 bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-md border border-gray-200 whitespace-nowrap z-10 transition-all duration-300 group-hover:shadow-lg group-hover:scale-105"
-                style={{
-                  top: getIdentityCardTop(dot.size || 100)
+                className="absolute left-1/2 z-50"
+                style={{ 
+                  top: `-${(dot.size || 110) / 2 + 45}px`,
+                  transform: 'translateX(-50%)',
                 }}
               >
-                <div className="flex items-center gap-2">
-                  <User className="h-3.5 w-3.5 text-gray-600" />
-                  <span className="text-xs font-medium text-gray-800">
-                    {dot.user?.fullName || dot.username || 'Anonymous'}
-                  </span>
-                </div>
+                <Card className="bg-white/95 backdrop-blur-md shadow-lg border-2 border-amber-200">
+                  <CardContent className="p-2 px-3">
+                    <div className="flex items-center gap-2 justify-center">
+                      <Avatar className="h-7 w-7 border-2 border-amber-300">
+                        {dot.user?.avatar ? (
+                          <AvatarImage src={dot.user.avatar} alt={dot.user.fullName || 'User'} />
+                        ) : (
+                          <AvatarFallback className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs">
+                            {dot.user?.fullName?.charAt(0).toUpperCase() || 'U'}
+                          </AvatarFallback>
+                        )}
+                      </Avatar>
+                      <p className="text-xs font-semibold text-gray-900 whitespace-nowrap">
+                        {dot.user?.fullName || 'Anonymous'}
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
 
-              {/* Thought Dot */}
+              {/* Main Dot Container */}
               <div
-                onClick={() => onDotClick(dot)}
-                className={`relative cursor-pointer transition-all duration-500 hover:scale-110 group-hover:shadow-2xl`}
+                className="cursor-pointer transition-all duration-300 hover:scale-110"
                 style={{
                   width: `${dot.size}px`,
                   height: `${dot.size}px`,
-                  animation: `float ${GRID_CONSTANTS.ANIMATION.DURATION_MIN + (dot.id % GRID_CONSTANTS.ANIMATION.DURATION_VARIATION)}s ease-in-out infinite`,
-                  animationDelay: `${(dot.id % 3) * 0.5}s`
+                  animation: `float-${dot.id % 3} ${6 + (dot.id % 4)}s ease-in-out infinite`,
                 }}
+                onClick={() => onDotClick(dot)}
               >
-                {/* Pulsing outer ring */}
-                <div className={`absolute inset-0 rounded-full bg-gradient-to-br ${channelConfig.color} opacity-20 animate-ping`} 
-                     style={{ animationDuration: '3s' }} />
+                {/* Outer pulsing ring with channel color */}
+                <div className={`absolute inset-0 rounded-full bg-gradient-to-br ${channelConfig.color} opacity-30 group-hover:opacity-50 transition-opacity animate-pulse`}
+                     style={{ transform: 'scale(1.2)' }} />
                 
-                {/* Main dot */}
-                <div className={`absolute inset-0 rounded-full bg-gradient-to-br ${channelConfig.bgGradient} border-2 ${channelConfig.borderColor} group-hover:${channelConfig.hoverBorderColor} shadow-lg flex items-center justify-center overflow-hidden backdrop-blur-sm transition-all duration-300`}>
-                  {/* Content preview */}
-                  <div className="absolute inset-0 p-3 flex items-center justify-center">
-                    <p className="text-xs text-center text-gray-800 font-medium line-clamp-3 leading-tight">
-                      {dot.heading.slice(0, 60)}...
-                    </p>
+                {/* Middle glow layer with channel color */}
+                <div className={`absolute inset-0 rounded-full bg-gradient-to-br ${channelConfig.color} blur-lg opacity-60 group-hover:opacity-80 transition-opacity`} />
+                
+                {/* Main circular thought with solid channel styling */}
+                <div className={`relative w-full h-full rounded-full bg-white border-4 ${channelConfig.borderColor} group-hover:${channelConfig.hoverBorderColor} shadow-2xl group-hover:shadow-[0_20px_60px_-15px_rgba(251,146,60,0.5)] transition-all flex flex-col items-center justify-center p-4 overflow-hidden`}>
+                  {/* Solid background layer with channel gradient */}
+                  <div className={`absolute inset-0 bg-gradient-to-br ${channelConfig.bgGradient} opacity-95`} />
+                  
+                  {/* Content wrapper */}
+                  <div className="relative z-10 w-full h-full flex flex-col items-center justify-center px-2">
+                    
+                    {/* Heading - prominently displayed in center */}
+                    <h3 className="text-sm font-bold text-gray-900 text-center line-clamp-4 leading-tight">
+                      {dot.heading}
+                    </h3>
+
                   </div>
                 </div>
 
                 {/* Channel indicator badge */}
-                <div 
-                  className={`absolute left-1/2 -translate-x-1/2 w-6 h-6 rounded-full ${channelConfig.badgeBg} flex items-center justify-center shadow-md border-2 border-white`}
-                  style={{
-                    bottom: `${GRID_CONSTANTS.CHANNEL_BADGE.BOTTOM_OFFSET}px`
-                  }}
-                >
-                  <ChannelIcon className="h-3 w-3 text-white" />
+                <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2">
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <div className={`h-6 w-6 rounded-full ${channelConfig.badgeBg} flex items-center justify-center border-2 border-white shadow-md`}>
+                          <ChannelIcon className="h-3 w-3 text-white" />
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p className="text-xs">From {channelConfig.name}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 </div>
 
-                {/* Sparkle effects on hover */}
-                <div className="absolute top-1 right-2 w-2 h-2 bg-yellow-400 rounded-full animate-ping opacity-0 group-hover:opacity-75" />
-                <div className="absolute bottom-2 left-1 w-1.5 h-1.5 bg-orange-400 rounded-full animate-pulse opacity-0 group-hover:opacity-60" />
+                {/* Sparkle particle effect */}
+                <div className="absolute top-0 right-2 w-2 h-2 bg-yellow-400 rounded-full animate-ping opacity-75" />
+                <div className="absolute bottom-2 left-1 w-1.5 h-1.5 bg-orange-400 rounded-full animate-pulse opacity-60" />
               </div>
             </div>
           );
