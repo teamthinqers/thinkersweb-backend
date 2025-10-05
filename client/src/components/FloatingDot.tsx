@@ -45,6 +45,15 @@ export default function FloatingDot({ onClick }: FloatingDotProps) {
   const { toast } = useToast();
 
   const handleSubmitThought = async () => {
+    if (!heading.trim()) {
+      toast({
+        title: "Missing heading",
+        description: "Please add a heading for your thought.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     if (!summary.trim()) {
       toast({
         title: "Missing content",
@@ -56,11 +65,8 @@ export default function FloatingDot({ onClick }: FloatingDotProps) {
 
     setIsSubmitting(true);
     try {
-      // Auto-generate heading from first 50 characters of summary
-      const autoHeading = summary.trim().substring(0, 50) + (summary.trim().length > 50 ? '...' : '');
-      
       await apiRequest('POST', '/api/thoughts', {
-        heading: autoHeading,
+        heading: heading.trim(),
         summary: summary.trim(),
         emotion: emotion.trim() || null,
         visibility: targetNeura === 'social' ? 'social' : 'personal',
@@ -373,6 +379,21 @@ export default function FloatingDot({ onClick }: FloatingDotProps) {
                 {/* Conditional Content: Write Form, Layers Screen, or Action Buttons */}
                 {showWriteForm && !showLayersScreen ? (
                   <div className="space-y-4">
+                    {/* Heading Input Section */}
+                    <div className="space-y-2">
+                      <Label htmlFor="heading" className="text-sm font-medium text-gray-700">
+                        Heading <span className="text-red-500">*</span>
+                      </Label>
+                      <Input
+                        id="heading"
+                        value={heading}
+                        onChange={(e) => setHeading(e.target.value)}
+                        placeholder="Give your thought a heading..."
+                        className="border-gray-300 focus:border-amber-500 focus:ring-amber-500"
+                        disabled={isSubmitting}
+                      />
+                    </div>
+
                     {/* Thought/Dot Input Section */}
                     <div className="space-y-2">
                       <Label htmlFor="thought" className="text-sm font-medium text-gray-700">
@@ -383,7 +404,7 @@ export default function FloatingDot({ onClick }: FloatingDotProps) {
                         value={summary}
                         onChange={(e) => setSummary(e.target.value)}
                         placeholder="What's on your mind?"
-                        className="min-h-[180px] resize-none border-gray-300 focus:border-amber-500 focus:ring-amber-500"
+                        className="min-h-[150px] resize-none border-gray-300 focus:border-amber-500 focus:ring-amber-500"
                         disabled={isSubmitting}
                       />
                       <p className="text-xs text-gray-500 text-right">{summary.length} characters</p>
@@ -433,7 +454,7 @@ export default function FloatingDot({ onClick }: FloatingDotProps) {
 
                       <Button
                         onClick={handleSubmitThought}
-                        disabled={isSubmitting || !summary.trim()}
+                        disabled={isSubmitting || !heading.trim() || !summary.trim()}
                         className="bg-gradient-to-r from-amber-500 to-orange-500 text-white hover:from-amber-600 hover:to-orange-600"
                       >
                         {isSubmitting ? (
@@ -546,7 +567,7 @@ export default function FloatingDot({ onClick }: FloatingDotProps) {
 
                       <Button
                         onClick={handleSubmitThought}
-                        disabled={isSubmitting || !summary.trim()}
+                        disabled={isSubmitting || !heading.trim() || !summary.trim()}
                         className="bg-gradient-to-r from-amber-500 to-orange-500 text-white hover:from-amber-600 hover:to-orange-600"
                       >
                         {isSubmitting ? (
