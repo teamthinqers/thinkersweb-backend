@@ -4,7 +4,7 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { RefreshCw, Maximize, Minimize } from 'lucide-react';
-import { GRID_CONSTANTS, dotsCollide, getDotSize, getChannelConfig } from '@/lib/gridConstants';
+import { GRID_CONSTANTS, getFixedPosition, getChannelConfig } from '@/lib/gridConstants';
 
 export interface ThoughtDot {
   id: number;
@@ -57,121 +57,45 @@ export default function ThoughtCloudGrid({
   const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerDimensions, setContainerDimensions] = useState({ width: 1000, height: 600 });
-  
-  // Cache for thought positions to prevent teleporting on refetch
-  const [positionCache] = useState(() => new Map<number, { x: number; y: number; size: number; rotation: number }>());
-  const prevDimensionsRef = useRef({ width: 0, height: 0 });
 
   // Track container dimensions
   useEffect(() => {
     const updateDimensions = () => {
       if (containerRef.current) {
-        const newDimensions = {
+        setContainerDimensions({
           width: containerRef.current.offsetWidth,
           height: containerRef.current.offsetHeight,
-        };
-        
-        // Clear cache if dimensions changed significantly (more than 10%)
-        const widthChange = Math.abs(newDimensions.width - prevDimensionsRef.current.width);
-        const heightChange = Math.abs(newDimensions.height - prevDimensionsRef.current.height);
-        
-        if (widthChange > prevDimensionsRef.current.width * 0.1 || 
-            heightChange > prevDimensionsRef.current.height * 0.1) {
-          positionCache.clear();
-        }
-        
-        prevDimensionsRef.current = newDimensions;
-        setContainerDimensions(newDimensions);
+        });
       }
     };
     
     updateDimensions();
     window.addEventListener('resize', updateDimensions);
     return () => window.removeEventListener('resize', updateDimensions);
-  }, [isFullscreen, positionCache]);
+  }, [isFullscreen]);
 
-  // Position thoughts in cloud formation with vertical layering
+  // Position thoughts using fixed grid (no collision detection needed)
   useEffect(() => {
-    const isMobile = window.innerWidth < 768;
-    
     // Show all thoughts loaded so far (load in batches of 8)
     const startIdx = 0;
     const endIdx = (page + 1) * DOTS_PER_PAGE;
     const currentPageThoughts = allThoughts.slice(startIdx, endIdx);
 
-    const positionedDots: { x: number; y: number; size: number; rotation: number }[] = [];
-
-    // Calculate safe zone with margins from grid constants
-    const minX = GRID_CONSTANTS.MARGIN_X;
-    const maxX = 100 - GRID_CONSTANTS.MARGIN_X;
-    const minY = GRID_CONSTANTS.MARGIN_Y;
-    const maxY = 100 - GRID_CONSTANTS.MARGIN_Y;
-
     const positioned = currentPageThoughts.map((thought, index) => {
-      // Check cache first
-      const cached = positionCache.get(thought.id);
-      if (cached) {
-        positionedDots.push(cached);
-        return { ...thought, ...cached };
-      }
-
-      // Use standardized size calculation
-      const size = getDotSize(thought.id, isMobile);
-
-      // Calculate which layer this dot belongs to (0 = first 8, 1 = next 8, etc.)
-      const layer = Math.floor(index / DOTS_PER_PAGE);
-      const indexInLayer = index % DOTS_PER_PAGE;
-
-      // Y offset for each layer - older dots appear below
-      const layerOffset = layer * 100; // Each layer is 100% height apart
-
-      let x = 0;
-      let y = 0;
-      let attempts = 0;
-      const maxAttempts = GRID_CONSTANTS.COLLISION.MAX_ATTEMPTS;
-
-      // Find a non-overlapping position within this layer
-      while (attempts < maxAttempts) {
-        // Generate random position within safe zone for this layer
-        const seed = thought.id * 7919 + attempts * 1337;
-        x = minX + (Math.abs(Math.sin(seed)) * (maxX - minX));
-        y = minY + (Math.abs(Math.cos(seed * 1.5)) * (maxY - minY)) + layerOffset;
-
-        // Check if this position collides with any dots in the same layer
-        let collides = false;
-        for (const existingDot of positionedDots) {
-          // Only check collision within same layer (within 100% height range)
-          if (Math.abs(existingDot.y - y) < 100) {
-            if (dotsCollide(
-              x, y, size,
-              existingDot.x, existingDot.y, existingDot.size,
-              containerDimensions.width,
-              containerDimensions.height
-            )) {
-              collides = true;
-              break;
-            }
-          }
-        }
-
-        if (!collides) {
-          break; // Found a good position
-        }
-
-        attempts++;
-      }
+      // Use fixed position from pre-calculated grid
+      const position = getFixedPosition(index);
       
-      const rotation = (thought.id * 13) % 360;
-
-      const position = { x, y, size, rotation };
-      positionCache.set(thought.id, position);
-      positionedDots.push(position);
-
-      return { ...thought, ...position };
+      return { 
+        ...thought, 
+        x: position.x,
+        y: position.y, 
+        size: position.size,
+        rotation: position.rotation
+      };
     }).filter(Boolean) as ThoughtDot[];
 
     setDots(positioned);
-  }, [allThoughts, page, positionCache, containerDimensions]);
+  }, [allThoughts, page]);
 
   // Smooth drag handlers using pointer events and RAF
   const handlePointerDown = (e: React.PointerEvent) => {
@@ -215,7 +139,6 @@ export default function ThoughtCloudGrid({
   };
 
   const handleRefresh = () => {
-    positionCache.clear();
     if (onRefresh) {
       onRefresh();
     } else {

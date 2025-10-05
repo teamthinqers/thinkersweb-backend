@@ -90,6 +90,58 @@ export function getIdentityCardTop(dotSize: number): string {
   return `-${dotSize / 2 + GRID_CONSTANTS.IDENTITY_CARD.CLEARANCE}px`;
 }
 
+// Generate 1000 fixed grid positions (pre-calculated to avoid overlaps)
+function generateFixedGridPositions(): Array<{ x: number; y: number; size: number; rotation: number }> {
+  const positions: Array<{ x: number; y: number; size: number; rotation: number }> = [];
+  const sizes = GRID_CONSTANTS.DOT_SIZES.DESKTOP;
+  
+  const minX = GRID_CONSTANTS.MARGIN_X;
+  const maxX = 100 - GRID_CONSTANTS.MARGIN_X;
+  const minY = GRID_CONSTANTS.MARGIN_Y;
+  const maxY = 100 - GRID_CONSTANTS.MARGIN_Y;
+  
+  const DOTS_PER_LAYER = 8;
+  const TOTAL_POSITIONS = 1000;
+  
+  // Use golden ratio for natural-looking distribution
+  const PHI = 1.618033988749895;
+  
+  for (let i = 0; i < TOTAL_POSITIONS; i++) {
+    const layer = Math.floor(i / DOTS_PER_LAYER);
+    const indexInLayer = i % DOTS_PER_LAYER;
+    
+    // Golden angle spiral for natural distribution within layer
+    const angle = indexInLayer * PHI * Math.PI * 2;
+    const radius = Math.sqrt(indexInLayer / DOTS_PER_LAYER) * 0.8; // 0-0.8 range
+    
+    // Convert polar to cartesian with layer offset
+    const layerOffset = layer * 100;
+    const x = minX + (maxX - minX) * (0.5 + radius * Math.cos(angle) * 0.4);
+    const y = minY + (maxY - minY) * (0.5 + radius * Math.sin(angle) * 0.4) + layerOffset;
+    
+    // Cycle through sizes deterministically
+    const size = sizes[i % sizes.length];
+    const rotation = (i * 137.5) % 360; // Golden angle rotation
+    
+    positions.push({ x, y, size, rotation });
+  }
+  
+  return positions;
+}
+
+// Pre-generated fixed positions (cached for performance)
+let FIXED_GRID_POSITIONS: Array<{ x: number; y: number; size: number; rotation: number }> | null = null;
+
+export function getFixedPosition(index: number): { x: number; y: number; size: number; rotation: number } {
+  if (!FIXED_GRID_POSITIONS) {
+    FIXED_GRID_POSITIONS = generateFixedGridPositions();
+  }
+  
+  // Cycle through positions if we exceed 1000
+  const actualIndex = index % 1000;
+  return FIXED_GRID_POSITIONS[actualIndex];
+}
+
 // Channel configuration types
 export interface ChannelConfig {
   icon: any;
