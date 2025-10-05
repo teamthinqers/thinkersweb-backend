@@ -5,10 +5,21 @@ import { GRID_CONSTANTS, dotsCollide, getDotSize, getIdentityCardTop, getChannel
 
 export interface ThoughtDot {
   id: number;
-  content: string;
-  channel: string;
+  heading: string;
+  summary: string;
+  emotion?: string;
+  imageUrl?: string;
+  channel?: string;
   createdAt: string;
   username?: string;
+  user?: {
+    id: number;
+    fullName: string;
+    avatar?: string;
+    email?: string;
+  };
+  isSaved?: boolean;
+  savedAt?: string;
   x?: number;
   y?: number;
   size?: number;
@@ -219,7 +230,7 @@ export default function ThoughtCloudGrid({
         }}
       >
         {dots.map((dot) => {
-          const channelConfig = getChannelConfig(dot.channel);
+          const channelConfig = getChannelConfig(dot.channel || 'write');
           const ChannelIcon = channelConfig.icon;
           
           return (
@@ -242,7 +253,7 @@ export default function ThoughtCloudGrid({
                 <div className="flex items-center gap-2">
                   <User className="h-3.5 w-3.5 text-gray-600" />
                   <span className="text-xs font-medium text-gray-800">
-                    {dot.username || 'Anonymous'}
+                    {dot.user?.fullName || dot.username || 'Anonymous'}
                   </span>
                 </div>
               </div>
@@ -267,7 +278,7 @@ export default function ThoughtCloudGrid({
                   {/* Content preview */}
                   <div className="absolute inset-0 p-3 flex items-center justify-center">
                     <p className="text-xs text-center text-gray-800 font-medium line-clamp-3 leading-tight">
-                      {dot.content.slice(0, 60)}...
+                      {dot.heading.slice(0, 60)}...
                     </p>
                   </div>
                 </div>
