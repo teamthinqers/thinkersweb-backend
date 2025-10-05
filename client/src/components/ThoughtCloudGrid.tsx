@@ -183,7 +183,7 @@ export default function ThoughtCloudGrid({
   const handlePointerMove = (e: React.PointerEvent) => {
     if (!isDragging) return;
 
-    const deltaY = e.clientY - dragStart.y;
+    const deltaY = (e.clientY - dragStart.y) * 1.8; // Increased sensitivity for smoother drag
     
     requestAnimationFrame(() => {
       setPanOffset(prev => {
@@ -192,14 +192,12 @@ export default function ThoughtCloudGrid({
         // Load more dots if dragged up beyond 200px and more exist
         if (newY < -200 && (page + 1) * DOTS_PER_PAGE < allThoughts.length) {
           setPage(prev => prev + 1);
-          // Keep the offset instead of resetting
-          return { x: 0, y: newY };
         }
 
-        // Allow free movement with generous boundaries
-        const maxOffset = 100; // Small positive bounce at top
+        // Very generous boundaries - allow extensive movement in both directions
+        const maxOffset = 300; // Large positive bounce at top for easy return
         const totalLayers = Math.ceil(allThoughts.length / DOTS_PER_PAGE);
-        const minOffset = -(totalLayers * containerDimensions.height) + containerDimensions.height * 0.8; // 80% of last layer visible
+        const minOffset = -(totalLayers * containerDimensions.height * 1.2); // Extra space below
         const clampedY = Math.max(minOffset, Math.min(maxOffset, newY));
 
         return { x: 0, y: clampedY };
