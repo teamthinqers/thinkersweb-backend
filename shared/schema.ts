@@ -57,6 +57,7 @@ export const thoughts = pgTable("thoughts", {
   emotion: text("emotion"), // Optional: joy, curiosity, frustration, etc.
   imageUrl: text("image_url"), // Optional: image attachment
   visibility: text("visibility").notNull().default("personal"), // 'personal' or 'social'
+  sharedToSocial: boolean("shared_to_social").default(false).notNull(), // Track if personal thought is shared to social
   channel: text("channel").notNull().default("write"), // 'write', 'linkedin', 'whatsapp', 'chatgpt', etc.
   positionX: integer("position_x"),
   positionY: integer("position_y"),
