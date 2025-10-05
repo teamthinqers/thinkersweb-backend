@@ -285,7 +285,7 @@ export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) 
       {/* Floating Dot */}
       <div
         ref={dotRef}
-        className="fixed z-50 cursor-move select-none"
+        className={`fixed z-50 select-none ${isDragging ? 'cursor-move' : 'cursor-pointer'}`}
         style={{
           left: `${position.x}px`,
           top: `${position.y}px`,
@@ -293,7 +293,7 @@ export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) 
         onMouseDown={handleMouseDown}
         onClick={handleClick}
       >
-        <div className="relative cursor-move">
+        <div className="relative">
           {/* DotSpark logo - spins fast when dragging, pulses when idle */}
           <img 
             src="/dotspark-logo-transparent.png?v=1" 
@@ -342,7 +342,7 @@ export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) 
               <CardContent className="p-6">
                 {/* Header - Draggable */}
                 <div 
-                  className={`flex items-start justify-between mb-6 ${isDraggingDialog ? 'cursor-move' : 'cursor-auto'}`}
+                  className={`flex items-start justify-between mb-6 ${isDraggingDialog ? 'cursor-move' : ''}`}
                   onMouseDown={handleDialogMouseDown}
                 >
                   {/* User Info */}
@@ -366,7 +366,7 @@ export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) 
                       <div className="flex items-center bg-gray-100 rounded-full p-1">
                         <button
                           onClick={() => setTargetNeura('social')}
-                          className={`cursor-pointer px-3 py-1.5 rounded-full text-xs font-medium transition-all whitespace-nowrap ${
+                          className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all whitespace-nowrap ${
                             targetNeura === 'social'
                               ? 'bg-red-500 text-white shadow-sm'
                               : 'text-gray-600 hover:text-gray-900'
@@ -376,7 +376,7 @@ export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) 
                         </button>
                         <button
                           onClick={() => setTargetNeura('myneura')}
-                          className={`cursor-pointer px-3 py-1.5 rounded-full text-xs font-medium transition-all whitespace-nowrap ${
+                          className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all whitespace-nowrap ${
                             targetNeura === 'myneura'
                               ? 'bg-gradient-to-br from-amber-500 to-orange-500 text-white shadow-sm'
                               : 'text-gray-600 hover:text-gray-900'
