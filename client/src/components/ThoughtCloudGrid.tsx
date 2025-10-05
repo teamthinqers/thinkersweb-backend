@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Card, CardContent } from '@/components/ui/card';
@@ -55,9 +55,27 @@ export default function ThoughtCloudGrid({
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [containerDimensions, setContainerDimensions] = useState({ width: 1000, height: 600 });
   
   // Cache for thought positions to prevent teleporting on refetch
   const [positionCache] = useState(() => new Map<number, { x: number; y: number; size: number; rotation: number }>());
+
+  // Track container dimensions
+  useEffect(() => {
+    const updateDimensions = () => {
+      if (containerRef.current) {
+        setContainerDimensions({
+          width: containerRef.current.offsetWidth,
+          height: containerRef.current.offsetHeight,
+        });
+      }
+    };
+    
+    updateDimensions();
+    window.addEventListener('resize', updateDimensions);
+    return () => window.removeEventListener('resize', updateDimensions);
+  }, [isFullscreen]);
 
   // Position thoughts in cloud formation
   useEffect(() => {
@@ -109,10 +127,21 @@ export default function ThoughtCloudGrid({
         // Position within safe zone with organic distribution
         x = marginX + (Math.abs(pseudoRandom1) * safeZoneX);
         y = marginY + (Math.abs(pseudoRandom2) * (safeZoneY * 0.7)) + layerOffset;
+        
+        // Clamp position to ensure dot (including radius) stays within bounds
+        const radiusPct = ((size / 2) / containerDimensions.width) * 100;
+        x = Math.max(marginX + radiusPct, Math.min(x, 100 - marginX - radiusPct));
+        const yRadiusPct = ((size / 2) / containerDimensions.height) * 100;
+        y = Math.max(marginY + yRadiusPct, Math.min(y, 100 - marginY - yRadiusPct));
 
-        // Check for collisions with existing dots
+        // Check for collisions with existing dots (pixel-based)
         const hasCollision = positionedDots.some(existing => 
-          dotsCollide(x, y, size, existing.x, existing.y, existing.size)
+          dotsCollide(
+            x, y, size, 
+            existing.x, existing.y, existing.size,
+            containerDimensions.width,
+            containerDimensions.height
+          )
         );
 
         if (!hasCollision || attempts >= maxAttempts) {
@@ -135,7 +164,7 @@ export default function ThoughtCloudGrid({
     }).filter(Boolean) as ThoughtDot[];
 
     setDots(positioned);
-  }, [allThoughts, page, positionCache]);
+  }, [allThoughts, page, positionCache, containerDimensions]);
 
   // Drag handlers for panning the grid
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -224,6 +253,7 @@ export default function ThoughtCloudGrid({
 
       {/* Floating Thoughts Container - Draggable */}
       <div 
+        ref={containerRef}
         className={`relative min-h-[600px] h-[calc(100vh-200px)] max-h-[1200px] p-8 ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}

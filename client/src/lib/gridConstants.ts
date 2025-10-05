@@ -3,8 +3,8 @@
 
 export const GRID_CONSTANTS = {
   // Margins to prevent dots from being cut off at edges (percentage)
-  MARGIN_X: 12, // 12% margin on each side
-  MARGIN_Y: 18, // 18% margin top and bottom (accounts for identity card space)
+  MARGIN_X: 15, // 15% margin on each side (increased to center dots better)
+  MARGIN_Y: 20, // 20% margin top and bottom (increased for better centering)
   
   // Dot sizes (in pixels)
   DOT_SIZES: {
@@ -14,14 +14,15 @@ export const GRID_CONSTANTS = {
   
   // Identity card positioning
   IDENTITY_CARD: {
-    CLEARANCE: 42, // Pixels above dot center to position identity card
+    CLEARANCE: 20, // Pixels above dot center to position identity card (reduced from 42)
     WIDTH: 'auto', // Auto-width based on content
   },
   
   // Collision detection
   COLLISION: {
     MIN_DISTANCE: 18, // Minimum distance between dot centers (percentage)
-    MAX_ATTEMPTS: 15, // Maximum attempts to find non-overlapping position
+    MAX_ATTEMPTS: 200, // Maximum attempts to find non-overlapping position (increased)
+    GUTTER_PX: 30, // Minimum pixel gap between dot edges
   },
   
   // Cloud/Universe layout
@@ -45,17 +46,32 @@ export const GRID_CONSTANTS = {
   },
 } as const;
 
-// Helper function to check if two dots collide
+// Helper function to check if two dots collide (pixel-based with radius awareness)
 export function dotsCollide(
   x1: number, 
   y1: number, 
   size1: number, 
   x2: number, 
   y2: number, 
-  size2: number
+  size2: number,
+  containerWidth: number,
+  containerHeight: number
 ): boolean {
-  const distance = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
-  return distance < GRID_CONSTANTS.COLLISION.MIN_DISTANCE;
+  // Convert percentage positions to pixels
+  const x1Px = (x1 / 100) * containerWidth;
+  const y1Px = (y1 / 100) * containerHeight;
+  const x2Px = (x2 / 100) * containerWidth;
+  const y2Px = (y2 / 100) * containerHeight;
+  
+  // Calculate distance in pixels
+  const distancePx = Math.sqrt(Math.pow(x2Px - x1Px, 2) + Math.pow(y2Px - y1Px, 2));
+  
+  // Check if distance is less than sum of radii plus gutter
+  const radius1 = size1 / 2;
+  const radius2 = size2 / 2;
+  const minDistance = radius1 + radius2 + GRID_CONSTANTS.COLLISION.GUTTER_PX;
+  
+  return distancePx < minDistance;
 }
 
 // Helper to get dot size based on index and device
