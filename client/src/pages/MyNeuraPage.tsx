@@ -275,7 +275,6 @@ export default function MyNeuraPage() {
                     onFullscreenToggle={() => setIsFullscreen(!isFullscreen)}
                     onDotClick={(dot) => setSelectedThought(dot)}
                     patternId="myneura-pattern"
-                    showAvatarOnly={true}
                   />
                 )}
               </>
