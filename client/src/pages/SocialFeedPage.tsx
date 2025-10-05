@@ -201,7 +201,7 @@ export default function SocialFeedPage() {
 
         {/* Feed List View */}
         {!dotsLoading && viewMode === 'feed' && (
-          <div className="space-y-4">
+          <div className={`space-y-4 ${isFullscreen ? 'h-full overflow-y-auto p-6' : ''}`}>
             {dots.map((dot) => (
               <div
                 key={dot.id}
