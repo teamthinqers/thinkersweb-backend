@@ -53,14 +53,19 @@ export default function FloatingDot({ onClick, currentPage }: FloatingDotProps) 
   const { user } = useAuth();
   const { toast } = useToast();
 
-  // Update targetNeura when page changes
+  // Update targetNeura when page changes OR when dialog opens
   useEffect(() => {
-    if (currentPage === '/myneura') {
-      setTargetNeura('myneura');
-    } else if (currentPage === '/social') {
-      setTargetNeura('social');
+    if (isOpen) {
+      // Reset to page default whenever dialog opens
+      if (currentPage === '/myneura') {
+        setTargetNeura('myneura');
+      } else if (currentPage === '/social') {
+        setTargetNeura('social');
+      } else {
+        setTargetNeura('social'); // default fallback
+      }
     }
-  }, [currentPage]);
+  }, [currentPage, isOpen]);
 
   const handleSubmitThought = async () => {
     if (!heading.trim()) {
