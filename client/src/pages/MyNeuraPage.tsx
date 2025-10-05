@@ -484,14 +484,19 @@ export default function MyNeuraPage() {
                       onClick={() => setSelectedThought(thought)}
                     >
                     {/* Outer pulsing ring with channel color */}
-                    <div className={`absolute inset-0 rounded-full bg-gradient-to-br ${channelConfig.color} opacity-25 group-hover:opacity-45 transition-opacity animate-pulse`}
-                         style={{ transform: 'scale(1.15)' }} />
+                    <div className={`absolute inset-0 rounded-full bg-gradient-to-br ${channelConfig.color} opacity-30 group-hover:opacity-50 transition-opacity animate-pulse`}
+                         style={{ transform: 'scale(1.2)' }} />
                     
                     {/* Middle glow layer with channel color */}
-                    <div className={`absolute inset-0 rounded-full bg-gradient-to-br ${channelConfig.color} blur-md opacity-45 group-hover:opacity-65 transition-opacity`} />
+                    <div className={`absolute inset-0 rounded-full bg-gradient-to-br ${channelConfig.color} blur-lg opacity-60 group-hover:opacity-80 transition-opacity`} />
                     
-                    {/* Main circular thought with channel styling */}
-                    <div className={`relative w-full h-full rounded-full bg-gradient-to-br ${channelConfig.bgGradient} border-3 ${channelConfig.borderColor} group-hover:${channelConfig.hoverBorderColor} shadow-xl group-hover:shadow-2xl transition-all flex flex-col items-center justify-center p-4 backdrop-blur-sm`}>
+                    {/* Main circular thought with solid channel styling */}
+                    <div className={`relative w-full h-full rounded-full bg-white border-4 ${channelConfig.borderColor} group-hover:${channelConfig.hoverBorderColor} shadow-2xl group-hover:shadow-[0_20px_60px_-15px_rgba(251,146,60,0.5)] transition-all flex flex-col items-center justify-center p-4 overflow-hidden`}>
+                      {/* Solid background layer with channel gradient */}
+                      <div className={`absolute inset-0 bg-gradient-to-br ${channelConfig.bgGradient} opacity-95`} />
+                      
+                      {/* Content wrapper */}
+                      <div className="relative z-10 w-full h-full flex flex-col items-center justify-center">
                       
                       {/* User avatar or saved indicator */}
                       <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
@@ -542,6 +547,7 @@ export default function MyNeuraPage() {
                       <p className="text-[10px] text-gray-600 text-center line-clamp-2 mt-auto">
                         {thought.summary}
                       </p>
+                      </div>
                     </div>
 
                     {/* Channel indicator badge */}
