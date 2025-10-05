@@ -21,8 +21,8 @@ export const GRID_CONSTANTS = {
   // Collision detection
   COLLISION: {
     MIN_DISTANCE: 25, // Minimum distance between dot centers (percentage) - increased for more spacing
-    MAX_ATTEMPTS: 200, // Maximum attempts to find non-overlapping position (increased)
-    GUTTER_PX: 80, // Minimum pixel gap between dot edges - significantly increased
+    MAX_ATTEMPTS: 300, // Maximum attempts to find non-overlapping position (increased)
+    GUTTER_PX: 120, // Minimum pixel gap between dot edges - very large spacing to prevent any overlap
   },
   
   // Cloud/Universe layout
