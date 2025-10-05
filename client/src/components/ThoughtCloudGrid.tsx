@@ -23,6 +23,12 @@ export interface ThoughtDot {
     avatar?: string | null;
     email?: string;
   };
+  contributors?: {
+    id: number;
+    fullName: string | null;
+    avatar?: string | null;
+  }[];
+  contributorCount?: number;
   isSaved?: boolean;
   savedAt?: string;
   x?: number;
@@ -194,7 +200,7 @@ export default function ThoughtCloudGrid({
                 transform: `translate(-50%, -50%)`,
               }}
             >
-              {/* Identity Card - Avatar only or Full card */}
+              {/* Identity Card - Avatar only or Multi-avatar card */}
               <div 
                 className="absolute z-50 thought-dot-clickable"
                 style={{ 
@@ -215,22 +221,71 @@ export default function ThoughtCloudGrid({
                     )}
                   </Avatar>
                 ) : (
-                  // Full identity card (for Social)
+                  // Multi-avatar card with contributors (for Social)
                   <Card className="bg-white/95 backdrop-blur-md shadow-lg border-2 border-amber-200">
                     <CardContent className="p-2 px-3">
-                      <div className="flex items-center gap-2 justify-center">
-                        <Avatar className="h-7 w-7 border-2 border-amber-300">
-                          {dot.user?.avatar ? (
-                            <AvatarImage src={dot.user.avatar} alt={dot.user.fullName || 'User'} />
-                          ) : (
-                            <AvatarFallback className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs">
-                              {dot.user?.fullName?.charAt(0).toUpperCase() || 'U'}
-                            </AvatarFallback>
-                          )}
-                        </Avatar>
-                        <p className="text-xs font-semibold text-gray-900 whitespace-nowrap">
-                          {dot.user?.fullName || 'Anonymous'}
-                        </p>
+                      <div className="flex items-center gap-1.5 justify-center">
+                        {/* Author avatar */}
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Avatar className="h-7 w-7 border-2 border-amber-300 cursor-pointer">
+                                {dot.user?.avatar ? (
+                                  <AvatarImage src={dot.user.avatar} alt={dot.user.fullName || 'User'} />
+                                ) : (
+                                  <AvatarFallback className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs">
+                                    {dot.user?.fullName?.charAt(0).toUpperCase() || 'U'}
+                                  </AvatarFallback>
+                                )}
+                              </Avatar>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p className="text-xs font-semibold">{dot.user?.fullName || 'Anonymous'}</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+
+                        {/* Contributor avatars (up to 3) */}
+                        {dot.contributors && dot.contributors.length > 0 && (
+                          <>
+                            {dot.contributors.slice(0, 3).map((contributor, idx) => (
+                              <TooltipProvider key={contributor.id}>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <Avatar className="h-6 w-6 border-2 border-red-400 cursor-pointer -ml-2">
+                                      {contributor.avatar ? (
+                                        <AvatarImage src={contributor.avatar} alt={contributor.fullName || 'Contributor'} />
+                                      ) : (
+                                        <AvatarFallback className="bg-gradient-to-r from-red-500 to-orange-500 text-white text-xs">
+                                          {contributor.fullName?.charAt(0).toUpperCase() || 'C'}
+                                        </AvatarFallback>
+                                      )}
+                                    </Avatar>
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p className="text-xs">{contributor.fullName || 'Contributor'}</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
+                            ))}
+
+                            {/* +X indicator if more than 3 contributors */}
+                            {dot.contributorCount && dot.contributorCount > 3 && (
+                              <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <div className="h-6 w-6 rounded-full bg-gradient-to-r from-red-500 to-orange-500 border-2 border-red-400 flex items-center justify-center -ml-2 cursor-pointer">
+                                      <p className="text-white text-[10px] font-bold">+{dot.contributorCount - 3}</p>
+                                    </div>
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p className="text-xs">{dot.contributorCount - 3} more {dot.contributorCount - 3 === 1 ? 'contributor' : 'contributors'}</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
+                            )}
+                          </>
+                        )}
                       </div>
                     </CardContent>
                   </Card>
