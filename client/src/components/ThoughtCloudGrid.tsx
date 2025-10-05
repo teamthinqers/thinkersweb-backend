@@ -196,9 +196,10 @@ export default function ThoughtCloudGrid({
           return { x: 0, y: newY };
         }
 
-        // Clamp offset for smooth boundaries
-        const maxOffset = 200;
-        const minOffset = -((page + 1) * 100 * containerDimensions.height / 100);
+        // Allow free movement with generous boundaries
+        const maxOffset = 100; // Small positive bounce at top
+        const totalLayers = Math.ceil(allThoughts.length / DOTS_PER_PAGE);
+        const minOffset = -(totalLayers * containerDimensions.height) + containerDimensions.height * 0.8; // 80% of last layer visible
         const clampedY = Math.max(minOffset, Math.min(maxOffset, newY));
 
         return { x: 0, y: clampedY };
@@ -292,7 +293,7 @@ export default function ThoughtCloudGrid({
           return (
             <div
               key={dot.id}
-              className="absolute transition-all duration-300 hover:z-50 group"
+              className="absolute transition-all duration-300 hover:z-50 group pointer-events-none"
               style={{
                 left: `${dot.x}%`,
                 top: `${dot.y}%`,
@@ -301,7 +302,7 @@ export default function ThoughtCloudGrid({
             >
               {/* Identity Card - Anchored above dot's outer edge */}
               <div 
-                className="absolute z-50"
+                className="absolute z-50 pointer-events-auto"
                 style={{ 
                   bottom: `calc(100% + ${GRID_CONSTANTS.IDENTITY_CARD.CLEARANCE}px)`,
                   left: '50%',
@@ -330,7 +331,7 @@ export default function ThoughtCloudGrid({
 
               {/* Main Dot Container */}
               <div
-                className="cursor-pointer transition-all duration-300 hover:scale-110"
+                className="cursor-pointer transition-all duration-300 hover:scale-110 pointer-events-auto"
                 style={{
                   width: `${dot.size}px`,
                   height: `${dot.size}px`,
