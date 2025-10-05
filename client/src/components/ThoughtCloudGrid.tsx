@@ -88,18 +88,18 @@ export default function ThoughtCloudGrid({
 
     const positionedDots: { x: number; y: number; size: number; rotation: number }[] = [];
 
-    // Predefined 10-slot grid layout with guaranteed spacing
+    // Predefined 10-slot grid layout with wide spacing to accommodate dot + identity card units
     const gridSlots = [
-      { x: 20, y: 28 },  // Top-left
-      { x: 50, y: 23 },  // Top-center
-      { x: 78, y: 28 },  // Top-right
-      { x: 18, y: 52 },  // Mid-left
-      { x: 42, y: 48 },  // Mid-center-left
-      { x: 66, y: 53 },  // Mid-center-right
-      { x: 83, y: 48 },  // Mid-right
-      { x: 25, y: 73 },  // Bottom-left
-      { x: 54, y: 75 },  // Bottom-center
-      { x: 77, y: 70 },  // Bottom-right
+      { x: 20, y: 32 },  // Top-left
+      { x: 50, y: 28 },  // Top-center
+      { x: 80, y: 32 },  // Top-right
+      { x: 15, y: 56 },  // Mid-left
+      { x: 38, y: 52 },  // Mid-center-left
+      { x: 62, y: 56 },  // Mid-center-right
+      { x: 85, y: 52 },  // Mid-right
+      { x: 22, y: 76 },  // Bottom-left
+      { x: 50, y: 78 },  // Bottom-center
+      { x: 78, y: 74 },  // Bottom-right
     ];
 
     const positioned = currentPageThoughts.map((thought, index) => {
@@ -249,11 +249,12 @@ export default function ThoughtCloudGrid({
                 transform: `translate(-50%, -50%)`,
               }}
             >
-              {/* Identity Card - Closer to dot */}
+              {/* Identity Card - Centered above dot */}
               <div 
-                className="absolute left-1/2 z-50"
+                className="absolute z-50"
                 style={{ 
-                  top: `-${(dot.size || 110) / 2 + 45}px`,
+                  top: `-${(dot.size || 110) / 2 + GRID_CONSTANTS.IDENTITY_CARD.CLEARANCE}px`,
+                  left: '50%',
                   transform: 'translateX(-50%)',
                 }}
               >
