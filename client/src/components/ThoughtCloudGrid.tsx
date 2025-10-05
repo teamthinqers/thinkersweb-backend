@@ -131,13 +131,8 @@ export default function ThoughtCloudGrid({
           setPage(prev => prev + 1);
         }
 
-        // Very generous boundaries - allow extensive movement in both directions
-        const maxOffset = 300; // Large positive bounce at top for easy return
-        const totalLayers = Math.ceil(allThoughts.length / DOTS_PER_PAGE);
-        const minOffset = -(totalLayers * containerDimensions.height * 1.2); // Extra space below
-        const clampedY = Math.max(minOffset, Math.min(maxOffset, newY));
-
-        return { x: 0, y: clampedY };
+        // Infinite scrolling - no boundaries, users can drag as far as they want
+        return { x: 0, y: newY };
       });
     });
     
@@ -152,10 +147,12 @@ export default function ThoughtCloudGrid({
   };
 
   const handleRefresh = () => {
+    // Reset position to origin
+    setPanOffset({ x: 0, y: 0 });
+    setPage(0);
+    
     if (onRefresh) {
       onRefresh();
-    } else {
-      window.location.reload();
     }
   };
 
