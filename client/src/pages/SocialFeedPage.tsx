@@ -308,52 +308,160 @@ export default function SocialFeedPage() {
           </div>
         )}
 
-          {/* Thought Detail Dialog */}
+          {/* Thought Detail Dialog - Three Column Layout */}
           {selectedDot && (
             <Dialog open={!!selectedDot} onOpenChange={() => setSelectedDot(null)}>
-              <DialogContent className="max-w-2xl">
-                <DialogHeader>
-                  <DialogTitle>{selectedDot.heading}</DialogTitle>
-                </DialogHeader>
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3">
-                    <Avatar className="h-10 w-10">
-                      <AvatarImage src={selectedDot.user?.avatar || undefined} />
-                      <AvatarFallback className="bg-gradient-to-r from-amber-500 to-orange-500 text-white">
-                        {selectedDot.user?.fullName?.[0]?.toUpperCase() || 'U'}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <p className="font-semibold text-sm">{selectedDot.user?.fullName || 'Anonymous'}</p>
-                      <p className="text-xs text-gray-500">
-                        {new Date(selectedDot.createdAt).toLocaleDateString()}
-                      </p>
+              <DialogContent className="max-w-7xl max-h-[90vh] p-0 overflow-hidden">
+                <div className="grid grid-cols-3 h-full max-h-[90vh]">
+                  {/* Left Column: Thought Details */}
+                  <div className="p-6 overflow-y-auto border-r border-gray-200">
+                    <DialogHeader>
+                      <div className="flex items-center gap-3 mb-4">
+                        <Avatar className="h-12 w-12 border-2 border-amber-200">
+                          <AvatarImage src={selectedDot.user?.avatar || undefined} />
+                          <AvatarFallback className="bg-gradient-to-r from-amber-500 to-orange-500 text-white">
+                            {selectedDot.user?.fullName?.[0]?.toUpperCase() || 'U'}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <p className="font-semibold text-gray-900">{selectedDot.user?.fullName || 'Anonymous'}</p>
+                          <p className="text-sm text-gray-500">Posted {new Date(selectedDot.createdAt).toLocaleString()}</p>
+                        </div>
+                      </div>
+                      
+                      <DialogTitle className="text-2xl font-bold text-gray-900 mt-4">
+                        {selectedDot.heading}
+                      </DialogTitle>
+                    </DialogHeader>
+
+                    <div className="space-y-6 mt-6">
+                      {/* Image - if present */}
+                      {selectedDot.imageUrl && (
+                        <div className="space-y-2">
+                          <img 
+                            src={selectedDot.imageUrl} 
+                            alt={selectedDot.heading}
+                            className="w-full max-h-96 object-cover rounded-lg shadow-lg"
+                            onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                          />
+                        </div>
+                      )}
+
+                      <Card className="bg-gradient-to-br from-amber-50 to-orange-50 border-amber-200">
+                        <CardContent className="pt-6">
+                          <p className="text-gray-700 leading-relaxed">
+                            {selectedDot.summary}
+                          </p>
+                        </CardContent>
+                      </Card>
+
+                      {/* Additional Layers Section */}
+                      <div className="space-y-4">
+                        <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                          <span className="text-amber-500">●</span>
+                          Additional Layers
+                        </h3>
+                        
+                        <div className="space-y-3">
+                          {/* Emotions Tag Layer */}
+                          <Card className="border-amber-200 bg-white/50">
+                            <CardContent className="pt-4">
+                              <div className="flex items-start gap-3">
+                                <div className="flex-shrink-0 w-24">
+                                  <p className="text-sm font-semibold text-gray-700">Emotions Tag</p>
+                                </div>
+                                <div className="flex-1">
+                                  {selectedDot.emotion ? (
+                                    <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0">
+                                      {selectedDot.emotion}
+                                    </Badge>
+                                  ) : (
+                                    <p className="text-sm text-gray-400 italic">No emotion added yet</p>
+                                  )}
+                                </div>
+                              </div>
+                            </CardContent>
+                          </Card>
+
+                          {/* Anchor Layer */}
+                          <Card className="border-amber-200 bg-white/50">
+                            <CardContent className="pt-4">
+                              <div className="flex items-start gap-3">
+                                <div className="flex-shrink-0 w-24">
+                                  <p className="text-sm font-semibold text-gray-700">Anchor</p>
+                                </div>
+                                <div className="flex-1">
+                                  {selectedDot.anchor ? (
+                                    <p className="text-sm text-gray-600">{selectedDot.anchor}</p>
+                                  ) : (
+                                    <p className="text-sm text-gray-400 italic">No anchor added yet</p>
+                                  )}
+                                </div>
+                              </div>
+                            </CardContent>
+                          </Card>
+
+                          {/* Analogies Layer */}
+                          <Card className="border-amber-200 bg-white/50">
+                            <CardContent className="pt-4">
+                              <div className="flex items-start gap-3">
+                                <div className="flex-shrink-0 w-24">
+                                  <p className="text-sm font-semibold text-gray-700">Analogies</p>
+                                </div>
+                                <div className="flex-1">
+                                  {selectedDot.analogies ? (
+                                    <p className="text-sm text-gray-600">{selectedDot.analogies}</p>
+                                  ) : (
+                                    <p className="text-sm text-gray-400 italic">No analogies added yet</p>
+                                  )}
+                                </div>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        </div>
+                      </div>
+
+                      {/* Save to MyNeura Button */}
+                      <div className="pt-4">
+                        <Button
+                          onClick={() => saveToMyNeuraMutation.mutate(selectedDot.id)}
+                          disabled={saveToMyNeuraMutation.isPending}
+                          className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
+                        >
+                          <Bookmark className="h-4 w-4 mr-2" />
+                          Save to MyNeura
+                        </Button>
+                      </div>
                     </div>
                   </div>
-                  
-                  <p className="text-gray-700">{selectedDot.summary}</p>
-                  
-                  {selectedDot.imageUrl && (
-                    <img 
-                      src={selectedDot.imageUrl} 
-                      alt={selectedDot.heading}
-                      className="w-full rounded-lg"
-                    />
-                  )}
-                  
-                  {selectedDot.emotion && (
-                    <Badge variant="secondary">{selectedDot.emotion}</Badge>
-                  )}
-                  
-                  <div className="flex gap-2 pt-4">
-                    <Button
-                      onClick={() => saveToMyNeuraMutation.mutate(selectedDot.id)}
-                      disabled={saveToMyNeuraMutation.isPending}
-                      className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
-                    >
-                      <Heart className="h-4 w-4 mr-2" />
-                      Save to MyNeura
-                    </Button>
+
+                  {/* Middle Column: Perspectives (Chat) */}
+                  <div className="flex flex-col h-full border-r border-gray-200">
+                    <div className="p-6 border-b border-gray-200 flex items-center gap-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-500">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.3-4.3"></path>
+                      </svg>
+                      <h3 className="text-lg font-semibold text-gray-900">Perspectives</h3>
+                    </div>
+                    <div className="flex-1 p-6 overflow-y-auto bg-gray-50">
+                      <div className="text-center text-gray-500 py-8">
+                        <p className="text-sm">Perspectives feature coming soon...</p>
+                        <p className="text-xs mt-2">Users will be able to share thoughts and reflections here</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Right Column: Spark */}
+                  <div className="flex flex-col h-full">
+                    <div className="p-6 border-b border-gray-200">
+                      <h3 className="text-lg font-semibold text-gray-900">Spark</h3>
+                    </div>
+                    <div className="flex-1 p-6 overflow-y-auto bg-gray-50">
+                      <div className="text-center text-gray-500 py-8">
+                        <p className="text-sm">Spark section placeholder</p>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </DialogContent>
