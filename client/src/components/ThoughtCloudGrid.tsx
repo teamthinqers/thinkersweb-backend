@@ -279,10 +279,10 @@ export default function ThoughtCloudGrid({
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
-        onPointerLeave={handlePointerUp}
         style={{
           transform: `translateY(${panOffset.y}px)`,
-          transition: isDragging ? 'none' : 'transform 0.3s ease-out'
+          transition: isDragging ? 'none' : 'transform 0.3s ease-out',
+          touchAction: 'none'
         }}
       >
         {dots.map((dot) => {
